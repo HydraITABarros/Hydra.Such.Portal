@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
+using Hydra.Such.Data.Logic.Project;
 
 namespace Hydra.Such.Data.Logic.PedidoCotacao
 {
@@ -854,7 +855,6 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
             }
             catch (Exception ex)
             {
-
                 return null;
             }
         }
@@ -947,11 +947,13 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                 ModificadoEm = ObjectToTransform.ModificadoEm,
                 ModificadoPor = ObjectToTransform.ModificadoPor,
                 NumConsultaMercado = ObjectToTransform.NumConsultaMercado,
-                //NumLinha = ObjectToTransform.NumLinha,
+                NumLinha = ObjectToTransform.NumLinha,
                 NumProjecto = ObjectToTransform.NumProjecto,
                 NumRequisicao = ObjectToTransform.NumRequisicao,
-                Quantidade = ObjectToTransform.Quantidade
+                Quantidade = ObjectToTransform.Quantidade,
+                NumProjectoNavigation = DBProjects.GetById(ObjectToTransform.NumProjecto)
             };
+
 
             return linhasConsultaMercado;
         }
@@ -960,6 +962,57 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
 
 
         #region Condicoes_Propostas_Fornecedores
+
+
+        public static string Get_MAX_Alternativa_CondicoesPropostasFornecedores(string NumConsultaMercado, string CodFornecedor)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.CondicoesPropostasFornecedores.Where(p => p.NumConsultaMercado == NumConsultaMercado).Where(p => p.CodFornecedor == CodFornecedor).Max(p => p.Alternativa);
+                }
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+
+        public static CondicoesPropostasFornecedores Create(SeleccaoEntidades seleccaoEntidades, string _alternativa)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    CondicoesPropostasFornecedores condicoesPropostasFornecedores = new CondicoesPropostasFornecedores()
+                    {
+                        Alternativa = _alternativa,
+                        CodActividade = seleccaoEntidades.CodActividade,
+                        CodFormaPagamento = seleccaoEntidades.CodFormaPagamento,
+                        CodFornecedor = seleccaoEntidades.CodFornecedor,
+                        CodTermosPagamento = seleccaoEntidades.CodTermosPagamento,
+                        DataProposta = DateTime.Now,
+                        NomeFornecedor = seleccaoEntidades.NomeFornecedor,
+                        NumConsultaMercado = seleccaoEntidades.NumConsultaMercado,
+                        NumProjecto = seleccaoEntidades.NumConsultaMercadoNavigation.CodProjecto,
+                        Preferencial = seleccaoEntidades.Preferencial
+                    };
+
+                    ctx.CondicoesPropostasFornecedores.Add(condicoesPropostasFornecedores);
+                    ctx.SaveChanges();
+
+                    return condicoesPropostasFornecedores;
+                }
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+
 
         public static CondicoesPropostasFornecedores Create_Copia(CondicoesPropostasFornecedoresView ObjectToCreate, string NumConsultaMercado, string UserID)
         {
@@ -1047,6 +1100,44 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
 
 
         #region Linhas_Condicoes_Propostas_Fornecedores
+
+
+        public static LinhasCondicoesPropostasFornecedores Create(LinhasConsultaMercado linhasConsultaMercado, string _alternativa, string _codFornecedor)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    LinhasCondicoesPropostasFornecedores linhasCondicoesPropostasFornecedores = new LinhasCondicoesPropostasFornecedores()
+                    {
+                        Alternativa = _alternativa,
+                        CodActividade = linhasConsultaMercado.CodActividade,
+                        CodFornecedor = _codFornecedor,
+                        CodLocalizacao = linhasConsultaMercado.CodLocalizacao,
+                        CodProduto = linhasConsultaMercado.CodProduto,
+                        CodUnidadeMedida = linhasConsultaMercado.CodUnidadeMedida,
+                        DataEntregaPrevista = linhasConsultaMercado.DataEntregaPrevista,
+                        EstadoRespostaFornecedor = 0,   //0-Pendente; 1-Aprovado; 2-Rejeitado
+                        MotivoRejeicao = string.Empty,
+                        NumConsultaMercado = linhasConsultaMercado.NumConsultaMercado,
+                        NumProjecto = linhasConsultaMercado.NumProjecto,
+                        PrazoEntrega = string.Empty,
+                        Quantidade = linhasConsultaMercado.Quantidade,
+                        Validade = string.Empty
+                    };
+
+                    ctx.LinhasCondicoesPropostasFornecedores.Add(linhasCondicoesPropostasFornecedores);
+                    ctx.SaveChanges();
+
+                    return linhasCondicoesPropostasFornecedores;
+                }
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
 
         public static LinhasCondicoesPropostasFornecedores Create_Copia(LinhasCondicoesPropostasFornecedoresView ObjectToCreate, string NumConsultaMercado, string UserID)
         {
@@ -1157,12 +1248,32 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
         #region Seleccao_Entidades
 
 
+        public static SeleccaoEntidades GetSeleccaoEntidadesPorNumConsultaFornecedor(string _NumConsultaMercado, string _CodFornecedor)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.SeleccaoEntidades.Where(p => p.NumConsultaMercado == _NumConsultaMercado).Where(p => p.CodFornecedor == _CodFornecedor).FirstOrDefault();
+                }
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+
         public static SeleccaoEntidades Create(SeleccaoEntidades ObjectToCreate)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
+                    //if ((ObjectToCreate.CodFornecedor != null || ObjectToCreate.CodFornecedor != "") && (ObjectToCreate.NomeFornecedor == null || ObjectToCreate.NomeFornecedor == ""))
+                    //{
+
+                    //}
                     ctx.SeleccaoEntidades.Add(ObjectToCreate);
                     ctx.SaveChanges();
                 }

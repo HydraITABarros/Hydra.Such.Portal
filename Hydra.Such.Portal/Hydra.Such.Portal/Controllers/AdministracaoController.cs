@@ -152,6 +152,9 @@ namespace Hydra.Such.Portal.Controllers
                 result.RFRespostaContabilidade = userConfig.RfrespostaContabilidade;
                 result.RFAlterarDestinatarios = userConfig.RfalterarDestinatarios;
                 result.RFMailEnvio = userConfig.RfmailEnvio;
+                result.NumSerieFaturas = userConfig.NumSerieFaturas;
+                result.NumSerieNotasCredito = userConfig.NumSerieNotasCredito;
+                result.NumSerieNotasDebito = userConfig.NumSerieNotasDebito;
 
                 result.UserAccesses = DBUserAccesses.GetByUserId(data.IdUser).Select(x => new UserAccessesViewModel()
                 {
@@ -203,7 +206,10 @@ namespace Hydra.Such.Portal.Controllers
                 RfrespostaContabilidade = data.RFRespostaContabilidade,
                 RfalterarDestinatarios = data.RFAlterarDestinatarios,
                 RfmailEnvio = data.RFMailEnvio,
-            });
+                NumSerieFaturas = data.NumSerieFaturas,
+                NumSerieNotasCredito = data.NumSerieNotasCredito,
+                NumSerieNotasDebito = data.NumSerieNotasDebito,
+        });
 
             data.IdUser = ObjectCreated.IdUtilizador;
 
@@ -270,6 +276,9 @@ namespace Hydra.Such.Portal.Controllers
                 userConfig.RfrespostaContabilidade = data.RFRespostaContabilidade;
                 userConfig.RfalterarDestinatarios = data.RFAlterarDestinatarios;
                 userConfig.RfmailEnvio = data.RFMailEnvio;
+                userConfig.NumSerieFaturas = data.NumSerieFaturas;
+                userConfig.NumSerieNotasCredito = data.NumSerieNotasCredito;
+                userConfig.NumSerieNotasDebito = data.NumSerieNotasDebito;
 
                 DBUserConfigurations.Update(userConfig);
 

@@ -56,6 +56,8 @@
 
         @*POPULATE GRID*@
         <!-- DROPDOWNS POPULATE -->
+        <iron-ajax url="/PopulateDropdowns/GetNoSeries" last-response="{{LNoSeries}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{LRegionCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{LAreaCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{LResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -147,6 +149,27 @@
         <div class="row break_clear">
             <div class="col-sm-3">
                 <vaadin-combo-box items="[[LReceptionConfig]]" id="LReceptionConfig" item-value-path="id" item-label-path="value" value="{{data.receptionConfig}}" label="Numeração Receção Doc. Compras">
+                    <template>
+                        <b>[[item.value]]</b>
+                    </template>
+                </vaadin-combo-box>
+            </div>
+            <div class="col-sm-3">
+                <vaadin-combo-box items="[[LNoSeries]]" id="LNumCreditNotes" item-value-path="id" item-label-path="value" value="{{data.numSerieNotasCredito}}" label="Numeração Notas de Crédito">
+                    <template>
+                        <b>[[item.value]]</b>
+                    </template>
+                </vaadin-combo-box>
+            </div>
+            <div class="col-sm-3">
+                <vaadin-combo-box items="[[LNoSeries]]" id="LNumDebitNotes" item-value-path="id" item-label-path="value" value="{{data.numSerieNotasDebito}}" label="Numeração Notas de Débito">
+                    <template>
+                        <b>[[item.value]]</b>
+                    </template>
+                </vaadin-combo-box>
+            </div>
+            <div class="col-sm-3">
+                <vaadin-combo-box items="[[LNoSeries]]" id="LNumInvoices" item-value-path="id" item-label-path="value" value="{{data.numSerieFaturas}}" label="Numeração Faturas">
                     <template>
                         <b>[[item.value]]</b>
                     </template>

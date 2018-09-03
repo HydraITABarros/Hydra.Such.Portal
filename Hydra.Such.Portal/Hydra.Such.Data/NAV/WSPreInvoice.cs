@@ -1,4 +1,5 @@
 ﻿using Hydra.Such.Data.Database;
+using Hydra.Such.Data.Logic;
 using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.ViewModel.Contracts;
 using Hydra.Such.Data.ViewModel.Projects;
@@ -27,22 +28,33 @@ namespace Hydra.Such.Data.NAV
         {
             WSCreatePreInvoice.Document_Type tipo;
             bool notaDebito=false;
+            string PostingNoSeries = "";
+
+            ConfigUtilizadores CUsers = DBUserConfigurations.GetById(PreInvoiceToCreate.CreateUser);
 
             if (PreInvoiceToCreate.MovementType == 2)//Nota de débito
             {
                 tipo = WSCreatePreInvoice.Document_Type.Invoice;
                 notaDebito = true;
+                PostingNoSeries = CUsers.NumSerieNotasDebito;
+                
+
             }
             else if (PreInvoiceToCreate.MovementType == 4)//Nota de crédito
             {
                 tipo = WSCreatePreInvoice.Document_Type.Credit_Memo;
                 notaDebito = false;
+                PostingNoSeries = CUsers.NumSerieNotasCredito;
+
             }
             else// Fatura
             {
                 tipo = WSCreatePreInvoice.Document_Type.Invoice;
                 notaDebito = false;
+                PostingNoSeries = CUsers.NumSerieFaturas;
             }
+
+
             WSCreatePreInvoice.Create NAVCreate = new WSCreatePreInvoice.Create()
             {
                 WSPreInvoice = new WSCreatePreInvoice.WSPreInvoice() {
@@ -52,8 +64,8 @@ namespace Hydra.Such.Data.NAV
                     Sell_to_Customer_No = PreInvoiceToCreate.InvoiceToClientNo,
                     VAT_Registration_No = PreInvoiceToCreate.ClientVATReg,
                     Contract_No = PreInvoiceToCreate.DocumentNo,
-                    Debit_Memo = notaDebito
-
+                    Debit_Memo = notaDebito,
+                    Posting_No_Series = PostingNoSeries
                 }
                 
             };

@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 
-namespace Hydra.Such.Data.Database
+namespace Hydra.Such.Data.ViewModel.Projects
 {
-    public partial class ProjectosAutorizados
+    public class AuthorizedProjectViewModel
     {
+        private string dataPrestacaoServico = string.Empty;
+
         public string CodProjeto { get; set; }
         public int GrupoFactura { get; set; }
         public string Descricao { get; set; }
@@ -18,9 +21,7 @@ namespace Hydra.Such.Data.Database
         public string GrupoContabilisticoProjeto { get; set; }
         public string NumSerie { get; set; }
         public string Utilizador { get; set; }
-        public DateTime? DataAutorizacao { get; set; }
-        public string DataServPrestado { get; set; }
-        public DateTime? DataPrestacaoServico { get; set; }
+        public string DataAutorizacao { get; set; }
         public string Observacoes { get; set; }
         public string Observacoes1 { get; set; }
         public string PedidoCliente { get; set; }
@@ -31,7 +32,26 @@ namespace Hydra.Such.Data.Database
         public string Diversos { get; set; }
         public string NumCompromisso { get; set; }
         public string SituacoesPendentes { get; set; }
+        public string DataPrestacaoServico
+        {
+            get { return this.dataPrestacaoServico; }
+            set
+            {
+                DateTime servDate;
+                if (DateTime.TryParse(value, out servDate))
+                {
+                    string monthName = servDate.ToString("MMMM", System.Globalization.CultureInfo.CreateSpecificCulture("pt-PT"));
+                    this.DataServPrestado = string.Format("{0}/{1}", monthName.ToUpper(), servDate.Year.ToString());
+                }
+                this.dataPrestacaoServico = value;
+            }
+        }
+        /// <summary>
+        /// Formato extenso ex: Janeiro/2018
+        /// </summary>
+        public string DataServPrestado { get; set; }
         public string CodMetodoPagamento { get; set; }
         public bool Faturado { get; set; }
+        public decimal ValorAutorizado { get; set; }
     }
 }

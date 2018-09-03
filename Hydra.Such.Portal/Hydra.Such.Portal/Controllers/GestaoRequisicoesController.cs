@@ -1319,12 +1319,12 @@ namespace Hydra.Such.Portal.Controllers
                 try
                 {
                     RequisitionService serv = new RequisitionService(configws, HttpContext.User.Identity.Name);
-                    serv.CreateMarketConsultFor(item);
+                    item = serv.CreateMarketConsultFor(item);
                 }
                 catch (NotImplementedException ex)
                 {
                     item.eReasonCode = 2;
-                    item.eMessage = "Funcionalidade não implementada";
+                    item.eMessage = "Ocorreu um erro ao criar a Consulta ao Mercado";
                 }
             }
             else

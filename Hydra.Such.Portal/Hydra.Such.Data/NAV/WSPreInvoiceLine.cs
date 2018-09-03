@@ -178,6 +178,7 @@ namespace Hydra.Such.Data.NAV
                 line.Contract_No = x.ProjectNo;
                 line.Tipo_Refeicao = (refeicao!=null) ? refeicao.Código.ToString() : "";
                 line.Gen_Prod_Posting_Group = (refeicao != null) ? refeicao.GrupoContabProduto : "";
+                
                 parsedList[array] = line;
                 array++;
 

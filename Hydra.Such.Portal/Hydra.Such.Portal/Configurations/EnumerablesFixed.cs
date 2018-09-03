@@ -2496,6 +2496,24 @@ namespace Hydra.Such.Portal.Configurations
             }
         };
 
+        //Pedidos de Cotação - Estado Resposta
+        public static readonly List<EnumData> EstadoResposta = new List<EnumData>(){
+            new EnumData()
+            {
+                Id = 0,
+                Value = "Pendente"
+            },
+            new EnumData()
+            {
+                Id = 1,
+                Value = "Aprovado"
+            },
+            new EnumData()
+            {
+                Id = 2,
+                Value = "Rejeitado"
+            }
+        };
     }
 
     public class EnumDataString

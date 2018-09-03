@@ -34,6 +34,9 @@ namespace Hydra.Such.Data.Database
         public bool? RfrespostaContabilidade { get; set; }
         public bool? RfalterarDestinatarios { get; set; }
         public string RfmailEnvio { get; set; }
+        public string NumSerieNotasCredito { get; set; }
+        public string NumSerieFaturas { get; set; }
+        public string NumSerieNotasDebito { get; set; }
 
         public ICollection<AcessosDimensões> AcessosDimensões { get; set; }
         public ICollection<PerfisUtilizador> PerfisUtilizador { get; set; }
