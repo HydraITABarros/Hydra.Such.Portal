@@ -586,12 +586,26 @@
                     }
 
                 },
-                _CancelLinesResponse: function () {
-
+                _CancelLinesResponse: function (e) {
+                    if (e.detail.status === 200) {
+                        if (this.CancelLines.eReasonCode == 1) {
+                            this.openToast(this.CancelLines.eMessage);
+                            setTimeout(
+                                function () {
+                                    window.location.href = window.location.href;
+                                }, 1000);
+                        }
+                        else {
+                            this.openToastError(this.CancelLines.eMessage);
+                        }
+                    }
+                    else {
+                        this.openToastError("Ocorreu um erro ao processar o pedido.");
+                    }
                 },
                 _deleteLine: function (selectedItem, selectedItems) {
                     if (this.selectedItems.length != 0) {
-                        this.$.page_cancelLines_ajax.body = JSON.stringify({ "data": this.selectedItem });
+                        this.$.page_cancelLines_ajax.body = JSON.stringify(this.selectedItems);
                         this.$.page_cancelLines_ajax.generateRequest();
                     } else {
                         this.openToastError("Selecionar pelo menos um projeto!");

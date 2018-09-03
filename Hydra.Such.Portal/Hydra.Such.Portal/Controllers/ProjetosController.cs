@@ -1857,8 +1857,10 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         int? lastUsed = ctx.ProjectosAutorizados
                             .Where(x => x.CodProjeto == projectNo)
-                            .Select(x => x.GrupoFactura)
+                            .OrderByDescending(x => x.GrupoFactura)
+                            .Select(x => x.GrupoFactura)                            
                             .FirstOrDefault();
+
                         int invoiceGroup = lastUsed.HasValue ? lastUsed.Value + 1 : 1;
                         ProjectosAutorizados authorizedProject = new ProjectosAutorizados();
                         authorizedProject.CodProjeto = project.NºProjeto;
@@ -2439,11 +2441,11 @@ namespace Hydra.Such.Portal.Controllers
                     Date = x.Key.Date,
                     CommitmentNumber = x.Key.CommitmentNumber,
                     ClientRequest = x.Key.ClientRequest,
-                    ClientVATReg = DBNAV2017Clients.GetClientVATByNo(x.Key.InvoiceToClientNo, _config.NAVDatabaseName, _config.NAVCompanyName)
-
+                    ClientVATReg = DBNAV2017Clients.GetClientVATByNo(x.Key.InvoiceToClientNo, _config.NAVDatabaseName, _config.NAVCompanyName),
+                    
                 }).ToList();
                 
-                //Create Project if existe
+                //Create Project if exists
                 Task<WSCreateNAVProject.Read_Result> Project = WSProject.GetNavProject(data[0].ProjectNo, _configws);
                 Project.Wait();
                 if (Project.IsCompletedSuccessfully && Project.Result.WSJob == null)
@@ -2502,103 +2504,31 @@ namespace Hydra.Such.Portal.Controllers
                                         }
                                     }
 
-                                    //declarações
-                                    List<NAVResourcesViewModel> Resourceslines = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "");
-                                    List<WasteRateViewModel> wr = DBWasteRate.ParseToViewModel(DBWasteRate.GetAll());
-                                    List<ResourceGroupLinesModelView> myRLlist = new List<ResourceGroupLinesModelView>();
-                                    List<ResourceGroupLinesModelView> myWRlist = new List<ResourceGroupLinesModelView>();
+                                    List<NAVResourcesViewModel> resourceslines = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "");
+                                    List<WasteRateViewModel> wasteRates = DBWasteRate.ParseToViewModel(DBWasteRate.GetAll());
 
-                                    ////recursos com taxa residuo
-                                    //var selectedResources = linesList.Where(x => x.Type == 2).Select(x => x.Code).Distinct();
-                                    //var selectedWasteResources = Resourceslines.Where(x => x.WasteRate == 1 && selectedResources.Contains(x.Code));
-                                    //foreach (var item in selectedWasteResources)
-                                    //{
-                                    //    var wasteFamilyResources = wr.Where(x => x.FamiliaRecurso == item.ResourceGroup).ToList();
-                                    //    wasteFamilyResources.ForEach(x =>
-                                    //    {
-                                    //        SPInvoiceListViewModel wasteLineToAdd = new SPInvoiceListViewModel();
-                                    //        wasteLineToAdd.Quantity = quantity;
-                                    //        wasteLineToAdd.Code = item.Resource;
-                                    //        wasteLineToAdd.Description = item.ResourceName;
-                                    //        wasteLineToAdd.UnitPrice = item.Price;
-
-                                    //    });
-                                    //}
-
-                                    //procurar grupo recurso das linhas a registar
-                                    foreach (SPInvoiceListViewModel spi in linesList)
+                                    //recursos com taxa residuo
+                                    var selectedResources = linesList.Where(x => x.Type == 2).Select(x => x.Code).Distinct().ToList();
+                                    var selectedWasteResources = resourceslines.Where(x => selectedResources.Contains(x.Code)).ToList();
+                                    
+                                    foreach (var item in selectedWasteResources)
                                     {
-                                        //var resources = Resourceslines.Where(x => x.);
-                                        foreach (NAVResourcesViewModel rl in Resourceslines)
+                                        var wasteFamilyResources = wasteRates.Where(x => x.FamiliaRecurso == item.ResourceGroup).ToList();
+                                        wasteFamilyResources.ForEach(x =>
                                         {
-                                            if (spi.Code == rl.Code)
+                                            decimal? quantity = linesList.Where(y => y.Type == 2 && y.Code == item.Code).Sum(y => y.Quantity);
+                                            var resource = resourceslines.Where(y => y.Code == x.Recurso && y.WasteRate == 1).FirstOrDefault();
+                                            if (resource != null)
                                             {
-                                                ResourceGroupLinesModelView newrow = new ResourceGroupLinesModelView();
-                                                newrow.LineNo = spi.LineNo;
-                                                newrow.Quantity = spi.Quantity;
-                                                newrow.ResourceGroup = rl.ResourceGroup;
-                                                myRLlist.Add(newrow);
+                                                SPInvoiceListViewModel wasteLineToAdd = new SPInvoiceListViewModel();
+                                                wasteLineToAdd.Quantity = quantity ?? 0;
+                                                wasteLineToAdd.Type = 2;
+                                                wasteLineToAdd.Code = resource.Code;
+                                                wasteLineToAdd.Description = resource.Name;
+                                                wasteLineToAdd.UnitPrice = resource.UnitPrice;
+                                                linesList.Add(wasteLineToAdd);
                                             }
-                                        }
-                                    }
-                                    if (myRLlist.Count > 0)
-                                    {
-                                        //Pegar nas linhas da taxa residuos e adicionar o unitPrice e o name
-                                        foreach (WasteRateViewModel item in wr)
-                                        {
-                                            foreach (NAVResourcesViewModel rl in Resourceslines)
-                                            {
-                                                if (item.Recurso == rl.Code)
-                                                {
-                                                    ResourceGroupLinesModelView newrow = new ResourceGroupLinesModelView();
-                                                    newrow.Resource = rl.Code;
-                                                    newrow.ResourceName = rl.Name;
-                                                    newrow.ResourceGroup = item.FamiliaRecurso;
-                                                    newrow.Price = rl.UnitPrice;
-                                                    myWRlist.Add(newrow);
-                                                }
-                                            }
-                                        }
-                                        //Comparar o grupo das linhas a faturar com o grupo das linhas taxa Residuos
-                                        //Se forem iguais e houver mais que uma linha para o mesmo, fazer o somatório das quantidades
-                                        //Pegar na primeira linha compativel, adicionar a quantidade, o recurso da tabela taxa residuos, o seu preço unitario e o seu nome
-                                        //Adicionar essa linha como se de uma nova linha se tratasse
-                                        foreach (ResourceGroupLinesModelView item in myWRlist)
-                                        {
-                                            decimal quantity = 0; int lineNo = 0; bool found = false;
-                                            foreach (ResourceGroupLinesModelView rgl in myRLlist)
-                                            {
-                                                if (item.ResourceGroup == rgl.ResourceGroup)
-                                                {
-                                                    found = true;
-                                                    if (lineNo == 0)
-                                                    {
-                                                        lineNo = rgl.LineNo.Value;
-                                                    }
-                                                    if (rgl.Quantity != null)
-                                                    {
-                                                        quantity = quantity + rgl.Quantity.Value;
-                                                    }
-                                                }
-                                            }
-                                            if (lineNo != 0 && found)
-                                            {
-                                                List<SPInvoiceListViewModel> linesToAdd = new List<SPInvoiceListViewModel>();
-                                                foreach (SPInvoiceListViewModel spi in linesList)
-                                                {
-                                                    if (spi.LineNo == lineNo)
-                                                    {
-                                                        spi.Quantity = quantity;
-                                                        spi.Code = item.Resource;
-                                                        spi.Description = item.ResourceName;
-                                                        spi.UnitPrice = item.Price;
-                                                        linesToAdd.Add(spi);
-                                                    }
-                                                }
-                                                if (linesToAdd.Count > 0)
-                                                    linesList.AddRange(linesToAdd);
-                                            }
-                                        }
+                                        });
                                     }
                                     Task<WSCreatePreInvoiceLine.CreateMultiple_Result> TCreatePreInvoiceLine = WSPreInvoiceLine.CreatePreInvoiceLineListProject(linesList, headerNo, OptionInvoice, _configws);
                                     TCreatePreInvoiceLine.Wait();
@@ -2607,13 +2537,37 @@ namespace Hydra.Such.Portal.Controllers
                                     {
                                         execDetails += " Linhas criadas com sucesso.";
                                         //update to Invoiced = true
-                                        foreach (var updatelist in linesList)
+                                        using (SuchDBContext ctx = new SuchDBContext())
                                         {
-                                            MovimentosDeProjeto mov = DBProjectMovements.GetByLineNo(updatelist.LineNo).FirstOrDefault();
-                                            mov.Faturada = true;
-                                            DBProjectMovements.Update(mov);
+                                            //foreach (var itemToUpdate in linesList)
+                                            //{
+                                            //    MovimentosDeProjeto mov = DBProjectMovements.GetByLineNo(itemToUpdate.LineNo).FirstOrDefault();
+                                            //    if(mov != null)
+                                            //        mov.Faturada = true;
+                                            //    DBProjectMovements.Update(mov);
+                                            //}
+
+                                            var projectNo = linesList.Select(x => x.ProjectNo).First();
+                                            var invoiceGroup = linesList.Select(x => x.InvoiceGroup).First();
+
+                                            var authorizedProjects = ctx.ProjectosAutorizados
+                                                .Where(x => x.CodProjeto == projectNo && x.GrupoFactura == invoiceGroup)
+                                                .ToList();
+                                            //var authorizedProjectMovements = ctx.MovimentosDeProjeto.Where(x => x.CodProjeto == projectNo && x.GrupoFactura == invoiceGroup);
+                                            var projectMovements = ctx.MovimentosDeProjeto
+                                                .Where(x => x.NºProjeto == projectNo && x.GrupoFatura == invoiceGroup)
+                                                .ToList();
+                                            authorizedProjects.ForEach(x => x.Faturado = true);
+                                            //authorizedProjectMovements.ForEach(x => x.Faturada = true);
+                                            projectMovements.ForEach(x => x.Faturada = true);
+
+                                            ctx.ProjectosAutorizados.UpdateRange(authorizedProjects);
+                                            //ctx.MovimentosProjetoAutorizados.UpdateRange(authorizedProjectMovements);
+                                            ctx.MovimentosDeProjeto.UpdateRange(projectMovements);
+                                            ctx.SaveChanges();
+                                            
+                                            result.eMessages.Add(new TraceInformation(TraceType.Success, execDetails));
                                         }
-                                        result.eMessages.Add(new TraceInformation(TraceType.Success, execDetails));
                                     }
                                 }
                                 catch (Exception ex)
@@ -2716,28 +2670,62 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult CancelLines([FromBody] List<SPInvoiceListViewModel> data)
+        public JsonResult CancelLines([FromBody] List<AuthorizedProjectViewModel> data)
         {
-            List<MovimentosDeProjeto> result = DBProjectMovements.GetMovementProjectByGroupProj(data[0].InvoiceGroup ?? 0, data[0].ProjectNo).ToList();
+            ErrorHandler result = new ErrorHandler();
 
-            foreach (MovimentosDeProjeto line in result)
+            if (data == null)
             {
-
-                line.FaturaçãoAutorizada = false;
-                line.FaturaçãoAutorizada2 = false;
-                line.Faturada = false;
-                line.GrupoFatura = (int?)null;
-                line.GrupoFaturaDescricao = string.Empty;
-                DBProjectMovements.Update(line);
-
+                result.eReasonCode = 2;
+                result.eMessage = "Selecione os movimentos a faturar";
+                return Json(result);
             }
 
             //Remove Project Authorized
             using (SuchDBContext ctx = new SuchDBContext())
             {
-                List<ProjectosAutorizados> authorizedProj = ctx.ProjectosAutorizados.Where(x => x.GrupoFactura == data[0].InvoiceGroup && x.CodProjeto == data[0].ProjectNo).ToList();
-                ctx.ProjectosAutorizados.RemoveRange(authorizedProj);
-                ctx.SaveChanges();
+                bool hasChanges = false;
+                var authorizedProj = ctx.ProjectosAutorizados.Where(x => x.GrupoFactura == data[0].GrupoFactura && x.CodProjeto == data[0].CodProjeto).ToList();
+                if (authorizedProj.Count > 0)
+                {
+                    ctx.ProjectosAutorizados.RemoveRange(authorizedProj);
+                    hasChanges = true;
+                }
+
+                var authorizeProjectMovements = ctx.MovimentosDeProjeto.Where(x => x.GrupoFatura == data[0].GrupoFactura && x.NºProjeto == data[0].CodProjeto).ToList();
+                if (authorizeProjectMovements.Count > 0)
+                {
+                    authorizeProjectMovements.ForEach(x =>
+                    {
+                        x.FaturaçãoAutorizada = false;
+                        x.FaturaçãoAutorizada2 = false;
+                        x.Faturada = false;
+                        x.GrupoFatura = (int?)null;
+                        x.GrupoFaturaDescricao = string.Empty;
+                    });
+                    ctx.MovimentosDeProjeto.UpdateRange(authorizeProjectMovements);
+                    hasChanges = true;
+                }
+                if (hasChanges)
+                {
+                    try
+                    {
+                        ctx.SaveChanges();
+                        result.eReasonCode = 1;
+                        result.eMessage = "Os registo foram anulados com sucesso.";
+                    }
+                    catch (Exception ex)
+                    {
+                        result.eReasonCode = 2;
+                        result.eMessage = "Não existem movimentos para anular";
+                        result.eMessages.Add(new TraceInformation(TraceType.Exception, ex.Message));
+                    }
+                }
+                else
+                {
+                    result.eReasonCode = 2;
+                    result.eMessage = "Não existem registos para anular";
+                }
             }
             return Json(result);
         }
@@ -2831,77 +2819,96 @@ namespace Hydra.Such.Portal.Controllers
                                     List<ResourceGroupLinesModelView> myRLlist = new List<ResourceGroupLinesModelView>();
                                     List<ResourceGroupLinesModelView> myWRlist = new List<ResourceGroupLinesModelView>();
 
-                                    //procurar grupo recurso das linhas a registar
-                                    foreach (SPInvoiceListViewModel spi in linesList)
+                                    //recursos com taxa residuo
+                                    var selectedResources = linesList.Where(x => x.Type == 2).Select(x => x.Code).Distinct();
+                                    var selectedWasteResources = Resourceslines.Where(x => x.WasteRate == 1 && selectedResources.Contains(x.Code));
+                                    foreach (var item in selectedWasteResources)
                                     {
-                                        foreach (NAVResourcesViewModel rl in Resourceslines)
+                                        decimal? quantity = linesList.Where(x => x.Code == item.Code).Sum(x => x.Quantity);
+
+                                        var wasteFamilyResources = wr.Where(x => x.FamiliaRecurso == item.ResourceGroup).ToList();
+                                        wasteFamilyResources.ForEach(x =>
                                         {
-                                            if (spi.Code == rl.Code)
-                                            {
-                                                ResourceGroupLinesModelView newrow = new ResourceGroupLinesModelView();
-                                                newrow.LineNo = spi.LineNo;
-                                                newrow.Quantity = spi.Quantity;
-                                                newrow.ResourceGroup = rl.ResourceGroup;
-                                                myRLlist.Add(newrow);
-                                            }
-                                        }
+                                            SPInvoiceListViewModel wasteLineToAdd = new SPInvoiceListViewModel();
+                                            wasteLineToAdd.Quantity = quantity??0;
+                                            wasteLineToAdd.Code = item.Code;
+                                            wasteLineToAdd.Description = item.Name;
+                                            wasteLineToAdd.UnitPrice = item.UnitPrice;
+                                            linesList.Add(wasteLineToAdd);
+                                        });
                                     }
-                                    if (myRLlist.Count > 0)
-                                    {
-                                        //Pegar nas linhas da taxa residuos e adicionar o unitPrice e o name
-                                        foreach (WasteRateViewModel item in wr)
-                                        {
-                                            foreach (NAVResourcesViewModel rl in Resourceslines)
-                                            {
-                                                if (item.Recurso == rl.Code)
-                                                {
-                                                    ResourceGroupLinesModelView newrow = new ResourceGroupLinesModelView();
-                                                    newrow.Resource = rl.Code;
-                                                    newrow.ResourceName = rl.Name;
-                                                    newrow.ResourceGroup = item.FamiliaRecurso;
-                                                    newrow.Price = rl.UnitPrice;
-                                                    myWRlist.Add(newrow);
-                                                }
-                                            }
-                                        }
-                                        //Comparar o grupo das linhas a faturar com o grupo das linhas taxa Residuos
-                                        //Se forem iguais e houver mais que uma linha para o mesmo, fazer o somatório das quantidades
-                                        //Pegar na primeira linha compativel, adicionar a quantidade, o recurso da tabela taxa residuos, o seu preço unitario e o seu nome
-                                        //Adicionar essa linha como se de uma nova linha se tratasse
-                                        foreach (ResourceGroupLinesModelView item in myWRlist)
-                                        {
-                                            decimal quantity = 0;int lineNo = 0;bool found = false;
-                                            foreach (ResourceGroupLinesModelView rgl in myRLlist)
-                                            {
-                                                if (item.ResourceGroup == rgl.ResourceGroup)
-                                                {
-                                                    found = true;
-                                                    if (lineNo == 0)
-                                                    {
-                                                        lineNo = rgl.LineNo.Value;
-                                                    }
-                                                    if (rgl.Quantity != null)
-                                                    {
-                                                        quantity = quantity + rgl.Quantity.Value;
-                                                    }
-                                                }
-                                            }
-                                            if (lineNo != 0 && found)
-                                            {
-                                                foreach (SPInvoiceListViewModel spi in linesList)
-                                                {
-                                                    if (spi.LineNo == lineNo)
-                                                    {
-                                                        spi.Quantity = quantity;
-                                                        spi.Code = item.Resource;
-                                                        spi.Description = item.ResourceName;
-                                                        spi.UnitPrice = item.Price;
-                                                        linesList.Add(spi);
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
+
+                                    ////procurar grupo recurso das linhas a registar
+                                    //foreach (SPInvoiceListViewModel spi in linesList)
+                                    //{
+                                    //    foreach (NAVResourcesViewModel rl in Resourceslines)
+                                    //    {
+                                    //        if (spi.Code == rl.Code)
+                                    //        {
+                                    //            ResourceGroupLinesModelView newrow = new ResourceGroupLinesModelView();
+                                    //            newrow.LineNo = spi.LineNo;
+                                    //            newrow.Quantity = spi.Quantity;
+                                    //            newrow.ResourceGroup = rl.ResourceGroup;
+                                    //            myRLlist.Add(newrow);
+                                    //        }
+                                    //    }
+                                    //}
+                                    //if (myRLlist.Count > 0)
+                                    //{
+                                    //    //Pegar nas linhas da taxa residuos e adicionar o unitPrice e o name
+                                    //    foreach (WasteRateViewModel item in wr)
+                                    //    {
+                                    //        foreach (NAVResourcesViewModel rl in Resourceslines)
+                                    //        {
+                                    //            if (item.Recurso == rl.Code)
+                                    //            {
+                                    //                ResourceGroupLinesModelView newrow = new ResourceGroupLinesModelView();
+                                    //                newrow.Resource = rl.Code;
+                                    //                newrow.ResourceName = rl.Name;
+                                    //                newrow.ResourceGroup = item.FamiliaRecurso;
+                                    //                newrow.Price = rl.UnitPrice;
+                                    //                myWRlist.Add(newrow);
+                                    //            }
+                                    //        }
+                                    //    }
+                                    //    //Comparar o grupo das linhas a faturar com o grupo das linhas taxa Residuos
+                                    //    //Se forem iguais e houver mais que uma linha para o mesmo, fazer o somatório das quantidades
+                                    //    //Pegar na primeira linha compativel, adicionar a quantidade, o recurso da tabela taxa residuos, o seu preço unitario e o seu nome
+                                    //    //Adicionar essa linha como se de uma nova linha se tratasse
+                                    //    foreach (ResourceGroupLinesModelView item in myWRlist)
+                                    //    {
+                                    //        decimal quantity = 0;int lineNo = 0;bool found = false;
+                                    //        foreach (ResourceGroupLinesModelView rgl in myRLlist)
+                                    //        {
+                                    //            if (item.ResourceGroup == rgl.ResourceGroup)
+                                    //            {
+                                    //                found = true;
+                                    //                if (lineNo == 0)
+                                    //                {
+                                    //                    lineNo = rgl.LineNo.Value;
+                                    //                }
+                                    //                if (rgl.Quantity != null)
+                                    //                {
+                                    //                    quantity = quantity + rgl.Quantity.Value;
+                                    //                }
+                                    //            }
+                                    //        }
+                                    //        if (lineNo != 0 && found)
+                                    //        {
+                                    //            foreach (SPInvoiceListViewModel spi in linesList)
+                                    //            {
+                                    //                if (spi.LineNo == lineNo)
+                                    //                {
+                                    //                    spi.Quantity = quantity;
+                                    //                    spi.Code = item.Resource;
+                                    //                    spi.Description = item.ResourceName;
+                                    //                    spi.UnitPrice = item.Price;
+                                    //                    linesList.Add(spi);
+                                    //                }
+                                    //            }
+                                    //        }
+                                    //    }
+                                    //}
                                     Task<WSCreatePreInvoiceLine.CreateMultiple_Result> TCreatePreInvoiceLine = WSPreInvoiceLine.CreatePreInvoiceLineListProject(linesList, headerNo, OptionInvoice, _configws);
                                     TCreatePreInvoiceLine.Wait();
 
