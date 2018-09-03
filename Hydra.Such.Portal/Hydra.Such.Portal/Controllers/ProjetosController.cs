@@ -1888,6 +1888,50 @@ namespace Hydra.Such.Portal.Controllers
                             x.AutorizatedInvoiceDate = DateTime.Now.ToString("yyyy-MM-dd");
                             x.AuthorizedBy = User.Identity.Name;
                             x.InvoiceGroup = invoiceGroup;
+
+                            //Create Movement Project Authorized ::RUI
+                            MovimentosProjectoAutorizados projMovement = new MovimentosProjectoAutorizados();
+                            projMovement.NumMovimento = x.LineNo;
+                            projMovement.DataRegisto = Convert.ToDateTime(x.Date);
+                            projMovement.Tipo = x.MovementType ?? 0;
+                            projMovement.Codigo = x.Code;
+                            projMovement.Descricao = x.Description;
+                            projMovement.Quantidade = x.Quantity ??0;
+                            projMovement.CodUnidadeMedida = x.MeasurementUnitCode;
+                            projMovement.PrecoVenda = x.UnitPrice ?? 0;
+                            projMovement.PrecoTotal = x.TotalPrice ?? 0;
+                            projMovement.CodProjeto = x.ProjectNo;
+                            projMovement.CodRegiao = x.RegionCode;
+                            projMovement.CodAreaFuncional = x.FunctionalAreaCode;
+                            projMovement.CodCentroResponsabilidade = x.ResponsabilityCenterCode;
+                            projMovement.CodContrato = x.ProjectNo;
+                            projMovement.CodGrupoServico = x.ServiceGroupCode.ToString();
+                            projMovement.CodServCliente = x.ServiceClientCode;
+                            projMovement.DescServCliente = x.ServiceClientDescription;
+                            projMovement.NumGuiaResiduosGar = x.ResidueGuideNo;
+                            projMovement.TipoRefeicao = x.MealType.ToString();
+                            projMovement.TipoRecurso = x.ResourceType.ToString();
+                            projMovement.NumDocumento = x.DocumentNo;
+                            projMovement.PrecoCusto = x.UnitCost;
+                            projMovement.CustoTotal = x.TotalCost;
+                            projMovement.CodCliente = x.InvoiceToClientNo;
+                            projMovement.GrupoFactura = x.InvoiceGroup ?? 0;
+
+                            if (x.OriginalDocument != null && x.DocumentNo != "")
+                                projMovement.NumGuiaExterna = x.OriginalDocument;
+                            else if (x.AdjustedDocument != null && x.AdjustedDocument != "")
+                            {
+                                projMovement.NumGuiaExterna = x.AdjustedDocument;
+                                projMovement.DataConsumo = Convert.ToDateTime(x.AdjustedDocumentDate);
+                            }
+                            else
+                            {
+                                projMovement.NumGuiaExterna = x.ExternalGuideNo;
+                                projMovement.DataConsumo = (x.ConsumptionDate == null || x.ConsumptionDate == "") ? Convert.ToDateTime(x.Date) : Convert.ToDateTime(x.ConsumptionDate);
+                            }
+
+                            DBProjectMovementsAuthorized.Create(projMovement);
+                            // END RUI
                         });
 
                         ctx.ProjectosAutorizados.Add(authorizedProject);
@@ -2230,6 +2274,48 @@ namespace Hydra.Such.Portal.Controllers
             {
                 return null;
             }
+        }
+
+        [HttpPost]
+        public JsonResult GetProjMovementsLines([FromBody] string ProjNo, int? ProjGroup)
+        {
+            //TODO: substituir GetMovimentosFaturacao         
+               List<ProjectMovementViewModel> projectMovements = new List<ProjectMovementViewModel>();
+                    try
+                        {
+                                 projectMovements = DBProjectMovements.GetProjMovementsById(ProjNo, ProjGroup)
+                                .ParseToViewModel(_config.NAVDatabaseName, _config.NAVCompanyName)
+                                .OrderBy(x => x.ClientName).ToList();
+
+                            if (projectMovements.Count > 0)
+                            {
+                                var userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+                                foreach (var lst in projectMovements)
+                                {
+                                    if (lst.MovementType == 3)
+                                    {
+                                        lst.Quantity = Math.Abs((decimal)lst.Quantity) * (-1);
+                                    }
+
+                                    if (!String.IsNullOrEmpty(lst.Currency))
+                                    {
+                                        lst.UnitPrice = lst.UnitValueToInvoice;
+                                    }
+                                }
+                                List<UserDimensionsViewModel> userDimensionsViewModel = userDimensions.ParseToViewModel();
+                                            if (userDimensionsViewModel.Where(x => x.Dimension == (int)Dimensions.Region).Count() > 0)
+                                                projectMovements.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.RegionCode));
+                                            if (userDimensionsViewModel.Where(x => x.Dimension == (int)Dimensions.FunctionalArea).Count() > 0)
+                                                projectMovements.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.FunctionalAreaCode));
+                                            if (userDimensionsViewModel.Where(x => x.Dimension == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                                                projectMovements.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.ResponsabilityCenterCode));
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                     projectMovements = new List<ProjectMovementViewModel>();
+                    }
+                return Json(projectMovements);
         }
 
         [HttpPost]
@@ -2629,7 +2715,7 @@ namespace Hydra.Such.Portal.Controllers
                 //Nº do Cliente > “999999”.
                 if (Convert.ToInt32(Cliente[0].No_) > 999999)
                 {
-                    execDetails += "Não é permitido contabilizar Notas de Crédito para o Cliente "+ Cliente[0].No_+".";
+                    execDetails += "Não é permitido contabilizar para o Cliente "+ Cliente[0].No_+".";
                     result.eMessages.Add(new TraceInformation(TraceType.Error, execDetails));
                 }
                 //Garantir que o campo “Nº do Contribuinte”
@@ -2789,6 +2875,7 @@ namespace Hydra.Such.Portal.Controllers
                     
                     foreach (var header in groupedbyclient)
                     {
+                      
                         try
                         {
                             
