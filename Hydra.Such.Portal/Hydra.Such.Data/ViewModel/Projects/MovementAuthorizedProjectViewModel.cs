@@ -20,14 +20,14 @@ namespace Hydra.Such.Data.ViewModel.Projects
         public string FunctionalAreaCode { get; set; }
         public string ResponsabilityCenterCode { get; set; }
         public string CodContract { get; set; }
-        public string CodServiceGroup { get; set; }
+        public int CodServiceGroup { get; set; }
         public string CodServClient { get; set; }
         public string DescServClient { get; set; }
         public string NumGuideResiduesGar { get; set; }
         public string NumGuideExternal { get; set; }
         public DateTime? DateConsume { get; set; }
-        public string TypeMeal { get; set; }
-        public string TypeResourse { get; set; }
+        public int TypeMeal { get; set; }
+        public int TypeResourse { get; set; }
         public string NumDocument { get; set; }
         public decimal? CostPrice { get; set; }
         public decimal? CostTotal { get; set; }
