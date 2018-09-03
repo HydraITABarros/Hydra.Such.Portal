@@ -141,7 +141,7 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
                 projMovement.FunctionalAreaCode = item.CodAreaFuncional;
                 projMovement.ResponsabilityCenterCode = item.CodCentroResponsabilidade;
                 projMovement.CodContract = item.CodContrato;
-                projMovement.CodServiceGroup = item.CodGrupoServico;
+                projMovement.CodServiceGroup = item.CodGrupoServico ??0;
                 projMovement.CodServClient = item.CodServCliente;
                 projMovement.DescServClient = item.DescServCliente;
                 projMovement.NumGuideResiduesGar = item.NumGuiaResiduosGar;
@@ -153,9 +153,9 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
                 projMovement.CostPrice = item.PrecoCusto;
                 projMovement.CostTotal = item.CustoTotal;
                 projMovement.CodClient = item.CodCliente;
-                projMovement.InvoiceGroup = item.GrupoFactura;
+                projMovement.InvoiceGroup = item.GrupoFactura ?? 0;
 
-                return projMovement;
+
             }
             return null;
         }

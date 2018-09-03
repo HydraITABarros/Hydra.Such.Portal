@@ -19,18 +19,19 @@ namespace Hydra.Such.Data.Database
         public string CodAreaFuncional { get; set; }
         public string CodCentroResponsabilidade { get; set; }
         public string CodContrato { get; set; }
-        public string CodGrupoServico { get; set; }
+        public int? CodGrupoServico { get; set; }
         public string CodServCliente { get; set; }
         public string DescServCliente { get; set; }
         public string NumGuiaResiduosGar { get; set; }
         public string NumGuiaExterna { get; set; }
         public DateTime? DataConsumo { get; set; }
-        public string TipoRefeicao { get; set; }
-        public string TipoRecurso { get; set; }
+        public int TipoRefeicao { get; set; }
+        public int TipoRecurso { get; set; }
         public string NumDocumento { get; set; }
         public decimal? PrecoCusto { get; set; }
         public decimal? CustoTotal { get; set; }
         public string CodCliente { get; set; }
-        public int GrupoFactura { get; set; }
+        public int? GrupoFactura { get; set; }
+        public string GrupoFaturaDescricao { get; set; }
     }
 }

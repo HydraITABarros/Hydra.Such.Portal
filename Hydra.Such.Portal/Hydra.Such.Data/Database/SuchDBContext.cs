@@ -150,8 +150,8 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<Viaturas> Viaturas { get; set; }
         public virtual DbSet<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
 
-      
-      
+       
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AcessosDimensões>(entity =>
@@ -5489,10 +5489,6 @@ namespace Hydra.Such.Data.Database
                     .HasMaxLength(20)
                     .IsUnicode(false);
 
-                entity.Property(e => e.CodGrupoServico)
-                    .HasMaxLength(30)
-                    .IsUnicode(false);
-
                 entity.Property(e => e.CodProjeto)
                     .IsRequired()
                     .HasMaxLength(20)
@@ -5516,9 +5512,9 @@ namespace Hydra.Such.Data.Database
                     .HasMaxLength(20)
                     .IsUnicode(false);
 
-                entity.Property(e => e.DataConsumo).HasColumnType("datetime");
+                entity.Property(e => e.DataConsumo).HasColumnType("date");
 
-                entity.Property(e => e.DataRegisto).HasColumnType("datetime");
+                entity.Property(e => e.DataRegisto).HasColumnType("date");
 
                 entity.Property(e => e.DescServCliente).HasMaxLength(80);
 
@@ -5529,6 +5525,8 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.GrupoFactura).HasColumnName("Grupo Factura");
 
+                entity.Property(e => e.GrupoFaturaDescricao).HasMaxLength(30);
+
                 entity.Property(e => e.NumDocumento)
                     .HasMaxLength(20)
                     .IsUnicode(false);
@@ -5538,14 +5536,6 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.NumGuiaResiduosGar)
                     .HasColumnName("NumGuiaResiduos_GAR")
                     .HasMaxLength(80);
-
-                entity.Property(e => e.TipoRecurso)
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.TipoRefeicao)
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<MovimentosTelefones>(entity =>
