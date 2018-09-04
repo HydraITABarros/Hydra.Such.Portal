@@ -2785,18 +2785,26 @@ namespace Hydra.Such.Portal.Controllers
                     hasChanges = true;
                 }
 
-                var authorizeProjectMovements = ctx.MovimentosDeProjeto.Where(x => x.GrupoFatura == data[0].GrupoFactura && x.NºProjeto == data[0].CodProjeto).ToList();
-                if (authorizeProjectMovements.Count > 0)
+                var ProjectMovements = ctx.MovimentosDeProjeto.Where(x => x.GrupoFatura == data[0].GrupoFactura && x.NºProjeto == data[0].CodProjeto).ToList();
+                List<MovimentosProjectoAutorizados> ProjectMovementsAuthorizedList = new List<MovimentosProjectoAutorizados>();
+                if (ProjectMovements.Count > 0) 
                 {
-                    authorizeProjectMovements.ForEach(x =>
+                    ProjectMovements.ForEach(x =>
                     {
                         x.FaturaçãoAutorizada = false;
                         x.FaturaçãoAutorizada2 = false;
                         x.Faturada = false;
                         x.GrupoFatura = (int?)null;
                         x.GrupoFaturaDescricao = string.Empty;
+
+                        //Remove Line of MPA : RUI
+                        MovimentosProjectoAutorizados movAutProject = new MovimentosProjectoAutorizados();
+                        movAutProject.NumMovimento = x.NºLinha;
+                        ProjectMovementsAuthorizedList.Add(movAutProject);
                     });
-                    ctx.MovimentosDeProjeto.UpdateRange(authorizeProjectMovements);
+                    ctx.MovimentosDeProjeto.UpdateRange(ProjectMovements);
+                    //Remove Line of MPA
+                    ctx.MovimentosProjectoAutorizados.RemoveRange(ProjectMovementsAuthorizedList);
                     hasChanges = true;
                 }
                 if (hasChanges)
