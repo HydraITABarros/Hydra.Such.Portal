@@ -20,6 +20,7 @@ namespace Hydra.Such.Data.ViewModel.Nutrition
         /// Map to Descrição
         /// </summary>
         public string ProductDescription { get; set; }
+        public string ProductDescription2 { get; set; }
 
         /// <summary>
         /// Map to CódLocalização

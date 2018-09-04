@@ -11,6 +11,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public int? Type { get; set; }
         public string Code { get; set; }
         public string Description { get; set; }
+        public string Description2 { get; set; }
         public string LocalCode { get; set; }
         public string UnitMeasureCode { get; set; }
         public decimal? QuantityToRequire { get; set; }
@@ -22,7 +23,6 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string CreateUser { get; set; }
         public string UpdateDateTime { get; set; }
         public string UpdateUser { get; set; }
-        public string Description2 { get; set; }
         public decimal? QtyByUnitOfMeasure { get; set; }
         public decimal? QuantityRequired { get; set; }
         public decimal? QuantityPending { get; set; }
