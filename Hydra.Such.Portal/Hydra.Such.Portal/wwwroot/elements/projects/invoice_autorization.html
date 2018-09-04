@@ -172,14 +172,7 @@
                    on-response="GetProjectResponse"
                    content-type="application/json">
         </iron-ajax>
-        <!--<iron-ajax url="/Projetos/UpdateProjectMovements"
-               last-response="{{UpdateResponse}}"
-               method="post"
-               handle-as="json"
-               id="updatelines_ajax"
-               on-response="_updateLinesResponse"
-               content-type="application/json">
-    </iron-ajax>-->
+
         <iron-ajax url="/Projetos/AuthorizeProjectMovements"
                    last-response="{{authorizationResponse}}"
                    method="post"
@@ -1005,23 +998,7 @@
                 _ConvertDecimals: function (e) {
                     e.target.value = e.target.value.replace(",", ".");
                 },
-                //_updateMovements: function () {
-                //    this.$.updatelines_ajax.body = JSON.stringify(this.result.value);
-                //    this.$.updatelines_ajax.generateRequest();
-                //},
-                _updateLinesResponse: function (e) {
-                    //UpdateResponse
-                    if (e.detail.status === 200) {
-                        if (this.UpdateResponse.eReasonCode == "1") {
-                            this.$.grdProjectMovements.clearCache();
-                            this.result.value = this.UpdateResponse;
-                            this._openToast(this.UpdateResponse.eMessage);
-                        }
-                        else {
-                            this.openToastError(this.UpdateResponse.eMessage);
-                        }
-                    }
-                },
+
                 _setDefaultDateForDatePickers: function () {
                     try {
                         if (this.$.dpDataPrestacaoServ == null)

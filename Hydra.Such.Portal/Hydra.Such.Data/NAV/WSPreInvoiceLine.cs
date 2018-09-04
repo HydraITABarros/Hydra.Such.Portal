@@ -178,6 +178,22 @@ namespace Hydra.Such.Data.NAV
                 line.Contract_No = x.ProjectNo;
                 line.Tipo_Refeicao = (refeicao!=null) ? refeicao.Código.ToString() : "";
                 line.Gen_Prod_Posting_Group = (refeicao != null) ? refeicao.GrupoContabProduto : "";
+
+                //TODO: Faturação Projetos - implementar preenchimento dos seguintes campos
+                //line.Cod_Serv_Cliente;
+                //line.Consumption_Date;
+                //line.Consumption_DateSpecified = true;
+                //line.Document_No = x.DocumentNo;
+                //line.FunctionAreaCode20 = x.FunctionalAreaCode;
+                //line.Grupo_Serviço = x.ServiceGroupCode;
+                //line.Nº_Guia_Externa = x.ExternalGuideNo;
+                ////line.Nº_Guia_Resíduos_GAR = x
+                //line.RegionCode20 = x.RegionCode;
+                //line.ResponsabilityCenterCode20 = x.ResponsabilityCenterCode;
+                //line.Tipo_Recurso = x.ResourceType;
+                //line.Tipo_RecursoSpecified = true;
+                //line.Tipo_Refeicao = x.MealType;
+                //line.Unit_Cost_LCY = x.UnitCost
                 
                 parsedList[array] = line;
                 array++;
