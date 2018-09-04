@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 
-namespace Hydra.Such.Data.Logic.Project
+namespace Hydra.Such.Data.Logic.ProjectMovements
 {
     public static class DBProjectMovements
     {
@@ -72,23 +72,50 @@ namespace Hydra.Such.Data.Logic.Project
             }
         }
 
-        public static List<MovimentosDeProjeto> GetAllTableByAreaProjectNo(string user, int areaId, string projectNo)
+        public static List<MovimentosDeProjeto> GetProjectMovementsFor(string projectNo, bool? billable)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.MovimentosDeProjeto
-                        .Where(x => x.NºProjeto == projectNo &&
+                    if (billable.HasValue)
+                    {
+                        return ctx.MovimentosDeProjeto
+                            .Where(x => x.NºProjeto == projectNo &&
                                     x.TipoMovimento == 1 && //Consumo
-                                    x.Faturável == true && 
+                                    x.Faturável == billable &&
                                     x.FaturaçãoAutorizada == false)
-                        .ToList();
+                            .ToList();
+                    }
+                    else
+                    {
+                        return ctx.MovimentosDeProjeto
+                           .Where(x => x.NºProjeto == projectNo &&
+                                    x.TipoMovimento == 1 && //Consumo
+                                    x.FaturaçãoAutorizada == false)
+                            .ToList();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
 
-                        
-                    //return ctx.MovimentosDeProjeto.Where(x => x.Faturada == false && x.Faturável == true && x.Registado == true && x.Utilizador == user && x.NºProjetoNavigation.Área == areaId && x.NºProjeto == projectNo && x.FaturaçãoAutorizada == false).ToList();
-                    //List<MovimentosDeProjeto> test = ctx.MovimentosDeProjeto.Where(x => x.Faturada == false && x.Faturável == true && x.Registado == true && x.NºProjeto == projectNo && x.FaturaçãoAutorizada == false).ToList();
-                    //return test;
+        public static List<MovimentosDeProjeto> GetProjMovementsById(string projectNo, int? ProjGroup)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                        return ctx.MovimentosDeProjeto
+                            .Where(x => x.NºProjeto == projectNo &&
+                                    x.Faturada == false && //Consumo
+                                    x.Faturável == true &&
+                                    x.GrupoFatura == ProjGroup &&
+                                    x.FaturaçãoAutorizada == true)
+                            .ToList();
                 }
             }
             catch (Exception ex)
@@ -112,6 +139,20 @@ namespace Hydra.Such.Data.Logic.Project
             }
         }
 
+        public static List<MovimentosDeProjeto> GetMovementProjectByGroupProj(int grupo, string nProjecto)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.MovimentosDeProjeto.Where(x => x.Faturável == true && x.FaturaçãoAutorizada == true && x.GrupoFatura == grupo && x.NºProjeto== nProjecto).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
 
         public static MovimentosDeProjeto Create(MovimentosDeProjeto ObjectToCreate)
         {
@@ -152,6 +193,23 @@ namespace Hydra.Such.Data.Logic.Project
             }
         }
 
+        public static List<MovimentosDeProjeto> Update(List<MovimentosDeProjeto> projectMovements)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    ctx.MovimentosDeProjeto.UpdateRange(projectMovements);
+                    ctx.SaveChanges();
+                }
+                return projectMovements;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+   
         public static bool Delete(MovimentosDeProjeto ObjectToDelete)
         {
             try
@@ -201,7 +259,6 @@ namespace Hydra.Such.Data.Logic.Project
             }
         }
 
-
         public static List<MovimentosDeProjeto> GetByLineNo(int LineNo, string user = "")
         {
             try
@@ -221,7 +278,6 @@ namespace Hydra.Such.Data.Logic.Project
             }
         }
 
-
         public static List<MovimentosDeProjeto> GetRegisteredDiary(string ProjectNo)
         {
             try
@@ -236,6 +292,7 @@ namespace Hydra.Such.Data.Logic.Project
                 return null;
             }
         }
+
         public static List<MovimentosDeProjeto> GetRegisteredDiaryDp(string ProjectNo, string user, bool AllProjs)
         {
             try
@@ -278,7 +335,6 @@ namespace Hydra.Such.Data.Logic.Project
             }
             return totalConsumption.HasValue ? totalConsumption.Value : 0;
         }
-
 
         public static List<SPInvoiceListViewModel> GetAllAutorized()
         {
@@ -328,7 +384,9 @@ namespace Hydra.Such.Data.Logic.Project
                         item.CreateUser = temp.UtilizadorCriacao.Equals(DBNull.Value) ? "" : (string)temp.UtilizadorCriacao;
                         item.Registered = temp.Registado.Equals(DBNull.Value) ? null : (bool?)temp.Registado;
                         item.Billed = temp.Faturada.Equals(DBNull.Value) ? null : (bool?)temp.Faturada;
-
+                        item.MealType= temp.TipoRefeicao.Equals(DBNull.Value) ? null : (int?)temp.TipoRefeicao;
+                        item.InvoiceGroup = temp.GrupoFatura.Equals(DBNull.Value) ? null : (int?)temp.GrupoFatura;
+                        item.InvoiceGroupDescription= temp.GrupoFaturaDescricao.Equals(DBNull.Value) ? "" : (string)temp.GrupoFaturaDescricao;
                         result.Add(item);
                     }
                 }
@@ -340,6 +398,180 @@ namespace Hydra.Such.Data.Logic.Project
             }
         }
 
+        #region Parse Utilities
+        public static ProjectMovementViewModel ParseToViewModel(this MovimentosDeProjeto item, string navDatabaseName, string navCompanyName)
+        {
+            if (item != null)
+            {
+                ProjectMovementViewModel projMovement = new ProjectMovementViewModel();
 
+                projMovement.LineNo = item.NºLinha;
+                projMovement.ProjectNo = item.NºProjeto;
+                projMovement.Date = item.Data == null ? String.Empty : item.Data.Value.ToString("yyyy-MM-dd");
+                projMovement.MovementType = item.TipoMovimento;
+                projMovement.DocumentNo = item.NºDocumento;
+                projMovement.Type = item.Tipo;
+                //TypeDescription
+                projMovement.Code = item.Código;
+                projMovement.Description = item.Descrição;
+                projMovement.Quantity = item.Quantidade;
+                projMovement.MeasurementUnitCode = item.CódUnidadeMedida;
+                projMovement.LocationCode = item.CódLocalização;
+                projMovement.ProjectContabGroup = item.GrupoContabProjeto;
+                projMovement.RegionCode = item.CódigoRegião;
+                projMovement.FunctionalAreaCode = item.CódigoÁreaFuncional;
+                projMovement.ResponsabilityCenterCode = item.CódigoCentroResponsabilidade;
+                projMovement.User = item.Utilizador;
+                projMovement.UnitCost = item.CustoUnitário;
+                projMovement.TotalCost = item.CustoTotal;
+                projMovement.UnitPrice = item.PreçoUnitário;
+                projMovement.TotalPrice = item.PreçoTotal;
+                projMovement.UnitValueToInvoice = item.ValorUnitárioAFaturar;
+                projMovement.Currency = item.Moeda;
+                projMovement.Billable = item.Faturável.HasValue ? item.Faturável.Value : false;
+                projMovement.Billed = item.Faturada.HasValue ? item.Faturada.Value : false;
+                projMovement.Registered = item.Registado.HasValue ? item.Registado.Value : false;
+                projMovement.ResourceType = item.TipoRecurso;
+                projMovement.ServiceClientCode = item.CódServiçoCliente;
+                //ServiceClientDescription
+                projMovement.ServiceGroupCode = item.CódGrupoServiço;
+                projMovement.ExternalGuideNo = item.NºGuiaExterna;
+                projMovement.ConsumptionDate = item.DataConsumo?.ToString("yyyy-MM-dd");
+                projMovement.ResidueGuideNo = item.NºGuiaResíduos;
+                projMovement.AdjustedDocument = item.DocumentoCorrigido;
+                projMovement.AdjustedDocumentDate = item.DataDocumentoCorrigido?.ToString("yyyy-MM-dd");
+                projMovement.ResidueFinalDestinyCode = item.CódDestinoFinalResíduos;
+                projMovement.MealType = item.TipoRefeição;
+                //MealTypeDescription
+                projMovement.InvoiceToClientNo = item.FaturaANºCliente;
+                projMovement.CreateUser = item.UtilizadorCriação;
+                projMovement.CreateDate = item.DataHoraCriação;
+                projMovement.UpdateUser = item.UtilizadorModificação;
+                projMovement.UpdateDate = item.DataHoraModificação;
+                //ServiceData = item;
+                //ClientRequest = item;
+                projMovement.RequestNo = item.NºRequisição;
+                projMovement.RequestLineNo = item.NºLinhaRequisição;
+                projMovement.Driver = item.Motorista;
+                projMovement.OriginalDocument = item.DocumentoOriginal;
+                projMovement.AdjustedPrice = item.AcertoDePreços;
+                projMovement.AutorizatedInvoice = item.FaturaçãoAutorizada;
+                projMovement.AutorizatedInvoice2 = item.FaturaçãoAutorizada2;
+                projMovement.AutorizatedInvoiceDate = item.DataAutorizaçãoFaturação?.ToString("yyyy-MM-dd");
+                projMovement.AuthorizedBy = item.AutorizadoPor;
+                projMovement.TimesheetNo = item.NºFolhaHoras;
+                projMovement.InternalRequest = item.RequisiçãoInterna;
+                projMovement.EmployeeNo = item.NºFuncionário;
+                projMovement.QuantityReturned = item.QuantidadeDevolvida;
+                projMovement.CustomerNo = item.CodCliente;
+                projMovement.LicensePlate = item.Matricula;
+                projMovement.ReadingCode = item.CodigoLer;
+                projMovement.Group = item.Grupo;
+                projMovement.Operation = item.Operacao;
+                projMovement.InvoiceGroup = item.GrupoFatura;
+                projMovement.InvoiceGroupDescription = item.GrupoFaturaDescricao;
+                //CommitmentNumber = Project.DBProjects.GetAllByProjectNumber(item.NºProjeto).NºCompromisso,
+                projMovement.ClientName = DBNAV2017Clients.GetClientNameByNo(item.FaturaANºCliente, navDatabaseName, navCompanyName);
+                projMovement.ClientVATReg = DBNAV2017Clients.GetClientVATByNo(item.FaturaANºCliente, navDatabaseName, navCompanyName);
+                return projMovement;
+            }
+            return null;
+        }
+
+        public static List<ProjectMovementViewModel> ParseToViewModel(this List<MovimentosDeProjeto> items, string navDatabaseName, string navCompanyName)
+        {
+            List<ProjectMovementViewModel> parsedItems = new List<ProjectMovementViewModel>();
+            if (items != null)
+                items.ForEach(x =>
+                    parsedItems.Add(x.ParseToViewModel(navDatabaseName, navCompanyName)));
+            return parsedItems;
+        }
+
+        public static MovimentosDeProjeto ParseToDB(this ProjectMovementViewModel item)
+        {
+            if (item != null)
+            {
+                MovimentosDeProjeto projMovement = new MovimentosDeProjeto();
+
+                projMovement.NºLinha = item.LineNo;
+                projMovement.NºProjeto = item.ProjectNo;
+                projMovement.Data = string.IsNullOrEmpty(item.Date) ? (DateTime?)null : DateTime.Parse(item.Date);
+                projMovement.TipoMovimento = item.MovementType;
+                projMovement.NºDocumento = item.DocumentNo;
+                projMovement.Tipo = item.Type;
+                //TypeDescription
+                projMovement.Código = item.Code;
+                projMovement.Descrição = item.Description;
+                projMovement.Quantidade = item.Quantity;
+                projMovement.CódUnidadeMedida = item.MeasurementUnitCode;
+                projMovement.CódLocalização = item.LocationCode;
+                projMovement.GrupoContabProjeto = item.ProjectContabGroup;
+                projMovement.CódigoRegião = item.RegionCode;
+                projMovement.CódigoÁreaFuncional = item.FunctionalAreaCode;
+                projMovement.CódigoCentroResponsabilidade = item.ResponsabilityCenterCode;
+                projMovement.Utilizador = item.User;
+                projMovement.CustoUnitário = item.UnitCost;
+                projMovement.CustoTotal = item.TotalCost;
+                projMovement.PreçoUnitário = item.UnitPrice;
+                projMovement.PreçoTotal = item.TotalPrice;
+                projMovement.ValorUnitárioAFaturar = item.UnitValueToInvoice;
+                projMovement.Moeda = item.Currency;
+                projMovement.Faturável = item.Billable.HasValue ? item.Billable.Value : false;
+                projMovement.Faturada = item.Billed;
+                projMovement.Registado = item.Registered.HasValue ? item.Registered.Value : false;
+                projMovement.TipoRecurso = item.ResourceType;
+                projMovement.CódServiçoCliente = item.ServiceClientCode;
+                //ServiceClientDescription
+                projMovement.CódGrupoServiço = item.ServiceGroupCode;
+                projMovement.NºGuiaExterna = item.ExternalGuideNo;
+                projMovement.DataConsumo = string.IsNullOrEmpty(item.ConsumptionDate) ? (DateTime?)null : DateTime.Parse(item.ConsumptionDate);
+                projMovement.NºGuiaResíduos = item.ResidueGuideNo;
+                projMovement.DocumentoCorrigido = item.AdjustedDocument;
+                projMovement.DataDocumentoCorrigido = string.IsNullOrEmpty(item.AdjustedDocumentDate) ? (DateTime?)null : DateTime.Parse(item.AdjustedDocumentDate);
+                projMovement.CódDestinoFinalResíduos = item.ResidueFinalDestinyCode;
+                projMovement.TipoRefeição = item.MealType;
+                //MealTypeDescription
+                projMovement.FaturaANºCliente = item.InvoiceToClientNo;
+                projMovement.UtilizadorCriação = item.CreateUser;
+                projMovement.DataHoraCriação = item.CreateDate;
+                projMovement.UtilizadorModificação = item.UpdateUser;
+                projMovement.DataHoraModificação = item.UpdateDate;
+                //ServiceData = item;
+                //ClientRequest = item;
+                projMovement.NºRequisição = item.RequestNo;
+                projMovement.NºLinhaRequisição = item.RequestLineNo;
+                projMovement.Motorista = item.Driver;
+                projMovement.DocumentoOriginal = item.OriginalDocument;
+                projMovement.AcertoDePreços = item.AdjustedPrice;
+                projMovement.FaturaçãoAutorizada = item.AutorizatedInvoice;
+                projMovement.FaturaçãoAutorizada2 = item.AutorizatedInvoice2;
+                projMovement.DataAutorizaçãoFaturação = string.IsNullOrEmpty(item.AutorizatedInvoiceDate) ? (DateTime?)null : DateTime.Parse(item.AutorizatedInvoiceDate);
+                projMovement.AutorizadoPor = item.AuthorizedBy;
+                projMovement.NºFolhaHoras = item.TimesheetNo;
+                projMovement.RequisiçãoInterna = item.InternalRequest;
+                projMovement.NºFuncionário = item.EmployeeNo;
+                projMovement.QuantidadeDevolvida = item.QuantityReturned;
+                projMovement.CodCliente = item.CustomerNo;
+                projMovement.Matricula = item.LicensePlate;
+                projMovement.CodigoLer = item.ReadingCode;
+                projMovement.Grupo = item.Group;
+                projMovement.Operacao = item.Operation;
+                projMovement.GrupoFatura = item.InvoiceGroup;
+                projMovement.GrupoFaturaDescricao = item.InvoiceGroupDescription;
+
+                return projMovement;
+            }
+            return null;
+        }
+
+        public static List<MovimentosDeProjeto> ParseToDB(this List<ProjectMovementViewModel> items)
+        {
+            List<MovimentosDeProjeto> parsedItems = new List<MovimentosDeProjeto>();
+            if (items != null)
+                items.ForEach(x =>
+                    parsedItems.Add(x.ParseToDB()));
+            return parsedItems;
+        }
+        #endregion
     }
 }

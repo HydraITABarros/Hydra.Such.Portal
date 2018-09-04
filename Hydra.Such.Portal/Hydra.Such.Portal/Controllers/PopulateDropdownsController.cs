@@ -27,6 +27,7 @@ using Hydra.Such.Data.ViewModel.Compras;
 using Hydra.Such.Data.Logic.Request;
 using Hydra.Such.Data.ViewModel.Projects;
 using Hydra.Such.Data.Logic.Telemoveis;
+using Hydra.Such.Data.ViewModel.PedidoCotacao;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -578,6 +579,13 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetInvoiceTypes()
+        {
+            List<EnumData> result = EnumerablesFixed.InvoiceType;
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetContractInvoiceGroups()
         {
             List<EnumData> result = EnumerablesFixed.ContractInvoiceGroups;
@@ -725,6 +733,20 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        [HttpPost]
+        public JsonResult GetNoSeries()
+        {
+            List<DDMessageString> result = DBNAV2017NoSeries.GetNoSeries(_config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageString()
+            {
+                id = x.Code,
+                value = x.Description
+            }).ToList();
+
+            return Json(result);
+        }
+
+
+        
         [HttpPost]
         public JsonResult GetAllRegionCode()
         {
@@ -931,6 +953,58 @@ namespace Hydra.Such.Portal.Controllers
                 id = x.Code,
                 value = x.Name,
                 extra = ""
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetCreateResourcesCodeWasteRate()
+        {
+            List<DDMessageRelated> cboResult = new List<DDMessageRelated>();
+            List<DDMessageRelated> result = DBNAV2017Resources.GetAllResourcesWR(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "").Select(x => new DDMessageRelated()
+            {
+                id = x.Code,
+                value = x.Name,
+                extra = x.MeasureUnit
+            }).ToList();
+            List<TaxaResiduos> getAllLines = DBWasteRate.GetAll();
+            foreach (DDMessageRelated res in result)
+            {
+                int count = 0;
+                bool notfind = true;
+                foreach (TaxaResiduos line in getAllLines)
+                {
+                    if (res.id == line.Recurso)
+                    {
+                        notfind = false;
+                    }
+                }
+                if (notfind == true)
+                {
+                    cboResult.Add(res);
+                }
+            }
+            return Json(cboResult);
+        }
+        [HttpPost]
+        public JsonResult GetResourcesCodeWasteRate()
+        {
+            List<DDMessageRelated> result = DBNAV2017Resources.GetAllResourcesWR(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "").Select(x => new DDMessageRelated()
+            {
+                id = x.Code,
+                value = x.Name,
+                extra = x.MeasureUnit
+            }).ToList();
+           
+            return Json(result);
+        }
+        [HttpPost]
+        public JsonResult GetResourcesFamily()
+        {
+            List<DDMessageRelated> result = DBNAV2017ResourcesFamily.GetAllResourcesFamily(_config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageRelated()
+            {
+                id = x.Code,
+                value = x.Name
             }).ToList();
             return Json(result);
         }
@@ -1686,6 +1760,13 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        [HttpPost]
+        public JsonResult GetNAVVendorComboGrid_FiltroActividade([FromBody]string id)
+        {
+            List<NAVVendorViewModel> result = DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName).Where(x => x.Atividade == id).ToList();
+            return Json(result);
+        }
+
 
         [HttpPost]
         public JsonResult GetMealTypes()
@@ -2145,6 +2226,22 @@ namespace Hydra.Such.Portal.Controllers
             List<EnumData> result = EnumerablesFixed.Modalidade;
             return Json(result);
         }
+
+        public JsonResult GetResourceTypes()
+        {
+            var items = Data.EnumHelper.GetItemsFor(typeof(ResourceTypes));
+            List<EnumData> result = items.Select(x => new EnumData { Id = x.Key, Value = x.Value }).ToList();
+            return Json(result);
+        }
+
+
+        [HttpPost]
+        public JsonResult GetNAVAtividadesComboGrid()
+        {
+            List<ActividadesView> result = DBNAV2017Atividades.GetAtividades(_config.NAVDatabaseName, _config.NAVCompanyName).ToList();
+            return Json(result);
+        }
+
     }
 
 

@@ -1,4 +1,5 @@
 ﻿using Hydra.Such.Data.Database;
+using Hydra.Such.Data.Logic;
 using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.ViewModel.Contracts;
 using Hydra.Such.Data.ViewModel.Projects;
@@ -25,18 +26,48 @@ namespace Hydra.Such.Data.NAV
 
         public static async Task<WSCreatePreInvoice.Create_Result> CreatePreInvoice(SPInvoiceListViewModel PreInvoiceToCreate, NAVWSConfigurations WSConfigurations)
         {
+            WSCreatePreInvoice.Document_Type tipo;
+            bool notaDebito=false;
+            string PostingNoSeries = "";
+
+            ConfigUtilizadores CUsers = DBUserConfigurations.GetById(PreInvoiceToCreate.CreateUser);
+
+            if (PreInvoiceToCreate.MovementType == 2)//Nota de débito
+            {
+                tipo = WSCreatePreInvoice.Document_Type.Invoice;
+                notaDebito = true;
+                PostingNoSeries = CUsers.NumSerieNotasDebito;
+                
+
+            }
+            else if (PreInvoiceToCreate.MovementType == 4)//Nota de crédito
+            {
+                tipo = WSCreatePreInvoice.Document_Type.Credit_Memo;
+                notaDebito = false;
+                PostingNoSeries = CUsers.NumSerieNotasCredito;
+
+            }
+            else// Fatura
+            {
+                tipo = WSCreatePreInvoice.Document_Type.Invoice;
+                notaDebito = false;
+                PostingNoSeries = CUsers.NumSerieFaturas;
+            }
+
+
             WSCreatePreInvoice.Create NAVCreate = new WSCreatePreInvoice.Create()
             {
-                WSPreInvoice = new WSCreatePreInvoice.WSPreInvoice()
-                {
-                    Document_Type = WSCreatePreInvoice.Document_Type.Invoice,
+                WSPreInvoice = new WSCreatePreInvoice.WSPreInvoice() {
+
+                    Document_Type = tipo,
                     Document_TypeSpecified = true,
                     Sell_to_Customer_No = PreInvoiceToCreate.InvoiceToClientNo,
                     VAT_Registration_No = PreInvoiceToCreate.ClientVATReg,
-                    Contract_No=PreInvoiceToCreate.DocumentNo
-                    
-                   
+                    Contract_No = PreInvoiceToCreate.DocumentNo,
+                    Debit_Memo = notaDebito,
+                    Posting_No_Series = PostingNoSeries
                 }
+                
             };
 
             //Configure NAV Client
@@ -134,6 +165,7 @@ namespace Hydra.Such.Data.NAV
                     Shipment_Start_TimeSpecified = true,
                     Document_Type = WSCreatePreInvoice.Document_Type.Invoice,
                     Document_TypeSpecified = true,
+                    Posting_Date = CreateInvoice.DataDeRegisto ?? DateTime.Now,
                     Periodo_de_Fact_Contrato = ContractInvoicePeriod,
                     Data_Serv_Prestado = InvoiceBorrowed
 

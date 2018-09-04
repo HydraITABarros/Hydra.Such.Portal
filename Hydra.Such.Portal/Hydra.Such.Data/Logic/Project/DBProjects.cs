@@ -220,7 +220,7 @@ namespace Hydra.Such.Data.Logic.Project
                     ShippingLocality = item.EnvioALocalidade,
                     ShippingContact = item.EnvioAContato,
                     ProjectTypeCode = item.CódTipoProjeto,
-                    ProjectTypeDescription = item.CódTipoProjetoNavigation.Descrição,
+                    ProjectTypeDescription = item.CódTipoProjetoNavigation?.Descrição,
                     OurProposal = item.NossaProposta,
                     ServiceObjectCode = item.CódObjetoServiço,
                     CommitmentCode = item.NºCompromisso,

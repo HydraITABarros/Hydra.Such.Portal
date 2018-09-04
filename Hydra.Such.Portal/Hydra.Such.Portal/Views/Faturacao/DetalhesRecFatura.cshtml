@@ -302,16 +302,11 @@
                         </vaadin-combo-box>
                     </div>
                     <div class="col-sm-3">
-
-                    </div>
-                    <div class="col-sm-3">
                         <vaadin-date-picker label="Data Receção" id="dpDataRececao" disabled="{{ !_permissions.update }}" value="{{ data.dataRececao }}"></vaadin-date-picker>
                     </div>
-                </div>
-                <div class="row break_clear">
                     <div class="col-sm-3">
                         <such-selectbox id="sbVendors" value="{{ data.codFornecedor }}" label="Fornecedor"
-                                       required error-message="Este campo é obrigatório"
+                                        required error-message="Este campo é obrigatório"
                                         items="[[ Vendors ]]"
                                         text-path="name"
                                         value-path="no_"
@@ -319,6 +314,8 @@
                                         on-value-changed="_supplierSelected">
                         </such-selectbox>
                     </div>
+                </div>
+                <div class="row break_clear">
                     <div class="col-sm-3">
                         <vaadin-text-field type="text" value="{{data.numDocFornecedor}}" id="txtNumDocFornecedor" disabled="{{ !_permissions.update }}" label="Núm. Doc. Fornecedor" required error-message="Este campo é obrigatório"></vaadin-text-field>
                     </div>
@@ -328,8 +325,6 @@
                     <div class="col-sm-3">
                         <vaadin-text-field type="text" value="{{data.numAcordoFornecedor}}" id="txtNumAcordoFornecedor" disabled="{{ !_permissions.update }}" label="Núm. Acordo Fornecedor"></vaadin-text-field>
                     </div>
-                </div>
-                <div class="row break_clear">
                     <div class="col-sm-3">
                         <vaadin-combo-box label="Região" items="[[Regions]]" id="cmbRegions" item-value-path="id" item-label-path="value" value="{{data.codRegiao}}" disabled="{{ !_permissions.update }}">
                             <template>
@@ -341,6 +336,8 @@
                             </template>
                         </vaadin-combo-box>
                     </div>
+                </div>
+                <div class="row break_clear">
                     <div class="col-sm-3">
                         <vaadin-combo-box label="Área Funcional" items="[[FunctionalAreas]]" id="cmbFunctionalAreas" item-value-path="id" item-label-path="value" value="{{data.codAreaFuncional}}" disabled="{{ !_permissions.update }}">
                             <template>
@@ -374,22 +371,17 @@
                             </template>
                         </vaadin-combo-box>
                     </div>
-                </div>
-                <div class="row break_clear">
                     <div class="col-sm-3">
                         <vaadin-text-field label="Local" type="text" value="{{data.local}}" id="txtLocal" disabled></vaadin-text-field>
                     </div>
+                </div>
+                <div class="row break_clear">
                     <div class="col-sm-3">
                         <vaadin-text-field label="Destinatário" type="text" value="{{data.destinatario}}" id="txtDestinatario" disabled></vaadin-text-field>
                     </div>
                     <div class="col-sm-3">
-
-                    </div>
-                    <div class="col-sm-3">
                         <vaadin-date-picker label="Data Última Interação" id="dpDataUltimaInteracao " disabled value="{{data.dataUltimaInteracao }}"></vaadin-date-picker>
                     </div>
-                </div>
-                <div class="row break_clear">
                     <div class="col-sm-3">
                         <such-selectbox id="sbOrders" value="{{ data.numEncomenda }}" label="Nº Encomenda"
                                         items="[[ Orders ]]"
@@ -414,7 +406,8 @@
                                             {"field":"documentDate", "name":"Data Documento"},
                                             {"field":"dimensionSetID", "name":"Cód. Dimensão"},
                                             {"field":"relatedDocument", "name":"Documento Relacionado"},
-                                            {"field":"sourceDocNo", "name":"Nº Doc. Origem"}]'
+                                            {"field":"sourceDocNo", "name":"Nº Doc. Origem"},
+                                            {"field":"amountIncludingVAT", "name":"Valor Encomenda -Actual "}]'
                                         disabled="{{ !_permissions.update }}"
                                         on-value-changed="_orderSelected">
                         </such-selectbox>
@@ -422,22 +415,27 @@
                     <div class="col-sm-3">
                         <vaadin-text-field label="Núm. Encomenda Manual" type="text" value="{{data.numEncomendaManual}}" id="txtNumEncomendaManual" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                     </div>
-                    <div class="col-sm-3">
+                </div>
+                <div class="row break_clear">
+                    <div class="col-sm-3" hidden>
                         <vaadin-text-field label="Valor Encomenda Original" type="text" value="{{data.valorEncomendaOriginal}}" id="txtValorEncomendaOriginal" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                     </div>
-                    <div class="col-sm-3">
+                    <div class="col-sm-3" hidden>
                         <vaadin-text-field label="Quantidade Encomenda" type="text" value="{{data.quantidadeEncomenda}}" id="txtQuantidadeEncomenda" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                     </div>
                 </div>
                 <div class="row break_clear">
-                    <div class="col-sm-3">
+                    <div class="col-sm-3" hidden>
                         <vaadin-text-field label="Quantidade Recebida" type="text" value="{{data.quantidadeRecebida}}" id="txtQuantidadeRecebida" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                     </div>
                     <div class="col-sm-3">
-                        <vaadin-text-field label="Valor Recebido Não Contabilizado" type="text" value="{{data.valorRecebidoNaoContabilizado}}" id="txtValorRecebidoNaoContabilizado" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                        <vaadin-text-field label="Valor Encomenda -Actual" type="text" value="{{data.valorEncomendaActual}}" id="dpValorEncomendaActual" disabled></vaadin-text-field>
                     </div>
                     <div class="col-sm-3">
-                        <vaadin-text-field label="Valor" type="text" value="{{data.valor}}" id="txtValor" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                        <vaadin-text-field label="Valor Recebido Não Contabilizado" type="text" value="{{data.valorRecebidoNaoContabilizado}}" id="txtValorRecebidoNaoContabilizado" disabled></vaadin-text-field>
+                    </div>
+                    <div class="col-sm-3">
+                        <vaadin-text-field label="Valor" type="text" value="{{data.valor}}" pattern="[0-9]+([\.][0-9]+)?" id="txtValor" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                     </div>
                     <div class="col-sm-3">
 
@@ -775,16 +773,16 @@
                 <vaadin-grid id="grdAttachedView" aria-label="grdAttachedView" items="[[attacheds]]" selected-items={{attachedItems}} active-item="{{attachedItem}}" class="grid" multi-sort="true">
                     <vaadin-grid-column resizable>
                         <template class="header">
-                                Caminho
+                            Caminho
                         </template>
                         <template>
                             <a href="/Faturacao/OpenLinkAttached/{{item.file}}" target="_blank">{{item.file}}</a>
                         </template>
                     </vaadin-grid-column>
-                         
+
                     <vaadin-grid-column resizable>
                         <template class="header">
-                          Descrição
+                            Descrição
                         </template>
                         <template>
                             {{item.description}}
@@ -1079,7 +1077,7 @@
                         type: Array,
                         value: [{ "id": 0, "value": "Interno" }, { "id": 1, "value": "Externo" }],
                     },
-                  
+
                     _descricaoProblema: {
                         type: String,
                         value: "",
@@ -1231,7 +1229,7 @@
 
                         if (mm < 10) {
                             mm = '0' + mm
-                        } 
+                        }
                         today = yyyy + '-' + mm + '-' + dd;
                         this.$.dpDataRececao.value = today;
                     }
@@ -1561,7 +1559,7 @@
                         var anexado = false;
                         if (this.files != null) {
                             var anexoNew;
-                            for (i = 0; i < this.files.length; i++) { 
+                            for (i = 0; i < this.files.length; i++) {
                                 anexoNew = {
                                     file: this.files[i].name,
                                     description: this.$.txtDescricaoAnexo.value
@@ -1613,16 +1611,14 @@
                     this.$.dialogSendPeding.close()
                 },
                 _orderSelected: function (e) {
+                    debugger;
                     var order = this.$.sbOrders.activeItem;
                     if (order != null) {
                         var vendorId = new String(this.$.sbVendors.value).valueOf();
                         var vendorIdFromOrder = new String(order.buyFromVendorNo).valueOf();
-
+                        debugger;
                         if (vendorId == "") {
                             this.$.sbVendors.value = order.buyFromVendorNo;
-                            this.$.cmbRegions.value = order.regionId;
-                            this.$.cmbFunctionalAreas.value = order.functionalAreaId;
-                            this.$.cmbResponsabilityCenters.value = order.respCenterId;
                             //this.$.txtLocal.value = order.locationCode;
                         }
                         //else if (this.$.sbVendors.value != order.buyFromVendorNo) {
@@ -1633,12 +1629,16 @@
                             this._openToastError("O fornecedor da encomenda tem que coincidir com o da receção.");
                             return;
                         }
+                        this.$.cmbRegions.value = order.regionId;
+                        this.$.cmbFunctionalAreas.value = order.functionalAreaId;
+                        this.$.cmbResponsabilityCenters.value = order.respCenterId;
+                        this.$.dpValorEncomendaActual.value = order.amountIncludingVAT;
                         this.$.txtLocal.value = order.locationCode;
                         //this.$.txtValorEncomendaOriginal.value = order.
                         this.$.txtQuantidadeEncomenda.value = order.quantity;
                         this.$.txtQuantidadeRecebida.value = order.quantityReceived;
                         this.$.txtValorRecebidoNaoContabilizado.value = order.amountRcdNotInvoiced;
-                        this.$.txtValor.value = order.amount;
+                        //this.$.txtValor.value = order.amount;
 
                         this._preventDocumentDuplicates();
                         if (!this._docIsValid)

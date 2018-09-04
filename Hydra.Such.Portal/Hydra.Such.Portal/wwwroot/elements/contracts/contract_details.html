@@ -1518,7 +1518,7 @@
                                     <template class="header">
                                         <vaadin-grid-sorter path="versionEndDate">Data Fim Versão</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="versionEndDate" />
-                                        ="
+           
 
                                     </template>
                                     <template>
@@ -1551,7 +1551,7 @@
                                             </vaadin-combo-box>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
-                                            !i
+                                   
                                             [[ _clFormatResponsible(item.responsibleNo) ]]
                                         </template>
                                     </template>
@@ -2210,7 +2210,6 @@
                 //CRUDS
                 _create: function () {
                     if (this._validateData()) {
-                        debugger;;
                         this.data.contractType = 3;
                         this.$.page_validator_ajax.body = JSON.stringify(this.data);
                         this.$.page_validator_ajax.generateRequest();
@@ -2219,7 +2218,7 @@
                 _update: function () {
 
                     if (this._validateData()) {
-                        this._executeRequest("/Contratos/UpdateContract", this.data)
+                        this._executeRequest("/Contratos/UpdateContract", this.data);
                     }
                 },
                 _delete: function () {
@@ -2286,7 +2285,7 @@
                     //Set AreaId
                     if (this.data.contractNo == "" || this.data.contractNo == null) {
                         this.$.versionNo.value = "1";
-                        this.data.filed = 0
+                        this.data.filed = 0;
                     } else {
                         this.$.shippingAddresses_ajax.body = JSON.stringify(this.data.codeShippingAddress);
                         this.$.shippingAddresses_ajax.generateRequest();
@@ -2332,8 +2331,6 @@
                         }
                         else if (data.detail.url.indexOf("Update") !== -1) {
                             if (this.data.eReasonCode == 1) {
-
-
                                 this._openToast("Contrato atualizado com sucesso.");
                             } else {
                                 this._openToastError(this.data.eMessage);
@@ -2440,7 +2437,7 @@
 
                     if (!this._isCreate) {
                         if (this._validateData()) {
-                            this._executeRequest("/Contratos/UpdateContract", this.data)
+                            this._executeRequest("/Contratos/UpdateContract", this.data);
                         }
                     }
                 },
@@ -2696,7 +2693,7 @@
                 },
                 _clContractLineCodeChange: function (e) {
                     if (e.detail.value != null && e.detail.value != "") {
-                        var index = this.CBContractLineCodes.findIndex(i => i.id === e.detail.value);
+                        var index = this.CBContractLineCodes.findIndex(i => i.id == e.detail.value);
                         //this.CBContractLineCodes[index].id;
                         this._CLDescription = this.CBContractLineCodes[index].value;
                         this._CLMeasureUnit = this.CBContractLineCodes[index].extra;
@@ -2712,12 +2709,15 @@
                     this.$.grid_contractlines.clearCache();
                 },
                 _clContractLineCodeGridChange: function (e) {
+                    debugger;;              
                     if (e.detail.value != null && e.detail.value != "") {
-                        var index = this.CBContractLineCodesGrid.findIndex(i => i.id === e.detail.value);
+                        var code = e.detail.value;
+                        var index = this.CBContractLineCodesGrid.findIndex(i => i.id == code);
                         //this.CBContractLineCodes[index].id;
-                        this.dataLines.lines.find(x => x == this._SelectedLine).code = e.detail.value;
-                        this.dataLines.lines.find(x => x == this._SelectedLine).description = this.CBContractLineCodesGrid[index].value;
-                        this.dataLines.lines.find(x => x == this._SelectedLine).codeMeasureUnit = this.CBContractLineCodesGrid[index].extra;
+                        this.dataLines.lines.find(x => x.lineNo == this._SelectedLine.lineNo).code = code;
+                        this.dataLines.lines.find(x => x.lineNo == this._SelectedLine.lineNo).description = this.CBContractLineCodesGrid[index].value;
+                        this.dataLines.lines.find(x => x.lineNo == this._SelectedLine.lineNo).codeMeasureUnit = this.CBContractLineCodesGrid[index].extra;
+
                         this.$.grid_contractlines.clearCache();
                     }
                 },
