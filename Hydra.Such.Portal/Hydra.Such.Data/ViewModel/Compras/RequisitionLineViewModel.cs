@@ -11,6 +11,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public int? Type { get; set; }
         public string Code { get; set; }
         public string Description { get; set; }
+        public string Description2 { get; set; }
         public string UnitMeasureCode { get; set; }
         public string LocalCode { get; set; }
         public bool? LocalMarket { get; set; }

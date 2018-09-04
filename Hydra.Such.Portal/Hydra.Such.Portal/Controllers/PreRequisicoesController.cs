@@ -286,6 +286,7 @@ namespace Hydra.Such.Portal.Controllers
                             CLine.Tipo = x.Type;
                             CLine.Código = x.Code;
                             CLine.Descrição = x.Description;
+                            CLine.Descrição2 = x.Description2;
                             CLine.CódigoLocalização = x.LocalCode;
                             CLine.CódigoUnidadeMedida = x.UnitMeasureCode;
                             CLine.QuantidadeARequerer = x.QuantityToRequire;
@@ -690,6 +691,7 @@ namespace Hydra.Such.Portal.Controllers
                         newline.CódigoProdutoFornecedor = x.SupplierProductCode;
                         newline.Código = x.Code;
                         newline.Descrição = x.Description;
+                        newline.Descrição2 = x.Description2;
                         newline.CódigoUnidadeMedida = x.UnitMeasureCode;
                         newline.QuantidadeARequerer = x.QuantityToRequire;
                         newline.CustoUnitário = x.UnitCost;
@@ -948,6 +950,7 @@ namespace Hydra.Such.Portal.Controllers
                                     LocalCode = line.LocalCode,
                                     Code = line.Code,
                                     Description = line.Description,
+                                    Description2 = line.Description2,
                                     UnitMeasureCode = line.UnitMeasureCode,
                                     QuantityToRequire = line.QuantityToRequire,
                                     UnitCost = line.UnitCost,
@@ -1026,6 +1029,7 @@ namespace Hydra.Such.Portal.Controllers
                                     LocalCode = line.LocalCode,
                                     Code = line.Code,
                                     Description = line.Description,
+                                    Description2 = line.Description2,
                                     UnitMeasureCode = line.UnitMeasureCode,
                                     QuantityToRequire = line.QuantityToRequire,
                                     UnitCost = line.UnitCost,

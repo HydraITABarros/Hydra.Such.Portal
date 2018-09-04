@@ -18,6 +18,7 @@ namespace Hydra.Such.Data.Database
         public int? Tipo { get; set; }
         public string Código { get; set; }
         public string Descrição { get; set; }
+        public string Descrição2 { get; set; }
         public string CódigoUnidadeMedida { get; set; }
         public string CódigoLocalização { get; set; }
         public bool? MercadoLocal { get; set; }
