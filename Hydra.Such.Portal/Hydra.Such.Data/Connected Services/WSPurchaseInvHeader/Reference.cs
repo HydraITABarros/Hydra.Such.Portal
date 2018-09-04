@@ -1435,8 +1435,8 @@ namespace WSPurchaseInvHeader
         {
             if ((endpointConfiguration == EndpointConfiguration.WSPurchInvHeaderInterm_Port))
             {
-                return new System.ServiceModel.EndpointAddress("http://10.101.1.13:8047/DynamicsNAV100_QUAL/WS/SUCH - QUALIDADE/Page/WSPurchInvHe" +
-                        "aderInterm");
+                return new System.ServiceModel.EndpointAddress("http://such-navdev.such.local:8047/DynamicsNAV100_QUAL/WS/SUCH - QUALIDADE/Page/W" +
+                        "SPurchInvHeaderInterm");
             }
             throw new System.InvalidOperationException(string.Format("Could not find endpoint with name \'{0}\'.", endpointConfiguration));
         }

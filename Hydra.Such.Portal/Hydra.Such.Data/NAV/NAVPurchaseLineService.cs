@@ -39,7 +39,7 @@ namespace Hydra.Such.Data.NAV
                     Type = WSPurchaseInvLine.Type.Item,
                     TypeSpecified = true,
                     No = purchLine.Code,
-                    Description = purchLine.Description,
+                    Description100 = purchLine.Description,
                     Buy_from_Vendor_No = purchFromSupplier.SupplierId,
                     Quantity = purchLine.QuantityRequired.HasValue ? purchLine.QuantityRequired.Value : 0,
                     QuantitySpecified = true,
