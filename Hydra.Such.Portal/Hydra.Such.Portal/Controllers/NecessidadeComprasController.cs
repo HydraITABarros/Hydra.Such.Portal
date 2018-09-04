@@ -352,16 +352,16 @@ namespace Hydra.Such.Portal.Controllers
                             prodVal = string.Empty;
 
                             //RUI DESENVOLVIMENTO: Get Supplier and Unit Cost  
-                               LinhasAcordoPrecos linhaAcordo = DBLinhasAcordoPrecos.GetAll().Where(x => x.DtValidadeInicio <= expectedReceipDate && x.DtValidadeFim >= pricesDate && x.CodProduto == lr.Código).FirstOrDefault();
-                            
-                            //Get Supplier by Code 
-                            List<DDMessageString> supplierval = DBNAV2017Supplier
-                                .GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, lr.NºFornecedor).Select(
-                                    x => new DDMessageString()
-                                    {
-                                        id = x.No_,
-                                        value = x.Name
-                                    }).ToList();
+                            LinhasAcordoPrecos linhaAcordo = DBLinhasAcordoPrecos.GetAll().Where(x => x.DtValidadeInicio <= expectedReceipDate && x.DtValidadeFim >= pricesDate && x.CodProduto == lr.Código).FirstOrDefault();
+
+                            //Get Supplier by Code //ACORDO DE PREÇOS
+                            //List<DDMessageString> supplierval = DBNAV2017Supplier
+                            //    .GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, lr.NºFornecedor).Select(
+                            //        x => new DDMessageString()
+                            //        {
+                            //            id = x.No_,
+                            //            value = x.Name
+                            //        }).ToList();
 
 
                             //Get product by code
@@ -373,15 +373,15 @@ namespace Hydra.Such.Portal.Controllers
                                         value = x.Name
                                     }).ToList();
 
-                            //Get supplier value
-                            if (supplierval.Count == 1)
-                            {
-                                var ddMessageString = supplierval.FirstOrDefault();
-                                if (ddMessageString != null)
-                                {
-                                    supVal = ddMessageString.value;
-                                }
-                            }
+                            //Get supplier value //ACORDO DE PREÇOS
+                            //if (supplierval.Count == 1)
+                            //{
+                            //    var ddMessageString = supplierval.FirstOrDefault();
+                            //    if (ddMessageString != null)
+                            //    {
+                            //        supVal = ddMessageString.value;
+                            //    }
+                            //}
 
                             //Get product value
                             if (products.Count == 1)
@@ -418,7 +418,7 @@ namespace Hydra.Such.Portal.Controllers
                             newdp.Descrição = prodVal;
                             newdp.CódUnidadeMedida = lr.CódigoUnidadeMedida;
                             //newdp.CustoUnitárioDireto = lr.CustoUnitário;
-                            //newdp.NºFornecedor = lr.NºFornecedor;
+                            //newdp.NºFornecedor = lr.NºFornecedor; //ACORDO DE PREÇOS
                             //newdp.NomeFornecedor = supVal;
                             newdp.CodigoProdutoFornecedor = lr.CódigoProdutoFornecedor;
                             newdp.QuantidadePorUnidMedida = lr.QtdPorUnidadeDeMedida;
@@ -434,7 +434,7 @@ namespace Hydra.Such.Portal.Controllers
                                 resultValidation.eMessage =
                                     "Ocorreu um erro ao criar a Diário Requisição Unid. Produtiva";
                             }
-                            if (linhaAcordo != null)
+                            if (linhaAcordo != null) //ACORDO DE PREÇOS
                             {
                                 newdp.CustoUnitárioDireto = linhaAcordo.CustoUnitario;
                                 newdp.NºFornecedor = linhaAcordo.NoFornecedor;
