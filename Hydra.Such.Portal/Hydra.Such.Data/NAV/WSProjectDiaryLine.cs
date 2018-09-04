@@ -148,7 +148,7 @@ namespace Hydra.Such.Data.NAV
                 line.Type = WSCreateProjectDiaryLine.Type.Item;
                 line.TypeSpecified = true;
                 line.No = item.Code;
-                line.Description = item.Description;
+                line.Description100 = item.Description;
                 line.Quantity = item.QuantityReceived.Value;
                 line.QuantitySpecified = true;
                 line.Unit_of_Measure_Code = item.UnitMeasureCode;
