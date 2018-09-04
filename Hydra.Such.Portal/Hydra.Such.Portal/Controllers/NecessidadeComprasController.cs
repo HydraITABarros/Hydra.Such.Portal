@@ -351,7 +351,9 @@ namespace Hydra.Such.Portal.Controllers
                             supVal = string.Empty;
                             prodVal = string.Empty;
 
-                            //RUI DESENVOLVIMENTO:DBLinhasAcordoPrecos.GetAll().Where(x => x.DtValidadeInicio == expectedReceipDate && x.DtValidadeFim == pricesDate && x.CodProduto == lr.CódigoProdutoFornecedor);
+                            //RUI DESENVOLVIMENTO: Get Supplier and Unit Cost  
+                               LinhasAcordoPrecos linhaAcordo = DBLinhasAcordoPrecos.GetAll().Where(x => x.DtValidadeInicio == expectedReceipDate && x.DtValidadeFim == pricesDate && x.CodProduto == lr.CódigoProdutoFornecedor).FirstOrDefault();
+                            
                             //Get Supplier by Code 
                             List<DDMessageString> supplierval = DBNAV2017Supplier
                                 .GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, lr.NºFornecedor).Select(
@@ -415,11 +417,14 @@ namespace Hydra.Such.Portal.Controllers
                             newdp.NºProduto = lr.Código;
                             newdp.Descrição = prodVal;
                             newdp.CódUnidadeMedida = lr.CódigoUnidadeMedida;
-                            newdp.CustoUnitárioDireto = lr.CustoUnitário;
-                            newdp.NºFornecedor = lr.NºFornecedor;
-                            newdp.QuantidadePorUnidMedida = lr.QtdPorUnidadeDeMedida;
+                            //newdp.CustoUnitárioDireto = lr.CustoUnitário;
+                              newdp.CustoUnitárioDireto = linhaAcordo.CustoUnitario;
+                            //newdp.NºFornecedor = lr.NºFornecedor;
+                              newdp.NºFornecedor = linhaAcordo.NoFornecedor;
+                            //newdp.NomeFornecedor = supVal;
+                              newdp.NomeFornecedor = linhaAcordo.NomeFornecedor;
                             newdp.CodigoProdutoFornecedor = lr.CódigoProdutoFornecedor;
-                            newdp.NomeFornecedor = supVal;
+                            newdp.QuantidadePorUnidMedida = lr.QtdPorUnidadeDeMedida;
                             newdp.NºEncomendaAberto = lr.NºEncomendaAberto;
                             newdp.NºLinhaEncomendaAberto = Convert.ToString(lr.NºLinhaEncomendaAberto);
                             newdp.DataPPreçoFornecedor = pricesDate;
