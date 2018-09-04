@@ -148,6 +148,8 @@ namespace WSPurchaseInvLine
         
         private string unit_of_Measure_CodeField;
         
+        private string description100Field;
+        
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=0)]
         public string Key
@@ -707,6 +709,20 @@ namespace WSPurchaseInvLine
                 this.unit_of_Measure_CodeField = value;
             }
         }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=30)]
+        public string Description100
+        {
+            get
+            {
+                return this.description100Field;
+            }
+            set
+            {
+                this.description100Field = value;
+            }
+        }
     }
     
     /// <remarks/>
@@ -888,6 +904,9 @@ namespace WSPurchaseInvLine
         
         /// <remarks/>
         Unit_of_Measure_Code,
+        
+        /// <remarks/>
+        Description100,
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
@@ -1484,8 +1503,8 @@ namespace WSPurchaseInvLine
         {
             if ((endpointConfiguration == EndpointConfiguration.WSPurchInvLineInterm_Port))
             {
-                return new System.ServiceModel.EndpointAddress("http://10.101.1.13:8047/DynamicsNAV100_QUAL/WS/SUCH - QUALIDADE/Page/WSPurchInvLi" +
-                        "neInterm");
+                return new System.ServiceModel.EndpointAddress("http://such-navdev.such.local:8047/DynamicsNAV100_QUAL/WS/SUCH - QUALIDADE/Page/W" +
+                        "SPurchInvLineInterm");
             }
             throw new System.InvalidOperationException(string.Format("Could not find endpoint with name \'{0}\'.", endpointConfiguration));
         }
