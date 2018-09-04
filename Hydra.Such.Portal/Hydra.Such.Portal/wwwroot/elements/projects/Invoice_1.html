@@ -154,6 +154,30 @@
                 padding-top: 0px !important;
             }
         </style>
+        <iron-ajax url="/PopulateDropdowns/GetLocations" 
+                   last-response="{{Locations}}"
+                   auto 
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetRegionCode"
+                   last-response="{{RegionData}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode"
+                   last-response="{{FunctionalAreaCodeData}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode"
+                   last-response="{{ResponsabilityCenterData}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProjectDiaryMovements"
                    last-response="{{MovementTypes}}"
                    auto
@@ -172,11 +196,11 @@
                    method="get"
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetTiposRefeicao" 
+        <iron-ajax url="/PopulateDropdowns/GetTiposRefeicao"
                    last-response="{{MealTypes}}"
-                   auto 
+                   auto
                    method="post"
-                   handle-as="json" 
+                   handle-as="json"
                    content-type="application/json"></iron-ajax>
 
 
@@ -470,15 +494,7 @@
                         <vaadin-grid-filter path="movementType" />
                     </template>
                     <template>
-                        <vaadin-combo-box items="[[MovementTypes]]" item-value-path="id" item-label-path="value" value="{{item.movementType}}" disabled>
-                            <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
-                            </template>
-                        </vaadin-combo-box>
+                        [[ _parseMovementType(item.movementType) ]]
                     </template>
                 </vaadin-grid-column>
                 <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.type.hidden }}">
@@ -487,15 +503,7 @@
                         <vaadin-grid-filter path="type" />
                     </template>
                     <template>
-                        <vaadin-combo-box id="type[[index]]" items="[[ProjectDiaryTypes]]" item-value-path="id" item-label-path="value" value="{{item.type}}" disabled>
-                            <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
-                            </template>
-                        </vaadin-combo-box>
+                        [[ _parseType(item.type) ]]
                     </template>
                 </vaadin-grid-column>
                 <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.code.hidden }}">
@@ -540,7 +548,7 @@
                         <vaadin-grid-filter path="unitPrice" />
                     </template>
                     <template>
-                        <vaadin-text-field rows="5" value="{{item.unitPrice}}" id="txtUnitPrice" maxlength="18" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"> </vaadin-text-field>
+                        {{item.unitPrice}}
                     </template>
                 </vaadin-grid-column>
                 <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.totalPrice.hidden }}">
@@ -567,15 +575,8 @@
                         <vaadin-grid-filter path="resourceType" />
                     </template>
                     <template>
-                        <vaadin-combo-box items="[[ResourceTypes]]" item-value-path="id" item-label-path="value" value="{{item.resourceType}}">
-                            <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
-                            </template>
-                        </vaadin-combo-box>
+                        [[ _parseResourceTypes(item.resourceType) ]]
+
                     </template>
                 </vaadin-grid-column>
                 <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.serviceClientCode.hidden }}">
@@ -584,7 +585,7 @@
                         <vaadin-grid-filter path="serviceClientCode" />
                     </template>
                     <template>
-                        <vaadin-text-field id="txtServiceClientCode" value="{{item.serviceClientCode}}"></vaadin-text-field>
+                        {{item.serviceClientCode}}
                     </template>
                 </vaadin-grid-column>
                 <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.serviceClientDescription.hidden }}">
@@ -593,7 +594,7 @@
                         <vaadin-grid-filter path="serviceClientDescription" />
                     </template>
                     <template>
-                        <vaadin-text-field id="txtServiceClientDescription" value="{{item.serviceClientDescription}}"></vaadin-text-field>
+                        {{item.serviceClientDescription}}
                     </template>
                 </vaadin-grid-column>
                 <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.serviceGroupCode.hidden }}">
@@ -602,7 +603,7 @@
                         <vaadin-grid-filter path="serviceGroupCode" />
                     </template>
                     <template>
-                        <vaadin-text-field id="txtServiceGroupCode" value="{{item.serviceGroupCode}}"></vaadin-text-field>
+                        {{item.serviceGroupCode}}
                     </template>
                 </vaadin-grid-column>
                 <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.externalGuideNo.hidden }}">
@@ -611,7 +612,7 @@
                         <vaadin-grid-filter path="externalGuideNo" />
                     </template>
                     <template>
-                        <vaadin-text-field rows="5" value="{{item.externalGuideNo}}"> </vaadin-text-field>
+                        {{item.externalGuideNo}}
                     </template>
                 </vaadin-grid-column>
                 <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.consumptionDate.hidden }}">
@@ -620,7 +621,7 @@
                         <vaadin-grid-filter path="consumptionDate" />
                     </template>
                     <template>
-                        <vaadin-date-picker value="{{item.consumptionDate}}"></vaadin-date-picker>
+                        {{item.consumptionDate}}
                     </template>
                 </vaadin-grid-column>
                 <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.residueGuideNo.hidden }}">
@@ -629,7 +630,7 @@
                         <vaadin-grid-filter path="residueGuideNo" />
                     </template>
                     <template>
-                        <vaadin-text-field rows="5" value="{{item.residueGuideNo}}"> </vaadin-text-field>
+                        {{item.residueGuideNo}}
                     </template>
                 </vaadin-grid-column>
                 <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.adjustedDocument.hidden }}">
@@ -665,15 +666,7 @@
                         <vaadin-grid-filter path="mealType" />
                     </template>
                     <template>
-                        <vaadin-combo-box items="[[MealTypes]]" item-value-path="id" item-label-path="value" value="{{item.mealType}}">
-                            <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
-                            </template>
-                        </vaadin-combo-box>
+                        [[ _parseMealType(item.mealType) ]]
                     </template>
                 </vaadin-grid-column>
                 <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.documentNo.hidden }}">
@@ -687,11 +680,11 @@
                 </vaadin-grid-column>
                 <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.locationCode.hidden }}">
                     <template class="header">
-                        <vaadin-grid-sorter path="locationCode">Cód. Localização</vaadin-grid-sorter>
+                        <vaadin-grid-sorter path="locationCode">Localização</vaadin-grid-sorter>
                         <vaadin-grid-filter path="locationCode" />
                     </template>
                     <template>
-                        {{item.locationCode}}
+                        [[ _parseLocation(item.locationCode)]]
                     </template>
                 </vaadin-grid-column>
                 <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.unitCost.hidden }}">
@@ -714,29 +707,29 @@
                 </vaadin-grid-column>
                 <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.regionCode.hidden }}">
                     <template class="header">
-                        <vaadin-grid-sorter path="regionCode">Código Região</vaadin-grid-sorter>
+                        <vaadin-grid-sorter path="regionCode">Região</vaadin-grid-sorter>
                         <vaadin-grid-filter path="regionCode" />
                     </template>
                     <template>
-                        {{item.regionCode}}
+                        [[ _parseRegion(item.regionCode)]]
                     </template>
                 </vaadin-grid-column>
                 <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.functionalAreaCode.hidden }}">
                     <template class="header">
-                        <vaadin-grid-sorter path="functionalAreaCode">Código Área</vaadin-grid-sorter>
+                        <vaadin-grid-sorter path="functionalAreaCode">Área Funcional</vaadin-grid-sorter>
                         <vaadin-grid-filter path="functionalAreaCode" />
                     </template>
                     <template>
-                        {{item.functionalAreaCode}}
+                        [[ _parseFuncArea(item.functionalAreaCode)]]
                     </template>
                 </vaadin-grid-column>
                 <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.responsabilityCenterCode.hidden }}">
                     <template class="header">
-                        <vaadin-grid-sorter path="responsabilityCenterCode">Código Centro Responsabilidade</vaadin-grid-sorter>
+                        <vaadin-grid-sorter path="responsabilityCenterCode">Centro Responsabilidade</vaadin-grid-sorter>
                         <vaadin-grid-filter path="responsabilityCenterCode" />
                     </template>
                     <template>
-                        {{item.responsabilityCenterCode}}
+                        [[ _parseResponsabilityCenter(item.responsabilityCenterCode)]]
                     </template>
                 </vaadin-grid-column>
                 <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.projectNo.hidden }}">
@@ -1094,7 +1087,7 @@
                     this.$.ajax_Export.body = JSON.stringify(this.authorizedMovements);
                     this.$.ajax_Export.generateRequest();
                 },
-
+               
                 _exportEXCELResponse: function (e) {
                     var FileName = this.export;
                     location.href = '../Projetos/ExportToExcelDownload_FaturacaoProjetos?sFileName=' + FileName;
@@ -1146,7 +1139,6 @@
                 },
                 _GoToProj: function (e) {
                     if (e != null) {
-                        debugger;
                         var Item = e.model.item;
                         this.$.grid_dataprojlines_ajax.params = {"ProjGroup": Item.grupoFactura};
                         this.$.grid_dataprojlines_ajax.body = JSON.stringify(Item.codProjeto);
@@ -1162,7 +1154,80 @@
                             value: obj[key]
                         };
                     });
-                }
+                },
+                _parseMovementType: function (param) {
+                    if (param != undefined && this.MovementTypes != undefined) {
+                        var sel = this.MovementTypes.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+                _parseType: function (param) {
+                    if (param != undefined && this.ProjectDiaryTypes != undefined) {
+                        var sel = this.ProjectDiaryTypes.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+                _parseMealType: function (param) {
+                    if (param != undefined && this.MealTypes != undefined) {
+                        var sel = this.MealTypes.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+                _parseResourceTypes: function (param) {
+                    if (param != undefined && this.ResourceTypes != undefined) {
+                        var sel = this.ResourceTypes.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+                _parseResponsabilityCenter: function (param) {
+                    if (param != undefined && this.ResponsabilityCenterData != undefined) {
+                        var sel = this.ResponsabilityCenterData.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+                _parseRegion: function (param) {
+                    if (param != undefined && this.RegionData != undefined) {
+                        var sel = this.RegionData.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+                _parseFuncArea: function (param) {
+                    if (param != undefined && this.FunctionalAreaCodeData != undefined) {
+                        var sel = this.FunctionalAreaCodeData.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+                _parseLocation: function (param) {
+                    debugger;
+                    if (param != undefined && this.Locations != undefined) {
+                        var sel = this.Locations.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
                 /* end - ColumnToggle */
 
             });
