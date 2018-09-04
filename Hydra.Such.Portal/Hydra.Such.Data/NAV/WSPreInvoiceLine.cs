@@ -61,7 +61,7 @@ namespace Hydra.Such.Data.NAV
                     Document_No = PKey,
                     Type = TypeValue,
                     No = PreInvoiceLineToCreate.Code,
-                    Description = PreInvoiceLineToCreate.Description,
+                    Description100 = PreInvoiceLineToCreate.Description,
                     QuantitySpecified = true,
                     Quantity = (int)PreInvoiceLineToCreate.Quantity,
                     TypeSpecified = true,
@@ -163,7 +163,7 @@ namespace Hydra.Such.Data.NAV
                 line.Document_No = HeaderNo;
                 line.Type = ConvertInvoiceLineType(x.Type.ToString());
                 line.No = x.Code;
-                line.Description = x.Description;
+                line.Description100 = x.Description;
                 line.QuantitySpecified = true;
                 line.Quantity = x.Quantity.HasValue ? x.Quantity.Value : 0;
                 line.TypeSpecified = true;
