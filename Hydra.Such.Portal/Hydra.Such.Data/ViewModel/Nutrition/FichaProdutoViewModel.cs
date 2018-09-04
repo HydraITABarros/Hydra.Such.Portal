@@ -9,6 +9,7 @@ namespace Hydra.Such.Data.ViewModel.Nutrition
         public string No { get; set; }
         public string Code { get; set; }
         public string Descricao { get; set; }
+        public string Descricao2 { get; set; }
         public bool? ListaDeMateriais { get; set; }
         public string ListaDeMateriaisText { get; set; }
         public string UnidadeMedidaBase { get; set; }

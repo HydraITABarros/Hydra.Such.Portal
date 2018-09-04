@@ -2596,6 +2596,8 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.Descrição).HasMaxLength(200);
 
+                entity.Property(e => e.Descrição2).HasMaxLength(200);
+
                 entity.Property(e => e.DescriçãoRefeição)
                     .HasColumnName("Descrição Refeição")
                     .HasMaxLength(200);
@@ -4467,6 +4469,8 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.Descrição).HasMaxLength(100);
 
+                entity.Property(e => e.Descrição2).HasMaxLength(100);
+
                 entity.Property(e => e.EnviadoParaCompras).HasColumnName("Enviado para Compras");
 
                 entity.Property(e => e.EnviadoPréCompra).HasColumnName("Enviado Pré Compra");
@@ -4802,6 +4806,8 @@ namespace Hydra.Such.Data.Database
                     .HasColumnType("date");
 
                 entity.Property(e => e.Descrição).HasMaxLength(100);
+
+                entity.Property(e => e.Descrição2).HasMaxLength(100);
 
                 entity.Property(e => e.NºFuncionário)
                     .HasColumnName("Nº Funcionário")

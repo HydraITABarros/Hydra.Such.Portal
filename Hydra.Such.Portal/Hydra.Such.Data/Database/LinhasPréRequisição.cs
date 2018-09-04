@@ -10,6 +10,7 @@ namespace Hydra.Such.Data.Database
         public int? Tipo { get; set; }
         public string Código { get; set; }
         public string Descrição { get; set; }
+        public string Descrição2 { get; set; }
         public string CódigoLocalização { get; set; }
         public string CódigoUnidadeMedida { get; set; }
         public decimal? QuantidadeARequerer { get; set; }
@@ -21,7 +22,6 @@ namespace Hydra.Such.Data.Database
         public string UtilizadorCriação { get; set; }
         public DateTime? DataHoraModificação { get; set; }
         public string UtilizadorModificação { get; set; }
-        public string Descrição2 { get; set; }
         public decimal? QtdPorUnidadeMedida { get; set; }
         public decimal? QuantidadeRequerida { get; set; }
         public decimal? QuantidadePendente { get; set; }

@@ -1916,6 +1916,56 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetAllProductsComprasPortal([FromBody] JObject requestParams)
+        {
+            string rootAreaId = string.Empty;
+            string requisitionType = string.Empty;
+            string locationCode = string.Empty;
+            List<NAVProductsViewModel> products = new List<NAVProductsViewModel>();
+            if (requestParams != null)
+            {
+                rootAreaId = requestParams["rootAreaId"].ToString();
+                requisitionType = requestParams["requisitionType"].ToString();
+                locationCode = requestParams["locationCode"].ToString();
+            }
+            else
+            {
+                products = DBNAV2017Products.GetAllProductsCompras(_config.NAVDatabaseName, _config.NAVCompanyName, "").ToList();
+            }
+            //List<NAVDimValueViewModel> userDimensionValues = DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 2, User.Identity.Name);
+            //string allowedProductsFilter = userDimensionValues.GenerateNAVProductFilter(rootAreaId, true);
+
+            string allowedProductsFilter = rootAreaId.GenerateNAVProductFilter();
+            List<NAVProductsViewModel> productsReqParams = DBNAV2017Products.GetProductsForDimensions(_config.NAVDatabaseName, _config.NAVCompanyName, allowedProductsFilter, requisitionType, locationCode).ToList();
+            if (productsReqParams != null && productsReqParams.Count > 0)
+            {
+                products = productsReqParams;
+            }
+
+            //ADICIONA OS PRODUTOS DA FICHA DE PRODUTO
+            List<FichaProduto> FichaProdutos = DBFichaProduto.GetAll();
+
+            //REMOVE TODOS OS PRODUTOS CUJO O ID ESTEJA NA TABELA FICHA PRODUTO
+            products.RemoveAll(x => FichaProdutos.Any(y => y.Nº == x.Code));
+
+            FichaProdutos.ForEach(x =>
+            {
+                NAVProductsViewModel Product = new NAVProductsViewModel();
+
+                Product.Code = x.Nº;
+                Product.Name = x.Descrição;
+                Product.Name2 = x.Descrição2;
+                Product.MeasureUnit = x.UnidadeMedidaBase;
+                Product.UnitCost = x.CustoUnitário;
+                Product.LastCostDirect = x.PreçoUnitário;
+
+                products.Add(Product);
+            });
+
+            return Json(products.OrderBy(x => x.Code));
+        }
+
+        [HttpPost]
         public JsonResult GetClassificationFilesTechniques()
         {
             List<DDMessageString> products = DBClassificationFilesTechniques.GetAllFiles().Select(x => new DDMessageString()

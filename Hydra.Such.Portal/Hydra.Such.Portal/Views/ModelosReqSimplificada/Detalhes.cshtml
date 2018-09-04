@@ -96,7 +96,7 @@
         @*POPULATE DROPDOWNS*@
         @*<iron-ajax url="/PopulateDropdowns/GetNutritionReqTemplateTypes" last-response="{{CBRequisitionModelTypes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>*@
 
-        <iron-ajax url="/PopulateDropdowns/GetProductsCode" last-response="{{CBProducts}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetAllProductsComprasPortal" last-response="{{CBProducts}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetMealTypes" last-response="{{CBMealTypes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{CBFunctionalAreas}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{CBResponsabilityCenters}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -213,15 +213,18 @@
                                         <div class="col-md-3 ">
                                             <such-selectbox id="lineProductId" value="" label="Produto"
                                                             items="[[CBProducts]]"
-                                                            text-path="id"
-                                                            value-path="id"
-                                                            fields='[{"field":"id", "name":"Cód. Produto"}, {"field":"value", "name":"Descrição"}, {"field":"extra", "name":"Unidade Medida"}]'
+                                                            text-path="code"
+                                                            value-path="code"
+                                                            fields='[{"field":"code", "name":"Cód. Produto"}, {"field":"name", "name":"Descrição"}, {"field":"name2", "name":"Descrição 2"}, {"field":"measureUnit", "name":"Unidade de Medida"}, {"field":"itemCategoryCode", "name":"Cód. Categoria"}, {"field":"productGroupCode", "name":"Cód. Grupo"}]'
                                                             disabled="{{ !_permissions.update }}"
                                                             on-value-changed="_onProductChanged" required error-message="Este campo é obrigatório">
                                             </such-selectbox>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field value="" id="lineProductDescription" name="lineProductDescription" label="Descrição Produto" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                            <vaadin-text-field value="" id="lineProductDescription" name="lineProductDescription" label="Descrição Produto" disabled> </vaadin-text-field>
+                                        </div>
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field value="" id="lineProductDescription2" name="lineProductDescription2" label="Descrição Produto 2" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
                                             <vaadin-combo-box items='[[CBUnitsOfMeasure]]' id="lineUnitOfMeasure" item-value-path="id" item-label-path="value" value="" label="Unidade de Medida" disabled="{{ !_permissions.update }}">
@@ -235,11 +238,11 @@
                                                 </template>
                                             </vaadin-combo-box>
                                         </div>
+                                    </div>
+                                    <div class="row break_clear">
                                         <div class="col-md-3 ">
                                             <vaadin-text-field id="lineQuantity" name="lineQuantity" label="Quantidade" disabled="{{ !_permissions.update }}" pattern="^[1-9]\d*(\.\d+)?$" error-message="Valor inválido"> </vaadin-text-field>
                                         </div>
-                                    </div>
-                                    <div class="row break_clear">
                                         <div class="col-md-3 ">
                                             <vaadin-text-field id="lineUnitValue" name="lineUnitValue" label="Valor Unitário" disabled="{{ !_permissions.update }}" pattern="^[1-9]\d*(\.\d+)?$" error-message="Valor inválido"> </vaadin-text-field>
                                         </div>
@@ -262,9 +265,6 @@
                                                             value-path="nºProjeto"
                                                             fields='[{"field":"nºProjeto", "name":"Código"}, {"field":"descrição", "name":"Descrição"}, {"field":"nºCliente", "name":"Nº Cliente"}]'>
                                             </such-selectbox>
-                                        </div>
-                                        <div class="col-md-3 ">
-
                                         </div>
                                     </div>
                                     <div class="row break_clear">
@@ -358,6 +358,7 @@
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
+
                                 <vaadin-grid-column width="30%">
                                     <template class="header">
                                         <vaadin-grid-sorter path="productDescription">Descrição Produto</vaadin-grid-sorter>
@@ -365,13 +366,29 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{ item.productDescription }}" id="grdLineProductDescription" name="grdLineProductDescription" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{ item.productDescription }}" id="grdLineProductDescription" name="grdLineProductDescription" disabled> </vaadin-text-field>
                                         </template>
-                                        <template is="dom-if" if="{{ !item.selected }}">
+                                        <template is="dom-if" if="{{ !item.selected }}" disabled>
                                             {{ item.productDescription }}
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
+
+                                <vaadin-grid-column width="30%">
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="productDescription2">Descrição Produto 2</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="productDescription2" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-text-field value="{{ item.productDescription2 }}" id="grdLineProductDescription2" name="grdLineProductDescription2" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            {{ item.productDescription2 }}
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+
                                 <vaadin-grid-column width="30%">
                                     <template class="header">
                                         <vaadin-grid-sorter path="unitOfMeasure">Unidade de Medida</vaadin-grid-sorter>
@@ -757,6 +774,7 @@
                             requisitionTemplateId: this.data.requisitionTemplateId,
                             productId: this.$.lineProductId.value,
                             productDescription: this.$.lineProductDescription.value,
+                            productDescription2: this.$.lineProductDescription2.value,
                             unitOfMeasure: this.$.lineUnitOfMeasure.value,
                             quantity: this.$.lineQuantity.value == "" ? 0 : this.$.lineQuantity.value,
                             unitCost: this.$.lineUnitValue.value == "" ? 0 : this.$.lineUnitValue.value,
@@ -914,12 +932,17 @@
                 },
                 _onProductChanged: function (e) {
                     if (e.detail.value != null && e.detail.value != "") {
-                        var products = $.grep(this.CBProducts, function (x) { return x.id == e.detail.value; });
-                        if (products != null && products.length > 0)
-                        {
+                        var products = $.grep(this.CBProducts, function (x) { return x.code == e.detail.value; });
+                        if (products != null && products.length > 0) {
                             var product = products[0];
-                            this.$.lineProductDescription.value = product.value;
-                            this.$.lineUnitOfMeasure.value = product.extra;
+                            this.$.lineProductDescription.value = product.name;
+                            this.$.lineProductDescription2.value = product.name2;
+                            this.$.lineUnitOfMeasure.value = product.measureUnit;
+                        }
+                        else {
+                            this.$.lineProductDescription.value = "";
+                            this.$.lineProductDescription2.value = "";
+                            this.$.lineUnitOfMeasure.value = "";
                         }
                     }
                 },

@@ -53,6 +53,48 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
+        public static List<NAVProductsViewModel> GetAllProductsCompras(string NAVDatabaseName, string NAVCompanyName, string productNo)
+        {
+            try
+            {
+                List<NAVProductsViewModel> result = new List<NAVProductsViewModel>();
+                using (var ctx = new SuchDBContextExtention())
+                {
+                    var parameters = new[]{
+                        new SqlParameter("@DBName", NAVDatabaseName),
+                        new SqlParameter("@CompanyName", NAVCompanyName),
+                        new SqlParameter("@NoProduto", productNo)
+                    };
+
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017ProdutosCompras @DBName, @CompanyName, @NoProduto", parameters);
+
+                    foreach (dynamic temp in data)
+                    {
+                        result.Add(new NAVProductsViewModel()
+                        {
+                            Code = (string)temp.No_,
+                            Name = (string)temp.Description,
+                            Name2 = (string)temp.Description2,
+                            MeasureUnit = (string)temp.Base_Unit_of_Measure,
+                            ItemCategoryCode = (string)temp.Item_Category_Code,
+                            ProductGroupCode = (string)temp.Product_Group_Code,
+                            VendorProductNo = (string)temp.Vendor_Item_No_,
+                            LastCostDirect = (decimal)temp.Last_Direct_Cost,
+                            VendorNo = (string)temp.Vendor_No_,
+                            VATProductPostingGroup = (string)temp.VATProductPostingGroup,
+                            UnitCost = (decimal)temp.UnitCost
+                        });
+                    }
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public static List<NAVProductsViewModel> GetProductsById(string navDatabaseName, string navCompanyName, List<string> productsId)
         {
             string productsIds = string.Join(",", productsId);
