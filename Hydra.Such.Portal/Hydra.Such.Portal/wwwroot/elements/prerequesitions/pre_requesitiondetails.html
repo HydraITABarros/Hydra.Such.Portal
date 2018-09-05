@@ -334,7 +334,7 @@
                                         </div>
 
                                         <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[CBRequesitionType]]" on-change="_onSearchTermChanged" id="requesitionType" item-value-path="id" item-label-path="value" value="{{data.requesitionType}}" label="Tipo Requisição">
+                                            <vaadin-combo-box items="[[CBRequesitionType]]" on-value-changed="_getRequesitionType" id="requesitionType" item-value-path="id" item-label-path="value" value="{{data.requesitionType}}" label="Tipo Requisição">
                                                 <template>
                                                     <table width="350px">
                                                         <tr>
@@ -643,7 +643,8 @@
                                                         value-path="code"
                                                         fields='[{"field":"code", "name":"Cód. Produto"}, {"field":"name", "name":"Descrição"}, {"field":"name2", "name":"Descrição 2"}, {"field":"measureUnit", "name":"Unidade de Medida"}, {"field":"itemCategoryCode", "name":"Cód. Categoria"}, {"field":"productGroupCode", "name":"Cód. Grupo"}]'
                                                         disabled="{{ !_permissions.update }}"
-                                                        on-value-changed="_onProductChanged">
+                                                        on-value-changed="_onProductChanged"
+                                                        on-click="_onProductClick">
                                         </such-selectbox>
                                     </div>
 
@@ -1403,16 +1404,20 @@
                 //    }
                 //},
 
+                _getRequesitionType: function (e) {
+                    var requesitionType = e.detail.value;
+                    var locationId = this.$._CBLocations.value;
+
+                    this.$.filteredProducts_ajax.body = JSON.stringify({ "rootAreaId": this._areaid, "requisitionType": requesitionType, "locationCode": locationId });
+                    this.$.filteredProducts_ajax.generateRequest();
+                },
+
                 _getCDirect: function (e) {
-                    if (e.detail.value != "") {
-                        var locationId = e.detail.value;
-                        var sel = this.CBLocations.find(x => x.id == locationId);
-                        this.$._CBItemsCDirect.value = sel.extra;
-                        if (this._areaid != null && this.$.requesitionType.value != null && locationId != null) {
-                            this.$.filteredProducts_ajax.body = JSON.stringify({ "rootAreaId": this._areaid, "requisitionType": this.$.requesitionType.value, "locationCode": locationId });
-                            this.$.filteredProducts_ajax.generateRequest();
-                        }
-                    }
+                    var requesitionType = this.$.requesitionType.value;
+                    var locationId = e.detail.value;
+
+                    this.$.filteredProducts_ajax.body = JSON.stringify({ "rootAreaId": this._areaid, "requisitionType": requesitionType, "locationCode": locationId });
+                    this.$.filteredProducts_ajax.generateRequest();
                 },
 
                 _setProjectDim: function (e) {
@@ -2037,6 +2042,19 @@
                         this.$._Description.value = "";
                         this.$._Description2.value = "";
                         this.$._UnitMeasureCode.value = "";
+                    }
+                },
+
+                _onProductClick: function (e) {
+                    var requesitionType = this.$.requesitionType.value;
+                    var locationId = this.$._CBLocations.value;
+
+                    if (requesitionType == null | requesitionType == "") {
+                        this._openToastError('É obrigatório preencher o campo Tipo Requesição.');
+                    } else {
+                        if (locationId == null | locationId == "") {
+                            this._openToastError('É obrigatório preencher o campo Cód. Localização.');
+                        }
                     }
                 },
 
