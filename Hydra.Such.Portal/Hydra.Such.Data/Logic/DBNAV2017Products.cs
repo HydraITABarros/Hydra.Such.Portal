@@ -122,6 +122,52 @@ namespace Hydra.Such.Data.Logic
                         var item = new NAVProductsViewModel();
                         item.Code = (string)temp.No_;
                         item.Name = (string)temp.Description;
+                        item.Name2 = (string)temp.Description2;
+                        item.MeasureUnit = (string)temp.Base_Unit_of_Measure;
+                        item.ItemCategoryCode = (string)temp.Item_Category_Code;
+                        item.ProductGroupCode = (string)temp.Product_Group_Code;
+                        item.VendorProductNo = (string)temp.Vendor_Item_No_;
+                        item.LastCostDirect = (decimal)temp.Last_Direct_Cost;
+                        item.VendorNo = (string)temp.Vendor_No_;
+                        item.UnitCost = (decimal)temp.UnitCost;
+                        item.LocationCode = temp.Location_Code.Equals(DBNull.Value) ? "" : (string)temp.Location_Code;
+                        item.VATProductPostingGroup = (string)temp.VATProductPostingGroup;
+
+                        result.Add(item);
+                    }
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public static List<NAVProductsViewModel> GetProductsForPreRequisitions(string NAVDatabaseName, string NAVCompanyName, string allowedDimensions, string requisitionType, string locationCode)
+        {
+            try
+            {
+                List<NAVProductsViewModel> result = new List<NAVProductsViewModel>();
+                using (var ctx = new SuchDBContextExtention())
+                {
+                    var parameters = new[]{
+                        new SqlParameter("@DBName", NAVDatabaseName),
+                        new SqlParameter("@CompanyName", NAVCompanyName),
+                        new SqlParameter("@AllowedDimensions", allowedDimensions),
+                        new SqlParameter("@RequisitionType", requisitionType),
+                        new SqlParameter("@LocationCode", locationCode)
+                    };
+
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure(@"exec NAV2017ProdutosPreRequisicao @DBName, @CompanyName, @AllowedDimensions, @RequisitionType, @LocationCode", parameters);
+
+                    foreach (dynamic temp in data)
+                    {
+                        var item = new NAVProductsViewModel();
+                        item.Code = (string)temp.No_;
+                        item.Name = (string)temp.Description;
+                        item.Name2 = (string)temp.Description2;
                         item.MeasureUnit = (string)temp.Base_Unit_of_Measure;
                         item.ItemCategoryCode = (string)temp.Item_Category_Code;
                         item.ProductGroupCode = (string)temp.Product_Group_Code;

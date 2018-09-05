@@ -57,6 +57,20 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
+        public IActionResult RequisicoesAcordosPrecos()
+        {
+            UserAccessesViewModel userPermissions =
+                DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Requisições);
+            if (userPermissions != null && userPermissions.Read.Value)
+            {
+                ViewBag.UPermissions = userPermissions;
+                return View();
+            }
+            else
+            {
+                return Redirect(Url.Content("~/Error/AccessDenied"));
+            }
+        }
 
         public IActionResult Detalhes()
         {
@@ -510,8 +524,8 @@ namespace Hydra.Such.Portal.Controllers
                 result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CenterResponsibilityCode));
             return Json(result);
         }
-        [HttpPost]
 
+        [HttpPost]
         public JsonResult GetValidatedRequisitions()
         {
             List<RequisitionStates> states = new List<RequisitionStates>()
@@ -534,10 +548,40 @@ namespace Hydra.Such.Portal.Controllers
             //ResponsabilityCenter
             if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
                 result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CenterResponsibilityCode));
-            return Json(result);
+            return Json(result.OrderByDescending(x => x.RequisitionNo));
         }
-        [HttpPost]
 
+        [HttpPost]
+        public JsonResult GetRequisitionsAcordosPrecos()
+        {
+            List<RequisitionStates> states = new List<RequisitionStates>()
+            {
+                RequisitionStates.Validated,
+                RequisitionStates.Available,
+                RequisitionStates.Received,
+                RequisitionStates.Treated,
+            };
+            List<RequisitionViewModel> result = DBRequest.GetByState(states).ParseToViewModel();
+
+            //Remove todas as requisições em que o campo Requisição Nutrição seja != de true
+            result.RemoveAll(x => x.RequestNutrition != true);
+
+            //Apply User Dimensions Validations
+            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            //Regions
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.RegionCode));
+            //FunctionalAreas
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.FunctionalAreaCode));
+            //ResponsabilityCenter
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CenterResponsibilityCode));
+
+            return Json(result.OrderByDescending(x => x.RequisitionNo));
+        }
+
+        [HttpPost]
         public JsonResult GetAllRequisitionshistoric()
         {
             List<RequisitionViewModel> result = DBRequest.GetByState(RequisitionStates.Archived).ParseToViewModel();
@@ -1040,6 +1084,8 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         break;
                     case "Fechar Requisicao":
+                        //DBRequesitionHist.Create(item);
+
                         item.State = RequisitionStates.Archived;
                         item.UpdateUser = User.Identity.Name;
                         item.UpdateDate = DateTime.Now;
@@ -1649,8 +1695,8 @@ namespace Hydra.Such.Portal.Controllers
 
                     //if (sendMailResult.IsCompletedSuccessfully)
                     //{
-                        result.eReasonCode = 1;
-                        result.eMessage = "Resposta enviada com sucesso.";
+                    result.eReasonCode = 1;
+                    result.eMessage = "Resposta enviada com sucesso.";
                     //}
                     //else
                     //{
