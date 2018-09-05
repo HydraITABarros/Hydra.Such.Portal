@@ -806,19 +806,12 @@
                         type: Array,
                     }
                 },
-                observers: ['_resetSelection(inverted),_onCacheLoaded( RegionData,FunctionalAreaCodeData,ResponsabilityCenterData)'],
-              
-                _onCacheLoaded: function (RegionData, FunctionalAreaCodeData, ResponsabilityCenterData) {
+                observers: ['_resetSelection(inverted)'],
 
-                    if (!this.Flag) {
-                        this.$.movements_databound_ajax.generateRequest();
-                        this.Flag = true;
-                    }
-                },
                 ready: function () {
+                    
                     this._loadData();
                     this._setDefaultDateForDatePickers();
-
                     /*ColumnToggle*/
                     this._startColumnToggle();
 
@@ -1080,6 +1073,7 @@
                 },
                 //### - Grid selection behaviour
                 _resetSelection: function (inverted) {
+                    
                     this._totalToAuthorize = 0.0;
                     if (inverted) {
                         var items = this.$.grdProjectMovements._cache[0];
