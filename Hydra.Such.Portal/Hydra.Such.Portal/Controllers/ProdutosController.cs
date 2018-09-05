@@ -416,6 +416,11 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Descrição");
                     Col = Col + 1;
                 }
+                if (dp["descricao2"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Descrição 2");
+                    Col = Col + 1;
+                }
                 if (dp["listaDeMateriaisText"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Lista De Materiais");
@@ -673,6 +678,11 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["descricao"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.Descricao);
+                            Col = Col + 1;
+                        }
+                        if (dp["descricao2"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Descricao2);
                             Col = Col + 1;
                         }
                         if (dp["listaDeMateriaisText"]["hidden"].ToString() == "False")
@@ -982,54 +992,55 @@ namespace Hydra.Such.Portal.Controllers
 
                                 nrow.No = row.GetCell(0) != null ? row.GetCell(0).ToString() : "";
                                 nrow.Descricao = row.GetCell(1) != null ? row.GetCell(1).ToString() : "";
-                                nrow.ListaDeMateriaisText = row.GetCell(2) != null ? row.GetCell(2).ToString() : "";
-                                nrow.UnidadeMedidaBase = row.GetCell(3) != null ? row.GetCell(3).ToString() : "";
-                                nrow.NoPrateleira = row.GetCell(4) != null ? row.GetCell(4).ToString() : "";
-                                nrow.PrecoUnitarioText = row.GetCell(5) != null ? row.GetCell(5).ToString() : "";
-                                nrow.CustoUnitarioText = row.GetCell(6) != null ? row.GetCell(6).ToString() : "";
-                                nrow.InventarioText = row.GetCell(7) != null ? row.GetCell(7).ToString() : "";
-                                nrow.ValorEnergeticoText = row.GetCell(8) != null ? row.GetCell(8).ToString() : "";
-                                nrow.ValorEnergetico100gText = row.GetCell(9) != null ? row.GetCell(9).ToString() : "";
-                                nrow.ProteinasText = row.GetCell(10) != null ? row.GetCell(10).ToString() : "";
-                                nrow.Proteinas100gText = row.GetCell(11) != null ? row.GetCell(11).ToString() : "";
-                                nrow.GlicidosText = row.GetCell(12) != null ? row.GetCell(12).ToString() : "";
-                                nrow.Glicidos100gText = row.GetCell(13) != null ? row.GetCell(13).ToString() : "";
-                                nrow.LipidosText = row.GetCell(14) != null ? row.GetCell(14).ToString() : "";
-                                nrow.Lipidos100gText = row.GetCell(15) != null ? row.GetCell(15).ToString() : "";
-                                nrow.FibraAlimentarText = row.GetCell(16) != null ? row.GetCell(16).ToString() : "";
-                                nrow.FibraAlimentar100gText = row.GetCell(17) != null ? row.GetCell(17).ToString() : "";
-                                nrow.QuantUnidadeMedidaText = row.GetCell(18) != null ? row.GetCell(18).ToString() : "";
-                                nrow.GramasPorQuantUnidMedidaText = row.GetCell(19) != null ? row.GetCell(19).ToString() : "";
-                                nrow.TipoRefeicao = row.GetCell(20) != null ? row.GetCell(20).ToString() : "";
-                                nrow.DescricaoRefeicao = row.GetCell(21) != null ? row.GetCell(21).ToString() : "";
-                                nrow.TarasText = row.GetCell(22) != null ? row.GetCell(22).ToString() : "";
-                                nrow.AcidosGordosSaturadosText = row.GetCell(23) != null ? row.GetCell(23).ToString() : "";
-                                nrow.AcucaresText = row.GetCell(24) != null ? row.GetCell(24).ToString() : "";
-                                nrow.SalText = row.GetCell(25) != null ? row.GetCell(25).ToString() : "";
-                                nrow.CereaisText = row.GetCell(26) != null ? row.GetCell(26).ToString() : "";
-                                nrow.CrustaceosText = row.GetCell(27) != null ? row.GetCell(27).ToString() : "";
-                                nrow.OvosText = row.GetCell(28) != null ? row.GetCell(28).ToString() : "";
-                                nrow.PeixesText = row.GetCell(29) != null ? row.GetCell(29).ToString() : "";
-                                nrow.AmendoinsText = row.GetCell(30) != null ? row.GetCell(30).ToString() : "";
-                                nrow.SojaText = row.GetCell(31) != null ? row.GetCell(31).ToString() : "";
-                                nrow.LeiteText = row.GetCell(32) != null ? row.GetCell(32).ToString() : "";
-                                nrow.FrutasDeCascaRijaText = row.GetCell(33) != null ? row.GetCell(33).ToString() : "";
-                                nrow.AipoText = row.GetCell(34) != null ? row.GetCell(34).ToString() : "";
-                                nrow.MostardaText = row.GetCell(35) != null ? row.GetCell(35).ToString() : "";
-                                nrow.SementesDeSesamoText = row.GetCell(36) != null ? row.GetCell(36).ToString() : "";
-                                nrow.DioxidoDeEnxofreESulfitosText = row.GetCell(37) != null ? row.GetCell(37).ToString() : "";
-                                nrow.TremocoText = row.GetCell(38) != null ? row.GetCell(38).ToString() : "";
-                                nrow.MoluscosText = row.GetCell(39) != null ? row.GetCell(39).ToString() : "";
-                                nrow.TipoText = row.GetCell(40) != null ? row.GetCell(40).ToString() : "";
-                                nrow.VitaminaAText = row.GetCell(41) != null ? row.GetCell(41).ToString() : "";
-                                nrow.VitaminaDText = row.GetCell(42) != null ? row.GetCell(42).ToString() : "";
-                                nrow.ColesterolText = row.GetCell(43) != null ? row.GetCell(43).ToString() : "";
-                                nrow.SodioText = row.GetCell(44) != null ? row.GetCell(44).ToString() : "";
-                                nrow.PotacioText = row.GetCell(45) != null ? row.GetCell(45).ToString() : "";
-                                nrow.CalcioText = row.GetCell(46) != null ? row.GetCell(46).ToString() : "";
-                                nrow.FerroText = row.GetCell(47) != null ? row.GetCell(47).ToString() : "";
-                                nrow.EdivelText = row.GetCell(48) != null ? row.GetCell(48).ToString() : "";
-                                nrow.AlcoolText = row.GetCell(49) != null ? row.GetCell(49).ToString() : "";
+                                nrow.Descricao2 = row.GetCell(2) != null ? row.GetCell(2).ToString() : "";
+                                nrow.ListaDeMateriaisText = row.GetCell(3) != null ? row.GetCell(3).ToString() : "";
+                                nrow.UnidadeMedidaBase = row.GetCell(4) != null ? row.GetCell(4).ToString() : "";
+                                nrow.NoPrateleira = row.GetCell(5) != null ? row.GetCell(5).ToString() : "";
+                                nrow.PrecoUnitarioText = row.GetCell(6) != null ? row.GetCell(6).ToString() : "";
+                                nrow.CustoUnitarioText = row.GetCell(7) != null ? row.GetCell(7).ToString() : "";
+                                nrow.InventarioText = row.GetCell(8) != null ? row.GetCell(8).ToString() : "";
+                                nrow.ValorEnergeticoText = row.GetCell(9) != null ? row.GetCell(9).ToString() : "";
+                                nrow.ValorEnergetico100gText = row.GetCell(10) != null ? row.GetCell(10).ToString() : "";
+                                nrow.ProteinasText = row.GetCell(11) != null ? row.GetCell(11).ToString() : "";
+                                nrow.Proteinas100gText = row.GetCell(12) != null ? row.GetCell(12).ToString() : "";
+                                nrow.GlicidosText = row.GetCell(13) != null ? row.GetCell(13).ToString() : "";
+                                nrow.Glicidos100gText = row.GetCell(14) != null ? row.GetCell(14).ToString() : "";
+                                nrow.LipidosText = row.GetCell(15) != null ? row.GetCell(15).ToString() : "";
+                                nrow.Lipidos100gText = row.GetCell(16) != null ? row.GetCell(16).ToString() : "";
+                                nrow.FibraAlimentarText = row.GetCell(17) != null ? row.GetCell(17).ToString() : "";
+                                nrow.FibraAlimentar100gText = row.GetCell(18) != null ? row.GetCell(18).ToString() : "";
+                                nrow.QuantUnidadeMedidaText = row.GetCell(19) != null ? row.GetCell(19).ToString() : "";
+                                nrow.GramasPorQuantUnidMedidaText = row.GetCell(20) != null ? row.GetCell(20).ToString() : "";
+                                nrow.TipoRefeicao = row.GetCell(21) != null ? row.GetCell(21).ToString() : "";
+                                nrow.DescricaoRefeicao = row.GetCell(22) != null ? row.GetCell(22).ToString() : "";
+                                nrow.TarasText = row.GetCell(23) != null ? row.GetCell(23).ToString() : "";
+                                nrow.AcidosGordosSaturadosText = row.GetCell(24) != null ? row.GetCell(24).ToString() : "";
+                                nrow.AcucaresText = row.GetCell(25) != null ? row.GetCell(25).ToString() : "";
+                                nrow.SalText = row.GetCell(26) != null ? row.GetCell(26).ToString() : "";
+                                nrow.CereaisText = row.GetCell(27) != null ? row.GetCell(27).ToString() : "";
+                                nrow.CrustaceosText = row.GetCell(28) != null ? row.GetCell(28).ToString() : "";
+                                nrow.OvosText = row.GetCell(29) != null ? row.GetCell(29).ToString() : "";
+                                nrow.PeixesText = row.GetCell(30) != null ? row.GetCell(30).ToString() : "";
+                                nrow.AmendoinsText = row.GetCell(31) != null ? row.GetCell(31).ToString() : "";
+                                nrow.SojaText = row.GetCell(32) != null ? row.GetCell(32).ToString() : "";
+                                nrow.LeiteText = row.GetCell(33) != null ? row.GetCell(33).ToString() : "";
+                                nrow.FrutasDeCascaRijaText = row.GetCell(34) != null ? row.GetCell(34).ToString() : "";
+                                nrow.AipoText = row.GetCell(35) != null ? row.GetCell(35).ToString() : "";
+                                nrow.MostardaText = row.GetCell(36) != null ? row.GetCell(36).ToString() : "";
+                                nrow.SementesDeSesamoText = row.GetCell(37) != null ? row.GetCell(37).ToString() : "";
+                                nrow.DioxidoDeEnxofreESulfitosText = row.GetCell(38) != null ? row.GetCell(38).ToString() : "";
+                                nrow.TremocoText = row.GetCell(39) != null ? row.GetCell(39).ToString() : "";
+                                nrow.MoluscosText = row.GetCell(40) != null ? row.GetCell(40).ToString() : "";
+                                nrow.TipoText = row.GetCell(41) != null ? row.GetCell(41).ToString() : "";
+                                nrow.VitaminaAText = row.GetCell(42) != null ? row.GetCell(42).ToString() : "";
+                                nrow.VitaminaDText = row.GetCell(43) != null ? row.GetCell(43).ToString() : "";
+                                nrow.ColesterolText = row.GetCell(44) != null ? row.GetCell(44).ToString() : "";
+                                nrow.SodioText = row.GetCell(45) != null ? row.GetCell(45).ToString() : "";
+                                nrow.PotacioText = row.GetCell(46) != null ? row.GetCell(46).ToString() : "";
+                                nrow.CalcioText = row.GetCell(47) != null ? row.GetCell(47).ToString() : "";
+                                nrow.FerroText = row.GetCell(48) != null ? row.GetCell(48).ToString() : "";
+                                nrow.EdivelText = row.GetCell(49) != null ? row.GetCell(49).ToString() : "";
+                                nrow.AlcoolText = row.GetCell(50) != null ? row.GetCell(50).ToString() : "";
 
                                 ListToCreate.Add(nrow);
                             }
@@ -1276,6 +1287,7 @@ namespace Hydra.Such.Portal.Controllers
                 u =>
                     u.No == x.No &&
                     u.Descricao == x.Descricao &&
+                    u.Descricao2 == x.Descricao2 &&
                     u.ListaDeMateriais == x.ListaDeMateriais &&
                     u.UnidadeMedidaBase == x.UnidadeMedidaBase &&
                     u.NoPrateleira == x.NoPrateleira &&
@@ -1340,6 +1352,7 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         toCreate.Nº = x.No;
                         toCreate.Descrição = x.Descricao;
+                        toCreate.Descrição2 = x.Descricao2;
                         toCreate.ListaDeMateriais = x.ListaDeMateriais.HasValue ? x.ListaDeMateriais.ToString().ToLower() == "sim" ? true : false : false;
                         if (unidadeMedida != null)
                             toCreate.UnidadeMedidaBase = x.UnidadeMedidaBase;
@@ -1400,6 +1413,7 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         toUpdate.Nº = x.No;
                         toUpdate.Descrição = x.Descricao;
+                        toUpdate.Descrição2 = x.Descricao2;
                         toUpdate.ListaDeMateriais = x.ListaDeMateriais.HasValue ? x.ListaDeMateriais.ToString().ToLower() == "sim" ? true : false : false;
                         if (unidadeMedida != null)
                             toUpdate.UnidadeMedidaBase = x.UnidadeMedidaBase;

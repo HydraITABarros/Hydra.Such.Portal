@@ -249,6 +249,12 @@
                                                 </div>
 
                                                 <div class="col-md-4">
+                                                    <vaadin-text-field id="dddescricao2" name="dddescricao2" label="Descrição 2" value="{{result.descricao2}}"></vaadin-text-field>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-4">
                                                     <vaadin-combo-box items="[[ProdutoUnidadesMedidas]]" id="ddunidadeMedidaBase" name="ddunidadeMedidaBase" label="Unidade Medida Base" item-value-path="id" item-label-path="value" value="{{result.unidadeMedidaBase}}">
                                                         <template>
                                                             <table width="250px">
@@ -259,9 +265,7 @@
                                                         </template>
                                                     </vaadin-combo-box>
                                                 </div>
-                                            </div>
 
-                                            <div class="row">
                                                 <div class="col-md-4">
                                                     <vaadin-text-field id="ddprecoUnitario" name="ddprecoUnitario" label="Preço Unitário" value="{{result.precoUnitario}}" type="number" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
                                                 </div>
@@ -269,13 +273,13 @@
                                                 <div class="col-md-4">
                                                     <vaadin-text-field id="ddcustoUnitario" name="ddcustoUnitario" label="Custo Unitário" value="{{result.custoUnitario}}" type="number" maxlength="38" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
                                                 </div>
-
-                                                <div class="col-md-4">
-                                                    <vaadin-text-field id="ddinventario" name="ddinventario" label="Inventário" value="{{result.inventario}}" disabled></vaadin-text-field>
-                                                </div>
                                             </div>
 
                                             <div class="row">
+                                                <div class="col-md-4">
+                                                    <vaadin-text-field id="ddinventario" name="ddinventario" label="Inventário" value="{{result.inventario}}" disabled></vaadin-text-field>
+                                                </div>
+
                                                 <div class="col-md-4">
                                                     <vaadin-combo-box items="[[ProdutoTipos]]" id="ddtipo" name="ddtipo" label="Tipo" item-value-path="id" item-label-path="value" value="{{result.tipo}}">
                                                         <template>
@@ -299,17 +303,19 @@
                                                         </template>
                                                     </vaadin-combo-box>
                                                 </div>
-
-                                                <div class="col-md-4">
-                                                    <vaadin-text-field id="dddescricaoRefeicao" name="dddescricaoRefeicao" label="Descrição Tipo Refeição" value="{{result.descricaoRefeicao}}" disabled></vaadin-text-field>
-                                                </div>
                                             </div>
 
                                             <div class="row">
                                                 <div class="col-md-4">
-                                                    <vaadin-text-field id="ddnoPrateleira" name="ddnoPrateleira" label="Nº Prateleira" value="{{result.noPrateleira}}"></vaadin-text-field>
+                                                    <vaadin-text-field id="dddescricaoRefeicao" name="dddescricaoRefeicao" label="Descrição Tipo Refeição" value="{{result.descricaoRefeicao}}" disabled></vaadin-text-field>
                                                 </div>
 
+                                                <div class="col-md-4">
+                                                    <vaadin-text-field id="ddnoPrateleira" name="ddnoPrateleira" label="Nº Prateleira" value="{{result.noPrateleira}}"></vaadin-text-field>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
                                                 <div class="col-md-7">
                                                     <vaadin-upload id="UploadRequest"
                                                                    method="POST"
@@ -322,7 +328,7 @@
                                                 </div>
 
                                                 <div class="col-sm-1" style="padding-top:-200px">
-                                                    <paper-button class="btnSave" disabled="{{ !_permissions.create }}" raised on-tap="_uploadImagem">Guardar</paper-button>
+                                                    <paper-button class="btnSave" disabled="{{ !_permissions.create }}" raised on-tap="_uploadImagem">Transferir</paper-button>
                                                 </div>
                                             </div>
                                         </div>
@@ -665,11 +671,13 @@
                     var item = this.Products.find(x => x.code == e.detail.value);
                     if (item != null) {
                         this.$.dddescricao.value = item.Name;
+                        this.$.dddescricao2.value = item.Name2;
                         this.$.ddprecoUnitario.value = item.lastCostDirect;
                         this.$.ddcustoUnitario.value = item.unitCost;
                     }
                     else {
                         this.$.dddescricao.value = "";
+                        this.$.dddescricao2.value = "";
                         this.$.ddprecoUnitario.value = "";
                         this.$.ddcustoUnitario.value = "";
                     }

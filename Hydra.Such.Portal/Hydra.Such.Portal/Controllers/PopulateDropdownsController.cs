@@ -1839,28 +1839,29 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetProductsForCurrentUser([FromBody] JObject requestParams)
         {
+            string allowedProductsFilter = string.Empty;
             string rootAreaId = string.Empty;
             string requisitionType = string.Empty;
             string locationCode = string.Empty;
             List<NAVProductsViewModel> products = new List<NAVProductsViewModel>();
+            //products = null;
+
             if (requestParams != null)
             {
-                rootAreaId = requestParams["rootAreaId"].ToString();
+                allowedProductsFilter = "";
+                rootAreaId = "";
                 requisitionType = requestParams["requisitionType"].ToString();
                 locationCode = requestParams["locationCode"].ToString();
-            }
-            else
-            {
-                products = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, "").ToList();
-            }
-            //List<NAVDimValueViewModel> userDimensionValues = DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 2, User.Identity.Name);
-            //string allowedProductsFilter = userDimensionValues.GenerateNAVProductFilter(rootAreaId, true);
-           
-            string allowedProductsFilter = rootAreaId.GenerateNAVProductFilter();
-            List<NAVProductsViewModel> productsReqParams = DBNAV2017Products.GetProductsForDimensions(_config.NAVDatabaseName, _config.NAVCompanyName, allowedProductsFilter, requisitionType, locationCode).ToList();
-            if (productsReqParams != null && productsReqParams.Count > 0)
-            {
-                products = productsReqParams;
+
+                if (requisitionType != "" && locationCode != "")
+                {
+                    List<NAVProductsViewModel> productsReqParams = DBNAV2017Products.GetProductsForDimensions(_config.NAVDatabaseName, _config.NAVCompanyName, allowedProductsFilter, requisitionType, locationCode).ToList();
+
+                    if (productsReqParams != null && productsReqParams.Count > 0)
+                    {
+                        products = productsReqParams;
+                    }
+                }
             }
             
             return Json(products);
