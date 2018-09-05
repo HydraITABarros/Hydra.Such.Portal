@@ -156,6 +156,9 @@
         </style>
         <iron-ajax url="/PopulateDropdowns/GetResourceTypes" last-response="{{ResourceTypes}}" auto method="get" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetTiposRefeicao" last-response="{{MealTypes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetServiceGroups" last-response="{{ServiceGroups}}" id="getServiceGroups_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetCustomerServices" last-response="{{CustomerServices}}" id="getCustomerServices_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/Projetos/GetAutorizacaoFaturacao"
                    last-response="{{result}}"
                    method="post"
@@ -461,7 +464,15 @@
                                                 <vaadin-grid-filter path="serviceClientCode" />
                                             </template>
                                             <template>
-                                                <vaadin-text-field id="txtServiceClientCode" value="{{item.serviceClientCode}}"></vaadin-text-field>
+                                                <vaadin-combo-box items="[[CustomerServices]]" item-value-path="id" item-label-path="id" value="{{item.serviceClientCode}}" on-change="_setCustomerServDescription" >
+                                                    <template>
+                                                        <paper-icon-item>
+                                                            <paper-item-body two-line>
+                                                                <div>[[item.id]]</div>
+                                                            </paper-item-body>
+                                                        </paper-icon-item>
+                                                    </template>
+                                                </vaadin-combo-box>
                                             </template>
                                         </vaadin-grid-column>
                                         <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.serviceClientDescription.hidden }}">
@@ -479,7 +490,15 @@
                                                 <vaadin-grid-filter path="serviceGroupCode" />
                                             </template>
                                             <template>
-                                                <vaadin-text-field id="txtServiceGroupCode" value="{{item.serviceGroupCode}}"></vaadin-text-field>
+                                                <vaadin-combo-box items="[[ServiceGroups]]" item-value-path="id" item-label-path="value" value="{{item.serviceGroupCode}}">
+                                                    <template>
+                                                        <paper-icon-item>
+                                                            <paper-item-body two-line>
+                                                                <div>[[item.value]]</div>
+                                                            </paper-item-body>
+                                                        </paper-icon-item>
+                                                    </template>
+                                                </vaadin-combo-box>
                                             </template>
                                         </vaadin-grid-column>
                                         <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.externalGuideNo.hidden }}">
@@ -669,6 +688,8 @@
                                 </div>
                                 <div class="marginSpace">
                                     <!--<paper-button raised id="btnSave" class="btnSave" on-tap="_updateMovements" disabled="{{ !_permissions.update }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>-->
+                                    
+
                                 </div>
                             </div>
                         </iron-form>
@@ -680,7 +701,7 @@
             <div>
                 <div class="row break_clear">
                     <div class="col-md-12 ">
-                        <such-textarea rows="10" value="" id="IdObs" name="mOBS" maxlength="250" label="Observações"> </such-textarea>
+                        <such-textarea rows="10" value="" id="IdObs" name="mOBS" maxlength="250" label="Observações">0" </</such-textarea>
                     </div>
                 </div>
             </div>
@@ -806,7 +827,7 @@
                         type: Array,
                     }
                 },
-                observers: ['_resetSelection(inverted),_onCacheLoaded( RegionData,FunctionalAreaCodeData,ResponsabilityCenterData)'],
+                observers: ['_resetSelection(inverted), _onCacheLoaded( RegionData,FunctionalAreaCodeData,ResponsabilityCenterData)'],
               
                 _onCacheLoaded: function (RegionData, FunctionalAreaCodeData, ResponsabilityCenterData) {
 
@@ -995,6 +1016,14 @@
                         if (this.Project.clientNo != "") {
                             this.$.get_customer_ajax.body = JSON.stringify({ "customerNo": this.Project.clientNo });
                             this.$.get_customer_ajax.generateRequest();
+
+                            this.$.getServiceGroups_ajax.body = JSON.stringify(this.Project.clientNo);
+                            this.$.getServiceGroups_ajax.params = { "allProjs": false };
+                            this.$.getServiceGroups_ajax.generateRequest();
+
+                            this.$.getCustomerServices_ajax.body = JSON.stringify(this.Project.clientNo);
+                            this.$.getCustomerServices_ajax.params = { "allProjs": false };
+                            this.$.getCustomerServices_ajax.generateRequest();
                         }
                     }
                     else {
@@ -1115,6 +1144,18 @@
                 },
                 //###
 
+                _setCustomerServDescription: function (e) {
+                    var itemId = e.model.item.serviceClientCode;
+                    var item = this.CustomerServices.find(x => x.id == itemId);
+                    if (item) {
+                        var line = this.result.value.find(x => x.lineNo == e.model.item.lineNo);
+                        if (line) {
+                            line.serviceClientDescription = item.value;
+                            this.$.grdProjectMovements.clearCache();
+                        }
+                    }
+                },
+
                 _exportEXCEL: function () {
                     //debugger;
                     this.result.value[0].ColunasEXCEL = this._columns;
@@ -1234,7 +1275,7 @@
                     return "";
                 },
                 _parseLocation: function (param) {
-                    debugger;
+                    //debugger;
                     if (param != undefined && this.Locations != undefined) {
                         var sel = this.Locations.find(x => x.id == param);
                         if (sel != undefined) {

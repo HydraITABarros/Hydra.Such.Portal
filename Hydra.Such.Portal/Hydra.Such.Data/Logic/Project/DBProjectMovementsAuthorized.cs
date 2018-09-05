@@ -158,7 +158,7 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
                 projMovement.CodServiceGroup = item.CodGrupoServico ??0;
                 projMovement.CodServClient = item.CodServCliente;
                 projMovement.DescServClient = item.DescServCliente;
-                projMovement.NumGuideResiduesGar = item.NumGuiaResiduosGar;
+                projMovement.NumGuideResiduesGar = item.NumGuiaResiduos_GAR;
                 projMovement.NumGuideExternal = item.NumGuiaExterna;
                 projMovement.DateConsume = item.DataConsumo;
                 projMovement.TypeMeal = item.TipoRefeicao;
@@ -205,7 +205,7 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
                 projMovement.CodGrupoServico = item.CodServiceGroup;
                 projMovement.CodServCliente = item.CodServClient;
                 projMovement.DescServCliente = item.DescServClient;
-                projMovement.NumGuiaResiduosGar = item.NumGuideResiduesGar;
+                projMovement.NumGuiaResiduos_GAR = item.NumGuideResiduesGar;
                 projMovement.NumGuiaExterna = item.NumGuideExternal;
                 projMovement.DataConsumo = item.DateConsume;
                 projMovement.TipoRefeicao = item.TypeMeal;

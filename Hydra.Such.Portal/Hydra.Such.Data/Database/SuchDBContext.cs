@@ -5539,7 +5539,7 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.NumGuiaExterna).HasMaxLength(80);
 
-                entity.Property(e => e.NumGuiaResiduosGar)
+                entity.Property(e => e.NumGuiaResiduos_GAR)
                     .HasColumnName("NumGuiaResiduos_GAR")
                     .HasMaxLength(80);
             });

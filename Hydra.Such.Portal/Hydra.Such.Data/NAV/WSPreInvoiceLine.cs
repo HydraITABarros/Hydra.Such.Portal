@@ -156,8 +156,8 @@ namespace Hydra.Such.Data.NAV
 
                 WSCreatePreInvoiceLine.WsPreInvoiceLine line = new WSCreatePreInvoiceLine.WsPreInvoiceLine();
 
-                line.Unit_PriceSpecified = true;
-                line.Unit_Cost_LCYSpecified = true;
+                
+                
                 line.Document_Type = OptionInvoice.Replace(" ", String.Empty) == "4" ? WSCreatePreInvoiceLine.Document_Type.Credit_Memo : WSCreatePreInvoiceLine.Document_Type.Invoice;
                 line.Document_TypeSpecified = true;
                 line.Document_No = HeaderNo;
@@ -170,7 +170,9 @@ namespace Hydra.Such.Data.NAV
                 line.Unit_of_Measure = x.MeasurementUnitCode;
                 line.Location_Code = x.LocationCode;
                 line.Unit_Price = x.UnitPrice.HasValue ? x.UnitPrice.Value : 0;
+                line.Unit_PriceSpecified = true;
                 line.Unit_Cost_LCY = x.UnitCost.HasValue ? x.UnitCost.Value : 0;
+                line.Unit_Cost_LCYSpecified = true;
                 line.Line_No = counter += 10000;
                 line.Line_NoSpecified = true;
                 line.Job_No = x.ProjectNo;
@@ -178,23 +180,21 @@ namespace Hydra.Such.Data.NAV
                 line.Contract_No = x.ProjectNo;
                 line.Tipo_Refeicao = (refeicao!=null) ? refeicao.Código.ToString() : "";
                 line.Gen_Prod_Posting_Group = (refeicao != null) ? refeicao.GrupoContabProduto : "";
-
-                //TODO: Faturação Projetos - implementar preenchimento dos seguintes campos
-                //line.Cod_Serv_Cliente;
-                //line.Consumption_Date;
-                //line.Consumption_DateSpecified = true;
-                //line.Document_No = x.DocumentNo;
-                //line.FunctionAreaCode20 = x.FunctionalAreaCode;
+                line.Cod_Serv_Cliente = x.ServiceClientCode;
+                line.Consumption_Date = !string.IsNullOrEmpty(x.ConsumptionDate) ? DateTime.Parse(x.ConsumptionDate) : DateTime.MinValue;
+                line.Consumption_DateSpecified = !string.IsNullOrEmpty(x.ConsumptionDate);
+                //TODO: passar para string
                 //line.Grupo_Serviço = x.ServiceGroupCode;
-                //line.Nº_Guia_Externa = x.ExternalGuideNo;
-                ////line.Nº_Guia_Resíduos_GAR = x
-                //line.RegionCode20 = x.RegionCode;
-                //line.ResponsabilityCenterCode20 = x.ResponsabilityCenterCode;
-                //line.Tipo_Recurso = x.ResourceType;
-                //line.Tipo_RecursoSpecified = true;
-                //line.Tipo_Refeicao = x.MealType;
-                //line.Unit_Cost_LCY = x.UnitCost
-                
+                line.Nº_Guia_Externa = x.ExternalGuideNo;
+                line.Nº_Guia_Resíduos_GAR = x.WasteGuideNo_GAR;
+                line.RegionCode20 = x.RegionCode;
+                line.FunctionAreaCode20 = x.FunctionalAreaCode;
+                line.ResponsabilityCenterCode20 = x.ResponsabilityCenterCode;
+                if (x.ResourceType.HasValue)
+                {
+                    line.Tipo_Recurso = (WSCreatePreInvoiceLine.Tipo_Recurso)x.ResourceType.Value;
+                    line.Tipo_RecursoSpecified = true;
+                }
                 parsedList[array] = line;
                 array++;
 
