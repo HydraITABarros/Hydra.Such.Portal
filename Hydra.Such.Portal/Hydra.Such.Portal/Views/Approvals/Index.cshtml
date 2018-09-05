@@ -104,6 +104,17 @@
                     {{item.number}}
                 </template>
             </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.requisicaoAcordosPrecos.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="requisicaoAcordosPrecos">Req A Preços</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="requisicaoAcordosPrecos" />
+                </template>
+                <template>
+                    <vaadin-checkbox checked="{{item.requisicaoAcordosPrecos}}" disabled></vaadin-checkbox>
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.requestUser.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="requestUser">Solicitado Por</vaadin-grid-sorter>

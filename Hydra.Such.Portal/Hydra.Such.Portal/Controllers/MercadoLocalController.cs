@@ -229,7 +229,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 string rejectionComments = requestParams["rejectReason"].ToString();
 
-                List<ComprasViewModel> Mercados = null;
+                List<ComprasViewModel> Mercados = new List<ComprasViewModel>();
                 int count = 0;
                 if (requestParams["mercados"].Count() > 0)
                 {
@@ -245,25 +245,25 @@ namespace Hydra.Such.Portal.Controllers
                             Quantidade = (decimal)requestParams["mercados"][count]["quantidade"],
                             NoRequisicao = (string)requestParams["mercados"][count]["noRequisicao"],
                             NoLinhaRequisicao = (int)requestParams["mercados"][count]["noLinhaRequisicao"],
-                            Urgente = (bool)requestParams["mercados"][count]["urgente"],
+                            Urgente = string.IsNullOrEmpty(Convert.ToString(requestParams["mercados"][count]["urgente"])) ? false : (bool)requestParams["mercados"][count]["urgente"],
                             RegiaoMercadoLocal = (string)requestParams["mercados"][count]["regiaoMercadoLocal"],
                             Estado = (int)requestParams["mercados"][count]["estado"],
-                            DataCriacao = (DateTime)requestParams["mercados"][count]["dataCriacao"],
+                            DataCriacao = string.IsNullOrEmpty(Convert.ToString(requestParams["mercados"][count]["dataCriacao"])) ? Convert.ToDateTime("1753/01/01") : (DateTime)requestParams["mercados"][count]["dataCriacao"],
                             UtilizadorCriacao = (string)requestParams["mercados"][count]["utilizadorCriacao"],
                             Responsaveis = (string)requestParams["mercados"][count]["responsaveis"],
                             NoProjeto = (string)requestParams["mercados"][count]["noProjeto"],
                             NoFornecedor = (string)requestParams["mercados"][count]["noFornecedor"],
                             NoEncomenda = (string)requestParams["mercados"][count]["noEncomenda"],
-                            DataEncomenda = (DateTime)requestParams["mercados"][count]["dataEncomenda"],
+                            DataEncomenda = string.IsNullOrEmpty(Convert.ToString(requestParams["mercados"][count]["dataEncomenda"])) ? Convert.ToDateTime("1753/01/01") : (DateTime)requestParams["mercados"][count]["dataEncomenda"],
                             NoConsultaMercado = (string)requestParams["mercados"][count]["noConsultaMercado"],
-                            DataConsultaMercado = (DateTime)requestParams["mercados"][count]["dataConsultaMercado"],
-                            DataValidacao = (DateTime)requestParams["mercados"][count]["dataValidacao"],
+                            DataConsultaMercado = string.IsNullOrEmpty(Convert.ToString(requestParams["mercados"][count]["dataConsultaMercado"])) ? Convert.ToDateTime("1753/01/01") : (DateTime)requestParams["mercados"][count]["dataConsultaMercado"],
+                            DataValidacao = string.IsNullOrEmpty(Convert.ToString(requestParams["mercados"][count]["dataValidacao"])) ? Convert.ToDateTime("1753/01/01") : (DateTime)requestParams["mercados"][count]["dataValidacao"],
                             UtilizadorValidacao = (string)requestParams["mercados"][count]["utilizadorValidacao"],
-                            DataRecusa = (DateTime)requestParams["mercados"][count]["dataRecusa"],
+                            DataRecusa = string.IsNullOrEmpty(Convert.ToString(requestParams["mercados"][count]["dataRecusa"])) ? Convert.ToDateTime("1753/01/01") : (DateTime)requestParams["mercados"][count]["dataRecusa"],
                             UtilizadorRecusa = (string)requestParams["mercados"][count]["utilizadorRecusa"],
-                            DataTratado = (DateTime)requestParams["mercados"][count]["dataTratado"],
+                            DataTratado = string.IsNullOrEmpty(Convert.ToString(requestParams["mercados"][count]["dataTratado"])) ? Convert.ToDateTime("1753/01/01") : (DateTime)requestParams["mercados"][count]["dataTratado"],
                             UtilizadorTratado = (string)requestParams["mercados"][count]["utilizadorTratado"],
-                            Recusada = (bool)requestParams["mercados"][count]["recusada"]
+                            Recusada = string.IsNullOrEmpty(Convert.ToString(requestParams["mercados"][count]["recusada"])) ? false : (bool)requestParams["mercados"][count]["recusada"]
                         };
                         Mercados.Add(Mercado);
                     }
