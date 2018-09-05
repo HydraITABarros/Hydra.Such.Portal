@@ -167,6 +167,16 @@
                 </template>
             </vaadin-grid-column>
 
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.descricao2.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="descricao2">Descrição 2</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="descricao2" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.descricao2}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.listaDeMateriaisText.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="listaDeMateriaisText">Lista de Materiais</vaadin-grid-sorter>
@@ -586,7 +596,7 @@
                     <vaadin-text-field value="{{item.colesterol}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
-          
+
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.sodio.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="sodio">Sódio</vaadin-grid-sorter>
@@ -596,7 +606,7 @@
                     <vaadin-text-field value="{{item.sodio}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
-          
+
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.potacio.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="potacio">Potácio</vaadin-grid-sorter>
@@ -606,7 +616,7 @@
                     <vaadin-text-field value="{{item.potacio}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
-          
+
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.calcio.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="calcio">Cálcio</vaadin-grid-sorter>
@@ -616,7 +626,7 @@
                     <vaadin-text-field value="{{item.calcio}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
-           
+
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.ferro.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="ferro">Ferro</vaadin-grid-sorter>
@@ -626,7 +636,7 @@
                     <vaadin-text-field value="{{item.ferro}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
-           
+
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.edivel.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="edivel">Edível</vaadin-grid-sorter>
@@ -636,7 +646,7 @@
                     <vaadin-text-field value="{{item.edivel}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
-           
+
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.alcool.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="alcool">Alcool</vaadin-grid-sorter>
@@ -779,9 +789,11 @@
 
                 /*start - ColumnToggle*/
                 _startColumnToggle: function () {
+                    debugger;
                     var columns = {
                         "no": { hidden: false, label: "Nº" },
                         "descricao": { hidden: false, label: "Descrição" },
+                        "descricao2": { hidden: false, label: "Descrição 2" },
                         "listaDeMateriaisText": { hidden: false, label: "Lista De Materiais" },
                         "unidadeMedidaBase": { hidden: false, label: "Unidade Medida Base" },
                         "noPrateleira": { hidden: false, label: "Nº Prateleira" },
@@ -829,8 +841,9 @@
                         "calcio": { hidden: false, label: "Cálcio" },
                         "ferro": { hidden: false, label: "Ferro" },
                         "edivel": { hidden: false, label: "Edível" },
-                        "alcool": { hidden: false, label: "Alcool" },
+                        "alcool": { hidden: false, label: "Alcool" }
                     };
+                    debugger;
 
                     if (localStorage["produtos.ToggleColumn"]) {
                         var keys = Object.keys(columns);

@@ -10,9 +10,9 @@ namespace Hydra.Such.Data.ViewModel.Projects
         public DateTime? CreateDate { get; set; }
         public string UpdateUser { get; set; }
         public DateTime? UpdateDate { get; set; }
-        public string ServiceData { get; set; }
+        public string ServiceDate { get; set; }
         public string ClientRequest { get; set; }
-        public int? ServiceClientCode { get; set; }
+        public string ServiceClientCode { get; set; }
         public string RequestNo { get; set; }
         public int? RequestLineNo { get; set; }
         public string Driver { get; set; }
@@ -66,9 +66,10 @@ namespace Hydra.Such.Data.ViewModel.Projects
         public int? InvoiceGroup { get; set; }
         public string InvoiceGroupDescription { get; set; }
         public string CodTermosPagamento { get; set; }
-        public string PedidoCliente { get; set; }
+        //public string PedidoCliente { get; set; }
         public string SituacoesPendentes { get; set; }
         public int? Opcao { get; set; }
+        public string Comments { get; set; }
         //EXPORTAR PARA EXCEL
         public Object ColunasEXCEL { get; set; }
 

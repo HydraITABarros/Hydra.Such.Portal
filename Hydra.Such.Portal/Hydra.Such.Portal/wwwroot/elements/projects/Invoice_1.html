@@ -471,7 +471,7 @@
                 </template>
                 <template>
                     <center>
-                        <paper-button class="btnSave tableBtn" on-tap="_GoToProj" title="Ver Projeto"><i class="fa fa-info" aria-hidden="true"></i></paper-button>
+                        <paper-button class="btnSave tableBtn" on-tap="_showAuthorizationDetails" title="Ver Detalhes Autorização"><i class="fa fa-info" aria-hidden="true"></i></paper-button>
                     </center>
                 </template>
             </vaadin-grid-column>
@@ -877,7 +877,6 @@
                     }
                 },
                 ready: function () {
-                    this.$.page_databound_ajax.generateRequest();
                     /*ColumnToggle*/
                     this._startColumnToggle();
 
@@ -1148,7 +1147,7 @@
                 _getColumnItemClass: function (columnIndex) {
                     return !this._columns[columnIndex].hidden ? "selected" : "";
                 },
-                _GoToProj: function (e) {
+                _showAuthorizationDetails: function (e) {
                     if (e != null) {
                         var Item = e.model.item;
                         this.$.grid_dataprojlines_ajax.params = {"ProjGroup": Item.grupoFactura};

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Hydra.Such.Data.Logic.ProjectMovements
 {
-    public static class DBProjectMovementsAuthorized
+    public static class DBAuthorizedProjectMovements
     {
         public static List<MovimentosProjectoAutorizados> GetAll(string user)
         {
@@ -29,13 +29,13 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
 
 
 
-        public static MovimentosProjectoAutorizados GetAllByNum(int numMov)
+        public static MovimentosProjectoAutorizados GetByMovementNo(int movementNo)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.MovimentosProjectoAutorizados.Where(x => x.NumMovimento == numMov).FirstOrDefault();
+                    return ctx.MovimentosProjectoAutorizados.Where(x => x.NumMovimento == movementNo).FirstOrDefault();
                 }
             }
             catch (Exception ex)
@@ -119,7 +119,21 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
                 return false;
             }
         }
-    
+
+        public static List<MovimentosProjectoAutorizados> GetMovementById(int group, string projectNo)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.MovimentosProjectoAutorizados.Where(x => x.GrupoFactura == group && x.CodProjeto == projectNo).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
 
         #region Parse Utilities
         public static MovementAuthorizedProjectViewModel ParseToViewModel(this MovimentosProjectoAutorizados item, string navDatabaseName, string navCompanyName)
