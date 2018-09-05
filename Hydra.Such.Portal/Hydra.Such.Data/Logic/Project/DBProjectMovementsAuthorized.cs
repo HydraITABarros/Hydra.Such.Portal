@@ -155,10 +155,10 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
                 projMovement.FunctionalAreaCode = item.CodAreaFuncional;
                 projMovement.ResponsabilityCenterCode = item.CodCentroResponsabilidade;
                 projMovement.CodContract = item.CodContrato;
-                projMovement.CodServiceGroup = item.CodGrupoServico ??0;
+                projMovement.CodServiceGroup = string.IsNullOrEmpty(item.CodGrupoServico) ? 0 : int.Parse(item.CodGrupoServico);
                 projMovement.CodServClient = item.CodServCliente;
                 projMovement.DescServClient = item.DescServCliente;
-                projMovement.NumGuideResiduesGar = item.NumGuiaResiduos_GAR;
+                projMovement.NumGuideResiduesGar = item.NumGuiaResiduosGar;
                 projMovement.NumGuideExternal = item.NumGuiaExterna;
                 projMovement.DateConsume = item.DataConsumo;
                 projMovement.TypeMeal = item.TipoRefeicao;
@@ -202,10 +202,10 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
                 projMovement.CodAreaFuncional = item.FunctionalAreaCode;
                 projMovement.CodCentroResponsabilidade = item.ResponsabilityCenterCode;
                 projMovement.CodContrato = item.CodContract;
-                projMovement.CodGrupoServico = item.CodServiceGroup;
+                projMovement.CodGrupoServico = item.CodServiceGroup.ToString();
                 projMovement.CodServCliente = item.CodServClient;
                 projMovement.DescServCliente = item.DescServClient;
-                projMovement.NumGuiaResiduos_GAR = item.NumGuideResiduesGar;
+                projMovement.NumGuiaResiduosGar = item.NumGuideResiduesGar;
                 projMovement.NumGuiaExterna = item.NumGuideExternal;
                 projMovement.DataConsumo = item.DateConsume;
                 projMovement.TipoRefeicao = item.TypeMeal;

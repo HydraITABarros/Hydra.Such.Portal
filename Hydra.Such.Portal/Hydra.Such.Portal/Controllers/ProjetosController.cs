@@ -1875,10 +1875,10 @@ namespace Hydra.Such.Portal.Controllers
                             authorizedProjMovement.CodAreaFuncional = x.FunctionalAreaCode;
                             authorizedProjMovement.CodCentroResponsabilidade = x.ResponsabilityCenterCode;
                             authorizedProjMovement.CodContrato = contract.NºDeContrato;
-                            authorizedProjMovement.CodGrupoServico = x.ServiceGroupCode;
+                            authorizedProjMovement.CodGrupoServico = x.ServiceGroupCode.HasValue ? x.ServiceGroupCode.Value.ToString() : string.Empty;
                             authorizedProjMovement.CodServCliente = x.ServiceClientCode;
                             authorizedProjMovement.DescServCliente = x.ServiceClientDescription;
-                            authorizedProjMovement.NumGuiaResiduos_GAR = x.ResidueGuideNo;
+                            authorizedProjMovement.NumGuiaResiduosGar = x.ResidueGuideNo;
                             authorizedProjMovement.TipoRefeicao = x.MealType ?? 0;
                             authorizedProjMovement.TipoRecurso = x.ResourceType ?? 0;
                             authorizedProjMovement.NumDocumento = x.DocumentNo;
@@ -2463,14 +2463,14 @@ namespace Hydra.Such.Portal.Controllers
                             InvoiceGroup = mpa.GrupoFactura,
                             DocumentNo = mpa.NumDocumento,
                             ResourceType = mpa.TipoRecurso,
-                            ServiceGroupCode = mpa.CodGrupoServico,
+                            ServiceGroupCode = string.IsNullOrEmpty(mpa.CodGrupoServico) ? (int?)null : int.Parse(mpa.CodGrupoServico),
                             ExternalGuideNo = mpa.NumGuiaExterna,
-                            WasteGuideNo_GAR = mpa.NumGuiaResiduos_GAR,
-                            //LocationCode = mp.locationCode,
-                            //UnitPrice = mpa.PreçoUnitário,
-                            //UnitCost = mpa.CustoUnitário,
+                            WasteGuideNo_GAR = mpa.NumGuiaResiduosGar,
 
                             //##################################    Se necessário, obter de movimentos de projeto
+                            UnitPrice = mp.PreçoUnitário,
+                            UnitCost = mp.CustoUnitário,
+                            LocationCode = mp.CódLocalização,
                             ProjectContabGroup = mp.GrupoContabProjeto,
                             AdjustedDocument = mp.DocumentoCorrigido,
                             AdjustedDocumentData = mp.DataDocumentoCorrigido.HasValue ? mp.DataDocumentoCorrigido.Value.ToString("yyyy-MM-dd") : "",

@@ -184,7 +184,7 @@ namespace Hydra.Such.Data.NAV
                 line.Consumption_Date = !string.IsNullOrEmpty(x.ConsumptionDate) ? DateTime.Parse(x.ConsumptionDate) : DateTime.MinValue;
                 line.Consumption_DateSpecified = !string.IsNullOrEmpty(x.ConsumptionDate);
                 //TODO: passar para string
-                //line.Grupo_Serviço = x.ServiceGroupCode;
+                line.Grupo_Serviço = x.ServiceGroupCode.HasValue ? x.ServiceGroupCode.Value.ToString() : string.Empty;
                 line.Nº_Guia_Externa = x.ExternalGuideNo;
                 line.Nº_Guia_Resíduos_GAR = x.WasteGuideNo_GAR;
                 line.RegionCode20 = x.RegionCode;
