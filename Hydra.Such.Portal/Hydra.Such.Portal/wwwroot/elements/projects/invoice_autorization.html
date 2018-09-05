@@ -172,6 +172,30 @@
                    on-response="GetProjectResponse"
                    content-type="application/json">
         </iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetLocations"
+                   last-response="{{Locations}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetRegionCode"
+                   last-response="{{RegionData}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode"
+                   last-response="{{FunctionalAreaCodeData}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode"
+                   last-response="{{ResponsabilityCenterData}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json"></iron-ajax>
         <!--<iron-ajax url="/Projetos/UpdateProjectMovements"
                last-response="{{UpdateResponse}}"
                method="post"
@@ -251,55 +275,65 @@
                                 <div class="panel-body">
                                     <div class="col-md-8">
                                         <div class="row break_clear">
-                                            <div class="col-md-2 ">
+                                            <div class="col-md-3 ">
                                                 <vaadin-text-field id="txtCodProjeto" name="txtCodProjeto" label="Nº Projeto" value="[[Project.projectNo]]" disabled></vaadin-text-field>
                                             </div>
-                                            <div class="col-md-4">
+                                            <div class="col-md-5">
                                                 <vaadin-text-field id="txtDescricaoProjeto" name="txtDescricaoProjeto" label="Descrição Projeto" value="[[Project.description]]" disabled></vaadin-text-field>
                                             </div>
-                                            <div class="col-md-2 ">
+                                            <div class="col-md-3 ">
                                                 <vaadin-text-field id="txtNumCompromisso" label="Nº Compromisso" value="{{_commitmentNo}}"></vaadin-text-field>
                                             </div>
                                         </div>
-
                                         <div class="row break_clear">
-                                            <div class="col-md-2 ">
+                                            <div class="col-md-3 ">
                                                 <vaadin-text-field id="txtCodCliente" name="txtCodCliente" label="Nº Cliente" value="[[Project.clientNo]]" disabled></vaadin-text-field>
                                             </div>
-                                            <div class="col-md-6">
+                                            <div class="col-md-8">
                                                 <vaadin-text-field id="txtNomeCliente" name="txtNomeCliente" label="Nome Cliente" value="[[_customerName]]" disabled></vaadin-text-field>
                                             </div>
                                         </div>
                                         <div class="row break_clear">
-                                            <div class="col-md-2 ">
+                                            <div class="col-md-3 ">
                                                 <vaadin-date-picker id="dpDataPrestacaoServ" label="Data Prestação Serviços" on-value-changed="serviceDateChanged"></vaadin-date-picker>
                                             </div>
-                                            <div class="col-md-2 ">
+                                            <div class="col-md-3 ">
                                                 <vaadin-text-field id="txtValorAAutorizar" name="txtValorAAutorizar" label="Total a Autorizar" value="[[_totalToAuthorize]]" disabled></vaadin-text-field>
                                             </div>
                                         </div>
                                         <div class="row break_clear">
-
+                                        </div>
+                                        <div class="row break_clear">
                                         </div>
                                     </div>
-                                    <div class="row break_clear">
-                                        <div class="col-md-4 ">
-                                            Total Const. Faturáveis .. [[ProjectBillingResume.TotalBillableConsumption]]
-                                            <!--<vaadin-text-field  value="[[ProjectBillingResume.TotalBillableConsumption]]" disabled></vaadin-text-field>-->
-                                        </div>
-                                        <div class="col-md-4 ">
-                                            Faturação Autorizada ..... [[ProjectBillingResume.AuthorizedBilling]]
-                                        </div>
-                                        <div class="col-md-4 ">
-                                            Faturação por Autorizar .. [[ProjectBillingResume.BillingToAuthorize]]
-                                        </div>
-                                        <div class="col-md-4 ">
-                                            Valor Faturas Registadas . [[ProjectBillingResume.RegisteredInvoiceValue]]
-                                        </div>
-                                        <div class="col-md-4 ">
-                                            Valor Faturadas Criadas .. [[ProjectBillingResume.CreatedInvoicesValue]]
-                                        </div>
+                                    <div class="col-md-4">
+                                        <div class="row break_clear">
+                                            <div class="col-md-12 ">
+                                                <vaadin-text-field id="idTotalBillableConsumption" name="nTotalBillableConsumption" label="Total Const. Faturáveis" value="[[ProjectBillingResume.TotalBillableConsumption]]" disabled></vaadin-text-field>
+                                                <!--Total Const. Faturáveis .. [[ProjectBillingResume.TotalBillableConsumption]]-->
+                                                <!--<vaadin-text-field  value="[[ProjectBillingResume.TotalBillableConsumption]]" disabled></vaadin-text-field>-->
+                                            </div>
+                                            <div class="col-md-12 ">
+                                                <vaadin-text-field id="idAuthorizedBilling" name="nAuthorizedBilling" label="Faturação Autorizada" value="[[ProjectBillingResume.AuthorizedBilling]]" disabled></vaadin-text-field>
 
+                                                <!--Faturação Autorizada ..... [[ProjectBillingResume.AuthorizedBilling]]-->
+                                            </div>
+                                            <div class="col-md-12 ">
+                                                <vaadin-text-field id="idBillingToAuthorize" name="nBillingToAuthorize" label="Faturação por Autorizar" value="[[ProjectBillingResume.BillingToAuthorize]]" disabled></vaadin-text-field>
+
+                                                <!--Faturação por Autorizar .. [[ProjectBillingResume.BillingToAuthorize]]-->
+                                            </div>
+                                            <div class="col-md-12 ">
+                                                <vaadin-text-field id="idRegisteredInvoiceValue" name="nRegisteredInvoiceValue" label="Valor Faturas Registadas" value="[[ProjectBillingResume.RegisteredInvoiceValue]]" disabled></vaadin-text-field>
+
+                                                <!--Valor Faturas Registadas . [[ProjectBillingResume.RegisteredInvoiceValue]]-->
+                                            </div>
+                                            <div class="col-md-12 ">
+                                                <vaadin-text-field id="idCreatedInvoicesValue" name="nCreatedInvoicesValue" label="Valor Faturadas Criadas" value="[[ProjectBillingResume.CreatedInvoicesValue]]" disabled></vaadin-text-field>
+
+                                                <!--Valor Faturadas Criadas .. [[ProjectBillingResume.CreatedInvoicesValue]]-->
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="row break_clear">
@@ -329,15 +363,7 @@
                                                 <vaadin-grid-filter path="movementType" />
                                             </template>
                                             <template>
-                                                <vaadin-combo-box items="[[MovementTypes]]" item-value-path="id" item-label-path="value" value="{{item.movementType}}" disabled>
-                                                    <template>
-                                                        <paper-icon-item>
-                                                            <paper-item-body two-line>
-                                                                <div>[[item.value]]</div>
-                                                            </paper-item-body>
-                                                        </paper-icon-item>
-                                                    </template>
-                                                </vaadin-combo-box>
+                                                [[ _parseMovementType(item.movementType) ]]
                                             </template>
                                         </vaadin-grid-column>
                                         <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.type.hidden }}">
@@ -346,15 +372,7 @@
                                                 <vaadin-grid-filter path="type" />
                                             </template>
                                             <template>
-                                                <vaadin-combo-box id="type[[index]]" items="[[ProjectDiaryTypes]]" item-value-path="id" item-label-path="value" value="{{item.type}}" disabled>
-                                                    <template>
-                                                        <paper-icon-item>
-                                                            <paper-item-body two-line>
-                                                                <div>[[item.value]]</div>
-                                                            </paper-item-body>
-                                                        </paper-icon-item>
-                                                    </template>
-                                                </vaadin-combo-box>
+                                                [[ _parseType(item.type) ]]
                                             </template>
                                         </vaadin-grid-column>
                                         <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.code.hidden }}">
@@ -546,11 +564,11 @@
                                         </vaadin-grid-column>
                                         <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.locationCode.hidden }}">
                                             <template class="header">
-                                                <vaadin-grid-sorter path="locationCode">Cód. Localização</vaadin-grid-sorter>
+                                                <vaadin-grid-sorter path="locationCode">Localização</vaadin-grid-sorter>
                                                 <vaadin-grid-filter path="locationCode" />
                                             </template>
                                             <template>
-                                                {{item.locationCode}}
+                                                [[ _parseLocation(item.locationCode)]]
                                             </template>
                                         </vaadin-grid-column>
                                         <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.unitCost.hidden }}">
@@ -573,29 +591,29 @@
                                         </vaadin-grid-column>
                                         <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.regionCode.hidden }}">
                                             <template class="header">
-                                                <vaadin-grid-sorter path="regionCode">Código Região</vaadin-grid-sorter>
+                                                <vaadin-grid-sorter path="regionCode">Região</vaadin-grid-sorter>
                                                 <vaadin-grid-filter path="regionCode" />
                                             </template>
                                             <template>
-                                                {{item.regionCode}}
+                                                [[ _parseRegion(item.regionCode)]]
                                             </template>
                                         </vaadin-grid-column>
                                         <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.functionalAreaCode.hidden }}">
                                             <template class="header">
-                                                <vaadin-grid-sorter path="functionalAreaCode">Código Área</vaadin-grid-sorter>
+                                                <vaadin-grid-sorter path="functionalAreaCode">Área Funcional</vaadin-grid-sorter>
                                                 <vaadin-grid-filter path="functionalAreaCode" />
                                             </template>
                                             <template>
-                                                {{item.functionalAreaCode}}
+                                                [[ _parseFuncArea(item.functionalAreaCode)]]
                                             </template>
                                         </vaadin-grid-column>
                                         <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.responsabilityCenterCode.hidden }}">
                                             <template class="header">
-                                                <vaadin-grid-sorter path="responsabilityCenterCode">Código Centro Responsabilidade</vaadin-grid-sorter>
+                                                <vaadin-grid-sorter path="responsabilityCenterCode">Centro Responsabilidade</vaadin-grid-sorter>
                                                 <vaadin-grid-filter path="responsabilityCenterCode" />
                                             </template>
                                             <template>
-                                                {{item.responsabilityCenterCode}}
+                                                [[ _parseResponsabilityCenter(item.responsabilityCenterCode)]]
                                             </template>
                                         </vaadin-grid-column>
                                         <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.projectNo.hidden }}">
@@ -635,14 +653,14 @@
                                             </template>
                                         </vaadin-grid-column>
                                         <!--<vaadin-grid-column width="15%" resizable hidden$="{{ _columns.commitmentNumber.hidden }}">
-                                    <template class="header">
-                                        <vaadin-grid-sorter path="commitmentNumber">Nº Compromisso</vaadin-grid-sorter>
-                                        <vaadin-grid-filter path="commitmentNumber" />
-                                    </template>
-                                    <template>
-                                        {{item.commitmentNumber}}
-                                    </template>
-                                </vaadin-grid-column>-->
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="commitmentNumber">Nº Compromisso</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="commitmentNumber" />
+                                        </template>
+                                        <template>
+                                            {{item.commitmentNumber}}
+                                        </template>
+                                    </vaadin-grid-column>-->
 
 
                                     </vaadin-grid>
@@ -667,40 +685,40 @@
                 </div>
             </div>
         </iron-pages>
-           
 
-            <paper-dialog id="dlgValidation" modal style="height:200px; width:500px">
 
-                <div class="row break_clear">
-                    <!--<div class="col-md-2 ">
-                    <vaadin-text-field id="txtGrupoFatura" name="txtGrupoFatura" label="Grupo Fatura" value="" disabled></vaadin-text-field>
-                </div>-->
-                    <div class="col-md-12 ">
-                        <vaadin-text-field id="txtDescGrupoFatura" maxlength="30" name="txtDescGrupoFatura" label="Descrição Grupo Fatura"></vaadin-text-field>
-                    </div>
-                    <div class="col-md-12 ">
-                        <h5 hidden id="validationTitle">Atenção</h5>
-                        <template is="dom-repeat" items="{{ _validationMessages }}">
-                            <template is="dom-if" if="{{ _isError(item.type) }}">
-                                <i class="fa fa-exclamation-triangle" aria-hidden="true" style="color:red;">&nbsp;&nbsp;</i>{{ item.message }}
-                                <br />
-                            </template>
-                            <template is="dom-if" if="{{ _isWarning(item.type) }}">
-                                <i class="fa fa-info-circle" aria-hidden="true" style="color:orange;">&nbsp;&nbsp;</i>{{ item.message }}
-                                <br />
-                            </template>
+        <paper-dialog id="dlgValidation" modal style="height:200px; width:500px">
+
+            <div class="row break_clear">
+                <!--<div class="col-md-2 ">
+                <vaadin-text-field id="txtGrupoFatura" name="txtGrupoFatura" label="Grupo Fatura" value="" disabled></vaadin-text-field>
+            </div>-->
+                <div class="col-md-12 ">
+                    <vaadin-text-field id="txtDescGrupoFatura" maxlength="30" name="txtDescGrupoFatura" label="Descrição Grupo Fatura"></vaadin-text-field>
+                </div>
+                <div class="col-md-12 ">
+                    <h5 hidden id="validationTitle">Atenção</h5>
+                    <template is="dom-repeat" items="{{ _validationMessages }}">
+                        <template is="dom-if" if="{{ _isError(item.type) }}">
+                            <i class="fa fa-exclamation-triangle" aria-hidden="true" style="color:red;">&nbsp;&nbsp;</i>{{ item.message }}
+                            <br />
                         </template>
-                    </div>
+                        <template is="dom-if" if="{{ _isWarning(item.type) }}">
+                            <i class="fa fa-info-circle" aria-hidden="true" style="color:orange;">&nbsp;&nbsp;</i>{{ item.message }}
+                            <br />
+                        </template>
+                    </template>
                 </div>
-                <div class="buttons">
-                    <paper-button raised class="btnEdit" on-tap="_confirm" id="btnConfirmAuthorization" hidden>Autorizar</paper-button>
-                    <paper-button raised class="btnRemove" on-tap="_closedlgValidationDlg">Cancelar</paper-button>
-                </div>
-            </paper-dialog>
+            </div>
+            <div class="buttons">
+                <paper-button raised class="btnEdit" on-tap="_confirm" id="btnConfirmAuthorization" hidden>Autorizar</paper-button>
+                <paper-button raised class="btnRemove" on-tap="_closedlgValidationDlg">Cancelar</paper-button>
+            </div>
+        </paper-dialog>
 
 
-            <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
-            <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
 
 
@@ -788,8 +806,15 @@
                         type: Array,
                     }
                 },
-                observers: ['_resetSelection(inverted)'],
+                observers: ['_resetSelection(inverted),_onCacheLoaded( RegionData,FunctionalAreaCodeData,ResponsabilityCenterData)'],
+              
+                _onCacheLoaded: function (RegionData, FunctionalAreaCodeData, ResponsabilityCenterData) {
 
+                    if (!this.Flag) {
+                        this.$.movements_databound_ajax.generateRequest();
+                        this.Flag = true;
+                    }
+                },
                 ready: function () {
                     this._loadData();
                     this._setDefaultDateForDatePickers();
@@ -1005,23 +1030,7 @@
                 _ConvertDecimals: function (e) {
                     e.target.value = e.target.value.replace(",", ".");
                 },
-                //_updateMovements: function () {
-                //    this.$.updatelines_ajax.body = JSON.stringify(this.result.value);
-                //    this.$.updatelines_ajax.generateRequest();
-                //},
-                _updateLinesResponse: function (e) {
-                    //UpdateResponse
-                    if (e.detail.status === 200) {
-                        if (this.UpdateResponse.eReasonCode == "1") {
-                            this.$.grdProjectMovements.clearCache();
-                            this.result.value = this.UpdateResponse;
-                            this._openToast(this.UpdateResponse.eMessage);
-                        }
-                        else {
-                            this.openToastError(this.UpdateResponse.eMessage);
-                        }
-                    }
-                },
+
                 _setDefaultDateForDatePickers: function () {
                     try {
                         if (this.$.dpDataPrestacaoServ == null)
@@ -1163,6 +1172,79 @@
                 },
                 _getColumnItemClass: function (columnIndex) {
                     return !this._columns[columnIndex].hidden ? "selected" : "";
+                },
+                _parseMovementType: function (param) {
+                    if (param != undefined && this.MovementTypes != undefined) {
+                        var sel = this.MovementTypes.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                        else {
+                            return param;
+                        }
+                    }
+                    return "";
+                },
+                _parseType: function (param) {
+                    if (param != undefined && this.ProjectDiaryTypes != undefined) {
+                        var sel = this.ProjectDiaryTypes.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                        else {
+                            return param;
+                        }
+                    }
+                    return "";
+                },
+                _parseResponsabilityCenter: function (param) {
+                    if (param != undefined && this.ResponsabilityCenterData != undefined) {
+                        var sel = this.ResponsabilityCenterData.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                        else {
+                            return param;
+                        }
+                    }
+                    return "";
+                },
+                _parseRegion: function (param) {
+                    if (param != undefined && this.RegionData != undefined) {
+                        var sel = this.RegionData.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                        else {
+                            return param;
+                        }
+                    }
+                    return "";
+                },
+                _parseFuncArea: function (param) {
+                    if (param != undefined && this.FunctionalAreaCodeData != undefined) {
+                        var sel = this.FunctionalAreaCodeData.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                        else {
+                            return param;
+                        }
+                    }
+                    return "";
+                },
+                _parseLocation: function (param) {
+                    debugger;
+                    if (param != undefined && this.Locations != undefined) {
+                        var sel = this.Locations.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                        else {
+                            return param;
+                        }
+                    }
+                    return "";
                 },
                 _toArray: function (obj) {
                     return Object.keys(obj).map(function (key) {

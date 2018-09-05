@@ -335,7 +335,7 @@
                     <vaadin-grid-filter path="codRegiao" />
                 </template>
                 <template>
-                    {{item.codRegiao}}
+                    [[ _parseRegion(item.codRegiao)]]
                 </template>
             </vaadin-grid-column>
 
@@ -345,7 +345,7 @@
                     <vaadin-grid-filter path="codAreaFuncional" />
                 </template>
                 <template>
-                    {{item.codAreaFuncional}}
+                    [[ _parseFuncArea(item.codAreaFuncional)]]
                 </template>
             </vaadin-grid-column>
 
@@ -355,7 +355,7 @@
                     <vaadin-grid-filter path="codCentroResponsabilidade" />
                 </template>
                 <template>
-                    {{item.codCentroResponsabilidade}}
+                    [[ _parseResponsabilityCenter(item.codCentroResponsabilidade)]]
                 </template>
             </vaadin-grid-column>
 
@@ -471,7 +471,7 @@
                 </template>
                 <template>
                     <center>
-                        <paper-button class="btnSave tableBtn" on-tap="_GoToProj" title="Ver Projeto"><i class="fa fa-info" aria-hidden="true"></i></paper-button>
+                        <paper-button class="btnSave tableBtn" on-tap="_showAuthorizationDetails" title="Ver Detalhes Autorização"><i class="fa fa-info" aria-hidden="true"></i></paper-button>
                     </center>
                 </template>
             </vaadin-grid-column>
@@ -865,8 +865,18 @@
                         value: false
                     },
                 },
+
+                observers: [
+                    '_onCacheLoaded( RegionData,FunctionalAreaCodeData,ResponsabilityCenterData)'
+                ],
+                _onCacheLoaded: function (RegionData, FunctionalAreaCodeData, ResponsabilityCenterData) {
+
+                    if (!this.Flag) {
+                        this.$.page_databound_ajax.generateRequest();
+                        this.Flag = true;
+                    }
+                },
                 ready: function () {
-                    this.$.page_databound_ajax.generateRequest();
                     /*ColumnToggle*/
                     this._startColumnToggle();
 
@@ -1137,7 +1147,7 @@
                 _getColumnItemClass: function (columnIndex) {
                     return !this._columns[columnIndex].hidden ? "selected" : "";
                 },
-                _GoToProj: function (e) {
+                _showAuthorizationDetails: function (e) {
                     if (e != null) {
                         var Item = e.model.item;
                         this.$.grid_dataprojlines_ajax.params = {"ProjGroup": Item.grupoFactura};
@@ -1161,6 +1171,9 @@
                         if (sel != undefined) {
                             return sel.value;
                         }
+                        else {
+                            return param;
+                        }
                     }
                     return "";
                 },
@@ -1169,6 +1182,9 @@
                         var sel = this.ProjectDiaryTypes.find(x => x.id == param);
                         if (sel != undefined) {
                             return sel.value;
+                        }
+                        else {
+                            return param;
                         }
                     }
                     return "";
@@ -1179,6 +1195,9 @@
                         if (sel != undefined) {
                             return sel.value;
                         }
+                        else {
+                            return param;
+                        }
                     }
                     return "";
                 },
@@ -1187,6 +1206,9 @@
                         var sel = this.ResourceTypes.find(x => x.id == param);
                         if (sel != undefined) {
                             return sel.value;
+                        }
+                        else {
+                            return param;
                         }
                     }
                     return "";
@@ -1197,6 +1219,9 @@
                         if (sel != undefined) {
                             return sel.value;
                         }
+                        else {
+                            return param;
+                        }
                     }
                     return "";
                 },
@@ -1205,6 +1230,9 @@
                         var sel = this.RegionData.find(x => x.id == param);
                         if (sel != undefined) {
                             return sel.value;
+                        }
+                        else {
+                            return param;
                         }
                     }
                     return "";
@@ -1215,6 +1243,9 @@
                         if (sel != undefined) {
                             return sel.value;
                         }
+                        else {
+                            return param;
+                        }
                     }
                     return "";
                 },
@@ -1224,6 +1255,9 @@
                         var sel = this.Locations.find(x => x.id == param);
                         if (sel != undefined) {
                             return sel.value;
+                        }
+                        else {
+                            return param;
                         }
                     }
                     return "";

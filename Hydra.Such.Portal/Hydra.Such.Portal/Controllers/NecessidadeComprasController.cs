@@ -427,7 +427,7 @@ namespace Hydra.Such.Portal.Controllers
                             newdp.DataPPreçoFornecedor = pricesDate;
                             newdp.UtilizadorCriação = User.Identity.Name;
                             newdp.DataHoraCriação = DateTime.Now;
-                            newdp = DBShoppingNecessity.Create(newdp);
+                            
                             if (newdp == null)
                             {
                                 resultValidation.eReasonCode = 5;
@@ -440,6 +440,12 @@ namespace Hydra.Such.Portal.Controllers
                                 newdp.NºFornecedor = linhaAcordo.NoFornecedor;
                                 newdp.NomeFornecedor = linhaAcordo.NomeFornecedor;
                             }
+                            else
+                            {
+                                resultValidation.eReasonCode = 1;
+                                resultValidation.eMessage = "Verificar acordo de preços! Não existe linhas de acordo para o produto "+ lr.Código+ ", na data "+ expectedReceipDate + " a "+ pricesDate;
+                            }
+                            newdp = DBShoppingNecessity.Create(newdp);
                         }
                     }
                     else
