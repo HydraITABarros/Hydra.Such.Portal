@@ -300,7 +300,10 @@
                                             <div class="col-md-3 ">
                                                 <vaadin-date-picker id="dpDataPrestacaoServ" label="Data Prestação Serviços" on-value-changed="serviceDateChanged"></vaadin-date-picker>
                                             </div>
-                                            <div class="col-md-3 ">
+                                            <div class="col-md-4 ">
+                                                <vaadin-text-field id="txtDataPrestacaoServ" name="txtDataPrestacaoServ" label=" " value="[[_billingPeriod]]" disabled></vaadin-text-field>
+                                            </div>
+                                            <div class="col-md-4 ">
                                                 <vaadin-text-field id="txtValorAAutorizar" name="txtValorAAutorizar" label="Total a Autorizar" value="[[_totalToAuthorize]]" disabled></vaadin-text-field>
                                             </div>
                                         </div>
@@ -790,7 +793,17 @@
                         notify: true,
                         value: ""
                     },
+                    _customerRequestDate: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
                     _customerName: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    _billingPeriod: {
                         type: String,
                         notify: true,
                         value: ""
@@ -880,7 +893,9 @@
                             "commitmentNumber": this._commitmentNo,
                             "invoiceGroupDescription": this.$.txtDescGrupoFatura.value,
                             "customerRequestNo": this._customerRequestNo,
+                            "customerRequestDate": this._customerRequestDate,
                             "serviceDate": this.$.dpDataPrestacaoServ.value,
+                            "dataServPrestado": this.$.txtDataPrestacaoServ.value,
                             "authorizationTotalValue": this.$.txtValorAAutorizar.value,
                             "projMovements": this.selectedItems,
                             "projObs": this.$.IdObs.value
@@ -900,6 +915,7 @@
                             "commitmentNumber": this._commitmentNo,
                             "invoiceGroupDescription": this.$.txtDescGrupoFatura.value,
                             "customerRequestNo": this._customerRequestNo,
+                            "customerRequestDate": this._customerRequestDate,
                             "serviceDate": this.$.dpDataPrestacaoServ.value,
                             "authorizationTotalValue": this.$.txtValorAAutorizar.value,
                             "projMovements": this.selectedItems,
@@ -1037,6 +1053,7 @@
                         if (this.CommitmentDetails.eReasonCode == 1) {
                             this._commitmentNo = this.CommitmentDetails.value.commitmentNo;
                             this._customerRequestNo = this.CommitmentDetails.value.customerRequestNo;
+                            this._customerRequestDate = this.CommitmentDetails.value.customerRequestDate;
                             this._settedFromProjectOrContract = this.CommitmentDetails.value.settedFromProjectOrContract;
                         }
                         else {
@@ -1078,7 +1095,16 @@
                     catch (err) { }
                 },
                 serviceDateChanged: function (e) {
+                    //debugger;
                     var date = e.detail.value;
+                    if (date != "") {
+                        var monthNames = ['JANEIRO', 'FEVEREIRO', 'MARÇO', 'ABRIL', 'MAIO', 'JUNHO', 'JULHO', 'AGOSTO', 'SETEMBRO', 'OUTUBRO', 'NOVEMBRO', 'DEZEMBRO'];
+                        this._billingPeriod = monthNames[parseInt(date.split("-")[1]) - 1] + "/" + date.split("-")[0];
+                    }
+                    else {
+                        this._billingPeriod = "";
+                    }
+
                     if (date != "" && !this._settedFromProjectOrContract) {
                         this.$.get_commitment_ajax.body = JSON.stringify({ "projectNo": this._projectno, "serviceDeliveryDate": date });
                         this.$.get_commitment_ajax.generateRequest();

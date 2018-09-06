@@ -79,7 +79,6 @@ namespace Hydra.Such.Data.NAV
                     FunctionAreaCode20 = preInvoiceToCreate.FunctionalAreaCode,
                     ResponsabilityCenterCode20 = preInvoiceToCreate.ResponsabilityCenterCode,
                     Location_Code = preInvoiceToCreate.LocationCode,
-                    No = preInvoiceToCreate.Code,
                     No_Compromisso = preInvoiceToCreate.CommitmentNumber,
                     Observacoes = preInvoiceToCreate.Comments,
                     //Order_Date
