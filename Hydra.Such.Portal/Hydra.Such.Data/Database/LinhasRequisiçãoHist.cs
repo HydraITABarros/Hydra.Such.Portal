@@ -10,6 +10,7 @@ namespace Hydra.Such.Data.Database
         public int? Tipo { get; set; }
         public string Código { get; set; }
         public string Descrição { get; set; }
+        public string Descrição2 { get; set; }
         public string CódigoUnidadeMedida { get; set; }
         public string CódigoLocalização { get; set; }
         public bool? MercadoLocal { get; set; }
@@ -60,5 +61,8 @@ namespace Hydra.Such.Data.Database
         public string NºCliente { get; set; }
         public string Aprovadores { get; set; }
         public bool? Urgente { get; set; }
+        public string GrupoRegistoIvanegocio { get; set; }
+        public string GrupoRegistoIvaproduto { get; set; }
+        public decimal? PercentagemDesconto { get; set; }
     }
 }

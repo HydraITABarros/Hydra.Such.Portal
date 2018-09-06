@@ -245,6 +245,7 @@ namespace Hydra.Such.Portal.Services
                                         Type = line.Type,
                                         Code = line.Code,
                                         Description = line.Description,
+                                        Description2 = line.Description2,
                                         ProjectNo = line.ProjectNo,
                                         QuantityRequired = line.QuantityRequired,
                                         UnitCost = line.UnitCost,

@@ -63,7 +63,6 @@ namespace Hydra.Such.Data.Logic.ComprasML
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    ObjectToCreate.DataHoraCriação = DateTime.Now;
                     ctx.LinhasRequisiçãoHist.Add(ObjectToCreate);
                     ctx.SaveChanges();
                 }
