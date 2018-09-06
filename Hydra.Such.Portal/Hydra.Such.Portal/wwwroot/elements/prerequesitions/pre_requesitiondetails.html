@@ -445,7 +445,7 @@
                                     </div>
                                     <div class="row break_clear">
                                         <div class="col-md-3 " hidden >
-                                            <vaadin-text-field id="_CBPurchaseHeader" name="_CBPurchaseHeader" label="" value="{{data.openOrderNo}}" disabled></vaadin-text-field>
+                                            <vaadin-text-field id="_CBPurchaseHeader" name="_CBPurchaseHeader" label="" value="{{data.Nº Linha Encomenda }}" disabled></vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
                                             <vaadin-text-field id="EmployeeNo" name="EmployeeNo" label="Nº Funcionário" value="{{data.employeeNo}}" hidden></vaadin-text-field>
@@ -627,7 +627,7 @@
                                         <vaadin-text-field value="{{_CBItemsCDirect}}" id="_CBItemsCDirect" name="_CBItemsCDirect" label="Compra Direta" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                     </div>
                                     <div class="col-sm-2">
-                                        <such-selectbox id="_CBPurchaseLine" value="{{_CBPurchaseLine}}" label="Nº Linha Encomenda Aberto" on-value-changed="_setPurchaseLine"
+                                        <such-selectbox id="_CBPurchaseLine" value="{{_CBPurchaseLine}}" label="Nº Linha Enc. Aberto" on-value-changed="_setPurchaseLine"
                                                         items="[[CBPurchaseLine]]"
                                                         text-path="documentNO"
                                                         value-path="line_No"
@@ -688,7 +688,7 @@
                                         </such-selectbox>
                                     </div>
                                     <div class="col-lg-2">
-                                        <vaadin-text-field value="{{_MaintenanceOrderLineNo}}" id="_MaintenanceOrderLineNo" name="_MaintenanceOrderLineNo" label="Nº Linha Ordem Manutenção" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                        <vaadin-text-field value="{{_MaintenanceOrderLineNo}}" id="_MaintenanceOrderLineNo" name="_MaintenanceOrderLineNo" label="Nº Linha Ord. Manutenção" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                     </div>
                                     <div class="col-lg-2">
                                         <vaadin-combo-box items="[[CBVehicle]]" id="_VehicleLines" item-value-path="id" item-label-path="id" value="{{data.vehicle}}" label="Viatura">

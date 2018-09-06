@@ -129,9 +129,9 @@
         </style>
         <paper-toast id="ToastError" style="background-color: red" duration="4000" horizontalAlign="right"></paper-toast>
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
-        <iron-ajax url="/Compras/GestaoRequisicoes/GridRequestLineValues" id="ajax_getdata" auto last-response="{{data}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Compras/GestaoRequisicoes/CreateAndDeleteRequestLine" id="ajax_updatedata" last-response="{{data}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Compras/GestaoRequisicoes/GetApprovedRequisitions" id="ajax_getgrid" auto last-response="{{result}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/GestaoRequisicoes/GridRequestLineValues" id="ajax_getdata" auto last-response="{{data}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/GestaoRequisicoes/CreateAndDeleteRequestLine" id="ajax_updatedata" last-response="{{data}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/GestaoRequisicoes/GetApprovedRequisitions" id="ajax_getgrid" auto last-response="{{result}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Viaturas/GetList" id="grid_databound_ajax" last-response="{{vehicleresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Projetos/GetAllProjectDiary" id="grid_GetAllProject_ajax" last-response="{{projectresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetLocations" id="grid_Locations_ajax" last-response="{{locationsresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -149,7 +149,7 @@
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{LProjectFunctionalAreaCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{LProjectResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{LProjectRegionCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Compras/GestaoRequisicoes/GetRequisition" last-response="{{Requisition}}" on-response="_responsePlaceDataCollection" method="post" handle-as="json" id="requisition_datasource" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/GestaoRequisicoes/GetRequisition" last-response="{{Requisition}}" on-response="_responsePlaceDataCollection" method="post" handle-as="json" id="requisition_datasource" content-type="application/json"></iron-ajax>
 
 
         <div class="row">

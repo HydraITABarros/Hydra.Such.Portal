@@ -27,14 +27,14 @@
         <link rel="stylesheet" href="/css/main.css" />
 
         @*POPULATE GRID*@
-        <iron-ajax url="/Nutricao/CafetariasRefeitorios/GetCoffeeShops"
+        <iron-ajax url="/CafetariasRefeitorios/GetCoffeeShops"
                    last-response="{{result}}"
                    auto
                    method="post"
                    handle-as="json"
                    id="grid_databound"
                    content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Nutricao/CafetariasRefeitorios/DeleteCoffeeShop"
+        <iron-ajax url="/CafetariasRefeitorios/DeleteCoffeeShop"
                    last-response="{{deletedData}}"
                    method="post"
                    handle-as="json"
@@ -224,7 +224,7 @@
                 _rowSelected: function (item) {
                     if (item != null) {
                         var urlParams = "?productivityUnitNo=" + item.productivityUnitNo + "&type=" + item.type + "&code=" + item.code + "&explorationStartDate=" + item.startDateExploration;
-                        window.location.href = "/Nutricao/CafetariasRefeitorios/Detalhes/" + urlParams;
+                        window.location.href = "/CafetariasRefeitorios/Detalhes/" + urlParams;
                     }
                 },
                 _openToast: function (message) {
@@ -237,7 +237,7 @@
                 },
                 _create: function (item) {
                     if (item != null) {
-                        window.location.href = "/Nutricao/CafetariasRefeitorios/Detalhes/";
+                        window.location.href = "/CafetariasRefeitorios/Detalhes/";
                     }
                 },
                 _deleteCoffeeShop: function (data) {
@@ -252,7 +252,7 @@
                         if (this.deletedData.eReasonCode == 1) {
                             setTimeout(
                                 function () {
-                                    window.location.href = "/Nutricao/CafetariasRefeitorios";
+                                    window.location.href = "/CafetariasRefeitorios";
                                 }, 2500);
                         } else {
                             this._openToastError(this.deletedData.eMessage);
