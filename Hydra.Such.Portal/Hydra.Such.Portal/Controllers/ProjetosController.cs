@@ -589,16 +589,13 @@ namespace Hydra.Such.Portal.Controllers
             string projectNo = "";
             string dataReque = "";
             string codServiceCliente = "";
-            int codServiceGroup = 0;
+            string codServiceGroup = string.Empty;
             if (requestParams != null)
             {
                 projectNo = (requestParams["noproj"] != null) ? requestParams["noproj"].ToString() : "";
                 dataReque = (requestParams["data"] != null) ? requestParams["data"].ToString() : "";
                 codServiceCliente = (requestParams["codClienteServico"] != null) ? requestParams["codClienteServico"].ToString() : "";
-                if (requestParams["codGrupoServico"] != null)
-                {
-                    codServiceGroup = (requestParams["codGrupoServico"].ToString() != "") ? Convert.ToInt32(requestParams["codGrupoServico"].ToString()) : 0;
-                }
+                codServiceGroup = (requestParams["codGrupoServico"] != null) ? requestParams["codGrupoServico"].ToString() : ""; 
             }
            
             List<ProjectDiaryViewModel> dp = null;
@@ -1391,16 +1388,13 @@ namespace Hydra.Such.Portal.Controllers
             string projectNo = "";
             string dataReque = "";
             string codServiceCliente = "";
-            int codServiceGroup = 0;
+            string codServiceGroup = "";
             if (requestParams != null)
             {
                 projectNo = (requestParams["noproj"] != null) ? requestParams["noproj"].ToString() : "";
                 dataReque = (requestParams["data"] != null) ? requestParams["data"].ToString() : "";
                 codServiceCliente = (requestParams["codClienteServico"] != null) ? requestParams["codClienteServico"].ToString() : "";
-                if (requestParams["codGrupoServico"] != null)
-                {
-                    codServiceGroup = (requestParams["codGrupoServico"].ToString() != "") ? Convert.ToInt32(requestParams["codGrupoServico"].ToString()) : 0;
-                }
+                codServiceGroup = (requestParams["codGrupoServico"] != null) ? requestParams["codGrupoServico"].ToString() : "";
             }
 
 
@@ -1909,7 +1903,7 @@ namespace Hydra.Such.Portal.Controllers
                             authorizedProjMovement.CodAreaFuncional = x.FunctionalAreaCode;
                             authorizedProjMovement.CodCentroResponsabilidade = x.ResponsabilityCenterCode;
                             authorizedProjMovement.CodContrato = contract.NºDeContrato;
-                            authorizedProjMovement.CodGrupoServico = x.ServiceGroupCode.HasValue ? x.ServiceGroupCode.Value.ToString() : string.Empty;
+                            authorizedProjMovement.CodGrupoServico = x.ServiceGroupCode;
                             authorizedProjMovement.CodServCliente = x.ServiceClientCode;
                             authorizedProjMovement.DescServCliente = x.ServiceClientDescription;
                             authorizedProjMovement.NumGuiaResiduosGar = x.ResidueGuideNo;
@@ -2461,7 +2455,7 @@ namespace Hydra.Such.Portal.Controllers
 
             var projectsIds = authProjectMovements.Select(x => x.CodProjeto).Distinct();
             var billingGroups = authProjectMovements.Select(x => x.GrupoFactura).Distinct();
-
+            string projectDescription =string.Empty;
             //get all movements from authProjects
             List<SPInvoiceListViewModel> data = null;
             using (SuchDBContext ctx = new SuchDBContext())
@@ -2509,7 +2503,7 @@ namespace Hydra.Such.Portal.Controllers
                             InvoiceGroup = mpa.GrupoFactura,
                             DocumentNo = mpa.NumDocumento,
                             ResourceType = mpa.TipoRecurso,
-                            ServiceGroupCode = string.IsNullOrEmpty(mpa.CodGrupoServico) ? (int?)null : int.Parse(mpa.CodGrupoServico),
+                            ServiceGroupCode = mpa.CodGrupoServico,
                             ExternalGuideNo = mpa.NumGuiaExterna,
                             WasteGuideNo_GAR = mpa.NumGuiaResiduosGar,
 
@@ -2546,6 +2540,8 @@ namespace Hydra.Such.Portal.Controllers
                         projectsIds.Contains(x.ProjectNo) &&
                         billingGroups.Contains(x.InvoiceGroup.Value))
                     .ToList();
+                if (data != null && data.Count > 0)
+                    projectDescription = ctx.Projetos.FirstOrDefault(x => x.NºProjeto == data[0].ProjectNo)?.Descrição;
             }
             if (data != null)
             {
@@ -2558,9 +2554,6 @@ namespace Hydra.Such.Portal.Controllers
                 if (userDimensionsViewModel.Where(x => x.Dimension == (int)Dimensions.ResponsabilityCenter).Count() > 0)
                     data.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.ResponsabilityCenterCode));
 
-
-
-                                   
                 var groupedbyclient = data.GroupBy(x => new
                     {
                         x.InvoiceToClientNo,
@@ -2577,16 +2570,7 @@ namespace Hydra.Such.Portal.Controllers
                         ClientRequest = key.ClientRequest,
                         ClientVATReg = DBNAV2017Clients.GetClientVATByNo(key.InvoiceToClientNo, _config.NAVDatabaseName, _config.NAVCompanyName),
                         Items = items.ToList(),
-                    }
-                )
-                //.Select(x => new SPInvoiceListViewModel
-                //{
-                //    InvoiceToClientNo = x.Key.InvoiceToClientNo,
-                //    Date = x.Key.Date,
-                //    CommitmentNumber = x.Key.CommitmentNumber,
-                //    ClientRequest = x.Key.ClientRequest,
-                //    ClientVATReg = DBNAV2017Clients.GetClientVATByNo(x.Key.InvoiceToClientNo, _config.NAVDatabaseName, _config.NAVCompanyName),
-                //})
+                    })
                 .ToList();
                 
                 //Create Project if exists
@@ -2598,7 +2582,7 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         ProjectDetailsViewModel proj = new ProjectDetailsViewModel();
                         proj.ProjectNo = data[0].ProjectNo;
-                        proj.Description = data[0].Description;
+                        proj.Description = projectDescription;
                         proj.ClientNo = data[0].InvoiceToClientNo;
                         proj.RegionCode = data[0].RegionCode;
                         proj.ResponsabilityCenterCode = data[0].ResponsabilityCenterCode;
@@ -3665,11 +3649,10 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         foreach (var item in dp)
                         {
-
                             DiárioDeProjeto dpValidation = new DiárioDeProjeto();
                             if (!String.IsNullOrEmpty(codSGroupClient))
                             {
-                                item.CódGrupoServiço = Convert.ToInt32(codSGroupClient);
+                                item.CódGrupoServiço = codSGroupClient;
                             }
                             item.UtilizadorCriação = User.Identity.Name;
                             item.DataHoraCriação = DateTime.Now;
@@ -3680,7 +3663,6 @@ namespace Hydra.Such.Portal.Controllers
                                 result.eMessage = "Occorreu um erro ao obter os movimentos";
                             }
                         }
-
                     }
                     else
                     {
@@ -3966,11 +3948,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 Projetos proj = DBProjects.GetById(projectNo);
                 List<PriceServiceClientViewModel> dp = DBPriceServiceClient.ParseToViewModel(DBPriceServiceClient.GetAll()).Where(x => x.Client == proj.NºCliente && x.CodServClient == serviceCod).ToList();
-                int? sGroup = null;
-                if (serviceGroup != "" && serviceGroup != null)
-                {
-                    sGroup = Convert.ToInt32(serviceGroup);
-                }
+                
                 if (dp != null && dp.Count > 0)
                 {
                     List<ProjectDiaryViewModel> newRows = new List<ProjectDiaryViewModel>();
@@ -3982,7 +3960,7 @@ namespace Hydra.Such.Portal.Controllers
                         newRow.ProjectNo = projectNo;
                         newRow.InvoiceToClientNo = proj.NºCliente;
                         newRow.ServiceClientCode = serviceCod;
-                        newRow.ServiceGroupCode = sGroup;
+                        newRow.ServiceGroupCode = serviceGroup;
                         newRow.Type = 2;
                         newRow.Code = item.Resource;
                         newRow.Description = item.ResourceDescription;

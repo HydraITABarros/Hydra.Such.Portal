@@ -8,7 +8,7 @@ namespace Hydra.Such.Data.Extensions
 {
     public static class DBModelExtensions
     {
-        public static ProjectDiaryViewModel ParseToProjectDiary(this LinhasContratos x, string projectNo, string userName, string date, string customerServiceId, int serviceGroupId)
+        public static ProjectDiaryViewModel ParseToProjectDiary(this LinhasContratos x, string projectNo, string userName, string date, string customerServiceId, string serviceGroupId)
         {
             ProjectDiaryViewModel item = new ProjectDiaryViewModel();
             item.ProjectNo = projectNo;
@@ -38,7 +38,7 @@ namespace Hydra.Such.Data.Extensions
             return item;
         }
 
-        public static List<ProjectDiaryViewModel> ParseToViewModel(this List<LinhasContratos> items, string projectNo, string userName, string date, string customerServiceId, int serviceGroupId)
+        public static List<ProjectDiaryViewModel> ParseToViewModel(this List<LinhasContratos> items, string projectNo, string userName, string date, string customerServiceId, string serviceGroupId)
         {
             List<ProjectDiaryViewModel> projectDiary = new List<ProjectDiaryViewModel>();
             if (items != null)
