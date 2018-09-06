@@ -177,6 +177,8 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (cProject != null)
                 {
+                    DateTime servDate = DateTime.Now;
+                    string monthName = servDate.ToString("MMMM", System.Globalization.CultureInfo.CreateSpecificCulture("pt-PT"));
                     ProjectDetailsViewModel result = new ProjectDetailsViewModel()
                     {
                         ProjectNo = cProject.NºProjeto,
