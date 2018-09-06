@@ -50,6 +50,7 @@ namespace Hydra.Such.Data.ViewModel.Projects
         public bool? Billable { get; set; }
         public string ResidueGuideNo { get; set; }
         public string ExternalGuideNo { get; set; }
+        public string WasteGuideNo_GAR { get; set; }
         public string InvoiceToClientNo { get; set; }
         public string ClientName { get; set; }
         public string ClientVATReg { get; set; }
@@ -66,6 +67,7 @@ namespace Hydra.Such.Data.ViewModel.Projects
         public int? InvoiceGroup { get; set; }
         public string InvoiceGroupDescription { get; set; }
         public string CodTermosPagamento { get; set; }
+        public string CodMetodoPagamento { get; set; }
         //public string PedidoCliente { get; set; }
         public string SituacoesPendentes { get; set; }
         public int? Opcao { get; set; }

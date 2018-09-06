@@ -81,6 +81,12 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public decimal? Budget { get; set; }
         public bool? SentReqToAprove { get; set; }
         public string PreRequisitionNo { get; set; }
+        public bool? PricesIncludingVAT { get; set; }
+        public bool? InAdvance { get; set; }
+        public string ApprovalDateString { get; set; }
+
+        //EXPORTAR PARA EXCEL
+        public Object ColunasEXCEL { get; set; }
 
         public List<RequisitionLineViewModel> Lines { get; set; }
         public List<RequisitionChangeLog> ChangeLog { get; set; }

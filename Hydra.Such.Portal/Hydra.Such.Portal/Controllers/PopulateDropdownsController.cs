@@ -49,9 +49,47 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetServiceGroups([FromBody]string customerNo, bool allProjs)
+        {
+            var serviceGroups = DBClientServices.GetAllServiceGroup(customerNo, allProjs);
+            List<DDMessageString> result;
+            if (serviceGroups != null)
+            {
+                result = serviceGroups.Select(x => new DDMessageString()
+                {
+                    id = x.ServiceCode,
+                    value = x.ServiceDescription
+                }).ToList();
+            }
+            else
+                result = new List<DDMessageString>();
+
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetClientService([FromBody]string invoiceClientNo, bool allProjs)
         {
             List<ClientServicesViewModel> result = DBClientServices.GetAllClientService(invoiceClientNo, allProjs);
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetCustomerServices([FromBody]string customerNo, bool allProjs)
+        {
+            var customerServices = DBClientServices.GetAllClientService(customerNo, allProjs);
+            List<DDMessageString> result;
+            if (customerServices != null)
+            {
+                result = customerServices.Select(x => new DDMessageString()
+                {
+                    id = x.ServiceCode,
+                    value = x.ServiceDescription
+                }).ToList();
+            }
+            else
+                result = new List<DDMessageString>();
+
             return Json(result);
         }
 

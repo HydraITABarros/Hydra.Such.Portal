@@ -67,11 +67,10 @@ namespace Hydra.Such.Data.NAV
                     Debit_Memo = notaDebito,
                     Posting_No_Series = PostingNoSeries,
                     Codigo_Pedido = preInvoiceToCreate.ClientRequest,
-                    //CommentSpecified = true,
                     Currency_Code = preInvoiceToCreate.Currency,
                     Data_Serv_Prestado = preInvoiceToCreate.ServiceDate,
-                    //Data_Encomenda = preInvoiceToCreate.Date,
-                    //Data_EncomendaSpecified = true,
+                    Data_Encomenda = !string.IsNullOrEmpty(preInvoiceToCreate.Date) ? DateTime.Parse(preInvoiceToCreate.Date) : DateTime.MinValue,
+                    Data_EncomendaSpecified = !string.IsNullOrEmpty(preInvoiceToCreate.Date),
                     //Document_Date = preInvoiceToCreate.dat
                     //Due_Date
                     //Document_Date
@@ -82,9 +81,9 @@ namespace Hydra.Such.Data.NAV
                     Location_Code = preInvoiceToCreate.LocationCode,
                     No = preInvoiceToCreate.Code,
                     No_Compromisso = preInvoiceToCreate.CommitmentNumber,
-                    //Observacoes = preInvoiceToCreate
+                    Observacoes = preInvoiceToCreate.Comments,
                     //Order_Date
-                    //Payment_Method_Code = preInvoiceToCreate.CodMetodoPagamento,
+                    Payment_Method_Code = preInvoiceToCreate.CodMetodoPagamento,
                     Payment_Terms_Code = preInvoiceToCreate.CodTermosPagamento,
                     //Posting_Date
                 }
