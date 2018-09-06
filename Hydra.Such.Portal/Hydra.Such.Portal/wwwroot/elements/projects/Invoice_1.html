@@ -1019,7 +1019,7 @@
                         if (this.selectedItem && this.selectedItem.length > 0) {
                             var customerNo = this.selectedItem[0].codCliente;
                             var commitmentNo = this.selectedItem[0].numCompromisso;
-                            this.$.valCustomer_ajax.body = JSON.stringify({ "customerNo": customerNo, "commitmentNo": "" });
+                            this.$.valCustomer_ajax.body = JSON.stringify({ "customerNo": customerNo, "commitmentNo": commitmentNo });
                             this.$.valCustomer_ajax.generateRequest();
                             this.$.dlgInvoice.close();
                         }
