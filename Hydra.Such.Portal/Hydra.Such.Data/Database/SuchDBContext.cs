@@ -8080,6 +8080,10 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.ValorEstimado).HasColumnName("Valor Estimado");
 
                 entity.Property(e => e.Viatura).HasMaxLength(10);
+
+                entity.Property(e => e.PrecoIVAIncluido).HasColumnName("PrecoIVAIncluido");
+
+                entity.Property(e => e.Adiantamento).HasColumnName("Adiantamento");
             });
 
             modelBuilder.Entity<RequisiçõesClienteContrato>(entity =>

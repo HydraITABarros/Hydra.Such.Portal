@@ -1084,7 +1084,15 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         break;
                     case "Fechar Requisicao":
-                        //DBRequesitionHist.Create(item);
+                        RequisiçãoHist REQHist = DBRequest.ParseToRequisitionHist(item);
+                        if (REQHist != null)
+                        {
+                            REQHist.Estado = 7; //RequisitionStates.Archived;
+                            REQHist.UtilizadorModificação = User.Identity.Name;
+                            REQHist.DataHoraModificação = DateTime.Now;
+
+                            DBRequesitionHist.Create(REQHist);
+                        }
 
                         item.State = RequisitionStates.Archived;
                         item.UpdateUser = User.Identity.Name;

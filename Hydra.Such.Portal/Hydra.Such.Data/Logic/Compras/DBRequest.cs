@@ -212,6 +212,95 @@ namespace Hydra.Such.Data.Logic.Request
             }
         }
         #region Parse Utilities
+        public static RequisiçãoHist ParseToRequisitionHist(this RequisitionViewModel item)
+        {
+            if (item != null)
+            {
+                return new RequisiçãoHist()
+                {
+                    NºRequisição = item.RequisitionNo,
+                    Área = item.Area,
+                    //Estado = item.State,
+                    NºProjeto = item.ProjectNo,
+                    CódigoRegião = item.RegionCode,
+                    CódigoÁreaFuncional = item.FunctionalAreaCode,
+                    CódigoCentroResponsabilidade = item.CenterResponsibilityCode,
+                    CódigoLocalização = item.LocalCode,
+                    NºFuncionário = item.EmployeeNo,
+                    Viatura = item.Vehicle,
+                    //DataReceção = item.ReceivedDate,
+                    Urgente = item.Urgent,
+                    Amostra = item.Sample,
+                    Anexo = item.Attachment,
+                    Imobilizado = item.Immobilized,
+                    CompraADinheiro = item.BuyCash,
+                    CódigoLocalRecolha = item.LocalCollectionCode,
+                    CódigoLocalEntrega = item.LocalDeliveryCode,
+                    Observações = item.Comments,
+                    ModeloDeRequisição = item.RequestModel,
+                    UtilizadorCriação = item.CreateUser,
+                    //DataHoraCriação = item.CreateDate,
+                    UtilizadorModificação = item.UpdateUser,
+                    DataHoraModificação = item.UpdateDate,
+                    CabimentoOrçamental = item.RelatedSearches,
+                    Exclusivo = item.Exclusive,
+                    JáExecutado = item.AlreadyPerformed,
+                    Equipamento = item.Equipment,
+                    ReposiçãoDeStock = item.StockReplacement,
+                    Reclamação = item.Reclamation,
+                    NºRequisiçãoReclamada = item.RequestReclaimNo,
+                    ResponsávelCriação = item.ResponsibleCreation,
+                    ResponsávelAprovação = item.ResponsibleApproval,
+                    ResponsávelValidação = item.ResponsibleValidation,
+                    ResponsávelReceção = item.ResponsibleReception,
+                    DataAprovação = item.ApprovalDate,
+                    DataValidação = item.ValidationDate,
+                    UnidadeProdutivaAlimentação = item.UnitFoodProduction,
+                    RequisiçãoNutrição = item.RequestNutrition,
+                    RequisiçãoDetergentes = item.RequestforDetergents,
+                    NºProcedimentoCcp = item.ProcedureCcpNo,
+                    Aprovadores = item.Approvers,
+                    MercadoLocal = item.LocalMarket,
+                    RegiãoMercadoLocal = item.LocalMarketRegion,
+                    ReparaçãoComGarantia = item.RepairWithWarranty,
+                    Emm = item.Emm,
+                    //DataEntregaArmazém = item.WarehouseDeliveryDate,
+                    LocalDeRecolha = item.LocalCollection,
+                    MoradaRecolha = item.CollectionAddress,
+                    Morada2Recolha = item.Collection2Address,
+                    CódigoPostalRecolha = item.CollectionPostalCode,
+                    LocalidadeRecolha = item.CollectionLocality,
+                    ContatoRecolha = item.CollectionContact,
+                    ResponsávelReceçãoRecolha = item.CollectionResponsibleReception,
+                    LocalEntrega = item.LocalDelivery,
+                    //DeliveryAddress = item.DeliveryAddress,
+                    //Delivery2Address = item.Delivery2Address,
+                    //DeliveryPostalCode = item.DeliveryPostalCode,
+                    //LocalityDelivery = item.LocalityDelivery,
+                    //DeliveryContact = item.DeliveryContact,
+                    //ResponsibleReceptionReception = item.ResponsibleReceptionReception,
+                    //InvoiceNo = item.InvoiceNo,
+                    //LocalMarketDate = item.LocalMarketDate,
+                    //EstimatedValue = item.EstimatedValue,
+                    //MarketInquiryNo = item.MarketInquiryNo,
+                    //OrderNo = item.OrderNo,
+                    //RequisitionDate = item.RequisitionDate,
+                    //dimension = item.dimension,
+                    //Budget = item.Budget,
+                    //InAdvance = item.InAdvance,
+                    //PricesIncludingVAT = item.PricesIncludingVAT,
+                    //ApprovalDateString = item.ApprovalDateString,
+                    //aux = item.aux,
+                    //ColunasEXCEL = item.ColunasEXCEL,
+                    //PreRequisitionNo = item.PreRequisitionNo,
+                    //SentReqToAprove = item.SentReqToAprove
+                    //Lines = item.Lines.ToList().ParseToViewModel(),
+                    //ChangeLog = item.ChangeLog.ToList().ParseToViewModel()
+                };
+            }
+            return null;
+        }
+
         public static RequisitionViewModel ParseToViewModel(this Requisição item)
         {
             if (item != null)
