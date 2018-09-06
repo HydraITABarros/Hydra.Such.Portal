@@ -1783,10 +1783,20 @@ namespace Hydra.Such.Portal.Controllers
                 if (customerRequestNoValue != null)
                     customerRequestNo = (string)customerRequestNoValue.Value;
 
+                DateTime customerRequestDate = DateTime.MinValue;
+                JValue customerRequestDateValue = requestParams["customerRequestDate"] as JValue;
+                if (customerRequestDateValue != null)
+                    DateTime.TryParse((string)customerRequestDateValue.Value, out customerRequestDate);
+
                 DateTime serviceDate = DateTime.MinValue;
                 JValue serviceDateValue = requestParams["serviceDate"] as JValue;
                 if (serviceDateValue != null)
                     DateTime.TryParse((string)serviceDateValue.Value, out serviceDate);
+
+                string billingPeriod = string.Empty;
+                JValue billingPeriodValue = requestParams["dataServPrestado"] as JValue;
+                if (billingPeriodValue != null)
+                    billingPeriod = (string)billingPeriodValue.Value;
 
                 decimal authorizationTotal;
                 JValue authorizationTotalValue = requestParams["authorizationTotalValue"] as JValue;
@@ -1842,22 +1852,45 @@ namespace Hydra.Such.Portal.Controllers
                         authorizedProject.CodAreaFuncional = project.CódigoÁreaFuncional;
                         authorizedProject.CodCentroResponsabilidade = project.CódigoCentroResponsabilidade;
                         authorizedProject.PedidoCliente = customerRequestNo;
+                        if (customerRequestDate > DateTime.MinValue)
+                            authorizedProject.DataPedido = serviceDate;
                         authorizedProject.DataAutorizacao = DateTime.Now;
                         authorizedProject.Utilizador = User.Identity.Name;
                         authorizedProject.Observacoes = projectObs;
                         //proj.DataPedido Não definido
                         if (serviceDate > DateTime.MinValue)
                             authorizedProject.DataPrestacaoServico = serviceDate;
+                        authorizedProject.DataServPrestado = billingPeriod;
+
+                        //Atualizar apenas os campos relativos à autorização. Nos movimentos de projeto atualizar apenas os necessários à listagem/apresentação
                         List<MovimentosProjectoAutorizados> authorizedProjMovements = new List<MovimentosProjectoAutorizados>();
+                        var allUnchangedMovementsIds = projMovements.Select(x => x.LineNo).ToList();
+                        var unchangedProjectMovements = ctx.MovimentosDeProjeto.Where(x => allUnchangedMovementsIds.Contains(x.NºLinha)).ToList();
+
                         projMovements.ForEach(x =>
                         {
-                            x.AutorizatedInvoice = true;
-                            x.AutorizatedInvoiceDate = DateTime.Now.ToString("yyyy-MM-dd");
-                            x.AuthorizedBy = User.Identity.Name;
-                            x.InvoiceGroup = invoiceGroup;
-                            x.InvoiceGroupDescription = invoiceGroupDescription;
-                            x.UpdateDate = DateTime.Now;
-                            x.UpdateUser = User.Identity.Name;
+                            
+                            //x.AutorizatedInvoice = true;
+                            //x.AutorizatedInvoiceDate = DateTime.Now.ToString("yyyy-MM-dd");
+                            //x.AuthorizedBy = User.Identity.Name;
+                            //x.InvoiceGroup = invoiceGroup;
+                            //x.InvoiceGroupDescription = invoiceGroupDescription;
+                            //x.UpdateDate = DateTime.Now;
+                            //x.UpdateUser = User.Identity.Name;
+
+                            var projectMovementToUpdate = unchangedProjectMovements.First(y => y.NºLinha == x.LineNo);
+                            var index = unchangedProjectMovements.IndexOf(projectMovementToUpdate);
+
+                            projectMovementToUpdate.FaturaçãoAutorizada = true;
+                            projectMovementToUpdate.DataAutorizaçãoFaturação = DateTime.Now;
+                            projectMovementToUpdate.AutorizadoPor = User.Identity.Name;
+                            projectMovementToUpdate.GrupoFatura = invoiceGroup;
+                            projectMovementToUpdate.GrupoFaturaDescricao = invoiceGroupDescription;
+                            projectMovementToUpdate.DataHoraModificação = DateTime.Now;
+                            projectMovementToUpdate.UtilizadorModificação = User.Identity.Name;
+
+                            if (index != -1)
+                                unchangedProjectMovements[index] = projectMovementToUpdate;
 
                             //Create Movement Project Authorized ::RUI
                             MovimentosProjectoAutorizados authorizedProjMovement = new MovimentosProjectoAutorizados();
@@ -1904,7 +1937,7 @@ namespace Hydra.Such.Portal.Controllers
                         });
 
                         ctx.ProjectosAutorizados.Add(authorizedProject);
-                        ctx.MovimentosDeProjeto.UpdateRange(projMovements.ParseToDB());
+                        ctx.MovimentosDeProjeto.UpdateRange(unchangedProjectMovements);// projMovements.ParseToDB());
                         ctx.MovimentosProjectoAutorizados.AddRange(authorizedProjMovements);
 
                         try
@@ -2093,6 +2126,7 @@ namespace Hydra.Such.Portal.Controllers
             dynamic commitmentDetails = new JObject();
             string commitmentNo = string.Empty;
             string customerRequestNo = string.Empty;
+            string customerRequestDate = string.Empty;
             bool settedFromProjectOrContract = false;
             Projetos project;
             Contratos contract = null;
@@ -2128,11 +2162,15 @@ namespace Hydra.Such.Portal.Controllers
                     }
                 }
                 if (!string.IsNullOrEmpty(project.PedidoDoCliente))
+                {
                     customerRequestNo = project.PedidoDoCliente;
+                    customerRequestDate = project.DataDoPedido.HasValue ? project.DataDoPedido.Value.ToString("yyyy-MM-dd") : string.Empty;
+                }
                 else
                 {
                     if (!string.IsNullOrEmpty(contract?.NºRequisiçãoDoCliente))
                         customerRequestNo = contract?.NºRequisiçãoDoCliente;
+                        customerRequestDate = contract?.DataReceçãoRequisição?.ToString("yyyy-MM-dd");
                 }
 
                 if (string.IsNullOrEmpty(commitmentNo) || string.IsNullOrEmpty(customerRequestNo))
@@ -2150,14 +2188,21 @@ namespace Hydra.Such.Portal.Controllers
                         if (string.IsNullOrEmpty(commitmentNo))
                             commitmentNo = projectReq.FirstOrDefault(x => x.DataFimCompromisso >= serviceDeliveryDate && !string.IsNullOrEmpty(x.NºCompromisso))?.NºCompromisso;
                         if (string.IsNullOrEmpty(customerRequestNo))
-                            customerRequestNo = projectReq.FirstOrDefault(x => x.DataFimCompromisso >= serviceDeliveryDate && !string.IsNullOrEmpty(x.NºRequisiçãoCliente))?.NºRequisiçãoCliente;
-
+                        {
+                            var item = projectReq.FirstOrDefault(x => x.DataFimCompromisso >= serviceDeliveryDate && !string.IsNullOrEmpty(x.NºRequisiçãoCliente));
+                            customerRequestNo = item?.NºRequisiçãoCliente;
+                            customerRequestDate = item?.DataRequisição?.ToString("yyyy-MM-dd");
+                        }
                         if (string.IsNullOrEmpty(commitmentNo) || string.IsNullOrEmpty(customerRequestNo))
                         {
                             if (string.IsNullOrEmpty(commitmentNo))
                                 commitmentNo = billingGroupReq.FirstOrDefault(x => x.DataFimCompromisso >= serviceDeliveryDate && !string.IsNullOrEmpty(x.NºCompromisso))?.NºCompromisso;
                             if (string.IsNullOrEmpty(customerRequestNo))
-                                customerRequestNo = billingGroupReq.FirstOrDefault(x => x.DataFimCompromisso >= serviceDeliveryDate && !string.IsNullOrEmpty(x.NºRequisiçãoCliente))?.NºRequisiçãoCliente;
+                            {
+                                var item = billingGroupReq.FirstOrDefault(x => x.DataFimCompromisso >= serviceDeliveryDate && !string.IsNullOrEmpty(x.NºRequisiçãoCliente));
+                                customerRequestNo = item?.NºRequisiçãoCliente;
+                                customerRequestDate = item?.DataRequisição?.ToString("yyyy-MM-dd");
+                            }
                         }
                     }
                 }
@@ -2165,6 +2210,7 @@ namespace Hydra.Such.Portal.Controllers
             }
             commitmentDetails.commitmentNo = commitmentNo;
             commitmentDetails.customerRequestNo = customerRequestNo;
+            commitmentDetails.CustomerRequestDate = customerRequestDate;
             commitmentDetails.settedFromProjectOrContract = settedFromProjectOrContract;
             result.Value = commitmentDetails;
 

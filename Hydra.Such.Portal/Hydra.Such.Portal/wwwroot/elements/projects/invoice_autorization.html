@@ -790,6 +790,11 @@
                         notify: true,
                         value: ""
                     },
+                    _customerRequestDate: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
                     _customerName: {
                         type: String,
                         notify: true,
@@ -880,6 +885,7 @@
                             "commitmentNumber": this._commitmentNo,
                             "invoiceGroupDescription": this.$.txtDescGrupoFatura.value,
                             "customerRequestNo": this._customerRequestNo,
+                            "customerRequestDate": this._customerRequestDate,
                             "serviceDate": this.$.dpDataPrestacaoServ.value,
                             "authorizationTotalValue": this.$.txtValorAAutorizar.value,
                             "projMovements": this.selectedItems,
@@ -899,7 +905,8 @@
                             "projectNo": this._projectno,
                             "commitmentNumber": this._commitmentNo,
                             "invoiceGroupDescription": this.$.txtDescGrupoFatura.value,
-                            "customerRequestNo": this._customerRequestNo,
+                            "customerRequestNo": this._customerRequestNo,,
+                            "customerRequestDate": this._customerRequestDate,
                             "serviceDate": this.$.dpDataPrestacaoServ.value,
                             "authorizationTotalValue": this.$.txtValorAAutorizar.value,
                             "projMovements": this.selectedItems,
@@ -1037,6 +1044,7 @@
                         if (this.CommitmentDetails.eReasonCode == 1) {
                             this._commitmentNo = this.CommitmentDetails.value.commitmentNo;
                             this._customerRequestNo = this.CommitmentDetails.value.customerRequestNo;
+                            this._customerRequestDate = this.CommitmentDetails.value.customerRequestDate;
                             this._settedFromProjectOrContract = this.CommitmentDetails.value.settedFromProjectOrContract;
                         }
                         else {
