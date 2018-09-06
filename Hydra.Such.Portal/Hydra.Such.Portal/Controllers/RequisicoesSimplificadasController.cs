@@ -62,6 +62,7 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     ViewBag.Option = "";
                 }
+                ViewBag.UPermissions = UPerm;
                 return View();
             }
             else
