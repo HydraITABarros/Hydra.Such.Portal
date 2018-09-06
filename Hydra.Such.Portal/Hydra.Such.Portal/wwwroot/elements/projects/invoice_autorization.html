@@ -908,7 +908,7 @@
                             "projectNo": this._projectno,
                             "commitmentNumber": this._commitmentNo,
                             "invoiceGroupDescription": this.$.txtDescGrupoFatura.value,
-                            "customerRequestNo": this._customerRequestNo,,
+                            "customerRequestNo": this._customerRequestNo,
                             "customerRequestDate": this._customerRequestDate,
                             "serviceDate": this.$.dpDataPrestacaoServ.value,
                             "authorizationTotalValue": this.$.txtValorAAutorizar.value,
@@ -1089,7 +1089,7 @@
                     catch (err) { }
                 },
                 serviceDateChanged: function (e) {
-                    debugger;
+                    //debugger;
                     var date = e.detail.value;
                     if (date != "") {
                         var monthNames = ['JANEIRO', 'FEVEREIRO', 'MARÇO', 'ABRIL', 'MAIO', 'JUNHO', 'JULHO', 'AGOSTO', 'SETEMBRO', 'OUTUBRO', 'NOVEMBRO', 'DEZEMBRO'];
