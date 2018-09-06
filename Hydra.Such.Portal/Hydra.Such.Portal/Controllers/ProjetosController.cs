@@ -1849,17 +1849,16 @@ namespace Hydra.Such.Portal.Controllers
                         authorizedProject.CodCliente = project.NºCliente;
                         authorizedProject.CodContrato = contract?.NºDeContrato;
                         authorizedProject.CodTermosPagamento = contract != null ? contract.CódTermosPagamento : customer?.PaymentTermsCode;
-                        authorizedProject.CodMetodoPagamento = customer?.PaymentTermsCode;
+                        authorizedProject.CodMetodoPagamento = customer?.PaymentMethodCode;
                         authorizedProject.CodRegiao = customer.National ? project.CódigoRegião : customer.RegionCode;
                         authorizedProject.CodAreaFuncional = project.CódigoÁreaFuncional;
                         authorizedProject.CodCentroResponsabilidade = project.CódigoCentroResponsabilidade;
                         authorizedProject.PedidoCliente = customerRequestNo;
                         if (customerRequestDate > DateTime.MinValue)
-                            authorizedProject.DataPedido = serviceDate;
+                            authorizedProject.DataPedido = customerRequestDate;
                         authorizedProject.DataAutorizacao = DateTime.Now;
                         authorizedProject.Utilizador = User.Identity.Name;
                         authorizedProject.Observacoes = projectObs;
-                        //proj.DataPedido Não definido
                         if (serviceDate > DateTime.MinValue)
                             authorizedProject.DataPrestacaoServico = serviceDate;
                         authorizedProject.DataServPrestado = billingPeriod;
@@ -1920,7 +1919,7 @@ namespace Hydra.Such.Portal.Controllers
                             authorizedProjMovement.PrecoCusto = x.UnitCost;
                             authorizedProjMovement.CustoTotal = x.TotalCost;
                             authorizedProjMovement.CodCliente = x.InvoiceToClientNo;
-                            authorizedProjMovement.GrupoFactura = x.InvoiceGroup ?? 0;
+                            authorizedProjMovement.GrupoFactura = invoiceGroup;
 
                             if (x.OriginalDocument != null && x.DocumentNo != "")
                                 authorizedProjMovement.NumGuiaExterna = x.OriginalDocument;
@@ -2212,7 +2211,7 @@ namespace Hydra.Such.Portal.Controllers
             }
             commitmentDetails.commitmentNo = commitmentNo;
             commitmentDetails.customerRequestNo = customerRequestNo;
-            commitmentDetails.CustomerRequestDate = customerRequestDate;
+            commitmentDetails.customerRequestDate = customerRequestDate;
             commitmentDetails.settedFromProjectOrContract = settedFromProjectOrContract;
             result.Value = commitmentDetails;
 
@@ -2499,7 +2498,6 @@ namespace Hydra.Such.Portal.Controllers
                             MovementType = mpa.Tipo,
                             ConsumptionDate = mpa.DataConsumo.HasValue ? mpa.DataConsumo.Value.ToString("yyyy-MM-dd") : "",
                             ServiceClientCode = mpa.CodServCliente,
-                            //ServiceDate = ?,
                             Type = mpa.Tipo,
                             Code = mpa.Codigo,
                             Description = mpa.Descricao,
@@ -2547,74 +2545,6 @@ namespace Hydra.Such.Portal.Controllers
                     .Where(x => x.InvoiceGroup.HasValue &&
                         projectsIds.Contains(x.ProjectNo) &&
                         billingGroups.Contains(x.InvoiceGroup.Value))
-                    //.Select(x => new SPInvoiceListViewModel
-                    //{
-                    //    //##################################    Obter de projetos autorizados (campos editaveis)
-                    //    InvoiceToClientNo = authProjectMovements.FirstOrDefault(y => y.CodProjeto == x.CodProjeto && y.GrupoFactura == x.GrupoFactura).CodCliente,
-                    //    CodTermosPagamento = authProjectMovements.FirstOrDefault(y => y.CodProjeto == x.CodProjeto && y.GrupoFactura == x.GrupoFactura).CodTermosPagamento,
-                    //    ServiceDate = authProjectMovements.FirstOrDefault(y => y.CodProjeto == x.CodProjeto && y.GrupoFactura == x.GrupoFactura).DataPrestacaoServico,
-                    //    CommitmentNumber = authProjectMovements.FirstOrDefault(y => y.CodProjeto == x.CodProjeto && y.GrupoFactura == x.GrupoFactura).NumCompromisso,
-                    //    SituacoesPendentes = authProjectMovements.FirstOrDefault(y => y.CodProjeto == x.CodProjeto && y.GrupoFactura == x.GrupoFactura).SituacoesPendentes,
-                    //    //##################################    Obter de projetos autorizados (campos não editaveis)
-                    //    RegionCode = authProjectMovements.FirstOrDefault(y => y.CodProjeto == x.CodProjeto && y.GrupoFactura == x.GrupoFactura).CodRegiao,
-                    //    FunctionalAreaCode = authProjectMovements.FirstOrDefault(y => y.CodProjeto == x.CodProjeto && y.GrupoFactura == x.GrupoFactura).CodAreaFuncional,
-                    //    ResponsabilityCenterCode = authProjectMovements.FirstOrDefault(y => y.CodProjeto == x.CodProjeto && y.GrupoFactura == x.GrupoFactura).CodCentroResponsabilidade,
-                    //    InvoiceGroupDescription = authProjectMovements.FirstOrDefault(y => y.CodProjeto == x.CodProjeto && y.GrupoFactura == x.GrupoFactura).DescricaoGrupo,
-                    //    ClientRequest = authProjectMovements.FirstOrDefault(y => y.CodProjeto == x.CodProjeto && y.GrupoFactura == x.GrupoFactura).PedidoCliente,
-                    //    Opcao = authProjectMovements.FirstOrDefault(y => y.CodProjeto == x.CodProjeto && y.GrupoFactura == x.GrupoFactura).Opcao,
-                    //    AutorizatedInvoiceData = authProjectMovements.FirstOrDefault(y => y.CodProjeto == x.CodProjeto && y.GrupoFactura == x.GrupoFactura).DataAutorizacao,
-                    //    Billed = authProjectMovements.FirstOrDefault(y => y.CodProjeto == x.CodProjeto && y.GrupoFactura == x.GrupoFactura).Faturado,
-                    //    User = authProjectMovements.FirstOrDefault(y => y.CodProjeto == x.CodProjeto && y.GrupoFactura == x.GrupoFactura).Utilizador,
-                        
-                    //    //##################################    Obter de movimentos de projeto autorizados
-                    //    ProjectNo = x.CodProjeto,
-                    //    LineNo = x.NumMovimento,
-                    //    MovementType = x.Tipo,
-                    //    ConsumptionDate = x.DataConsumo.HasValue ? x.DataConsumo.Value.ToString("yyyy-MM-dd") : "",
-                    //    ServiceClientCode = x.CodServCliente,
-                    //    //ServiceDate = ?,
-                    //    Type = x.Tipo,
-                    //    Code = x.Codigo,
-                    //    Description = x.Descricao,
-                    //    MeasurementUnitCode = x.CodUnidadeMedida,
-                    //    Quantity = x.Quantidade,
-                    //    TotalCost = x.CustoTotal,
-                    //    TotalPrice = x.PrecoTotal,
-                    //    MealType = x.TipoRefeicao,
-                    //    InvoiceGroup = x.GrupoFactura,
-                    //    DocumentNo = x.NumDocumento,
-                    //    ResourceType = x.TipoRecurso,
-                    //    ServiceGroupCode = x.CodGrupoServico,
-                    //    ExternalGuideNo = x.NumGuiaExterna,
-                    //    //LocationCode = x.locationCode,
-                    //    //UnitPrice = x.PreçoUnitário,
-                    //    //UnitCost = x.CustoUnitário,
-
-                    //    //##################################    Se necessário, obter de movimentos de projeto
-                    //    //ProjectContabGroup = x.GrupoContabProjeto,
-                    //    //AdjustedDocument = x.DocumentoCorrigido,
-                    //    //AdjustedDocumentData = x.DataDocumentoCorrigido.HasValue ? x.DataDocumentoCorrigido.Value.ToString("yyyy-MM-dd") : "",
-                    //    //AdjustedPrice = x.AcertoDePreços,
-                    //    //Currency = x.Moeda,
-                    //    //Driver = x.Motorista,
-                    //    //EmployeeNo = x.NºFuncionário,
-                    //    //InternalRequest = x.RequisiçãoInterna,
-                    //    //OriginalDocument = x.DocumentoOriginal,
-                    //    //RequestNo = x.NºRequisição,
-                    //    //RequestLineNo = x.NºLinhaRequisição,
-                    //    //ResidueFinalDestinyCode = x.CódDestinoFinalResíduos,
-                    //    //ResidueGuideNo = x.NºGuiaResíduos,
-                    //    //TimesheetNo = x.NºFolhaHoras,
-                    //    //UnitValueToInvoice = x.ValorUnitárioAFaturar,
-                    //    //CreateDate = x.DataHoraCriação,
-                    //    //CreateUser = x.UtilizadorCriação,
-                    //    //Registered = x.Registado,
-                    //    //QuantityReturned = x.QuantidadeDevolvida,
-                    //    //AutorizatedInvoice = x.FaturaçãoAutorizada,
-                    //    //Billable = x.Faturável,
-                    //    //UpdateDate = x.DataHoraModificação,
-                    //    //UpdateUser = x.UtilizadorModificação,
-                    //})
                     .ToList();
             }
             if (data != null)
@@ -2628,22 +2558,36 @@ namespace Hydra.Such.Portal.Controllers
                 if (userDimensionsViewModel.Where(x => x.Dimension == (int)Dimensions.ResponsabilityCenter).Count() > 0)
                     data.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.ResponsabilityCenterCode));
 
-                List<SPInvoiceListViewModel> groupedbyclient = data.GroupBy(x => new
-                {
-                    x.InvoiceToClientNo,
-                    x.Date,
-                    x.CommitmentNumber,
-                    x.ClientRequest,
 
-                }).Select(x => new SPInvoiceListViewModel
-                {
-                    InvoiceToClientNo = x.Key.InvoiceToClientNo,
-                    Date = x.Key.Date,
-                    CommitmentNumber = x.Key.CommitmentNumber,
-                    ClientRequest = x.Key.ClientRequest,
-                    ClientVATReg = DBNAV2017Clients.GetClientVATByNo(x.Key.InvoiceToClientNo, _config.NAVDatabaseName, _config.NAVCompanyName),
-                    
-                }).ToList();
+
+                                   
+                var groupedbyclient = data.GroupBy(x => new
+                    {
+                        x.InvoiceToClientNo,
+                        x.Date,
+                        x.CommitmentNumber,
+                        x.ClientRequest
+                    },
+                    x => x,
+                    (key, items) => new AuthorizedCustomerBilling
+                    {
+                        InvoiceToClientNo = key.InvoiceToClientNo,
+                        Date = key.Date,
+                        CommitmentNumber = key.CommitmentNumber,
+                        ClientRequest = key.ClientRequest,
+                        ClientVATReg = DBNAV2017Clients.GetClientVATByNo(key.InvoiceToClientNo, _config.NAVDatabaseName, _config.NAVCompanyName),
+                        Items = items.ToList(),
+                    }
+                )
+                //.Select(x => new SPInvoiceListViewModel
+                //{
+                //    InvoiceToClientNo = x.Key.InvoiceToClientNo,
+                //    Date = x.Key.Date,
+                //    CommitmentNumber = x.Key.CommitmentNumber,
+                //    ClientRequest = x.Key.ClientRequest,
+                //    ClientVATReg = DBNAV2017Clients.GetClientVATByNo(x.Key.InvoiceToClientNo, _config.NAVDatabaseName, _config.NAVCompanyName),
+                //})
+                .ToList();
                 
                 //Create Project if exists
                 Task<WSCreateNAVProject.Read_Result> Project = WSProject.GetNavProject(data[0].ProjectNo, _configws);
@@ -2676,16 +2620,20 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (groupedbyclient != null)
                 {
-
                     foreach (var header in groupedbyclient)
                     {
                         try
                         {
+                            var invoiceHeader = header.Items.First();
+                            invoiceHeader.ClientVATReg = header.ClientVATReg;
+                            invoiceHeader.MovementType = Convert.ToInt32(OptionInvoice);
+                            invoiceHeader.CreateUser = User.Identity.Name;
+                            //header.MovementType = Convert.ToInt32(OptionInvoice);
+                            //header.CreateUser = User.Identity.Name;
 
-                            header.MovementType = Convert.ToInt32(OptionInvoice);
-                            header.CreateUser = User.Identity.Name;
                             execDetails = string.Format("Fat. Cliente: {0}, Data: {1}, Nº Compromisso: {2} - ", header.InvoiceToClientNo, header.Date, header.CommitmentNumber);
-                            Task<WSCreatePreInvoice.Create_Result> TCreatePreInvoice = WSPreInvoice.CreatePreInvoice(header, _configws);
+                            Task<WSCreatePreInvoice.Create_Result> TCreatePreInvoice = WSPreInvoice.CreatePreInvoice(invoiceHeader, _configws);
+                            //Task<WSCreatePreInvoice.Create_Result> TCreatePreInvoice = WSPreInvoice.CreatePreInvoice(header, _configws);
                             TCreatePreInvoice.Wait();
 
                             if (TCreatePreInvoice.IsCompletedSuccessfully)
@@ -2695,21 +2643,22 @@ namespace Hydra.Such.Portal.Controllers
 
                                 try
                                 {
-                                    List<SPInvoiceListViewModel> linesList = new List<SPInvoiceListViewModel>();
-                                    foreach (var line in data)
-                                    {
-                                        if (line.InvoiceToClientNo == header.InvoiceToClientNo && line.Date == header.Date && line.CommitmentNumber == header.CommitmentNumber && line.ClientRequest == header.ClientRequest)
-                                        {
-                                            line.DocumentNo = headerNo;
-                                            linesList.Add(line);
-                                        }
-                                    }
+                                    //List<SPInvoiceListViewModel> linesList = new List<SPInvoiceListViewModel>();
+                                    //foreach (var line in data)
+                                    //{
+                                    //    if (line.InvoiceToClientNo == header.InvoiceToClientNo && line.Date == header.Date && line.CommitmentNumber == header.CommitmentNumber && line.ClientRequest == header.ClientRequest)
+                                    //    {
+                                    //        line.DocumentNo = headerNo;
+                                    //        linesList.Add(line);
+                                    //    }
+                                    //}
+                                    header.Items.ForEach(x => x.DocumentNo = headerNo);
 
                                     List<NAVResourcesViewModel> resourceslines = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "");
                                     List<WasteRateViewModel> wasteRates = DBWasteRate.ParseToViewModel(DBWasteRate.GetAll());
 
                                     //recursos com taxa residuo
-                                    var selectedResources = linesList.Where(x => x.Type == 2).Select(x => x.Code).Distinct().ToList();
+                                    var selectedResources = header.Items.Where(x => x.Type == 2).Select(x => x.Code).Distinct().ToList();
                                     var selectedWasteResources = resourceslines.Where(x => selectedResources.Contains(x.Code)).ToList();
                                     
                                     foreach (var item in selectedWasteResources)
@@ -2717,7 +2666,7 @@ namespace Hydra.Such.Portal.Controllers
                                         var wasteFamilyResources = wasteRates.Where(x => x.FamiliaRecurso == item.ResourceGroup).ToList();
                                         wasteFamilyResources.ForEach(x =>
                                         {
-                                            decimal? quantity = linesList.Where(y => y.Type == 2 && y.Code == item.Code).Sum(y => y.Quantity);
+                                            decimal? quantity = header.Items.Where(y => y.Type == 2 && y.Code == item.Code).Sum(y => y.Quantity);
                                             var resource = resourceslines.Where(y => y.Code == x.Recurso && y.WasteRate == 1).FirstOrDefault();
                                             if (resource != null)
                                             {
@@ -2727,11 +2676,11 @@ namespace Hydra.Such.Portal.Controllers
                                                 wasteLineToAdd.Code = resource.Code;
                                                 wasteLineToAdd.Description = resource.Name;
                                                 wasteLineToAdd.UnitPrice = resource.UnitPrice;
-                                                linesList.Add(wasteLineToAdd);
+                                                header.Items.Add(wasteLineToAdd);
                                             }
                                         });
                                     }
-                                    Task<WSCreatePreInvoiceLine.CreateMultiple_Result> TCreatePreInvoiceLine = WSPreInvoiceLine.CreatePreInvoiceLineListProject(linesList, headerNo, OptionInvoice, _configws);
+                                    Task<WSCreatePreInvoiceLine.CreateMultiple_Result> TCreatePreInvoiceLine = WSPreInvoiceLine.CreatePreInvoiceLineListProject(header.Items, headerNo, OptionInvoice, _configws);
                                     TCreatePreInvoiceLine.Wait();
 
                                     if (TCreatePreInvoiceLine.IsCompletedSuccessfully)
@@ -2740,8 +2689,8 @@ namespace Hydra.Such.Portal.Controllers
                                         //update to Invoiced = true
                                         using (SuchDBContext ctx = new SuchDBContext())
                                         {
-                                            var projectNo = linesList.Select(x => x.ProjectNo).First();
-                                            var invoiceGroup = linesList.Select(x => x.InvoiceGroup).First();
+                                            var projectNo = header.Items.Select(x => x.ProjectNo).First();
+                                            var invoiceGroup = header.Items.Select(x => x.InvoiceGroup).First();
 
                                             var authorizedProjects = ctx.ProjectosAutorizados
                                                 .Where(x => x.CodProjeto == projectNo && x.GrupoFactura == invoiceGroup)

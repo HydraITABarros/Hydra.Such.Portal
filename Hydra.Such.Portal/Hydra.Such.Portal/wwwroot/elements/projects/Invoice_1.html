@@ -1087,6 +1087,7 @@
                         else
                             this.openToastError(this.CreateInvoiceResponse.eMessage);
                     }
+                    this.selectedItems = [];
                     this.$.page_databound_ajax.generateRequest();
                     this.$.projectInvoiceAutorization.clearCache();
                 },
