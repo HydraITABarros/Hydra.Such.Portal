@@ -301,7 +301,7 @@
                                                 <vaadin-date-picker id="dpDataPrestacaoServ" label="Data Prestação Serviços" on-value-changed="serviceDateChanged"></vaadin-date-picker>
                                             </div>
                                             <div class="col-md-4 ">
-                                                <vaadin-text-field id="txtDataPrestacaoServ" name="txtDataPrestacaoServ" label=" " value="[[_customerRequestDate]]" disabled></vaadin-text-field>
+                                                <vaadin-text-field id="txtDataPrestacaoServ" name="txtDataPrestacaoServ" label=" " value="[[_billingPeriod]]" disabled></vaadin-text-field>
                                             </div>
                                             <div class="col-md-4 ">
                                                 <vaadin-text-field id="txtValorAAutorizar" name="txtValorAAutorizar" label="Total a Autorizar" value="[[_totalToAuthorize]]" disabled></vaadin-text-field>
@@ -803,6 +803,11 @@
                         notify: true,
                         value: ""
                     },
+                    _billingPeriod: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
                     ddCGTOM_Type: {
                         type: Number,
                         notify: true,
@@ -1093,10 +1098,10 @@
                     var date = e.detail.value;
                     if (date != "") {
                         var monthNames = ['JANEIRO', 'FEVEREIRO', 'MARÇO', 'ABRIL', 'MAIO', 'JUNHO', 'JULHO', 'AGOSTO', 'SETEMBRO', 'OUTUBRO', 'NOVEMBRO', 'DEZEMBRO'];
-                        this._customerRequestDate = monthNames[parseInt(date.split("-")[1]) - 1] + "/" + date.split("-")[0];
+                        this._billingPeriod = monthNames[parseInt(date.split("-")[1]) - 1] + "/" + date.split("-")[0];
                     }
                     else {
-                        this._customerRequestDate = "";
+                        this._billingPeriod = "";
                     }
 
                     if (date != "" && !this._settedFromProjectOrContract) {
