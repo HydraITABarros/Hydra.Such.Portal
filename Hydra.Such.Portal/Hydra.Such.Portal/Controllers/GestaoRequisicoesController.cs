@@ -1084,29 +1084,88 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         break;
                     case "Fechar Requisicao":
-                        RequisiçãoHist REQHist = DBRequest.ParseToRequisitionHist(item);
+                        bool ok = true;
+                        RequisiçãoHist REQHist = DBRequest.TransferToRequisitionHist(item);
                         if (REQHist != null)
                         {
-                            REQHist.Estado = 7; //RequisitionStates.Archived;
+                            REQHist.Estado = (int)RequisitionStates.Archived;
                             REQHist.UtilizadorModificação = User.Identity.Name;
                             REQHist.DataHoraModificação = DateTime.Now;
 
-                            DBRequesitionHist.Create(REQHist);
+                            if (DBRequesitionHist.Create(REQHist) != null)
+                            {
+                                List<LinhasRequisiçãoHist> REQLinhasHist = DBRequest.TransferToRequisitionLinesHist(item.Lines);
+                                if (REQLinhasHist.Count > 0)
+                                {
+                                    REQLinhasHist.ForEach(Linha =>
+                                    {
+                                        Linha.UtilizadorModificação = User.Identity.Name;
+                                        Linha.DataHoraModificação = DateTime.Now;
+                                        if (DBRequesitionLinesHist.Create(Linha) == null)
+                                        {
+                                            ok = false;
+                                            item.eReasonCode = 14;
+                                            item.eMessage = "Ocorreu Um erro ao fechar na criação da linha no Histórico";
+                                        }
+                                    });
+                                }
+
+                                if (ok == true)
+                                {
+                                    item.Lines.ForEach(Linha =>
+                                    {
+                                        if (DBRequestLine.Delete(Linha.ParseToDB()) == false)
+                                        {
+                                            ok = false;
+                                            item.eReasonCode = 15;
+                                            item.eMessage = "Ocorreu Um erro ao fechar ao Eliminar linha.";
+                                        }
+                                    });
+
+                                    if (ok == true)
+                                    {
+                                        if (DBRequest.Delete(item.ParseToDB()) == false)
+                                        {
+                                            ok = false;
+                                            item.eReasonCode = 16;
+                                            item.eMessage = "Ocorreu Um erro ao fechar na Eliminação da Requisição";
+                                        }
+                                        else
+                                        {
+                                            item.eReasonCode = 1;
+                                            item.eMessage = "Requisição foi fechada";
+                                        }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                item.eReasonCode = 17;
+                                item.eMessage = "Ocorreu Um erro ao fechar ao criar Requisição Histórico.";
+                            }
+                        }
+                        else
+                        {
+                            item.eReasonCode = 18;
+                            item.eMessage = "Ocorreu Um erro ao fechar na transferência de dados para Histórico.";
                         }
 
-                        item.State = RequisitionStates.Archived;
-                        item.UpdateUser = User.Identity.Name;
-                        item.UpdateDate = DateTime.Now;
-                        RequisitionViewModel reqArchived = DBRequest.Update(item.ParseToDB(), false, true).ParseToViewModel();
-                        if (reqArchived == null)
-                        {
-                            item.eReasonCode = 14;
-                            item.eMessage = "Ocorreu Um erro ao fechar";
-                        }
-                        if (item.eReasonCode == 1)
-                        {
-                            item.eMessage = "Requisição foi fechada";
-                        }
+                        //CODIGO ORIGINAL
+                        //item.State = RequisitionStates.Archived;
+                        //item.UpdateUser = User.Identity.Name;
+                        //item.UpdateDate = DateTime.Now;
+                        //RequisitionViewModel reqArchived = DBRequest.Update(item.ParseToDB(), false, true).ParseToViewModel();
+                        //if (reqArchived == null)
+                        //{
+                        //    item.eReasonCode = 14;
+                        //    item.eMessage = "Ocorreu Um erro ao fechar";
+                        //}
+                        //if (item.eReasonCode == 1)
+                        //{
+                        //    item.eMessage = "Requisição foi fechada";
+                        //}
+                        //FIM
+
                         break;
                     default:
                         item.eReasonCode = 10;
