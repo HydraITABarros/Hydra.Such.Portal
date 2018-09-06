@@ -73,5 +73,7 @@ namespace Hydra.Such.Data.Database
         public string NºEncomenda { get; set; }
         public bool? Orçamento { get; set; }
         public decimal? ValorEstimado { get; set; }
+        public bool? PrecoIVAIncluido { get; set; }
+        public bool? Adiantamento { get; set; }
     }
 }

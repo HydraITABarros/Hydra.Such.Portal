@@ -122,7 +122,6 @@ namespace Hydra.Such.Data.Logic
                         var item = new NAVProductsViewModel();
                         item.Code = (string)temp.No_;
                         item.Name = (string)temp.Description;
-                        item.Name2 = (string)temp.Description2;
                         item.MeasureUnit = (string)temp.Base_Unit_of_Measure;
                         item.ItemCategoryCode = (string)temp.Item_Category_Code;
                         item.ProductGroupCode = (string)temp.Product_Group_Code;
