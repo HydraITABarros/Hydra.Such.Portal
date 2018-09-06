@@ -19,7 +19,7 @@ namespace Hydra.Such.Data.Database
         public string CodAreaFuncional { get; set; }
         public string CodCentroResponsabilidade { get; set; }
         public string CodContrato { get; set; }
-        public int? CodGrupoServico { get; set; }
+        public string CodGrupoServico { get; set; }
         public string CodServCliente { get; set; }
         public string DescServCliente { get; set; }
         public string NumGuiaResiduosGar { get; set; }

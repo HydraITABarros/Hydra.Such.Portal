@@ -1297,7 +1297,7 @@ namespace Hydra.Such.Portal.Controllers
                                 CódServiçoCliente = newdp.CódServiçoCliente,
                                 UtilizadorCriação = User.Identity.Name,
                                 DataHoraCriação = DateTime.Now,
-                                FaturaçãoAutorizada = false
+                                FaturaçãoAutorizada = false,
                             };
 
                             DBProjectMovements.Create(ProjectMovement);
@@ -1642,7 +1642,7 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     var projectContract = DBContracts.GetByIdLastVersion(project.NºContrato);
 
-                    List<ProjectMovementViewModel> projectMovements = GetProjectMovements(projectNo, billable);
+                    List<ProjectMovementViewModel> projectMovements = GetProjectMovements(projectNo, project.NºCliente, billable);
 
                     if (project.Estado.HasValue && (project.Estado == 3 || project.Estado == 4))
                     {
@@ -1672,7 +1672,7 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
         
-        private List<ProjectMovementViewModel> GetProjectMovements(string projectNo, bool? billable)
+        private List<ProjectMovementViewModel> GetProjectMovements(string projectNo, string customerNo, bool? billable)
         {
             List<ProjectMovementViewModel> projectMovements = DBProjectMovements.GetProjectMovementsFor(projectNo, billable)
                         .ParseToViewModel(_config.NAVDatabaseName, _config.NAVCompanyName)
@@ -1680,19 +1680,23 @@ namespace Hydra.Such.Portal.Controllers
 
             if (projectMovements.Count > 0)
             {
-                var userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
-                foreach (var lst in projectMovements)
+                List<ClientServicesViewModel> customerServices = string.IsNullOrEmpty(customerNo) ? new List<ClientServicesViewModel>() : DBClientServices.GetAllClientService(customerNo, false);
+                
+                foreach (var mov in projectMovements)
                 {
-                    if (lst.MovementType == 3)
+                    if (mov.MovementType == 3)
                     {
-                        lst.Quantity = Math.Abs((decimal)lst.Quantity) * (-1);
+                        mov.Quantity = Math.Abs((decimal)mov.Quantity) * (-1);
                     }
 
-                    if (!String.IsNullOrEmpty(lst.Currency))
+                    if (!String.IsNullOrEmpty(mov.Currency))
                     {
-                        lst.UnitPrice = lst.UnitValueToInvoice;
+                        mov.UnitPrice = mov.UnitValueToInvoice;
                     }
+                    if (!string.IsNullOrEmpty(mov.ServiceClientCode))
+                        mov.ServiceClientDescription = customerServices.Where(x => x.ServiceCode == mov.ServiceClientCode).Select(x => x.ServiceDescription).FirstOrDefault();
                 }
+                var userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
                 List<UserDimensionsViewModel> userDimensionsViewModel = userDimensions.ParseToViewModel();
                 if (userDimensionsViewModel.Where(x => x.Dimension == (int)Dimensions.Region).Count() > 0)
                     projectMovements.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.RegionCode));
@@ -1709,7 +1713,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             string projectNo = requestParams["projectNo"].ToString();
 
-            List<ProjectMovementViewModel> projectMovements = GetProjectMovements(projectNo, null);
+            List<ProjectMovementViewModel> projectMovements = GetProjectMovements(projectNo, null, null);
             //prevent errors
             if (projectMovements == null)
                 projectMovements = new List<ProjectMovementViewModel>();
@@ -1854,6 +1858,8 @@ namespace Hydra.Such.Portal.Controllers
                             x.AuthorizedBy = User.Identity.Name;
                             x.InvoiceGroup = invoiceGroup;
                             x.InvoiceGroupDescription = invoiceGroupDescription;
+                            x.UpdateDate = DateTime.Now;
+                            x.UpdateUser = User.Identity.Name;
 
                             //Create Movement Project Authorized ::RUI
                             MovimentosProjectoAutorizados authorizedProjMovement = new MovimentosProjectoAutorizados();
@@ -1871,7 +1877,7 @@ namespace Hydra.Such.Portal.Controllers
                             authorizedProjMovement.CodAreaFuncional = x.FunctionalAreaCode;
                             authorizedProjMovement.CodCentroResponsabilidade = x.ResponsabilityCenterCode;
                             authorizedProjMovement.CodContrato = contract.NºDeContrato;
-                            authorizedProjMovement.CodGrupoServico = x.ServiceGroupCode;
+                            authorizedProjMovement.CodGrupoServico = x.ServiceGroupCode.HasValue ? x.ServiceGroupCode.Value.ToString() : string.Empty;
                             authorizedProjMovement.CodServCliente = x.ServiceClientCode;
                             authorizedProjMovement.DescServCliente = x.ServiceClientDescription;
                             authorizedProjMovement.NumGuiaResiduosGar = x.ResidueGuideNo;
@@ -2424,6 +2430,7 @@ namespace Hydra.Such.Portal.Controllers
                             //##################################    Obter de projetos autorizados (campos editaveis)
                             InvoiceToClientNo = authProjectMovements.FirstOrDefault(y => y.CodProjeto == mpa.CodProjeto && y.GrupoFactura == mpa.GrupoFactura).CodCliente,
                             CodTermosPagamento = authProjectMovements.FirstOrDefault(y => y.CodProjeto == mpa.CodProjeto && y.GrupoFactura == mpa.GrupoFactura).CodTermosPagamento,
+                            CodMetodoPagamento = authProjectMovements.FirstOrDefault(y => y.CodProjeto == mpa.CodProjeto && y.GrupoFactura == mpa.GrupoFactura).CodMetodoPagamento,
                             ServiceDate = authProjectMovements.FirstOrDefault(y => y.CodProjeto == mpa.CodProjeto && y.GrupoFactura == mpa.GrupoFactura).DataPrestacaoServico,
                             CommitmentNumber = authProjectMovements.FirstOrDefault(y => y.CodProjeto == mpa.CodProjeto && y.GrupoFactura == mpa.GrupoFactura).NumCompromisso,
                             SituacoesPendentes = authProjectMovements.FirstOrDefault(y => y.CodProjeto == mpa.CodProjeto && y.GrupoFactura == mpa.GrupoFactura).SituacoesPendentes,
@@ -2439,7 +2446,7 @@ namespace Hydra.Such.Portal.Controllers
                             AutorizatedInvoiceData = authProjectMovements.FirstOrDefault(y => y.CodProjeto == mpa.CodProjeto && y.GrupoFactura == mpa.GrupoFactura).DataAutorizacao,
                             Billed = authProjectMovements.FirstOrDefault(y => y.CodProjeto == mpa.CodProjeto && y.GrupoFactura == mpa.GrupoFactura).Faturado,
                             User = authProjectMovements.FirstOrDefault(y => y.CodProjeto == mpa.CodProjeto && y.GrupoFactura == mpa.GrupoFactura).Utilizador,
-                            
+
                             //##################################    Obter de movimentos de projeto autorizados
                             ProjectNo = mpa.CodProjeto,
                             LineNo = mpa.NumMovimento,
@@ -2458,13 +2465,14 @@ namespace Hydra.Such.Portal.Controllers
                             InvoiceGroup = mpa.GrupoFactura,
                             DocumentNo = mpa.NumDocumento,
                             ResourceType = mpa.TipoRecurso,
-                            ServiceGroupCode = mpa.CodGrupoServico,
+                            ServiceGroupCode = string.IsNullOrEmpty(mpa.CodGrupoServico) ? (int?)null : int.Parse(mpa.CodGrupoServico),
                             ExternalGuideNo = mpa.NumGuiaExterna,
-                            //LocationCode = mp.locationCode,
-                            //UnitPrice = mpa.PreçoUnitário,
-                            //UnitCost = mpa.CustoUnitário,
+                            WasteGuideNo_GAR = mpa.NumGuiaResiduosGar,
 
                             //##################################    Se necessário, obter de movimentos de projeto
+                            UnitPrice = mp.PreçoUnitário,
+                            UnitCost = mp.CustoUnitário,
+                            LocationCode = mp.CódLocalização,
                             ProjectContabGroup = mp.GrupoContabProjeto,
                             AdjustedDocument = mp.DocumentoCorrigido,
                             AdjustedDocumentData = mp.DataDocumentoCorrigido.HasValue ? mp.DataDocumentoCorrigido.Value.ToString("yyyy-MM-dd") : "",
@@ -2642,11 +2650,12 @@ namespace Hydra.Such.Portal.Controllers
                                 try
                                 {
                                     List<SPInvoiceListViewModel> linesList = new List<SPInvoiceListViewModel>();
-                                    foreach (var lines in data)
+                                    foreach (var line in data)
                                     {
-                                        if (lines.InvoiceToClientNo == header.InvoiceToClientNo && lines.Date == header.Date && lines.CommitmentNumber == header.CommitmentNumber && lines.ClientRequest == header.ClientRequest)
+                                        if (line.InvoiceToClientNo == header.InvoiceToClientNo && line.Date == header.Date && line.CommitmentNumber == header.CommitmentNumber && line.ClientRequest == header.ClientRequest)
                                         {
-                                            linesList.Add(lines);
+                                            line.DocumentNo = headerNo;
+                                            linesList.Add(line);
                                         }
                                     }
 

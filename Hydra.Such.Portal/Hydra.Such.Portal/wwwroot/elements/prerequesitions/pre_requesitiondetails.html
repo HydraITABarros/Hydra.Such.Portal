@@ -147,7 +147,7 @@
         <iron-ajax url="/PopulateDropdowns/GetProjectNavList" last-response="{{CBJobNo}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetNAVVendorComboGrid" last-response="{{CBVendor}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetPlaces" last-response="{{CBLocal}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetProductsForCurrentUser" last-response="{{Products}}" id="filteredProducts_ajax" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProductsPreRequisition" last-response="{{Products}}" id="filteredProducts_ajax" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <!--<iron-ajax url="/PopulateDropdowns/GetAllProductsComprasPortal" last-response="{{Products}}" id="filteredProducts_ajax" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
         <!--<iron-ajax url="/PopulateDropdowns/GetProductsForCurrentUser" last-response="{{CBItems}}" id="filteredProducts_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
         <iron-ajax url="/PopulateDropdowns/GetLocations" last-response="{{CBLocations}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -444,10 +444,9 @@
                                         </div>
                                     </div>
                                     <div class="row break_clear">
-                                        <div class="col-md-3 " hidden>
+                                        <div class="col-md-3 " hidden >
                                             <vaadin-text-field id="_CBPurchaseHeader" name="_CBPurchaseHeader" label="" value="{{data.openOrderNo}}" disabled></vaadin-text-field>
                                         </div>
-
                                         <div class="col-md-3 ">
                                             <vaadin-text-field id="EmployeeNo" name="EmployeeNo" label="Nº Funcionário" value="{{data.employeeNo}}" hidden></vaadin-text-field>
                                         </div>
@@ -935,8 +934,8 @@
                                     </vaadin-grid-column>
                                     <vaadin-grid-column width="200px" resizable>
                                         <template class="header">
-                                            <vaadin-grid-sorter path="openOrderLineNo">Nº Linha Ordem Manutenção</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="openOrderLineNo" />
+                                            <vaadin-grid-sorter path="maintenanceOrderLineNo">Nº Linha Ordem Manutenção</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="maintenanceOrderLineNo" />
                                         </template>
                                         <template>
                                             <template is="dom-if" if="{{ item.selected }}">
@@ -1062,27 +1061,27 @@
                                         </template>
                                     </vaadin-grid-column>
                                     <!--<vaadin-grid-column width="200px" resizable>
-                                    <template class="header">
-                                        <vaadin-grid-sorter path="openOrderNo">Nº Encomenda Aberto</vaadin-grid-sorter>
-                                        <vaadin-grid-filter path="openOrderNo" />
-                                    </template>
-                                    <template>
-                                        <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-combo-box items="[[GridCBPurchaseHeader]]" id="_CBGridPurchaseHeader" item-value-path="id" item-label-path="id" value="{{item.openOrderNo}}" on-change="_PopulatePurchaseLinesGrid" disabled="{{ !_permissions.update }}">
-                                                <template>
-                                                    <table width="200px">
-                                                        <tr>
-                                                            <td width="60%"> <b>[[item.id]]</b></td>
-                                                        </tr>
-                                                    </table>
-                                                </template>
-                                            </vaadin-combo-box>
-                                        </template>
-                                        <template is="dom-if" if="{{ !item.selected }}">
-                                            [[item.openOrderNo ]]
-                                        </template>
-                                    </template>
-                                </vaadin-grid-column>-->
+        <template class="header">
+            <vaadin-grid-sorter path="openOrderNo">Nº Encomenda Aberto</vaadin-grid-sorter>
+            <vaadin-grid-filter path="openOrderNo" />
+        </template>
+        <template>
+            <template is="dom-if" if="{{ item.selected }}">
+                <vaadin-combo-box items="[[GridCBPurchaseHeader]]" id="_CBGridPurchaseHeader" item-value-path="id" item-label-path="id" value="{{item.openOrderNo}}" on-change="_PopulatePurchaseLinesGrid" disabled="{{ !_permissions.update }}">
+                    <template>
+                        <table width="200px">
+                            <tr>
+                                <td width="60%"> <b>[[item.id]]</b></td>
+                            </tr>
+                        </table>
+                    </template>
+                </vaadin-combo-box>
+            </template>
+            <template is="dom-if" if="{{ !item.selected }}">
+                [[item.openOrderNo ]]
+            </template>
+        </template>
+    </vaadin-grid-column>-->
                                     <vaadin-grid-column width="200px" resizable>
                                         <template class="header">
                                             <vaadin-grid-sorter path="openOrderLineNo">Nº Linha Encomenda Aberto</vaadin-grid-sorter>
@@ -1090,19 +1089,19 @@
                                         </template>
                                         <template>
                                             <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-combo-box items="[[CBPurchaseLineGrid]]" id="_CBGridPurchaseLine" item-value-path="id" item-label-path="value" value="{{item.openOrderLineNo}}" disabled="{{ !_permissions.update }}">
+                                                <vaadin-combo-box items="[[CBPurchaseLine]]" id="_CBGridPurchaseLine" item-value-path="line_No" item-label-path="line_No" value="{{item.openOrderLineNo}}" disabled="{{ !_permissions.update }}" on-change="_GridOpenLineChange">
                                                     <template>
                                                         <table width="200px">
                                                             <tr>
-                                                                <td width="40%">[[item.id]]</td>
-                                                                <td width="60%"> <b>[[item.value]]</b></td>
+                                                                <td width="40%">[[item.documentNO]]</td>
+                                                                <td width="60%"> <b>[[item.line_No]]</b></td>
                                                             </tr>
                                                         </table>
                                                     </template>
                                                 </vaadin-combo-box>
                                             </template>
                                             <template is="dom-if" if="{{ !item.selected }}">
-                                                [[ _clFormatOpenOrderLineNo(item.openOrderLineNo) ]]
+                                                {{item.openOrderLineNo}}
                                             </template>
                                         </template>
                                     </vaadin-grid-column>
@@ -1434,13 +1433,13 @@
                 _setPurchaseLine: function (e) {
                     if (e.detail.value != "") {
                         var line = e.detail.value;
-                        var document = this.$._CBPurchaseLine.title;
+                        var document = e.currentTarget.title;
                         var proj = this.CBPurchaseLine.find(x => x.line_No == line && x.documentNO == document);
                         this._QuantityToOpen = proj.outstandingQtyBase;
                         this._CBVendor = proj.buyFromVendorNo;
-                        this._CBPurchaseHeader = proj.documentNO;
-                        if (proj.prodOrderNo != "" && this.Products != undefined) {
-                            var item = this.Products.find(x => x.code == proj.prodOrderNo);
+                        this.$._CBPurchaseHeader.value = proj.documentNO;
+                        if (proj.numb != "" && this.Products != undefined) {
+                            var item = this.Products.find(x => x.code == proj.numb);
                             if (item != null) {
                                 this._Products = item.code;
                             }
@@ -1492,7 +1491,6 @@
                 },
 
                 _deletedAttachResponse: function (e) {
-                    debugger
                     if (this.deleted_files.eReasonCode === 1) {
                         this._openToast("Anexo eliminado com sucesso.");
 
@@ -1572,7 +1570,6 @@
                 },
 
                 _createnewreq: function (e) {
-                    //debugger;
                     this.data.area = this._areaid;
                     this.$.page_validator_req_ajax.body = JSON.stringify(this.data);
                     this.$.page_validator_req_ajax.generateRequest();
@@ -1691,10 +1688,13 @@
                         //        this._openToastError(this.data.eMessage);
                         //    }
                         //}
-                        if (!(this.$._CLResponsabilityCenterCode.value == "" || this.$._CLResponsabilityCenterCode.value == null)) {
-                            this.$.purchaseheader_ajax.body = JSON.stringify(this.$._CLResponsabilityCenterCode.value);
-                            this.$.purchaseheader_ajax.generateRequest();
-                        }
+
+                        //Não existe purchaseheader_ajax
+                        //if (!(this.$._CLResponsabilityCenterCode.value == "" || this.$._CLResponsabilityCenterCode.value == null)) {
+                        //    var itemNo = this.$._CLResponsabilityCenterCode.value;
+                        //    this.$.purchaseheader_ajax.body = JSON.stringify(itemNo);
+                        //    this.$.purchaseheader_ajax.generateRequest();
+                        //}
                     } else {
                         this._openToastError("Ocorreu um erro desconhecido.")
                     }
@@ -1809,8 +1809,9 @@
 
                 _RespChange: function (e) {
                     if (!(this.$._CLResponsabilityCenterCode.value == "" || this.$._CLResponsabilityCenterCode.value == null)) {
-                        this.$.purchaseheader_ajax.body = JSON.stringify(this.$._CLResponsabilityCenterCode.value);
-                        this.$.purchaseheader_ajax.generateRequest();
+                        // Não existe purchaseheader_ajax
+                        //this.$.purchaseheader_ajax.body = JSON.stringify(this.$._CLResponsabilityCenterCode.value);
+                        //this.$.purchaseheader_ajax.generateRequest();
                     }
                 },
 
@@ -1884,7 +1885,12 @@
                     }
                     this.$.grid_prereqlines.clearCache();
                 },
-
+                _GridOpenLineChange: function (e) {
+                    var line = this.CBPurchaseLine.find(x => x.id == e.currentTarget.__data.selectedItem.id);
+                    if (line != null) {
+                        this._SelectedLine.openOrderNo = line.documentNO;
+                    }                   
+                },
                 _GridRespCenterChange: function (e) {
                     if (this.dataLines != null && this.dataLines.lines != null) {
                         var line = this.dataLines.lines.find(x => x == this._SelectedLine);
@@ -1893,11 +1899,11 @@
                         this.CBPurchaseLineGrid = "";
                         line.openOrderLineNo = "";
 
+                        //Não existe gridpurchaseheader_ajax
+                        //this.$.gridpurchaseheader_ajax.body = JSON.stringify(itemNo);
+                        //this.$.gridpurchaseheader_ajax.generateRequest();
 
-                        this.$.gridpurchaseheader_ajax.body = JSON.stringify(itemNo);
-                        this.$.gridpurchaseheader_ajax.generateRequest();
-
-                        this.$.grid_prereqlines.clearCache();
+                        //this.$.grid_prereqlines.clearCache();
                     }
                 },
 
@@ -1960,11 +1966,10 @@
                 },
 
                 _clFormatOpenOrderLineNo: function (param) {
-                    if (param != undefined && this.CBPurchaseLineGrid != undefined) {
-
-                        var sel = this.CBPurchaseLineGrid.find(x => x.id == param);
+                    if (param != undefined && this.CBPurchaseLine != undefined) {
+                        var sel = this.CBPurchaseLine.find(x => x.id == param);
                         if (sel != undefined) {
-                            return sel.value;
+                            return sel.line_No;
                         }
                     }
                     return "";
@@ -1986,7 +1991,6 @@
                     if (isNaN(totalCost)) {
                         totalCost = 0;
                     }
-                    debugger;
                     this.dataLines.lines.unshift({
                         preRequisitionLineNo: this.data.preRequesitionsNo,
                         localCode: this._LocalCode,
@@ -2003,16 +2007,17 @@
                         regionCode: this.$._CLRegion.value,
                         functionalAreaCode: this.$._CLFunctionalAreaCode.value,
                         centerResponsibilityCode: this.$._CLResponsabilityCenterCode.value,
-                        openOrderNo: this._CBPurchaseHeader,
-                        openOrderLineNo: this._CBPurchaseLine,
+                        openOrderNo: this.$._CBPurchaseHeader.value,
+                        openOrderLineNo: this.$._CBPurchaseLine.value,
                         totalCost: totalCost > 0 ? totalCost : "",
                         armazemCDireta: this._CBItemsCDirect
                     });
+
                     this.$.grid_prereqlines.clearCache();
 
-                    this.$.prereqLines_databound_ajax.url = "/PreRequisicoes/UpdateContractLines";
-                    this.$.prereqLines_databound_ajax.body = JSON.stringify(this.dataLines);
-                    this.$.prereqLines_databound_ajax.generateRequest();
+                    //this.$.prereqLines_databound_ajax.url = "/PreRequisicoes/UpdateContractLines";
+                    //this.$.prereqLines_databound_ajax.body = JSON.stringify(this.dataLines);
+                    //this.$.prereqLines_databound_ajax.generateRequest();
                 },
 
                 _updateContractLines: function () {
@@ -2071,7 +2076,9 @@
                 //    }
                 //},
                 _ConvertDecimals: function (e) {
-                    e.target.value = e.target.value.replace(",", ".");
+                    var stringVal = ""+e.target.value;
+                    e.target.value = stringVal.replace(",", ".");
+
                 },
                 _lineSelected: function (item) {
                     if (item != null) {
@@ -2094,10 +2101,11 @@
                             }
 
                             this.$.grid_prereqlines.clearCache();
-                            if (!(item.centerResponsibilityCode == "" || item.centerResponsibilityCode == null)) {
-                                this.$.gridpurchaseheader_ajax.body = JSON.stringify(item.centerResponsibilityCode);
-                                this.$.gridpurchaseheader_ajax.generateRequest();
-                            }
+                             //Não existe gridpurchaseheader_ajax
+                            //if (!(item.centerResponsibilityCode == "" || item.centerResponsibilityCode == null)) {
+                            //    this.$.gridpurchaseheader_ajax.body = JSON.stringify(item.centerResponsibilityCode);
+                            //    this.$.gridpurchaseheader_ajax.generateRequest();
+                            //}
                         }
                     }
                 },
@@ -2142,19 +2150,11 @@
 
                 _PopulatePurchaseLines: function (data) {
                     var codArea = this.$.FunctionalAreaCode.value;
-                    this._CBPurchaseLine = "";
+                    this.$._CBPurchaseLine = "";
                     this.$.purchaselines_ajax.body = JSON.stringify(codArea);
                     this.$.purchaselines_ajax.generateRequest();
 
 
-                },
-
-                _PopulatePurchaseLinesGrid: function (data) {
-
-                    var PurchaseNo = data.model.item.openOrderNo;
-                    this.dataLines.openOrderLineNo = "";
-                    this.$.purchaselinesgrid_ajax.body = JSON.stringify(PurchaseNo);
-                    this.$.purchaselinesgrid_ajax.generateRequest();
                 },
 
                 _responsePurchaseLinesProcessor: function (data) {
@@ -2192,7 +2192,6 @@
                     }
                 },
                 _createRequesitionResponse: function (e) {
-                    debugger;
                     if (this.CreateReqResponse.eReasonCode == "1") {
                         this._openToast(this.CreateReqResponse.eMessage);
 

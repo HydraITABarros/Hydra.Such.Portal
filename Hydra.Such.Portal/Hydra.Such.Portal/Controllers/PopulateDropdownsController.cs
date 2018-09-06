@@ -49,9 +49,47 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetServiceGroups([FromBody]string customerNo, bool allProjs)
+        {
+            var serviceGroups = DBClientServices.GetAllServiceGroup(customerNo, allProjs);
+            List<DDMessageString> result;
+            if (serviceGroups != null)
+            {
+                result = serviceGroups.Select(x => new DDMessageString()
+                {
+                    id = x.ServiceCode,
+                    value = x.ServiceDescription
+                }).ToList();
+            }
+            else
+                result = new List<DDMessageString>();
+
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetClientService([FromBody]string invoiceClientNo, bool allProjs)
         {
             List<ClientServicesViewModel> result = DBClientServices.GetAllClientService(invoiceClientNo, allProjs);
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetCustomerServices([FromBody]string customerNo, bool allProjs)
+        {
+            var customerServices = DBClientServices.GetAllClientService(customerNo, allProjs);
+            List<DDMessageString> result;
+            if (customerServices != null)
+            {
+                result = customerServices.Select(x => new DDMessageString()
+                {
+                    id = x.ServiceCode,
+                    value = x.ServiceDescription
+                }).ToList();
+            }
+            else
+                result = new List<DDMessageString>();
+
             return Json(result);
         }
 
@@ -1839,6 +1877,36 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetProductsForCurrentUser([FromBody] JObject requestParams)
         {
+            string rootAreaId = string.Empty;
+            string requisitionType = string.Empty;
+            string locationCode = string.Empty;
+            List<NAVProductsViewModel> products = new List<NAVProductsViewModel>();
+            if (requestParams != null)
+            {
+                rootAreaId = requestParams["rootAreaId"].ToString();
+                requisitionType = requestParams["requisitionType"].ToString();
+                locationCode = requestParams["locationCode"].ToString();
+            }
+            else
+            {
+                products = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, "").ToList();
+            }
+            //List<NAVDimValueViewModel> userDimensionValues = DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 2, User.Identity.Name);
+            //string allowedProductsFilter = userDimensionValues.GenerateNAVProductFilter(rootAreaId, true);
+
+            string allowedProductsFilter = rootAreaId.GenerateNAVProductFilter();
+            List<NAVProductsViewModel> productsReqParams = DBNAV2017Products.GetProductsForDimensions(_config.NAVDatabaseName, _config.NAVCompanyName, allowedProductsFilter, requisitionType, locationCode).ToList();
+            if (productsReqParams != null && productsReqParams.Count > 0)
+            {
+                products = productsReqParams;
+            }
+
+            return Json(products);
+        }
+
+        [HttpPost]
+        public JsonResult GetProductsPreRequisition([FromBody] JObject requestParams)
+        {
             string allowedProductsFilter = string.Empty;
             string rootAreaId = string.Empty;
             string requisitionType = string.Empty;
@@ -1855,7 +1923,7 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (requisitionType != "" && locationCode != "")
                 {
-                    List<NAVProductsViewModel> productsReqParams = DBNAV2017Products.GetProductsForDimensions(_config.NAVDatabaseName, _config.NAVCompanyName, allowedProductsFilter, requisitionType, locationCode).ToList();
+                    List<NAVProductsViewModel> productsReqParams = DBNAV2017Products.GetProductsForPreRequisitions(_config.NAVDatabaseName, _config.NAVCompanyName, allowedProductsFilter, requisitionType, locationCode).ToList();
 
                     if (productsReqParams != null && productsReqParams.Count > 0)
                     {

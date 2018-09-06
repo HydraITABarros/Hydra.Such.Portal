@@ -149,9 +149,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<UtilizadoresMovimentosDeAprovação> UtilizadoresMovimentosDeAprovação { get; set; }
         public virtual DbSet<Viaturas> Viaturas { get; set; }
         public virtual DbSet<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
-
-       
-
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AcessosDimensões>(entity =>
@@ -5495,6 +5493,8 @@ namespace Hydra.Such.Data.Database
                     .HasMaxLength(20)
                     .IsUnicode(false);
 
+                entity.Property(e => e.CodGrupoServico).HasMaxLength(20);
+
                 entity.Property(e => e.CodProjeto)
                     .IsRequired()
                     .HasMaxLength(20)
@@ -8080,6 +8080,10 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.ValorEstimado).HasColumnName("Valor Estimado");
 
                 entity.Property(e => e.Viatura).HasMaxLength(10);
+
+                entity.Property(e => e.PrecoIVAIncluido).HasColumnName("PrecoIVAIncluido");
+
+                entity.Property(e => e.Adiantamento).HasColumnName("Adiantamento");
             });
 
             modelBuilder.Entity<RequisiçõesClienteContrato>(entity =>

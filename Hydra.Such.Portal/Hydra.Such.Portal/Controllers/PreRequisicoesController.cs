@@ -903,7 +903,7 @@ namespace Hydra.Such.Portal.Controllers
                         PreRequesitionLines.Where(x => x.NºLinhaEncomendaAberto.HasValue).ToList().ForEach(x => GroupedListOpenOrderLine.Add(DBPreRequesitionLines.ParseToViewModel(x)));
 
                         List<RequisitionViewModel> newlistOpenOrder = GroupedListOpenOrderLine.GroupBy(
-                            x => x.OpenOrderLineNo,
+                            x => x.OpenOrderNo,
                             x => x,
                             (key, items) => new RequisitionViewModel
                             {
