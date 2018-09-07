@@ -2330,12 +2330,13 @@
                     }
                 },
                 _registTypeResponse: function (e) {
-                    //debugger;
+                    debugger;
                     if (this.regist.eReasonCode == "1") {
                         this._openToast(this.regist.eMessage);
                         this.Requisition = this.regist;
                         if (this.regist.state === this._requisitionstatesenum.Archived) {
-                            window.location.href = "/GestaoRequisicoes/";///HistóricoCabeçalhoRequisicao/" + this._requisitionid;
+                            window.history.back();
+                            //window.location.href = "/GestaoRequisicoes/";///HistóricoCabeçalhoRequisicao/" + this._requisitionid;
                         }
                         else {
                             this.$.stateDescription_ajax.body = JSON.stringify(this.Requisition.state);

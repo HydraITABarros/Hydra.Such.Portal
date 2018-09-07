@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using static Hydra.Such.Data.Enumerations;
+
 namespace Hydra.Such.Data.Logic.ComprasML
 {
     public class DBRequesitionHist
@@ -36,6 +38,25 @@ namespace Hydra.Such.Data.Logic.ComprasML
             catch (Exception ex)
             {
 
+                return null;
+            }
+        }
+
+        public static List<RequisiçãoHist> GetReqByUserAreaStatus(string UserName, List<RequisitionStates> status)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    var statusValues = status.Cast<int>().ToList();
+
+                    //REGRA ORIGINAL AMARO TESTE
+                    //return ctx.RequisiçãoHist.Where(x => x.UtilizadorCriação == UserName && statusValues.Contains(x.Estado.Value) && !x.ModeloDeRequisição.HasValue || !x.ModeloDeRequisição.Value).ToList();
+                    return ctx.RequisiçãoHist.Where(x => statusValues.Contains(x.Estado.Value)).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
                 return null;
             }
         }
@@ -121,7 +142,7 @@ namespace Hydra.Such.Data.Logic.ComprasML
             {
                 NºRequisição = x.RequisitionNo,
                 Área = x.Area,
-                //Estado = x.State,
+                Estado = (int?)x.State,
                 NºProjeto = x.ProjectNo,
                 CódigoRegião = x.RegionCode,
                 CódigoÁreaFuncional = x.FunctionalAreaCode,
@@ -190,13 +211,14 @@ namespace Hydra.Such.Data.Logic.ComprasML
             };
             return result;
         }
+
         public static RequisitionHistViewModel ParseToViewModel(RequisiçãoHist x)
         {
             RequisitionHistViewModel result = new RequisitionHistViewModel()
             {
                 RequisitionNo = x.NºRequisição,
                 Area = x.Área,
-                //State = x.Estado,
+                State = (RequisitionStates?)x.Estado,
                 ProjectNo = x.NºProjeto,
                 RegionCode = x.CódigoRegião,
                 FunctionalAreaCode = x.CódigoÁreaFuncional,
@@ -264,7 +286,87 @@ namespace Hydra.Such.Data.Logic.ComprasML
             };
 
             return result;
+        }
 
+        public static Requisição TransferToRequisition(RequisiçãoHist item)
+        {
+            if (item != null)
+            {
+                return new Requisição()
+                {
+                    NºRequisição = item.NºRequisição,
+                    Área = item.Área,
+                    Estado = item.Estado.HasValue ? (int)item.Estado.Value : (int?)null,
+                    NºProjeto = item.NºProjeto,
+                    CódigoRegião = item.CódigoRegião,
+                    CódigoÁreaFuncional = item.CódigoÁreaFuncional,
+                    CódigoCentroResponsabilidade = item.CódigoCentroResponsabilidade,
+                    CódigoLocalização = item.CódigoLocalização,
+                    NºFuncionário = item.NºFuncionário,
+                    Viatura = item.Viatura,
+                    DataReceção = item.DataReceção,
+                    Urgente = item.Urgente,
+                    Amostra = item.Amostra,
+                    Anexo = item.Anexo,
+                    Imobilizado = item.Imobilizado,
+                    CompraADinheiro = item.CompraADinheiro,
+                    CódigoLocalRecolha = item.CódigoLocalRecolha,
+                    CódigoLocalEntrega = item.CódigoLocalEntrega,
+                    Observações = item.Observações,
+                    ModeloDeRequisição = item.ModeloDeRequisição,
+                    DataHoraCriação = item.DataHoraCriação,
+                    UtilizadorCriação = item.UtilizadorCriação,
+                    DataHoraModificação = item.DataHoraModificação,
+                    UtilizadorModificação = item.UtilizadorModificação,
+                    CabimentoOrçamental = item.CabimentoOrçamental,
+                    Exclusivo = item.Exclusivo,
+                    JáExecutado = item.JáExecutado,
+                    Equipamento = item.Equipamento,
+                    ReposiçãoDeStock = item.ReposiçãoDeStock,
+                    Reclamação = item.Reclamação,
+                    NºRequisiçãoReclamada = item.NºRequisiçãoReclamada,
+                    ResponsávelCriação = item.ResponsávelCriação,
+                    ResponsávelAprovação = item.ResponsávelAprovação,
+                    ResponsávelValidação = item.ResponsávelValidação,
+                    ResponsávelReceção = item.ResponsávelReceção,
+                    DataAprovação = item.DataAprovação,
+                    DataValidação = item.DataValidação,
+                    UnidadeProdutivaAlimentação = item.UnidadeProdutivaAlimentação,
+                    RequisiçãoNutrição = item.RequisiçãoNutrição,
+                    RequisiçãoDetergentes = item.RequisiçãoDetergentes,
+                    NºProcedimentoCcp = item.NºProcedimentoCcp,
+                    Aprovadores = item.Aprovadores,
+                    MercadoLocal = item.MercadoLocal,
+                    RegiãoMercadoLocal = item.RegiãoMercadoLocal,
+                    ReparaçãoComGarantia = item.ReparaçãoComGarantia,
+                    Emm = item.Emm,
+                    DataEntregaArmazém = item.DataEntregaArmazém,
+                    LocalDeRecolha = item.LocalDeRecolha,
+                    MoradaRecolha = item.MoradaRecolha,
+                    Morada2Recolha = item.Morada2Recolha,
+                    CódigoPostalRecolha = item.CódigoPostalRecolha,
+                    LocalidadeRecolha = item.LocalidadeRecolha,
+                    ContatoRecolha = item.ContatoRecolha,
+                    ResponsávelReceçãoRecolha = item.ResponsávelReceçãoRecolha,
+                    LocalEntrega = item.LocalEntrega,
+                    MoradaEntrega = item.MoradaEntrega,
+                    Morada2Entrega = item.Morada2Entrega,
+                    CódigoPostalEntrega = item.CódigoPostalEntrega,
+                    LocalidadeEntrega = item.LocalidadeEntrega,
+                    ContatoEntrega = item.ContatoEntrega,
+                    ResponsávelReceçãoReceção = item.ResponsávelReceçãoReceção,
+                    NºFatura = item.NºFatura,
+                    DataMercadoLocal = item.DataMercadoLocal,
+                    DataRequisição = item.DataRequisição,
+                    NºConsultaMercado = item.NºConsultaMercado,
+                    NºEncomenda = item.NºEncomenda,
+                    Orçamento = item.Orçamento,
+                    ValorEstimado = item.ValorEstimado,
+                    PrecoIvaincluido = item.PrecoIvaincluido,
+                    Adiantamento = item.Adiantamento,
+                };
+            }
+            return null;
         }
 
     }

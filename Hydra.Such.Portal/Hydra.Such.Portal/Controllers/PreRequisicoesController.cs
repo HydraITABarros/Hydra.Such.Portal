@@ -811,16 +811,16 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult GetHistoryReq()
         {
-            List<Requisição> requisition = null;
+            List<RequisiçãoHist> requisition = null;
             List<RequisitionStates> states = new List<RequisitionStates>()
             {
                 RequisitionStates.Archived,
             };
-            requisition = DBRequest.GetReqByUserAreaStatus(User.Identity.Name, states);
+            requisition = DBRequesitionHist.GetReqByUserAreaStatus(User.Identity.Name, states);
 
-            List<RequisitionViewModel> result = new List<RequisitionViewModel>();
+            List<RequisitionHistViewModel> result = new List<RequisitionHistViewModel>();
 
-            requisition.ForEach(x => result.Add(x.ParseToViewModel()));
+            requisition.ForEach(x => result.Add(DBRequesitionHist.ParseToViewModel(x)));
 
             return Json(result);
         }
@@ -829,12 +829,12 @@ namespace Hydra.Such.Portal.Controllers
         {
             string ReqNo = requestParams["ReqNo"].ToString();
 
-            List<LinhasRequisição> RequisitionLines = null;
-            RequisitionLines = DBRequestLine.GetByRequisitionId(ReqNo);
+            List<LinhasRequisiçãoHist> RequisitionLines = null;
+            RequisitionLines = DBRequesitionLinesHist.GetByRequisitionId(ReqNo);
 
-            List<RequisitionLineViewModel> result = new List<RequisitionLineViewModel>();
+            List<RequisitionLineHistViewModel> result = new List<RequisitionLineHistViewModel>();
 
-            RequisitionLines.ForEach(x => result.Add(DBRequestLine.ParseToViewModel(x)));
+            RequisitionLines.ForEach(x => result.Add(DBRequesitionLinesHist.ParseToViewModel(x)));
             return Json(result);
 
         }
