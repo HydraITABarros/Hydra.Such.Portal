@@ -974,6 +974,8 @@ namespace Hydra.Such.Portal.Controllers
                                 line.VATBusinessPostingGroup = vendors.FirstOrDefault(x => x.No_ == line.SupplierNo)?.VATBusinessPostingGroup;
                                 line.VATProductPostingGroup = productsInRequisition.FirstOrDefault(x => x.Code == line.Code)?.VATProductPostingGroup;
                             });
+
+                            header.LocalMarketRegion = header.Lines.FirstOrDefault().MarketLocalRegion;
                         });
 
                         data = CreateRequesition(newlistOpenOrder, data);
@@ -1053,6 +1055,8 @@ namespace Hydra.Such.Portal.Controllers
                                 line.VATBusinessPostingGroup = vendors.FirstOrDefault(x => x.No_ == line.SupplierNo)?.VATBusinessPostingGroup;
                                 line.VATProductPostingGroup = productsInRequisition.FirstOrDefault(x => x.Code == line.Code)?.VATProductPostingGroup;
                             });
+
+                            header.LocalMarketRegion = header.Lines.FirstOrDefault().MarketLocalRegion;
                         });
                         data = CreateRequesition(newlist, data);
 

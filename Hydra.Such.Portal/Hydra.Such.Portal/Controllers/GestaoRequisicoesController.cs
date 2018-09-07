@@ -1550,7 +1550,6 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-
         public JsonResult CreatePurchaseOrder([FromBody] RequisitionViewModel item)
         {
             if (item != null)
@@ -1575,6 +1574,50 @@ namespace Hydra.Such.Portal.Controllers
                 };
             }
             return Json(item);
+        }
+
+        [HttpPost]
+        public JsonResult CreatePurchaseOrderList([FromBody] List<RequisitionViewModel> Requisicoes)
+        {
+            ErrorHandler result = new ErrorHandler
+            {
+                eReasonCode = 1,
+                eMessage = "Os Registos foram atualizados com sucesso."
+            };
+
+            try
+            {
+                if (Requisicoes != null && Requisicoes.Count > 0)
+                {
+                    UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Requisições);
+                    if (UPerm.Create == true)
+                    {
+                        Requisicoes.ForEach(Requisicao =>
+                        {
+                            if (result.eReasonCode == 1)
+                            {
+                                RequisitionService serv = new RequisitionService(configws, HttpContext.User.Identity.Name);
+                                Requisicao = serv.CreatePurchaseOrderFor(Requisicao);
+
+                                result.eReasonCode = Requisicao.eReasonCode;
+                                result.eMessage = Requisicao.eMessage;
+                            }
+                        });
+                    }
+                }
+                else
+                {
+                    result.eReasonCode = 3;
+                    result.eMessage = "Não é possivel criar encomenda de compra. Não escolheu nenhuma linha.";
+                }
+            }
+            catch (Exception ex)
+            {
+                result.eReasonCode = 2;
+                result.eMessage = "Ocorreu um erro ao criar encomenda de compra (" + ex.Message + ")";
+            }
+
+            return Json(result);
         }
 
         //
