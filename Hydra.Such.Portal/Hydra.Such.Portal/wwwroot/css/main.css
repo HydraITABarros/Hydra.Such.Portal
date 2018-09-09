@@ -445,6 +445,7 @@ paper-toast {
     background: transparent;
     cursor: col-resize;
 }
+
 .menubar-fold .menubar-resizable .after {
     display: none;
 }
@@ -767,3 +768,14 @@ input:focus::-webkit-datetime-edit {
             background: white;
             color: black !important;
         }
+
+/*css tools*/
+.grey {
+    color: grey !important;
+}
+
+/*Logout*/
+.page-title .dropdown-menu {
+    border-radius: 0;
+    top: 25px;
+}
