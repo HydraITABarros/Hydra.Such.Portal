@@ -286,7 +286,7 @@ namespace Hydra.Such.Data.Logic.Request
                     NºEncomenda = item.OrderNo,
                     Orçamento = item.Budget,
                     ValorEstimado = item.EstimatedValue,
-                    PrecoIVAIncluido = item.PricesIncludingVAT,
+                    PrecoIvaincluido = item.PricesIncludingVAT,
                     Adiantamento = item.InAdvance,
                 };
             }

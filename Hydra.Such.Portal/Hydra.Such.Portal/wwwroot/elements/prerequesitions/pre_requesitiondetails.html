@@ -1991,6 +1991,10 @@
                     if (isNaN(totalCost)) {
                         totalCost = 0;
                     }
+                    debugger;
+                    var openOrderNoAUX = "";
+                    if (this.$._CBPurchaseHeader.value != "{{data.Nº Linha Encomenda }}")
+                        openOrderNoAUX = this.$._CBPurchaseHeader.value;
                     this.dataLines.lines.unshift({
                         preRequisitionLineNo: this.data.preRequesitionsNo,
                         localCode: this._LocalCode,
@@ -2007,17 +2011,17 @@
                         regionCode: this.$._CLRegion.value,
                         functionalAreaCode: this.$._CLFunctionalAreaCode.value,
                         centerResponsibilityCode: this.$._CLResponsabilityCenterCode.value,
-                        openOrderNo: this.$._CBPurchaseHeader.value,
-                        openOrderLineNo: this.$._CBPurchaseLine.value,
+                        openOrderNo: openOrderNoAUX,
+                        openOrderLineNo: this._CBPurchaseLine,
                         totalCost: totalCost > 0 ? totalCost : "",
                         armazemCDireta: this._CBItemsCDirect
                     });
 
                     this.$.grid_prereqlines.clearCache();
 
-                    //this.$.prereqLines_databound_ajax.url = "/PreRequisicoes/UpdateContractLines";
-                    //this.$.prereqLines_databound_ajax.body = JSON.stringify(this.dataLines);
-                    //this.$.prereqLines_databound_ajax.generateRequest();
+                    this.$.prereqLines_databound_ajax.url = "/PreRequisicoes/UpdateContractLines";
+                    this.$.prereqLines_databound_ajax.body = JSON.stringify(this.dataLines);
+                    this.$.prereqLines_databound_ajax.generateRequest();
                 },
 
                 _updateContractLines: function () {
@@ -2116,6 +2120,7 @@
                     }
                 },
                 _clResponseProcessor: function (data) {
+                    //debugger;
                     if (data.detail.status === 200) {
                         if (!(data.detail.url.indexOf("GetPreReqLines") !== -1)) {
                             if (this.dataLines.eReasonCode != 1) {

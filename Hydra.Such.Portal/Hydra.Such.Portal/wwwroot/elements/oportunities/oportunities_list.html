@@ -611,9 +611,9 @@
                         "proposalDeliveryTime": { hidden: false, label: "Hora - Entrega Proposta" }
                     };
 
-                    if (localStorage["contacts.ToggleColumn"]) {
+                    if (localStorage["oportunitieslist.ToggleColumn"]) {
                         var keys = Object.keys(columns);
-                        var storedColumns = JSON.parse(localStorage["contacts.ToggleColumn"]);
+                        var storedColumns = JSON.parse(localStorage["oportunitieslist.ToggleColumn"]);
                         for (var i = 0; i < keys.length; i++) {
                             columns[keys[i]] = storedColumns[keys[i]];
                         }
