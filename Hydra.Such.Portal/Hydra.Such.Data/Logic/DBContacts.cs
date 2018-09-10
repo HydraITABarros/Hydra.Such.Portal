@@ -199,6 +199,7 @@ namespace Hydra.Such.Data.Logic
                     Email = item.Email,
                     EmailContato = item.EmailContact,
                     Endereço = item.Address,
+                    CódigoRegião = item.Regiao,
                     FunçãoContato = item.ContactFunction,
                     Nif = item.VATNumber,
                     Notas = item.Notes,

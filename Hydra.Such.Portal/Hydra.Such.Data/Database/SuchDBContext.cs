@@ -3412,7 +3412,9 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Data_Entrega_Prevista")
                     .HasColumnType("date");
 
-                entity.Property(e => e.Descricao).HasMaxLength(50);
+                entity.Property(e => e.Descricao).HasMaxLength(100);
+
+                entity.Property(e => e.Descricao2).HasMaxLength(100);
 
                 entity.Property(e => e.LinhaRequisicao).HasColumnName("Linha_Requisicao");
 
@@ -3697,7 +3699,9 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Data_Entrega_Prevista")
                     .HasColumnType("date");
 
-                entity.Property(e => e.Descricao).HasMaxLength(50);
+                entity.Property(e => e.Descricao).HasMaxLength(100);
+
+                entity.Property(e => e.Descricao2).HasMaxLength(100);
 
                 entity.Property(e => e.LinhaRequisicao).HasColumnName("Linha_Requisicao");
 
