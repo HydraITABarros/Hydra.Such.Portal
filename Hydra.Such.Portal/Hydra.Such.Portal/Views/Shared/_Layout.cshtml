@@ -80,7 +80,18 @@
                 </ul>
 
                 <div class="page-title hidden-menubar-top hidden-float pull-right">
-                    @User.Identity.Name &nbsp;&nbsp;&nbsp;
+
+                    <div class="dropdown">
+                        <a href="javascript:void(0)" class="dropdown-toggle" type="button" data-toggle="dropdown">                            
+                            @User.Identity.Name &nbsp;
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li class="grey"><a href="@Url.Action("EndSession", "Account")"><i class="fa fa-sign-out" aria-hidden="true"></i> &nbsp;Sair</a> </li>
+                        </ul>
+                    </div>&nbsp;&nbsp;&nbsp;
+                    <div class="clearfix"></div>
+
                 </div>
             </div>
         </div><!-- navbar-container -->
@@ -208,8 +219,8 @@
                                 </a>
                                 <ul class="submenu">
                                     @*<li>@Html.ActionLink("Actividades", "Actividades", "Actividades", null, null)</li>
-                                    <li>@Html.ActionLink("Actividades Por Fornecedor", "ActividadesPorFornecedor", "ActividadesPorFornecedor", null, null)</li>
-                                    <li>@Html.ActionLink("Actividades Por Produto", "ActividadesPorProduto", "ActividadesPorProduto", null, null)</li>*@
+                                        <li>@Html.ActionLink("Actividades Por Fornecedor", "ActividadesPorFornecedor", "ActividadesPorFornecedor", null, null)</li>
+                                        <li>@Html.ActionLink("Actividades Por Produto", "ActividadesPorProduto", "ActividadesPorProduto", null, null)</li>*@
                                     <li>@Html.ActionLink("Consulta de Mercado", "ConsultaMercado", "ConsultaMercado", null, null)</li>
                                 </ul>
                             </li>
