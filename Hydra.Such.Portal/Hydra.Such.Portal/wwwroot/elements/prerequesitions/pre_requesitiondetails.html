@@ -152,7 +152,7 @@
         <!--<iron-ajax url="/PopulateDropdowns/GetProductsForCurrentUser" last-response="{{CBItems}}" id="filteredProducts_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
         <iron-ajax url="/PopulateDropdowns/GetLocations" last-response="{{CBLocations}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetUnitOfMeasureByCode" last-response="{{LCBMeasuresUnit}}" auto id="measuresunit_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/getOpenOrderLineByHeader" last-response="{{CBPurchaseLine}}" auto id="purchaselines_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/getOpenOrderLineByHeader" last-response="{{CBPurchaseLine}}" id="purchaselines_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/getOpenOrderLineByHeader" last-response="{{CBPurchaseLineGrid}}" id="purchaselinesgrid_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProjectById" last-response="{{ProjectDims}}" id="get_project_dims" on-response="_getprojectdimsResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
@@ -627,11 +627,12 @@
                                         <vaadin-text-field value="{{_CBItemsCDirect}}" id="_CBItemsCDirect" name="_CBItemsCDirect" label="Compra Direta" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                     </div>
                                     <div class="col-sm-2">
-                                        <such-selectbox id="_CBPurchaseLine" value="{{_CBPurchaseLine}}" label="Nº Linha Enc. Aberto" on-value-changed="_setPurchaseLine"
+                                        <such-selectbox id="_CBPurchaseLine" label="Nº Linha Enc. Aberto" on-value-changed="_setPurchaseLine"
                                                         items="[[CBPurchaseLine]]"
                                                         text-path="documentNO"
-                                                        value-path="line_No"
-                                                        fields='[{"field":"documentNO", "name":"Nº Documento"},{"field":"line_No", "name":"Nº Linha Aberta"}, {"field":"buyFromVendorNo", "name":"Fornecedor"}, {"field":"outstandingQtyBase", "name":"Quantidade Disponível"}]'
+                                                        value-path="id"
+                                                        fields='[{"field":"documentNO", "name":"Nº Documento"},{"field":"line_No", "name":"Nº Linha Aberta"}, {"field":"buyFromVendorNo", "name":"Fornecedor"}, {"field":"outstandingQtyBase", "name":"Quantidade Disponível"}, {"field":"numb", "name":"Cód. Produto"}
+                                                                ,{"field":"description", "name":"Descrição"},{"field":"functionalAreaDescription", "name":"Área Funcional"},{"field":"regionDescription", "name":"Região"},{"field":"responsabilityCenterDescription", "name":"Centro Resonsabilidade"}]'
                                                         disabled="{{ !_permissions.update }}">
                                         </such-selectbox>
                                     </div>
@@ -1308,11 +1309,6 @@
                         type: Boolean,
                         value: true
                     },
-                    selected: {
-                        type: Number,
-                        value: 0
-                    },
-
                     _SelectedLine: {
                         observer: '_lineSelected'
                     },
@@ -1431,10 +1427,12 @@
                     this.$.page_getProject2_ajax.generateRequest();
                 },
                 _setPurchaseLine: function (e) {
-                    if (e.detail.value != "") {
-                        var line = e.detail.value;
-                        var document = e.currentTarget.title;
-                        var proj = this.CBPurchaseLine.find(x => x.line_No == line && x.documentNO == document);
+                    if (e.detail.value !== "") {
+                        var composedKey = e.detail.value.split(" ", 2); 
+                        var purchHeaderNo = composedKey[0];
+                        var purchLineNo = composedKey[1];
+                        
+                        var proj = this.CBPurchaseLine.find(x => x.line_No == purchLineNo && x.documentNO == purchHeaderNo);
                         this._QuantityToOpen = proj.outstandingQtyBase;
                         this._CBVendor = proj.buyFromVendorNo;
                         this.$._CBPurchaseHeader.value = proj.documentNO;
@@ -1444,6 +1442,7 @@
                                 this._Products = item.code;
                             }
                         }
+                        //this._LocalCode = proj.locationCode;
                     }
                 },
                 _onChangeQuantity: function (e) {
@@ -1665,6 +1664,7 @@
                                 this.$.prereqLines_databound_ajax.generateRequest();
 
                                 this._loadProductsByAreaAndType(this.data.requesitionType);
+                                this._PopulatePurchaseLines();
                             }
                         }
                         if (data.detail.url.indexOf("CreatePreRequesition") !== -1) {
@@ -1673,7 +1673,7 @@
                         else if (data.detail.url.indexOf("Update") !== -1) {
                             if (this.data.eReasonCode == 1) {
 
-                                this._openToast("Pré-Requisição atualizada com sucesso.")
+                                this._openToast("Pré-Requisição atualizada com sucesso.");
                             } else {
                                 this._openToastError(this.data.eMessage);
                             }
@@ -1991,6 +1991,11 @@
                     if (isNaN(totalCost)) {
                         totalCost = 0;
                     }
+
+                    var composedKey = this.$._CBPurchaseLine.value.split(" ", 2);
+                    var purchHeaderNo = composedKey[0];
+                    var purchLineNo = composedKey[1];
+
                     this.dataLines.lines.unshift({
                         preRequisitionLineNo: this.data.preRequesitionsNo,
                         localCode: this._LocalCode,
@@ -2007,8 +2012,8 @@
                         regionCode: this.$._CLRegion.value,
                         functionalAreaCode: this.$._CLFunctionalAreaCode.value,
                         centerResponsibilityCode: this.$._CLResponsabilityCenterCode.value,
-                        openOrderNo: this.$._CBPurchaseHeader.value,
-                        openOrderLineNo: this.$._CBPurchaseLine.value,
+                        openOrderNo: purchHeaderNo,//this.$._CBPurchaseHeader.value,
+                        openOrderLineNo: purchLineNo,//this.$._CBPurchaseLine.value,
                         totalCost: totalCost > 0 ? totalCost : "",
                         armazemCDireta: this._CBItemsCDirect
                     });
