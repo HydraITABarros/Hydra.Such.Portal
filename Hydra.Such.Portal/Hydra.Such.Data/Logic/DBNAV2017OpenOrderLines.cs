@@ -114,6 +114,7 @@ namespace Hydra.Such.Data.Logic
                             UnitPriceLCY = (decimal)temp.UnitPriceLCY,
                             OutstandingAmount = (decimal)temp.OutstandingAmount,
                             QuantityReceived = (decimal)temp.QuantityReceived,
+                            AvailableQuantity = (decimal)temp.AvailableQuantity,
                             QuantityInvoiced = (decimal)temp.QuantityInvoiced,
                             PaytoVendorNo = (string)temp.PaytoVendorNo,
                             VendorItemNo = (string)temp.VendorItemNo,

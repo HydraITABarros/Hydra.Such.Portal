@@ -1902,7 +1902,7 @@ namespace Hydra.Such.Portal.Controllers
                             authorizedProjMovement.CodRegiao = x.RegionCode;
                             authorizedProjMovement.CodAreaFuncional = x.FunctionalAreaCode;
                             authorizedProjMovement.CodCentroResponsabilidade = x.ResponsabilityCenterCode;
-                            authorizedProjMovement.CodContrato = contract.NºDeContrato;
+                            authorizedProjMovement.CodContrato = contract?.NºDeContrato;
                             authorizedProjMovement.CodGrupoServico = x.ServiceGroupCode;
                             authorizedProjMovement.CodServCliente = x.ServiceClientCode;
                             authorizedProjMovement.DescServCliente = x.ServiceClientDescription;

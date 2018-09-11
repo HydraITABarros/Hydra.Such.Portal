@@ -32,6 +32,7 @@ namespace Hydra.Such.Data.ViewModel
         public decimal OutstandingAmount { get; set; }
         public decimal QuantityReceived { get; set; }
         public decimal QuantityInvoiced { get; set; }
+        public decimal AvailableQuantity { get; set; }
         public string PaytoVendorNo { get; set; }
         public string VendorItemNo { get; set; }
         public string GenBusPostingGroup { get; set; }

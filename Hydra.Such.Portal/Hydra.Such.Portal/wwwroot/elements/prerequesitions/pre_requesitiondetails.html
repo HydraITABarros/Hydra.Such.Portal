@@ -147,7 +147,7 @@
         <iron-ajax url="/PopulateDropdowns/GetProjectNavList" last-response="{{CBJobNo}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetNAVVendorComboGrid" last-response="{{CBVendor}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetPlaces" last-response="{{CBLocal}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetProductsPreRequisition" last-response="{{Products}}" id="filteredProducts_ajax" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProductsPreRequisition" last-response="{{Products}}" id="filteredProducts_ajax" auto method="post" handle-as="json" on-response="_productsResponse" content-type="application/json"></iron-ajax>
         <!--<iron-ajax url="/PopulateDropdowns/GetAllProductsComprasPortal" last-response="{{Products}}" id="filteredProducts_ajax" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
         <!--<iron-ajax url="/PopulateDropdowns/GetProductsForCurrentUser" last-response="{{CBItems}}" id="filteredProducts_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
         <iron-ajax url="/PopulateDropdowns/GetLocations" last-response="{{CBLocations}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -627,7 +627,7 @@
                                         <vaadin-text-field value="{{_CBItemsCDirect}}" id="_CBItemsCDirect" name="_CBItemsCDirect" label="Compra Direta" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                     </div>
                                     <div class="col-sm-2">
-                                        <such-selectbox id="_CBPurchaseLine" label="Nº Linha Enc. Aberto" on-value-changed="_setPurchaseLine"
+                                        <such-selectbox id="_CBPurchaseLine" value="{{_CBPurchaseLine}}" label="Nº Linha Enc. Aberto" on-value-changed="_setPurchaseLine"
                                                         items="[[CBPurchaseLine]]"
                                                         text-path="documentNO"
                                                         value-path="id"
@@ -1320,7 +1320,17 @@
                     _Products: {
                         observer: '_setProductData'
                     },
-
+                    _productFromPurchLine: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    //_LocalCode: {
+                    //    type: String,
+                    //    notify: true,
+                    //    value: "",
+                    //    observer: "_getProdtctsForLocation"
+                    //},
                     projectNo: {
                         observer: '_setProjectDim'
                     },
@@ -1414,7 +1424,20 @@
                     this.$.filteredProducts_ajax.body = JSON.stringify({ "rootAreaId": this._areaid, "requisitionType": requesitionType, "locationCode": locationId });
                     this.$.filteredProducts_ajax.generateRequest();
                 },
+                _getProdtctsForLocation: function (e) {
+                    var requesitionType = this.$.requesitionType.value;
+                    var locationId = this._LocalCode;
 
+                    this.$.filteredProducts_ajax.body = JSON.stringify({ "rootAreaId": this._areaid, "requisitionType": requesitionType, "locationCode": locationId });
+                    this.$.filteredProducts_ajax.generateRequest();
+                },
+                _productsResponse: function (data) {
+                    if (data.detail.status === 200) {
+                        if (this._productFromPurchLine != "") {
+                            this._Products = this._productFromPurchLine;
+                        }
+                    }
+                },
                 _setProjectDim: function (e) {
                     var projectNo = this.$.projectNo.value;
                     this.$.page_getProject_ajax.body = JSON.stringify(projectNo);
@@ -1432,18 +1455,33 @@
                         var purchHeaderNo = composedKey[0];
                         var purchLineNo = composedKey[1];
                         
+                        //var proj = this.CBPurchaseLine.find(x => x.line_No == purchLineNo && x.documentNO == purchHeaderNo);
+                        //this._LocalCode = proj.locationCode;
+                        //this._QuantityToOpen = proj.availableQuantity;//outstandingQtyBase;
+                        //this._CBVendor = proj.buyFromVendorNo;
+                        //this.$._CBPurchaseHeader.value = proj.documentNO;
+                        //this._productFromPurchLine = proj.numb;
+                        //this._UnitCost = proj.unitCost;
+                        ////if (proj.numb != "" && this.Products != undefined) {
+                        ////    var item = this.Products.find(x => x.code == proj.numb);
+                        ////    if (item != null) {
+                        ////        this._Products = item.code;
+                        ////    }
+                        ////}
+
                         var proj = this.CBPurchaseLine.find(x => x.line_No == purchLineNo && x.documentNO == purchHeaderNo);
-                        this._QuantityToOpen = proj.outstandingQtyBase;
+                        this._QuantityToOpen = proj.outstandingQtyBase;//proj.availableQuantity;//
                         this._CBVendor = proj.buyFromVendorNo;
                         this.$._CBPurchaseHeader.value = proj.documentNO;
+                        this._UnitCost = proj.unitCost;
                         if (proj.numb != "" && this.Products != undefined) {
                             var item = this.Products.find(x => x.code == proj.numb);
                             if (item != null) {
                                 this._Products = item.code;
                             }
                         }
-                        //this._LocalCode = proj.locationCode;
                     }
+                    this.$._UnitCost.disabled = e.detail.value !== "";
                 },
                 _onChangeQuantity: function (e) {
                     if (e != undefined) {
@@ -1992,10 +2030,14 @@
                         totalCost = 0;
                     }
 
-                    var composedKey = this.$._CBPurchaseLine.value.split(" ", 2);
-                    var purchHeaderNo = composedKey[0];
-                    var purchLineNo = composedKey[1];
-
+                    var purchHeaderNo = "";
+                    var purchLineNo = "";
+                    
+                    if (this._CBPurchaseLine) {
+                        var composedKey = this._CBPurchaseLine.split(" ", 2);
+                        purchHeaderNo = composedKey[0];
+                        purchLineNo = composedKey[1];
+                    }
                     this.dataLines.lines.unshift({
                         preRequisitionLineNo: this.data.preRequesitionsNo,
                         localCode: this._LocalCode,
@@ -2012,8 +2054,8 @@
                         regionCode: this.$._CLRegion.value,
                         functionalAreaCode: this.$._CLFunctionalAreaCode.value,
                         centerResponsibilityCode: this.$._CLResponsabilityCenterCode.value,
-                        openOrderNo: purchHeaderNo,//this.$._CBPurchaseHeader.value,
-                        openOrderLineNo: purchLineNo,//this.$._CBPurchaseLine.value,
+                        openOrderNo: purchHeaderNo,
+                        openOrderLineNo: purchLineNo,
                         totalCost: totalCost > 0 ? totalCost : "",
                         armazemCDireta: this._CBItemsCDirect
                     });
