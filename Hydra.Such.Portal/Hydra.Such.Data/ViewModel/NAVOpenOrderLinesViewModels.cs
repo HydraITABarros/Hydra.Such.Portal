@@ -66,5 +66,11 @@ namespace Hydra.Such.Data.ViewModel
         public int ProdOrderLineN { get; set; }
         public DateTime ContractStartingDate { get; set; }
         public DateTime ContractEndingDate { get; set; }
+        public string FunctionalAreaNo { get; set; }
+        public string FunctionalAreaDescription { get; set; }
+        public string RegionNo { get; set; }
+        public string RegionDescription { get; set; }
+        public string ResponsabilityCenterNo { get; set; }
+        public string ResponsabilityCenterDescription { get; set; }
     }
 }

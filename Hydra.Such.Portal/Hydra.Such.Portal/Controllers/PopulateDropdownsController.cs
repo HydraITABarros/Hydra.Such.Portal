@@ -446,7 +446,7 @@ namespace Hydra.Such.Portal.Controllers
             try
             {
                 List<NAVOpenOrderLinesViewModels> result = new List<NAVOpenOrderLinesViewModels>();
-                result = DBNAV2017OpenOrderLines.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, date, "", codFuncArea);
+                result = DBNAV2017OpenOrderLines.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, date, "", codFuncArea, true);
          
 
                 return Json(result);
