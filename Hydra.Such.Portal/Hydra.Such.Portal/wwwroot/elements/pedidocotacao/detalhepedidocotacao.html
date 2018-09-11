@@ -145,10 +145,13 @@
         <iron-ajax url="/PopulateDropdowns/GetProductsCode" last-response="{{CBItems_List}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetUnitOfMeasureByCode" last-response="{{LCBMeasuresUnit}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <!--<iron-ajax url="/Actividades/GetAllActividades" last-response="{{CBActividades}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
-
         <iron-ajax url="/PopulateDropdowns/GetNAVAtividadesComboGrid" last-response="{{CBActividades}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetNAVAtividadesComboGridList" last-response="{{CBActividades_List}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetNAVVendorComboGrid_FiltroActividade" id="ajax_supplier_options" last-response="{{Suppliers}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+
+        <iron-ajax url="/PopulateDropdowns/GetPaymentTerms" last-response="{{CBPaymentTerms}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetPaymentForms" last-response="{{CBPaymentForms}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
 
         <div class="subMenu">
@@ -385,10 +388,24 @@
                                                 </such-selectbox>
                                             </div>
                                             <div class="col-sm-2">
-                                                <vaadin-text-field type="text" id="_CodTermosPagamento" label="Cód. Termos Pagamento" maxlength="10"></vaadin-text-field>
+                                                <!--<vaadin-text-field type="text" id="_CodTermosPagamento" label="Cód. Termos Pagamento" maxlength="10"></vaadin-text-field>-->
+                                                <such-selectbox id="_CodTermosPagamento" name="_CodTermosPagamento" label="Cód. Termos Pagamento"
+                                                                items="[[CBPaymentTerms]]"
+                                                                text-path="value"
+                                                                value-path="id"
+                                                                required error-message="Este campo é obrigatório"
+                                                                fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                                                </such-selectbox>
                                             </div>
                                             <div class="col-sm-2">
-                                                <vaadin-text-field type="text" id="_CodFormasPagamento" label="Cód. Formas Pagamento" maxlength="10"></vaadin-text-field>
+                                                <!--<vaadin-text-field type="text" id="_CodFormasPagamento" label="Cód. Formas Pagamento" maxlength="10"></vaadin-text-field>-->
+                                                <such-selectbox id="_CodFormasPagamento" name="_CodFormasPagamento" label="Cód. Formas Pagamento"
+                                                                items="[[CBPaymentForms]]"
+                                                                text-path="value"
+                                                                value-path="id"
+                                                                required error-message="Este campo é obrigatório"
+                                                                fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                                                </such-selectbox>
                                             </div>
                                             <div class="col-sm-2" style="padding-top:16px">
                                                 <vaadin-checkbox id="_Preferencial" checked="{{chkPreferencial}}">Preferencial</vaadin-checkbox>
@@ -415,6 +432,7 @@
                                                 <vaadin-text-field name="tabSelecaoEntidadesidSeleccaoEntidades" id="tabSelecaoEntidadesidSeleccaoEntidades" value="{{item.idSeleccaoEntidades}}" disabled="true"></vaadin-text-field>
                                             </template>
                                         </vaadin-grid-column>
+
                                         <vaadin-grid-column resizable hidden>
                                             <template class="header">
                                                 <vaadin-grid-sorter path="numConsultaMercado" style="text-align:center;">Nº Consulta Mercado</vaadin-grid-sorter>
@@ -424,16 +442,38 @@
                                                 <vaadin-text-field name="tabSelecaoEntidadesnumConsultaMercado" id="tabSelecaoEntidadesnumConsultaMercado" value="{{item.numConsultaMercado}}" disabled="true"></vaadin-text-field>
                                             </template>
                                         </vaadin-grid-column>
-                                        <vaadin-grid-column resizable>
+
+                                        <vaadin-grid-column resizable width="250px">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="codActividade" style="text-align:center;">Cód. Actividade</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="codActividade"></vaadin-grid-filter>
+                                            </template>
+                                            <template>
+                                                <!--<vaadin-text-field name="tabSelecaoEntidadescodActividade" id="tabSelecaoEntidadescodActividade" value="{{item.codActividade}}" on-blur="_updateLinhaSeleccaoEntidade" disabled="{{ !_permissions.update }}"></vaadin-text-field>-->
+                                                <vaadin-combo-box items="[[CBActividades_List]]" id="tabSelecaoEntidadescodActividade" name="tabSelecaoEntidadescodActividade" item-value-path="id" item-label-path="id" value="{{item.codActividade}}" on-blur="_updateLinhaSeleccaoEntidade" disabled="{{ !_permissions.update }}">
+                                                    <template>
+                                                        <table width="200px">
+                                                            <tr>
+                                                                <td width="40%">[[item.id]]</td>
+                                                                <td width="60%"> <b>[[item.value]]</b></td>
+                                                            </tr>
+                                                        </table>
+                                                    </template>
+                                                </vaadin-combo-box>
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable width="250px">
                                             <template class="header">
                                                 <vaadin-grid-sorter path="codFornecedor" style="text-align:center;">Cód. Fornecedor</vaadin-grid-sorter>
                                                 <vaadin-grid-filter path="codFornecedor"></vaadin-grid-filter>
                                             </template>
                                             <template>
-                                                <vaadin-text-field name="tabSelecaoEntidadescodFornecedor" id="tabSelecaoEntidadescodFornecedor" value="{{item.codFornecedor}}" disabled="true"></vaadin-text-field>
+                                                <vaadin-text-field name="tabSelecaoEntidadescodFornecedor" id="tabSelecaoEntidadescodFornecedor" value="{{item.codFornecedor}}" on-blur="_updateLinhaSeleccaoEntidade" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                                             </template>
                                         </vaadin-grid-column>
-                                        <vaadin-grid-column resizable>
+
+                                        <vaadin-grid-column resizable width="250px">
                                             <template class="header">
                                                 <vaadin-grid-sorter path="nomeFornecedor" style="text-align:center;">Nome Fornecedor</vaadin-grid-sorter>
                                                 <vaadin-grid-filter path="nomeFornecedor"></vaadin-grid-filter>
@@ -442,41 +482,56 @@
                                                 <vaadin-text-field name="tabSelecaoEntidadesnomeFornecedor" id="tabSelecaoEntidadesnomeFornecedor" value="{{item.nomeFornecedor}}" disabled="true"></vaadin-text-field>
                                             </template>
                                         </vaadin-grid-column>
-                                        <vaadin-grid-column resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="codActividade" style="text-align:center;">Cód. Actividade</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="codActividade"></vaadin-grid-filter>
-                                            </template>
-                                            <template>
-                                                <vaadin-text-field name="tabSelecaoEntidadescodActividade" id="tabSelecaoEntidadescodActividade" value="{{item.codActividade}}" disabled="true"></vaadin-text-field>
-                                            </template>
-                                        </vaadin-grid-column>
-                                        <vaadin-grid-column resizable>
+
+                                        <vaadin-grid-column resizable width="250px">
                                             <template class="header">
                                                 <vaadin-grid-sorter path="codTermosPagamento" style="text-align:center;">Cód. Termos Pagamento</vaadin-grid-sorter>
                                                 <vaadin-grid-filter path="codTermosPagamento"></vaadin-grid-filter>
                                             </template>
                                             <template>
-                                                <vaadin-text-field name="tabSelecaoEntidadescodTermosPagamento" id="tabSelecaoEntidadescodTermosPagamento" value="{{item.codTermosPagamento}}" disabled="true"></vaadin-text-field>
+                                                <!--<vaadin-text-field name="tabSelecaoEntidadescodTermosPagamento" id="tabSelecaoEntidadescodTermosPagamento" value="{{item.codTermosPagamento}}" on-blur="_updateLinhaSeleccaoEntidade" disabled="{{ !_permissions.update }}"></vaadin-text-field>-->
+                                                <vaadin-combo-box items="[[CBPaymentTerms]]" id="tabSelecaoEntidadescodTermosPagamento" item-value-path="id" item-label-path="id" value="{{item.codTermosPagamento}}" on-blur="_updateLinhaSeleccaoEntidade" disabled="{{ !_permissions.update }}">
+                                                    <template>
+                                                        <table>
+                                                            <tr>
+                                                                <td width="40%">[[item.id]]</td>
+                                                                <td width="60%"> <b>[[item.value]]</b></td>
+                                                            </tr>
+                                                        </table>
+                                                    </template>
+                                                </vaadin-combo-box>
                                             </template>
                                         </vaadin-grid-column>
-                                        <vaadin-grid-column resizable>
+
+                                        <vaadin-grid-column resizable width="250px">
                                             <template class="header">
                                                 <vaadin-grid-sorter path="codFormaPagamento" style="text-align:center;">Cód. Formas Pagamento</vaadin-grid-sorter>
                                                 <vaadin-grid-filter path="codFormaPagamento"></vaadin-grid-filter>
                                             </template>
                                             <template>
-                                                <vaadin-text-field name="tabSelecaoEntidadescodFormaPagamento" id="tabSelecaoEntidadescodFormaPagamento" value="{{item.codFormaPagamento}}" disabled="true"></vaadin-text-field>
+                                                <!--<vaadin-text-field name="tabSelecaoEntidadescodFormaPagamento" id="tabSelecaoEntidadescodFormaPagamento" value="{{item.codFormaPagamento}}" on-blur="_updateLinhaSeleccaoEntidade" disabled="{{ !_permissions.update }}"></vaadin-text-field>-->
+                                                <vaadin-combo-box items="[[CBPaymentForms]]" id="tabSelecaoEntidadescodFormaPagamento" item-value-path="id" item-label-path="id" value="{{item.codFormaPagamento}}" on-blur="_updateLinhaSeleccaoEntidade" disabled="{{ !_permissions.update }}">
+                                                    <template>
+                                                        <table>
+                                                            <tr>
+                                                                <td width="40%">[[item.id]]</td>
+                                                                <td width="60%"> <b>[[item.value]]</b></td>
+                                                            </tr>
+                                                        </table>
+                                                    </template>
+                                                </vaadin-combo-box>
                                             </template>
                                         </vaadin-grid-column>
+
                                         <vaadin-grid-column resizable>
                                             <template class="header">
                                                 <vaadin-grid-sorter path="preferencial" style="text-align:center;">Preferencial</vaadin-grid-sorter>
                                             </template>
                                             <template>
-                                                <vaadin-checkbox id="tabSelecaoEntidadespreferencial" checked="{{item.preferencial}}" disabled="true"></vaadin-checkbox>
+                                                <vaadin-checkbox id="tabSelecaoEntidadespreferencial" checked="{{item.preferencial}}" on-blur="_updateLinhaSeleccaoEntidade" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
                                             </template>
                                         </vaadin-grid-column>
+
                                         <vaadin-grid-column resizable>
                                             <template class="header">
                                             </template>
@@ -637,7 +692,7 @@
                         </template>
                     </vaadin-grid-column>
 
-                    <vaadin-grid-column resizable>
+                    <vaadin-grid-column resizable width="250px">
                         <template class="header">
                             <vaadin-grid-sorter path="numConsultaMercado" style="text-align:center;">Nº Consulta Mercado</vaadin-grid-sorter>
                             <vaadin-grid-filter path="numConsultaMercado"></vaadin-grid-filter>
@@ -647,7 +702,7 @@
                         </template>
                     </vaadin-grid-column>
 
-                    <vaadin-grid-column resizable>
+                    <vaadin-grid-column resizable width="250px">
                         <template class="header">
                             <vaadin-grid-sorter path="numProjecto" style="text-align:center;">Nº Projeto</vaadin-grid-sorter>
                             <vaadin-grid-filter path="numProjecto"></vaadin-grid-filter>
@@ -656,17 +711,18 @@
                             <!--<vaadin-text-field name="tabLinhasnumProjecto" id="tabLinhasnumProjecto" value="{{item.numProjecto}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}"></vaadin-text-field>-->
                             <vaadin-combo-box items="[[CBJobNo_List]]" id="tabLinhasnumProjecto" item-value-path="id" item-label-path="id" value="{{item.numProjecto}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}" style="text-align:left;">
                                 <template>
-                                    <paper-icon-item>
-                                        <paper-item-body two-line>
-                                            <div>[[item.id]]  - [[item.value]]</div>
-                                        </paper-item-body>
-                                    </paper-icon-item>
+                                    <table width="200px">
+                                        <tr>
+                                            <td width="40%">[[item.id]]</td>
+                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
                                 </template>
                             </vaadin-combo-box>
                         </template>
                     </vaadin-grid-column>
 
-                    <vaadin-grid-column resizable>
+                    <vaadin-grid-column resizable width="250px">
                         <template class="header">
                             <vaadin-grid-sorter path="codProduto" style="text-align:center;">Cód. Produto</vaadin-grid-sorter>
                             <vaadin-grid-filter path="codProduto"></vaadin-grid-filter>
@@ -675,17 +731,18 @@
                             <!--<vaadin-text-field name="tabLinhascodProduto" id="tabLinhascodProduto" value="{{item.codProduto}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}"></vaadin-text-field>-->
                             <vaadin-combo-box items="[[CBItems_List]]" id="tabLinhascodProduto" item-value-path="id" item-label-path="id" value="{{item.codProduto}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}" style="text-align:left;">
                                 <template>
-                                    <paper-icon-item>
-                                        <paper-item-body two-line>
-                                            <div>[[item.id]]  - [[item.value]]</div>
-                                        </paper-item-body>
-                                    </paper-icon-item>
+                                    <table width="200px">
+                                        <tr>
+                                            <td width="40%">[[item.id]]</td>
+                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
                                 </template>
                             </vaadin-combo-box>
                         </template>
                     </vaadin-grid-column>
 
-                    <vaadin-grid-column resizable>
+                    <vaadin-grid-column resizable width="250px">
                         <template class="header">
                             <vaadin-grid-sorter path="descricao" style="text-align:center;">Descrição</vaadin-grid-sorter>
                             <vaadin-grid-filter path="descricao"></vaadin-grid-filter>
@@ -695,7 +752,7 @@
                         </template>
                     </vaadin-grid-column>
 
-                    <vaadin-grid-column resizable>
+                    <vaadin-grid-column resizable width="250px">
                         <template class="header">
                             <vaadin-grid-sorter path="descricao2" style="text-align:center;">Descrição 2</vaadin-grid-sorter>
                             <vaadin-grid-filter path="descricao2"></vaadin-grid-filter>
@@ -705,7 +762,7 @@
                         </template>
                     </vaadin-grid-column>
 
-                    <vaadin-grid-column resizable>
+                    <vaadin-grid-column resizable width="250px">
                         <template class="header">
                             <vaadin-grid-sorter path="codUnidadeMedida" style="text-align:center;">Cód. Unidade Medida</vaadin-grid-sorter>
                             <vaadin-grid-filter path="codUnidadeMedida"></vaadin-grid-filter>
@@ -725,15 +782,13 @@
                         </template>
                     </vaadin-grid-column>
 
-                    <vaadin-grid-column resizable>
+                    <vaadin-grid-column resizable width="250px">
                         <template class="header">
                             <vaadin-grid-sorter path="codActividade" style="text-align:center;">Cód.Actividade</vaadin-grid-sorter>
                             <vaadin-grid-filter path="codActividade"></vaadin-grid-filter>
                         </template>
                         <template>
-                            <vaadin-text-field name="tabLinhascodActividade" id="tabLinhascodActividade" value="{{item.codActividade}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}"></vaadin-text-field>
-                            CBActividades_List
-
+                            <!--<vaadin-text-field name="tabLinhascodActividade" id="tabLinhascodActividade" value="{{item.codActividade}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}"></vaadin-text-field>-->
                             <vaadin-combo-box items="[[CBActividades_List]]" id="tabLinhascodActividade" name="tabLinhascodActividade" item-value-path="id" item-label-path="id" value="{{item.codActividade}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}">
                                 <template>
                                     <table width="200px">
@@ -744,51 +799,90 @@
                                     </table>
                                 </template>
                             </vaadin-combo-box>
-
                         </template>
                     </vaadin-grid-column>
 
-                    <vaadin-grid-column resizable>
+                    <vaadin-grid-column resizable width="250px">
                         <template class="header">
                             <vaadin-grid-sorter path="codLocalizacao" style="text-align:center;">Cód.Localização</vaadin-grid-sorter>
                             <vaadin-grid-filter path="codLocalizacao"></vaadin-grid-filter>
                         </template>
                         <template>
-                            <vaadin-text-field name="tabLinhascodLocalizacao" id="tabLinhascodLocalizacao" value="{{item.codLocalizacao}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                            <!--<vaadin-text-field name="tabLinhascodLocalizacao" id="tabLinhascodLocalizacao" value="{{item.codLocalizacao}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}"></vaadin-text-field>-->
+                            <vaadin-combo-box items="[[CBLocations]]" id="tabLinhascodLocalizacao" name="tabLinhascodLocalizacao" item-value-path="id" item-label-path="id" value="{{item.codLocalizacao}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}">
+                                <template>
+                                    <table width="200px">
+                                        <tr>
+                                            <td width="40%">[[item.id]]</td>
+                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
+                                </template>
+                            </vaadin-combo-box>
                         </template>
                     </vaadin-grid-column>
 
-                    <vaadin-grid-column resizable>
+                    <vaadin-grid-column resizable width="250px">
                         <template class="header">
                             <vaadin-grid-sorter path="codRegiao" style="text-align:center;">Cód. Região</vaadin-grid-sorter>
                             <vaadin-grid-filter path="codRegiao"></vaadin-grid-filter>
                         </template>
                         <template>
-                            <vaadin-text-field name="tabLinhascodRegiao" id="tabLinhascodRegiao" value="{{item.codRegiao}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                            <!--<vaadin-text-field name="tabLinhascodRegiao" id="tabLinhascodRegiao" value="{{item.codRegiao}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}"></vaadin-text-field>-->
+                            <vaadin-combo-box items="[[CBRegions]]" id="tabLinhascodRegiao" name="tabLinhascodRegiao" item-value-path="id" item-label-path="id" value="{{item.codRegiao}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}">
+                                <template>
+                                    <table width="200px">
+                                        <tr>
+                                            <td width="40%">[[item.id]]</td>
+                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
+                                </template>
+                            </vaadin-combo-box>
                         </template>
                     </vaadin-grid-column>
 
-                    <vaadin-grid-column resizable>
+                    <vaadin-grid-column resizable width="250px">
                         <template class="header">
                             <vaadin-grid-sorter path="codAreaFuncional" style="text-align:center;">Cód. Área Funcional</vaadin-grid-sorter>
                             <vaadin-grid-filter path="codAreaFuncional"></vaadin-grid-filter>
                         </template>
                         <template>
-                            <vaadin-text-field name="tabLinhascodAreaFuncional" id="tabLinhascodAreaFuncional" value="{{item.codAreaFuncional}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                            <!--<vaadin-text-field name="tabLinhascodAreaFuncional" id="tabLinhascodAreaFuncional" value="{{item.codAreaFuncional}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}"></vaadin-text-field>-->
+                            <vaadin-combo-box items="[[CBFunctionalAreas]]" id="tabLinhascodAreaFuncional" name="tabLinhascodAreaFuncional" item-value-path="id" item-label-path="id" value="{{item.codAreaFuncional}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}">
+                                <template>
+                                    <table width="200px">
+                                        <tr>
+                                            <td width="40%">[[item.id]]</td>
+                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
+                                </template>
+                            </vaadin-combo-box>
                         </template>
                     </vaadin-grid-column>
 
-                    <vaadin-grid-column resizable>
+                    <vaadin-grid-column resizable width="250px">
                         <template class="header">
                             <vaadin-grid-sorter path="codCentroResponsabilidade" style="text-align:center;">Cód. Centro Responsabilidade</vaadin-grid-sorter>
                             <vaadin-grid-filter path="codCentroResponsabilidade"></vaadin-grid-filter>
                         </template>
                         <template>
-                            <vaadin-text-field name="tabLinhascodCentroResponsabilidade" id="tabLinhascodCentroResponsabilidade" value="{{item.codCentroResponsabilidade}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                            <!--<vaadin-text-field name="tabLinhascodCentroResponsabilidade" id="tabLinhascodCentroResponsabilidade" value="{{item.codCentroResponsabilidade}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}"></vaadin-text-field>-->
+                            <vaadin-combo-box items="[[CBResponsabilityCenterCodes]]" id="tabLinhascodCentroResponsabilidade" name="tabLinhascodCentroResponsabilidade" item-value-path="id" item-label-path="id" value="{{item.codCentroResponsabilidade}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}">
+                                <template>
+                                    <table width="200px">
+                                        <tr>
+                                            <td width="40%">[[item.id]]</td>
+                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
+                                </template>
+                            </vaadin-combo-box>
                         </template>
                     </vaadin-grid-column>
 
-                    <vaadin-grid-column resizable>
+                    <vaadin-grid-column resizable width="250px">
                         <template class="header">
                             <vaadin-grid-sorter path="quantidade" style="text-align:center;">Quantidade</vaadin-grid-sorter>
                             <vaadin-grid-filter path="quantidade"></vaadin-grid-filter>
@@ -798,7 +892,7 @@
                         </template>
                     </vaadin-grid-column>
 
-                    <vaadin-grid-column resizable>
+                    <vaadin-grid-column resizable width="250px">
                         <template class="header">
                             <vaadin-grid-sorter path="custoUnitarioPrevisto" style="text-align:center;">Custo Unitário Previsto</vaadin-grid-sorter>
                             <vaadin-grid-filter path="custoUnitarioPrevisto"></vaadin-grid-filter>
@@ -808,7 +902,7 @@
                         </template>
                     </vaadin-grid-column>
 
-                    <vaadin-grid-column resizable>
+                    <vaadin-grid-column resizable width="250px">
                         <template class="header">
                             <vaadin-grid-sorter path="custoTotalPrevisto" style="text-align:center;">Custo Total Previsto</vaadin-grid-sorter>
                             <vaadin-grid-filter path="custoTotalPrevisto"></vaadin-grid-filter>
@@ -818,7 +912,7 @@
                         </template>
                     </vaadin-grid-column>
 
-                    <vaadin-grid-column resizable>
+                    <vaadin-grid-column resizable width="250px">
                         <template class="header">
                             <vaadin-grid-sorter path="custoUnitarioObjectivo" style="text-align:center;">Custo Unitário Objectivo</vaadin-grid-sorter>
                             <vaadin-grid-filter path="custoUnitarioObjectivo"></vaadin-grid-filter>
@@ -828,7 +922,7 @@
                         </template>
                     </vaadin-grid-column>
 
-                    <vaadin-grid-column resizable>
+                    <vaadin-grid-column resizable width="250px">
                         <template class="header">
                             <vaadin-grid-sorter path="custoTotalObjectivo" style="text-align:center;">Custo Total Objectivo</vaadin-grid-sorter>
                             <vaadin-grid-filter path="custoTotalObjectivo"></vaadin-grid-filter>
@@ -838,7 +932,7 @@
                         </template>
                     </vaadin-grid-column>
 
-                    <vaadin-grid-column resizable>
+                    <vaadin-grid-column resizable width="250px">
                         <template class="header">
                             <vaadin-grid-sorter path="dataEntregaPrevista_Show" style="text-align:center;">Data Entrega Prevista</vaadin-grid-sorter>
                             <vaadin-grid-filter path="dataEntregaPrevista_Show"></vaadin-grid-filter>
@@ -1308,6 +1402,7 @@
                         numConsultaMercado: e.model.item.numConsultaMercado,
                         codProduto: e.model.item.codProduto,
                         descricao: e.model.item.descricao,
+                        descricao2: e.model.item.descricao2,
                         numProjecto: e.model.item.numProjecto,
                         codRegiao: e.model.item.codRegiao,
                         codAreaFuncional: e.model.item.codAreaFuncional,
@@ -1389,10 +1484,30 @@
                     }
                 },
                 _updateLinhaSeleccaoEntidade: function (e) {
-
+                    debugger;
+                    this.$.page_updateLinhaSeleccaoEntidade_ajax.body = JSON.stringify({
+                        idSeleccaoEntidades: e.model.item.idSeleccaoEntidades,
+                        numConsultaMercado: e.model.item.numConsultaMercado,
+                        codFornecedor: e.model.item.codFornecedor,
+                        nomeFornecedor: e.model.item.nomeFornecedor,
+                        codActividade: e.model.item.codActividade,
+                        cidadeFornecedor: e.model.item.cidadeFornecedor,
+                        codTermosPagamento: e.model.item.codTermosPagamento,
+                        codFormaPagamento: e.model.item.codFormaPagamento,
+                        selecionado: e.model.item.selecionado,
+                        preferencial: e.model.item.preferencial
+                    });
+                    this.$.page_updateLinhaSeleccaoEntidade_ajax.generateRequest();
+                    this.$.tabSelecaoEntidades.clearCache();
                 },
                 _updateLinhaSeleccaoEntidadeResponse: function (e) {
-
+                    if (this.LinhaSeleccaoEntidadeUpdated == true) {
+                        this.$.page_databound_ajax.generateRequest();
+                        this._showMessage('Linha Entidade Actualizada com sucesso.');
+                    }
+                    else {
+                        this._showErrorMessage('Ocorreu um erro ao Actualizar a linha da Entidade.');
+                    }
                 },
 
 

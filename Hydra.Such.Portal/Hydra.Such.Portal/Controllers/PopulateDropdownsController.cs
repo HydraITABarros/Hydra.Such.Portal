@@ -517,6 +517,17 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetPaymentForms()
+        {
+            List<DDMessageString> result = DBNAV2017PaymentForms.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(x => new DDMessageString()
+            {
+                id = x.Code,
+                value = x.Description
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetContacts([FromBody] int type = -1)
         {
             List<DDMessageString> result = DBNAV2017Contacts.GetContacts(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(x => new DDMessageString()

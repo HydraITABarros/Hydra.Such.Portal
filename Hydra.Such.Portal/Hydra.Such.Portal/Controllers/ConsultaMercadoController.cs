@@ -596,14 +596,12 @@ namespace Hydra.Such.Portal.Controllers
                     if (PROD != null)
                     {
                         data.Descricao = PROD.Name;
-                        data.Descricao2 = PROD.Name2;
                         data.CodUnidadeMedida = PROD.MeasureUnit;
                     }
                 }
                 else
                 {
                     data.Descricao = null;
-                    data.Descricao2 = null;
                     data.CodUnidadeMedida = null;
                 }
 
@@ -699,7 +697,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 SeleccaoEntidades seleccaoEntidades = DBConsultaMercado.CastSeleccaoEntidadesViewToDB(data);
 
-                var dbUpdateResult = DBConsultaMercado.Create(seleccaoEntidades);
+                var dbUpdateResult = DBConsultaMercado.Update(seleccaoEntidades);
 
                 if (dbUpdateResult != null)
                     result = true;
