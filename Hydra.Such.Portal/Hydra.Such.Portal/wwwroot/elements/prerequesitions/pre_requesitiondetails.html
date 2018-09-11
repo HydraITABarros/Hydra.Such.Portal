@@ -1987,14 +1987,19 @@
 
                 //Pre Requesition Lines
                 _createPreReqLine: function () {
+                    debugger;
                     var totalCost = this._QuantityToRequire * this._UnitCost;
                     if (isNaN(totalCost)) {
                         totalCost = 0;
                     }
 
-                    var composedKey = this.$._CBPurchaseLine.value.split(" ", 2);
-                    var purchHeaderNo = composedKey[0];
-                    var purchLineNo = composedKey[1];
+                    var purchHeaderNo = "";
+                    var purchLineNo = "";
+                    if (this.$._CBPurchaseLine.value != undefined & this.$._CBPurchaseLine.value != "") {
+                        var composedKey = this.$._CBPurchaseLine.value.split(" ", 2);
+                        purchHeaderNo = composedKey[0];
+                        purchLineNo = composedKey[1];
+                    }
 
                     this.dataLines.lines.unshift({
                         preRequisitionLineNo: this.data.preRequesitionsNo,
