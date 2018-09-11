@@ -11,6 +11,7 @@ using Hydra.Such.Data.ViewModel.PedidoCotacao;
 using Hydra.Such.Portal.Configurations;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
@@ -21,10 +22,12 @@ namespace Hydra.Such.Portal.Controllers
 {
     public class ConsultaMercadoController : Controller
     {
+        private readonly NAVConfigurations _config;
         private readonly IHostingEnvironment _hostingEnvironment;
 
-        public ConsultaMercadoController(IHostingEnvironment _hostingEnvironment)
+        public ConsultaMercadoController(IOptions<NAVConfigurations> appSettings, IHostingEnvironment _hostingEnvironment)
         {
+            _config = appSettings.Value;
             this._hostingEnvironment = _hostingEnvironment;
         }
 
@@ -586,6 +589,32 @@ namespace Hydra.Such.Portal.Controllers
             bool result = false;
             try
             {
+                if (!string.IsNullOrEmpty(data.CodProduto))
+                {
+                    NAVProductsViewModel PROD = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, data.CodProduto).FirstOrDefault();
+
+                    if (PROD != null)
+                    {
+                        data.Descricao = PROD.Name;
+                        data.CodUnidadeMedida = PROD.MeasureUnit;
+                    }
+                }
+                else
+                {
+                    data.Descricao = null;
+                    data.CodUnidadeMedida = null;
+                }
+
+                if (data.Quantidade != null && data.CustoUnitarioPrevisto != null)
+                    data.CustoTotalPrevisto = Math.Round((decimal)data.Quantidade * (decimal)data.CustoUnitarioPrevisto * 100) / 100;
+                else
+                    data.CustoTotalPrevisto = null;
+
+                if (data.Quantidade != null && data.CustoUnitarioObjectivo != null)
+                    data.CustoTotalObjectivo = Math.Round((decimal)data.Quantidade * (decimal)data.CustoUnitarioObjectivo * 100) / 100;
+                else
+                    data.CustoTotalObjectivo = null;
+
                 LinhasConsultaMercado linhaConsultaMercado = DBConsultaMercado.CastLinhasConsultaMercadoViewToDB(data);
                 
                 linhaConsultaMercado.ModificadoEm = DateTime.Now;
@@ -668,7 +697,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 SeleccaoEntidades seleccaoEntidades = DBConsultaMercado.CastSeleccaoEntidadesViewToDB(data);
 
-                var dbUpdateResult = DBConsultaMercado.Create(seleccaoEntidades);
+                var dbUpdateResult = DBConsultaMercado.Update(seleccaoEntidades);
 
                 if (dbUpdateResult != null)
                     result = true;

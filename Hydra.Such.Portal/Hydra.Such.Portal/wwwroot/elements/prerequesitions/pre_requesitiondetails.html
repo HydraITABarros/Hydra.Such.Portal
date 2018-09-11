@@ -1451,10 +1451,10 @@
                 },
                 _setPurchaseLine: function (e) {
                     if (e.detail.value !== "") {
-                        var composedKey = e.detail.value.split(" ", 2); 
+                        var composedKey = e.detail.value.split(" ", 2);
                         var purchHeaderNo = composedKey[0];
                         var purchLineNo = composedKey[1];
-                        
+
                         //var proj = this.CBPurchaseLine.find(x => x.line_No == purchLineNo && x.documentNO == purchHeaderNo);
                         //this._LocalCode = proj.locationCode;
                         //this._QuantityToOpen = proj.availableQuantity;//outstandingQtyBase;
@@ -1927,7 +1927,7 @@
                     var line = this.CBPurchaseLine.find(x => x.id == e.currentTarget.__data.selectedItem.id);
                     if (line != null) {
                         this._SelectedLine.openOrderNo = line.documentNO;
-                    }                   
+                    }
                 },
                 _GridRespCenterChange: function (e) {
                     if (this.dataLines != null && this.dataLines.lines != null) {
@@ -2032,12 +2032,12 @@
 
                     var purchHeaderNo = "";
                     var purchLineNo = "";
-                    
-                    if (this._CBPurchaseLine) {
-                        var composedKey = this._CBPurchaseLine.split(" ", 2);
+                    if (this.$._CBPurchaseLine.value != undefined & this.$._CBPurchaseLine.value != "") {
+                        var composedKey = this.$._CBPurchaseLine.value.split(" ", 2);
                         purchHeaderNo = composedKey[0];
                         purchLineNo = composedKey[1];
                     }
+
                     this.dataLines.lines.unshift({
                         preRequisitionLineNo: this.data.preRequesitionsNo,
                         localCode: this._LocalCode,
