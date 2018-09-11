@@ -556,6 +556,7 @@ namespace Hydra.Such.Portal.Controllers
                 linhaConsultaMercado.CustoUnitarioPrevisto = data.CustoUnitarioPrevisto;
                 linhaConsultaMercado.DataEntregaPrevista = data.DataEntregaPrevista_Show != string.Empty ? DateTime.Parse(data.DataEntregaPrevista_Show) : (DateTime?)null;
                 linhaConsultaMercado.Descricao = data.Descricao;
+                linhaConsultaMercado.Descricao2 = data.Descricao2;
                 linhaConsultaMercado.LinhaRequisicao = data.LinhaRequisicao;
                 linhaConsultaMercado.ModificadoEm = data.ModificadoEm;
                 linhaConsultaMercado.ModificadoPor = data.ModificadoPor;

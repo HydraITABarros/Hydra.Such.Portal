@@ -2020,9 +2020,9 @@
 
                     this.$.grid_prereqlines.clearCache();
 
-                    //this.$.prereqLines_databound_ajax.url = "/PreRequisicoes/UpdateContractLines";
-                    //this.$.prereqLines_databound_ajax.body = JSON.stringify(this.dataLines);
-                    //this.$.prereqLines_databound_ajax.generateRequest();
+                    this.$.prereqLines_databound_ajax.url = "/PreRequisicoes/UpdateContractLines";
+                    this.$.prereqLines_databound_ajax.body = JSON.stringify(this.dataLines);
+                    this.$.prereqLines_databound_ajax.generateRequest();
                 },
 
                 _updateContractLines: function () {
@@ -2121,6 +2121,7 @@
                     }
                 },
                 _clResponseProcessor: function (data) {
+                    //debugger;
                     if (data.detail.status === 200) {
                         if (!(data.detail.url.indexOf("GetPreReqLines") !== -1)) {
                             if (this.dataLines.eReasonCode != 1) {

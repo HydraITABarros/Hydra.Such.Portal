@@ -88,7 +88,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         //EXPORTAR PARA EXCEL
         public Object ColunasEXCEL { get; set; }
 
-        public List<RequisitionLineViewModel> Lines { get; set; }
+        public List<RequisitionLineHistViewModel> Lines { get; set; }
         public List<RequisitionChangeLog> ChangeLog { get; set; }
 
         public decimal GetTotalValue()
