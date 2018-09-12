@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 using static Hydra.Such.Data.Enumerations;
 using Hydra.Such.Data.Database;
 using Hydra.Such.Data.Logic;
+using Hydra.Such.Portal.Configurations;
+using Microsoft.Extensions.Options;
 
 namespace Hydra.Such.Portal.Services
 {
@@ -28,11 +30,19 @@ namespace Hydra.Such.Portal.Services
 
     public class RequisitionService
     {
+        private readonly NAVConfigurations _config;
         private readonly NAVWSConfigurations configws;
         private readonly string changedByUserName;
 
         public RequisitionService(NAVWSConfigurations NAVWSConfigs, string logChangesAsUserName)
         {
+            this.configws = NAVWSConfigs;
+            this.changedByUserName = logChangesAsUserName;
+        }
+
+        public RequisitionService(IOptions<NAVConfigurations> appSettings, NAVWSConfigurations NAVWSConfigs, string logChangesAsUserName)
+        {
+            _config = appSettings.Value;
             this.configws = NAVWSConfigs;
             this.changedByUserName = logChangesAsUserName;
         }
@@ -502,6 +512,7 @@ namespace Hydra.Such.Portal.Services
                             seleccaoEntidades = new SeleccaoEntidades() {
                                 NumConsultaMercado = consultaMercado.NumConsultaMercado,
                                 CodFornecedor = requisitionLine.SupplierNo,
+                                NomeFornecedor = !string.IsNullOrEmpty(requisitionLine.SupplierNo) ? DBNAV2017Supplier.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, requisitionLine.SupplierNo).FirstOrDefault().Name : "",
                                 Selecionado = true,
                                 Preferencial = true
                             };
