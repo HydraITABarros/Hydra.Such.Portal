@@ -150,8 +150,8 @@
         <iron-ajax url="/PopulateDropdowns/GetNAVVendorComboGrid_FiltroActividade" id="ajax_supplier_options" last-response="{{Suppliers}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
 
-        <iron-ajax url="/PopulateDropdowns/GetPaymentTerms" last-response="{{CBPaymentTerms}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetPaymentForms" last-response="{{CBPaymentForms}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetPaymentTerms" id="ajax_PaymentTerms_options" last-response="{{CBPaymentTerms}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetPaymentForms" id="ajax_PaymentForms_options" last-response="{{CBPaymentForms}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
 
         <div class="subMenu">
@@ -370,7 +370,7 @@
                                     <div class="panel-body">
                                         <div class="row break_clear">
                                             <div class="col-sm-2">
-                                                <such-selectbox id="seleccaoentidade_codActividade" value="{{data.codActividade}}" label="Cód. Actividade" on-blur="_filtraFornecedores"
+                                                <such-selectbox id="seleccaoentidade_codActividade" value="{{data.codActividade}}" label="Cód. Actividade" on-blur="_filtraFornecedores" on-value-changed="_filtraFornecedores"
                                                                 items="[[CBActividades]]"
                                                                 text-path="codActividade"
                                                                 value-path="codActividade"
@@ -450,7 +450,7 @@
                                             </template>
                                             <template>
                                                 <!--<vaadin-text-field name="tabSelecaoEntidadescodActividade" id="tabSelecaoEntidadescodActividade" value="{{item.codActividade}}" on-blur="_updateLinhaSeleccaoEntidade" disabled="{{ !_permissions.update }}"></vaadin-text-field>-->
-                                                <vaadin-combo-box items="[[CBActividades_List]]" id="tabSelecaoEntidadescodActividade" name="tabSelecaoEntidadescodActividade" item-value-path="id" item-label-path="id" value="{{item.codActividade}}" on-blur="_updateLinhaSeleccaoEntidade" disabled="{{ !_permissions.update }}">
+                                                <vaadin-combo-box items="[[CBActividades_List]]" id="tabSelecaoEntidadescodActividade" name="tabSelecaoEntidadescodActividade" item-value-path="id" item-label-path="id" value="{{item.codActividade}}" on-blur="_updateLinhaSeleccaoEntidade" disabled="true">
                                                     <template>
                                                         <table width="200px">
                                                             <tr>
@@ -469,7 +469,7 @@
                                                 <vaadin-grid-filter path="codFornecedor"></vaadin-grid-filter>
                                             </template>
                                             <template>
-                                                <vaadin-text-field name="tabSelecaoEntidadescodFornecedor" id="tabSelecaoEntidadescodFornecedor" value="{{item.codFornecedor}}" on-blur="_updateLinhaSeleccaoEntidade" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                                <vaadin-text-field name="tabSelecaoEntidadescodFornecedor" id="tabSelecaoEntidadescodFornecedor" value="{{item.codFornecedor}}" on-blur="_updateLinhaSeleccaoEntidade" disabled="true"></vaadin-text-field>
                                             </template>
                                         </vaadin-grid-column>
 
@@ -1262,11 +1262,24 @@
                     }
                 },
                 _setSuppliersData: function (e) {
-                    var item = this.Suppliers.find(x => x.no_ == e);
+                    debugger;
+                    var self = this;
+
+                    var item = self.Suppliers.find(x => x.no_ == e);
                     if (item != null) {
-                        this.$._CodTermosPagamento.value = item.cod_Termos_Pagamento;
-                        this.$._CodFormasPagamento.value = item.cod_Formas_Pagamento;
-                        this.chkPreferencial = item.preferencial == 0 ? false : true;
+                        self.$._CodTermosPagamento.value = item.cod_Termos_Pagamento;
+                        self.$._CodFormasPagamento.value = item.cod_Formas_Pagamento;
+                        self.chkPreferencial = item.preferencial == 0 ? false : true;
+                    }
+                    else {
+                        self.$._Suppliers.value = "";
+                        self.$._CodTermosPagamento.value = "";
+                        self.$._CodFormasPagamento.value = "";
+                        self.chkPreferencial = false;
+
+                        self.$._Suppliers.valueText = "";
+                        self.$._CodTermosPagamento.valueText = "";
+                        self.$._CodFormasPagamento.valueText = "";
                     }
                 },
                 _formulaCalculoAutomatica: function () {
@@ -1515,7 +1528,7 @@
                     var self = this;
                     
                     self._setFieldsEditability(self.data);
-                    self._filtraFornecedores();
+                    //self._filtraFornecedores();
                 },
 
                 _confirmAndExecuteActionToast: function (_message, _ajaxRequest) {
@@ -1540,11 +1553,26 @@
                 },
 
                 _filtraFornecedores: function () {
+                    debugger;
                     var _self = this;
 
-                    this.$.ajax_supplier_options.body = JSON.stringify(_self.$.seleccaoentidade_codActividade.value);
-                    this.$.ajax_supplier_options.params = { "id": _self.$.seleccaoentidade_codActividade.value };
-                    this.$.ajax_supplier_options.generateRequest();
+                    _self.$._CodTermosPagamento.value = "";
+                    _self.$._CodTermosPagamento.valueText = "";
+
+                    _self.$._CodFormasPagamento.value = "";
+                    _self.$._CodFormasPagamento.valueText = "";
+
+                    _self.chkPreferencial = false;
+
+                    _self.$._Suppliers.value = "";
+                    _self.$._Suppliers.valueText = "";
+
+                    _self.$.ajax_supplier_options.body = JSON.stringify(_self.$.seleccaoentidade_codActividade.value);
+                    _self.$.ajax_supplier_options.params = { "id": _self.$.seleccaoentidade_codActividade.value };
+                    _self.$.ajax_supplier_options.generateRequest();
+
+                    _self.$.ajax_PaymentTerms_options.generateRequest();
+                    _self.$.ajax_PaymentForms_options.generateRequest();
                 },
 
 
