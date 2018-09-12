@@ -536,7 +536,12 @@
                                 <div>
                                     <div class="row break_clear">
                                         <!--<template is="dom-if" if="{{ _permissions.update }}">-->
-                                        <vaadin-upload id="UploadRequest" target="/PreRequisicoes/FileUpload/{{_prerequesitionno}}/{{_lineno}}" method="POST" headers="{'Accept': 'application/json'}" hidden="{{ !_permissions.update }}" timeout=15000>
+                                        <vaadin-upload id="UploadRequest" 
+                                                       target="/PreRequisicoes/FileUpload/{{_prerequesitionno}}/{{_lineno}}"
+                                                       method="POST" 
+                                                       headers="{'Accept': 'application/json'}" 
+                                                       hidden="{{ !_permissions.update }}" 
+                                                       timeout=15000>
 
                                         </vaadin-upload>
                                         <!--</template>-->
