@@ -34,6 +34,12 @@ namespace Hydra.Such.Portal.Services
         private readonly NAVWSConfigurations configws;
         private readonly string changedByUserName;
 
+        public RequisitionService(NAVWSConfigurations NAVWSConfigs, string logChangesAsUserName)
+        {
+            this.configws = NAVWSConfigs;
+            this.changedByUserName = logChangesAsUserName;
+        }
+
         public RequisitionService(IOptions<NAVConfigurations> appSettings, NAVWSConfigurations NAVWSConfigs, string logChangesAsUserName)
         {
             _config = appSettings.Value;
