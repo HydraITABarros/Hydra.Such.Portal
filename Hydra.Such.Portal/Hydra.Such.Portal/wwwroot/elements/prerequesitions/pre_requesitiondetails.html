@@ -236,6 +236,14 @@
                    on-response="_responseDeleteProcessor"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/PreRequisicoes/DuplicarContractLines"
+                   last-response="{{dataLines}}"
+                   method="post"
+                   handle-as="json"
+                   id="prereqLines_DuplicarLinha_ajax"
+                   on-response="_dlResponseProcessor"
+                   content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/PreRequisicoes/GetPreReqLines"
                    last-response="{{dataLines}}"
                    method="post"
@@ -444,7 +452,7 @@
                                         </div>
                                     </div>
                                     <div class="row break_clear">
-                                        <div class="col-md-3 " hidden >
+                                        <div class="col-md-3 " hidden>
                                             <vaadin-text-field id="_CBPurchaseHeader" name="_CBPurchaseHeader" label="" value="{{data.Nº Linha Encomenda }}" disabled></vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
@@ -756,6 +764,19 @@
                             </paper-collapse-item>
                             <div>
                                 <vaadin-grid aria-label="PreReqLines" id="grid_prereqlines" name="grid_prereqlines" items="[[dataLines.lines]]" class="grid" multi-sort="true" active-item="{{_SelectedLine}}">
+                                    <vaadin-grid-column width="2%">
+                                        <template class="header">
+                                        </template>
+                                        <template>
+                                            <center>
+                                                <template is="dom-if" if="{{ _permissions.update }}">
+                                                    <center>
+                                                        <paper-button class="btnRemove tableBtn" raised on-tap="_duplicarContractLine" title="Duplicar Linha"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                                    </center>
+                                                </template>
+                                            </center>
+                                        </template>
+                                    </vaadin-grid-column>
                                     <vaadin-grid-column width="200px" resizable>
                                         <template class="header">
                                             <vaadin-grid-sorter path="localCode">Código Localização</vaadin-grid-sorter>
@@ -780,7 +801,6 @@
                                             </template>
                                         </template>
                                     </vaadin-grid-column>
-
 
                                     <vaadin-grid-column width="200px" hidden>
                                         <template class="header">
@@ -852,7 +872,6 @@
                                         </template>
                                         <template>
                                             <template is="dom-if" if="{{ item.selected }}">
-
                                                 <vaadin-combo-box items="[[LCBMeasuresUnit]]" id="_CLGridUnitMeasureCode" name="_CLGridUnitMeasureCode" item-value-path="id" item-label-path="id" value="{{item.unitMeasureCode}}" disabled="{{ !_permissions.update }}">
                                                     <template>
                                                         <table width="200px">
@@ -1062,27 +1081,27 @@
                                         </template>
                                     </vaadin-grid-column>
                                     <!--<vaadin-grid-column width="200px" resizable>
-        <template class="header">
-            <vaadin-grid-sorter path="openOrderNo">Nº Encomenda Aberto</vaadin-grid-sorter>
-            <vaadin-grid-filter path="openOrderNo" />
-        </template>
-        <template>
-            <template is="dom-if" if="{{ item.selected }}">
-                <vaadin-combo-box items="[[GridCBPurchaseHeader]]" id="_CBGridPurchaseHeader" item-value-path="id" item-label-path="id" value="{{item.openOrderNo}}" on-change="_PopulatePurchaseLinesGrid" disabled="{{ !_permissions.update }}">
-                    <template>
-                        <table width="200px">
-                            <tr>
-                                <td width="60%"> <b>[[item.id]]</b></td>
-                            </tr>
-                        </table>
-                    </template>
-                </vaadin-combo-box>
-            </template>
-            <template is="dom-if" if="{{ !item.selected }}">
-                [[item.openOrderNo ]]
-            </template>
-        </template>
-    </vaadin-grid-column>-->
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="openOrderNo">Nº Encomenda Aberto</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="openOrderNo" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-combo-box items="[[GridCBPurchaseHeader]]" id="_CBGridPurchaseHeader" item-value-path="id" item-label-path="id" value="{{item.openOrderNo}}" on-change="_PopulatePurchaseLinesGrid" disabled="{{ !_permissions.update }}">
+                                                <template>
+                                                    <table width="200px">
+                                                        <tr>
+                                                            <td width="60%"> <b>[[item.id]]</b></td>
+                                                        </tr>
+                                                    </table>
+                                                </template>
+                                            </vaadin-combo-box>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            [[item.openOrderNo ]]
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>-->
                                     <vaadin-grid-column width="200px" resizable>
                                         <template class="header">
                                             <vaadin-grid-sorter path="openOrderLineNo">Nº Linha Encomenda Aberto</vaadin-grid-sorter>
@@ -2083,6 +2102,20 @@
 
                     //this.$.gridUserAccesses.clearCache();
                 },
+                _duplicarContractLine: function (e) {
+                    debugger;
+                    var index = this.dataLines.lines.indexOf(e.model.item);
+
+                    this.$.prereqLines_DuplicarLinha_ajax.body = JSON.stringify({
+                        preRequisitionLineNo: e.model.item.preRequisitionLineNo,
+                        lineNo: e.model.item.lineNo,
+                    });
+                    this.$.prereqLines_DuplicarLinha_ajax.generateRequest();
+                    this.$.grid_prereqlines.clearCache();
+                },
+
+
+
                 _onProductChanged: function (e) {
                     var item = this.Products.find(x => x.code == e.detail.value);
                     if (item != null) {
@@ -2162,6 +2195,12 @@
                         this.$.filteredProducts_ajax.generateRequest();
                     }
                 },
+
+                _dlResponseProcessor: function () {
+                    this._openToast('Linha Duplicada com sucesso.');
+                    this.$.page_databound_ajax.generateRequest();
+                },
+
                 _clResponseProcessor: function (data) {
                     //debugger;
                     if (data.detail.status === 200) {

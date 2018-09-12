@@ -337,6 +337,56 @@ namespace Hydra.Such.Portal.Controllers
             }
             return Json(data);
         }
+
+        [HttpPost]
+        public JsonResult DuplicarContractLines([FromBody] PreRequisitionLineViewModel linha)
+        {
+            if (linha != null && !string.IsNullOrEmpty(linha.PreRequisitionLineNo) && linha.LineNo > 0)
+            {
+                LinhasPréRequisição LinhaOriginal = DBPreRequesitionLines.GetById(linha.PreRequisitionLineNo, linha.LineNo);
+                LinhasPréRequisição LinhaDuplicada = new LinhasPréRequisição();
+
+                LinhaDuplicada.NºPréRequisição = LinhaOriginal.NºPréRequisição;
+                LinhaDuplicada.Tipo = LinhaOriginal.Tipo;
+                LinhaDuplicada.Código = LinhaOriginal.Código;
+                LinhaDuplicada.Descrição = LinhaOriginal.Descrição;
+                LinhaDuplicada.CódigoLocalização = LinhaOriginal.CódigoLocalização;
+                LinhaDuplicada.CódigoUnidadeMedida = LinhaOriginal.CódigoUnidadeMedida;
+                LinhaDuplicada.QuantidadeARequerer = LinhaOriginal.QuantidadeARequerer;
+                LinhaDuplicada.CódigoRegião = LinhaOriginal.CódigoRegião;
+                LinhaDuplicada.CódigoÁreaFuncional = LinhaOriginal.CódigoÁreaFuncional;
+                LinhaDuplicada.CódigoCentroResponsabilidade = LinhaOriginal.CódigoCentroResponsabilidade;
+                LinhaDuplicada.NºProjeto = LinhaOriginal.NºProjeto;
+                LinhaDuplicada.DataHoraCriação = DateTime.Now;
+                LinhaDuplicada.UtilizadorCriação = User.Identity.Name;
+                LinhaDuplicada.DataHoraModificação = (DateTime?)null;
+                LinhaDuplicada.UtilizadorModificação = "";
+                LinhaDuplicada.Descrição2 = LinhaOriginal.Descrição2;
+                LinhaDuplicada.QtdPorUnidadeMedida = LinhaOriginal.QtdPorUnidadeMedida;
+                LinhaDuplicada.QuantidadeRequerida = LinhaOriginal.QuantidadeRequerida;
+                LinhaDuplicada.QuantidadePendente = LinhaOriginal.QuantidadePendente;
+                LinhaDuplicada.CustoUnitário = LinhaOriginal.CustoUnitário;
+                LinhaDuplicada.PreçoUnitárioVenda = LinhaOriginal.PreçoUnitárioVenda;
+                LinhaDuplicada.ValorOrçamento = LinhaOriginal.ValorOrçamento;
+                LinhaDuplicada.DataReceçãoEsperada = LinhaOriginal.DataReceçãoEsperada;
+                LinhaDuplicada.Faturável = LinhaOriginal.Faturável;
+                LinhaDuplicada.NºLinhaOrdemManutenção = LinhaOriginal.NºLinhaOrdemManutenção;
+                LinhaDuplicada.NºFuncionário = LinhaOriginal.NºFuncionário;
+                LinhaDuplicada.Viatura = LinhaOriginal.Viatura;
+                LinhaDuplicada.NºFornecedor = LinhaOriginal.NºFornecedor;
+                LinhaDuplicada.CódigoProdutoFornecedor = LinhaOriginal.CódigoProdutoFornecedor;
+                LinhaDuplicada.UnidadeProdutivaNutrição = LinhaOriginal.UnidadeProdutivaNutrição;
+                LinhaDuplicada.NºCliente = LinhaOriginal.NºCliente;
+                LinhaDuplicada.NºEncomendaAberto = LinhaOriginal.NºEncomendaAberto;
+                LinhaDuplicada.NºLinhaEncomendaAberto = LinhaOriginal.NºLinhaEncomendaAberto;
+                LinhaDuplicada.LocalCompraDireta = LinhaOriginal.LocalCompraDireta;
+
+                DBPreRequesitionLines.Create(LinhaDuplicada);
+
+                return Json(LinhaDuplicada);
+            }
+            return Json(linha);
+        }
         #endregion
 
         #region CRUD
