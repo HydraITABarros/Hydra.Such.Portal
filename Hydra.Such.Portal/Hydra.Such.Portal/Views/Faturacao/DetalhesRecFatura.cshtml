@@ -407,7 +407,7 @@
                                             {"field":"dimensionSetID", "name":"Cód. Dimensão"},
                                             {"field":"relatedDocument", "name":"Documento Relacionado"},
                                             {"field":"sourceDocNo", "name":"Nº Doc. Origem"},
-                                            {"field":"amountIncludingVAT", "name":"Valor Encomenda -Actual "}]'
+                                            {"field":"amountIncludingVAT", "name":"Valor Encomenda p/faturar"}]'
                                         disabled="{{ !_permissions.update }}"
                                         on-value-changed="_orderSelected">
                         </such-selectbox>
@@ -429,7 +429,7 @@
                         <vaadin-text-field label="Quantidade Recebida" type="text" value="{{data.quantidadeRecebida}}" id="txtQuantidadeRecebida" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                     </div>
                     <div class="col-sm-3">
-                        <vaadin-text-field label="Valor Encomenda -Actual" type="text" value="{{data.valorEncomendaActual}}" id="dpValorEncomendaActual" disabled></vaadin-text-field>
+                        <vaadin-text-field label="Valor Encomenda p/faturar" type="text" value="{{data.valorEncomendaActual}}" id="dpValorEncomendaActual" disabled></vaadin-text-field>
                     </div>
                     <div class="col-sm-3">
                         <vaadin-text-field label="Valor Recebido Não Contabilizado" type="text" value="{{data.valorRecebidoNaoContabilizado}}" id="txtValorRecebidoNaoContabilizado" disabled></vaadin-text-field>
@@ -1303,7 +1303,53 @@
                 },
 
                 _supplierSelected: function (e) {
-                    this._loadOrders(e.detail.value);
+                    //Seleção de encomenda seleciona fornecedor. Se encomenda já está selecionada e o fornecedor é o mesmo não é necessário obter novamente as encomendas 
+                    var needsToLoadOrders = false;
+                    var ordersElem = this.$.sbOrders;
+                    if (ordersElem && ordersElem.activeItem) {
+                        var selectedOrder = ordersElem.activeItem;
+                        if (selectedOrder.buyFromVendorNo !== e.detail.value) {
+                            needsToLoadOrders = true;
+                            ordersElem._clearSelection();
+                        }
+                    }
+                    else {
+                        needsToLoadOrders = true
+                    }
+
+                    if (needsToLoadOrders) {
+                        this._loadOrders(e.detail.value);
+                    }
+                },
+                _orderSelected: function (e) {
+                    var order = this.$.sbOrders.activeItem;
+                    if (order != null) {
+                        var vendorId = new String(this.$.sbVendors.value).valueOf();
+                        var vendorIdFromOrder = new String(order.buyFromVendorNo).valueOf();
+                        
+                        if (vendorId != vendorIdFromOrder) {
+                            this.$.sbVendors.value = order.buyFromVendorNo;
+                        }
+                        this.$.cmbRegions.value = order.regionId;
+                        this.$.cmbFunctionalAreas.value = order.functionalAreaId;
+                        this.$.cmbResponsabilityCenters.value = order.respCenterId;
+                        this.$.dpValorEncomendaActual.value = order.amountIncludingVAT;
+                        this.$.txtLocal.value = order.locationCode;
+                        //this.$.txtValorEncomendaOriginal.value = order.
+                        this.$.txtQuantidadeEncomenda.value = order.quantity;
+                        this.$.txtQuantidadeRecebida.value = order.quantityReceived;
+                        this.$.txtValorRecebidoNaoContabilizado.value = order.amountRcdNotInvoiced;
+                        //this.$.txtValor.value = order.amount;
+
+                        this._preventDocumentDuplicates();
+                        if (!this._docIsValid)
+                            return false;
+
+                        if (order.quantity == order.quantityReceived)
+                            this._openToast("Encomenda totalmente rececionada.");
+                        else
+                            this._openToastError("Encomenda por rececionar.");
+                    }
                 },
                 _redirectToCreateForm: function () {
                     debugger;
@@ -1609,46 +1655,6 @@
                         this.$.page_send_ajax.generateRequest();
                     }
                     this.$.dialogSendPeding.close()
-                },
-                _orderSelected: function (e) {
-                    debugger;
-                    var order = this.$.sbOrders.activeItem;
-                    if (order != null) {
-                        var vendorId = new String(this.$.sbVendors.value).valueOf();
-                        var vendorIdFromOrder = new String(order.buyFromVendorNo).valueOf();
-                        debugger;
-                        if (vendorId == "") {
-                            this.$.sbVendors.value = order.buyFromVendorNo;
-                            //this.$.txtLocal.value = order.locationCode;
-                        }
-                        //else if (this.$.sbVendors.value != order.buyFromVendorNo) {
-                        else if (vendorId != "" && vendorId != "undefined" &&
-                                vendorIdFromOrder != "" && vendorIdFromOrder != "undefined" &&
-                                vendorId != vendorIdFromOrder)
-                        {
-                            this._openToastError("O fornecedor da encomenda tem que coincidir com o da receção.");
-                            return;
-                        }
-                        this.$.cmbRegions.value = order.regionId;
-                        this.$.cmbFunctionalAreas.value = order.functionalAreaId;
-                        this.$.cmbResponsabilityCenters.value = order.respCenterId;
-                        this.$.dpValorEncomendaActual.value = order.amountIncludingVAT;
-                        this.$.txtLocal.value = order.locationCode;
-                        //this.$.txtValorEncomendaOriginal.value = order.
-                        this.$.txtQuantidadeEncomenda.value = order.quantity;
-                        this.$.txtQuantidadeRecebida.value = order.quantityReceived;
-                        this.$.txtValorRecebidoNaoContabilizado.value = order.amountRcdNotInvoiced;
-                        //this.$.txtValor.value = order.amount;
-
-                        this._preventDocumentDuplicates();
-                        if (!this._docIsValid)
-                            return false;
-
-                        if (order.quantity == order.quantityReceived)
-                            this._openToast("Encomenda totalmente rececionada.");
-                        else
-                            this._openToastError("Encomenda por rececionar.");
-                    }
                 },
                 _problemTypeChanged: function (e) {
                     var id = this.$.cmbProblemas.value;
