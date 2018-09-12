@@ -1482,8 +1482,15 @@
                     this.$.ToastMessageError.text = message;
                     this.$.ToastMessageError.open();
                 },
+                _validateData: function () {
+                    if (this.$.dpDate.validate()) {
+                        return true;
+                    }
+                    this.openToastError("Verifique os dados inseridos.");
+                    return false;
+                },
                 _add() {
-                    if (true)
+                    if (this._validateData())
                     //Validações
                     {
                         this.result.items.unshift({
@@ -1520,8 +1527,6 @@
                         this.$.ajax_update.body = JSON.stringify(this.result.items);
                         this.$.ajax_update.generateRequest();
                         this.$.projectDiaryProject.clearCache();
-                    } else {
-                        alert("Tem de preencher todos os campos.");
                     }
                 },
 
