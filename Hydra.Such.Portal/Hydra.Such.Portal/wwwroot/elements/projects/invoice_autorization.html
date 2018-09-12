@@ -840,11 +840,18 @@
                         type: Array,
                     }
                 },
-                observers: ['_resetSelection(inverted)'],
+                observers: ['_resetSelection(inverted)', '_onCacheLoaded( RegionData,FunctionalAreaCodeData,ResponsabilityCenterData)'],
 
+                _onCacheLoaded: function (RegionData, FunctionalAreaCodeData, ResponsabilityCenterData) {
+                    var totalItemsToCache = 3;//3 = RegionData, FunctionalAreaCodeData, ResponsabilityCenterData
+                    this.itemsToCache = this.itemsToCache == undefined ? 1 : (this.itemsToCache + 1);
+                    if (this.itemsToCache == totalItemsToCache) {
+                        this._loadData();
+                    }
+                },
                 ready: function () {
                     
-                    this._loadData();
+                    //this._loadData();
                     this._setDefaultDateForDatePickers();
                     /*ColumnToggle*/
                     this._startColumnToggle();
