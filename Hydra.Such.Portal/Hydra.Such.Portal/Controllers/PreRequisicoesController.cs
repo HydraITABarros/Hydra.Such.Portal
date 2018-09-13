@@ -414,6 +414,124 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(result);
         }
+
+        [HttpPost]
+        public JsonResult UpdateLinhaPreRequisicao([FromBody] PreRequisitionLineViewModel linha)
+        {
+            ErrorHandler result = new ErrorHandler();
+            result.eReasonCode = 0;
+            result.eMessage = "Ocorreu um erro ao atualizar a linha.";
+
+            try
+            {
+                if (!string.IsNullOrEmpty(linha.LocalCode))
+                {
+                    if (!string.IsNullOrEmpty(linha.Code))
+                    {
+                        if (linha.QuantityToRequire > 0)
+                        {
+                            if (DBPreRequesitionLines.Update(DBPreRequesitionLines.ParseToDB(linha)) != null)
+                            {
+                                result.eReasonCode = 1;
+                                result.eMessage = "Linha Atualizada com Sucesso.";
+
+                            }
+                            else
+                            {
+                                result.eReasonCode = 2;
+                                result.eMessage = "Ocorreu um erro ao atualizar a linha.";
+                            }
+                        }
+                        else
+                        {
+                            result.eReasonCode = 3;
+                            result.eMessage = "A Qt. a Requerer tem que ser superior a 0.";
+                        }
+                    }
+                    else
+                    {
+                        result.eReasonCode = 4;
+                        result.eMessage = "É obrigatório preencher o Cód. Produto.";
+                    }
+                }
+                else
+                {
+                    result.eReasonCode = 5;
+                    result.eMessage = "É obrigatório preencher o Código Localização.";
+                }
+            }
+            catch (Exception ex)
+            {
+                result.eReasonCode = 99;
+                result.eMessage = "Ocorreu um erro.";
+
+                return Json(result);
+            }
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateLinhaPreRequisicaoProduto([FromBody] PreRequisitionLineViewModel linha)
+        {
+            ErrorHandler result = new ErrorHandler();
+            result.eReasonCode = 0;
+            result.eMessage = "Ocorreu um erro ao atualizar a linha.";
+
+            try
+            {
+                if (!string.IsNullOrEmpty(linha.LocalCode))
+                {
+                    if (!string.IsNullOrEmpty(linha.Code))
+                    {
+                        if (linha.QuantityToRequire > 0)
+                        {
+                            NAVProductsViewModel PRODUTO = DBNAV2017Products.GetAllProducts(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, linha.Code).FirstOrDefault();
+
+                            linha.Description = PRODUTO.Name;
+                            linha.Description2 = PRODUTO.Name2;
+                            linha.UnitMeasureCode = PRODUTO.MeasureUnit;
+
+                            if (DBPreRequesitionLines.Update(DBPreRequesitionLines.ParseToDB(linha)) != null)
+                            {
+                                result.eReasonCode = 1;
+                                result.eMessage = "Linha Atualizada com Sucesso.";
+
+                            }
+                            else
+                            {
+                                result.eReasonCode = 2;
+                                result.eMessage = "Ocorreu um erro ao atualizar a linha.";
+                            }
+                        }
+                        else
+                        {
+                            result.eReasonCode = 3;
+                            result.eMessage = "A Qt. a Requerer tem que ser superior a 0.";
+                        }
+                    }
+                    else
+                    {
+                        result.eReasonCode = 4;
+                        result.eMessage = "É obrigatório preencher o Cód. Produto.";
+                    }
+                }
+                else
+                {
+                    result.eReasonCode = 5;
+                    result.eMessage = "É obrigatório preencher o Código Localização.";
+                }
+            }
+            catch (Exception ex)
+            {
+                result.eReasonCode = 99;
+                result.eMessage = "Ocorreu um erro.";
+
+                return Json(result);
+            }
+
+            return Json(result);
+        }
         #endregion
 
         #region CRUD
