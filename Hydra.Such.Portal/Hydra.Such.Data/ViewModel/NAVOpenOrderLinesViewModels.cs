@@ -18,6 +18,8 @@ namespace Hydra.Such.Data.ViewModel
         public int Type { get; set; }
         public string Numb { get; set; }
         public string LocationCode { get; set; }
+        public string LocationName { get; set; } 
+        public bool DirectPurchLocation { get; set; }
         public DateTime ExpectedReceiptDate { get; set; }
         public string Description { get; set; }
         public string UnitofMeasure { get; set; }
