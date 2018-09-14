@@ -833,7 +833,7 @@
                                             <vaadin-grid-filter path="armazemCDireta" />
                                         </template>
                                         <template>
-                                            <vaadin-text-field value="{{item.armazemCDireta}}" id="CBItemsCDirect" name="CBItemsCDirect" disabled="{{ _setDisabled(item) }}"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{item.armazemCDireta}}" id="CBItemsCDirect" name="CBItemsCDirect" disabled> </vaadin-text-field>
                                         </template>
                                     </vaadin-grid-column>
 
@@ -1473,9 +1473,15 @@
                 _getCDirect: function (e) {
                     var requesitionType = this.$.requesitionType.value;
                     var locationId = e.detail.value;
-
+                    
                     this.$.filteredProducts_ajax.body = JSON.stringify({ "rootAreaId": this._areaid, "requisitionType": requesitionType, "locationCode": locationId });
                     this.$.filteredProducts_ajax.generateRequest();
+                    if (this.CBLocations != null) {
+                        var whareHouse = this.CBLocations.find(x => x.id == locationId);
+                        if (whareHouse != null) {
+                            this._CBItemsCDirect = whareHouse.extra;
+                        }
+                    }
                 },
                 //_getProdtctsForLocation: function (locationId) {
                 //    var requesitionType = this.$.requesitionType.value;
@@ -1525,6 +1531,7 @@
                         if (proj != null) {
                             this._setNewLineFormControl(true);
                             this.$.txtLocalCode.value = proj.locationCode;
+                            this._CBItemsCDirect = proj.directPurchLocation ? "1" : "0";
                             this.$._Description.value = proj.description;
                             this.$._UnitMeasureCode.value = proj.unitofMeasureCode;
                             this.$._UnitCost.value = proj.unitCost;
@@ -2149,8 +2156,6 @@
                     //debugger;
                     var index = this.dataLines.lines.indexOf(e.model.item);
 
-                    var item = e.model.item;
-
                     this.$.prereqLines_UpdateLinhaPreRequisicao_ajax.body = JSON.stringify({
                         preRequisitionLineNo: e.model.item.preRequisitionLineNo,
                         lineNo: e.model.item.lineNo,
@@ -2387,10 +2392,12 @@
                             else {
                                 this._openToast(this.dataLines.eMessage);
                                 this.$._CBLocations.value = "";
+                                this._CBItemsCDirect = "0";
                                 this.$._Description.value = "";
                                 this.$._Description2.value = "";
                                 this.$._UnitMeasureCode.value = "";
                                 this.$._QuantityToRequire.value = "";
+                                this.$._QuantityToOpen.value = "";
                                 this.$._UnitCost.value = "";
                                 this.$._MaintenanceOrderLineNo.value = "";
                                 if (this.$._CBPurchaseHeader != null)
