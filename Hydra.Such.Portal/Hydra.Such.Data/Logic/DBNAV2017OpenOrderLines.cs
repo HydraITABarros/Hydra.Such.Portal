@@ -14,8 +14,11 @@ namespace Hydra.Such.Data.Logic
             List<NAVOpenOrderLinesViewModels> result = new List<NAVOpenOrderLinesViewModels>();
             try
             {
-                DateTime d = DateTime.Parse(Date);
-                string formatedDate = d.ToString("MM-dd-yyyy");
+                DateTime d;
+                string formatedDate = string.Empty;
+                if (DateTime.TryParse(Date, out d))
+                    formatedDate = d.ToString("MM-dd-yyyy");
+
                 using (var ctx = new SuchDBContextExtention())
                 {
                     string purhNo = string.IsNullOrEmpty(PurchaseHeaderNo) ? "" : PurchaseHeaderNo;

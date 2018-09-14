@@ -1745,18 +1745,18 @@
                     }
                 },
                 _updateRegisterResponse: function (e) {
-                    if (this.data == null || this.data.length <= 0) {
-                        this.openToastError("Não existem linhas de Diário para Registar.");
-                    } else {
-
-                        if (e.detail.status === 200) {
+                    if (e.detail.status === 200) {
+                        if (this.data.eReasonCode == 1) {
                             this.$.ajax_getall.generateRequest();
                             this.$.projectDiaryProject.clearCache();
-                            this.openToastSuccess("Linhas do Diário registadas com sucesso.");
+                            this.openToastSuccess(this.data.eMessage);
                         }
                         else {
-                            this.openToastError("Occorreu um erro ao registar as linhas do Diário.");
+                            this.openToastError(this.data.eMessage);
                         }
+                    }
+                    else {
+                        this.openToastError("Occorreu um erro ao registar as linhas do Diário.");
                     }
                 },
 

@@ -1221,6 +1221,10 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult RegisterDiaryLines([FromBody]  List<ProjectDiaryViewModel> dp)
         {
+            ErrorHandler result = new ErrorHandler();
+            result.eReasonCode = 1;
+            result.eMessage = "Linhas do Diário registadas com sucesso.";
+            string message = string.Empty;
             //SET INTEGRATED IN DB
             if (dp != null)
             {
@@ -1230,7 +1234,16 @@ namespace Hydra.Such.Portal.Controllers
                     //Create Lines in NAV
                     Task<WSCreateProjectDiaryLine.CreateMultiple_Result> TCreateNavDiaryLine = WSProjectDiaryLine.CreateNavDiaryLines(dp, transactID, _configws);
                     TCreateNavDiaryLine.Wait();
+                }
+                catch (Exception ex)
+                {
+                    result.eReasonCode = 2;
+                    result.eMessage = "Não foi possivel registar: " + ex.Message;
+                    return Json(result);
+                }
 
+                try
+                {
                     ////Register Lines in NAV
                     Task<WSGenericCodeUnit.FxPostJobJrnlLines_Result> TRegisterNavDiaryLine = WSProjectDiaryLine.RegsiterNavDiaryLines(transactID, _configws);
                     TRegisterNavDiaryLine.Wait();
@@ -1238,13 +1251,13 @@ namespace Hydra.Such.Portal.Controllers
                     if (TRegisterNavDiaryLine == null)
                     {
                         Response.StatusCode = (int)HttpStatusCode.NoContent;
-                        return Json(dp);
+                        return Json(result);
                     }
                 }
                 catch (Exception ex)
                 {
                     Response.StatusCode = (int)HttpStatusCode.NoContent;
-                    return Json(dp);
+                    return Json(result);
                 }
 
                 dp.ForEach(x =>
@@ -1302,7 +1315,12 @@ namespace Hydra.Such.Portal.Controllers
                     }
                 });
             }
-            return Json(dp);
+            else
+            {
+                result.eReasonCode = 2;
+                result.eMessage = "Não existem linhas de Diário para Registar.";
+            }
+            return Json(result);
         }
 
         public JsonResult RegisterDiaryLinesRequisition(List<ProjectDiaryViewModel> dp, string userName)
