@@ -59,6 +59,7 @@ namespace Hydra.Such.Data.ViewModel.Viaturas
         public int? KmUltimaRevisao { get; set; }
         public int? IntervaloRevisoes { get; set; }
         public int? DuracaoPneus { get; set; }
+        public string NoProjeto { get; set; }
 
         //EXPORTAR PARA EXCEL
         public Object ColunasEXCEL { get; set; }

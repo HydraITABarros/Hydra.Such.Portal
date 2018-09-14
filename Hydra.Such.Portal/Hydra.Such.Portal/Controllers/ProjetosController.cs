@@ -2027,7 +2027,7 @@ namespace Hydra.Such.Portal.Controllers
 
                 List<ProjectMovementViewModel> projMovements = new List<ProjectMovementViewModel>();
                 JArray projMovementsValue = requestParams["projMovements"] as JArray;
-                if (projMovementsValue != null)
+                if (projMovementsValue != null) 
                     projMovements = projMovementsValue.ToObject<List<ProjectMovementViewModel>>();
 
                 Projetos project = null;
