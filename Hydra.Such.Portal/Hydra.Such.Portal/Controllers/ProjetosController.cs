@@ -1248,16 +1248,16 @@ namespace Hydra.Such.Portal.Controllers
                     Task<WSGenericCodeUnit.FxPostJobJrnlLines_Result> TRegisterNavDiaryLine = WSProjectDiaryLine.RegsiterNavDiaryLines(transactID, _configws);
                     TRegisterNavDiaryLine.Wait();
 
-                    if (TRegisterNavDiaryLine == null)
-                    {
-                        Response.StatusCode = (int)HttpStatusCode.NoContent;
-                        return Json(result);
-                    }
+                    //if (TRegisterNavDiaryLine == null)
+                    //{
+                    //    Response.StatusCode = (int)HttpStatusCode.NoContent;
+                    //    return Json(result);
+                    //}
                 }
                 catch (Exception ex)
                 {
-                    Response.StatusCode = (int)HttpStatusCode.NoContent;
-                    return Json(result);
+                    //Response.StatusCode = (int)HttpStatusCode.NoContent;
+                    //return Json(result);
                 }
 
                 dp.ForEach(x =>
