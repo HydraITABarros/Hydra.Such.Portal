@@ -49,6 +49,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<ElementosJuri> ElementosJuri { get; set; }
         public virtual DbSet<EmailsAprovações> EmailsAprovações { get; set; }
         public virtual DbSet<EmailsProcedimentosCcp> EmailsProcedimentosCcp { get; set; }
+        public virtual DbSet<FeaturesMenus> FeaturesMenus { get; set; }
         public virtual DbSet<FichaProduto> FichaProduto { get; set; }
         public virtual DbSet<FichasTécnicasPratos> FichasTécnicasPratos { get; set; }
         public virtual DbSet<FluxoTrabalhoListaControlo> FluxoTrabalhoListaControlo { get; set; }
@@ -78,6 +79,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<Localizações> Localizações { get; set; }
         public virtual DbSet<MãoDeObraFolhaDeHoras> MãoDeObraFolhaDeHoras { get; set; }
         public virtual DbSet<Marcas> Marcas { get; set; }
+        public virtual DbSet<Menu> Menu { get; set; }
         public virtual DbSet<Modelos> Modelos { get; set; }
         public virtual DbSet<MovimentoDeProdutos> MovimentoDeProdutos { get; set; }
         public virtual DbSet<MovimentosCafetariaRefeitório> MovimentosCafetariaRefeitório { get; set; }
@@ -149,7 +151,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<UtilizadoresMovimentosDeAprovação> UtilizadoresMovimentosDeAprovação { get; set; }
         public virtual DbSet<Viaturas> Viaturas { get; set; }
         public virtual DbSet<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
-        
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AcessosDimensões>(entity =>
@@ -2562,6 +2564,26 @@ namespace Hydra.Such.Data.Database
                     .HasForeignKey(d => d.NºProcedimento)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Emails Procedimentos CCP_Procedimentos CCP");
+            });
+
+            modelBuilder.Entity<FeaturesMenus>(entity =>
+            {
+                entity.HasKey(e => new { e.IdFeature, e.IdMenu });
+
+                entity.HasIndex(e => e.IdFeature)
+                    .HasName("IX_Features");
+
+                entity.HasIndex(e => e.IdMenu)
+                    .HasName("IX_Menus");
+
+                entity.HasIndex(e => new { e.IdFeature, e.IdMenu })
+                    .HasName("IX_FeaturesMenus");
+
+                entity.HasOne(d => d.IdMenuNavigation)
+                    .WithMany(p => p.FeaturesMenus)
+                    .HasForeignKey(d => d.IdMenu)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_FeaturesMenus_Menu");
             });
 
             modelBuilder.Entity<FichaProduto>(entity =>
@@ -5098,6 +5120,37 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.UtilizadorModificação)
                     .HasColumnName("Utilizador Modificação")
                     .HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<Menu>(entity =>
+            {
+                entity.HasIndex(e => e.Weight)
+                    .HasName("IX_Weight");
+
+                entity.Property(e => e.Action)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Controller)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.HtmlAttributes)
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Icon)
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.RouteParameters)
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Title)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<Modelos>(entity =>
