@@ -33,6 +33,7 @@
 <!-- NR 20180226 -->
 <link rel="import" href="/lib/such-selectbox/such-selectbox.html">
 <link rel="import" href="/lib/vaadin-dialog/vaadin-dialog.html">
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload-file.html">
 <link rel="import" href="/lib/vaadin-upload/vaadin-upload.html">
 <link rel="import" href="/lib/such-dropdown-menu/such-dropdown-menu.html" />
 <link rel="import" href="/lib/vaadin-progress-bar/vaadin-progress-bar.html">
@@ -833,8 +834,22 @@
         </iron-ajax>
 
 
+        <!-- Anexos.b -->
+        <iron-ajax url="/ProcedimentosCcps/LoadAttachments"
+                   last-response="{{uploads}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_update_ajax"
+                   content-type="application/json"></iron-ajax>
 
-
+        <iron-ajax url="/ProcedimentosCcps/DeleteAttachments"
+                   last-response="{{deleted_files}}"
+                   method="post"
+                   handle-as="json"
+                   id="delete_files_ajax"
+                   on-response="_deletedAttachResponse"
+                   content-type="application/json"></iron-ajax>
+        <!-- Anexos.e -->
         <!-- Controller actions.e -->
         <!-- Header section of the Procedimento details -->
         <div class="panel panel-default">
@@ -847,17 +862,17 @@
                         </div>
                         <div class="col-sm-3">
                             <!--<vaadin-combo-box items="[[CBRegions]]" id="codigoRegiao" item-value-path="id" item-label-path="value" value="{{data.codigoRegiao}}" label="Cód. Região" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
-                                <template>
-                                    <table width="250px">
-                                        <tr>
-                                            <td width="20%">[[item.id]]</td>
-                                            <td width="80%">
-                                                <b>[[item.value]]</b>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </template>
-                            </vaadin-combo-box>-->
+                            <template>
+                                <table width="250px">
+                                    <tr>
+                                        <td width="20%">[[item.id]]</td>
+                                        <td width="80%">
+                                            <b>[[item.value]]</b>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>-->
 
                             <such-selectbox id="codigoRegiao" name="codigoRegiao" value="{{data.codigoRegiao}}" label="Cód. Região" disabled="{{ !_permissions.update }}"
                                             items="[[CBRegions]]"
@@ -870,17 +885,17 @@
                         </div>
                         <div class="col-sm-3">
                             <!--<vaadin-combo-box items="[[CBFunctionalAreas]]" id="codigoAreaFuncional" item-value-path="id" item-label-path="value" value="{{data.codigoAreaFuncional}}" label="Àrea Funcional" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
-                                <template>
-                                    <table width="250px">
-                                        <tr>
-                                            <td width="30%">[[item.id]]</td>
-                                            <td width="70%">
-                                                <b>[[item.value]]</b>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </template>
-                            </vaadin-combo-box>-->
+                            <template>
+                                <table width="250px">
+                                    <tr>
+                                        <td width="30%">[[item.id]]</td>
+                                        <td width="70%">
+                                            <b>[[item.value]]</b>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>-->
 
 
                             <such-selectbox id="codigoAreaFuncional" name="codigoAreaFuncional" value="{{data.codigoAreaFuncional}}" label="Cód. Área Funcional" disabled="{{ !_permissions.update }}"
@@ -893,17 +908,17 @@
                         </div>
                         <div class="col-sm-3">
                             <!--<vaadin-combo-box items="[[CBResponsabilityCenterCodes]]" id="codigoCentroResponsabilidade" item-value-path="id" item-label-path="value" value="{{data.codigoCentroResponsabilidade}}" label="Centro Responsabilidade" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
-                                <template>
-                                    <table width="180px">
-                                        <tr>
-                                            <td width="40%">[[item.id]]</td>
-                                            <td width="60%">
-                                                <b>[[item.value]]</b>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </template>
-                            </vaadin-combo-box>-->
+                            <template>
+                                <table width="180px">
+                                    <tr>
+                                        <td width="40%">[[item.id]]</td>
+                                        <td width="60%">
+                                            <b>[[item.value]]</b>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>-->
 
                             <such-selectbox id="codigoCentroResponsabilidade" name="codigoCentroResponsabilidade" value="{{data.codigoCentroResponsabilidade}}" label="Cód. Centro Respon." disabled="{{ !_permissions.update }}"
                                             items="[[CBResponsabilityCenterCodes]]"
@@ -1360,7 +1375,9 @@
                                                             <table width="200px">
                                                                 <tr>
                                                                     <td width="40%">[[item.id]]</td>
-                                                                    <td width="60%"> <b>[[item.value]]</b></td>
+                                                                    <td width="60%">
+                                                                        <b>[[item.value]]</b>
+                                                                    </td>
                                                                 </tr>
                                                             </table>
                                                         </template>
@@ -1387,7 +1404,9 @@
                                                             <table width="200px">
                                                                 <tr>
                                                                     <td width="40%">[[item.id]]</td>
-                                                                    <td width="60%"> <b>[[item.value]]</b></td>
+                                                                    <td width="60%">
+                                                                        <b>[[item.value]]</b>
+                                                                    </td>
                                                                 </tr>
                                                             </table>
                                                         </template>
@@ -2440,38 +2459,38 @@
                                 </div>
                             </div>
                             <!--<div class="col-xs-6">
-                                <div class="panel panel-default">
-                                    <div class="panel-heading">Acordos c/ fornecedores</div>
-                                    <div class="panel-body">
-                                        <div class="">
-                                            <div class="row">
-                                                <div class="col-xs-12">
-                                                    <vaadin-text-field type="number" value="{{data.adjudicacaoAcordosNo}}" id="adjudicacaoAcordosNo" name="adjudicacaoAcordosNo" label="Nº Contratos/Acordos"></vaadin-text-field>
-                                                </div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading">Acordos c/ fornecedores</div>
+                                <div class="panel-body">
+                                    <div class="">
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <vaadin-text-field type="number" value="{{data.adjudicacaoAcordosNo}}" id="adjudicacaoAcordosNo" name="adjudicacaoAcordosNo" label="Nº Contratos/Acordos"></vaadin-text-field>
                                             </div>
-                                            <div class="row break_clear">
-                                                <div class="col-sm-6">
-                                                    <vaadin-combo-box value="{{data.fornecedor}}" label="Fornecedor" items="[[cboSupplier]]" item-value-path="id" id="adjudicacaoAcordosFornecedor" item-label-path="value">
-                                                        <template>
-                                                            <paper-icon-item>
-                                                                <paper-item-body two-line>
-                                                                    <div>[[item.value]]</div>
-                                                                </paper-item-body>
-                                                            </paper-icon-item>
-                                                        </template>
-                                                    </vaadin-combo-box>
-                                                </div>
+                                        </div>
+                                        <div class="row break_clear">
+                                            <div class="col-sm-6">
+                                                <vaadin-combo-box value="{{data.fornecedor}}" label="Fornecedor" items="[[cboSupplier]]" item-value-path="id" id="adjudicacaoAcordosFornecedor" item-label-path="value">
+                                                    <template>
+                                                        <paper-icon-item>
+                                                            <paper-item-body two-line>
+                                                                <div>[[item.value]]</div>
+                                                            </paper-item-body>
+                                                        </paper-icon-item>
+                                                    </template>
+                                                </vaadin-combo-box>
                                             </div>
-                                            <div class="row break_clear">
-                                                <div class="col-sm-12">
-                                                    <br />
-                                                    <paper-button raised id="btnNovoAcordoAdjudicacaoAcordos" class="btn--confirm pull-right" on-tap="_novoAcordoAdjudicacaoAcordos">Criar Novo Contrato/Acordo</paper-button>
-                                                </div>
+                                        </div>
+                                        <div class="row break_clear">
+                                            <div class="col-sm-12">
+                                                <br />
+                                                <paper-button raised id="btnNovoAcordoAdjudicacaoAcordos" class="btn--confirm pull-right" on-tap="_novoAcordoAdjudicacaoAcordos">Criar Novo Contrato/Acordo</paper-button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>-->
+                            </div>
+                        </div>-->
                             <div class="col-xs-6">
                                 <div class="panel panel-default">
                                     <div class="panel-heading">Acordo de Preços</div>
@@ -2487,8 +2506,12 @@
                                                     <vaadin-text-field value="{{data.dtFim_AcordoPreco_Show}}" id="dtFim_acordoPreco_Show" name="dtFim_acordoPreco_Show" label="Data Fim" disabled="true"> </vaadin-text-field>
                                                 </div>
                                                 <div class="col-xs-4">
-                                                    <vaadin-text-field type="number" id="valorTotal_acordoPreco" name="valorTotal_acordoPreco" label="Valor Total"> <div slot="suffix">€</div> </vaadin-text-field>
-                                                    <vaadin-text-field value="{{data.valorTotal_AcordoPreco_Show}}" id="valorTotal_AcordoPreco_Show" name="valorTotal_AcordoPreco_Show" label="Valor Total" disabled="true"> <div slot="suffix">€</div></vaadin-text-field>
+                                                    <vaadin-text-field type="number" id="valorTotal_acordoPreco" name="valorTotal_acordoPreco" label="Valor Total">
+                                                        <div slot="suffix">€</div>
+                                                    </vaadin-text-field>
+                                                    <vaadin-text-field value="{{data.valorTotal_AcordoPreco_Show}}" id="valorTotal_AcordoPreco_Show" name="valorTotal_AcordoPreco_Show" label="Valor Total" disabled="true">
+                                                        <div slot="suffix">€</div>
+                                                    </vaadin-text-field>
                                                 </div>
                                             </div>
                                             <div class="row break_clear">
@@ -2505,42 +2528,42 @@
                             </div>
                             <div class="clearfix"></div>
                             <!--<div class="col-xs-6">
-                                <div class="panel panel-default">
-                                    <div class="panel-heading">Contratos Fornecedores</div>
-                                    <div class="panel-body">
-                                        <div class="">
-                                            <div class="row">
-                                                <div class="col-xs-12">
-                                                    <vaadin-text-field type="number" value="{{data.adjudicacaoContratosNo}}" id="adjudicacaoContratosNo" name="adjudicacaoContratosNo" label="Nº Contratos"></vaadin-text-field>
-                                                </div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading">Contratos Fornecedores</div>
+                                <div class="panel-body">
+                                    <div class="">
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <vaadin-text-field type="number" value="{{data.adjudicacaoContratosNo}}" id="adjudicacaoContratosNo" name="adjudicacaoContratosNo" label="Nº Contratos"></vaadin-text-field>
                                             </div>
-                                            <div class="row break_clear">
-                                                <div class="col-sm-6">
-                                                    <vaadin-combo-box value="{{data.adjudicacaoContratosFornecedor}}" label="Fornecedor" items="[[cboSupplier]]" item-value-path="id" id="adjudicacaoContratosFornecedor" item-label-path="value">
-                                                        <template>
-                                                            <paper-icon-item>
-                                                                <paper-item-body two-line>
-                                                                    <div>[[item.value]]</div>
-                                                                </paper-item-body>
-                                                            </paper-icon-item>
-                                                        </template>
-                                                    </vaadin-combo-box>
-                                                </div>
-                                                <div class="col-sm-6">
-                                                    <vaadin-text-field type="text" value="{{data.adjudicacaoContratosValor}}" id="adjudicacaoContratosValor" name="adjudicacaoContratosValor" label="Valor Contrato" maxlength="18" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"> </vaadin-text-field>
-                                                </div>
+                                        </div>
+                                        <div class="row break_clear">
+                                            <div class="col-sm-6">
+                                                <vaadin-combo-box value="{{data.adjudicacaoContratosFornecedor}}" label="Fornecedor" items="[[cboSupplier]]" item-value-path="id" id="adjudicacaoContratosFornecedor" item-label-path="value">
+                                                    <template>
+                                                        <paper-icon-item>
+                                                            <paper-item-body two-line>
+                                                                <div>[[item.value]]</div>
+                                                            </paper-item-body>
+                                                        </paper-icon-item>
+                                                    </template>
+                                                </vaadin-combo-box>
                                             </div>
-                                            <div class="row break_clear">
+                                            <div class="col-sm-6">
+                                                <vaadin-text-field type="text" value="{{data.adjudicacaoContratosValor}}" id="adjudicacaoContratosValor" name="adjudicacaoContratosValor" label="Valor Contrato" maxlength="18" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"> </vaadin-text-field>
+                                            </div>
+                                        </div>
+                                        <div class="row break_clear">
 
-                                                <div class="col-sm-12">
-                                                    <br />
-                                                    <paper-button raised id="btnNovoContratoAdjudicacaoAcordos" class="btn--confirm pull-right" on-tap="_novoContratoAdjudicacaoAcordos">Criar Contrato</paper-button>
-                                                </div>
+                                            <div class="col-sm-12">
+                                                <br />
+                                                <paper-button raised id="btnNovoContratoAdjudicacaoAcordos" class="btn--confirm pull-right" on-tap="_novoContratoAdjudicacaoAcordos">Criar Contrato</paper-button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>-->
+                            </div>
+                        </div>-->
                             <div class="col-xs-6">
                                 <div class="panel panel-default">
                                     <div class="panel-heading">Encomendas a Fornecedores</div>
@@ -2969,6 +2992,52 @@
                                                 </vaadin-grid-column>
                                             </vaadin-grid>
                                         </div>
+                                    </div>
+                                </div>
+                                <div class="clearfix"></div>
+                                <div class="mb-15"></div>
+                            </paper-collapse-item>
+                            <paper-collapse-item header="Anexos">
+                                <div class="panel-body">
+                                    <div class="row break_clear">
+                                        <!--<template is="dom-if">-->
+                                            <vaadin-upload id="uploadRequest"
+                                                           target="/Procedimentos/FileUpload/{{_procedimentoid}}/{{_lineno}}"
+                                                           method="POST"
+                                                           headers="{'Accept': 'application/json'}"
+                                                           timeout=15000>
+                                            </vaadin-upload>
+                                        <!--</template>-->
+                                    </div>
+                                    <div class="row break_clear">
+                                        <vaadin-grid aria-label="ReqUpdateGrid" items="[[uploads]]" class="grid" multi-sort="true">
+
+                                            <vaadin-grid-column width="70%" resizable>
+                                                <template class="header">
+                                                    <vaadin-grid-sorter path="url">Anexo</vaadin-grid-sorter>
+                                                    <vaadin-grid-filter path="url" />
+                                                </template>
+                                                <template>
+                                                    <a href="/PreRequisicoes/DownloadFile/{{item.url}}" target="_blank">{{item.url}}</a>
+                                                </template>
+                                            </vaadin-grid-column>
+                                            <vaadin-grid-column width="20%" resizable>
+                                                <template class="header">
+                                                    <vaadin-grid-sorter path="createDateTime">Anexado em</vaadin-grid-sorter>
+                                                    <vaadin-grid-filter path="createDateTime" />
+                                                </template>
+                                                <template>
+                                                    {{item.createDateTime}}
+                                                </template>
+                                            </vaadin-grid-column>
+                                            <vaadin-grid-column width="10%" resizable>
+                                                <template class="header">
+                                                </template>
+                                                <template>
+                                                    <paper-button class="btnRemove tableBtn" raised on-tap="_deleteFiles" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                                </template>
+                                            </vaadin-grid-column>
+                                        </vaadin-grid>
                                     </div>
                                 </div>
                                 <div class="clearfix"></div>
@@ -3625,6 +3694,18 @@
                     _CBItems: {
                         observer: '_setProductData'
                     },
+
+                    _uploadurl: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+
+                    _lineno: {
+                        type: Number,
+                        value: 0
+                    }
+
                 },
                 _testFunction: function () {
 
@@ -3651,7 +3732,55 @@
                         //    this.$.precoMaisBaixo.value = true;
                         //}
                     });;
+
+                    // Anexos.b
+                    debugger;;
+                    var _self = this;
+             
+                    var upload = document.querySelector('vaadin-upload#uploadRequest');
+                    if (this._isCreate == false && this.$.uploadRequest != null) {
+                        this.$.uploadRequest.addEventListener('upload-response', function (e) {
+                            if (e.detail.xhr.status == 200) {
+                                e.detail.xhr.requestURL;
+                                var dd = document.querySelector("x-procedimentodetails");
+                                dd.$.page_update_ajax.generateRequest();
+                            }
+                        });
+                    }
+                    debugger;;
+
+                    this.$.page_update_ajax.body = JSON.stringify({ "id": this._procedimentoid });
+                    this.$.page_update_ajax.generateRequest();
+                    // Anexos.e
                 },
+                // Anexos.b
+                _deleteFiles: function (e) {
+                    var index = this.dataLines.lines.indexOf(e.model.item);
+                    this.dataLines.lines.splice(index, 1);
+
+                    var ajax_request = this.$.delete_files_ajax;
+                    ajax_request.body = JSON.stringify(e.model.item);
+                    //this.$.delete_files_ajax.generateRequest();
+
+                    this._confirmAndExecuteActionToast(
+                        "Confirma a eliminação do Anexo?",
+                        ajax_request
+                    );
+
+                },
+
+                _deletedAttachResponse: function (e) {
+                    if (this.deleted_files.eReasonCode === 1) {
+                        this._openToast("Anexo eliminado com sucesso.");
+
+                        this.$.page_update_ajax.body = JSON.stringify({ "id": this._contractno });
+                        this.$.page_update_ajax.generateRequest();
+
+                    } else if (this.deleted_files.eReasonCode === 2) {
+                        this._openToastError("Ocorreu um erro ao eliminar o anexo.");
+                    }
+                },
+                // Anexos.e
                 _openToast: function (message) {
                     this.$.ToastMessage.text = message;
                     this.$.ToastMessage.open();

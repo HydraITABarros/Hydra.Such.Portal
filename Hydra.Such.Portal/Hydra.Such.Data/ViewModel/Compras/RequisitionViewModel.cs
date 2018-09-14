@@ -78,7 +78,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string OrderNo { get; set; }
         public string RequisitionDate { get; set; }
         public string dimension { get; set; }
-        public decimal? Budget { get; set; }
+        public bool? Budget { get; set; }
         public bool? SentReqToAprove { get; set; }
         public string PreRequisitionNo { get; set; }
         public bool? PricesIncludingVAT { get; set; }

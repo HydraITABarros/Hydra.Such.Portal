@@ -156,8 +156,6 @@ namespace Hydra.Such.Data.NAV
 
                 WSCreatePreInvoiceLine.WsPreInvoiceLine line = new WSCreatePreInvoiceLine.WsPreInvoiceLine();
 
-                
-                
                 line.Document_Type = OptionInvoice.Replace(" ", String.Empty) == "4" ? WSCreatePreInvoiceLine.Document_Type.Credit_Memo : WSCreatePreInvoiceLine.Document_Type.Invoice;
                 line.Document_TypeSpecified = true;
                 line.Document_No = HeaderNo;
@@ -183,8 +181,7 @@ namespace Hydra.Such.Data.NAV
                 line.Cod_Serv_Cliente = x.ServiceClientCode;
                 line.Consumption_Date = !string.IsNullOrEmpty(x.ConsumptionDate) ? DateTime.Parse(x.ConsumptionDate) : DateTime.MinValue;
                 line.Consumption_DateSpecified = !string.IsNullOrEmpty(x.ConsumptionDate);
-                //TODO: passar para string
-                line.Grupo_Serviço = x.ServiceGroupCode.HasValue ? x.ServiceGroupCode.Value.ToString() : string.Empty;
+                line.Grupo_Serviço = x.ServiceGroupCode;
                 line.Nº_Guia_Externa = x.ExternalGuideNo;
                 line.Nº_Guia_Resíduos_GAR = x.WasteGuideNo_GAR;
                 line.RegionCode20 = x.RegionCode;

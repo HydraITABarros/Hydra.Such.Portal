@@ -446,8 +446,7 @@ namespace Hydra.Such.Portal.Controllers
             try
             {
                 List<NAVOpenOrderLinesViewModels> result = new List<NAVOpenOrderLinesViewModels>();
-                result = DBNAV2017OpenOrderLines.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, date, "", codFuncArea);
-         
+                result = DBNAV2017OpenOrderLines.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, date, "", codFuncArea, true);
 
                 return Json(result);
 
@@ -457,7 +456,7 @@ namespace Hydra.Such.Portal.Controllers
                 return Json(getorderline);
             }
 
-        }
+}
 
         
 
@@ -509,6 +508,17 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetPaymentTerms()
         {
             List<DDMessageString> result = DBNAV2017PaymentTerms.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(x => new DDMessageString()
+            {
+                id = x.Code,
+                value = x.Description
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetPaymentForms()
+        {
+            List<DDMessageString> result = DBNAV2017PaymentForms.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(x => new DDMessageString()
             {
                 id = x.Code,
                 value = x.Description
@@ -2361,6 +2371,16 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        [HttpPost]
+        public JsonResult GetNAVAtividadesComboGridList()
+        {
+            List<DDMessageString> result = DBNAV2017Atividades.GetAtividades(_config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageString()
+            {
+                id = Convert.ToString(x.CodActividade),
+                value = x.Descricao
+            }).ToList();
+            return Json(result);
+        }
     }
 
 

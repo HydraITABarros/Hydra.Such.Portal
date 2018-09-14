@@ -573,6 +573,41 @@ namespace Hydra.Such.Portal.Controllers
             return Json(userAccess != null ? DBUserAccesses.Delete(userAccess) : false);
         }
 
+        [HttpPost]
+        public JsonResult CopiarAcessosUtilizador([FromBody] AccessProfileModelView data)
+        {
+            int AcessosCopiados = 0;
+            string IdUtilizadorOriginal = data.CreateUser; // "nunorato@such.pt";
+            string IdUtilizadorDestino = data.UpdateUser; // "ARomao@such.pt";
+
+            List<AcessosUtilizador> ListaAcessosOriginal = DBUserAccesses.GetByUserId(IdUtilizadorOriginal);
+            List<AcessosUtilizador> ListaAcessosDestino = DBUserAccesses.GetByUserId(IdUtilizadorDestino);
+
+            ListaAcessosOriginal.ForEach(Acesso =>
+            {
+                if (ListaAcessosDestino.Where(x => x.Funcionalidade == Acesso.Funcionalidade).Count() == 0)
+                {
+                    AcessosUtilizador CopiarAcesso = new AcessosUtilizador();
+                    CopiarAcesso.IdUtilizador = IdUtilizadorDestino;
+                    CopiarAcesso.Área = Acesso.Área;
+                    CopiarAcesso.Funcionalidade = Acesso.Funcionalidade;
+                    CopiarAcesso.Leitura = Acesso.Leitura;
+                    CopiarAcesso.Inserção = Acesso.Inserção;
+                    CopiarAcesso.Modificação = Acesso.Modificação;
+                    CopiarAcesso.Eliminação = Acesso.Eliminação;
+                    CopiarAcesso.DataHoraCriação = DateTime.Now;
+                    CopiarAcesso.DataHoraModificação = (DateTime?)null;
+                    CopiarAcesso.UtilizadorCriação = User.Identity.Name;
+                    CopiarAcesso.UtilizadorModificação = null;
+
+                    if (DBUserAccesses.Create(CopiarAcesso) != null)
+                        AcessosCopiados = AcessosCopiados + 1;
+                }
+            });
+
+            return Json(AcessosCopiados);
+        }
+
         #endregion
 
         #region PerfisModelo

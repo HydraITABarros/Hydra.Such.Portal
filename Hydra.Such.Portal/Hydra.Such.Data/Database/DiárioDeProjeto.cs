@@ -40,7 +40,7 @@ namespace Hydra.Such.Data.Database
         public DateTime? DataDocumentoCorrigido { get; set; }
         public bool? FaturaçãoAutorizada { get; set; }
         public DateTime? DataAutorizaçãoFaturação { get; set; }
-        public int? CódGrupoServiço { get; set; }
+        public string CódGrupoServiço { get; set; }
         public int? TipoRecurso { get; set; }
         public string NºFolhaHoras { get; set; }
         public string RequisiçãoInterna { get; set; }

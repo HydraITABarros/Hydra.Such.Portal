@@ -67,21 +67,24 @@ namespace Hydra.Such.Data.Logic
             try
             {
                 string result = "";
-                string currency = "";
-                using (var ctx = new SuchDBContextExtention())
+
+                if (!string.IsNullOrEmpty(NoClient))
                 {
-                    var parameters = new[]{
+                    using (var ctx = new SuchDBContextExtention())
+                    {
+                        var parameters = new[]{
                         new SqlParameter("@DBName", NAVDatabaseName),
                         new SqlParameter("@CompanyName", NAVCompanyName),
                         new SqlParameter("@NoCliente", NoClient)
                     };
 
-                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017Clientes @DBName, @CompanyName, @NoCliente", parameters);
+                        IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017Clientes @DBName, @CompanyName, @NoCliente", parameters);
 
-                    foreach (dynamic temp in data)
-                    {
-                        result = (string)temp.Name;
-                        
+                        foreach (dynamic temp in data)
+                        {
+                            result = (string)temp.Name;
+
+                        }
                     }
                 }
 

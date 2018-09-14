@@ -26,7 +26,7 @@ namespace Hydra.Such.Data.ViewModel.Projects
         public string Observacoes1 { get; set; }
         public string PedidoCliente { get; set; }
         public int? Opcao { get; set; }
-        public DateTime? DataPedido { get; set; }
+        public string DataPedido { get; set; }
         public string DescricaoGrupo { get; set; }
         public string CodTermosPagamento { get; set; }
         public string Diversos { get; set; }

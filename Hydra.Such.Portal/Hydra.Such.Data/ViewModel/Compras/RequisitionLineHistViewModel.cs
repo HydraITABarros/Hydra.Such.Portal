@@ -11,6 +11,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public int? Type { get; set; }
         public string Code { get; set; }
         public string Description { get; set; }
+        public string Description2 { get; set; }
         public string UnitMeasureCode { get; set; }
         public string LocalCode { get; set; }
         public bool? LocalMarket { get; set; }
@@ -107,5 +108,9 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string Approvers { get; set; }
 
         public bool Selected { get; set; }
+        public bool? Urgent { get; set; }
+        public string VATBusinessPostingGroup { get; set; }
+        public string VATProductPostingGroup { get; set; }
+        public decimal? DiscountPercentage { get; set; }
     }
 }
