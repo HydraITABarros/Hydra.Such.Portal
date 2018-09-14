@@ -26,6 +26,21 @@ namespace Hydra.Such.Data.Logic.ComprasML
             }
         }
 
+        public static List<LinhasRequisiçãoHist> GetByRequisitionId(string requisicao)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.LinhasRequisiçãoHist.Where(x => x.NºRequisição == requisicao).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public static List<LinhasRequisiçãoHist> GetAll()
         {
             try
@@ -63,7 +78,6 @@ namespace Hydra.Such.Data.Logic.ComprasML
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    ObjectToCreate.DataHoraCriação = DateTime.Now;
                     ctx.LinhasRequisiçãoHist.Add(ObjectToCreate);
                     ctx.SaveChanges();
                 }

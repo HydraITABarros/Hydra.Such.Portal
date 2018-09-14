@@ -112,6 +112,7 @@ namespace Hydra.Such.Data.Logic.Nutrition
                     No = x.Nº,
                     Code = x.Nº,
                     Descricao = x.Descrição,
+                    Descricao2 = x.Descrição2,
                     ListaDeMateriais = x.ListaDeMateriais,
                     UnidadeMedidaBase = x.UnidadeMedidaBase,
                     NoPrateleira = x.NºPrateleira,
@@ -185,6 +186,7 @@ namespace Hydra.Such.Data.Logic.Nutrition
             {
                  Nº = x.No,
                  Descrição = x.Descricao,
+                 Descrição2 = x.Descricao2,
                  ListaDeMateriais = x.ListaDeMateriais,
                  UnidadeMedidaBase = x.UnidadeMedidaBase,
                  NºPrateleira = x.NoPrateleira,

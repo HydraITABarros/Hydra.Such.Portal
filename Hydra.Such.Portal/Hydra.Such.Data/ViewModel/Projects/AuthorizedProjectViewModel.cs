@@ -26,26 +26,26 @@ namespace Hydra.Such.Data.ViewModel.Projects
         public string Observacoes1 { get; set; }
         public string PedidoCliente { get; set; }
         public int? Opcao { get; set; }
-        public DateTime? DataPedido { get; set; }
+        public string DataPedido { get; set; }
         public string DescricaoGrupo { get; set; }
         public string CodTermosPagamento { get; set; }
         public string Diversos { get; set; }
         public string NumCompromisso { get; set; }
         public string SituacoesPendentes { get; set; }
-        public string DataPrestacaoServico
-        {
-            get { return this.dataPrestacaoServico; }
-            set
-            {
-                DateTime servDate;
-                if (DateTime.TryParse(value, out servDate))
-                {
-                    string monthName = servDate.ToString("MMMM", System.Globalization.CultureInfo.CreateSpecificCulture("pt-PT"));
-                    this.DataServPrestado = string.Format("{0}/{1}", monthName.ToUpper(), servDate.Year.ToString());
-                }
-                this.dataPrestacaoServico = value;
-            }
-        }
+        public string DataPrestacaoServico { get; set; }
+        //{
+        //    get { return this.dataPrestacaoServico; }
+        //    set
+        //    {
+        //        DateTime servDate;
+        //        if (DateTime.TryParse(value, out servDate))
+        //        {
+        //            string monthName = servDate.ToString("MMMM", System.Globalization.CultureInfo.CreateSpecificCulture("pt-PT"));
+        //            this.DataServPrestado = string.Format("{0}/{1}", monthName.ToUpper(), servDate.Year.ToString());
+        //        }
+        //        this.dataPrestacaoServico = value;
+        //    }
+        //}
         /// <summary>
         /// Formato extenso ex: Janeiro/2018
         /// </summary>

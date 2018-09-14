@@ -24,6 +24,9 @@ using Microsoft.AspNetCore.Hosting;
 using System.IO;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using Hydra.Such.Portal.Services;
+using Hydra.Such.Data.NAV;
+using Microsoft.Extensions.Options;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -31,11 +34,13 @@ namespace Hydra.Such.Portal.Controllers
     {
         private readonly ISession session;
         private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly NAVWSConfigurations configws;
 
-        public ApprovalsController(IHttpContextAccessor httpContextAccessor, IHostingEnvironment _hostingEnvironment)
+        public ApprovalsController(IHttpContextAccessor httpContextAccessor, IOptions<NAVWSConfigurations> NAVWSConfigs, IHostingEnvironment _hostingEnvironment)
         {
             this.session = httpContextAccessor.HttpContext.Session;
             this._hostingEnvironment = _hostingEnvironment;
+            configws = NAVWSConfigs.Value;
         }
 
         public IActionResult Index()
@@ -96,6 +101,14 @@ namespace Hydra.Such.Portal.Controllers
                             x.TypeText = "Folha de Horas - Integrar km's";
                             break;
                     }
+                }
+
+                if (x.Type == 1) //Requisições
+                {
+                    Requisição REQ = DBRequest.GetById(x.Number);
+
+                    if (REQ != null)
+                        x.RequisicaoAcordosPrecos = REQ.RequisiçãoNutrição;
                 }
             });
 
@@ -179,6 +192,33 @@ namespace Hydra.Such.Portal.Controllers
 
                                         result.eReasonCode = 100;
                                         result.eMessage = "A requisição foi aprovada com sucesso.";
+
+                                        //Se a requesição tiver o campo "Requisição Nutrição" a true faz automaticamente a validação
+                                        if (requisition.RequestNutrition == true)
+                                        {
+                                            RequisitionService serv = new RequisitionService(configws, HttpContext.User.Identity.Name);
+                                            requisition = serv.ValidateRequisition(requisition);
+                                            if (requisition.eReasonCode == 1)
+                                            {
+                                                //Create Workflow
+                                                ctx = new SuchDBContext();
+                                                logEntry = new RequisicoesRegAlteracoes();
+                                                logEntry.NºRequisição = requisition.RequisitionNo;
+                                                logEntry.Estado = (int)RequisitionStates.Validated; //VALIDADO = 3
+                                                logEntry.ModificadoEm = DateTime.Now;
+                                                logEntry.ModificadoPor = User.Identity.Name;
+                                                ctx.RequisicoesRegAlteracoes.Add(logEntry);
+                                                ctx.SaveChanges();
+
+                                                result.eReasonCode = 100;
+                                                result.eMessage = "A requisição foi aprovada e validada com sucesso.";
+                                            }
+                                            else
+                                            {
+                                                result.eReasonCode = requisition.eReasonCode;
+                                                result.eMessage = requisition.eMessage;
+                                            }
+                                        }
                                     }
                                     else if (approvalResult.eReasonCode == 100)
                                     {

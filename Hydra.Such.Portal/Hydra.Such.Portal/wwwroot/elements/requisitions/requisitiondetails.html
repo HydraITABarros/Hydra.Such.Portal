@@ -147,7 +147,7 @@
         <iron-ajax url="/PopulateDropdowns/GetUnitOfMeasureByCode" id="grid_unitofmeasure_ajax" last-response="{{UnitsOfMmeasure}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetrequestTypes" id="grid_requesttypes_ajax" last-response="{{requesttypesresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <!--<iron-ajax url="/PopulateDropdowns/GetProductsForCurrentUser" id="filteredProducts_ajax" auto last-response="{{Products}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
-        <iron-ajax url="/PopulateDropdowns/GetAllProductsPortal" id="filteredProducts_ajax" auto last-response="{{Products}}" method="post" handle-as="json"  content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetAllProductsComprasPortal" id="filteredProducts_ajax" auto last-response="{{Products}}" method="post" handle-as="json"  content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetNAVVendorComboGrid" id="ajax_supplier_options" last-response="{{Suppliers}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetAllClients" id="ajax_clients_options" last-response="{{cboClients}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <!--<iron-ajax url="/PopulateDropdowns/GetEmployees" id="ajax_employees_options" last-response="{{cboEmployees}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
@@ -598,14 +598,19 @@
                                                         items="[[Products]]"
                                                         text-path="code"
                                                         value-path="code"
-                                                        fields='[{"field":"code", "name":"Cód. Produto"}, {"field":"name", "name":"Descrição"}, {"field":"measureUnit", "name":"Unidade de Medida"}, {"field":"itemCategoryCode", "name":"Cód. Categoria"}, {"field":"productGroupCode", "name":"Cód. Grupo"}]'
+                                                        fields='[{"field":"code", "name":"Cód. Produto"}, {"field":"name", "name":"Descrição"}, {"field":"name2", "name":"Descrição 2"}, {"field":"measureUnit", "name":"Unidade de Medida"}, {"field":"itemCategoryCode", "name":"Cód. Categoria"}, {"field":"productGroupCode", "name":"Cód. Grupo"}]'
                                                         disabled="{{ !_permissions.update }}"
                                                         on-value-changed="_onProductChanged">
                                         </such-selectbox>
                                     </div>
                                     <div class="col-lg-3">
-                                        <vaadin-text-field id="txtProductDesciption" name="txtProductDesciption" label="Descrição" value=""></vaadin-text-field>
+                                        <vaadin-text-field id="txtProductDesciption" name="txtProductDesciption" label="Descrição" value="" disabled></vaadin-text-field>
                                     </div>
+                                    <div class="col-lg-3">
+                                        <vaadin-text-field id="txtProductDesciption2" name="txtProductDesciption2" label="Descrição 2" value=""></vaadin-text-field>
+                                    </div>
+                                </div>
+                                <div class="row break_clear" hidden="{{_isArchived}}">
                                     <div class="col-lg-3">
                                         <vaadin-combo-box items="[[UnitsOfMmeasure]]" id="CBUnitsOfMmeasure" item-value-path="id" item-label-path="value" value="" label="Código Unidade Medida">
                                             <template>
@@ -618,8 +623,6 @@
                                             </template>
                                         </vaadin-combo-box>
                                     </div>
-                                </div>
-                                <div class="row break_clear" hidden="{{_isArchived}}">
                                     <div class="col-lg-3">
                                         <vaadin-text-field id="quantityToRequireId" name="quantityToRequireName" label="Quantidade A Requerer" value=""></vaadin-text-field>
                                     </div>
@@ -629,11 +632,11 @@
                                     <div class="col-lg-3">
                                         <vaadin-text-field id="quantityToProvideId" name="quantityToProvideName" label="Quantidade A Disponibilizar" value=""></vaadin-text-field>
                                     </div>
+                                </div>
+                                <div class="row break_clear" hidden="{{_isArchived}}">
                                     <div class="col-lg-3">
                                         <vaadin-text-field id="quantityAvailableId" name="quantityAvailableName" label="Quantidade Disponibilizada" value=""></vaadin-text-field>
                                     </div>
-                                </div>
-                                <div class="row break_clear" hidden="{{_isArchived}}">
                                     <div class="col-lg-3">
                                         <vaadin-text-field id="quantityReceivableId" name="quantityReceivableName" label="Quantidade A Receber" value=""></vaadin-text-field>
                                     </div>
@@ -643,11 +646,11 @@
                                     <div class="col-lg-3">
                                         <vaadin-text-field id="unitCostId" name="unitCostName" label="Custo Unitário" value=""></vaadin-text-field>
                                     </div>
+                                </div>
+                                <div class="row break_clear" hidden="{{_isArchived}}">
                                     <div class="col-lg-3">
                                         <vaadin-text-field id="unitCostsouldId" name="unitCostsouldName" label="Preço Unitário Venda" value=""></vaadin-text-field>
                                     </div>
-                                </div>
-                                <div class="row break_clear" hidden="{{_isArchived}}">
                                     <div class="col-lg-3">
                                         <vaadin-text-field id="budgetValueId" name="budgetValueName" label="Valor Orçamento" value=""></vaadin-text-field>
                                     </div>
@@ -663,11 +666,11 @@
                                                         disabled="{{ !_permissions.update }}">
                                         </such-selectbox>
                                     </div>
+                                </div>
+                                <div class="row break_clear" hidden="{{_isArchived}}">
                                     <div class="col-lg-3">
                                         <vaadin-text-field id="maintenanceOrderLineNoId" name="maintenanceOrderLineNoName" label="Nº Linha Ordem Manutenção" value=""></vaadin-text-field>
                                     </div>
-                                </div>
-                                <div class="row break_clear" hidden="{{_isArchived}}">
                                     <div class="col-lg-3">
                                         <such-selectbox id="CBLineProjects" value="[[Requisition.projectNo]]" label="Nº Ordem/Projeto"
                                                         items="[[Projects]]"
@@ -701,6 +704,8 @@
                                             </template>
                                         </vaadin-combo-box>
                                     </div>
+                                </div>
+                                <div class="row break_clear" hidden="{{_isArchived}}">
                                     <div class="col-lg-3">
                                         <vaadin-combo-box items="[[LProjectResponsabilityCenterCodes]]" id="_CLResponsabilityCenterCode" name="_CLResponsabilityCenterCode" item-value-path="id" item-label-path="value" on-change="_RespChange" value="[[Requisition.centerResponsibilityCode]]" label="Cód. Centro Responsabilidade" disabled="{{ !_permissions.update }}">
                                             <template>
@@ -713,8 +718,6 @@
                                             </template>
                                         </vaadin-combo-box>
                                     </div>
-                                </div>
-                                <div class="row break_clear" hidden="{{_isArchived}}">
                                     <div class="col-lg-3">
                                         <vaadin-combo-box items="[[CBVehicle]]" id="CBVehicles" item-value-path="id" item-label-path="id" value="" label="Viatura">
                                             <template>
@@ -744,8 +747,6 @@
                                                 </table>
                                             </template>
                                         </vaadin-combo-box>
-                                    </div>
-                                    <div class="col-lg-3">
                                     </div>
                                 </div>
                                 <div class="row break_clear" hidden="{{_isArchived}}">
@@ -827,6 +828,7 @@
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
+
                                 <vaadin-grid-column width="160px" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
@@ -834,10 +836,25 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.description}}" id="_CLGridDescription" name="_CLGridDescription" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{item.description}}" id="_CLGridDescription" name="_CLGridDescription" disabled> </vaadin-text-field>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}" disabled>
+                                            {{item.description}}
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="description2">Descrição 2</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="description2"></vaadin-grid-filter>
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-text-field value="{{item.description2}}" id="_CLGridDescription2" name="_CLGridDescription2" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
-                                            {{item.description}}
+                                            {{item.description2}}
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
@@ -1008,7 +1025,7 @@
                                     <template class="header">
                                         <p class="alignCenter">Criar Consulta Mercado</p>
                                         <!--<vaadin-grid-filter path="createMarketSearchStringValue">
-                                    </vaadin-grid-filter>-->
+            </vaadin-grid-filter>-->
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
@@ -1429,7 +1446,7 @@
                     },
                     _functionsMenuItems: {
                         type: Array,
-                        value: [{ value: 1, description: "Criar Consulta Mercado" }, { value: 2, description: "Criar Encomenda de Compra" }, { value: 3, description: "Criar Guia Transporte" }, { value: 4, description: "Enviar Pré-Encomenda" }],
+                        value: [{ value: 1, description: "Criar Consulta Mercado" }, { value: 2, description: "Criar Encomenda de Compra" }, { value: 3, description: "Criar Guia Transporte" }, { value: 4, description: "Enviar Pré-Encomenda" }, { value: 5, description: "Validação Mercado Local" }],
                     },
                     _permissions: {
                         type: Array
@@ -1557,6 +1574,9 @@
                         case 4://"Enviar Pré- Encomenda"
                             this._sendPrePurchase();
                             break;
+                        case 5://"Validação Mercado Local"
+                            this._validateLocalMarket();
+                            break;
                     }
                 },
                 ready: function () {
@@ -1574,16 +1594,16 @@
                         $(_self.$.menuRegister).removeClass('hidden');
                         $(_self.$.menuFunctios).removeClass('hidden');
 
-                        $(_self.$.divLocalMarketRegions).addClass('hidden');
+                        //$(_self.$.divLocalMarketRegions).removeClass('hidden');
                     }
                     if (this._requisitionstatus === 4) { //Aprovado - VALIDAÇÃO REQUISIÇÕES
-                        $(_self.$.btnLocalMarketValidation).removeClass('hidden');
+                        //$(_self.$.btnLocalMarketValidation).addClass('hidden');
                         $(_self.$.btnValidate).removeClass('hidden');
                         $(_self.$.btnAnularAprovacao).removeClass('hidden');
                         $(_self.$.menuRegister).addClass('hidden');
                         $(_self.$.menuFunctios).addClass('hidden');
 
-                        $(_self.$.divLocalMarketRegions).removeClass('hidden');
+                        //$(_self.$.divLocalMarketRegions).addClass('hidden');
                     }
 
                     if (this._isCreate == false && this.$.UploadRequest != null) {
@@ -1702,6 +1722,7 @@
                     return true;
                 },
                 _resetUserInputForLine() {
+                    debugger;
                     this.$.CBProducts._clearSelection();
                     this.$.txtProductDesciption.value = "";
                     this.$.CBUnitsOfMmeasure.value = "";
@@ -1945,6 +1966,7 @@
                             requestNo: this.$.requisitionNo.value,
                             code: this.$.CBProducts.value,
                             description: this.$.txtProductDesciption.value,
+                            description2: this.$.txtProductDesciption2.value,
                             unitMeasureCode: this.$.CBUnitsOfMmeasure.value,
                             localCode: this.$.CBLocations.value,
                             quantityToRequire: this.$.quantityToRequireId.value,
@@ -2277,11 +2299,13 @@
                     var item = this.Products.find(x => x.code == e.detail.value);
                     if (item != null) {
                         this.$.txtProductDesciption.value = item.name;
+                        this.$.txtProductDesciption2.value = item.name2;
                         this.$.CBUnitsOfMmeasure.value = item.measureUnit;
                         this.$.unitCostId.value = item.unitCost;
                     }
                     else {
                         this.$.txtProductDesciption.value = "";
+                        this.$.txtProductDesciption2.value = "";
                         this.$.CBUnitsOfMmeasure.value = "";
                         this.$.unitCostId.value = "";
                     }
@@ -2307,12 +2331,13 @@
                     }
                 },
                 _registTypeResponse: function (e) {
-                    //debugger;
+                    debugger;
                     if (this.regist.eReasonCode == "1") {
                         this._openToast(this.regist.eMessage);
                         this.Requisition = this.regist;
                         if (this.regist.state === this._requisitionstatesenum.Archived) {
-                            window.location.href = "/GestaoRequisicoes/";///HistóricoCabeçalhoRequisicao/" + this._requisitionid;
+                            window.history.back();
+                            //window.location.href = "/GestaoRequisicoes/";///HistóricoCabeçalhoRequisicao/" + this._requisitionid;
                         }
                         else {
                             this.$.stateDescription_ajax.body = JSON.stringify(this.Requisition.state);

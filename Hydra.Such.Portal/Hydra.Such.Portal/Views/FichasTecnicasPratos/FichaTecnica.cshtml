@@ -68,17 +68,17 @@
         <iron-ajax url="/PopulateDropdowns/GetAllAction" id="action_ajax" auto last-response="{{CboAction}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetAllAction" id="actionGrid_ajax" auto last-response="{{CboActionGrid}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/Nutricao/FichasTecnicasPratos/GetAllProceduresConfection" id="ajax_GridProcedConfec" last-response="{{GridProceduresConfection}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Nutricao/FichasTecnicasPratos/GetImageRecTecPlates" id="ajax_Image" last-response="{{dataImage}}" on-response="_ImageResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Nutricao/FichasTecnicasPratos/GetAllRecTecPlatesBYPlate" id="ajax_GetAllRecTecPlat" last-response="{{getAllRecTecPlatResult}}" on-response="_GetRecTecPlatResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Nutricao/FichasTecnicasPratos/CreateRecordTechnicalOfPlates" id="createRecTec_ajax" last-response="{{CreateResult}}" on-response="_CreateResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Nutricao/FichasTecnicasPratos/UpdateRecordTechnicalOfPlates" id="UpdateRecTec_ajax" last-response="{{UpdateResult}}" on-response="_UpdateResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Nutricao/FichasTecnicasPratos/GetAllLinesRecTechnicPlates" id="getallgrid_ajax" last-response="{{data}}" on-response="_GridResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Nutricao/FichasTecnicasPratos/CreateLinesRecordTechnicalOfPlates" id="createRecTecLines_ajax" last-response="{{Createdate}}" on-response="_CreateLinesResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Nutricao/FichasTecnicasPratos/UpdateLinesRecordTechnicalOfPlates" id="updateRecTecLines_ajax" last-response="{{updatedate}}" on-response="_UpdateLinesResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Nutricao/FichasTecnicasPratos/SaveImage" id="getsaveImg_ajax" last-response="{{Uploaddate}}" on-response="_UploadResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Nutricao/FichasTecnicasPratos/CreateConfection" id="createConf_ajax" last-response="{{createConf}}" on-response="_createConfResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Nutricao/FichasTecnicasPratos/UpdateConfection" id="updateConf_ajax" last-response="{{updateConf}}" on-response="_updateConfResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/FichasTecnicasPratos/GetAllProceduresConfection" id="ajax_GridProcedConfec" last-response="{{GridProceduresConfection}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/FichasTecnicasPratos/GetImageRecTecPlates" id="ajax_Image" last-response="{{dataImage}}" on-response="_ImageResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/FichasTecnicasPratos/GetAllRecTecPlatesBYPlate" id="ajax_GetAllRecTecPlat" last-response="{{getAllRecTecPlatResult}}" on-response="_GetRecTecPlatResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/FichasTecnicasPratos/CreateRecordTechnicalOfPlates" id="createRecTec_ajax" last-response="{{CreateResult}}" on-response="_CreateResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/FichasTecnicasPratos/UpdateRecordTechnicalOfPlates" id="UpdateRecTec_ajax" last-response="{{UpdateResult}}" on-response="_UpdateResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/FichasTecnicasPratos/GetAllLinesRecTechnicPlates" id="getallgrid_ajax" last-response="{{data}}" on-response="_GridResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/FichasTecnicasPratos/CreateLinesRecordTechnicalOfPlates" id="createRecTecLines_ajax" last-response="{{Createdate}}" on-response="_CreateLinesResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/FichasTecnicasPratos/UpdateLinesRecordTechnicalOfPlates" id="updateRecTecLines_ajax" last-response="{{updatedate}}" on-response="_UpdateLinesResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/FichasTecnicasPratos/SaveImage" id="getsaveImg_ajax" last-response="{{Uploaddate}}" on-response="_UploadResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/FichasTecnicasPratos/CreateConfection" id="createConf_ajax" last-response="{{createConf}}" on-response="_createConfResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/FichasTecnicasPratos/UpdateConfection" id="updateConf_ajax" last-response="{{updateConf}}" on-response="_updateConfResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
 
 
@@ -1964,7 +1964,7 @@
                     if (this.CreateResult.eReasonCode === 1) {
                         this._openToast(this.CreateResult.eMessage);
                         if (this.CreateResult.plateNo != "" && this.CreateResult.plateNo != null) {
-                            window.location.href = "/Nutricao/FichasTecnicasPratos/FichaTecnica/" + this.CreateResult.plateNo;
+                            window.location.href = "/FichasTecnicasPratos/FichaTecnica/" + this.CreateResult.plateNo;
                         }
                     } else {
                         this._openToastError(this.CreateResult.eMessage);

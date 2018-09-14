@@ -10,9 +10,9 @@ namespace Hydra.Such.Data.ViewModel.Projects
         public DateTime? CreateDate { get; set; }
         public string UpdateUser { get; set; }
         public DateTime? UpdateDate { get; set; }
-        public string ServiceData { get; set; }
+        public string ServiceDate { get; set; }
         public string ClientRequest { get; set; }
-        public int? ServiceClientCode { get; set; }
+        public string ServiceClientCode { get; set; }
         public string RequestNo { get; set; }
         public int? RequestLineNo { get; set; }
         public string Driver { get; set; }
@@ -50,6 +50,7 @@ namespace Hydra.Such.Data.ViewModel.Projects
         public bool? Billable { get; set; }
         public string ResidueGuideNo { get; set; }
         public string ExternalGuideNo { get; set; }
+        public string WasteGuideNo_GAR { get; set; }
         public string InvoiceToClientNo { get; set; }
         public string ClientName { get; set; }
         public string ClientVATReg { get; set; }
@@ -58,7 +59,7 @@ namespace Hydra.Such.Data.ViewModel.Projects
         public string Currency { get; set; }
         public bool? Billed { get; set; }
         public int? MealType { get; set; }
-        public int? ServiceGroupCode { get; set; }
+        public string ServiceGroupCode { get; set; }
         public string ConsumptionDate { get; set; }
         public bool? Registered { get; set; }
         public string TypeDescription { get; set; }
@@ -66,11 +67,23 @@ namespace Hydra.Such.Data.ViewModel.Projects
         public int? InvoiceGroup { get; set; }
         public string InvoiceGroupDescription { get; set; }
         public string CodTermosPagamento { get; set; }
-        public string PedidoCliente { get; set; }
+        public string CodMetodoPagamento { get; set; }
+        //public string PedidoCliente { get; set; }
         public string SituacoesPendentes { get; set; }
         public int? Opcao { get; set; }
+        public string Comments { get; set; }
         //EXPORTAR PARA EXCEL
         public Object ColunasEXCEL { get; set; }
 
+    }
+
+    public class AuthorizedCustomerBilling
+    {
+        public string InvoiceToClientNo { get; set; }
+        public string Date { get; set; }
+        public string CommitmentNumber { get; set; }
+        public string ClientRequest { get; set; }
+        public string ClientVATReg { get; set; }
+        public List<SPInvoiceListViewModel> Items { get; set; }
     }
 }

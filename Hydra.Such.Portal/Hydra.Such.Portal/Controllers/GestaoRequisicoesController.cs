@@ -57,6 +57,20 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
+        public IActionResult RequisicoesAcordosPrecos()
+        {
+            UserAccessesViewModel userPermissions =
+                DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Requisições);
+            if (userPermissions != null && userPermissions.Read.Value)
+            {
+                ViewBag.UPermissions = userPermissions;
+                return View();
+            }
+            else
+            {
+                return Redirect(Url.Content("~/Error/AccessDenied"));
+            }
+        }
 
         public IActionResult Detalhes()
         {
@@ -109,6 +123,24 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
+        public IActionResult DetalhesReqArquivo(string id)
+        {
+            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Requisições);
+
+            if (userPermissions != null && userPermissions.Read.Value)
+            {
+                ViewBag.UPermissions = userPermissions;
+                ViewBag.RequisitionId = id;
+                ViewBag.ApprovedRequisitionEnumValue = (int)RequisitionStates.Archived;
+                ViewBag.RequisitionStatesEnumString = "7";
+                ViewBag.ReportServerURL = config.ReportServerURL;
+                return View();
+            }
+            else
+            {
+                return Redirect(Url.Content("~/Error/AccessDenied"));
+            }
+        }
 
         public IActionResult LinhasRequisicao(string id)
         {
@@ -510,8 +542,8 @@ namespace Hydra.Such.Portal.Controllers
                 result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CenterResponsibilityCode));
             return Json(result);
         }
-        [HttpPost]
 
+        [HttpPost]
         public JsonResult GetValidatedRequisitions()
         {
             List<RequisitionStates> states = new List<RequisitionStates>()
@@ -534,10 +566,40 @@ namespace Hydra.Such.Portal.Controllers
             //ResponsabilityCenter
             if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
                 result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CenterResponsibilityCode));
-            return Json(result);
+            return Json(result.OrderByDescending(x => x.RequisitionNo));
         }
-        [HttpPost]
 
+        [HttpPost]
+        public JsonResult GetRequisitionsAcordosPrecos()
+        {
+            List<RequisitionStates> states = new List<RequisitionStates>()
+            {
+                RequisitionStates.Validated,
+                RequisitionStates.Available,
+                RequisitionStates.Received,
+                RequisitionStates.Treated,
+            };
+            List<RequisitionViewModel> result = DBRequest.GetByState(states).ParseToViewModel();
+
+            //Remove todas as requisições em que o campo Requisição Nutrição seja != de true
+            result.RemoveAll(x => x.RequestNutrition != true);
+
+            //Apply User Dimensions Validations
+            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            //Regions
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.RegionCode));
+            //FunctionalAreas
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.FunctionalAreaCode));
+            //ResponsabilityCenter
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CenterResponsibilityCode));
+
+            return Json(result.OrderByDescending(x => x.RequisitionNo));
+        }
+
+        [HttpPost]
         public JsonResult GetAllRequisitionshistoric()
         {
             List<RequisitionViewModel> result = DBRequest.GetByState(RequisitionStates.Archived).ParseToViewModel();
@@ -572,7 +634,10 @@ namespace Hydra.Such.Portal.Controllers
             RequisitionViewModel item;
             if (!string.IsNullOrEmpty(requisitionId) && requisitionId != "0" && statusIsValid)
             {
-                item = DBRequest.GetById(requisitionId).ParseToViewModel();
+                if (status != (int)RequisitionStates.Archived) //ARQUIVO
+                    item = DBRequest.GetById(requisitionId).ParseToViewModel();
+                else
+                    item = DBRequesitionHist.TransferToRequisition(DBRequesitionHist.GetByNo(requisitionId)).ParseToViewModel();
             }
             else
                 item = new RequisitionViewModel();
@@ -907,13 +972,87 @@ namespace Hydra.Such.Portal.Controllers
                                             }
 
                                             item.State = keepOpen ? RequisitionStates.Received : RequisitionStates.Archived;
-                                            item.UpdateUser = User.Identity.Name;
-                                            item.UpdateDate = DateTime.Now;
-                                            RequisitionViewModel updatedReq = DBRequest.Update(item.ParseToDB(), false, true).ParseToViewModel();
-                                            if (updatedReq == null)
+                                            if (item.State == RequisitionStates.Received)
                                             {
-                                                item.eReasonCode = 9;
-                                                item.eMessage = "Ocorreu um erro ao atualizar a requisição";
+                                                item.UpdateUser = User.Identity.Name;
+                                                item.UpdateDate = DateTime.Now;
+                                                RequisitionViewModel updatedReq = DBRequest.Update(item.ParseToDB(), false, true).ParseToViewModel();
+                                                if (updatedReq == null)
+                                                {
+                                                    item.eReasonCode = 9;
+                                                    item.eMessage = "Ocorreu um erro ao atualizar a requisição";
+                                                }
+                                            }
+                                            else
+                                            {
+                                                bool okReceber = true;
+                                                RequisiçãoHist REQHistReceber = DBRequest.TransferToRequisitionHist(item);
+                                                if (REQHistReceber != null)
+                                                {
+                                                    REQHistReceber.Estado = (int)RequisitionStates.Archived;
+                                                    REQHistReceber.UtilizadorModificação = User.Identity.Name;
+                                                    REQHistReceber.DataHoraModificação = DateTime.Now;
+
+                                                    if (DBRequesitionHist.Create(REQHistReceber) != null)
+                                                    {
+                                                        List<LinhasRequisiçãoHist> REQLinhasHistReceber = DBRequest.TransferToRequisitionLinesHist(item.Lines);
+                                                        if (REQLinhasHistReceber.Count > 0)
+                                                        {
+                                                            REQLinhasHistReceber.ForEach(Linha =>
+                                                            {
+                                                                Linha.UtilizadorModificação = User.Identity.Name;
+                                                                Linha.DataHoraModificação = DateTime.Now;
+                                                                if (DBRequesitionLinesHist.Create(Linha) == null)
+                                                                {
+                                                                    okReceber = false;
+                                                                    item.eReasonCode = 14;
+                                                                    item.eMessage = "Ocorreu Um erro ao fechar na criação da linha no Histórico";
+                                                                }
+                                                            });
+                                                        }
+
+                                                        if (okReceber == true)
+                                                        {
+                                                            if (item.Lines.Count > 0)
+                                                            {
+                                                                item.Lines.ForEach(Linha =>
+                                                                {
+                                                                    if (DBRequestLine.Delete(Linha.ParseToDB()) == false)
+                                                                    {
+                                                                        okReceber = false;
+                                                                        item.eReasonCode = 15;
+                                                                        item.eMessage = "Ocorreu Um erro ao fechar ao Eliminar linha.";
+                                                                    }
+                                                                });
+                                                            }
+
+                                                            if (okReceber == true)
+                                                            {
+                                                                if (DBRequest.Delete(item.ParseToDB()) == false)
+                                                                {
+                                                                    okReceber = false;
+                                                                    item.eReasonCode = 16;
+                                                                    item.eMessage = "Ocorreu Um erro ao fechar na Eliminação da Requisição";
+                                                                }
+                                                                else
+                                                                {
+                                                                    item.eReasonCode = 1;
+                                                                    item.eMessage = "Requisição foi fechada";
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        item.eReasonCode = 17;
+                                                        item.eMessage = "Ocorreu Um erro ao fechar ao criar Requisição Histórico.";
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    item.eReasonCode = 18;
+                                                    item.eMessage = "Ocorreu Um erro ao fechar na transferência de dados para Histórico.";
+                                                }
                                             }
                                         }
                                         else
@@ -1040,19 +1179,91 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         break;
                     case "Fechar Requisicao":
-                        item.State = RequisitionStates.Archived;
-                        item.UpdateUser = User.Identity.Name;
-                        item.UpdateDate = DateTime.Now;
-                        RequisitionViewModel reqArchived = DBRequest.Update(item.ParseToDB(), false, true).ParseToViewModel();
-                        if (reqArchived == null)
+                        bool okFechar = true;
+                        RequisiçãoHist REQHistFechar = DBRequest.TransferToRequisitionHist(item);
+                        if (REQHistFechar != null)
                         {
-                            item.eReasonCode = 14;
-                            item.eMessage = "Ocorreu Um erro ao fechar";
+                            REQHistFechar.Estado = (int)RequisitionStates.Archived;
+                            REQHistFechar.UtilizadorModificação = User.Identity.Name;
+                            REQHistFechar.DataHoraModificação = DateTime.Now;
+
+                            if (DBRequesitionHist.Create(REQHistFechar) != null)
+                            {
+                                List<LinhasRequisiçãoHist> REQLinhasHistFechar = DBRequest.TransferToRequisitionLinesHist(item.Lines);
+                                if (REQLinhasHistFechar.Count > 0)
+                                {
+                                    REQLinhasHistFechar.ForEach(Linha =>
+                                    {
+                                        Linha.UtilizadorModificação = User.Identity.Name;
+                                        Linha.DataHoraModificação = DateTime.Now;
+                                        if (DBRequesitionLinesHist.Create(Linha) == null)
+                                        {
+                                            okFechar = false;
+                                            item.eReasonCode = 14;
+                                            item.eMessage = "Ocorreu Um erro ao fechar na criação da linha no Histórico";
+                                        }
+                                    });
+                                }
+
+                                if (okFechar == true)
+                                {
+                                    if (item.Lines.Count > 0)
+                                    {
+                                        item.Lines.ForEach(Linha =>
+                                        {
+                                            if (DBRequestLine.Delete(Linha.ParseToDB()) == false)
+                                            {
+                                                okFechar = false;
+                                                item.eReasonCode = 15;
+                                                item.eMessage = "Ocorreu Um erro ao fechar ao Eliminar linha.";
+                                            }
+                                        });
+                                    }
+
+                                    if (okFechar == true)
+                                    {
+                                        if (DBRequest.Delete(item.ParseToDB()) == false)
+                                        {
+                                            okFechar = false;
+                                            item.eReasonCode = 16;
+                                            item.eMessage = "Ocorreu Um erro ao fechar na Eliminação da Requisição";
+                                        }
+                                        else
+                                        {
+                                            item.eReasonCode = 1;
+                                            item.eMessage = "Requisição foi fechada";
+                                        }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                item.eReasonCode = 17;
+                                item.eMessage = "Ocorreu Um erro ao fechar ao criar Requisição Histórico.";
+                            }
                         }
-                        if (item.eReasonCode == 1)
+                        else
                         {
-                            item.eMessage = "Requisição foi fechada";
+                            item.eReasonCode = 18;
+                            item.eMessage = "Ocorreu Um erro ao fechar na transferência de dados para Histórico.";
                         }
+
+                        //CODIGO ORIGINAL
+                        //item.State = RequisitionStates.Archived;
+                        //item.UpdateUser = User.Identity.Name;
+                        //item.UpdateDate = DateTime.Now;
+                        //RequisitionViewModel reqArchived = DBRequest.Update(item.ParseToDB(), false, true).ParseToViewModel();
+                        //if (reqArchived == null)
+                        //{
+                        //    item.eReasonCode = 14;
+                        //    item.eMessage = "Ocorreu Um erro ao fechar";
+                        //}
+                        //if (item.eReasonCode == 1)
+                        //{
+                        //    item.eMessage = "Requisição foi fechada";
+                        //}
+                        //FIM
+
                         break;
                     default:
                         item.eReasonCode = 10;
@@ -1339,7 +1550,6 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-
         public JsonResult CreatePurchaseOrder([FromBody] RequisitionViewModel item)
         {
             if (item != null)
@@ -1364,6 +1574,50 @@ namespace Hydra.Such.Portal.Controllers
                 };
             }
             return Json(item);
+        }
+
+        [HttpPost]
+        public JsonResult CreatePurchaseOrderList([FromBody] List<RequisitionViewModel> Requisicoes)
+        {
+            ErrorHandler result = new ErrorHandler
+            {
+                eReasonCode = 1,
+                eMessage = "Os Registos foram atualizados com sucesso."
+            };
+
+            try
+            {
+                if (Requisicoes != null && Requisicoes.Count > 0)
+                {
+                    UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Requisições);
+                    if (UPerm.Create == true)
+                    {
+                        Requisicoes.ForEach(Requisicao =>
+                        {
+                            if (result.eReasonCode == 1)
+                            {
+                                RequisitionService serv = new RequisitionService(configws, HttpContext.User.Identity.Name);
+                                Requisicao = serv.CreatePurchaseOrderFor(Requisicao);
+
+                                result.eReasonCode = Requisicao.eReasonCode;
+                                result.eMessage = Requisicao.eMessage;
+                            }
+                        });
+                    }
+                }
+                else
+                {
+                    result.eReasonCode = 3;
+                    result.eMessage = "Não é possivel criar encomenda de compra. Não escolheu nenhuma linha.";
+                }
+            }
+            catch (Exception ex)
+            {
+                result.eReasonCode = 2;
+                result.eMessage = "Ocorreu um erro ao criar encomenda de compra (" + ex.Message + ")";
+            }
+
+            return Json(result);
         }
 
         //
@@ -1649,8 +1903,8 @@ namespace Hydra.Such.Portal.Controllers
 
                     //if (sendMailResult.IsCompletedSuccessfully)
                     //{
-                        result.eReasonCode = 1;
-                        result.eMessage = "Resposta enviada com sucesso.";
+                    result.eReasonCode = 1;
+                    result.eMessage = "Resposta enviada com sucesso.";
                     //}
                     //else
                     //{

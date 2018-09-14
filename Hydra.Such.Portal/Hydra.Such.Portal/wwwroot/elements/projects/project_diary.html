@@ -1482,8 +1482,15 @@
                     this.$.ToastMessageError.text = message;
                     this.$.ToastMessageError.open();
                 },
+                _validateData: function () {
+                    if (this.$.dpDate.validate()) {
+                        return true;
+                    }
+                    this.openToastError("Verifique os dados inseridos.");
+                    return false;
+                },
                 _add() {
-                    if (true)
+                    if (this._validateData())
                     //Validações
                     {
                         this.result.items.unshift({
@@ -1520,8 +1527,6 @@
                         this.$.ajax_update.body = JSON.stringify(this.result.items);
                         this.$.ajax_update.generateRequest();
                         this.$.projectDiaryProject.clearCache();
-                    } else {
-                        alert("Tem de preencher todos os campos.");
                     }
                 },
 
@@ -1580,6 +1585,7 @@
                             if (this.disabledProjectNo == false) {
                                 this.projectNumber = "";
                                 this.$.projectList._clearSelection();
+                                this.invoiceClientNo = "";
                             }
                             this.date = "";
                             this.projectMovementNumber = "";
@@ -1594,7 +1600,6 @@
                             this.unitPrice = "";
                             this.totalPrice = "";
                             this.billable = true;
-                            this.invoiceClientNo = "";
                             this.ddMealTypes = "";
                             this.ddServiceGroupCode = "";
                             this.residueguide = "";
@@ -1740,18 +1745,18 @@
                     }
                 },
                 _updateRegisterResponse: function (e) {
-                    if (this.data == null || this.data.length <= 0) {
-                        this.openToastError("Não existem linhas de Diário para Registar.");
-                    } else {
-
-                        if (e.detail.status === 200) {
+                    if (e.detail.status === 200) {
+                        if (this.data.eReasonCode == 1) {
                             this.$.ajax_getall.generateRequest();
                             this.$.projectDiaryProject.clearCache();
-                            this.openToastSuccess("Linhas do Diário registadas com sucesso.");
+                            this.openToastSuccess(this.data.eMessage);
                         }
                         else {
-                            this.openToastError("Occorreu um erro ao registar as linhas do Diário.");
+                            this.openToastError(this.data.eMessage);
                         }
+                    }
+                    else {
+                        this.openToastError("Occorreu um erro ao registar as linhas do Diário.");
                     }
                 },
 
@@ -1825,7 +1830,7 @@
                         }
                     }
                     else {
-                        this.openToastError("Occorreu um erro ao registar as linhas do Diário.");
+                        this.openToastError("Ocorreu um erro ao registar as linhas do Diário.");
                     }
                 },
 

@@ -212,6 +212,162 @@ namespace Hydra.Such.Data.Logic.Request
             }
         }
         #region Parse Utilities
+        public static RequisiçãoHist TransferToRequisitionHist(this RequisitionViewModel item)
+        {
+            if (item != null)
+            {
+                return new RequisiçãoHist()
+                {
+                    NºRequisição = item.RequisitionNo,
+                    Área = item.Area,
+                    Estado = item.State.HasValue ? (int)item.State.Value : (int?)null,
+                    NºProjeto = item.ProjectNo,
+                    CódigoRegião = item.RegionCode,
+                    CódigoÁreaFuncional = item.FunctionalAreaCode,
+                    CódigoCentroResponsabilidade = item.CenterResponsibilityCode,
+                    CódigoLocalização = item.LocalCode,
+                    NºFuncionário = item.EmployeeNo,
+                    Viatura = item.Vehicle,
+                    DataReceção = !string.IsNullOrEmpty(item.ReceivedDate) ? Convert.ToDateTime(item.ReceivedDate) : (DateTime?)null,
+                    Urgente = item.Urgent,
+                    Amostra = item.Sample,
+                    Anexo = item.Attachment,
+                    Imobilizado = item.Immobilized,
+                    CompraADinheiro = item.BuyCash,
+                    CódigoLocalRecolha = item.LocalCollectionCode,
+                    CódigoLocalEntrega = item.LocalDeliveryCode,
+                    Observações = item.Comments,
+                    ModeloDeRequisição = item.RequestModel,
+                    DataHoraCriação = !string.IsNullOrEmpty(item.CreateDate) ? Convert.ToDateTime(item.CreateDate) : (DateTime?)null,
+                    UtilizadorCriação = item.CreateUser,
+                    DataHoraModificação = item.UpdateDate,
+                    UtilizadorModificação = item.UpdateUser,
+                    CabimentoOrçamental = item.RelatedSearches,
+                    Exclusivo = item.Exclusive,
+                    JáExecutado = item.AlreadyPerformed,
+                    Equipamento = item.Equipment,
+                    ReposiçãoDeStock = item.StockReplacement,
+                    Reclamação = item.Reclamation,
+                    NºRequisiçãoReclamada = item.RequestReclaimNo,
+                    ResponsávelCriação = item.ResponsibleCreation,
+                    ResponsávelAprovação = item.ResponsibleApproval,
+                    ResponsávelValidação = item.ResponsibleValidation,
+                    ResponsávelReceção = item.ResponsibleReception,
+                    DataAprovação = item.ApprovalDate,
+                    DataValidação = item.ValidationDate,
+                    UnidadeProdutivaAlimentação = item.UnitFoodProduction,
+                    RequisiçãoNutrição = item.RequestNutrition,
+                    RequisiçãoDetergentes = item.RequestforDetergents,
+                    NºProcedimentoCcp = item.ProcedureCcpNo,
+                    Aprovadores = item.Approvers,
+                    MercadoLocal = item.LocalMarket,
+                    RegiãoMercadoLocal = item.LocalMarketRegion,
+                    ReparaçãoComGarantia = item.RepairWithWarranty,
+                    Emm = item.Emm,
+                    DataEntregaArmazém = !string.IsNullOrEmpty(item.WarehouseDeliveryDate) ? Convert.ToDateTime(item.WarehouseDeliveryDate) : (DateTime?)null,
+                    LocalDeRecolha = item.LocalCollection,
+                    MoradaRecolha = item.CollectionAddress,
+                    Morada2Recolha = item.Collection2Address,
+                    CódigoPostalRecolha = item.CollectionPostalCode,
+                    LocalidadeRecolha = item.CollectionLocality,
+                    ContatoRecolha = item.CollectionContact,
+                    ResponsávelReceçãoRecolha = item.CollectionResponsibleReception,
+                    LocalEntrega = item.LocalDelivery,
+                    MoradaEntrega = item.DeliveryAddress,
+                    Morada2Entrega = item.Delivery2Address,
+                    CódigoPostalEntrega = item.DeliveryPostalCode,
+                    LocalidadeEntrega = item.LocalityDelivery,
+                    ContatoEntrega = item.DeliveryContact,
+                    ResponsávelReceçãoReceção = item.ResponsibleReceptionReception,
+                    NºFatura = item.InvoiceNo,
+                    DataMercadoLocal = item.LocalMarketDate,
+                    DataRequisição = !string.IsNullOrEmpty(item.RequisitionDate) ? Convert.ToDateTime(item.RequisitionDate) : (DateTime?)null,
+                    NºConsultaMercado = item.MarketInquiryNo,
+                    NºEncomenda = item.OrderNo,
+                    Orçamento = item.Budget,
+                    ValorEstimado = item.EstimatedValue,
+                    PrecoIvaincluido = item.PricesIncludingVAT,
+                    Adiantamento = item.InAdvance,
+                };
+            }
+            return null;
+        }
+
+        public static List<LinhasRequisiçãoHist> TransferToRequisitionLinesHist(this List<RequisitionLineViewModel> Linhas)
+        {
+            List<LinhasRequisiçãoHist> LinhasREQHist = new List<LinhasRequisiçãoHist>();
+            if (Linhas.Count > 0)
+            {
+                Linhas.ForEach(Linha =>
+                {
+                    LinhasRequisiçãoHist LinhaHist = new LinhasRequisiçãoHist()
+                    {
+                        NºRequisição = Linha.RequestNo,
+                        NºLinha = (int)Linha.LineNo,
+                        Tipo = Linha.Type,
+                        Código = Linha.Code,
+                        Descrição = Linha.Description,
+                        Descrição2 = Linha.Description2,
+                        CódigoUnidadeMedida = Linha.UnitMeasureCode,
+                        CódigoLocalização = Linha.LocalCode,
+                        MercadoLocal = Linha.LocalMarket,
+                        QuantidadeARequerer = Linha.QuantityToRequire,
+                        QuantidadeRequerida = Linha.QuantityRequired,
+                        QuantidadeDisponibilizada = Linha.QuantityToProvide,
+                        QuantidadeAReceber = Linha.QuantityAvailable,
+                        QuantidadeRecebida = Linha.QuantityReceivable,
+                        QuantidadePendente = Linha.QuantityPending,
+                        CustoUnitário = Linha.UnitCost,
+                        DataReceçãoEsperada = !string.IsNullOrEmpty(Linha.ExpectedReceivingDate) ? Convert.ToDateTime(Linha.ExpectedReceivingDate) : (DateTime?)null,
+                        Faturável = Linha.Billable,
+                        NºProjeto = Linha.ProjectNo,
+                        CódigoRegião = Linha.RegionCode,
+                        CódigoÁreaFuncional = Linha.FunctionalAreaCode,
+                        CódigoCentroResponsabilidade = Linha.CenterResponsibilityCode,
+                        NºFuncionário = Linha.FunctionalNo,
+                        Viatura = Linha.Vehicle,
+                        DataHoraCriação = Linha.CreateDateTime,
+                        UtilizadorCriação = Linha.CreateUser,
+                        DataHoraModificação = Linha.UpdateDateTime,
+                        UtilizadorModificação = Linha.UpdateUser,
+                        QtdPorUnidadeDeMedida = Linha.QtyByUnitOfMeasure,
+                        PreçoUnitárioVenda = Linha.UnitCostsould,
+                        ValorOrçamento = Linha.BudgetValue,
+                        NºLinhaOrdemManutenção = Linha.MaintenanceOrderLineNo,
+                        CriarConsultaMercado = Linha.CreateMarketSearch,
+                        EnviarPréCompra = Linha.SubmitPrePurchase,
+                        EnviadoPréCompra = Linha.SendPrePurchase,
+                        DataMercadoLocal = !string.IsNullOrEmpty(Linha.LocalMarketDate) ? Convert.ToDateTime(Linha.LocalMarketDate) : (DateTime?)null,
+                        UserMercadoLocal = Linha.LocalMarketUser,
+                        EnviadoParaCompras = Linha.SendForPurchase,
+                        DataEnvioParaCompras = !string.IsNullOrEmpty(Linha.SendForPurchaseDate) ? Convert.ToDateTime(Linha.SendForPurchaseDate) : (DateTime?)null,
+                        ValidadoCompras = Linha.PurchaseValidated,
+                        RecusadoCompras = Linha.PurchaseRefused,
+                        MotivoRecusaMercLocal = Linha.ReasonToRejectionLocalMarket,
+                        DataRecusaMercLocal = !string.IsNullOrEmpty(Linha.RejectionLocalMarketDate) ? Convert.ToDateTime(Linha.RejectionLocalMarketDate) : (DateTime?)null,
+                        IdCompra = Linha.PurchaseId,
+                        NºFornecedor = Linha.SupplierNo,
+                        NºEncomendaAberto = Linha.OpenOrderNo,
+                        NºLinhaEncomendaAberto = Linha.OpenOrderLineNo,
+                        NºDeConsultaMercadoCriada = Linha.QueryCreatedMarketNo,
+                        NºEncomendaCriada = Linha.CreatedOrderNo,
+                        CódigoProdutoFornecedor = Linha.SupplierProductCode,
+                        UnidadeProdutivaNutrição = Linha.UnitNutritionProduction,
+                        RegiãoMercadoLocal = Linha.MarketLocalRegion,
+                        NºCliente = Linha.CustomerNo,
+                        Aprovadores = Linha.Approvers,
+                        Urgente = Linha.Urgent,
+                        GrupoRegistoIvanegocio = Linha.VATBusinessPostingGroup,
+                        GrupoRegistoIvaproduto = Linha.VATProductPostingGroup,
+                        PercentagemDesconto = Linha.DiscountPercentage
+                    };
+
+                    LinhasREQHist.Add(LinhaHist);
+                });
+            }
+            return LinhasREQHist;
+        }
+
         public static RequisitionViewModel ParseToViewModel(this Requisição item)
         {
             if (item != null)
@@ -220,7 +376,6 @@ namespace Hydra.Such.Data.Logic.Request
                 {
                     RequisitionNo = item.NºRequisição,
                     Area = item.Área,
-                    //State = item.Estado,
                     State = item.Estado.HasValue && Enum.IsDefined(typeof(RequisitionStates), item.Estado.Value) ? (RequisitionStates)item.Estado.Value : (RequisitionStates?)null,
                     ProjectNo = item.NºProjeto,
                     RegionCode = item.CódigoRegião,
@@ -239,10 +394,10 @@ namespace Hydra.Such.Data.Logic.Request
                     LocalDeliveryCode = item.CódigoLocalEntrega,
                     Comments = item.Observações,
                     RequestModel = item.ModeloDeRequisição,
-                    CreateUser = item.UtilizadorCriação,
                     CreateDate = !item.DataHoraCriação.HasValue ? "" : item.DataHoraCriação.Value.ToString("yyyy-MM-dd HH:mm:ss"),
-                    UpdateUser = item.UtilizadorModificação,
+                    CreateUser = item.UtilizadorCriação,
                     UpdateDate = item.DataHoraModificação,
+                    UpdateUser = item.UtilizadorModificação,
                     RelatedSearches = item.CabimentoOrçamental,
                     Exclusive = item.Exclusivo,
                     AlreadyPerformed = item.JáExecutado,
@@ -282,14 +437,14 @@ namespace Hydra.Such.Data.Logic.Request
                     ResponsibleReceptionReception = item.ResponsávelReceçãoReceção,
                     InvoiceNo = item.NºFatura,
                     LocalMarketDate = item.DataMercadoLocal,
-                    // EstimatedValue = item.,
+                    RequisitionDate = !item.DataRequisição.HasValue ? "" : item.DataRequisição.Value.ToString("yyyy-MM-dd"),
                     MarketInquiryNo = item.NºConsultaMercado,
                     OrderNo = item.NºEncomenda,
-                    RequisitionDate = !item.DataRequisição.HasValue ? "" : item.DataRequisição.Value.ToString("yyyy-MM-dd"),
-                    //dimension = item.,
-                    //Budget = item.,
-                    InAdvance = item.Adiantamento.HasValue ? item.Adiantamento.Value : false,
+                    Budget = item.Orçamento,
+                    EstimatedValue = item.ValorEstimado,
                     PricesIncludingVAT = item.PrecoIvaincluido.HasValue ? item.PrecoIvaincluido.Value : false,
+                    InAdvance = item.Adiantamento.HasValue ? item.Adiantamento.Value : false,
+
                     Lines = item.LinhasRequisição.ToList().ParseToViewModel(),
                     ChangeLog = item.RequisicoesRegAlteracoes.ToList().ParseToViewModel()
                 };
@@ -314,7 +469,6 @@ namespace Hydra.Such.Data.Logic.Request
                 {
                     NºRequisição = item.RequisitionNo,
                     Área = item.Area,
-                    //Estado = item.State.HasValue ? (int)item.State.Value : (int?)null,
                     Estado = item.State.HasValue ? (int)item.State.Value : (int?)null,
                     NºProjeto = item.ProjectNo,
                     CódigoRegião = item.RegionCode,
@@ -323,7 +477,7 @@ namespace Hydra.Such.Data.Logic.Request
                     CódigoLocalização = item.LocalCode,
                     NºFuncionário = item.EmployeeNo,
                     Viatura = item.Vehicle,
-                    DataReceção = string.IsNullOrEmpty(item.ReceivedDate) ? (DateTime?)null : DateTime.Parse(item.ReceivedDate),
+                    DataReceção = !string.IsNullOrEmpty(item.ReceivedDate) ? Convert.ToDateTime(item.ReceivedDate) : (DateTime?)null,
                     Urgente = item.Urgent,
                     Amostra = item.Sample,
                     Anexo = item.Attachment,
@@ -333,10 +487,10 @@ namespace Hydra.Such.Data.Logic.Request
                     CódigoLocalEntrega = item.LocalDeliveryCode,
                     Observações = item.Comments,
                     ModeloDeRequisição = item.RequestModel,
+                    DataHoraCriação = !string.IsNullOrEmpty(item.CreateDate) ? Convert.ToDateTime(item.CreateDate) : (DateTime?)null,
                     UtilizadorCriação = item.CreateUser,
-                    DataHoraCriação = string.IsNullOrEmpty(item.CreateDate) ? (DateTime?)null : DateTime.Parse(item.CreateDate),
-                    UtilizadorModificação = item.UpdateUser,
                     DataHoraModificação = item.UpdateDate,
+                    UtilizadorModificação = item.UpdateUser,
                     CabimentoOrçamental = item.RelatedSearches,
                     Exclusivo = item.Exclusive,
                     JáExecutado = item.AlreadyPerformed,
@@ -359,7 +513,7 @@ namespace Hydra.Such.Data.Logic.Request
                     RegiãoMercadoLocal = item.LocalMarketRegion,
                     ReparaçãoComGarantia = item.RepairWithWarranty,
                     Emm = item.Emm,
-                    DataEntregaArmazém = string.IsNullOrEmpty(item.WarehouseDeliveryDate) ? (DateTime?)null : DateTime.Parse(item.WarehouseDeliveryDate),
+                    DataEntregaArmazém = !string.IsNullOrEmpty(item.WarehouseDeliveryDate) ? Convert.ToDateTime(item.WarehouseDeliveryDate) : (DateTime?)null,
                     LocalDeRecolha = item.LocalCollection,
                     MoradaRecolha = item.CollectionAddress,
                     Morada2Recolha = item.Collection2Address,
@@ -376,14 +530,14 @@ namespace Hydra.Such.Data.Logic.Request
                     ResponsávelReceçãoReceção = item.ResponsibleReceptionReception,
                     NºFatura = item.InvoiceNo,
                     DataMercadoLocal = item.LocalMarketDate,
-                    // EstimatedValue = item.,
+                    DataRequisição = !string.IsNullOrEmpty(item.RequisitionDate) ? Convert.ToDateTime(item.RequisitionDate) : (DateTime?)null,
                     NºConsultaMercado = item.MarketInquiryNo,
                     NºEncomenda = item.OrderNo,
-                    DataRequisição = item.RequisitionDate != null && item.RequisitionDate != "" ? DateTime.Parse(item.RequisitionDate) : (DateTime?)null,
-                    //dimension = item.,
-                    //Budget = item.,
-                    Adiantamento = item.InAdvance.HasValue ? item.InAdvance.Value : false,
-                    PrecoIvaincluido = item.PricesIncludingVAT.HasValue ? item.PricesIncludingVAT.Value : false,
+                    Orçamento = item.Budget,
+                    ValorEstimado = item.EstimatedValue,
+                    PrecoIvaincluido = item.PricesIncludingVAT,
+                    Adiantamento = item.InAdvance,
+
                     LinhasRequisição = item.Lines.ParseToDB(),
                     RequisicoesRegAlteracoes = item.ChangeLog.ParseToDB()
                 };

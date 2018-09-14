@@ -7,6 +7,7 @@ namespace Hydra.Such.Data.Database
     {
         public string Nº { get; set; }
         public string Descrição { get; set; }
+        public string Descrição2 { get; set; }
         public bool? ListaDeMateriais { get; set; }
         public string UnidadeMedidaBase { get; set; }
         public string NºPrateleira { get; set; }

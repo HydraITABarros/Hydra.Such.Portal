@@ -204,6 +204,7 @@ namespace Hydra.Such.Data.Logic.Request
                     Type = item.Tipo,
                     Code = item.Código,
                     Description = item.Descrição,
+                    Description2 = item.Descrição2,
                     UnitMeasureCode = item.CódigoUnidadeMedida,
                     LocalCode = item.CódigoLocalização,
                     LocalMarket = item.MercadoLocal == null ? false : item.MercadoLocal,
@@ -253,6 +254,7 @@ namespace Hydra.Such.Data.Logic.Request
                     MarketLocalRegion = item.RegiãoMercadoLocal,
                     CustomerNo = item.NºCliente,
                     Approvers = item.Aprovadores,
+                    Urgent = item.Urgente,
                     VATBusinessPostingGroup = item.GrupoRegistoIvanegocio,
                     VATProductPostingGroup = item.GrupoRegistoIvaproduto,
                     DiscountPercentage = item.PercentagemDesconto.HasValue ? item.PercentagemDesconto.Value : 0,
@@ -281,6 +283,7 @@ namespace Hydra.Such.Data.Logic.Request
                     Tipo = item.Type,
                     Código = item.Code,
                     Descrição = item.Description,
+                    Descrição2 = item.Description2,
                     CódigoUnidadeMedida = item.UnitMeasureCode,
                     CódigoLocalização = item.LocalCode,
                     MercadoLocal = item.LocalMarket == null ? false : item.LocalMarket,
@@ -330,9 +333,10 @@ namespace Hydra.Such.Data.Logic.Request
                     RegiãoMercadoLocal= item.MarketLocalRegion,
                     NºCliente= item.CustomerNo,
                     Aprovadores= item.Approvers,
+                    Urgente = item.Urgent,
                     GrupoRegistoIvanegocio = item.VATBusinessPostingGroup,
                     GrupoRegistoIvaproduto = item.VATProductPostingGroup,
-                    PercentagemDesconto = item.DiscountPercentage.HasValue ? item.DiscountPercentage.Value : 0,
+                    PercentagemDesconto = item.DiscountPercentage.HasValue ? item.DiscountPercentage.Value : (decimal?)null,
                 };
             }
             return null;
@@ -344,6 +348,173 @@ namespace Hydra.Such.Data.Logic.Request
             if (items != null)
                 items.ForEach(x =>
                     parsedItems.Add(x.ParseToDB()));
+            return parsedItems;
+        }
+        #endregion
+
+
+
+
+
+
+
+
+        #region HISTORICO
+        public static RequisitionLineHistViewModel ParseHistToViewModel(this LinhasRequisiçãoHist item)
+        {
+            if (item != null)
+            {
+                return new RequisitionLineHistViewModel()
+                {
+                    RequestNo = item.NºRequisição,
+                    LineNo = item.NºLinha,
+                    Type = item.Tipo,
+                    Code = item.Código,
+                    Description = item.Descrição,
+                    Description2 = item.Descrição2,
+                    UnitMeasureCode = item.CódigoUnidadeMedida,
+                    LocalCode = item.CódigoLocalização,
+                    LocalMarket = item.MercadoLocal == null ? false : item.MercadoLocal,
+                    QuantityToRequire = item.QuantidadeARequerer,
+                    QuantityRequired = item.QuantidadeRequerida,
+                    QuantityToProvide = item.QuantidadeADisponibilizar,
+                    QuantityAvailable = item.QuantidadeDisponibilizada,
+                    QuantityReceivable = item.QuantidadeAReceber,
+                    QuantityReceived = item.QuantidadeRecebida,
+                    QuantityPending = item.QuantidadePendente,
+                    UnitCost = item.CustoUnitário,
+                    ExpectedReceivingDate = !item.DataReceçãoEsperada.HasValue ? "" : item.DataReceçãoEsperada.Value.ToString("yyyy-MM-dd"),
+                    Billable = item.Faturável == null ? false : item.Faturável,
+                    ProjectNo = item.NºProjeto,
+                    RegionCode = item.CódigoRegião,
+                    FunctionalAreaCode = item.CódigoÁreaFuncional,
+                    CenterResponsibilityCode = item.CódigoCentroResponsabilidade,
+                    FunctionalNo = item.NºFuncionário,
+                    Vehicle = item.Viatura,
+                    CreateDateTime = item.DataHoraCriação,
+                    CreateUser = item.UtilizadorCriação,
+                    UpdateDateTime = item.DataHoraModificação,
+                    UpdateUser = item.UtilizadorModificação,
+                    QtyByUnitOfMeasure = item.QtdPorUnidadeDeMedida,
+                    UnitCostsould = item.PreçoUnitárioVenda,
+                    BudgetValue = item.ValorOrçamento,
+                    MaintenanceOrderLineNo = item.NºLinhaOrdemManutenção,
+                    CreateMarketSearch = item.CriarConsultaMercado == null ? false : item.CriarConsultaMercado,
+                    SubmitPrePurchase = item.EnviadoPréCompra == null ? false : item.EnviadoPréCompra,
+                    SendPrePurchase = item.EnviarPréCompra == null ? false : item.EnviarPréCompra,
+                    LocalMarketDate = !item.DataMercadoLocal.HasValue ? "" : item.DataMercadoLocal.Value.ToString("yyyy-MM-dd"),
+                    LocalMarketUser = item.UserMercadoLocal,
+                    SendForPurchase = item.EnviadoParaCompras == null ? false : item.EnviadoParaCompras,
+                    SendForPurchaseDate = !item.DataEnvioParaCompras.HasValue ? "" : item.DataEnvioParaCompras.Value.ToString("yyyy-MM-dd"),
+                    PurchaseValidated = item.ValidadoCompras == null ? false : item.ValidadoCompras,
+                    PurchaseRefused = item.RecusadoCompras == null ? false : item.RecusadoCompras,
+                    ReasonToRejectionLocalMarket = item.MotivoRecusaMercLocal,
+                    RejectionLocalMarketDate = !item.DataRecusaMercLocal.HasValue ? "" : item.DataRecusaMercLocal.Value.ToString("yyyy-MM-dd"),
+                    PurchaseId = item.IdCompra,
+                    SupplierNo = item.NºFornecedor,
+                    OpenOrderNo = item.NºEncomendaAberto,
+                    OpenOrderLineNo = item.NºLinhaEncomendaAberto,
+                    QueryCreatedMarketNo = item.NºDeConsultaMercadoCriada,
+                    CreatedOrderNo = item.NºEncomendaCriada,
+                    SupplierProductCode = item.CódigoProdutoFornecedor,
+                    UnitNutritionProduction = item.UnidadeProdutivaNutrição,
+                    MarketLocalRegion = item.RegiãoMercadoLocal,
+                    CustomerNo = item.NºCliente,
+                    Approvers = item.Aprovadores,
+                    Urgent = item.Urgente,
+                    VATBusinessPostingGroup = item.GrupoRegistoIvanegocio,
+                    VATProductPostingGroup = item.GrupoRegistoIvaproduto,
+                    DiscountPercentage = item.PercentagemDesconto.HasValue ? item.PercentagemDesconto.Value : 0
+                };
+            }
+            return null;
+        }
+
+        public static List<RequisitionLineHistViewModel> ParseHistToViewModel(this List<LinhasRequisiçãoHist> items)
+        {
+            List<RequisitionLineHistViewModel> parsedItems = new List<RequisitionLineHistViewModel>();
+            if (items != null)
+                items.ForEach(x =>
+                    parsedItems.Add(x.ParseHistToViewModel()));
+            return parsedItems;
+        }
+
+        public static LinhasRequisiçãoHist ParseHistToDB(this RequisitionLineHistViewModel item)
+        {
+            if (item != null)
+            {
+                return new LinhasRequisiçãoHist()
+                {
+                    NºRequisição = item.RequestNo,
+                    NºLinha = item.LineNo.HasValue ? item.LineNo.Value : 0,
+                    Tipo = item.Type,
+                    Código = item.Code,
+                    Descrição = item.Description,
+                    Descrição2 = item.Description2,
+                    CódigoUnidadeMedida = item.UnitMeasureCode,
+                    CódigoLocalização = item.LocalCode,
+                    MercadoLocal = item.LocalMarket == null ? false : item.LocalMarket,
+                    QuantidadeARequerer = item.QuantityToRequire,
+                    QuantidadeRequerida = item.QuantityRequired,
+                    QuantidadeADisponibilizar = item.QuantityToProvide,
+                    QuantidadeDisponibilizada = item.QuantityAvailable,
+                    QuantidadeAReceber = item.QuantityReceivable,
+                    QuantidadeRecebida = item.QuantityReceived,
+                    QuantidadePendente = item.QuantityPending,
+                    CustoUnitário = item.UnitCost,
+                    DataReceçãoEsperada = string.IsNullOrEmpty(item.ExpectedReceivingDate) ? (DateTime?)null : DateTime.Parse(item.ExpectedReceivingDate),
+                    Faturável = item.Billable == null ? false : item.Billable,
+                    NºProjeto = item.ProjectNo,
+                    CódigoRegião = item.RegionCode,
+                    CódigoÁreaFuncional = item.FunctionalAreaCode,
+                    CódigoCentroResponsabilidade = item.CenterResponsibilityCode,
+                    NºFuncionário = item.FunctionalNo,
+                    Viatura = item.Vehicle,
+                    DataHoraCriação = item.CreateDateTime,
+                    UtilizadorCriação = item.CreateUser,
+                    DataHoraModificação = item.UpdateDateTime,
+                    UtilizadorModificação = item.UpdateUser,
+                    QtdPorUnidadeDeMedida = item.QtyByUnitOfMeasure,
+                    PreçoUnitárioVenda = item.UnitCostsould,
+                    ValorOrçamento = item.BudgetValue,
+                    NºLinhaOrdemManutenção = item.MaintenanceOrderLineNo,
+                    CriarConsultaMercado = item.CreateMarketSearch == null ? false : item.CreateMarketSearch,
+                    EnviarPréCompra = item.SendPrePurchase == null ? false : item.SendPrePurchase,
+                    EnviadoPréCompra = item.SubmitPrePurchase == null ? false : item.SubmitPrePurchase,
+                    DataMercadoLocal = string.IsNullOrEmpty(item.LocalMarketDate) ? (DateTime?)null : DateTime.Parse(item.LocalMarketDate),
+                    UserMercadoLocal = item.LocalMarketUser,
+                    EnviadoParaCompras = item.SendForPurchase == null ? false : item.SendForPurchase,
+                    DataEnvioParaCompras = string.IsNullOrEmpty(item.SendForPurchaseDate) ? (DateTime?)null : DateTime.Parse(item.SendForPurchaseDate),
+                    ValidadoCompras = item.PurchaseValidated == null ? false : item.PurchaseValidated,
+                    RecusadoCompras = item.PurchaseRefused == null ? false : item.PurchaseRefused,
+                    MotivoRecusaMercLocal = item.ReasonToRejectionLocalMarket,
+                    DataRecusaMercLocal = string.IsNullOrEmpty(item.RejectionLocalMarketDate) ? (DateTime?)null : DateTime.Parse(item.RejectionLocalMarketDate),
+                    IdCompra = item.PurchaseId,
+                    NºFornecedor = item.SupplierNo,
+                    NºEncomendaAberto = item.OpenOrderNo,
+                    NºLinhaEncomendaAberto = item.OpenOrderLineNo,
+                    NºDeConsultaMercadoCriada = item.QueryCreatedMarketNo,
+                    NºEncomendaCriada = item.CreatedOrderNo,
+                    CódigoProdutoFornecedor = item.SupplierProductCode,
+                    UnidadeProdutivaNutrição = item.UnitNutritionProduction,
+                    RegiãoMercadoLocal = item.MarketLocalRegion,
+                    NºCliente = item.CustomerNo,
+                    Aprovadores = item.Approvers,
+                    GrupoRegistoIvanegocio = item.VATBusinessPostingGroup,
+                    GrupoRegistoIvaproduto = item.VATProductPostingGroup,
+                    PercentagemDesconto = item.DiscountPercentage.HasValue ? item.DiscountPercentage.Value : (decimal?)null,
+                    Urgente = item.Urgent
+                };
+            }
+            return null;
+        }
+
+        public static List<LinhasRequisiçãoHist> ParseHistToDB(this List<RequisitionLineHistViewModel> items)
+        {
+            List<LinhasRequisiçãoHist> parsedItems = new List<LinhasRequisiçãoHist>();
+            if (items != null)
+                items.ForEach(x =>
+                    parsedItems.Add(x.ParseHistToDB()));
             return parsedItems;
         }
         #endregion

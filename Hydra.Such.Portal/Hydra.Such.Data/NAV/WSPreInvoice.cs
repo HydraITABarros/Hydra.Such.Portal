@@ -24,15 +24,15 @@ namespace Hydra.Such.Data.NAV
             navWSBinding.Security.Transport.ClientCredentialType = HttpClientCredentialType.Windows;
         }
 
-        public static async Task<WSCreatePreInvoice.Create_Result> CreatePreInvoice(SPInvoiceListViewModel PreInvoiceToCreate, NAVWSConfigurations WSConfigurations)
+        public static async Task<WSCreatePreInvoice.Create_Result> CreatePreInvoice(SPInvoiceListViewModel preInvoiceToCreate, NAVWSConfigurations WSConfigurations)
         {
             WSCreatePreInvoice.Document_Type tipo;
             bool notaDebito=false;
             string PostingNoSeries = "";
 
-            ConfigUtilizadores CUsers = DBUserConfigurations.GetById(PreInvoiceToCreate.CreateUser);
+            ConfigUtilizadores CUsers = DBUserConfigurations.GetById(preInvoiceToCreate.CreateUser);
 
-            if (PreInvoiceToCreate.MovementType == 2)//Nota de débito
+            if (preInvoiceToCreate.MovementType == 2)//Nota de débito
             {
                 tipo = WSCreatePreInvoice.Document_Type.Invoice;
                 notaDebito = true;
@@ -40,7 +40,7 @@ namespace Hydra.Such.Data.NAV
                 
 
             }
-            else if (PreInvoiceToCreate.MovementType == 4)//Nota de crédito
+            else if (preInvoiceToCreate.MovementType == 4)//Nota de crédito
             {
                 tipo = WSCreatePreInvoice.Document_Type.Credit_Memo;
                 notaDebito = false;
@@ -61,11 +61,30 @@ namespace Hydra.Such.Data.NAV
 
                     Document_Type = tipo,
                     Document_TypeSpecified = true,
-                    Sell_to_Customer_No = PreInvoiceToCreate.InvoiceToClientNo,
-                    VAT_Registration_No = PreInvoiceToCreate.ClientVATReg,
-                    Contract_No = PreInvoiceToCreate.DocumentNo,
+                    Sell_to_Customer_No = preInvoiceToCreate.InvoiceToClientNo,
+                    VAT_Registration_No = preInvoiceToCreate.ClientVATReg,
+                    Contract_No = preInvoiceToCreate.DocumentNo,
                     Debit_Memo = notaDebito,
-                    Posting_No_Series = PostingNoSeries
+                    Posting_No_Series = PostingNoSeries,
+                    Codigo_Pedido = preInvoiceToCreate.ClientRequest,
+                    Currency_Code = preInvoiceToCreate.Currency,
+                    Data_Serv_Prestado = preInvoiceToCreate.ServiceDate,
+                    Data_Encomenda = !string.IsNullOrEmpty(preInvoiceToCreate.Date) ? DateTime.Parse(preInvoiceToCreate.Date) : DateTime.MinValue,
+                    Data_EncomendaSpecified = !string.IsNullOrEmpty(preInvoiceToCreate.Date),
+                    //Document_Date = preInvoiceToCreate.dat
+                    //Due_Date
+                    //Document_Date
+                    //External_Document_No
+                    RegionCode20 = preInvoiceToCreate.RegionCode,
+                    FunctionAreaCode20 = preInvoiceToCreate.FunctionalAreaCode,
+                    ResponsabilityCenterCode20 = preInvoiceToCreate.ResponsabilityCenterCode,
+                    Location_Code = preInvoiceToCreate.LocationCode,
+                    No_Compromisso = preInvoiceToCreate.CommitmentNumber,
+                    Observacoes = preInvoiceToCreate.Comments,
+                    //Order_Date
+                    Payment_Method_Code = preInvoiceToCreate.CodMetodoPagamento,
+                    Payment_Terms_Code = preInvoiceToCreate.CodTermosPagamento,
+                    //Posting_Date
                 }
                 
             };

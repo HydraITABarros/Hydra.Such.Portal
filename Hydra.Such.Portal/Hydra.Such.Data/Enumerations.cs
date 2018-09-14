@@ -58,7 +58,7 @@ namespace Hydra.Such.Data
             PedidoSimplificado = 10,
             [Description("Viaturas")]
             Viaturas = 11,
-            [Description("Telemoveis")]
+            [Description("Telemóveis")]
             Telemoveis = 12,
             [Description("Telefones")]
             Telefones = 13,
@@ -134,10 +134,10 @@ namespace Hydra.Such.Data
             MercadoLocal = 50,
             [Description("Pré-Encomendas")]
             PréEncomendas = 51,
-            [Description("Pedido Cotação")]
-            PedidoCotacao = 52,
             [Description("Administração Geral")]
             Localizações = 52,
+            [Description("Pedido Cotação")]
+            PedidoCotacao = 53,
             [Description("Localizações")]
             AdminGeral = 100,
             [Description("Administração Aprovações")]
@@ -158,7 +158,7 @@ namespace Hydra.Such.Data
             AdminExistencias = 108,
             [Description("Administração Receção Faturação")]
             AdminReceçãoFaturação = 109,
-            [Description("Taxa Residuos")]
+            [Description("Taxa Resíduos")]
             AdminTaxaResiduos = 110,
         }
 
