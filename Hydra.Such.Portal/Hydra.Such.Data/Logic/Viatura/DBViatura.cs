@@ -140,7 +140,8 @@ namespace Hydra.Such.Data.Logic.Viatura
                 Imagem = x.Imagem,
                 KmUltimaRevisão = x.KmUltimaRevisao,
                 IntervaloRevisões = x.IntervaloRevisoes,
-                DuraçãoPneus = x.DuracaoPneus
+                DuraçãoPneus = x.DuracaoPneus,
+                NoProjeto = x.NoProjeto
             };
 
             viatura.DataMatrícula = x.DataMatricula != "" && x.DataMatricula != null ? DateTime.Parse(x.DataMatricula) : (DateTime?)null;
@@ -198,7 +199,8 @@ namespace Hydra.Such.Data.Logic.Viatura
                 Imagem = x.Imagem,
                 KmUltimaRevisao = x.KmUltimaRevisão,
                 IntervaloRevisoes = x.IntervaloRevisões,
-                DuracaoPneus = x.DuraçãoPneus
+                DuracaoPneus = x.DuraçãoPneus,
+                NoProjeto = x.NoProjeto
             };
 
             if (x.DataMatrícula != null) viatura.DataMatricula = x.DataMatrícula.Value.ToString("yyyy-MM-dd");

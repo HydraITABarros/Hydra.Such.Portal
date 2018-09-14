@@ -101,14 +101,14 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.buyCash.hidden }}">
-                <template class="header">
-                    Compra a Dinheiro
-                </template>
-                <template>
-                    <vaadin-checkbox checked="{{item.buyCash}}" disabled></vaadin-checkbox>
-                </template>
-            </vaadin-grid-column>
+            @*<vaadin-grid-column width="160px" resizable hidden$="{{ _columns.buyCash.hidden }}">
+            <template class="header">
+                Compra a Dinheiro
+            </template>
+            <template>
+                <vaadin-checkbox checked="{{item.buyCash}}" disabled></vaadin-checkbox>
+            </template>
+        </vaadin-grid-column>*@
 
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.alreadyPerformed.hidden }}">
                 <template class="header">
@@ -125,6 +125,15 @@
                 </template>
                 <template>
                     <vaadin-checkbox checked="{{item.requestNutrition}}" disabled></vaadin-checkbox>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.pedirOrcamento.hidden }}">
+                <template class="header">
+                    Pedir Orçamento
+                </template>
+                <template>
+                    <vaadin-checkbox checked="{{item.pedirOrcamento}}" disabled></vaadin-checkbox>
                 </template>
             </vaadin-grid-column>
 
@@ -309,9 +318,10 @@
                         "requisitionNo": { hidden: false, label: "Nº Requisição" },
                         "state": { hidden: false, label: "Estado" },
                         "urgent": { hidden: false, label: "Urgente" },
-                        "buyCash": { hidden: false, label: "Compra a Dinheiro" },
+                        //"buyCash": { hidden: false, label: "Compra a Dinheiro" },
                         "alreadyPerformed": { hidden: false, label: "Trabalho já executado" },
                         "requestNutrition": { hidden: false, label: "Requisição Nutrição" },
+                        "pedirOrcamento": { hidden: false, label: "Pedir Orçamento" },
                         "regionCode": { hidden: false, label: "Código Região" },
                         "functionalAreaCode": { hidden: false, label: "Código Área Funcional" },
                         "centerResponsibilityCode": { hidden: false, label: "Código Centro Responsabilidade" },

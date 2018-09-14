@@ -123,6 +123,16 @@
                 </template>
             </vaadin-grid-column>
 
+            <vaadin-grid-column width="90px" resizable hidden$="{{ _columns.noProjeto.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="noProjeto">Nº Projeto</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="noProjeto" />
+                </template>
+                <template>
+                    {{item.noProjeto}}
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.tipoViatura.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="tipoViatura.descricao">Tipo Viatura</vaadin-grid-sorter>
@@ -310,6 +320,7 @@
                         "matricula": { hidden: false, label: "Matrícula" },
                         "dataMatricula": { hidden: false, label: "Data Matrícula" },
                         "estadoDescricao": { hidden: false, label: "Estado" },
+                        "noProjeto": { hidden: false, label: "Nº Projeto" },
                         "tipoViatura": { hidden: false, label: "Tipo Viatura" },
                         "codigoMarca": { hidden: false, label: "Código Marca" },
                         "marca": { hidden: false, label: "Marca" },

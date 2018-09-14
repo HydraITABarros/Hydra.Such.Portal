@@ -62,6 +62,7 @@ namespace Hydra.Such.Data.Database
         public int? KmUltimaRevisão { get; set; }
         public int? IntervaloRevisões { get; set; }
         public int? DuraçãoPneus { get; set; }
+        public string NoProjeto { get; set; }
 
         public Modelos CódigoM { get; set; }
         public Marcas CódigoMarcaNavigation { get; set; }

@@ -87,7 +87,7 @@
                 </template>
 
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.state.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="state">Estado</vaadin-grid-sorter>
@@ -97,7 +97,7 @@
                     [[ _parsestate(item.state)]]
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.urgent.hidden }}">
                 <template class="header">
                     Urgente
@@ -106,16 +106,16 @@
                     <vaadin-checkbox checked="{{item.urgent}}" disabled></vaadin-checkbox>
                 </template>
             </vaadin-grid-column>
-            
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.buyCash.hidden }}">
-                <template class="header">
-                    Compra a Dinheiro
-                </template>
-                <template>
-                    <vaadin-checkbox checked="{{item.buyCash}}" disabled></vaadin-checkbox>
-                </template>
-            </vaadin-grid-column>
-            
+
+            @*<vaadin-grid-column width="160px" resizable hidden$="{{ _columns.buyCash.hidden }}">
+            <template class="header">
+                Compra a Dinheiro
+            </template>
+            <template>
+                <vaadin-checkbox checked="{{item.buyCash}}" disabled></vaadin-checkbox>
+            </template>
+        </vaadin-grid-column>*@
+
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.alreadyPerformed.hidden }}">
                 <template class="header">
                     Trabalho já executado
@@ -124,7 +124,7 @@
                     <vaadin-checkbox checked="{{item.alreadyPerformed}}" disabled></vaadin-checkbox>
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.requestNutrition.hidden }}">
                 <template class="header">
                     Requisição Nutrição
@@ -133,7 +133,25 @@
                     <vaadin-checkbox checked="{{item.requestNutrition}}" disabled></vaadin-checkbox>
                 </template>
             </vaadin-grid-column>
-            
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.localMarket.hidden }}">
+                <template class="header">
+                    Mercado Local
+                </template>
+                <template>
+                    <vaadin-checkbox checked="{{item.localMarket}}" disabled></vaadin-checkbox>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.pedirOrcamento.hidden }}">
+                <template class="header">
+                    Pedir Orçamento
+                </template>
+                <template>
+                    <vaadin-checkbox checked="{{item.pedirOrcamento}}" disabled></vaadin-checkbox>
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.budget.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="budget">Orçamento</vaadin-grid-sorter>
@@ -143,16 +161,7 @@
                     {{item.budget}}
                 </template>
             </vaadin-grid-column>
-            
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.localMarket.hidden }}">
-                <template class="header">
-                    Mercado Local
-                </template>
-                <template>
-                    <vaadin-checkbox checked="{{item.localMarket}}" disabled></vaadin-checkbox>
-                </template>
-            </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.localMarketRegion.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="localMarketRegion">Região Mercado Local</vaadin-grid-sorter>
@@ -162,7 +171,7 @@
                     [[ _getLocalMarketRegionDescription(item.localMarketRegion) ]]
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.localMarketDate.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="localMarketDate">Data Mercado Local</vaadin-grid-sorter>
@@ -172,7 +181,7 @@
                     [[ _parseDateFormat(item.localMarketDate)]]
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.regionCode.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="regionCode">Código Região</vaadin-grid-sorter>
@@ -183,7 +192,7 @@
                     {{item.regionCode}}
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.functionalAreaCode.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="functionalAreaCode">Código Área Funcional</vaadin-grid-sorter>
@@ -194,7 +203,7 @@
                     {{item.functionalAreaCode}}
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.centerResponsibilityCode.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="centerResponsibilityCode">Código Centro Responsabilidade</vaadin-grid-sorter>
@@ -205,7 +214,7 @@
                     {{item.centerResponsibilityCode}}
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.comments.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="comments">Observações</vaadin-grid-sorter>
@@ -215,7 +224,7 @@
                     {{item.comments}}
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.marketInquiryNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="marketInquiryNo">Nº Consulta Mercado</vaadin-grid-sorter>
@@ -225,7 +234,7 @@
                     {{item.marketInquiryNo}}
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.orderNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="orderNo">Nº Encomenda</vaadin-grid-sorter>
@@ -235,7 +244,7 @@
                     {{item.orderNo}}
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.stockReplacement.hidden }}">
                 <template class="header">
                     Reposição Stock
@@ -244,26 +253,26 @@
                     <vaadin-checkbox checked="{{item.stockReplacement}}" disabled></vaadin-checkbox>
                 </template>
             </vaadin-grid-column>
-            
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.reclamation.hidden }}">
-                <template class="header">
-                    Reclamação
-                </template>
-                <template>
-                    <vaadin-checkbox checked="{{item.reclamation}}" disabled></vaadin-checkbox>
-                </template>
-            </vaadin-grid-column>
-            
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.requestReclaimNo.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="requestReclaimNo">Nº Requisição Reclamada</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="requestReclaimNo" />
-                </template>
-                <template>
-                    {{item.requestReclaimNo}}
-                </template>
-            </vaadin-grid-column>
-            
+
+            @*<vaadin-grid-column width="160px" resizable hidden$="{{ _columns.reclamation.hidden }}">
+            <template class="header">
+                Reclamação
+            </template>
+            <template>
+                <vaadin-checkbox checked="{{item.reclamation}}" disabled></vaadin-checkbox>
+            </template>
+        </vaadin-grid-column>*@
+
+            @*<vaadin-grid-column width="160px" resizable hidden$="{{ _columns.requestReclaimNo.hidden }}">
+            <template class="header">
+                <vaadin-grid-sorter path="requestReclaimNo">Nº Requisição Reclamada</vaadin-grid-sorter>
+                <vaadin-grid-filter path="requestReclaimNo" />
+            </template>
+            <template>
+                {{item.requestReclaimNo}}
+            </template>
+        </vaadin-grid-column>*@
+
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.requisitionDate.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="requisitionDate">Data requisição</vaadin-grid-sorter>
@@ -273,7 +282,7 @@
                     [[ _parseDateFormat(item.requisitionDate)]]
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.createUser.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="createUser">Utilizador Criação</vaadin-grid-sorter>
@@ -283,7 +292,7 @@
                     {{item.createUser}}
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.estimatedValue.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="estimatedValue">Valor Estimado</vaadin-grid-sorter>
@@ -424,11 +433,11 @@
                         "requisitionNo": { hidden: false, label: "Nº Requisição" },
                         "state": { hidden: false, label: "Estado" },
                         "urgent": { hidden: false, label: "Urgente" },
-                        "buyCash": { hidden: false, label: "Compra a Dinheiro" },
                         "alreadyPerformed": { hidden: false, label: "Trabalho já executado" },
                         "requestNutrition": { hidden: false, label: "Requisição Nutrição" },
-                        "budget": { hidden: false, label: "Orçamento" },
                         "localMarket": { hidden: false, label: "Mercado Local" },
+                        "pedirOrcamento": { hidden: false, label: "Pedir Orçamento" },
+                        "budget": { hidden: false, label: "Orçamento" },
                         "localMarketRegion": { hidden: false, label: "Região Mercado Local" },
                         "localMarketDate": { hidden: false, label: "Data Mercado Local" },
                         "regionCode": { hidden: false, label: "Código Região" },
@@ -438,8 +447,6 @@
                         "marketInquiryNo": { hidden: false, label: "Nº Consulta Mercado" },
                         "orderNo": { hidden: false, label: "Nº Encomenda" },
                         "stockReplacement": { hidden: false, label: "Reposição Stock" },
-                        "reclamation": { hidden: false, label: "Reclamação" },
-                        "requestReclaimNo": { hidden: false, label: "Nº Requisição Reclamada" },
                         "requisitionDate": { hidden: false, label: "Data requisição" },
                         "createUser": { hidden: false, label: "Utilizador Criação" },
                         "estimatedValue": { hidden: false, label: "Valor Estimado" }
