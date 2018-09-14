@@ -830,7 +830,7 @@
                                         </template>
                                         <template>
                                             <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-combo-box items="[[CBLocations]]" id="_CBLocalizations" item-value-path="id" item-label-path="id" value="{{item.localCode}}" required disabled="{{ !_permissions.update }}" onchange="_GridLocationChange" on-blur="_updateLinhaPreRequisicao">
+                                                <vaadin-combo-box items="[[CBLocations]]" id="_CBLocalizations" item-value-path="id" item-label-path="id" value="{{item.localCode}}" required disabled="{{ _setDisabled(item) }}" onchange="_GridLocationChange" on-blur="_updateLinhaPreRequisicao">
                                                     <template>
                                                         <table width="200px">
                                                             <tr>
@@ -855,7 +855,7 @@
                                             <vaadin-grid-filter path="armazemCDireta" />
                                         </template>
                                         <template>
-                                            <vaadin-text-field value="{{item.armazemCDireta}}" id="CBItemsCDirect" name="CBItemsCDirect" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{item.armazemCDireta}}" id="CBItemsCDirect" name="CBItemsCDirect" disabled="{{ _setDisabled(item) }}"> </vaadin-text-field>
                                         </template>
                                     </vaadin-grid-column>
 
@@ -866,7 +866,7 @@
                                         </template>
                                         <template>
                                             <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-combo-box items="[[Products]]" id="_CLGridSupplierProductCode" name="_CLGridSupplierProductCode" item-value-path="code" item-label-path="code" value="{{item.code}}" disabled="{{ !_permissions.update }}" on-blur="_onProductInGridChanged">
+                                                <vaadin-combo-box items="[[Products]]" id="_CLGridSupplierProductCode" name="_CLGridSupplierProductCode" item-value-path="code" item-label-path="code" value="{{item.code}}" disabled="{{ _setDisabled(item) }}" on-blur="_onProductInGridChanged">
                                                     <template>
                                                         <table width="180px">
                                                             <tr>
@@ -956,7 +956,7 @@
                                         </template>
                                         <template>
                                             <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-text-field value="{{item.unitCost}}" id="_CLGridUnitCost" name="_CLGridUnitCost" disabled="{{ !_permissions.update }}" type="number" pattern="^[1-9]\d*(\.\d+)?$" onchange="_CalculateTotalCostLine" on-blur="_updateLinhaPreRequisicao">
+                                                <vaadin-text-field value="{{item.unitCost}}" id="_CLGridUnitCost" name="_CLGridUnitCost" disabled="{{ _setDisabled(item) }}" type="number" pattern="^[1-9]\d*(\.\d+)?$" onchange="_CalculateTotalCostLine" on-blur="_updateLinhaPreRequisicao">
                                                     <div slot="suffix">€</div>
                                                 </vaadin-text-field>
                                             </template>
@@ -1160,7 +1160,7 @@
                                         </template>
                                         <template>
                                             <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-combo-box items="[[CBPurchaseLine]]" id="_CBGridPurchaseLine" item-value-path="line_No" item-label-path="line_No" value="{{item.openOrderLineNo}}" disabled="{{ !_permissions.update }}" onchange="_GridOpenLineChange" on-blur="_updateLinhaPreRequisicao">
+                                                <vaadin-combo-box items="[[CBPurchaseLine]]" id="_CBGridPurchaseLine" item-value-path="line_No" item-label-path="line_No" value="{{item.openOrderLineNo}}" disabled="{{ _setDisabled(item) }}" onchange="_GridOpenLineChange" on-blur="_updateLinhaPreRequisicao">
                                                     <template>
                                                         <table width="200px">
                                                             <tr>
@@ -1475,7 +1475,15 @@
                 //        this.$.purchaseheader_ajax.generateRequest();
                 //    }
                 //},
-
+                _setDisabled: function (e) {
+                    if (!this._permissions.update)
+                        return false;
+                    else if (e != null) {
+                        if (e.openOrderLineNo !== null && e.openOrderLineNo !== "" && e.openOrderLineNo !== undefined)
+                           return true;
+                    }
+                    return false;
+                },
                 _getRequesitionType: function (e) {
                     //debugger;
                     var _self = this;
@@ -2184,6 +2192,8 @@
                 _updateLinhaPreRequisicao: function (e) {
                     //debugger;
                     var index = this.dataLines.lines.indexOf(e.model.item);
+
+                    var item = e.model.item;
 
                     this.$.prereqLines_UpdateLinhaPreRequisicao_ajax.body = JSON.stringify({
                         preRequisitionLineNo: e.model.item.preRequisitionLineNo,
