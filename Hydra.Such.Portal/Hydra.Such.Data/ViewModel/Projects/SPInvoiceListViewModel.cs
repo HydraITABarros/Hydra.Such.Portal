@@ -59,7 +59,7 @@ namespace Hydra.Such.Data.ViewModel.Projects
         public string Currency { get; set; }
         public bool? Billed { get; set; }
         public int? MealType { get; set; }
-        public int? ServiceGroupCode { get; set; }
+        public string ServiceGroupCode { get; set; }
         public string ConsumptionDate { get; set; }
         public bool? Registered { get; set; }
         public string TypeDescription { get; set; }
@@ -75,5 +75,15 @@ namespace Hydra.Such.Data.ViewModel.Projects
         //EXPORTAR PARA EXCEL
         public Object ColunasEXCEL { get; set; }
 
+    }
+
+    public class AuthorizedCustomerBilling
+    {
+        public string InvoiceToClientNo { get; set; }
+        public string Date { get; set; }
+        public string CommitmentNumber { get; set; }
+        public string ClientRequest { get; set; }
+        public string ClientVATReg { get; set; }
+        public List<SPInvoiceListViewModel> Items { get; set; }
     }
 }

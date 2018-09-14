@@ -53,6 +53,15 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/GestaoRequisicoes/CreatePurchaseOrderList"
+                   last-response="{{Requisition}}"
+                   id="createPurchOrder_ajax"
+                   on-response="_createPurchaseOrderResponse"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
         <iron-ajax url="/PopulateDropdowns/GetRequestStatus" id="ajax_getstatus" auto last-response="{{resultstatus}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{RegionData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{ResponsabilityCenterData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -75,9 +84,11 @@
                 </div>
             </paper-menu-button>
             <!--end ColumnToggle-->
+
+            <paper-button class="tablinks" id="btnCreatePurchaseOrder" on-tap="_createPurchaseOrder" disabled="{{ !_permissions.create }}"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Criar Encomenda de Compra</paper-button>
         </div>
 
-        <vaadin-grid id="gridrequest" aria-label="ProfileModelsTabel" items="[[result]]" class="grid" active-item="{{_SelectedLine}}">
+        <vaadin-grid id="gridrequest" aria-label="ProfileModelsTabel" items="[[result]]" class="grid" selected-items={{selectedItems}} active-item="{{_SelectedLine}}">
             <vaadin-grid-selection-column auto-select id="grid_SelectAll">
             </vaadin-grid-selection-column>
 
@@ -183,7 +194,8 @@
                     <vaadin-grid-filter path="regionCode" />
                 </template>
                 <template>
-                    [[ _parseregion(item.regionCode)]]
+                    @*[[ _parseregion(item.regionCode)]]*@
+                    {{item.regionCode}}
                 </template>
             </vaadin-grid-column>
 
@@ -193,7 +205,8 @@
                     <vaadin-grid-filter path="functionalAreaCode" />
                 </template>
                 <template>
-                    [[ _parseArea(item.functionalAreaCode)]]
+                    @*[[ _parseArea(item.functionalAreaCode)]]*@
+                    {{item.functionalAreaCode}}
                 </template>
             </vaadin-grid-column>
 
@@ -203,7 +216,8 @@
                     <vaadin-grid-filter path="centerResponsibilityCode" />
                 </template>
                 <template>
-                    [[ _parsecenterRespons(item.centerResponsibilityCode)]]
+                    @*[[ _parsecenterRespons(item.centerResponsibilityCode)]]*@
+                    {{item.centerResponsibilityCode}}
                 </template>
             </vaadin-grid-column>
 
@@ -295,6 +309,9 @@
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
+
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
     <script>
         document.addEventListener('WebComponentsReady', function () {
@@ -304,6 +321,12 @@
                     _filterActive: {
                         type: Boolean,
                         value: true
+                    },
+                    selectedItems: {
+                        type: Array
+                    },
+                    selectedItem: {
+                        type: Array
                     },
                     _SelectedLine: {
                         observer: '_rowSelected'
@@ -340,6 +363,20 @@
                     var height = parentHeight - offsetTop;
                     grid_el.height(height);
                 },
+                //Mostra Mensagens
+                _showMessage: function (message) {
+                    //debugger;
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+
+                //Mostra Mensagens de Erro
+                _showErrorMessage: function (message) {
+                    //debugger;
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                },
+
                 _parsestate: function (param1) {
                     if (param1 != undefined) {
                         if (this.resultstatus != null) {
@@ -403,6 +440,30 @@
                         }
                     }
                     return "";
+                },
+
+                _createPurchaseOrder: function (selectedItem, selectedItems) {
+                    if (this.selectedItems != null && this.selectedItems != "") {
+                        var selItms = this.selectedItems;
+
+                        this.$.createPurchOrder_ajax.body = JSON.stringify(selItms);
+                        this.$.createPurchOrder_ajax.generateRequest();
+                        this.$.gridrequest.clearCache();
+                    } else {
+                        this._showErrorMessage("Não foi selecionada nenhuma linha.");
+                    }
+                },
+
+                _createPurchaseOrderResponse: function (e) {
+                    if (this.Requisition.eReasonCode == "1") {
+                        this._openToast(this.Requisition.eMessage);
+                    }
+                    else {
+                        if (this.Requisition.eMessages.length > 0)
+                            this._toggleToastMultiple();
+                        else
+                            this._openToastError(this.Requisition.eMessage);
+                    }
                 },
 
                 _exportEXCEL: function () {

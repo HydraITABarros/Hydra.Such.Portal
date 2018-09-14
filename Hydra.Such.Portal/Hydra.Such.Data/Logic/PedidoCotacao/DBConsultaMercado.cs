@@ -899,6 +899,7 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                 NumConsultaMercado = ObjectToTransform.NumConsultaMercado,
                 CodProduto = ObjectToTransform.CodProduto,
                 Descricao = ObjectToTransform.Descricao,
+                Descricao2 = ObjectToTransform.Descricao2,
                 NumProjecto = ObjectToTransform.NumProjecto,
                 CodRegiao = ObjectToTransform.CodRegiao,
                 CodAreaFuncional = ObjectToTransform.CodAreaFuncional,
@@ -943,6 +944,7 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                 CustoUnitarioPrevisto = ObjectToTransform.CustoUnitarioPrevisto,
                 DataEntregaPrevista = ObjectToTransform.DataEntregaPrevista,
                 Descricao = ObjectToTransform.Descricao,
+                Descricao2 = ObjectToTransform.Descricao2,
                 LinhaRequisicao = ObjectToTransform.LinhaRequisicao,
                 ModificadoEm = ObjectToTransform.ModificadoEm,
                 ModificadoPor = ObjectToTransform.ModificadoPor,
@@ -1308,6 +1310,24 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
             }
         }
 
+        public static SeleccaoEntidades Update(SeleccaoEntidades ObjectToUpdate)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    ctx.SeleccaoEntidades.Update(ObjectToUpdate);
+                    ctx.SaveChanges();
+                }
+
+                return ObjectToUpdate;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
         public static SeleccaoEntidades Delete(SeleccaoEntidades ObjectToDelete)
         {
             try
@@ -1352,8 +1372,8 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                 CidadeFornecedor = ObjectToTransform.CidadeFornecedor,
                 CodTermosPagamento = ObjectToTransform.CodTermosPagamento,
                 CodFormaPagamento = ObjectToTransform.CodFormaPagamento,
-                Selecionado = ObjectToTransform.Selecionado,
-                Preferencial = ObjectToTransform.Preferencial
+                Preferencial = ObjectToTransform.Preferencial,
+                Selecionado = ObjectToTransform.Selecionado
             };
 
             return view;
@@ -1363,13 +1383,14 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
         {
             SeleccaoEntidades seleccaoEntidades = new SeleccaoEntidades()
             {
-                CidadeFornecedor = ObjectToTransform.CidadeFornecedor,
-                CodActividade = ObjectToTransform.CodActividade,
-                CodFormaPagamento = ObjectToTransform.CodFormaPagamento,
-                CodFornecedor = ObjectToTransform.CodFornecedor,
-                CodTermosPagamento = ObjectToTransform.CodTermosPagamento,
-                NomeFornecedor = ObjectToTransform.NomeFornecedor,
+                IdSeleccaoEntidades = ObjectToTransform.IdSeleccaoEntidades,
                 NumConsultaMercado = ObjectToTransform.NumConsultaMercado,
+                CodFornecedor = ObjectToTransform.CodFornecedor,
+                NomeFornecedor = ObjectToTransform.NomeFornecedor,
+                CodActividade = ObjectToTransform.CodActividade,
+                CidadeFornecedor = ObjectToTransform.CidadeFornecedor,
+                CodTermosPagamento = ObjectToTransform.CodTermosPagamento,
+                CodFormaPagamento = ObjectToTransform.CodFormaPagamento,
                 Preferencial = ObjectToTransform.Preferencial,
                 Selecionado = ObjectToTransform.Selecionado
             };

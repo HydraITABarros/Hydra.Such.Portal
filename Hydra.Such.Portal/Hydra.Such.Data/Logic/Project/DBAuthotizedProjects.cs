@@ -35,7 +35,7 @@ namespace Hydra.Such.Data.Logic.Project
                 proj.Observacoes1 = item.Observacoes1;
                 proj.PedidoCliente = item.PedidoCliente;
                 proj.Opcao = item.Opcao;
-                proj.DataPedido = item.DataPedido;
+                proj.DataPedido = item.DataPedido.HasValue ? item.DataPedido.Value.ToString("yyyy-MM-dd") : "";
                 proj.DescricaoGrupo = item.DescricaoGrupo;
                 proj.CodTermosPagamento = item.CodTermosPagamento;
                 proj.Diversos = item.Diversos;
@@ -85,7 +85,7 @@ namespace Hydra.Such.Data.Logic.Project
                 proj.Observacoes1 = item.Observacoes1;
                 proj.PedidoCliente = item.PedidoCliente;
                 proj.Opcao = item.Opcao;
-                proj.DataPedido = item.DataPedido;
+                proj.DataPedido = string.IsNullOrEmpty(item.DataPedido) ? (DateTime?)null : DateTime.Parse(item.DataPedido);
                 proj.DescricaoGrupo = item.DescricaoGrupo;
                 proj.CodTermosPagamento = item.CodTermosPagamento;
                 proj.Diversos = item.Diversos;
@@ -130,7 +130,7 @@ namespace Hydra.Such.Data.Logic.Project
                 proj.GrupoContabilisticoProjeto = projitm.TipoGrupoContabProjeto.ToString();
                 proj.Utilizador = item.Utilizador;
                 proj.DataAutorizacao = item.DataAutorizaçãoFaturação.HasValue ? item.DataAutorizaçãoFaturação.Value.ToString("yyyy-MM-dd") : "";
-                proj.DataPedido = projitm.DataDoPedido;
+                proj.DataPedido = projitm.DataDoPedido.HasValue ? projitm.DataDoPedido.Value.ToString("yyyy-MM-dd") : "";
                 proj.DescricaoGrupo = item.GrupoFaturaDescricao;
                 proj.NumCompromisso = projitm.NºCompromisso;
                 proj.Faturado = (bool)item.Faturada;

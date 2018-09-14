@@ -337,6 +337,201 @@ namespace Hydra.Such.Portal.Controllers
             }
             return Json(data);
         }
+
+        [HttpPost]
+        public JsonResult DuplicarContractLines([FromBody] PreRequisitionLineViewModel linha)
+        {
+            ErrorHandler result = new ErrorHandler();
+            result.eReasonCode = 0;
+            result.eMessage = "Ocorreu um erro ao duplicar a linha.";
+
+            try
+            {
+                if (linha != null && !string.IsNullOrEmpty(linha.PreRequisitionLineNo) && linha.LineNo > 0)
+                {
+                    LinhasPréRequisição LinhaOriginal = DBPreRequesitionLines.GetById(linha.PreRequisitionLineNo, linha.LineNo);
+                    LinhasPréRequisição LinhaDuplicada = new LinhasPréRequisição();
+
+                    LinhaDuplicada.NºPréRequisição = LinhaOriginal.NºPréRequisição;
+                    LinhaDuplicada.Tipo = LinhaOriginal.Tipo;
+                    LinhaDuplicada.Código = LinhaOriginal.Código;
+                    LinhaDuplicada.Descrição = LinhaOriginal.Descrição;
+                    LinhaDuplicada.CódigoLocalização = LinhaOriginal.CódigoLocalização;
+                    LinhaDuplicada.CódigoUnidadeMedida = LinhaOriginal.CódigoUnidadeMedida;
+                    LinhaDuplicada.QuantidadeARequerer = LinhaOriginal.QuantidadeARequerer;
+                    LinhaDuplicada.CódigoRegião = LinhaOriginal.CódigoRegião;
+                    LinhaDuplicada.CódigoÁreaFuncional = LinhaOriginal.CódigoÁreaFuncional;
+                    LinhaDuplicada.CódigoCentroResponsabilidade = LinhaOriginal.CódigoCentroResponsabilidade;
+                    LinhaDuplicada.NºProjeto = LinhaOriginal.NºProjeto;
+                    LinhaDuplicada.DataHoraCriação = DateTime.Now;
+                    LinhaDuplicada.UtilizadorCriação = User.Identity.Name;
+                    LinhaDuplicada.DataHoraModificação = (DateTime?)null;
+                    LinhaDuplicada.UtilizadorModificação = "";
+                    LinhaDuplicada.Descrição2 = LinhaOriginal.Descrição2;
+                    LinhaDuplicada.QtdPorUnidadeMedida = LinhaOriginal.QtdPorUnidadeMedida;
+                    LinhaDuplicada.QuantidadeRequerida = LinhaOriginal.QuantidadeRequerida;
+                    LinhaDuplicada.QuantidadePendente = LinhaOriginal.QuantidadePendente;
+                    LinhaDuplicada.CustoUnitário = LinhaOriginal.CustoUnitário;
+                    LinhaDuplicada.PreçoUnitárioVenda = LinhaOriginal.PreçoUnitárioVenda;
+                    LinhaDuplicada.ValorOrçamento = LinhaOriginal.ValorOrçamento;
+                    LinhaDuplicada.DataReceçãoEsperada = LinhaOriginal.DataReceçãoEsperada;
+                    LinhaDuplicada.Faturável = LinhaOriginal.Faturável;
+                    LinhaDuplicada.NºLinhaOrdemManutenção = LinhaOriginal.NºLinhaOrdemManutenção;
+                    LinhaDuplicada.NºFuncionário = LinhaOriginal.NºFuncionário;
+                    LinhaDuplicada.Viatura = LinhaOriginal.Viatura;
+                    LinhaDuplicada.NºFornecedor = LinhaOriginal.NºFornecedor;
+                    LinhaDuplicada.CódigoProdutoFornecedor = LinhaOriginal.CódigoProdutoFornecedor;
+                    LinhaDuplicada.UnidadeProdutivaNutrição = LinhaOriginal.UnidadeProdutivaNutrição;
+                    LinhaDuplicada.NºCliente = LinhaOriginal.NºCliente;
+                    LinhaDuplicada.NºEncomendaAberto = LinhaOriginal.NºEncomendaAberto;
+                    LinhaDuplicada.NºLinhaEncomendaAberto = LinhaOriginal.NºLinhaEncomendaAberto;
+                    LinhaDuplicada.LocalCompraDireta = LinhaOriginal.LocalCompraDireta;
+
+                    if (DBPreRequesitionLines.Create(LinhaDuplicada) != null)
+                    {
+                        result.eReasonCode = 1;
+                        result.eMessage = "A duplicação da Linha com sucesso.";
+                    }
+                    else
+                    {
+                        result.eReasonCode = 2;
+                        result.eMessage = "Ocorreu um erro ao criar a linha duplicada.";
+                    }
+                }
+                else
+                {
+                    result.eReasonCode = 3;
+                    result.eMessage = "Falta informação para duplicar a linha.";
+                }
+            }
+            catch (Exception ex)
+            {
+                result.eReasonCode = 99;
+                result.eMessage = "Ocorreu um erro.";
+
+                return Json(result);
+            }
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateLinhaPreRequisicao([FromBody] PreRequisitionLineViewModel linha)
+        {
+            ErrorHandler result = new ErrorHandler();
+            result.eReasonCode = 0;
+            result.eMessage = "Ocorreu um erro ao atualizar a linha.";
+
+            try
+            {
+                if (!string.IsNullOrEmpty(linha.LocalCode))
+                {
+                    if (!string.IsNullOrEmpty(linha.Code))
+                    {
+                        if (linha.QuantityToRequire > 0)
+                        {
+                            if (DBPreRequesitionLines.Update(DBPreRequesitionLines.ParseToDB(linha)) != null)
+                            {
+                                result.eReasonCode = 1;
+                                result.eMessage = "Linha Atualizada com Sucesso.";
+
+                            }
+                            else
+                            {
+                                result.eReasonCode = 2;
+                                result.eMessage = "Ocorreu um erro ao atualizar a linha.";
+                            }
+                        }
+                        else
+                        {
+                            result.eReasonCode = 3;
+                            result.eMessage = "A Qt. a Requerer tem que ser superior a 0.";
+                        }
+                    }
+                    else
+                    {
+                        result.eReasonCode = 4;
+                        result.eMessage = "É obrigatório preencher o Cód. Produto.";
+                    }
+                }
+                else
+                {
+                    result.eReasonCode = 5;
+                    result.eMessage = "É obrigatório preencher o Código Localização.";
+                }
+            }
+            catch (Exception ex)
+            {
+                result.eReasonCode = 99;
+                result.eMessage = "Ocorreu um erro.";
+
+                return Json(result);
+            }
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateLinhaPreRequisicaoProduto([FromBody] PreRequisitionLineViewModel linha)
+        {
+            ErrorHandler result = new ErrorHandler();
+            result.eReasonCode = 0;
+            result.eMessage = "Ocorreu um erro ao atualizar a linha.";
+
+            try
+            {
+                if (!string.IsNullOrEmpty(linha.LocalCode))
+                {
+                    if (!string.IsNullOrEmpty(linha.Code))
+                    {
+                        if (linha.QuantityToRequire > 0)
+                        {
+                            NAVProductsViewModel PRODUTO = DBNAV2017Products.GetAllProducts(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, linha.Code).FirstOrDefault();
+
+                            linha.Description = PRODUTO.Name;
+                            linha.Description2 = PRODUTO.Name2;
+                            linha.UnitMeasureCode = PRODUTO.MeasureUnit;
+
+                            if (DBPreRequesitionLines.Update(DBPreRequesitionLines.ParseToDB(linha)) != null)
+                            {
+                                result.eReasonCode = 1;
+                                result.eMessage = "Linha Atualizada com Sucesso.";
+
+                            }
+                            else
+                            {
+                                result.eReasonCode = 2;
+                                result.eMessage = "Ocorreu um erro ao atualizar a linha.";
+                            }
+                        }
+                        else
+                        {
+                            result.eReasonCode = 3;
+                            result.eMessage = "A Qt. a Requerer tem que ser superior a 0.";
+                        }
+                    }
+                    else
+                    {
+                        result.eReasonCode = 4;
+                        result.eMessage = "É obrigatório preencher o Cód. Produto.";
+                    }
+                }
+                else
+                {
+                    result.eReasonCode = 5;
+                    result.eMessage = "É obrigatório preencher o Código Localização.";
+                }
+            }
+            catch (Exception ex)
+            {
+                result.eReasonCode = 99;
+                result.eMessage = "Ocorreu um erro.";
+
+                return Json(result);
+            }
+
+            return Json(result);
+        }
         #endregion
 
         #region CRUD
@@ -811,16 +1006,16 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult GetHistoryReq()
         {
-            List<Requisição> requisition = null;
+            List<RequisiçãoHist> requisition = null;
             List<RequisitionStates> states = new List<RequisitionStates>()
             {
                 RequisitionStates.Archived,
             };
-            requisition = DBRequest.GetReqByUserAreaStatus(User.Identity.Name, states);
+            requisition = DBRequesitionHist.GetReqByUserAreaStatus(User.Identity.Name, states);
 
-            List<RequisitionViewModel> result = new List<RequisitionViewModel>();
+            List<RequisitionHistViewModel> result = new List<RequisitionHistViewModel>();
 
-            requisition.ForEach(x => result.Add(x.ParseToViewModel()));
+            requisition.ForEach(x => result.Add(DBRequesitionHist.ParseToViewModel(x)));
 
             return Json(result);
         }
@@ -829,12 +1024,12 @@ namespace Hydra.Such.Portal.Controllers
         {
             string ReqNo = requestParams["ReqNo"].ToString();
 
-            List<LinhasRequisição> RequisitionLines = null;
-            RequisitionLines = DBRequestLine.GetByRequisitionId(ReqNo);
+            List<LinhasRequisiçãoHist> RequisitionLines = null;
+            RequisitionLines = DBRequesitionLinesHist.GetByRequisitionId(ReqNo);
 
-            List<RequisitionLineViewModel> result = new List<RequisitionLineViewModel>();
+            List<RequisitionLineHistViewModel> result = new List<RequisitionLineHistViewModel>();
 
-            RequisitionLines.ForEach(x => result.Add(DBRequestLine.ParseToViewModel(x)));
+            RequisitionLines.ForEach(x => result.Add(DBRequesitionLinesHist.ParseToViewModel(x)));
             return Json(result);
 
         }
@@ -974,6 +1169,8 @@ namespace Hydra.Such.Portal.Controllers
                                 line.VATBusinessPostingGroup = vendors.FirstOrDefault(x => x.No_ == line.SupplierNo)?.VATBusinessPostingGroup;
                                 line.VATProductPostingGroup = productsInRequisition.FirstOrDefault(x => x.Code == line.Code)?.VATProductPostingGroup;
                             });
+
+                            header.LocalMarketRegion = header.Lines.FirstOrDefault().MarketLocalRegion;
                         });
 
                         data = CreateRequesition(newlistOpenOrder, data);
@@ -1053,6 +1250,8 @@ namespace Hydra.Such.Portal.Controllers
                                 line.VATBusinessPostingGroup = vendors.FirstOrDefault(x => x.No_ == line.SupplierNo)?.VATBusinessPostingGroup;
                                 line.VATProductPostingGroup = productsInRequisition.FirstOrDefault(x => x.Code == line.Code)?.VATProductPostingGroup;
                             });
+
+                            header.LocalMarketRegion = header.Lines.FirstOrDefault().MarketLocalRegion;
                         });
                         data = CreateRequesition(newlist, data);
 

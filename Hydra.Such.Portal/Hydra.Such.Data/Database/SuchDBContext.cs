@@ -1933,7 +1933,9 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.CódDestinoFinalResíduos).HasColumnName("Cód. Destino Final Resíduos");
 
-                entity.Property(e => e.CódGrupoServiço).HasColumnName("Cód. Grupo Serviço");
+                entity.Property(e => e.CódGrupoServiço)
+                    .HasColumnName("Cód. Grupo Serviço")
+                    .HasMaxLength(20);
 
                 entity.Property(e => e.CódLocalização)
                     .HasColumnName("Cód. Localização")
@@ -3410,7 +3412,9 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Data_Entrega_Prevista")
                     .HasColumnType("date");
 
-                entity.Property(e => e.Descricao).HasMaxLength(50);
+                entity.Property(e => e.Descricao).HasMaxLength(100);
+
+                entity.Property(e => e.Descricao2).HasMaxLength(100);
 
                 entity.Property(e => e.LinhaRequisicao).HasColumnName("Linha_Requisicao");
 
@@ -3695,7 +3699,9 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Data_Entrega_Prevista")
                     .HasColumnType("date");
 
-                entity.Property(e => e.Descricao).HasMaxLength(50);
+                entity.Property(e => e.Descricao).HasMaxLength(100);
+
+                entity.Property(e => e.Descricao2).HasMaxLength(100);
 
                 entity.Property(e => e.LinhaRequisicao).HasColumnName("Linha_Requisicao");
 
@@ -4658,11 +4664,21 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.Descrição).HasMaxLength(100);
 
+                entity.Property(e => e.Descrição2).HasMaxLength(100);
+
                 entity.Property(e => e.EnviadoParaCompras).HasColumnName("Enviado para Compras");
 
                 entity.Property(e => e.EnviadoPréCompra).HasColumnName("Enviado Pré Compra");
 
                 entity.Property(e => e.EnviarPréCompra).HasColumnName("Enviar Pré Compra");
+
+                entity.Property(e => e.GrupoRegistoIvanegocio)
+                    .HasColumnName("GrupoRegistoIVANegocio")
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.GrupoRegistoIvaproduto)
+                    .HasColumnName("GrupoRegistoIVAProduto")
+                    .HasMaxLength(10);
 
                 entity.Property(e => e.IdCompra).HasColumnName("ID Compra");
 
@@ -4749,6 +4765,12 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.ValorOrçamento).HasColumnName("Valor Orçamento");
 
                 entity.Property(e => e.Viatura).HasMaxLength(10);
+
+                entity.HasOne(d => d.NºRequisiçãoNavigation)
+                    .WithMany(p => p.LinhasRequisiçãoHist)
+                    .HasForeignKey(d => d.NºRequisição)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Linhas Requisição Hist_Requisição Hist");
             });
 
             modelBuilder.Entity<LinhasRequisiçõesSimplificadas>(entity =>
@@ -5301,7 +5323,9 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.CódDestinoFinalResíduos).HasColumnName("Cód. Destino Final Resíduos");
 
-                entity.Property(e => e.CódGrupoServiço).HasColumnName("Cód. Grupo Serviço");
+                entity.Property(e => e.CódGrupoServiço)
+                    .HasColumnName("Cód. Grupo Serviço")
+                    .HasMaxLength(20);
 
                 entity.Property(e => e.CódLocalização)
                     .HasColumnName("Cód. Localização")
@@ -6282,7 +6306,9 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.CódDestinoFinalResíduos).HasColumnName("Cód. Destino Final Resíduos");
 
-                entity.Property(e => e.CódGrupoServiço).HasColumnName("Cód. Grupo Serviço");
+                entity.Property(e => e.CódGrupoServiço)
+                    .HasColumnName("Cód. Grupo Serviço")
+                    .HasMaxLength(20);
 
                 entity.Property(e => e.CódLocalização)
                     .HasColumnName("Cód. Localização")
@@ -8029,6 +8055,8 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.Observações).HasColumnType("text");
 
+                entity.Property(e => e.PrecoIvaincluido).HasColumnName("PrecoIVAIncluido");
+
                 entity.Property(e => e.RegiãoMercadoLocal)
                     .HasColumnName("Região Mercado Local")
                     .HasMaxLength(20);
@@ -8080,10 +8108,6 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.ValorEstimado).HasColumnName("Valor Estimado");
 
                 entity.Property(e => e.Viatura).HasMaxLength(10);
-
-                entity.Property(e => e.PrecoIVAIncluido).HasColumnName("PrecoIVAIncluido");
-
-                entity.Property(e => e.Adiantamento).HasColumnName("Adiantamento");
             });
 
             modelBuilder.Entity<RequisiçõesClienteContrato>(entity =>

@@ -18,6 +18,8 @@ namespace Hydra.Such.Data.ViewModel
         public int Type { get; set; }
         public string Numb { get; set; }
         public string LocationCode { get; set; }
+        public string LocationName { get; set; } 
+        public bool DirectPurchLocation { get; set; }
         public DateTime ExpectedReceiptDate { get; set; }
         public string Description { get; set; }
         public string UnitofMeasure { get; set; }
@@ -32,6 +34,7 @@ namespace Hydra.Such.Data.ViewModel
         public decimal OutstandingAmount { get; set; }
         public decimal QuantityReceived { get; set; }
         public decimal QuantityInvoiced { get; set; }
+        public decimal AvailableQuantity { get; set; }
         public string PaytoVendorNo { get; set; }
         public string VendorItemNo { get; set; }
         public string GenBusPostingGroup { get; set; }
@@ -66,5 +69,11 @@ namespace Hydra.Such.Data.ViewModel
         public int ProdOrderLineN { get; set; }
         public DateTime ContractStartingDate { get; set; }
         public DateTime ContractEndingDate { get; set; }
+        public string FunctionalAreaNo { get; set; }
+        public string FunctionalAreaDescription { get; set; }
+        public string RegionNo { get; set; }
+        public string RegionDescription { get; set; }
+        public string ResponsabilityCenterNo { get; set; }
+        public string ResponsabilityCenterDescription { get; set; }
     }
 }
