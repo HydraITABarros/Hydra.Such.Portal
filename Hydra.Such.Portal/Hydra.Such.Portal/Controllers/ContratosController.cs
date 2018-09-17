@@ -2115,7 +2115,13 @@ namespace Hydra.Such.Portal.Controllers
             {
               
                 DateTime lastDay = Convert.ToDateTime(dateCont);
+
                 string obs = "";
+                string execDetails = string.Empty;
+                string errorMessage = string.Empty;
+                bool hasErrors = false;
+                ErrorHandler result = new ErrorHandler();
+
                 ContractViewModel Contract = JsonConvert.DeserializeObject<ContractViewModel>(requestParams["Contrato"].ToString());
                 List<ContractLineViewModel> ContractLines = JsonConvert.DeserializeObject<List<ContractLineViewModel>>(requestParams["LinhasContrato"].ToString());
                 string groupInvoice = requestParams["GrupoFatura"].ToString();
@@ -2199,11 +2205,13 @@ namespace Hydra.Such.Portal.Controllers
                             PreInvoiceToCreate.Observacoes = obs;
                             obs = "";
 
+
                             Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreatePreInvoiceHeader(PreInvoiceToCreate, _configws);
                             InvoiceHeader.Wait();
 
                             if (InvoiceHeader.IsCompletedSuccessfully && InvoiceHeader.Result != null)
                             {
+                               
                                 string cod = InvoiceHeader.Result.WSPreInvoice.No;
                                 List<LinhasFaturaçãoContrato> LinhasFaturacao = new List<LinhasFaturaçãoContrato>();
                                 foreach (ContractLineViewModel line in ContractLines)
@@ -2226,11 +2234,24 @@ namespace Hydra.Such.Portal.Controllers
                                         LinhasFaturacao.Add(PreInvoiceLinesToCreate);
                                     }
                                 }
-                                Task<WSCreatePreInvoiceLine.CreateMultiple_Result> InvoiceLines = WSPreInvoiceLine.CreatePreInvoiceLineList(LinhasFaturacao, cod, _configws);
-                                InvoiceLines.Wait();
-                                if (InvoiceLines.IsCompletedSuccessfully)
+                                try
                                 {
-                                    registado = true;
+                                    Task<WSCreatePreInvoiceLine.CreateMultiple_Result> InvoiceLines = WSPreInvoiceLine.CreatePreInvoiceLineList(LinhasFaturacao, cod, _configws);
+                                    InvoiceLines.Wait();
+                                    if (InvoiceLines.IsCompletedSuccessfully)
+                                    {
+                                        registado = true;
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    if (!hasErrors)
+                                        hasErrors = true;
+
+                                    execDetails += " Erro ao criar as linhas: ";
+                                    errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                                    result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails + errorMessage));
+                                    return Json(result);
                                 }
                             }
 
@@ -2266,6 +2287,7 @@ namespace Hydra.Such.Portal.Controllers
                             InvoiceHeader.Wait();
                             if (InvoiceHeader.IsCompletedSuccessfully && InvoiceHeader.Result != null)
                             {
+                               
                                 string cod = InvoiceHeader.Result.WSPreInvoice.No;
                                 List<LinhasFaturaçãoContrato> LinhasFaturacao = new List<LinhasFaturaçãoContrato>();
                                 foreach (ContractLineViewModel line in ContractLines)
@@ -2283,17 +2305,30 @@ namespace Hydra.Such.Portal.Controllers
                                         PreInvoiceLinesToCreate.NºContrato = Contract.ContractNo;
                                         PreInvoiceLinesToCreate.NºProjeto = Contract.ContractNo;
                                         PreInvoiceLinesToCreate.CódigoServiço = line.ServiceClientNo;
-                                        PreInvoiceLinesToCreate.Quantidade =Convert.ToDecimal(line.Quantity * Contract.InvocePeriod);
+                                        PreInvoiceLinesToCreate.Quantidade = Convert.ToDecimal(line.Quantity * Contract.InvocePeriod);
                                         PreInvoiceLinesToCreate.PreçoUnitário = line.UnitPrice;
                                         PreInvoiceLinesToCreate.GrupoFatura = line.InvoiceGroup ?? 0;
                                         LinhasFaturacao.Add(PreInvoiceLinesToCreate);
                                     }
                                 }
-                                Task<WSCreatePreInvoiceLine.CreateMultiple_Result> InvoiceLines = WSPreInvoiceLine.CreatePreInvoiceLineList(LinhasFaturacao, cod, _configws);
-                                InvoiceLines.Wait();
-                                if (InvoiceLines.IsCompletedSuccessfully)
+                                try
                                 {
-                                    registado = true;
+                                    Task<WSCreatePreInvoiceLine.CreateMultiple_Result> InvoiceLines = WSPreInvoiceLine.CreatePreInvoiceLineList(LinhasFaturacao, cod, _configws);
+                                    InvoiceLines.Wait();
+                                    if (InvoiceLines.IsCompletedSuccessfully)
+                                    {
+                                        registado = true;
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    if (!hasErrors)
+                                        hasErrors = true;
+
+                                    execDetails += " Erro ao criar as linhas: ";
+                                    errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                                    result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails + errorMessage));
+                                    return Json(result);
                                 }
                             }
 

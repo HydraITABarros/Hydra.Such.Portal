@@ -2601,8 +2601,12 @@
                     }
                 },
                 _ResponseProcessorInvoice: function (data) {
+                    debugger;;
                     if (this.CreateInvoiceResponse == true) {
                         this._openToast("Fatura Criada com Sucesso!");
+                    }
+                    else if (this.CreateInvoiceResponse.eReasonCode == 2){
+                        this.openToastError(this.CreateInvoiceResponse.eMessage);
                     }
                     else {
                         this._openToastError("Erro ao criar a fatura!");
