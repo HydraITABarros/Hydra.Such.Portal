@@ -122,19 +122,23 @@ namespace Hydra.Such.Portal.Controllers
 
     }
 
+    
+
     [Authorize]
     public class ProcedimentosCcpsController : Controller
     {
         private readonly NAVConfigurations _config;
         private readonly NAVWSConfigurations _configws;
         private readonly IHostingEnvironment _hostingEnvironment;
-        private readonly GeneralConfigurations _generalConfig;
+        //private readonly GeneralConfigurations _generalConfig;
+        private string __UploadPath { get; set; }
 
-        public ProcedimentosCcpsController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs, IOptions<GeneralConfigurations> appSettingsGeneral, IHostingEnvironment _hostingEnvironment)
+        public ProcedimentosCcpsController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs, IHostingEnvironment _hostingEnvironment)
         {
             _config = appSettings.Value;
             _configws = NAVWSConfigs.Value;
-            _generalConfig = appSettingsGeneral.Value;
+            //_generalConfig = appSettingsGeneral.Value;
+            __UploadPath = "wwwroot/Upload/Procedimentos/";
             this._hostingEnvironment = _hostingEnvironment;
         }
 
@@ -6883,7 +6887,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         #region ANEXOS
-
+        
         [HttpPost]
         [Route("Procedimentos/FileUpload")]
         [Route("Procedimentos/FileUpload/{id}/{linha}")]
@@ -6898,11 +6902,28 @@ namespace Hydra.Such.Portal.Controllers
                     try
                     {
                         string filename = Path.GetFileName(file.FileName);
-                        //full_filename = id + "_" + filename;
+                                                    
                         full_filename = filename;
-                        var path = Path.Combine(_generalConfig.FileUploadFolder, full_filename);
+                        full_filename = "[" + DateTime.Now.ToString("yyyyMMddHmmssf") + "]_" + full_filename;
+
+                        // class propertiy to define Procedimentos path 
+                        __UploadPath += id;
+
+                        if (!System.IO.Directory.Exists(__UploadPath))
+                        {
+                            System.IO.Directory.CreateDirectory(__UploadPath);
+                        }
+
+                        var path = Path.Combine(__UploadPath, full_filename);
+
+                        if (System.IO.File.Exists(path))
+                        {    
+                            return Json("Ficheiro já existe!");
+                        }
+
                         using (FileStream dd = new FileStream(path, FileMode.CreateNew))
                         {
+                            
                             file.CopyTo(dd);
                             dd.Dispose();
 
@@ -6933,7 +6954,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 throw;
             }
-            return Json("");
+            return Json("0");
         }
 
         [HttpPost]
@@ -6950,21 +6971,23 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult DeleteAttachments([FromBody] AttachmentsViewModel requestParams)
         {
-            try
-            {
-                System.IO.File.Delete(_generalConfig.FileUploadFolder + requestParams.Url);
-                DBAttachments.Delete(DBAttachments.ParseToDB(requestParams));
-                requestParams.eReasonCode = 1;
+            //try
+            //{
+            //    System.IO.File.Delete(_generalConfig.FileUploadFolder + requestParams.Url);
+            //    DBAttachments.Delete(DBAttachments.ParseToDB(requestParams));
+            //    requestParams.eReasonCode = 1;
 
-            }
-            catch (Exception ex)
-            {
-                requestParams.eReasonCode = 2;
-                return Json(requestParams);
-            }
-            return Json(requestParams);
+            //}
+            //catch (Exception ex)
+            //{
+            //    requestParams.eReasonCode = 2;
+            //    return Json(requestParams);
+            //}
+            //return Json(requestParams);
+            return Json("NULL");
         }
         #endregion
 
     }
+    
 }

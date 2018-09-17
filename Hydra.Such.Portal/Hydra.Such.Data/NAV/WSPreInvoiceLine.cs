@@ -119,7 +119,7 @@ namespace Hydra.Such.Data.NAV
                    //AmountSpecified = true,
                    Service_Contract_No = x.NºContrato,
                    Contract_No = x.NºContrato,
-                   Job_No = x.NºProjeto,
+                   Job_No = x.NºContrato,
                    RegionCode20 = x.CódigoRegião,
                    FunctionAreaCode20 = x.CódigoÁreaFuncional,
                    ResponsabilityCenterCode20 = x.CódigoCentroResponsabilidade

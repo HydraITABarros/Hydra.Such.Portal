@@ -1642,6 +1642,11 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult CountInvoice([FromBody] List<FaturacaoContratosViewModel> data)
         {
+            string execDetails = string.Empty;
+            string errorMessage = string.Empty;
+            bool hasErrors = false;
+            ErrorHandler result = new ErrorHandler();
+
             List<LinhasFaturaçãoContrato> lineList = DBInvoiceContractLines.GetAll();
             List<AutorizarFaturaçãoContratos> contractList = new List<AutorizarFaturaçãoContratos>();
             foreach (FaturacaoContratosViewModel itm in data)
@@ -1836,8 +1841,23 @@ namespace Hydra.Such.Portal.Controllers
                 
                 if (item.Situação == "" || item.Situação == null)
                 {
-                  
 
+                    Task<WSCreateNAVProject.Read_Result> Project = WSProject.GetNavProject(item.NºContrato, _configws);
+                    Project.Wait();
+                    if (Project.IsCompletedSuccessfully && Project.Result.WSJob == null)
+                    {
+                        ProjectDetailsViewModel proj = new ProjectDetailsViewModel();
+                        proj.ProjectNo = item.NºContrato;
+                        proj.ClientNo = item.NºCliente;
+                        proj.Status = item.Estado;
+                        proj.RegionCode = item.CódigoRegião;
+                        proj.ResponsabilityCenterCode = item.CódigoCentroResponsabilidade;
+                        proj.FunctionalAreaCode = item.CódigoÁreaFuncional;
+                        proj.Description = item.Descrição;
+                        Task<WSCreateNAVProject.Create_Result> createProject = WSProject.CreateNavProject(proj, _configws);
+                        createProject.Wait();
+                    }
+                    
                     Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreateContractInvoice(item, _configws, ContractInvoicePeriod, InvoiceBorrowed);
                     InvoiceHeader.Wait();
 
@@ -1851,23 +1871,23 @@ namespace Hydra.Such.Portal.Controllers
 
                         if (itemList.Count > 0)
                         {
-                            Task<WSCreatePreInvoiceLine.CreateMultiple_Result> InvoiceLines = WSPreInvoiceLine.CreatePreInvoiceLineList(itemList, InvoiceHeaderNo, _configws);
-                            InvoiceLines.Wait();
+                            try
+                            {
+                                Task<WSCreatePreInvoiceLine.CreateMultiple_Result> InvoiceLines = WSPreInvoiceLine.CreatePreInvoiceLineList(itemList, InvoiceHeaderNo, _configws);
+                                InvoiceLines.Wait();
+                            }
+                             
+                            catch (Exception ex)
+                            {
+                                if (!hasErrors)
+                                    hasErrors = true;
 
-                            //if (InvoiceLines.IsCompletedSuccessfully && InvoiceLines != null)
-                            //{
-                            //    //Task<WSGenericCodeUnit.FxPostInvoice_Result> postNAV = WSGeneric.CreatePreInvoiceLineList(InvoiceHeaderNo, _configws);
-                            //    //postNAV.Wait();
+                                execDetails += " Erro ao criar as linhas: ";
+                                errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                                result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails + errorMessage));
+                                return Json(result);
+                            }
 
-                            //    if (!postNAV.IsCompletedSuccessfully || postNAV == null)
-                            //    {
-                            //        return Json(false);
-                            //    }
-                            //}
-                            //else
-                            //{
-                            //    return Json(false);
-                            //}
                         }
                     }
                     else
