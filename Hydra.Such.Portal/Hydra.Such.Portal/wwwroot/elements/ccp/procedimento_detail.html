@@ -3704,6 +3704,11 @@
                     _lineno: {
                         type: Number,
                         value: 0
+                    },
+
+                    _isUploadError: {
+                        type: Boolean,
+                        value: false
                     }
 
                 },
@@ -3740,13 +3745,22 @@
                     var upload = document.querySelector('vaadin-upload#uploadRequest');
                     if (this._isCreate == false && this.$.uploadRequest != null) {
                         this.$.uploadRequest.addEventListener('upload-response', function (e) {
+                            debugger;;
                             if (e.detail.xhr.status == 200) {
-                                e.detail.xhr.requestURL;
-                                var dd = document.querySelector("x-procedimentodetails");
-                                dd.$.page_update_ajax.generateRequest();
+                                if (e.detail.xhr.response == '0') {
+                                    e.detail.xhr.requestURL;
+                                    var dd = document.querySelector("x-procedimentodetails");
+                                    dd.$.page_update_ajax.generateRequest();
+                                } else {
+                                    // how to show error message?!
+                                    //https://vaadin.com/components/vaadin-upload/html-examples/upload-basic-demos
+                                    window.alert(e.detail.xhr.response);
+                                }
+                                
                             }
                         });
                     }
+                    
                     debugger;;
 
                     this.$.page_update_ajax.body = JSON.stringify({ "id": this._procedimentoid });
@@ -3755,6 +3769,8 @@
                 },
                 // Anexos.b
                 _deleteFiles: function (e) {
+                    debugger;;
+
                     var index = this.dataLines.lines.indexOf(e.model.item);
                     this.dataLines.lines.splice(index, 1);
 
@@ -3790,6 +3806,7 @@
                     this.$.ToastMessageSuccess.open();
                 },
                 _showErrorMessage: function (message) {
+                    debugger;;
                     this.$.ToastMessageError.text = message;
                     this.$.ToastMessageError.open();
                 },
