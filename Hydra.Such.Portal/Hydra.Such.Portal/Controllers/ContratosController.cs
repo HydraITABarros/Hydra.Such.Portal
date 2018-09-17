@@ -2131,6 +2131,7 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult CreateInvoiceHeaderFromContract([FromBody] JObject requestParams, string dateCont )
         {
             bool registado = false;
+            ErrorHandler result = new ErrorHandler();
             if (requestParams["Contrato"].ToString() != null && requestParams["LinhasContrato"].ToString() != null)
             {
               
@@ -2140,7 +2141,7 @@ namespace Hydra.Such.Portal.Controllers
                 string execDetails = string.Empty;
                 string errorMessage = string.Empty;
                 bool hasErrors = false;
-                ErrorHandler result = new ErrorHandler();
+                
 
                 ContractViewModel Contract = JsonConvert.DeserializeObject<ContractViewModel>(requestParams["Contrato"].ToString());
                 List<ContractLineViewModel> ContractLines = JsonConvert.DeserializeObject<List<ContractLineViewModel>>(requestParams["LinhasContrato"].ToString());
@@ -2270,8 +2271,9 @@ namespace Hydra.Such.Portal.Controllers
 
                                     execDetails += " Erro ao criar as linhas: ";
                                     errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                                    result.eReasonCode = 2;
                                     result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails + errorMessage));
-                                    return Json(result);
+                             
                                 }
                             }
 
@@ -2346,9 +2348,10 @@ namespace Hydra.Such.Portal.Controllers
                                         hasErrors = true;
 
                                     execDetails += " Erro ao criar as linhas: ";
+                                    result.eReasonCode = 2;
                                     errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
                                     result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails + errorMessage));
-                                    return Json(result);
+                                    
                                 }
                             }
 
@@ -2357,7 +2360,14 @@ namespace Hydra.Such.Portal.Controllers
                 }
             }
 
-            return Json(registado);
+            if(result.eMessages.Count > 0)
+            {
+                return Json(result);
+            }
+            else
+            {
+                return Json(registado);
+            }
         }
 
         public JsonResult ExitSalesHeader([FromBody] JObject requestParams)
