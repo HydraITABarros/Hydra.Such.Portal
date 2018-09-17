@@ -1,0 +1,333 @@
+﻿
+@{
+    ViewData["Title"] = "Requisições por Aprovar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="~/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="~/lib/iron-form/iron-form.html" />
+<link rel="import" href="~/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+
+<!--start ColumnToggle-->
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-icons/iron-icons.html" />
+<link rel="import" href="/lib/iron-behaviors/iron-button-state.html" />
+<link rel="import" href="/lib/paper-menu-button/paper-menu-button.html" />
+<!--end ColumnToggle-->
+
+<x-approvals></x-approvals>
+<dom-module id="x-approvals">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+
+        @*POPULATE GRID*@
+        <iron-ajax url="/Approvals/GetREQListApprovals"
+                   last-response="{{result}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   id="grid_databound"
+                   content-type="application/json"></iron-ajax>
+
+        @*Actions*@
+        <iron-ajax url="/Approvals/UpdateMovementStatus"
+                   last-response="{{actionResult}}"
+                   method="post"
+                   handle-as="json"
+                   id="action_databound"
+                   on-response="_actionResponseProcessor"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Approvals/ExportToExcel_Approvals"
+                   last-response="{{export}}"
+                   id="ajax_Export"
+                   method="post"
+                   handle-as="json"
+                   on-response="_exportEXCELResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <div class="subMenu">
+            <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+
+            <!--start ColumnToggle-->
+            <paper-menu-button class="column-toggle" no-animations>
+                <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
+                <div class="list-group" slot="dropdown-content">
+                    <template is="dom-repeat" items="[[ _toArray(_columns)]]" id="columnsList">
+                        <a href="javascript:void(0);" on-tap="_toggleColumn" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClass( item.key ) ]]">
+                            {{ item.value.label }}
+                        </a>
+                        <hr />
+                    </template>
+                </div>
+            </paper-menu-button>
+            <!--end ColumnToggle-->
+        </div>
+
+        <vaadin-grid aria-label="ApprovalsTable" id="grid" items="[[result]]" class="grid" multi-sort="true">
+            <vaadin-grid-column width="60px" resizable hidden$="{{ _columns.movementNo.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="movementNo">Nº</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="movementNo" />
+                </template>
+                <template>
+                    {{item.movementNo}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.typeText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="typeText">Tipo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="typeText" />
+                </template>
+                <template>
+                    {{item.typeText}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.number.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="number">Associado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="number" />
+                </template>
+                <template>
+                    {{item.number}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.requisicaoAcordosPrecos.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="requisicaoAcordosPrecos">Req A Preços</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="requisicaoAcordosPrecos" />
+                </template>
+                <template>
+                    <vaadin-checkbox checked="{{item.requisicaoAcordosPrecos}}" disabled></vaadin-checkbox>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.requestUser.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="requestUser">Solicitado Por</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="requestUser" />
+                </template>
+                <template>
+                    {{item.requestUser}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.value.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="value">Valor</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="value" />
+                </template>
+                <template>
+                    {{item.value}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.statusText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="statusText">Estado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="statusText" />
+                </template>
+                <template>
+                    {{item.statusText}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="100px" resizable hidden$="{{ _columns.level.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="level">Nivel</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="level" />
+                </template>
+                <template>
+                    {{item.level}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="140px">
+                <template class="header">
+                </template>
+                <template>
+                    <center>
+                        <paper-button class="btnSave tableBtn" on-tap="_showDetails" title="Detalhes"><i class="fa fa-info" aria-hidden="true"></i></paper-button>
+                        <paper-button class="btnEdit tableBtn" on-tap="_Approve" title="Aprovar"><i class="fa fa-check" aria-hidden="true"></i></paper-button>
+                        <paper-button class="btnRemove tableBtn" on-tap="_Reject" title="Rejeitar"><i class="fa fa-times" aria-hidden="true"></i></paper-button>
+                    </center>
+                </template>
+            </vaadin-grid-column>
+        </vaadin-grid>
+
+        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+
+    </template>
+
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-approvals',
+                properties: {
+                    _columns: {
+                        type: Object,
+                        value: function () {
+                            return {};
+                        }
+                    }
+                },
+                ready: function () {
+                    /*ColumnToggle*/
+                    this._startColumnToggle();
+
+                    var _this = this;
+                    var gridToBottomTimeout;
+                    $(window).resize(function () {
+                        clearTimeout(gridToBottomTimeout);
+                        gridToBottomTimeout = setTimeout(function () { _this.fixGridToBottom(); }, 200);
+                    });
+                    $(window).trigger('resize');
+                },
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.grid);
+                    var parentHeight = $(this).offsetParent().height();
+                    var windowHeight = $(window).height();
+                    var paddingTop = $(this).offsetParent().css('padding-top').replace("px", "");
+                    var offsetTop = $(this).offset().top;
+                    var height = windowHeight - offsetTop - paddingTop;
+                    grid_el.height(height);
+                },
+                _openToast: function (message) {
+                    this.$.ToastMessage.text = message;
+                    this.$.ToastMessage.open();
+                },
+                _showDetails: function (e) {
+                    if (e != null) {
+                        window.location.href = e.model.item.numberLink;
+                    }
+                },
+                _Approve: function (e) {
+                    if (e != null) {
+                        this.$.action_databound.body = JSON.stringify({ movementNo: e.model.item.movementNo, status: 1, rejectReason: "" });
+                        this.$.action_databound.generateRequest();
+                    }
+                },
+                _Reject: function (e) {
+                    if (e != null) {
+                        var TMessage = this.$.ToastMessage;
+                        var TMessageError = this.$.ToastError;
+                        var ARequest = this.$.action_databound;
+
+                        if (e.model.item.type == 3 & (e.model.item.level == 2 | e.model.item.level == 3)) {
+                            TMessageError.text = "Não é possível rejeitar a Folha de Horas neste nível.";
+                            TMessageError.open();
+                            return false;
+                        };
+
+                        bootbox.prompt({
+                            title: "Introduza o motivo de rejeição!",
+                            inputType: 'textarea',
+                            buttons: {
+                                confirm: {
+                                    label: 'Rejeitar',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Cancelar',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (result) {
+                                if (result == "") {
+                                    TMessageError.text = "É necessário preencher o motivo de rejeição.";
+                                    TMessageError.open();
+                                    return false;
+                                } else {
+                                    ARequest.body = JSON.stringify({ movementNo: e.model.item.movementNo, status: 2, rejectReason: result });
+                                    ARequest.generateRequest();
+                                }
+                            }
+                        });
+                    }
+                },
+                _actionResponseProcessor: function (e) {
+                    var self = this;
+                    if (this.actionResult.eReasonCode == 100) {
+                        this.$.ToastMessage.text = this.actionResult.eMessage;
+                        this.$.ToastMessage.open();
+
+                        this.$.grid_databound.generateRequest();
+                    } else {
+                        this.$.ToastError.text = this.actionResult.eMessage;
+                        this.$.ToastError.open();
+                    }
+                },
+
+                _exportEXCEL: function () {
+                    //debugger;
+                    this.result[0].ColunasEXCEL = this._columns;
+
+                    this.$.ajax_Export.body = JSON.stringify(this.result);
+                    this.$.ajax_Export.generateRequest();
+                },
+
+                _exportEXCELResponse: function (e) {
+                    //debugger
+                    var FileName = this.export;
+                    location.href = '../Approvals/ExportToExcelDownload_Approvals?sFileName=' + FileName;
+                },
+
+                /*start - ColumnToggle*/
+                _startColumnToggle: function () {
+                    var columns = {
+                        "movementNo": { hidden: false, label: "Nº" },
+                        "typeText": { hidden: false, label: "Tipo" },
+                        "number": { hidden: false, label: "Associado" },
+                        "requestUser": { hidden: false, label: "Solicitado Por" },
+                        "value": { hidden: false, label: "Valor" },
+                        "statusText": { hidden: false, label: "Estado" },
+                        "level": { hidden: false, label: "Nivel" }
+                    };
+
+                    if (localStorage["approvals.ToggleColumn"]) {
+                        var keys = Object.keys(columns);
+                        var storedColumns = JSON.parse(localStorage["approvals.ToggleColumn"]);
+                        for (var i = 0; i < keys.length; i++) {
+                            columns[keys[i]] = storedColumns[keys[i]];
+                        }
+                    };
+                    this._columns = columns;
+                },
+                _toggleColumn: function (event) {
+                    var columnIndex = JSON.parse(event.target.dataset.item).key;
+                    event.path[0].classList.toggle("selected");
+                    this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
+                    if (typeof (Storage) !== "undefined") {
+                        localStorage["approvals.ToggleColumn"] = JSON.stringify(this._columns);
+                    }
+                },
+                _getColumnItemClass: function (columnIndex) {
+                    return !this._columns[columnIndex].hidden ? "selected" : "";
+                },
+                _toArray: function (obj) {
+                    return Object.keys(obj).map(function (key) {
+                        return {
+                            key: key,
+                            value: obj[key]
+                        };
+                    });
+                }
+                /* end - ColumnToggle */
+
+            });
+        });
+    </script>
+
+</dom-module>
+
+

@@ -1042,7 +1042,7 @@ namespace Hydra.Such.Portal.Controllers
 
             requisition.ForEach(x => result.Add(DBRequesitionHist.ParseToViewModel(x)));
 
-            return Json(result);
+            return Json(result.OrderByDescending(x => x.RequisitionNo));
         }
 
         public JsonResult GetHistoryReqLines([FromBody] JObject requestParams)
@@ -1055,7 +1055,7 @@ namespace Hydra.Such.Portal.Controllers
             List<RequisitionLineHistViewModel> result = new List<RequisitionLineHistViewModel>();
 
             RequisitionLines.ForEach(x => result.Add(DBRequesitionLinesHist.ParseToViewModel(x)));
-            return Json(result);
+            return Json(result.OrderByDescending(x => x.LineNo));
 
         }
         #endregion
@@ -1198,7 +1198,8 @@ namespace Hydra.Such.Portal.Controllers
                             header.LocalMarketRegion = header.Lines.FirstOrDefault().MarketLocalRegion;
                         });
 
-                        data = CreateRequesition(newlistOpenOrder, data);
+                        if (newlistOpenOrder != null && newlistOpenOrder.Count > 0)
+                            data = CreateRequesition(newlistOpenOrder, data);
 
                         List<PreRequisitionLineViewModel> GroupedList = new List<PreRequisitionLineViewModel>();
                         PreRequesitionLines.Where(x => x.NºLinhaEncomendaAberto == 0 || x.NºLinhaEncomendaAberto == null).ToList().ForEach(x => GroupedList.Add(DBPreRequesitionLines.ParseToViewModel(x)));
@@ -1278,7 +1279,8 @@ namespace Hydra.Such.Portal.Controllers
 
                             header.LocalMarketRegion = header.Lines.FirstOrDefault().MarketLocalRegion;
                         });
-                        data = CreateRequesition(newlist, data);
+                        if (newlist != null && newlist.Count > 0)
+                            data = CreateRequesition(newlist, data);
 
                         if (data.eReasonCode == 1 && newlist.Count > 0 || newlistOpenOrder.Count > 0)
                         {

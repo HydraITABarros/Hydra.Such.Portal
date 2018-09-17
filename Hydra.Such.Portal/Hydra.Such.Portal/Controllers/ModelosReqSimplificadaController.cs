@@ -65,7 +65,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             if (userDimensions.Where(y => y.Dimensão == (int)Enumerations.Dimensions.ResponsabilityCenter).Count() > 0)
                 items.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Enumerations.Dimensions.ResponsabilityCenter && (y.ValorDimensão == x.CodeResponsabilityCenter || string.IsNullOrEmpty(x.CodeResponsabilityCenter))));
 
-            return Json(items);
+            return Json(items.OrderByDescending(x => x.RequisitionTemplateId));
         }
 
         
