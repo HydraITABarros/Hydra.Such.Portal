@@ -24,6 +24,7 @@ using Microsoft.AspNetCore.Hosting;
 using System.Threading.Tasks;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using Hydra.Such.Data.Logic.Viatura;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -82,11 +83,34 @@ namespace Hydra.Such.Portal.Controllers
             List<NAVProjectsViewModel> navList = DBNAV2017Projects.GetAll(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, ProjectNo).ToList();
             NAVProjectsViewModel Project = navList.Where(x => x.No == ProjectNo).FirstOrDefault();
 
-            result.RegionCode = Project.RegionCode;
-            result.FunctionalAreaCode = Project.AreaCode;
-            result.ResponsabilityCenterCode = Project.CenterResponsibilityCode;
+            if (Project != null)
+            {
+                result.RegionCode = Project.RegionCode != null ? Project.RegionCode : "";
+                result.FunctionalAreaCode = Project.AreaCode != null ? Project.AreaCode : "";
+                result.ResponsabilityCenterCode = Project.CenterResponsibilityCode != null ? Project.CenterResponsibilityCode : "";
+            }
+            else
+            {
+                result.RegionCode = "";
+                result.FunctionalAreaCode = "";
+                result.ResponsabilityCenterCode = "";
+            }
 
             return Json(result);
+        }
+
+        public JsonResult GetProjetoNo([FromBody] string Matricula)
+        {
+            Viaturas viatura = new Viaturas();
+            string ProjetoNo = "";
+
+            if (!string.IsNullOrEmpty(Matricula))
+            {
+                viatura = DBViatura.GetByMatricula(Matricula);
+                ProjetoNo = viatura.NoProjeto != null ? viatura.NoProjeto : "";
+            }
+
+            return Json(ProjetoNo);
         }
 
         public JsonResult GetPreReqList([FromBody] int Area)
@@ -716,6 +740,7 @@ namespace Hydra.Such.Portal.Controllers
                             PreRequisicaoDB.ContatoEntrega = data.DeliveryContact;
                             PreRequisicaoDB.ResponsávelReceçãoReceção = data.ReceptionReceptionResponsible;
                             PreRequisicaoDB.NºFatura = data.InvoiceNo;
+                            PreRequisicaoDB.PedirOrcamento = data.PedirOrcamento;
 
                             PreRequisicaoDB = DBPreRequesition.Update(PreRequisicaoDB);
                         }
@@ -987,7 +1012,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
 
             }
-            return Json(result);
+            return Json(result.OrderByDescending(x => x.RequisitionNo));
         }
 
         public JsonResult GetPendingReqLines([FromBody] JObject requestParams)

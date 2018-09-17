@@ -181,7 +181,8 @@ namespace Hydra.Such.Data.Logic.ComprasML
                  LocalidadeEntrega = x.DeliveryLocality,
                  ContatoEntrega = x.DeliveryContact,
                  ResponsávelReceçãoReceção = x.ReceptionReceptionResponsible,
-                 NºFatura = x.InvoiceNo
+                 NºFatura = x.InvoiceNo,
+                 PedirOrcamento = x.PedirOrcamento
             };
             return result;
         }
@@ -251,6 +252,7 @@ namespace Hydra.Such.Data.Logic.ComprasML
                 DeliveryContact = x.ContatoEntrega,
                 ReceptionReceptionResponsible = x.ResponsávelReceçãoReceção,
                 InvoiceNo = x.NºFatura,
+                PedirOrcamento = x.PedirOrcamento
             };
 
             return result;

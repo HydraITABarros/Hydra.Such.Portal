@@ -2108,184 +2108,196 @@ namespace Hydra.Such.Portal.Controllers
 
         #region Invoice
         [HttpPost]
-        public JsonResult CreateInvoiceHeaderFromContract([FromBody] JObject requestParams)
+        public JsonResult CreateInvoiceHeaderFromContract([FromBody] JObject requestParams, string dateCont )
         {
             bool registado = false;
             if (requestParams["Contrato"].ToString() != null && requestParams["LinhasContrato"].ToString() != null)
             {
+              
+                DateTime lastDay = Convert.ToDateTime(dateCont);
                 string obs = "";
                 ContractViewModel Contract = JsonConvert.DeserializeObject<ContractViewModel>(requestParams["Contrato"].ToString());
                 List<ContractLineViewModel> ContractLines = JsonConvert.DeserializeObject<List<ContractLineViewModel>>(requestParams["LinhasContrato"].ToString());
                 string groupInvoice = requestParams["GrupoFatura"].ToString();
                 List<int> groups = new List<int>();
-               
-                //Create Project if existe
-                Task<WSCreateNAVProject.Read_Result> Project = WSProject.GetNavProject(Contract.ContractNo, _configws);
-                Project.Wait();
-                if (Project.IsCompletedSuccessfully && Project.Result.WSJob == null)
-                {
-                    ProjectDetailsViewModel proj = new ProjectDetailsViewModel();
-                    proj.ProjectNo = Contract.ContractNo;
-                    proj.ClientNo = Contract.ClientNo;
-                    proj.Status = Contract.Status;
-                    proj.RegionCode = Contract.CodeRegion;
-                    proj.ResponsabilityCenterCode = Contract.CodeResponsabilityCenter;
-                    proj.FunctionalAreaCode = Contract.CodeFunctionalArea;
-                    proj.Description = Contract.Description;
-                    Task<WSCreateNAVProject.Create_Result> createProject = WSProject.CreateNavProject(proj, _configws);
-                    createProject.Wait();
-                }
-
-                //CREATE SALES HEADER
-                NAVSalesHeaderViewModel PreInvoiceToCreate = new NAVSalesHeaderViewModel();
-                PreInvoiceToCreate.Sell_toCustomerNo = Contract.ClientNo;
-                PreInvoiceToCreate.DocumentDate = DateTime.Parse(Contract.CreateDate);
-                if (Contract.CustomerShipmentDate != null && Contract.CustomerShipmentDate != "")
-                    PreInvoiceToCreate.ShipmentDate = DateTime.Parse(Contract.CustomerShipmentDate);
-
-                if (Contract.ContractStartDate != "" && Contract.ContractEndDate != "")
-                    PreInvoiceToCreate.PeriododeFact_Contrato = Contract.ContractStartDate + " a " + Contract.ContractEndDate;
-                PreInvoiceToCreate.ValorContrato = Contract.TotalValue ?? 0;
-                PreInvoiceToCreate.Ship_toAddress = Contract.ShippingAddress;
-                PreInvoiceToCreate.Ship_toPostCode = Contract.ShippingZipCode;
-                if (Contract.DueDate != null && Contract.DueDate != "")
-                    PreInvoiceToCreate.DueDate = DateTime.Parse(Contract.DueDate);
-
-                PreInvoiceToCreate.PaymentTermsCode = Contract.CodePaymentTerms;
-                //PreInvoiceToCreate.ResponsibilityCenter= Contract.CodeResponsabilityCenter;
-                PreInvoiceToCreate.No_Compromisso = Contract.PromiseNo;
-                PreInvoiceToCreate.CodigoPedido = Contract.ClientRequisitionNo;
-                if (Contract.ReceiptDateRequisition != null && Contract.ReceiptDateRequisition != "")
-                    PreInvoiceToCreate.DataEncomenda = DateTime.Parse(Contract.ReceiptDateRequisition);
-
-                string mes = DateTime.Now.ToString("MMMM");
-                PreInvoiceToCreate.DataServ_Prestado = String.Format("{0}/{1}", mes.ToUpper(), DateTime.Now.Year);
-                
-                PreInvoiceToCreate.ContractNo = Contract.ContractNo;
-                PreInvoiceToCreate.FacturaCAF = true;
-                PreInvoiceToCreate.Userpreregisto2009 = User.Identity.Name;
-                if (Contract.StartData != null && Contract.StartData != "")
-                    PreInvoiceToCreate.PostingDate = DateTime.Parse(Contract.StartData);
-
-                PreInvoiceToCreate.ResponsabilityCenterCode20 = Contract.CodeResponsabilityCenter;
-                PreInvoiceToCreate.FunctionAreaCode20 = Contract.CodeFunctionalArea;
-                PreInvoiceToCreate.RegionCode20 = Contract.CodeRegion;
-             
-
-
+                bool createGroup = true;
                 if (groupInvoice != null && groupInvoice != "")
                 {
                     int Codgroup = Convert.ToInt32(groupInvoice);
-                    if (ContractLines.Find(x => x.InvoiceGroup == Codgroup) != null)
+                    if(ContractLines.Find(x => x.InvoiceGroup == Codgroup) == null)
                     {
-                        foreach (ContractInvoiceTextViewModel texts in Contract.InvoiceTexts)
-                        {
-                            if (texts.InvoiceGroup == Convert.ToInt32(groupInvoice))
-                            {
-                                obs += texts.InvoiceText;
-                            }
-                        }
-                        PreInvoiceToCreate.Observacoes = obs;
-                        obs = "";
-
-                        Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreatePreInvoiceHeader(PreInvoiceToCreate, _configws);
-                        InvoiceHeader.Wait();
-
-                        if (InvoiceHeader.IsCompletedSuccessfully && InvoiceHeader.Result != null)
-                        {
-                            string cod = InvoiceHeader.Result.WSPreInvoice.No;
-                            List<LinhasFaturaçãoContrato> LinhasFaturacao = new List<LinhasFaturaçãoContrato>();
-                            foreach (ContractLineViewModel line in ContractLines)
-                            {
-                                //CREATE SALES LINES
-                                if (line.Billable == true && Codgroup == line.InvoiceGroup)
-                                {
-                                    LinhasFaturaçãoContrato PreInvoiceLinesToCreate = new LinhasFaturaçãoContrato();
-                                    PreInvoiceLinesToCreate.Tipo = "3";                                  
-                                    PreInvoiceLinesToCreate.Descrição = line.Description;
-                                    PreInvoiceLinesToCreate.CódUnidadeMedida = line.CodeMeasureUnit;
-                                    PreInvoiceLinesToCreate.CódigoÁreaFuncional = line.CodeFunctionalArea;
-                                    PreInvoiceLinesToCreate.CódigoRegião = line.CodeRegion;
-                                    PreInvoiceLinesToCreate.CódigoCentroResponsabilidade = line.CodeResponsabilityCenter;
-                                    PreInvoiceLinesToCreate.NºContrato = Contract.ContractNo;
-                                    PreInvoiceLinesToCreate.NºProjeto = Contract.ContractNo;
-                                    PreInvoiceLinesToCreate.CódigoServiço = line.ServiceClientNo;
-                                    PreInvoiceLinesToCreate.Quantidade = line.Quantity * Contract.InvocePeriod;
-                                    PreInvoiceLinesToCreate.PreçoUnitário = line.UnitPrice;
-                                    LinhasFaturacao.Add(PreInvoiceLinesToCreate);
-                                }
-                            }
-                            Task<WSCreatePreInvoiceLine.CreateMultiple_Result> InvoiceLines = WSPreInvoiceLine.CreatePreInvoiceLineList(LinhasFaturacao, cod, _configws);
-                            InvoiceLines.Wait();
-                            if (InvoiceLines.IsCompletedSuccessfully)
-                            {
-                                registado = true;
-                            }
-                        }
-                    
+                        createGroup = false;
                     }
-
+                   
                 }
-                else
-                {
-                    foreach (ContractLineViewModel line in ContractLines)
+                if (createGroup==true) {
+                    //Create Project if existe
+                    Task<WSCreateNAVProject.Read_Result> Project = WSProject.GetNavProject(Contract.ContractNo, _configws);
+                    Project.Wait();
+                    if (Project.IsCompletedSuccessfully && Project.Result.WSJob == null)
                     {
-                        if (groups.Find(x => x == line.InvoiceGroup) == 0)
-                        {
-                            groups.Add(line.InvoiceGroup ?? 0);
-                        }
+                        ProjectDetailsViewModel proj = new ProjectDetailsViewModel();
+                        proj.ProjectNo = Contract.ContractNo;
+                        proj.ClientNo = Contract.ClientNo;
+                        proj.Status = Contract.Status;
+                        proj.RegionCode = Contract.CodeRegion;
+                        proj.ResponsabilityCenterCode = Contract.CodeResponsabilityCenter;
+                        proj.FunctionalAreaCode = Contract.CodeFunctionalArea;
+                        proj.Description = Contract.Description;
+                        Task<WSCreateNAVProject.Create_Result> createProject = WSProject.CreateNavProject(proj, _configws);
+                        createProject.Wait();
                     }
 
-                    foreach (int group in groups)
+                    //CREATE SALES HEADER
+                    NAVSalesHeaderViewModel PreInvoiceToCreate = new NAVSalesHeaderViewModel();
+                    PreInvoiceToCreate.Sell_toCustomerNo = Contract.ClientNo;
+                    PreInvoiceToCreate.DocumentDate = lastDay;
+                    if (Contract.CustomerShipmentDate != null && Contract.CustomerShipmentDate != "")
+                        PreInvoiceToCreate.ShipmentDate = DateTime.Parse(Contract.CustomerShipmentDate);
+
+                    if (Contract.ContractStartDate != "" && Contract.ContractEndDate != "")
+                        PreInvoiceToCreate.PeriododeFact_Contrato = Contract.ContractStartDate + " a " + Contract.ContractEndDate;
+                    PreInvoiceToCreate.ValorContrato = Contract.TotalValue ?? 0;
+                    PreInvoiceToCreate.Ship_toAddress = Contract.ShippingAddress;
+                    PreInvoiceToCreate.Ship_toPostCode = Contract.ShippingZipCode;
+                    if (Contract.DueDate != null && Contract.DueDate != "")
+                        PreInvoiceToCreate.DueDate = DateTime.Parse(Contract.DueDate);
+
+                    PreInvoiceToCreate.PaymentTermsCode = Contract.CodePaymentTerms;
+                    //PreInvoiceToCreate.ResponsibilityCenter= Contract.CodeResponsabilityCenter;
+                    PreInvoiceToCreate.No_Compromisso = Contract.PromiseNo;
+                    PreInvoiceToCreate.CodigoPedido = Contract.ClientRequisitionNo;
+                    if (Contract.ReceiptDateRequisition != null && Contract.ReceiptDateRequisition != "")
+                        PreInvoiceToCreate.DataEncomenda = DateTime.Parse(Contract.ReceiptDateRequisition);
+
+                    string mes = DateTime.Now.ToString("MMMM");
+                    PreInvoiceToCreate.DataServ_Prestado = String.Format("{0}/{1}", mes.ToUpper(), DateTime.Now.Year);
+
+                    PreInvoiceToCreate.ContractNo = Contract.ContractNo;
+                    PreInvoiceToCreate.FacturaCAF = true;
+                    PreInvoiceToCreate.Userpreregisto2009 = User.Identity.Name;
+                    PreInvoiceToCreate.PostingDate = lastDay;
+
+                    PreInvoiceToCreate.ResponsabilityCenterCode20 = Contract.CodeResponsabilityCenter;
+                    PreInvoiceToCreate.FunctionAreaCode20 = Contract.CodeFunctionalArea;
+                    PreInvoiceToCreate.RegionCode20 = Contract.CodeRegion;
+
+
+
+                    if (groupInvoice != null && groupInvoice != "")
                     {
-                        //CREATE SALES HEADER
-                        foreach (ContractInvoiceTextViewModel texts in Contract.InvoiceTexts)
+                        int Codgroup = Convert.ToInt32(groupInvoice);
+                        if (ContractLines.Find(x => x.InvoiceGroup == Codgroup) != null)
                         {
-                            if (texts.InvoiceGroup == Convert.ToInt32(group))
+                            foreach (ContractInvoiceTextViewModel texts in Contract.InvoiceTexts)
                             {
-                                obs += texts.InvoiceText;
-                            }
-                        }
-
-                        PreInvoiceToCreate.Observacoes = obs;
-                        obs = "";
-
-
-                        Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreatePreInvoiceHeader(PreInvoiceToCreate, _configws);
-                        InvoiceHeader.Wait();
-                        if (InvoiceHeader.IsCompletedSuccessfully && InvoiceHeader.Result != null)
-                        {
-                            string cod = InvoiceHeader.Result.WSPreInvoice.No;
-                            List<LinhasFaturaçãoContrato> LinhasFaturacao = new List<LinhasFaturaçãoContrato>();
-                            foreach (ContractLineViewModel line in ContractLines)
-                            {
-                                //CREATE SALES LINES
-                                if (line.Billable == true && group == line.InvoiceGroup)
+                                if (texts.InvoiceGroup == Convert.ToInt32(groupInvoice))
                                 {
-                                    LinhasFaturaçãoContrato PreInvoiceLinesToCreate = new LinhasFaturaçãoContrato();
-                                    PreInvoiceLinesToCreate.Tipo = "3";
-                                    PreInvoiceLinesToCreate.Descrição = line.Description;
-                                    PreInvoiceLinesToCreate.CódUnidadeMedida = line.CodeMeasureUnit;
-                                    PreInvoiceLinesToCreate.CódigoÁreaFuncional = line.CodeFunctionalArea;
-                                    PreInvoiceLinesToCreate.CódigoRegião = line.CodeRegion;
-                                    PreInvoiceLinesToCreate.CódigoCentroResponsabilidade = line.CodeResponsabilityCenter;
-                                    PreInvoiceLinesToCreate.NºContrato = Contract.ContractNo;
-                                    PreInvoiceLinesToCreate.NºProjeto = Contract.ContractNo;
-                                    PreInvoiceLinesToCreate.CódigoServiço = line.ServiceClientNo;
-                                    PreInvoiceLinesToCreate.Quantidade = line.Quantity * Contract.InvocePeriod;
-                                    PreInvoiceLinesToCreate.PreçoUnitário = line.UnitPrice;
-                                    PreInvoiceLinesToCreate.GrupoFatura = line.InvoiceGroup ?? 0;
-                                    LinhasFaturacao.Add(PreInvoiceLinesToCreate);
+                                    obs += texts.InvoiceText;
                                 }
                             }
-                            Task<WSCreatePreInvoiceLine.CreateMultiple_Result> InvoiceLines = WSPreInvoiceLine.CreatePreInvoiceLineList(LinhasFaturacao, cod, _configws);
-                            InvoiceLines.Wait();
-                            if (InvoiceLines.IsCompletedSuccessfully)
+                            PreInvoiceToCreate.Observacoes = obs;
+                            obs = "";
+
+                            Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreatePreInvoiceHeader(PreInvoiceToCreate, _configws);
+                            InvoiceHeader.Wait();
+
+                            if (InvoiceHeader.IsCompletedSuccessfully && InvoiceHeader.Result != null)
                             {
-                                registado = true;
+                                string cod = InvoiceHeader.Result.WSPreInvoice.No;
+                                List<LinhasFaturaçãoContrato> LinhasFaturacao = new List<LinhasFaturaçãoContrato>();
+                                foreach (ContractLineViewModel line in ContractLines)
+                                {
+                                    //CREATE SALES LINES
+                                    if (line.Billable == true && Codgroup == line.InvoiceGroup)
+                                    {
+                                        LinhasFaturaçãoContrato PreInvoiceLinesToCreate = new LinhasFaturaçãoContrato();
+                                        PreInvoiceLinesToCreate.Tipo = "3";
+                                        PreInvoiceLinesToCreate.Descrição = line.Description;
+                                        PreInvoiceLinesToCreate.CódUnidadeMedida = line.CodeMeasureUnit;
+                                        PreInvoiceLinesToCreate.CódigoÁreaFuncional = line.CodeFunctionalArea;
+                                        PreInvoiceLinesToCreate.CódigoRegião = line.CodeRegion;
+                                        PreInvoiceLinesToCreate.CódigoCentroResponsabilidade = line.CodeResponsabilityCenter;
+                                        PreInvoiceLinesToCreate.NºContrato = Contract.ContractNo;
+                                        PreInvoiceLinesToCreate.NºProjeto = Contract.ContractNo;
+                                        PreInvoiceLinesToCreate.CódigoServiço = line.ServiceClientNo;
+                                        PreInvoiceLinesToCreate.Quantidade = line.Quantity * Contract.InvocePeriod;
+                                        PreInvoiceLinesToCreate.PreçoUnitário = line.UnitPrice;
+                                        LinhasFaturacao.Add(PreInvoiceLinesToCreate);
+                                    }
+                                }
+                                Task<WSCreatePreInvoiceLine.CreateMultiple_Result> InvoiceLines = WSPreInvoiceLine.CreatePreInvoiceLineList(LinhasFaturacao, cod, _configws);
+                                InvoiceLines.Wait();
+                                if (InvoiceLines.IsCompletedSuccessfully)
+                                {
+                                    registado = true;
+                                }
+                            }
+
+                        }
+
+                    }
+                    else
+                    {
+                        foreach (ContractLineViewModel line in ContractLines)
+                        {
+                            if (groups.Find(x => x == line.InvoiceGroup) == 0)
+                            {
+                                groups.Add(line.InvoiceGroup ?? 0);
                             }
                         }
-                        
+
+                        foreach (int group in groups)
+                        {
+                            //CREATE SALES HEADER
+                            foreach (ContractInvoiceTextViewModel texts in Contract.InvoiceTexts)
+                            {
+                                if (texts.InvoiceGroup == Convert.ToInt32(group))
+                                {
+                                    obs += texts.InvoiceText;
+                                }
+                            }
+
+                            PreInvoiceToCreate.Observacoes = obs;
+                            obs = "";
+
+
+                            Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreatePreInvoiceHeader(PreInvoiceToCreate, _configws);
+                            InvoiceHeader.Wait();
+                            if (InvoiceHeader.IsCompletedSuccessfully && InvoiceHeader.Result != null)
+                            {
+                                string cod = InvoiceHeader.Result.WSPreInvoice.No;
+                                List<LinhasFaturaçãoContrato> LinhasFaturacao = new List<LinhasFaturaçãoContrato>();
+                                foreach (ContractLineViewModel line in ContractLines)
+                                {
+                                    //CREATE SALES LINES
+                                    if (line.Billable == true && group == line.InvoiceGroup)
+                                    {
+                                        LinhasFaturaçãoContrato PreInvoiceLinesToCreate = new LinhasFaturaçãoContrato();
+                                        PreInvoiceLinesToCreate.Tipo = "3";
+                                        PreInvoiceLinesToCreate.Descrição = line.Description;
+                                        PreInvoiceLinesToCreate.CódUnidadeMedida = line.CodeMeasureUnit;
+                                        PreInvoiceLinesToCreate.CódigoÁreaFuncional = line.CodeFunctionalArea;
+                                        PreInvoiceLinesToCreate.CódigoRegião = line.CodeRegion;
+                                        PreInvoiceLinesToCreate.CódigoCentroResponsabilidade = line.CodeResponsabilityCenter;
+                                        PreInvoiceLinesToCreate.NºContrato = Contract.ContractNo;
+                                        PreInvoiceLinesToCreate.NºProjeto = Contract.ContractNo;
+                                        PreInvoiceLinesToCreate.CódigoServiço = line.ServiceClientNo;
+                                        PreInvoiceLinesToCreate.Quantidade =Convert.ToDecimal(line.Quantity * Contract.InvocePeriod);
+                                        PreInvoiceLinesToCreate.PreçoUnitário = line.UnitPrice;
+                                        PreInvoiceLinesToCreate.GrupoFatura = line.InvoiceGroup ?? 0;
+                                        LinhasFaturacao.Add(PreInvoiceLinesToCreate);
+                                    }
+                                }
+                                Task<WSCreatePreInvoiceLine.CreateMultiple_Result> InvoiceLines = WSPreInvoiceLine.CreatePreInvoiceLineList(LinhasFaturacao, cod, _configws);
+                                InvoiceLines.Wait();
+                                if (InvoiceLines.IsCompletedSuccessfully)
+                                {
+                                    registado = true;
+                                }
+                            }
+
+                        }
                     }
                 }
             }

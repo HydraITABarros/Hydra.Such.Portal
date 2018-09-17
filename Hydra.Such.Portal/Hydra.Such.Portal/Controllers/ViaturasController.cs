@@ -231,6 +231,11 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Estado");
                     Col = Col + 1;
                 }
+                if (dp["noProjeto"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº Projeto");
+                    Col = Col + 1;
+                }
                 if (dp["tipoViatura"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Tipo Viatura");
@@ -308,6 +313,11 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["estadoDescricao"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.EstadoDescricao);
+                            Col = Col + 1;
+                        }
+                        if (dp["noProjeto"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.NoProjeto);
                             Col = Col + 1;
                         }
                         if (dp["tipoViatura"]["hidden"].ToString() == "False")

@@ -162,7 +162,9 @@
                    method="post"
                    handle-as="json"
                    id="page_createnewForUser_ajax"
-                   content-type="application/json"></iron-ajax>
+                   content-type="application/json"
+                   on-response="_responseProcessor">
+        </iron-ajax>
 
         <iron-ajax url="/PreRequisicoes/LoadAttachments"
                    last-response="{{uploads}}"
@@ -235,7 +237,7 @@
                    id="ajax_delete_prereq"
                    on-response="_responseDeleteProcessor"
                    content-type="application/json"></iron-ajax>
-        
+
         <iron-ajax url="/PreRequisicoes/DuplicarContractLines"
                    last-response="{{duplicarLinhasResponse}}"
                    method="post"
@@ -314,6 +316,23 @@
                    id="page_getProject2_ajax"
                    on-response="_getProjectDimsResponse2"
                    content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PreRequisicoes/GetProjetoNo"
+                   last-response="{{ProjetoNo}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_GetProjetoNoCabecalho_ajax"
+                   on-response="_GetProjetoNoCabecalhoResponse"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PreRequisicoes/GetProjetoNo"
+                   last-response="{{ProjetoNo}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_GetProjetoNoLinha_ajax"
+                   on-response="_GetProjetoNoLinhaResponse"
+                   content-type="application/json"></iron-ajax>
+
         <!--//-------------------------------------------------------------//-->
         <template is="dom-if" if="{{ !_isCreate }}">
             <template is="dom-if" if="{{ _permissions.update }}">
@@ -353,12 +372,12 @@
                                 <!--Geral-->
                                 <div>
                                     <div class="row break_clear">
-                                        <div class="col-md-3 ">
+                                        <div class="col-md-3" hidden>
                                             <vaadin-text-field id="PreRequesitionsNo" name="PreRequesitionsNo" label="Nº Pré-Requisição" value="{{data.preRequesitionsNo}}" disabled></vaadin-text-field>
                                         </div>
 
                                         <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[CBRequesitionType]]" onchange="_getRequesitionType" id="requesitionType" item-value-path="id" item-label-path="value" value="{{data.requesitionType}}" label="Tipo Requisição">
+                                            <vaadin-combo-box items="[[CBRequesitionType]]" on-value-changed="_getRequesitionType" id="requesitionType" item-value-path="id" item-label-path="value" value="{{data.requesitionType}}" label="Tipo Requisição">
                                                 <template>
                                                     <table width="350px">
                                                         <tr>
@@ -371,7 +390,7 @@
                                         </div>
 
                                         <div class="col-md-3 ">
-                                            <such-selectbox id="projectNo" value="{{data.projectNo}}" onchange="_setProjectDim" label="Nº Ordem/Projecto"
+                                            <such-selectbox id="projectNo" value="{{data.projectNo}}" on-value-changed="_setProjectDim" label="Nº Ordem/Projecto"
                                                             items="[[CBJobNo]]"
                                                             text-path="no"
                                                             value-path="no"
@@ -380,8 +399,20 @@
                                             </such-selectbox>
                                         </div>
 
-                                        <div class="col-md-3 ">
+                                        <div class="col-md-3" hidden>
                                             <vaadin-text-field id="ClaimedRequesitionNo" name="ClaimedRequesitionNo" label="Nº Requisição Reclamada" value="{{data.claimedRequesitionNo}}"></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-3" id="VehicleDiv" hidden>
+                                            <vaadin-combo-box items="[[CBVehicle]]" id="Vehicle" item-value-path="id" item-label-path="id" value="{{data.vehicle}}" label="Viatura" on-value-changed="_GetNoProjetoCabecalho">
+                                                <template>
+                                                    <b>[[item.id]]</b>
+                                                </template>
+                                            </vaadin-combo-box>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <vaadin-date-picker label="Data Receção" id="dpReceptionDate" name="dpReceptionDate" value="{{data.receptionDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
                                         </div>
                                     </div>
 
@@ -412,14 +443,6 @@
                                                             fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
                                             </such-selectbox>
                                         </div>
-
-                                        <div class="col-md-3" id="VehicleDiv" hidden>
-                                            <vaadin-combo-box items="[[CBVehicle]]" id="Vehicle" item-value-path="id" item-label-path="id" value="{{data.vehicle}}" label="Viatura">
-                                                <template>
-                                                    <b>[[item.id]]</b>
-                                                </template>
-                                            </vaadin-combo-box>
-                                        </div>
                                     </div>
 
                                     <div class="row break_clear">
@@ -427,7 +450,7 @@
                                             <vaadin-checkbox id="UrgentId" checked="{{data.urgent}}">Urgente</vaadin-checkbox>
                                         </div>
                                         <div class="col-sm-2">
-                                            <vaadin-checkbox id="FittingBudgetId" checked="{{data.fittingBudget}}">Orçamento</vaadin-checkbox>
+                                            <vaadin-checkbox id="FittingBudgetId" checked="{{data.fittingBudget}}">Orçamento em Anexo</vaadin-checkbox>
                                         </div>
                                         <div class="col-sm-2">
                                             <vaadin-checkbox id="ImmobilizedId" checked="{{data.immobilized}}">Imobilizado</vaadin-checkbox>
@@ -444,24 +467,23 @@
                                         <div class="col-sm-2">
                                             <vaadin-checkbox id="EquipmentId" checked="{{data.equipment}}">Equipamento</vaadin-checkbox>
                                         </div>
-                                        <div class="col-sm-2">
+                                        <div class="col-sm-2" hidden>
                                             <vaadin-checkbox id="MoneyBuyId" checked="{{data.moneyBuy}}">Compras a Dinheiro</vaadin-checkbox>
                                         </div>
                                         <div class="col-sm-2">
                                             <vaadin-checkbox id="StockReplacementId" checked="{{data.stockReplacement}}">Reposição de Stock</vaadin-checkbox>
                                         </div>
-                                        <div class="col-sm-2">
+                                        <div class="col-sm-2" hidden>
                                             <vaadin-checkbox id="ComplaintId" checked="{{data.complaint}}">Reclamação</vaadin-checkbox>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <vaadin-checkbox id="PedirOrcamento" checked="{{data.pedirOrcamento}}">Pedir Orçamento</vaadin-checkbox>
                                         </div>
                                     </div>
 
                                     <div class="row break_clear">
                                         <div class="col-md-6">
                                             <such-textarea rows="5" value="{{data.notes}}" id="Notes" name="Notes" label="Notas" disabled="{{ !_permissions.update }}"> </such-textarea>
-                                        </div>
-
-                                        <div class="col-md-3">
-                                            <vaadin-date-picker label="Data Receção" id="dpReceptionDate" name="dpReceptionDate" value="{{data.receptionDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
                                         </div>
 
                                         <div class="col-md-3">
@@ -644,8 +666,8 @@
                                                         items="[[CBPurchaseLine]]"
                                                         text-path="documentNO"
                                                         value-path="id"
-                                                        fields='[{"field":"documentNO", "name":"Nº Documento"},{"field":"line_No", "name":"Nº Linha Aberta"}, {"field":"buyFromVendorNo", "name":"Fornecedor"}, {"field":"outstandingQtyBase", "name":"Quantidade Disponível"}, {"field":"numb", "name":"Cód. Produto"}
-                                                                ,{"field":"description", "name":"Descrição"},{"field":"functionalAreaDescription", "name":"Área Funcional"},{"field":"regionDescription", "name":"Região"},{"field":"responsabilityCenterDescription", "name":"Centro Resonsabilidade"}]'
+                                                        fields='[{"field":"documentNO", "name":"Nº Documento"},{"field":"line_No", "name":"Nº Linha Aberta"}, {"field":"numb", "name":"Cód. Produto"}, {"field":"description", "name":"Descrição"}, {"field":"buyFromVendorNo", "name":"Fornecedor"},
+                                                                {"field":"outstandingQtyBase", "name":"Quantidade Disponível"}, {"field":"functionalAreaDescription", "name":"Área Funcional"},{"field":"regionDescription", "name":"Região"},{"field":"responsabilityCenterDescription", "name":"Centro Resonsabilidade"}]'
                                                         disabled="{{ !_permissions.update }}">
                                         </such-selectbox>
                                     </div>
@@ -725,7 +747,7 @@
                                         <vaadin-text-field value="{{_MaintenanceOrderLineNo}}" id="_MaintenanceOrderLineNo" name="_MaintenanceOrderLineNo" label="Nº Linha Ord. Manutenção" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                     </div>
                                     <div class="col-lg-2">
-                                        <vaadin-combo-box items="[[CBVehicle]]" id="_VehicleLines" item-value-path="id" item-label-path="id" value="{{data.vehicle}}" label="Viatura">
+                                        <vaadin-combo-box items="[[CBVehicle]]" id="_VehicleLines" item-value-path="id" item-label-path="id" label="Viatura" on-value-changed="_GetNoProjetoLinha">
                                             <template>
                                                 <b>[[item.id]]</b>
                                             </template>
@@ -789,7 +811,7 @@
                             </paper-collapse-item>
                             <div>
                                 <vaadin-grid aria-label="PreReqLines" id="grid_prereqlines" name="grid_prereqlines" items="[[dataLines.lines]]" class="grid" multi-sort="true" active-item="{{_SelectedLine}}">
-                                    <vaadin-grid-column width="2%">
+                                    <vaadin-grid-column width="3%" resizable>
                                         <template class="header">
                                         </template>
                                         <template>
@@ -833,7 +855,7 @@
                                             <vaadin-grid-filter path="armazemCDireta" />
                                         </template>
                                         <template>
-                                            <vaadin-text-field value="{{item.armazemCDireta}}" id="CBItemsCDirect" name="CBItemsCDirect" disabled="{{ _setDisabled(item) }}"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{item.armazemCDireta}}" id="CBItemsCDirect" name="CBItemsCDirect" disabled> </vaadin-text-field>
                                         </template>
                                     </vaadin-grid-column>
 
@@ -1110,27 +1132,27 @@
                                         </template>
                                     </vaadin-grid-column>
                                     <!--<vaadin-grid-column width="200px" resizable>
-        <template class="header">
-            <vaadin-grid-sorter path="openOrderNo">Nº Encomenda Aberto</vaadin-grid-sorter>
-            <vaadin-grid-filter path="openOrderNo" />
-        </template>
-        <template>
-            <template is="dom-if" if="{{ item.selected }}">
-                <vaadin-combo-box items="[[GridCBPurchaseHeader]]" id="_CBGridPurchaseHeader" item-value-path="id" item-label-path="id" value="{{item.openOrderNo}}" on-change="_PopulatePurchaseLinesGrid" disabled="{{ !_permissions.update }}">
-                    <template>
-                        <table width="200px">
-                            <tr>
-                                <td width="60%"> <b>[[item.id]]</b></td>
-                            </tr>
-                        </table>
-                    </template>
-                </vaadin-combo-box>
-            </template>
-            <template is="dom-if" if="{{ !item.selected }}">
-                [[item.openOrderNo ]]
-            </template>
-        </template>
-    </vaadin-grid-column>-->
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="openOrderNo">Nº Encomenda Aberto</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="openOrderNo" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-combo-box items="[[GridCBPurchaseHeader]]" id="_CBGridPurchaseHeader" item-value-path="id" item-label-path="id" value="{{item.openOrderNo}}" on-change="_PopulatePurchaseLinesGrid" disabled="{{ !_permissions.update }}">
+                                                <template>
+                                                    <table width="200px">
+                                                        <tr>
+                                                            <td width="60%"> <b>[[item.id]]</b></td>
+                                                        </tr>
+                                                    </table>
+                                                </template>
+                                            </vaadin-combo-box>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            [[item.openOrderNo ]]
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>-->
                                     <vaadin-grid-column width="150px" resizable>
                                         <template class="header">
                                             <vaadin-grid-sorter path="openOrderLineNo">Nº Linha Encomenda Aberto</vaadin-grid-sorter>
@@ -1463,8 +1485,21 @@
                     return false;
                 },
                 _getRequesitionType: function (e) {
+                    //debugger;
+                    var _self = this;
+
                     var requesitionType = e.detail.value;
-                    var locationId = this.$._CBLocations.value;
+                    var locationId = _self.$._CBLocations.value;
+
+                    if (requesitionType == 'FROTA') {
+                        _self.$.projectNo.disabled = true;
+                        _self.$._ProjectNo.disabled = true;
+                        _self.$.grid_prereqlines.__data._columnTree[0][1].__data.frozen = true;
+                    }
+                    else {
+                        _self.$.projectNo.disabled = false;
+                        _self.$._ProjectNo.disabled = false;
+                    }
 
                     this.$.filteredProducts_ajax.body = JSON.stringify({ "rootAreaId": this._areaid, "requisitionType": requesitionType, "locationCode": locationId });
                     this.$.filteredProducts_ajax.generateRequest();
@@ -1473,9 +1508,15 @@
                 _getCDirect: function (e) {
                     var requesitionType = this.$.requesitionType.value;
                     var locationId = e.detail.value;
-
+                    
                     this.$.filteredProducts_ajax.body = JSON.stringify({ "rootAreaId": this._areaid, "requisitionType": requesitionType, "locationCode": locationId });
                     this.$.filteredProducts_ajax.generateRequest();
+                    if (this.CBLocations != null) {
+                        var whareHouse = this.CBLocations.find(x => x.id == locationId);
+                        if (whareHouse != null) {
+                            this._CBItemsCDirect = whareHouse.extra;
+                        }
+                    }
                 },
                 //_getProdtctsForLocation: function (locationId) {
                 //    var requesitionType = this.$.requesitionType.value;
@@ -1484,12 +1525,14 @@
                 //    this.$.filteredProducts_ajax.generateRequest();
                 //},
                 _setProjectDim: function (e) {
+                    //debugger;
                     var projectNo = this.$.projectNo.value;
                     this.$.page_getProject_ajax.body = JSON.stringify(projectNo);
                     this.$.page_getProject_ajax.generateRequest();
                 },
 
                 _setProjectDim2: function (e) {
+                    //debugger;
                     var projectNo = this.$._ProjectNo.value;
                     this.$.page_getProject2_ajax.body = JSON.stringify(projectNo);
                     this.$.page_getProject2_ajax.generateRequest();
@@ -1525,6 +1568,7 @@
                         if (proj != null) {
                             this._setNewLineFormControl(true);
                             this.$.txtLocalCode.value = proj.locationCode;
+                            this._CBItemsCDirect = proj.directPurchLocation ? "1" : "0";
                             this.$._Description.value = proj.description;
                             this.$._UnitMeasureCode.value = proj.unitofMeasureCode;
                             this.$._UnitCost.value = proj.unitCost;
@@ -1795,6 +1839,15 @@
                         //}
                     } else {
                         this._openToastError("Ocorreu um erro desconhecido.")
+                    }
+
+                    if (this.$.requesitionType.value == 'FROTA') {
+                        this.$.projectNo.disabled = true;
+                        this.$._ProjectNo.disabled = true;
+                    }
+                    else {
+                        this.$.projectNo.disabled = false;
+                        this.$._ProjectNo.disabled = false;
                     }
                 },
 
@@ -2149,8 +2202,6 @@
                     //debugger;
                     var index = this.dataLines.lines.indexOf(e.model.item);
 
-                    var item = e.model.item;
-
                     this.$.prereqLines_UpdateLinhaPreRequisicao_ajax.body = JSON.stringify({
                         preRequisitionLineNo: e.model.item.preRequisitionLineNo,
                         lineNo: e.model.item.lineNo,
@@ -2194,7 +2245,7 @@
                     this.$.grid_prereqlines.clearCache();
                 },
                 _UpdateLinhaPreRequisicao_ResponseProcessor: function (e) {
-                    debugger;
+                    //debugger;
                     if (this.updateLinhaPreRequisicaoResponse.eReasonCode == 1) {
                         this._openToast(this.updateLinhaPreRequisicaoResponse.eMessage);
                     }
@@ -2251,7 +2302,7 @@
                     this.$.grid_prereqlines.clearCache();
                 },
                 _UpdateLinhaPreRequisicaoProduto_ResponseProcessor: function (e) {
-                    debugger;
+                    //debugger;
                     if (this.updateLinhaPreRequisicaoProdutoResponse.eReasonCode == 1) {
                         this._openToast(this.updateLinhaPreRequisicaoProdutoResponse.eMessage);
                     }
@@ -2289,7 +2340,7 @@
                     this.$.grid_prereqlines.clearCache();
                 },
                 _dlResponseProcessor: function (e) {
-                    debugger;
+                    //debugger;
                     if (this.duplicarLinhasResponse.eReasonCode == 1) {
                         this._openToast(this.duplicarLinhasResponse.eMessage);
                         this.$.page_databound_ajax.generateRequest();
@@ -2387,10 +2438,12 @@
                             else {
                                 this._openToast(this.dataLines.eMessage);
                                 this.$._CBLocations.value = "";
+                                this._CBItemsCDirect = "0";
                                 this.$._Description.value = "";
                                 this.$._Description2.value = "";
                                 this.$._UnitMeasureCode.value = "";
                                 this.$._QuantityToRequire.value = "";
+                                this.$._QuantityToOpen.value = "";
                                 this.$._UnitCost.value = "";
                                 this.$._MaintenanceOrderLineNo.value = "";
                                 if (this.$._CBPurchaseHeader != null)
@@ -2499,7 +2552,40 @@
                     this.$.prereqLines_databound_ajax.generateRequest();
                 },
 
-                _goBack: function (e) {
+                _GetNoProjetoCabecalho: function (e) {
+                    var matricula = this.$.Vehicle.value;
+                    this.$.page_GetProjetoNoCabecalho_ajax.body = JSON.stringify(matricula);
+                    this.$.page_GetProjetoNoCabecalho_ajax.generateRequest();
+                },
+                _GetProjetoNoCabecalhoResponse: function (e) {
+                    //debugger;
+                    if (this.ProjetoNo != "") {
+                        this.$.projectNo.value = this.ProjetoNo;
+                    }
+                    else {
+                        this.$.projectNo.value = this.ProjetoNo;
+                        this.$.projectNo.valueText = this.ProjetoNo;
+                    }
+                },
+
+                _GetNoProjetoLinha: function (e) {
+                    //debugger;
+                    var matricula = this.$._VehicleLines.value;
+                    this.$.page_GetProjetoNoLinha_ajax.body = JSON.stringify(matricula);
+                    this.$.page_GetProjetoNoLinha_ajax.generateRequest();
+                },
+                _GetProjetoNoLinhaResponse: function (e) {
+                    //debugger;
+                    if (this.ProjetoNo != "") {
+                        this.$._ProjectNo.value = this.ProjetoNo;
+                    }
+                    else {
+                        this.$._ProjectNo.value = this.ProjetoNo;
+                        this.$._ProjectNo.valueText = this.ProjetoNo;
+                    }
+                },
+
+                _goBack: function(e) {
                     window.history.back();
                 },
             });
