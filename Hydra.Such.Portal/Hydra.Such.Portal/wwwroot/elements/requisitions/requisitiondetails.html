@@ -147,7 +147,7 @@
         <iron-ajax url="/PopulateDropdowns/GetUnitOfMeasureByCode" id="grid_unitofmeasure_ajax" last-response="{{UnitsOfMmeasure}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetrequestTypes" id="grid_requesttypes_ajax" last-response="{{requesttypesresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <!--<iron-ajax url="/PopulateDropdowns/GetProductsForCurrentUser" id="filteredProducts_ajax" auto last-response="{{Products}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
-        <iron-ajax url="/PopulateDropdowns/GetAllProductsComprasPortal" id="filteredProducts_ajax" auto last-response="{{Products}}" method="post" handle-as="json"  content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetAllProductsComprasPortal" id="filteredProducts_ajax" auto last-response="{{Products}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetNAVVendorComboGrid" id="ajax_supplier_options" last-response="{{Suppliers}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetAllClients" id="ajax_clients_options" last-response="{{cboClients}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <!--<iron-ajax url="/PopulateDropdowns/GetEmployees" id="ajax_employees_options" last-response="{{cboEmployees}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
@@ -273,6 +273,22 @@
                    id="page_update_ajax"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/PreRequisicoes/GetProjetoNo"
+                   last-response="{{ProjetoNo}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_GetProjetoNoCabecalho_ajax"
+                   on-response="_GetProjetoNoCabecalhoResponse"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PreRequisicoes/GetProjetoNo"
+                   last-response="{{ProjetoNo}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_GetProjetoNoLinha_ajax"
+                   on-response="_GetProjetoNoLinhaResponse"
+                   content-type="application/json"></iron-ajax>
+
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" id="btnGoBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
 
@@ -329,7 +345,7 @@
                                                 </template>
                                             </vaadin-combo-box>
                                         </div>
-                                        <div class="col-md-3 ">
+                                        <div class="col-md-3 " hidden>
                                             <vaadin-text-field id="ClaimedRequesitionNo" name="ClaimedRequesitionNo" label="Nº Requisição Reclamada" value="{{Requisition.requestReclaimNo}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                                         </div>
                                         <div class="col-lg-3">
@@ -340,6 +356,14 @@
                                                             fields='[{"field":"no", "name":"Nº Projeto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"globalDimension1", "name":"Dimensão Global 1"}, {"field":"globalDimension2", "name":"Dimensão Global 2"}]'
                                                             disabled="{{ !_permissions.update }}">
                                             </such-selectbox>
+                                        </div>
+
+                                        <div class="col-lg-3">
+                                            <vaadin-combo-box items="[[CBVehicle]]" id="Vehicle" item-value-path="id" item-label-path="id" value="{{Requisition.vehicle}}" label="Viatura" disabled="{{ !_permissions.update }}" on-value-changed="_GetNoProjetoCabecalho">
+                                                <template>
+                                                    <b>[[item.id]]</b>
+                                                </template>
+                                            </vaadin-combo-box>
                                         </div>
                                     </div>
 
@@ -368,13 +392,6 @@
                                                             fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
                                             </such-selectbox>
                                         </div>
-                                        <div class="col-lg-3">
-                                            <vaadin-combo-box items="[[CBVehicle]]" id="Vehicle" item-value-path="id" item-label-path="id" value="{{Requisition.vehicle}}" label="Viatura" disabled="{{ !_permissions.update }}">
-                                                <template>
-                                                    <b>[[item.id]]</b>
-                                                </template>
-                                            </vaadin-combo-box>
-                                        </div>
                                     </div>
 
                                     <div class="row break_clear">
@@ -382,7 +399,7 @@
                                             <vaadin-checkbox id="chkUrgent" checked="{{Requisition.urgent}}" disabled="{{ !_permissions.update }}">Urgente</vaadin-checkbox>
                                         </div>
                                         <div class="col-sm-2 ">
-                                            <vaadin-checkbox id="chkRelatedSearches" checked="{{Requisition.relatedSearches}}" disabled="{{ !_permissions.update }}">Orçamento</vaadin-checkbox>
+                                            <vaadin-checkbox id="chkRelatedSearches" checked="{{Requisition.relatedSearches}}" disabled="{{ !_permissions.update }}">Orçamento em Anexo</vaadin-checkbox>
                                         </div>
                                         <div class="col-sm-2 ">
                                             <vaadin-checkbox id="chkImmobilized" checked="{{Requisition.immobilized}}" disabled="{{ !_permissions.update }}">Imobilizado</vaadin-checkbox>
@@ -399,13 +416,13 @@
                                         <div class="col-sm-2 ">
                                             <vaadin-checkbox id="chkequipment" checked="{{Requisition.equipment}}" disabled="{{ !_permissions.update }}">Equipamento</vaadin-checkbox>
                                         </div>
-                                        <div class="col-sm-2 ">
+                                        <div class="col-sm-2 " hidden>
                                             <vaadin-checkbox id="chkbuyCash" checked="{{Requisition.buyCash}}" disabled="{{ !_permissions.update }}">Compras a Dinheiro</vaadin-checkbox>
                                         </div>
                                         <div class="col-sm-2 ">
                                             <vaadin-checkbox id="chkstockReplacement" checked="{{Requisition.stockReplacement}}" disabled="{{ !_permissions.update }}">Reposição de Stock</vaadin-checkbox>
                                         </div>
-                                        <div class="col-sm-2">
+                                        <div class="col-sm-2" hidden>
                                             <vaadin-checkbox id="chkreclamation" checked="{{Requisition.reclamation}}" disabled="{{ !_permissions.update }}">Reclamação</vaadin-checkbox>
                                         </div>
                                         <div class="col-sm-2 ">
@@ -413,6 +430,9 @@
                                         </div>
                                         <div class="col-sm-2">
                                             <vaadin-checkbox id="chkInAdvance" checked="{{Requisition.inAdvance}}" disabled="{{ !_permissions.update }}">Adiantamento</vaadin-checkbox>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <vaadin-checkbox id="chkPedirOrcamento" checked="{{Requisition.pedirOrcamento}}" disabled="{{ !_permissions.update }}">Pedir Orçamento</vaadin-checkbox>
                                         </div>
                                     </div>
 
@@ -719,7 +739,7 @@
                                         </vaadin-combo-box>
                                     </div>
                                     <div class="col-lg-3">
-                                        <vaadin-combo-box items="[[CBVehicle]]" id="CBVehicles" item-value-path="id" item-label-path="id" value="" label="Viatura">
+                                        <vaadin-combo-box items="[[CBVehicle]]" id="CBVehicles" item-value-path="id" item-label-path="id" value="" label="Viatura" on-value-changed="_GetNoProjetoLinha">
                                             <template>
                                                 <b>[[item.id]]</b>
                                             </template>
@@ -1025,7 +1045,7 @@
                                     <template class="header">
                                         <p class="alignCenter">Criar Consulta Mercado</p>
                                         <!--<vaadin-grid-filter path="createMarketSearchStringValue">
-            </vaadin-grid-filter>-->
+                                    </vaadin-grid-filter>-->
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
@@ -2149,6 +2169,14 @@
                         this._openToastError("Ocorreu um erro desconhecido.")
                     }
 
+                    if (this.$.Vehicle.value != "") {
+                        this.$.CBHeaderProjects.disabled = true;
+                        //this.$.CBLineProjects.disabled = true;
+                    }
+                    else {
+                        this.$.CBHeaderProjects.disabled = false;
+                        //this.$.CBLineProjects.disabled = false;
+                    }
 
                 },
                 _deleteReqLineResponse: function (e) {
@@ -2428,6 +2456,56 @@
                         this._openToastError(this.Requisition.eMessage);
                     }
                 },
+
+                _GetNoProjetoCabecalho: function (e) {
+                    var matricula = this.$.Vehicle.value;
+
+                    if (matricula != "") {
+                        this.$.CBHeaderProjects.disabled = true;
+                    }
+                    else {
+                        this.$.CBHeaderProjects.disabled = false;
+                    }
+
+                    this.$.page_GetProjetoNoCabecalho_ajax.body = JSON.stringify(matricula);
+                    this.$.page_GetProjetoNoCabecalho_ajax.generateRequest();
+                },
+                _GetProjetoNoCabecalhoResponse: function (e) {
+                    //debugger;
+                    if (this.ProjetoNo != "") {
+                        this.$.CBHeaderProjects.value = this.ProjetoNo;
+                    }
+                    else {
+                        this.$.CBHeaderProjects.value = this.ProjetoNo;
+                        this.$.CBHeaderProjects.valueText = this.ProjetoNo;
+                    }
+                },
+
+                _GetNoProjetoLinha: function (e) {
+                    //debugger;
+                    var matricula = this.$.CBVehicles.value;
+
+                    if (matricula != "") {
+                        this.$.CBLineProjects.disabled = true;
+                    }
+                    else {
+                        this.$.CBLineProjects.disabled = false;
+                    }
+
+                    this.$.page_GetProjetoNoLinha_ajax.body = JSON.stringify(matricula);
+                    this.$.page_GetProjetoNoLinha_ajax.generateRequest();
+                },
+                _GetProjetoNoLinhaResponse: function (e) {
+                    debugger;
+                    if (this.ProjetoNo != "") {
+                        this.$.CBLineProjects.value = this.ProjetoNo;
+                    }
+                    else {
+                        this.$.CBLineProjects.value = this.ProjetoNo;
+                        this.$.CBLineProjects.valueText = this.ProjetoNo;
+                    }
+                },
+
             });
         });
     </script>

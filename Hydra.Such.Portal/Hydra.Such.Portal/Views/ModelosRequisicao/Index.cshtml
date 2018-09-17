@@ -162,7 +162,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.requestReclaimNo.hidden }}">
+            @*<vaadin-grid-column width="160px" resizable hidden$="{{ _columns.requestReclaimNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="requestReclaimNo">Nº Requisição Reclamada</vaadin-grid-sorter>
                     <vaadin-grid-filter path="requestReclaimNo" />
@@ -170,7 +170,7 @@
                 <template>
                     {{item.requestReclaimNo}}
                 </template>
-            </vaadin-grid-column>
+            </vaadin-grid-column>*@
 
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.requisitionDate.hidden }}">
                 <template class="header">
@@ -314,7 +314,7 @@
                     "centerResponsibilityCode": { hidden: false, label: "Código Centro Responsabilidade" },
                     "marketInquiryNo": { hidden: false, label: "Nº Consulta Mercado" },
                     "orderNo": { hidden: false, label: "Nº Encomenda" },
-                    "requestReclaimNo": { hidden: false, label: "Nº Requisição Reclamada" },
+                    //"requestReclaimNo": { hidden: false, label: "Nº Requisição Reclamada" },
                     "requisitionDate": { hidden: false, label: "Data requisição" }
                 };
 

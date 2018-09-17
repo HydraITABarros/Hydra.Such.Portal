@@ -397,11 +397,11 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Nº Encomenda");
                     Col = Col + 1;
                 }
-                if (dp["requestReclaimNo"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Nº Requisição Reclamada");
-                    Col = Col + 1;
-                }
+                //if (dp["requestReclaimNo"]["hidden"].ToString() == "False")
+                //{
+                //    row.CreateCell(Col).SetCellValue("Nº Requisição Reclamada");
+                //    Col = Col + 1;
+                //}
                 if (dp["requisitionDate"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Data requisição");
@@ -456,11 +456,11 @@ namespace Hydra.Such.Portal.Controllers
                             row.CreateCell(Col).SetCellValue(item.OrderNo);
                             Col = Col + 1;
                         }
-                        if (dp["requestReclaimNo"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.RequestReclaimNo);
-                            Col = Col + 1;
-                        }
+                        //if (dp["requestReclaimNo"]["hidden"].ToString() == "False")
+                        //{
+                        //    row.CreateCell(Col).SetCellValue(item.RequestReclaimNo);
+                        //    Col = Col + 1;
+                        //}
                         if (dp["requisitionDate"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.RequisitionDate);
