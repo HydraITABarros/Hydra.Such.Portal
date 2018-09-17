@@ -80,6 +80,7 @@ namespace Hydra.Such.Data.Database
         public decimal? ValorEstimado { get; set; }
         public bool? PrecoIvaincluido { get; set; }
         public bool? Adiantamento { get; set; }
+        public bool? PedirOrcamento { get; set; }
 
         public ICollection<LinhasRequisiçãoHist> LinhasRequisiçãoHist { get; set; }
     }
