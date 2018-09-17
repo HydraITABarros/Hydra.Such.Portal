@@ -112,7 +112,72 @@ namespace Hydra.Such.Portal.Controllers
                 }
             });
 
-            return Json(result);
+            return Json(result.OrderByDescending(x => x.MovementNo));
+        }
+
+        [HttpPost]
+        public JsonResult GetREQListApprovals()
+        {
+            List<ApprovalMovementsViewModel> result = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAllREQAssignedToUserFilteredByStatus(User.Identity.Name, 1));
+
+            this.session.SetString("totalPendingApprovals", result.Count.ToString());
+
+            result.ForEach(x =>
+            {
+                x.TypeText = EnumerablesFixed.ApprovalTypes.Where(y => y.Id == x.Type).FirstOrDefault().Value;
+
+                switch (x.Status)
+                {
+                    case 1:
+                        x.StatusText = "Pendente";
+                        break;
+                    case 2:
+                        x.StatusText = "Aprovado";
+                        break;
+                    case 3:
+                        x.StatusText = "Pendente";
+                        break;
+                }
+
+                switch (x.Type)
+                {
+                    case 1:
+                        x.NumberLink = "/GestaoRequisicoes/DetalhesReqAprovada/" + x.Number;
+                        break;
+                    case 2:
+                        x.NumberLink = "/ModelosReqSimplificada";
+                        break;
+                    case 3:
+                        x.NumberLink = "/FolhasDeHoras/Detalhes/?FHNo=" + x.Number;
+                        break;
+                }
+
+                if (x.Type == 3)
+                {
+                    switch (x.Level)
+                    {
+                        case 1:
+                            x.TypeText = "Folha de Horas - Validar";
+                            break;
+                        case 2:
+                            x.TypeText = "Folha de Horas - Integrar Ajudas de Custo";
+                            break;
+                        case 3:
+                            x.TypeText = "Folha de Horas - Integrar km's";
+                            break;
+                    }
+                }
+
+                if (x.Type == 1) //Requisições
+                {
+                    Requisição REQ = DBRequest.GetById(x.Number);
+
+                    if (REQ != null)
+                        x.RequisicaoAcordosPrecos = REQ.RequisiçãoNutrição;
+                }
+            });
+
+            return Json(result.OrderByDescending(x => x.MovementNo));
         }
 
 

@@ -1642,6 +1642,11 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult CountInvoice([FromBody] List<FaturacaoContratosViewModel> data)
         {
+            string execDetails = string.Empty;
+            string errorMessage = string.Empty;
+            bool hasErrors = false;
+            ErrorHandler result = new ErrorHandler();
+
             List<LinhasFaturaçãoContrato> lineList = DBInvoiceContractLines.GetAll();
             List<AutorizarFaturaçãoContratos> contractList = new List<AutorizarFaturaçãoContratos>();
             foreach (FaturacaoContratosViewModel itm in data)
@@ -1836,8 +1841,23 @@ namespace Hydra.Such.Portal.Controllers
                 
                 if (item.Situação == "" || item.Situação == null)
                 {
-                  
 
+                    Task<WSCreateNAVProject.Read_Result> Project = WSProject.GetNavProject(item.NºContrato, _configws);
+                    Project.Wait();
+                    if (Project.IsCompletedSuccessfully && Project.Result.WSJob == null)
+                    {
+                        ProjectDetailsViewModel proj = new ProjectDetailsViewModel();
+                        proj.ProjectNo = item.NºContrato;
+                        proj.ClientNo = item.NºCliente;
+                        proj.Status = item.Estado;
+                        proj.RegionCode = item.CódigoRegião;
+                        proj.ResponsabilityCenterCode = item.CódigoCentroResponsabilidade;
+                        proj.FunctionalAreaCode = item.CódigoÁreaFuncional;
+                        proj.Description = item.Descrição;
+                        Task<WSCreateNAVProject.Create_Result> createProject = WSProject.CreateNavProject(proj, _configws);
+                        createProject.Wait();
+                    }
+                    
                     Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreateContractInvoice(item, _configws, ContractInvoicePeriod, InvoiceBorrowed);
                     InvoiceHeader.Wait();
 
@@ -1851,23 +1871,23 @@ namespace Hydra.Such.Portal.Controllers
 
                         if (itemList.Count > 0)
                         {
-                            Task<WSCreatePreInvoiceLine.CreateMultiple_Result> InvoiceLines = WSPreInvoiceLine.CreatePreInvoiceLineList(itemList, InvoiceHeaderNo, _configws);
-                            InvoiceLines.Wait();
+                            try
+                            {
+                                Task<WSCreatePreInvoiceLine.CreateMultiple_Result> InvoiceLines = WSPreInvoiceLine.CreatePreInvoiceLineList(itemList, InvoiceHeaderNo, _configws);
+                                InvoiceLines.Wait();
+                            }
+                             
+                            catch (Exception ex)
+                            {
+                                if (!hasErrors)
+                                    hasErrors = true;
 
-                            //if (InvoiceLines.IsCompletedSuccessfully && InvoiceLines != null)
-                            //{
-                            //    //Task<WSGenericCodeUnit.FxPostInvoice_Result> postNAV = WSGeneric.CreatePreInvoiceLineList(InvoiceHeaderNo, _configws);
-                            //    //postNAV.Wait();
+                                execDetails += " Erro ao criar as linhas: ";
+                                errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                                result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails + errorMessage));
+                             
+                            }
 
-                            //    if (!postNAV.IsCompletedSuccessfully || postNAV == null)
-                            //    {
-                            //        return Json(false);
-                            //    }
-                            //}
-                            //else
-                            //{
-                            //    return Json(false);
-                            //}
                         }
                     }
                     else
@@ -1876,9 +1896,14 @@ namespace Hydra.Such.Portal.Controllers
                     }
                 }
             }
-            // Delete Lines
-
-            return Json(true);
+            if (result.eMessages.Count > 0)
+            {
+                return Json(result);
+            }
+            else
+            {
+                return Json(true);
+            }           
         }
         #endregion
 
@@ -2111,11 +2136,18 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult CreateInvoiceHeaderFromContract([FromBody] JObject requestParams, string dateCont )
         {
             bool registado = false;
+            ErrorHandler result = new ErrorHandler();
             if (requestParams["Contrato"].ToString() != null && requestParams["LinhasContrato"].ToString() != null)
             {
               
                 DateTime lastDay = Convert.ToDateTime(dateCont);
+
                 string obs = "";
+                string execDetails = string.Empty;
+                string errorMessage = string.Empty;
+                bool hasErrors = false;
+                
+
                 ContractViewModel Contract = JsonConvert.DeserializeObject<ContractViewModel>(requestParams["Contrato"].ToString());
                 List<ContractLineViewModel> ContractLines = JsonConvert.DeserializeObject<List<ContractLineViewModel>>(requestParams["LinhasContrato"].ToString());
                 string groupInvoice = requestParams["GrupoFatura"].ToString();
@@ -2199,11 +2231,13 @@ namespace Hydra.Such.Portal.Controllers
                             PreInvoiceToCreate.Observacoes = obs;
                             obs = "";
 
+
                             Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreatePreInvoiceHeader(PreInvoiceToCreate, _configws);
                             InvoiceHeader.Wait();
 
                             if (InvoiceHeader.IsCompletedSuccessfully && InvoiceHeader.Result != null)
                             {
+                               
                                 string cod = InvoiceHeader.Result.WSPreInvoice.No;
                                 List<LinhasFaturaçãoContrato> LinhasFaturacao = new List<LinhasFaturaçãoContrato>();
                                 foreach (ContractLineViewModel line in ContractLines)
@@ -2226,11 +2260,25 @@ namespace Hydra.Such.Portal.Controllers
                                         LinhasFaturacao.Add(PreInvoiceLinesToCreate);
                                     }
                                 }
-                                Task<WSCreatePreInvoiceLine.CreateMultiple_Result> InvoiceLines = WSPreInvoiceLine.CreatePreInvoiceLineList(LinhasFaturacao, cod, _configws);
-                                InvoiceLines.Wait();
-                                if (InvoiceLines.IsCompletedSuccessfully)
+                                try
                                 {
-                                    registado = true;
+                                    Task<WSCreatePreInvoiceLine.CreateMultiple_Result> InvoiceLines = WSPreInvoiceLine.CreatePreInvoiceLineList(LinhasFaturacao, cod, _configws);
+                                    InvoiceLines.Wait();
+                                    if (InvoiceLines.IsCompletedSuccessfully)
+                                    {
+                                        registado = true;
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    if (!hasErrors)
+                                        hasErrors = true;
+
+                                    execDetails += " Erro ao criar as linhas: ";
+                                    errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                                    result.eReasonCode = 2;
+                                    result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails + errorMessage));
+                             
                                 }
                             }
 
@@ -2266,6 +2314,7 @@ namespace Hydra.Such.Portal.Controllers
                             InvoiceHeader.Wait();
                             if (InvoiceHeader.IsCompletedSuccessfully && InvoiceHeader.Result != null)
                             {
+                               
                                 string cod = InvoiceHeader.Result.WSPreInvoice.No;
                                 List<LinhasFaturaçãoContrato> LinhasFaturacao = new List<LinhasFaturaçãoContrato>();
                                 foreach (ContractLineViewModel line in ContractLines)
@@ -2283,17 +2332,31 @@ namespace Hydra.Such.Portal.Controllers
                                         PreInvoiceLinesToCreate.NºContrato = Contract.ContractNo;
                                         PreInvoiceLinesToCreate.NºProjeto = Contract.ContractNo;
                                         PreInvoiceLinesToCreate.CódigoServiço = line.ServiceClientNo;
-                                        PreInvoiceLinesToCreate.Quantidade =Convert.ToDecimal(line.Quantity * Contract.InvocePeriod);
+                                        PreInvoiceLinesToCreate.Quantidade = Convert.ToDecimal(line.Quantity * Contract.InvocePeriod);
                                         PreInvoiceLinesToCreate.PreçoUnitário = line.UnitPrice;
                                         PreInvoiceLinesToCreate.GrupoFatura = line.InvoiceGroup ?? 0;
                                         LinhasFaturacao.Add(PreInvoiceLinesToCreate);
                                     }
                                 }
-                                Task<WSCreatePreInvoiceLine.CreateMultiple_Result> InvoiceLines = WSPreInvoiceLine.CreatePreInvoiceLineList(LinhasFaturacao, cod, _configws);
-                                InvoiceLines.Wait();
-                                if (InvoiceLines.IsCompletedSuccessfully)
+                                try
                                 {
-                                    registado = true;
+                                    Task<WSCreatePreInvoiceLine.CreateMultiple_Result> InvoiceLines = WSPreInvoiceLine.CreatePreInvoiceLineList(LinhasFaturacao, cod, _configws);
+                                    InvoiceLines.Wait();
+                                    if (InvoiceLines.IsCompletedSuccessfully)
+                                    {
+                                        registado = true;
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    if (!hasErrors)
+                                        hasErrors = true;
+
+                                    execDetails += " Erro ao criar as linhas: ";
+                                    result.eReasonCode = 2;
+                                    errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                                    result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails + errorMessage));
+                                    
                                 }
                             }
 
@@ -2302,7 +2365,14 @@ namespace Hydra.Such.Portal.Controllers
                 }
             }
 
-            return Json(registado);
+            if(result.eMessages.Count > 0)
+            {
+                return Json(result);
+            }
+            else
+            {
+                return Json(registado);
+            }
         }
 
         public JsonResult ExitSalesHeader([FromBody] JObject requestParams)
