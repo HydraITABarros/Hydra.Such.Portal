@@ -107,7 +107,7 @@ namespace Hydra.Such.Portal.Controllers
             if (!string.IsNullOrEmpty(Matricula))
             {
                 viatura = DBViatura.GetByMatricula(Matricula);
-                ProjetoNo = viatura.NoProjeto != null ? viatura.NoProjeto : "";
+                ProjetoNo = viatura.NoProjeto ?? "";
             }
 
             return Json(ProjetoNo);
