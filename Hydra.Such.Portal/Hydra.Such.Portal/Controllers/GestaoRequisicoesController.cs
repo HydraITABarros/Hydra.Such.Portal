@@ -88,6 +88,21 @@ namespace Hydra.Such.Portal.Controllers
         }
 
 
+        public IActionResult AprovacoesPendentes()
+        {
+            UserAccessesViewModel userPermissions =
+                DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Requisições);
+            if (userPermissions != null && userPermissions.Read.Value)
+            {
+                ViewBag.UPermissions = userPermissions;
+                return View();
+            }
+            else
+            {
+                return Redirect(Url.Content("~/Error/AccessDenied"));
+            }
+        }
+
         public IActionResult RequisicoesAprovadas()
         {
             UserAccessesViewModel userPermissions =
@@ -178,6 +193,21 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
+        public IActionResult ArquivadasLinhas()
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.HistóricoRequisições);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.Area = 4;
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
         public IActionResult HistóricoCabeçalhoRequisicao(string id)
         {
             UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.HistóricoRequisições);
@@ -215,7 +245,7 @@ namespace Hydra.Such.Portal.Controllers
             //ResponsabilityCenter
             if (CUserDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
                 result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CenterResponsibilityCode));
-            return Json(result);
+            return Json(result.OrderByDescending(x => x.LineNo));
         }
 
         [HttpPost]
@@ -540,7 +570,7 @@ namespace Hydra.Such.Portal.Controllers
             //ResponsabilityCenter
             if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
                 result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CenterResponsibilityCode));
-            return Json(result);
+            return Json(result.OrderByDescending(x => x.RequisitionNo));
         }
 
         [HttpPost]
@@ -614,7 +644,7 @@ namespace Hydra.Such.Portal.Controllers
             if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
                 result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CenterResponsibilityCode));
 
-            return Json(result);
+            return Json(result.OrderByDescending(x => x.RequisitionNo));
         }
         [HttpPost]
 
@@ -1823,7 +1853,7 @@ namespace Hydra.Such.Portal.Controllers
                     .OrderBy(x => x.Read)
                     .ToList();
             }
-            return Json(items);
+            return Json(items.OrderByDescending(x => x.RequisitionNo));
         }
 
         [HttpPost]

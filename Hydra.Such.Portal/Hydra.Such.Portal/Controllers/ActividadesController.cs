@@ -53,7 +53,7 @@ namespace Hydra.Such.Portal.Controllers
             }
 
             //return Json(result);
-            return Json(list);
+            return Json(list.OrderByDescending(x => x.CodActividade));
         }
 
 
