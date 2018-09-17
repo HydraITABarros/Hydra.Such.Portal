@@ -390,7 +390,7 @@
                                         </div>
 
                                         <div class="col-md-3 ">
-                                            <such-selectbox id="projectNo" value="{{data.projectNo}}" onchange="_setProjectDim" label="Nº Ordem/Projecto"
+                                            <such-selectbox id="projectNo" value="{{data.projectNo}}" on-value-changed="_setProjectDim" label="Nº Ordem/Projecto"
                                                             items="[[CBJobNo]]"
                                                             text-path="no"
                                                             value-path="no"
@@ -1525,12 +1525,14 @@
                 //    this.$.filteredProducts_ajax.generateRequest();
                 //},
                 _setProjectDim: function (e) {
+                    //debugger;
                     var projectNo = this.$.projectNo.value;
                     this.$.page_getProject_ajax.body = JSON.stringify(projectNo);
                     this.$.page_getProject_ajax.generateRequest();
                 },
 
                 _setProjectDim2: function (e) {
+                    //debugger;
                     var projectNo = this.$._ProjectNo.value;
                     this.$.page_getProject2_ajax.body = JSON.stringify(projectNo);
                     this.$.page_getProject2_ajax.generateRequest();
@@ -2573,7 +2575,7 @@
                     this.$.page_GetProjetoNoLinha_ajax.generateRequest();
                 },
                 _GetProjetoNoLinhaResponse: function (e) {
-                    debugger;
+                    //debugger;
                     if (this.ProjetoNo != "") {
                         this.$._ProjectNo.value = this.ProjetoNo;
                     }
