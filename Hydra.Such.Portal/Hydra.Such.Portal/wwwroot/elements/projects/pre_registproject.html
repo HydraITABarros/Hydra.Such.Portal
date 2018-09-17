@@ -299,18 +299,19 @@
                 <div class="col-lg-2">
                     <vaadin-text-field id="piTotalPrice" label="Preço Total" pattern="^[1-9]\d*(\.\d+)?$" class="alignRight" value="{{totalPrice}}" on-value-changed="_calcTotals" disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
                 </div>
-                <div class="col-lg-2">
+                <div class="col-lg-2" hidden>
                     <vaadin-text-field id="piUnitValueToInvoice" label="Valor Unitário a Faturar" pattern="^[1-9]\d*(\.\d+)?$" class="alignRight" value="{{unitValueToInvoice}}" on-value-changed="_calcTotals" disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
                     <vaadin-text-field id="piCoin" label="Moeda" class="alignRight" value="{{coin}}" disabled></vaadin-text-field>
                 </div>
-            </div>
-            <div class="row">
-
                 <div class="col-lg-2 alignPoga">
                     <vaadin-checkbox id="pcInvoice" checked="{{billable}}" disabled="{{ !_permissions.create }}"> Faturável</vaadin-checkbox>
                 </div>
+            </div>
+            <div class="row">
+
+
                 <div class="col-lg-2">
                     <such-selectbox id="MealTypesCode" name="piCodeResponsabilityCenter" value="{{ddMealTypes}}" label="Tipo Refeição" disabled="{{ !_permissions.create }}"
                                     items="[[MealTypesData]]"
@@ -336,8 +337,6 @@
                 <div class="col-lg-2">
                     <vaadin-date-picker label="Data Consumo" id="dpcompDate" name="dpcompDate" value="{{consumptionDate}}" disabled="{{ !_permissions.create }}"></vaadin-date-picker>
                 </div>
-            </div>
-            <div class="row">
                 <div class="col-lg-2">
                     <such-selectbox id="ServiceClientCode" name="piCodeResponsabilityCenter" value="{{ddServiceClientCode}}" label="Cód. Serviço Cliente" disabled="{{ !_permissions.create }}"
                                     items="[[ServiceClientData]]"
@@ -346,6 +345,9 @@
                                     fields='[{"field":"serviceCode", "name":"Código"}, {"field":"serviceDescription", "name":"Descrição"}]'>
                     </such-selectbox>
                 </div>
+            </div>
+            <div class="row">
+               
                 <div class="col-lg-2" hidden="{{ !_permissions.create }}">
                     <paper-button class="btnSave" disabled="{{ !_permissions.create }}" raised on-tap="_add"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                 </div>
@@ -688,7 +690,7 @@
                     </template>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
+            <vaadin-grid-column width="160px" resizable hidden>
                 <template class="header">
                     <vaadin-grid-sorter path="unitValueToInvoice">Valor Unitário a Faturar</vaadin-grid-sorter>
                     <vaadin-grid-filter path="unitValueToInvoice"></vaadin-grid-filter>

@@ -24,6 +24,7 @@ using Microsoft.AspNetCore.Hosting;
 using System.Threading.Tasks;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using Hydra.Such.Data.Logic.Viatura;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -82,11 +83,34 @@ namespace Hydra.Such.Portal.Controllers
             List<NAVProjectsViewModel> navList = DBNAV2017Projects.GetAll(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, ProjectNo).ToList();
             NAVProjectsViewModel Project = navList.Where(x => x.No == ProjectNo).FirstOrDefault();
 
-            result.RegionCode = Project.RegionCode;
-            result.FunctionalAreaCode = Project.AreaCode;
-            result.ResponsabilityCenterCode = Project.CenterResponsibilityCode;
+            if (Project != null)
+            {
+                result.RegionCode = Project.RegionCode != null ? Project.RegionCode : "";
+                result.FunctionalAreaCode = Project.AreaCode != null ? Project.AreaCode : "";
+                result.ResponsabilityCenterCode = Project.CenterResponsibilityCode != null ? Project.CenterResponsibilityCode : "";
+            }
+            else
+            {
+                result.RegionCode = "";
+                result.FunctionalAreaCode = "";
+                result.ResponsabilityCenterCode = "";
+            }
 
             return Json(result);
+        }
+
+        public JsonResult GetProjetoNo([FromBody] string Matricula)
+        {
+            Viaturas viatura = new Viaturas();
+            string ProjetoNo = "";
+
+            if (!string.IsNullOrEmpty(Matricula))
+            {
+                viatura = DBViatura.GetByMatricula(Matricula);
+                ProjetoNo = viatura.NoProjeto ?? "";
+            }
+
+            return Json(ProjetoNo);
         }
 
         public JsonResult GetPreReqList([FromBody] int Area)
@@ -414,6 +438,124 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(result);
         }
+
+        [HttpPost]
+        public JsonResult UpdateLinhaPreRequisicao([FromBody] PreRequisitionLineViewModel linha)
+        {
+            ErrorHandler result = new ErrorHandler();
+            result.eReasonCode = 0;
+            result.eMessage = "Ocorreu um erro ao atualizar a linha.";
+
+            try
+            {
+                if (!string.IsNullOrEmpty(linha.LocalCode))
+                {
+                    if (!string.IsNullOrEmpty(linha.Code))
+                    {
+                        if (linha.QuantityToRequire > 0)
+                        {
+                            if (DBPreRequesitionLines.Update(DBPreRequesitionLines.ParseToDB(linha)) != null)
+                            {
+                                result.eReasonCode = 1;
+                                result.eMessage = "Linha Atualizada com Sucesso.";
+
+                            }
+                            else
+                            {
+                                result.eReasonCode = 2;
+                                result.eMessage = "Ocorreu um erro ao atualizar a linha.";
+                            }
+                        }
+                        else
+                        {
+                            result.eReasonCode = 3;
+                            result.eMessage = "A Qt. a Requerer tem que ser superior a 0.";
+                        }
+                    }
+                    else
+                    {
+                        result.eReasonCode = 4;
+                        result.eMessage = "É obrigatório preencher o Cód. Produto.";
+                    }
+                }
+                else
+                {
+                    result.eReasonCode = 5;
+                    result.eMessage = "É obrigatório preencher o Código Localização.";
+                }
+            }
+            catch (Exception ex)
+            {
+                result.eReasonCode = 99;
+                result.eMessage = "Ocorreu um erro.";
+
+                return Json(result);
+            }
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateLinhaPreRequisicaoProduto([FromBody] PreRequisitionLineViewModel linha)
+        {
+            ErrorHandler result = new ErrorHandler();
+            result.eReasonCode = 0;
+            result.eMessage = "Ocorreu um erro ao atualizar a linha.";
+
+            try
+            {
+                if (!string.IsNullOrEmpty(linha.LocalCode))
+                {
+                    if (!string.IsNullOrEmpty(linha.Code))
+                    {
+                        if (linha.QuantityToRequire > 0)
+                        {
+                            NAVProductsViewModel PRODUTO = DBNAV2017Products.GetAllProducts(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, linha.Code).FirstOrDefault();
+
+                            linha.Description = PRODUTO.Name;
+                            linha.Description2 = PRODUTO.Name2;
+                            linha.UnitMeasureCode = PRODUTO.MeasureUnit;
+
+                            if (DBPreRequesitionLines.Update(DBPreRequesitionLines.ParseToDB(linha)) != null)
+                            {
+                                result.eReasonCode = 1;
+                                result.eMessage = "Linha Atualizada com Sucesso.";
+
+                            }
+                            else
+                            {
+                                result.eReasonCode = 2;
+                                result.eMessage = "Ocorreu um erro ao atualizar a linha.";
+                            }
+                        }
+                        else
+                        {
+                            result.eReasonCode = 3;
+                            result.eMessage = "A Qt. a Requerer tem que ser superior a 0.";
+                        }
+                    }
+                    else
+                    {
+                        result.eReasonCode = 4;
+                        result.eMessage = "É obrigatório preencher o Cód. Produto.";
+                    }
+                }
+                else
+                {
+                    result.eReasonCode = 5;
+                    result.eMessage = "É obrigatório preencher o Código Localização.";
+                }
+            }
+            catch (Exception ex)
+            {
+                result.eReasonCode = 99;
+                result.eMessage = "Ocorreu um erro.";
+
+                return Json(result);
+            }
+
+            return Json(result);
+        }
         #endregion
 
         #region CRUD
@@ -598,6 +740,7 @@ namespace Hydra.Such.Portal.Controllers
                             PreRequisicaoDB.ContatoEntrega = data.DeliveryContact;
                             PreRequisicaoDB.ResponsávelReceçãoReceção = data.ReceptionReceptionResponsible;
                             PreRequisicaoDB.NºFatura = data.InvoiceNo;
+                            PreRequisicaoDB.PedirOrcamento = data.PedirOrcamento;
 
                             PreRequisicaoDB = DBPreRequesition.Update(PreRequisicaoDB);
                         }
@@ -869,7 +1012,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
 
             }
-            return Json(result);
+            return Json(result.OrderByDescending(x => x.RequisitionNo));
         }
 
         public JsonResult GetPendingReqLines([FromBody] JObject requestParams)

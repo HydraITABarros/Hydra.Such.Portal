@@ -1654,7 +1654,7 @@
             </div>
         </paper-dialog>
 
-        <paper-dialog id="dlgCreateInvoice" modal style="height:200px; width:300px">
+        <paper-dialog id="dlgCreateInvoice" modal style="height:250px; width:300px">
             <div>
                 <vaadin-combo-box items="[[CBInvoiceGroups]]" id="_IRGridInvoiceGroupBox" name="_IRGridInvoiceGroupBox" item-value-path="id" item-label-path="value" label="Grupo Fatura">
                     <template>
@@ -1665,6 +1665,9 @@
                         </paper-icon-item>
                     </template>
                 </vaadin-combo-box>
+            </div>
+            <div>
+                <vaadin-date-picker label="Data" id="_CLDateCount" name="_CLDateCount"  required error-message="Este campo é obrigatório"></vaadin-date-picker>
             </div>
             <div class="buttons">
                 <paper-button raised class="btnEdit" on-tap="_createNewInvoice">Guardar</paper-button>
@@ -2095,6 +2098,15 @@
                     }
                 },
                 ready: function () {
+                    var date = new Date();
+                    var day = date.getDate();
+                    var month = date.getMonth() + 1;
+                    var year = date.getFullYear();
+
+                    if (month < 10) month = "0" + month;
+                    if (day < 10) day = "0" + day;
+                    var today = year + "-" + month + "-" + day;
+                    this.$._CLDateCount.value = today;
                     //GET CONTRACT DATA
                     var VersionNo = this._versionno == "" ? 0 : parseInt(this._versionno);
                     this.$.page_databound_ajax.body = JSON.stringify({ "ContractNo": this._contractno, "VersionNo": VersionNo });
@@ -2589,8 +2601,12 @@
                     }
                 },
                 _ResponseProcessorInvoice: function (data) {
+                    debugger;;
                     if (this.CreateInvoiceResponse == true) {
                         this._openToast("Fatura Criada com Sucesso!");
+                    }
+                    else if (this.CreateInvoiceResponse.eReasonCode == 2){
+                        this.openToastError(this.CreateInvoiceResponse.eMessage);
                     }
                     else {
                         this._openToastError("Erro ao criar a fatura!");
@@ -2605,6 +2621,7 @@
                     var t1 = this.$._IRGridInvoiceGroupBox.value;
                     var t2 = this.dataLines.lines;
                     var t3 = this.data;
+                    var dataRegist = this.$._CLDateCount.value;
                     if (data.detail.status === 200) {
                         if (this.ExitSalesHeader.eReasonCode == 2)
                             this._openToastError(this.ExitSalesHeader.eMessage);
@@ -2640,6 +2657,7 @@
                                             "GrupoFatura": t1
                                         };
                                         ajax_request.body = JSON.stringify(Invoice);
+                                        ajax_request.params = { "dateCont": dataRegist };
                                         ajax_request.generateRequest();
                                     }
                                 }
@@ -2679,7 +2697,9 @@
                                             "GrupoFatura": t1
                                         };
                                         ajax_request.body = JSON.stringify(Invoice);
+                                        ajax_request.params = { "dateCont": dataRegist };
                                         ajax_request.generateRequest();
+
                                     }
                                 }
                             });
@@ -2843,10 +2863,12 @@
                     }
                 },
                 _createNewInvoice: function (param) {
-                    this.$.dlgCreateInvoice.close();
-                    var contract = this.$.contractNo.value;
-                    this.$.ExitSalesHeader_ajax.body = JSON.stringify({ "Contrato": contract });
-                    this.$.ExitSalesHeader_ajax.generateRequest();
+                    if (this.$._CLDateCount.validate()){
+                        this.$.dlgCreateInvoice.close();
+                        var contract = this.$.contractNo.value;
+                        this.$.ExitSalesHeader_ajax.body = JSON.stringify({ "Contrato": contract });
+                        this.$.ExitSalesHeader_ajax.generateRequest();
+                    }
                 },
                 _createProposal: function () {
                     var contractId = this.data.contractNo;

@@ -288,6 +288,7 @@ namespace Hydra.Such.Data.Logic.Request
                     ValorEstimado = item.EstimatedValue,
                     PrecoIvaincluido = item.PricesIncludingVAT,
                     Adiantamento = item.InAdvance,
+                    PedirOrcamento = item.PedirOrcamento
                 };
             }
             return null;
@@ -444,6 +445,7 @@ namespace Hydra.Such.Data.Logic.Request
                     EstimatedValue = item.ValorEstimado,
                     PricesIncludingVAT = item.PrecoIvaincluido.HasValue ? item.PrecoIvaincluido.Value : false,
                     InAdvance = item.Adiantamento.HasValue ? item.Adiantamento.Value : false,
+                    PedirOrcamento = item.PedirOrcamento,
 
                     Lines = item.LinhasRequisição.ToList().ParseToViewModel(),
                     ChangeLog = item.RequisicoesRegAlteracoes.ToList().ParseToViewModel()
@@ -537,6 +539,7 @@ namespace Hydra.Such.Data.Logic.Request
                     ValorEstimado = item.EstimatedValue,
                     PrecoIvaincluido = item.PricesIncludingVAT,
                     Adiantamento = item.InAdvance,
+                    PedirOrcamento = item.PedirOrcamento,
 
                     LinhasRequisição = item.Lines.ParseToDB(),
                     RequisicoesRegAlteracoes = item.ChangeLog.ParseToDB()

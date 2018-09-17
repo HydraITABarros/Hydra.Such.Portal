@@ -16,6 +16,7 @@
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 <link rel="import" href="/lib/vaadin-upload/vaadin-upload.html" />
 <link rel="import" href="/lib/vaadin-upload/vaadin-upload-file.html" />
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
 
 <dom-module id="x-viaturadetails">
     <template>
@@ -75,6 +76,7 @@
         <iron-ajax url="/PopulateDropdowns/GetViaturasCombustivel" last-response="{{LCombustivel}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetViaturasCartaoCombustivel" last-response="{{LCartaoCombustivel}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetViaturasApolices" last-response="{{LApolice}}" aut auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProjectNavList" last-response="{{Projects}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/PopulateDropdowns/GetViaturasModelosByMarca"
                    last-response="{{LModelos}}"
@@ -293,6 +295,16 @@
                                     <div class="col-lg-3">
                                         <vaadin-text-field value="{{data.consumoIndicativo}}" type="number" id="ConsumoIndicativo" name="ConsumoIndicativo" label="Consumo Indicativo" pattern="[0-9]*"></vaadin-text-field>
                                     </div>
+
+                                    <div class="col-lg-3">
+                                        <such-selectbox id="noProjeto" value="{{data.noProjeto}}" label="Nº Ordem/Projeto"
+                                                        items="[[Projects]]"
+                                                        text-path="no"
+                                                        value-path="no"
+                                                        fields='[{"field":"no", "name":"Nº Projeto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"globalDimension1", "name":"Dimensão Global 1"}, {"field":"globalDimension2", "name":"Dimensão Global 2"}]'
+                                                        disabled="{{ !_permissions.update }}">
+                                        </such-selectbox>
+                                    </div>
                                 </div>
 
                             </div>
@@ -429,7 +441,10 @@
                     _isCreate: {
                         type: Boolean,
                         value: false
-                    }
+                    },
+                    observers: [
+                        '_onCacheLoaded(Projects)'
+                    ],
                 },
                 ready: function () {
                     //GET PROJECT DATA
