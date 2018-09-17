@@ -6904,6 +6904,7 @@ namespace Hydra.Such.Portal.Controllers
                         string filename = Path.GetFileName(file.FileName);
                                                     
                         full_filename = filename;
+                        full_filename = "[" + DateTime.Now.ToString("yyyyMMddHmmssf") + "]_" + full_filename;
 
                         // class propertiy to define Procedimentos path 
                         __UploadPath += id;
