@@ -1885,7 +1885,7 @@ namespace Hydra.Such.Portal.Controllers
                                 execDetails += " Erro ao criar as linhas: ";
                                 errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
                                 result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails + errorMessage));
-                                return Json(result);
+                               // return Json(result);
                             }
 
                         }
