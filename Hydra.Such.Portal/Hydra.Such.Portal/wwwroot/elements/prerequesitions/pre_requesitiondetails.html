@@ -140,9 +140,9 @@
 
         <!-- DROPDOWNS POPULATE -->
         <iron-ajax url="/PopulateDropdowns/TipoRequisicoesLista" last-response="{{CBRequesitionType}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{LProjectFunctionalAreaCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{LProjectResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{LProjectRegionCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" id="page_GetFunctionalAreaCode_ajax" last-response="{{LProjectFunctionalAreaCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" id="page_GetResponsabilityCenterCode_ajax" last-response="{{LProjectResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetRegionCode" id="page_GetRegionCode_ajax" last-response="{{LProjectRegionCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetViaturas" last-response="{{CBVehicle}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProjectNavList" last-response="{{CBJobNo}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetNAVVendorComboGrid" last-response="{{CBVendor}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -154,7 +154,7 @@
         <iron-ajax url="/PopulateDropdowns/GetUnitOfMeasureByCode" last-response="{{LCBMeasuresUnit}}" auto id="measuresunit_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/getOpenOrderLineByHeader" last-response="{{CBPurchaseLine}}" id="purchaselines_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/getOpenOrderLineByHeader" last-response="{{CBPurchaseLineGrid}}" id="purchaselinesgrid_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetProjectById" last-response="{{ProjectDims}}" id="get_project_dims" on-response="_getprojectdimsResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <!--<iron-ajax url="/PopulateDropdowns/GetProjectById" last-response="{{ProjectDims}}" id="get_project_dims" on-response="_getprojectdimsResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
 
 
         <iron-ajax url="/PreRequisicoes/CreateNewForThisUser"
@@ -390,7 +390,7 @@
                                         </div>
 
                                         <div class="col-md-3 ">
-                                            <such-selectbox id="projectNo" value="{{data.projectNo}}" onchange="_setProjectDim" label="Nº Ordem/Projecto"
+                                            <such-selectbox id="projectNo" value="{{data.projectNo}}" on-value-changed="_setProjectDim" label="Nº Ordem/Projecto"
                                                             items="[[CBJobNo]]"
                                                             text-path="no"
                                                             value-path="no"
@@ -1525,12 +1525,32 @@
                 //    this.$.filteredProducts_ajax.generateRequest();
                 //},
                 _setProjectDim: function (e) {
+                    //debugger;
                     var projectNo = this.$.projectNo.value;
-                    this.$.page_getProject_ajax.body = JSON.stringify(projectNo);
-                    this.$.page_getProject_ajax.generateRequest();
+                    if (projectNo != "") {
+                        this.$.page_getProject_ajax.body = JSON.stringify(projectNo);
+                        this.$.page_getProject_ajax.generateRequest();
+                    }
+                    else {
+                        this.$._CLRegion.value = "";
+                        this.$._CLRegion.valueText = "";
+                        this.$.RegionCode.value = "";
+                        this.$.RegionCode.valueText = "";
+
+                        this.$._CLFunctionalAreaCode.value = "";
+                        this.$._CLFunctionalAreaCode.valueText = "";
+                        this.$.FunctionalAreaCode.value = "";
+                        this.$.FunctionalAreaCode.valueText = "";
+
+                        this.$._CLResponsabilityCenterCode.value = "";
+                        this.$._CLResponsabilityCenterCode.valueText = "";
+                        this.$.ResponsabilityCenterCode.value = "";
+                        this.$.ResponsabilityCenterCode.valueText = "";
+                    }
                 },
 
                 _setProjectDim2: function (e) {
+                    //debugger;
                     var projectNo = this.$._ProjectNo.value;
                     this.$.page_getProject2_ajax.body = JSON.stringify(projectNo);
                     this.$.page_getProject2_ajax.generateRequest();
@@ -1597,28 +1617,64 @@
                     }
                 },
                 _getProjectDimsResponse: function (e) {
+                    debugger;
                     if (e.detail.status === 200) {
-                        if (this.ProjectDims != null) {
-                            this.$._CLRegion.value = this.ProjectDims.regionCode;
-                            this.$._CLFunctionalAreaCode.value = this.ProjectDims.functionalAreaCode;
-                            this.$._CLResponsabilityCenterCode.value = this.ProjectDims.responsabilityCenterCode;
+                    this.$.page_GetRegionCode_ajax.generateRequest();
+                    this.$.page_GetResponsabilityCenterCode_ajax.generateRequest();
+                    this.$.page_GetFunctionalAreaCode_ajax.generateRequest();
 
-                            this.$.RegionCode.value = this.ProjectDims.regionCode;
-                            this.$.FunctionalAreaCode.value = this.ProjectDims.functionalAreaCode;
-                            this.$.ResponsabilityCenterCode.value = this.ProjectDims.responsabilityCenterCode;
-                        }
+                    var teste = this.$.projectNo.value;
+
+                    if (this.ProjectDims.regionCode != "") {
+                        this.$._CLRegion.value = this.ProjectDims.regionCode;
+
+                        this.$.RegionCode.value = this.ProjectDims.regionCode;
+                    }
+                    else {
+                        this.$._CLRegion.value = "";
+                        this.$._CLRegion.valueText = "";
+
+                        this.$.RegionCode.value = "";
+                        this.$.RegionCode.valueText = "";
+                    }
+
+                    if (this.ProjectDims.functionalAreaCode != "") {
+                        this.$._CLFunctionalAreaCode.value = this.ProjectDims.functionalAreaCode;
+
+                        this.$.FunctionalAreaCode.value = this.ProjectDims.functionalAreaCode;
+                    }
+                    else {
+                        this.$._CLFunctionalAreaCode.value = "";
+                        this.$._CLFunctionalAreaCode.valueText = "";
+
+                        this.$.FunctionalAreaCode.value = "";
+                        this.$.FunctionalAreaCode.valueText = "";
+                    }
+
+                    if (this.ProjectDims.responsabilityCenterCode != "") {
+                        this.$._CLResponsabilityCenterCode.value = this.ProjectDims.responsabilityCenterCode;
+
+                        this.$.ResponsabilityCenterCode.value = this.ProjectDims.responsabilityCenterCode;
+                    }
+                    else {
+                        this.$._CLResponsabilityCenterCode.value = "";
+                        this.$._CLResponsabilityCenterCode.valueText = "";
+
+                        this.$.ResponsabilityCenterCode.value = "";
+                        this.$.ResponsabilityCenterCode.valueText = "";
+                    }
                     }
                 },
 
                 _getProjectDimsResponse2: function (e) {
-                    if (e.detail.status === 200) {
+                    //if (e.detail.status === 200) {
                         if (this.ProjectDims2 != null) {
 
                             this.$.RegionCode.value = this.ProjectDims2.regionCode;
                             this.$.FunctionalAreaCode.value = this.ProjectDims2.functionalAreaCode;
                             this.$.ResponsabilityCenterCode.value = this.ProjectDims2.responsabilityCenterCode;
                         }
-                    }
+                    //}
                 },
 
                 _deleteFiles: function (e) {
@@ -1722,6 +1778,7 @@
                 },
 
                 _update: function () {
+                    //debugger;
                     this.data.area = this._areaid;
                     this._executeRequest("/PreRequisicoes/UpdatePreRequesition", this.data)
                 },
@@ -2015,15 +2072,15 @@
                 },
 
 
-                _getprojectdimsResponse: function (e) {
-                    if (this.ProjectDims != null) {
-                        var line = this.dataLines.lines.find(x => x == this._SelectedLine);
-                        line.regionCode = this.ProjectDims[0].regionCode;
-                        line.functionalAreaCode = this.ProjectDims[0].areaCode;
-                        line.centerResponsibilityCode = this.ProjectDims[0].centerResponsibilityCode;
-                    }
-                    this.$.grid_prereqlines.clearCache();
-                },
+                //_getprojectdimsResponse: function (e) {
+                //    if (this.ProjectDims != null) {
+                //        var line = this.dataLines.lines.find(x => x == this._SelectedLine);
+                //        line.regionCode = this.ProjectDims[0].regionCode;
+                //        line.functionalAreaCode = this.ProjectDims[0].areaCode;
+                //        line.centerResponsibilityCode = this.ProjectDims[0].centerResponsibilityCode;
+                //    }
+                //    this.$.grid_prereqlines.clearCache();
+                //},
                 _GridOpenLineChange: function (e) {
                     var line = this.CBPurchaseLine.find(x => x.id == e.currentTarget.__data.selectedItem.id);
                     if (line != null) {
@@ -2557,13 +2614,16 @@
                 },
                 _GetProjetoNoCabecalhoResponse: function (e) {
                     //debugger;
-                    if (this.ProjetoNo != "") {
-                        this.$.projectNo.value = this.ProjetoNo;
-                    }
-                    else {
-                        this.$.projectNo.value = this.ProjetoNo;
-                        this.$.projectNo.valueText = this.ProjetoNo;
-                    }
+                    //if (this.ProjetoNo != "") {
+                    //    this.$.projectNo.value = this.ProjetoNo;
+                    //}
+                    //else {
+                    //    this.$.projectNo.value = this.ProjetoNo;
+                    //    this.$.projectNo.valueText = this.ProjetoNo;
+                    //}
+
+                    this.$.projectNo.value = this.ProjetoNo;
+                    this.$.projectNo.valueText = this.ProjetoNo;
                 },
 
                 _GetNoProjetoLinha: function (e) {
@@ -2573,7 +2633,7 @@
                     this.$.page_GetProjetoNoLinha_ajax.generateRequest();
                 },
                 _GetProjetoNoLinhaResponse: function (e) {
-                    debugger;
+                    //debugger;
                     if (this.ProjetoNo != "") {
                         this.$._ProjectNo.value = this.ProjetoNo;
                     }
