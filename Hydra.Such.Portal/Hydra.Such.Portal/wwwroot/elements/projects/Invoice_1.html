@@ -941,16 +941,17 @@
                         }
                         if (verifica == true) {
                             this.selectedItem = this.selectedItems;
+                            this.$._CLOptionInvoice.title = "";
+                            var availableInvoiceTypes = this.invoiceTypes.slice();
                             if (saldo > 0) {
-                                delete this.invoiceTypes[2];
-                                this.$._CLOptionInvoice.items = this.invoiceTypes;
+                                delete availableInvoiceTypes[2];
+                                this.$._CLOptionInvoice.items = availableInvoiceTypes;
                                 this.$.dlgInvoice.open();
-                                this.$.getInvoiceTypes.generateRequest();
                             }
                             else {
-                                delete this.invoiceTypes[0];
-                                delete this.invoiceTypes[1];
-                                this.$._CLOptionInvoice.items = this.invoiceTypes;
+                                delete availableInvoiceTypes[0];
+                                delete availableInvoiceTypes[1];
+                                this.$._CLOptionInvoice.items = availableInvoiceTypes;
                                 this.$._CLOptionInvoice.value = 4;
                                 var erro = this._validateData(this.selectedItem);
                                 if (erro == "") {
