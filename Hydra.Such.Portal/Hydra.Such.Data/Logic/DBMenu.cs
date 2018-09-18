@@ -88,41 +88,27 @@ namespace Hydra.Such.Data.Logic
                 using (var ctx = new SuchDBContext())
                 {
                     List<Menu> menus = null;
-                    HashSet<int> featuresIds = new HashSet<int>();
                     List<int> menusIds = null;
 
-                    // toDo -> get features ids from user id
-                    var listProfiles = DBUserProfiles.GetByUserId(userId);
-                    if (listProfiles != null && listProfiles.Count() > 0)
-                    {
-                        var listProfilesId = listProfiles.Select(s => s.IdPerfil).ToList();
-                        foreach (var profileId in listProfilesId)
-                        {
-                            var listAccessProfile = DBAccessProfiles.GetByProfileModelId(profileId).ToList();
-                            if (listAccessProfile != null && listAccessProfile.Count() > 0)
-                            {
-                                var listProfileFeatures = new HashSet<int>();
-                                listProfileFeatures = listAccessProfile.Select(s => s.Funcionalidade).ToHashSet<int>();
-                                featuresIds.UnionWith(listProfileFeatures);
-                            }
-                        }
-                    }
+                    var user = DBUserConfigurations.GetById(userId);
+                    if (user == null)
+                        throw new Exception();
 
-                    var listUserAccess = DBUserAccesses.GetByUserId(userId);
-                    if(listUserAccess != null && listUserAccess.Count() > 0)
+                    if (user.Administrador)
                     {
-                        var listFeatures = new HashSet<int>();
-                        listFeatures = listUserAccess.Select(s => s.Funcionalidade).ToHashSet<int>();
-                        featuresIds.UnionWith(listFeatures);
+                        menus = ctx.Menu.Where(p => p.Active == true).ToList();
                     }
+                    else
+                    {
+                        HashSet<int> featuresIds = GetFeaturesByUserId(userId);
 
-                    //featuresIds = new List<int> { 1, 2, 3, 4 };
-                    // list menu id from features                    
-                    if (featuresIds != null && featuresIds.Count() > 0)
-                        menusIds = ctx.FeaturesMenus.Where(fm=> featuresIds.Contains(fm.IdFeature)).Select(fm => fm.IdMenu).ToList();
-                    // get menu
-                    if(menusIds != null && menusIds.Count() > 0)
-                        menus = ctx.Menu.Where(m => menusIds.Contains(m.Id)).ToList();
+                        // list menu id from features                    
+                        if (featuresIds != null && featuresIds.Count() > 0)
+                            menusIds = ctx.FeaturesMenus.Where(fm => featuresIds.Contains(fm.IdFeature)).Select(fm => fm.IdMenu).ToList();
+                        // get menu
+                        if (menusIds != null && menusIds.Count() > 0)
+                            menus = ctx.Menu.Where(m => menusIds.Contains(m.Id)).ToList();
+                    }
 
                     return menus;
                 }
@@ -131,6 +117,37 @@ namespace Hydra.Such.Data.Logic
             {
                 return null;
             }
+        }
+
+        private static HashSet<int> GetFeaturesByUserId(string userId)
+        {
+            HashSet<int> result = new HashSet<int>();
+
+            var listProfiles = DBUserProfiles.GetByUserId(userId);
+            if (listProfiles != null && listProfiles.Count() > 0)
+            {
+                var listProfilesId = listProfiles.Select(s => s.IdPerfil).ToList();
+                foreach (var profileId in listProfilesId)
+                {
+                    var listAccessProfile = DBAccessProfiles.GetByProfileModelId(profileId).ToList();
+                    if (listAccessProfile != null && listAccessProfile.Count() > 0)
+                    {
+                        var listProfileFeatures = new HashSet<int>();
+                        listProfileFeatures = listAccessProfile.Select(s => s.Funcionalidade).ToHashSet<int>();
+                        result.UnionWith(listProfileFeatures);
+                    }
+                }
+            }
+
+            var listUserAccess = DBUserAccesses.GetByUserId(userId);
+            if (listUserAccess != null && listUserAccess.Count() > 0)
+            {
+                var listFeatures = new HashSet<int>();
+                listFeatures = listUserAccess.Select(s => s.Funcionalidade).ToHashSet<int>();
+                result.UnionWith(listFeatures);
+            }
+
+            return result;
         }
 
         #region Parses
