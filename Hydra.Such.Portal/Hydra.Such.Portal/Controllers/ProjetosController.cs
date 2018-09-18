@@ -2029,6 +2029,13 @@ namespace Hydra.Such.Portal.Controllers
                 JArray projMovementsValue = requestParams["projMovements"] as JArray;
                 if (projMovementsValue != null) 
                     projMovements = projMovementsValue.ToObject<List<ProjectMovementViewModel>>();
+                projMovements.ForEach(x =>
+                {
+                    if (x.FunctionalAreaCode.StartsWith("5") && !x.MealType.HasValue)
+                    {
+                        result.eMessages.Add(new TraceInformation(TraceType.Error, "O tipo de refeição é obrigatório nas linhas com Área Funcional Nutrição"));
+                    }
+                });
 
                 Projetos project = null;
                 Contratos contract = null;
