@@ -36,6 +36,17 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public decimal? UnitCost { get; set; }
         public string ExpectedReceivingDate { get; set; }
         public bool? Billable { get; set; }
+        /// <summary>
+        /// For filter purposes
+        /// </summary>
+        public string BillableStringValue
+        {
+            get
+            {
+                bool b = this.Billable.HasValue ? this.Billable.Value : false;
+                return b ? "Sim" : "Não";
+            }
+        }
         public string ProjectNo { get; set; }
         public string RegionCode { get; set; }
         public string FunctionalAreaCode { get; set; }
@@ -90,9 +101,42 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string LocalMarketDate { get; set; }
         public string LocalMarketUser { get; set; }
         public bool? SendForPurchase { get; set; }
+        /// <summary>
+        /// For filter purposes
+        /// </summary>
+        public string SendForPurchaseStringValue
+        {
+            get
+            {
+                bool b = this.SendForPurchase.HasValue ? this.SendForPurchase.Value : false;
+                return b ? "Sim" : "Não";
+            }
+        }
         public string SendForPurchaseDate { get; set; }
         public bool? PurchaseValidated { get; set; }
+        /// <summary>
+        /// For filter purposes
+        /// </summary>
+        public string PurchaseValidatedStringValue
+        {
+            get
+            {
+                bool b = this.PurchaseValidated.HasValue ? this.PurchaseValidated.Value : false;
+                return b ? "Sim" : "Não";
+            }
+        }
         public bool? PurchaseRefused { get; set; }
+        /// <summary>
+        /// For filter purposes
+        /// </summary>
+        public string PurchaseRefusedStringValue
+        {
+            get
+            {
+                bool b = this.PurchaseRefused.HasValue ? this.PurchaseRefused.Value : false;
+                return b ? "Sim" : "Não";
+            }
+        }
         public string ReasonToRejectionLocalMarket { get; set; }
         public string RejectionLocalMarketDate { get; set; }
         public int? PurchaseId { get; set; }
@@ -107,10 +151,36 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string CustomerNo { get; set; }
         public string Approvers { get; set; }
 
-        public bool Selected { get; set; }
+        public bool? Selected { get; set; }
+        /// <summary>
+        /// For filter purposes
+        /// </summary>
+        public string SelectedStringValue
+        {
+            get
+            {
+                bool b = this.Selected.HasValue ? this.Selected.Value : false;
+                return b ? "Sim" : "Não";
+            }
+        }
         public bool? Urgent { get; set; }
+        /// <summary>
+        /// For filter purposes
+        /// </summary>
+        public string UrgentStringValue
+        {
+            get
+            {
+                bool b = this.Urgent.HasValue ? this.Urgent.Value : false;
+                return b ? "Sim" : "Não";
+            }
+        }
         public string VATBusinessPostingGroup { get; set; }
         public string VATProductPostingGroup { get; set; }
         public decimal? DiscountPercentage { get; set; }
+
+        //EXPORTAR PARA EXCEL
+        public Object ColunasEXCEL { get; set; }
+
     }
 }
