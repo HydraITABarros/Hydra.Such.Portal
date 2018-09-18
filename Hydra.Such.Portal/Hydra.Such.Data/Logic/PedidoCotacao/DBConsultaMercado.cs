@@ -1265,6 +1265,21 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
             }
         }
 
+        public static List<SeleccaoEntidades> GetAllSeleccaoEntidadesPorNumConsulta(string _NumConsultaMercado)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.SeleccaoEntidades.Where(p => p.NumConsultaMercado == _NumConsultaMercado).ToList();
+                }
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
 
         public static SeleccaoEntidades Create(SeleccaoEntidades ObjectToCreate)
         {
@@ -1397,6 +1412,125 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
 
             return seleccaoEntidades;
         }
+
+        #endregion
+
+
+        #region Registo_De_Propostas
+
+
+        public static RegistoDePropostas Create(LinhasConsultaMercado linhasConsultaMercado, string _alternativa)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    //List<SeleccaoEntidades> seleccaoEntidades = DBConsultaMercado.GetAllSeleccaoEntidadesPorNumConsulta(linhasConsultaMercado.NumConsultaMercado);
+                    int entidade = 0;
+                    string[,] fornecedor = new string[6, 2];
+                    foreach (SeleccaoEntidades seleccaoEntidades in DBConsultaMercado.GetAllSeleccaoEntidadesPorNumConsulta(linhasConsultaMercado.NumConsultaMercado))
+                    {
+                        entidade = entidade + 1;
+
+                        switch (entidade)
+                        {
+                            case 1:
+                                fornecedor[0, 0] = seleccaoEntidades.CodFornecedor;
+                                fornecedor[0, 1] = seleccaoEntidades.NomeFornecedor;
+                                break;
+                            case 2:
+                                fornecedor[1, 0] = seleccaoEntidades.CodFornecedor;
+                                fornecedor[1, 1] = seleccaoEntidades.NomeFornecedor;
+                                break;
+                            case 3:
+                                fornecedor[2, 0] = seleccaoEntidades.CodFornecedor;
+                                fornecedor[2, 1] = seleccaoEntidades.NomeFornecedor;
+                                break;
+                            case 4:
+                                fornecedor[3, 0] = seleccaoEntidades.CodFornecedor;
+                                fornecedor[3, 1] = seleccaoEntidades.NomeFornecedor;
+                                break;
+                            case 5:
+                                fornecedor[4, 0] = seleccaoEntidades.CodFornecedor;
+                                fornecedor[4, 1] = seleccaoEntidades.NomeFornecedor;
+                                break;
+                            case 6:
+                                fornecedor[5, 0] = seleccaoEntidades.CodFornecedor;
+                                fornecedor[5, 1] = seleccaoEntidades.NomeFornecedor;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+
+                    RegistoDePropostas registoDePropostas = new RegistoDePropostas()
+                    {
+                        
+                    };
+
+                    //ctx.RegistoDePropostas.Add(registoDePropostas);
+                    //ctx.SaveChanges();
+
+                    return registoDePropostas;
+                }
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+        public static RegistoDePropostas Update(RegistoDePropostas ObjectToUpdate)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    //ctx.RegistoDePropostas.Update(ObjectToUpdate);
+                    //ctx.SaveChanges();
+                }
+
+                return ObjectToUpdate;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public static RegistoDePropostasView CastRegistoDePropostasToView(RegistoDePropostas ObjectToTransform)
+        {
+            RegistoDePropostas registoDePropostas = new RegistoDePropostas();
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    //registoDePropostas = ctx.RegistoDePropostas.Where(p => p.NumLinha == ObjectToTransform.NumLinha).FirstOrDefault();
+                }
+            }
+            catch (Exception e)
+            {
+
+            }
+
+            RegistoDePropostasView view = new RegistoDePropostasView()
+            {
+                
+            };
+
+            return view;
+        }
+
+        public static RegistoDePropostas CastRegistoDePropostasViewToDB(RegistoDePropostasView ObjectToTransform)
+        {
+            RegistoDePropostas registoDePropostas = new RegistoDePropostas()
+            {
+                
+            };
+
+            return registoDePropostas;
+        }
+
 
         #endregion
 

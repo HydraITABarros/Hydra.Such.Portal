@@ -45,7 +45,6 @@ namespace Hydra.Such.Data.NAV
                 tipo = WSCreatePreInvoice.Document_Type.Credit_Memo;
                 notaDebito = false;
                 PostingNoSeries = CUsers.NumSerieNotasCredito;
-
             }
             else// Fatura
             {

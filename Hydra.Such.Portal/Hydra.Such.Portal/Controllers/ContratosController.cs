@@ -2015,7 +2015,7 @@ namespace Hydra.Such.Portal.Controllers
 
             });
 
-            return Json(result);
+            return Json(result.OrderByDescending(x => x.ContractNo));
         }
 
         public JsonResult GetListContractsProposalsById([FromBody] JObject requestParams)
@@ -2027,7 +2027,7 @@ namespace Hydra.Such.Portal.Controllers
 
             ContractsList = DBContracts.GetAllByContractProposalsNo(ContractNo);
             ContractsList.ForEach(x => result.Add(DBContracts.ParseToViewModel(x, _config.NAVDatabaseName, _config.NAVCompanyName)));
-            return Json(result);
+            return Json(result.OrderByDescending(x => x.ContractNo));
         }
 
         public JsonResult GetContractsProposalById([FromBody] string ContractNo)

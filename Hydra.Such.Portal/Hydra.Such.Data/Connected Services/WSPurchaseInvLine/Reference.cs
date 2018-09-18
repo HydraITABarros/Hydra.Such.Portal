@@ -150,6 +150,8 @@ namespace WSPurchaseInvLine
         
         private string description100Field;
         
+        private string pay_to_Vendor_NoField;
+        
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=0)]
         public string Key
@@ -723,6 +725,20 @@ namespace WSPurchaseInvLine
                 this.description100Field = value;
             }
         }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=31)]
+        public string Pay_to_Vendor_No
+        {
+            get
+            {
+                return this.pay_to_Vendor_NoField;
+            }
+            set
+            {
+                this.pay_to_Vendor_NoField = value;
+            }
+        }
     }
     
     /// <remarks/>
@@ -907,6 +923,9 @@ namespace WSPurchaseInvLine
         
         /// <remarks/>
         Description100,
+        
+        /// <remarks/>
+        Pay_to_Vendor_No,
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
