@@ -19,6 +19,7 @@ namespace Hydra.Such.Data.Database
         public string Controller { get; set; }
         public string RouteParameters { get; set; }
         public string HtmlAttributes { get; set; }
+        public bool Active { get; set; }
 
         public ICollection<FeaturesMenus> FeaturesMenus { get; set; }
     }
