@@ -2132,6 +2132,24 @@ namespace Hydra.Such.Portal.Controllers
         #endregion
 
         #region Invoice
+
+        public DateTime getDatePeriodPayment(DateTime startDate, int payPeriod)
+        {
+            DateTime lastDate;
+            if (payPeriod == 1)
+            {
+                lastDate = new DateTime(startDate.Year, startDate.Month, Convert.ToInt32(startDate.AddMonths(1).AddDays(-1)));
+            }
+            else if (payPeriod == 2)
+            {
+                lastDate = new DateTime(startDate.Year, startDate.Month, Convert.ToInt32(startDate.AddMonths(2).AddDays(-1)));
+            }
+            else
+            {
+                lastDate = startDate;
+            }
+            return lastDate;
+        }
         [HttpPost]
         public JsonResult CreateInvoiceHeaderFromContract([FromBody] JObject requestParams, string dateCont )
         {
@@ -2164,6 +2182,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 if (createGroup==true) {
                     //Create Project if existe
+
                     Task<WSCreateNAVProject.Read_Result> Project = WSProject.GetNavProject(Contract.ContractNo, _configws);
                     Project.Wait();
                     if (Project.IsCompletedSuccessfully && Project.Result.WSJob == null)
@@ -2182,13 +2201,25 @@ namespace Hydra.Such.Portal.Controllers
 
                     //CREATE SALES HEADER
                     NAVSalesHeaderViewModel PreInvoiceToCreate = new NAVSalesHeaderViewModel();
+                    DateTime dataInicio;
+                    DateTime dataFim;
+                    if (Contract.LastInvoiceDate!=null && Contract.LastInvoiceDate != "")
+                        dataInicio = Convert.ToDateTime( Contract.LastInvoiceDate);
+                    else
+                        dataInicio = Convert.ToDateTime(Contract.StartData);
+
+
+                    dataFim = getDatePeriodPayment(dataInicio, Contract.InvocePeriod ?? 0);
+
+
+                    PreInvoiceToCreate.PeriododeFact_Contrato = dataInicio + " a " + dataFim;
+                    string mes = DateTime.Now.ToString("MMMM");
+                    PreInvoiceToCreate.DataServ_Prestado = String.Format("{0}/{1}", mes.ToUpper(), DateTime.Now.Year);
                     PreInvoiceToCreate.Sell_toCustomerNo = Contract.ClientNo;
                     PreInvoiceToCreate.DocumentDate = lastDay;
                     if (Contract.CustomerShipmentDate != null && Contract.CustomerShipmentDate != "")
                         PreInvoiceToCreate.ShipmentDate = DateTime.Parse(Contract.CustomerShipmentDate);
 
-                    if (Contract.ContractStartDate != "" && Contract.ContractEndDate != "")
-                        PreInvoiceToCreate.PeriododeFact_Contrato = Contract.ContractStartDate + " a " + Contract.ContractEndDate;
                     PreInvoiceToCreate.ValorContrato = Contract.TotalValue ?? 0;
                     PreInvoiceToCreate.Ship_toAddress = Contract.ShippingAddress;
                     PreInvoiceToCreate.Ship_toPostCode = Contract.ShippingZipCode;
@@ -2202,14 +2233,12 @@ namespace Hydra.Such.Portal.Controllers
                     if (Contract.ReceiptDateRequisition != null && Contract.ReceiptDateRequisition != "")
                         PreInvoiceToCreate.DataEncomenda = DateTime.Parse(Contract.ReceiptDateRequisition);
 
-                    string mes = DateTime.Now.ToString("MMMM");
-                    PreInvoiceToCreate.DataServ_Prestado = String.Format("{0}/{1}", mes.ToUpper(), DateTime.Now.Year);
+                 
 
                     PreInvoiceToCreate.ContractNo = Contract.ContractNo;
-                    PreInvoiceToCreate.FacturaCAF = true;
+                    PreInvoiceToCreate.FacturaCAF = false;
                     PreInvoiceToCreate.Userpreregisto2009 = User.Identity.Name;
                     PreInvoiceToCreate.PostingDate = lastDay;
-
                     PreInvoiceToCreate.ResponsabilityCenterCode20 = Contract.CodeResponsabilityCenter;
                     PreInvoiceToCreate.FunctionAreaCode20 = Contract.CodeFunctionalArea;
                     PreInvoiceToCreate.RegionCode20 = Contract.CodeRegion;
