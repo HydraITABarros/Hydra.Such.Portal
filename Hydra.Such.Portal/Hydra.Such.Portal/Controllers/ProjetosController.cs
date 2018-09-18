@@ -2652,16 +2652,15 @@ namespace Hydra.Such.Portal.Controllers
 
                                 try
                                 {
-                                    //List<SPInvoiceListViewModel> linesList = new List<SPInvoiceListViewModel>();
-                                    //foreach (var line in data)
-                                    //{
-                                    //    if (line.InvoiceToClientNo == header.InvoiceToClientNo && line.Date == header.Date && line.CommitmentNumber == header.CommitmentNumber && line.ClientRequest == header.ClientRequest)
-                                    //    {
-                                    //        line.DocumentNo = headerNo;
-                                    //        linesList.Add(line);
-                                    //    }
-                                    //}
-                                    header.Items.ForEach(x => x.DocumentNo = headerNo);
+                                    header.Items.ForEach(x =>
+                                    {
+                                        x.DocumentNo = headerNo;
+                                        //Para Nota de crédito passar o valor para positivo
+                                        if (invoiceHeader.MovementType == 4 && x.TotalPrice.HasValue && x.TotalPrice < 0)
+                                            x.TotalPrice = Math.Abs(x.TotalPrice.Value);
+                                        if (invoiceHeader.MovementType == 4 && x.Quantity.HasValue && x.Quantity < 0)
+                                            x.Quantity = Math.Abs(x.Quantity.Value);
+                                    });
 
                                     List<NAVResourcesViewModel> resourceslines = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "");
                                     List<WasteRateViewModel> wasteRates = DBWasteRate.ParseToViewModel(DBWasteRate.GetAll());
