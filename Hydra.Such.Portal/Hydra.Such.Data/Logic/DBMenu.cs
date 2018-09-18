@@ -1,5 +1,5 @@
 ﻿using Hydra.Such.Data.Database;
-using Hydra.Such.Data.ViewModel.Approvals;
+using Hydra.Such.Data.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -81,13 +81,14 @@ namespace Hydra.Such.Data.Logic
         }
         #endregion
 
-        public static List<Menu> GetByUserId(string userId)
+        public static List<Menu> GetAllByUserId(string userId)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    List<Menu> menus = null;
+                    List<Menu> menuList = null;
+
                     HashSet<int> featuresIds = new HashSet<int>();
                     List<int> menusIds = null;
 
@@ -109,7 +110,7 @@ namespace Hydra.Such.Data.Logic
                     }
 
                     var listUserAccess = DBUserAccesses.GetByUserId(userId);
-                    if(listUserAccess != null && listUserAccess.Count() > 0)
+                    if (listUserAccess != null && listUserAccess.Count() > 0)
                     {
                         var listFeatures = new HashSet<int>();
                         listFeatures = listUserAccess.Select(s => s.Funcionalidade).ToHashSet<int>();
@@ -119,12 +120,15 @@ namespace Hydra.Such.Data.Logic
                     //featuresIds = new List<int> { 1, 2, 3, 4 };
                     // list menu id from features                    
                     if (featuresIds != null && featuresIds.Count() > 0)
-                        menusIds = ctx.FeaturesMenus.Where(fm=> featuresIds.Contains(fm.IdFeature)).Select(fm => fm.IdMenu).ToList();
+                        menusIds = ctx.FeaturesMenus.Where(fm => featuresIds.Contains(fm.IdFeature)).Select(fm => fm.IdMenu).ToList();
                     // get menu
-                    if(menusIds != null && menusIds.Count() > 0)
-                        menus = ctx.Menu.Where(m => menusIds.Contains(m.Id)).ToList();
-
-                    return menus;
+                    if (menusIds != null && menusIds.Count() > 0) { 
+                        var userMenuList = ctx.Menu.Where(m => menusIds.Contains(m.Id)).ToList();
+                        var parentMenuList = GetAllParentsByMenuList(userMenuList);
+                        menuList = userMenuList.Union(parentMenuList).ToList();
+                    }
+                    
+                    return menuList;
                 }
             }
             catch (Exception ex)
@@ -133,9 +137,36 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
+        private static List<Menu> GetAllParentsByMenuList(List<Menu> menuList)
+        {
+            List<Menu> parents = null;
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    List<int?> parentIds = menuList.Where(m => m.Parent != null).Select(m => m.Parent).ToList();
+                    if (parentIds.Count() < 1) { return parents; }
+                    parents = ctx.Menu.Where(m => parentIds.Contains(m.Id)).ToList();
+                    if (parents.FirstOrDefault(m => m.Parent != null) != null)
+                    {
+                        parents.AddRange(GetAllParentsByMenuList(parents));
+                    };
+                    return parents;
+                }
+            }
+            catch (Exception ex)
+            {
+                return parents;
+            }
+        }
+
         #region Parses
+        /*
+        public static List<MenuViewModel> fromMenuListToMenuViewModelList()
+        {
 
-
+        }
+        */
         #endregion
 
 

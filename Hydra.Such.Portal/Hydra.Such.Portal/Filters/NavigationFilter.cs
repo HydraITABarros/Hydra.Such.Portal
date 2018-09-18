@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Hydra.Such.Data.Logic;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Newtonsoft.Json;
 using System.Security.Claims;
 using System.Security.Claims;
 using System.Web;
@@ -48,13 +50,13 @@ namespace Hydra.Such.Portal.Filters
             var user = context.HttpContext.User;
             var session = context.HttpContext.Session;
 
-            if (httpMethod == "GET" && user.Identity.IsAuthenticated && session.GetString("menu") != null)
-            {
-                // get menu
-                // if menu assign
-                // else define empty menu and assign
+            var menuTeste = session.GetString("menu");
 
-                session.SetString("menu", "teste");
+            if (httpMethod == "GET" && user.Identity.IsAuthenticated /*&& session.GetString("menu") != null*/)
+            {
+                var menuList = DBMenu.GetAllByUserId(user.Identity.Name);
+
+                session.SetString("menu", JsonConvert.SerializeObject(menuList));
             }
             base.OnActionExecuting(context);
         }
