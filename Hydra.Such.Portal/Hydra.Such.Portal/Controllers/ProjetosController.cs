@@ -2021,7 +2021,7 @@ namespace Hydra.Such.Portal.Controllers
                 JValue authorizationTotalValue = requestParams["authorizationTotalValue"] as JValue;
                 if (authorizationTotalValue != null)
                 {
-                    string str = (string)authorizationTotalValue.Value;
+                    string str = authorizationTotalValue.Value.ToString();
                     authorizationTotal = decimal.Parse(str, CultureInfo.InvariantCulture);
                 }
 
@@ -2626,7 +2626,7 @@ namespace Hydra.Such.Portal.Controllers
                         return Json(result);
                     }
                 }
-
+                
                 if (groupedbyclient != null)
                 {
                     foreach (var header in groupedbyclient)
