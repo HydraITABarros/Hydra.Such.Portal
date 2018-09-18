@@ -1795,7 +1795,7 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Código Localização");
                     Col = Col + 1;
                 }
-                if (dp["localMarketStringValue"]["hidden"].ToString() == "False")
+                if (dp["localMarket"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Mercado Local");
                     Col = Col + 1;
@@ -1845,7 +1845,7 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Data Receção Esperada");
                     Col = Col + 1;
                 }
-                if (dp["billableStringValue"]["hidden"].ToString() == "False")
+                if (dp["billable"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Faturável");
                     Col = Col + 1;
@@ -1920,17 +1920,17 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Nº Linha Ordem Manutenção");
                     Col = Col + 1;
                 }
-                if (dp["createMarketSearchStringValue"]["hidden"].ToString() == "False")
+                if (dp["createMarketSearch"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Criar Consulta Mercado");
                     Col = Col + 1;
                 }
-                if (dp["submitPrePurchaseStringValue"]["hidden"].ToString() == "False")
+                if (dp["submitPrePurchase"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Enviar Pré Compra");
                     Col = Col + 1;
                 }
-                if (dp["sendPrePurchaseStringValue"]["hidden"].ToString() == "False")
+                if (dp["sendPrePurchase"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Enviado Pré Compra");
                     Col = Col + 1;
@@ -1945,7 +1945,7 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("User Mercado Local");
                     Col = Col + 1;
                 }
-                if (dp["sendForPurchaseStringValue"]["hidden"].ToString() == "False")
+                if (dp["sendForPurchase"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Enviado Para Compras");
                     Col = Col + 1;
@@ -1955,12 +1955,12 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Data Envio Para Compras");
                     Col = Col + 1;
                 }
-                if (dp["purchaseValidatedStringValue"]["hidden"].ToString() == "False")
+                if (dp["purchaseValidated"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Validado Compras");
                     Col = Col + 1;
                 }
-                if (dp["purchaseRefusedStringValue"]["hidden"].ToString() == "False")
+                if (dp["purchaseRefused"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Recusado Compras");
                     Col = Col + 1;
@@ -2030,7 +2030,7 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Aprovadores");
                     Col = Col + 1;
                 }
-                if (dp["selectedStringValue"]["hidden"].ToString() == "False")
+                if (dp["selected"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Urgente");
                     Col = Col + 1;
@@ -2079,7 +2079,7 @@ namespace Hydra.Such.Portal.Controllers
                             row.CreateCell(Col).SetCellValue(item.LocalCode);
                             Col = Col + 1;
                         }
-                        if (dp["localMarketStringValue"]["hidden"].ToString() == "False")
+                        if (dp["localMarket"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.LocalMarketStringValue);
                             Col = Col + 1;
@@ -2129,7 +2129,7 @@ namespace Hydra.Such.Portal.Controllers
                             row.CreateCell(Col).SetCellValue(item.ExpectedReceivingDate);
                             Col = Col + 1;
                         }
-                        if (dp["billableStringValue"]["hidden"].ToString() == "False")
+                        if (dp["billable"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.BillableStringValue);
                             Col = Col + 1;
@@ -2204,17 +2204,17 @@ namespace Hydra.Such.Portal.Controllers
                             row.CreateCell(Col).SetCellValue(item.MaintenanceOrderLineNo.ToString());
                             Col = Col + 1;
                         }
-                        if (dp["createMarketSearchStringValue"]["hidden"].ToString() == "False")
+                        if (dp["createMarketSearch"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.CreateMarketSearchStringValue);
                             Col = Col + 1;
                         }
-                        if (dp["submitPrePurchaseStringValue"]["hidden"].ToString() == "False")
+                        if (dp["submitPrePurchase"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.SubmitPrePurchaseStringValue);
                             Col = Col + 1;
                         }
-                        if (dp["sendPrePurchaseStringValue"]["hidden"].ToString() == "False")
+                        if (dp["sendPrePurchase"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.SendPrePurchaseStringValue);
                             Col = Col + 1;
@@ -2229,7 +2229,7 @@ namespace Hydra.Such.Portal.Controllers
                             row.CreateCell(Col).SetCellValue(item.LocalMarketUser);
                             Col = Col + 1;
                         }
-                        if (dp["sendForPurchaseStringValue"]["hidden"].ToString() == "False")
+                        if (dp["sendForPurchase"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.SendForPurchaseStringValue);
                             Col = Col + 1;
@@ -2239,12 +2239,12 @@ namespace Hydra.Such.Portal.Controllers
                             row.CreateCell(Col).SetCellValue(item.SendForPurchaseDate);
                             Col = Col + 1;
                         }
-                        if (dp["purchaseValidatedStringValue"]["hidden"].ToString() == "False")
+                        if (dp["purchaseValidated"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.PurchaseValidatedStringValue);
                             Col = Col + 1;
                         }
-                        if (dp["purchaseRefusedStringValue"]["hidden"].ToString() == "False")
+                        if (dp["purchaseRefused"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.PurchaseRefusedStringValue);
                             Col = Col + 1;
@@ -2314,7 +2314,7 @@ namespace Hydra.Such.Portal.Controllers
                             row.CreateCell(Col).SetCellValue(item.Approvers);
                             Col = Col + 1;
                         }
-                        if (dp["selectedStringValue"]["hidden"].ToString() == "False")
+                        if (dp["selected"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.SelectedStringValue);
                             Col = Col + 1;
