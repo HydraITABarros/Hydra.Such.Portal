@@ -128,7 +128,7 @@
                    id="grid_databound_ajax"
                    content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/PreRequisicoes/ExportToExcel_RequisicoesArquivadas"
+        <iron-ajax url="/PreRequisicoes/ExportToExcel_RequisicoesLinhasArquivadas"
                    last-response="{{export}}"
                    id="ajax_Export"
                    method="post"
@@ -160,17 +160,17 @@
         </div>
 
         <vaadin-grid id="grdHistoryReqGrid" aria-label="HistoryReqGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
-            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.requisitionNo.hidden }}">
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.requestNo.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="requisitionNo">Nº Requisição</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="requisitionNo" />
+                    <vaadin-grid-sorter path="requestNo">Nº Requisição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="requestNo" />
                 </template>
                 <template>
-                    {{item.requisitionNo}}
+                    {{item.requestNo}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.lineNo.hidden }}">
+            <!--<vaadin-grid-column width="110px" resizable hidden$="{{ _columns.lineNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="lineNo">Nº Linha</vaadin-grid-sorter>
                     <vaadin-grid-filter path="lineNo" />
@@ -178,9 +178,9 @@
                 <template>
                     {{item.lineNo}}
                 </template>
-            </vaadin-grid-column>
+            </vaadin-grid-column>-->
 
-            <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.type.hidden }}">
+            <!--<vaadin-grid-column width="110px" resizable hidden$="{{ _columns.type.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="type">Tipo</vaadin-grid-sorter>
                     <vaadin-grid-filter path="type" />
@@ -188,7 +188,7 @@
                 <template>
                     {{item.type}}
                 </template>
-            </vaadin-grid-column>
+            </vaadin-grid-column>-->
 
             <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.code.hidden }}">
                 <template class="header">
@@ -230,36 +230,15 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.mocalMarket.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.localMarketStringValue.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="mocalMarket">Mercado Local</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="mocalMarket" />
+                    <vaadin-grid-sorter path="localMarketStringValue">Mercado Local</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="localMarketStringValue" />
                 </template>
                 <template>
-                    {{item.mocalMarket}}
+                    {{item.localMarketStringValue}}
                 </template>
             </vaadin-grid-column>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.quantityToRequire.hidden }}">
                 <template class="header">
@@ -351,13 +330,13 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.billable.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.billableStringValue.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="billable">Faturável</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="billable" />
+                    <vaadin-grid-sorter path="billableStringValue">Faturável</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="billableStringValue" />
                 </template>
                 <template>
-                    {{item.billable}}
+                    {{item.billableStringValue}}
                 </template>
             </vaadin-grid-column>
 
@@ -401,317 +380,335 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.mocalMarket.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.functionalNo.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="mocalMarket">Mercado Local</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="mocalMarket" />
+                    <vaadin-grid-sorter path="functionalNo">Nº Funcionário</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="functionalNo" />
                 </template>
                 <template>
-                    {{item.mocalMarket}}
+                    {{item.functionalNo}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.mocalMarket.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.vehicle.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="mocalMarket">Mercado Local</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="mocalMarket" />
+                    <vaadin-grid-sorter path="vehicle">Viatura</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="vehicle" />
                 </template>
                 <template>
-                    {{item.mocalMarket}}
+                    {{item.vehicle}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.mocalMarket.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.createDateTime.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="mocalMarket">Mercado Local</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="mocalMarket" />
+                    <vaadin-grid-sorter path="createDateTime">Data-Hora Criação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="createDateTime" />
                 </template>
                 <template>
-                    {{item.mocalMarket}}
+                    {{item.createDateTime}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.mocalMarket.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.createUser.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="mocalMarket">Mercado Local</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="mocalMarket" />
+                    <vaadin-grid-sorter path="createUser">Utilizador Criação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="createUser" />
                 </template>
                 <template>
-                    {{item.mocalMarket}}
+                    {{item.createUser}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.mocalMarket.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.updateDateTime.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="mocalMarket">Mercado Local</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="mocalMarket" />
+                    <vaadin-grid-sorter path="updateDateTime">Data-Hora Modificação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="updateDateTime" />
                 </template>
                 <template>
-                    {{item.mocalMarket}}
+                    {{item.updateDateTime}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.mocalMarket.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.updateUser.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="mocalMarket">Mercado Local</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="mocalMarket" />
+                    <vaadin-grid-sorter path="updateUser">Utilizador Modificação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="updateUser" />
                 </template>
                 <template>
-                    {{item.mocalMarket}}
+                    {{item.updateUser}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.mocalMarket.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.qtyByUnitOfMeasure.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="mocalMarket">Mercado Local</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="mocalMarket" />
+                    <vaadin-grid-sorter path="qtyByUnitOfMeasure">Qtd Por Unidade De Medida</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="qtyByUnitOfMeasure" />
                 </template>
                 <template>
-                    {{item.mocalMarket}}
+                    {{item.qtyByUnitOfMeasure}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.mocalMarket.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.unitCostsould.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="mocalMarket">Mercado Local</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="mocalMarket" />
+                    <vaadin-grid-sorter path="unitCostsould">Preço Unitário Venda</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="unitCostsould" />
                 </template>
                 <template>
-                    {{item.mocalMarket}}
+                    {{item.unitCostsould}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.mocalMarket.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.budgetValue.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="mocalMarket">Mercado Local</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="mocalMarket" />
+                    <vaadin-grid-sorter path="budgetValue">Valor Orçamento</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="budgetValue" />
                 </template>
                 <template>
-                    {{item.mocalMarket}}
+                    {{item.budgetValue}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.mocalMarket.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.maintenanceOrderLineNo.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="mocalMarket">Mercado Local</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="mocalMarket" />
+                    <vaadin-grid-sorter path="maintenanceOrderLineNo">Nº Linha Ordem Manutenção</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="maintenanceOrderLineNo" />
                 </template>
                 <template>
-                    {{item.mocalMarket}}
+                    {{item.maintenanceOrderLineNo}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.mocalMarket.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.createMarketSearchStringValue.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="mocalMarket">Mercado Local</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="mocalMarket" />
+                    <vaadin-grid-sorter path="createMarketSearchStringValue">Criar Consulta Mercado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="createMarketSearchStringValue" />
                 </template>
                 <template>
-                    {{item.mocalMarket}}
+                    {{item.createMarketSearchStringValue}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.mocalMarket.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.submitPrePurchaseStringValue.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="mocalMarket">Mercado Local</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="mocalMarket" />
+                    <vaadin-grid-sorter path="submitPrePurchaseStringValue">Enviar Pré Compra</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="submitPrePurchaseStringValue" />
                 </template>
                 <template>
-                    {{item.mocalMarket}}
+                    {{item.submitPrePurchaseStringValue}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.mocalMarket.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.sendPrePurchaseStringValue.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="mocalMarket">Mercado Local</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="mocalMarket" />
+                    <vaadin-grid-sorter path="sendPrePurchaseStringValue">Enviado Pré Compra</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="sendPrePurchaseStringValue" />
                 </template>
                 <template>
-                    {{item.mocalMarket}}
+                    {{item.sendPrePurchaseStringValue}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.mocalMarket.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.localMarketDate.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="mocalMarket">Mercado Local</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="mocalMarket" />
+                    <vaadin-grid-sorter path="localMarketDate">Data Mercado Local</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="localMarketDate" />
                 </template>
                 <template>
-                    {{item.mocalMarket}}
+                    {{item.localMarketDate}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.mocalMarket.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.localMarketUser.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="mocalMarket">Mercado Local</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="mocalMarket" />
+                    <vaadin-grid-sorter path="localMarketUser">User Mercado Local</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="localMarketUser" />
                 </template>
                 <template>
-                    {{item.mocalMarket}}
+                    {{item.localMarketUser}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.mocalMarket.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.sendForPurchaseStringValue.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="mocalMarket">Mercado Local</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="mocalMarket" />
+                    <vaadin-grid-sorter path="sendForPurchaseStringValue">Enviado Para Compras</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="sendForPurchaseStringValue" />
                 </template>
                 <template>
-                    {{item.mocalMarket}}
+                    {{item.sendForPurchaseStringValue}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.mocalMarket.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.sendForPurchaseDate.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="mocalMarket">Mercado Local</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="mocalMarket" />
+                    <vaadin-grid-sorter path="sendForPurchaseDate">Data Envio Para Compras</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="sendForPurchaseDate" />
                 </template>
                 <template>
-                    {{item.mocalMarket}}
+                    {{item.sendForPurchaseDate}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.mocalMarket.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.purchaseValidatedStringValue.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="mocalMarket">Mercado Local</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="mocalMarket" />
+                    <vaadin-grid-sorter path="purchaseValidatedStringValue">Validado Compras</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="purchaseValidatedStringValue" />
                 </template>
                 <template>
-                    {{item.mocalMarket}}
+                    {{item.purchaseValidatedStringValue}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.mocalMarket.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.purchaseRefusedStringValue.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="mocalMarket">Mercado Local</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="mocalMarket" />
+                    <vaadin-grid-sorter path="purchaseRefusedStringValue">Recusado Compras</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="purchaseRefusedStringValue" />
                 </template>
                 <template>
-                    {{item.mocalMarket}}
+                    {{item.purchaseRefusedStringValue}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.mocalMarket.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.reasonToRejectionLocalMarket.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="mocalMarket">Mercado Local</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="mocalMarket" />
+                    <vaadin-grid-sorter path="reasonToRejectionLocalMarket">Motivo Recusa Merc Local</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="reasonToRejectionLocalMarket" />
                 </template>
                 <template>
-                    {{item.mocalMarket}}
+                    {{item.reasonToRejectionLocalMarket}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.mocalMarket.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.rejectionLocalMarketDate.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="mocalMarket">Mercado Local</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="mocalMarket" />
+                    <vaadin-grid-sorter path="rejectionLocalMarketDate">Data Recusa Merc Local</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="rejectionLocalMarketDate" />
                 </template>
                 <template>
-                    {{item.mocalMarket}}
+                    {{item.rejectionLocalMarketDate}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.mocalMarket.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.purchaseId.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="mocalMarket">Mercado Local</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="mocalMarket" />
+                    <vaadin-grid-sorter path="purchaseId">Id Compra</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="purchaseId" />
                 </template>
                 <template>
-                    {{item.mocalMarket}}
+                    {{item.purchaseId}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.mocalMarket.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.supplierNo.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="mocalMarket">Mercado Local</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="mocalMarket" />
+                    <vaadin-grid-sorter path="supplierNo">Nº Fornecedor</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="supplierNo" />
                 </template>
                 <template>
-                    {{item.mocalMarket}}
+                    {{item.supplierNo}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.mocalMarket.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.openOrderNo.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="mocalMarket">Mercado Local</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="mocalMarket" />
+                    <vaadin-grid-sorter path="openOrderNo">Nº Encomenda Aberto</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="openOrderNo" />
                 </template>
                 <template>
-                    {{item.mocalMarket}}
+                    {{item.openOrderNo}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.mocalMarket.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.openOrderLineNo.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="mocalMarket">Mercado Local</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="mocalMarket" />
+                    <vaadin-grid-sorter path="openOrderLineNo">Nº Linha Encomenda Aberto</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="openOrderLineNo" />
                 </template>
                 <template>
-                    {{item.mocalMarket}}
+                    {{item.openOrderLineNo}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.mocalMarket.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.queryCreatedMarketNo.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="mocalMarket">Mercado Local</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="mocalMarket" />
+                    <vaadin-grid-sorter path="queryCreatedMarketNo">Nº De Consulta Mercado Criada</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="queryCreatedMarketNo" />
                 </template>
                 <template>
-                    {{item.mocalMarket}}
+                    {{item.queryCreatedMarketNo}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.mocalMarket.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.createdOrderNo.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="mocalMarket">Mercado Local</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="mocalMarket" />
+                    <vaadin-grid-sorter path="createdOrderNo">Nº Encomenda Criada</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="createdOrderNo" />
                 </template>
                 <template>
-                    {{item.mocalMarket}}
+                    {{item.createdOrderNo}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.mocalMarket.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.supplierProductCode.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="mocalMarket">Mercado Local</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="mocalMarket" />
+                    <vaadin-grid-sorter path="supplierProductCode">Código Produto Fornecedor</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="supplierProductCode" />
                 </template>
                 <template>
-                    {{item.mocalMarket}}
+                    {{item.supplierProductCode}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.mocalMarket.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.unitNutritionProduction.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="mocalMarket">Mercado Local</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="mocalMarket" />
+                    <vaadin-grid-sorter path="unitNutritionProduction">Unidade Produtiva Nutrição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="unitNutritionProduction" />
                 </template>
                 <template>
-                    {{item.mocalMarket}}
+                    {{item.unitNutritionProduction}}
                 </template>
             </vaadin-grid-column>
 
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.marketLocalRegion.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="marketLocalRegion">Região Mercado Local</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="marketLocalRegion" />
+                </template>
+                <template>
+                    {{item.marketLocalRegion}}
+                </template>
+            </vaadin-grid-column>
 
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.customerNo.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="customerNo">Nº Cliente</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="customerNo" />
+                </template>
+                <template>
+                    {{item.customerNo}}
+                </template>
+            </vaadin-grid-column>
 
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.approvers.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="approvers">Aprovadores</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="approvers" />
+                </template>
+                <template>
+                    {{item.approvers}}
+                </template>
+            </vaadin-grid-column>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.selectedStringValue.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="selectedStringValue">Urgente</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="selectedStringValue" />
+                </template>
+                <template>
+                    {{item.selectedStringValue}}
+                </template>
+            </vaadin-grid-column>
         </vaadin-grid>
 
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
@@ -767,7 +764,6 @@
                 },
                 _rowSelected: function (item) {
                     if (item != null) {
-                        //window.location.href = "/GestaoRequisicoes/DetalhesReqAprovada/" + item.requisitionNo;
                         window.location.href = "/GestaoRequisicoes/DetalhesReqArquivo/" + item.requisitionNo;
                     }
                 },
@@ -798,7 +794,7 @@
                 },
 
                 _exportEXCEL: function () {
-                    //debugger;
+                    debugger;
                     this.result[0].ColunasEXCEL = this._columns;
 
                     this.$.ajax_Export.body = JSON.stringify(this.result);
@@ -806,22 +802,69 @@
                 },
 
                 _exportEXCELResponse: function (e) {
-                    //debugger
+                    debugger
                     var FileName = this.export;
-                    location.href = '../PreRequisicoes/ExportToExcelDownload_RequisicoesArquivadas?sFileName=' + FileName;
+                    location.href = '../PreRequisicoes/ExportToExcelDownload_RequisicoesLinhasArquivadas?sFileName=' + FileName;
                 },
 
                 /*start - ColumnToggle*/
                 _startColumnToggle: function () {
                     var columns = {
-                        "requisitionNo": { hidden: false, label: "Nº Requisição" },
-                        "state": { hidden: false, label: "Estado" },
-                        "requisitionDate": { hidden: false, label: "Data Requisição" },
+                        "requestNo": { hidden: false, label: "Nº Requisição" },
+                        //"lineNo": { hidden: false, label: "Nº Linha" },
+                        //"type": { hidden: false, label: "Tipo" },
+                        "code": { hidden: false, label: "Código" },
+                        "description": { hidden: false, label: "Descrição" },
+                        "unitMeasureCode": { hidden: false, label: "Código Unidade Medida" },
                         "localCode": { hidden: false, label: "Código Localização" },
-                        "responsibleApproval": { hidden: false, label: "Responsável Aprovação" },
-                        "approvalDate": { hidden: false, label: "Data/Hora Aprovação" },
-                        "comments": { hidden: false, label: "Observações" },
-                        "employeeNo": { hidden: false, label: "Nº Funcionário" }
+                        "localMarketStringValue": { hidden: false, label: "Mercado Local" },
+                        "quantityToRequire": { hidden: false, label: "Quantidade A Requerer" },
+                        "quantityRequired": { hidden: false, label: "Quantidade Requerida" },
+                        "quantityToProvide": { hidden: false, label: "Quantidade A Disponibilizar" },
+                        "quantityAvailable": { hidden: false, label: "Quantidade Disponibilizada" },
+                        "quantityReceivable": { hidden: false, label: "Quantidade A Receber" },
+                        "quantityReceived": { hidden: false, label: "Quantidade Recebida" },
+                        "quantityPending": { hidden: false, label: "Quantidade Pendente" },
+                        "unitCost": { hidden: false, label: "Custo Unitário" },
+                        "expectedReceivingDate": { hidden: false, label: "Data Receção Esperada" },
+                        "billableStringValue": { hidden: false, label: "Faturável" },
+                        "projectNo": { hidden: false, label: "Nº Projeto" },
+                        "regionCode": { hidden: false, label: "Código Região" },
+                        "functionalAreaCode": { hidden: false, label: "Código Área Funcional" },
+                        "centerResponsibilityCode": { hidden: false, label: "Código Centro Responsabilidade" },
+                        "functionalNo": { hidden: false, label: "Nº Funcionário" },
+                        "vehicle": { hidden: false, label: "Viatura" },
+                        "createDateTime": { hidden: false, label: "Data Hora Criação" },
+                        "createUser": { hidden: false, label: "Utilizador Criação" },
+                        "updateDateTime": { hidden: false, label: "Data Hora Modificação" },
+                        "updateUser": { hidden: false, label: "Utilizador Modificação" },
+                        "qtyByUnitOfMeasure": { hidden: false, label: "Qtd Por Unidade De Medida" },
+                        "unitCostsould": { hidden: false, label: "Preço Unitário Venda" },
+                        "budgetValue": { hidden: false, label: "Valor Orçamento" },
+                        "maintenanceOrderLineNo": { hidden: false, label: "Nº Linha Ordem Manutenção" },
+                        "createMarketSearchStringValue": { hidden: false, label: "Criar Consulta Mercado" },
+                        "submitPrePurchaseStringValue": { hidden: false, label: "Enviar Pré Compra" },
+                        "sendPrePurchaseStringValue": { hidden: false, label: "Enviado Pré Compra" },
+                        "localMarketDate": { hidden: false, label: "Data Mercado Local" },
+                        "localMarketUser": { hidden: false, label: "User Mercado Local" },
+                        "sendForPurchaseStringValue": { hidden: false, label: "Enviado Para Compras" },
+                        "sendForPurchaseDate": { hidden: false, label: "Data Envio Para Compras" },
+                        "purchaseValidatedStringValue": { hidden: false, label: "Validado Compras" },
+                        "purchaseRefusedStringValue": { hidden: false, label: "Recusado Compras" },
+                        "reasonToRejectionLocalMarket": { hidden: false, label: "Motivo Recusa Merc Local" },
+                        "rejectionLocalMarketDate": { hidden: false, label: "Data Recusa Merc Local" },
+                        "purchaseId": { hidden: false, label: "Id Compra" },
+                        "supplierNo": { hidden: false, label: "Nº Fornecedor" },
+                        "openOrderNo": { hidden: false, label: "Nº Encomenda Aberto" },
+                        "openOrderLineNo": { hidden: false, label: "Nº Linha Encomenda Aberto" },
+                        "queryCreatedMarketNo": { hidden: false, label: "Nº De Consulta Mercado Criada" },
+                        "createdOrderNo": { hidden: false, label: "Nº Encomenda Criada" },
+                        "supplierProductCode": { hidden: false, label: "Código Produto Fornecedor" },
+                        "unitNutritionProduction": { hidden: false, label: "Unidade Produtiva Nutrição" },
+                        "marketLocalRegion": { hidden: false, label: "Região Mercado Local" },
+                        "customerNo": { hidden: false, label: "Nº Cliente" },
+                        "approvers": { hidden: false, label: "Aprovadores" },
+                        "selectedStringValue": { hidden: false, label: "Urgente" }
                     };
 
                     if (localStorage["historyreq.ToggleColumn"]) {

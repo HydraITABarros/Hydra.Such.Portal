@@ -41,6 +41,21 @@ namespace Hydra.Such.Data.Logic.ComprasML
             }
         }
 
+        public static List<LinhasRequisiçãoHist> GetReqLinesByUserAreaStatus(string UserName)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.LinhasRequisiçãoHist.Where(x => x.UtilizadorCriação == UserName).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public static List<LinhasRequisiçãoHist> GetAll()
         {
             try
@@ -226,7 +241,7 @@ namespace Hydra.Such.Data.Logic.ComprasML
                 MarketLocalRegion = x.RegiãoMercadoLocal,
                 CustomerNo = x.NºCliente,
                 Approvers = x.Aprovadores,
-                Selected = (bool)x.Urgente
+                Selected = x.Urgente
             };
         }
 
