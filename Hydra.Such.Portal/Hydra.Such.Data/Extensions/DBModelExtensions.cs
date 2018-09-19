@@ -28,13 +28,13 @@ namespace Hydra.Such.Data.Extensions
             item.ServiceGroupCode = serviceGroupId;
             item.PreRegistered = false;
             item.MovementType = 1;
-            switch (x.Tipo.Value)
-            {
-                case 1: item.Type = 2; break;
-                case 2: item.Type = 1; break;
-                default: item.Type = x.Tipo; break;
-            }
-
+            //switch (x.Tipo.Value)
+            //{
+            //    case 1: item.Type = 2; break;
+            //    case 2: item.Type = 1; break;
+            //    default: item.Type = x.Tipo; break;
+            //}
+            item.Type = x.Tipo;
             return item;
         }
 
