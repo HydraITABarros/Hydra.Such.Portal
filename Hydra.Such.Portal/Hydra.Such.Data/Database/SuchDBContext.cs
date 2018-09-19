@@ -113,6 +113,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<RecFacturasProblemas> RecFacturasProblemas { get; set; }
         public virtual DbSet<RecFaturacaoConfigDestinatarios> RecFaturacaoConfigDestinatarios { get; set; }
         public virtual DbSet<RegistoDeAtas> RegistoDeAtas { get; set; }
+        public virtual DbSet<RegistoDePropostas> RegistoDePropostas { get; set; }
         public virtual DbSet<Requisição> Requisição { get; set; }
         public virtual DbSet<RequisiçãoHist> RequisiçãoHist { get; set; }
         public virtual DbSet<RequisiçõesClienteContrato> RequisiçõesClienteContrato { get; set; }
@@ -7688,6 +7689,132 @@ namespace Hydra.Such.Data.Database
                     .HasForeignKey(d => d.NºProcedimento)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Registo de Atas_Procedimentos CCP");
+            });
+
+            modelBuilder.Entity<RegistoDePropostas>(entity =>
+            {
+                entity.HasKey(e => e.NumLinha);
+
+                entity.ToTable("Registo_De_Propostas");
+
+                entity.Property(e => e.NumLinha).HasColumnName("Num_Linha");
+
+                entity.Property(e => e.Alternativa).HasMaxLength(20);
+
+                entity.Property(e => e.CodActividade)
+                    .HasColumnName("Cod_Actividade")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodAreaFuncional)
+                    .HasColumnName("Cod_Area_Funcional")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodCentroResponsabilidade)
+                    .HasColumnName("Cod_Centro_Responsabilidade")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodLocalizacao)
+                    .HasColumnName("Cod_Localizacao")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodProduto)
+                    .HasColumnName("Cod_Produto")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodRegiao)
+                    .HasColumnName("Cod_Regiao")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.Descricao).HasMaxLength(100);
+
+                entity.Property(e => e.Descricao2).HasMaxLength(100);
+
+                entity.Property(e => e.Fornecedor1Code)
+                    .HasColumnName("Fornecedor1_Code")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.Fornecedor1Nome)
+                    .HasColumnName("Fornecedor1_Nome")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Fornecedor1Preco).HasColumnName("Fornecedor1_Preco");
+
+                entity.Property(e => e.Fornecedor1Select).HasColumnName("Fornecedor1_Select");
+
+                entity.Property(e => e.Fornecedor2Code)
+                    .HasColumnName("Fornecedor2_Code")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.Fornecedor2Nome)
+                    .HasColumnName("Fornecedor2_Nome")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Fornecedor2Preco).HasColumnName("Fornecedor2_Preco");
+
+                entity.Property(e => e.Fornecedor2Select).HasColumnName("Fornecedor2_Select");
+
+                entity.Property(e => e.Fornecedor3Code)
+                    .HasColumnName("Fornecedor3_Code")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.Fornecedor3Nome)
+                    .HasColumnName("Fornecedor3_Nome")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Fornecedor3Preco).HasColumnName("Fornecedor3_Preco");
+
+                entity.Property(e => e.Fornecedor3Select).HasColumnName("Fornecedor3_Select");
+
+                entity.Property(e => e.Fornecedor4Code)
+                    .HasColumnName("Fornecedor4_Code")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.Fornecedor4Nome)
+                    .HasColumnName("Fornecedor4_Nome")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Fornecedor4Preco).HasColumnName("Fornecedor4_Preco");
+
+                entity.Property(e => e.Fornecedor4Select).HasColumnName("Fornecedor4_Select");
+
+                entity.Property(e => e.Fornecedor5Code)
+                    .HasColumnName("Fornecedor5_Code")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.Fornecedor5Nome)
+                    .HasColumnName("Fornecedor5_Nome")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Fornecedor5Preco).HasColumnName("Fornecedor5_Preco");
+
+                entity.Property(e => e.Fornecedor5Select).HasColumnName("Fornecedor5_Select");
+
+                entity.Property(e => e.Fornecedor6Code)
+                    .HasColumnName("Fornecedor6_Code")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.Fornecedor6Nome)
+                    .HasColumnName("Fornecedor6_Nome")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Fornecedor6Preco).HasColumnName("Fornecedor6_Preco");
+
+                entity.Property(e => e.Fornecedor6Select).HasColumnName("Fornecedor6_Select");
+
+                entity.Property(e => e.NumConsultaMercado)
+                    .HasColumnName("Num_Consulta_Mercado")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.NumLinhaConsultaMercado).HasColumnName("Num_Linha_Consulta_Mercado");
+
+                entity.Property(e => e.NumProjecto)
+                    .HasColumnName("Num_Projecto")
+                    .HasMaxLength(20);
+
+                entity.HasOne(d => d.NumConsultaMercadoNavigation)
+                    .WithMany(p => p.RegistoDePropostas)
+                    .HasForeignKey(d => d.NumConsultaMercado)
+                    .HasConstraintName("FK_Registo_De_Propostas_Consulta_Mercado");
             });
 
             modelBuilder.Entity<Requisição>(entity =>
