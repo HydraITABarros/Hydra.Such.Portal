@@ -2674,7 +2674,9 @@ namespace Hydra.Such.Portal.Controllers
                                         var wasteFamilyResources = wasteRates.Where(x => x.FamiliaRecurso == item.ResourceGroup).ToList();
                                         wasteFamilyResources.ForEach(x =>
                                         {
+                                            
                                             decimal? quantity = header.Items.Where(y => y.Type == 2 && y.Code == item.Code).Sum(y => y.Quantity);
+                                            var resourceFirstLine = header.Items.Where(y => y.Type == 2 && y.Code == item.Code).LastOrDefault();
                                             var resource = resourceslines.Where(y => y.Code == x.Recurso && y.WasteRate == 1).FirstOrDefault();
                                             if (resource != null)
                                             {
@@ -2684,6 +2686,11 @@ namespace Hydra.Such.Portal.Controllers
                                                 wasteLineToAdd.Code = resource.Code;
                                                 wasteLineToAdd.Description = resource.Name;
                                                 wasteLineToAdd.UnitPrice = resource.UnitPrice;
+                                                wasteLineToAdd.RegionCode = resourceFirstLine.RegionCode;
+                                                wasteLineToAdd.ResponsabilityCenterCode = resourceFirstLine.ResponsabilityCenterCode;
+                                                wasteLineToAdd.FunctionalAreaCode = resourceFirstLine.FunctionalAreaCode;
+                                                wasteLineToAdd.ContractNo = resourceFirstLine.ProjectNo;
+
                                                 header.Items.Add(wasteLineToAdd);
                                             }
                                         });
