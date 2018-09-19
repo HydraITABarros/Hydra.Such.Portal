@@ -4345,6 +4345,13 @@ namespace Hydra.Such.Portal.Controllers
             {
                 Code = x.Código,
                 Description = x.Descrição,
+                Email1 = x.Email1,
+                Email2 = x.Email2,
+                Email3 = x.Email3,
+                EmailRegiao12 = x.EmailRegiao12,
+                EmailRegiao23 = x.EmailRegiao23,
+                EmailRegiao33 = x.EmailRegiao33,
+                EmailRegiao43 = x.EmailRegiao43,
                 CreateDate = x.DataHoraCriação.HasValue ? x.DataHoraCriação.Value.ToString("yyyy-MM-dd hh:mm:ss.ff") : "",
                 CreateUser = x.UtilizadorCriação
             }).ToList();
@@ -4366,6 +4373,13 @@ namespace Hydra.Such.Portal.Controllers
                 UnidadePrestação Unidadeval = new UnidadePrestação()
                 {
                     Descrição = x.Description,
+                    Email1 = x.Email1,
+                    Email2 = x.Email2,
+                    Email3 = x.Email3,
+                    EmailRegiao12 = x.EmailRegiao12,
+                    EmailRegiao23 = x.EmailRegiao23,
+                    EmailRegiao33 = x.EmailRegiao33,
+                    EmailRegiao43 = x.EmailRegiao43,
                 };
                 if (x.Code > 0)
                 {
@@ -4383,6 +4397,59 @@ namespace Hydra.Such.Portal.Controllers
                     DBFetcUnit.Create(Unidadeval);
                 }
             });
+            return Json(data);
+        }
+        #endregion
+
+        #region Config Compras
+        public IActionResult ConfigCompras()
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminGeral);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.CreatePermissions = !UPerm.Create.Value;
+                ViewBag.UpdatePermissions = !UPerm.Update.Value;
+                ViewBag.DeletePermissions = !UPerm.Delete.Value;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        [HttpPost]
+        public JsonResult GetConfigCompras()
+        {
+            ConfiguraçãoCompras result = DBConfigCompras.GetByNo(1);
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateConfigCompras([FromBody] ConfiguracaoComprasViewModel data)
+        {
+
+            ConfiguraçãoCompras Compra = new ConfiguraçãoCompras()
+            {
+                ID = 1,
+                Email1Regiao12 = data.Email1Regiao12,
+                Email2Regiao12 = data.Email2Regiao12,
+                Email1Regiao23 = data.Email1Regiao23,
+                Email2Regiao23 = data.Email2Regiao23,
+                Email1Regiao33 = data.Email1Regiao33,
+                Email2Regiao33 = data.Email2Regiao33,
+                Email1Regiao43 = data.Email1Regiao43,
+                Email2Regiao43 = data.Email2Regiao43,
+                DiasParaEnvioAlerta = data.DiasParaEnvioAlerta,
+                UtilizadorCriacao = data.UtilizadorCriacao,
+                DataHoraCriacao = data.DataHoraCriacao,
+                UtilizadorModificacao = User.Identity.Name,
+                DataHoraModificacao = DateTime.Now
+            };
+
+            DBConfigCompras.Update(Compra);
+
             return Json(data);
         }
         #endregion
