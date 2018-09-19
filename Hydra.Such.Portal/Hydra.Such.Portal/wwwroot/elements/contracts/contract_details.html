@@ -2140,7 +2140,6 @@
                         this._isHistoricDiv = true;
                     }
 
-                    debugger;;
                     var _self = this;
                     var upload = document.querySelector('vaadin-upload#uploadRequest');
 
@@ -2153,7 +2152,6 @@
                             }
                         });
                     }
-                    debugger;;
                     //if (this._isCreate == false) {
                     //    this.$.page_update_ajax.body = JSON.stringify({ "id": this._contractno });
                     //    this.$.page_update_ajax.generateRequest();
@@ -2477,6 +2475,7 @@
                         //close
                     this.$.ToastMessageMultiple.toggle();
                     this.CreateInvoiceResponse.eMessages = [];
+                    window.location.href = "/Contratos/DetalhesContrato/" + this.data.contractNo + "?version=" + this.data.versionNo + "&" + "isHistoric=" + false;
                 },
                 _deleteClientRequisition: function (data) {
                     var index = this.data.clientRequisitions.indexOf(data.model.item);
@@ -2625,9 +2624,10 @@
                     }
                 },
                 _ResponseProcessorInvoice: function (data) {
-                    debugger;;
+
                     if (this.CreateInvoiceResponse == true) {
                         this._openToast("Fatura Criada com Sucesso!");
+                        window.location.href = "/Contratos/DetalhesContrato/" + this.data.contractNo + "?version=" + this.data.versionNo + "&" + "isHistoric=" + false;
                     }
                     else if (this.CreateInvoiceResponse.eReasonCode == 2) {
 
@@ -2645,7 +2645,7 @@
                     else {
                         this._openToastError("Erro ao criar a fatura!");
                     }
-
+                   
                 },
                 _createInvoiceResponseProcessor: function (data) {
                     var verifica = false;

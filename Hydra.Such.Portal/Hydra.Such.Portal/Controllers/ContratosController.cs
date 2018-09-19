@@ -2142,7 +2142,22 @@ namespace Hydra.Such.Portal.Controllers
             }
             else if (payPeriod == 2)
             {
-                lastDate = new DateTime(startDate.Year, startDate.Month, Convert.ToInt32(startDate.AddMonths(2).AddDays(-1)));
+                startDate = startDate.AddMonths(1);
+                lastDate = new DateTime(startDate.Year, startDate.Month, 1).AddMonths(1).AddDays(-1);
+            }
+            else if (payPeriod == 3)
+            {
+                startDate = startDate.AddMonths(2);
+                lastDate = new DateTime(startDate.Year, startDate.Month, 1).AddMonths(1).AddDays(-1);
+            }
+            else if (payPeriod == 4)
+            {
+                startDate = startDate.AddMonths(5);
+                lastDate = new DateTime(startDate.Year, startDate.Month, 1).AddMonths(1).AddDays(-1);
+            }
+            else if (payPeriod == 5)
+            {
+                lastDate = new DateTime(startDate.Year, 12, 31);
             }
             else
             {
@@ -2203,18 +2218,24 @@ namespace Hydra.Such.Portal.Controllers
                     NAVSalesHeaderViewModel PreInvoiceToCreate = new NAVSalesHeaderViewModel();
                     DateTime dataInicio;
                     DateTime dataFim;
-                    if (Contract.LastInvoiceDate!=null && Contract.LastInvoiceDate != "")
-                        dataInicio = Convert.ToDateTime( Contract.LastInvoiceDate);
+                    if (Contract.LastInvoiceDate != null && Contract.LastInvoiceDate != "")
+                    {
+                        dataInicio = Convert.ToDateTime(Contract.LastInvoiceDate);
+                        dataInicio = dataInicio.AddDays(1);
+                    }
                     else
                         dataInicio = Convert.ToDateTime(Contract.StartData);
-
-
+                 
                     dataFim = getDatePeriodPayment(dataInicio, Contract.InvocePeriod ?? 0);
 
+                    //UPDATE LASTINVOICEDATE
+                    Contract.LastInvoiceDate = dataFim.ToString("dd/MM/yyyy");
+                    DBContracts.Update(DBContracts.ParseToDB(Contract));
 
-                    PreInvoiceToCreate.PeriododeFact_Contrato = dataInicio + " a " + dataFim;
-                    string mes = DateTime.Now.ToString("MMMM");
-                    PreInvoiceToCreate.DataServ_Prestado = String.Format("{0}/{1}", mes.ToUpper(), DateTime.Now.Year);
+                    PreInvoiceToCreate.PeriododeFact_Contrato = dataInicio.ToString("dd/MM/yyyy") + " a " + dataFim.ToString("dd/MM/yyyy");
+                    string mes = dataInicio.ToString("MMMM");
+                    PreInvoiceToCreate.DataServ_Prestado = String.Format("{0}/{1}", mes.ToUpper(), dataInicio.Year);
+                    
                     PreInvoiceToCreate.Sell_toCustomerNo = Contract.ClientNo;
                     PreInvoiceToCreate.DocumentDate = lastDay;
                     if (Contract.CustomerShipmentDate != null && Contract.CustomerShipmentDate != "")
