@@ -2140,7 +2140,6 @@
                         this._isHistoricDiv = true;
                     }
 
-                    debugger;;
                     var _self = this;
                     var upload = document.querySelector('vaadin-upload#uploadRequest');
 
@@ -2153,7 +2152,6 @@
                             }
                         });
                     }
-                    debugger;;
                     //if (this._isCreate == false) {
                     //    this.$.page_update_ajax.body = JSON.stringify({ "id": this._contractno });
                     //    this.$.page_update_ajax.generateRequest();
@@ -2477,6 +2475,7 @@
                         //close
                     this.$.ToastMessageMultiple.toggle();
                     this.CreateInvoiceResponse.eMessages = [];
+                    window.location.href = "/Contratos/DetalhesContrato/" + this.data.contractNo + "?version=" + this.data.versionNo + "&" + "isHistoric=" + false;
                 },
                 _deleteClientRequisition: function (data) {
                     var index = this.data.clientRequisitions.indexOf(data.model.item);
@@ -2625,9 +2624,10 @@
                     }
                 },
                 _ResponseProcessorInvoice: function (data) {
-                    debugger;;
+
                     if (this.CreateInvoiceResponse == true) {
                         this._openToast("Fatura Criada com Sucesso!");
+                        window.location.href = "/Contratos/DetalhesContrato/" + this.data.contractNo + "?version=" + this.data.versionNo + "&" + "isHistoric=" + false;
                     }
                     else if (this.CreateInvoiceResponse.eReasonCode == 2) {
 
@@ -2645,7 +2645,7 @@
                     else {
                         this._openToastError("Erro ao criar a fatura!");
                     }
-
+                   
                 },
                 _createInvoiceResponseProcessor: function (data) {
                     var verifica = false;
@@ -2763,8 +2763,7 @@
                     this.dataLines.lines.find(x => x == this._SelectedLine).type = e.detail.value;
                     this.$.grid_contractlines.clearCache();
                 },
-                _clContractLineCodeGridChange: function (e) {
-                    debugger;;              
+                _clContractLineCodeGridChange: function (e) {             
                     if (e.detail.value != null && e.detail.value != "") {
                         var code = e.detail.value;
                         var index = this.CBContractLineCodesGrid.findIndex(i => i.id == code);
@@ -3009,7 +3008,7 @@
                     this._openToastError("Verifique os dados inseridos.");
                     return false;
                 },
-                _ValidateInvoice: function () {
+                _ValidateInvoice: function () { 
                     var messageErro = "";
                     if (this.$.mStatus.value != 4 && this.$.mStatus.value != 7) {
                         messageErro = "O estado do contrato tem que ser: Assinado ou Em Vigor \n";
@@ -3023,12 +3022,15 @@
                     if (this.$.mInvoicePeriods.value == null) {
                         messageErro += "O periodo de faturação tem de estar preenchido \n";
                     }
+                    if (this.$.mInvoicePeriods.value == 6)
+                        messageErro += "Data de periodo de faturação nao pode ser 'Nenhum' \n";
+
                     if (this.$.mPaymentTerms.value == null && this.$.mPaymentTerms.value == "") {
                         messageErro += "Os termos de pagamento de estar preenchido \n";
                     }
                     if (this.$.dueDate.value < this.$.contractStartDate.value && this.$.dueDate.value != null)
                         messageErro += "Data da expiração não pode ser menor que o inicio da faturação \n";
-
+                   
                     if (this.$.dueDate.value < this.$.contractEndDate.value && this.$.dueDate.value != null)
                         messageErro += "Data da fim de periodo não pode ser maior que a data de expiração \n";
 
@@ -3144,7 +3146,6 @@
                 _deletedAttachResponse: function (e) {
                     if (this.deleted_files.eReasonCode === 1) {
                         this._openToast("Anexo eliminado com sucesso.");
-
                         this.$.page_update_ajax.body = JSON.stringify({ "id": this._contractno });
                         this.$.page_update_ajax.generateRequest();
 

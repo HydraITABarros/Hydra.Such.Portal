@@ -234,6 +234,8 @@ namespace WSCreatePreInvoiceLine
         
         private string description100Field;
         
+        private string gJobDimensionField;
+        
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=0)]
         public string Key
@@ -1395,6 +1397,20 @@ namespace WSCreatePreInvoiceLine
                 this.description100Field = value;
             }
         }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=59)]
+        public string gJobDimension
+        {
+            get
+            {
+                return this.gJobDimensionField;
+            }
+            set
+            {
+                this.gJobDimensionField = value;
+            }
+        }
     }
     
     /// <remarks/>
@@ -1704,6 +1720,9 @@ namespace WSCreatePreInvoiceLine
         
         /// <remarks/>
         Description100,
+        
+        /// <remarks/>
+        gJobDimension,
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]

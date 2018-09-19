@@ -142,6 +142,8 @@ namespace WSPurchaseInvHeader
         
         private bool down_PaymentFieldSpecified;
         
+        private string buy_from_Vendor_NoField;
+        
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=0)]
         public string Key
@@ -659,6 +661,20 @@ namespace WSPurchaseInvHeader
                 this.down_PaymentFieldSpecified = value;
             }
         }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=32)]
+        public string Buy_from_Vendor_No
+        {
+            get
+            {
+                return this.buy_from_Vendor_NoField;
+            }
+            set
+            {
+                this.buy_from_Vendor_NoField = value;
+            }
+        }
     }
     
     /// <remarks/>
@@ -849,6 +865,9 @@ namespace WSPurchaseInvHeader
         
         /// <remarks/>
         Down_Payment,
+        
+        /// <remarks/>
+        Buy_from_Vendor_No,
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]

@@ -230,7 +230,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.localMarketStringValue.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.localMarket.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="localMarketStringValue">Mercado Local</vaadin-grid-sorter>
                     <vaadin-grid-filter path="localMarketStringValue" />
@@ -330,7 +330,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.billableStringValue.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.billable.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="billableStringValue">Faturável</vaadin-grid-sorter>
                     <vaadin-grid-filter path="billableStringValue" />
@@ -480,7 +480,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.createMarketSearchStringValue.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.createMarketSearch.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="createMarketSearchStringValue">Criar Consulta Mercado</vaadin-grid-sorter>
                     <vaadin-grid-filter path="createMarketSearchStringValue" />
@@ -490,7 +490,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.submitPrePurchaseStringValue.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.submitPrePurchase.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="submitPrePurchaseStringValue">Enviar Pré Compra</vaadin-grid-sorter>
                     <vaadin-grid-filter path="submitPrePurchaseStringValue" />
@@ -500,7 +500,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.sendPrePurchaseStringValue.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.sendPrePurchase.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="sendPrePurchaseStringValue">Enviado Pré Compra</vaadin-grid-sorter>
                     <vaadin-grid-filter path="sendPrePurchaseStringValue" />
@@ -530,7 +530,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.sendForPurchaseStringValue.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.sendForPurchase.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="sendForPurchaseStringValue">Enviado Para Compras</vaadin-grid-sorter>
                     <vaadin-grid-filter path="sendForPurchaseStringValue" />
@@ -550,7 +550,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.purchaseValidatedStringValue.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.purchaseValidated.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="purchaseValidatedStringValue">Validado Compras</vaadin-grid-sorter>
                     <vaadin-grid-filter path="purchaseValidatedStringValue" />
@@ -560,7 +560,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.purchaseRefusedStringValue.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.purchaseRefused.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="purchaseRefusedStringValue">Recusado Compras</vaadin-grid-sorter>
                     <vaadin-grid-filter path="purchaseRefusedStringValue" />
@@ -700,7 +700,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.selectedStringValue.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.selected.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="selectedStringValue">Urgente</vaadin-grid-sorter>
                     <vaadin-grid-filter path="selectedStringValue" />
@@ -817,7 +817,7 @@
                         "description": { hidden: false, label: "Descrição" },
                         "unitMeasureCode": { hidden: false, label: "Código Unidade Medida" },
                         "localCode": { hidden: false, label: "Código Localização" },
-                        "localMarketStringValue": { hidden: false, label: "Mercado Local" },
+                        "localMarket": { hidden: false, label: "Mercado Local" },
                         "quantityToRequire": { hidden: false, label: "Quantidade A Requerer" },
                         "quantityRequired": { hidden: false, label: "Quantidade Requerida" },
                         "quantityToProvide": { hidden: false, label: "Quantidade A Disponibilizar" },
@@ -827,7 +827,7 @@
                         "quantityPending": { hidden: false, label: "Quantidade Pendente" },
                         "unitCost": { hidden: false, label: "Custo Unitário" },
                         "expectedReceivingDate": { hidden: false, label: "Data Receção Esperada" },
-                        "billableStringValue": { hidden: false, label: "Faturável" },
+                        "billable": { hidden: false, label: "Faturável" },
                         "projectNo": { hidden: false, label: "Nº Projeto" },
                         "regionCode": { hidden: false, label: "Código Região" },
                         "functionalAreaCode": { hidden: false, label: "Código Área Funcional" },
@@ -842,15 +842,15 @@
                         "unitCostsould": { hidden: false, label: "Preço Unitário Venda" },
                         "budgetValue": { hidden: false, label: "Valor Orçamento" },
                         "maintenanceOrderLineNo": { hidden: false, label: "Nº Linha Ordem Manutenção" },
-                        "createMarketSearchStringValue": { hidden: false, label: "Criar Consulta Mercado" },
-                        "submitPrePurchaseStringValue": { hidden: false, label: "Enviar Pré Compra" },
-                        "sendPrePurchaseStringValue": { hidden: false, label: "Enviado Pré Compra" },
+                        "createMarketSearch": { hidden: false, label: "Criar Consulta Mercado" },
+                        "submitPrePurchase": { hidden: false, label: "Enviar Pré Compra" },
+                        "sendPrePurchase": { hidden: false, label: "Enviado Pré Compra" },
                         "localMarketDate": { hidden: false, label: "Data Mercado Local" },
                         "localMarketUser": { hidden: false, label: "User Mercado Local" },
-                        "sendForPurchaseStringValue": { hidden: false, label: "Enviado Para Compras" },
+                        "sendForPurchase": { hidden: false, label: "Enviado Para Compras" },
                         "sendForPurchaseDate": { hidden: false, label: "Data Envio Para Compras" },
-                        "purchaseValidatedStringValue": { hidden: false, label: "Validado Compras" },
-                        "purchaseRefusedStringValue": { hidden: false, label: "Recusado Compras" },
+                        "purchaseValidated": { hidden: false, label: "Validado Compras" },
+                        "purchaseRefused": { hidden: false, label: "Recusado Compras" },
                         "reasonToRejectionLocalMarket": { hidden: false, label: "Motivo Recusa Merc Local" },
                         "rejectionLocalMarketDate": { hidden: false, label: "Data Recusa Merc Local" },
                         "purchaseId": { hidden: false, label: "Id Compra" },
@@ -864,7 +864,7 @@
                         "marketLocalRegion": { hidden: false, label: "Região Mercado Local" },
                         "customerNo": { hidden: false, label: "Nº Cliente" },
                         "approvers": { hidden: false, label: "Aprovadores" },
-                        "selectedStringValue": { hidden: false, label: "Urgente" }
+                        "selected": { hidden: false, label: "Urgente" }
                     };
 
                     if (localStorage["historyreq.ToggleColumn"]) {
