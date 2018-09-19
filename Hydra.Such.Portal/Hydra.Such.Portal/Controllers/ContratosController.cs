@@ -2214,8 +2214,7 @@ namespace Hydra.Such.Portal.Controllers
                         createProject.Wait();
                     }
 
-                    //CREATE SALES HEADER
-                    NAVSalesHeaderViewModel PreInvoiceToCreate = new NAVSalesHeaderViewModel();
+                 
                     DateTime dataInicio;
                     DateTime dataFim;
                     if (Contract.LastInvoiceDate != null && Contract.LastInvoiceDate != "")
@@ -2232,6 +2231,8 @@ namespace Hydra.Such.Portal.Controllers
                     Contract.LastInvoiceDate = dataFim.ToString("dd/MM/yyyy");
                     DBContracts.Update(DBContracts.ParseToDB(Contract));
 
+                    //CREATE SALES HEADER
+                    NAVSalesHeaderViewModel PreInvoiceToCreate = new NAVSalesHeaderViewModel();
                     PreInvoiceToCreate.PeriododeFact_Contrato = dataInicio.ToString("dd/MM/yyyy") + " a " + dataFim.ToString("dd/MM/yyyy");
                     string mes = dataInicio.ToString("MMMM");
                     PreInvoiceToCreate.DataServ_Prestado = String.Format("{0}/{1}", mes.ToUpper(), dataInicio.Year);
@@ -2305,7 +2306,7 @@ namespace Hydra.Such.Portal.Controllers
                                         PreInvoiceLinesToCreate.NºContrato = Contract.ContractNo;
                                         PreInvoiceLinesToCreate.NºProjeto = Contract.ContractNo;
                                         PreInvoiceLinesToCreate.CódigoServiço = line.ServiceClientNo;
-                                        PreInvoiceLinesToCreate.Quantidade = line.Quantity * Contract.InvocePeriod;
+                                        PreInvoiceLinesToCreate.Quantidade = line.Quantity * (Contract.InvocePeriod == 6 ? 1 : Contract.InvocePeriod==5 ? 12 : Contract.InvocePeriod==4 ? 6 : Contract.InvocePeriod);
                                         PreInvoiceLinesToCreate.PreçoUnitário = line.UnitPrice;
                                         LinhasFaturacao.Add(PreInvoiceLinesToCreate);
                                     }
@@ -2382,7 +2383,7 @@ namespace Hydra.Such.Portal.Controllers
                                         PreInvoiceLinesToCreate.NºContrato = Contract.ContractNo;
                                         PreInvoiceLinesToCreate.NºProjeto = Contract.ContractNo;
                                         PreInvoiceLinesToCreate.CódigoServiço = line.ServiceClientNo;
-                                        PreInvoiceLinesToCreate.Quantidade = Convert.ToDecimal(line.Quantity * Contract.InvocePeriod);
+                                        PreInvoiceLinesToCreate.Quantidade = line.Quantity * (Contract.InvocePeriod == 6 ? 1 : Contract.InvocePeriod == 5 ? 12 : Contract.InvocePeriod == 4 ? 6 : Contract.InvocePeriod);
                                         PreInvoiceLinesToCreate.PreçoUnitário = line.UnitPrice;
                                         PreInvoiceLinesToCreate.GrupoFatura = line.InvoiceGroup ?? 0;
                                         LinhasFaturacao.Add(PreInvoiceLinesToCreate);
