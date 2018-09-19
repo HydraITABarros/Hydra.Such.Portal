@@ -1,0 +1,25 @@
+﻿@using Hydra.Such.Data.ViewModel
+@model MenuViewModel
+
+@if (Model.Submenu == null || Model.Submenu.Count < 1)
+{
+    var href = Url.Action(Model.Action, Model.Controller, Model.RouteParameters);
+    var currentHref = Context.Request.Path + Context.Request.QueryString;
+    <li@(href == currentHref ? " class=selected" : "" )>
+        <a href="@href">@Model.Title</a>
+    </li>
+}
+else
+{
+    <li class="has-submenu">
+        <a href="javascript:void(0)" class="submenu-toggle">
+            <i class="menu-icon zmdi zmdi-plus zmdi-hc-lg"></i>
+            <span class="menu-text">@Model.Title</span>
+            <i class="menu-caret zmdi zmdi-hc-sm zmdi-chevron-right"></i>
+        </a>
+        @if (Model.Submenu != null && Model.Submenu.Count > 0)
+        {
+            @Html.Partial("Menu/_SubMenu", (List<MenuViewModel>)Model.Submenu)
+        }
+    </li>
+}

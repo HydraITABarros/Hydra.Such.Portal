@@ -264,6 +264,10 @@ paper-toast {
     text-align: center;
 }
 
+.menubar .open .selected a {
+    border-left: solid 2px #188ae2;
+}
+
 #wrapper {
     padding-left: 0;
     -webkit-transition: all 0.5s ease;
