@@ -1,0 +1,1982 @@
+SERVICE_NAME: AeLookupSvc
+DISPLAY_NAME: Application Experience
+Processes application compatibility cache requests for applications as they are launched
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: ALG
+DISPLAY_NAME: Application Layer Gateway Service
+Provides support for 3rd party protocol plug-ins for Internet Connection Sharing
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: AppHostSvc
+DISPLAY_NAME: Application Host Helper Service
+Provides administrative services for IIS, for example configuration history and Application Pool account mapping. If this service is stopped, configuration history and locking down files or directories with Application Pool specific Access Control Entries will not work.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,PAUSABLE,ACCEPTS_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: AppIDSvc
+DISPLAY_NAME: Application Identity
+Determines and verifies the identity of an application. Disabling this service will prevent AppLocker from being enforced.
+	GROUP		  : ProfSvc_Group
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: Appinfo
+DISPLAY_NAME: Application Information
+Facilitates the running of interactive applications with additional administrative privileges.  If this service is stopped, users will be unable to launch applications with the additional administrative privileges they may require to perform desired user tasks.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: AppMgmt
+DISPLAY_NAME: Application Management
+Processes installation, removal, and enumeration requests for software deployed through Group Policy. If the service is disabled, users will be unable to install, remove, or enumerate software deployed through Group Policy. If this service is disabled, any services that explicitly depend on it will fail to start.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: AppReadiness
+DISPLAY_NAME: App Readiness
+Gets apps ready for use the first time a user signs in to this PC and when adding new apps.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: AppXSvc
+DISPLAY_NAME: AppX Deployment Service (AppXSVC)
+Provides infrastructure support for deploying Store applications. This service is started on demand and if disabled Store applications will not be deployed to the system, and may not function properly.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: aspnet_state
+DISPLAY_NAME: ASP.NET State Service
+Provides support for out-of-process session states for ASP.NET. If this service is stopped, out-of-process requests will not be processed. If this service is disabled, any services that explicitly depend on it will fail to start.
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: AudioEndpointBuilder
+DISPLAY_NAME: Windows Audio Endpoint Builder
+Manages audio devices for the Windows Audio service.  If this service is stopped, audio devices and effects will not function properly.  If this service is disabled, any services that explicitly depend on it will fail to start
+	GROUP		  : AudioGroup
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: Audiosrv
+DISPLAY_NAME: Windows Audio
+Manages audio for Windows-based programs.  If this service is stopped, audio devices and effects will not function properly.  If this service is disabled, any services that explicitly depend on it will fail to start
+	GROUP		  : AudioGroup
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: BFE
+DISPLAY_NAME: Base Filtering Engine
+The Base Filtering Engine (BFE) is a service that manages firewall and Internet Protocol security (IPsec) policies and implements user mode filtering. Stopping or disabling the BFE service will significantly reduce the security of the system. It will also result in unpredictable behavior in IPsec management and firewall applications.
+	GROUP		  : NetworkProvider
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: BITS
+DISPLAY_NAME: Background Intelligent Transfer Service
+Transfers files in the background using idle network bandwidth. If the service is disabled, then any applications that depend on BITS, such as Windows Update or MSN Explorer, will be unable to automatically download programs and other information.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: BrokerInfrastructure
+DISPLAY_NAME: Background Tasks Infrastructure Service
+Windows infrastructure service that controls which background tasks can run on the system.
+	GROUP		  : COM Infrastructure
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 4  RUNNING
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: Browser
+DISPLAY_NAME: Computer Browser
+Maintains an updated list of computers on the network and supplies this list to computers designated as browsers. If this service is stopped, this list will not be updated or maintained. If this service is disabled, any services that explicitly depend on it will fail to start.
+	GROUP		  : NetworkProvider
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: Canon Driver Information Assist Service
+DISPLAY_NAME: Canon Driver Information Assist Service
+Provides communication service between printer drivers and printers.
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,ACCEPTS_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: CertPropSvc
+DISPLAY_NAME: Certificate Propagation
+Copies user certificates and root certificates from smart cards into the current user's certificate store, detects when a smart card is inserted into a smart card reader, and, if needed, installs the smart card Plug and Play minidriver.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,ACCEPTS_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: COMSysApp
+DISPLAY_NAME: COM+ System Application
+Manages the configuration and tracking of Component Object Model (COM)+-based components. If the service is stopped, most COM+-based components will not function properly. If this service is disabled, any services that explicitly depend on it will fail to start.
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: CryptSvc
+DISPLAY_NAME: Cryptographic Services
+Provides three management services: Catalog Database Service, which confirms the signatures of Windows files and allows new programs to be installed; Protected Root Service, which adds and removes Trusted Root Certification Authority certificates from this computer; and Automatic Root Certificate Update Service, which retrieves root certificates from Windows Update and enable scenarios such as SSL. If this service is stopped, these management services will not function properly. If this service is disabled, any services that explicitly depend on it will fail to start.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,ACCEPTS_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: DcomLaunch
+DISPLAY_NAME: DCOM Server Process Launcher
+The DCOMLAUNCH service launches COM and DCOM servers in response to object activation requests. If this service is stopped or disabled, programs using COM or DCOM will not function properly. It is strongly recommended that you have the DCOMLAUNCH service running.
+	GROUP		  : COM Infrastructure
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 4  RUNNING
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: defragsvc
+DISPLAY_NAME: Optimize drives
+Helps the computer run more efficiently by optimizing files on storage drives.
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: DeviceAssociationService
+DISPLAY_NAME: Device Association Service
+Enables pairing between the system and wired or wireless devices.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: DeviceInstall
+DISPLAY_NAME: Device Install Service
+Enables a computer to recognize and adapt to hardware changes with little or no user input. Stopping or disabling this service will result in system instability.
+	GROUP		  : PlugPlay
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: Dhcp
+DISPLAY_NAME: DHCP Client
+Registers and updates IP addresses and DNS records for this computer. If this service is stopped, this computer will not receive dynamic IP addresses and DNS updates. If this service is disabled, any services that explicitly depend on it will fail to start.
+	GROUP		  : TDI
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,ACCEPTS_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: DiagTrack
+DISPLAY_NAME: Diagnostics Tracking Service
+The Diagnostics Tracking Service enables data collection about functional issues in Windows components.
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,ACCEPTS_PRESHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: Dnscache
+DISPLAY_NAME: DNS Client
+The DNS Client service (dnscache) caches Domain Name System (DNS) names and registers the full computer name for this computer. If the service is stopped, DNS names will continue to be resolved. However, the results of DNS name queries will not be cached and the computer's name will not be registered. If the service is disabled, any services that explicitly depend on it will fail to start.
+	GROUP		  : TDI
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: dot3svc
+DISPLAY_NAME: Wired AutoConfig
+The Wired AutoConfig (DOT3SVC) service is responsible for performing IEEE 802.1X authentication on Ethernet interfaces. If your current wired network deployment enforces 802.1X authentication, the DOT3SVC service should be configured to run for establishing Layer 2 connectivity and/or providing access to network resources. Wired networks that do not enforce 802.1X authentication are unaffected by the DOT3SVC service.
+	GROUP		  : TDI
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: DPS
+DISPLAY_NAME: Diagnostic Policy Service
+The Diagnostic Policy Service enables problem detection, troubleshooting and resolution for Windows components.  If this service is stopped, diagnostics will no longer function.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,ACCEPTS_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: DSIService
+DISPLAY_NAME: PA DSI Service
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: DsmSvc
+DISPLAY_NAME: Device Setup Manager
+Enables the detection, download and installation of device-related software. If this service is disabled, devices may be configured with outdated software, and may not work correctly.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: Eaphost
+DISPLAY_NAME: Extensible Authentication Protocol
+The Extensible Authentication Protocol (EAP) service provides network authentication in such scenarios as 802.1x wired and wireless, VPN, and Network Access Protection (NAP).  EAP also provides application programming interfaces (APIs) that are used by network access clients, including wireless and VPN clients, during the authentication process.  If you disable this service, this computer is prevented from accessing networks that require EAP authentication.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: EFS
+DISPLAY_NAME: Encrypting File System (EFS)
+Provides the core file encryption technology used to store encrypted files on NTFS file system volumes. If this service is stopped or disabled, applications will be unable to access encrypted files.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: EventLog
+DISPLAY_NAME: Windows Event Log
+This service manages events and event logs. It supports logging events, querying events, subscribing to events, archiving event logs, and managing event metadata. It can display events in both XML and plain text format. Stopping this service may compromise security and reliability of the system.
+	GROUP		  : Event Log
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,ACCEPTS_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: EventSystem
+DISPLAY_NAME: COM+ Event System
+Supports System Event Notification Service (SENS), which provides automatic distribution of events to subscribing Component Object Model (COM) components. If the service is stopped, SENS will close and will not be able to provide logon and logoff notifications. If this service is disabled, any services that explicitly depend on it will fail to start.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: fdPHost
+DISPLAY_NAME: Function Discovery Provider Host
+The FDPHOST service hosts the Function Discovery (FD) network discovery providers. These FD providers supply network discovery services for the Simple Services Discovery Protocol (SSDP) and Web Services – Discovery (WS-D) protocol. Stopping or disabling the FDPHOST service will disable network discovery for these protocols when using FD. When this service is unavailable, network services using FD and relying on these discovery protocols will be unable to find network devices or resources.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: FDResPub
+DISPLAY_NAME: Function Discovery Resource Publication
+Publishes this computer and resources attached to this computer so they can be discovered over the network.  If this service is stopped, network resources will no longer be published and they will not be discovered by other computers on the network.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: FontCache
+DISPLAY_NAME: Windows Font Cache Service
+Optimizes performance of applications by caching commonly used font data. Applications will start this service if it is not already running. It can be disabled, though doing so will degrade application performance.
+	GROUP		  : AudioGroup
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,ACCEPTS_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: FontCache3.0.0.0
+DISPLAY_NAME: Windows Presentation Foundation Font Cache 3.0.0.0
+Optimizes performance of Windows Presentation Foundation (WPF) applications by caching commonly used font data. WPF applications will start this service if it is not already running. It can be disabled, though doing so will degrade the performance of WPF applications.
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: gpsvc
+DISPLAY_NAME: Group Policy Client
+The service is responsible for applying settings configured by administrators for the computer and users through the Group Policy component. If the service is disabled, the settings will not be applied and applications and components will not be manageable through Group Policy. Any components or applications that depend on the Group Policy component might not be functional if the service is disabled.
+	GROUP		  : ProfSvc_Group
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,ACCEPTS_PRESHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: gupdate
+DISPLAY_NAME: Serviço Google Update (gupdate)
+Mantém o software Google atualizado. Se este serviço for desactivado ou interrompido, o software Google não ficará atualizado, o que significa que não será possível corrigir eventuais vulnerabilidades de segurança e as funcionalidades poderão não funcionar. Esta tarefa desinstala-se quando não está a ser utilizada por nenhum software Google.
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: gupdatem
+DISPLAY_NAME: Serviço Google Update (gupdatem)
+Mantém o software Google atualizado. Se este serviço for desactivado ou interrompido, o software Google não ficará atualizado, o que significa que não será possível corrigir eventuais vulnerabilidades de segurança e as funcionalidades poderão não funcionar. Esta tarefa desinstala-se quando não está a ser utilizada por nenhum software Google.
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: hidserv
+DISPLAY_NAME: Human Interface Device Service
+Activates and maintains the use of hot buttons on keyboards, remote controls, and other multimedia devices. It is recommended that you keep this service running.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: hkmsvc
+DISPLAY_NAME: Health Key and Certificate Management
+Provides X.509 certificate and key management services for the Network Access Protection Agent (NAPAgent). Enforcement technologies that use X.509 certificates may not function properly without this service
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: HPOvTrcSvc
+DISPLAY_NAME: HP Software Shared Trace Service
+HP Software Shared Service for diagnostic tracing facility.
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: IEEtwCollectorService
+DISPLAY_NAME: Internet Explorer ETW Collector Service
+ETW Collector Service for Internet Explorer. When running, this service collects real time ETW events and processes them.
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: IISADMIN
+DISPLAY_NAME: IIS Admin Service
+Enables this server to administer the IIS metabase. The IIS metabase stores configuration for the SMTP and FTP services. If this service is stopped, the server will be unable to configure SMTP or FTP. If this service is disabled, any services that explicitly depend on it will fail to start.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,ACCEPTS_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: IKEEXT
+DISPLAY_NAME: IKE and AuthIP IPsec Keying Modules
+The IKEEXT service hosts the Internet Key Exchange (IKE) and Authenticated Internet Protocol (AuthIP) keying modules. These keying modules are used for authentication and key exchange in Internet Protocol security (IPsec). Stopping or disabling the IKEEXT service will disable IKE and AuthIP key exchange with peer computers. IPsec is typically configured to use IKE or AuthIP; therefore, stopping or disabling the IKEEXT service might result in an IPsec failure and might compromise the security of the system. It is strongly recommended that you have the IKEEXT service running.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,ACCEPTS_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: iphlpsvc
+DISPLAY_NAME: IP Helper
+Provides tunnel connectivity using IPv6 transition technologies (6to4, ISATAP, Port Proxy, and Teredo), and IP-HTTPS. If this service is stopped, the computer will not have the enhanced connectivity benefits that these technologies offer.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: KeyIso
+DISPLAY_NAME: CNG Key Isolation
+The CNG key isolation service is hosted in the LSA process. The service provides key process isolation to private keys and associated cryptographic operations as required by the Common Criteria. The service stores and uses long-lived keys in a secure process complying with Common Criteria requirements.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: KPSSVC
+DISPLAY_NAME: KDC Proxy Server service (KPS)
+KDC Proxy Server service runs on edge servers to proxy Kerberos protocol messages to domain controllers on the corporate network.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: KtmRm
+DISPLAY_NAME: KtmRm for Distributed Transaction Coordinator
+Coordinates transactions between the Distributed Transaction Coordinator (MSDTC) and the Kernel Transaction Manager (KTM). If it is not needed, it is recommended that this service remain stopped. If it is needed, both MSDTC and KTM will start this service automatically. If this service is disabled, any MSDTC transaction interacting with a Kernel Resource Manager will fail and any services that explicitly depend on it will fail to start.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: LanmanServer
+DISPLAY_NAME: Server
+Supports file, print, and named-pipe sharing over the network for this computer. If this service is stopped, these functions will be unavailable. If this service is disabled, any services that explicitly depend on it will fail to start.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: LanmanWorkstation
+DISPLAY_NAME: Workstation
+Creates and maintains client network connections to remote servers using the SMB protocol. If this service is stopped, these connections will be unavailable. If this service is disabled, any services that explicitly depend on it will fail to start.
+	GROUP		  : NetworkProvider
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: LiveUpdate
+DISPLAY_NAME: LiveUpdate
+LiveUpdate Core Engine
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: lltdsvc
+DISPLAY_NAME: Link-Layer Topology Discovery Mapper
+Creates a Network Map, consisting of PC and device topology (connectivity) information, and metadata describing each PC and device.  If this service is disabled, the Network Map will not function properly.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: lmhosts
+DISPLAY_NAME: TCP/IP NetBIOS Helper
+Provides support for the NetBIOS over TCP/IP (NetBT) service and NetBIOS name resolution for clients on the network, therefore enabling users to share files, print, and log on to the network. If this service is stopped, these functions might be unavailable. If this service is disabled, any services that explicitly depend on it will fail to start.
+	GROUP		  : TDI
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: LPDSVC
+DISPLAY_NAME: LPD Service
+Enables client computers to print to the Line Printer Daemon (LPD) service on this server using TCP/IP and the Line Printer Remote (LPR) protocol.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,PAUSABLE,ACCEPTS_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: LSM
+DISPLAY_NAME: Local Session Manager
+Core Windows Service that manages local user sessions. Stopping or disabling this service will result in system instability.
+	GROUP		  : COM Infrastructure
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 4  RUNNING
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: McAfeeFramework
+DISPLAY_NAME: Serviço McAfee Framework
+Estrutura de componentes partilhada dos produtos McAfee
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,ACCEPTS_PRESHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: McShield
+DISPLAY_NAME: McAfee McShield
+McAfee OnAccess Scanner
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,ACCEPTS_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: McTaskManager
+DISPLAY_NAME: McAfee Task Manager
+Permite a programação de atividades de atualização e varredura da McAfee.
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,ACCEPTS_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: mfevtp
+DISPLAY_NAME: McAfee Validation Trust Protection Service
+Provides validation trust protection services
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,ACCEPTS_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: MIService
+DISPLAY_NAME: PA Measurement Interface
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: MMCSS
+DISPLAY_NAME: Multimedia Class Scheduler
+Enables relative prioritization of work based on system-wide task priorities. This is intended mainly for multimedia applications.  If this service is stopped, individual tasks resort to their default priority.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: MomAdmSvc
+DISPLAY_NAME: uniFLOW Admin Service
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: MomJdfSvc
+DISPLAY_NAME: uniFLOW JDF Agent
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: MomLpdSvc
+DISPLAY_NAME: uniFLOW LPD Service TCP/IP Cluster Printing
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: MomSvc
+DISPLAY_NAME: uniFLOW Server
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: MpsSvc
+DISPLAY_NAME: Windows Firewall
+Windows Firewall helps protect your computer by preventing unauthorized users from gaining access to your computer through the Internet or a network.
+	GROUP		  : NetworkProvider
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: MSDTC
+DISPLAY_NAME: Distributed Transaction Coordinator
+Coordinates transactions that span multiple resource managers, such as databases, message queues, and file systems. If this service is stopped, these transactions will fail. If this service is disabled, any services that explicitly depend on it will fail to start.
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,ACCEPTS_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: MSiSCSI
+DISPLAY_NAME: Microsoft iSCSI Initiator Service
+Manages Internet SCSI (iSCSI) sessions from this computer to remote iSCSI target devices. If this service is stopped, this computer will not be able to login or access iSCSI targets. If this service is disabled, any services that explicitly depend on it will fail to start.
+	GROUP		  : iSCSI
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: msiserver
+DISPLAY_NAME: Windows Installer
+Adds, modifies, and removes applications provided as a Windows Installer (*.msi, *.msp) package. If this service is disabled, any services that explicitly depend on it will fail to start.
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: mtstrmd
+DISPLAY_NAME: NetBackup Deduplication Multi-Threaded Agent
+Provides a multi-threaded streaming agent for improved performance
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,PAUSABLE,ACCEPTS_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: MWECService
+DISPLAY_NAME: PA Extended Collector
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: napagent
+DISPLAY_NAME: Network Access Protection Agent
+The Network Access Protection (NAP) agent service collects and manages health information for client computers on a network. Information collected by NAP agent is used to make sure that the client computer has the required software and settings. If a client computer is not compliant with health policy, it can be provided with restricted network access until its configuration is updated. Depending on the configuration of health policy, client computers might be automatically updated so that users quickly regain full network access without having to manually update their computer.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: NcaSvc
+DISPLAY_NAME: Network Connectivity Assistant
+Provides DirectAccess status notification for UI components
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: NetBackup Client Service
+DISPLAY_NAME: NetBackup Client Service
+Client Service
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,PAUSABLE,ACCEPTS_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: NetBackup Discovery Framework
+DISPLAY_NAME: NetBackup Discovery Framework
+Discovers system and application information for NetBackup.
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,ACCEPTS_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: NetBackup Legacy Client Service
+DISPLAY_NAME: NetBackup Legacy Client Service
+Listens for connections from NetBackup servers in the network and when an authorized connection is made, starts the necessary NetBackup process to service the connection.
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,PAUSABLE,ACCEPTS_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: NetBackup Legacy Network Service
+DISPLAY_NAME: NetBackup Legacy Network Service
+Legacy Network Service
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,PAUSABLE,ACCEPTS_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: NetBackup Proxy Service
+DISPLAY_NAME: NetBackup Proxy Service
+Executes the Open Storage (OST) calls on any host and returns the results to the proxy plugin side, which returns them to the application. The proxy server (and plugin) provides a network connection between different servers to relay Open Storage calls.
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: NetBackup SAN Client Fibre Transport Service
+DISPLAY_NAME: NetBackup SAN Client Fibre Transport Service
+Implements the client side of the Fibre Transport (FT) mechanism. The Client FT Service provides the means of opening and closing FT connections and of connecting the Fibre Transport connections to bpbkar(32) and tar(32) shared memory for data transfers.
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: Netlogon
+DISPLAY_NAME: Netlogon
+Maintains a secure channel between this computer and the domain controller for authenticating users and services. If this service is stopped, the computer may not authenticate users and services and the domain controller cannot register DNS records. If this service is disabled, any services that explicitly depend on it will fail to start.
+	GROUP		  : MS_WindowsRemoteValidation
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: Netman
+DISPLAY_NAME: Network Connections
+Manages objects in the Network and Dial-Up Connections folder, in which you can view both local area network and remote connections.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: netprofm
+DISPLAY_NAME: Network List Service
+Identifies the networks to which the computer has connected, collects and stores properties for these networks, and notifies applications when these properties change.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: NetTcpPortSharing
+DISPLAY_NAME: Net.Tcp Port Sharing Service
+Provides ability to share TCP ports over the net.tcp protocol.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: NlaSvc
+DISPLAY_NAME: Network Location Awareness
+Collects and stores configuration information for the network and notifies programs when this information is modified. If this service is stopped, configuration information might be unavailable. If this service is disabled, any services that explicitly depend on it will fail to start.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: nsi
+DISPLAY_NAME: Network Store Interface Service
+This service delivers network notifications (e.g. interface addition/deleting etc) to user mode clients. Stopping this service will cause loss of network connectivity. If this service is disabled, any other services that explicitly depend on this service will fail to start.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: OpswareAgent
+DISPLAY_NAME: Opsware Agent
+Opsware Server Automation System management component
+	TYPE		  : 110 WIN32_OWN_PROCESS INTERACTIVE_PROCESS  
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: OvCtrl
+DISPLAY_NAME: HP OpenView Ctrl Service
+HP OpenView Control Service for controlling and monitoring integrated OpenView processes.
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,ACCEPTS_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: PerfAlarmService
+DISPLAY_NAME: PA Alarm Generator
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: PerfHost
+DISPLAY_NAME: Performance Counter DLL Host
+Enables remote users and 64-bit processes to query performance counters provided by 32-bit DLLs. If this service is stopped, only local users and 32-bit processes will be able to query performance counters provided by 32-bit DLLs.
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: pla
+DISPLAY_NAME: Performance Logs & Alerts
+Performance Logs and Alerts Collects performance data from local or remote computers based on preconfigured schedule parameters, then writes the data to a log or triggers an alert. If this service is stopped, performance information will not be collected. If this service is disabled, any services that explicitly depend on it will fail to start.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: PlugPlay
+DISPLAY_NAME: Plug and Play
+Enables a computer to recognize and adapt to hardware changes with little or no user input. Stopping or disabling this service will result in system instability.
+	GROUP		  : PlugPlay
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,ACCEPTS_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: PolicyAgent
+DISPLAY_NAME: IPsec Policy Agent
+Internet Protocol security (IPsec) supports network-level peer authentication, data origin authentication, data integrity, data confidentiality (encryption), and replay protection.  This service enforces IPsec policies created through the IP Security Policies snap-in or the command-line tool "netsh ipsec".  If you stop this service, you may experience network connectivity issues if your policy requires that connections use IPsec.  Also,remote management of Windows Firewall is not available when this service is stopped.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,ACCEPTS_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: Power
+DISPLAY_NAME: Power
+Manages power policy and power policy notification delivery.
+	GROUP		  : Plugplay
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 4  RUNNING
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: PrintNotify
+DISPLAY_NAME: Printer Extensions and Notifications
+This service opens custom printer dialog boxes and handles notifications from a remote print server or a printer. If you turn off this service, you won’t be able to see printer extensions or notifications.
+	TYPE		  : 120 WIN32_SHARE_PROCESS INTERACTIVE_PROCESS  
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: ProfSvc
+DISPLAY_NAME: User Profile Service
+This service is responsible for loading and unloading user profiles. If this service is stopped or disabled, users will no longer be able to successfully sign in or sign out, apps might have problems getting to users' data, and components registered to receive profile event notifications won't receive them.
+	GROUP		  : profsvc_group
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,ACCEPTS_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: RasAuto
+DISPLAY_NAME: Remote Access Auto Connection Manager
+Creates a connection to a remote network whenever a program references a remote DNS or NetBIOS name or address.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: RasMan
+DISPLAY_NAME: Remote Access Connection Manager
+Manages dial-up and virtual private network (VPN) connections from this computer to the Internet or other remote networks. If this service is disabled, any services that explicitly depend on it will fail to start.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: RemoteAccess
+DISPLAY_NAME: Routing and Remote Access
+Offers routing services to businesses in local area and wide area network environments.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: RemoteRegistry
+DISPLAY_NAME: Remote Registry
+Enables remote users to modify registry settings on this computer. If this service is stopped, the registry can be modified only by users on this computer. If this service is disabled, any services that explicitly depend on it will fail to start.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: RpcEptMapper
+DISPLAY_NAME: RPC Endpoint Mapper
+Resolves RPC interfaces identifiers to transport endpoints. If this service is stopped or disabled, programs using Remote Procedure Call (RPC) services will not function properly.
+	GROUP		  : COM Infrastructure
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 4  RUNNING
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: RpcLocator
+DISPLAY_NAME: Remote Procedure Call (RPC) Locator
+In Windows 2003 and earlier versions of Windows, the Remote Procedure Call (RPC) Locator service manages the RPC name service database. In Windows Vista and later versions of Windows, this service does not provide any functionality and is present for application compatibility.
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: RpcSs
+DISPLAY_NAME: Remote Procedure Call (RPC)
+The RPCSS service is the Service Control Manager for COM and DCOM servers. It performs object activations requests, object exporter resolutions and distributed garbage collection for COM and DCOM servers. If this service is stopped or disabled, programs using COM or DCOM will not function properly. It is strongly recommended that you have the RPCSS service running.
+	GROUP		  : COM Infrastructure
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 4  RUNNING
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: RSoPProv
+DISPLAY_NAME: Resultant Set of Policy Provider
+Provides a network service that processes requests to simulate application of Group Policy settings for a target user or computer in various situations and computes the Resultant Set of Policy settings.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: RTMAService
+DISPLAY_NAME: Real Time Metric Access Service
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: sacsvr
+DISPLAY_NAME: Special Administration Console Helper
+Allows administrators to remotely access a command prompt using Emergency Management Services.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: SamSs
+DISPLAY_NAME: Security Accounts Manager
+The startup of this service signals other services that the Security Accounts Manager (SAM) is ready to accept requests.  Disabling this service will prevent other services in the system from being notified when the SAM is ready, which may in turn cause those services to fail to start correctly. This service should not be disabled.
+	GROUP		  : MS_WindowsLocalValidation
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 4  RUNNING
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: SCardSvr
+DISPLAY_NAME: Smart Card
+Manages access to smart cards read by this computer. If this service is stopped, this computer will be unable to read smart cards. If this service is disabled, any services that explicitly depend on it will fail to start.
+	GROUP		  : SmartCardGroup
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: ScDeviceEnum
+DISPLAY_NAME: Smart Card Device Enumeration Service
+Creates software device nodes for all smart card readers accessible to a given session. If this service is disabled, WinRT APIs will not be able to enumerate smart card readers.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: Schedule
+DISPLAY_NAME: Task Scheduler
+Enables a user to configure and schedule automated tasks on this computer. The service also hosts multiple Windows system-critical tasks. If this service is stopped or disabled, these tasks will not be run at their scheduled times. If this service is disabled, any services that explicitly depend on it will fail to start.
+	GROUP		  : SchedulerGroup
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,ACCEPTS_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: ScopeService
+DISPLAY_NAME: PA Collector
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: SCPolicySvc
+DISPLAY_NAME: Smart Card Removal Policy
+Allows the system to be configured to lock the user desktop upon smart card removal.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: seclogon
+DISPLAY_NAME: Secondary Logon
+Enables starting processes under alternate credentials. If this service is stopped, this type of logon access will be unavailable. If this service is disabled, any services that explicitly depend on it will fail to start.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: SENS
+DISPLAY_NAME: System Event Notification Service
+Monitors system events and notifies subscribers to COM+ Event System of these events.
+	GROUP		  : ProfSvc_Group
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: SessionEnv
+DISPLAY_NAME: Remote Desktop Configuration
+Remote Desktop Configuration service (RDCS) is responsible for all Remote Desktop Services and Remote Desktop related configuration and session maintenance activities that require SYSTEM context. These include per-session temporary folders, RD themes, and RD certificates.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: SharedAccess
+DISPLAY_NAME: Internet Connection Sharing (ICS)
+Provides network address translation, addressing, name resolution and/or intrusion prevention services for a home or small office network.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: ShellHWDetection
+DISPLAY_NAME: Shell Hardware Detection
+Provides notifications for AutoPlay hardware events.
+	GROUP		  : ShellSvcGroup
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: smphost
+DISPLAY_NAME: Microsoft Storage Spaces SMP
+Host service for the Microsoft Storage Spaces management provider. If this service is stopped or disabled, Storage Spaces cannot be managed.
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: SNMPTRAP
+DISPLAY_NAME: SNMP Trap
+Receives trap messages generated by local or remote Simple Network Management Protocol (SNMP) agents and forwards the messages to SNMP management programs running on this computer. If this service is stopped, SNMP-based programs on this computer will not receive SNMP trap messages. If this service is disabled, any services that explicitly depend on it will fail to start.
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: Spooler
+DISPLAY_NAME: Print Spooler
+This service spools print jobs and handles interaction with the printer.  If you turn off this service, you won’t be able to print or see your printers.
+	GROUP		  : SpoolerGroup
+	TYPE		  : 110 WIN32_OWN_PROCESS INTERACTIVE_PROCESS  
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: sppsvc
+DISPLAY_NAME: Software Protection
+Enables the download, installation and enforcement of digital licenses for Windows and Windows applications. If the service is disabled, the operating system and licensed applications may run in a notification mode. It is strongly recommended that you not disable the Software Protection service.
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: SSDPSRV
+DISPLAY_NAME: SSDP Discovery
+Discovers networked devices and services that use the SSDP discovery protocol, such as UPnP devices. Also announces SSDP devices and services running on the local computer. If this service is stopped, SSDP-based devices will not be discovered. If this service is disabled, any services that explicitly depend on it will fail to start.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: SstpSvc
+DISPLAY_NAME: Secure Socket Tunneling Protocol Service
+Provides support for the Secure Socket Tunneling Protocol (SSTP) to connect to remote computers using VPN. If this service is disabled, users will not be able to use SSTP to access remote servers.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: svsvc
+DISPLAY_NAME: Spot Verifier
+Verifies potential file system corruptions.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: swprv
+DISPLAY_NAME: Microsoft Software Shadow Copy Provider
+Manages software-based volume shadow copies taken by the Volume Shadow Copy service. If this service is stopped, software-based volume shadow copies cannot be managed. If this service is disabled, any services that explicitly depend on it will fail to start.
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: SysMain
+DISPLAY_NAME: Superfetch
+Maintains and improves system performance over time.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: SystemEventsBroker
+DISPLAY_NAME: System Events Broker
+Coordinates execution of background work for WinRT application. If this service is stopped or disabled, then background work might not be triggered.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: TapiSrv
+DISPLAY_NAME: Telephony
+Provides Telephony API (TAPI) support for programs that control telephony devices on the local computer and, through the LAN, on servers that are also running the service.
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: TermService
+DISPLAY_NAME: Remote Desktop Services
+Allows users to connect interactively to a remote computer. Remote Desktop and Remote Desktop Session Host Server depend on this service.  To prevent remote use of this computer, clear the checkboxes on the Remote tab of the System properties control panel item.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,ACCEPTS_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: Themes
+DISPLAY_NAME: Themes
+Provides user experience theme management.
+	GROUP		  : ProfSvc_Group
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: THREADORDER
+DISPLAY_NAME: Thread Ordering Server
+Provides ordered execution for a group of threads within a specific period of time.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: TieringEngineService
+DISPLAY_NAME: Storage Tiers Management
+Optimizes the placement of data in storage tiers on all tiered storage spaces in the system.
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: TrkWks
+DISPLAY_NAME: Distributed Link Tracking Client
+Maintains links between NTFS files within a computer or across computers in a network.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,ACCEPTS_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: TrustedInstaller
+DISPLAY_NAME: Windows Modules Installer
+Enables installation, modification, and removal of Windows updates and optional components. If this service is disabled, install or uninstall of Windows updates might fail for this computer.
+	GROUP		  : ProfSvc_Group
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: TTService
+DISPLAY_NAME: PA Transaction Manager
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: UALSVC
+DISPLAY_NAME: User Access Logging Service
+This service logs unique client access requests, in the form of IP addresses and user names, of installed products and roles on the local server. This information can be queried, via Powershell, by administrators needing to quantify client demand of server software for offline Client Access License (CAL) management. If the service is disabled, client requests will not be logged and will not be retrievable via Powershell queries. Stopping the service will not affect query of historical data (see supporting documentation for steps to delete historical data). The local system administrator must consult his, or her, Windows Server license terms to determine the number of CALs that are required for the server software to be appropriately licensed; use of the UAL service and data does not alter this obligation.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,ACCEPTS_PRESHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: UI0Detect
+DISPLAY_NAME: Interactive Services Detection
+Enables user notification of user input for interactive services, which enables access to dialogs created by interactive services when they appear. If this service is stopped, notifications of new interactive service dialogs will no longer function and there might not be access to interactive service dialogs. If this service is disabled, both notifications of and access to new interactive service dialogs will no longer function.
+	TYPE		  : 110 WIN32_OWN_PROCESS INTERACTIVE_PROCESS  
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: UmRdpService
+DISPLAY_NAME: Remote Desktop Services UserMode Port Redirector
+Allows the redirection of Printers/Drives/Ports for RDP connections
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,ACCEPTS_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: upnphost
+DISPLAY_NAME: UPnP Device Host
+Allows UPnP devices to be hosted on this computer. If this service is stopped, any hosted UPnP devices will stop functioning and no additional hosted devices can be added. If this service is disabled, any services that explicitly depend on it will fail to start.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: VaultSvc
+DISPLAY_NAME: Credential Manager
+Provides secure storage and retrieval of credentials to users, applications and security service packages.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: vds
+DISPLAY_NAME: Virtual Disk
+Provides management services for disks, volumes, file systems, and storage arrays.
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: vmicguestinterface
+DISPLAY_NAME: Hyper-V Guest Service Interface
+Provides an interface for the Hyper-V host to interact with specific services running inside the virtual machine.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: vmicheartbeat
+DISPLAY_NAME: Hyper-V Heartbeat Service
+Monitors the state of this virtual machine by reporting a heartbeat at regular intervals. This service helps you identify running virtual machines that have stopped responding.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: vmickvpexchange
+DISPLAY_NAME: Hyper-V Data Exchange Service
+Provides a mechanism to exchange data between the virtual machine and the operating system running on the physical computer.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: vmicrdv
+DISPLAY_NAME: Hyper-V Remote Desktop Virtualization Service
+Provides a platform for communication between the virtual machine and the operating system running on the physical computer.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: vmicshutdown
+DISPLAY_NAME: Hyper-V Guest Shutdown Service
+Provides a mechanism to shut down the operating system of this virtual machine from the management interfaces on the physical computer.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: vmictimesync
+DISPLAY_NAME: Hyper-V Time Synchronization Service
+Synchronizes the system time of this virtual machine with the system time of the physical computer.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: vmicvss
+DISPLAY_NAME: Hyper-V Volume Shadow Copy Requestor
+Coordinates the communications that are required to use Volume Shadow Copy Service to back up applications and data on this virtual machine from the operating system on the physical computer.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: VMTools
+DISPLAY_NAME: VMTools
+Provides support for synchronizing objects between the host and guest operating systems.
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,PAUSABLE,ACCEPTS_PRESHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: vmvss
+DISPLAY_NAME: VMware Snapshot Provider
+VMware Snapshot Provider
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: vmware-converter-agent
+DISPLAY_NAME: VMware vCenter Converter Standalone Agent
+VMware vCenter Converter Standalone Agent provides virtual machine conversion and reconfiguration services.
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,ACCEPTS_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: vmware-converter-server
+DISPLAY_NAME: VMware vCenter Converter Standalone Server
+VMware vCenter Converter Standalone Server provides centralized management of Converter Stadalone agents and tasks.
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,ACCEPTS_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: vmware-converter-worker
+DISPLAY_NAME: VMware vCenter Converter Standalone Worker
+VMware vCenter Converter Standalone Worker helps VMware vCenter Converter Standalone Server to create virtual machines and to orchestrate conversion tasks.
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,ACCEPTS_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: VRTSpbx
+DISPLAY_NAME: Symantec Private Branch Exchange
+Symantec Private Branch Exchange provides single-port access to clients outside the firewall connecting to various services offered by Symantec products.
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: VSS
+DISPLAY_NAME: Volume Shadow Copy
+Manages and implements Volume Shadow Copies used for backup and other purposes. If this service is stopped, shadow copies will be unavailable for backup and the backup may fail. If this service is disabled, any services that explicitly depend on it will fail to start.
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: W32Time
+DISPLAY_NAME: Windows Time
+Maintains date and time synchronization on all clients and servers in the network. If this service is stopped, date and time synchronization will be unavailable. If this service is disabled, any services that explicitly depend on it will fail to start.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,ACCEPTS_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: w3logsvc
+DISPLAY_NAME: W3C Logging Service
+Provides W3C logging for Internet Information Services (IIS). If this service is stopped, W3C logging configured by IIS will not work.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: W3SVC
+DISPLAY_NAME: World Wide Web Publishing Service
+Provides Web connectivity and administration through the Internet Information Services Manager
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,ACCEPTS_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: WAS
+DISPLAY_NAME: Windows Process Activation Service
+The Windows Process Activation Service (WAS) provides process activation, resource management and health management services for message-activated applications.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,PAUSABLE,ACCEPTS_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: Wcmsvc
+DISPLAY_NAME: Windows Connection Manager
+Makes automatic connect/disconnect decisions based on the network connectivity options currently available to the PC and enables management of network connectivity based on Group Policy settings.
+	GROUP		  : TDI
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,ACCEPTS_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: WcsPlugInService
+DISPLAY_NAME: Windows Color System
+The WcsPlugInService service hosts third-party Windows Color System color device model and gamut map model plug-in modules. These plug-in modules are vendor-specific extensions to the Windows Color System baseline color device and gamut map models. Stopping or disabling the WcsPlugInService service will disable this extensibility feature, and the Windows Color System will use its baseline model processing rather than the vendor's desired processing. This might result in inaccurate color rendering.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: WdiServiceHost
+DISPLAY_NAME: Diagnostic Service Host
+The Diagnostic Service Host is used by the Diagnostic Policy Service to host diagnostics that need to run in a Local Service context.  If this service is stopped, any diagnostics that depend on it will no longer function.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: WdiSystemHost
+DISPLAY_NAME: Diagnostic System Host
+The Diagnostic System Host is used by the Diagnostic Policy Service to host diagnostics that need to run in a Local System context.  If this service is stopped, any diagnostics that depend on it will no longer function.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: Wecsvc
+DISPLAY_NAME: Windows Event Collector
+This service manages persistent subscriptions to events from remote sources that support WS-Management protocol. This includes Windows Vista event logs, hardware and IPMI-enabled event sources. The service stores forwarded events in a local Event Log. If this service is stopped or disabled event subscriptions cannot be created and forwarded events cannot be accepted.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: WEPHOSTSVC
+DISPLAY_NAME: Windows Encryption Provider Host Service
+Windows Encryption Provider Host Service brokers encryption related functionalities from 3rd Party Encryption Providers to processes that need to evaluate and apply EAS policies. Stopping this will compromise EAS compliancy checks that have been established by the connected Mail Accounts
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: wercplsupport
+DISPLAY_NAME: Problem Reports and Solutions Control Panel Support
+This service provides support for viewing, sending and deletion of system-level problem reports for the Problem Reports and Solutions control panel.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: WerSvc
+DISPLAY_NAME: Windows Error Reporting Service
+Allows errors to be reported when programs stop working or responding and allows existing solutions to be delivered. Also allows logs to be generated for diagnostic and repair services. If this service is stopped, error reporting might not work correctly and results of diagnostic services and repairs might not be displayed.
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: WinHttpAutoProxySvc
+DISPLAY_NAME: WinHTTP Web Proxy Auto-Discovery Service
+WinHTTP implements the client HTTP stack and provides developers with a Win32 API and COM Automation component for sending HTTP requests and receiving responses. In addition, WinHTTP provides support for auto-discovering a proxy configuration via its implementation of the Web Proxy Auto-Discovery (WPAD) protocol.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: Winmgmt
+DISPLAY_NAME: Windows Management Instrumentation
+Provides a common interface and object model to access management information about operating system, devices, applications and services. If this service is stopped, most Windows-based software will not function properly. If this service is disabled, any services that explicitly depend on it will fail to start.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,PAUSABLE,ACCEPTS_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: WinRM
+DISPLAY_NAME: Windows Remote Management (WS-Management)
+Windows Remote Management (WinRM) service implements the WS-Management protocol for remote management. WS-Management is a standard web services protocol used for remote software and hardware management. The WinRM service listens on the network for WS-Management requests and processes them. The WinRM Service needs to be configured with a listener using winrm.cmd command line tool or through Group Policy in order for it to listen over the network. The WinRM service provides access to WMI data and enables event collection. Event collection and subscription to events require that the service is running. WinRM messages use HTTP and HTTPS as transports. The WinRM service does not depend on IIS but is preconfigured to share a port with IIS on the same machine.  The WinRM service reserves the /wsman URL prefix. To prevent conflicts with IIS, administrators should ensure that any websites hosted on IIS do not use the /wsman URL prefix.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,ACCEPTS_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: wmiApSrv
+DISPLAY_NAME: WMI Performance Adapter
+Provides performance library information from Windows Management Instrumentation (WMI) providers to clients on the network. This service only runs when Performance Data Helper is activated.
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: WMSVC
+DISPLAY_NAME: Web Management Service
+The Web Management Service enables remote and delegated management capabilities for administrators to manage for the Web server, sites and applications present on this machine.
+	TYPE		  : 10 WIN32_OWN_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: WPDBusEnum
+DISPLAY_NAME: Portable Device Enumerator Service
+Enforces group policy for removable mass-storage devices. Enables applications such as Windows Media Player and Image Import Wizard to transfer and synchronize content using removable mass-storage devices.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: WSService
+DISPLAY_NAME: Windows Store Service (WSService)
+Provides infrastructure support for Windows Store.This service is started on demand and if disabled applications bought using Windows Store will not behave correctly.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: wuauserv
+DISPLAY_NAME: Windows Update
+Enables the detection, download, and installation of updates for Windows and other programs. If this service is disabled, users of this computer will not be able to use Windows Update or its automatic updating feature, and programs will not be able to use the Windows Update Agent (WUA) API.
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 4  RUNNING
+			       (STOPPABLE,NOT_PAUSABLE,ACCEPTS_PRESHUTDOWN)
+	WIN32_EXIT_CODE	  : 0  (0x0)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+
+SERVICE_NAME: wudfsvc
+DISPLAY_NAME: Windows Driver Foundation - User-mode Driver Framework
+Creates and manages user-mode driver processes. This service cannot be stopped.
+	GROUP		  : PlugPlay
+	TYPE		  : 20 WIN32_SHARE_PROCESS 
+	STATE		  : 1  STOPPED
+			       (NOT_STOPPABLE,NOT_PAUSABLE,IGNORES_SHUTDOWN)
+	WIN32_EXIT_CODE	  : 1077 (0x435)
+	SERVICE_EXIT_CODE : 0  (0x0)
+	CHECKPOINT	  : 0x0
+	WAIT_HINT	  : 0 ms
+

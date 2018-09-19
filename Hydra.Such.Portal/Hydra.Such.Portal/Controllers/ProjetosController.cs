@@ -2021,7 +2021,7 @@ namespace Hydra.Such.Portal.Controllers
                 JValue authorizationTotalValue = requestParams["authorizationTotalValue"] as JValue;
                 if (authorizationTotalValue != null)
                 {
-                    string str = (string)authorizationTotalValue.Value;
+                    string str = authorizationTotalValue.Value.ToString();
                     authorizationTotal = decimal.Parse(str, CultureInfo.InvariantCulture);
                 }
 
@@ -2029,6 +2029,13 @@ namespace Hydra.Such.Portal.Controllers
                 JArray projMovementsValue = requestParams["projMovements"] as JArray;
                 if (projMovementsValue != null) 
                     projMovements = projMovementsValue.ToObject<List<ProjectMovementViewModel>>();
+                projMovements.ForEach(x =>
+                {
+                    if (x.FunctionalAreaCode.StartsWith("5") && !x.MealType.HasValue)
+                    {
+                        result.eMessages.Add(new TraceInformation(TraceType.Error, "O tipo de refeição é obrigatório nas linhas com Área Funcional Nutrição"));
+                    }
+                });
 
                 Projetos project = null;
                 Contratos contract = null;
@@ -2619,7 +2626,7 @@ namespace Hydra.Such.Portal.Controllers
                         return Json(result);
                     }
                 }
-
+                
                 if (groupedbyclient != null)
                 {
                     foreach (var header in groupedbyclient)
@@ -2645,16 +2652,15 @@ namespace Hydra.Such.Portal.Controllers
 
                                 try
                                 {
-                                    //List<SPInvoiceListViewModel> linesList = new List<SPInvoiceListViewModel>();
-                                    //foreach (var line in data)
-                                    //{
-                                    //    if (line.InvoiceToClientNo == header.InvoiceToClientNo && line.Date == header.Date && line.CommitmentNumber == header.CommitmentNumber && line.ClientRequest == header.ClientRequest)
-                                    //    {
-                                    //        line.DocumentNo = headerNo;
-                                    //        linesList.Add(line);
-                                    //    }
-                                    //}
-                                    header.Items.ForEach(x => x.DocumentNo = headerNo);
+                                    header.Items.ForEach(x =>
+                                    {
+                                        x.DocumentNo = headerNo;
+                                        //Para Nota de crédito passar o valor para positivo
+                                        if (invoiceHeader.MovementType == 4 && x.TotalPrice.HasValue && x.TotalPrice < 0)
+                                            x.TotalPrice = Math.Abs(x.TotalPrice.Value);
+                                        if (invoiceHeader.MovementType == 4 && x.Quantity.HasValue && x.Quantity < 0)
+                                            x.Quantity = Math.Abs(x.Quantity.Value);
+                                    });
 
                                     List<NAVResourcesViewModel> resourceslines = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "");
                                     List<WasteRateViewModel> wasteRates = DBWasteRate.ParseToViewModel(DBWasteRate.GetAll());

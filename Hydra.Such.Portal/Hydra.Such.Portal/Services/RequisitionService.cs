@@ -309,8 +309,9 @@ namespace Hydra.Such.Portal.Services
                         }
                         catch(Exception ex)
                         {
-                            requisition.eMessages.Add(new TraceInformation(TraceType.Error, "Ocorreu um erro ao criar encomenda para o fornecedor núm. " + purchOrder.SupplierId + "; "));
-                            requisition.eMessages.Add(new TraceInformation(TraceType.Exception, purchOrder.SupplierId + " " + ex.Message));
+
+                            requisition.eMessages.Add(new TraceInformation(TraceType.Error, "Ocorreu um erro ao criar encomenda para o fornecedor núm. " + purchOrder.SupplierId + ": " + ex.Message));
+                            //requisition.eMessages.Add(new TraceInformation(TraceType.Exception, purchOrder.SupplierId + " " + ex.Message));
                         }
                     });
 

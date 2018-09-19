@@ -36,16 +36,41 @@ namespace Hydra.Such.Data.NAV
             {
                 WSPurchInvHeaderInterm = new WSPurchaseInvHeader.WSPurchInvHeaderInterm()
                 {
+                    Buy_from_Vendor_No = purchFromSupplier.SupplierId,
                     Pay_to_Vendor_No = purchFromSupplier.SupplierId,
-                    FunctionAreaCode20 = purchFromSupplier.FunctionalAreaCode,
+                    //LocationCode = purchFromSupplier
                     RegionCode20 = purchFromSupplier.RegionCode,
+                    FunctionAreaCode20 = purchFromSupplier.FunctionalAreaCode,
                     ResponsabilityCenterCode20 = purchFromSupplier.CenterResponsibilityCode,
+                    //Your_Reference = purchFromSupplier
+                    //Observacoes = purchFromSupplier;
+                    //Purchaser_Code = purchFromSupplier;
+                    //N_Consulta = purchFromSupplier;
+                    //Expected_Receipt_Date = purchFromSupplier;
+                    //Expected_Receipt_DateSpecified = true;
+                    //Responsibility_Center = purchFromSupplier;
+                    //V_Prop_Num = purchFromSupplier;
+                    //Ship_to_Name = purchFromSupplier;
+                    //Ship_to_Name_2 = purchFromSupplier;
+                    //Ship_to_Address = purchFromSupplier;
+                    //Ship_to_Address_2 = purchFromSupplier;
+                    //Ship_to_City = purchFromSupplier;
+                    //Ship_to_Contact = purchFromSupplier;
+                    //Ship_to_Post_Code = purchFromSupplier;
+                    //Ship_to_County = purchFromSupplier;
+                    //Ship_to_Country_Region_Code = purchFromSupplier;
+                    Requisition_No = purchFromSupplier.RequisitionId,
+                    //Payment_Terms_Code = purchFromSupplier;
                     Mercado_Local_Regiao = (WSPurchaseInvHeader.Mercado_Local_Regiao)localMarketRegion,
                     Mercado_Local_RegiaoSpecified = true,
-                    Down_Payment = purchFromSupplier.InAdvance.HasValue ? purchFromSupplier.InAdvance.Value : false,
-                    Down_PaymentSpecified = purchFromSupplier.InAdvance.HasValue,
+                    //Motivo_Anulacao_Encomenda = purchFromSupplier,
+                    //Motivo_Anulacao_EncomendaSpecified = true;
+                    //Encomenda_Origem_NAV17 = purchFromSupplier,
+                    //Utilizador_Criacao = purchFromSupplier,
                     Prices_Including_VAT = purchFromSupplier.PricesIncludingVAT.HasValue ? purchFromSupplier.PricesIncludingVAT.Value : false,
                     Prices_Including_VATSpecified = purchFromSupplier.PricesIncludingVAT.HasValue,
+                    Down_Payment = purchFromSupplier.InAdvance.HasValue ? purchFromSupplier.InAdvance.Value : false,
+                    Down_PaymentSpecified = purchFromSupplier.InAdvance.HasValue,
                 }
             };
             

@@ -100,6 +100,22 @@ namespace Hydra.Such.Data.Logic.Approvals
             }
         }
 
+        public static List<MovimentosDeAprovação> GetAllREQAssignedToUserFilteredByStatus(string userId, int status)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.UtilizadoresMovimentosDeAprovação.Where(x => x.Utilizador == userId).Select(x => x.NºMovimentoNavigation).Where(x => x.Estado == status && x.Tipo == 1).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
         #region Parses
 
         public static ApprovalMovementsViewModel ParseToViewModel(MovimentosDeAprovação x)

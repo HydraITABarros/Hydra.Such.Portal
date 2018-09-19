@@ -140,9 +140,9 @@
 
         <!-- DROPDOWNS POPULATE -->
         <iron-ajax url="/PopulateDropdowns/TipoRequisicoesLista" last-response="{{CBRequesitionType}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{LProjectFunctionalAreaCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{LProjectResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{LProjectRegionCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" id="page_GetFunctionalAreaCode_ajax" last-response="{{LProjectFunctionalAreaCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" id="page_GetResponsabilityCenterCode_ajax" last-response="{{LProjectResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetRegionCode" id="page_GetRegionCode_ajax" last-response="{{LProjectRegionCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetViaturas" last-response="{{CBVehicle}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProjectNavList" last-response="{{CBJobNo}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetNAVVendorComboGrid" last-response="{{CBVendor}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -154,7 +154,7 @@
         <iron-ajax url="/PopulateDropdowns/GetUnitOfMeasureByCode" last-response="{{LCBMeasuresUnit}}" auto id="measuresunit_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/getOpenOrderLineByHeader" last-response="{{CBPurchaseLine}}" id="purchaselines_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/getOpenOrderLineByHeader" last-response="{{CBPurchaseLineGrid}}" id="purchaselinesgrid_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetProjectById" last-response="{{ProjectDims}}" id="get_project_dims" on-response="_getprojectdimsResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <!--<iron-ajax url="/PopulateDropdowns/GetProjectById" last-response="{{ProjectDims}}" id="get_project_dims" on-response="_getprojectdimsResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
 
 
         <iron-ajax url="/PreRequisicoes/CreateNewForThisUser"
@@ -349,10 +349,10 @@
         </template>
 
         <!--<div class="row" style="display: {{ _showPreReqLines }};">
-        <div class="col-lg-12">
-            <paper-button raised id="btnContractAdd" class="" on-tap="_createNewPreReq"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
-        </div>
-    </div>-->
+            <div class="col-lg-12">
+                <paper-button raised id="btnContractAdd" class="" on-tap="_createNewPreReq"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
+            </div>
+        </div>-->
 
         <div class="row break_frm">
             <div class="col-md-12 col-md-12 col-lg-12">
@@ -427,7 +427,7 @@
                                         </div>
 
                                         <div class="col-md-3 ">
-                                            <such-selectbox id="FunctionalAreaCode" name="FunctionalAreaCode" value="{{data.functionalAreaCode}}" label="Cód. Área Funcional" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" onchange="_PopulatePurchaseLines"
+                                            <such-selectbox id="FunctionalAreaCode" name="FunctionalAreaCode" value="{{data.functionalAreaCode}}" label="Cód. Área Funcional" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" on-value-changed="_PopulatePurchaseLines" onchange="_PopulatePurchaseLines"
                                                             items="[[LProjectFunctionalAreaCodes]]"
                                                             text-path="value"
                                                             value-path="id"
@@ -659,8 +659,8 @@
                             <paper-collapse-item class="panel-heading" header="Linhas" closed>
                                 <div class="row break_clear">
                                     <!--<div class="col-lg-2">
-                                    <vaadin-text-field value="{{_LocalCode}}" id="_LocalCode" name="_LocalCode" label="Código Localização" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
-                                </div>-->
+                                        <vaadin-text-field value="{{_LocalCode}}" id="_LocalCode" name="_LocalCode" label="Código Localização" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                    </div>-->
                                     <div class="col-lg-2">
                                         <such-selectbox id="_CBPurchaseLine" value="{{PurchaseLine}}" label="Nº Linha Enc. Aberto" on-value-changed="_setPurchaseLine"
                                                         items="[[CBPurchaseLine]]"
@@ -1132,27 +1132,27 @@
                                         </template>
                                     </vaadin-grid-column>
                                     <!--<vaadin-grid-column width="200px" resizable>
-                                    <template class="header">
-                                        <vaadin-grid-sorter path="openOrderNo">Nº Encomenda Aberto</vaadin-grid-sorter>
-                                        <vaadin-grid-filter path="openOrderNo" />
-                                    </template>
-                                    <template>
-                                        <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-combo-box items="[[GridCBPurchaseHeader]]" id="_CBGridPurchaseHeader" item-value-path="id" item-label-path="id" value="{{item.openOrderNo}}" on-change="_PopulatePurchaseLinesGrid" disabled="{{ !_permissions.update }}">
-                                                <template>
-                                                    <table width="200px">
-                                                        <tr>
-                                                            <td width="60%"> <b>[[item.id]]</b></td>
-                                                        </tr>
-                                                    </table>
-                                                </template>
-                                            </vaadin-combo-box>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="openOrderNo">Nº Encomenda Aberto</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="openOrderNo" />
                                         </template>
-                                        <template is="dom-if" if="{{ !item.selected }}">
-                                            [[item.openOrderNo ]]
+                                        <template>
+                                            <template is="dom-if" if="{{ item.selected }}">
+                                                <vaadin-combo-box items="[[GridCBPurchaseHeader]]" id="_CBGridPurchaseHeader" item-value-path="id" item-label-path="id" value="{{item.openOrderNo}}" on-change="_PopulatePurchaseLinesGrid" disabled="{{ !_permissions.update }}">
+                                                    <template>
+                                                        <table width="200px">
+                                                            <tr>
+                                                                <td width="60%"> <b>[[item.id]]</b></td>
+                                                            </tr>
+                                                        </table>
+                                                    </template>
+                                                </vaadin-combo-box>
+                                            </template>
+                                            <template is="dom-if" if="{{ !item.selected }}">
+                                                [[item.openOrderNo ]]
+                                            </template>
                                         </template>
-                                    </template>
-                                </vaadin-grid-column>-->
+                                    </vaadin-grid-column>-->
                                     <vaadin-grid-column width="150px" resizable>
                                         <template class="header">
                                             <vaadin-grid-sorter path="openOrderLineNo">Nº Linha Encomenda Aberto</vaadin-grid-sorter>
@@ -1297,63 +1297,63 @@
         </paper-dialog>
         <!-- Paper Dialog Anexos-->
         <!--<paper-dialog id="dialogAttach" style="width:70%">
-        <h2>Anexos</h2>
-        <div>
-            <vaadin-upload id="UploadRequest" target="/PreRequisicoes/FileUpload/{{_prerequesitionno}}/{{_lineno}}" method="POST" headers="{'Accept': 'application/json'}" timeout=15000>
+            <h2>Anexos</h2>
+            <div>
+                <vaadin-upload id="UploadRequest" target="/PreRequisicoes/FileUpload/{{_prerequesitionno}}/{{_lineno}}" method="POST" headers="{'Accept': 'application/json'}" timeout=15000>
 
-            </vaadin-upload>
-            <vaadin-grid aria-label="ReqUpdateGrid" items="[[uploads]]" class="grid" multi-sort="true">
-                <vaadin-grid-column width="120px" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="docType">Tipo Origem</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="docType" />
-                    </template>
-                    <template>
-                        {{item.docType}}
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="110px" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="docNumber">Nº Origem</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="docNumber" />
-                    </template>
-                    <template>
-                        {{item.docNumber}}
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="110px" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="docLineNo">Nº Linha</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="docLineNo" />
-                    </template>
-                    <template>
-                        {{item.docLineNo}}
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="80%" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="url">Anexo</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="url" />
-                    </template>
-                    <template>
-                        {{item.url}}
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="20%" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="createDateTime">Anexado em</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="createDateTime" />
-                    </template>
-                    <template>
-                        {{item.createDateTime}}
-                    </template>
-                </vaadin-grid-column>
-            </vaadin-grid>
-        </div>
-        <div class="buttons">
-            <paper-button dialog-dismiss>Cancelar</paper-button>
-        </div>
-    </paper-dialog>-->
+                </vaadin-upload>
+                <vaadin-grid aria-label="ReqUpdateGrid" items="[[uploads]]" class="grid" multi-sort="true">
+                    <vaadin-grid-column width="120px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="docType">Tipo Origem</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="docType" />
+                        </template>
+                        <template>
+                            {{item.docType}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="110px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="docNumber">Nº Origem</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="docNumber" />
+                        </template>
+                        <template>
+                            {{item.docNumber}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="110px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="docLineNo">Nº Linha</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="docLineNo" />
+                        </template>
+                        <template>
+                            {{item.docLineNo}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="80%" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="url">Anexo</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="url" />
+                        </template>
+                        <template>
+                            {{item.url}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="20%" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="createDateTime">Anexado em</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="createDateTime" />
+                        </template>
+                        <template>
+                            {{item.createDateTime}}
+                        </template>
+                    </vaadin-grid-column>
+                </vaadin-grid>
+            </div>
+            <div class="buttons">
+                <paper-button dialog-dismiss>Cancelar</paper-button>
+            </div>
+        </paper-dialog>-->
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
@@ -1480,12 +1480,12 @@
                         return false;
                     else if (e != null) {
                         if (e.openOrderLineNo !== null && e.openOrderLineNo !== "" && e.openOrderLineNo !== undefined)
-                           return true;
+                            return true;
                     }
                     return false;
                 },
                 _getRequesitionType: function (e) {
-                    //debugger;
+                    //uugger;
                     var _self = this;
 
                     var requesitionType = e.detail.value;
@@ -1508,7 +1508,7 @@
                 _getCDirect: function (e) {
                     var requesitionType = this.$.requesitionType.value;
                     var locationId = e.detail.value;
-                    
+
                     this.$.filteredProducts_ajax.body = JSON.stringify({ "rootAreaId": this._areaid, "requisitionType": requesitionType, "locationCode": locationId });
                     this.$.filteredProducts_ajax.generateRequest();
                     if (this.CBLocations != null) {
@@ -1527,8 +1527,26 @@
                 _setProjectDim: function (e) {
                     //debugger;
                     var projectNo = this.$.projectNo.value;
-                    this.$.page_getProject_ajax.body = JSON.stringify(projectNo);
-                    this.$.page_getProject_ajax.generateRequest();
+                    if (projectNo != "") {
+                        this.$.page_getProject_ajax.body = JSON.stringify(projectNo);
+                        this.$.page_getProject_ajax.generateRequest();
+                    }
+                    else {
+                        this.$._CLRegion.value = "";
+                        this.$._CLRegion.valueText = "";
+                        this.$.RegionCode.value = "";
+                        this.$.RegionCode.valueText = "";
+
+                        this.$._CLFunctionalAreaCode.value = "";
+                        this.$._CLFunctionalAreaCode.valueText = "";
+                        this.$.FunctionalAreaCode.value = "";
+                        this.$.FunctionalAreaCode.valueText = "";
+
+                        this.$._CLResponsabilityCenterCode.value = "";
+                        this.$._CLResponsabilityCenterCode.valueText = "";
+                        this.$.ResponsabilityCenterCode.value = "";
+                        this.$.ResponsabilityCenterCode.valueText = "";
+                    }
                 },
 
                 _setProjectDim2: function (e) {
@@ -1599,26 +1617,81 @@
                     }
                 },
                 _getProjectDimsResponse: function (e) {
+                    //debugger;
                     if (e.detail.status === 200) {
-                        if (this.ProjectDims != null) {
+                        this.$.page_GetRegionCode_ajax.generateRequest();
+                        this.$.page_GetResponsabilityCenterCode_ajax.generateRequest();
+                        this.$.page_GetFunctionalAreaCode_ajax.generateRequest();
+
+                        if (this.ProjectDims.regionCode != "") {
                             this.$._CLRegion.value = this.ProjectDims.regionCode;
-                            this.$._CLFunctionalAreaCode.value = this.ProjectDims.functionalAreaCode;
-                            this.$._CLResponsabilityCenterCode.value = this.ProjectDims.responsabilityCenterCode;
 
                             this.$.RegionCode.value = this.ProjectDims.regionCode;
+                        }
+                        else {
+                            this.$._CLRegion.value = "";
+                            this.$._CLRegion.valueText = "";
+
+                            this.$.RegionCode.value = "";
+                            this.$.RegionCode.valueText = "";
+                        }
+
+                        if (this.ProjectDims.functionalAreaCode != "") {
+                            this.$._CLFunctionalAreaCode.value = this.ProjectDims.functionalAreaCode;
+
                             this.$.FunctionalAreaCode.value = this.ProjectDims.functionalAreaCode;
+                        }
+                        else {
+                            this.$._CLFunctionalAreaCode.value = "";
+                            this.$._CLFunctionalAreaCode.valueText = "";
+
+                            this.$.FunctionalAreaCode.value = "";
+                            this.$.FunctionalAreaCode.valueText = "";
+                        }
+
+                        if (this.ProjectDims.responsabilityCenterCode != "") {
+                            this.$._CLResponsabilityCenterCode.value = this.ProjectDims.responsabilityCenterCode;
+
                             this.$.ResponsabilityCenterCode.value = this.ProjectDims.responsabilityCenterCode;
+                        }
+                        else {
+                            this.$._CLResponsabilityCenterCode.value = "";
+                            this.$._CLResponsabilityCenterCode.valueText = "";
+
+                            this.$.ResponsabilityCenterCode.value = "";
+                            this.$.ResponsabilityCenterCode.valueText = "";
                         }
                     }
                 },
 
                 _getProjectDimsResponse2: function (e) {
                     if (e.detail.status === 200) {
-                        if (this.ProjectDims2 != null) {
+                        this.$.page_GetRegionCode_ajax.generateRequest();
+                        this.$.page_GetResponsabilityCenterCode_ajax.generateRequest();
+                        this.$.page_GetFunctionalAreaCode_ajax.generateRequest();
 
-                            this.$.RegionCode.value = this.ProjectDims2.regionCode;
-                            this.$.FunctionalAreaCode.value = this.ProjectDims2.functionalAreaCode;
-                            this.$.ResponsabilityCenterCode.value = this.ProjectDims2.responsabilityCenterCode;
+                        if (this.ProjectDims2.regionCode != "") {
+                            this.$._CLRegion.value = this.ProjectDims2.regionCode;
+                        }
+                        else {
+                            this.$._CLRegion.value = "";
+                            this.$._CLRegion.valueText = "";
+                        }
+
+                        if (this.ProjectDims2.functionalAreaCode != "") {
+                            this.$._CLFunctionalAreaCode.value = this.ProjectDims2.functionalAreaCode;
+                        }
+                        else {
+                            this.$._CLFunctionalAreaCode.value = "";
+                            this.$._CLFunctionalAreaCode.valueText = "";
+                        }
+
+                        if (this.ProjectDims2.responsabilityCenterCode != "") {
+                            this.$._CLResponsabilityCenterCode.value = this.ProjectDims2.responsabilityCenterCode;
+                        }
+                        else {
+                            this.$._CLResponsabilityCenterCode.value = "";
+                            this.$._CLResponsabilityCenterCode.valueText = "";
                         }
                     }
                 },
@@ -1724,6 +1797,7 @@
                 },
 
                 _update: function () {
+                    //debugger;
                     this.data.area = this._areaid;
                     this._executeRequest("/PreRequisicoes/UpdatePreRequesition", this.data)
                 },
@@ -2017,15 +2091,15 @@
                 },
 
 
-                _getprojectdimsResponse: function (e) {
-                    if (this.ProjectDims != null) {
-                        var line = this.dataLines.lines.find(x => x == this._SelectedLine);
-                        line.regionCode = this.ProjectDims[0].regionCode;
-                        line.functionalAreaCode = this.ProjectDims[0].areaCode;
-                        line.centerResponsibilityCode = this.ProjectDims[0].centerResponsibilityCode;
-                    }
-                    this.$.grid_prereqlines.clearCache();
-                },
+                //_getprojectdimsResponse: function (e) {
+                //    if (this.ProjectDims != null) {
+                //        var line = this.dataLines.lines.find(x => x == this._SelectedLine);
+                //        line.regionCode = this.ProjectDims[0].regionCode;
+                //        line.functionalAreaCode = this.ProjectDims[0].areaCode;
+                //        line.centerResponsibilityCode = this.ProjectDims[0].centerResponsibilityCode;
+                //    }
+                //    this.$.grid_prereqlines.clearCache();
+                //},
                 _GridOpenLineChange: function (e) {
                     var line = this.CBPurchaseLine.find(x => x.id == e.currentTarget.__data.selectedItem.id);
                     if (line != null) {
@@ -2388,7 +2462,7 @@
                 //    }
                 //},
                 _ConvertDecimals: function (e) {
-                    var stringVal = ""+e.target.value;
+                    var stringVal = "" + e.target.value;
                     e.target.value = stringVal.replace(",", ".");
 
                 },
@@ -2413,7 +2487,7 @@
                             }
 
                             this.$.grid_prereqlines.clearCache();
-                             //Não existe gridpurchaseheader_ajax
+                            //Não existe gridpurchaseheader_ajax
                             //if (!(item.centerResponsibilityCode == "" || item.centerResponsibilityCode == null)) {
                             //    this.$.gridpurchaseheader_ajax.body = JSON.stringify(item.centerResponsibilityCode);
                             //    this.$.gridpurchaseheader_ajax.generateRequest();
@@ -2467,6 +2541,7 @@
                 },
 
                 _PopulatePurchaseLines: function (data) {
+                    debugger;
                     var codArea = this.$.FunctionalAreaCode.value;
                     this.PurchaseLine = "";
                     this.$.purchaselines_ajax.body = JSON.stringify(codArea);
@@ -2559,13 +2634,16 @@
                 },
                 _GetProjetoNoCabecalhoResponse: function (e) {
                     //debugger;
-                    if (this.ProjetoNo != "") {
-                        this.$.projectNo.value = this.ProjetoNo;
-                    }
-                    else {
-                        this.$.projectNo.value = this.ProjetoNo;
-                        this.$.projectNo.valueText = this.ProjetoNo;
-                    }
+                    //if (this.ProjetoNo != "") {
+                    //    this.$.projectNo.value = this.ProjetoNo;
+                    //}
+                    //else {
+                    //    this.$.projectNo.value = this.ProjetoNo;
+                    //    this.$.projectNo.valueText = this.ProjetoNo;
+                    //}
+
+                    this.$.projectNo.value = this.ProjetoNo;
+                    this.$.projectNo.valueText = this.ProjetoNo;
                 },
 
                 _GetNoProjetoLinha: function (e) {
@@ -2585,7 +2663,7 @@
                     }
                 },
 
-                _goBack: function(e) {
+                _goBack: function (e) {
                     window.history.back();
                 },
             });

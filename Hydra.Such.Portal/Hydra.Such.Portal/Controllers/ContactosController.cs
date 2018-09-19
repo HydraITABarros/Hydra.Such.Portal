@@ -250,9 +250,9 @@ namespace Hydra.Such.Portal.Controllers
             List<ContactViewModel> result = DBContacts.GetAll().ParseToViewModel();
             result.ForEach(CT =>
             {
-                CT.RegiaoText = CT.Regiao != null ? DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 1).Where(x => x.Code == CT.Regiao).FirstOrDefault().Name : "";
+                CT.RegiaoText = CT.Regiao != null && CT.Regiao != "" ? DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 1).Where(x => x.Code == CT.Regiao).FirstOrDefault().Name : "";
             });
-            return Json(result);
+            return Json(result.OrderByDescending(x => x.Id));
         }
 
         //1

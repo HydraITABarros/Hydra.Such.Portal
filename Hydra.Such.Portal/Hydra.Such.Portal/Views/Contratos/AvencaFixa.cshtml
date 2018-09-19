@@ -329,6 +329,22 @@
 
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageMultiple" duration="8000" horizontalAlign="right" class="toastMultiple">
+            <template is="dom-repeat" items="{{ invoiceCount.eMessages }}">
+                <template is="dom-if" if="{{ _isError(item.type) }}">
+                    <div>&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true">{{ item.message }}</i></div>
+                </template>
+                <template is="dom-if" if="{{ _isSuccess(item.type) }}">
+                    <div>&nbsp;<i class="fa fa-check" aria-hidden="true">{{ item.message }}</i></div>
+                </template>
+            </template>
+            <template is="dom-if" if="{{ _hasErrors }}">
+                <div style="text-align: right;">
+                    <paper-button id="btnCloseMultipleToastMessageDlg" horizontalAlign="right" on-tap="_toggleToastMultiple">Fechar</paper-button>
+                </div>
+            </template>
+        </paper-toast>
+
     </template>
 
     <script>
@@ -356,6 +372,10 @@
                         value: function () {
                             return {};
                         }
+                    },
+                    _hasErrors: {
+                        type: Boolean,
+                        value: false
                     },
                    
                 },
@@ -388,7 +408,17 @@
                     this.$.ToastMessageError.text = message;
                     this.$.ToastMessageError.open();
                 },
-
+                _toggleToastMultiple: function () {
+                    //close
+                    this.$.ToastMessageMultiple.toggle();
+                    this.invoiceCount.eMessages = [];
+                },
+                _isError: function (type) {
+                    //Used to show or hide close button
+                    if (!this._hasErrors)
+                        this._hasErrors = type != 1;
+                    return type != 1;
+                },
                 _gridListResponse: function () {
                     this._locked = false;
                     if (this.result == null || this.result == undefined || this.result.length == 0) {
@@ -479,6 +509,19 @@
                     if (this.invoiceCount == true) {
                         this.$.avencaFixaTable.clearCache();
                         this.openToastSuccess("Faturas contabilizadas com sucesso.");
+                    }
+                    else if (this.invoiceCount.eMessages.length > 0) {
+
+                        var errors = this.invoiceCount.eMessages.find(x => x.type != 1);
+                        this._hasErrors = !(errors == undefined);
+                        if (this._hasErrors)
+                            //keep open
+                            this.$.ToastMessageMultiple.duration = 0;
+                        else
+                            //close
+                            this.$.ToastMessageMultiple.duration = 8000;
+                        this.$.ToastMessageMultiple.toggle();
+                        this.invoiceCount.eMessages = [];
                     }
                     else {
                         this.openToastError("Ocorreu um erro ao tentar contabilizar faturas.");
