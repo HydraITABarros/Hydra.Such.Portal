@@ -1,9 +1,11 @@
 ﻿using Hydra.Such.Data.Logic;
+using Hydra.Such.Data.ViewModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Security.Claims;
 using System.Security.Claims;
 using System.Web;
@@ -13,53 +15,30 @@ namespace Hydra.Such.Portal.Filters
 
     public class NavigationFilter : ActionFilterAttribute
     {
-        /*
-        public override void OnActionExecuted(ActionExecutedContext context)
-        {
-
-
-            var cenas = (Controller)context.Controller;
-            //cenas.User;
-
-            var httpMethod = context.HttpContext.Request.Method;
-            //var user = context.HttpContext.User;            
-
-
-            if (httpMethod == "GET" && user.Identity.IsAuthenticated && !user.HasClaim(c => c.Type == "menu"))
-            {
-                // get menu
-                // if menu assign
-                // else define empty menu and assign
-
-                ((ClaimsIdentity)user.Identity).AddClaim(new Claim("menu", "teste"));
-
-                ((ClaimsIdentity)user.Identity).BootstrapContext = ((ClaimsIdentity)user.Identity).BootstrapContext;
-
-                user.AddIdentity((ClaimsIdentity)user.Identity);
-
-                var tres = 2;
-
-            }
-
-        }*/
 
         public override void OnActionExecuting(ActionExecutingContext context)
         {
 
             var httpMethod = context.HttpContext.Request.Method;
             var user = context.HttpContext.User;
-            var session = context.HttpContext.Session;
 
-            var menuTeste = session.GetString("menu");
-
-            if (httpMethod == "GET" && user.Identity.IsAuthenticated /*&& session.GetString("menu") != null*/)
+            if (httpMethod == "GET" && user.Identity.IsAuthenticated)
             {
-                var menuList = DBMenu.GetAllByUserId(user.Identity.Name);
+                var session = context.HttpContext.Session;
+                var viewBag = ((Controller)(context.Controller)).ViewBag;
+                var menu = new List<MenuViewModel>();
 
-                session.SetString("menu", JsonConvert.SerializeObject(menuList));
+                if (session.GetString("menu") == null || true)
+                {
+                    menu = DBMenu.GetAllByUserId(user.Identity.Name).ParseToViewModel();
+                    session.SetString("menu", JsonConvert.SerializeObject(menu));
+                } else
+                {
+                    menu = JsonConvert.DeserializeObject<List<MenuViewModel>>(session.GetString("menu"));
+                }
+                viewBag._menu = menu;
             }
-            base.OnActionExecuting(context);
-        }
+            base.OnActionExecuting(context);}
 
     }
 }

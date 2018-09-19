@@ -7,7 +7,7 @@ namespace Hydra.Such.Data.Database
     {
         public Menu()
         {
-            FeaturesMenus = new HashSet<FeaturesMenus>();
+           // FeaturesMenus = new HashSet<FeaturesMenus>();
         }
 
         public int Id { get; set; }
