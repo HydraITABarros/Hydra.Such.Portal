@@ -84,7 +84,7 @@ namespace Hydra.Such.Data.NAV
 
         /// <summary>
         /// Para criar encomendas com referência a encomendas de compra abertas.
-        /// Necessário para contornar validação do NAV no campo Pay-to Vendor No.". Primeiro criar as linhas ´para gerar as chaves, etc e depois atualizar
+        /// Necessário para contornar validação do NAV no campo Pay-to Vendor No.". Primeiro criar as linhas para gerar as chaves, etc e depois atualizar e preencher com os dados pretendidos.
         /// </summary>
         /// <param name="purchFromSupplier"></param>
         /// <param name="WSConfigurations"></param>
