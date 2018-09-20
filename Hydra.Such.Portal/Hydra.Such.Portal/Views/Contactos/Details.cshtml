@@ -209,6 +209,7 @@
                             }
                             else {
                                 this._showErrorMessage(this.contact.eMessage);
+                                this.$.contactId.value = "";
                             }
                         }
                         else if (e.detail.url.indexOf("Delete") !== -1) {

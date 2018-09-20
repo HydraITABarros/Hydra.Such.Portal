@@ -55,6 +55,11 @@
                 margin-top: 10px;
             }
 
+                paper-button.disabled {
+                    cursor: not-allowed;
+                    pointer-events: none;
+                }
+
             .break_clear {
                 margin-top: 15px;
                 margin-right: 0px !important;
@@ -249,10 +254,10 @@
                                         <vaadin-text-field id="contractNo" name="contractNo" label="Nº Oportunidade" value="{{data.contractNo}}" disabled="{{ !_isCreate}}"></vaadin-text-field>
                                     </div>
                                     <div class="col-md-3 ">
-                                        <vaadin-text-field value="{{data.description}}" id="description" name="description" label="Âmbito do Serviço"  disabled="{{ !_permissions.update }}">  </vaadin-text-field>
+                                        <vaadin-text-field value="{{data.description}}" id="description" name="description" label="Âmbito do Serviço" disabled="{{ !_permissions.update }}">  </vaadin-text-field>
                                     </div>
                                     <div class="col-md-3 ">
-                                        <such-selectbox id="mClients" value="{{data.clientNo}}" label="Cliente"
+                                        <such-selectbox id="mClients" value="{{data.clientNo}}" label="Nome Cliente"
                                                         items="[[CBClients]]"
                                                         text-path="name"
                                                         value-path="no_"
@@ -263,7 +268,7 @@
                                         </such-selectbox>
                                     </div>
                                     <div class="col-md-3 ">
-                                        <such-selectbox id="contactNo" value="{{data.contactNo}}" label="Contato"
+                                        <such-selectbox id="contactNo" value="{{data.contactNo}}" label="Nome Contacto"
                                                         items="[[CBContacts]]"
                                                         text-path="value"
                                                         value-path="id"
@@ -325,7 +330,9 @@
                                         <vaadin-text-field value="{{data.internalNumeration}}" id="mInternalNumeration" name="mInternalNumeration" label="Numeração Interna" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                     </div>
                                     <div class="col-md-3 ">
-                                        <vaadin-text-field value="{{data.totalProposalValue}}" auto-validate type="number" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals" error-message="Valor inválido" id="mTotalProposalValue" name="mTotalProposalValue" label="Valor Total" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                        <vaadin-text-field value="{{data.totalProposalValue}}" auto-validate type="number" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals" error-message="Valor inválido" id="mTotalProposalValue" name="mTotalProposalValue" label="Valor Total" disabled="{{ !_permissions.update }}">
+                                            <div slot="suffix">€</div>
+                                        </vaadin-text-field>
                                     </div>
                                     <div class="col-md-3 ">
                                         <!--<vaadin-combo-box items="[[CBRegions]]" id="mCodeRegion" item-value-path="id" item-label-path="value" value="{{data.codeRegion}}" label="Cód. Região" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
@@ -429,7 +436,9 @@
                                 </div>
                                 <div class="row break_clear">
                                     <div class="col-md-3 ">
-                                        <vaadin-text-field value="{{data.baseValueProcedure}}" id="mBaseValueProcedure" name="mBaseValueProcedure" type="number" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals" label="Valor Base Procedimento" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                        <vaadin-text-field value="{{data.baseValueProcedure}}" id="mBaseValueProcedure" name="mBaseValueProcedure" type="number" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals" label="Valor Base Procedimento" disabled="{{ !_permissions.update }}">
+                                            <div slot="suffix">€</div>
+                                        </vaadin-text-field>
                                     </div>
                                     <div class="col-md-9 ">
                                         <such-textarea rows="5" value="{{data.notes}}" id="mNotes" name="mNotes" label="Notas" disabled="{{ !_permissions.update }}"> </such-textarea>
@@ -511,6 +520,8 @@
                                     </div>
                                 </div>
                             </div>
+
+
 
                             <!--Envio-->
                             <!--<div>
@@ -662,7 +673,8 @@
                                     </div>
 
                                     <div class="col-lg-2">
-                                        <vaadin-text-field value="{{_CLQuantity}}" id="_CLQuantity" name="_CLQuantity" label="Quantidade" disabled="{{ !_permissions.update }}" type="number" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"> </vaadin-text-field>
+                                        <vaadin-text-field value="{{_CLQuantity}}" id="_CLQuantity" name="_CLQuantity" label="Quantidade" disabled="{{ !_permissions.update }}" type="number" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals">
+                                        </vaadin-text-field>
                                     </div>
 
                                     <div class="col-lg-2">
@@ -686,12 +698,16 @@
                                     </div>
 
                                     <div class="col-lg-2">
-                                        <vaadin-text-field value="{{_CLUnitPrice}}" id="_CLUnitPrice" name="_CLUnitPrice" label="Preço Unitário (€)" disabled="{{ !_permissions.update }}" type="number" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals" />
+                                        <vaadin-text-field value="{{_CLUnitPrice}}" id="_CLUnitPrice" name="_CLUnitPrice" label="Preço Unitário (€)" disabled="{{ !_permissions.update }}" type="number" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals">
+                                            <div slot="suffix">€</div>
+                                        </vaadin-text-field>
                                     </div>
                                 </div>
                                 <div class="row break_clear">
                                     <div class="col-lg-2">
-                                        <vaadin-text-field value="{{_CLDiscountLine}}" id="_CLDiscountLine" name="_CLDiscountLine" label="Desconto Linha (€)" disabled="{{ !_permissions.update }}" type="number" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"> </vaadin-text-field>
+                                        <vaadin-text-field value="{{_CLDiscountLine}}" id="_CLDiscountLine" name="_CLDiscountLine" label="Desconto Linha (€)" disabled="{{ !_permissions.update }}" type="number" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals">
+                                            <div slot="suffix">€</div>
+                                        </vaadin-text-field>
                                     </div>
 
                                     <div class="col-lg-2 alignPoga">
@@ -788,6 +804,7 @@
                                                 </paper-icon-item>
                                             </template>
                                         </vaadin-combo-box>-->
+                                        <Re
 
                                         <such-selectbox id="_CLResponsible" name="_CLResponsible" value="{{_CLResponsible}}" label="Responsável" disabled="{{ !_permissions.update }}"
                                                         items="[[CBEmployees]]"
@@ -807,6 +824,7 @@
                                                 </paper-icon-item>
                                             </template>
                                         </vaadin-combo-box>-->
+                                        <Se
 
                                         <such-selectbox id="_CLServiceClient" name="_CLServiceClient" value="{{_CLServiceClient}}" label="Cód. Serviço Cliente" disabled="{{ !_permissions.update }}"
                                                         items="[[CBServiceClients]]"
@@ -827,6 +845,7 @@
                                                 </paper-icon-item>
                                             </template>
                                         </vaadin-combo-box>-->
+                                        <In
 
                                         <such-selectbox id="_CLInvoiceGroup" name="_CLInvoiceGroup" value="{{_CLInvoiceGroup}}" label="Grupo Fatura" disabled="{{ !_permissions.update }}"
                                                         items="[[CBInvoiceGroups]]"
@@ -953,7 +972,9 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.unitPrice}}" id="_CLGridUnitPrice" name="_CLGridUnitPrice" disabled="{{ !_permissions.update }}" type="number" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"> <div slot="suffix">€</div></vaadin-text-field>
+                                            <vaadin-text-field value="{{item.unitPrice}}" id="_CLGridUnitPrice" name="_CLGridUnitPrice" disabled="{{ !_permissions.update }}" type="number" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals">
+                                                <div slot="suffix">€</div>
+                                            </vaadin-text-field>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.unitPrice}} €
@@ -967,7 +988,9 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.lineDiscount}}" id="_CLGridDiscountLine" name="_CLGridDiscountLine" disabled="{{ !_permissions.update }}" type="number" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{item.lineDiscount}}" id="_CLGridDiscountLine" name="_CLGridDiscountLine" disabled="{{ !_permissions.update }}" type="number" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals">
+                                                <div slot="suffix">%</div>
+                                            </vaadin-text-field>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.lineDiscount}}%

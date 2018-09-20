@@ -109,6 +109,25 @@
 
                 };
             }
+
+            .red{
+                background-color:red;
+            }
+            .blue {
+                background-color: dodgerblue;
+            }
+            .green {
+                background-color: forestgreen;
+            }
+            .orange {
+                background-color: darkorange;
+            }
+            .yellow {
+                background-color: yellow;
+            }
+            .violet {
+                background-color: blueviolet;
+            }
         </style>
 
         <!-- Acções -->
@@ -550,7 +569,136 @@
                     <!-- Tab Condições Propostas Fornecedores-->
                     <div class="panel panel-default">
                         <div class="panel-body">
+                            <vaadin-grid id="tabRegistoDePropostas" aria-label="TabelaRegistoDePropostas" items="[[ data.registoDePropostas ]]" class="editDialogGrid" selected-items={{selectedItems}} active-item="{{selectedItem}}" multi-sort="true">
+                                <vaadin-grid-column resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="numLinha" style="text-align:center;">Nº Linha</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="numLinha"></vaadin-grid-filter>
+                                    </template>
+                                    <template>
+                                        <vaadin-text-field name="tabRegistoDePropostasnumLinha" id="tabRegistoDePropostasnumLinha" value="{{item.numLinha}}" disabled="true"></vaadin-text-field>
+                                    </template>
+                                </vaadin-grid-column>
 
+                                <vaadin-grid-column resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="numConsultaMercado" style="text-align:center;">Nº Consulta Mercado</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="numConsultaMercado"></vaadin-grid-filter>
+                                    </template>
+                                    <template>
+                                        <vaadin-text-field name="tabRegistoDePropostasnumConsultaMercado" id="tabRegistoDePropostasnumConsultaMercado" value="{{item.numConsultaMercado}}" disabled="true"></vaadin-text-field>
+                                    </template>
+                                </vaadin-grid-column>
+
+
+
+
+
+
+
+                                <vaadin-grid-column resizable width="100px">
+                                    <template class="header">
+                                        <vaadin-text-field class="red" disabled="true"></vaadin-text-field>
+                                    </template>
+                                    <template>
+                                        <vaadin-text-field name="tabRegistoDePropostasfornecedor1Preco" id="tabRegistoDePropostasfornecedor1Preco" value="{{item.fornecedor1Preco}}" on-blur="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column resizable width="20px">
+                                    <template class="header">
+                                        <vaadin-text-field class="red" disabled="true"></vaadin-text-field>
+                                    </template>
+                                    <template>
+                                        <vaadin-checkbox id="tabRegistoDePropostasfornecedor1Select" checked="{{item.fornecedor1Select}}" on-blur="" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column resizable width="100px">
+                                    <template class="header">
+                                        <vaadin-text-field class="blue" disabled="true"></vaadin-text-field>
+                                    </template>
+                                    <template>
+                                        <vaadin-text-field name="tabRegistoDePropostasfornecedor2Preco" id="tabRegistoDePropostasfornecedor2Preco" value="{{item.fornecedor2Preco}}" on-blur="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column resizable width="20px">
+                                    <template class="header">
+                                        <vaadin-text-field class="blue" disabled="true"></vaadin-text-field>
+                                    </template>
+                                    <template>
+                                        <vaadin-checkbox id="tabRegistoDePropostasfornecedor2Select" checked="{{item.fornecedor2Select}}" on-blur="" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column resizable width="100px">
+                                    <template class="header">
+                                        <vaadin-text-field class="green" disabled="true"></vaadin-text-field>
+                                    </template>
+                                    <template>
+                                        <vaadin-text-field name="tabRegistoDePropostasfornecedor3Preco" id="tabRegistoDePropostasfornecedor3Preco" value="{{item.fornecedor3Preco}}" on-blur="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column resizable width="20px">
+                                    <template class="header">
+                                        <vaadin-text-field class="green" disabled="true"></vaadin-text-field>
+                                    </template>
+                                    <template>
+                                        <vaadin-checkbox id="tabRegistoDePropostasfornecedor3Select" checked="{{item.fornecedor3Select}}" on-blur="" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column resizable width="100px">
+                                    <template class="header">
+                                        <vaadin-text-field class="orange" disabled="true"></vaadin-text-field>
+                                    </template>
+                                    <template>
+                                        <vaadin-text-field name="tabRegistoDePropostasfornecedor4Preco" id="tabRegistoDePropostasfornecedor4Preco" value="{{item.fornecedor4Preco}}" on-blur="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column resizable width="20px">
+                                    <template class="header">
+                                        <vaadin-text-field class="orange" disabled="true"></vaadin-text-field>
+                                    </template>
+                                    <template>
+                                        <vaadin-checkbox id="tabRegistoDePropostasfornecedor4Select" checked="{{item.fornecedor4Select}}" on-blur="" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column resizable width="100px">
+                                    <template class="header">
+                                        <vaadin-text-field class="yellow" disabled="true"></vaadin-text-field>
+                                    </template>
+                                    <template>
+                                        <vaadin-text-field name="tabRegistoDePropostasfornecedor5Preco" id="tabRegistoDePropostasfornecedor5Preco" value="{{item.fornecedor5Preco}}" on-blur="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column resizable width="20px">
+                                    <template class="header">
+                                        <vaadin-text-field class="yellow" disabled="true"></vaadin-text-field>
+                                    </template>
+                                    <template>
+                                        <vaadin-checkbox id="tabRegistoDePropostasfornecedor5Select" checked="{{item.fornecedor5Select}}" on-blur="" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column resizable width="100px">
+                                    <template class="header">
+                                        <vaadin-text-field class="violet" disabled="true"></vaadin-text-field>
+                                    </template>
+                                    <template>
+                                        <vaadin-text-field name="tabRegistoDePropostasfornecedor6Preco" id="tabRegistoDePropostasfornecedor6Preco" value="{{item.fornecedor6Preco}}" on-blur="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column resizable width="20px">
+                                    <template class="header">
+                                        <vaadin-text-field class="violet" disabled="true"></vaadin-text-field>
+                                    </template>
+                                    <template>
+                                        <vaadin-checkbox id="tabRegistoDePropostasfornecedor6Select" checked="{{item.fornecedor6Select}}" on-blur="" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
+                                    </template>
+                                </vaadin-grid-column>
+
+                            </vaadin-grid>
                         </div>
                     </div>
                 </iron-pages>
@@ -1039,6 +1187,7 @@
                     if (this._id == "") {
                         this._isCreate = true;
                     }
+                    
                 },
 
                 _validateData: function () {
@@ -1221,6 +1370,8 @@
 
                     var ajax_request = this.$.ajax_gerarRegistoPropostas;
                     ajax_request.body = JSON.stringify(this.data);
+
+
 
                     this._confirmAndExecuteActionToast(
                         "Confirma a Geração de Registo de Propostas?", ajax_request

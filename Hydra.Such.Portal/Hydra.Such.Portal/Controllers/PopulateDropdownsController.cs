@@ -269,7 +269,7 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetRequestOrigin()
         {
             List<EnumData> result = EnumerablesFixed.RequestOrigin;
-            return Json(result);
+            return Json(result.OrderBy(x => x.Value));
         }
 
         [HttpPost]
