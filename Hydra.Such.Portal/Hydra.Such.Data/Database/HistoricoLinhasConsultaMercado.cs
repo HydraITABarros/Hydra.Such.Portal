@@ -31,7 +31,6 @@ namespace Hydra.Such.Data.Database
         public DateTime? ModificadoEm { get; set; }
         public string ModificadoPor { get; set; }
 
-        public Projetos NumProjectoNavigation { get; set; }
         public Requisição NumRequisicaoNavigation { get; set; }
     }
 }

@@ -22,6 +22,5 @@ namespace Hydra.Such.Data.Database
         public bool? Notificado { get; set; }
 
         public ConsultaMercado NumConsultaMercadoNavigation { get; set; }
-        public Projetos NumProjectoNavigation { get; set; }
     }
 }

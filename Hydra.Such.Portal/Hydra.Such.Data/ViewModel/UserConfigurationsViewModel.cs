@@ -14,6 +14,7 @@ namespace Hydra.Such.Data.ViewModel
         public string Regiao { get; set; }
         public string Area { get; set; }
         public string Cresp { get; set; }
+        public string Centroresp { get; set; }
         public string EmployeeNo { get; set; }
         public string ProcedimentosEmailEnvioParaCA { get; set; }
         public string ProcedimentosEmailEnvioParaArea { get; set; }

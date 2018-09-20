@@ -1114,6 +1114,13 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        [HttpPost]
+        public JsonResult GetNAVResponsabilityCenter()
+        {
+
+            List<NAVResponsabilityCenterViewModel> result = DBNAV2017CentroResponsabilidade.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName);
+            return Json(result);
+        }
 
         [HttpPost]
         public JsonResult GetNAVShippingAddresses()
