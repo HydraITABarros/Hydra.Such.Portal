@@ -119,7 +119,8 @@ namespace Hydra.Such.Data.NAV
                    //AmountSpecified = true,
                    Service_Contract_No = x.NºContrato,
                    Contract_No = x.NºContrato,
-                   Job_No = x.NºContrato,
+                   //Job_No = x.NºContrato,//Não definir para não obrigar a ter movimentos
+                   gJobDimension = x.NºContrato,
                    RegionCode20 = x.CódigoRegião,
                    FunctionAreaCode20 = x.CódigoÁreaFuncional,
                    ResponsabilityCenterCode20 = x.CódigoCentroResponsabilidade
@@ -175,9 +176,9 @@ namespace Hydra.Such.Data.NAV
                 line.Line_NoSpecified = true;
                 line.Job_No = x.ProjectNo;
                 line.gJobDimension = x.ProjectDimension;
-                line.Service_Contract_No = x.ContractNo;//string.IsNullOrEmpty(x.ContractNo) ? x.ProjectNo : x.ContractNo;
-                line.Contract_No_Portal = x.ContractNo; //string.IsNullOrEmpty(x.ContractNo) ? x.ProjectNo : x.ContractNo;
-                line.Contract_No = x.ContractNo; // string.IsNullOrEmpty(x.ContractNo)? x.ProjectNo : x.ContractNo;
+                line.Service_Contract_No = x.ContractNo;
+                line.Contract_No_Portal = x.ContractNo;
+                line.Contract_No = x.ContractNo;
                 line.Tipo_Refeicao = (refeicao!=null) ? refeicao.Código.ToString() : "";
                 line.Gen_Prod_Posting_Group = (refeicao != null) ? refeicao.GrupoContabProduto : "";
                 line.Cod_Serv_Cliente = x.ServiceClientCode;
