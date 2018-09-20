@@ -1593,6 +1593,7 @@ namespace Hydra.Such.Portal.Controllers
                 Billable = x.Faturável,
                 Registered = x.Registado,
                 DocumentNo = x.NºDocumento,
+                MealType = x.TipoRefeição,
                 ConsumptionDate = x.DataConsumo == null ? String.Empty : x.DataConsumo.Value.ToString("yyyy-MM-dd")
             }).ToList();
             if (!string.IsNullOrEmpty(NoDocument))
