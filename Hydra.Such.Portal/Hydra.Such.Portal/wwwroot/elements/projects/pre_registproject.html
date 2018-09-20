@@ -1102,7 +1102,15 @@
                         <paper-checkbox name="billable" disabled checked="{{item.billable}}"></paper-checkbox>
                     </template>
                 </vaadin-grid-column>
-
+                <vaadin-grid-column width="100px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="mealType">Tipo Refeição</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="mealType" />
+                    </template>
+                    <template>
+                        [[ _parseMealType(item.mealType) ]]
+                    </template>
+                </vaadin-grid-column>
             </vaadin-grid>
 
 
