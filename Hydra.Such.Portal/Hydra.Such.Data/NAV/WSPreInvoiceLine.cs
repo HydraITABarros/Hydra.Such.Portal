@@ -93,7 +93,14 @@ namespace Hydra.Such.Data.NAV
 
         public static async Task<WSCreatePreInvoiceLine.CreateMultiple_Result> CreatePreInvoiceLineList(List<LinhasFaturaçãoContrato> LinesList, String HeaderNo, NAVWSConfigurations WSConfigurations)
         {
-            
+            //LinesList.ForEach(x =>
+            //{
+            //    switch (x.Tipo)
+            //    {
+            //        case ""
+            //    }
+            //});
+
             int counter = 0;
             WSCreatePreInvoiceLine.WsPreInvoiceLine[] parsedList = LinesList.Select(
                x => new WSCreatePreInvoiceLine.WsPreInvoiceLine
@@ -106,7 +113,8 @@ namespace Hydra.Such.Data.NAV
                    Document_TypeSpecified = true,
                    No = x.Código,
                    TypeSpecified = true,
-                   Type = x.Tipo.Replace(" ", String.Empty) == "3" ? WSCreatePreInvoiceLine.Type.Resource : ConvertType((x.Tipo.Replace(" ", String.Empty)))+1,
+                   
+                   Type = ConvertToSaleslineType(x.Tipo.Replace(" ", String.Empty)),
                    Description = x.Descrição,
                    //Quantity = x.Quantidade.Value,
                    Quantity = x.Quantidade.HasValue ? x.Quantidade.Value : 0,
@@ -221,20 +229,20 @@ namespace Hydra.Such.Data.NAV
             //}
         }
         
-        private static WSCreatePreInvoiceLine.Type ConvertType (string type)
+        private static WSCreatePreInvoiceLine.Type ConvertToSaleslineType (string type)
         {
             switch (type)
             {
                 case "1":
-                    return WSCreatePreInvoiceLine.Type.Resource;
-                case "2":
                     return WSCreatePreInvoiceLine.Type.Item;
+                case "2":
+                    return WSCreatePreInvoiceLine.Type.Resource;
                 case "3":
                     return WSCreatePreInvoiceLine.Type.G_L_Account;
-                case "4":
-                    return WSCreatePreInvoiceLine.Type.Fixed_Asset;
-                case "5":
-                    return WSCreatePreInvoiceLine.Type.Charge_Item;
+                //case "4":
+                //    return WSCreatePreInvoiceLine.Type.Fixed_Asset;
+                //case "5":
+                //    return WSCreatePreInvoiceLine.Type.Charge_Item;
                 default:
                     return WSCreatePreInvoiceLine.Type._blank_;
             }
