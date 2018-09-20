@@ -5,7 +5,7 @@ namespace Hydra.Such.Data.Database
 {
     public partial class ConfiguraçãoCompras
     {
-        public int ID { get; set; }
+        public int Id { get; set; }
         public string Email1Regiao12 { get; set; }
         public string Email2Regiao12 { get; set; }
         public string Email1Regiao23 { get; set; }

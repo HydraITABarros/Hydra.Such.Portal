@@ -17,7 +17,7 @@ namespace Hydra.Such.Data.Logic
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.ConfiguracaoCompras.Where(x => x.ID == ID).FirstOrDefault();
+                    return ctx.ConfiguraçãoCompras.Where(x => x.Id == ID).FirstOrDefault();
                 }
             }
             catch (Exception ex)
@@ -34,7 +34,7 @@ namespace Hydra.Such.Data.Logic
                 using (var ctx = new SuchDBContext())
                 {
                     ObjectToCreate.DataHoraCriacao = DateTime.Now;
-                    ctx.ConfiguracaoCompras.Add(ObjectToCreate);
+                    ctx.ConfiguraçãoCompras.Add(ObjectToCreate);
                     ctx.SaveChanges();
                 }
 
@@ -54,7 +54,7 @@ namespace Hydra.Such.Data.Logic
                 using (var ctx = new SuchDBContext())
                 {
                     ObjectToUpdate.DataHoraModificacao = DateTime.Now;
-                    ctx.ConfiguracaoCompras.Update(ObjectToUpdate);
+                    ctx.ConfiguraçãoCompras.Update(ObjectToUpdate);
                     ctx.SaveChanges();
                 }
 
@@ -77,7 +77,7 @@ namespace Hydra.Such.Data.Logic
 
             ConfiguraçãoCompras result = new ConfiguraçãoCompras()
             {
-                ID = x.ID,
+                Id = x.ID,
                 Email1Regiao12 = x.Email1Regiao12,
                 Email2Regiao12 = x.Email2Regiao12,
                 Email1Regiao23 = x.Email1Regiao23,
@@ -103,7 +103,7 @@ namespace Hydra.Such.Data.Logic
 
             ConfiguracaoComprasViewModel result = new ConfiguracaoComprasViewModel()
             {
-                ID = x.ID,
+                ID = x.Id,
                 Email1Regiao12 = x.Email1Regiao12,
                 Email2Regiao12 = x.Email2Regiao12,
                 Email1Regiao23 = x.Email1Regiao23,
