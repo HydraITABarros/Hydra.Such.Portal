@@ -953,7 +953,7 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                 NumProjecto = ObjectToTransform.NumProjecto,
                 NumRequisicao = ObjectToTransform.NumRequisicao,
                 Quantidade = ObjectToTransform.Quantidade,
-                NumProjectoNavigation = DBProjects.GetById(ObjectToTransform.NumProjecto)
+                //NumProjectoNavigation = DBProjects.GetById(ObjectToTransform.NumProjecto)
             };
 
 
