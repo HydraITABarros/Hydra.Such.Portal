@@ -2690,6 +2690,7 @@ namespace Hydra.Such.Portal.Controllers
                                                 wasteLineToAdd.ResponsabilityCenterCode = resourceFirstLine.ResponsabilityCenterCode;
                                                 wasteLineToAdd.FunctionalAreaCode = resourceFirstLine.FunctionalAreaCode;
                                                 wasteLineToAdd.ContractNo = resourceFirstLine.ProjectNo;
+                                                wasteLineToAdd.ProjectDimension = resourceFirstLine.ProjectNo;
 
                                                 header.Items.Add(wasteLineToAdd);
                                             }

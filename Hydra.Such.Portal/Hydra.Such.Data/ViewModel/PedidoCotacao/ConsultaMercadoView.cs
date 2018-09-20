@@ -45,6 +45,7 @@ namespace Hydra.Such.Data.ViewModel.PedidoCotacao
         public ICollection<LinhasCondicoesPropostasFornecedoresView> LinhasCondicoesPropostasFornecedores { get; set; }
         public ICollection<LinhasConsultaMercadoView> LinhasConsultaMercado { get; set; }
         public ICollection<SeleccaoEntidadesView> SeleccaoEntidades { get; set; }
+        public ICollection<RegistoDePropostasView> RegistoDePropostas { get; set; }
 
         //EXPORTAR PARA EXCEL
         public Object ColunasEXCEL { get; set; }

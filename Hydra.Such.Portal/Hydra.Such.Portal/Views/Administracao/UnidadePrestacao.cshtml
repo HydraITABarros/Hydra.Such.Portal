@@ -99,6 +99,35 @@
                             <vaadin-text-field id="ddDescription" label="Descrição" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
                         </div>
 
+                        <div class="col-lg-2">
+                            <vaadin-text-field id="ddEmail1" label="Email 1" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+                        </div>
+
+                        <div class="col-lg-2">
+                            <vaadin-text-field id="ddEmail2" label="Email 2" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+                        </div>
+
+                        <div class="col-lg-2">
+                            <vaadin-text-field id="ddEmail3" label="Email 3" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-2">
+                            <vaadin-text-field id="ddEmailRegiao12" label="Email Região 12" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+                        </div>
+
+                        <div class="col-lg-2">
+                            <vaadin-text-field id="ddEmailRegiao23" label="Email Região 23" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+                        </div>
+                        <div class="col-lg-2">
+                            <vaadin-text-field id="ddEmailRegiao33" label="Email Região 33" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+                        </div>
+
+                        <div class="col-lg-2">
+                            <vaadin-text-field id="ddEmailRegiao43" label="Email Região 43" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+                        </div>
+
                         <div class="col-lg-2 alignPoga">
                             <paper-button id="btnAddNew" class="btnSave" on-tap="_createPlaces" disabled="{{ _permissionsCreate }}">Criar</paper-button>
                         </div>
@@ -109,7 +138,7 @@
         <br />
 
         <vaadin-grid id="gridFetcUnit" aria-label="gridFetcUnit" items="[[result]]" class="grid" multi-sort="true">
-            <vaadin-grid-column resizable width="150px">
+            <vaadin-grid-column resizable width="50px">
                 <template class="header">
                     <vaadin-grid-sorter path="code">Código</vaadin-grid-sorter>
                     <vaadin-grid-filter path="code" />
@@ -130,6 +159,76 @@
             </vaadin-grid-column>
 
             <vaadin-grid-column resizable width="150px">
+                <template class="header">
+                    <vaadin-grid-sorter path="email1">Email 1</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="email1" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.email1}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px">
+                <template class="header">
+                    <vaadin-grid-sorter path="email2">Email 2</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="email2" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.email2}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px">
+                <template class="header">
+                    <vaadin-grid-sorter path="email3">Email 3</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="email3" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.email3}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px">
+                <template class="header">
+                    <vaadin-grid-sorter path="emailRegiao12">Email Região 12</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="emailRegiao12" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.emailRegiao12}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px">
+                <template class="header">
+                    <vaadin-grid-sorter path="emailRegiao23">Email Região 23</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="emailRegiao23" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.emailRegiao23}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px">
+                <template class="header">
+                    <vaadin-grid-sorter path="emailRegiao33">Email Região 33</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="emailRegiao33" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.emailRegiao33}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px">
+                <template class="header">
+                    <vaadin-grid-sorter path="emailRegiao43">Email Região 43</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="emailRegiao43" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.emailRegiao43}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="50px">
                 <template class="header">
                 </template>
                 <template>
@@ -242,6 +341,13 @@
 
                         var Line = {
                             description: this.$.ddDescription.value,
+                            email1: this.$.ddEmail1.value,
+                            email2: this.$.ddEmail2.value,
+                            email3: this.$.ddEmail3.value,
+                            emailRegiao12: this.$.ddEmailRegiao12.value,
+                            emailRegiao23: this.$.ddEmailRegiao23.value,
+                            emailRegiao33: this.$.ddEmailRegiao33.value,
+                            emailRegiao43: this.$.ddEmailRegiao43.value,
                         };
                         if (this.result == null) {
                             this.result = Line;

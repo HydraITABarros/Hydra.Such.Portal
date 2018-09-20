@@ -145,6 +145,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<UnidadeMedida> UnidadeMedida { get; set; }
         public virtual DbSet<UnidadeMedidaProduto> UnidadeMedidaProduto { get; set; }
         public virtual DbSet<UnidadePrestação> UnidadePrestação { get; set; }
+        public virtual DbSet<ConfiguraçãoCompras> ConfiguracaoCompras { get; set; }
         public virtual DbSet<UnidadesProdutivas> UnidadesProdutivas { get; set; }
         public virtual DbSet<UtilizadoresGruposAprovação> UtilizadoresGruposAprovação { get; set; }
         public virtual DbSet<UtilizadoresMovimentosDeAprovação> UtilizadoresMovimentosDeAprovação { get; set; }
@@ -9675,6 +9676,45 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.UtilizadorModificação)
                     .HasColumnName("Utilizador Modificação")
                     .HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<ConfiguraçãoCompras>(entity =>
+            {
+                entity.HasKey(e => e.ID);
+
+                entity.ToTable("Configuração Compras");
+
+                entity.Property(e => e.Email1Regiao12).HasColumnType("nvarchar(100)");
+
+                entity.Property(e => e.Email2Regiao12).HasColumnType("nvarchar(100)");
+
+                entity.Property(e => e.Email1Regiao23).HasColumnType("nvarchar(100)");
+
+                entity.Property(e => e.Email2Regiao23).HasColumnType("nvarchar(100)");
+
+                entity.Property(e => e.Email1Regiao33).HasColumnType("nvarchar(100)");
+
+                entity.Property(e => e.Email2Regiao33).HasColumnType("nvarchar(100)");
+
+                entity.Property(e => e.Email1Regiao43).HasColumnType("nvarchar(100)");
+
+                entity.Property(e => e.Email2Regiao43).HasColumnType("nvarchar(100)");
+
+                entity.Property(e => e.UtilizadorCriacao)
+                    .HasColumnName("UtilizadorCriacao")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DataHoraCriacao)
+                    .HasColumnName("DataHoraCriacao")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.UtilizadorModificacao)
+                    .HasColumnName("UtilizadorModificacao")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DataHoraModificacao)
+                    .HasColumnName("DataHoraModificacao")
+                    .HasColumnType("datetime");
             });
 
             modelBuilder.Entity<UnidadesProdutivas>(entity =>
