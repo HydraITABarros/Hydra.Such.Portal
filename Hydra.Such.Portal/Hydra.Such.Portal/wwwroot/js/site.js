@@ -88,9 +88,32 @@ var startMenubarResizable = function () {
 
 
 var openSelectedMenu = function () {
-    var selectedMenu = $("#menubar .selected");
+    return;
+
+    var selectedMenu = $($("#menubar .selected")[0]);
+    $("#menubar .selected").not(":first").removeClass("selected");
     if (selectedMenu.length > 0) {
         selectedMenu.parents('ul.submenu').css({ display: 'block' }).parents('li.has-submenu').addClass('open');
+
+        var scrollMaxTimeout = false;
+        setTimeout(function () {
+            scrollMaxTimeout = true;
+        }, 5000);
+
+        (function tryScrollTo() {
+            if (window.app.menubar == null || window.app.menubar.$scrollInner == null) {
+                setTimeout(function () {
+                    tryScrollTo();
+                },300);
+                return;
+            }
+            if (scrollMaxTimeout) {
+                return;
+            }
+            var menuLinks = $("#menubar a");
+            window.app.menubar.$scrollInner.slimScroll({ scrollTo: ((selectedMenu.index()) * 37) + "px" });
+        })()
+
     }
 };
 

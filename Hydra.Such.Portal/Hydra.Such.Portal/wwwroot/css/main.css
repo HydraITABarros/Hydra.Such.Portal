@@ -266,6 +266,7 @@ paper-toast {
 
 .menubar .open .selected a {
     border-left: solid 2px #188ae2;
+    background: rgba(0,0,0,0.02);
 }
 
 #wrapper {
