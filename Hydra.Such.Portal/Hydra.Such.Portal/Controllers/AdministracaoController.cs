@@ -4432,7 +4432,7 @@ namespace Hydra.Such.Portal.Controllers
 
             ConfiguraçãoCompras Compra = new ConfiguraçãoCompras()
             {
-                ID = 1,
+                Id = 1,
                 Email1Regiao12 = data.Email1Regiao12,
                 Email2Regiao12 = data.Email2Regiao12,
                 Email1Regiao23 = data.Email1Regiao23,
