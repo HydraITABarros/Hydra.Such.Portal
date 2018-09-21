@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using static Hydra.Such.Data.Enumerations;
 
 namespace Hydra.Such.Data.Logic
 {
@@ -34,6 +35,35 @@ namespace Hydra.Such.Data.Logic
                 using (var ctx = new SuchDBContext())
                 {
                     return ctx.Menu.ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+        public static List<Menu> GetAllFull()
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    var FeaturesMenus = ctx.FeaturesMenus.ToList();
+
+                    return ctx.Menu.ToList().Select(m => new Menu() {
+                        Action = m.Action,
+                        Active = m.Active,
+                        Controller = m.Controller,
+                        Features = FeaturesMenus.Where(f=> f.IdMenu == m.Id).Select(f => (Features)f.IdFeature).ToHashSet(),
+                        HtmlAttributes = m.HtmlAttributes,
+                        Icon = m.Icon,
+                        Id = m.Id,
+                        Parent = m.Parent,
+                        RouteParameters = m.RouteParameters,
+                        Title = m.Title,
+                        Weight = m.Weight
+                    }).ToList();
                 }
             }
             catch (Exception ex)

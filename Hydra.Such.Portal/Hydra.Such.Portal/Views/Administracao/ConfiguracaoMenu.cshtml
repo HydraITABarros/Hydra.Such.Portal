@@ -1,0 +1,379 @@
+﻿
+@{
+    ViewData["Title"] = "Configuração de Menu";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-grid.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-text-field.html" />
+<link rel="import" href="~/lib/vaadin-text-field/vaadin-text-field.html" />
+
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-checkbox.html" />
+<link rel="import" href="~/lib/vaadin-checkbox/vaadin-checkbox.html" />
+
+<link rel="import" href="~/lib/vaadin-combo-box/vaadin-combo-box.html">
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-combo-box.html">
+
+<link rel="import" href="~/lib/iron-form/iron-form.html" />
+<link rel="import" href="~/lib/paper-button/paper-button.html" />
+<link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout.html" />
+<link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout-classes.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+
+<!--ACORDEÃO-->
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
+<link rel="import" href="~/lib/paper-tabs-master/paper-tabs.html" />
+
+
+
+@*<link rel="import" href="~/lib/paper-multi-select/paper-multi-select.html" />*@
+@*<link rel="import" href="~/lib/mcd-multi-select/mcd-multi-select.html" />*@
+<link rel="import" href="~/lib/select2-wrapper/select2-wrapper.html" />
+
+
+<x-confignumerations></x-confignumerations>
+<dom-module id="x-confignumerations">
+    <template>
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="/css/select2.min.css">
+        <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="~/css/main.css" />
+
+        <style>
+            input[readonly] {
+                border: 2px solid transparent;
+            }
+
+            input {
+                font: inherit;
+            }
+
+            /*ACORDEÃO*/
+            paper-collapse-item {
+                --paper-item: {
+                        padding: 0 0;
+                    };
+                --paper-collapse-item-header: {
+                        padding: 0 15px;
+                        color: #333;
+                        background-color: #f5f5f5;
+                        border-bottom: solid #ddd 1px;
+                        border-top-left-radius: 3px;
+                        border-top-right-radius: 3px;
+                    };
+            }
+        </style>
+
+        <iron-ajax url="/Administracao/GetListConfigMenu"
+                   last-response="{{result}}"
+                   id="ajax_update"
+                   method="post"
+                   on-response="_updateResponse"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
+        @*CRUD NEW PROFILEMODEL*@
+        <iron-ajax url="/PopulateDropdowns/GetMenus"
+                   last-response="{{menus}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <template is="dom-if" if="{{ _permissions.update }}">
+            <div class="subMenu">
+                <paper-button id="btnGoBack" class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Voltar</paper-button>
+                <paper-button id="btnAddNew" class="tablinks" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                <paper-button id="btnCancel" class="tablinks" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+            </div>
+        </template>
+
+        <paper-collapse-group>
+            <paper-collapse-item class="panel-heading" header="Novo Registo" closed>
+                <div class="panel-body">
+                    <div class="row break_clear">
+                        <div class="col-lg-2"><vaadin-text-field id="piDescription" label="Descrição" maxlength="50"></vaadin-text-field></div>
+
+                        <div class="col-lg-2 alignPoga"><vaadin-checkbox id="pcAuto"> Auto</vaadin-checkbox><vaadin-checkbox id="pcManual"> Manual</vaadin-checkbox></div>
+
+                        <div class="col-lg-2"><vaadin-text-field id="piPrefix" label="Prefixo" maxlength="10"></vaadin-text-field></div>
+
+                        <div class="col-lg-2"><vaadin-text-field id="piDigitNumber" label="Nº Incrementar" pattern="[0-9]*" prevent-invalid-input></vaadin-text-field></div>
+
+                        <div class="col-lg-2"><vaadin-text-field id="piIncrementNumber" label="Qt. Incrementar" pattern="[0-9]*" prevent-invalid-input></vaadin-text-field></div>
+
+                        <template is="dom-if" if="{{ _permissions.create }}">
+                            <div class="col-lg-2 alignPoga"><paper-button class="btnSave" raised on-tap="_add">Criar</paper-button></div>
+                        </template>
+                    </div>
+                </div>
+            </paper-collapse-item>
+        </paper-collapse-group>
+
+        <vaadin-grid id="menuTable" aria-label="Tabela Numerações" items="[[result]]" class="editGrid">
+
+            <vaadin-grid-column resizable width="150px" id="menuColumn">
+                <template class="header">
+                    Menu
+                </template>
+
+                <template class="body" id="entra">
+                    <select2-wrapper id="my_select2_element" model="{{menus}}"></select2-wrapper>
+                    <script>
+                        var teste = function (el) {
+                            return;
+                            $(el).parent().find("#my_select2_element")[0].model = [
+                                {
+                                    label: 'Asia',
+                                    value: 'AS'
+                                }, {
+                                    label: '2Asia',
+                                    value: '2AS'
+                                }, {
+                                    label: '3Asia',
+                                    value: '3AS'
+                                }, {
+                                    label: '4Asia',
+                                    value: '4AS'
+                                }, {
+                                    label: '5Asia',
+                                    value: '5AS'
+                                }, {
+                                    label: '6Asia',
+                                    value: '6AS'
+                                }
+                            ];
+                        }
+                    </script>
+                    <img src="" onerror="teste(this)" />
+                    <br />
+                    <vaadin-combo-box multiple="true" items="[[menus]]" item-value-path="id" item-label-path="value" value="{{item.parent}}" disabled="{{ _permissionsCreate }}">
+                        <template>
+                            <table width="200px">
+                                <tr>
+                                    <td width="70%"> <b>[[item.value]]</b></td>
+                                    <td width="30%">[[item.id]]</td>
+                                </tr>
+                            </table>
+                        </template>
+                    </vaadin-combo-box>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px">
+                <template class="header">
+                    Titulo
+                </template>
+                <template>
+                    <vaadin-text-field name="description" value="{{item.title}}" maxlength="100"></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px">
+                <template class="header">
+                    Icon
+                </template>
+                <template>
+                    <vaadin-text-field name="description" value="{{item.icon}}" maxlength="50"></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px">
+                <template class="header">
+                    Peso
+                </template>
+                <template>
+                    <vaadin-text-field name="weight" value="{{item.weight}}" pattern="[0-9]*" prevent-invalid-input></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px">
+                <template class="header">
+                    Controller
+                </template>
+                <template>
+                    <vaadin-text-field name="description" value="{{item.controller}}" maxlength="100"></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px">
+                <template class="header">
+                    Action
+                </template>
+                <template>
+                    <vaadin-text-field name="description" value="{{item.action}}" maxlength="100"></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px">
+                <template class="header">
+                    Parâmetros de rota
+                </template>
+                <template>
+                    <vaadin-text-field name="lastUsedNumber" value="{{item.routeParameters}}"></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px">
+                <template class="header">
+                    Ativo
+                </template>
+                <template>
+                    <vaadin-checkbox checked="{{item.active}}"></vaadin-checkbox>
+                </template>
+            </vaadin-grid-column>
+
+            <template is="dom-if" if="{{ _permissions.delete }}">
+                <vaadin-grid-column resizable width="150px">
+                    <template class="header">
+                    </template>
+                    <template>
+                        <center>
+                            @*<paper-button class="btnRemove" raised on-tap="_delete">Eliminar</paper-button>*@
+                            <paper-button class="btnRemove tableBtn" raised on-tap="_delete" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                        </center>
+                    </template>
+                </vaadin-grid-column>
+            </template>
+        </vaadin-grid>
+
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+    </template>
+
+    <script>
+
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-confignumerations',
+                properties: {
+                    //flag: {
+                    //    type: Number,
+                    //    value: 0
+                    //}
+                    _permissions: {
+	                    type: Array,
+	                    value: @Html.Raw(Json.Serialize(ViewBag.UPermissions))
+                    },
+                },
+
+                ready: function () {
+                    this.$.ajax_update.generateRequest();
+                    //this.$.gridAutorizacaoFHRH.clearCache();
+
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.menuTable);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top;
+                    var height = parentHeight - offsetTop;
+                    $(this.$.menuTable).height(height);
+                },
+
+                openToast: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+                openToastError: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                },
+                _add() {
+                    if (this.$.piDescription.value != "" &&
+                        this.$.piPrefix.value != "" &&
+                        isNaN(this.$.piDigitNumber.value) == false &&
+                        isNaN(this.$.piIncrementNumber.value) == false
+                    ) {
+                        this.result.unshift({
+
+                            description: this.$.piDescription.value,
+                            auto: this.$.pcAuto.checked,
+                            manual: this.$.pcManual.checked,
+                            prefix: this.$.piPrefix.value,
+                            totalDigitIncrement: parseInt(this.$.piDigitNumber.value),
+                            incrementQuantity: parseInt(this.$.piIncrementNumber.value)
+
+                        });
+
+                        this.$.ajax_update.url = "/Administracao/UpdateNumerationConfigs";
+                        this.$.ajax_update.body = JSON.stringify(this.result);
+                        this.$.ajax_update.generateRequest();
+
+
+                        this.$.menuTable.clearCache();
+
+
+                    }
+                    else {
+                        this.openToastError("Tem de preencher todos os campos.")
+                    }
+
+                },
+
+                _update: function () {
+                    this.$.ajax_update.url = "/Administracao/UpdateNumerationConfigs";
+                    this.$.ajax_update.body = JSON.stringify(this.result);
+                    this.$.ajax_update.generateRequest();
+
+                    //this.$.flag = 1;
+
+                    this.$.menuTable.clearCache();
+                    //this.$.ajax_update.url = "/Administracao/GetListConfigNumerations";
+
+                },
+
+                _delete: function (e) {
+                    var index = this.result.indexOf(e.model.item);
+                    this.result.splice(index, 1);
+
+                    this.$.menuTable.clearCache();
+                },
+
+                _cancel: function () {
+                    this.$.ajax_update.url = "/Administracao/GetListConfigNumerations";
+                    this.$.ajax_update.generateRequest();
+
+                    this.$.menuTable.clearCache();
+                },
+
+                _updateResponse: function (e) {
+                    var self = this;
+                    if (this.$.ajax_update.url != "/Administracao/GetListConfigNumerations") {
+                        if (e.detail.status === 200) {
+                            this.openToast("Numerações atualizadas.");
+                            this.$.piDescription.value = "";
+                            this.$.piPrefix.value = "";
+                            this.$.piDigitNumber.value = "";
+                            this.$.piIncrementNumber.value = "";
+                            this.$.pcAuto.checked = false;
+                            this.$.pcManual.checked = false;
+                        }
+                        else {
+                            this.openToastError("Occorreu um erro ao atualizar as numerações.");
+                        }
+                    }
+                },
+
+                _goBack: function (e) {
+                    window.history.back();
+                }
+            });
+        });
+    </script>
+</dom-module>
