@@ -3760,7 +3760,7 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.CódServiçoCliente)
                     .HasColumnName("Cód. Serviço Cliente")
-                    .HasMaxLength(20);
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.CódUnidadeMedida)
                     .HasColumnName("Cód. Unidade Medida")
@@ -6181,7 +6181,7 @@ namespace Hydra.Such.Data.Database
 
                 entity.ToTable("Preços Serviços Cliente");
 
-                entity.Property(e => e.Cliente).HasMaxLength(20);
+                entity.Property(e => e.Cliente).HasMaxLength(50);
 
                 entity.Property(e => e.CodServCliente)
                     .HasColumnName("Cod.Serv.Cliente")
@@ -8548,11 +8548,11 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.NºCliente)
                     .HasColumnName("Nº Cliente")
-                    .HasMaxLength(20);
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.CódServiço)
                     .HasColumnName("Cód. Serviço")
-                    .HasMaxLength(20);
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.DataHoraCriação)
                     .HasColumnName("Data/Hora Criação")
