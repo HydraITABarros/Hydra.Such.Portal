@@ -204,7 +204,7 @@
                     <vaadin-grid-filter path="custoUnitario" />
                 </template>
                 <template>
-                    {{item.custoUnitario}}
+                    [[_formatValue(item.custoUnitario)]]
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codigoLocalizacao.hidden }}">
@@ -658,8 +658,13 @@
                             value: obj[key]
                         };
                     });
-                }
+                },
                 /* end - ColumnToggle */
+                _formatValue: function (value) {
+                    if (value != null && value != 0) {
+                        return currency(value, { separator: '.', decimal: ',' }).format();
+                    }
+                }
             });
         });
     </script>

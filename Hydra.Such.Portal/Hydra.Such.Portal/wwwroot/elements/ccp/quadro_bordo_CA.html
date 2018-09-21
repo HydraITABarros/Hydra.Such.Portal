@@ -453,7 +453,7 @@
                                                 <vaadin-grid-filter path="estimativaPreco" />
                                             </template>
                                             <template>
-                                                {{item.estimativaPreco}}
+                                                [[_formatValue(item.estimativaPreco)]]
                                             </template>
                                         </vaadin-grid-column>
                                         <vaadin-grid-column width="150px" resizable>
@@ -584,7 +584,7 @@
                                                 <vaadin-grid-filter path="estimativaPreco" />
                                             </template>
                                             <template>
-                                                {{item.estimativaPreco}}
+                                                [[_formatValue(item.estimativaPreco)]]
                                             </template>
                                         </vaadin-grid-column>
                                         <vaadin-grid-column width="150px" resizable>
@@ -715,7 +715,7 @@
                                                 <vaadin-grid-filter path="estimativaPreco" />
                                             </template>
                                             <template>
-                                                {{item.estimativaPreco}}
+                                                [[_formatValue(item.estimativaPreco)]]
                                             </template>
                                         </vaadin-grid-column>
                                         <vaadin-grid-column width="150px" resizable>
@@ -846,7 +846,7 @@
                                                 <vaadin-grid-filter path="estimativaPreco" />
                                             </template>
                                             <template>
-                                                {{item.estimativaPreco}}
+                                                [[_formatValue(item.estimativaPreco)]]
                                             </template>
                                         </vaadin-grid-column>
                                         <vaadin-grid-column width="150px" resizable>
@@ -984,7 +984,7 @@
                                                 <vaadin-grid-filter path="estimativaPreco" />
                                             </template>
                                             <template>
-                                                {{item.estimativaPreco}}
+                                                [[_formatValue(item.estimativaPreco)]]
                                             </template>
                                         </vaadin-grid-column>
                                         <vaadin-grid-column width="150px" resizable>
@@ -1115,7 +1115,7 @@
                                                 <vaadin-grid-filter path="estimativaPreco" />
                                             </template>
                                             <template>
-                                                {{item.estimativaPreco}}
+                                                [[_formatValue(item.estimativaPreco)]]
                                             </template>
                                         </vaadin-grid-column>
                                         <vaadin-grid-column width="150px" resizable>
@@ -1249,6 +1249,11 @@
                     
                     _self.$.paper7.header = '17 - Autorização Adjudicação CA (' + this.$.grid_databound_ajax.__data.lastResponse.estado_7.length + ')';
                     _self.$.paper_ratificarCA_Simplificado.header = 'Ratificar CA (' + this.$.grid_databound_ajax.__data.lastResponse.estado_processos_suspensos.length + ')';
+                },
+                _formatValue: function (value) {
+                    if (value != null && value != 0) {
+                        return currency(value, { separator: '.', decimal: ',' }).format();
+                    }
                 }
             });
         });
