@@ -2234,8 +2234,8 @@ namespace Hydra.Such.Portal.Controllers
                     //CREATE SALES HEADER
                     NAVSalesHeaderViewModel PreInvoiceToCreate = new NAVSalesHeaderViewModel();
                     PreInvoiceToCreate.PeriododeFact_Contrato = dataInicio.ToString("dd/MM/yyyy") + " a " + dataFim.ToString("dd/MM/yyyy");
-                    string mes = dataInicio.ToString("MMMM");
-                    PreInvoiceToCreate.DataServ_Prestado = String.Format("{0}/{1}", mes.ToUpper(), dataInicio.Year);
+                    string mes = dataFim.ToString("MMMM");
+                    PreInvoiceToCreate.DataServ_Prestado = String.Format("{0}/{1}", mes.ToUpper(), dataFim.Year);
                     
                     PreInvoiceToCreate.Sell_toCustomerNo = Contract.ClientNo;
                     PreInvoiceToCreate.DocumentDate = lastDay;
