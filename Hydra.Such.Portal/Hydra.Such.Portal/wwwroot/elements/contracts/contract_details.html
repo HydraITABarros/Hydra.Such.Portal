@@ -102,7 +102,7 @@
         <iron-ajax url="/PopulateDropdowns/GetContractBillingTypes" last-response="{{CBBillingTypes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetContractMaintenanceTypes" last-response="{{CBMaintenanceTypes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetContractInvoicePeriods" last-response="{{CBInvoicePeriods}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetNAVShippingAddressesByClientNo" last-response="{{CBShippingAddresses}}" id="shippingAddresses_ajax" method="post" handle-as="json" content-type="application/json" id="shippinhAddress_ajax"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetNAVShippingAddressesByClientNo" last-response="{{CBShippingAddresses}}" id="shippingAddresses_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProjectList" last-response="{{CBProjects}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetContractInvoiceGroups" last-response="{{CBInvoiceGroups}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetContractLineTypes" last-response="{{CBContractLineTypes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -2233,7 +2233,15 @@
                     window.location.href = "../DetalhesContrato";
                 },
                 _clientChange: function (e) {
-                    this.$.codeShippingAddress.value = "";
+                    debugger;;
+                    var client = this.CBClients.find(x => x.no_ == e.detail.value);
+                    if (client != null) {
+                        this.$.codeShippingAddress.value = "";
+                        this.$.ShippingName.value = client.name;
+                        this.$.ShippingAddress.value = client.address;
+                        this.$.shippingZipCode.value = client.postCode;
+                        this.$.ShippingLocality.value = client.city;
+                    }
                     this.$.shippingAddresses_ajax.body = JSON.stringify(e.detail.value);
                     this.$.shippingAddresses_ajax.generateRequest();
                 },
@@ -3067,6 +3075,9 @@
                         this.$.updatePrices_ajax.body = JSON.stringify(updPriceRequest);
                         this.$.updatePrices_ajax.generateRequest();
                     }
+                },
+                _responseFillInSend: function() {
+
                 },
                 _updatePricesResponseProcessor: function () {
                     if (this.UpdatePricesResponse.eReasonCode == 1) {

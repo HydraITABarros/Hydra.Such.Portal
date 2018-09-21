@@ -8529,7 +8529,7 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Data/Hora Modificação")
                     .HasColumnType("datetime");
 
-                entity.Property(e => e.Descrição).HasMaxLength(50);
+                entity.Property(e => e.Descrição).HasMaxLength(200);
 
                 entity.Property(e => e.UtilizadorCriação)
                     .HasColumnName("Utilizador Criação")
