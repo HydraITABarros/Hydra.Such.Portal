@@ -101,6 +101,7 @@
 		open: false,
         folded: app.settings.menubar.folded,
 		scrollInitialized: false,
+        $scrollInner: null,
 
 		init: function() {
 			app.defaultLayout && this.folded && this.fold();
@@ -302,7 +303,10 @@
 					touchScrollStep: 50
 				});
 				this.scrollInitialized = true;
-			}
+            }
+
+            this.$scrollInner = $scrollInner;
+
 			return true;
 		},
 
