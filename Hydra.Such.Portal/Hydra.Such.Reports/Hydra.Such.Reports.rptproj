@@ -50,9 +50,11 @@
   </PropertyGroup>
   <ItemGroup>
     <DataSet Include="ReportRequisicao.rsd" />
+    <DataSet Include="ReportRequisicaoTestes.rsd" />
   </ItemGroup>
   <ItemGroup>
     <DataSource Include="eSuchDS.rds" />
+    <DataSource Include="eSUCHTestes.rds" />
   </ItemGroup>
   <ItemGroup>
     <Report Include="ExtratoCliente.rdl" />
