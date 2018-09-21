@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using static Hydra.Such.Data.Enumerations;
 
 namespace Hydra.Such.Data.Database
 {
@@ -22,5 +24,8 @@ namespace Hydra.Such.Data.Database
         public bool Active { get; set; }
 
         public ICollection<FeaturesMenus> FeaturesMenus { get; set; }
+
+        [NotMapped]
+        public ICollection<Features> Features { get; set; }
     }
 }

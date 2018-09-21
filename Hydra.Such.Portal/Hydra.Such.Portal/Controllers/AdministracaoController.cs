@@ -40,6 +40,7 @@ using Microsoft.AspNetCore.Hosting;
 using System.Text;
 using NPOI.HSSF.UserModel;
 using Hydra.Such.Data.Logic.Request;
+using Newtonsoft.Json;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -963,6 +964,80 @@ namespace Hydra.Such.Portal.Controllers
             return Json(data);
         }
         #endregion
+
+
+        #region ConfiguracaoMenus
+
+        public IActionResult ConfiguracaoMenu()
+        {
+            //UserAccessesViewModel UPerm = GetPermissions("Administracao");
+            UserAccessesViewModel userPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminGeral);
+            if (userPerm != null && userPerm.Read.Value)
+            {
+                ViewBag.UPermissions = userPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        [HttpPost]
+        public ActionResult GetListConfigMenu()
+        {
+            List<Data.Database.Menu> result = DBMenu.GetAllFull();
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateMenuConfigs([FromBody] List<ConfigNumerationsViewModel> data)
+        {
+            //Get All
+            List<ConfiguraçãoNumerações> previousList = DBNumerationConfigurations.GetAll();
+            //previousList.RemoveAll(x => !data.Any(u => u.Id == x.Id));
+            //previousList.ForEach(x => DBNumerationConfigurations.Delete(x));
+
+            foreach (ConfiguraçãoNumerações line in previousList)
+            {
+                if (!data.Any(x => x.Id == line.Id))
+                {
+                    DBNumerationConfigurations.Delete(line);
+                }
+            }
+
+            data.ForEach(x =>
+            {
+                ConfiguraçãoNumerações CN = new ConfiguraçãoNumerações()
+                {
+                    Descrição = x.Description,
+                    Automático = x.Auto,
+                    Manual = x.Manual,
+                    Prefixo = x.Prefix,
+                    NºDígitosIncrementar = x.TotalDigitIncrement,
+                    QuantidadeIncrementar = x.IncrementQuantity,
+                    ÚltimoNºUsado = x.LastNumerationUsed
+                };
+
+                if (x.Id > 0)
+                {
+                    CN.Id = x.Id;
+                    CN.UtilizadorModificação = User.Identity.Name;
+                    CN.DataHoraModificação = DateTime.Now;
+                    DBNumerationConfigurations.Update(CN);
+                }
+                else
+                {
+                    CN.UtilizadorCriação = User.Identity.Name;
+                    CN.DataHoraCriação = DateTime.Now;
+                    DBNumerationConfigurations.Create(CN);
+                }
+            });
+
+            return Json(data);
+        }
+        #endregion
+
 
         #region TabelasAuxiliares
 
