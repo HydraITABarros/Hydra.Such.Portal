@@ -742,6 +742,33 @@ namespace Hydra.Such.Portal.Controllers
 
         #endregion
 
+        #region Registo de Proposta
+
+        [HttpPost]
+        public JsonResult UpdateLinhaRegistoProposta([FromBody] RegistoDePropostasView data)
+        {
+            bool result = false;
+            try
+            {
+                RegistoDePropostas registoDePropostas = DBConsultaMercado.CastRegistoDePropostasViewToDB(data);
+
+                var dbUpdateResult = DBConsultaMercado.Update(registoDePropostas);
+
+                if (dbUpdateResult != null)
+                    result = true;
+                else
+                    result = false;
+            }
+            catch (Exception ex)
+            {
+                //log
+            }
+            return Json(result);
+        }
+
+
+        #endregion
+
         #region EXCEL
 
         //1

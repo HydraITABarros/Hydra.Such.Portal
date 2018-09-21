@@ -75,7 +75,6 @@ namespace Hydra.Such.Data.Database
         public string NºFatura { get; set; }
         public bool? PedirOrcamento { get; set; }
 
-
         public Locais CódigoLocalEntregaNavigation { get; set; }
         public Locais CódigoLocalRecolhaNavigation { get; set; }
         public Projetos NºProjetoNavigation { get; set; }

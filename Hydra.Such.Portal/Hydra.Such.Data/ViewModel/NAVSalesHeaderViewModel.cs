@@ -142,6 +142,7 @@ namespace Hydra.Such.Data.ViewModel
         public string Observacoes { get; set; }
         public DateTime DataEncomenda { get; set; }
         public string PeriododeFact_Contrato { get; set; }
+        public string PostingNoSeries { get; set; }
         public string Observações1 { get; set; }
         public string ContractNo { get; set; }
         public decimal ValorContrato { get; set; }

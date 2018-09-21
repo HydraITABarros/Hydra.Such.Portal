@@ -647,7 +647,7 @@
                 <div class="row break_clear">
 
                     <div class="col-sm-3" hidden="{{ _isInternalDestination }}">
-                        <vaadin-combo-box items="[[ TiposMotivos ]]" id="cmbMotivos" item-value-path="id" item-label-path="id" label="Motivo" on-value-changed="_reasonTypeChanged">
+                        <vaadin-combo-box items="[[ TiposMotivos ]]" id="cmbMotivos" item-value-path="id" item-label-path="id" label="Motivo" value="{{motivoscmb}}" on-value-changed="_reasonTypeChanged">
                             <template>
                                 <paper-icon-item>
                                     <paper-item-body two-line>
@@ -662,7 +662,7 @@
                     </div>
                     <div class="row break_clear" hidden="{{ !_isInternalDestination }}">
                         <div class="col-sm-3">
-                            <vaadin-combo-box items="[[ TiposProblemas ]]" id="cmbProblemas" item-value-path="id" item-label-path="id" value="{{tipoDestinatario}}" label="Problema" on-value-changed="_problemTypeChanged">
+                            <vaadin-combo-box items="[[ TiposProblemas ]]" id="cmbProblemas" item-value-path="id" item-label-path="id" value="{{problemascmb}}" label="Problema" on-value-changed="_problemTypeChanged">
                                 <template>
                                     <paper-icon-item>
                                         <paper-item-body two-line>
@@ -678,7 +678,7 @@
                     </div>
                     <div class="row break_clear" hidden="{{ !_isInternalDestination }}">
                         <div class="col-sm-3">
-                            <vaadin-combo-box items="[[ Areas ]]" id="txtAreadgl" item-value-path="id" item-label-path="value" label="Área" on-value-changed="_areaChanged">
+                            <vaadin-combo-box items="[[ Areas ]]" id="txtAreadgl" item-value-path="id" item-label-path="value" label="Área" value="{{areacmb}}" on-value-changed="_areaChanged">
                                 <template>
                                     <paper-icon-item>
                                         <paper-item-body two-line>
@@ -1514,14 +1514,14 @@
                             this._openToast(this.updatedItem.eMessage);
                             this.data = this.updatedItem;
 
-                            this.$.cmbProblemas.value = "";
+                            this.problemascmb = "";
                             this.$.txtdescricaoProblema.value = "";
                             this.$.txtdestinatarioArea.value = "";
                             this.$.txtCommentdgl.value = "";
                             this.$.txtArea2.value = "";
-                            this.$.txtAreadgl.value="";
+                            this.areacmb="";
                             this.$.txtCodDestino.value = "";
-                            this.$.cmbMotivos.value = "";
+                            this.motivoscmb = "";
                             this.$.txtmotivo.value = "";
                             this.$.txtCommentdgl.value = "";
 

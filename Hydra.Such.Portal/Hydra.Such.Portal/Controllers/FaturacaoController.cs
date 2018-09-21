@@ -969,32 +969,35 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult UploadFile(BillingRecWorkflowModel workflow)
         {
-            try
+            if (workflow.Attached != null)
             {
-
-                foreach (var file in workflow.Attached)
+                try
                 {
-                    var path = Path.Combine(_generalConfig.FileUploadFolder, file.File);
-                    if (!System.IO.File.Exists(path))
+
+                    foreach (var file in workflow.Attached)
                     {
-                        try
+                        var path = Path.Combine(_generalConfig.FileUploadFolder, file.File);
+                        if (!System.IO.File.Exists(path))
                         {
-                            using (FileStream dd = new FileStream(path, FileMode.CreateNew))
+                            try
                             {
-                                
-                                dd.Dispose();
+                                using (FileStream dd = new FileStream(path, FileMode.CreateNew))
+                                {
+
+                                    dd.Dispose();
+                                }
                             }
-                        }
-                        catch (Exception ex)
-                        {
-                            throw;
+                            catch (Exception ex)
+                            {
+                                throw;
+                            }
                         }
                     }
                 }
-            }
-            catch (Exception)
-            {
-                throw;
+                catch (Exception)
+                {
+                    throw;
+                }
             }
             return Json("");
         }

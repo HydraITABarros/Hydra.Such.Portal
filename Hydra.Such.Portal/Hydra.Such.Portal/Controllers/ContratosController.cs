@@ -1857,7 +1857,7 @@ namespace Hydra.Such.Portal.Controllers
                         Task<WSCreateNAVProject.Create_Result> createProject = WSProject.CreateNavProject(proj, _configws);
                         createProject.Wait();
                     }
-                    
+                    item.UtilizadorCriação = User.Identity.Name;
                     Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreateContractInvoice(item, _configws, ContractInvoicePeriod, InvoiceBorrowed);
                     InvoiceHeader.Wait();
 
@@ -2138,7 +2138,7 @@ namespace Hydra.Such.Portal.Controllers
             DateTime lastDate;
             if (payPeriod == 1)
             {
-                lastDate = new DateTime(startDate.Year, startDate.Month, Convert.ToInt32(startDate.AddMonths(1).AddDays(-1)));
+                lastDate = new DateTime(startDate.Year, startDate.Month, 1).AddMonths(1).AddDays(-1);
             }
             else if (payPeriod == 2)
             {
@@ -2197,7 +2197,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 if (createGroup==true) {
                     //Create Project if existe
-
+                    ConfigUtilizadores userConfig = DBUserConfigurations.GetById(User.Identity.Name);
                     Task<WSCreateNAVProject.Read_Result> Project = WSProject.GetNavProject(Contract.ContractNo, _configws);
                     Project.Wait();
                     if (Project.IsCompletedSuccessfully && Project.Result.WSJob == null)
@@ -2249,14 +2249,13 @@ namespace Hydra.Such.Portal.Controllers
                         PreInvoiceToCreate.DueDate = DateTime.Parse(Contract.DueDate);
 
                     PreInvoiceToCreate.PaymentTermsCode = Contract.CodePaymentTerms;
-                    //PreInvoiceToCreate.ResponsibilityCenter= Contract.CodeResponsabilityCenter;
+                   
                     PreInvoiceToCreate.No_Compromisso = Contract.PromiseNo;
                     PreInvoiceToCreate.CodigoPedido = Contract.ClientRequisitionNo;
                     if (Contract.ReceiptDateRequisition != null && Contract.ReceiptDateRequisition != "")
                         PreInvoiceToCreate.DataEncomenda = DateTime.Parse(Contract.ReceiptDateRequisition);
 
-                 
-
+                
                     PreInvoiceToCreate.ContractNo = Contract.ContractNo;
                     PreInvoiceToCreate.FacturaCAF = false;
                     PreInvoiceToCreate.Userpreregisto2009 = User.Identity.Name;
@@ -2265,7 +2264,8 @@ namespace Hydra.Such.Portal.Controllers
                     PreInvoiceToCreate.FunctionAreaCode20 = Contract.CodeFunctionalArea;
                     PreInvoiceToCreate.RegionCode20 = Contract.CodeRegion;
 
-
+                    PreInvoiceToCreate.ResponsibilityCenter = userConfig.CentroDeResponsabilidade;
+                    PreInvoiceToCreate.PostingNoSeries = userConfig.NumSerieFaturas;
 
                     if (groupInvoice != null && groupInvoice != "")
                     {
@@ -2297,7 +2297,7 @@ namespace Hydra.Such.Portal.Controllers
                                     if (line.Billable == true && Codgroup == line.InvoiceGroup)
                                     {
                                         LinhasFaturaçãoContrato PreInvoiceLinesToCreate = new LinhasFaturaçãoContrato();
-                                        PreInvoiceLinesToCreate.Tipo = "3";
+                                        PreInvoiceLinesToCreate.Tipo = line.Type.Value.ToString();
                                         PreInvoiceLinesToCreate.Descrição = line.Description;
                                         PreInvoiceLinesToCreate.CódUnidadeMedida = line.CodeMeasureUnit;
                                         PreInvoiceLinesToCreate.CódigoÁreaFuncional = line.CodeFunctionalArea;
@@ -2374,7 +2374,7 @@ namespace Hydra.Such.Portal.Controllers
                                     if (line.Billable == true && group == line.InvoiceGroup)
                                     {
                                         LinhasFaturaçãoContrato PreInvoiceLinesToCreate = new LinhasFaturaçãoContrato();
-                                        PreInvoiceLinesToCreate.Tipo = "3";
+                                        PreInvoiceLinesToCreate.Tipo = line.Type.Value.ToString();
                                         PreInvoiceLinesToCreate.Descrição = line.Description;
                                         PreInvoiceLinesToCreate.CódUnidadeMedida = line.CodeMeasureUnit;
                                         PreInvoiceLinesToCreate.CódigoÁreaFuncional = line.CodeFunctionalArea;

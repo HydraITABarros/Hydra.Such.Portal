@@ -8,17 +8,9 @@ namespace Hydra.Such.Data.Database
         public Projetos()
         {
             CafetariasRefeitórios = new HashSet<CafetariasRefeitórios>();
-            CondicoesPropostasFornecedores = new HashSet<CondicoesPropostasFornecedores>();
-            ConsultaMercado = new HashSet<ConsultaMercado>();
             DistribuiçãoCustoFolhaDeHoras = new HashSet<DistribuiçãoCustoFolhaDeHoras>();
             DiárioCafetariaRefeitório = new HashSet<DiárioCafetariaRefeitório>();
             DiárioDeProjeto = new HashSet<DiárioDeProjeto>();
-            HistoricoCondicoesPropostasFornecedores = new HashSet<HistoricoCondicoesPropostasFornecedores>();
-            HistoricoConsultaMercado = new HashSet<HistoricoConsultaMercado>();
-            HistoricoLinhasCondicoesPropostasFornecedores = new HashSet<HistoricoLinhasCondicoesPropostasFornecedores>();
-            HistoricoLinhasConsultaMercado = new HashSet<HistoricoLinhasConsultaMercado>();
-            LinhasCondicoesPropostasFornecedores = new HashSet<LinhasCondicoesPropostasFornecedores>();
-            LinhasConsultaMercado = new HashSet<LinhasConsultaMercado>();
             LinhasPréRequisição = new HashSet<LinhasPréRequisição>();
             LinhasRequisição = new HashSet<LinhasRequisição>();
             LinhasRequisiçõesSimplificadas = new HashSet<LinhasRequisiçõesSimplificadas>();
@@ -76,17 +68,9 @@ namespace Hydra.Such.Data.Database
         public TiposGrupoContabOmProjeto TipoGrupoContabOmProjetoNavigation { get; set; }
         public TiposGrupoContabProjeto TipoGrupoContabProjetoNavigation { get; set; }
         public ICollection<CafetariasRefeitórios> CafetariasRefeitórios { get; set; }
-        public ICollection<CondicoesPropostasFornecedores> CondicoesPropostasFornecedores { get; set; }
-        public ICollection<ConsultaMercado> ConsultaMercado { get; set; }
         public ICollection<DistribuiçãoCustoFolhaDeHoras> DistribuiçãoCustoFolhaDeHoras { get; set; }
         public ICollection<DiárioCafetariaRefeitório> DiárioCafetariaRefeitório { get; set; }
         public ICollection<DiárioDeProjeto> DiárioDeProjeto { get; set; }
-        public ICollection<HistoricoCondicoesPropostasFornecedores> HistoricoCondicoesPropostasFornecedores { get; set; }
-        public ICollection<HistoricoConsultaMercado> HistoricoConsultaMercado { get; set; }
-        public ICollection<HistoricoLinhasCondicoesPropostasFornecedores> HistoricoLinhasCondicoesPropostasFornecedores { get; set; }
-        public ICollection<HistoricoLinhasConsultaMercado> HistoricoLinhasConsultaMercado { get; set; }
-        public ICollection<LinhasCondicoesPropostasFornecedores> LinhasCondicoesPropostasFornecedores { get; set; }
-        public ICollection<LinhasConsultaMercado> LinhasConsultaMercado { get; set; }
         public ICollection<LinhasPréRequisição> LinhasPréRequisição { get; set; }
         public ICollection<LinhasRequisição> LinhasRequisição { get; set; }
         public ICollection<LinhasRequisiçõesSimplificadas> LinhasRequisiçõesSimplificadas { get; set; }

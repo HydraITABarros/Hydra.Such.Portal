@@ -155,6 +155,7 @@ namespace Hydra.Such.Portal.Controllers
                 result.NumSerieFaturas = userConfig.NumSerieFaturas;
                 result.NumSerieNotasCredito = userConfig.NumSerieNotasCredito;
                 result.NumSerieNotasDebito = userConfig.NumSerieNotasDebito;
+                result.Centroresp = userConfig.CentroDeResponsabilidade;
 
                 result.UserAccesses = DBUserAccesses.GetByUserId(data.IdUser).Select(x => new UserAccessesViewModel()
                 {
@@ -209,6 +210,7 @@ namespace Hydra.Such.Portal.Controllers
                 NumSerieFaturas = data.NumSerieFaturas,
                 NumSerieNotasCredito = data.NumSerieNotasCredito,
                 NumSerieNotasDebito = data.NumSerieNotasDebito,
+                CentroDeResponsabilidade=data.Centroresp,
         });
 
             data.IdUser = ObjectCreated.IdUtilizador;
@@ -279,6 +281,7 @@ namespace Hydra.Such.Portal.Controllers
                 userConfig.NumSerieFaturas = data.NumSerieFaturas;
                 userConfig.NumSerieNotasCredito = data.NumSerieNotasCredito;
                 userConfig.NumSerieNotasDebito = data.NumSerieNotasDebito;
+                userConfig.CentroDeResponsabilidade = data.Centroresp;
 
                 DBUserConfigurations.Update(userConfig);
 
@@ -4432,7 +4435,7 @@ namespace Hydra.Such.Portal.Controllers
 
             ConfiguraçãoCompras Compra = new ConfiguraçãoCompras()
             {
-                ID = 1,
+                Id = 1,
                 Email1Regiao12 = data.Email1Regiao12,
                 Email2Regiao12 = data.Email2Regiao12,
                 Email1Regiao23 = data.Email1Regiao23,
