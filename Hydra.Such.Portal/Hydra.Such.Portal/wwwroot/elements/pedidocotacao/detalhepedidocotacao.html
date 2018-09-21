@@ -844,14 +844,6 @@
                                     </template>
                                 </vaadin-grid-column>
 
-
-
-
-
-
-
-
-
                                 <vaadin-grid-column width="100px">
                                     <template class="header">
                                         <vaadin-text-field id="headerRED" class="red" disabled="true" placeholder="{{item.fornecedor1Code}}"></vaadin-text-field>
@@ -1006,6 +998,8 @@
                                     </template>
                                 </vaadin-grid-column>
                             </vaadin-grid>
+
+                            <paper-button class="btn--confirm pull-right" id="btnCriarEncomenda" raised on-tap="_criarEncomenda"><i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp; Criar Encomenda</paper-button>
                         </div>
                     </div>
                 </iron-pages>
@@ -1995,8 +1989,11 @@
                     {
                         num_check += 1;
 
-                        if (e.model.item.fornecedor2Code == null) {
-                            e.model.item.fornecedor2Code.checked = false;
+                        if (e.model.item.fornecedor2Code == null || e.model.item.fornecedor2Code == "false") {
+                            e.model.item.fornecedor2Select = false;
+
+                            _self.$.tabRegistoDePropostas.clearCache();
+
                             _self._showErrorMessage("Não pode selecionar este campo, pois não tem Entidade!");
                             return;
                         }
@@ -2006,8 +2003,11 @@
                     {
                         num_check += 1;
 
-                        if (e.model.item.fornecedor3Code == null) {
-                            e.model.item.fornecedor3Code.checked = false;
+                        if (e.model.item.fornecedor3Code == null || e.model.item.fornecedor3Code == "false") {
+                            e.model.item.fornecedor3Select = false;
+
+                            _self.$.tabRegistoDePropostas.clearCache();
+
                             _self._showErrorMessage("Não pode selecionar este campo, pois não tem Entidade!");
                             return;
                         }
@@ -2016,8 +2016,11 @@
                     if (e.model.item.fornecedor4Select == true) {
                         num_check += 1;
 
-                        if (e.model.item.fornecedor4Code == null) {
-                            e.model.item.fornecedor4Code.checked = false;
+                        if (e.model.item.fornecedor4Code == null || e.model.item.fornecedor4Code == "false") {
+                            e.model.item.fornecedor4Select = false;
+
+                            _self.$.tabRegistoDePropostas.clearCache();
+
                             _self._showErrorMessage("Não pode selecionar este campo, pois não tem Entidade!");
                             return;
                         }
@@ -2026,8 +2029,11 @@
                     if (e.model.item.fornecedor5Select == true) {
                         num_check += 1;
 
-                        if (e.model.item.fornecedor5Code == null) {
-                            e.model.item.fornecedor5Code.checked = false;
+                        if (e.model.item.fornecedor5Code == null || e.model.item.fornecedor5Code == "false") {
+                            e.model.item.fornecedor5Select = false;
+
+                            _self.$.tabRegistoDePropostas.clearCache();
+
                             _self._showErrorMessage("Não pode selecionar este campo, pois não tem Entidade!");
                             return;
                         }
@@ -2035,14 +2041,82 @@
 
                     if (e.model.item.fornecedor6Select == true) {
                         num_check += 1;
-                        debugger
+                        
                         if (e.model.item.fornecedor6Code == null || e.model.item.fornecedor6Code == "false") {
-                            e.model.item.fornecedor6Select == false;
+                            e.model.item.fornecedor6Select = false;
+
+                            _self.$.tabRegistoDePropostas.clearCache();
+
                             _self._showErrorMessage("Não pode selecionar este campo, pois não tem Entidade!");
                             return;
                         }
                     }
 
+                    if (e.model.item.fornecedor1Preco != null) {
+                        if (e.model.item.fornecedor1Code == null || e.model.item.fornecedor1Code == "false") {
+                            e.model.item.fornecedor1Preco = null;
+
+                            _self.$.tabRegistoDePropostas.clearCache();
+
+                            _self._showErrorMessage("Não pode selecionar este campo, pois não tem Entidade!");
+                            return;
+                        }
+                    }
+
+                    if (e.model.item.fornecedor2Preco != null) {
+                        if (e.model.item.fornecedor2Code == null || e.model.item.fornecedor2Code == "false") {
+                            e.model.item.fornecedor2Preco = null;
+
+                            _self.$.tabRegistoDePropostas.clearCache();
+
+                            _self._showErrorMessage("Não pode preencher este campo, pois não tem Entidade!");
+                            return;
+                        }
+                    }
+
+                    if (e.model.item.fornecedor3Preco != null) {
+                        if (e.model.item.fornecedor3Code == null || e.model.item.fornecedor3Code == "false") {
+                            e.model.item.fornecedor3Preco = null;
+
+                            _self.$.tabRegistoDePropostas.clearCache();
+
+                            _self._showErrorMessage("Não pode preencher este campo, pois não tem Entidade!");
+                            return;
+                        }
+                    }
+
+                    if (e.model.item.fornecedor4Preco != null) {
+                        if (e.model.item.fornecedor4Code == null || e.model.item.fornecedor4Code == "false") {
+                            e.model.item.fornecedor4Preco = null;
+
+                            _self.$.tabRegistoDePropostas.clearCache();
+
+                            _self._showErrorMessage("Não pode preencher este campo, pois não tem Entidade!");
+                            return;
+                        }
+                    }
+
+                    if (e.model.item.fornecedor5Preco != null) {
+                        if (e.model.item.fornecedor5Code == null || e.model.item.fornecedor5Code == "false") {
+                            e.model.item.fornecedor5Preco = null;
+
+                            _self.$.tabRegistoDePropostas.clearCache();
+
+                            _self._showErrorMessage("Não pode preencher este campo, pois não tem Entidade!");
+                            return;
+                        }
+                    }
+
+                    if (e.model.item.fornecedor6Preco != null) {
+                        if (e.model.item.fornecedor6Code == null || e.model.item.fornecedor6Code == "false") {
+                            e.model.item.fornecedor6Preco = null;
+
+                            _self.$.tabRegistoDePropostas.clearCache();
+
+                            _self._showErrorMessage("Não pode preencher este campo, pois não tem Entidade!");
+                            return;
+                        }
+                    }
 
                     if (num_check > 1)
                         _self._showErrorMessage("Apenas pode ter uma Entidade Selecionada!");
@@ -2089,7 +2163,6 @@
                         this.$.page_updateLinhaRegistoProposta_ajax.generateRequest();
                         this.$.tabRegistoProposta.clearCache();
                     }
-
                     return;
                 },
                 _updateLinhaRegistoPropostaResponse: function (e) {
@@ -2100,6 +2173,13 @@
                     else {
                         this._showErrorMessage('Ocorreu um erro ao Actualizar a linha de Registo de Proposta.');
                     }
+                },
+
+                _criarEncomenda: function (e) {
+                    
+                },
+                _criarEncomendaResponse: function (e) {
+                    
                 },
 
                 _responseProcessor: function (data) {
