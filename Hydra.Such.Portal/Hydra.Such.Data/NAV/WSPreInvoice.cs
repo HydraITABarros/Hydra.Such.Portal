@@ -45,7 +45,6 @@ namespace Hydra.Such.Data.NAV
                 tipo = WSCreatePreInvoice.Document_Type.Credit_Memo;
                 notaDebito = false;
                 PostingNoSeries = CUsers.NumSerieNotasCredito;
-
             }
             else// Fatura
             {
@@ -81,6 +80,7 @@ namespace Hydra.Such.Data.NAV
                     Location_Code = preInvoiceToCreate.LocationCode,
                     No_Compromisso = preInvoiceToCreate.CommitmentNumber,
                     Observacoes = preInvoiceToCreate.Comments,
+                    Responsibility_Center= CUsers.CentroDeResponsabilidade,
                     //Order_Date
                     Payment_Method_Code = preInvoiceToCreate.CodMetodoPagamento,
                     Payment_Terms_Code = preInvoiceToCreate.CodTermosPagamento,
@@ -119,6 +119,7 @@ namespace Hydra.Such.Data.NAV
                     Payment_Terms_Code = PreInvoiceToCreate.PaymentTermsCode,
                     Payment_Method_Code = PreInvoiceToCreate.PaymentMethodCode,
                     Responsibility_Center = PreInvoiceToCreate.ResponsibilityCenter,
+                    Posting_No_Series = PreInvoiceToCreate.PostingNoSeries,
                     No_Compromisso = PreInvoiceToCreate.No_Compromisso,
                     Codigo_Pedido = PreInvoiceToCreate.CodigoPedido,
                     Data_Encomenda = PreInvoiceToCreate.DataEncomenda,
@@ -128,7 +129,7 @@ namespace Hydra.Such.Data.NAV
                     Document_Type = WSCreatePreInvoice.Document_Type.Invoice,
                     Factura_CAF= PreInvoiceToCreate.FacturaCAF,
                     User_pre_registo_2009=PreInvoiceToCreate.Userpreregisto2009,
-                    Posting_Date= PreInvoiceToCreate.PostingDate,
+                    Posting_Date= PreInvoiceToCreate.PostingDate,                   
                     Document_TypeSpecified = true,
                     Posting_DateSpecified=true,
                     Shipment_DateSpecified=true,
@@ -142,9 +143,9 @@ namespace Hydra.Such.Data.NAV
                     Data_EncomendaSpecified=true,
                     
                     //Dimensions
-                    ResponsabilityCenterCode20 = PreInvoiceToCreate.ResponsibilityCenter,
-                    FunctionAreaCode20 = PreInvoiceToCreate.Area,
-                    RegionCode20 = PreInvoiceToCreate.ReasonCode,
+                    ResponsabilityCenterCode20 = PreInvoiceToCreate.ResponsabilityCenterCode20,
+                    FunctionAreaCode20 = PreInvoiceToCreate.FunctionAreaCode20,
+                    RegionCode20 = PreInvoiceToCreate.RegionCode20,
                    
                    
 
@@ -171,6 +172,7 @@ namespace Hydra.Such.Data.NAV
         public static async Task<WSCreatePreInvoice.Create_Result> CreateContractInvoice(AutorizarFaturaçãoContratos CreateInvoice, NAVWSConfigurations WSConfigurations,string ContractInvoicePeriod, string InvoiceBorrowed)
         {
             DateTime now = DateTime.Now;
+            ConfigUtilizadores CUsers = DBUserConfigurations.GetById(CreateInvoice.UtilizadorCriação);
             WSCreatePreInvoice.Create NAVCreate = new WSCreatePreInvoice.Create()
             {
                 WSPreInvoice = new WSCreatePreInvoice.WSPreInvoice()
@@ -186,7 +188,9 @@ namespace Hydra.Such.Data.NAV
                     Document_TypeSpecified = true,
                     Posting_Date = CreateInvoice.DataDeRegisto ?? DateTime.Now,
                     Periodo_de_Fact_Contrato = ContractInvoicePeriod,
-                    Data_Serv_Prestado = InvoiceBorrowed
+                    Data_Serv_Prestado = InvoiceBorrowed,
+                    Responsibility_Center= CUsers.CentroDeResponsabilidade,
+                    Posting_No_Series = CUsers.NumSerieFaturas,
 
                 }
             };

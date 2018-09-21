@@ -10,6 +10,7 @@ namespace Hydra.Such.Data.Database
             CondicoesPropostasFornecedores = new HashSet<CondicoesPropostasFornecedores>();
             LinhasCondicoesPropostasFornecedores = new HashSet<LinhasCondicoesPropostasFornecedores>();
             LinhasConsultaMercado = new HashSet<LinhasConsultaMercado>();
+            RegistoDePropostas = new HashSet<RegistoDePropostas>();
             SeleccaoEntidades = new HashSet<SeleccaoEntidades>();
         }
 
@@ -47,10 +48,10 @@ namespace Hydra.Such.Data.Database
         public string CodFormaPagamento { get; set; }
         public bool? SeleccaoEfectuada { get; set; }
 
-        public Projetos CodProjectoNavigation { get; set; }
         public ICollection<CondicoesPropostasFornecedores> CondicoesPropostasFornecedores { get; set; }
         public ICollection<LinhasCondicoesPropostasFornecedores> LinhasCondicoesPropostasFornecedores { get; set; }
         public ICollection<LinhasConsultaMercado> LinhasConsultaMercado { get; set; }
+        public ICollection<RegistoDePropostas> RegistoDePropostas { get; set; }
         public ICollection<SeleccaoEntidades> SeleccaoEntidades { get; set; }
     }
 }

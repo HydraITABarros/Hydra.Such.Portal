@@ -42,6 +42,7 @@ namespace Hydra.Such.Data.Logic
                             VATRegistrationNo_ = temp.VATRegistrationNo.Equals(DBNull.Value) ? "" : (string)temp.VATRegistrationNo,
                             Address = temp.Address.Equals(DBNull.Value) ? "" : (string)temp.Address,
                             PostCode = temp.PostalCode.Equals(DBNull.Value) ? "" : (string)temp.PostalCode,
+                            City = temp.PostalCode.Equals(DBNull.Value) ? "" : (string)temp.City,
                             Country_RegionCode = temp.Country_RegionCode.Equals(DBNull.Value) ? "" : (string)temp.Country_RegionCode,
                             UnderCompromiseLaw = temp.UnderCompromiseLaw.Equals(DBNull.Value) ? false : ((int)temp.UnderCompromiseLaw) == 0 ? false : true,
                             InternalClient = temp.InternalClient.Equals(DBNull.Value) ? false : ((int)temp.InternalClient) == 0 ? false : true,

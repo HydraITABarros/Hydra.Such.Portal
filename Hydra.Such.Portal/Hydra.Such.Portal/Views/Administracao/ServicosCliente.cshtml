@@ -181,6 +181,7 @@
             <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="clientNumber">Cliente</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="clientNumber" />
                 </template>
                 <template>
                     <vaadin-combo-box items="[[Clients]]" item-value-path="id" item-label-path="value" value="{{item.clientNumber}}" disabled>
@@ -198,6 +199,7 @@
             <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="serviceCode">Serviço</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="serviceCode" />
                 </template>
                 <template>
                     <vaadin-combo-box items="[[Services]]" item-value-path="id" item-label-path="value" value="{{item.serviceCode}}" disabled>

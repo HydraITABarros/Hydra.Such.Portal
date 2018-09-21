@@ -460,6 +460,21 @@ namespace Hydra.Such.Portal.Configurations
             {
                 Id = 11,
                 Value = "Outros"
+            },
+            new EnumData()
+            {
+                Id = 12,
+                Value = "Consulta Prévia"
+            },
+            new EnumData()
+            {
+                Id = 13,
+                Value = "Contratação Excluída"
+            },
+            new EnumData()
+            {
+                Id = 14,
+                Value = "Consulta Preliminar"
             }
         };
 

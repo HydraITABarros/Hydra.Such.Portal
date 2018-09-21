@@ -30,6 +30,8 @@ namespace Hydra.Such.Data.ViewModel.Projects
         public decimal? QuantityReturned { get; set; }
         public int LineNo { get; set; }
         public string ProjectNo { get; set; }
+        public string ProjectDimension { get; set; }
+        public string ContractNo { get; set; }
         public string Date { get; set; }
         public int? MovementType { get; set; }
         public int? Type { get; set; }

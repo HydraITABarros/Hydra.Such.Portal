@@ -45,7 +45,7 @@
 
         <div class="row">
             <div class="col-lg-3">
-                <vaadin-text-field id="contactId" name="contactId" label="Nº" value="{{contact.id}}" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                <vaadin-text-field id="contactId" name="contactId" label="Nº" value="{{contact.id}}" disabled></vaadin-text-field>
             </div>
             <div class="col-lg-3">
                 <vaadin-text-field id="contactName" name="contactName" label="Nome" value="{{contact.name}}" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
@@ -141,7 +141,7 @@
                         this._isCreate = true;
 
                     //Inserir
-                    debugger;
+                    //debugger;
                     if (this._contactId  == "") {
                         $(this.$.btnCreateNew).addClass('hidden');
                         $(this.$.btnCreate).removeClass('hidden');
@@ -209,6 +209,7 @@
                             }
                             else {
                                 this._showErrorMessage(this.contact.eMessage);
+                                this.$.contactId.value = "";
                             }
                         }
                         else if (e.detail.url.indexOf("Delete") !== -1) {

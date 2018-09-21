@@ -31,7 +31,5 @@ namespace Hydra.Such.Data.Database
         public DateTime? DataEntregaPrometida { get; set; }
         public bool? RespostaFornecedor { get; set; }
         public decimal? QuantidadeRespondida { get; set; }
-
-        public Projetos NumProjectoNavigation { get; set; }
     }
 }

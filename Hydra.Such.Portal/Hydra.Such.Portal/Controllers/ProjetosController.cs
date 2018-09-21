@@ -1593,6 +1593,7 @@ namespace Hydra.Such.Portal.Controllers
                 Billable = x.Faturável,
                 Registered = x.Registado,
                 DocumentNo = x.NºDocumento,
+                MealType = x.TipoRefeição,
                 ConsumptionDate = x.DataConsumo == null ? String.Empty : x.DataConsumo.Value.ToString("yyyy-MM-dd")
             }).ToList();
             if (!string.IsNullOrEmpty(NoDocument))
@@ -2021,7 +2022,7 @@ namespace Hydra.Such.Portal.Controllers
                 JValue authorizationTotalValue = requestParams["authorizationTotalValue"] as JValue;
                 if (authorizationTotalValue != null)
                 {
-                    string str = (string)authorizationTotalValue.Value;
+                    string str = authorizationTotalValue.Value.ToString();
                     authorizationTotal = decimal.Parse(str, CultureInfo.InvariantCulture);
                 }
 
@@ -2029,6 +2030,13 @@ namespace Hydra.Such.Portal.Controllers
                 JArray projMovementsValue = requestParams["projMovements"] as JArray;
                 if (projMovementsValue != null) 
                     projMovements = projMovementsValue.ToObject<List<ProjectMovementViewModel>>();
+                projMovements.ForEach(x =>
+                {
+                    if (x.FunctionalAreaCode.StartsWith("5") && !x.MealType.HasValue)
+                    {
+                        result.eMessages.Add(new TraceInformation(TraceType.Error, "O tipo de refeição é obrigatório nas linhas com Área Funcional Nutrição"));
+                    }
+                });
 
                 Projetos project = null;
                 Contratos contract = null;
@@ -2470,10 +2478,10 @@ namespace Hydra.Such.Portal.Controllers
                 result.eMessage = "Selecione registos para faturar";
                 return Json(result);
             }
-
+            List<Projetos> projectsDetails = new List<Projetos>();
             var projectsIds = authProjectMovements.Select(x => x.CodProjeto).Distinct();
             var billingGroups = authProjectMovements.Select(x => x.GrupoFactura).Distinct();
-            string projectDescription =string.Empty;
+
             //get all movements from authProjects
             List<SPInvoiceListViewModel> data = null;
             using (SuchDBContext ctx = new SuchDBContext())
@@ -2506,6 +2514,7 @@ namespace Hydra.Such.Portal.Controllers
 
                             //##################################    Obter de movimentos de projeto autorizados
                             ProjectNo = mpa.CodProjeto,
+                            ContractNo = projectsDetails.Select(x => x.NºContrato).FirstOrDefault(x => x == mpa.CodProjeto),
                             LineNo = mpa.NumMovimento,
                             MovementType = mpa.Tipo,
                             ConsumptionDate = mpa.DataConsumo.HasValue ? mpa.DataConsumo.Value.ToString("yyyy-MM-dd") : "",
@@ -2558,8 +2567,9 @@ namespace Hydra.Such.Portal.Controllers
                         projectsIds.Contains(x.ProjectNo) &&
                         billingGroups.Contains(x.InvoiceGroup.Value))
                     .ToList();
+
                 if (data != null && data.Count > 0)
-                    projectDescription = ctx.Projetos.FirstOrDefault(x => x.NºProjeto == data[0].ProjectNo)?.Descrição;
+                    projectsDetails = ctx.Projetos.Where(x => projectsIds.Contains(x.NºProjeto)).ToList();
             }
             if (data != null)
             {
@@ -2590,52 +2600,57 @@ namespace Hydra.Such.Portal.Controllers
                         Items = items.ToList(),
                     })
                 .ToList();
-                
-                //Create Project if exists
-                Task<WSCreateNAVProject.Read_Result> Project = WSProject.GetNavProject(data[0].ProjectNo, _configws);
-                Project.Wait();
-                if (Project.IsCompletedSuccessfully && Project.Result.WSJob == null)
-                {
-                    try
-                    {
-                        ProjectDetailsViewModel proj = new ProjectDetailsViewModel();
-                        proj.ProjectNo = data[0].ProjectNo;
-                        proj.Description = projectDescription;
-                        proj.ClientNo = data[0].InvoiceToClientNo;
-                        proj.RegionCode = data[0].RegionCode;
-                        proj.ResponsabilityCenterCode = data[0].ResponsabilityCenterCode;
-                        proj.FunctionalAreaCode = data[0].FunctionalAreaCode;
-                        Task<WSCreateNAVProject.Create_Result> createProject = WSProject.CreateNavProject(proj, _configws);
-                        createProject.Wait();
-                    }
-                    catch (Exception ex)
-                    {
-                        if (!hasErrors)
-                            hasErrors = true;
 
-                        execDetails += " Erro ao criar Projeto: ";
-                        errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                        result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails + errorMessage));
-                        return Json(result);
+                //Create Project if exists
+                foreach (string projectId in projectsIds)
+                {
+                    Task<WSCreateNAVProject.Read_Result> Project = WSProject.GetNavProject(projectId, _configws);
+                    Project.Wait();
+                    if (Project.IsCompletedSuccessfully && Project.Result.WSJob == null)
+                    {
+                        try
+                        {
+                            var projectDetails = projectsDetails.First(x => x.NºProjeto == projectId);
+
+                            ProjectDetailsViewModel proj = new ProjectDetailsViewModel();
+                            proj.ProjectNo = projectId;
+                            proj.Description = projectDetails.Descrição;
+                            proj.ClientNo = projectDetails.NºCliente;
+                            proj.RegionCode = projectDetails.CódigoRegião;
+                            proj.ResponsabilityCenterCode = projectDetails.CódigoCentroResponsabilidade;
+                            proj.FunctionalAreaCode = projectDetails.CódigoÁreaFuncional;
+
+                            Task<WSCreateNAVProject.Create_Result> createProject = WSProject.CreateNavProject(proj, _configws);
+                            createProject.Wait();
+                        }
+                        catch (Exception ex)
+                        {
+                            if (!hasErrors)
+                                hasErrors = true;
+
+                            execDetails += " Erro ao criar Projeto: ";
+                            errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                            result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails + errorMessage));
+                            return Json(result);
+                        }
                     }
                 }
-
+                
+                
                 if (groupedbyclient != null)
                 {
                     foreach (var header in groupedbyclient)
                     {
+                        var itemsToInvoice = header.Items.Select(x => new Tuple<string, int>(x.ProjectNo, x.InvoiceGroup.Value)).Distinct().ToList();
                         try
                         {
                             var invoiceHeader = header.Items.First();
                             invoiceHeader.ClientVATReg = header.ClientVATReg;
                             invoiceHeader.MovementType = Convert.ToInt32(OptionInvoice);
                             invoiceHeader.CreateUser = User.Identity.Name;
-                            //header.MovementType = Convert.ToInt32(OptionInvoice);
-                            //header.CreateUser = User.Identity.Name;
 
                             execDetails = string.Format("Fat. Cliente: {0}, Data: {1}, Nº Compromisso: {2} - ", header.InvoiceToClientNo, header.Date, header.CommitmentNumber);
                             Task<WSCreatePreInvoice.Create_Result> TCreatePreInvoice = WSPreInvoice.CreatePreInvoice(invoiceHeader, _configws);
-                            //Task<WSCreatePreInvoice.Create_Result> TCreatePreInvoice = WSPreInvoice.CreatePreInvoice(header, _configws);
                             TCreatePreInvoice.Wait();
 
                             if (TCreatePreInvoice.IsCompletedSuccessfully)
@@ -2645,16 +2660,19 @@ namespace Hydra.Such.Portal.Controllers
 
                                 try
                                 {
-                                    //List<SPInvoiceListViewModel> linesList = new List<SPInvoiceListViewModel>();
-                                    //foreach (var line in data)
-                                    //{
-                                    //    if (line.InvoiceToClientNo == header.InvoiceToClientNo && line.Date == header.Date && line.CommitmentNumber == header.CommitmentNumber && line.ClientRequest == header.ClientRequest)
-                                    //    {
-                                    //        line.DocumentNo = headerNo;
-                                    //        linesList.Add(line);
-                                    //    }
-                                    //}
-                                    header.Items.ForEach(x => x.DocumentNo = headerNo);
+                                    header.Items.ForEach(x =>
+                                    {
+                                        x.DocumentNo = headerNo;
+                                        x.ContractNo = projectsDetails
+                                                            .Select(y => new { ProjectNo = y.NºProjeto, ContractNo = y.NºContrato })
+                                                            .FirstOrDefault(y => y.ProjectNo == x.ProjectNo)?.ContractNo;
+
+                                        //Para Nota de crédito passar o valor para positivo
+                                        if (invoiceHeader.MovementType == 4 && x.TotalPrice.HasValue && x.TotalPrice < 0)
+                                            x.TotalPrice = Math.Abs(x.TotalPrice.Value);
+                                        if (invoiceHeader.MovementType == 4 && x.Quantity.HasValue && x.Quantity < 0)
+                                            x.Quantity = Math.Abs(x.Quantity.Value);
+                                    });
 
                                     List<NAVResourcesViewModel> resourceslines = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "");
                                     List<WasteRateViewModel> wasteRates = DBWasteRate.ParseToViewModel(DBWasteRate.GetAll());
@@ -2668,7 +2686,9 @@ namespace Hydra.Such.Portal.Controllers
                                         var wasteFamilyResources = wasteRates.Where(x => x.FamiliaRecurso == item.ResourceGroup).ToList();
                                         wasteFamilyResources.ForEach(x =>
                                         {
+                                            
                                             decimal? quantity = header.Items.Where(y => y.Type == 2 && y.Code == item.Code).Sum(y => y.Quantity);
+                                            var resourceFirstLine = header.Items.Where(y => y.Type == 2 && y.Code == item.Code).OrderByDescending(y => y.ContractNo).FirstOrDefault();
                                             var resource = resourceslines.Where(y => y.Code == x.Recurso && y.WasteRate == 1).FirstOrDefault();
                                             if (resource != null)
                                             {
@@ -2678,10 +2698,19 @@ namespace Hydra.Such.Portal.Controllers
                                                 wasteLineToAdd.Code = resource.Code;
                                                 wasteLineToAdd.Description = resource.Name;
                                                 wasteLineToAdd.UnitPrice = resource.UnitPrice;
+                                                wasteLineToAdd.RegionCode = resourceFirstLine.RegionCode;
+                                                wasteLineToAdd.ResponsabilityCenterCode = resourceFirstLine.ResponsabilityCenterCode;
+                                                wasteLineToAdd.FunctionalAreaCode = resourceFirstLine.FunctionalAreaCode;
+                                                wasteLineToAdd.ProjectDimension = resourceFirstLine.ProjectNo;
+                                                wasteLineToAdd.ContractNo = projectsDetails
+                                                            .Select(y => new { ProjectNo = y.NºProjeto, ContractNo = y.NºContrato })
+                                                            .FirstOrDefault(y => y.ProjectNo == resourceFirstLine.ProjectNo)?.ContractNo;
+
                                                 header.Items.Add(wasteLineToAdd);
                                             }
                                         });
                                     }
+                                    
                                     Task<WSCreatePreInvoiceLine.CreateMultiple_Result> TCreatePreInvoiceLine = WSPreInvoiceLine.CreatePreInvoiceLineListProject(header.Items, headerNo, OptionInvoice, _configws);
                                     TCreatePreInvoiceLine.Wait();
 
@@ -2691,23 +2720,24 @@ namespace Hydra.Such.Portal.Controllers
                                         //update to Invoiced = true
                                         using (SuchDBContext ctx = new SuchDBContext())
                                         {
-                                            var projectNo = header.Items.Select(x => x.ProjectNo).First();
-                                            var invoiceGroup = header.Items.Select(x => x.InvoiceGroup).First();
-
-                                            var authorizedProjects = ctx.ProjectosAutorizados
-                                                .Where(x => x.CodProjeto == projectNo && x.GrupoFactura == invoiceGroup)
+                                            itemsToInvoice.ForEach(key =>
+                                            {
+                                                var authorizedProjects = ctx.ProjectosAutorizados
+                                                .Where(x => x.CodProjeto == key.Item1 && x.GrupoFactura == key.Item2)
                                                 .ToList();
-                                            //var authorizedProjectMovements = ctx.MovimentosDeProjeto.Where(x => x.CodProjeto == projectNo && x.GrupoFactura == invoiceGroup);
-                                            var projectMovements = ctx.MovimentosDeProjeto
-                                                .Where(x => x.NºProjeto == projectNo && x.GrupoFatura == invoiceGroup)
-                                                .ToList();
-                                            authorizedProjects.ForEach(x => x.Faturado = true);
-                                            //authorizedProjectMovements.ForEach(x => x.Faturada = true);
-                                            projectMovements.ForEach(x => x.Faturada = true);
+                                                //var authorizedProjectMovements = ctx.MovimentosDeProjeto.Where(x => x.CodProjeto == projectNo && x.GrupoFactura == invoiceGroup);
+                                                var projectMovements = ctx.MovimentosDeProjeto
+                                                    .Where(x => x.NºProjeto == key.Item1 && x.GrupoFatura == key.Item2)
+                                                    .ToList();
+                                                authorizedProjects.ForEach(x => x.Faturado = true);
+                                                //authorizedProjectMovements.ForEach(x => x.Faturada = true);
+                                                projectMovements.ForEach(x => x.Faturada = true);
 
-                                            ctx.ProjectosAutorizados.UpdateRange(authorizedProjects);
-                                            //ctx.MovimentosProjetoAutorizados.UpdateRange(authorizedProjectMovements);
-                                            ctx.MovimentosDeProjeto.UpdateRange(projectMovements);
+                                                ctx.ProjectosAutorizados.UpdateRange(authorizedProjects);
+                                                //ctx.MovimentosProjetoAutorizados.UpdateRange(authorizedProjectMovements);
+                                                ctx.MovimentosDeProjeto.UpdateRange(projectMovements);
+                                            });
+
                                             ctx.SaveChanges();
                                             
                                             result.eMessages.Add(new TraceInformation(TraceType.Success, execDetails));

@@ -125,6 +125,7 @@ namespace Hydra.Such.Data.Logic
                     RFRespostaContabilidade = item.RfrespostaContabilidade,
                     RFAlterarDestinatarios = item.RfalterarDestinatarios,
                     RFMailEnvio = item.RfmailEnvio,
+                    Centroresp=item.CentroDeResponsabilidade
                 };
             }
             return null;
@@ -164,6 +165,7 @@ namespace Hydra.Such.Data.Logic
                     RfrespostaContabilidade = item.RFRespostaContabilidade,
                     RfalterarDestinatarios = item.RFAlterarDestinatarios,
                     RfmailEnvio = item.RFMailEnvio,
+                    CentroDeResponsabilidade=item.Centroresp
                 };
             }
             return null;

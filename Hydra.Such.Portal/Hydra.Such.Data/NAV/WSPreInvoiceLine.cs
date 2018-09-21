@@ -93,7 +93,6 @@ namespace Hydra.Such.Data.NAV
 
         public static async Task<WSCreatePreInvoiceLine.CreateMultiple_Result> CreatePreInvoiceLineList(List<LinhasFaturaçãoContrato> LinesList, String HeaderNo, NAVWSConfigurations WSConfigurations)
         {
-            
             int counter = 0;
             WSCreatePreInvoiceLine.WsPreInvoiceLine[] parsedList = LinesList.Select(
                x => new WSCreatePreInvoiceLine.WsPreInvoiceLine
@@ -106,7 +105,8 @@ namespace Hydra.Such.Data.NAV
                    Document_TypeSpecified = true,
                    No = x.Código,
                    TypeSpecified = true,
-                   Type = x.Tipo.Replace(" ", String.Empty) == "3" ? WSCreatePreInvoiceLine.Type.Resource : ConvertType((x.Tipo.Replace(" ", String.Empty)))+1,
+                   
+                   Type = ConvertToSaleslineType(x.Tipo.Replace(" ", String.Empty)),
                    Description = x.Descrição,
                    //Quantity = x.Quantidade.Value,
                    Quantity = x.Quantidade.HasValue ? x.Quantidade.Value : 0,
@@ -119,7 +119,8 @@ namespace Hydra.Such.Data.NAV
                    //AmountSpecified = true,
                    Service_Contract_No = x.NºContrato,
                    Contract_No = x.NºContrato,
-                   Job_No = x.NºProjeto,
+                   //Job_No = x.NºContrato,//Não definir para não obrigar a ter movimentos
+                   gJobDimension = x.NºContrato,
                    RegionCode20 = x.CódigoRegião,
                    FunctionAreaCode20 = x.CódigoÁreaFuncional,
                    ResponsabilityCenterCode20 = x.CódigoCentroResponsabilidade
@@ -140,7 +141,7 @@ namespace Hydra.Such.Data.NAV
             }
             catch (Exception ex)
             {
-                return null;
+                throw ex;
             }
         }
         
@@ -174,8 +175,10 @@ namespace Hydra.Such.Data.NAV
                 line.Line_No = counter += 10000;
                 line.Line_NoSpecified = true;
                 line.Job_No = x.ProjectNo;
-                line.Service_Contract_No = x.ProjectNo;
-                line.Contract_No = x.ProjectNo;
+                line.gJobDimension = x.ProjectDimension;
+                line.Service_Contract_No = x.ContractNo;
+                line.Contract_No_Portal = x.ContractNo;
+                line.Contract_No = x.ContractNo;
                 line.Tipo_Refeicao = (refeicao!=null) ? refeicao.Código.ToString() : "";
                 line.Gen_Prod_Posting_Group = (refeicao != null) ? refeicao.GrupoContabProduto : "";
                 line.Cod_Serv_Cliente = x.ServiceClientCode;
@@ -218,22 +221,18 @@ namespace Hydra.Such.Data.NAV
             //}
         }
         
-        private static WSCreatePreInvoiceLine.Type ConvertType (string type)
+        private static WSCreatePreInvoiceLine.Type ConvertToSaleslineType (string type)
         {
             switch (type)
             {
                 case "1":
-                    return WSCreatePreInvoiceLine.Type.Resource;
-                case "2":
                     return WSCreatePreInvoiceLine.Type.Item;
+                case "2":
+                    return WSCreatePreInvoiceLine.Type.Resource;
                 case "3":
                     return WSCreatePreInvoiceLine.Type.G_L_Account;
-                case "4":
-                    return WSCreatePreInvoiceLine.Type.Fixed_Asset;
-                case "5":
-                    return WSCreatePreInvoiceLine.Type.Charge_Item;
                 default:
-                    return WSCreatePreInvoiceLine.Type._blank_;
+                    throw new Exception("O tipo selecionado não é válido.");
             }
         }
 

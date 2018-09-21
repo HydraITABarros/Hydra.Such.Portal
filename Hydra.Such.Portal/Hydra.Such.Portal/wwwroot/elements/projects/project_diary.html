@@ -292,14 +292,14 @@
                 <div class="col-lg-2">
                     <vaadin-text-field id="piTotalPrice" label="Preço Total" pattern="^[1-9]\d*(\.\d+)?$" class="alignRight" value="{{totalPrice}}" on-value-changed="_calcTotals" disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
                 </div>
-                <div class="col-lg-2">
+                <div class="col-lg-2" hidden>
                     <vaadin-text-field id="piUnitValueToInvoice" label="Valor Unitário a Faturar" pattern="^[1-9]\d*(\.\d+)?$" class="alignRight" value="{{unitValueToInvoice}}" on-value-changed="_calcTotals" disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
                 </div>
-            </div>
-            <div class="row">
                 <div class="col-lg-2">
                     <vaadin-text-field id="piCoin" label="Moeda" class="alignRight" value="{{coin}}" disabled></vaadin-text-field>
                 </div>
+            </div>
+            <div class="row">
                 <div class="col-lg-2 alignPoga">
                     <vaadin-checkbox id="pcInvoice" checked="{{billable}}" disabled="{{ !_permissions.create }}"> Faturável</vaadin-checkbox>
                 </div>
@@ -311,7 +311,6 @@
                                     fields='[{"field":"code", "name":"Código"}, {"field":"description", "name":"Descrição"}, {"field":"grupoContabProduto", "name":"Grupo Contab. Produto"}]'>
                     </such-selectbox>
                 </div>
-
                 <div class="col-lg-2">
                     <such-selectbox id="ServiceGroupCod" name="piCodeResponsabilityCenter" value="{{ddServiceGroupCode}}" label="Cód. Grupo Serviço" disabled="{{ !_permissions.create }}"
                                     items="[[ServiceGroupData]]"
@@ -326,8 +325,6 @@
                 <div class="col-lg-2">
                     <vaadin-text-field id="piExternalGuideNo" label="Nº Guia Externa" value="{{externalguide}}" disabled="{{ !_permissions.create }}"></vaadin-text-field>
                 </div>
-            </div>
-            <div class="row">
                 <div class="col-lg-2">
                     <such-selectbox id="ServiceClientCode" name="piCodeResponsabilityCenter" value="{{ddServiceClientCode}}" label="Cód. Serviço Cliente" disabled="{{ !_permissions.create }}"
                                     items="[[ServiceClientData]]"
@@ -336,7 +333,10 @@
                                     fields='[{"field":"serviceCode", "name":"Código"}, {"field":"serviceDescription", "name":"Descrição"}]'>
                     </such-selectbox>
                 </div>
-                <div class="col-lg-2">
+            </div>
+            <div class="row">
+               
+                <div class="col-lg-2" hidden>
                     <such-selectbox id="piContabGroup" name="piContabGroup" value="{{codeProjectContabGroup}}" label="Grupo Contab" disabled="{{disabledProjectNo }}"
                                     items="[[ContabGroupData]]"
                                     text-path="value"
@@ -687,7 +687,7 @@
                     </template>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
+            <vaadin-grid-column width="160px" resizable hidden>
                 <template class="header">
                     <vaadin-grid-sorter path="unitValueToInvoice">Valor Unitário a Faturar</vaadin-grid-sorter>
                     <vaadin-grid-filter path="unitValueToInvoice"></vaadin-grid-filter>
@@ -714,8 +714,8 @@
             </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
-                    <vaadin-grid-sorter path="MealType">Tipo Refeição</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="MealType"></vaadin-grid-filter>
+                    <vaadin-grid-sorter path="mealType">Tipo Refeição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="mealType"></vaadin-grid-filter>
                 </template>
                 <template>
                     <template is="dom-if" if="{{ item.selected }}">
@@ -1098,7 +1098,15 @@
                         <paper-checkbox name="billable" disabled checked="{{item.billable}}"></paper-checkbox>
                     </template>
                 </vaadin-grid-column>
-
+                <vaadin-grid-column width="100px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="mealType">Tipo Refeição</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="mealType" />
+                    </template>
+                    <template>
+                        [[ _parseMealType(item.mealType) ]]
+                    </template>
+                </vaadin-grid-column>
             </vaadin-grid>
 
 

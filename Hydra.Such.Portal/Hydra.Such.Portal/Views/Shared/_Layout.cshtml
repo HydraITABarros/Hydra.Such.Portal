@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Http
+@using Hydra.Such.Data.ViewModel
 @inject IHttpContextAccessor HttpContextAccessor
 <!DOCTYPE html>
 <html>
@@ -82,7 +83,7 @@
                 <div class="page-title hidden-menubar-top hidden-float pull-right">
 
                     <div class="dropdown">
-                        <a href="javascript:void(0)" class="dropdown-toggle" type="button" data-toggle="dropdown">                            
+                        <a href="javascript:void(0)" class="dropdown-toggle" type="button" data-toggle="dropdown">
                             @User.Identity.Name &nbsp;
                             <span class="caret"></span>
                         </a>
@@ -100,264 +101,11 @@
     <!-- APP ASIDE ==========-->
     <aside id="menubar" class="menubar light menubar-resizable">
         <div class="after"></div>
-
         <div class="menubar-scroll">
             <div class="menubar-scroll-inner">
-                <ul class="app-menu">
-                    <li id="approvalPendingShow">
-                        <a href="/Approvals">
-                            <i class="menu-icon zmdi zmdi-check zmdi-hc-lg"></i>
-                            <span id="pendingApprovalsLink" class="menu-text danger">Aprovações Pendentes &nbsp;</span>
-                        </a>
-                    </li>
-
-                    <li class="has-submenu">
-                        <a href="javascript:void(0)" class="submenu-toggle">
-                            <i class="menu-icon zmdi zmdi-view-dashboard zmdi-hc-lg"></i>
-                            <span class="menu-text">Processos DR's</span>
-                            <i class="menu-caret zmdi zmdi-hc-sm zmdi-chevron-right"></i>
-                        </a>
-                        <ul class="submenu">
-                            <li>@Html.ActionLink("Contactos", "Index", "Contactos", null, null)</li>
-                            <li>@Html.ActionLink("Clientes", "Index", "Clientes", null, null)</li>
-                            <li>@Html.ActionLink("Oportunidades", "Oportunidades", "Contratos", null, null)</li>
-                            <li>@Html.ActionLink("Propostas", "Propostas", "Contratos", null, null)</li>
-                            <li>@Html.ActionLink("Contratos", "Index", "Contratos", null, null)</li>
-                            <li>@Html.ActionLink("Contratos Avença Fixa", "AvencaFixa", "Contratos", null, null)</li>
-                        </ul>
-                    </li><!-- .menu-item -->
-
-                    <li class="has-submenu">
-                        <a href="javascript:void(0)" class="submenu-toggle">
-                            <i class="menu-icon zmdi zmdi-pages zmdi-hc-lg"></i>
-                            <span class="menu-text">Processos UP's e UAS</span>
-                            <i class="menu-caret zmdi zmdi-hc-sm zmdi-chevron-right"></i>
-                        </a>
-                        <ul class="submenu">
-                            <li>@Html.ActionLink("Projetos", "Index", "Projetos", null, null)</li>
-                            <li>@Html.ActionLink("Orçamentos", "", "", null, null)</li>
-                            <li>@Html.ActionLink("Diário Projetos", "DiarioProjeto", "Projetos", new { id = "" }, null)</li>
-                            <li>@Html.ActionLink("Pré-Registos", "PreregistoProjetos", "Projetos", new { id = "" }, null)</li>
-                            @*<li>@Html.ActionLink("Autorização Faturação", "AutorizacaoFaturacao", "Projetos", null, null)</li>*@
-                            <li>@Html.ActionLink("Faturação Projetos", "Faturacao", "Projetos", null, null)</li>
-                            <li>@Html.ActionLink("Unidades Produtivas", "Index", "UnidadesProdutivas", null, null)</li>
-                            <li>@Html.ActionLink("Preços Venda – Clientes", "PreçosServiçosCliente", "Projetos", null, null)</li>
-                            <li class="has-submenu">
-                                <a href="javascript:void(0)" class="submenu-toggle">
-                                    <i class="menu-icon zmdi zmdi-plus zmdi-hc-lg"></i>
-                                    <span class="menu-text">Gestão Localizações</span>
-                                    <i class="menu-caret zmdi zmdi-hc-sm zmdi-chevron-right"></i>
-                                </a>
-                                <ul class="submenu">
-                                    <li>@Html.ActionLink("Produtos", "List", "Produtos", null, null)</li>
-                                    <li>@Html.ActionLink("Unidades Armazenamento", "Index", "UnidadeArmazenamento", null, null)</li>
-                                    <li>@Html.ActionLink("Unidade Medida Produto", "UnidadeMedidaProduto", "Nutricao", null, null)</li>
-                                    <li>@Html.ActionLink("Diários Artigos-Produtos", "", "", null, null)</li>
-                                    <li>@Html.ActionLink("Requisições Simplificadas", "Index", "RequisicoesSimplificadas", null, null)</li>
-                                    <li>@Html.ActionLink("Fichas Técnicas", "Index", "FichasTecnicasPratos", null, null)</li>
-                                    <li>@Html.ActionLink("Histórico Requisições Simplificadas", "Index", "RequisicoesSimplificadas", new { area = "", option = 2 }, null)</li>
-                                </ul>
-                            </li>
-
-                            <li class="has-submenu">
-                                <a href="javascript:void(0)" class="submenu-toggle">
-                                    <i class="menu-icon zmdi zmdi-plus zmdi-hc-lg"></i>
-                                    <span class="menu-text">Gestão Viaturas</span>
-                                    <i class="menu-caret zmdi zmdi-hc-sm zmdi-chevron-right"></i>
-                                </a>
-                                <ul class="submenu">
-                                    <li>@Html.ActionLink("Viaturas", "Viaturas", "Viaturas", null, null)</li>
-                                </ul>
-                            </li>
-
-                            <li class="has-submenu">
-                                <a href="javascript:void(0)" class="submenu-toggle">
-                                    <i class="menu-icon zmdi zmdi-plus zmdi-hc-lg"></i>
-                                    <span class="menu-text">Telemóveis</span>
-                                    <i class="menu-caret zmdi zmdi-hc-sm zmdi-chevron-right"></i>
-                                </a>
-                                <ul class="submenu">
-                                    <li>@Html.ActionLink("Equipamentos", "TelemoveisEquipamentos", "TelemoveisEquipamentos", null, null)</li>
-                                    <li>@Html.ActionLink("Cartões", "TelemoveisCartoes", "TelemoveisCartoes", null, null)</li>
-                                </ul>
-                            </li>
-
-                        </ul>
-                    </li><!-- .menu-item -->
-
-                    <li class="has-submenu">
-                        <a href="javascript:void(0)" class="submenu-toggle">
-                            <i class="menu-icon zmdi zmdi-layers zmdi-hc-lg"></i>
-                            <span class="menu-text">Compras</span>
-                            <i class="menu-caret zmdi zmdi-hc-sm zmdi-chevron-right"></i>
-                        </a>
-                        <ul class="submenu">
-                            <li>@Html.ActionLink("Receção e Conferência Faturas", "RececaoFaturas", "Faturacao", null, null)</li>
-                            <li>@Html.ActionLink("Pré-Requisição", "Index", "PreRequisicoes", null, null)</li>
-                            <li class="has-submenu">
-                                <a href="javascript:void(0)" class="submenu-toggle">
-                                    <i class="menu-icon zmdi zmdi-plus zmdi-hc-lg"></i>
-                                    <span class="menu-text">Requisições</span>
-                                    <i class="menu-caret zmdi zmdi-hc-sm zmdi-chevron-right"></i>
-                                </a>
-                                <ul class="submenu">
-                                    <li>@Html.ActionLink("Validação Requisições", "RequisicoesAprovadas", "GestaoRequisicoes", null, null)</li>
-                                    <li>@Html.ActionLink("Gestão de Requisições", "Index", "GestaoRequisicoes", null, null)</li>
-                                    <li>@Html.ActionLink("Requisições Acordos Preços", "RequisicoesAcordosPrecos", "GestaoRequisicoes", null, null)</li>
-                                    <li>@Html.ActionLink("Pontos de Situação", "PontosSituacao", "GestaoRequisicoes", null, null)</li>
-                                    <li>@Html.ActionLink("Arquivo Requisições", "Arquivadas", "GestaoRequisicoes", null, null)</li>
-                                    <li>@Html.ActionLink("Modelos Requisição", "Index", "ModelosRequisicao", null, null)</li>
-                                    <li>@Html.ActionLink("Mod. Req. Simplificadas", "Index", "ModelosReqSimplificada", new { area = "" }, null)</li>
-                                </ul>
-                            </li>
-
-                            <li class="has-submenu">
-                                <a href="javascript:void(0)" class="submenu-toggle">
-                                    <i class="menu-icon zmdi zmdi-plus zmdi-hc-lg"></i>
-                                    <span class="menu-text">Pedidos de Cotação</span>
-                                    <i class="menu-caret zmdi zmdi-hc-sm zmdi-chevron-right"></i>
-                                </a>
-                                <ul class="submenu">
-                                    @*<li>@Html.ActionLink("Actividades", "Actividades", "Actividades", null, null)</li>
-                                        <li>@Html.ActionLink("Actividades Por Fornecedor", "ActividadesPorFornecedor", "ActividadesPorFornecedor", null, null)</li>
-                                        <li>@Html.ActionLink("Actividades Por Produto", "ActividadesPorProduto", "ActividadesPorProduto", null, null)</li>*@
-                                    <li>@Html.ActionLink("Consulta de Mercado", "ConsultaMercado", "ConsultaMercado", null, null)</li>
-                                </ul>
-                            </li>
-
-                            <li class="has-submenu">
-                                <a href="javascript:void(0)" class="submenu-toggle">
-                                    <i class="menu-icon zmdi zmdi-plus zmdi-hc-lg"></i>
-                                    <span class="menu-text">Procedimentos CCP</span>
-                                    <i class="menu-caret zmdi zmdi-hc-sm zmdi-chevron-right"></i>
-                                </a>
-                                <ul class="submenu">
-                                    <li>@Html.ActionLink("Pedido de Aquisição", "PedidoAquisicao", "ProcedimentosCcps", null, null)</li>
-                                    <li>@Html.ActionLink("Pedido Simplificado", "PedidoSimplificado", "ProcedimentosCcps", null, null)</li>
-                                    <li>@Html.ActionLink("Quadro de Bordo", "QuadroBordo", "ProcedimentosCcps", null, null)</li>
-                                    <li>@Html.ActionLink("Quadro de Bordo Simplificado", "QuadroBordoSimplificado", "ProcedimentosCcps", null, null)</li>
-                                    <li>@Html.ActionLink("Quadro de Bordo CA", "QuadroBordoCA", "ProcedimentosCcps", null, null)</li>
-                                </ul>
-                            </li>
-                            <li>@Html.ActionLink("Pré Encomendas", "LinhasPreEncomenda", "LinhasPreEncomenda", null, null)</li>
-                            <li>@Html.ActionLink("Mercado Local", "MercadoLocalList", "MercadoLocal", null, null)</li>
-                        </ul>
-                    </li><!-- .menu-item -->
-
-                    <li class="has-submenu">
-                        <a href="javascript:void(0)" class="submenu-toggle">
-                            <i class="menu-icon fa fa-leaf"></i>
-                            <span class="menu-text">Folhas de Horas</span>
-                            <i class="menu-caret zmdi zmdi-hc-sm zmdi-chevron-right"></i>
-                        </a>
-                        <ul class="submenu">
-                            <li>@Html.ActionLink("Folhas de Horas", "Index", "FolhasDeHoras", null, null)</li>
-                            @*<li>@Html.ActionLink("Folhas de Horas Pendentes", "FolhaDeHoras_Pendentes", "FolhasDeHoras", null, null)</li>
-                                <li>@Html.ActionLink("Nova / Criadas", "Index", "FolhasDeHoras", null, null)</li>
-                                <li>@Html.ActionLink("Por Validar", "FolhaDeHoras_Validacao", "FolhasDeHoras", null, null)</li>
-                                <li>@Html.ActionLink("Por Integrar Aj. Custo RH", "FolhaDeHoras_IntegracaoAjudaCusto", "FolhasDeHoras", null, null)</li>
-                                <li>@Html.ActionLink("Por Integrar km RH", "FolhaDeHoras_IntegracaoKMS", "FolhasDeHoras", null, null)</li>
-                                <li>@Html.ActionLink("Histórico", "FolhaDeHoras_Historico", "FolhasDeHoras", null, null)</li>*@
-                        </ul>
-                    </li><!-- .menu-item -->
-
-                    <li class="has-submenu">
-                        <a href="javascript:void(0)" class="submenu-toggle">
-                            <i class="menu-icon zmdi zmdi-settings zmdi-hc-lg"></i>
-                            <span class="menu-text">Administração</span>
-                            <i class="menu-caret zmdi zmdi-hc-sm zmdi-chevron-right"></i>
-                        </a>
-                        <ul class="submenu">
-                            <!--Diversos-->
-                            <li>@Html.ActionLink("Configurações", "Configuracoes", "Administracao", new { area = "" }, null)</li>
-                            <li>@Html.ActionLink("Config. Numerações", "ConfiguracaoNumeracoes", "Administracao", new { area = "" }, null)</li>
-                            <li>@Html.ActionLink("Perfis Modelo", "PerfisModelo", "Administracao", new { area = "" }, null)</li>
-                            <li>@Html.ActionLink("Config. Utilizadores", "ConfiguracaoUtilizadores", "Administracao", new { area = "" }, null)</li>
-                            <li>@Html.ActionLink("Config. Aprovações", "ConfiguracaoAprovacoes", "Administracao", new { area = "", id = "Administracao" }, null)</li>
-                            <li>@Html.ActionLink("Grupo Aprovações", "GruposAprovacoes", "Administracao", new { area = "", id = "Administracao" }, null)</li>
-
-                            <li>@Html.ActionLink("Objetos De Serviço", "ObjetosDeServico", "Administracao", null, null)</li>
-                            <li>@Html.ActionLink("Tipos de Refeição", "TiposRefeicao", "Administracao", null, null)</li>
-                            <li>@Html.ActionLink("Serviços", "Servicos", "Administracao", null, null)</li>
-                            <li>@Html.ActionLink("Serviços Cliente", "ServicosCliente", "Administracao", null, null)</li>
-                            <li>@Html.ActionLink("Destinos Finais Residuos", "DestinosFinaisResiduos", "Administracao", null, null)</li>
-
-                            <li>@Html.ActionLink("Grupos Classif. Fichas Técnicas", "ClassificacaoFichasTecnicas", "Administracao", new { option = "Grupos" }, null)</li>
-                            <li>@Html.ActionLink("Classif. Fichas Técnicas", "ClassificacaoFichasTecnicas", "Administracao", new { id = "" }, null)</li>
-                            <li>@Html.ActionLink("Acções Confeção", "AccoesConfecao", "Administracao", null, null)</li>
-                            <li>@Html.ActionLink("Procedimento Confeção", "ProcedimentoConfecao", "Administracao", null, null)</li>
-
-                            <li>@Html.ActionLink("Tipos Viaturas", "TiposViaturas", "Administracao", null, null)</li>
-                            <li>@Html.ActionLink("Marcas", "Marcas", "Administracao", null, null)</li>
-                            <li>@Html.ActionLink("Modelos", "Modelos", "Administracao", null, null)</li>
-                            <li>@Html.ActionLink("Cartões e Apólices", "CartoesEApolices", "Administracao", null, null)</li>
-
-                            <li>@Html.ActionLink("Locais", "Locais", "Administracao", null, null)</li>
-
-                            <li>@Html.ActionLink("Tipos Requisições", "TiposRequisicao", "Administracao", null, null)</li>
-                            <li>@Html.ActionLink("Localizações (Armazéns)", "Localizacoes", "Administracao", null, null)</li>
-                            <li>@Html.ActionLink("Unidades de Prestação", "UnidadePrestacao", "Administracao", null, null)</li>
-
-                            <li>@Html.ActionLink("Config. Mercado Local", "ConfiguracaoMLResponsaveis", "Administracao", null, null)</li>
-                            <li>@Html.ActionLink("Unidade Medida", "UnidadeMedida", "Administracao", null, null)</li>
-                            <li>@Html.ActionLink("Taxa Residuos", "TaxaResiduos", "Administracao", null, null)</li>
-
-                            <!--FH-->
-                            <li class="has-submenu">
-                                <a href="javascript:void(0)" class="submenu-toggle">
-                                    <i class="menu-icon zmdi zmdi-plus zmdi-hc-lg"></i>
-                                    <span class="menu-text">Folha de Horas</span>
-                                    <i class="menu-caret zmdi zmdi-hc-sm zmdi-chevron-right"></i>
-                                </a>
-                                <ul class="submenu">
-                                    <li>@Html.ActionLink("FH Ajudas de Custo", "ConfiguracaoAjudaCusto", "Administracao", new { area = "", id = "Administracao" }, null)</li>
-                                    <li>@Html.ActionLink("FH Autorização Empregado", "ConfiguracaoAutorizacaoFHRH", "Administracao", new { area = "", id = "Administracao" })</li>
-                                    <li>@Html.ActionLink("FH Distância", "ConfiguracaoDistanciaFH", "Administracao", new { area = "", id = "Administracao" }, null)</li>
-                                    <li>@Html.ActionLink("FH Empregado Recursos", "ConfiguracaoRHRecursosFH", "Administracao", new { area = "", id = "Administracao" }, null)</li>
-                                    <li>@Html.ActionLink("FH Origem Destino", "ConfiguracaoOrigemDestinoFH", "Administracao", new { area = "", id = "Administracao" }, null)</li>
-                                    <li>@Html.ActionLink("FH Preço Venda Recursos", "ConfiguracaoPrecoVendaRecursoFH", "Administracao", new { area = "", id = "Administracao" }, null)</li>
-                                    <li>@Html.ActionLink("FH Recursos", "ConfiguracaoRecursosFolhaHoras", "Administracao", new { area = "", id = "Administracao" }, null)</li>
-                                    <li>@Html.ActionLink("FH Tipo Trabalho", "ConfiguracaoTipoTrabalhoFH", "Administracao", new { area = "", id = "Administracao" }, null)</li>
-                                </ul>
-                            </li>
-
-                            <!--CCP-->
-                            <li class="has-submenu">
-                                <a href="javascript:void(0)" class="submenu-toggle">
-                                    <i class="menu-icon zmdi zmdi-plus zmdi-hc-lg"></i>
-                                    <span class="menu-text">CCP</span>
-                                    <i class="menu-caret zmdi zmdi-hc-sm zmdi-chevron-right"></i>
-                                </a>
-                                <ul class="submenu">
-                                    <li>@Html.ActionLink("Configuração CCP", "ConfiguracaoCCP", "Administracao", null, null)</li>
-                                </ul>
-                            </li>
-
-                            <!--Projetos-->
-                            <li>@Html.ActionLink("Tipos Projeto", "TiposProjetoDetalhes", "Administracao", null, null)</li>
-                            <li>@Html.ActionLink("Tipos Grupo Contab. Projeto", "TiposGrupoContabProjeto", "Administracao", null, null)</li>
-                            <li>@Html.ActionLink("Tipos Grupo Contab OM Projet", "TiposGrupoContabOMProjeto", "Administracao", null, null)</li>
-
-                            <li>@Html.ActionLink("Acordo de Preços", "AcordoPrecos_List", "Administracao", null, null)</li>
-
-                            <!--CCP-->
-                            <li class="has-submenu">
-                                <a href="javascript:void(0)" class="submenu-toggle">
-                                    <i class="menu-icon zmdi zmdi-plus zmdi-hc-lg"></i>
-                                    <span class="menu-text">Receção Faturação</span>
-                                    <i class="menu-caret zmdi zmdi-hc-sm zmdi-chevron-right"></i>
-                                </a>
-                                <ul class="submenu">
-                                    <li>@Html.ActionLink("Configuração Problemas", "ConfigProblemas", "Administracao", null, null)</li>
-                                    <li>@Html.ActionLink("Configuração Destinatários", "ConfigDestinatarios", "Administracao", null, null)</li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </li><!-- .menu-item -->
-
-                </ul><!-- .app-menu -->
-            </div><!-- .menubar-scroll-inner -->
-        </div><!-- .menubar-scroll -->
+                @Html.Partial("Menu/_Menu", (List<MenuViewModel>)ViewBag._menu)
+            </div>
+        </div>
     </aside>
     <!--========== END app aside -->
     <!-- navbar search -->
@@ -433,6 +181,7 @@
             integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
     </script>
     <script src="~/js/site.min.js" asp-append-version="true"></script>
+    <script src="~/lib/select2.full.min.js"></script>
 
 
 

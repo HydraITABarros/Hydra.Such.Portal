@@ -941,19 +941,33 @@
                         }
                         if (verifica == true) {
                             this.selectedItem = this.selectedItems;
+                            this.$._CLOptionInvoice.value = "";
+                            var availableInvoiceTypes = this.invoiceTypes.slice();
                             if (saldo > 0) {
-                                delete this.invoiceTypes[2];
-                                this.$._CLOptionInvoice.items = this.invoiceTypes;
-
+                                delete availableInvoiceTypes[2];
+                                this.$._CLOptionInvoice.items = availableInvoiceTypes;
+                                this.$.dlgInvoice.open();
                             }
                             else {
-                                delete this.invoiceTypes[0];
-                                delete this.invoiceTypes[1];
-                                this.$._CLOptionInvoice.items = this.invoiceTypes;
-                            }
-
-                            this.$.dlgInvoice.open();
-                            this.$.getInvoiceTypes.generateRequest();
+                                delete availableInvoiceTypes[0];
+                                delete availableInvoiceTypes[1];
+                                this.$._CLOptionInvoice.items = availableInvoiceTypes;
+                                this.$._CLOptionInvoice.value = 4;
+                                var erro = this._validateData(this.selectedItem);
+                                if (erro == "") {
+                                    if (this.selectedItem && this.selectedItem.length > 0) {
+                                        var customerNo = this.selectedItem[0].codCliente;
+                                        var commitmentNo = this.selectedItem[0].numCompromisso;
+                                        this.$.valCustomer_ajax.body = JSON.stringify({ "customerNo": customerNo, "commitmentNo": commitmentNo });
+                                        this.$.valCustomer_ajax.generateRequest();
+                                    }
+                                    else {
+                                        this.openToastError("Não foi possivel aceder ao registo selecionado.");
+                                    }
+                                } else {
+                                    this.openToastError(erro);
+                                }
+                            }  
                         }
                         else {
                             this.openToastError("Selecione apenas projetos de um cliente!");
@@ -1251,7 +1265,6 @@
                     return "";
                 },
                 _parseLocation: function (param) {
-                    debugger;
                     if (param != undefined && this.Locations != undefined) {
                         var sel = this.Locations.find(x => x.id == param);
                         if (sel != undefined) {

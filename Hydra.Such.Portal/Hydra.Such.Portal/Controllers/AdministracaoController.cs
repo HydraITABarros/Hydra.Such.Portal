@@ -40,6 +40,7 @@ using Microsoft.AspNetCore.Hosting;
 using System.Text;
 using NPOI.HSSF.UserModel;
 using Hydra.Such.Data.Logic.Request;
+using Newtonsoft.Json;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -155,6 +156,7 @@ namespace Hydra.Such.Portal.Controllers
                 result.NumSerieFaturas = userConfig.NumSerieFaturas;
                 result.NumSerieNotasCredito = userConfig.NumSerieNotasCredito;
                 result.NumSerieNotasDebito = userConfig.NumSerieNotasDebito;
+                result.Centroresp = userConfig.CentroDeResponsabilidade;
 
                 result.UserAccesses = DBUserAccesses.GetByUserId(data.IdUser).Select(x => new UserAccessesViewModel()
                 {
@@ -209,6 +211,7 @@ namespace Hydra.Such.Portal.Controllers
                 NumSerieFaturas = data.NumSerieFaturas,
                 NumSerieNotasCredito = data.NumSerieNotasCredito,
                 NumSerieNotasDebito = data.NumSerieNotasDebito,
+                CentroDeResponsabilidade=data.Centroresp,
         });
 
             data.IdUser = ObjectCreated.IdUtilizador;
@@ -279,6 +282,7 @@ namespace Hydra.Such.Portal.Controllers
                 userConfig.NumSerieFaturas = data.NumSerieFaturas;
                 userConfig.NumSerieNotasCredito = data.NumSerieNotasCredito;
                 userConfig.NumSerieNotasDebito = data.NumSerieNotasDebito;
+                userConfig.CentroDeResponsabilidade = data.Centroresp;
 
                 DBUserConfigurations.Update(userConfig);
 
@@ -963,6 +967,80 @@ namespace Hydra.Such.Portal.Controllers
             return Json(data);
         }
         #endregion
+
+
+        #region ConfiguracaoMenus
+
+        public IActionResult ConfiguracaoMenu()
+        {
+            //UserAccessesViewModel UPerm = GetPermissions("Administracao");
+            UserAccessesViewModel userPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminGeral);
+            if (userPerm != null && userPerm.Read.Value)
+            {
+                ViewBag.UPermissions = userPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        [HttpPost]
+        public ActionResult GetListConfigMenu()
+        {
+            List<Data.Database.Menu> result = DBMenu.GetAllFull();
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateMenuConfigs([FromBody] List<ConfigNumerationsViewModel> data)
+        {
+            //Get All
+            List<ConfiguraçãoNumerações> previousList = DBNumerationConfigurations.GetAll();
+            //previousList.RemoveAll(x => !data.Any(u => u.Id == x.Id));
+            //previousList.ForEach(x => DBNumerationConfigurations.Delete(x));
+
+            foreach (ConfiguraçãoNumerações line in previousList)
+            {
+                if (!data.Any(x => x.Id == line.Id))
+                {
+                    DBNumerationConfigurations.Delete(line);
+                }
+            }
+
+            data.ForEach(x =>
+            {
+                ConfiguraçãoNumerações CN = new ConfiguraçãoNumerações()
+                {
+                    Descrição = x.Description,
+                    Automático = x.Auto,
+                    Manual = x.Manual,
+                    Prefixo = x.Prefix,
+                    NºDígitosIncrementar = x.TotalDigitIncrement,
+                    QuantidadeIncrementar = x.IncrementQuantity,
+                    ÚltimoNºUsado = x.LastNumerationUsed
+                };
+
+                if (x.Id > 0)
+                {
+                    CN.Id = x.Id;
+                    CN.UtilizadorModificação = User.Identity.Name;
+                    CN.DataHoraModificação = DateTime.Now;
+                    DBNumerationConfigurations.Update(CN);
+                }
+                else
+                {
+                    CN.UtilizadorCriação = User.Identity.Name;
+                    CN.DataHoraCriação = DateTime.Now;
+                    DBNumerationConfigurations.Create(CN);
+                }
+            });
+
+            return Json(data);
+        }
+        #endregion
+
 
         #region TabelasAuxiliares
 
@@ -4345,6 +4423,13 @@ namespace Hydra.Such.Portal.Controllers
             {
                 Code = x.Código,
                 Description = x.Descrição,
+                Email1 = x.Email1,
+                Email2 = x.Email2,
+                Email3 = x.Email3,
+                EmailRegiao12 = x.EmailRegiao12,
+                EmailRegiao23 = x.EmailRegiao23,
+                EmailRegiao33 = x.EmailRegiao33,
+                EmailRegiao43 = x.EmailRegiao43,
                 CreateDate = x.DataHoraCriação.HasValue ? x.DataHoraCriação.Value.ToString("yyyy-MM-dd hh:mm:ss.ff") : "",
                 CreateUser = x.UtilizadorCriação
             }).ToList();
@@ -4366,6 +4451,13 @@ namespace Hydra.Such.Portal.Controllers
                 UnidadePrestação Unidadeval = new UnidadePrestação()
                 {
                     Descrição = x.Description,
+                    Email1 = x.Email1,
+                    Email2 = x.Email2,
+                    Email3 = x.Email3,
+                    EmailRegiao12 = x.EmailRegiao12,
+                    EmailRegiao23 = x.EmailRegiao23,
+                    EmailRegiao33 = x.EmailRegiao33,
+                    EmailRegiao43 = x.EmailRegiao43,
                 };
                 if (x.Code > 0)
                 {
@@ -4383,6 +4475,59 @@ namespace Hydra.Such.Portal.Controllers
                     DBFetcUnit.Create(Unidadeval);
                 }
             });
+            return Json(data);
+        }
+        #endregion
+
+        #region Config Compras
+        public IActionResult ConfigCompras()
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminGeral);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.CreatePermissions = !UPerm.Create.Value;
+                ViewBag.UpdatePermissions = !UPerm.Update.Value;
+                ViewBag.DeletePermissions = !UPerm.Delete.Value;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        [HttpPost]
+        public JsonResult GetConfigCompras()
+        {
+            ConfiguraçãoCompras result = DBConfigCompras.GetByNo(1);
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateConfigCompras([FromBody] ConfiguracaoComprasViewModel data)
+        {
+
+            ConfiguraçãoCompras Compra = new ConfiguraçãoCompras()
+            {
+                Id = 1,
+                Email1Regiao12 = data.Email1Regiao12,
+                Email2Regiao12 = data.Email2Regiao12,
+                Email1Regiao23 = data.Email1Regiao23,
+                Email2Regiao23 = data.Email2Regiao23,
+                Email1Regiao33 = data.Email1Regiao33,
+                Email2Regiao33 = data.Email2Regiao33,
+                Email1Regiao43 = data.Email1Regiao43,
+                Email2Regiao43 = data.Email2Regiao43,
+                DiasParaEnvioAlerta = data.DiasParaEnvioAlerta,
+                UtilizadorCriacao = data.UtilizadorCriacao,
+                DataHoraCriacao = data.DataHoraCriacao,
+                UtilizadorModificacao = User.Identity.Name,
+                DataHoraModificacao = DateTime.Now
+            };
+
+            DBConfigCompras.Update(Compra);
+
             return Json(data);
         }
         #endregion

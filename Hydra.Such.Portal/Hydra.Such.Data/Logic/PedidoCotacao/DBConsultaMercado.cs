@@ -627,6 +627,7 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
             List<CondicoesPropostasFornecedores> condicoesPropostasFornecedores = new List<CondicoesPropostasFornecedores>();
             List<LinhasCondicoesPropostasFornecedores> linhasCondicoesPropostasFornecedores = new List<LinhasCondicoesPropostasFornecedores>();
             List<SeleccaoEntidades> seleccaoEntidades = new List<SeleccaoEntidades>();
+            List<RegistoDePropostas> registoDePropostas = new List<RegistoDePropostas>();
             //HistoricoConsultaMercado historicoConsultaMercado = new HistoricoConsultaMercado();
             string historicoConsultaMercado = string.Empty;
 
@@ -639,6 +640,7 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                     condicoesPropostasFornecedores = ctx.CondicoesPropostasFornecedores.Where(p => p.NumConsultaMercado == consultaMercado.NumConsultaMercado).ToList();
                     linhasCondicoesPropostasFornecedores = ctx.LinhasCondicoesPropostasFornecedores.Where(p => p.NumConsultaMercado == consultaMercado.NumConsultaMercado).ToList();
                     seleccaoEntidades = ctx.SeleccaoEntidades.Where(p => p.NumConsultaMercado == consultaMercado.NumConsultaMercado).ToList();
+                    registoDePropostas = ctx.RegistoDePropostas.Where(p => p.NumConsultaMercado == consultaMercado.NumConsultaMercado).ToList();
 
                     historicoConsultaMercado = ctx.HistoricoConsultaMercado.Where(p => p.NumConsultaMercado == consultaMercado.NumConsultaMercado).Max(p => p.NumVersao).ToString();
                 }
@@ -739,6 +741,17 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                 }
 
                 view.SeleccaoEntidades = seleccaoEntidadesList;
+            }
+
+            if (registoDePropostas != null && registoDePropostas.Count > 0)
+            {
+                List<RegistoDePropostasView> registoDePropostasList = new List<RegistoDePropostasView>();
+                foreach (var rdp in registoDePropostas)
+                {
+                    registoDePropostasList.Add(CastRegistoDePropostasToView(rdp));
+                }
+
+                view.RegistoDePropostas = registoDePropostasList;
             }
 
             return view;
@@ -952,8 +965,8 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                 NumLinha = ObjectToTransform.NumLinha,
                 NumProjecto = ObjectToTransform.NumProjecto,
                 NumRequisicao = ObjectToTransform.NumRequisicao,
-                Quantidade = ObjectToTransform.Quantidade,
-                NumProjectoNavigation = DBProjects.GetById(ObjectToTransform.NumProjecto)
+                Quantidade = ObjectToTransform.Quantidade
+                //NumProjectoNavigation = DBProjects.GetById(ObjectToTransform.NumProjecto)
             };
 
 
@@ -1265,6 +1278,21 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
             }
         }
 
+        public static List<SeleccaoEntidades> GetAllSeleccaoEntidadesPorNumConsulta(string _NumConsultaMercado)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.SeleccaoEntidades.Where(p => p.NumConsultaMercado == _NumConsultaMercado).ToList();
+                }
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
 
         public static SeleccaoEntidades Create(SeleccaoEntidades ObjectToCreate)
         {
@@ -1397,6 +1425,225 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
 
             return seleccaoEntidades;
         }
+
+        #endregion
+
+
+        #region Registo_De_Propostas
+
+
+        public static RegistoDePropostas Create(LinhasConsultaMercado linhasConsultaMercado, string _alternativa)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    //List<SeleccaoEntidades> seleccaoEntidades = DBConsultaMercado.GetAllSeleccaoEntidadesPorNumConsulta(linhasConsultaMercado.NumConsultaMercado);
+                    int entidade = 0;
+                    string[,] fornecedor = new string[6, 2];
+                    foreach (SeleccaoEntidades seleccaoEntidades in DBConsultaMercado.GetAllSeleccaoEntidadesPorNumConsulta(linhasConsultaMercado.NumConsultaMercado))
+                    {
+                        entidade = entidade + 1;
+
+                        switch (entidade)
+                        {
+                            case 1:
+                                fornecedor[0, 0] = seleccaoEntidades.CodFornecedor;
+                                fornecedor[0, 1] = seleccaoEntidades.NomeFornecedor;
+                                break;
+                            case 2:
+                                fornecedor[1, 0] = seleccaoEntidades.CodFornecedor;
+                                fornecedor[1, 1] = seleccaoEntidades.NomeFornecedor;
+                                break;
+                            case 3:
+                                fornecedor[2, 0] = seleccaoEntidades.CodFornecedor;
+                                fornecedor[2, 1] = seleccaoEntidades.NomeFornecedor;
+                                break;
+                            case 4:
+                                fornecedor[3, 0] = seleccaoEntidades.CodFornecedor;
+                                fornecedor[3, 1] = seleccaoEntidades.NomeFornecedor;
+                                break;
+                            case 5:
+                                fornecedor[4, 0] = seleccaoEntidades.CodFornecedor;
+                                fornecedor[4, 1] = seleccaoEntidades.NomeFornecedor;
+                                break;
+                            case 6:
+                                fornecedor[5, 0] = seleccaoEntidades.CodFornecedor;
+                                fornecedor[5, 1] = seleccaoEntidades.NomeFornecedor;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+
+                    RegistoDePropostas registoDePropostas = new RegistoDePropostas()
+                    {
+                        Alternativa = _alternativa,
+                        CodActividade = linhasConsultaMercado.CodActividade,
+                        CodAreaFuncional = linhasConsultaMercado.CodAreaFuncional,
+                        CodCentroResponsabilidade = linhasConsultaMercado.CodCentroResponsabilidade,
+                        CodLocalizacao = linhasConsultaMercado.CodLocalizacao,
+                        CodProduto = linhasConsultaMercado.CodProduto,
+                        CodRegiao = linhasConsultaMercado.CodRegiao,
+                        Descricao = linhasConsultaMercado.Descricao,
+                        Descricao2 = linhasConsultaMercado.Descricao2,
+                        Fornecedor1Code = fornecedor[0, 0],
+                        Fornecedor1Nome = fornecedor[0, 1],
+                        Fornecedor2Code = fornecedor[1, 0],
+                        Fornecedor2Nome = fornecedor[1, 1],
+                        Fornecedor3Code = fornecedor[2, 0],
+                        Fornecedor3Nome = fornecedor[2, 1],
+                        Fornecedor4Code = fornecedor[3, 0],
+                        Fornecedor4Nome = fornecedor[3, 1],
+                        Fornecedor5Code = fornecedor[4, 0],
+                        Fornecedor5Nome = fornecedor[4, 1],
+                        Fornecedor6Code = fornecedor[5, 0],
+                        Fornecedor6Nome = fornecedor[5, 1],
+                        NumConsultaMercado = linhasConsultaMercado.NumConsultaMercado,
+                        NumLinhaConsultaMercado = linhasConsultaMercado.NumLinha,
+                        NumProjecto = linhasConsultaMercado.NumProjecto,
+                        Quantidade = linhasConsultaMercado.Quantidade
+                    };
+
+                    ctx.RegistoDePropostas.Add(registoDePropostas);
+                    ctx.SaveChanges();
+
+                    return registoDePropostas;
+                }
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+        public static RegistoDePropostas Update(RegistoDePropostas ObjectToUpdate)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    ctx.RegistoDePropostas.Update(ObjectToUpdate);
+                    ctx.SaveChanges();
+                }
+
+                return ObjectToUpdate;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public static RegistoDePropostasView CastRegistoDePropostasToView(RegistoDePropostas ObjectToTransform)
+        {
+            RegistoDePropostas registoDePropostas = new RegistoDePropostas();
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    registoDePropostas = ctx.RegistoDePropostas.Where(p => p.NumLinha == ObjectToTransform.NumLinha).FirstOrDefault();
+                }
+            }
+            catch (Exception e)
+            {
+
+            }
+
+            RegistoDePropostasView view = new RegistoDePropostasView()
+            {
+                Alternativa = ObjectToTransform.Alternativa,
+                CodActividade = ObjectToTransform.CodActividade,
+                CodAreaFuncional = ObjectToTransform.CodAreaFuncional,
+                CodCentroResponsabilidade = ObjectToTransform.CodCentroResponsabilidade,
+                CodLocalizacao = ObjectToTransform.CodLocalizacao,
+                CodProduto = ObjectToTransform.CodProduto,
+                CodRegiao = ObjectToTransform.CodRegiao,
+                Descricao = ObjectToTransform.Descricao,
+                Descricao2 = ObjectToTransform.Descricao2,
+                Fornecedor1Code = ObjectToTransform.Fornecedor1Code,
+                Fornecedor1Nome = ObjectToTransform.Fornecedor1Nome,
+                Fornecedor1Preco = ObjectToTransform.Fornecedor1Preco,
+                Fornecedor1Select = ObjectToTransform.Fornecedor1Select,
+                Fornecedor2Code = ObjectToTransform.Fornecedor2Code,
+                Fornecedor2Nome = ObjectToTransform.Fornecedor2Nome,
+                Fornecedor2Preco = ObjectToTransform.Fornecedor2Preco,
+                Fornecedor2Select = ObjectToTransform.Fornecedor2Select,
+                Fornecedor3Code = ObjectToTransform.Fornecedor3Code,
+                Fornecedor3Nome = ObjectToTransform.Fornecedor3Nome,
+                Fornecedor3Preco = ObjectToTransform.Fornecedor3Preco,
+                Fornecedor3Select = ObjectToTransform.Fornecedor3Select,
+                Fornecedor4Code = ObjectToTransform.Fornecedor4Code,
+                Fornecedor4Nome = ObjectToTransform.Fornecedor4Nome,
+                Fornecedor4Preco = ObjectToTransform.Fornecedor4Preco,
+                Fornecedor4Select = ObjectToTransform.Fornecedor4Select,
+                Fornecedor5Code = ObjectToTransform.Fornecedor5Code,
+                Fornecedor5Nome = ObjectToTransform.Fornecedor5Nome,
+                Fornecedor5Preco = ObjectToTransform.Fornecedor5Preco,
+                Fornecedor5Select = ObjectToTransform.Fornecedor5Select,
+                Fornecedor6Code = ObjectToTransform.Fornecedor6Code,
+                Fornecedor6Nome = ObjectToTransform.Fornecedor6Nome,
+                Fornecedor6Preco = ObjectToTransform.Fornecedor6Preco,
+                Fornecedor6Select = ObjectToTransform.Fornecedor6Select,
+                NumConsultaMercado = ObjectToTransform.NumConsultaMercado,
+                //NumConsultaMercadoNavigation = ObjectToTransform.NumConsultaMercadoNavigation,
+                NumLinha = ObjectToTransform.NumLinha,
+                NumLinhaConsultaMercado = ObjectToTransform.NumLinhaConsultaMercado,
+                NumProjecto = ObjectToTransform.NumProjecto,
+                Quantidade = ObjectToTransform.Quantidade
+            };
+
+            return view;
+        }
+
+        public static RegistoDePropostas CastRegistoDePropostasViewToDB(RegistoDePropostasView ObjectToTransform)
+        {
+            RegistoDePropostas registoDePropostas = new RegistoDePropostas()
+            {
+                Alternativa = ObjectToTransform.Alternativa,
+                CodActividade = ObjectToTransform.CodActividade,
+                CodAreaFuncional = ObjectToTransform.CodAreaFuncional,
+                CodCentroResponsabilidade = ObjectToTransform.CodCentroResponsabilidade,
+                CodLocalizacao = ObjectToTransform.CodLocalizacao,
+                CodProduto = ObjectToTransform.CodProduto,
+                CodRegiao = ObjectToTransform.CodRegiao,
+                Descricao = ObjectToTransform.Descricao,
+                Descricao2 = ObjectToTransform.Descricao2,
+                Fornecedor1Code = ObjectToTransform.Fornecedor1Code,
+                Fornecedor1Nome = ObjectToTransform.Fornecedor1Nome,
+                Fornecedor1Preco = ObjectToTransform.Fornecedor1Preco,
+                Fornecedor1Select = ObjectToTransform.Fornecedor1Select,
+                Fornecedor2Code = ObjectToTransform.Fornecedor2Code,
+                Fornecedor2Nome = ObjectToTransform.Fornecedor2Nome,
+                Fornecedor2Preco = ObjectToTransform.Fornecedor2Preco,
+                Fornecedor2Select = ObjectToTransform.Fornecedor2Select,
+                Fornecedor3Code = ObjectToTransform.Fornecedor3Code,
+                Fornecedor3Nome = ObjectToTransform.Fornecedor3Nome,
+                Fornecedor3Preco = ObjectToTransform.Fornecedor3Preco,
+                Fornecedor3Select = ObjectToTransform.Fornecedor3Select,
+                Fornecedor4Code = ObjectToTransform.Fornecedor4Code,
+                Fornecedor4Nome = ObjectToTransform.Fornecedor4Nome,
+                Fornecedor4Preco = ObjectToTransform.Fornecedor4Preco,
+                Fornecedor4Select = ObjectToTransform.Fornecedor4Select,
+                Fornecedor5Code = ObjectToTransform.Fornecedor5Code,
+                Fornecedor5Nome = ObjectToTransform.Fornecedor5Nome,
+                Fornecedor5Preco = ObjectToTransform.Fornecedor5Preco,
+                Fornecedor5Select = ObjectToTransform.Fornecedor5Select,
+                Fornecedor6Code = ObjectToTransform.Fornecedor6Code,
+                Fornecedor6Nome = ObjectToTransform.Fornecedor6Nome,
+                Fornecedor6Preco = ObjectToTransform.Fornecedor6Preco,
+                Fornecedor6Select = ObjectToTransform.Fornecedor6Select,
+                NumConsultaMercado = ObjectToTransform.NumConsultaMercado,
+                NumConsultaMercadoNavigation = ObjectToTransform.NumConsultaMercadoNavigation,
+                NumLinha = ObjectToTransform.NumLinha,
+                NumLinhaConsultaMercado = ObjectToTransform.NumLinhaConsultaMercado,
+                NumProjecto = ObjectToTransform.NumProjecto,
+                Quantidade = ObjectToTransform.Quantidade
+            };
+
+            return registoDePropostas;
+        }
+
 
         #endregion
 

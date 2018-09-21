@@ -21,7 +21,5 @@ namespace Hydra.Such.Data.Database
         public string NomeFornecedor { get; set; }
         public bool? EnviarPedidoProposta { get; set; }
         public bool? Notificado { get; set; }
-
-        public Projetos NumProjectoNavigation { get; set; }
     }
 }

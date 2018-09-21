@@ -50,10 +50,7 @@ namespace Hydra.Such.Data.Logic.ComprasML
                 {
                     var statusValues = status.Cast<int>().ToList();
 
-                    //REGRA ORIGINAL AMARO TESTE
                     return ctx.RequisiçãoHist.Where(x => x.UtilizadorCriação == UserName && statusValues.Contains(x.Estado.Value) && !x.ModeloDeRequisição.HasValue || !x.ModeloDeRequisição.Value).ToList();
-                    //REGRA DE TESTE
-                    //return ctx.RequisiçãoHist.Where(x => statusValues.Contains(x.Estado.Value)).ToList();
                 }
             }
             catch (Exception ex)

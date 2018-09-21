@@ -58,7 +58,7 @@ namespace Hydra.Such.Portal.Controllers
             }
 
             //return Json(result);
-            return Json(list);
+            return Json(list.OrderByDescending(x => x.NumConsultaMercado));
         }
 
 
@@ -521,6 +521,16 @@ namespace Hydra.Such.Portal.Controllers
                     }
                 }
 
+
+                //NOVO MÉTODO, QUE SUBSTITUI O USO DAS DUAS TABELAS ACIMA, "Condicoes_Propostas_Fornecedores" e "Linhas_Condicoes_Propostas_Fornecedores"
+                //GRAVA NA NOVA TABELA "Registo_De_Propostas"
+                //Para cada registo, inserir as linhas da consulta de mercado na tabela "Linhas_Condicoes_Propostas_Fornecedores"
+                foreach (LinhasConsultaMercado linhasConsultaMercado in consultaMercado.LinhasConsultaMercado)
+                {
+                    RegistoDePropostas registoDePropostas = DBConsultaMercado.Create(linhasConsultaMercado, _Alternativa);
+                }
+
+
                 consultaMercado = DBConsultaMercado.GetDetalheConsultaMercado(data.NumConsultaMercado);
 
                 data = DBConsultaMercado.CastConsultaMercadoToView(consultaMercado);
@@ -729,6 +739,33 @@ namespace Hydra.Such.Portal.Controllers
             }
             return Json(result);
         }
+
+        #endregion
+
+        #region Registo de Proposta
+
+        [HttpPost]
+        public JsonResult UpdateLinhaRegistoProposta([FromBody] RegistoDePropostasView data)
+        {
+            bool result = false;
+            try
+            {
+                RegistoDePropostas registoDePropostas = DBConsultaMercado.CastRegistoDePropostasViewToDB(data);
+
+                var dbUpdateResult = DBConsultaMercado.Update(registoDePropostas);
+
+                if (dbUpdateResult != null)
+                    result = true;
+                else
+                    result = false;
+            }
+            catch (Exception ex)
+            {
+                //log
+            }
+            return Json(result);
+        }
+
 
         #endregion
 

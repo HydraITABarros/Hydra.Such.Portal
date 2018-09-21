@@ -1,9 +1,11 @@
 ﻿using Hydra.Such.Data.Database;
 using Hydra.Such.Data.ViewModel;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using static Hydra.Such.Data.Enumerations;
 
 namespace Hydra.Such.Data.Logic
 {
@@ -33,6 +35,35 @@ namespace Hydra.Such.Data.Logic
                 using (var ctx = new SuchDBContext())
                 {
                     return ctx.Menu.ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+        public static List<Menu> GetAllFull()
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    var FeaturesMenus = ctx.FeaturesMenus.ToList();
+
+                    return ctx.Menu.ToList().Select(m => new Menu() {
+                        Action = m.Action,
+                        Active = m.Active,
+                        Controller = m.Controller,
+                        Features = FeaturesMenus.Where(f=> f.IdMenu == m.Id).Select(f => (Features)f.IdFeature).ToHashSet(),
+                        HtmlAttributes = m.HtmlAttributes,
+                        Icon = m.Icon,
+                        Id = m.Id,
+                        Parent = m.Parent,
+                        RouteParameters = m.RouteParameters,
+                        Title = m.Title,
+                        Weight = m.Weight
+                    }).ToList();
                 }
             }
             catch (Exception ex)
@@ -83,6 +114,7 @@ namespace Hydra.Such.Data.Logic
 
         public static List<Menu> GetAllByUserId(string userId)
         {
+
             try
             {
                 using (var ctx = new SuchDBContext())
@@ -101,7 +133,7 @@ namespace Hydra.Such.Data.Logic
                     {
                         HashSet<int> featuresIds = GetFeaturesByUserId(userId);
                         List<int> menusIds = null;
-                     
+
                         // list menu id from features                    
                         if (featuresIds != null && featuresIds.Count() > 0)
                             menusIds = ctx.FeaturesMenus.Where(fm => featuresIds.Contains(fm.IdFeature)).Select(fm => fm.IdMenu).ToList();
@@ -113,7 +145,7 @@ namespace Hydra.Such.Data.Logic
                             menuList = userMenuList.Union(parentMenuList).ToList();
                         }
                     }
-                    menuList = menuList.OrderBy(m => m.Parent).ToList();
+                    menuList = menuList.OrderBy(m => m.Weight).ToList();
 
                     return menuList;
                 }
@@ -122,6 +154,38 @@ namespace Hydra.Such.Data.Logic
             {
                 return null;
             }
+        }
+
+        public static List<MenuViewModel> ParseToViewModel(this List<Menu> menu)
+        {
+            if (menu == null) { return new List<MenuViewModel>(); }
+            return menu.GroupBy(m => m.Parent).ToList().ParseToViewModel();
+        }
+
+        private static List<MenuViewModel> ParseToViewModel(this List<IGrouping<int?, Menu>> groupedMenu, int? parentId = null)
+        {
+            List<MenuViewModel> treeMenu = null;
+
+            var parent = groupedMenu.FirstOrDefault(m => m.Key == parentId);
+
+            if (parent != null)
+            {
+                groupedMenu.Remove(parent);
+
+                treeMenu = parent.Select(m => new MenuViewModel
+                {
+                    Icon = m.Icon,
+                    Title = m.Title,
+                    Weight = m.Weight,
+                    Controller = m.Controller,
+                    Action = m.Action,
+                    RouteParameters = m.RouteParameters != null ? JsonConvert.DeserializeObject<Dictionary<string, string>>(m.RouteParameters) : null,
+                    HtmlAttributes = m.HtmlAttributes != null ? JsonConvert.DeserializeObject<Dictionary<string, string>>(m.HtmlAttributes) : null,
+                    Submenu = groupedMenu.ParseToViewModel(m.Id)
+
+                }).ToList();
+            }
+            return treeMenu;
         }
 
         private static HashSet<int> GetFeaturesByUserId(string userId)

@@ -269,7 +269,7 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetRequestOrigin()
         {
             List<EnumData> result = EnumerablesFixed.RequestOrigin;
-            return Json(result);
+            return Json(result.OrderBy(x => x.Value));
         }
 
         [HttpPost]
@@ -1114,6 +1114,13 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        [HttpPost]
+        public JsonResult GetNAVResponsabilityCenter()
+        {
+
+            List<NAVResponsabilityCenterViewModel> result = DBNAV2017CentroResponsabilidade.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName);
+            return Json(result);
+        }
 
         [HttpPost]
         public JsonResult GetNAVShippingAddresses()
@@ -1312,6 +1319,7 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+       
         [HttpPost]
         public JsonResult GetAllClientsComboGrid()
         {
@@ -2378,6 +2386,17 @@ namespace Hydra.Such.Portal.Controllers
             {
                 id = Convert.ToString(x.CodActividade),
                 value = x.Descricao
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetMenus()
+        {
+            List<DDMessage> result = DBMenu.GetAll().Where(m=> m.Active).Select(x => new DDMessage()
+            {
+                id = x.Id,
+                value = x.Title
             }).ToList();
             return Json(result);
         }
