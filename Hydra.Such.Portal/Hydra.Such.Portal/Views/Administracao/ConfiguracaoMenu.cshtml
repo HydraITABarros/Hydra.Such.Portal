@@ -90,6 +90,14 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/PopulateDropdowns/GetFeatures"
+                   last-response="{{featuresData}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
         <template is="dom-if" if="{{ _permissions.update }}">
             <div class="subMenu">
                 <paper-button id="btnGoBack" class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Voltar</paper-button>
@@ -121,130 +129,109 @@
         </paper-collapse-group>
 
         <vaadin-grid id="menuTable" aria-label="Tabela Numerações" items="[[result]]" class="editGrid">
-
-            <vaadin-grid-column resizable width="150px" id="menuColumn">
-                <template class="header">
-                    Menu
-                </template>
-
-                <template class="body" id="entra">
-                    <select2-wrapper id="my_select2_element" model="{{menus}}"></select2-wrapper>
-                    <script>
-                        var teste = function (el) {
-                            return;
-                            $(el).parent().find("#my_select2_element")[0].model = [
-                                {
-                                    label: 'Asia',
-                                    value: 'AS'
-                                }, {
-                                    label: '2Asia',
-                                    value: '2AS'
-                                }, {
-                                    label: '3Asia',
-                                    value: '3AS'
-                                }, {
-                                    label: '4Asia',
-                                    value: '4AS'
-                                }, {
-                                    label: '5Asia',
-                                    value: '5AS'
-                                }, {
-                                    label: '6Asia',
-                                    value: '6AS'
-                                }
-                            ];
-                        }
-                    </script>
-                    <img src="" onerror="teste(this)" />
-                    <br />
-                    <vaadin-combo-box multiple="true" items="[[menus]]" item-value-path="id" item-label-path="value" value="{{item.parent}}" disabled="{{ _permissionsCreate }}">
-                        <template>
-                            <table width="200px">
-                                <tr>
-                                    <td width="70%"> <b>[[item.value]]</b></td>
-                                    <td width="30%">[[item.id]]</td>
-                                </tr>
-                            </table>
-                        </template>
-                    </vaadin-combo-box>
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column resizable width="150px">
-                <template class="header">
-                    Titulo
-                </template>
-                <template>
-                    <vaadin-text-field name="description" value="{{item.title}}" maxlength="100"></vaadin-text-field>
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column resizable width="150px">
-                <template class="header">
-                    Icon
-                </template>
-                <template>
-                    <vaadin-text-field name="description" value="{{item.icon}}" maxlength="50"></vaadin-text-field>
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column resizable width="150px">
-                <template class="header">
-                    Peso
-                </template>
-                <template>
-                    <vaadin-text-field name="weight" value="{{item.weight}}" pattern="[0-9]*" prevent-invalid-input></vaadin-text-field>
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column resizable width="150px">
-                <template class="header">
-                    Controller
-                </template>
-                <template>
-                    <vaadin-text-field name="description" value="{{item.controller}}" maxlength="100"></vaadin-text-field>
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column resizable width="150px">
-                <template class="header">
-                    Action
-                </template>
-                <template>
-                    <vaadin-text-field name="description" value="{{item.action}}" maxlength="100"></vaadin-text-field>
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column resizable width="150px">
-                <template class="header">
-                    Parâmetros de rota
-                </template>
-                <template>
-                    <vaadin-text-field name="lastUsedNumber" value="{{item.routeParameters}}"></vaadin-text-field>
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column resizable width="150px">
-                <template class="header">
-                    Ativo
-                </template>
-                <template>
-                    <vaadin-checkbox checked="{{item.active}}"></vaadin-checkbox>
-                </template>
-            </vaadin-grid-column>
-
-            <template is="dom-if" if="{{ _permissions.delete }}">
-                <vaadin-grid-column resizable width="150px">
+               <vaadin-grid-column resizable width="150px">
                     <template class="header">
+                        Menu
                     </template>
-                    <template>
-                        <center>
-                            @*<paper-button class="btnRemove" raised on-tap="_delete">Eliminar</paper-button>*@
-                            <paper-button class="btnRemove tableBtn" raised on-tap="_delete" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
-                        </center>
+                    <template class="body" id="entra">
+                        <vaadin-combo-box multiple="true" items="[[menus]]" item-value-path="id" item-label-path="value" value="{{item.parent}}" disabled="{{ _permissionsCreate }}">
+                            <template>
+                                <table width="200px">
+                                    <tr>
+                                        <td width="70%"> <b>[[item.value]]</b></td>
+                                        <td width="30%">[[item.id]]</td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>
                     </template>
                 </vaadin-grid-column>
-            </template>
+
+                <vaadin-grid-column resizable width="150px">
+                    <template class="header">
+                        Titulo
+                    </template>
+                    <template>
+                        <vaadin-text-field name="description" value="{{item.title}}" maxlength="100"></vaadin-text-field>
+                    </template>
+                </vaadin-grid-column>
+
+                <vaadin-grid-column resizable width="150px">
+                    <template class="header">
+                        Icon
+                    </template>
+                    <template>
+                        <vaadin-text-field name="description" value="{{item.icon}}" maxlength="50"></vaadin-text-field>
+                    </template>
+                </vaadin-grid-column>
+
+                <vaadin-grid-column resizable width="150px">
+                    <template class="header">
+                        Peso
+                    </template>
+                    <template>
+                        <vaadin-text-field name="weight" value="{{item.weight}}" pattern="[0-9]*" prevent-invalid-input></vaadin-text-field>
+                    </template>
+                </vaadin-grid-column>
+
+                <vaadin-grid-column resizable width="150px">
+                    <template class="header">
+                        Controller
+                    </template>
+                    <template>
+                        <vaadin-text-field name="description" value="{{item.controller}}" maxlength="100"></vaadin-text-field>
+                    </template>
+                </vaadin-grid-column>
+
+                <vaadin-grid-column resizable width="150px">
+                    <template class="header">
+                        Action
+                    </template>
+                    <template>
+                        <vaadin-text-field name="description" value="{{item.action}}" maxlength="100"></vaadin-text-field>
+                    </template>
+                </vaadin-grid-column>
+
+                <vaadin-grid-column resizable width="150px">
+                    <template class="header">
+                        Parâmetros de rota
+                    </template>
+                    <template>
+                        <vaadin-text-field name="lastUsedNumber" value="{{item.routeParameters}}"></vaadin-text-field>
+                    </template>
+                </vaadin-grid-column>
+
+                <vaadin-grid-column resizable width="150px">
+                    <template class="header">
+                        Ativo
+                    </template>
+                    <template>
+                        <vaadin-checkbox checked="{{item.active}}"></vaadin-checkbox>
+                    </template>
+                </vaadin-grid-column>
+
+                <vaadin-grid-column resizable width="400px">
+                    <template class="header">
+                        Funcionalidades
+                    </template>
+                    <template>
+                        <select2-wrapper items="{{featuresData}}" id="select2{{item.id}}" value="{{item.features}}"></select2-wrapper>
+                    </template>
+                </vaadin-grid-column>
+
+                <template is="dom-if" if="{{ _permissions.delete }}">
+                    <vaadin-grid-column resizable width="150px">
+                        <template class="header">
+                        </template>
+                        <template>
+                            <center>
+                                @*<paper-button class="btnRemove" raised on-tap="_delete">Eliminar</paper-button>*@
+                                <paper-button class="btnRemove tableBtn" raised on-tap="_delete" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                            </center>
+                        </template>
+                    </vaadin-grid-column>
+                </template>
+
         </vaadin-grid>
 
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
@@ -272,6 +259,9 @@
                     //this.$.gridAutorizacaoFHRH.clearCache();
 
                     var _this = this;
+
+                    window.menuComponent = _this;
+
                     $(window).resize(function () {
                         _this.fixGridToBottom();
                     });
@@ -282,7 +272,7 @@
                     var grid_el = $(this.$.menuTable);
                     var parentHeight = $(this).offsetParent().height();
                     var offsetTop = $(this).offset().top;
-                    var height = parentHeight - offsetTop;
+                    var height = parentHeight - offsetTop - 50;
                     $(this.$.menuTable).height(height);
                 },
 
