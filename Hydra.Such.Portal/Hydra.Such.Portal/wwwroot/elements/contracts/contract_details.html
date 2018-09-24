@@ -1658,216 +1658,216 @@
             </template>
         </paper-toast>
 
-            <paper-dialog id="dlgCreateProposal" modal style="height:200px; width:300px">
-                <div>
-                    <vaadin-checkbox id="chkUpdateLines" on-checked-changed="_chkUpdateLinesChanged">Atualizar os valores das linhas?</vaadin-checkbox>
-                    <vaadin-text-field id="txtPercentage" disabled on-value-changed="_ConvertDecimals" pattern="^-?[0-9]+([\.][0-9]+)?" error-message="Valor inválido" name="txtPercentage" label="Insira percentagem"></vaadin-text-field>
-                </div>
-                <div class="buttons">
-                    <paper-button raised class="btnEdit" on-tap="_createNewProposal">Guardar</paper-button>
-                    <paper-button raised class="btnRemove" on-tap="_closeCreateProposalDlg">Cancelar</paper-button>
-                </div>
-            </paper-dialog>
+        <paper-dialog id="dlgCreateProposal" modal style="height:200px; width:300px">
+            <div>
+                <vaadin-checkbox id="chkUpdateLines" on-checked-changed="_chkUpdateLinesChanged">Atualizar os valores das linhas?</vaadin-checkbox>
+                <vaadin-text-field id="txtPercentage" disabled on-value-changed="_ConvertDecimals" pattern="^-?[0-9]+([\.][0-9]+)?" error-message="Valor inválido" name="txtPercentage" label="Insira percentagem"></vaadin-text-field>
+            </div>
+            <div class="buttons">
+                <paper-button raised class="btnEdit" on-tap="_createNewProposal">Guardar</paper-button>
+                <paper-button raised class="btnRemove" on-tap="_closeCreateProposalDlg">Cancelar</paper-button>
+            </div>
+        </paper-dialog>
 
-            <paper-dialog id="dlgCreateInvoice" modal style="height:250px; width:300px">
-                <div>
-                    <vaadin-combo-box items="[[CBInvoiceGroups]]" id="_IRGridInvoiceGroupBox" name="_IRGridInvoiceGroupBox" item-value-path="id" item-label-path="value" label="Grupo Fatura">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
+        <paper-dialog id="dlgCreateInvoice" modal style="height:250px; width:300px">
+            <div>
+                <vaadin-combo-box items="[[CBInvoiceGroups]]" id="_IRGridInvoiceGroupBox" name="_IRGridInvoiceGroupBox" item-value-path="id" item-label-path="value" label="Grupo Fatura">
+                    <template>
+                        <paper-icon-item>
+                            <paper-item-body two-line>
+                                <div>[[item.value]]</div>
+                            </paper-item-body>
+                        </paper-icon-item>
+                    </template>
+                </vaadin-combo-box>
+            </div>
+            <div>
+                <vaadin-date-picker label="Data" id="_CLDateCount" name="_CLDateCount" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+            </div>
+            <div class="buttons">
+                <paper-button raised class="btnEdit" on-tap="_createNewInvoice">Guardar</paper-button>
+                <paper-button raised class="btnRemove" on-tap="_closeCreateInvoiceDlg">Cancelar</paper-button>
+            </div>
+        </paper-dialog>
+
+        <paper-dialog id="dlgContratInvoiceList" class="dialgoBox" modal>
+            <div>
+                <vaadin-grid aria-label="InvoiceList" id="grid_contractInvoiceList" items="[[invoiceList]]" class="grid" multi-sort="true">
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="no_">Nº Fatura</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="no_" />
                         </template>
-                    </vaadin-combo-box>
-                </div>
-                <div>
-                    <vaadin-date-picker label="Data" id="_CLDateCount" name="_CLDateCount" required error-message="Este campo é obrigatório"></vaadin-date-picker>
-                </div>
+                        <template>
+                            {{item.no_}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="valorContrato">Valor Contrato</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="valorContrato" />
+                        </template>
+                        <template>
+                            {{item.valorContrato}}
+                        </template>
+                    </vaadin-grid-column>
+                </vaadin-grid>
+
                 <div class="buttons">
-                    <paper-button raised class="btnEdit" on-tap="_createNewInvoice">Guardar</paper-button>
-                    <paper-button raised class="btnRemove" on-tap="_closeCreateInvoiceDlg">Cancelar</paper-button>
+                    <paper-button class="btnRemove" dialog-dismiss><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
                 </div>
-            </paper-dialog>
+            </div>
 
-            <paper-dialog id="dlgContratInvoiceList" class="dialgoBox" modal>
-                <div>
-                    <vaadin-grid aria-label="InvoiceList" id="grid_contractInvoiceList" items="[[invoiceList]]" class="grid" multi-sort="true">
-                        <vaadin-grid-column resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="no_">Nº Fatura</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="no_" />
-                            </template>
-                            <template>
-                                {{item.no_}}
-                            </template>
-                        </vaadin-grid-column>
-                        <vaadin-grid-column resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="valorContrato">Valor Contrato</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="valorContrato" />
-                            </template>
-                            <template>
-                                {{item.valorContrato}}
-                            </template>
-                        </vaadin-grid-column>
-                    </vaadin-grid>
+        </paper-dialog>
 
-                    <div class="buttons">
-                        <paper-button class="btnRemove" dialog-dismiss><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
-                    </div>
-                </div>
+        <paper-dialog id="dlgContratInvoiceLinesList" class="dialgoBox" modal>
+            <div>
+                <vaadin-grid aria-label="InvoiceLinesList" id="grid_contractInvoiceLinesList" items="[[invoiceLinesList]]" class="grid" multi-sort="true">
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="no_">Nº Fatura</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="no_" />
+                        </template>
+                        <template>
+                            {{item.no_}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="docNo">Código</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="docNo" />
+                        </template>
+                        <template>
+                            {{item.docNo}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="description" />
+                        </template>
+                        <template>
+                            {{item.description}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="description2">Descrição 2</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="description2" />
+                        </template>
+                        <template>
+                            {{item.description2}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="unitOfMeasure">Unidade Medida</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="unitOfMeasure" />
+                        </template>
+                        <template>
+                            {{item.unitOfMeasure}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="quantity">Quantidade</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="quantity" />
+                        </template>
+                        <template>
+                            {{item.quantity}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="unitPrice">Preço Unitário</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="unitPrice" />
+                        </template>
+                        <template>
+                            {{item.unitPrice}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="amount">Valor sem IVA</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="amount" />
+                        </template>
+                        <template>
+                            {{item.amount}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="amountIncludingVAT">Valor com IVA</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="amountIncludingVAT" />
+                        </template>
+                        <template>
+                            {{item.amountIncludingVAT}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="jobNo">Nº Projeto</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="jobNo" />
+                        </template>
+                        <template>
+                            {{item.jobNo}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="externalShipmentNo_">Nº Guia Externa</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="externalShipmentNo_" />
+                        </template>
+                        <template>
+                            {{item.externalShipmentNo_}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="dataRegistoDiarioSTR">Data Registo Diário</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="dataRegistoDiarioSTR" />
+                        </template>
+                        <template>
+                            {{item.dataRegistoDiarioSTR}}
+                        </template>
+                    </vaadin-grid-column>
+                </vaadin-grid>
 
-            </paper-dialog>
-
-            <paper-dialog id="dlgContratInvoiceLinesList" class="dialgoBox" modal>
-                <div>
-                    <vaadin-grid aria-label="InvoiceLinesList" id="grid_contractInvoiceLinesList" items="[[invoiceLinesList]]" class="grid" multi-sort="true">
-                        <vaadin-grid-column resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="no_">Nº Fatura</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="no_" />
-                            </template>
-                            <template>
-                                {{item.no_}}
-                            </template>
-                        </vaadin-grid-column>
-                        <vaadin-grid-column resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="docNo">Código</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="docNo" />
-                            </template>
-                            <template>
-                                {{item.docNo}}
-                            </template>
-                        </vaadin-grid-column>
-                        <vaadin-grid-column resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="description" />
-                            </template>
-                            <template>
-                                {{item.description}}
-                            </template>
-                        </vaadin-grid-column>
-                        <vaadin-grid-column resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="description2">Descrição 2</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="description2" />
-                            </template>
-                            <template>
-                                {{item.description2}}
-                            </template>
-                        </vaadin-grid-column>
-                        <vaadin-grid-column resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="unitOfMeasure">Unidade Medida</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="unitOfMeasure" />
-                            </template>
-                            <template>
-                                {{item.unitOfMeasure}}
-                            </template>
-                        </vaadin-grid-column>
-                        <vaadin-grid-column resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="quantity">Quantidade</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="quantity" />
-                            </template>
-                            <template>
-                                {{item.quantity}}
-                            </template>
-                        </vaadin-grid-column>
-                        <vaadin-grid-column resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="unitPrice">Preço Unitário</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="unitPrice" />
-                            </template>
-                            <template>
-                                {{item.unitPrice}}
-                            </template>
-                        </vaadin-grid-column>
-                        <vaadin-grid-column resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="amount">Valor sem IVA</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="amount" />
-                            </template>
-                            <template>
-                                {{item.amount}}
-                            </template>
-                        </vaadin-grid-column>
-                        <vaadin-grid-column resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="amountIncludingVAT">Valor com IVA</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="amountIncludingVAT" />
-                            </template>
-                            <template>
-                                {{item.amountIncludingVAT}}
-                            </template>
-                        </vaadin-grid-column>
-                        <vaadin-grid-column resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="jobNo">Nº Projeto</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="jobNo" />
-                            </template>
-                            <template>
-                                {{item.jobNo}}
-                            </template>
-                        </vaadin-grid-column>
-                        <vaadin-grid-column resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="externalShipmentNo_">Nº Guia Externa</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="externalShipmentNo_" />
-                            </template>
-                            <template>
-                                {{item.externalShipmentNo_}}
-                            </template>
-                        </vaadin-grid-column>
-                        <vaadin-grid-column resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="dataRegistoDiarioSTR">Data Registo Diário</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="dataRegistoDiarioSTR" />
-                            </template>
-                            <template>
-                                {{item.dataRegistoDiarioSTR}}
-                            </template>
-                        </vaadin-grid-column>
-                    </vaadin-grid>
-
-                    <div class="buttons">
-                        <paper-button class="btnRemove" dialog-dismiss><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
-                    </div>
-                </div>
-
-            </paper-dialog>
-
-            <paper-dialog id="dlgUpdatePrices" modal style="height:300px; width:600px">
-                <div class="row break_clear">
-                    <div class="col-md-4 ">
-                        <vaadin-date-picker label="Data Inicial" id="dpStartDate" name="dpStartDate" required error-message="Este campo é obrigatório"></vaadin-date-picker>
-                    </div>
-                    <div class="col-md-4 ">
-                        <vaadin-date-picker label="Data Expiração" id="dpDueDate" name="dpDueDate" required error-message="Este campo é obrigatório"></vaadin-date-picker>
-                    </div>
-                    <div class="col-md-4 ">
-                        <vaadin-text-field id="txtClientRequisitionNo" name="txtClientRequisitionNo" label="Nº Req. do Cliente" required error-message="Este campo é obrigatório"></vaadin-text-field>
-                    </div>
-                </div>
-                <div class="row break_clear">
-                    <div class="col-md-4 ">
-                        <vaadin-date-picker label="Data Receção Requisição" id="dpRequisitionReceiveDate" name="dpRequisitionReceiveDate" required error-message="Este campo é obrigatório"></vaadin-date-picker>
-                    </div>
-                    <div class="col-md-4 ">
-                        <vaadin-date-picker label="Data Próxima Fatura" id="dpNextInvoiceDate" name="dpNextInvoiceDate" required error-message="Este campo é obrigatório"></vaadin-date-picker>
-                    </div>
-                    <div class="col-md-4 ">
-                        <vaadin-text-field id="txtContractLinesPercentage" on-value-changed="_ConvertDecimals" pattern="^-?[0-9]+([\.][0-9]+)?" required error-message="Valor inválido" name="txtContractLinesPercentage" label="Percentagem"></vaadin-text-field>
-                    </div>
-                </div>
                 <div class="buttons">
-                    <paper-button raised class="btnEdit" on-tap="_updatePrices">Guardar</paper-button>
-                    <paper-button raised class="btnRemove" on-tap="_closeUpdatePricesDlg">Cancelar</paper-button>
+                    <paper-button class="btnRemove" dialog-dismiss><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
                 </div>
-            </paper-dialog>
+            </div>
+
+        </paper-dialog>
+
+        <paper-dialog id="dlgUpdatePrices" modal style="height:300px; width:600px">
+            <div class="row break_clear">
+                <div class="col-md-4 ">
+                    <vaadin-date-picker label="Data Inicial" id="dpStartDate" name="dpStartDate" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+                </div>
+                <div class="col-md-4 ">
+                    <vaadin-date-picker label="Data Expiração" id="dpDueDate" name="dpDueDate" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+                </div>
+                <div class="col-md-4 ">
+                    <vaadin-text-field id="txtClientRequisitionNo" name="txtClientRequisitionNo" label="Nº Req. do Cliente" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                </div>
+            </div>
+            <div class="row break_clear">
+                <div class="col-md-4 ">
+                    <vaadin-date-picker label="Data Receção Requisição" id="dpRequisitionReceiveDate" name="dpRequisitionReceiveDate" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+                </div>
+                <div class="col-md-4 ">
+                    <vaadin-date-picker label="Data Próxima Fatura" id="dpNextInvoiceDate" name="dpNextInvoiceDate" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+                </div>
+                <div class="col-md-4 ">
+                    <vaadin-text-field id="txtContractLinesPercentage" on-value-changed="_ConvertDecimals" pattern="^-?[0-9]+([\.][0-9]+)?" required error-message="Valor inválido" name="txtContractLinesPercentage" label="Percentagem"></vaadin-text-field>
+                </div>
+            </div>
+            <div class="buttons">
+                <paper-button raised class="btnEdit" on-tap="_updatePrices">Guardar</paper-button>
+                <paper-button raised class="btnRemove" on-tap="_closeUpdatePricesDlg">Cancelar</paper-button>
+            </div>
+        </paper-dialog>
     </template>
     <script>
 
@@ -2233,7 +2233,6 @@
                     window.location.href = "../DetalhesContrato";
                 },
                 _clientChange: function (e) {
-                    debugger;;
                     var client = this.CBClients.find(x => x.no_ == e.detail.value);
                     if (client != null) {
                         this.$.codeShippingAddress.value = "";
