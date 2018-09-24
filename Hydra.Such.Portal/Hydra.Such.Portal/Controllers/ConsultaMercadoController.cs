@@ -65,6 +65,7 @@ namespace Hydra.Such.Portal.Controllers
         public IActionResult DetalheConsultaMercado(string id)
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Features.PedidoCotacao);
+            ViewBag.reportServerURL = _config.ReportServerURL;
 
             if (UPerm != null && UPerm.Read.Value)
             {

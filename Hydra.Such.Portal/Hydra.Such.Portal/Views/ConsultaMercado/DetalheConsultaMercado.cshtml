@@ -7,4 +7,4 @@
 
 <link rel="import" href="~/elements/pedidocotacao/detalhepedidocotacao.html" />
 
-<x-pedidocotacaodetails _id="@ViewBag.No" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-pedidocotacaodetails>
+<x-pedidocotacaodetails _id="@ViewBag.No" _reportserverurl='@ViewBag.reportServerURL' _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-pedidocotacaodetails>
