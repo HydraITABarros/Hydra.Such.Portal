@@ -51,11 +51,12 @@ namespace Hydra.Such.Data.Logic
                 {
                     var FeaturesMenus = ctx.FeaturesMenus.ToList();
 
-                    return ctx.Menu.ToList().Select(m => new Menu() {
+                    return ctx.Menu.ToList().Select(m => new Menu()
+                    {
                         Action = m.Action,
                         Active = m.Active,
                         Controller = m.Controller,
-                        Features = FeaturesMenus.Where(f=> f.IdMenu == m.Id).Select(f => (Features)f.IdFeature).ToHashSet(),
+                        Features = FeaturesMenus.Where(f => f.IdMenu == m.Id).Select(f => (Features)f.IdFeature).ToHashSet(),
                         HtmlAttributes = m.HtmlAttributes,
                         Icon = m.Icon,
                         Id = m.Id,
@@ -190,17 +191,23 @@ namespace Hydra.Such.Data.Logic
             {
                 groupedMenu.Remove(parent);
 
-                treeMenu = parent.Select(m => new MenuViewModel
+                treeMenu = parent.Select(m =>
                 {
-                    Icon = m.Icon,
-                    Title = m.Title,
-                    Weight = m.Weight,
-                    Controller = m.Controller,
-                    Action = m.Action,
-                    RouteParameters = m.RouteParameters != null ? JsonConvert.DeserializeObject<Dictionary<string, string>>(m.RouteParameters) : null,
-                    HtmlAttributes = m.HtmlAttributes != null ? JsonConvert.DeserializeObject<Dictionary<string, string>>(m.HtmlAttributes) : null,
-                    Submenu = groupedMenu.ParseToViewModel(m.Id)
-
+                    var RouteParameters = new Dictionary<string, string>();
+                    var HtmlAttributes = new Dictionary<string, string>();
+                    try { RouteParameters = JsonConvert.DeserializeObject<Dictionary<string, string>>(m.RouteParameters); } catch { }
+                    try { HtmlAttributes = JsonConvert.DeserializeObject<Dictionary<string, string>>(m.RouteParameters); } catch { }
+                    return new MenuViewModel
+                    {
+                        Icon = m.Icon,
+                        Title = m.Title,
+                        Weight = m.Weight,
+                        Controller = m.Controller,
+                        Action = m.Action,
+                        RouteParameters = RouteParameters,
+                        HtmlAttributes = HtmlAttributes,
+                        Submenu = groupedMenu.ParseToViewModel(m.Id)
+                    };
                 }).ToList();
             }
             return treeMenu;

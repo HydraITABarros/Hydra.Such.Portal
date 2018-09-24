@@ -997,7 +997,7 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult UpdateMenuConfigs([FromBody] List<Data.Database.Menu> data)
         {
 
-            return Json(new { });
+
             //Get All
             List<Data.Database.Menu> previousList = DBMenu.GetAll();
             //previousList.RemoveAll(x => !data.Any(u => u.Id == x.Id));
