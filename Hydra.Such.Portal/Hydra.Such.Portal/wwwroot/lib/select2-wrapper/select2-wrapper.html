@@ -51,6 +51,12 @@ Example:
                 position: relative;
             }
 
+                :host:focus {
+                    outline: none;
+                }
+            :host([label]) {
+                margin-top: var(--valo-space-m);
+            }
             .select2-selection.select2-selection--multiple {
                 margin-top: var(--valo-space-xs);
                 margin-bottom: var(--valo-space-xs);
@@ -110,6 +116,7 @@ Example:
                 bottom: 0 !important;
                 max-height: none !important;
             }
+
             [part="label"] {
                 color: var(--valo-contrast-60pct);
                 font-weight: 500;
@@ -118,13 +125,20 @@ Example:
                 margin-bottom: var(--valo-space-xs);
                 transition: color 0.4s;
                 line-height: 1;
+                font-size: 12px !important;
+                font-family: var(--valo-font-family);
+                display: block;
+            }
+
+            .such-select2-container:focus {
+                outline: none;
             }
         </style>
 
         <div class="such-select2-container">
-
-            <label part="label" on-click="focus" id="select2-wrapper-label" for="select2-wrapper-tag">[[label]]</label>
-
+            <template is="dom-if" if="{{haveLabel}}">
+                <label part="label" on-click="focus" id="select2-wrapper-label" for="select2-wrapper-tag">[[label]]</label>
+            </template>
             <div part="input-field">
                 <select id="select2-wrapper-tag" style="width: 100%" part="value" value="{{value}}">
                     <template is="dom-repeat" items="{{_items}}" as="item">
@@ -174,6 +188,10 @@ Example:
                         label: {
                             type: String,
                             value: ''
+                        },
+                        haveLabel: {
+                            type: Boolean,
+                            value: false
                         }
                     }
                 }
@@ -183,6 +201,7 @@ Example:
                 ready() {
                     super.ready();
                     var _this = this;
+                    _this.haveLabel = _this.label.length > 0;
                 }
 
                 _onUpdateItems(data) {
@@ -232,15 +251,16 @@ Example:
                                     }, 0);
 
                                 }).on('select2:close', function () {
-                                    var _this = this;
 
                                     $(".select2-drop-wrapper").remove();
-                                    $(_this).parent().find('input').focusout();
-                                    $(_this).parent().find('ul').scrollLeft(0);
-                                    $(_this).parent().find()
+                                    $(this).parent().find('input').focusout();
+                                    $(this).parent().find('ul').scrollLeft(0);
+                                    $(this).parent().find()
                                     $("body").css({
                                         pointerEvents: '',
                                     }).trigger('click');
+
+                                    _this.value = $(this).parent().find('select').val();
 
                                 });
 
@@ -263,7 +283,7 @@ Example:
                             $($(_this.root.querySelector("#select2-wrapper-tag"))[0])
                                 .find(" option[value='" + e + "']").prop("selected", true);
                         });
-                        
+
                         $($(_this.root.querySelector("#select2-wrapper-tag"))[0]).trigger("change");
                     }
                 }
