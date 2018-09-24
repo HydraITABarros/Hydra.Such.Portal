@@ -41,8 +41,9 @@
             vaadin-combo-box {
                 margin-top: 0px !important;
                 width: 100% !important;
+                
             }
-
+          
             vaadin-date-picker {
                 margin-top: 0px !important;
                 width: 100% !important;
@@ -534,7 +535,7 @@
 
                             </template>
                             <template is="dom-if" if="{{ !item.selected }}">
-                                {{item.dataCriacao}}
+                               [[ _formateDate(item.dataCriacao)]]
                             </template>
                         </template>
                     </vaadin-grid-column>
@@ -662,7 +663,7 @@
                     </div>
                     <div class="row break_clear" hidden="{{ !_isInternalDestination }}">
                         <div class="col-sm-3">
-                            <vaadin-combo-box items="[[ TiposProblemas ]]" id="cmbProblemas" item-value-path="id" item-label-path="id" value="{{problemascmb}}" label="Problema" on-value-changed="_problemTypeChanged">
+                            <vaadin-combo-box class="my-combo-box" items="[[ TiposProblemas ]]" id="cmbProblemas" item-value-path="id" item-label-path="id" value="{{problemascmb}}" label="Problema" on-value-changed="_problemTypeChanged">
                                 <template>
                                     <paper-icon-item>
                                         <paper-item-body two-line>
@@ -1207,6 +1208,9 @@
                     '_preventDocumentDuplicates(data.dataDocFornecedor, data.numDocFornecedor, data.codFornecedor)'
                 ],
                 ready: function () {
+               
+
+
                     if (this._billingReceptionId != null && this._billingReceptionId != "") {
                         this._isCreate = false;
                         this.$.page_databound_ajax.url += this._billingReceptionId;
@@ -1352,11 +1356,9 @@
                     }
                 },
                 _redirectToCreateForm: function () {
-                    debugger;
                     window.location.href = "/Faturacao/DetalhesRecFatura";
                 },
                 _validateInputForNew: function () {
-                    debugger;;
                     if (this.$.cmbDocumentTypes.validate() & this.$.txtNumDocFornecedor.validate() & this.$.dpDataDocFornecedor.validate()) {
                         if (this.$.sbVendors.value != "" && this.$.sbVendors.value != undefined) {
                             if (this._docIsValid) {
@@ -1751,6 +1753,8 @@
                     }
                 },
                 _sendPending: function () {
+                    this.$.ToastMessageError.close();
+                    this.$.ToastMessageSuccess.close();
                     this.$.uploadRequest.files = [];
                     this.$.dialogSendPeding.open();
                 },
@@ -2183,6 +2187,12 @@
                         this._openToastError("Não foi selecionada nenhuma linha.");
                     }
 
+                },
+                _formateDate: function (param) {
+                    if (param != undefined) {
+                        param = new Date(param).toISOString().slice(0, 10);
+                    }
+                    return param;
                 },
                 _clFormatStatus: function (param) {
                     if (param != undefined) {
