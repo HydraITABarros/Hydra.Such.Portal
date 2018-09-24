@@ -643,6 +643,22 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <!-- Anexos.b -->
+        <iron-ajax url="/ProcedimentosCcps/LoadAttachments"
+                   last-response="{{uploads}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_update_ajax"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/ProcedimentosCcps/DeleteAttachments"
+                   last-response="{{_btnDeleteAttachment}}"
+                   method="post"
+                   handle-as="json"
+                   id="delete_files_ajax"
+                   on-response="_deletedAttachResponse"
+                   content-type="application/json"></iron-ajax>
+        <!-- Anexos.e -->
         <!-- Controller actions.e -->
         <!-- Header section of the Procedimento details -->
         <div class="panel panel-default">
@@ -655,17 +671,17 @@
                         </div>
                         <div class="col-sm-3">
                             <!--<vaadin-combo-box items="[[CBRegions]]" id="codigoRegiao" item-value-path="id" item-label-path="value" value="{{data.codigoRegiao}}" label="Cód. Região" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
-                                <template>
-                                    <table width="250px">
-                                        <tr>
-                                            <td width="20%">[[item.id]]</td>
-                                            <td width="80%">
-                                                <b>[[item.value]]</b>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </template>
-                            </vaadin-combo-box>-->
+                            <template>
+                                <table width="250px">
+                                    <tr>
+                                        <td width="20%">[[item.id]]</td>
+                                        <td width="80%">
+                                            <b>[[item.value]]</b>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>-->
 
                             <such-selectbox id="codigoRegiao" name="codigoRegiao" value="{{data.codigoRegiao}}" label="Cód. Região" disabled="{{ !_permissions.update }}"
                                             items="[[CBRegions]]"
@@ -679,17 +695,17 @@
                         </div>
                         <div class="col-sm-3">
                             <!--<vaadin-combo-box items="[[CBFunctionalAreas]]" id="codigoAreaFuncional" item-value-path="id" item-label-path="value" value="{{data.codigoAreaFuncional}}" label="Àrea Funcional" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
-                                <template>
-                                    <table width="250px">
-                                        <tr>
-                                            <td width="30%">[[item.id]]</td>
-                                            <td width="70%">
-                                                <b>[[item.value]]</b>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </template>
-                            </vaadin-combo-box>-->
+                            <template>
+                                <table width="250px">
+                                    <tr>
+                                        <td width="30%">[[item.id]]</td>
+                                        <td width="70%">
+                                            <b>[[item.value]]</b>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>-->
 
                             <such-selectbox id="codigoAreaFuncional" name="codigoAreaFuncional" value="{{data.codigoAreaFuncional}}" label="Cód. Área Funcional" disabled="{{ !_permissions.update }}"
                                             items="[[CBFunctionalAreas]]"
@@ -701,17 +717,17 @@
                         </div>
                         <div class="col-sm-3">
                             <!--<vaadin-combo-box items="[[CBResponsabilityCenterCodes]]" id="codigoCentroResponsabilidade" item-value-path="id" item-label-path="value" value="{{data.codigoCentroResponsabilidade}}" label="Centro Responsabilidade" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
-                                <template>
-                                    <table width="180px">
-                                        <tr>
-                                            <td width="40%">[[item.id]]</td>
-                                            <td width="60%">
-                                                <b>[[item.value]]</b>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </template>
-                            </vaadin-combo-box>-->
+                            <template>
+                                <table width="180px">
+                                    <tr>
+                                        <td width="40%">[[item.id]]</td>
+                                        <td width="60%">
+                                            <b>[[item.value]]</b>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>-->
 
                             <such-selectbox id="codigoCentroResponsabilidade" name="codigoCentroResponsabilidade" value="{{data.codigoCentroResponsabilidade}}" label="Cód. Centro Respon." disabled="{{ !_permissions.update }}"
                                             items="[[CBResponsabilityCenterCodes]]"
@@ -737,11 +753,11 @@
                             </vaadin-combo-box>
                         </div>
                         <!--<div class="col-sm-3">
-                            <vaadin-text-field type="text" label="Nº Requisição" disabled="true"> </vaadin-text-field>
-                        </div>
-                        <div class="col-sm-3">
-                            <vaadin-text-field type="text" label="Nº Encomenda" disabled="true"> </vaadin-text-field>
-                        </div>-->
+                        <vaadin-text-field type="text" label="Nº Requisição" disabled="true"> </vaadin-text-field>
+                    </div>
+                    <div class="col-sm-3">
+                        <vaadin-text-field type="text" label="Nº Encomenda" disabled="true"> </vaadin-text-field>
+                    </div>-->
                     </div>
                 </div>
                 <div>
@@ -2113,10 +2129,56 @@
                                 <div class="clearfix"></div>
                                 <div class="mb-15"></div>
                             </paper-collapse-item>
+                            <paper-collapse-item header="Anexos">
+                                <div class="panel-body">
+                                    <div class="row break_clear">
+                                        <!--<template is="dom-if">-->
+                                        <vaadin-upload id="uploadRequest"
+                                                       target="/Procedimentos/FileUpload/{{_procedimentoid}}/{{_lineno}}"
+                                                       method="POST"
+                                                       headers="{'Accept': 'application/json'}"
+                                                       timeout=15000>
+                                        </vaadin-upload>
+                                        <!--</template>-->
+                                    </div>
+                                    <div class="row break_clear">
+                                        <vaadin-grid id="attachmentsProcedimento" aria-label="ReqUpdateGrid" items="[[uploads]]" class="grid" multi-sort="true">
+
+                                            <vaadin-grid-column width="70%" resizable>
+                                                <template class="header">
+                                                    <vaadin-grid-sorter path="url">Anexo</vaadin-grid-sorter>
+                                                    <vaadin-grid-filter path="url" />
+                                                </template>
+                                                <template>
+                                                    <a href="/Upload/Procedimentos/{{data.no}}/{{item.url}}" target="_blank">{{item.url}}</a>
+                                                </template>
+                                            </vaadin-grid-column>
+                                            <vaadin-grid-column width="20%" resizable>
+                                                <template class="header">
+                                                    <vaadin-grid-sorter path="createDateTime">Anexado em</vaadin-grid-sorter>
+                                                    <vaadin-grid-filter path="createDateTime" />
+                                                </template>
+                                                <template>
+                                                    {{item.createDateTime}}
+                                                </template>
+                                            </vaadin-grid-column>
+                                            <vaadin-grid-column width="10%" resizable>
+                                                <template class="header">
+                                                </template>
+                                                <template>
+                                                    <paper-button class="btnRemove tableBtn" raised on-tap="_btnDeleteAttachment" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                                </template>
+                                            </vaadin-grid-column>
+                                        </vaadin-grid>
+                                    </div>
+                                </div>
+                                <div class="clearfix"></div>
+                                <div class="mb-15"></div>
+                            </paper-collapse-item>
                         </paper-collapse-group>
                     </div>
                 </iron-pages>
-                
+
                 <!-- Save and Create Buttons -->
                 <div id="botoes_accao" class="marginSpace">
                     <template is="dom-if" if="{{ _isCreate }}">
@@ -2270,6 +2332,21 @@
                         type: Boolean,
                         notify: true,
                         value: false
+                    },
+                    _uploadurl: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+
+                    _lineno: {
+                        type: Number,
+                        value: 0
+                    },
+
+                    _isUploadError: {
+                        type: Boolean,
+                        value: false
                     }
                 },
                 _testFunction: function () {
@@ -2287,7 +2364,7 @@
                         //else {
                         //    this.$.propostaEconMaisVantajosa.value = true;
                         //}
-                    });;
+                    });
 
                     this.$.propostaEconMaisVantajosa.addEventListener('value-changed', function () {
                         //if (this.$.propostaEconMaisVantajosa.value == true) {
@@ -2297,7 +2374,48 @@
                         //    this.$.precoMaisBaixo.value = true;
                         //}
                     });;
+                    // Anexos.b
+                    if (this._isCreate == false && this.$.uploadRequest != null) {
+                        this.$.uploadRequest.addEventListener('upload-response', function (e) {
+                            if (e.detail.xhr.status == 200) {
+                                e.detail.xhr.requestURL;
+                                var dd = document.querySelector("x-procedimentodetails");
+                                dd.$.page_update_ajax.generateRequest();
+
+                            }
+                        });
+                    }
+
+                    if (this._isCreate == false) {
+                        this.$.page_update_ajax.body = JSON.stringify({ "id": this._procedimentoid });
+                        this.$.page_update_ajax.generateRequest();
+                    }
+
+                    // Anexos.e
                 },
+                // Anexos.b
+                _btnDeleteAttachment: function (e) {
+                    var ajax_request = this.$.delete_files_ajax;
+                    ajax_request.body = JSON.stringify(e.model.item);
+
+                    this._confirmAndExecuteActionToast(
+                        "Confirma a eliminação do Anexo?",
+                        ajax_request
+                    );
+
+                    var index = this.uploads.indexOf(e.model.item);
+                    this.uploads.splice(index, 1);
+                    this.$.attachmentsProcedimento.clearCache();
+                },
+
+                _deletedAttachResponse: function (e) {
+                    if (this._btnDeleteAttachment.eReasonCode == 0) {
+                        this._openToast("Anexo eliminado com sucesso!");
+                    } else {
+                        this._showErrorMessage("Não foi possível eliminar o anexo!");
+                    }
+                },
+                // Anexos.e
                 _openToast: function (message) {
                     this.$.ToastMessage.text = message;
                     this.$.ToastMessage.open();
