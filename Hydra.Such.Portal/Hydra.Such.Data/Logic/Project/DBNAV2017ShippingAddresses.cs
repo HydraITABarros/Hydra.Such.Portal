@@ -93,6 +93,10 @@ namespace Hydra.Such.Data.Logic.Project
         {
             try
             {
+                if (string.IsNullOrEmpty(Code))
+                {
+                    return null;
+                }
                 using (var ctx = new SuchDBContextExtention())
                 {
                     var parameters = new[]{
@@ -102,10 +106,12 @@ namespace Hydra.Such.Data.Logic.Project
                     };
 
                     IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017EnderecosEnvio @DBName, @CompanyName, @NoCliente", parameters);
-
+                    string customerNo = string.Empty;
                     foreach (dynamic temp in data)
                     {
-                        if ((string)temp.Code == Code)
+                        customerNo = (string)temp.Code;
+                        if (!string.IsNullOrEmpty(customerNo) && customerNo == Code)
+                        //if ((string)temp.Code == Code)
                         {
                             return new NAVAddressesViewModel()
                             {
@@ -119,7 +125,6 @@ namespace Hydra.Such.Data.Logic.Project
                         }
                     }
                 }
-
                 return null;
             }
             catch (Exception ex)

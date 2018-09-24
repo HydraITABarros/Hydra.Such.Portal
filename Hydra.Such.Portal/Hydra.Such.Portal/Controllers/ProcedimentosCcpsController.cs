@@ -6904,7 +6904,7 @@ namespace Hydra.Such.Portal.Controllers
                         string filename = Path.GetFileName(file.FileName);
                                                     
                         full_filename = filename;
-                        full_filename = "[" + DateTime.Now.ToString("yyyyMMddHmmssf") + "]_" + full_filename;
+                        full_filename = DateTime.Now.ToString("yyyyMMddHmmssf") + "_" + full_filename;
 
                         // class propertiy to define Procedimentos path 
                         __UploadPath += id;
@@ -6971,20 +6971,19 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult DeleteAttachments([FromBody] AttachmentsViewModel requestParams)
         {
-            //try
-            //{
-            //    System.IO.File.Delete(_generalConfig.FileUploadFolder + requestParams.Url);
-            //    DBAttachments.Delete(DBAttachments.ParseToDB(requestParams));
-            //    requestParams.eReasonCode = 1;
+            try
+            {
+                System.IO.File.Delete(__UploadPath + requestParams.DocNumber + '/' + requestParams.Url);
+                DBAttachments.Delete(DBAttachments.ParseToDB(requestParams));
 
-            //}
-            //catch (Exception ex)
-            //{
-            //    requestParams.eReasonCode = 2;
-            //    return Json(requestParams);
-            //}
-            //return Json(requestParams);
-            return Json("NULL");
+                return Json(ReturnHandlers.Success);
+
+            }
+            catch (Exception ex)
+            {
+                return Json(ReturnHandlers.Error);
+            }
+            
         }
         #endregion
 
