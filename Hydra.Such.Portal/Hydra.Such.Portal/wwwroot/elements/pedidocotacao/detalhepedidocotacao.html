@@ -24,6 +24,8 @@
 <link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
 <link rel="import" href="/lib/paper-input/paper-input.html" />
 <link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
+<link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
 <link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
 <link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
@@ -210,6 +212,9 @@
             <paper-button id="btnUpdate" raised class="tablinks" on-tap="_update" disabled="{{ _isCreate }}" title="Gravar" style="background-color:#5A9E49"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Gravar</paper-button>
             <paper-button id="btnDelete" raised class="tablinks" on-tap="_delete" disabled="{{ _isCreate }}" title="Eliminar" style="background-color:#D5662F"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
             <such-dropdown-menu on-value-changed="_functionsMenuItemSelected" title="Funções" items='[[ _functionsMenuItems ]]'></such-dropdown-menu>
+
+            <paper-button class="tablinks" id="btnPrint" on-tap="_printConsulta"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Imprimir</paper-button>
+
         </div>
 
         <div class="panel panel-default">
@@ -501,6 +506,8 @@
                                             </template>
                                             <template>
                                                 <!--<vaadin-text-field name="tabSelecaoEntidadescodActividade" id="tabSelecaoEntidadescodActividade" value="{{item.codActividade}}" on-blur="_updateLinhaSeleccaoEntidade" disabled="{{ !_permissions.update }}"></vaadin-text-field>-->
+                                                co
+                                                ms
                                                 <vaadin-combo-box items="[[CBActividades_List]]" id="tabSelecaoEntidadescodActividade" name="tabSelecaoEntidadescodActividade" item-value-path="id" item-label-path="id" value="{{item.codActividade}}" on-blur="_updateLinhaSeleccaoEntidade" disabled="true">
                                                     <template>
                                                         <table width="200px">
@@ -541,6 +548,8 @@
                                             </template>
                                             <template>
                                                 <!--<vaadin-text-field name="tabSelecaoEntidadescodTermosPagamento" id="tabSelecaoEntidadescodTermosPagamento" value="{{item.codTermosPagamento}}" on-blur="_updateLinhaSeleccaoEntidade" disabled="{{ !_permissions.update }}"></vaadin-text-field>-->
+                                                co
+                                                ms
                                                 <vaadin-combo-box items="[[CBPaymentTerms]]" id="tabSelecaoEntidadescodTermosPagamento" item-value-path="id" item-label-path="id" value="{{item.codTermosPagamento}}" on-blur="_updateLinhaSeleccaoEntidade" disabled="{{ !_permissions.update }}">
                                                     <template>
                                                         <table>
@@ -561,6 +570,8 @@
                                             </template>
                                             <template>
                                                 <!--<vaadin-text-field name="tabSelecaoEntidadescodFormaPagamento" id="tabSelecaoEntidadescodFormaPagamento" value="{{item.codFormaPagamento}}" on-blur="_updateLinhaSeleccaoEntidade" disabled="{{ !_permissions.update }}"></vaadin-text-field>-->
+                                                co
+                                                ms
                                                 <vaadin-combo-box items="[[CBPaymentForms]]" id="tabSelecaoEntidadescodFormaPagamento" item-value-path="id" item-label-path="id" value="{{item.codFormaPagamento}}" on-blur="_updateLinhaSeleccaoEntidade" disabled="{{ !_permissions.update }}">
                                                     <template>
                                                         <table>
@@ -1407,6 +1418,13 @@
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+
+        <paper-dialog id="rptDialog" class="dialgoBox" modal>
+            <div class="buttons">
+                <paper-button class="btnRemove" on-tap="_closeRptDialog" title="Fechar"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
+            </div>
+            <iframe id="rptContainer" src="" frameborder="0" style="width: 100%; height: 92%; margin: 0px; padding: 0px"></iframe>
+        </paper-dialog>
     </template>
 
     <script>
@@ -1455,6 +1473,9 @@
                     _Suppliers: {
                         observer: '_setSuppliersData'
                     },
+                    _reportserverurl: {
+                        type: String,
+                    }
                 },
                 _functionsMenuItemSelected: function (e) {
                     var item = e.detail.value;
@@ -1497,7 +1518,7 @@
 
                 _setFieldsEditability(data) {
                     var _self = this;
-                    
+
                     if (data.fase > 0) {
                         _self.$.descricao.disabled = true;
                         _self.$.codProjecto.disabled = true;
@@ -1521,7 +1542,7 @@
                         _self.$.codFormaPagamento.disabled = true;
                         _self.$.filtroActividade.disabled = true;
                     }
-                    
+
                     _self.$.seleccaoentidade_codActividade.value = _self.$.codActividade.value;
                 },
 
@@ -1661,7 +1682,7 @@
                     }
 
                     for (i = 0; i < this.data.seleccaoEntidades.length; i++) {
-                        if (((this.data.seleccaoEntidades[i].codTermosPagamento == null) || (this.data.seleccaoEntidades[i].codTermosPagamento == "")) && 
+                        if (((this.data.seleccaoEntidades[i].codTermosPagamento == null) || (this.data.seleccaoEntidades[i].codTermosPagamento == "")) &&
                             ((this.data.seleccaoEntidades[i].codFormaPagamento == null) || (this.data.seleccaoEntidades[i].codFormaPagamento == ""))) {
                             this._showErrorMessage("Existem Fornecedores sem 'Cód. Forma Pagamento' e 'Cód. Termos Pagamento' definidos!")
                             return;
@@ -1891,9 +1912,8 @@
                         this.$.page_databound_ajax.generateRequest();
                         this._showMessage('Linha Actualizada com sucesso.');
                     }
-                    else
-                    {
-                        this._showErrorMessage('Ocorreu um erro ao Actualizar a linha.');    
+                    else {
+                        this._showErrorMessage('Ocorreu um erro ao Actualizar a linha.');
                     }
                 },
 
@@ -1985,8 +2005,7 @@
                     if (e.model.item.fornecedor1Select == true)
                         num_check += 1;
 
-                    if (e.model.item.fornecedor2Select == true)
-                    {
+                    if (e.model.item.fornecedor2Select == true) {
                         num_check += 1;
 
                         if (e.model.item.fornecedor2Code == null || e.model.item.fornecedor2Code == "false") {
@@ -1999,8 +2018,7 @@
                         }
                     }
 
-                    if (e.model.item.fornecedor3Select == true)
-                    {
+                    if (e.model.item.fornecedor3Select == true) {
                         num_check += 1;
 
                         if (e.model.item.fornecedor3Code == null || e.model.item.fornecedor3Code == "false") {
@@ -2041,7 +2059,7 @@
 
                     if (e.model.item.fornecedor6Select == true) {
                         num_check += 1;
-                        
+
                         if (e.model.item.fornecedor6Code == null || e.model.item.fornecedor6Code == "false") {
                             e.model.item.fornecedor6Select = false;
 
@@ -2118,8 +2136,96 @@
                         }
                     }
 
-                    if (num_check > 1)
-                        _self._showErrorMessage("Apenas pode ter uma Entidade Selecionada!");
+                    if (num_check > 1) {
+                        switch (e.currentTarget.id) {
+                            case "tabRegistoDePropostasfornecedor1Select":
+                                e.model.item.fornecedor2Select = false;
+                                e.model.item.fornecedor3Select = false;
+                                e.model.item.fornecedor4Select = false;
+                                e.model.item.fornecedor5Select = false;
+                                e.model.item.fornecedor6Select = false;
+                                break;
+                            case "tabRegistoDePropostasfornecedor2Select":
+                                e.model.item.fornecedor1Select = false;
+                                e.model.item.fornecedor3Select = false;
+                                e.model.item.fornecedor4Select = false;
+                                e.model.item.fornecedor5Select = false;
+                                e.model.item.fornecedor6Select = false;
+                                break;
+                            case "tabRegistoDePropostasfornecedor3Select":
+                                e.model.item.fornecedor1Select = false;
+                                e.model.item.fornecedor2Select = false;
+                                e.model.item.fornecedor4Select = false;
+                                e.model.item.fornecedor5Select = false;
+                                e.model.item.fornecedor6Select = false;
+                                break;
+                            case "tabRegistoDePropostasfornecedor4Select":
+                                e.model.item.fornecedor1Select = false;
+                                e.model.item.fornecedor2Select = false;
+                                e.model.item.fornecedor3Select = false;
+                                e.model.item.fornecedor5Select = false;
+                                e.model.item.fornecedor6Select = false;
+                                break;
+                            case "tabRegistoDePropostasfornecedor5Select":
+                                e.model.item.fornecedor1Select = false;
+                                e.model.item.fornecedor2Select = false;
+                                e.model.item.fornecedor3Select = false;
+                                e.model.item.fornecedor4Select = false;
+                                e.model.item.fornecedor6Select = false;
+                                break;
+                            case "tabRegistoDePropostasfornecedor6Select":
+                                e.model.item.fornecedor1Select = false;
+                                e.model.item.fornecedor2Select = false;
+                                e.model.item.fornecedor3Select = false;
+                                e.model.item.fornecedor4Select = false;
+                                e.model.item.fornecedor5Select = false;
+                                break;
+                        }
+                        //this.$.tabRegistoProposta.clearCache();
+                        //_self._showErrorMessage("Apenas pode ter uma Entidade Selecionada!");
+
+                        this.$.page_updateLinhaRegistoProposta_ajax.body = JSON.stringify({
+                            numLinha: e.model.item.numLinha,
+                            numConsultaMercado: e.model.item.numConsultaMercado,
+                            numLinhaConsultaMercado: e.model.item.numLinhaConsultaMercado,
+                            alternativa: e.model.item.alternativa,
+                            codProduto: e.model.item.codProduto,
+                            descricao: e.model.item.descricao,
+                            descricao2: e.model.item.descricao2,
+                            numProjecto: e.model.item.numProjecto,
+                            codRegiao: e.model.item.codRegiao,
+                            codAreaFuncional: e.model.item.codAreaFuncional,
+                            codCentroResponsabilidade: e.model.item.codCentroResponsabilidade,
+                            codLocalizacao: e.model.item.codLocalizacao,
+                            quantidade: e.model.item.quantidade,
+                            fornecedor1Code: e.model.item.fornecedor1Code,
+                            fornecedor1Nome: e.model.item.fornecedor1Nome,
+                            fornecedor1Preco: e.model.item.fornecedor1Preco,
+                            fornecedor1Select: e.model.item.fornecedor1Select,
+                            fornecedor2Code: e.model.item.fornecedor2Code,
+                            fornecedor2Nome: e.model.item.fornecedor2Nome,
+                            fornecedor2Preco: e.model.item.fornecedor2Preco,
+                            fornecedor2Select: e.model.item.fornecedor2Select,
+                            fornecedor3Code: e.model.item.fornecedor3Code,
+                            fornecedor3Nome: e.model.item.fornecedor3Nome,
+                            fornecedor3Preco: e.model.item.fornecedor3Preco,
+                            fornecedor3Select: e.model.item.fornecedor3Select,
+                            fornecedor4Code: e.model.item.fornecedor4Code,
+                            fornecedor4Nome: e.model.item.fornecedor4Nome,
+                            fornecedor4Preco: e.model.item.fornecedor4Preco,
+                            fornecedor4Select: e.model.item.fornecedor4Select,
+                            fornecedor5Code: e.model.item.fornecedor5Code,
+                            fornecedor5Nome: e.model.item.fornecedor5Nome,
+                            fornecedor5Preco: e.model.item.fornecedor5Preco,
+                            fornecedor5Select: e.model.item.fornecedor5Select,
+                            fornecedor6Code: e.model.item.fornecedor6Code,
+                            fornecedor6Nome: e.model.item.fornecedor6Nome,
+                            fornecedor6Preco: e.model.item.fornecedor6Preco,
+                            fornecedor6Select: e.model.item.fornecedor6Select
+                        });
+                        this.$.page_updateLinhaRegistoProposta_ajax.generateRequest();
+                        this.$.tabRegistoProposta.clearCache();
+                    }
                     else {
                         this.$.page_updateLinhaRegistoProposta_ajax.body = JSON.stringify({
                             numLinha: e.model.item.numLinha,
@@ -2176,15 +2282,15 @@
                 },
 
                 _criarEncomenda: function (e) {
-                    
+
                 },
                 _criarEncomendaResponse: function (e) {
-                    
+
                 },
 
                 _responseProcessor: function (data) {
                     var self = this;
-                    
+
                     self._setFieldsEditability(self.data);
                     //self._filtraFornecedores();
 
@@ -2263,6 +2369,19 @@
                     _self.$.ajax_PaymentForms_options.generateRequest();
                 },
 
+                _printConsulta: function (e) {
+                    if (this._reportserverurl != undefined) {
+                        this.$.rptContainer.src = this._reportserverurl + "ConsultaMercado&CM=" + this._id;
+                        this.$.rptDialog.open();
+                    }
+                    else {
+                        this._showErrorMessage("Não é possivel imprimir. Não foi definido o servidor de relatórios.");
+                    }
+                },
+                _closeRptDialog: function () {
+                    this.$.rptContainer.src = "about:blank";
+                    this.$.rptDialog.close();
+                },
 
                 //Helpers
                 _executeRequest: function (url, data) {
