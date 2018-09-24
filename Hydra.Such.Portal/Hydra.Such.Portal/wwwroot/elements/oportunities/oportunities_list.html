@@ -257,7 +257,7 @@
                     <vaadin-grid-filter path="totalProposalValue" />
                 </template>
                 <template>
-                    {{item.totalProposalValue}} €
+                    [[_formatValue(item.totalProposalValue)]] €
                 </template>
             </vaadin-grid-column>
 
@@ -317,7 +317,7 @@
                     <vaadin-grid-filter path="baseValueProcedure" />
                 </template>
                 <template>
-                    {{item.baseValueProcedure}}
+                    [[_formatValue(item.baseValueProcedure)]]
                 </template>
             </vaadin-grid-column>
 
@@ -643,6 +643,11 @@
                     });
                 },
                 /* end - ColumnToggle */
+                _formatValue: function (value) {
+                    if (value != null && value != 0) {
+                        return currency(value, { separator: '.', decimal: ',' }).format();
+                    }
+                }
             });
         });
     </script>

@@ -194,7 +194,7 @@ namespace Hydra.Such.Data.Logic.ProjectDiary
                             ServiceCode = x.CódServiço,
                             ServiceDescription = x.CódServiçoNavigation.Descrição,
                             ServiceGroup = x.GrupoServiços,
-                            ClientNumber = x.NºCliente
+                            ClientNumber = x.NºCliente                            
                         }).ToList();
                     }
                 }

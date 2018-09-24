@@ -40,6 +40,7 @@ using Microsoft.AspNetCore.Hosting;
 using System.Text;
 using NPOI.HSSF.UserModel;
 using Hydra.Such.Data.Logic.Request;
+using Newtonsoft.Json;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -967,6 +968,70 @@ namespace Hydra.Such.Portal.Controllers
         }
         #endregion
 
+
+        #region ConfiguracaoMenus
+
+        public IActionResult ConfiguracaoMenu()
+        {
+            //UserAccessesViewModel UPerm = GetPermissions("Administracao");
+            UserAccessesViewModel userPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminGeral);
+            if (userPerm != null && userPerm.Read.Value)
+            {
+                ViewBag.UPermissions = userPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        [HttpPost]
+        public ActionResult GetListConfigMenu()
+        {
+            List<Data.Database.Menu> result = DBMenu.GetAllFull();
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateMenuConfigs([FromBody] List<Data.Database.Menu> data)
+        {
+
+            return Json(new { });
+            //Get All
+            List<Data.Database.Menu> previousList = DBMenu.GetAll();
+            //previousList.RemoveAll(x => !data.Any(u => u.Id == x.Id));
+            //previousList.ForEach(x => DBNumerationConfigurations.Delete(x));
+
+            foreach (Data.Database.Menu line in previousList)
+            {
+                if (!data.Any(x => x.Id == line.Id))
+                {
+                    DBMenu.Delete(line);
+                }
+            }
+
+            data.ForEach(x =>
+            {
+                if (x.Id > 0)
+                {
+                    x.UpdatedBy = User.Identity.Name;
+                    x.UpdatedAt = DateTime.Now;
+                    DBMenu.Update(x);
+                }
+                else
+                {
+                    x.CreatedBy = User.Identity.Name;
+                    x.CreatedAt = DateTime.Now;
+                    DBMenu.Create(x);
+                }
+            });
+
+            return Json(data);
+        }
+        #endregion
+
+
         #region TabelasAuxiliares
 
         #region TiposDeProjeto
@@ -1282,7 +1347,8 @@ namespace Hydra.Such.Portal.Controllers
             {
                 Code = x.Código,
                 Description = x.Descrição,
-                GrupoContabProduto = x.GrupoContabProduto
+                GrupoContabProduto = x.GrupoContabProduto,
+                GrupoContabProdutoText = DBNAV2017GruposContabilisticos.GetGruposContabProduto(_config.NAVDatabaseName, _config.NAVCompanyName).Where(y => y.Code == x.GrupoContabProduto).Count() > 0 ? DBNAV2017GruposContabilisticos.GetGruposContabProduto(_config.NAVDatabaseName, _config.NAVCompanyName).Where(y => y.Code == x.GrupoContabProduto).FirstOrDefault().Description : "",
             }).ToList();
             return Json(result);
         }
@@ -1502,7 +1568,10 @@ namespace Hydra.Such.Portal.Controllers
             List<ClientServicesViewModel> result = DBClientServices.GetAll().Select(x => new ClientServicesViewModel()
             {
                 ClientNumber = x.NºCliente,
+                ClientName = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, x.NºCliente).Count() > 0 ? DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, x.NºCliente).FirstOrDefault().Name : "",
                 ServiceCode = x.CódServiço,
+                ServiceDescription = DBServices.GetById(x.CódServiço) != null ? DBServices.GetById(x.CódServiço).Descrição : "",
+                //ServiceDescription = x.CódServiçoNavigation != null ? x.CódServiçoNavigation.Descrição : "",
                 ServiceGroup = x.GrupoServiços
             }).ToList();
 

@@ -57,6 +57,8 @@
     <DataSource Include="eSUCHTestes.rds" />
   </ItemGroup>
   <ItemGroup>
+    <Report Include="ConsultaMercado.rdl" />
+    <Report Include="ConsultaMercadoLinhas.rdl" />
     <Report Include="ExtratoCliente.rdl" />
     <Report Include="FolhaCaixa.rdl" />
     <Report Include="FolhaHora.rdl" />

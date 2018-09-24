@@ -315,7 +315,7 @@
                     <vaadin-grid-filter path="valorAutorizado" />
                 </template>
                 <template>
-                    {{item.valorAutorizado}}
+                    [[_formatValue(item.valorAutorizado)]]
                 </template>
             </vaadin-grid-column>
 
@@ -325,7 +325,7 @@
                     <vaadin-grid-filter path="valorPorFaturar" />
                 </template>
                 <template>
-                    {{item.valorPorFaturar}}
+                    [[_formatValue(item.valorPorFaturar)]]
                 </template>
             </vaadin-grid-column>
 
@@ -548,7 +548,7 @@
                         <vaadin-grid-filter path="unitPrice" />
                     </template>
                     <template>
-                        {{item.unitPrice}}
+                        [[_formatValue(item.unitPrice)]]
                     </template>
                 </vaadin-grid-column>
                 <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.totalPrice.hidden }}">
@@ -557,7 +557,7 @@
                         <vaadin-grid-filter path="totalPrice" />
                     </template>
                     <template>
-                        <span slot="suffix">{{item.totalPrice}}€</span>
+                        <span slot="suffix">[[_formatValue(item.totalPrice)]]€</span>
                     </template>
                 </vaadin-grid-column>
                 <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.billable.hidden }}">
@@ -693,7 +693,7 @@
                         <vaadin-grid-filter path="unitCost" />
                     </template>
                     <template>
-                        <span slot="suffix">{{item.unitCost}}€</span>
+                        <span slot="suffix">[[_formatValue(item.unitCost)]]€</span>
                     </template>
                 </vaadin-grid-column>
                 <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.totalCost.hidden }}">
@@ -702,7 +702,7 @@
                         <vaadin-grid-filter path="totalCost" />
                     </template>
                     <template>
-                        <span slot="suffix">{{item.totalCost}}€</span>
+                        <span slot="suffix">[[_formatValue(item.totalCost)]]€</span>
                     </template>
                 </vaadin-grid-column>
                 <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.regionCode.hidden }}">
@@ -1277,7 +1277,11 @@
                     return "";
                 },
                 /* end - ColumnToggle */
-
+                _formatValue: function (value) {
+                    if (value != null && value != 0) {
+                        return currency(value, { separator: '.', decimal: ',' }).format();
+                    }
+                }
             });
         });
     </script>

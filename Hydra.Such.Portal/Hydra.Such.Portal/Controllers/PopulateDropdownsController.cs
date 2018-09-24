@@ -2389,6 +2389,17 @@ namespace Hydra.Such.Portal.Controllers
             }).ToList();
             return Json(result);
         }
+
+        [HttpPost]
+        public JsonResult GetMenus()
+        {
+            List<DDMessage> result = DBMenu.GetAll().Where(m=> m.Active).Select(x => new DDMessage()
+            {
+                id = x.Id,
+                value = x.Title
+            }).ToList();
+            return Json(result);
+        }
     }
 
 

@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using static Hydra.Such.Data.Enumerations;
 
 namespace Hydra.Such.Data.Database
 {
     public partial class Menu
     {
-        public Menu()
-        {
-           // FeaturesMenus = new HashSet<FeaturesMenus>();
-        }
-
         public int Id { get; set; }
         public string Title { get; set; }
         public int Weight { get; set; }
@@ -22,5 +19,12 @@ namespace Hydra.Such.Data.Database
         public bool Active { get; set; }
 
         public ICollection<FeaturesMenus> FeaturesMenus { get; set; }
+
+        [NotMapped]
+        public ICollection<Features> Features { get; set; }
+        public DateTime? CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
+        public string CreatedBy { get; set; }
+        public string UpdatedBy { get; set; }
     }
 }

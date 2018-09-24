@@ -151,9 +151,30 @@
                 </template>
             </vaadin-grid-column>
 
+            @*<vaadin-grid-column resizable width="150px">
+                <template class="header">
+                    <vaadin-grid-sorter path="grupoContabProduto">Nº Grupos Contab. Produto</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="grupoContabProduto" />
+                </template>
+                <template>
+                    <vaadin-text-field id="lineGrupoContabProduto" value="{{item.grupoContabProduto}}" disabled=></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px">
+                <template class="header">
+                    <vaadin-grid-sorter path="grupoContabProdutoText">Nome Grupos Contab. Produto</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="grupoContabProdutoText" />
+                </template>
+                <template>
+                    <vaadin-text-field id="lineGrupoContabProdutoText" value="{{item.grupoContabProdutoText}}" disabled=></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>*@
+
             <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="grupoContabProduto">Grupos Contab. Produto</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="grupoContabProdutoText" />
                 </template>
                 <template>
                     <vaadin-combo-box items="[[GroupContProductData]]" item-value-path="id" item-label-path="value" value="{{item.grupoContabProduto}}" disabled="{{ _permissionsUpdate }}">
