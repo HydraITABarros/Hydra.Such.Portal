@@ -17,6 +17,7 @@ using System.Reflection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.AspNetCore.Http.Features;
+using Hydra.Such.Portal.Filters;
 
 namespace Hydra.Such.Portal
 {
@@ -36,7 +37,9 @@ namespace Hydra.Such.Portal
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
+            services.AddMvc(options => {
+                options.Filters.Add(new NavigationFilter());
+            });
             services.Configure<FormOptions>(x =>
             {
                 x.ValueLengthLimit = int.MaxValue;

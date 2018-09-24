@@ -1,0 +1,18 @@
+﻿@using Hydra.Such.Data.ViewModel
+@model List<MenuViewModel>
+
+<ul class="app-menu">
+    <li id="approvalPendingShow">
+        <a href="/Approvals">
+            <i class="menu-icon zmdi zmdi-check zmdi-hc-lg"></i>
+            <span id="pendingApprovalsLink" class="menu-text danger">Aprovações Pendentes &nbsp;</span>
+        </a>
+    </li>
+    @if (Model != null && Model.Count > 0)
+    {
+        @foreach (MenuViewModel menuItem in Model)
+        {
+            @Html.Partial("Menu/_MenuItem", (MenuViewModel)menuItem)
+        }
+    }
+</ul>
