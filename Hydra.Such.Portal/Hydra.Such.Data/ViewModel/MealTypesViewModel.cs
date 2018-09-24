@@ -10,5 +10,6 @@ namespace Hydra.Such.Data.ViewModel
         public string id { get; set; }
         public string Description { get; set; }
         public string GrupoContabProduto { get; set; }
+        public string GrupoContabProdutoText { get; set; }
     }
 }

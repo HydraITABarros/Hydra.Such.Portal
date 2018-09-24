@@ -1282,7 +1282,8 @@ namespace Hydra.Such.Portal.Controllers
             {
                 Code = x.Código,
                 Description = x.Descrição,
-                GrupoContabProduto = x.GrupoContabProduto
+                GrupoContabProduto = x.GrupoContabProduto,
+                GrupoContabProdutoText = DBNAV2017GruposContabilisticos.GetGruposContabProduto(_config.NAVDatabaseName, _config.NAVCompanyName).Where(y => y.Code == x.GrupoContabProduto).Count() > 0 ? DBNAV2017GruposContabilisticos.GetGruposContabProduto(_config.NAVDatabaseName, _config.NAVCompanyName).Where(y => y.Code == x.GrupoContabProduto).FirstOrDefault().Description : "",
             }).ToList();
             return Json(result);
         }
@@ -1502,7 +1503,10 @@ namespace Hydra.Such.Portal.Controllers
             List<ClientServicesViewModel> result = DBClientServices.GetAll().Select(x => new ClientServicesViewModel()
             {
                 ClientNumber = x.NºCliente,
+                ClientName = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, x.NºCliente).Count() > 0 ? DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, x.NºCliente).FirstOrDefault().Name : "",
                 ServiceCode = x.CódServiço,
+                ServiceDescription = DBServices.GetById(x.CódServiço) != null ? DBServices.GetById(x.CódServiço).Descrição : "",
+                //ServiceDescription = x.CódServiçoNavigation != null ? x.CódServiçoNavigation.Descrição : "",
                 ServiceGroup = x.GrupoServiços
             }).ToList();
 
