@@ -32,18 +32,13 @@
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
 <link rel="import" href="~/lib/paper-tabs-master/paper-tabs.html" />
 
-
-
-@*<link rel="import" href="~/lib/paper-multi-select/paper-multi-select.html" />*@
-@*<link rel="import" href="~/lib/mcd-multi-select/mcd-multi-select.html" />*@
 <link rel="import" href="~/lib/select2-wrapper/select2-wrapper.html" />
 
 
-<x-confignumerations></x-confignumerations>
-<dom-module id="x-confignumerations">
+<x-configmenu></x-configmenu>
+<dom-module id="x-configmenu">
     <template>
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-        <link rel="stylesheet" href="/css/select2.min.css">
         <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="~/css/main.css" />
 
@@ -110,127 +105,163 @@
             <paper-collapse-item class="panel-heading" header="Novo Registo" closed>
                 <div class="panel-body">
                     <div class="row break_clear">
-                        <div class="col-lg-2"><vaadin-text-field id="piDescription" label="Descrição" maxlength="50"></vaadin-text-field></div>
 
-                        <div class="col-lg-2 alignPoga"><vaadin-checkbox id="pcAuto"> Auto</vaadin-checkbox><vaadin-checkbox id="pcManual"> Manual</vaadin-checkbox></div>
+                        <div class="col-sm-4">
+                            <vaadin-combo-box multiple="true" id="parent" items="[[menus]]" item-value-path="id" item-label-path="value" value="{{parent}}" disabled="{{ _permissionsCreate }}" label="Menu">
+                                <template>
+                                    <table width="200px">
+                                        <tr>
+                                            <td width="70%"> <b>[[item.value]]</b></td>
+                                            <td width="30%">[[item.id]]</td>
+                                        </tr>
+                                    </table>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
 
-                        <div class="col-lg-2"><vaadin-text-field id="piPrefix" label="Prefixo" maxlength="10"></vaadin-text-field></div>
+                        <div class="col-sm-4">
+                            <vaadin-text-field id="title" name="title" maxlength="100" label="Titulo *"></vaadin-text-field>
+                        </div>
 
-                        <div class="col-lg-2"><vaadin-text-field id="piDigitNumber" label="Nº Incrementar" pattern="[0-9]*" prevent-invalid-input></vaadin-text-field></div>
+                        <div class="col-sm-4">
+                            <vaadin-text-field id="icon" name="icon" maxlength="50" label="Icon"></vaadin-text-field>
+                        </div>
 
-                        <div class="col-lg-2"><vaadin-text-field id="piIncrementNumber" label="Qt. Incrementar" pattern="[0-9]*" prevent-invalid-input></vaadin-text-field></div>
+                        <div class="col-sm-4">
+                            <vaadin-text-field id="weight" name="weight" pattern="[0-9]*" prevent-invalid-input label="Peso *"></vaadin-text-field>
+                        </div>
 
-                        <template is="dom-if" if="{{ _permissions.create }}">
-                            <div class="col-lg-2 alignPoga"><paper-button class="btnSave" raised on-tap="_add">Criar</paper-button></div>
-                        </template>
+                        <div class="col-sm-4">
+                            <vaadin-text-field id="controller" name="controller" maxlength="100" label="Controller"></vaadin-text-field>
+                        </div>
+
+                        <div class="col-sm-4">
+                            <vaadin-text-field id="action" name="action" maxlength="100" label="Action"></vaadin-text-field>
+                        </div>
+
+                        <div class="col-sm-4">
+                            <vaadin-text-field id="routeParameters" name="routeParameters" label="Parâmetros de rota"></vaadin-text-field>
+                        </div>
+
+                        <div class="col-sm-4">
+                            <select2-wrapper items="{{featuresData}}" id="features" label="Funcionalidades" ></select2-wrapper>
+                        </div>
+
+                        <div class="col-sm-4">
+                            <br />
+                            <br />
+                            <vaadin-checkbox id="active" checked="true" label="Ativo">Ativo</vaadin-checkbox>
+                        </div>
+
+                        <div class="col-sm-4 alignPoga"><paper-button class="btnSave" raised on-tap="_add">Criar</paper-button></div>
                     </div>
                 </div>
             </paper-collapse-item>
         </paper-collapse-group>
 
         <vaadin-grid id="menuTable" aria-label="Tabela Numerações" items="[[result]]" class="editGrid">
-               <vaadin-grid-column resizable width="150px">
-                    <template class="header">
-                        Menu
-                    </template>
-                    <template class="body" id="entra">
-                        <vaadin-combo-box multiple="true" items="[[menus]]" item-value-path="id" item-label-path="value" value="{{item.parent}}" disabled="{{ _permissionsCreate }}">
-                            <template>
-                                <table width="200px">
-                                    <tr>
-                                        <td width="70%"> <b>[[item.value]]</b></td>
-                                        <td width="30%">[[item.id]]</td>
-                                    </tr>
-                                </table>
-                            </template>
-                        </vaadin-combo-box>
-                    </template>
-                </vaadin-grid-column>
-
-                <vaadin-grid-column resizable width="150px">
-                    <template class="header">
-                        Titulo
-                    </template>
-                    <template>
-                        <vaadin-text-field name="description" value="{{item.title}}" maxlength="100"></vaadin-text-field>
-                    </template>
-                </vaadin-grid-column>
-
-                <vaadin-grid-column resizable width="150px">
-                    <template class="header">
-                        Icon
-                    </template>
-                    <template>
-                        <vaadin-text-field name="description" value="{{item.icon}}" maxlength="50"></vaadin-text-field>
-                    </template>
-                </vaadin-grid-column>
-
-                <vaadin-grid-column resizable width="150px">
-                    <template class="header">
-                        Peso
-                    </template>
-                    <template>
-                        <vaadin-text-field name="weight" value="{{item.weight}}" pattern="[0-9]*" prevent-invalid-input></vaadin-text-field>
-                    </template>
-                </vaadin-grid-column>
-
-                <vaadin-grid-column resizable width="150px">
-                    <template class="header">
-                        Controller
-                    </template>
-                    <template>
-                        <vaadin-text-field name="description" value="{{item.controller}}" maxlength="100"></vaadin-text-field>
-                    </template>
-                </vaadin-grid-column>
-
-                <vaadin-grid-column resizable width="150px">
-                    <template class="header">
-                        Action
-                    </template>
-                    <template>
-                        <vaadin-text-field name="description" value="{{item.action}}" maxlength="100"></vaadin-text-field>
-                    </template>
-                </vaadin-grid-column>
-
-                <vaadin-grid-column resizable width="150px">
-                    <template class="header">
-                        Parâmetros de rota
-                    </template>
-                    <template>
-                        <vaadin-text-field name="lastUsedNumber" value="{{item.routeParameters}}"></vaadin-text-field>
-                    </template>
-                </vaadin-grid-column>
-
-                <vaadin-grid-column resizable width="150px">
-                    <template class="header">
-                        Ativo
-                    </template>
-                    <template>
-                        <vaadin-checkbox checked="{{item.active}}"></vaadin-checkbox>
-                    </template>
-                </vaadin-grid-column>
-
-                <vaadin-grid-column resizable width="400px">
-                    <template class="header">
-                        Funcionalidades
-                    </template>
-                    <template>
-                        <select2-wrapper items="{{featuresData}}" id="select2{{item.id}}" value="{{item.features}}"></select2-wrapper>
-                    </template>
-                </vaadin-grid-column>
-
-                <template is="dom-if" if="{{ _permissions.delete }}">
-                    <vaadin-grid-column resizable width="150px">
-                        <template class="header">
-                        </template>
-                        <template>
-                            <center>
-                                @*<paper-button class="btnRemove" raised on-tap="_delete">Eliminar</paper-button>*@
-                                <paper-button class="btnRemove tableBtn" raised on-tap="_delete" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
-                            </center>
-                        </template>
-                    </vaadin-grid-column>
+            <vaadin-grid-column resizable width="150px">
+                <template class="header">
+                    Menu
                 </template>
+                <template class="body" id="entra">
+                    <vaadin-combo-box multiple="true" items="[[menus]]" item-value-path="id" item-label-path="value" value="{{item.parent}}" disabled="{{ _permissionsCreate }}">
+                        <template>
+                            <table width="200px">
+                                <tr>
+                                    <td width="70%"> <b>[[item.value]]</b></td>
+                                    <td width="30%">[[item.id]]</td>
+                                </tr>
+                            </table>
+                        </template>
+                    </vaadin-combo-box>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px">
+                <template class="header">
+                    Titulo
+                </template>
+                <template>
+                    <vaadin-text-field name="description" value="{{item.title}}" maxlength="100"></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px">
+                <template class="header">
+                    Icon
+                </template>
+                <template>
+                    <vaadin-text-field name="description" value="{{item.icon}}" maxlength="50"></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="70px">
+                <template class="header">
+                    Peso
+                </template>
+                <template>
+                    <vaadin-text-field name="weight" value="{{item.weight}}" pattern="[0-9]*" prevent-invalid-input></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px">
+                <template class="header">
+                    Controller
+                </template>
+                <template>
+                    <vaadin-text-field name="description" value="{{item.controller}}" maxlength="100"></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px">
+                <template class="header">
+                    Action
+                </template>
+                <template>
+                    <vaadin-text-field name="description" value="{{item.action}}" maxlength="100"></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px">
+                <template class="header">
+                    Parâmetros de rota
+                </template>
+                <template>
+                    <vaadin-text-field name="lastUsedNumber" value="{{item.routeParameters}}"></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="50px">
+                <template class="header">
+                    Ativo
+                </template>
+                <template>
+                    <vaadin-checkbox checked="{{item.active}}"></vaadin-checkbox>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="400px">
+                <template class="header">
+                    Funcionalidades
+                </template>
+                <template>
+                    <select2-wrapper items="{{featuresData}}" id="select2{{item.id}}" value="{{item.features}}"></select2-wrapper>
+                </template>
+            </vaadin-grid-column>
+
+            <template is="dom-if" if="{{ _permissions.delete }}">
+                <vaadin-grid-column resizable width="150px">
+                    <template class="header">
+                    </template>
+                    <template>
+                        <center>
+                            @*<paper-button class="btnRemove" raised on-tap="_delete">Eliminar</paper-button>*@
+                            <paper-button class="btnRemove tableBtn" raised on-tap="_delete" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                        </center>
+                    </template>
+                </vaadin-grid-column>
+            </template>
 
         </vaadin-grid>
 
@@ -242,12 +273,8 @@
 
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
-                is: 'x-confignumerations',
+                is: 'x-configmenu',
                 properties: {
-                    //flag: {
-                    //    type: Number,
-                    //    value: 0
-                    //}
                     _permissions: {
 	                    type: Array,
 	                    value: @Html.Raw(Json.Serialize(ViewBag.UPermissions))
@@ -255,12 +282,11 @@
                 },
 
                 ready: function () {
-                    this.$.ajax_update.generateRequest();
-                    //this.$.gridAutorizacaoFHRH.clearCache();
 
                     var _this = this;
+                    this.$.ajax_update.generateRequest();
 
-                    window.menuComponent = _this;
+                    window.menu = this;
 
                     $(window).resize(function () {
                         _this.fixGridToBottom();
@@ -285,23 +311,27 @@
                     this.$.ToastMessageError.open();
                 },
                 _add() {
-                    if (this.$.piDescription.value != "" &&
-                        this.$.piPrefix.value != "" &&
-                        isNaN(this.$.piDigitNumber.value) == false &&
-                        isNaN(this.$.piIncrementNumber.value) == false
+
+                    window.teste = this;
+
+                    if (this.$.title.value != "" &&
+                        isNaN(this.$.weight.value) == false
                     ) {
                         this.result.unshift({
 
-                            description: this.$.piDescription.value,
-                            auto: this.$.pcAuto.checked,
-                            manual: this.$.pcManual.checked,
-                            prefix: this.$.piPrefix.value,
-                            totalDigitIncrement: parseInt(this.$.piDigitNumber.value),
-                            incrementQuantity: parseInt(this.$.piIncrementNumber.value)
+                            parent: this.$.parent.value,
+                            title: this.$.title.value,
+                            weight: parseInt(this.$.weight.value),
+                            icon: this.$.icon.value,
+                            controller: this.$.controller.value,
+                            action: this.$.action.value,
+                            routeParameters: this.$.routeParameters.value,
+                            active: this.$.active.checked,
+                            features: this.$.features.value,
 
                         });
 
-                        this.$.ajax_update.url = "/Administracao/UpdateNumerationConfigs";
+                        this.$.ajax_update.url = "/Administracao/UpdateMenuConfigs";
                         this.$.ajax_update.body = JSON.stringify(this.result);
                         this.$.ajax_update.generateRequest();
 
@@ -317,15 +347,12 @@
                 },
 
                 _update: function () {
-                    this.$.ajax_update.url = "/Administracao/UpdateNumerationConfigs";
+
+                    this.$.ajax_update.url = "/Administracao/UpdateMenuConfigs";
                     this.$.ajax_update.body = JSON.stringify(this.result);
                     this.$.ajax_update.generateRequest();
 
-                    //this.$.flag = 1;
-
                     this.$.menuTable.clearCache();
-                    //this.$.ajax_update.url = "/Administracao/GetListConfigNumerations";
-
                 },
 
                 _delete: function (e) {
@@ -336,7 +363,7 @@
                 },
 
                 _cancel: function () {
-                    this.$.ajax_update.url = "/Administracao/GetListConfigNumerations";
+                    this.$.ajax_update.url = "/Administracao/GetListConfigMenu";
                     this.$.ajax_update.generateRequest();
 
                     this.$.menuTable.clearCache();
@@ -344,9 +371,11 @@
 
                 _updateResponse: function (e) {
                     var self = this;
-                    if (this.$.ajax_update.url != "/Administracao/GetListConfigNumerations") {
+                    if (this.$.ajax_update.url != "/Administracao/GetListConfigMenu") {
                         if (e.detail.status === 200) {
-                            this.openToast("Numerações atualizadas.");
+                            this.openToast("Menu atualizado.");
+
+
                             this.$.piDescription.value = "";
                             this.$.piPrefix.value = "";
                             this.$.piDigitNumber.value = "";

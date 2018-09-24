@@ -12,8 +12,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="../vaadin-themable-mixin/vaadin-themable-mixin.html">
 <link rel="import" href="../vaadin-control-state-mixin/vaadin-control-state-mixin.html">
+<link rel="import" href="vaadin-form-element-mixin.html">
 <!--<link rel="import" href="vaadin-form-element-mixin.html">-->
-
 <!--<link rel="import" href="../polymer/polymer.html">-->
 <!--<link rel="import" href="../polymer/polymer-element.html">-->
 <!--<link rel="import" href="../polymer/lib/utils/debounce.html">-->
@@ -110,16 +110,28 @@ Example:
                 bottom: 0 !important;
                 max-height: none !important;
             }
+            [part="label"] {
+                color: var(--valo-contrast-60pct);
+                font-weight: 500;
+                font-size: var(--valo-font-size-s);
+                margin-left: calc(var(--valo-text-field-border-radius, var(--valo-border-radius)) / 4);
+                margin-bottom: var(--valo-space-xs);
+                transition: color 0.4s;
+                line-height: 1;
+            }
         </style>
 
-        <div class="such-select2-container" part="input-field">
+        <div class="such-select2-container">
 
-            <select id="select2-wrapper-tag" style="width: 100%" part="value">
-                <template is="dom-repeat" items="{{_items}}" as="item">
-                    <option value="{{item.value}}">{{item.label}}</option>
-                </template>
-            </select>
+            <label part="label" on-click="focus" id="select2-wrapper-label" for="select2-wrapper-tag">[[label]]</label>
 
+            <div part="input-field">
+                <select id="select2-wrapper-tag" style="width: 100%" part="value" value="{{value}}">
+                    <template is="dom-repeat" items="{{_items}}" as="item">
+                        <option value="{{item.value}}">{{item.label}}</option>
+                    </template>
+                </select>
+            </div>
         </div>
 
     </template>
@@ -146,8 +158,22 @@ Example:
                         },
                         value: {
                             type: Array,
-                            value: null,
-                            observer: '_onUpdateSelectedItems'
+                            observer: '_onUpdateSelectedItems',
+                            notify: true
+                        },
+                        /**
+                         * String used for the label element.
+                         */
+                        _value: {
+                            type: Array,
+                            value: null
+                        },
+                        /**
+                         * String used for the label element.
+                         */
+                        label: {
+                            type: String,
+                            value: ''
                         }
                     }
                 }
@@ -157,9 +183,6 @@ Example:
                 ready() {
                     super.ready();
                     var _this = this;
-                    $(_this).attr("id", Math.floor(Date.now() / 1000));
-                    window['select2' + Math.floor(Date.now() / 1000).toString()] = _this;
-
                 }
 
                 _onUpdateItems(data) {
@@ -170,7 +193,7 @@ Example:
                         if (data) {
                             _this._items = _this._format(data);
                             $(document).ready(function () {
-                                console.log('root -> ', _this.root);
+
                                 $($(_this.root.querySelector("#select2-wrapper-tag"))[0]).select2({
                                     //                            data: _this._format(data),
                                     closeOnSelect: false,
@@ -219,12 +242,12 @@ Example:
                                         pointerEvents: '',
                                     }).trigger('click');
 
-                                 });
+                                });
 
                                 setTimeout(function () {
                                     _this._onUpdateSelectedItems(_this.value);
                                 }, 600);
-                                
+
                             });
                         }
                     }
@@ -233,12 +256,14 @@ Example:
                     var _this = this;
 
                     if (data) {
+
                         $($(_this.root.querySelector("#select2-wrapper-tag"))[0])
                             .find("option").prop("selected", false);
                         $.each(data, function (i, e) {
                             $($(_this.root.querySelector("#select2-wrapper-tag"))[0])
                                 .find(" option[value='" + e + "']").prop("selected", true);
                         });
+                        
                         $($(_this.root.querySelector("#select2-wrapper-tag"))[0]).trigger("change");
                     }
                 }

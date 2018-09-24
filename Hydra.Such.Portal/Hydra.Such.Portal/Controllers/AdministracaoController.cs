@@ -994,46 +994,36 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult UpdateMenuConfigs([FromBody] List<ConfigNumerationsViewModel> data)
+        public JsonResult UpdateMenuConfigs([FromBody] List<Data.Database.Menu> data)
         {
+
+            return Json(new { });
             //Get All
-            List<ConfiguraçãoNumerações> previousList = DBNumerationConfigurations.GetAll();
+            List<Data.Database.Menu> previousList = DBMenu.GetAll();
             //previousList.RemoveAll(x => !data.Any(u => u.Id == x.Id));
             //previousList.ForEach(x => DBNumerationConfigurations.Delete(x));
 
-            foreach (ConfiguraçãoNumerações line in previousList)
+            foreach (Data.Database.Menu line in previousList)
             {
                 if (!data.Any(x => x.Id == line.Id))
                 {
-                    DBNumerationConfigurations.Delete(line);
+                    DBMenu.Delete(line);
                 }
             }
 
             data.ForEach(x =>
             {
-                ConfiguraçãoNumerações CN = new ConfiguraçãoNumerações()
-                {
-                    Descrição = x.Description,
-                    Automático = x.Auto,
-                    Manual = x.Manual,
-                    Prefixo = x.Prefix,
-                    NºDígitosIncrementar = x.TotalDigitIncrement,
-                    QuantidadeIncrementar = x.IncrementQuantity,
-                    ÚltimoNºUsado = x.LastNumerationUsed
-                };
-
                 if (x.Id > 0)
                 {
-                    CN.Id = x.Id;
-                    CN.UtilizadorModificação = User.Identity.Name;
-                    CN.DataHoraModificação = DateTime.Now;
-                    DBNumerationConfigurations.Update(CN);
+                    x.UpdatedBy = User.Identity.Name;
+                    x.UpdatedAt = DateTime.Now;
+                    DBMenu.Update(x);
                 }
                 else
                 {
-                    CN.UtilizadorCriação = User.Identity.Name;
-                    CN.DataHoraCriação = DateTime.Now;
-                    DBNumerationConfigurations.Create(CN);
+                    x.CreatedBy = User.Identity.Name;
+                    x.CreatedAt = DateTime.Now;
+                    DBMenu.Create(x);
                 }
             });
 

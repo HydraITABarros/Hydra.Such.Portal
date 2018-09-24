@@ -110,6 +110,24 @@ namespace Hydra.Such.Data.Logic
                 return null;
             }
         }
+
+        public static bool Delete(Menu ObjectToDelete)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    ctx.Menu.Remove(ObjectToDelete);
+                    ctx.SaveChanges();
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
         #endregion
 
         public static List<Menu> GetAllByUserId(string userId)
