@@ -269,6 +269,47 @@ paper-toast {
     background: rgba(0,0,0,0.02);
 }
 
+/* Select2 */
+.select2-container {
+    display: none !important;
+    pointer-events: all;
+}
+
+.select2-drop-wrapper .select2-container {
+    display: block !important;
+}
+
+.select2-selection__rendered {
+    pointer-events: all;
+}
+
+.select2-results {
+    height: 100%;
+}
+
+.select2-dropdown.select2-dropdown--below {
+    bottom: 0 !important;
+    height: auto;
+    top: 0 !important;
+    display: block !important;
+    border: none !important;
+    left: 1px !important;
+    box-shadow: 0 0 0 1px var(--valo-contrast-10pct), 0 1px 4px 1px var(--valo-shade-10pct);
+}
+
+.select2-container.select2-container--default {
+    bottom: 0;
+}
+
+.select2-drop-wrapper {
+    bottom: 10px;
+}
+
+.select2-container--default .select2-results > .select2-results__options {
+    max-height: none !important;
+    height: 100% !important;
+}
+
 #wrapper {
     padding-left: 0;
     -webkit-transition: all 0.5s ease;

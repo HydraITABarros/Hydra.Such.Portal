@@ -6,16 +6,24 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\lib\paper-dialog-scrollable\**" />
     <Compile Remove="wwwroot\lib\paper-input-money-master\**" />
+    <Compile Remove="wwwroot\lib\paper-multi-select\paper-checkbox\**" />
     <Compile Remove="wwwroot\lib\vaadin-time-picker-master\bower_components\**" />
     <Compile Remove="__Notes\**" />
+    <Content Remove="wwwroot\lib\paper-dialog-scrollable\**" />
     <Content Remove="wwwroot\lib\paper-input-money-master\**" />
+    <Content Remove="wwwroot\lib\paper-multi-select\paper-checkbox\**" />
     <Content Remove="wwwroot\lib\vaadin-time-picker-master\bower_components\**" />
     <Content Remove="__Notes\**" />
+    <EmbeddedResource Remove="wwwroot\lib\paper-dialog-scrollable\**" />
     <EmbeddedResource Remove="wwwroot\lib\paper-input-money-master\**" />
+    <EmbeddedResource Remove="wwwroot\lib\paper-multi-select\paper-checkbox\**" />
     <EmbeddedResource Remove="wwwroot\lib\vaadin-time-picker-master\bower_components\**" />
     <EmbeddedResource Remove="__Notes\**" />
+    <None Remove="wwwroot\lib\paper-dialog-scrollable\**" />
     <None Remove="wwwroot\lib\paper-input-money-master\**" />
+    <None Remove="wwwroot\lib\paper-multi-select\paper-checkbox\**" />
     <None Remove="wwwroot\lib\vaadin-time-picker-master\bower_components\**" />
     <None Remove="__Notes\**" />
   </ItemGroup>

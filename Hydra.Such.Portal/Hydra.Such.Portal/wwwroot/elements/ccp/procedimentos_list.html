@@ -165,7 +165,7 @@
                     <vaadin-grid-filter path="valorPrecoBase" />
                 </template>
                 <template>
-                    {{item.valorPrecoBase}}
+                    [[_formatValue(item.valorPrecoBase)]]
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column resizable hidden$="{{ _columns.codigoRegiao.hidden }}">
@@ -384,8 +384,13 @@
                             value: obj[key]
                         };
                     });
-                }
+                },
                 /* end - ColumnToggle */
+                _formatValue: function (value) {
+                    if (value != null && value != 0) {
+                        return currency(value, { separator: '.', decimal: ',' }).format();
+                    }
+                }
             });
         });
     </script>

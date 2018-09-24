@@ -1,0 +1,297 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<!--<link rel="import" href="../../polymer/polymer.html">-->
+
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../vaadin-themable-mixin/vaadin-themable-mixin.html">
+<link rel="import" href="../vaadin-control-state-mixin/vaadin-control-state-mixin.html">
+<link rel="import" href="vaadin-form-element-mixin.html">
+<!--<link rel="import" href="vaadin-form-element-mixin.html">-->
+<!--<link rel="import" href="../polymer/polymer.html">-->
+<!--<link rel="import" href="../polymer/polymer-element.html">-->
+<!--<link rel="import" href="../polymer/lib/utils/debounce.html">-->
+<script src="../jquery/dist/jquery.min.js"></script>
+<script src="./select2.full.min.js"></script>
+<link rel="stylesheet" href="./select2.min.css">
+<!--
+Polymer 1.0 wrapper for Select2
+
+Example:
+
+    <select2-wrapper id="my_select2_element"></select2-wrapper>
+    <script>
+      document.getElementById('my_select2_element').model = [
+        {
+          label: 'Asia',
+          value: 'AS'
+        }
+      ];
+    </script>
+
+@group Wrappers
+@element select2-wrapper
+@demo http://kolarski.github.io/select2-wrapper/bower_components/select2-wrapper/demo/
+@hero hero.svg
+-->
+<dom-module id="select2-wrapper">
+    <template is="dom-bind">
+
+        <link rel="stylesheet" href="/css/select2.min.css">
+        <style>
+            :host {
+                display: block;
+                box-sizing: border-box;
+                position: relative;
+            }
+
+            .select2-selection.select2-selection--multiple {
+                margin-top: var(--valo-space-xs);
+                margin-bottom: var(--valo-space-xs);
+                border-radius: var(--valo-text-field-border-radius, var(--valo-border-radius));
+                background-color: var(--valo-contrast-5pct) !important;
+                padding: 0 calc(var(--valo-size, var(--valo-size-m)) / 6 + var(--valo-text-field-border-radius, var(--valo-border-radius)) / 4);
+                transition: all 0s;
+                font-weight: 500;
+                position: relative;
+                will-change: transform;
+                height: var(--valo-size, var(--valo-size-m));
+                border: none !important;
+                overflow: auto;
+                /*resize: vertical;*/
+                bottom: 0;
+            }
+
+            .select2.select2-container.select2-container--default:before {
+                content: "\f103";
+                font-family: "FontAwesome";
+                display: inline-block;
+                position: absolute;
+                right: 10px;
+                top: 4px;
+                width: 14px;
+                height: var(--valo-size, var(--valo-size-m));
+                line-height: var(--valo-size, var(--valo-size-m));
+                font-size: 20px;
+                color: var(--valo-contrast-40pct);
+                z-index: 1;
+                pointer-events: none;
+            }
+
+            .select2-selection.select2-selection--multiple:hover {
+                background-color: var(--valo-contrast-10pct) !important;
+            }
+
+
+            .select2-selection.select2-selection--multiple[aria-owns="select2-select2-wrapper-tag-results"] {
+                background-color: var(--valo-base-color) !important;
+                box-shadow: 0 0 0 1px var(--valo-contrast-10pct), 0 1px 4px 1px var(--valo-shade-10pct);
+            }
+
+            .select2-selection.select2-selection--multiple li {
+                float: none !important;
+                display: inline-block !important;
+                position: initial !important;
+            }
+
+            .select2-selection.select2-selection--multiple ul {
+                /*white-space: nowrap;*/
+                display: block !important;
+                /** /overflow: hidden !important;/**/
+                white-space: normal !important;
+                text-overflow: unset !important;
+                height: 100% !important;
+                bottom: 0 !important;
+                max-height: none !important;
+            }
+            [part="label"] {
+                color: var(--valo-contrast-60pct);
+                font-weight: 500;
+                font-size: var(--valo-font-size-s);
+                margin-left: calc(var(--valo-text-field-border-radius, var(--valo-border-radius)) / 4);
+                margin-bottom: var(--valo-space-xs);
+                transition: color 0.4s;
+                line-height: 1;
+            }
+        </style>
+
+        <div class="such-select2-container">
+
+            <label part="label" on-click="focus" id="select2-wrapper-label" for="select2-wrapper-tag">[[label]]</label>
+
+            <div part="input-field">
+                <select id="select2-wrapper-tag" style="width: 100%" part="value" value="{{value}}">
+                    <template is="dom-repeat" items="{{_items}}" as="item">
+                        <option value="{{item.value}}">{{item.label}}</option>
+                    </template>
+                </select>
+            </div>
+        </div>
+
+    </template>
+
+    <script>
+
+        (function () {
+            class Select2Wrapper extends Vaadin.ControlStateMixin(Vaadin.FormElementMixin(Vaadin.ThemableMixin(Polymer.Element))) {
+                static get is() {
+                    return 'select2-wrapper';
+                }
+
+                static get properties() {
+                    return {
+                        /*model: {
+                            type: Array,
+                            value: null,
+                            observer: '_onUpdateSelectItems'
+                        },*/
+                        items: {
+                            type: Array,
+                            value: null,
+                            observer: '_onUpdateItems'
+                        },
+                        value: {
+                            type: Array,
+                            observer: '_onUpdateSelectedItems',
+                            notify: true
+                        },
+                        /**
+                         * String used for the label element.
+                         */
+                        _value: {
+                            type: Array,
+                            value: null
+                        },
+                        /**
+                         * String used for the label element.
+                         */
+                        label: {
+                            type: String,
+                            value: ''
+                        }
+                    }
+                }
+                get focusElement() {
+                    return this.root.querySelector('[part=value]');
+                }
+                ready() {
+                    super.ready();
+                    var _this = this;
+                }
+
+                _onUpdateItems(data) {
+                    var _this = this;
+
+                    if (data && data.length > 0) {
+
+                        if (data) {
+                            _this._items = _this._format(data);
+                            $(document).ready(function () {
+
+                                $($(_this.root.querySelector("#select2-wrapper-tag"))[0]).select2({
+                                    //                            data: _this._format(data),
+                                    closeOnSelect: false,
+                                    //dropdownParent: $(_this.root.querySelector(".such-select2-container")),
+                                    dropdownParent: $('body'),
+                                    multiple: true,
+                                    placeholder: ""
+                                }).on('select2:open', function () {
+                                    var _this = this;
+
+                                    var container = $('.select2-container').last();
+                                    $(_this).parent().find('ul').scrollLeft(0);
+                                    setTimeout(function () {
+                                        container.wrap("<div class='select2-drop-wrapper'></div>");
+
+                                        $("body").css({
+                                            pointerEvents: 'none',
+                                        }).one('click', function () {
+                                            if ($('.select2-container').length > 0) {
+                                                $(_this).select2('close');
+                                            }
+                                        });
+
+                                        $(window, document).one('click', function () {
+                                            if ($('.select2-container').length > 0) {
+                                                $(_this).select2('close');
+                                            }
+                                        });
+
+                                        container.parents(".select2-drop-wrapper").css({
+                                            position: 'absolute',
+                                            top: _this.getBoundingClientRect().y + $(window).scrollTop(),
+                                            left: _this.getBoundingClientRect().x
+                                        });
+
+                                    }, 0);
+
+                                }).on('select2:close', function () {
+                                    var _this = this;
+
+                                    $(".select2-drop-wrapper").remove();
+                                    $(_this).parent().find('input').focusout();
+                                    $(_this).parent().find('ul').scrollLeft(0);
+                                    $(_this).parent().find()
+                                    $("body").css({
+                                        pointerEvents: '',
+                                    }).trigger('click');
+
+                                });
+
+                                setTimeout(function () {
+                                    _this._onUpdateSelectedItems(_this.value);
+                                }, 600);
+
+                            });
+                        }
+                    }
+                }
+                _onUpdateSelectedItems(data) {
+                    var _this = this;
+
+                    if (data) {
+
+                        $($(_this.root.querySelector("#select2-wrapper-tag"))[0])
+                            .find("option").prop("selected", false);
+                        $.each(data, function (i, e) {
+                            $($(_this.root.querySelector("#select2-wrapper-tag"))[0])
+                                .find(" option[value='" + e + "']").prop("selected", true);
+                        });
+                        
+                        $($(_this.root.querySelector("#select2-wrapper-tag"))[0]).trigger("change");
+                    }
+                }
+                _format(data) {
+                    if (data && data.length > 0) {
+                        data = data.map(function (item) {
+                            return {
+                                value: item.id,
+                                label: item.value
+                            };
+                        });
+                    }
+                    else {
+                        data = [];
+                    }
+                    return data;
+                }
+            }
+
+            customElements.define(Select2Wrapper.is, Select2Wrapper);
+
+            /**
+             * @namespace Vaadin
+             */
+            window.Vaadin = window.Vaadin || {};
+            Vaadin.Select2Wrapper = Select2Wrapper;
+        })();
+
+    </script>
+
+</dom-module>

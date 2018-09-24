@@ -40,6 +40,7 @@ using Microsoft.AspNetCore.Hosting;
 using System.Text;
 using NPOI.HSSF.UserModel;
 using Hydra.Such.Data.Logic.Request;
+using Newtonsoft.Json;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -966,6 +967,70 @@ namespace Hydra.Such.Portal.Controllers
             return Json(data);
         }
         #endregion
+
+
+        #region ConfiguracaoMenus
+
+        public IActionResult ConfiguracaoMenu()
+        {
+            //UserAccessesViewModel UPerm = GetPermissions("Administracao");
+            UserAccessesViewModel userPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminGeral);
+            if (userPerm != null && userPerm.Read.Value)
+            {
+                ViewBag.UPermissions = userPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        [HttpPost]
+        public ActionResult GetListConfigMenu()
+        {
+            List<Data.Database.Menu> result = DBMenu.GetAllFull();
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateMenuConfigs([FromBody] List<Data.Database.Menu> data)
+        {
+
+            return Json(new { });
+            //Get All
+            List<Data.Database.Menu> previousList = DBMenu.GetAll();
+            //previousList.RemoveAll(x => !data.Any(u => u.Id == x.Id));
+            //previousList.ForEach(x => DBNumerationConfigurations.Delete(x));
+
+            foreach (Data.Database.Menu line in previousList)
+            {
+                if (!data.Any(x => x.Id == line.Id))
+                {
+                    DBMenu.Delete(line);
+                }
+            }
+
+            data.ForEach(x =>
+            {
+                if (x.Id > 0)
+                {
+                    x.UpdatedBy = User.Identity.Name;
+                    x.UpdatedAt = DateTime.Now;
+                    DBMenu.Update(x);
+                }
+                else
+                {
+                    x.CreatedBy = User.Identity.Name;
+                    x.CreatedAt = DateTime.Now;
+                    DBMenu.Create(x);
+                }
+            });
+
+            return Json(data);
+        }
+        #endregion
+
 
         #region TabelasAuxiliares
 

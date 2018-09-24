@@ -5130,6 +5130,8 @@ namespace Hydra.Such.Data.Database
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
+                entity.Property(e => e.CreatedAt).HasColumnType("datetime");
+
                 entity.Property(e => e.HtmlAttributes)
                     .HasMaxLength(255)
                     .IsUnicode(false);
@@ -5146,6 +5148,8 @@ namespace Hydra.Such.Data.Database
                     .IsRequired()
                     .HasMaxLength(50)
                     .IsUnicode(false);
+
+                entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
             });
 
             modelBuilder.Entity<Modelos>(entity =>

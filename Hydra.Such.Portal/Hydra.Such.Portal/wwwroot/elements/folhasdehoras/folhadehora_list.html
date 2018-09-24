@@ -307,7 +307,7 @@
                     <vaadin-grid-filter path="custoTotalAjudaCusto" />
                 </template>
                 <template>
-                    {{item.custoTotalAjudaCusto}}
+                    [[_formatValue(item.custoTotalAjudaCusto)]]
                 </template>
             </vaadin-grid-column>
 
@@ -317,7 +317,7 @@
                     <vaadin-grid-filter path="custoTotalHoras" />
                 </template>
                 <template>
-                    {{item.custoTotalHoras}}
+                    [[_formatValue(item.custoTotalHoras)]]
                 </template>
             </vaadin-grid-column>
 
@@ -327,7 +327,7 @@
                     <vaadin-grid-filter path="custoTotalKM" />
                 </template>
                 <template>
-                    {{item.custoTotalKM}}
+                    [[_formatValue(item.custoTotalKM)]]
                 </template>
             </vaadin-grid-column>
 
@@ -1044,9 +1044,13 @@
                             value: obj[key]
                         };
                     });
-                }
+                },
                 /* end - ColumnToggle */
-
+                _formatValue: function (value) {
+                    if (value != null && value != 0) {
+                        return currency(value, { separator: '.', decimal: ',' }).format();
+                    }
+                }
             });
         });
     </script>
