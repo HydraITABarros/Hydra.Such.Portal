@@ -134,11 +134,11 @@ namespace Hydra.Such.Data
             MercadoLocal = 50,
             [Description("Pré-Encomendas")]
             PréEncomendas = 51,
-            [Description("Administração Geral")]
+            [Description("Localizações")]
             Localizações = 52,
             [Description("Pedido Cotação")]
             PedidoCotacao = 53,
-            [Description("Localizações")]
+            [Description("Administração Geral")]
             AdminGeral = 100,
             [Description("Administração Aprovações")]
             AdminAprovacoes = 101,
