@@ -637,39 +637,16 @@ namespace Hydra.Such.Portal.Services
                          *  Swallow errors at this stage as they will be managed in NAV
                          */
                         //Task<WSGenericCodeUnit.FxCabimento_Result> createPurchOrderTask = WSGeneric.CreatePurchaseOrder(purchOrder.NAVPrePurchOrderId, configws);
-                        //createPurchOrderTask.Wait();
-                        //if (createPurchOrderTask.IsCompletedSuccessfully)
-                        //{
-                        //    createPrePurchOrderResult.CompletedSuccessfully = true;
-                        //}
+                        //createPurchOrderTask.Start();
+                        ////if (createPurchOrderTask.IsCompletedSuccessfully)
+                        ////{
+                        ////    createPrePurchOrderResult.CompletedSuccessfully = true;
+                        ////}
                     }
                     catch (Exception ex) { }
+                    createPrePurchOrderResult.CompletedSuccessfully = true;
                 }
-
-                //Task<WSPurchaseInvLine.CreateMultiple_Result> createPurchaseLinesTask = NAVPurchaseLineService.CreateMultipleAsync(purchOrder, configws);
-                //createPurchaseLinesTask.Wait();
-                //if (createPurchaseLinesTask.IsCompletedSuccessfully)
-                //{                    
-                //Task<WSPurchaseInvLine.UpdateMultiple_Result> updatePurchaseLinesTask = NAVPurchaseLineService.UpdateMultipleAsync(purchOrder, createPurchaseLinesTask.Result.WSPurchInvLineInterm_List.ToList(), configws);
-                //updatePurchaseLinesTask.Wait();
-                //if (updatePurchaseLinesTask.IsCompletedSuccessfully)
-                //{
-                //    try
-                //    {
-                //        /*
-                //         *  Swallow errors at this stage as they will be managed in NAV
-                //         */
-                //        //Task<WSGenericCodeUnit.FxCabimento_Result> createPurchOrderTask = WSGeneric.CreatePurchaseOrder(purchOrder.NAVPrePurchOrderId, configws);
-                //        //createPurchOrderTask.Wait();
-                //        //if (createPurchOrderTask.IsCompletedSuccessfully)
-                //        //{
-                //        //    createPrePurchOrderResult.CompletedSuccessfully = true;
-                //        //}
-                //    }
-                //    catch (Exception ex) { }
-                //}
-                //}
-                }
+            }
             return createPrePurchOrderResult;
         }
     }
