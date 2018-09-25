@@ -1537,16 +1537,19 @@ namespace Hydra.Such.Portal.Controllers
                             }
                         }
 
-
-                        Task<ClientDetailsViewModel> postNAV = WSCustomerService.GetByNoAsync(item.NºCliente, _configws);
-                        postNAV.Wait();
-                        if (postNAV.IsCompletedSuccessfully == true && postNAV.Result!=null)
+                        if (!string.IsNullOrEmpty(item.NºCliente))
                         {
-                           if(postNAV.Result.Blocked == WSClientNAV.Blocked.Invoice || postNAV.Result.Blocked == WSClientNAV.Blocked.All)
+                            Task<ClientDetailsViewModel> postNAV = WSCustomerService.GetByNoAsync(item.NºCliente, _configws);
+                            postNAV.Wait();
+                            if (postNAV.IsCompletedSuccessfully == true && postNAV.Result != null)
                             {
-                                Problema += "Cliente Bloqueado";
+                                if (postNAV.Result.Blocked == WSClientNAV.Blocked.Invoice || postNAV.Result.Blocked == WSClientNAV.Blocked.All)
+                                {
+                                    Problema += "Cliente Bloqueado";
+                                }
                             }
                         }
+
                         decimal valFatura= invoicePeriod - creditPeriod;
                         decimal ValorPorFatura = (contractVal - (invoicePeriod - creditPeriod));
 
