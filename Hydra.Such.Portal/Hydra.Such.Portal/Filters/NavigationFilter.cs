@@ -28,7 +28,7 @@ namespace Hydra.Such.Portal.Filters
                 var viewBag = ((Controller)(context.Controller)).ViewBag;
                 var menu = new List<MenuViewModel>();
 
-                if (session.GetString("menu") == null /* || true*/)
+                if (session.GetString("menu") == null || true )
                 {
                     menu = DBMenu.GetAllByUserId(user.Identity.Name).ParseToViewModel();
                     session.SetString("menu", JsonConvert.SerializeObject(menu));
