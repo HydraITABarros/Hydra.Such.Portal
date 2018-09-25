@@ -267,8 +267,13 @@ namespace Hydra.Such.Data.Logic.Contracts
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.Contratos.Where(x => x.NºDeContrato == ContractNo && x.ContratoAvençaFixa == true &&
-                    x.Arquivado == false).OrderByDescending(x => x.NºVersão).FirstOrDefault();
+                    return ctx.Contratos
+                        .Where(x => x.NºDeContrato == ContractNo && 
+                            x.ContratoAvençaFixa == true &&
+                            //x.Arquivado == false
+                            x.Arquivado != true)
+                        .OrderByDescending(x => x.NºVersão)
+                        .FirstOrDefault();
                 }
             }
             catch (Exception ex)
@@ -286,7 +291,8 @@ namespace Hydra.Such.Data.Logic.Contracts
                 {
                     return ctx.Contratos.Where(x =>
                     x.ContratoAvençaFixa == true &&
-                    x.Arquivado == false &&
+                    //x.Arquivado == false &&
+                    x.Arquivado != true &&
                     x.Estado == 4 && // Assinado 
                     x.EstadoAlteração == 2 && // Bloqueado
                     (x.TipoFaturação == 1 || x.TipoFaturação == 4)).ToList(); // Mensal / Mensal + Consumo
@@ -305,7 +311,9 @@ namespace Hydra.Such.Data.Logic.Contracts
                 {
                     return ctx.Contratos.Where(x =>
                     x.ContratoAvençaFixa == true &&
-                    x.Arquivado == false && x.TipoContrato==3).ToList(); 
+                    //x.Arquivado == false && 
+                    x.Arquivado != true &&
+                    x.TipoContrato==3).ToList(); 
                 }
             }
             catch (Exception ex)
