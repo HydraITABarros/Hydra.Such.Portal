@@ -1129,7 +1129,6 @@ namespace Hydra.Such.Portal.Controllers
             List<Contratos> contractList = DBContracts.GetAllAvencaFixa2();
             foreach (var item in contractList)
             {
-                
                 List<NAVSalesLinesViewModel> SLines = DBNAV2017SalesLine.FindSalesLine(_config.NAVDatabaseName, _config.NAVCompanyName, item.NºDeContrato, item.NºCliente);
                 List<LinhasContratos> contractLinesList = DBContractLines.GetAllByNoTypeVersion(item.NºDeContrato, item.TipoContrato, item.NºVersão, true);
                 contractLinesList.OrderBy(x => x.NºContrato).ThenBy(y => y.GrupoFatura);
@@ -1224,10 +1223,23 @@ namespace Hydra.Such.Portal.Controllers
                             }
                             else
                             {
-                                if (item.DataInicial != null)
+                                //if (item.DataInicial != null)
+                                //{
+                                //    nextInvoice = item.DataInicial.Value;
+                                //    lastInvoice = item.DataInicial.Value.Month;
+                                //}
+                                if (item.ÚltimaDataFatura != null)
                                 {
-                                    nextInvoice = item.DataInicial.Value;
-                                    lastInvoice = item.DataInicial.Value.Month;
+                                    nextInvoice = item.ÚltimaDataFatura.Value;
+                                    lastInvoice = item.ÚltimaDataFatura.Value.Month;
+                                }
+                                else
+                                {
+                                    if (item.DataInicial != null)
+                                    {
+                                        nextInvoice = item.DataInicial.Value;
+                                        lastInvoice = item.DataInicial.Value.Month;
+                                    }
                                 }
                             }
                         }

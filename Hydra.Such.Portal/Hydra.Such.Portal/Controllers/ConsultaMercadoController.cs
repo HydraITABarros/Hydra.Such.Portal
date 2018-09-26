@@ -6,9 +6,12 @@ using System.Threading.Tasks;
 using Hydra.Such.Data.Database;
 using Hydra.Such.Data.Logic;
 using Hydra.Such.Data.Logic.PedidoCotacao;
+using Hydra.Such.Data.NAV;
 using Hydra.Such.Data.ViewModel;
+using Hydra.Such.Data.ViewModel.Compras;
 using Hydra.Such.Data.ViewModel.PedidoCotacao;
 using Hydra.Such.Portal.Configurations;
+using Hydra.Such.Portal.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -23,11 +26,13 @@ namespace Hydra.Such.Portal.Controllers
     public class ConsultaMercadoController : Controller
     {
         private readonly NAVConfigurations _config;
+        private readonly NAVWSConfigurations configws;
         private readonly IHostingEnvironment _hostingEnvironment;
 
-        public ConsultaMercadoController(IOptions<NAVConfigurations> appSettings, IHostingEnvironment _hostingEnvironment)
+        public ConsultaMercadoController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs, IHostingEnvironment _hostingEnvironment)
         {
             _config = appSettings.Value;
+            configws = NAVWSConfigs.Value;
             this._hostingEnvironment = _hostingEnvironment;
         }
 
@@ -545,6 +550,407 @@ namespace Hydra.Such.Portal.Controllers
             return Json(data);
         }
 
+
+
+        [HttpPost]
+        public JsonResult CriarEncomenda([FromBody] ConsultaMercadoView data)
+        {
+            PurchOrderDTO purchOrderDTO = new PurchOrderDTO();
+            List<PurchOrderDTO> purchOrders = new List<PurchOrderDTO>();
+            List<RegistoDePropostasView> registoDePropostas = new List<RegistoDePropostasView>();
+
+            try
+            {
+                for (int i = 1; i <= 6; i++)
+                {
+                    if (i == 1)
+                    {
+                        registoDePropostas = data.RegistoDePropostas.Where(x => x.Fornecedor1Select.HasValue && x.Fornecedor1Select.Value == true).ToList();
+
+                        if (registoDePropostas.Count() > 0)
+                        {
+                            //vamos criar a encomenda com as linhas
+                            PurchOrderLineDTO purchOrderLineDTO = new PurchOrderLineDTO();
+                            List<PurchOrderLineDTO> purchOrderLineDTOs = new List<PurchOrderLineDTO>();
+                            
+                            foreach(RegistoDePropostasView registoDePropostasView in registoDePropostas)
+                            {
+                                purchOrderLineDTO.CenterResponsibilityCode = registoDePropostasView.CodCentroResponsabilidade;
+                                purchOrderLineDTO.Code = registoDePropostasView.CodProduto;
+                                purchOrderLineDTO.Description = registoDePropostasView.Descricao;
+                                purchOrderLineDTO.Description2 = registoDePropostasView.Descricao2;
+                                purchOrderLineDTO.DiscountPercentage = 0;
+                                purchOrderLineDTO.FunctionalAreaCode = registoDePropostasView.CodAreaFuncional;
+                                purchOrderLineDTO.LineId = registoDePropostasView.NumLinha;
+                                purchOrderLineDTO.LocationCode = registoDePropostasView.CodLocalizacao;
+                                purchOrderLineDTO.OpenOrderLineNo = registoDePropostasView.NumLinhaConsultaMercado;
+                                purchOrderLineDTO.OpenOrderNo = registoDePropostasView.NumConsultaMercado;
+                                purchOrderLineDTO.ProjectNo = registoDePropostasView.NumProjecto;
+                                purchOrderLineDTO.QuantityRequired = registoDePropostasView.Quantidade;
+                                purchOrderLineDTO.RegionCode = registoDePropostasView.CodRegiao;
+                                purchOrderLineDTO.UnitCost = registoDePropostasView.Fornecedor1Preco;
+                                purchOrderLineDTO.UnitMeasureCode = data.LinhasConsultaMercado.Where(x => x.NumLinha == registoDePropostasView.NumLinhaConsultaMercado).FirstOrDefault().CodUnidadeMedida;
+
+                                purchOrderLineDTOs.Add(purchOrderLineDTO);
+                            }
+
+                            PurchOrderDTO purchOrderDTO1 = new PurchOrderDTO()
+                            {
+                                CenterResponsibilityCode = data.CodCentroResponsabilidade,
+                                FunctionalAreaCode = data.CodAreaFuncional,
+                                InAdvance = false,
+                                LocalMarketRegion = data.CodLocalizacao,
+                                PricesIncludingVAT = false,
+                                RegionCode = data.CodRegiao,
+                                RequisitionId = data.NumRequisicao,
+                                SupplierId = registoDePropostas[0].Fornecedor1Code,
+                                Lines = purchOrderLineDTOs
+                            };
+
+                            purchOrders.Add(purchOrderDTO1);
+                        }
+                    }
+
+
+
+
+
+
+
+                    if (i == 2)
+                    {
+                        registoDePropostas = data.RegistoDePropostas.Where(x => x.Fornecedor2Select.HasValue && x.Fornecedor2Select.Value == true).ToList();
+
+                        if (registoDePropostas.Count() > 0)
+                        {
+                            //vamos criar a encomenda com as linhas
+                            PurchOrderLineDTO purchOrderLineDTO = new PurchOrderLineDTO();
+                            List<PurchOrderLineDTO> purchOrderLineDTOs = new List<PurchOrderLineDTO>();
+
+                            foreach (RegistoDePropostasView registoDePropostasView in registoDePropostas)
+                            {
+                                purchOrderLineDTO.CenterResponsibilityCode = registoDePropostasView.CodCentroResponsabilidade;
+                                purchOrderLineDTO.Code = registoDePropostasView.CodProduto;
+                                purchOrderLineDTO.Description = registoDePropostasView.Descricao;
+                                purchOrderLineDTO.Description2 = registoDePropostasView.Descricao2;
+                                purchOrderLineDTO.DiscountPercentage = 0;
+                                purchOrderLineDTO.FunctionalAreaCode = registoDePropostasView.CodAreaFuncional;
+                                purchOrderLineDTO.LineId = registoDePropostasView.NumLinha;
+                                purchOrderLineDTO.LocationCode = registoDePropostasView.CodLocalizacao;
+                                purchOrderLineDTO.OpenOrderLineNo = registoDePropostasView.NumLinhaConsultaMercado;
+                                purchOrderLineDTO.OpenOrderNo = registoDePropostasView.NumConsultaMercado;
+                                purchOrderLineDTO.ProjectNo = registoDePropostasView.NumProjecto;
+                                purchOrderLineDTO.QuantityRequired = registoDePropostasView.Quantidade;
+                                purchOrderLineDTO.RegionCode = registoDePropostasView.CodRegiao;
+                                purchOrderLineDTO.UnitCost = registoDePropostasView.Fornecedor2Preco;
+                                purchOrderLineDTO.UnitMeasureCode = data.LinhasConsultaMercado.Where(x => x.NumLinha == registoDePropostasView.NumLinhaConsultaMercado).FirstOrDefault().CodUnidadeMedida;
+
+                                purchOrderLineDTOs.Add(purchOrderLineDTO);
+                            }
+
+                            PurchOrderDTO purchOrderDTO2 = new PurchOrderDTO()
+                            {
+                                CenterResponsibilityCode = data.CodCentroResponsabilidade,
+                                FunctionalAreaCode = data.CodAreaFuncional,
+                                InAdvance = false,
+                                LocalMarketRegion = data.CodLocalizacao,
+                                PricesIncludingVAT = false,
+                                RegionCode = data.CodRegiao,
+                                RequisitionId = data.NumRequisicao,
+                                SupplierId = registoDePropostas[0].Fornecedor2Code,
+                                Lines = purchOrderLineDTOs
+                            };
+
+                            purchOrders.Add(purchOrderDTO2);
+                        }
+                    }
+
+
+
+                    if (i == 3)
+                    {
+                        registoDePropostas = data.RegistoDePropostas.Where(x => x.Fornecedor3Select.HasValue && x.Fornecedor3Select.Value == true).ToList();
+
+                        if (registoDePropostas.Count() > 0)
+                        {
+                            //vamos criar a encomenda com as linhas
+                            PurchOrderLineDTO purchOrderLineDTO = new PurchOrderLineDTO();
+                            List<PurchOrderLineDTO> purchOrderLineDTOs = new List<PurchOrderLineDTO>();
+
+                            foreach (RegistoDePropostasView registoDePropostasView in registoDePropostas)
+                            {
+                                purchOrderLineDTO.CenterResponsibilityCode = registoDePropostasView.CodCentroResponsabilidade;
+                                purchOrderLineDTO.Code = registoDePropostasView.CodProduto;
+                                purchOrderLineDTO.Description = registoDePropostasView.Descricao;
+                                purchOrderLineDTO.Description2 = registoDePropostasView.Descricao2;
+                                purchOrderLineDTO.DiscountPercentage = 0;
+                                purchOrderLineDTO.FunctionalAreaCode = registoDePropostasView.CodAreaFuncional;
+                                purchOrderLineDTO.LineId = registoDePropostasView.NumLinha;
+                                purchOrderLineDTO.LocationCode = registoDePropostasView.CodLocalizacao;
+                                purchOrderLineDTO.OpenOrderLineNo = registoDePropostasView.NumLinhaConsultaMercado;
+                                purchOrderLineDTO.OpenOrderNo = registoDePropostasView.NumConsultaMercado;
+                                purchOrderLineDTO.ProjectNo = registoDePropostasView.NumProjecto;
+                                purchOrderLineDTO.QuantityRequired = registoDePropostasView.Quantidade;
+                                purchOrderLineDTO.RegionCode = registoDePropostasView.CodRegiao;
+                                purchOrderLineDTO.UnitCost = registoDePropostasView.Fornecedor3Preco;
+                                purchOrderLineDTO.UnitMeasureCode = data.LinhasConsultaMercado.Where(x => x.NumLinha == registoDePropostasView.NumLinhaConsultaMercado).FirstOrDefault().CodUnidadeMedida;
+
+                                purchOrderLineDTOs.Add(purchOrderLineDTO);
+                            }
+
+                            PurchOrderDTO purchOrderDTO3 = new PurchOrderDTO()
+                            {
+                                CenterResponsibilityCode = data.CodCentroResponsabilidade,
+                                FunctionalAreaCode = data.CodAreaFuncional,
+                                InAdvance = false,
+                                LocalMarketRegion = data.CodLocalizacao,
+                                PricesIncludingVAT = false,
+                                RegionCode = data.CodRegiao,
+                                RequisitionId = data.NumRequisicao,
+                                SupplierId = registoDePropostas[0].Fornecedor3Code,
+                                Lines = purchOrderLineDTOs
+                            };
+
+                            purchOrders.Add(purchOrderDTO3);
+                        }
+                    }
+
+
+
+
+                    if (i == 4)
+                    {
+                        registoDePropostas = data.RegistoDePropostas.Where(x => x.Fornecedor4Select.HasValue && x.Fornecedor4Select.Value == true).ToList();
+
+                        if (registoDePropostas.Count() > 0)
+                        {
+                            //vamos criar a encomenda com as linhas
+                            PurchOrderLineDTO purchOrderLineDTO = new PurchOrderLineDTO();
+                            List<PurchOrderLineDTO> purchOrderLineDTOs = new List<PurchOrderLineDTO>();
+
+                            foreach (RegistoDePropostasView registoDePropostasView in registoDePropostas)
+                            {
+                                purchOrderLineDTO.CenterResponsibilityCode = registoDePropostasView.CodCentroResponsabilidade;
+                                purchOrderLineDTO.Code = registoDePropostasView.CodProduto;
+                                purchOrderLineDTO.Description = registoDePropostasView.Descricao;
+                                purchOrderLineDTO.Description2 = registoDePropostasView.Descricao2;
+                                purchOrderLineDTO.DiscountPercentage = 0;
+                                purchOrderLineDTO.FunctionalAreaCode = registoDePropostasView.CodAreaFuncional;
+                                purchOrderLineDTO.LineId = registoDePropostasView.NumLinha;
+                                purchOrderLineDTO.LocationCode = registoDePropostasView.CodLocalizacao;
+                                purchOrderLineDTO.OpenOrderLineNo = registoDePropostasView.NumLinhaConsultaMercado;
+                                purchOrderLineDTO.OpenOrderNo = registoDePropostasView.NumConsultaMercado;
+                                purchOrderLineDTO.ProjectNo = registoDePropostasView.NumProjecto;
+                                purchOrderLineDTO.QuantityRequired = registoDePropostasView.Quantidade;
+                                purchOrderLineDTO.RegionCode = registoDePropostasView.CodRegiao;
+                                purchOrderLineDTO.UnitCost = registoDePropostasView.Fornecedor4Preco;
+                                purchOrderLineDTO.UnitMeasureCode = data.LinhasConsultaMercado.Where(x => x.NumLinha == registoDePropostasView.NumLinhaConsultaMercado).FirstOrDefault().CodUnidadeMedida;
+
+                                purchOrderLineDTOs.Add(purchOrderLineDTO);
+                            }
+
+                            PurchOrderDTO purchOrderDTO4 = new PurchOrderDTO()
+                            {
+                                CenterResponsibilityCode = data.CodCentroResponsabilidade,
+                                FunctionalAreaCode = data.CodAreaFuncional,
+                                InAdvance = false,
+                                LocalMarketRegion = data.CodLocalizacao,
+                                PricesIncludingVAT = false,
+                                RegionCode = data.CodRegiao,
+                                RequisitionId = data.NumRequisicao,
+                                SupplierId = registoDePropostas[0].Fornecedor4Code,
+                                Lines = purchOrderLineDTOs
+                            };
+
+                            purchOrders.Add(purchOrderDTO4);
+                        }
+                    }
+
+
+
+
+                    if (i == 5)
+                    {
+                        registoDePropostas = data.RegistoDePropostas.Where(x => x.Fornecedor5Select.HasValue && x.Fornecedor5Select.Value == true).ToList();
+
+                        if (registoDePropostas.Count() > 0)
+                        {
+                            //vamos criar a encomenda com as linhas
+                            PurchOrderLineDTO purchOrderLineDTO = new PurchOrderLineDTO();
+                            List<PurchOrderLineDTO> purchOrderLineDTOs = new List<PurchOrderLineDTO>();
+
+                            foreach (RegistoDePropostasView registoDePropostasView in registoDePropostas)
+                            {
+                                purchOrderLineDTO.CenterResponsibilityCode = registoDePropostasView.CodCentroResponsabilidade;
+                                purchOrderLineDTO.Code = registoDePropostasView.CodProduto;
+                                purchOrderLineDTO.Description = registoDePropostasView.Descricao;
+                                purchOrderLineDTO.Description2 = registoDePropostasView.Descricao2;
+                                purchOrderLineDTO.DiscountPercentage = 0;
+                                purchOrderLineDTO.FunctionalAreaCode = registoDePropostasView.CodAreaFuncional;
+                                purchOrderLineDTO.LineId = registoDePropostasView.NumLinha;
+                                purchOrderLineDTO.LocationCode = registoDePropostasView.CodLocalizacao;
+                                purchOrderLineDTO.OpenOrderLineNo = registoDePropostasView.NumLinhaConsultaMercado;
+                                purchOrderLineDTO.OpenOrderNo = registoDePropostasView.NumConsultaMercado;
+                                purchOrderLineDTO.ProjectNo = registoDePropostasView.NumProjecto;
+                                purchOrderLineDTO.QuantityRequired = registoDePropostasView.Quantidade;
+                                purchOrderLineDTO.RegionCode = registoDePropostasView.CodRegiao;
+                                purchOrderLineDTO.UnitCost = registoDePropostasView.Fornecedor5Preco;
+                                purchOrderLineDTO.UnitMeasureCode = data.LinhasConsultaMercado.Where(x => x.NumLinha == registoDePropostasView.NumLinhaConsultaMercado).FirstOrDefault().CodUnidadeMedida;
+
+                                purchOrderLineDTOs.Add(purchOrderLineDTO);
+                            }
+
+                            PurchOrderDTO purchOrderDTO5 = new PurchOrderDTO()
+                            {
+                                CenterResponsibilityCode = data.CodCentroResponsabilidade,
+                                FunctionalAreaCode = data.CodAreaFuncional,
+                                InAdvance = false,
+                                LocalMarketRegion = data.CodLocalizacao,
+                                PricesIncludingVAT = false,
+                                RegionCode = data.CodRegiao,
+                                RequisitionId = data.NumRequisicao,
+                                SupplierId = registoDePropostas[0].Fornecedor5Code,
+                                Lines = purchOrderLineDTOs
+                            };
+
+                            purchOrders.Add(purchOrderDTO5);
+                        }
+                    }
+
+
+
+
+                    if (i == 6)
+                    {
+                        registoDePropostas = data.RegistoDePropostas.Where(x => x.Fornecedor6Select.HasValue && x.Fornecedor6Select.Value == true).ToList();
+
+                        if (registoDePropostas.Count() > 0)
+                        {
+                            //vamos criar a encomenda com as linhas
+                            PurchOrderLineDTO purchOrderLineDTO = new PurchOrderLineDTO();
+                            List<PurchOrderLineDTO> purchOrderLineDTOs = new List<PurchOrderLineDTO>();
+
+                            foreach (RegistoDePropostasView registoDePropostasView in registoDePropostas)
+                            {
+                                purchOrderLineDTO.CenterResponsibilityCode = registoDePropostasView.CodCentroResponsabilidade;
+                                purchOrderLineDTO.Code = registoDePropostasView.CodProduto;
+                                purchOrderLineDTO.Description = registoDePropostasView.Descricao;
+                                purchOrderLineDTO.Description2 = registoDePropostasView.Descricao2;
+                                purchOrderLineDTO.DiscountPercentage = 0;
+                                purchOrderLineDTO.FunctionalAreaCode = registoDePropostasView.CodAreaFuncional;
+                                purchOrderLineDTO.LineId = registoDePropostasView.NumLinha;
+                                purchOrderLineDTO.LocationCode = registoDePropostasView.CodLocalizacao;
+                                purchOrderLineDTO.OpenOrderLineNo = registoDePropostasView.NumLinhaConsultaMercado;
+                                purchOrderLineDTO.OpenOrderNo = registoDePropostasView.NumConsultaMercado;
+                                purchOrderLineDTO.ProjectNo = registoDePropostasView.NumProjecto;
+                                purchOrderLineDTO.QuantityRequired = registoDePropostasView.Quantidade;
+                                purchOrderLineDTO.RegionCode = registoDePropostasView.CodRegiao;
+                                purchOrderLineDTO.UnitCost = registoDePropostasView.Fornecedor6Preco;
+                                purchOrderLineDTO.UnitMeasureCode = data.LinhasConsultaMercado.Where(x => x.NumLinha == registoDePropostasView.NumLinhaConsultaMercado).FirstOrDefault().CodUnidadeMedida;
+
+                                purchOrderLineDTOs.Add(purchOrderLineDTO);
+                            }
+
+                            PurchOrderDTO purchOrderDTO6 = new PurchOrderDTO()
+                            {
+                                CenterResponsibilityCode = data.CodCentroResponsabilidade,
+                                FunctionalAreaCode = data.CodAreaFuncional,
+                                InAdvance = false,
+                                LocalMarketRegion = data.CodLocalizacao,
+                                PricesIncludingVAT = false,
+                                RegionCode = data.CodRegiao,
+                                RequisitionId = data.NumRequisicao,
+                                SupplierId = registoDePropostas[0].Fornecedor6Code,
+                                Lines = purchOrderLineDTOs
+                            };
+
+                            purchOrders.Add(purchOrderDTO6);
+                        }
+                    }
+
+
+
+
+                }
+            }
+            catch
+            {
+                throw new Exception("Ocorreu um erro ao agrupar as linhas.");
+            }
+
+            if (purchOrders.Count() > 0)
+            {
+                purchOrders.ForEach(purchOrder =>
+                {
+                    try
+                    {
+                        var result = CreateNAVPurchaseOrderFor(purchOrder);
+                        if (result.CompletedSuccessfully)
+                        {
+                            data.eMessages.Add(new TraceInformation(TraceType.Success, "Criada encomenda para o fornecedor núm. " + purchOrder.SupplierId + "; "));
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        data.eMessages.Add(new TraceInformation(TraceType.Error, "Ocorreu um erro ao criar encomenda para o fornecedor núm. " + purchOrder.SupplierId + ": " + ex.Message));
+                    }
+                });
+
+
+                if (data.eMessages.Any(x => x.Type == TraceType.Error))
+                {
+                    data.eReasonCode = 2;
+                    data.eMessage = "Ocorram erros ao criar encomenda de compra.";
+                }
+                else
+                {
+                    data.eReasonCode = 1;
+                    data.eMessage = "Encomenda de compra criada com sucesso.";
+                }
+            }
+            else
+            {
+                data.eReasonCode = 3;
+                data.eMessage = "Não existem linhas que cumpram os requisitos de validação do mercado local.";
+            }
+
+
+            return Json(data);
+        }
+
+
+        private GenericResult CreateNAVPurchaseOrderFor(PurchOrderDTO purchOrder)
+        {
+            GenericResult createPrePurchOrderResult = new GenericResult();
+
+            Task<WSPurchaseInvHeader.Create_Result> createPurchaseHeaderTask = NAVPurchaseHeaderIntermService.CreateAsync(purchOrder, configws);
+            createPurchaseHeaderTask.Wait();
+            if (createPurchaseHeaderTask.IsCompletedSuccessfully)
+            {
+                createPrePurchOrderResult.ResultValue = createPurchaseHeaderTask.Result.WSPurchInvHeaderInterm.No;
+                purchOrder.NAVPrePurchOrderId = createPrePurchOrderResult.ResultValue;
+
+                bool createPurchaseLinesTask = NAVPurchaseLineService.CreateAndUpdateMultipleAsync(purchOrder, configws);
+                if (createPurchaseLinesTask)
+                {
+                    try
+                    {
+                        /*
+                         *  Swallow errors at this stage as they will be managed in NAV
+                         */
+                        //Task<WSGenericCodeUnit.FxCabimento_Result> createPurchOrderTask = WSGeneric.CreatePurchaseOrder(purchOrder.NAVPrePurchOrderId, configws);
+                        //createPurchOrderTask.Start();
+                        ////if (createPurchOrderTask.IsCompletedSuccessfully)
+                        ////{
+                        ////    createPrePurchOrderResult.CompletedSuccessfully = true;
+                        ////}
+                    }
+                    catch (Exception ex) { }
+                    createPrePurchOrderResult.CompletedSuccessfully = true;
+                }
+            }
+            return createPrePurchOrderResult;
+        }
 
         #region Linhas Consulta Mercado
 
