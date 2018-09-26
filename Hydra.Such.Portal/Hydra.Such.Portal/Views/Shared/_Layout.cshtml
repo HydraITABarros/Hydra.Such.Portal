@@ -82,12 +82,16 @@
                 </ul>
 
                 <div class="page-title hidden-menubar-top hidden-float pull-right">
-
                     <div class="dropdown">
+                        <a href="javascript:window.location.reload()" class="dropdown-toggle" type="button">
+                            <i class="fa fa-refresh"></i> Atualizar &nbsp;&nbsp;&nbsp;
+                        </a>
+
                         <a href="javascript:void(0)" class="dropdown-toggle" type="button" data-toggle="dropdown">
                             @User.Identity.Name &nbsp;
                             <span class="caret"></span>
                         </a>
+
                         <ul class="dropdown-menu">
                             <li class="grey"><a href="@Url.Action("EndSession", "Account")"><i class="fa fa-sign-out" aria-hidden="true"></i> &nbsp;Sair</a> </li>
                         </ul>
