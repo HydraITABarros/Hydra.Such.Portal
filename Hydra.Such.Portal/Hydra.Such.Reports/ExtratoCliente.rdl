@@ -8,11 +8,19 @@
       <rd:SecurityType>None</rd:SecurityType>
       <rd:DataSourceID>f5dbf267-58a6-42e7-b5c2-b574d7a02b02</rd:DataSourceID>
     </DataSource>
+    <DataSource Name="eSuchSqlNavDev">
+      <ConnectionProperties>
+        <DataProvider>SQL</DataProvider>
+        <ConnectString>Data Source=10.101.1.10\sqlnavdev;Initial Catalog=PlataformaOperacionalSUCH</ConnectString>
+      </ConnectionProperties>
+      <rd:SecurityType>DataBase</rd:SecurityType>
+      <rd:DataSourceID>abc05c05-b364-4b4c-b1a2-afedc86606aa</rd:DataSourceID>
+    </DataSource>
   </DataSources>
   <DataSets>
     <DataSet Name="dw_MovClientesIntegrado">
       <Query>
-        <DataSourceName>eSuchDS</DataSourceName>
+        <DataSourceName>eSuchSqlNavDev</DataSourceName>
         <QueryParameters>
           <QueryParameter Name="@Cliente">
             <Value>=Parameters!Cliente.Value</Value>
@@ -64,7 +72,7 @@
     </DataSet>
     <DataSet Name="NavCustomer">
       <Query>
-        <DataSourceName>eSuchDS</DataSourceName>
+        <DataSourceName>eSuchSqlNavDev</DataSourceName>
         <QueryParameters>
           <QueryParameter Name="@Cliente">
             <Value>=Parameters!Cliente.Value</Value>
@@ -1279,10 +1287,11 @@ Contribuite Nº</Value>
       <DataType>Integer</DataType>
       <DefaultValue>
         <Values>
-          <Value>1</Value>
+          <Value>0</Value>
         </Values>
       </DefaultValue>
       <Prompt>Mostrar factoring</Prompt>
+      <Hidden>true</Hidden>
       <ValidValues>
         <ParameterValues>
           <ParameterValue>

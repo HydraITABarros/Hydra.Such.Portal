@@ -1558,7 +1558,7 @@
                                     }
                                 },
                                 callback: function (result) {
-                                    debugger;
+                                    //debugger;
                                     if (result == "") {
                                         TMessageError.text = "É necessário preencher o motivo de rejeição.";
                                         TMessageError.open();
@@ -1586,7 +1586,10 @@
                             this._createMarketConsult();
                             break;
                         case 2://"Criar Encomenda de Compra"
-                            this._createPurchaseOrder();
+                            if (this.Requisition.orderNo)
+                                this._openToastError("Já foi criada uma encomenda para esta requisição.");
+                            else
+                                this._createPurchaseOrder();
                             break;
                         case 3://"Criar Guia Transporte"
                             this._createTransferShipment();
@@ -1742,7 +1745,7 @@
                     return true;
                 },
                 _resetUserInputForLine() {
-                    debugger;
+                    //debugger;
                     this.$.CBProducts._clearSelection();
                     this.$.txtProductDesciption.value = "";
                     this.$.CBUnitsOfMmeasure.value = "";
@@ -2254,7 +2257,7 @@
                     }
                 },
                 _printRequisition: function () {
-                    debugger;;
+                    //debugger;;
                     if (this._reportserverurl != undefined) {
                         //window.open(this._reportserverurl + "Requisi%C3%A7%C3%B5es&CodRequisicao=" + this.Requisition.requisitionNo, "_blank");
                         this.$.rptContainer.src = this._reportserverurl + "RequisitionReport&NoRequisicao=" + this.Requisition.requisitionNo;
@@ -2359,7 +2362,7 @@
                     }
                 },
                 _registTypeResponse: function (e) {
-                    debugger;
+                    //debugger;
                     if (this.regist.eReasonCode == "1") {
                         this._openToast(this.regist.eMessage);
                         this.Requisition = this.regist;
@@ -2397,7 +2400,7 @@
                     }
                 },
                 _redirectToStatOfPlay: function () {
-                    debugger;
+                    //debugger;
                     window.location.href = "/GestaoRequisicoes/PontoSituacaoRequisicao/?reqId=" + this._requisitionid;
                     //window.location.href = "/GestaoRequisicoes/PontoSituacaoRequisicao/" + this._requisitionid;
                 },
@@ -2430,7 +2433,7 @@
                             }
                         },
                         callback: function (result) {
-                            debugger;
+                            //debugger;
                             if (result == "") {
                                 TMessageError.text = "É necessário preencher o motivo de rejeição.";
                                 TMessageError.open();
@@ -2496,7 +2499,7 @@
                     this.$.page_GetProjetoNoLinha_ajax.generateRequest();
                 },
                 _GetProjetoNoLinhaResponse: function (e) {
-                    debugger;
+                    //debugger;
                     if (this.ProjetoNo != "") {
                         this.$.CBLineProjects.value = this.ProjetoNo;
                     }

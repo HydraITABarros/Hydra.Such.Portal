@@ -1,4 +1,5 @@
 ﻿using Hydra.Such.Data.Database;
+using Hydra.Such.Data.Extensions;
 using Hydra.Such.Data.ViewModel;
 using Newtonsoft.Json;
 using System;
@@ -138,7 +139,8 @@ namespace Hydra.Such.Data.Logic
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    List<Menu> menuList = null;
+                    MenuComparer comparer = new MenuComparer();
+                    HashSet<Menu> menuList = null;
 
                     var user = DBUserConfigurations.GetById(userId);
                     if (user == null)
@@ -146,27 +148,26 @@ namespace Hydra.Such.Data.Logic
 
                     if (user.Administrador && true)
                     {
-                        menuList = ctx.Menu.Where(p => p.Active == true).ToList();
+                        menuList = ctx.Menu.Where(p => p.Active == true).ToHashSet(comparer);
                     }
                     else
                     {
                         HashSet<int> featuresIds = GetFeaturesByUserId(userId);
-                        List<int> menusIds = null;
+                        HashSet<int> menusIds = null;
 
                         // list menu id from features                    
                         if (featuresIds != null && featuresIds.Count() > 0)
-                            menusIds = ctx.FeaturesMenus.Where(fm => featuresIds.Contains(fm.IdFeature)).Select(fm => fm.IdMenu).ToList();
+                            menusIds = ctx.FeaturesMenus.Where(fm => featuresIds.Contains(fm.IdFeature)).Select(fm => fm.IdMenu).ToHashSet();
                         // get menu                        
                         if (menusIds != null && menusIds.Count() > 0)
                         {
-                            var userMenuList = ctx.Menu.Where(m => menusIds.Contains(m.Id) && m.Active).ToList();
+                            var userMenuList = ctx.Menu.Where(m => menusIds.Contains(m.Id) && m.Active).ToHashSet(comparer);
                             var parentMenuList = GetAllParentsByMenuList(userMenuList);
-                            menuList = userMenuList.Union(parentMenuList).ToList();
+                            menuList = userMenuList.Union(parentMenuList).ToHashSet(comparer);
                         }
                     }
-                    menuList = menuList.OrderBy(m => m.Weight).ToList();
 
-                    return menuList;
+                    return menuList.OrderBy(m => m.Weight).ToList();
                 }
             }
             catch (Exception ex)
@@ -243,19 +244,20 @@ namespace Hydra.Such.Data.Logic
 
             return result;
         }
-        private static List<Menu> GetAllParentsByMenuList(List<Menu> menuList)
+        private static HashSet<Menu> GetAllParentsByMenuList(HashSet<Menu> menuList)
         {
-            List<Menu> parents = null;
+            MenuComparer comparer = new MenuComparer();
+            HashSet<Menu> parents = null;
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    List<int?> parentIds = menuList.Where(m => m.Parent != null).Select(m => m.Parent).ToList();
+                    HashSet<int?> parentIds = menuList.Where(m => m.Parent != null).Select(m => m.Parent).ToHashSet();
                     if (parentIds.Count() < 1) { return parents; }
-                    parents = ctx.Menu.Where(m => parentIds.Contains(m.Id)).ToList();
+                    parents = ctx.Menu.Where(m => parentIds.Contains(m.Id)).ToHashSet(comparer);
                     if (parents.FirstOrDefault(m => m.Parent != null) != null)
                     {
-                        parents.AddRange(GetAllParentsByMenuList(parents));
+                        parents.UnionWith(GetAllParentsByMenuList(parents));
                     };
                     return parents;
                 }
