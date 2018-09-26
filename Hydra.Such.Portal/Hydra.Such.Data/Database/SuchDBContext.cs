@@ -32,7 +32,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<ConfiguracaoAjudaCusto> ConfiguracaoAjudaCusto { get; set; }
         public virtual DbSet<ConfiguraçãoAprovações> ConfiguraçãoAprovações { get; set; }
         public virtual DbSet<ConfiguracaoCcp> ConfiguracaoCcp { get; set; }
-        public virtual DbSet<ConfiguraçãoCompras> ConfiguraçãoCompras { get; set; }
+        public virtual DbSet<ConfiguraçãoVendasAlertas> ConfiguraçãoVendasAlertas { get; set; }
         public virtual DbSet<ConfiguraçãoNumerações> ConfiguraçãoNumerações { get; set; }
         public virtual DbSet<ConfiguraçãoTemposCcp> ConfiguraçãoTemposCcp { get; set; }
         public virtual DbSet<ConfigUtilizadores> ConfigUtilizadores { get; set; }
@@ -1173,9 +1173,9 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.EmailJurididos).HasMaxLength(50);
             });
 
-            modelBuilder.Entity<ConfiguraçãoCompras>(entity =>
+            modelBuilder.Entity<ConfiguraçãoVendasAlertas>(entity =>
             {
-                entity.ToTable("Configuração Compras");
+                entity.ToTable("Configuração Vendas Alertas");
 
                 entity.Property(e => e.Id).HasColumnName("ID");
 

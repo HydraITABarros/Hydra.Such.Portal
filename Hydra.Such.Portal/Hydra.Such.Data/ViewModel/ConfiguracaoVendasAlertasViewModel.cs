@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Hydra.Such.Data.ViewModel
 {
-    public class ConfiguracaoComprasViewModel : ErrorHandler
+    public class ConfiguracaoVendasAlertasViewModel : ErrorHandler
     {
         public int ID { get; set; }
         public string Email1Regiao12 { get; set; }
