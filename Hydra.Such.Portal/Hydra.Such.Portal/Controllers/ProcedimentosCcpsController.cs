@@ -6756,6 +6756,14 @@ namespace Hydra.Such.Portal.Controllers
 
         #endregion
 
+        #region the following methods map the NAV 2009 MenuButton on the PA form
+        public JsonResult CloseProcedimento([FromBody] ProcedimentoCCPView data)
+        {
+            return null;
+        }
+        #endregion
+
+
         //1
         [HttpPost]
         public async Task<JsonResult> ExportToExcel_PedidosAquisicao([FromBody] List<ProcedimentoCCPView> Lista)
