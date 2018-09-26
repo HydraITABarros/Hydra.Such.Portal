@@ -819,7 +819,7 @@
                                     </div>
                                     <div class="row break_clear">
                                         <div class="col-sm-3">
-                                            <vaadin-combo-box items="[[LBoolValues]]" item-value-path="booleanValue" item-label-path="stringValue" required value="{{data.negociacao}}" id="negociacao" label="Negociação?">
+                                            <vaadin-combo-box items="[[LBoolValues]]" item-value-path="booleanValue" item-label-path="stringValue" value="{{data.negociacao}}" id="negociacao" label="Negociação?">
                                                 <template>
                                                     <paper-icon-item>
                                                         <paper-item-body two-line>
@@ -2839,15 +2839,15 @@
                         return false;
                     }
 
-                    if (this.data.estimativaPreco == null || this.data.estimativaPreco == 0) {
-                        this._openToast("Obrigatório definir uma Estimativa de Preço, mesmo que não seja definido Preço Base!");
-                        return false;
-                    }
+                    //if (this.data.estimativaPreco == null || this.data.estimativaPreco == 0) {
+                    //    this._openToast("Obrigatório definir uma Estimativa de Preço, mesmo que não seja definido Preço Base!");
+                    //    return false;
+                    //}
 
-                    if (this.data.negociacao == null) {
-                        this._openToast("Negociação: tem que indicar um valor (Sim/Não)!")
-                        return false;
-                    }
+                    //if (this.data.negociacao == null) {
+                    //    this._openToast("Negociação: tem que indicar um valor (Sim/Não)!")
+                    //    return false;
+                    //}
 
                     if (this.data.prazo == "" || this.data.prazo == null) {
                         this._openToast("O Prazo para Prestação do Serviço, tem que ser indicado!!")
@@ -2869,10 +2869,10 @@
                         return false;
                     }
 
-                    if (this.data.propostaVariante == null) {
-                        this._openToast("Proposta Variante: tem que indicar um valor (Sim/Não)!")
-                        return false;
-                    }
+                    //if (this.data.propostaVariante == null) {
+                    //    this._openToast("Proposta Variante: tem que indicar um valor (Sim/Não)!")
+                    //    return false;
+                    //}
 
                     if (this.fornecedorExclusivo && (this.descFornecedorExclusivo == null || this.descFornecedorExclusivo == "")) {
                         this._openToast("Obrigatória a fundamentação da exclusividade do fornecedor!");
@@ -2900,11 +2900,12 @@
                     }
 
                     if (this._onSubmitValidateProcedimento()) {
+                        debugger;;
                         var ajax_request = this.$.ajax_submitprocedimento;
                         ajax_request.body = this.data;
 
                         this._confirmAndExecuteActionToast(
-                            "Confirma a sumissão do Procedimento " + this.data.no,
+                            "Confirma a submissão do Procedimento " + this.data.no,
                             ajax_request
                         );
                     }
@@ -2916,12 +2917,15 @@
                             function () {
                             }, 3000);
 
+                        debugger;;
+
                         if (this._procedimentotypeid == 1)
                             window.location.replace("/ProcedimentosCcps/PedidoAquisicao/");
                         else
                             window.location.replace("/ProcedimentosCcps/PedidoSimplificado/");
                     } else {
-                        this._openToast(ProcedimentoSubmitted.eMessage);
+                        debugger;;
+                        this._openToast(this.ProcedimentoSubmitted.eMessage);
                     }
                 },
 
