@@ -181,6 +181,8 @@
         <iron-ajax url="/ConsultaMercado/GerarRegistoPropostas" last-response="{{gerarRegistoPropostasData}}" method="post" handle-as="json" id="ajax_gerarRegistoPropostas" on-response="_gerarRegistoPropostasResponse" content-type="application/json"></iron-ajax>
         <iron-ajax url="/ConsultaMercado/UpdateLinhaRegistoProposta" last-response="{{LinhaRegistoPropostaUpdated}}" method="post" handle-as="json" id="page_updateLinhaRegistoProposta_ajax" on-response="_updateLinhaRegistoPropostaResponse" content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/ConsultaMercado/CriarEncomenda" last-response="{{CriarEncomendaCreated}}" method="post" handle-as="json" id="page_criarEncomenda_ajax" on-response="_criarEncomendaResponse" content-type="application/json"></iron-ajax>
+
 
         <!-- Dropdowns -->
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{CBRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -2273,7 +2275,8 @@
                 },
 
                 _criarEncomenda: function (e) {
-
+                    this.$.page_criarEncomenda_ajax.body = JSON.stringify(this.data);
+                    this.$.page_criarEncomenda_ajax.generateRequest();
                 },
                 _criarEncomendaResponse: function (e) {
 
