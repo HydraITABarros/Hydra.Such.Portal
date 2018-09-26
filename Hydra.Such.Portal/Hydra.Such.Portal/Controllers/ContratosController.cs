@@ -1127,9 +1127,11 @@ namespace Hydra.Such.Portal.Controllers
             DBAuthorizeInvoiceContracts.DeleteAllAllowedInvoiceAndLines();
             
             List<Contratos> contractList = DBContracts.GetAllAvencaFixa2();
+            string str = "";
             foreach (var item in contractList)
             {
-                
+                if (item.NºContrato == "VC0500251")
+                    str = "";
                 List<NAVSalesLinesViewModel> SLines = DBNAV2017SalesLine.FindSalesLine(_config.NAVDatabaseName, _config.NAVCompanyName, item.NºDeContrato, item.NºCliente);
                 List<LinhasContratos> contractLinesList = DBContractLines.GetAllByNoTypeVersion(item.NºDeContrato, item.TipoContrato, item.NºVersão, true);
                 contractLinesList.OrderBy(x => x.NºContrato).ThenBy(y => y.GrupoFatura);
@@ -1224,10 +1226,23 @@ namespace Hydra.Such.Portal.Controllers
                             }
                             else
                             {
-                                if (item.DataInicial != null)
+                                //if (item.DataInicial != null)
+                                //{
+                                //    nextInvoice = item.DataInicial.Value;
+                                //    lastInvoice = item.DataInicial.Value.Month;
+                                //}
+                                if (item.ÚltimaDataFatura != null)
                                 {
-                                    nextInvoice = item.DataInicial.Value;
-                                    lastInvoice = item.DataInicial.Value.Month;
+                                    nextInvoice = item.ÚltimaDataFatura.Value;
+                                    lastInvoice = item.ÚltimaDataFatura.Value.Month;
+                                }
+                                else
+                                {
+                                    if (item.DataInicial != null)
+                                    {
+                                        nextInvoice = item.DataInicial.Value;
+                                        lastInvoice = item.DataInicial.Value.Month;
+                                    }
                                 }
                             }
                         }
