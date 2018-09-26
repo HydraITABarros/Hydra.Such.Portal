@@ -4,7 +4,7 @@
   <AutoRefresh>0</AutoRefresh>
   <DataSources>
     <DataSource Name="DS">
-      <DataSourceReference>eSUCHTestes</DataSourceReference>
+      <DataSourceReference>eSuchDS</DataSourceReference>
       <rd:SecurityType>None</rd:SecurityType>
       <rd:DataSourceID>34b24329-adb6-4a85-b314-afbaa0b2ca9f</rd:DataSourceID>
     </DataSource>
