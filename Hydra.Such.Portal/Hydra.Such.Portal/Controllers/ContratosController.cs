@@ -1135,7 +1135,7 @@ namespace Hydra.Such.Portal.Controllers
 
                 String ContractNoDuplicate = "";
                 int InvoiceGroupDuplicate = -1;
-                DateTime current = Convert.ToDateTime(dateCont);//.AddDays(1);// DateTime.Now;
+                DateTime current = Convert.ToDateTime(dateCont);
                 DateTime lastDay = Convert.ToDateTime(dateCont);
                 string Problema;
                 foreach (var contractLine in contractLines)
