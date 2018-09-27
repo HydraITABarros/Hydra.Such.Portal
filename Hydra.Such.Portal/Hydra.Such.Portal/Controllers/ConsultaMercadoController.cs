@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Hydra.Such.Data.Database;
 using Hydra.Such.Data.Logic;
@@ -550,8 +551,6 @@ namespace Hydra.Such.Portal.Controllers
             return Json(data);
         }
 
-
-
         [HttpPost]
         public JsonResult CriarEncomenda([FromBody] ConsultaMercadoView data)
         {
@@ -599,7 +598,7 @@ namespace Hydra.Such.Portal.Controllers
                                 CenterResponsibilityCode = data.CodCentroResponsabilidade,
                                 FunctionalAreaCode = data.CodAreaFuncional,
                                 InAdvance = false,
-                                LocalMarketRegion = data.CodLocalizacao,
+                                LocalMarketRegion = string.Empty,
                                 PricesIncludingVAT = false,
                                 RegionCode = data.CodRegiao,
                                 RequisitionId = data.NumRequisicao,
@@ -610,12 +609,6 @@ namespace Hydra.Such.Portal.Controllers
                             purchOrders.Add(purchOrderDTO1);
                         }
                     }
-
-
-
-
-
-
 
                     if (i == 2)
                     {
@@ -653,7 +646,7 @@ namespace Hydra.Such.Portal.Controllers
                                 CenterResponsibilityCode = data.CodCentroResponsabilidade,
                                 FunctionalAreaCode = data.CodAreaFuncional,
                                 InAdvance = false,
-                                LocalMarketRegion = data.CodLocalizacao,
+                                LocalMarketRegion = string.Empty,
                                 PricesIncludingVAT = false,
                                 RegionCode = data.CodRegiao,
                                 RequisitionId = data.NumRequisicao,
@@ -664,8 +657,6 @@ namespace Hydra.Such.Portal.Controllers
                             purchOrders.Add(purchOrderDTO2);
                         }
                     }
-
-
 
                     if (i == 3)
                     {
@@ -703,7 +694,7 @@ namespace Hydra.Such.Portal.Controllers
                                 CenterResponsibilityCode = data.CodCentroResponsabilidade,
                                 FunctionalAreaCode = data.CodAreaFuncional,
                                 InAdvance = false,
-                                LocalMarketRegion = data.CodLocalizacao,
+                                LocalMarketRegion = string.Empty,
                                 PricesIncludingVAT = false,
                                 RegionCode = data.CodRegiao,
                                 RequisitionId = data.NumRequisicao,
@@ -714,9 +705,6 @@ namespace Hydra.Such.Portal.Controllers
                             purchOrders.Add(purchOrderDTO3);
                         }
                     }
-
-
-
 
                     if (i == 4)
                     {
@@ -754,7 +742,7 @@ namespace Hydra.Such.Portal.Controllers
                                 CenterResponsibilityCode = data.CodCentroResponsabilidade,
                                 FunctionalAreaCode = data.CodAreaFuncional,
                                 InAdvance = false,
-                                LocalMarketRegion = data.CodLocalizacao,
+                                LocalMarketRegion = string.Empty,
                                 PricesIncludingVAT = false,
                                 RegionCode = data.CodRegiao,
                                 RequisitionId = data.NumRequisicao,
@@ -765,9 +753,6 @@ namespace Hydra.Such.Portal.Controllers
                             purchOrders.Add(purchOrderDTO4);
                         }
                     }
-
-
-
 
                     if (i == 5)
                     {
@@ -805,7 +790,7 @@ namespace Hydra.Such.Portal.Controllers
                                 CenterResponsibilityCode = data.CodCentroResponsabilidade,
                                 FunctionalAreaCode = data.CodAreaFuncional,
                                 InAdvance = false,
-                                LocalMarketRegion = data.CodLocalizacao,
+                                LocalMarketRegion = string.Empty,
                                 PricesIncludingVAT = false,
                                 RegionCode = data.CodRegiao,
                                 RequisitionId = data.NumRequisicao,
@@ -816,9 +801,6 @@ namespace Hydra.Such.Portal.Controllers
                             purchOrders.Add(purchOrderDTO5);
                         }
                     }
-
-
-
 
                     if (i == 6)
                     {
@@ -856,7 +838,7 @@ namespace Hydra.Such.Portal.Controllers
                                 CenterResponsibilityCode = data.CodCentroResponsabilidade,
                                 FunctionalAreaCode = data.CodAreaFuncional,
                                 InAdvance = false,
-                                LocalMarketRegion = data.CodLocalizacao,
+                                LocalMarketRegion = string.Empty,
                                 PricesIncludingVAT = false,
                                 RegionCode = data.CodRegiao,
                                 RequisitionId = data.NumRequisicao,
@@ -867,10 +849,6 @@ namespace Hydra.Such.Portal.Controllers
                             purchOrders.Add(purchOrderDTO6);
                         }
                     }
-
-
-
-
                 }
             }
             catch
@@ -896,11 +874,10 @@ namespace Hydra.Such.Portal.Controllers
                     }
                 });
 
-
                 if (data.eMessages.Any(x => x.Type == TraceType.Error))
                 {
                     data.eReasonCode = 2;
-                    data.eMessage = "Ocorram erros ao criar encomenda de compra.";
+                    data.eMessage = "Ocorreram erros ao criar encomenda de compra.";
                 }
                 else
                 {
@@ -914,6 +891,87 @@ namespace Hydra.Such.Portal.Controllers
                 data.eMessage = "Não existem linhas que cumpram os requisitos de validação do mercado local.";
             }
 
+            return Json(data);
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> EnviarEmailATodos([FromBody] ConsultaMercadoView data)
+        {
+            //Para cada Fornecedor, criar o pdf da Consulta de Mercado, guardar em algum lado e anexar ao email e enviar!!!
+            foreach (SeleccaoEntidadesView fornecedor in data.SeleccaoEntidades)
+            {
+                string Consulta = data.NumConsultaMercado;
+                string Cod = fornecedor.CodFornecedor;
+
+                string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+                string sFileName = @Consulta + "_" + Cod + "_" + ".pdf";
+
+                var theURL = (_config.ReportServerURL + "ConsultaMercado&rs:Command=Render&rs:format=PDF&CM=" + Consulta + "&Fornecedor=" + Cod);
+
+                WebClient Client = new WebClient();
+                Client.UseDefaultCredentials = true;
+
+                byte[] myDataBuffer = Client.DownloadData(theURL);
+
+                using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+                {
+                    await fs.WriteAsync(myDataBuffer, 0, myDataBuffer.Length);
+                }
+
+                Stream _my_stream = new MemoryStream(myDataBuffer);
+
+                using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+                {
+                    await stream.CopyToAsync(_my_stream);
+                }
+
+                //Falta enviar o email!!!
+
+
+
+
+            }
+
+
+
+
+            return Json(data);
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> EnviarEmailAUm([FromBody] JObject requestParams)
+        {
+            //Para o fornecedor selecionado, criar o pdf da Consulta de Mercado, guardar em algum lado e anexar ao email e enviar!!!
+            string Consulta = requestParams["Consulta"].ToString();
+            string Cod = requestParams["Cod"].ToString();
+
+            ConsultaMercado consultaMercado = DBConsultaMercado.GetDetalheConsultaMercado(Consulta);
+            ConsultaMercadoView data = DBConsultaMercado.CastConsultaMercadoToView(consultaMercado);
+
+            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string sFileName = @Consulta + "_" + Cod + "_" + ".pdf";
+
+            var theURL = (_config.ReportServerURL + "ConsultaMercado&rs:Command=Render&rs:format=PDF&CM=" + Consulta + "&Fornecedor=" + Cod);
+
+            WebClient Client = new WebClient();
+            Client.UseDefaultCredentials = true;
+
+            byte[] myDataBuffer = Client.DownloadData(theURL);
+
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                await fs.WriteAsync(myDataBuffer, 0, myDataBuffer.Length);
+            }
+
+            Stream _my_stream = new MemoryStream(myDataBuffer);
+
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(_my_stream);
+            }
+
+            //Falta enviar o email!!!
+            
 
             return Json(data);
         }
