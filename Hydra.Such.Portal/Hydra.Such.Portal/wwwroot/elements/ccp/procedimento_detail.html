@@ -239,6 +239,16 @@
                 border-radius: 4px !important;
             }
 
+            /*zpgm.26092018*/
+            .subMenuFuncoes {
+                background-color: #AE98D3 !important;
+                padding: 0px !important;
+                min-width: 50px !important;
+                height: 30px !important;
+                cursor: pointer;
+                margin-top: 7px;
+                border-radius: 4px !important;
+            }
             .tablinks {
                 text-transform: none;
                 border: none;
@@ -870,11 +880,12 @@
                                                 <b>[[item.value]]</b>
                                             </td>
                                         </tr>
+
                                     </table>
                                 </template>
                             </vaadin-combo-box>-->
 
-                            <such-selectbox id="codigoRegiao" name="codigoRegiao" value="{{data.codigoRegiao}}" label="Cód. Região" disabled="{{ !_permissions.update }}"
+                            <such-selectbox id="codigoRegiao" name="codigoRegiao" value="{{data.codigoRegiao}}" label="Cód. Região" disabled="{{ !_permissions.update }}" 
                                             items="[[CBRegions]]"
                                             text-path="value"
                                             value-path="id"
@@ -3535,6 +3546,7 @@
                     <template is="dom-if" if="{{ !_isCreate }}">
                         <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
                         <paper-button raised id="btnCancel" class="btnRemove" on-tap="_delete"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                        <such-dropdown-menu class="subMenuFuncoes" id="actionButtonFuncoes" on-value-changed="_mnuFuncoes_ItemSelected" title=" Funções " items="[[ _mnuFuncoes_MenuItems ]]"></such-dropdown-menu>
                     </template>
                 </div>
             </div>
@@ -3581,7 +3593,18 @@
                         type: Array,
                         value: [{ value: 1, description: "Enviar p/ Compras(15)" }],
                     },
-
+                     // zpgm.26092018.b
+                    _mnuFuncoes_MenuItems: {
+                        type: Array,
+                        value: [
+                            { value: 1, description: "Fecho do Processo (20)" },
+                            { value: 2, description: "Obter Ref. Procedimento" },
+                            { value: 3, description: "Imprimir" },
+                            { value: 4, description: "Obter Ref. Procedimento" },
+                            { value: 5, description: "Libertar Processo Suspenso" }
+                        ],
+                    },
+                    // zpgm.26092018.e
                     _procedimentoid: {
                         type: String,
                         notify: true,
@@ -5927,6 +5950,30 @@
                     }
                 },
 
+                // zpgm.26092018.b
+                _mnuFuncoes_ItemSelected: function (e) {
+                    //if (this.$.id_Estado.value != 1) {
+                    //    this._openToast("Opções desactivadas para o estado actual!")
+                    //    return;
+                    //}
+
+                    //var item = e.detail.value;
+
+                    //if (item == null)
+                    //    return;
+
+                    //this._newStatus = item.value;
+
+                    //switch (this._newStatus) {
+                    //    case 1:
+                    //        this._confirmImobilizadoContab();
+                    //        break;
+                    //    case 2:
+                    //        this._imobReturnToArea();
+                    //        break;
+                    //}
+                },
+                // zpgm.26092018.e
                 _setFieldsEditability(data) {
                     var _self = this;
                     //if (data.estado == 0) {
@@ -5980,6 +6027,9 @@
                         $(_self.$.btnMudarEstado).addClass('hidden');
                         $(_self.$.btnCriarNota).addClass('hidden');
                         $(_self.$.btnCriarAta).addClass('hidden');
+                        // zpgm.26092018.b
+                        $(_self.$.actionButtonFuncoes).addClass('hidden');
+                        // zpgm.26092018.e
                     }
                     else {
                         if (data.estado != 0) {
