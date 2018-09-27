@@ -4495,6 +4495,101 @@ namespace Hydra.Such.Data.Logic.CCP
             return ReturnHandlers.Success;
         }
 
+        public static ErrorHandler CloseProcedimento(ProcedimentoCCPView Procedimento, ConfigUtilizadores UserDetails)
+        {
+            try
+            {
+                if (Procedimento.TemposPaCcp == null)
+                {
+                    TemposPaCcp TemposPA = GetTemposPaCcP(Procedimento.No);
+                    if (TemposPA != null)
+                    {
+                        // Holidays aren't excluded (see GetWorkingDays overload method thar uses a List<DateTime>)
+                        TemposPA.Estado19Tg += GetWorkingDays(DateTime.Now, Procedimento.DataHoraEstado.Value);
+                        TemposPA.UtilizadorModificação = UserDetails.IdUtilizador;
+                        TemposPA.DataHoraModificação = DateTime.Now;
+
+                        if (!__UpdateTemposPaCcp(TemposPA))
+                        {
+                            return ReturnHandlers.UnableToUpdateTemposPA;
+                        }
+                    };
+
+                    Procedimento.TemposPaCcp = CCPFunctions.CastTemposPaCcpToTemposCCPView(TemposPA);
+                }
+                else
+                {
+                    Procedimento.TemposPaCcp.Estado19Tg = Procedimento.TemposPaCcp.Estado19Tg ?? 0 + GetWorkingDays(DateTime.Now, Procedimento.DataHoraEstado.Value);
+                    Procedimento.TemposPaCcp.UtilizadorModificacao = UserDetails.IdUtilizador;
+                    Procedimento.TemposPaCcp.DataHoraModificacao = DateTime.Now;
+                    if (!__UpdateTemposPaCcp(CCPFunctions.CastTemposCCPViewToTemposPaCcp(Procedimento.TemposPaCcp)))
+                    {
+                        return ReturnHandlers.UnableToUpdateTemposPA;
+                    }
+                }
+
+                Procedimento.Imobilizado = Procedimento.Imobilizado.HasValue ? Procedimento.Imobilizado : false;
+
+                FluxoTrabalhoListaControlo NewFluxo19 = new FluxoTrabalhoListaControlo
+                {
+                    No = Procedimento.No,
+                    Estado = 20,
+                    Data = DateTime.Now.Date,
+                    Hora = DateTime.Now.TimeOfDay,
+                    Comentario = "Arquivo do Processo",
+                    Comentario2 = "",
+                    User = UserDetails.IdUtilizador,
+                    EstadoAnterior = Procedimento.Estado ?? 0, 
+                    TipoEstado = 1,
+                    NomeUser = UserDetails.Nome,
+                    UtilizadorCriacao = UserDetails.IdUtilizador,
+                    DataHoraCriacao = DateTime.Now,
+                    ImobSimNao = Procedimento.ImobilizadoSimNao
+                };
+
+                Procedimento.WorkflowJuridicosConfirm = Procedimento.WorkflowJuridicosConfirm.HasValue ? Procedimento.WorkflowJuridicosConfirm : false;
+                Procedimento.WorkflowJuridicos = Procedimento.WorkflowJuridicos.HasValue ? Procedimento.WorkflowJuridicos : false;
+
+                if(__CreateFluxoTrabalho(NewFluxo19) == null)
+                {
+                    return ReturnHandlers.UnableToCreateFluxo;
+                }
+
+                Procedimento.Estado = 20;
+                Procedimento.Arquivado = true;
+                
+                if(Procedimento.TemposPaCcp.Estado19Tg - (Procedimento.TemposPaCcp.Estado19 ?? 0) != 0)
+                {
+                    Procedimento.No_DiasAtraso += (Procedimento.TemposPaCcp.Estado19Tg - Procedimento.TemposPaCcp.Estado19);
+                    if (Procedimento.DataFechoPrevista.HasValue)
+                    {
+                        DateTime DateAux = Procedimento.DataFechoPrevista.Value;
+                        Procedimento.DataFechoPrevista = DateAux.AddDays(Procedimento.No_DiasAtraso.Value);
+                    }
+                    else
+                    {
+                        Procedimento.DataFechoPrevista = DateTime.Now.AddDays(Procedimento.No_DiasAtraso.Value);
+                    }
+                }
+
+                Procedimento.DataHoraEstado = DateTime.Now;
+                Procedimento.UtilizadorEstado = UserDetails.IdUtilizador;
+                Procedimento.UtilizadorModificacao = UserDetails.IdUtilizador;
+                Procedimento.DataHoraModificacao = Procedimento.DataHoraEstado;
+
+                if (__UpdateProcedimento(Procedimento) == null)
+                {
+                    return ReturnHandlers.UnableToUpdateProcedimento;
+                };
+
+                return ReturnHandlers.Success;
+            }
+            catch (Exception ex)
+            {
+
+                return ReturnHandlers.Error;
+            }
+        }
 
 
         /* PROCEDIMENTOS SIMPLIFICADOS */
