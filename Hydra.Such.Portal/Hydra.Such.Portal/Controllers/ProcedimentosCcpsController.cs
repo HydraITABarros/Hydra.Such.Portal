@@ -6738,10 +6738,8 @@ namespace Hydra.Such.Portal.Controllers
                 Email.BCC.Add(UserEmail_TO_Area);
                 Email.BCC.Add(UserEmail_TO_2Area);
                 Email.BCC.Add(UserEmail);
-
                 Email.Body = CCPFunctions.MakeEmailBodyContent(ProcedimentoEmail.TextoEmail, UserDetails.Nome);
                 Email.IsBodyHtml = true;
-
                 Email.EmailProcedimento = ProcedimentoEmail;
 
                 Email.SendEmail();
@@ -6757,9 +6755,18 @@ namespace Hydra.Such.Portal.Controllers
         #endregion
 
         #region the following methods map the NAV 2009 MenuButton on the PA form
-        public JsonResult CloseProcedimento([FromBody] ProcedimentoCCPView data)
+        public JsonResult CloseProcedimentoByRequest([FromBody] ProcedimentoCCPView data)
         {
-            return null;
+            ConfigUtilizadores UserDetails = DBProcedimentosCCP.GetUserDetails(User.Identity.Name);
+            if (data != null)
+            {
+                return Json(DBProcedimentosCCP.CloseProcedimento(data, UserDetails));
+            }
+            else
+            {
+                return Json(ReturnHandlers.NoData);
+            }
+
         }
         #endregion
 

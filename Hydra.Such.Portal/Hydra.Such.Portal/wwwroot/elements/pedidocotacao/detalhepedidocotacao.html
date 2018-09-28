@@ -184,6 +184,11 @@
         <iron-ajax url="/ConsultaMercado/CriarEncomenda" last-response="{{CriarEncomendaCreated}}" method="post" handle-as="json" id="page_criarEncomenda_ajax" on-response="_criarEncomendaResponse" content-type="application/json"></iron-ajax>
 
 
+        <iron-ajax url="/ConsultaMercado/EnviarEmailATodos" last-response="{{EnviarEmailATodosCreated}}" method="post" handle-as="json" id="page_enviarEmailATodos_ajax" on-response="_enviarEmailATodosResponse" content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/ConsultaMercado/EnviarEmailAUm" last-response="{{EnviarEmailAUmCreated}}" method="post" handle-as="json" id="page_enviarEmailAUm_ajax" on-response="_enviarEmailAUmResponse" content-type="application/json"></iron-ajax>
+
+
         <!-- Dropdowns -->
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{CBRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{CBFunctionalAreas}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -204,7 +209,6 @@
         <iron-ajax url="/PopulateDropdowns/GetNAVAtividadesComboGridList" last-response="{{CBActividades_List}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetNAVVendorComboGrid_FiltroActividade" id="ajax_supplier_options" last-response="{{Suppliers}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
-
         <iron-ajax url="/PopulateDropdowns/GetPaymentTerms" id="ajax_PaymentTerms_options" last-response="{{CBPaymentTerms}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetPaymentForms" id="ajax_PaymentForms_options" last-response="{{CBPaymentForms}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
@@ -216,6 +220,8 @@
             <such-dropdown-menu on-value-changed="_functionsMenuItemSelected" title="Funções" items='[[ _functionsMenuItems ]]'></such-dropdown-menu>
 
             <paper-button class="tablinks" id="btnPrint" on-tap="_printConsulta"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Imprimir</paper-button>
+
+            <paper-button class="tablinks" id="btnEnviarEmail" on-tap="_enviarEmail"><i class="fa fa-envelope" aria-hidden="true"></i>&nbsp; Enviar Emails</paper-button>
 
         </div>
 
@@ -1418,6 +1424,35 @@
             </div>
             <iframe id="rptContainer" src="" frameborder="0" style="width: 100%; height: 92%; margin: 0px; padding: 0px"></iframe>
         </paper-dialog>
+
+
+        <paper-dialog id="rptDialog_EnviarEmail" class="dialgoBox" modal>
+            <div class="buttons">
+                <paper-button class="btnRemove" on-tap="_closerptDialog_EnviarEmail" title="Fechar"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
+            </div>
+            <div class="panel-body">
+                <div class="col-sm-4">
+                    <vaadin-combo-box items="[[ data.seleccaoEntidades ]]" id="_fornecedores" name="_fornecedores" item-value-path="codFornecedor" item-label-path="nomeFornecedor" label="Fornecedores">
+                        <template>
+                            <table width="200px">
+                                <tr>
+                                    <td width="40%">[[item.codFornecedor]]</td>
+                                    <td width="60%"> <b>[[item.nomeFornecedor]]</b></td>
+                                </tr>
+                            </table>
+                        </template>
+                    </vaadin-combo-box>
+                </div>
+                <div class="col-sm-4">
+                    <vaadin-checkbox id="_todosFornecedores" checked="false">Enviar a Todos</vaadin-checkbox>
+                </div>
+                <div class="col-sm-4">
+                    <paper-button class="btn--confirm pull-right" id="btnEnviarEmail" raised on-tap="_enviarEmailFornecedores"><i class="fa fa-envelope-o" aria-hidden="true"></i>&nbsp; Enviar Email</paper-button>
+                </div>
+            </div>
+        </paper-dialog>
+
+
     </template>
 
     <script>
@@ -2275,11 +2310,13 @@
                 },
 
                 _criarEncomenda: function (e) {
+                    debugger
                     this.$.page_criarEncomenda_ajax.body = JSON.stringify(this.data);
                     this.$.page_criarEncomenda_ajax.generateRequest();
                 },
                 _criarEncomendaResponse: function (e) {
-
+                    debugger
+                    this._openToast(this.CriarEncomendaCreated.eMessage);
                 },
 
                 _responseProcessor: function (data) {
@@ -2377,6 +2414,54 @@
                     this.$.rptDialog.close();
                 },
 
+                _enviarEmailFornecedores: function (e) {
+                    
+                    var _self = this;
+
+                    if (_self.$._todosFornecedores.__data.checked) {
+                        //Enviar email a todos
+
+                        //Criar um iron-ajax com uma acção que receba o data
+                        this._enviarEmailATodos();
+                    }
+                    else if (!_self.$._todosFornecedores.__data.checked) {
+                        //Enviar email apenas a um
+
+                        //Criar um iron-ajax com uma acção que receba o numero da consulta e o código do fornecedor selecionado
+                        this._enviarEmailAUm();
+                    }
+
+                },
+
+
+                _enviarEmailATodos: function (e) {
+                    debugger
+                    this.$.page_enviarEmailATodos_ajax.body = JSON.stringify(this.data);
+                    this.$.page_enviarEmailATodos_ajax.generateRequest();
+                },
+                _enviarEmailATodosResponse: function (e) {
+                    debugger
+                    this._openToast(this.EnviarEmailATodosCreated.eMessage);
+                },
+
+                _enviarEmailAUm: function (e) {
+                    this.$.page_enviarEmailAUm_ajax.body = JSON.stringify({ "Consulta": this._id, "Cod": this.$._fornecedores.__data.value });
+                    this.$.page_enviarEmailAUm_ajax.generateRequest();
+                },
+                _enviarEmailAUmResponse: function (e) {
+                    debugger
+                    this._openToast(this.EnviarEmailAUmCreated.eMessage);
+                },
+
+
+
+                _enviarEmail: function (e) {
+                    this.$.rptDialog_EnviarEmail.open();
+                },
+                _closerptDialog_EnviarEmail: function () {
+                    this.$.rptDialog_EnviarEmail.src = "about:blank";
+                    this.$.rptDialog_EnviarEmail.close();
+                },
                 //Helpers
                 _executeRequest: function (url, data) {
                     this.$.page_databound_ajax.url = url;
