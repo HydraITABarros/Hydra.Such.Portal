@@ -317,7 +317,7 @@
 
                         <div class="panel-body">
                             <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
-                                <paper-tab>Geral</paper-tab>
+                                <paper-tab>Geral11</paper-tab>
                                 <paper-tab>Reparação</paper-tab>
                                 <paper-tab>Recolha</paper-tab>
                                 <paper-tab>Entrega (Fornecedor)</paper-tab>
@@ -2362,11 +2362,11 @@
                     }
                 },
                 _registTypeResponse: function (e) {
-                    //debugger;
+                    debugger;
                     if (this.regist.eReasonCode == "1") {
                         this._openToast(this.regist.eMessage);
                         this.Requisition = this.regist;
-                        if (this.regist.state === this._requisitionstatesenum.Archived) {
+                        if (this.regist.eMessage == "Requisição foi fechada") {
                             window.history.back();
                             //window.location.href = "/GestaoRequisicoes/";///HistóricoCabeçalhoRequisicao/" + this._requisitionid;
                         }

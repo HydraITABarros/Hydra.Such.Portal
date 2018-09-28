@@ -229,7 +229,7 @@
             }
 
             /*NR20180313*/
-            .subMenu {
+            .subMenuDrop {
                 background-color: #D5662F !important;
                 padding: 0px !important;
                 min-width: 50px !important;
@@ -861,7 +861,6 @@
                    on-response="_deletedAttachResponse"
                    content-type="application/json"></iron-ajax>
         <!-- Anexos.e -->
-
         <!-- MenuButton Funções.b -->
         <iron-ajax url="/ProcedimentosCcps/CloseProcedimentoByRequest"
                    last-response="{{ procedimentoClosed }}"
@@ -873,6 +872,15 @@
         </iron-ajax>
         <!-- MenuButton Funções.e -->
         <!-- Controller actions.e -->
+       
+        <div class="subMenu">
+            <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+            <paper-button raised id="btnUpdate" class="tablinks" on-tap="_update" disabled="{{ _isCreate }}" title="Gravar" style="background-color:#1DB73C"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Gravar</paper-button>
+            <paper-button raised id="btnCancel" class="tablinks" on-tap="_delete" disabled="{{ _isCreate }}" title="Eliminar" style="background-color:#D84949"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+            <such-dropdown-menu id="actionButtonFuncoes" on-value-changed="_mnuFuncoes_ItemSelected" title=" Funções " items="[[ _mnuFuncoes_MenuItems ]]"></such-dropdown-menu>
+            <paper-button class="tablinks" on-tap="_printProcedimento" id="_btnPrint"><i class="fa fa-print" aria-hidden="true"></i> Imprimir</paper-button>
+        </div>
+
 
         <!-- Header section of the Procedimento details -->
         <div class="panel panel-default">
@@ -1612,7 +1620,7 @@
                                         <div class="clearfix"></div>
                                         <div class="clearfix"></div>
                                         <div class="col-lg-6">
-                                            <such-dropdown-menu class="subMenu" id="actionButtonContabilidade1" on-value-changed="_mnuAccao1_ItemSelected" title=" Acções " items="[[ _mnuAccao1_MenuItems ]]"></such-dropdown-menu>
+                                            <such-dropdown-menu class="subMenuDrop" id="actionButtonContabilidade1" on-value-changed="_mnuAccao1_ItemSelected" title=" Acções " items="[[ _mnuAccao1_MenuItems ]]"></such-dropdown-menu>
                                         </div>
                                     </div>
                                 </div>
@@ -1647,7 +1655,7 @@
                                             </div>
                                             <div class="col-sm-3" id="idDivAccao2">
                                                 <br />
-                                                <such-dropdown-menu class="subMenu" id="actionButtonArea2" disabled="true" on-value-changed="_mnuAccao2_ItemSelected" title=" Acções " items="[[ _mnuAccao2_MenuItems ]]"></such-dropdown-menu>
+                                                <such-dropdown-menu class="subMenuDrop" id="actionButtonArea2" disabled="true" on-value-changed="_mnuAccao2_ItemSelected" title=" Acções " items="[[ _mnuAccao2_MenuItems ]]"></such-dropdown-menu>
                                             </div>
                                         </div>
                                         <div class="clearfix"></div>
@@ -1836,7 +1844,7 @@
                                         </div>
                                     </div>
                                     <div class="col-lg-6">
-                                        <such-dropdown-menu class="subMenu" id="actionButtonCompras" on-value-changed="_mnuAccao4_ItemSelected" title=" Acções " items="[[ _mnuAccao4_MenuItems ]]"></such-dropdown-menu>
+                                        <such-dropdown-menu class="subMenuDrop" id="actionButtonCompras" on-value-changed="_mnuAccao4_ItemSelected" title=" Acções " items="[[ _mnuAccao4_MenuItems ]]"></such-dropdown-menu>
                                     </div>
                                 </div>
                                 <div class="clearfix"></div>
@@ -1869,7 +1877,7 @@
                                         </div>
                                         <div class="col-sm-3">
                                             <br />
-                                            <such-dropdown-menu class="subMenu" id="actionButtonFinanceiros" on-value-changed="_mnuAccao5_ItemSelected" title=" Acções " items="[[ _mnuAccao5_MenuItems ]]"></such-dropdown-menu>
+                                            <such-dropdown-menu class="subMenuDrop" id="actionButtonFinanceiros" on-value-changed="_mnuAccao5_ItemSelected" title=" Acções " items="[[ _mnuAccao5_MenuItems ]]"></such-dropdown-menu>
                                         </div>
                                     </div>
                                 </div>
@@ -1903,7 +1911,7 @@
                                         </div>
                                         <div class="col-sm-3">
                                             <br />
-                                            <such-dropdown-menu class="subMenu" id="actionButtonPedidoAberturaProc" on-value-changed="_mnuAccao7_ItemSelected" title=" Acções " items="[[ _mnuAccao7_MenuItems ]]"></such-dropdown-menu>
+                                            <such-dropdown-menu class="subMenuDrop" id="actionButtonPedidoAberturaProc" on-value-changed="_mnuAccao7_ItemSelected" title=" Acções " items="[[ _mnuAccao7_MenuItems ]]"></such-dropdown-menu>
                                         </div>
                                     </div>
                                 </div>
@@ -2055,7 +2063,7 @@
                                                 </div>
                                                 <div class="col-lg-6">
                                                     <br />
-                                                    <such-dropdown-menu class="subMenu pull-right" id="btnConfirmRelatorioFinal" on-value-changed="_mnuAccao13_ItemSelected" title=" Acções " items="[[ _mnuAccao13_MenuItems ]]"></such-dropdown-menu>
+                                                    <such-dropdown-menu class="subMenuDrop pull-right" id="btnConfirmRelatorioFinal" on-value-changed="_mnuAccao13_ItemSelected" title=" Acções " items="[[ _mnuAccao13_MenuItems ]]"></such-dropdown-menu>
                                                 </div>
                                             </div>
                                         </div>
@@ -2135,7 +2143,7 @@
                                         <div class="clearfix"></div>
                                     </div>
                                     <div class="col-lg-6">
-                                        <such-dropdown-menu class="subMenu" id="actionButtonPedidoAberturaProc6" on-value-changed="_mnuAccao6_ItemSelected" title=" Acções " items="[[ _mnuAccao6_MenuItems ]]"></such-dropdown-menu>
+                                        <such-dropdown-menu class="subMenuDrop" id="actionButtonPedidoAberturaProc6" on-value-changed="_mnuAccao6_ItemSelected" title=" Acções " items="[[ _mnuAccao6_MenuItems ]]"></such-dropdown-menu>
                                     </div>
                                 </div>
                                 <div class="clearfix"></div>
@@ -2171,7 +2179,7 @@
                                         <div class="clearfix"></div>
                                     </div>
                                     <div class="col-lg-6">
-                                        <such-dropdown-menu class="subMenu" id="actionButtonPedidoAberturaProc14" on-value-changed="_mnuAccao14_ItemSelected" title=" Acções " items="[[ _mnuAccao14_MenuItems ]]"></such-dropdown-menu>
+                                        <such-dropdown-menu class="subMenuDrop" id="actionButtonPedidoAberturaProc14" on-value-changed="_mnuAccao14_ItemSelected" title=" Acções " items="[[ _mnuAccao14_MenuItems ]]"></such-dropdown-menu>
                                     </div>
                                 </div>
                                 <div class="clearfix"></div>
@@ -3552,16 +3560,15 @@
                 </iron-pages>
 
                 <!-- Save and Create Buttons -->
-                <div id="botoes_accao" class="marginSpace">
+                <!--<div id="botoes_accao" class="marginSpace">
                     <template is="dom-if" if="{{ _isCreate }}">
                         <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                     </template>
                     <template is="dom-if" if="{{ !_isCreate }}">
                         <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
                         <paper-button raised id="btnCancel" class="btnRemove" on-tap="_delete"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
-                        <such-dropdown-menu class="subMenuFuncoes" id="actionButtonFuncoes" on-value-changed="_mnuFuncoes_ItemSelected" title=" Funções " items="[[ _mnuFuncoes_MenuItems ]]"></such-dropdown-menu>
                     </template>
-                </div>
+                </div>-->
             </div>
         </div>
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
@@ -3612,9 +3619,7 @@
                         value: [
                             { value: 1, description: "Fecho do Processo (20)" },
                             { value: 2, description: "Obter Ref. Procedimento" },
-                            { value: 3, description: "Imprimir" },
-                            { value: 4, description: "Obter Ref. Procedimento" },
-                            { value: 5, description: "Libertar Processo Suspenso" }
+                            { value: 3, description: "Libertar Processo Suspenso" }
                         ],
                     },
                     // zpgm.MenuFunções.e
@@ -5988,19 +5993,20 @@
                     this.$.ajax_request_closing.body = JSON.stringify(this.data);
                 },
                 _closingProcedimentoResponse: function (e) {
-                    //if (this.FecharProcesso_7.eReasonCode == 0) {
-                    //    this._openToast("Procedimento " + this.data.no + " Fechado!");
-                    //    setTimeout(
-                    //        function () {
-                    //        }, 3000);
+                    if (this.procedimentoClosed.eReasonCode == 0) {
+                            this._openToast("Procedimento " + this.data.no + " arquivado!");
+                        setTimeout(
+                            function () {
+                            }, 3000);
 
-                    //    if (this._procedimentotypeid == 1)
-                    //        window.location.replace("/ProcedimentosCcps/PedidoAquisicao/");
-                    //    else
-                    //        window.location.replace("/ProcedimentosCcps/PedidoSimplificado/");
-                    //} else {
-                    //    this._openToast(this.FecharProcesso_7.eMessage);
-                    //}
+                        if (this._procedimentotypeid == 1)
+                            window.location.replace("/ProcedimentosCcps/PedidoAquisicao/");
+                        else
+                            window.location.replace("/ProcedimentosCcps/PedidoSimplificado/");
+
+                    } else {
+                        this._openToast(this._procedimentoClosed.eMessage);
+                    }
                 },
 
                 _mnuFuncoes_ItemSelected: function (e) {
@@ -6075,9 +6081,6 @@
                         $(_self.$.btnMudarEstado).addClass('hidden');
                         $(_self.$.btnCriarNota).addClass('hidden');
                         $(_self.$.btnCriarAta).addClass('hidden');
-                        // zpgm.MenuFunções.b
-                        $(_self.$.actionButtonFuncoes).addClass('hidden');
-                        // zpgm.MenuFunções.e
                     }
                     else {
                         if (data.estado != 0) {
@@ -6439,6 +6442,9 @@
                     this.$.page_databound_ajax.url = url;
                     this.$.page_databound_ajax.body = JSON.stringify(data);
                     this.$.page_databound_ajax.generateRequest();
+                },
+                _goBack: function (e) {
+                    window.history.back();
                 }
             });
         });

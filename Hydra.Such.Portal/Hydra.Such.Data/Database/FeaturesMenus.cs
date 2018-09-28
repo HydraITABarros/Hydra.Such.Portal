@@ -7,7 +7,5 @@ namespace Hydra.Such.Data.Database
     {
         public int IdFeature { get; set; }
         public int IdMenu { get; set; }
-
-        public Menu IdMenuNavigation { get; set; }
     }
 }
