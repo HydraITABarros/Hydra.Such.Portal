@@ -3296,10 +3296,10 @@ namespace Hydra.Such.Portal.Controllers
             string user = User.Identity.Name;
             user = user.Replace("@", "_");
             user = user.Replace(".", "_");
-            string sFileName = @"" + user + ".xlsx";
+            string sFileName = @"" + user + "_ExportEXCEL.xlsx";
             string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
             FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
-            var memory = new MemoryStream();
+            //var memory = new MemoryStream();
             using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
             {
                 IWorkbook workbook;
@@ -3513,11 +3513,11 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 workbook.Write(fs);
             }
-            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
-            {
-                await stream.CopyToAsync(memory);
-            }
-            memory.Position = 0;
+            //using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            //{
+            //    await stream.CopyToAsync(memory);
+            //}
+            //memory.Position = 0;
             return Json(sFileName);
         }
         //2

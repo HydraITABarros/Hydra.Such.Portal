@@ -4367,7 +4367,7 @@ namespace Hydra.Such.Portal.Controllers
             string user = User.Identity.Name;
             user = user.Replace("@", "_");
             user = user.Replace(".", "_");
-            string sFileName = @"" + user + ".xlsx";
+            string sFileName = @"" + user + "_ExportEXCEL.xlsx";
             string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
             FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
             var memory = new MemoryStream();
@@ -4528,7 +4528,7 @@ namespace Hydra.Such.Portal.Controllers
             string user = User.Identity.Name;
             user = user.Replace("@", "_");
             user = user.Replace(".", "_");
-            string sFileName = @"" + user + ".xlsx";
+            string sFileName = @"" + user + "_ExportEXCEL.xlsx";
             string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
             FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
             var memory = new MemoryStream();
@@ -4698,7 +4698,7 @@ namespace Hydra.Such.Portal.Controllers
             string user = User.Identity.Name;
             user = user.Replace("@", "_");
             user = user.Replace(".", "_");
-            string sFileName = @"" + user + ".xlsx";
+            string sFileName = @"" + user + "_ExportEXCEL.xlsx";
             string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
             FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
             var memory = new MemoryStream();
@@ -4938,7 +4938,7 @@ namespace Hydra.Such.Portal.Controllers
             string user = User.Identity.Name;
             user = user.Replace("@", "_");
             user = user.Replace(".", "_");
-            string sFileName = @"" + user + ".xlsx";
+            string sFileName = @"" + user + "_ExportEXCEL.xlsx";
             string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
             FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
             var memory = new MemoryStream();
@@ -5178,7 +5178,7 @@ namespace Hydra.Such.Portal.Controllers
             string user = User.Identity.Name;
             user = user.Replace("@", "_");
             user = user.Replace(".", "_");
-            string sFileName = @"" + user + ".xlsx";
+            string sFileName = @"" + user + "_ExportEXCEL.xlsx";
             string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
             FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
             var memory = new MemoryStream();
@@ -5448,7 +5448,7 @@ namespace Hydra.Such.Portal.Controllers
             string user = User.Identity.Name;
             user = user.Replace("@", "_");
             user = user.Replace(".", "_");
-            string sFileName = @"" + user + ".xlsx";
+            string sFileName = @"" + user + "_ExportEXCEL.xlsx";
             string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
             FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
             var memory = new MemoryStream();
