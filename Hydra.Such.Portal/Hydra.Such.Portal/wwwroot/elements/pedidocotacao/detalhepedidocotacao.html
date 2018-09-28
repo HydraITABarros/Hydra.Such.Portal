@@ -1748,7 +1748,6 @@
                 },
 
                 _gerarRegistoPropostas: function () {
-                    debugger
                     if (this.$.fase.value != 1) {
                         this._showErrorMessage("Só é possível Gerar o Registo de Propostas quando a Fase se encontra em 'Consulta'")
                         return;
@@ -1772,7 +1771,6 @@
                     );
                 },
                 _gerarRegistoPropostasResponse: function () {
-                    debugger
                     if (this.gerarRegistoPropostasData.eReasonCode == 0) {
                         this._showMessage(this.gerarRegistoPropostasData.eMessage);
                         setTimeout(
@@ -1807,7 +1805,6 @@
                     }
                 },
                 _setSuppliersData: function (e) {
-                    debugger;
                     var self = this;
 
                     var item = self.Suppliers.find(x => x.no_ == e);
@@ -1954,7 +1951,6 @@
                 },
 
                 _updateLinha: function (e) {
-                    //debugger
                     this.$.page_updateLinhaConsultaMercado_ajax.body = JSON.stringify({
                         numLinha: e.model.item.numLinha,
                         numConsultaMercado: e.model.item.numConsultaMercado,
@@ -2041,7 +2037,6 @@
                     }
                 },
                 _updateLinhaSeleccaoEntidade: function (e) {
-                    debugger;
                     this.$.page_updateLinhaSeleccaoEntidade_ajax.body = JSON.stringify({
                         idSeleccaoEntidades: e.model.item.idSeleccaoEntidades,
                         numConsultaMercado: e.model.item.numConsultaMercado,
@@ -2407,7 +2402,6 @@
                 },
 
                 _filtraFornecedores: function () {
-                    debugger;
                     var _self = this;
 
                     _self.$._CodTermosPagamento.value = "";
