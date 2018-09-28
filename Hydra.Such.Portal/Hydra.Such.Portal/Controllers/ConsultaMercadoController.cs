@@ -2,13 +2,17 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Hydra.Such.Data.Database;
 using Hydra.Such.Data.Logic;
 using Hydra.Such.Data.Logic.PedidoCotacao;
+using Hydra.Such.Data.NAV;
 using Hydra.Such.Data.ViewModel;
+using Hydra.Such.Data.ViewModel.Compras;
 using Hydra.Such.Data.ViewModel.PedidoCotacao;
 using Hydra.Such.Portal.Configurations;
+using Hydra.Such.Portal.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -23,11 +27,13 @@ namespace Hydra.Such.Portal.Controllers
     public class ConsultaMercadoController : Controller
     {
         private readonly NAVConfigurations _config;
+        private readonly NAVWSConfigurations configws;
         private readonly IHostingEnvironment _hostingEnvironment;
 
-        public ConsultaMercadoController(IOptions<NAVConfigurations> appSettings, IHostingEnvironment _hostingEnvironment)
+        public ConsultaMercadoController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs, IHostingEnvironment _hostingEnvironment)
         {
             _config = appSettings.Value;
+            configws = NAVWSConfigs.Value;
             this._hostingEnvironment = _hostingEnvironment;
         }
 
@@ -70,7 +76,7 @@ namespace Hydra.Such.Portal.Controllers
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.UPermissions = UPerm;
-                ViewBag.No = id == null ? "" : id;
+                ViewBag.No = id ?? "";
                 return View();
             }
             else
@@ -545,6 +551,542 @@ namespace Hydra.Such.Portal.Controllers
             return Json(data);
         }
 
+        [HttpPost]
+        public JsonResult CriarEncomenda([FromBody] ConsultaMercadoView data)
+        {
+            PurchOrderDTO purchOrderDTO = new PurchOrderDTO();
+            List<PurchOrderDTO> purchOrders = new List<PurchOrderDTO>();
+            List<RegistoDePropostasView> registoDePropostas = new List<RegistoDePropostasView>();
+
+            try
+            {
+                for (int i = 1; i <= 6; i++)
+                {
+                    if (i == 1)
+                    {
+                        registoDePropostas = data.RegistoDePropostas.Where(x => x.Fornecedor1Select.HasValue && x.Fornecedor1Select.Value == true).ToList();
+
+                        if (registoDePropostas.Count() > 0)
+                        {
+                            //vamos criar a encomenda com as linhas
+                            PurchOrderLineDTO purchOrderLineDTO = new PurchOrderLineDTO();
+                            List<PurchOrderLineDTO> purchOrderLineDTOs = new List<PurchOrderLineDTO>();
+                            
+                            foreach(RegistoDePropostasView registoDePropostasView in registoDePropostas)
+                            {
+                                purchOrderLineDTO.CenterResponsibilityCode = registoDePropostasView.CodCentroResponsabilidade;
+                                purchOrderLineDTO.Code = registoDePropostasView.CodProduto;
+                                purchOrderLineDTO.Description = registoDePropostasView.Descricao;
+                                purchOrderLineDTO.Description2 = registoDePropostasView.Descricao2;
+                                purchOrderLineDTO.DiscountPercentage = 0;
+                                purchOrderLineDTO.FunctionalAreaCode = registoDePropostasView.CodAreaFuncional;
+                                purchOrderLineDTO.LineId = registoDePropostasView.NumLinha;
+                                purchOrderLineDTO.LocationCode = registoDePropostasView.CodLocalizacao;
+                                purchOrderLineDTO.OpenOrderLineNo = registoDePropostasView.NumLinhaConsultaMercado;
+                                purchOrderLineDTO.OpenOrderNo = registoDePropostasView.NumConsultaMercado;
+                                purchOrderLineDTO.ProjectNo = registoDePropostasView.NumProjecto;
+                                purchOrderLineDTO.QuantityRequired = registoDePropostasView.Quantidade;
+                                purchOrderLineDTO.RegionCode = registoDePropostasView.CodRegiao;
+                                purchOrderLineDTO.UnitCost = registoDePropostasView.Fornecedor1Preco;
+                                purchOrderLineDTO.UnitMeasureCode = data.LinhasConsultaMercado.Where(x => x.NumLinha == registoDePropostasView.NumLinhaConsultaMercado).FirstOrDefault().CodUnidadeMedida;
+
+                                purchOrderLineDTOs.Add(purchOrderLineDTO);
+                            }
+
+                            PurchOrderDTO purchOrderDTO1 = new PurchOrderDTO()
+                            {
+                                CenterResponsibilityCode = data.CodCentroResponsabilidade,
+                                FunctionalAreaCode = data.CodAreaFuncional,
+                                InAdvance = false,
+                                LocalMarketRegion = string.Empty,
+                                PricesIncludingVAT = false,
+                                RegionCode = data.CodRegiao,
+                                RequisitionId = data.NumRequisicao,
+                                SupplierId = registoDePropostas[0].Fornecedor1Code,
+                                Lines = purchOrderLineDTOs
+                            };
+
+                            purchOrders.Add(purchOrderDTO1);
+                        }
+                    }
+
+                    if (i == 2)
+                    {
+                        registoDePropostas = data.RegistoDePropostas.Where(x => x.Fornecedor2Select.HasValue && x.Fornecedor2Select.Value == true).ToList();
+
+                        if (registoDePropostas.Count() > 0)
+                        {
+                            //vamos criar a encomenda com as linhas
+                            PurchOrderLineDTO purchOrderLineDTO = new PurchOrderLineDTO();
+                            List<PurchOrderLineDTO> purchOrderLineDTOs = new List<PurchOrderLineDTO>();
+
+                            foreach (RegistoDePropostasView registoDePropostasView in registoDePropostas)
+                            {
+                                purchOrderLineDTO.CenterResponsibilityCode = registoDePropostasView.CodCentroResponsabilidade;
+                                purchOrderLineDTO.Code = registoDePropostasView.CodProduto;
+                                purchOrderLineDTO.Description = registoDePropostasView.Descricao;
+                                purchOrderLineDTO.Description2 = registoDePropostasView.Descricao2;
+                                purchOrderLineDTO.DiscountPercentage = 0;
+                                purchOrderLineDTO.FunctionalAreaCode = registoDePropostasView.CodAreaFuncional;
+                                purchOrderLineDTO.LineId = registoDePropostasView.NumLinha;
+                                purchOrderLineDTO.LocationCode = registoDePropostasView.CodLocalizacao;
+                                purchOrderLineDTO.OpenOrderLineNo = registoDePropostasView.NumLinhaConsultaMercado;
+                                purchOrderLineDTO.OpenOrderNo = registoDePropostasView.NumConsultaMercado;
+                                purchOrderLineDTO.ProjectNo = registoDePropostasView.NumProjecto;
+                                purchOrderLineDTO.QuantityRequired = registoDePropostasView.Quantidade;
+                                purchOrderLineDTO.RegionCode = registoDePropostasView.CodRegiao;
+                                purchOrderLineDTO.UnitCost = registoDePropostasView.Fornecedor2Preco;
+                                purchOrderLineDTO.UnitMeasureCode = data.LinhasConsultaMercado.Where(x => x.NumLinha == registoDePropostasView.NumLinhaConsultaMercado).FirstOrDefault().CodUnidadeMedida;
+
+                                purchOrderLineDTOs.Add(purchOrderLineDTO);
+                            }
+
+                            PurchOrderDTO purchOrderDTO2 = new PurchOrderDTO()
+                            {
+                                CenterResponsibilityCode = data.CodCentroResponsabilidade,
+                                FunctionalAreaCode = data.CodAreaFuncional,
+                                InAdvance = false,
+                                LocalMarketRegion = string.Empty,
+                                PricesIncludingVAT = false,
+                                RegionCode = data.CodRegiao,
+                                RequisitionId = data.NumRequisicao,
+                                SupplierId = registoDePropostas[0].Fornecedor2Code,
+                                Lines = purchOrderLineDTOs
+                            };
+
+                            purchOrders.Add(purchOrderDTO2);
+                        }
+                    }
+
+                    if (i == 3)
+                    {
+                        registoDePropostas = data.RegistoDePropostas.Where(x => x.Fornecedor3Select.HasValue && x.Fornecedor3Select.Value == true).ToList();
+
+                        if (registoDePropostas.Count() > 0)
+                        {
+                            //vamos criar a encomenda com as linhas
+                            PurchOrderLineDTO purchOrderLineDTO = new PurchOrderLineDTO();
+                            List<PurchOrderLineDTO> purchOrderLineDTOs = new List<PurchOrderLineDTO>();
+
+                            foreach (RegistoDePropostasView registoDePropostasView in registoDePropostas)
+                            {
+                                purchOrderLineDTO.CenterResponsibilityCode = registoDePropostasView.CodCentroResponsabilidade;
+                                purchOrderLineDTO.Code = registoDePropostasView.CodProduto;
+                                purchOrderLineDTO.Description = registoDePropostasView.Descricao;
+                                purchOrderLineDTO.Description2 = registoDePropostasView.Descricao2;
+                                purchOrderLineDTO.DiscountPercentage = 0;
+                                purchOrderLineDTO.FunctionalAreaCode = registoDePropostasView.CodAreaFuncional;
+                                purchOrderLineDTO.LineId = registoDePropostasView.NumLinha;
+                                purchOrderLineDTO.LocationCode = registoDePropostasView.CodLocalizacao;
+                                purchOrderLineDTO.OpenOrderLineNo = registoDePropostasView.NumLinhaConsultaMercado;
+                                purchOrderLineDTO.OpenOrderNo = registoDePropostasView.NumConsultaMercado;
+                                purchOrderLineDTO.ProjectNo = registoDePropostasView.NumProjecto;
+                                purchOrderLineDTO.QuantityRequired = registoDePropostasView.Quantidade;
+                                purchOrderLineDTO.RegionCode = registoDePropostasView.CodRegiao;
+                                purchOrderLineDTO.UnitCost = registoDePropostasView.Fornecedor3Preco;
+                                purchOrderLineDTO.UnitMeasureCode = data.LinhasConsultaMercado.Where(x => x.NumLinha == registoDePropostasView.NumLinhaConsultaMercado).FirstOrDefault().CodUnidadeMedida;
+
+                                purchOrderLineDTOs.Add(purchOrderLineDTO);
+                            }
+
+                            PurchOrderDTO purchOrderDTO3 = new PurchOrderDTO()
+                            {
+                                CenterResponsibilityCode = data.CodCentroResponsabilidade,
+                                FunctionalAreaCode = data.CodAreaFuncional,
+                                InAdvance = false,
+                                LocalMarketRegion = string.Empty,
+                                PricesIncludingVAT = false,
+                                RegionCode = data.CodRegiao,
+                                RequisitionId = data.NumRequisicao,
+                                SupplierId = registoDePropostas[0].Fornecedor3Code,
+                                Lines = purchOrderLineDTOs
+                            };
+
+                            purchOrders.Add(purchOrderDTO3);
+                        }
+                    }
+
+                    if (i == 4)
+                    {
+                        registoDePropostas = data.RegistoDePropostas.Where(x => x.Fornecedor4Select.HasValue && x.Fornecedor4Select.Value == true).ToList();
+
+                        if (registoDePropostas.Count() > 0)
+                        {
+                            //vamos criar a encomenda com as linhas
+                            PurchOrderLineDTO purchOrderLineDTO = new PurchOrderLineDTO();
+                            List<PurchOrderLineDTO> purchOrderLineDTOs = new List<PurchOrderLineDTO>();
+
+                            foreach (RegistoDePropostasView registoDePropostasView in registoDePropostas)
+                            {
+                                purchOrderLineDTO.CenterResponsibilityCode = registoDePropostasView.CodCentroResponsabilidade;
+                                purchOrderLineDTO.Code = registoDePropostasView.CodProduto;
+                                purchOrderLineDTO.Description = registoDePropostasView.Descricao;
+                                purchOrderLineDTO.Description2 = registoDePropostasView.Descricao2;
+                                purchOrderLineDTO.DiscountPercentage = 0;
+                                purchOrderLineDTO.FunctionalAreaCode = registoDePropostasView.CodAreaFuncional;
+                                purchOrderLineDTO.LineId = registoDePropostasView.NumLinha;
+                                purchOrderLineDTO.LocationCode = registoDePropostasView.CodLocalizacao;
+                                purchOrderLineDTO.OpenOrderLineNo = registoDePropostasView.NumLinhaConsultaMercado;
+                                purchOrderLineDTO.OpenOrderNo = registoDePropostasView.NumConsultaMercado;
+                                purchOrderLineDTO.ProjectNo = registoDePropostasView.NumProjecto;
+                                purchOrderLineDTO.QuantityRequired = registoDePropostasView.Quantidade;
+                                purchOrderLineDTO.RegionCode = registoDePropostasView.CodRegiao;
+                                purchOrderLineDTO.UnitCost = registoDePropostasView.Fornecedor4Preco;
+                                purchOrderLineDTO.UnitMeasureCode = data.LinhasConsultaMercado.Where(x => x.NumLinha == registoDePropostasView.NumLinhaConsultaMercado).FirstOrDefault().CodUnidadeMedida;
+
+                                purchOrderLineDTOs.Add(purchOrderLineDTO);
+                            }
+
+                            PurchOrderDTO purchOrderDTO4 = new PurchOrderDTO()
+                            {
+                                CenterResponsibilityCode = data.CodCentroResponsabilidade,
+                                FunctionalAreaCode = data.CodAreaFuncional,
+                                InAdvance = false,
+                                LocalMarketRegion = string.Empty,
+                                PricesIncludingVAT = false,
+                                RegionCode = data.CodRegiao,
+                                RequisitionId = data.NumRequisicao,
+                                SupplierId = registoDePropostas[0].Fornecedor4Code,
+                                Lines = purchOrderLineDTOs
+                            };
+
+                            purchOrders.Add(purchOrderDTO4);
+                        }
+                    }
+
+                    if (i == 5)
+                    {
+                        registoDePropostas = data.RegistoDePropostas.Where(x => x.Fornecedor5Select.HasValue && x.Fornecedor5Select.Value == true).ToList();
+
+                        if (registoDePropostas.Count() > 0)
+                        {
+                            //vamos criar a encomenda com as linhas
+                            PurchOrderLineDTO purchOrderLineDTO = new PurchOrderLineDTO();
+                            List<PurchOrderLineDTO> purchOrderLineDTOs = new List<PurchOrderLineDTO>();
+
+                            foreach (RegistoDePropostasView registoDePropostasView in registoDePropostas)
+                            {
+                                purchOrderLineDTO.CenterResponsibilityCode = registoDePropostasView.CodCentroResponsabilidade;
+                                purchOrderLineDTO.Code = registoDePropostasView.CodProduto;
+                                purchOrderLineDTO.Description = registoDePropostasView.Descricao;
+                                purchOrderLineDTO.Description2 = registoDePropostasView.Descricao2;
+                                purchOrderLineDTO.DiscountPercentage = 0;
+                                purchOrderLineDTO.FunctionalAreaCode = registoDePropostasView.CodAreaFuncional;
+                                purchOrderLineDTO.LineId = registoDePropostasView.NumLinha;
+                                purchOrderLineDTO.LocationCode = registoDePropostasView.CodLocalizacao;
+                                purchOrderLineDTO.OpenOrderLineNo = registoDePropostasView.NumLinhaConsultaMercado;
+                                purchOrderLineDTO.OpenOrderNo = registoDePropostasView.NumConsultaMercado;
+                                purchOrderLineDTO.ProjectNo = registoDePropostasView.NumProjecto;
+                                purchOrderLineDTO.QuantityRequired = registoDePropostasView.Quantidade;
+                                purchOrderLineDTO.RegionCode = registoDePropostasView.CodRegiao;
+                                purchOrderLineDTO.UnitCost = registoDePropostasView.Fornecedor5Preco;
+                                purchOrderLineDTO.UnitMeasureCode = data.LinhasConsultaMercado.Where(x => x.NumLinha == registoDePropostasView.NumLinhaConsultaMercado).FirstOrDefault().CodUnidadeMedida;
+
+                                purchOrderLineDTOs.Add(purchOrderLineDTO);
+                            }
+
+                            PurchOrderDTO purchOrderDTO5 = new PurchOrderDTO()
+                            {
+                                CenterResponsibilityCode = data.CodCentroResponsabilidade,
+                                FunctionalAreaCode = data.CodAreaFuncional,
+                                InAdvance = false,
+                                LocalMarketRegion = string.Empty,
+                                PricesIncludingVAT = false,
+                                RegionCode = data.CodRegiao,
+                                RequisitionId = data.NumRequisicao,
+                                SupplierId = registoDePropostas[0].Fornecedor5Code,
+                                Lines = purchOrderLineDTOs
+                            };
+
+                            purchOrders.Add(purchOrderDTO5);
+                        }
+                    }
+
+                    if (i == 6)
+                    {
+                        registoDePropostas = data.RegistoDePropostas.Where(x => x.Fornecedor6Select.HasValue && x.Fornecedor6Select.Value == true).ToList();
+
+                        if (registoDePropostas.Count() > 0)
+                        {
+                            //vamos criar a encomenda com as linhas
+                            PurchOrderLineDTO purchOrderLineDTO = new PurchOrderLineDTO();
+                            List<PurchOrderLineDTO> purchOrderLineDTOs = new List<PurchOrderLineDTO>();
+
+                            foreach (RegistoDePropostasView registoDePropostasView in registoDePropostas)
+                            {
+                                purchOrderLineDTO.CenterResponsibilityCode = registoDePropostasView.CodCentroResponsabilidade;
+                                purchOrderLineDTO.Code = registoDePropostasView.CodProduto;
+                                purchOrderLineDTO.Description = registoDePropostasView.Descricao;
+                                purchOrderLineDTO.Description2 = registoDePropostasView.Descricao2;
+                                purchOrderLineDTO.DiscountPercentage = 0;
+                                purchOrderLineDTO.FunctionalAreaCode = registoDePropostasView.CodAreaFuncional;
+                                purchOrderLineDTO.LineId = registoDePropostasView.NumLinha;
+                                purchOrderLineDTO.LocationCode = registoDePropostasView.CodLocalizacao;
+                                purchOrderLineDTO.OpenOrderLineNo = registoDePropostasView.NumLinhaConsultaMercado;
+                                purchOrderLineDTO.OpenOrderNo = registoDePropostasView.NumConsultaMercado;
+                                purchOrderLineDTO.ProjectNo = registoDePropostasView.NumProjecto;
+                                purchOrderLineDTO.QuantityRequired = registoDePropostasView.Quantidade;
+                                purchOrderLineDTO.RegionCode = registoDePropostasView.CodRegiao;
+                                purchOrderLineDTO.UnitCost = registoDePropostasView.Fornecedor6Preco;
+                                purchOrderLineDTO.UnitMeasureCode = data.LinhasConsultaMercado.Where(x => x.NumLinha == registoDePropostasView.NumLinhaConsultaMercado).FirstOrDefault().CodUnidadeMedida;
+
+                                purchOrderLineDTOs.Add(purchOrderLineDTO);
+                            }
+
+                            PurchOrderDTO purchOrderDTO6 = new PurchOrderDTO()
+                            {
+                                CenterResponsibilityCode = data.CodCentroResponsabilidade,
+                                FunctionalAreaCode = data.CodAreaFuncional,
+                                InAdvance = false,
+                                LocalMarketRegion = string.Empty,
+                                PricesIncludingVAT = false,
+                                RegionCode = data.CodRegiao,
+                                RequisitionId = data.NumRequisicao,
+                                SupplierId = registoDePropostas[0].Fornecedor6Code,
+                                Lines = purchOrderLineDTOs
+                            };
+
+                            purchOrders.Add(purchOrderDTO6);
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                throw new Exception("Ocorreu um erro ao agrupar as linhas.");
+            }
+
+            if (purchOrders.Count() > 0)
+            {
+                purchOrders.ForEach(purchOrder =>
+                {
+                    try
+                    {
+                        var result = CreateNAVPurchaseOrderFor(purchOrder);
+                        if (result.CompletedSuccessfully)
+                        {
+                            data.eMessages.Add(new TraceInformation(TraceType.Success, "Criada encomenda para o fornecedor núm. " + purchOrder.SupplierId + "; "));
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        data.eMessages.Add(new TraceInformation(TraceType.Error, "Ocorreu um erro ao criar encomenda para o fornecedor núm. " + purchOrder.SupplierId + ": " + ex.Message));
+                    }
+                });
+
+                if (data.eMessages.Any(x => x.Type == TraceType.Error))
+                {
+                    data.eReasonCode = 2;
+                    data.eMessage = "Ocorreram erros ao criar encomenda de compra.";
+                }
+                else
+                {
+                    data.eReasonCode = 1;
+                    data.eMessage = "Encomenda de compra criada com sucesso.";
+                }
+            }
+            else
+            {
+                data.eReasonCode = 3;
+                data.eMessage = "Não existem linhas que cumpram os requisitos de validação do mercado local.";
+            }
+
+            return Json(data);
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> EnviarEmailATodos([FromBody] ConsultaMercadoView data)
+        {
+            //Para cada Fornecedor, criar o pdf da Consulta de Mercado, guardar em algum lado e anexar ao email e enviar!!!
+            foreach (SeleccaoEntidadesView fornecedor in data.SeleccaoEntidades)
+            {
+                string Consulta = data.NumConsultaMercado;
+                string Cod = fornecedor.CodFornecedor;
+
+                string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+                string sFileName = @Consulta + "_" + Cod + "_" + ".pdf";
+
+                var theURL = (_config.ReportServerURL + "ConsultaMercado&rs:Command=Render&rs:format=PDF&CM=" + Consulta + "&Fornecedor=" + Cod);
+
+                WebClient Client = new WebClient
+                {
+                    UseDefaultCredentials = true
+                };
+
+                byte[] myDataBuffer = Client.DownloadData(theURL);
+
+                using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+                {
+                    await fs.WriteAsync(myDataBuffer, 0, myDataBuffer.Length);
+                }
+
+                Stream _my_stream = new MemoryStream(myDataBuffer);
+
+                using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+                {
+                    await stream.CopyToAsync(_my_stream);
+                }
+
+                SendEmailsPedidoCotacao Email = new SendEmailsPedidoCotacao
+                {
+                    DisplayName = User.Identity.Name,
+                    Subject = "Pedido de Cotação",
+                    From = User.Identity.Name,
+                    Anexo = Path.Combine(sWebRootFolder, sFileName)
+                };
+
+                //Email.To.Add(data.SeleccaoEntidades.Where(x => x.CodFornecedor == Cod).First().EmailFornecedor);
+                Email.To.Add(User.Identity.Name);
+
+                Email.Body = MakeEmailBodyContent("Solicitamos Pedido de Cotação", User.Identity.Name);
+                Email.IsBodyHtml = true;
+
+                Email.SendEmail();
+            }
+
+            return Json(data);
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> EnviarEmailAUm([FromBody] JObject requestParams)
+        {
+            //Para o fornecedor selecionado, criar o pdf da Consulta de Mercado, guardar em algum lado e anexar ao email e enviar!!!
+            string Consulta = requestParams["Consulta"].ToString();
+            string Cod = requestParams["Cod"].ToString();
+
+            ConsultaMercado consultaMercado = DBConsultaMercado.GetDetalheConsultaMercado(Consulta);
+            ConsultaMercadoView data = DBConsultaMercado.CastConsultaMercadoToView(consultaMercado);
+
+            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string sFileName = @Consulta + "_" + Cod + "_" + ".pdf";
+
+            var theURL = (_config.ReportServerURL + "ConsultaMercado&rs:Command=Render&rs:format=PDF&CM=" + Consulta + "&Fornecedor=" + Cod);
+
+            WebClient Client = new WebClient
+            {
+                UseDefaultCredentials = true
+            };
+
+            byte[] myDataBuffer = Client.DownloadData(theURL);
+
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                await fs.WriteAsync(myDataBuffer, 0, myDataBuffer.Length);
+            }
+
+            Stream _my_stream = new MemoryStream(myDataBuffer);
+
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(_my_stream);
+            }
+
+            SendEmailsPedidoCotacao Email = new SendEmailsPedidoCotacao
+            {
+                DisplayName = User.Identity.Name,
+                Subject = "Pedido de Cotação",
+                From = User.Identity.Name,
+                Anexo = Path.Combine(sWebRootFolder, sFileName)
+            };
+
+            //Email.To.Add(data.SeleccaoEntidades.Where(x => x.CodFornecedor == Cod).First().EmailFornecedor);
+            Email.To.Add(User.Identity.Name);
+
+            Email.Body = MakeEmailBodyContent("Solicitamos Pedido de Cotação", User.Identity.Name);
+            Email.IsBodyHtml = true;
+            
+            Email.SendEmail();
+
+            return Json(data);
+        }
+
+        public static string MakeEmailBodyContent(string BodyText, string SenderName)
+        {
+            string Body = @"<html>" +
+                                "<head>" +
+                                    "<style>" +
+                                        "table{border:0;} " +
+                                        "td{width:600px; vertical-align: top;}" +
+                                    "</style>" +
+                                "</head>" +
+                                "<body>" +
+                                    "<table>" +
+                                        "<tr><td>&nbsp;</td></tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "Exmos (as) Senhores (as)," +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr><td>&nbsp;</td></tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                BodyText +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "&nbsp;" +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "Com os melhores cumprimentos," +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                SenderName +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "&nbsp;" +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "<i>SUCH - Serviço de Utilização Comum dos Hospitais</i>" +
+                                            "</td>" +
+                                        "</tr>" +
+                                    "</table>" +
+                                "</body>" +
+                            "</html>";
+
+            return Body;
+        }
+
+        private GenericResult CreateNAVPurchaseOrderFor(PurchOrderDTO purchOrder)
+        {
+            GenericResult createPrePurchOrderResult = new GenericResult();
+
+            Task<WSPurchaseInvHeader.Create_Result> createPurchaseHeaderTask = NAVPurchaseHeaderIntermService.CreateAsync(purchOrder, configws);
+            createPurchaseHeaderTask.Wait();
+            if (createPurchaseHeaderTask.IsCompletedSuccessfully)
+            {
+                createPrePurchOrderResult.ResultValue = createPurchaseHeaderTask.Result.WSPurchInvHeaderInterm.No;
+                purchOrder.NAVPrePurchOrderId = createPrePurchOrderResult.ResultValue;
+
+                bool createPurchaseLinesTask = NAVPurchaseLineService.CreateAndUpdateMultipleAsync(purchOrder, configws);
+                if (createPurchaseLinesTask)
+                {
+                    try
+                    {
+                        /*
+                         *  Swallow errors at this stage as they will be managed in NAV
+                         */
+                        //Task<WSGenericCodeUnit.FxCabimento_Result> createPurchOrderTask = WSGeneric.CreatePurchaseOrder(purchOrder.NAVPrePurchOrderId, configws);
+                        //createPurchOrderTask.Start();
+                        ////if (createPurchOrderTask.IsCompletedSuccessfully)
+                        ////{
+                        ////    createPrePurchOrderResult.CompletedSuccessfully = true;
+                        ////}
+                    }
+                    catch (Exception ex) { }
+                    createPrePurchOrderResult.CompletedSuccessfully = true;
+                }
+            }
+            return createPrePurchOrderResult;
+        }
 
         #region Linhas Consulta Mercado
 
@@ -554,31 +1096,33 @@ namespace Hydra.Such.Portal.Controllers
             bool result = false;
             try
             {
-                LinhasConsultaMercado linhaConsultaMercado = new LinhasConsultaMercado();
-                linhaConsultaMercado.CodActividade = data.CodActividade;
-                linhaConsultaMercado.CodAreaFuncional = data.CodAreaFuncional;
-                linhaConsultaMercado.CodCentroResponsabilidade = data.CodCentroResponsabilidade;
-                linhaConsultaMercado.CodLocalizacao = data.CodLocalizacao;
-                linhaConsultaMercado.CodProduto = data.CodProduto;
-                linhaConsultaMercado.CodRegiao = data.CodRegiao;
-                linhaConsultaMercado.CodUnidadeMedida = data.CodUnidadeMedida;
-                linhaConsultaMercado.CriadoEm = DateTime.Now;
-                linhaConsultaMercado.CriadoPor = User.Identity.Name;
-                linhaConsultaMercado.CustoTotalObjectivo = data.CustoTotalObjectivo;
-                linhaConsultaMercado.CustoTotalPrevisto = data.CustoTotalPrevisto;
-                linhaConsultaMercado.CustoUnitarioObjectivo = data.CustoUnitarioObjectivo;
-                linhaConsultaMercado.CustoUnitarioPrevisto = data.CustoUnitarioPrevisto;
-                linhaConsultaMercado.DataEntregaPrevista = data.DataEntregaPrevista_Show != string.Empty ? DateTime.Parse(data.DataEntregaPrevista_Show) : (DateTime?)null;
-                linhaConsultaMercado.Descricao = data.Descricao;
-                linhaConsultaMercado.Descricao2 = data.Descricao2;
-                linhaConsultaMercado.LinhaRequisicao = data.LinhaRequisicao;
-                linhaConsultaMercado.ModificadoEm = data.ModificadoEm;
-                linhaConsultaMercado.ModificadoPor = data.ModificadoPor;
-                linhaConsultaMercado.NumConsultaMercado = data.NumConsultaMercado;
-                //linhaConsultaMercado.NumLinha = data.NumLinha;
-                linhaConsultaMercado.NumProjecto = data.NumProjecto;
-                linhaConsultaMercado.NumRequisicao = data.NumRequisicao;
-                linhaConsultaMercado.Quantidade = data.Quantidade;
+                LinhasConsultaMercado linhaConsultaMercado = new LinhasConsultaMercado
+                {
+                    CodActividade = data.CodActividade,
+                    CodAreaFuncional = data.CodAreaFuncional,
+                    CodCentroResponsabilidade = data.CodCentroResponsabilidade,
+                    CodLocalizacao = data.CodLocalizacao,
+                    CodProduto = data.CodProduto,
+                    CodRegiao = data.CodRegiao,
+                    CodUnidadeMedida = data.CodUnidadeMedida,
+                    CriadoEm = DateTime.Now,
+                    CriadoPor = User.Identity.Name,
+                    CustoTotalObjectivo = data.CustoTotalObjectivo,
+                    CustoTotalPrevisto = data.CustoTotalPrevisto,
+                    CustoUnitarioObjectivo = data.CustoUnitarioObjectivo,
+                    CustoUnitarioPrevisto = data.CustoUnitarioPrevisto,
+                    DataEntregaPrevista = data.DataEntregaPrevista_Show != string.Empty ? DateTime.Parse(data.DataEntregaPrevista_Show) : (DateTime?)null,
+                    Descricao = data.Descricao,
+                    Descricao2 = data.Descricao2,
+                    LinhaRequisicao = data.LinhaRequisicao,
+                    ModificadoEm = data.ModificadoEm,
+                    ModificadoPor = data.ModificadoPor,
+                    NumConsultaMercado = data.NumConsultaMercado,
+                    //linhaConsultaMercado.NumLinha = data.NumLinha;
+                    NumProjecto = data.NumProjecto,
+                    NumRequisicao = data.NumRequisicao,
+                    Quantidade = data.Quantidade
+                };
 
                 var dbCreateResult = DBConsultaMercado.Create(linhaConsultaMercado);
 
@@ -675,16 +1219,31 @@ namespace Hydra.Such.Portal.Controllers
             bool result = false;
             try
             {
-                SeleccaoEntidades seleccaoEntidades = new SeleccaoEntidades();
-                seleccaoEntidades.CidadeFornecedor = null;
-                seleccaoEntidades.CodActividade = data.CodActividade;
-                seleccaoEntidades.CodFormaPagamento = data.CodFormaPagamento;
-                seleccaoEntidades.CodFornecedor = data.CodFornecedor;
-                seleccaoEntidades.CodTermosPagamento = data.CodTermosPagamento;
-                seleccaoEntidades.NomeFornecedor = data.NomeFornecedor;
-                seleccaoEntidades.NumConsultaMercado = data.NumConsultaMercado;
-                seleccaoEntidades.Preferencial = data.Preferencial;
-                seleccaoEntidades.Selecionado = true;
+
+                string _Email = string.Empty;
+                try
+                {
+                    _Email = DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName).Where(x => x.No_ == data.CodFornecedor).First().Email;
+                }
+                catch
+                {
+                    _Email = string.Empty;
+                }
+
+
+                SeleccaoEntidades seleccaoEntidades = new SeleccaoEntidades
+                {
+                    CidadeFornecedor = null,
+                    CodActividade = data.CodActividade,
+                    CodFormaPagamento = data.CodFormaPagamento,
+                    CodFornecedor = data.CodFornecedor,
+                    CodTermosPagamento = data.CodTermosPagamento,
+                    NomeFornecedor = data.NomeFornecedor,
+                    NumConsultaMercado = data.NumConsultaMercado,
+                    Preferencial = data.Preferencial,
+                    Selecionado = true,
+                    EmailFornecedor = _Email
+                };
 
                 var dbCreateResult = DBConsultaMercado.Create(seleccaoEntidades);
 
@@ -707,6 +1266,18 @@ namespace Hydra.Such.Portal.Controllers
             try
             {
                 SeleccaoEntidades seleccaoEntidades = DBConsultaMercado.CastSeleccaoEntidadesViewToDB(data);
+
+                string _Email = string.Empty;
+                try
+                {
+                    _Email = DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName).Where(x => x.No_ == data.CodFornecedor).First().Email;
+                }
+                catch
+                {
+                    _Email = string.Empty;
+                }
+
+                seleccaoEntidades.EmailFornecedor = _Email;
 
                 var dbUpdateResult = DBConsultaMercado.Update(seleccaoEntidades);
 

@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Configuração de Compras";
+    ViewData["Title"] = "Configuração Vendas - Alertas";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
@@ -58,7 +58,7 @@
         </custom-style>
 
         @*POPULATE GRID*@
-        <iron-ajax url="/Administracao/GetConfigCompras"
+        <iron-ajax url="/Administracao/GetConfigVendasAlertas"
                    last-response="{{result}}"
                    method="post"
                    auto
@@ -68,7 +68,7 @@
         </iron-ajax>
 
         @*POPULATE Update*@
-        <iron-ajax url="/Administracao/UpdateConfigCompras"
+        <iron-ajax url="/Administracao/UpdateConfigVendasAlertas"
                    last-response="{{result}}"
                    method="post"
                    handle-as="json"
@@ -187,7 +187,7 @@
                         this.$.page_databound_ajax.generateRequest();
                     }
                     else {
-                        this.openToastError('Ocorreu um erro ao atualizar a Tabela Configuração de Compras.');
+                        this.openToastError('Ocorreu um erro ao atualizar a Tabela Configuração de Vendas - Alertas.');
                     }
                 },
 

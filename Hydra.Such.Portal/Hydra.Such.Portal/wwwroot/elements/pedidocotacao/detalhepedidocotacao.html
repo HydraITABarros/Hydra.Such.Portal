@@ -1205,9 +1205,9 @@
                             <vaadin-grid-filter path="codProduto"></vaadin-grid-filter>
                         </template>
                         <template>
-                            
 
-                              <!--<vaadin-text-field name="tabLinhascodProduto" id="tabLinhascodProduto" value="{{item.codProduto}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}"></vaadin-text-field>-->
+
+                            <!--<vaadin-text-field name="tabLinhascodProduto" id="tabLinhascodProduto" value="{{item.codProduto}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}"></vaadin-text-field>-->
                             <vaadin-combo-box items="[[CBItems_List]]" id="tabLinhascodProduto" item-value-path="id" item-label-path="id" value="{{item.codProduto}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}" style="text-align:left;">
                                 <template>
                                     <table width="200px">
@@ -1309,8 +1309,9 @@
                             <vaadin-grid-filter path="codRegiao"></vaadin-grid-filter>
                         </template>
                         <template>
-                            >
-                              <!--<vaadin-text-field name="tabLinhascodRegiao" id="tabLinhascodRegiao" value="{{item.codRegiao}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}"></vaadin-text-field>-->
+                            >
+
+                            <!--<vaadin-text-field name="tabLinhascodRegiao" id="tabLinhascodRegiao" value="{{item.codRegiao}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}"></vaadin-text-field>-->
                             <vaadin-combo-box items="[[CBRegions]]" id="tabLinhascodRegiao" name="tabLinhascodRegiao" item-value-path="id" item-label-path="id" value="{{item.codRegiao}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}">
                                 <template>
                                     <table width="200px">
@@ -2367,17 +2368,19 @@
                     //self._filtraFornecedores();
                     var fornecedores = {};
 
-                    for (var i = 1; i <= 6; i++) {
-                        if (data.detail.response.registoDePropostas[0]['fornecedor' + i + 'Nome'] == null) {
-                            self.$['Entidade' + i].innerHTML = ' ';
-                            $(self.$['Entidade' + i]).parents('[class^="col-"]').hide();
+                    if (data.detail.response.registoDePropostas) {
+                        for (var i = 1; i <= 6; i++) {
+                            if (data.detail.response.registoDePropostas[0]['fornecedor' + i + 'Nome'] == null) {
+                                self.$['Entidade' + i].innerHTML = ' ';
+                                $(self.$['Entidade' + i]).parents('[class^="col-"]').hide();
 
-                        }
-                        else {
-                            self.$['Entidade' + i].innerHTML = ' ' + data.detail.response.registoDePropostas[0]['fornecedor' + i + 'Nome'];
-                            //self.fornecedores["" + i] = ' ' + data.detail.response.registoDePropostas[0]['fornecedor' + i + 'Nome'];
-                            self["fornecedor" + i] = ' ' + data.detail.response.registoDePropostas[0]['fornecedor' + i + 'Nome'];
-                            self["hasfornecedor" + i] = true;
+                            }
+                            else {
+                                self.$['Entidade' + i].innerHTML = ' ' + data.detail.response.registoDePropostas[0]['fornecedor' + i + 'Nome'];
+                                //self.fornecedores["" + i] = ' ' + data.detail.response.registoDePropostas[0]['fornecedor' + i + 'Nome'];
+                                self["fornecedor" + i] = ' ' + data.detail.response.registoDePropostas[0]['fornecedor' + i + 'Nome'];
+                                self["hasfornecedor" + i] = true;
+                            }
                         }
                     }
                 },
@@ -2452,4 +2455,5 @@
             });
         });
     </script>
+
 </dom-module>

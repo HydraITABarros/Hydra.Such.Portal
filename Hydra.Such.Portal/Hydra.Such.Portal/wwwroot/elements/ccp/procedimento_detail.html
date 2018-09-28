@@ -229,8 +229,19 @@
             }
 
             /*NR20180313*/
-            .subMenu {
+            .subMenuDrop {
                 background-color: #D5662F !important;
+                padding: 0px !important;
+                min-width: 50px !important;
+                height: 30px !important;
+                cursor: pointer;
+                margin-top: 7px;
+                border-radius: 4px !important;
+            }
+
+            /*zpgm.MenuFunções*/
+            .subMenuFuncoes {
+                background-color: #AE98D3 !important;
                 padding: 0px !important;
                 min-width: 50px !important;
                 height: 30px !important;
@@ -850,7 +861,27 @@
                    on-response="_deletedAttachResponse"
                    content-type="application/json"></iron-ajax>
         <!-- Anexos.e -->
+        <!-- MenuButton Funções.b -->
+        <iron-ajax url="/ProcedimentosCcps/CloseProcedimentoByRequest"
+                   last-response="{{ procedimentoClosed }}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_request_closing"
+                   on-response="_closingProcedimentoResponse"
+                   content-type="application/json">
+        </iron-ajax>
+        <!-- MenuButton Funções.e -->
         <!-- Controller actions.e -->
+       
+        <div class="subMenu">
+            <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+            <paper-button raised id="btnUpdate" class="tablinks" on-tap="_update" disabled="{{ _isCreate }}" title="Gravar" style="background-color:#1DB73C"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Gravar</paper-button>
+            <paper-button raised id="btnCancel" class="tablinks" on-tap="_delete" disabled="{{ _isCreate }}" title="Eliminar" style="background-color:#D84949"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+            <such-dropdown-menu id="actionButtonFuncoes" on-value-changed="_mnuFuncoes_ItemSelected" title=" Funções " items="[[ _mnuFuncoes_MenuItems ]]"></such-dropdown-menu>
+            <paper-button class="tablinks" on-tap="_printProcedimento" id="_btnPrint"><i class="fa fa-print" aria-hidden="true"></i> Imprimir</paper-button>
+        </div>
+
+
         <!-- Header section of the Procedimento details -->
         <div class="panel panel-default">
             <div class="panel-heading">Cabeçalho</div>
@@ -862,17 +893,18 @@
                         </div>
                         <div class="col-sm-3">
                             <!--<vaadin-combo-box items="[[CBRegions]]" id="codigoRegiao" item-value-path="id" item-label-path="value" value="{{data.codigoRegiao}}" label="Cód. Região" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
-                                <template>
-                                    <table width="250px">
-                                        <tr>
-                                            <td width="20%">[[item.id]]</td>
-                                            <td width="80%">
-                                                <b>[[item.value]]</b>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </template>
-                            </vaadin-combo-box>-->
+                            <template>
+                                <table width="250px">
+                                    <tr>
+                                        <td width="20%">[[item.id]]</td>
+                                        <td width="80%">
+                                            <b>[[item.value]]</b>
+                                        </td>
+                                    </tr>
+
+                                </table>
+                            </template>
+                        </vaadin-combo-box>-->
 
                             <such-selectbox id="codigoRegiao" name="codigoRegiao" value="{{data.codigoRegiao}}" label="Cód. Região" disabled="{{ !_permissions.update }}"
                                             items="[[CBRegions]]"
@@ -885,17 +917,17 @@
                         </div>
                         <div class="col-sm-3">
                             <!--<vaadin-combo-box items="[[CBFunctionalAreas]]" id="codigoAreaFuncional" item-value-path="id" item-label-path="value" value="{{data.codigoAreaFuncional}}" label="Àrea Funcional" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
-                                <template>
-                                    <table width="250px">
-                                        <tr>
-                                            <td width="30%">[[item.id]]</td>
-                                            <td width="70%">
-                                                <b>[[item.value]]</b>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </template>
-                            </vaadin-combo-box>-->
+                            <template>
+                                <table width="250px">
+                                    <tr>
+                                        <td width="30%">[[item.id]]</td>
+                                        <td width="70%">
+                                            <b>[[item.value]]</b>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>-->
 
 
                             <such-selectbox id="codigoAreaFuncional" name="codigoAreaFuncional" value="{{data.codigoAreaFuncional}}" label="Cód. Área Funcional" disabled="{{ !_permissions.update }}"
@@ -908,17 +940,17 @@
                         </div>
                         <div class="col-sm-3">
                             <!--<vaadin-combo-box items="[[CBResponsabilityCenterCodes]]" id="codigoCentroResponsabilidade" item-value-path="id" item-label-path="value" value="{{data.codigoCentroResponsabilidade}}" label="Centro Responsabilidade" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
-                                <template>
-                                    <table width="180px">
-                                        <tr>
-                                            <td width="40%">[[item.id]]</td>
-                                            <td width="60%">
-                                                <b>[[item.value]]</b>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </template>
-                            </vaadin-combo-box>-->
+                            <template>
+                                <table width="180px">
+                                    <tr>
+                                        <td width="40%">[[item.id]]</td>
+                                        <td width="60%">
+                                            <b>[[item.value]]</b>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>-->
 
                             <such-selectbox id="codigoCentroResponsabilidade" name="codigoCentroResponsabilidade" value="{{data.codigoCentroResponsabilidade}}" label="Cód. Centro Respon." disabled="{{ !_permissions.update }}"
                                             items="[[CBResponsabilityCenterCodes]]"
@@ -1588,7 +1620,7 @@
                                         <div class="clearfix"></div>
                                         <div class="clearfix"></div>
                                         <div class="col-lg-6">
-                                            <such-dropdown-menu class="subMenu" id="actionButtonContabilidade1" on-value-changed="_mnuAccao1_ItemSelected" title=" Acções " items="[[ _mnuAccao1_MenuItems ]]"></such-dropdown-menu>
+                                            <such-dropdown-menu class="subMenuDrop" id="actionButtonContabilidade1" on-value-changed="_mnuAccao1_ItemSelected" title=" Acções " items="[[ _mnuAccao1_MenuItems ]]"></such-dropdown-menu>
                                         </div>
                                     </div>
                                 </div>
@@ -1623,7 +1655,7 @@
                                             </div>
                                             <div class="col-sm-3" id="idDivAccao2">
                                                 <br />
-                                                <such-dropdown-menu class="subMenu" id="actionButtonArea2" disabled="true" on-value-changed="_mnuAccao2_ItemSelected" title=" Acções " items="[[ _mnuAccao2_MenuItems ]]"></such-dropdown-menu>
+                                                <such-dropdown-menu class="subMenuDrop" id="actionButtonArea2" disabled="true" on-value-changed="_mnuAccao2_ItemSelected" title=" Acções " items="[[ _mnuAccao2_MenuItems ]]"></such-dropdown-menu>
                                             </div>
                                         </div>
                                         <div class="clearfix"></div>
@@ -1812,7 +1844,7 @@
                                         </div>
                                     </div>
                                     <div class="col-lg-6">
-                                        <such-dropdown-menu class="subMenu" id="actionButtonCompras" on-value-changed="_mnuAccao4_ItemSelected" title=" Acções " items="[[ _mnuAccao4_MenuItems ]]"></such-dropdown-menu>
+                                        <such-dropdown-menu class="subMenuDrop" id="actionButtonCompras" on-value-changed="_mnuAccao4_ItemSelected" title=" Acções " items="[[ _mnuAccao4_MenuItems ]]"></such-dropdown-menu>
                                     </div>
                                 </div>
                                 <div class="clearfix"></div>
@@ -1845,7 +1877,7 @@
                                         </div>
                                         <div class="col-sm-3">
                                             <br />
-                                            <such-dropdown-menu class="subMenu" id="actionButtonFinanceiros" on-value-changed="_mnuAccao5_ItemSelected" title=" Acções " items="[[ _mnuAccao5_MenuItems ]]"></such-dropdown-menu>
+                                            <such-dropdown-menu class="subMenuDrop" id="actionButtonFinanceiros" on-value-changed="_mnuAccao5_ItemSelected" title=" Acções " items="[[ _mnuAccao5_MenuItems ]]"></such-dropdown-menu>
                                         </div>
                                     </div>
                                 </div>
@@ -1879,7 +1911,7 @@
                                         </div>
                                         <div class="col-sm-3">
                                             <br />
-                                            <such-dropdown-menu class="subMenu" id="actionButtonPedidoAberturaProc" on-value-changed="_mnuAccao7_ItemSelected" title=" Acções " items="[[ _mnuAccao7_MenuItems ]]"></such-dropdown-menu>
+                                            <such-dropdown-menu class="subMenuDrop" id="actionButtonPedidoAberturaProc" on-value-changed="_mnuAccao7_ItemSelected" title=" Acções " items="[[ _mnuAccao7_MenuItems ]]"></such-dropdown-menu>
                                         </div>
                                     </div>
                                 </div>
@@ -2031,7 +2063,7 @@
                                                 </div>
                                                 <div class="col-lg-6">
                                                     <br />
-                                                    <such-dropdown-menu class="subMenu pull-right" id="btnConfirmRelatorioFinal" on-value-changed="_mnuAccao13_ItemSelected" title=" Acções " items="[[ _mnuAccao13_MenuItems ]]"></such-dropdown-menu>
+                                                    <such-dropdown-menu class="subMenuDrop pull-right" id="btnConfirmRelatorioFinal" on-value-changed="_mnuAccao13_ItemSelected" title=" Acções " items="[[ _mnuAccao13_MenuItems ]]"></such-dropdown-menu>
                                                 </div>
                                             </div>
                                         </div>
@@ -2111,7 +2143,7 @@
                                         <div class="clearfix"></div>
                                     </div>
                                     <div class="col-lg-6">
-                                        <such-dropdown-menu class="subMenu" id="actionButtonPedidoAberturaProc6" on-value-changed="_mnuAccao6_ItemSelected" title=" Acções " items="[[ _mnuAccao6_MenuItems ]]"></such-dropdown-menu>
+                                        <such-dropdown-menu class="subMenuDrop" id="actionButtonPedidoAberturaProc6" on-value-changed="_mnuAccao6_ItemSelected" title=" Acções " items="[[ _mnuAccao6_MenuItems ]]"></such-dropdown-menu>
                                     </div>
                                 </div>
                                 <div class="clearfix"></div>
@@ -2147,7 +2179,7 @@
                                         <div class="clearfix"></div>
                                     </div>
                                     <div class="col-lg-6">
-                                        <such-dropdown-menu class="subMenu" id="actionButtonPedidoAberturaProc14" on-value-changed="_mnuAccao14_ItemSelected" title=" Acções " items="[[ _mnuAccao14_MenuItems ]]"></such-dropdown-menu>
+                                        <such-dropdown-menu class="subMenuDrop" id="actionButtonPedidoAberturaProc14" on-value-changed="_mnuAccao14_ItemSelected" title=" Acções " items="[[ _mnuAccao14_MenuItems ]]"></such-dropdown-menu>
                                     </div>
                                 </div>
                                 <div class="clearfix"></div>
@@ -2459,38 +2491,38 @@
                                 </div>
                             </div>
                             <!--<div class="col-xs-6">
-                                <div class="panel panel-default">
-                                    <div class="panel-heading">Acordos c/ fornecedores</div>
-                                    <div class="panel-body">
-                                        <div class="">
-                                            <div class="row">
-                                                <div class="col-xs-12">
-                                                    <vaadin-text-field type="number" value="{{data.adjudicacaoAcordosNo}}" id="adjudicacaoAcordosNo" name="adjudicacaoAcordosNo" label="Nº Contratos/Acordos"></vaadin-text-field>
-                                                </div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading">Acordos c/ fornecedores</div>
+                                <div class="panel-body">
+                                    <div class="">
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <vaadin-text-field type="number" value="{{data.adjudicacaoAcordosNo}}" id="adjudicacaoAcordosNo" name="adjudicacaoAcordosNo" label="Nº Contratos/Acordos"></vaadin-text-field>
                                             </div>
-                                            <div class="row break_clear">
-                                                <div class="col-sm-6">
-                                                    <vaadin-combo-box value="{{data.fornecedor}}" label="Fornecedor" items="[[cboSupplier]]" item-value-path="id" id="adjudicacaoAcordosFornecedor" item-label-path="value">
-                                                        <template>
-                                                            <paper-icon-item>
-                                                                <paper-item-body two-line>
-                                                                    <div>[[item.value]]</div>
-                                                                </paper-item-body>
-                                                            </paper-icon-item>
-                                                        </template>
-                                                    </vaadin-combo-box>
-                                                </div>
+                                        </div>
+                                        <div class="row break_clear">
+                                            <div class="col-sm-6">
+                                                <vaadin-combo-box value="{{data.fornecedor}}" label="Fornecedor" items="[[cboSupplier]]" item-value-path="id" id="adjudicacaoAcordosFornecedor" item-label-path="value">
+                                                    <template>
+                                                        <paper-icon-item>
+                                                            <paper-item-body two-line>
+                                                                <div>[[item.value]]</div>
+                                                            </paper-item-body>
+                                                        </paper-icon-item>
+                                                    </template>
+                                                </vaadin-combo-box>
                                             </div>
-                                            <div class="row break_clear">
-                                                <div class="col-sm-12">
-                                                    <br />
-                                                    <paper-button raised id="btnNovoAcordoAdjudicacaoAcordos" class="btn--confirm pull-right" on-tap="_novoAcordoAdjudicacaoAcordos">Criar Novo Contrato/Acordo</paper-button>
-                                                </div>
+                                        </div>
+                                        <div class="row break_clear">
+                                            <div class="col-sm-12">
+                                                <br />
+                                                <paper-button raised id="btnNovoAcordoAdjudicacaoAcordos" class="btn--confirm pull-right" on-tap="_novoAcordoAdjudicacaoAcordos">Criar Novo Contrato/Acordo</paper-button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>-->
+                            </div>
+                        </div>-->
                             <div class="col-xs-6">
                                 <div class="panel panel-default">
                                     <div class="panel-heading">Acordo de Preços</div>
@@ -2528,42 +2560,42 @@
                             </div>
                             <div class="clearfix"></div>
                             <!--<div class="col-xs-6">
-                                <div class="panel panel-default">
-                                    <div class="panel-heading">Contratos Fornecedores</div>
-                                    <div class="panel-body">
-                                        <div class="">
-                                            <div class="row">
-                                                <div class="col-xs-12">
-                                                    <vaadin-text-field type="number" value="{{data.adjudicacaoContratosNo}}" id="adjudicacaoContratosNo" name="adjudicacaoContratosNo" label="Nº Contratos"></vaadin-text-field>
-                                                </div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading">Contratos Fornecedores</div>
+                                <div class="panel-body">
+                                    <div class="">
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <vaadin-text-field type="number" value="{{data.adjudicacaoContratosNo}}" id="adjudicacaoContratosNo" name="adjudicacaoContratosNo" label="Nº Contratos"></vaadin-text-field>
                                             </div>
-                                            <div class="row break_clear">
-                                                <div class="col-sm-6">
-                                                    <vaadin-combo-box value="{{data.adjudicacaoContratosFornecedor}}" label="Fornecedor" items="[[cboSupplier]]" item-value-path="id" id="adjudicacaoContratosFornecedor" item-label-path="value">
-                                                        <template>
-                                                            <paper-icon-item>
-                                                                <paper-item-body two-line>
-                                                                    <div>[[item.value]]</div>
-                                                                </paper-item-body>
-                                                            </paper-icon-item>
-                                                        </template>
-                                                    </vaadin-combo-box>
-                                                </div>
-                                                <div class="col-sm-6">
-                                                    <vaadin-text-field type="text" value="{{data.adjudicacaoContratosValor}}" id="adjudicacaoContratosValor" name="adjudicacaoContratosValor" label="Valor Contrato" maxlength="18" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"> </vaadin-text-field>
-                                                </div>
+                                        </div>
+                                        <div class="row break_clear">
+                                            <div class="col-sm-6">
+                                                <vaadin-combo-box value="{{data.adjudicacaoContratosFornecedor}}" label="Fornecedor" items="[[cboSupplier]]" item-value-path="id" id="adjudicacaoContratosFornecedor" item-label-path="value">
+                                                    <template>
+                                                        <paper-icon-item>
+                                                            <paper-item-body two-line>
+                                                                <div>[[item.value]]</div>
+                                                            </paper-item-body>
+                                                        </paper-icon-item>
+                                                    </template>
+                                                </vaadin-combo-box>
                                             </div>
-                                            <div class="row break_clear">
+                                            <div class="col-sm-6">
+                                                <vaadin-text-field type="text" value="{{data.adjudicacaoContratosValor}}" id="adjudicacaoContratosValor" name="adjudicacaoContratosValor" label="Valor Contrato" maxlength="18" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"> </vaadin-text-field>
+                                            </div>
+                                        </div>
+                                        <div class="row break_clear">
 
-                                                <div class="col-sm-12">
-                                                    <br />
-                                                    <paper-button raised id="btnNovoContratoAdjudicacaoAcordos" class="btn--confirm pull-right" on-tap="_novoContratoAdjudicacaoAcordos">Criar Contrato</paper-button>
-                                                </div>
+                                            <div class="col-sm-12">
+                                                <br />
+                                                <paper-button raised id="btnNovoContratoAdjudicacaoAcordos" class="btn--confirm pull-right" on-tap="_novoContratoAdjudicacaoAcordos">Criar Contrato</paper-button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>-->
+                            </div>
+                        </div>-->
                             <div class="col-xs-6">
                                 <div class="panel panel-default">
                                     <div class="panel-heading">Encomendas a Fornecedores</div>
@@ -3528,7 +3560,7 @@
                 </iron-pages>
 
                 <!-- Save and Create Buttons -->
-                <div id="botoes_accao" class="marginSpace">
+                <!--<div id="botoes_accao" class="marginSpace">
                     <template is="dom-if" if="{{ _isCreate }}">
                         <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                     </template>
@@ -3536,7 +3568,7 @@
                         <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
                         <paper-button raised id="btnCancel" class="btnRemove" on-tap="_delete"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
                     </template>
-                </div>
+                </div>-->
             </div>
         </div>
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
@@ -3581,7 +3613,16 @@
                         type: Array,
                         value: [{ value: 1, description: "Enviar p/ Compras(15)" }],
                     },
-
+                     // zpgm.MenuFunções.b
+                    _mnuFuncoes_MenuItems: {
+                        type: Array,
+                        value: [
+                            { value: 1, description: "Fecho do Processo (20)" },
+                            { value: 2, description: "Obter Ref. Procedimento" },
+                            { value: 3, description: "Libertar Processo Suspenso" }
+                        ],
+                    },
+                    // zpgm.MenuFunções.e
                     _procedimentoid: {
                         type: String,
                         notify: true,
@@ -5739,7 +5780,6 @@
                     window.location.href = "/Administracao/AcordoPrecos/" + this.data.no;
                 },
 
-
                 //NR 20180313
                 _mnuAccao1_ItemSelected: function (e) {
                     if (this.$.id_Estado.value != 1) {
@@ -5927,6 +5967,67 @@
                     }
                 },
 
+                // zpgm.MenuFunções.b
+                _closeProcedimentoByUserRequest: function () {
+                    debugger;;
+                    if (!this.__isFechoProcesso) {
+                        this._showErrorMessage("Não está autorizado a executar esta acção!");
+                        return;
+                    } 
+
+                    if (this.data.caRatificar) {
+                        this._showErrorMessage("Este Procedimento está pendente de Ratificação pelo CA!");
+                        return;
+                    }
+
+                    var ajax_request = this.$.ajax_request_closing;
+                    ajax_request.body = JSON.stringify(this.data);
+
+                    this._confirmAndExecuteActionToast(
+                        "Confirma o Arquivamento do Processo?",
+                        ajax_request
+                    );
+
+                    ////NR 20180301 - Se não fizer isto, o this.data.nomeProcesso não leva o valor que têm!!!
+                    this.data.nomeProcesso = this.$.nomeProcesso.value;
+                    this.$.ajax_request_closing.body = JSON.stringify(this.data);
+                },
+                _closingProcedimentoResponse: function (e) {
+                    if (this.procedimentoClosed.eReasonCode == 0) {
+                            this._openToast("Procedimento " + this.data.no + " arquivado!");
+                        setTimeout(
+                            function () {
+                            }, 3000);
+
+                        if (this._procedimentotypeid == 1)
+                            window.location.replace("/ProcedimentosCcps/PedidoAquisicao/");
+                        else
+                            window.location.replace("/ProcedimentosCcps/PedidoSimplificado/");
+
+                    } else {
+                        this._openToast(this._procedimentoClosed.eMessage);
+                    }
+                },
+
+                _mnuFuncoes_ItemSelected: function (e) {
+                    debugger;;
+                    var item = e.detail.value;
+
+                    if (item == null)
+                        return;
+
+                    this._newStatus = item.value;
+
+                    switch (this._newStatus) {
+                        case 1:
+                            this._closeProcedimentoByUserRequest();
+                            break;
+                        //case 2:
+                        //    this._imobReturnToArea();
+                        //    break;
+                    }
+                },
+                // zpgm.MenuFunções.e
                 _setFieldsEditability(data) {
                     var _self = this;
                     //if (data.estado == 0) {
@@ -6341,6 +6442,9 @@
                     this.$.page_databound_ajax.url = url;
                     this.$.page_databound_ajax.body = JSON.stringify(data);
                     this.$.page_databound_ajax.generateRequest();
+                },
+                _goBack: function (e) {
+                    window.history.back();
                 }
             });
         });

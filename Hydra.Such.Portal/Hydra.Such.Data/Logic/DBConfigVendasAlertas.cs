@@ -8,16 +8,16 @@ using Hydra.Such.Data.Extensions;
 
 namespace Hydra.Such.Data.Logic
 {
-    public static class DBConfigCompras
+    public static class DBConfigVendasAlertas
     {
         #region CRUD
-        public static ConfiguraçãoCompras GetByNo(int ID)
+        public static ConfiguraçãoVendasAlertas GetByNo(int ID)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.ConfiguraçãoCompras.Where(x => x.Id == ID).FirstOrDefault();
+                    return ctx.ConfiguraçãoVendasAlertas.Where(x => x.Id == ID).FirstOrDefault();
                 }
             }
             catch (Exception ex)
@@ -27,14 +27,14 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
-        public static ConfiguraçãoCompras Create(ConfiguraçãoCompras ObjectToCreate)
+        public static ConfiguraçãoVendasAlertas Create(ConfiguraçãoVendasAlertas ObjectToCreate)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
                     ObjectToCreate.DataHoraCriacao = DateTime.Now;
-                    ctx.ConfiguraçãoCompras.Add(ObjectToCreate);
+                    ctx.ConfiguraçãoVendasAlertas.Add(ObjectToCreate);
                     ctx.SaveChanges();
                 }
 
@@ -47,14 +47,14 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
-        public static ConfiguraçãoCompras Update(ConfiguraçãoCompras ObjectToUpdate)
+        public static ConfiguraçãoVendasAlertas Update(ConfiguraçãoVendasAlertas ObjectToUpdate)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
                     ObjectToUpdate.DataHoraModificacao = DateTime.Now;
-                    ctx.ConfiguraçãoCompras.Update(ObjectToUpdate);
+                    ctx.ConfiguraçãoVendasAlertas.Update(ObjectToUpdate);
                     ctx.SaveChanges();
                 }
 
@@ -70,12 +70,12 @@ namespace Hydra.Such.Data.Logic
 
         #endregion
 
-        public static ConfiguraçãoCompras ParseToDB(ConfiguracaoComprasViewModel x)
+        public static ConfiguraçãoVendasAlertas ParseToDB(ConfiguracaoVendasAlertasViewModel x)
         {
             if (x == null)
                 return null;
 
-            ConfiguraçãoCompras result = new ConfiguraçãoCompras()
+            ConfiguraçãoVendasAlertas result = new ConfiguraçãoVendasAlertas()
             {
                 Id = x.ID,
                 Email1Regiao12 = x.Email1Regiao12,
@@ -96,12 +96,12 @@ namespace Hydra.Such.Data.Logic
             return result;
         }
 
-        public static ConfiguracaoComprasViewModel ParseToViewModel(ConfiguraçãoCompras x)
+        public static ConfiguracaoVendasAlertasViewModel ParseToViewModel(ConfiguraçãoVendasAlertas x)
         {
             if (x == null)
                 return null;
 
-            ConfiguracaoComprasViewModel result = new ConfiguracaoComprasViewModel()
+            ConfiguracaoVendasAlertasViewModel result = new ConfiguracaoVendasAlertasViewModel()
             {
                 ID = x.Id,
                 Email1Regiao12 = x.Email1Regiao12,

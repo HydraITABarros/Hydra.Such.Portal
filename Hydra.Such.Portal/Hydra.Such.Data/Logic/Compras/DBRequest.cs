@@ -144,8 +144,10 @@ namespace Hydra.Such.Data.Logic.Request
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    ctx.LinhasRequisição.RemoveRange(ObjectToDelete.LinhasRequisição);
-                    ctx.RequisicoesRegAlteracoes.RemoveRange(ObjectToDelete.RequisicoesRegAlteracoes);
+                    //if (ObjectToDelete.LinhasRequisição.Count() > 0)
+                    //    ctx.LinhasRequisição.RemoveRange(ObjectToDelete.LinhasRequisição);
+                    //if (ObjectToDelete.RequisicoesRegAlteracoes.Count() > 0)
+                    //    ctx.RequisicoesRegAlteracoes.RemoveRange(ObjectToDelete.RequisicoesRegAlteracoes);
                     ctx.Requisição.Remove(ObjectToDelete);
                     ctx.SaveChanges();
                 }

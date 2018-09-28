@@ -4473,8 +4473,8 @@ namespace Hydra.Such.Portal.Controllers
         }
         #endregion
 
-        #region Config Compras
-        public IActionResult ConfigCompras()
+        #region Config Vendas Alertas
+        public IActionResult ConfigVendasAlertas()
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminGeral);
             if (UPerm != null && UPerm.Read.Value)
@@ -4491,18 +4491,18 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetConfigCompras()
+        public JsonResult GetConfigVendasAlertas()
         {
-            ConfiguraçãoCompras result = DBConfigCompras.GetByNo(1);
+            ConfiguraçãoVendasAlertas result = DBConfigVendasAlertas.GetByNo(1);
 
             return Json(result);
         }
 
         [HttpPost]
-        public JsonResult UpdateConfigCompras([FromBody] ConfiguracaoComprasViewModel data)
+        public JsonResult UpdateConfigVendasAlertas([FromBody] ConfiguracaoVendasAlertasViewModel data)
         {
 
-            ConfiguraçãoCompras Compra = new ConfiguraçãoCompras()
+            ConfiguraçãoVendasAlertas Compra = new ConfiguraçãoVendasAlertas()
             {
                 Id = 1,
                 Email1Regiao12 = data.Email1Regiao12,
@@ -4520,7 +4520,7 @@ namespace Hydra.Such.Portal.Controllers
                 DataHoraModificacao = DateTime.Now
             };
 
-            DBConfigCompras.Update(Compra);
+            DBConfigVendasAlertas.Update(Compra);
 
             return Json(data);
         }

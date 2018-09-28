@@ -11,7 +11,7 @@
     <DataSource Name="eSuchSqlNavDev">
       <ConnectionProperties>
         <DataProvider>SQL</DataProvider>
-        <ConnectString>Data Source=10.101.1.10\sqlnavdev;Initial Catalog=PlataformaOperacionalSUCH</ConnectString>
+        <ConnectString>Data Source=10.101.1.10\sqlnav;Initial Catalog=eSuch_PROD</ConnectString>
       </ConnectionProperties>
       <rd:SecurityType>DataBase</rd:SecurityType>
       <rd:DataSourceID>abc05c05-b364-4b4c-b1a2-afedc86606aa</rd:DataSourceID>
@@ -80,7 +80,7 @@
         </QueryParameters>
         <CommandText>SELECT        No_, { fn CONCAT(Name, [Name 2]) } AS Name, [VAT Registration No_] AS VATRegistrationNo, { fn CONCAT(Address, [Address 2]) } AS Address, [Currency Code] AS Currency, [Post Code] AS PostalCode, City, 
                          [Country_Region Code] AS Country_RegionCode
-FROM            SUCH_NAV_QUAL.dbo.[SUCH - QUALIDADE$Customer]
+FROM            SUCH_NAV_PROD.dbo.[SUCH$Customer]
 WHERE        (No_ = @Cliente)</CommandText>
       </Query>
       <Fields>
@@ -1142,7 +1142,6 @@ Contribuite Nº</Value>
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox48</rd:DefaultName>
-              <Top>0cm</Top>
               <Left>12.97806cm</Left>
               <Height>0.6cm</Height>
               <Width>2.50037cm</Width>
@@ -1177,7 +1176,6 @@ Contribuite Nº</Value>
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox49</rd:DefaultName>
-              <Top>0cm</Top>
               <Left>15.61955cm</Left>
               <Height>0.6cm</Height>
               <Width>2.16701cm</Width>

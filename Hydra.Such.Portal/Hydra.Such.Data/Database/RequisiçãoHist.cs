@@ -5,11 +5,6 @@ namespace Hydra.Such.Data.Database
 {
     public partial class RequisiçãoHist
     {
-        public RequisiçãoHist()
-        {
-            LinhasRequisiçãoHist = new HashSet<LinhasRequisiçãoHist>();
-        }
-
         public string NºRequisição { get; set; }
         public int? Área { get; set; }
         public int? Estado { get; set; }
@@ -81,7 +76,5 @@ namespace Hydra.Such.Data.Database
         public bool? PrecoIvaincluido { get; set; }
         public bool? Adiantamento { get; set; }
         public bool? PedirOrcamento { get; set; }
-
-        public ICollection<LinhasRequisiçãoHist> LinhasRequisiçãoHist { get; set; }
     }
 }
