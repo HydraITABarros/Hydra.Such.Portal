@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="DotNetCore.NPOI" Version="1.2.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Hydra.Such.Data\Hydra.Such.Data.csproj" />
     <ProjectReference Include="..\Hydra.Such.Portal\Hydra.Such.Portal.csproj" />
   </ItemGroup>
