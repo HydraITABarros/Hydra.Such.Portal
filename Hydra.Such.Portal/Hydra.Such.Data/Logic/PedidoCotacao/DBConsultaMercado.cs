@@ -1401,7 +1401,8 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                 CodTermosPagamento = ObjectToTransform.CodTermosPagamento,
                 CodFormaPagamento = ObjectToTransform.CodFormaPagamento,
                 Preferencial = ObjectToTransform.Preferencial,
-                Selecionado = ObjectToTransform.Selecionado
+                Selecionado = ObjectToTransform.Selecionado,
+                EmailFornecedor = ObjectToTransform.EmailFornecedor
             };
 
             return view;
@@ -1420,7 +1421,8 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                 CodTermosPagamento = ObjectToTransform.CodTermosPagamento,
                 CodFormaPagamento = ObjectToTransform.CodFormaPagamento,
                 Preferencial = ObjectToTransform.Preferencial,
-                Selecionado = ObjectToTransform.Selecionado
+                Selecionado = ObjectToTransform.Selecionado,
+                EmailFornecedor = ObjectToTransform.EmailFornecedor
             };
 
             return seleccaoEntidades;

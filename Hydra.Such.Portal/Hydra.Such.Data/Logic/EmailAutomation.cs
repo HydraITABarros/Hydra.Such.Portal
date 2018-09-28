@@ -61,7 +61,7 @@ namespace Hydra.Such.Data.ViewModel
         protected __EmailSetup Config { get; set; }
         
         public string UserID { get; set; }  
-
+        public string Anexo { get; set; }
         
         #endregion
 

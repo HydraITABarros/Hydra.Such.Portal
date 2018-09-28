@@ -1444,6 +1444,7 @@
                     </vaadin-combo-box>
                 </div>
                 <div class="col-sm-4">
+                    <br />
                     <vaadin-checkbox id="_todosFornecedores" checked="false">Enviar a Todos</vaadin-checkbox>
                 </div>
                 <div class="col-sm-4">
@@ -1762,7 +1763,7 @@
                     }
                 },
                 _setSuppliersData: function (e) {
-                    debugger;
+                    
                     var self = this;
 
                     var item = self.Suppliers.find(x => x.no_ == e);
@@ -2378,7 +2379,7 @@
                 },
 
                 _filtraFornecedores: function () {
-                    debugger;
+                    
                     var _self = this;
 
                     _self.$._CodTermosPagamento.value = "";
@@ -2435,12 +2436,10 @@
 
 
                 _enviarEmailATodos: function (e) {
-                    debugger
                     this.$.page_enviarEmailATodos_ajax.body = JSON.stringify(this.data);
                     this.$.page_enviarEmailATodos_ajax.generateRequest();
                 },
                 _enviarEmailATodosResponse: function (e) {
-                    debugger
                     this._openToast(this.EnviarEmailATodosCreated.eMessage);
                 },
 
@@ -2449,7 +2448,6 @@
                     this.$.page_enviarEmailAUm_ajax.generateRequest();
                 },
                 _enviarEmailAUmResponse: function (e) {
-                    debugger
                     this._openToast(this.EnviarEmailAUmCreated.eMessage);
                 },
 
