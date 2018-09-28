@@ -58,9 +58,7 @@ namespace Hydra.Such.Data.Database
         public string CódServiçoCliente { get; set; }
 
         public DestinosFinaisResíduos CódDestinoFinalResíduosNavigation { get; set; }
-        public LinhasRequisição Nº { get; set; }
         public Projetos NºProjetoNavigation { get; set; }
-        public Requisição NºRequisiçãoNavigation { get; set; }
         public TiposRefeição TipoRefeiçãoNavigation { get; set; }
     }
 }

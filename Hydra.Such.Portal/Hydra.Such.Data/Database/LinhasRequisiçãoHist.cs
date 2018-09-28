@@ -64,7 +64,5 @@ namespace Hydra.Such.Data.Database
         public string GrupoRegistoIvanegocio { get; set; }
         public string GrupoRegistoIvaproduto { get; set; }
         public decimal? PercentagemDesconto { get; set; }
-
-        public RequisiçãoHist NºRequisiçãoNavigation { get; set; }
     }
 }

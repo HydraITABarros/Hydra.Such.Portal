@@ -5,19 +5,6 @@ namespace Hydra.Such.Data.Database
 {
     public partial class Requisição
     {
-        public Requisição()
-        {
-            Anexos = new HashSet<Anexos>();
-            DiárioDeProjeto = new HashSet<DiárioDeProjeto>();
-            HistoricoLinhasConsultaMercado = new HashSet<HistoricoLinhasConsultaMercado>();
-            LinhasConsultaMercado = new HashSet<LinhasConsultaMercado>();
-            LinhasPEncomendaProcedimentosCcp = new HashSet<LinhasPEncomendaProcedimentosCcp>();
-            LinhasRequisição = new HashSet<LinhasRequisição>();
-            MovimentosDeProjeto = new HashSet<MovimentosDeProjeto>();
-            PréMovimentosProjeto = new HashSet<PréMovimentosProjeto>();
-            RequisicoesRegAlteracoes = new HashSet<RequisicoesRegAlteracoes>();
-        }
-
         public string NºRequisição { get; set; }
         public int? Área { get; set; }
         public int? Estado { get; set; }

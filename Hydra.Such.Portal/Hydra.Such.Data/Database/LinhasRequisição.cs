@@ -5,14 +5,6 @@ namespace Hydra.Such.Data.Database
 {
     public partial class LinhasRequisição
     {
-        public LinhasRequisição()
-        {
-            DiárioDeProjeto = new HashSet<DiárioDeProjeto>();
-            LinhasPEncomendaProcedimentosCcp = new HashSet<LinhasPEncomendaProcedimentosCcp>();
-            MovimentosDeProjeto = new HashSet<MovimentosDeProjeto>();
-            PréMovimentosProjeto = new HashSet<PréMovimentosProjeto>();
-        }
-
         public string NºRequisição { get; set; }
         public int NºLinha { get; set; }
         public int? Tipo { get; set; }
@@ -80,5 +72,6 @@ namespace Hydra.Such.Data.Database
         public ICollection<LinhasPEncomendaProcedimentosCcp> LinhasPEncomendaProcedimentosCcp { get; set; }
         public ICollection<MovimentosDeProjeto> MovimentosDeProjeto { get; set; }
         public ICollection<PréMovimentosProjeto> PréMovimentosProjeto { get; set; }
+
     }
 }
