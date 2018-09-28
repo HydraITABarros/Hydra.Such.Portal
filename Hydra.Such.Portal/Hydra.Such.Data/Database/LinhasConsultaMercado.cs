@@ -31,6 +31,5 @@ namespace Hydra.Such.Data.Database
         public string ModificadoPor { get; set; }
 
         public ConsultaMercado NumConsultaMercadoNavigation { get; set; }
-        public Requisição NumRequisicaoNavigation { get; set; }
     }
 }

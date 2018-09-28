@@ -14,7 +14,6 @@ namespace Hydra.Such.Data.Database
         public string UtilizadorCriação { get; set; }
         public string UtilizadorModificação { get; set; }
 
-        public Requisição NºOrigem1 { get; set; }
         public PréRequisição NºOrigemNavigation { get; set; }
     }
 }

@@ -10,7 +10,5 @@ namespace Hydra.Such.Data.Database
         public int Estado { get; set; }
         public DateTime ModificadoEm { get; set; }
         public string ModificadoPor { get; set; }
-
-        public Requisição NºRequisiçãoNavigation { get; set; }
     }
 }
