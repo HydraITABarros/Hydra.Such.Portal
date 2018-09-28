@@ -8654,6 +8654,10 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Num_Consulta_Mercado")
                     .HasMaxLength(20);
 
+                entity.Property(e => e.EmailFornecedor)
+                    .HasColumnName("Email_Fornecedor")
+                    .HasMaxLength(60);
+
                 entity.HasOne(d => d.NumConsultaMercadoNavigation)
                     .WithMany(p => p.SeleccaoEntidades)
                     .HasForeignKey(d => d.NumConsultaMercado)

@@ -1758,10 +1758,12 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!Data_Limite.Value</Value>
+                                  <Value>=FormatDateTime(Fields!Data_Limite.Value,DateFormat.ShortDate)</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                     <FontSize>8pt</FontSize>
+                                    <Format>dd/MM/yyyy</Format>
+                                    <Language>pt-PT</Language>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
@@ -1780,6 +1782,7 @@
                             <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
+                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                     <TablixCell>

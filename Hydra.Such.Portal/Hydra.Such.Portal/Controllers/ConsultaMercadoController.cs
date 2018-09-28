@@ -76,7 +76,7 @@ namespace Hydra.Such.Portal.Controllers
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.UPermissions = UPerm;
-                ViewBag.No = id == null ? "" : id;
+                ViewBag.No = id ?? "";
                 return View();
             }
             else
@@ -908,8 +908,10 @@ namespace Hydra.Such.Portal.Controllers
 
                 var theURL = (_config.ReportServerURL + "ConsultaMercado&rs:Command=Render&rs:format=PDF&CM=" + Consulta + "&Fornecedor=" + Cod);
 
-                WebClient Client = new WebClient();
-                Client.UseDefaultCredentials = true;
+                WebClient Client = new WebClient
+                {
+                    UseDefaultCredentials = true
+                };
 
                 byte[] myDataBuffer = Client.DownloadData(theURL);
 
@@ -925,15 +927,22 @@ namespace Hydra.Such.Portal.Controllers
                     await stream.CopyToAsync(_my_stream);
                 }
 
-                //Falta enviar o email!!!
+                SendEmailsPedidoCotacao Email = new SendEmailsPedidoCotacao
+                {
+                    DisplayName = User.Identity.Name,
+                    Subject = "Pedido de Cotação",
+                    From = User.Identity.Name,
+                    Anexo = Path.Combine(sWebRootFolder, sFileName)
+                };
 
+                //Email.To.Add(data.SeleccaoEntidades.Where(x => x.CodFornecedor == Cod).First().EmailFornecedor);
+                Email.To.Add(User.Identity.Name);
 
+                Email.Body = MakeEmailBodyContent("Solicitamos Pedido de Cotação", User.Identity.Name);
+                Email.IsBodyHtml = true;
 
-
+                Email.SendEmail();
             }
-
-
-
 
             return Json(data);
         }
@@ -953,8 +962,10 @@ namespace Hydra.Such.Portal.Controllers
 
             var theURL = (_config.ReportServerURL + "ConsultaMercado&rs:Command=Render&rs:format=PDF&CM=" + Consulta + "&Fornecedor=" + Cod);
 
-            WebClient Client = new WebClient();
-            Client.UseDefaultCredentials = true;
+            WebClient Client = new WebClient
+            {
+                UseDefaultCredentials = true
+            };
 
             byte[] myDataBuffer = Client.DownloadData(theURL);
 
@@ -970,12 +981,79 @@ namespace Hydra.Such.Portal.Controllers
                 await stream.CopyToAsync(_my_stream);
             }
 
-            //Falta enviar o email!!!
+            SendEmailsPedidoCotacao Email = new SendEmailsPedidoCotacao
+            {
+                DisplayName = User.Identity.Name,
+                Subject = "Pedido de Cotação",
+                From = User.Identity.Name,
+                Anexo = Path.Combine(sWebRootFolder, sFileName)
+            };
+
+            //Email.To.Add(data.SeleccaoEntidades.Where(x => x.CodFornecedor == Cod).First().EmailFornecedor);
+            Email.To.Add(User.Identity.Name);
+
+            Email.Body = MakeEmailBodyContent("Solicitamos Pedido de Cotação", User.Identity.Name);
+            Email.IsBodyHtml = true;
             
+            Email.SendEmail();
 
             return Json(data);
         }
 
+        public static string MakeEmailBodyContent(string BodyText, string SenderName)
+        {
+            string Body = @"<html>" +
+                                "<head>" +
+                                    "<style>" +
+                                        "table{border:0;} " +
+                                        "td{width:600px; vertical-align: top;}" +
+                                    "</style>" +
+                                "</head>" +
+                                "<body>" +
+                                    "<table>" +
+                                        "<tr><td>&nbsp;</td></tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "Exmos (as) Senhores (as)," +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr><td>&nbsp;</td></tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                BodyText +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "&nbsp;" +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "Com os melhores cumprimentos," +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                SenderName +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "&nbsp;" +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "<i>SUCH - Serviço de Utilização Comum dos Hospitais</i>" +
+                                            "</td>" +
+                                        "</tr>" +
+                                    "</table>" +
+                                "</body>" +
+                            "</html>";
+
+            return Body;
+        }
 
         private GenericResult CreateNAVPurchaseOrderFor(PurchOrderDTO purchOrder)
         {
@@ -1018,31 +1096,33 @@ namespace Hydra.Such.Portal.Controllers
             bool result = false;
             try
             {
-                LinhasConsultaMercado linhaConsultaMercado = new LinhasConsultaMercado();
-                linhaConsultaMercado.CodActividade = data.CodActividade;
-                linhaConsultaMercado.CodAreaFuncional = data.CodAreaFuncional;
-                linhaConsultaMercado.CodCentroResponsabilidade = data.CodCentroResponsabilidade;
-                linhaConsultaMercado.CodLocalizacao = data.CodLocalizacao;
-                linhaConsultaMercado.CodProduto = data.CodProduto;
-                linhaConsultaMercado.CodRegiao = data.CodRegiao;
-                linhaConsultaMercado.CodUnidadeMedida = data.CodUnidadeMedida;
-                linhaConsultaMercado.CriadoEm = DateTime.Now;
-                linhaConsultaMercado.CriadoPor = User.Identity.Name;
-                linhaConsultaMercado.CustoTotalObjectivo = data.CustoTotalObjectivo;
-                linhaConsultaMercado.CustoTotalPrevisto = data.CustoTotalPrevisto;
-                linhaConsultaMercado.CustoUnitarioObjectivo = data.CustoUnitarioObjectivo;
-                linhaConsultaMercado.CustoUnitarioPrevisto = data.CustoUnitarioPrevisto;
-                linhaConsultaMercado.DataEntregaPrevista = data.DataEntregaPrevista_Show != string.Empty ? DateTime.Parse(data.DataEntregaPrevista_Show) : (DateTime?)null;
-                linhaConsultaMercado.Descricao = data.Descricao;
-                linhaConsultaMercado.Descricao2 = data.Descricao2;
-                linhaConsultaMercado.LinhaRequisicao = data.LinhaRequisicao;
-                linhaConsultaMercado.ModificadoEm = data.ModificadoEm;
-                linhaConsultaMercado.ModificadoPor = data.ModificadoPor;
-                linhaConsultaMercado.NumConsultaMercado = data.NumConsultaMercado;
-                //linhaConsultaMercado.NumLinha = data.NumLinha;
-                linhaConsultaMercado.NumProjecto = data.NumProjecto;
-                linhaConsultaMercado.NumRequisicao = data.NumRequisicao;
-                linhaConsultaMercado.Quantidade = data.Quantidade;
+                LinhasConsultaMercado linhaConsultaMercado = new LinhasConsultaMercado
+                {
+                    CodActividade = data.CodActividade,
+                    CodAreaFuncional = data.CodAreaFuncional,
+                    CodCentroResponsabilidade = data.CodCentroResponsabilidade,
+                    CodLocalizacao = data.CodLocalizacao,
+                    CodProduto = data.CodProduto,
+                    CodRegiao = data.CodRegiao,
+                    CodUnidadeMedida = data.CodUnidadeMedida,
+                    CriadoEm = DateTime.Now,
+                    CriadoPor = User.Identity.Name,
+                    CustoTotalObjectivo = data.CustoTotalObjectivo,
+                    CustoTotalPrevisto = data.CustoTotalPrevisto,
+                    CustoUnitarioObjectivo = data.CustoUnitarioObjectivo,
+                    CustoUnitarioPrevisto = data.CustoUnitarioPrevisto,
+                    DataEntregaPrevista = data.DataEntregaPrevista_Show != string.Empty ? DateTime.Parse(data.DataEntregaPrevista_Show) : (DateTime?)null,
+                    Descricao = data.Descricao,
+                    Descricao2 = data.Descricao2,
+                    LinhaRequisicao = data.LinhaRequisicao,
+                    ModificadoEm = data.ModificadoEm,
+                    ModificadoPor = data.ModificadoPor,
+                    NumConsultaMercado = data.NumConsultaMercado,
+                    //linhaConsultaMercado.NumLinha = data.NumLinha;
+                    NumProjecto = data.NumProjecto,
+                    NumRequisicao = data.NumRequisicao,
+                    Quantidade = data.Quantidade
+                };
 
                 var dbCreateResult = DBConsultaMercado.Create(linhaConsultaMercado);
 
@@ -1139,16 +1219,31 @@ namespace Hydra.Such.Portal.Controllers
             bool result = false;
             try
             {
-                SeleccaoEntidades seleccaoEntidades = new SeleccaoEntidades();
-                seleccaoEntidades.CidadeFornecedor = null;
-                seleccaoEntidades.CodActividade = data.CodActividade;
-                seleccaoEntidades.CodFormaPagamento = data.CodFormaPagamento;
-                seleccaoEntidades.CodFornecedor = data.CodFornecedor;
-                seleccaoEntidades.CodTermosPagamento = data.CodTermosPagamento;
-                seleccaoEntidades.NomeFornecedor = data.NomeFornecedor;
-                seleccaoEntidades.NumConsultaMercado = data.NumConsultaMercado;
-                seleccaoEntidades.Preferencial = data.Preferencial;
-                seleccaoEntidades.Selecionado = true;
+
+                string _Email = string.Empty;
+                try
+                {
+                    _Email = DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName).Where(x => x.No_ == data.CodFornecedor).First().Email;
+                }
+                catch
+                {
+                    _Email = string.Empty;
+                }
+
+
+                SeleccaoEntidades seleccaoEntidades = new SeleccaoEntidades
+                {
+                    CidadeFornecedor = null,
+                    CodActividade = data.CodActividade,
+                    CodFormaPagamento = data.CodFormaPagamento,
+                    CodFornecedor = data.CodFornecedor,
+                    CodTermosPagamento = data.CodTermosPagamento,
+                    NomeFornecedor = data.NomeFornecedor,
+                    NumConsultaMercado = data.NumConsultaMercado,
+                    Preferencial = data.Preferencial,
+                    Selecionado = true,
+                    EmailFornecedor = _Email
+                };
 
                 var dbCreateResult = DBConsultaMercado.Create(seleccaoEntidades);
 
@@ -1171,6 +1266,18 @@ namespace Hydra.Such.Portal.Controllers
             try
             {
                 SeleccaoEntidades seleccaoEntidades = DBConsultaMercado.CastSeleccaoEntidadesViewToDB(data);
+
+                string _Email = string.Empty;
+                try
+                {
+                    _Email = DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName).Where(x => x.No_ == data.CodFornecedor).First().Email;
+                }
+                catch
+                {
+                    _Email = string.Empty;
+                }
+
+                seleccaoEntidades.EmailFornecedor = _Email;
 
                 var dbUpdateResult = DBConsultaMercado.Update(seleccaoEntidades);
 

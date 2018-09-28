@@ -17,5 +17,6 @@ namespace Hydra.Such.Data.ViewModel.PedidoCotacao
         public string CodFormaPagamento { get; set; }
         public bool? Selecionado { get; set; }
         public bool? Preferencial { get; set; }
+        public string EmailFornecedor { get; set; }
     }
 }
