@@ -123,6 +123,17 @@ namespace Hydra.Such.Portal.Controllers
     }
 
     
+    public class ReferenceProcedimento
+    {
+        public int ReferenceYear { get; set; }
+        public int ProcReference { get; set; }
+
+        public ReferenceProcedimento(int type_proc, int type, int year)
+        {
+            ReferenceYear = year;
+            ProcReference = DBProcedimentosCCP.ObtainProcedimentoReference(type_proc, type, year);
+        }
+    }
 
     [Authorize]
     public class ProcedimentosCcpsController : Controller
@@ -6757,7 +6768,7 @@ namespace Hydra.Such.Portal.Controllers
 
         #endregion
 
-        #region the following methods map the NAV 2009 MenuButton on the PA form
+        #region the following methods map the NAV 2009 "Funções" MenuButton on the PA form
         public JsonResult CloseProcedimentoByRequest([FromBody] ProcedimentoCCPView data)
         {
             ConfigUtilizadores UserDetails = DBProcedimentosCCP.GetUserDetails(User.Identity.Name);
@@ -6770,6 +6781,22 @@ namespace Hydra.Such.Portal.Controllers
                 return Json(ReturnHandlers.NoData);
             }
 
+        }
+        public JsonResult GetProcedimentoReference([FromBody] JObject requestParams)
+        {
+            int TipoProc = requestParams["tipoProc"].ToString() != string.Empty ? int.Parse(requestParams["tipoProc"].ToString()): 0;
+            int Tipo = requestParams["tipo"].ToString() != string.Empty ? int.Parse(requestParams["tipo"].ToString()) : 0;
+
+            if(TipoProc == 0 || Tipo == 0)
+            {
+                return Json(ReturnHandlers.Error);
+            }
+
+            ReferenceProcedimento rproc = new ReferenceProcedimento(TipoProc, Tipo, DateTime.Now.Year);
+            if (rproc != null)
+                return Json(rproc);
+
+            return Json(ReturnHandlers.Error);
         }
         #endregion
 

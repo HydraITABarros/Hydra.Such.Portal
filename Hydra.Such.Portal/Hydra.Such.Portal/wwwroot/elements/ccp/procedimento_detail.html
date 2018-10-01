@@ -870,9 +870,17 @@
                    on-response="_closingProcedimentoResponse"
                    content-type="application/json">
         </iron-ajax>
+        <iron-ajax url="/ProcedimentosCcps/GetProcedimentoReference"
+                   last-response="{{ procedimentoReference }}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_request_reference"
+                   on-response="_procedimentoReferenceResponse"
+                   content-type="application/json">
+        </iron-ajax>
         <!-- MenuButton Funções.e -->
         <!-- Controller actions.e -->
-       
+
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
             <paper-button raised id="btnUpdate" class="tablinks" on-tap="_update" disabled="{{ _isCreate }}" title="Gravar" style="background-color:#1DB73C"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Gravar</paper-button>
@@ -3561,14 +3569,14 @@
 
                 <!-- Save and Create Buttons -->
                 <!--<div id="botoes_accao" class="marginSpace">
-                    <template is="dom-if" if="{{ _isCreate }}">
-                        <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
-                    </template>
-                    <template is="dom-if" if="{{ !_isCreate }}">
-                        <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                        <paper-button raised id="btnCancel" class="btnRemove" on-tap="_delete"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
-                    </template>
-                </div>-->
+                <template is="dom-if" if="{{ _isCreate }}">
+                    <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                </template>
+                <template is="dom-if" if="{{ !_isCreate }}">
+                    <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                    <paper-button raised id="btnCancel" class="btnRemove" on-tap="_delete"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                </template>
+            </div>-->
             </div>
         </div>
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
@@ -4052,7 +4060,7 @@
                             this._openToast(this.deletedData.eMessage);
                             setTimeout(
                                 function () {
-                                    window.location.replace("/");
+                                    window.location.replace("/ProcedimentosCcps/PedidoAquisicao/");
                                 }, 2500);
                         }
                     }
@@ -5968,6 +5976,24 @@
                 },
 
                 // zpgm.MenuFunções.b
+                _mnuFuncoes_ItemSelected: function (e) {
+                    debugger;;
+                    var item = e.detail.value;
+
+                    if (item == null)
+                        return;
+
+                    this._newStatus = item.value;
+
+                    switch (this._newStatus) {
+                        case 1:
+                            this._closeProcedimentoByUserRequest();
+                            break;
+                        case 2:
+                            this._obtainProcedimentoReference();
+                            break;
+                    }
+                },
                 _closeProcedimentoByUserRequest: function () {
                     debugger;;
                     if (!this.__isFechoProcesso) {
@@ -6009,22 +6035,49 @@
                     }
                 },
 
-                _mnuFuncoes_ItemSelected: function (e) {
+                _obtainProcedimentoReference: function () {
                     debugger;;
-                    var item = e.detail.value;
-
-                    if (item == null)
+                    if ((this.data.ano != null && this.data.ano != 0) && (this.data.referencia != null && this.data.referencia != 0)) {
+                        this._showErrorMessage("Já existe uma Referência para o Processo!");
                         return;
+                    }
 
-                    this._newStatus = item.value;
+                    if (!this.__isElementCompras && !this.__isGestorProcesso) {
+                        this._showErrorMessage('Não está autorizado a utilizar esta opção!');
+                        return;
+                    }
 
-                    switch (this._newStatus) {
-                        case 1:
-                            this._closeProcedimentoByUserRequest();
-                            break;
-                        //case 2:
-                        //    this._imobReturnToArea();
-                        //    break;
+                    if (this.data.estado < 9) {
+                        this._showErrorMessage("Não pode atribuir a Referência neste estado!");
+                        return;
+                    }
+
+                    debugger;;
+                    var ajax_request = this.$.ajax_request_reference;
+                    ajax_request.body = JSON.stringify({ "tipoProc": this.data.tipoProcedimento, "tipo": this.data.tipo });
+
+                    this._confirmAndExecuteActionToast(
+                        "Obter a Referência do Processo?",
+                        ajax_request
+                    );
+
+                    this.data.nomeProcesso = this.$.nomeProcesso.value;
+                    //this.$.ajax_request_reference.body = JSON.stringify(this.data);
+                },
+
+                _procedimentoReferenceResponse: function (e) {
+                    if (this.procedimentoReference.eReasonCode == -9) {
+                        debugger;;
+                        this._showErrorMessage("Ocorreu um erro!");
+                    } else {
+                        this.data.ano = this.procedimentoReference.referenceYear;
+                        this.data.referencia = this.procedimentoReference.procReference;
+
+                        debugger;;
+                        this.$.ajax_update_procedimento.body = JSON.stringify(this.data);
+
+                        var sav = this.$.ajax_update_procedimento.generateRequest();
+                        this.$.ajax_update_procedimento.clearCache();
                     }
                 },
                 // zpgm.MenuFunções.e
