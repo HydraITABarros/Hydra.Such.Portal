@@ -68,6 +68,7 @@ namespace Hydra.Such.Data.Database
 
         public DestinosFinaisResíduos CódDestinoFinalResíduosNavigation { get; set; }
         public Projetos NºProjetoNavigation { get; set; }
+        public Requisição NºRequisiçãoNavigation { get; set; }
         public TiposRefeição TipoRefeiçãoNavigation { get; set; }
     }
 }

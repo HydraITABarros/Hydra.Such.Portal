@@ -51,7 +51,7 @@ namespace Hydra.Such.Data.Logic.Request
                     return ctx.Requisição
                         .Include("LinhasRequisição")
                         //AROMAO 01/10/2018
-                        //.Include(x => x.RequisicoesRegAlteracoes)
+                        .Include(x => x.RequisicoesRegAlteracoes)
                         .Where(x => stateValues.Contains(x.Estado.Value))
                         .ToList();
                 }
@@ -71,7 +71,7 @@ namespace Hydra.Such.Data.Logic.Request
                     return ctx.Requisição
                         .Include(x => x.LinhasRequisição)//("LinhasRequisição")
                         //AROMAO 01/10/2018
-                        //.Include(x => x.RequisicoesRegAlteracoes)
+                        .Include(x => x.RequisicoesRegAlteracoes)
                         .SingleOrDefault(x => x.NºRequisição == requestId);
                 }
             }
@@ -453,7 +453,7 @@ namespace Hydra.Such.Data.Logic.Request
 
                     Lines = item.LinhasRequisição.ToList().ParseToViewModel(),
                     //AROMAO 01/10/2018
-                    //ChangeLog = item.RequisicoesRegAlteracoes.ToList().ParseToViewModel()
+                    ChangeLog = item.RequisicoesRegAlteracoes.ToList().ParseToViewModel()
                 };
             }
             return null;
@@ -546,9 +546,9 @@ namespace Hydra.Such.Data.Logic.Request
                     Adiantamento = item.InAdvance,
                     PedirOrcamento = item.PedirOrcamento,
 
-                    LinhasRequisição = item.Lines.ParseToDB()
+                    LinhasRequisição = item.Lines.ParseToDB(),
                     //AROMAO 01/10/2018
-                    //RequisicoesRegAlteracoes = item.ChangeLog.ParseToDB()
+                    RequisicoesRegAlteracoes = item.ChangeLog.ParseToDB()
                 };
             }
             return null;

@@ -2124,6 +2124,11 @@ namespace Hydra.Such.Data.Database
                     .HasForeignKey(d => d.NºProjeto)
                     .HasConstraintName("FK_Diário de Projeto_Projetos");
 
+                entity.HasOne(d => d.NºRequisiçãoNavigation)
+                    .WithMany(p => p.DiárioDeProjeto)
+                    .HasForeignKey(d => d.NºRequisição)
+                    .HasConstraintName("FK_Diário de Projeto_Requisição");
+
                 entity.HasOne(d => d.TipoRefeiçãoNavigation)
                     .WithMany(p => p.DiárioDeProjeto)
                     .HasForeignKey(d => d.TipoRefeição)
@@ -4320,6 +4325,11 @@ namespace Hydra.Such.Data.Database
                     .HasForeignKey(d => d.NºProcedimento)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Linhas p/ Encomenda Procedimentos CCP_Procedimentos CCP");
+
+                entity.HasOne(d => d.NºRequisiçãoNavigation)
+                    .WithMany(p => p.LinhasPEncomendaProcedimentosCcp)
+                    .HasForeignKey(d => d.NºRequisição)
+                    .HasConstraintName("FK_Linhas p/ Encomenda Procedimentos CCP_Requisição");
             });
 
             modelBuilder.Entity<LinhasPreEncomenda>(entity =>
@@ -4899,6 +4909,12 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.ValorOrçamento).HasColumnName("Valor Orçamento");
 
                 entity.Property(e => e.Viatura).HasMaxLength(10);
+
+                entity.HasOne(d => d.NºRequisiçãoNavigation)
+                    .WithMany(p => p.LinhasRequisiçãoHist)
+                    .HasForeignKey(d => d.NºRequisição)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Linhas Requisição Hist_Requisição");
             });
 
             modelBuilder.Entity<LinhasRequisiçõesSimplificadas>(entity =>
@@ -4989,6 +5005,12 @@ namespace Hydra.Such.Data.Database
                     .HasConstraintName("FK_Linhas Requisições Simplificadas_Projetos");
 
                 entity.HasOne(d => d.NºRequisiçãoNavigation)
+                    .WithMany(p => p.LinhasRequisiçõesSimplificadas)
+                    .HasForeignKey(d => d.NºRequisição)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Linhas Requisições Simplificadas_Requisição");
+
+                entity.HasOne(d => d.NºRequisição1)
                     .WithMany(p => p.LinhasRequisiçõesSimplificadas)
                     .HasForeignKey(d => d.NºRequisição)
                     .OnDelete(DeleteBehavior.ClientSetNull)
@@ -5646,6 +5668,11 @@ namespace Hydra.Such.Data.Database
                     .WithMany(p => p.MovimentosDeProjeto)
                     .HasForeignKey(d => d.NºProjeto)
                     .HasConstraintName("FK_Movimentos De Projeto_Projetos");
+
+                entity.HasOne(d => d.NºRequisiçãoNavigation)
+                    .WithMany(p => p.MovimentosDeProjeto)
+                    .HasForeignKey(d => d.NºRequisição)
+                    .HasConstraintName("FK_Movimentos De Projeto_Requisição");
 
                 entity.HasOne(d => d.TipoRefeiçãoNavigation)
                     .WithMany(p => p.MovimentosDeProjeto)
@@ -6613,6 +6640,11 @@ namespace Hydra.Such.Data.Database
                     .WithMany(p => p.PréMovimentosProjeto)
                     .HasForeignKey(d => d.NºProjeto)
                     .HasConstraintName("FK_Pré-Movimentos Projeto_Projetos");
+
+                entity.HasOne(d => d.NºRequisiçãoNavigation)
+                    .WithMany(p => p.PréMovimentosProjeto)
+                    .HasForeignKey(d => d.NºRequisição)
+                    .HasConstraintName("FK_Pré-Movimentos Projeto_Requisição");
 
                 entity.HasOne(d => d.TipoRefeiçãoNavigation)
                     .WithMany(p => p.PréMovimentosProjeto)
@@ -8465,6 +8497,12 @@ namespace Hydra.Such.Data.Database
                     .IsRequired()
                     .HasColumnName("Nº Requisição")
                     .HasMaxLength(20);
+
+                entity.HasOne(d => d.NºRequisiçãoNavigation)
+                    .WithMany(p => p.RequisicoesRegAlteracoes)
+                    .HasForeignKey(d => d.NºRequisição)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_RequisicoesRegAlteracoes_Requisição");
             });
 
             modelBuilder.Entity<RequisiçõesSimplificadas>(entity =>

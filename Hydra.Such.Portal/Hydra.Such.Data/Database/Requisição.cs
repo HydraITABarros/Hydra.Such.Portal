@@ -7,7 +7,14 @@ namespace Hydra.Such.Data.Database
     {
         public Requisição()
         {
+            DiárioDeProjeto = new HashSet<DiárioDeProjeto>();
+            LinhasPEncomendaProcedimentosCcp = new HashSet<LinhasPEncomendaProcedimentosCcp>();
             LinhasRequisição = new HashSet<LinhasRequisição>();
+            LinhasRequisiçãoHist = new HashSet<LinhasRequisiçãoHist>();
+            LinhasRequisiçõesSimplificadas = new HashSet<LinhasRequisiçõesSimplificadas>();
+            MovimentosDeProjeto = new HashSet<MovimentosDeProjeto>();
+            PréMovimentosProjeto = new HashSet<PréMovimentosProjeto>();
+            RequisicoesRegAlteracoes = new HashSet<RequisicoesRegAlteracoes>();
         }
 
         public string NºRequisição { get; set; }
@@ -84,6 +91,13 @@ namespace Hydra.Such.Data.Database
 
         public Projetos NºProjetoNavigation { get; set; }
         public Viaturas ViaturaNavigation { get; set; }
+        public ICollection<DiárioDeProjeto> DiárioDeProjeto { get; set; }
+        public ICollection<LinhasPEncomendaProcedimentosCcp> LinhasPEncomendaProcedimentosCcp { get; set; }
         public ICollection<LinhasRequisição> LinhasRequisição { get; set; }
+        public ICollection<LinhasRequisiçãoHist> LinhasRequisiçãoHist { get; set; }
+        public ICollection<LinhasRequisiçõesSimplificadas> LinhasRequisiçõesSimplificadas { get; set; }
+        public ICollection<MovimentosDeProjeto> MovimentosDeProjeto { get; set; }
+        public ICollection<PréMovimentosProjeto> PréMovimentosProjeto { get; set; }
+        public ICollection<RequisicoesRegAlteracoes> RequisicoesRegAlteracoes { get; set; }
     }
 }

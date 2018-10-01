@@ -26,5 +26,6 @@ namespace Hydra.Such.Data.Database
         public string UtilizadorModificação { get; set; }
 
         public ProcedimentosCcp NºProcedimentoNavigation { get; set; }
+        public Requisição NºRequisiçãoNavigation { get; set; }
     }
 }
