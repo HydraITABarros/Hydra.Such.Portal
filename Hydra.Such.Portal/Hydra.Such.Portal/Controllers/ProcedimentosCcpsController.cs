@@ -625,7 +625,7 @@ namespace Hydra.Such.Portal.Controllers
                 LinhaProdutoServico.NºProjeto = data.NºProjeto;
                 LinhaProdutoServico.NºRequisição = data.NºRequisição;
                 //AROMAO 01/10/2018
-                //LinhaProdutoServico.NºRequisiçãoNavigation = data.NºRequisiçãoNavigation;
+                LinhaProdutoServico.NºRequisiçãoNavigation = data.NºRequisiçãoNavigation;
                 LinhaProdutoServico.QuantARequerer = data.QuantARequerer;
                 LinhaProdutoServico.Tipo = data.Tipo;
                 LinhaProdutoServico.UtilizadorCriação = User.Identity.Name;
@@ -1077,7 +1077,7 @@ namespace Hydra.Such.Portal.Controllers
                     LinhaProdutoServico.NºProjeto = linhasReq[i].NºProjeto;
                     LinhaProdutoServico.NºRequisição = linhasReq[i].NºRequisição;
                     //AROMAO 01/10/2018
-                    //LinhaProdutoServico.NºRequisiçãoNavigation = linhasReq[i].NºRequisiçãoNavigation;
+                    LinhaProdutoServico.NºRequisiçãoNavigation = linhasReq[i].NºRequisiçãoNavigation;
                     LinhaProdutoServico.QuantARequerer = linhasReq[i].QuantidadeARequerer;
                     LinhaProdutoServico.Tipo = linhasReq[i].Tipo;
                     LinhaProdutoServico.UtilizadorCriação = User.Identity.Name;

@@ -33,7 +33,8 @@ namespace Hydra.Such.Data.Database
         public string UtilizadorModificação { get; set; }
 
         public Projetos NºProjetoNavigation { get; set; }
-        public RequisiçõesSimplificadas NºRequisiçãoNavigation { get; set; }
+        public RequisiçõesSimplificadas NºRequisição1 { get; set; }
+        public Requisição NºRequisiçãoNavigation { get; set; }
         public TiposRefeição TipoRefeiçãoNavigation { get; set; }
     }
 }
