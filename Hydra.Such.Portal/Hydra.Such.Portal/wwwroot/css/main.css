@@ -265,8 +265,19 @@ paper-toast {
 }
 
 .menubar .open .selected a {
-    border-left: solid 2px #188ae2;
+    /*border-left: solid 2px #188ae2;*/
     background: rgba(0,0,0,0.02);
+    position: relative;
+}
+
+.menubar .open .selected a:before {
+    content: "";
+    background: rgba(0,0,0,0.02);
+    position: absolute;
+    top: 0;
+    width: 1000px;
+    left: -1000px;
+    bottom: 0;
 }
 
 /* Select2 */
@@ -494,6 +505,13 @@ paper-toast {
 
 .menubar-fold .menubar-resizable .after {
     display: none;
+}
+/* menu bar indentation*/
+#menubar li {
+    padding-left: 20px;
+}
+#menubar .app-menu > li {
+    padding-left: 0px;
 }
 
 @media (max-width: 1199px) {
