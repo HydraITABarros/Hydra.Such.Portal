@@ -113,30 +113,47 @@
                 };
             }
 
+            .p-r-0 {
+                padding-right: 0 !important;
+            }
+
+            .m-l--10 {
+                margin-left: -10px !important;
+            }
+
+            .m-r--10 {
+                margin-right: -10px !important;
+            }
+
             .red {
                 background-color: firebrick;
+                color: white;
             }
 
             .blue {
                 background-color: dodgerblue;
+                color: white;
             }
 
             .green {
                 background-color: yellowgreen;
+                color: white;
             }
 
             .orange {
                 background-color: darkorange;
+                color: white;
             }
 
             .yellow {
                 background-color: goldenrod;
+                color: white;
             }
 
             .violet {
                 background-color: palevioletred;
+                color: white;
             }
-
 
             .red2 {
                 color: firebrick;
@@ -183,11 +200,9 @@
 
         <iron-ajax url="/ConsultaMercado/CriarEncomenda" last-response="{{CriarEncomendaCreated}}" method="post" handle-as="json" id="page_criarEncomenda_ajax" on-response="_criarEncomendaResponse" content-type="application/json"></iron-ajax>
 
-
         <iron-ajax url="/ConsultaMercado/EnviarEmailATodos" last-response="{{EnviarEmailATodosCreated}}" method="post" handle-as="json" id="page_enviarEmailATodos_ajax" on-response="_enviarEmailATodosResponse" content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/ConsultaMercado/EnviarEmailAUm" last-response="{{EnviarEmailAUmCreated}}" method="post" handle-as="json" id="page_enviarEmailAUm_ajax" on-response="_enviarEmailAUmResponse" content-type="application/json"></iron-ajax>
-
 
         <!-- Dropdowns -->
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{CBRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -208,6 +223,7 @@
         <iron-ajax url="/PopulateDropdowns/GetNAVAtividadesComboGrid" last-response="{{CBActividades}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetNAVAtividadesComboGridList" last-response="{{CBActividades_List}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetNAVVendorComboGrid_FiltroActividade" id="ajax_supplier_options" last-response="{{Suppliers}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
 
         <iron-ajax url="/PopulateDropdowns/GetPaymentTerms" id="ajax_PaymentTerms_options" last-response="{{CBPaymentTerms}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetPaymentForms" id="ajax_PaymentForms_options" last-response="{{CBPaymentForms}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -611,33 +627,39 @@
                     <!-- Tab Condições Propostas Fornecedores-->
                     <div class="panel panel-default">
                         <div class="panel-body">
-                            <div class="row break_clear">
+                            <div class="row break_clear hide">
                                 <div class="col-sm-2">
-                                    <span class="glyphicon glyphicon-user red2"></span><vaadin-item id="Entidade1" class="red2"></vaadin-item>
+                                    <span class="glyphicon glyphicon-user red2"></span>
+                                    <vaadin-item id="Entidade1" class="red2"></vaadin-item>
                                 </div>
 
                                 <div class="col-sm-2">
-                                    <span class="glyphicon glyphicon-user blue2"></span><vaadin-item id="Entidade2" class="blue2"></vaadin-item>
+                                    <span class="glyphicon glyphicon-user blue2"></span>
+                                    <vaadin-item id="Entidade2" class="blue2"></vaadin-item>
                                 </div>
 
                                 <div class="col-sm-2">
-                                    <span class="glyphicon glyphicon-user green2"></span><vaadin-item id="Entidade3" class="green2"></vaadin-item>
+                                    <span class="glyphicon glyphicon-user green2"></span>
+                                    <vaadin-item id="Entidade3" class="green2"></vaadin-item>
                                 </div>
 
                                 <div class="col-sm-2">
-                                    <span class="glyphicon glyphicon-user orange2"></span><vaadin-item id="Entidade4" class="orange2"></vaadin-item>
+                                    <span class="glyphicon glyphicon-user orange2"></span>
+                                    <vaadin-item id="Entidade4" class="orange2"></vaadin-item>
                                 </div>
 
                                 <div class="col-sm-2">
-                                    <span class="glyphicon glyphicon-user yellow2"></span><vaadin-item id="Entidade5" class="yellow2"></vaadin-item>
+                                    <span class="glyphicon glyphicon-user yellow2"></span>
+                                    <vaadin-item id="Entidade5" class="yellow2"></vaadin-item>
                                 </div>
 
                                 <div class="col-sm-2">
-                                    <span class="glyphicon glyphicon-user violet2"></span><vaadin-item id="Entidade6" class="violet2"></vaadin-item>
+                                    <span class="glyphicon glyphicon-user violet2"></span>
+                                    <vaadin-item id="Entidade6" class="violet2"></vaadin-item>
                                 </div>
                             </div>
 
-                            <hr />
+                            <!--<hr />-->
 
                             <vaadin-grid id="tabRegistoDePropostas" aria-label="TabelaRegistoDePropostas" items="[[ data.registoDePropostas ]]" class="editDialogGrid" selected-items={{selectedItems}} active-item="{{selectedItem}}" multi-sort="true">
                                 <vaadin-grid-column hidden>
@@ -729,9 +751,6 @@
                                         <vaadin-text-field name="tabRegistoDePropostasquantidade" id="tabRegistoDePropostasquantidade" value="{{item.quantidade}}" disabled="true"></vaadin-text-field>
                                     </template>
                                 </vaadin-grid-column>
-
-
-
 
                                 <vaadin-grid-column hidden>
                                     <template class="header">
@@ -854,119 +873,125 @@
                                     </template>
                                 </vaadin-grid-column>
 
-                                <vaadin-grid-column width="100px">
-                                    <template class="header">
-                                        <vaadin-text-field id="headerRED" class="red" disabled="true" placeholder="{{item.fornecedor1Code}}"></vaadin-text-field>
-                                    </template>
-                                    <template>
-                                        <vaadin-text-field name="tabRegistoDePropostasfornecedor1Preco" id="tabRegistoDePropostasfornecedor1Preco" value="{{item.fornecedor1Preco}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !_permissions.update }}">
-                                            <div slot="suffix">€</div>
-                                        </vaadin-text-field>
-                                    </template>
-                                </vaadin-grid-column>
-                                <vaadin-grid-column width="40px">
-                                    <template class="header">
-                                        <vaadin-text-field class="red" disabled="true"></vaadin-text-field>
-                                    </template>
-                                    <template>
-                                        <vaadin-checkbox id="tabRegistoDePropostasfornecedor1Select" checked="{{item.fornecedor1Select}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
-                                    </template>
-                                </vaadin-grid-column>
+                                <template is="dom-if" if="{{hasfornecedor1}}">
+                                    <vaadin-grid-column width="150px" resizable>
+                                        <template class="header p-r-0" style="padding-right:0;">
+                                            <span class="red2"><span class="glyphicon glyphicon-user red2"></span> &nbsp;&nbsp;{{fornecedor1}}</span>
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field name="tabRegistoDePropostasfornecedor1Preco" id="tabRegistoDePropostasfornecedor1Preco" value="{{item.fornecedor1Preco}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !_permissions.update }}">
+                                                <div slot="suffix">€</div>
+                                            </vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="40px" resizable>
+                                        <template class="header">
+                                        </template>
+                                        <template>
+                                            <vaadin-checkbox id="tabRegistoDePropostasfornecedor1Select" checked="{{item.fornecedor1Select}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !_permissions.update }}" class="m-r--10"></vaadin-checkbox>
+                                        </template>
+                                    </vaadin-grid-column>
+                                </template>
 
-                                <vaadin-grid-column width="100px">
-                                    <template class="header">
-                                        <vaadin-text-field class="blue" disabled="true"></vaadin-text-field>
-                                    </template>
-                                    <template>
-                                        <vaadin-text-field name="tabRegistoDePropostasfornecedor2Preco" id="tabRegistoDePropostasfornecedor2Preco" value="{{item.fornecedor2Preco}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !_permissions.update }}">
-                                            <div slot="suffix">€</div>
-                                        </vaadin-text-field>
-                                    </template>
-                                </vaadin-grid-column>
-                                <vaadin-grid-column width="40px">
-                                    <template class="header">
-                                        <vaadin-text-field class="blue" disabled="true"></vaadin-text-field>
-                                    </template>
-                                    <template>
-                                        <vaadin-checkbox id="tabRegistoDePropostasfornecedor2Select" checked="{{item.fornecedor2Select}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
-                                    </template>
-                                </vaadin-grid-column>
+                                <template is="dom-if" if="{{hasfornecedor2}}">
+                                    <vaadin-grid-column width="150px" resizable>
+                                        <template class="header">
+                                            <span class="blue2"><span class="glyphicon glyphicon-user blue2"></span> &nbsp;&nbsp;{{fornecedor2}}</span>
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field name="tabRegistoDePropostasfornecedor2Preco" id="tabRegistoDePropostasfornecedor2Preco" value="{{item.fornecedor2Preco}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !_permissions.update }}">
+                                                <div slot="suffix">€</div>
+                                            </vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="40px" resizable>
+                                        <template class="header">
+                                        </template>
+                                        <template>
+                                            <vaadin-checkbox id="tabRegistoDePropostasfornecedor2Select" checked="{{item.fornecedor2Select}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
+                                        </template>
+                                    </vaadin-grid-column>
+                                </template>
 
-                                <vaadin-grid-column width="100px">
-                                    <template class="header">
-                                        <vaadin-text-field class="green" disabled="true"></vaadin-text-field>
-                                    </template>
-                                    <template>
-                                        <vaadin-text-field name="tabRegistoDePropostasfornecedor3Preco" id="tabRegistoDePropostasfornecedor3Preco" value="{{item.fornecedor3Preco}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !_permissions.update }}">
-                                            <div slot="suffix">€</div>
-                                        </vaadin-text-field>
-                                    </template>
-                                </vaadin-grid-column>
-                                <vaadin-grid-column width="40px">
-                                    <template class="header">
-                                        <vaadin-text-field class="green" disabled="true"></vaadin-text-field>
-                                    </template>
-                                    <template>
-                                        <vaadin-checkbox id="tabRegistoDePropostasfornecedor3Select" checked="{{item.fornecedor3Select}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
-                                    </template>
-                                </vaadin-grid-column>
+                                <template is="dom-if" if="{{hasfornecedor3}}">
+                                    <vaadin-grid-column width="150px" resizable>
+                                        <template class="header">
+                                            <span class="green2"><span class="glyphicon glyphicon-user green2"></span> &nbsp;&nbsp;{{fornecedor3}}</span>
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field name="tabRegistoDePropostasfornecedor3Preco" id="tabRegistoDePropostasfornecedor3Preco" value="{{item.fornecedor3Preco}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !_permissions.update }}">
+                                                <div slot="suffix">€</div>
+                                            </vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="40px" resizable>
+                                        <template class="header">
+                                        </template>
+                                        <template>
+                                            <vaadin-checkbox id="tabRegistoDePropostasfornecedor3Select" checked="{{item.fornecedor3Select}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
+                                        </template>
+                                    </vaadin-grid-column>
+                                </template>
 
-                                <vaadin-grid-column width="100px">
-                                    <template class="header">
-                                        <vaadin-text-field class="orange" disabled="true"></vaadin-text-field>
-                                    </template>
-                                    <template>
-                                        <vaadin-text-field name="tabRegistoDePropostasfornecedor4Preco" id="tabRegistoDePropostasfornecedor4Preco" value="{{item.fornecedor4Preco}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !_permissions.update }}">
-                                            <div slot="suffix">€</div>
-                                        </vaadin-text-field>
-                                    </template>
-                                </vaadin-grid-column>
-                                <vaadin-grid-column width="40px">
-                                    <template class="header">
-                                        <vaadin-text-field class="orange" disabled="true"></vaadin-text-field>
-                                    </template>
-                                    <template>
-                                        <vaadin-checkbox id="tabRegistoDePropostasfornecedor4Select" checked="{{item.fornecedor4Select}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
-                                    </template>
-                                </vaadin-grid-column>
+                                <template is="dom-if" if="{{hasfornecedor4}}">
+                                    <vaadin-grid-column width="150px" resizable>
+                                        <template class="header">
+                                            <span class="orange2"><span class="glyphicon glyphicon-user orange2"></span> &nbsp;&nbsp;{{fornecedor4}}</span>
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field name="tabRegistoDePropostasfornecedor4Preco" id="tabRegistoDePropostasfornecedor4Preco" value="{{item.fornecedor4Preco}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !_permissions.update }}">
+                                                <div slot="suffix">€</div>
+                                            </vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="40px" resizable>
+                                        <template class="header">
+                                        </template>
+                                        <template>
+                                            <vaadin-checkbox id="tabRegistoDePropostasfornecedor4Select" checked="{{item.fornecedor4Select}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
+                                        </template>
+                                    </vaadin-grid-column>
+                                </template>
 
-                                <vaadin-grid-column width="100px">
-                                    <template class="header">
-                                        <vaadin-text-field class="yellow" disabled="true"></vaadin-text-field>
-                                    </template>
-                                    <template>
-                                        <vaadin-text-field name="tabRegistoDePropostasfornecedor5Preco" id="tabRegistoDePropostasfornecedor5Preco" value="{{item.fornecedor5Preco}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !_permissions.update }}">
-                                            <div slot="suffix">€</div>
-                                        </vaadin-text-field>
-                                    </template>
-                                </vaadin-grid-column>
-                                <vaadin-grid-column width="40px">
-                                    <template class="header">
-                                        <vaadin-text-field class="yellow" disabled="true"></vaadin-text-field>
-                                    </template>
-                                    <template>
-                                        <vaadin-checkbox id="tabRegistoDePropostasfornecedor5Select" checked="{{item.fornecedor5Select}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
-                                    </template>
-                                </vaadin-grid-column>
+                                <template is="dom-if" if="{{hasfornecedor5}}">
+                                    <vaadin-grid-column width="150px" resizable>
+                                        <template class="header">
+                                            <span class="yellow2"><span class="glyphicon glyphicon-user yellow2"></span> &nbsp;&nbsp;{{fornecedor5}}</span>
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field name="tabRegistoDePropostasfornecedor5Preco" id="tabRegistoDePropostasfornecedor5Preco" value="{{item.fornecedor5Preco}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !_permissions.update }}">
+                                                <div slot="suffix">€</div>
+                                            </vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="40px" resizable>
+                                        <template class="header">
+                                        </template>
+                                        <template>
+                                            <vaadin-checkbox id="tabRegistoDePropostasfornecedor5Select" checked="{{item.fornecedor5Select}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
+                                        </template>
+                                    </vaadin-grid-column>
+                                </template>
 
-                                <vaadin-grid-column width="100px">
-                                    <template class="header">
-                                        <vaadin-text-field class="violet" disabled="true"></vaadin-text-field>
-                                    </template>
-                                    <template>
-                                        <vaadin-text-field name="tabRegistoDePropostasfornecedor6Preco" id="tabRegistoDePropostasfornecedor6Preco" value="{{item.fornecedor6Preco}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !_permissions.update }}">
-                                            <div slot="suffix">€</div>
-                                        </vaadin-text-field>
-                                    </template>
-                                </vaadin-grid-column>
-                                <vaadin-grid-column width="40px">
-                                    <template class="header">
-                                        <vaadin-text-field class="violet" disabled="true"></vaadin-text-field>
-                                    </template>
-                                    <template>
-                                        <vaadin-checkbox id="tabRegistoDePropostasfornecedor6Select" checked="{{item.fornecedor6Select}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
-                                    </template>
-                                </vaadin-grid-column>
+                                <template is="dom-if" if="{{hasfornecedor6}}">
+                                    <vaadin-grid-column width="150px" resizable>
+                                        <template class="header">
+                                            <span class="violet2"><span class="glyphicon glyphicon-user violet2"></span> &nbsp;&nbsp;{{fornecedor6}}</span>
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field name="tabRegistoDePropostasfornecedor6Preco" id="tabRegistoDePropostasfornecedor6Preco" value="{{item.fornecedor6Preco}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !_permissions.update }}">
+                                                <div slot="suffix">€</div>
+                                            </vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="40px" resizable>
+                                        <template class="header">
+                                        </template>
+                                        <template>
+                                            <vaadin-checkbox id="tabRegistoDePropostasfornecedor6Select" checked="{{item.fornecedor6Select}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
+                                        </template>
+                                    </vaadin-grid-column>
+                                </template>
 
                                 <vaadin-grid-column resizable>
                                     <template class="header">
@@ -1187,6 +1212,8 @@
                             <vaadin-grid-filter path="codProduto"></vaadin-grid-filter>
                         </template>
                         <template>
+
+
                             <!--<vaadin-text-field name="tabLinhascodProduto" id="tabLinhascodProduto" value="{{item.codProduto}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}"></vaadin-text-field>-->
                             <vaadin-combo-box items="[[CBItems_List]]" id="tabLinhascodProduto" item-value-path="id" item-label-path="id" value="{{item.codProduto}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}" style="text-align:left;">
                                 <template>
@@ -1227,6 +1254,7 @@
                             <vaadin-grid-filter path="codUnidadeMedida"></vaadin-grid-filter>
                         </template>
                         <template>
+
                             <!--<vaadin-text-field name="tabLinhascodUnidadeMedida" id="tabLinhascodUnidadeMedida" value="{{item.codUnidadeMedida}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}"></vaadin-text-field>-->
                             <vaadin-combo-box items="[[LCBMeasuresUnit]]" id="tabLinhascodUnidadeMedida" name="tabLinhascodUnidadeMedida" item-value-path="id" item-label-path="id" value="{{item.codUnidadeMedida}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}">
                                 <template>
@@ -1267,6 +1295,7 @@
                             <vaadin-grid-filter path="codLocalizacao"></vaadin-grid-filter>
                         </template>
                         <template>
+
                             <!--<vaadin-text-field name="tabLinhascodLocalizacao" id="tabLinhascodLocalizacao" value="{{item.codLocalizacao}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}"></vaadin-text-field>-->
                             <vaadin-combo-box items="[[CBLocations]]" id="tabLinhascodLocalizacao" name="tabLinhascodLocalizacao" item-value-path="id" item-label-path="id" value="{{item.codLocalizacao}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}">
                                 <template>
@@ -1287,6 +1316,7 @@
                             <vaadin-grid-filter path="codRegiao"></vaadin-grid-filter>
                         </template>
                         <template>
+
                             <!--<vaadin-text-field name="tabLinhascodRegiao" id="tabLinhascodRegiao" value="{{item.codRegiao}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}"></vaadin-text-field>-->
                             <vaadin-combo-box items="[[CBRegions]]" id="tabLinhascodRegiao" name="tabLinhascodRegiao" item-value-path="id" item-label-path="id" value="{{item.codRegiao}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}">
                                 <template>
@@ -1307,6 +1337,7 @@
                             <vaadin-grid-filter path="codAreaFuncional"></vaadin-grid-filter>
                         </template>
                         <template>
+
                             <!--<vaadin-text-field name="tabLinhascodAreaFuncional" id="tabLinhascodAreaFuncional" value="{{item.codAreaFuncional}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}"></vaadin-text-field>-->
                             <vaadin-combo-box items="[[CBFunctionalAreas]]" id="tabLinhascodAreaFuncional" name="tabLinhascodAreaFuncional" item-value-path="id" item-label-path="id" value="{{item.codAreaFuncional}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}">
                                 <template>
@@ -1425,7 +1456,6 @@
             <iframe id="rptContainer" src="" frameborder="0" style="width: 100%; height: 92%; margin: 0px; padding: 0px"></iframe>
         </paper-dialog>
 
-
         <paper-dialog id="rptDialog_EnviarEmail" class="dialgoBox" modal>
             <div class="buttons">
                 <paper-button class="btnRemove" on-tap="_closerptDialog_EnviarEmail" title="Fechar"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
@@ -1453,7 +1483,6 @@
             </div>
         </paper-dialog>
 
-
     </template>
 
     <script>
@@ -1467,6 +1496,54 @@
                     _id: {
                         type: String,
                         notify: true,
+                        value: ""
+                    },
+                    hasfornecedor1: {
+                        type: Boolean,
+                        value: false
+                    },
+                    fornecedor1: {
+                        type: String,
+                        value: ""
+                    },
+                    hasfornecedor2: {
+                        type: Boolean,
+                        value: false
+                    },
+                    fornecedor2: {
+                        type: String,
+                        value: ""
+                    },
+                    hasfornecedor3: {
+                        type: Boolean,
+                        value: false
+                    },
+                    fornecedor3: {
+                        type: String,
+                        value: ""
+                    },
+                    hasfornecedor4: {
+                        type: Boolean,
+                        value: false
+                    },
+                    fornecedor4: {
+                        type: String,
+                        value: ""
+                    },
+                    hasfornecedor5: {
+                        type: Boolean,
+                        value: false
+                    },
+                    fornecedor5: {
+                        type: String,
+                        value: ""
+                    },
+                    hasfornecedor6: {
+                        type: Boolean,
+                        value: false
+                    },
+                    fornecedor6: {
+                        type: String,
                         value: ""
                     },
                     selected: {
@@ -1538,6 +1615,7 @@
                     if (this._id == "") {
                         this._isCreate = true;
                     }
+
                 },
 
                 _validateData: function () {
@@ -1704,7 +1782,6 @@
                 },
 
                 _gerarRegistoPropostas: function () {
-                    debugger
                     if (this.$.fase.value != 1) {
                         this._showErrorMessage("Só é possível Gerar o Registo de Propostas quando a Fase se encontra em 'Consulta'")
                         return;
@@ -1728,7 +1805,6 @@
                     );
                 },
                 _gerarRegistoPropostasResponse: function () {
-                    debugger
                     if (this.gerarRegistoPropostasData.eReasonCode == 0) {
                         this._showMessage(this.gerarRegistoPropostasData.eMessage);
                         setTimeout(
@@ -1763,7 +1839,6 @@
                     }
                 },
                 _setSuppliersData: function (e) {
-                    
                     var self = this;
 
                     var item = self.Suppliers.find(x => x.no_ == e);
@@ -1910,7 +1985,6 @@
                 },
 
                 _updateLinha: function (e) {
-                    //debugger
                     this.$.page_updateLinhaConsultaMercado_ajax.body = JSON.stringify({
                         numLinha: e.model.item.numLinha,
                         numConsultaMercado: e.model.item.numConsultaMercado,
@@ -1997,7 +2071,6 @@
                     }
                 },
                 _updateLinhaSeleccaoEntidade: function (e) {
-                    debugger;
                     this.$.page_updateLinhaSeleccaoEntidade_ajax.body = JSON.stringify({
                         idSeleccaoEntidades: e.model.item.idSeleccaoEntidades,
                         numConsultaMercado: e.model.item.numConsultaMercado,
@@ -2311,12 +2384,11 @@
                 },
 
                 _criarEncomenda: function (e) {
-                    debugger
                     this.$.page_criarEncomenda_ajax.body = JSON.stringify(this.data);
                     this.$.page_criarEncomenda_ajax.generateRequest();
                 },
+
                 _criarEncomendaResponse: function (e) {
-                    debugger
                     this._openToast(this.CriarEncomendaCreated.eMessage);
                 },
 
@@ -2325,36 +2397,23 @@
 
                     self._setFieldsEditability(self.data);
                     //self._filtraFornecedores();
+                    var fornecedores = {};
 
-                    if (data.detail.response.registoDePropostas[0].fornecedor1Nome == null)
-                        self.$.Entidade1.innerHTML = ' ';
-                    else
-                        self.$.Entidade1.innerHTML = ' ' + data.detail.response.registoDePropostas[0].fornecedor1Nome;
+                    if (data.detail.response.registoDePropostas) {
+                        for (var i = 1; i <= 6; i++) {
+                            if (data.detail.response.registoDePropostas[0]['fornecedor' + i + 'Nome'] == null) {
+                                self.$['Entidade' + i].innerHTML = ' ';
+                                $(self.$['Entidade' + i]).parents('[class^="col-"]').hide();
 
-                    if (data.detail.response.registoDePropostas[0].fornecedor2Nome == null)
-                        self.$.Entidade2.innerHTML = ' ';
-                    else
-                        self.$.Entidade2.innerHTML = ' ' + data.detail.response.registoDePropostas[0].fornecedor2Nome;
-
-                    if (data.detail.response.registoDePropostas[0].fornecedor3Nome == null)
-                        self.$.Entidade3.innerHTML = ' ';
-                    else
-                        self.$.Entidade3.innerHTML = ' ' + data.detail.response.registoDePropostas[0].fornecedor3Nome;
-
-                    if (data.detail.response.registoDePropostas[0].fornecedor4Nome == null)
-                        self.$.Entidade4.innerHTML = ' ';
-                    else
-                        self.$.Entidade4.innerHTML = ' ' + data.detail.response.registoDePropostas[0].fornecedor4Nome;
-
-                    if (data.detail.response.registoDePropostas[0].fornecedor5Nome == null)
-                        self.$.Entidade5.innerHTML = ' ';
-                    else
-                        self.$.Entidade5.innerHTML = ' ' + data.detail.response.registoDePropostas[0].fornecedor5Nome;
-
-                    if (data.detail.response.registoDePropostas[0].fornecedor6Nome == null)
-                        self.$.Entidade6.innerHTML = ' ';
-                    else
-                        self.$.Entidade6.innerHTML = ' ' + data.detail.response.registoDePropostas[0].fornecedor6Nome;
+                            }
+                            else {
+                                self.$['Entidade' + i].innerHTML = ' ' + data.detail.response.registoDePropostas[0]['fornecedor' + i + 'Nome'];
+                                //self.fornecedores["" + i] = ' ' + data.detail.response.registoDePropostas[0]['fornecedor' + i + 'Nome'];
+                                self["fornecedor" + i] = ' ' + data.detail.response.registoDePropostas[0]['fornecedor' + i + 'Nome'];
+                                self["hasfornecedor" + i] = true;
+                            }
+                        }
+                    }
                 },
 
                 _confirmAndExecuteActionToast: function (_message, _ajaxRequest) {
@@ -2379,7 +2438,6 @@
                 },
 
                 _filtraFornecedores: function () {
-                    
                     var _self = this;
 
                     _self.$._CodTermosPagamento.value = "";
@@ -2416,7 +2474,7 @@
                 },
 
                 _enviarEmailFornecedores: function (e) {
-                    
+
                     var _self = this;
 
                     if (_self.$._todosFornecedores.__data.checked) {
@@ -2472,4 +2530,5 @@
             });
         });
     </script>
+
 </dom-module>
