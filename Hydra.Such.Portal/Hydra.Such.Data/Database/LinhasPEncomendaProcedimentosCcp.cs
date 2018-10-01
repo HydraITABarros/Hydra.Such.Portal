@@ -25,8 +25,6 @@ namespace Hydra.Such.Data.Database
         public DateTime? DataHoraModificação { get; set; }
         public string UtilizadorModificação { get; set; }
 
-        public LinhasRequisição Nº { get; set; }
         public ProcedimentosCcp NºProcedimentoNavigation { get; set; }
-        public Requisição NºRequisiçãoNavigation { get; set; }
     }
 }

@@ -68,10 +68,5 @@ namespace Hydra.Such.Data.Database
         public Projetos NºProjetoNavigation { get; set; }
         public Requisição NºRequisiçãoNavigation { get; set; }
         public Viaturas ViaturaNavigation { get; set; }
-        public ICollection<DiárioDeProjeto> DiárioDeProjeto { get; set; }
-        public ICollection<LinhasPEncomendaProcedimentosCcp> LinhasPEncomendaProcedimentosCcp { get; set; }
-        public ICollection<MovimentosDeProjeto> MovimentosDeProjeto { get; set; }
-        public ICollection<PréMovimentosProjeto> PréMovimentosProjeto { get; set; }
-
     }
 }

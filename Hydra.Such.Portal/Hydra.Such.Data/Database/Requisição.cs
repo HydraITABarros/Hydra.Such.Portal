@@ -5,6 +5,11 @@ namespace Hydra.Such.Data.Database
 {
     public partial class Requisição
     {
+        public Requisição()
+        {
+            LinhasRequisição = new HashSet<LinhasRequisição>();
+        }
+
         public string NºRequisição { get; set; }
         public int? Área { get; set; }
         public int? Estado { get; set; }
@@ -79,14 +84,6 @@ namespace Hydra.Such.Data.Database
 
         public Projetos NºProjetoNavigation { get; set; }
         public Viaturas ViaturaNavigation { get; set; }
-        public ICollection<Anexos> Anexos { get; set; }
-        public ICollection<DiárioDeProjeto> DiárioDeProjeto { get; set; }
-        public ICollection<HistoricoLinhasConsultaMercado> HistoricoLinhasConsultaMercado { get; set; }
-        public ICollection<LinhasConsultaMercado> LinhasConsultaMercado { get; set; }
-        public ICollection<LinhasPEncomendaProcedimentosCcp> LinhasPEncomendaProcedimentosCcp { get; set; }
         public ICollection<LinhasRequisição> LinhasRequisição { get; set; }
-        public ICollection<MovimentosDeProjeto> MovimentosDeProjeto { get; set; }
-        public ICollection<PréMovimentosProjeto> PréMovimentosProjeto { get; set; }
-        public ICollection<RequisicoesRegAlteracoes> RequisicoesRegAlteracoes { get; set; }
     }
 }

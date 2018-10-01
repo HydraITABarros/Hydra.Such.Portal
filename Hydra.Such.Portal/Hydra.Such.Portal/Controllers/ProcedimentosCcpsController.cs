@@ -605,14 +605,16 @@ namespace Hydra.Such.Portal.Controllers
                 LinhaProdutoServico.DataHoraCriação = DateTime.Now;
                 LinhaProdutoServico.DataHoraModificação = data.DataHoraModificação;
                 LinhaProdutoServico.Descrição = data.Descrição;
-                LinhaProdutoServico.Nº = data.Nº;
+                //AROMAO 01/10/2018
+                //LinhaProdutoServico.Nº = data.Nº;
                 //LinhaProdutoServico.NºLinha = noLinha;
                 LinhaProdutoServico.NºLinhaRequisição = data.NºLinhaRequisição;
                 LinhaProdutoServico.NºProcedimento = data.NºProcedimento;
                 LinhaProdutoServico.NºProcedimentoNavigation = data.NºProcedimentoNavigation;
                 LinhaProdutoServico.NºProjeto = data.NºProjeto;
                 LinhaProdutoServico.NºRequisição = data.NºRequisição;
-                LinhaProdutoServico.NºRequisiçãoNavigation = data.NºRequisiçãoNavigation;
+                //AROMAO 01/10/2018
+                //LinhaProdutoServico.NºRequisiçãoNavigation = data.NºRequisiçãoNavigation;
                 LinhaProdutoServico.QuantARequerer = data.QuantARequerer;
                 LinhaProdutoServico.Tipo = data.Tipo;
                 LinhaProdutoServico.UtilizadorCriação = User.Identity.Name;
@@ -1063,7 +1065,8 @@ namespace Hydra.Such.Portal.Controllers
                     //LinhaProdutoServico.NºProcedimentoNavigation = procedureNo;
                     LinhaProdutoServico.NºProjeto = linhasReq[i].NºProjeto;
                     LinhaProdutoServico.NºRequisição = linhasReq[i].NºRequisição;
-                    LinhaProdutoServico.NºRequisiçãoNavigation = linhasReq[i].NºRequisiçãoNavigation;
+                    //AROMAO 01/10/2018
+                    //LinhaProdutoServico.NºRequisiçãoNavigation = linhasReq[i].NºRequisiçãoNavigation;
                     LinhaProdutoServico.QuantARequerer = linhasReq[i].QuantidadeARequerer;
                     LinhaProdutoServico.Tipo = linhasReq[i].Tipo;
                     LinhaProdutoServico.UtilizadorCriação = User.Identity.Name;

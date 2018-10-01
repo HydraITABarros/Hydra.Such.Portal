@@ -4716,6 +4716,12 @@ namespace Hydra.Such.Data.Database
                     .HasForeignKey(d => d.NºProjeto)
                     .HasConstraintName("FK_Linhas Requisição_Projetos");
 
+                entity.HasOne(d => d.NºRequisiçãoNavigation)
+                    .WithMany(p => p.LinhasRequisição)
+                    .HasForeignKey(d => d.NºRequisição)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Linhas Requisição_Requisição");
+
                 entity.HasOne(d => d.ViaturaNavigation)
                     .WithMany(p => p.LinhasRequisição)
                     .HasForeignKey(d => d.Viatura)
@@ -8646,6 +8652,10 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Cod_Termos_Pagamento")
                     .HasMaxLength(10);
 
+                entity.Property(e => e.EmailFornecedor)
+                    .HasColumnName("Email_Fornecedor")
+                    .HasMaxLength(60);
+
                 entity.Property(e => e.NomeFornecedor)
                     .HasColumnName("Nome_Fornecedor")
                     .HasMaxLength(50);
@@ -8653,10 +8663,6 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.NumConsultaMercado)
                     .HasColumnName("Num_Consulta_Mercado")
                     .HasMaxLength(20);
-
-                entity.Property(e => e.EmailFornecedor)
-                    .HasColumnName("Email_Fornecedor")
-                    .HasMaxLength(60);
 
                 entity.HasOne(d => d.NumConsultaMercadoNavigation)
                     .WithMany(p => p.SeleccaoEntidades)

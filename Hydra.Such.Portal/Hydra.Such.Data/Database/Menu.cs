@@ -28,3 +28,4 @@ namespace Hydra.Such.Data.Database
         public string UpdatedBy { get; set; }
     }
 }
+
