@@ -503,7 +503,9 @@ namespace Hydra.Such.Portal.Controllers
                             if (resultado.eMessages.Any(x => x.Type == TraceType.Error))
                             {
                                 resultado.eReasonCode = 2;
-                                resultado.eMessage = "Ocorreram erros ao criar encomenda de compra.";
+                                //resultado.eMessage = "Ocorreram erros ao criar encomenda de compra.";
+
+                                resultado.eMessage = "Ocorreram erros ao criar encomenda de compra." + Environment.NewLine + resultado.eMessages[resultado.eMessages.Count() - 1].Message;
                             }
                             else
                             {

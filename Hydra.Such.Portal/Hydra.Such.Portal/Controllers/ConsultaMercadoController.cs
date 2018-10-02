@@ -571,8 +571,10 @@ namespace Hydra.Such.Portal.Controllers
                             //vamos criar a encomenda com as linhas
                             PurchOrderLineDTO purchOrderLineDTO = new PurchOrderLineDTO();
                             List<PurchOrderLineDTO> purchOrderLineDTOs = new List<PurchOrderLineDTO>();
-                            
-                            foreach(RegistoDePropostasView registoDePropostasView in registoDePropostas)
+
+                            string VAT_Fornecedor = DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName).Where(x => x.No_ == registoDePropostas[0].Fornecedor1Code).FirstOrDefault().VATBusinessPostingGroup;
+
+                            foreach (RegistoDePropostasView registoDePropostasView in registoDePropostas)
                             {
                                 purchOrderLineDTO.CenterResponsibilityCode = registoDePropostasView.CodCentroResponsabilidade;
                                 purchOrderLineDTO.Code = registoDePropostasView.CodProduto;
@@ -582,13 +584,16 @@ namespace Hydra.Such.Portal.Controllers
                                 purchOrderLineDTO.FunctionalAreaCode = registoDePropostasView.CodAreaFuncional;
                                 purchOrderLineDTO.LineId = registoDePropostasView.NumLinha;
                                 purchOrderLineDTO.LocationCode = registoDePropostasView.CodLocalizacao;
-                                purchOrderLineDTO.OpenOrderLineNo = registoDePropostasView.NumLinhaConsultaMercado;
-                                purchOrderLineDTO.OpenOrderNo = registoDePropostasView.NumConsultaMercado;
+                                //purchOrderLineDTO.OpenOrderLineNo = registoDePropostasView.NumLinhaConsultaMercado;
+                                //purchOrderLineDTO.OpenOrderNo = registoDePropostasView.NumConsultaMercado;
                                 purchOrderLineDTO.ProjectNo = registoDePropostasView.NumProjecto;
                                 purchOrderLineDTO.QuantityRequired = registoDePropostasView.Quantidade;
                                 purchOrderLineDTO.RegionCode = registoDePropostasView.CodRegiao;
                                 purchOrderLineDTO.UnitCost = registoDePropostasView.Fornecedor1Preco;
                                 purchOrderLineDTO.UnitMeasureCode = data.LinhasConsultaMercado.Where(x => x.NumLinha == registoDePropostasView.NumLinhaConsultaMercado).FirstOrDefault().CodUnidadeMedida;
+
+                                purchOrderLineDTO.VATBusinessPostingGroup = VAT_Fornecedor;
+                                purchOrderLineDTO.VATProductPostingGroup = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, registoDePropostasView.CodProduto).FirstOrDefault().VATProductPostingGroup;
 
                                 purchOrderLineDTOs.Add(purchOrderLineDTO);
                             }
@@ -620,6 +625,8 @@ namespace Hydra.Such.Portal.Controllers
                             PurchOrderLineDTO purchOrderLineDTO = new PurchOrderLineDTO();
                             List<PurchOrderLineDTO> purchOrderLineDTOs = new List<PurchOrderLineDTO>();
 
+                            string VAT_Fornecedor = DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName).Where(x => x.No_ == registoDePropostas[0].Fornecedor2Code).FirstOrDefault().VATBusinessPostingGroup;
+
                             foreach (RegistoDePropostasView registoDePropostasView in registoDePropostas)
                             {
                                 purchOrderLineDTO.CenterResponsibilityCode = registoDePropostasView.CodCentroResponsabilidade;
@@ -630,13 +637,16 @@ namespace Hydra.Such.Portal.Controllers
                                 purchOrderLineDTO.FunctionalAreaCode = registoDePropostasView.CodAreaFuncional;
                                 purchOrderLineDTO.LineId = registoDePropostasView.NumLinha;
                                 purchOrderLineDTO.LocationCode = registoDePropostasView.CodLocalizacao;
-                                purchOrderLineDTO.OpenOrderLineNo = registoDePropostasView.NumLinhaConsultaMercado;
-                                purchOrderLineDTO.OpenOrderNo = registoDePropostasView.NumConsultaMercado;
+                                //purchOrderLineDTO.OpenOrderLineNo = registoDePropostasView.NumLinhaConsultaMercado;
+                                //purchOrderLineDTO.OpenOrderNo = registoDePropostasView.NumConsultaMercado;
                                 purchOrderLineDTO.ProjectNo = registoDePropostasView.NumProjecto;
                                 purchOrderLineDTO.QuantityRequired = registoDePropostasView.Quantidade;
                                 purchOrderLineDTO.RegionCode = registoDePropostasView.CodRegiao;
                                 purchOrderLineDTO.UnitCost = registoDePropostasView.Fornecedor2Preco;
                                 purchOrderLineDTO.UnitMeasureCode = data.LinhasConsultaMercado.Where(x => x.NumLinha == registoDePropostasView.NumLinhaConsultaMercado).FirstOrDefault().CodUnidadeMedida;
+
+                                purchOrderLineDTO.VATBusinessPostingGroup = VAT_Fornecedor;
+                                purchOrderLineDTO.VATProductPostingGroup = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, registoDePropostasView.CodProduto).FirstOrDefault().VATProductPostingGroup;
 
                                 purchOrderLineDTOs.Add(purchOrderLineDTO);
                             }
@@ -668,6 +678,8 @@ namespace Hydra.Such.Portal.Controllers
                             PurchOrderLineDTO purchOrderLineDTO = new PurchOrderLineDTO();
                             List<PurchOrderLineDTO> purchOrderLineDTOs = new List<PurchOrderLineDTO>();
 
+                            string VAT_Fornecedor = DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName).Where(x => x.No_ == registoDePropostas[0].Fornecedor3Code).FirstOrDefault().VATBusinessPostingGroup;
+
                             foreach (RegistoDePropostasView registoDePropostasView in registoDePropostas)
                             {
                                 purchOrderLineDTO.CenterResponsibilityCode = registoDePropostasView.CodCentroResponsabilidade;
@@ -678,13 +690,16 @@ namespace Hydra.Such.Portal.Controllers
                                 purchOrderLineDTO.FunctionalAreaCode = registoDePropostasView.CodAreaFuncional;
                                 purchOrderLineDTO.LineId = registoDePropostasView.NumLinha;
                                 purchOrderLineDTO.LocationCode = registoDePropostasView.CodLocalizacao;
-                                purchOrderLineDTO.OpenOrderLineNo = registoDePropostasView.NumLinhaConsultaMercado;
-                                purchOrderLineDTO.OpenOrderNo = registoDePropostasView.NumConsultaMercado;
+                                //purchOrderLineDTO.OpenOrderLineNo = registoDePropostasView.NumLinhaConsultaMercado;
+                                //purchOrderLineDTO.OpenOrderNo = registoDePropostasView.NumConsultaMercado;
                                 purchOrderLineDTO.ProjectNo = registoDePropostasView.NumProjecto;
                                 purchOrderLineDTO.QuantityRequired = registoDePropostasView.Quantidade;
                                 purchOrderLineDTO.RegionCode = registoDePropostasView.CodRegiao;
                                 purchOrderLineDTO.UnitCost = registoDePropostasView.Fornecedor3Preco;
                                 purchOrderLineDTO.UnitMeasureCode = data.LinhasConsultaMercado.Where(x => x.NumLinha == registoDePropostasView.NumLinhaConsultaMercado).FirstOrDefault().CodUnidadeMedida;
+
+                                purchOrderLineDTO.VATBusinessPostingGroup = VAT_Fornecedor;
+                                purchOrderLineDTO.VATProductPostingGroup = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, registoDePropostasView.CodProduto).FirstOrDefault().VATProductPostingGroup;
 
                                 purchOrderLineDTOs.Add(purchOrderLineDTO);
                             }
@@ -716,6 +731,8 @@ namespace Hydra.Such.Portal.Controllers
                             PurchOrderLineDTO purchOrderLineDTO = new PurchOrderLineDTO();
                             List<PurchOrderLineDTO> purchOrderLineDTOs = new List<PurchOrderLineDTO>();
 
+                            string VAT_Fornecedor = DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName).Where(x => x.No_ == registoDePropostas[0].Fornecedor4Code).FirstOrDefault().VATBusinessPostingGroup;
+
                             foreach (RegistoDePropostasView registoDePropostasView in registoDePropostas)
                             {
                                 purchOrderLineDTO.CenterResponsibilityCode = registoDePropostasView.CodCentroResponsabilidade;
@@ -726,13 +743,16 @@ namespace Hydra.Such.Portal.Controllers
                                 purchOrderLineDTO.FunctionalAreaCode = registoDePropostasView.CodAreaFuncional;
                                 purchOrderLineDTO.LineId = registoDePropostasView.NumLinha;
                                 purchOrderLineDTO.LocationCode = registoDePropostasView.CodLocalizacao;
-                                purchOrderLineDTO.OpenOrderLineNo = registoDePropostasView.NumLinhaConsultaMercado;
-                                purchOrderLineDTO.OpenOrderNo = registoDePropostasView.NumConsultaMercado;
+                                //purchOrderLineDTO.OpenOrderLineNo = registoDePropostasView.NumLinhaConsultaMercado;
+                                //purchOrderLineDTO.OpenOrderNo = registoDePropostasView.NumConsultaMercado;
                                 purchOrderLineDTO.ProjectNo = registoDePropostasView.NumProjecto;
                                 purchOrderLineDTO.QuantityRequired = registoDePropostasView.Quantidade;
                                 purchOrderLineDTO.RegionCode = registoDePropostasView.CodRegiao;
                                 purchOrderLineDTO.UnitCost = registoDePropostasView.Fornecedor4Preco;
                                 purchOrderLineDTO.UnitMeasureCode = data.LinhasConsultaMercado.Where(x => x.NumLinha == registoDePropostasView.NumLinhaConsultaMercado).FirstOrDefault().CodUnidadeMedida;
+
+                                purchOrderLineDTO.VATBusinessPostingGroup = VAT_Fornecedor;
+                                purchOrderLineDTO.VATProductPostingGroup = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, registoDePropostasView.CodProduto).FirstOrDefault().VATProductPostingGroup;
 
                                 purchOrderLineDTOs.Add(purchOrderLineDTO);
                             }
@@ -764,6 +784,8 @@ namespace Hydra.Such.Portal.Controllers
                             PurchOrderLineDTO purchOrderLineDTO = new PurchOrderLineDTO();
                             List<PurchOrderLineDTO> purchOrderLineDTOs = new List<PurchOrderLineDTO>();
 
+                            string VAT_Fornecedor = DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName).Where(x => x.No_ == registoDePropostas[0].Fornecedor5Code).FirstOrDefault().VATBusinessPostingGroup;
+
                             foreach (RegistoDePropostasView registoDePropostasView in registoDePropostas)
                             {
                                 purchOrderLineDTO.CenterResponsibilityCode = registoDePropostasView.CodCentroResponsabilidade;
@@ -774,13 +796,16 @@ namespace Hydra.Such.Portal.Controllers
                                 purchOrderLineDTO.FunctionalAreaCode = registoDePropostasView.CodAreaFuncional;
                                 purchOrderLineDTO.LineId = registoDePropostasView.NumLinha;
                                 purchOrderLineDTO.LocationCode = registoDePropostasView.CodLocalizacao;
-                                purchOrderLineDTO.OpenOrderLineNo = registoDePropostasView.NumLinhaConsultaMercado;
-                                purchOrderLineDTO.OpenOrderNo = registoDePropostasView.NumConsultaMercado;
+                                //purchOrderLineDTO.OpenOrderLineNo = registoDePropostasView.NumLinhaConsultaMercado;
+                                //purchOrderLineDTO.OpenOrderNo = registoDePropostasView.NumConsultaMercado;
                                 purchOrderLineDTO.ProjectNo = registoDePropostasView.NumProjecto;
                                 purchOrderLineDTO.QuantityRequired = registoDePropostasView.Quantidade;
                                 purchOrderLineDTO.RegionCode = registoDePropostasView.CodRegiao;
                                 purchOrderLineDTO.UnitCost = registoDePropostasView.Fornecedor5Preco;
                                 purchOrderLineDTO.UnitMeasureCode = data.LinhasConsultaMercado.Where(x => x.NumLinha == registoDePropostasView.NumLinhaConsultaMercado).FirstOrDefault().CodUnidadeMedida;
+
+                                purchOrderLineDTO.VATBusinessPostingGroup = VAT_Fornecedor;
+                                purchOrderLineDTO.VATProductPostingGroup = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, registoDePropostasView.CodProduto).FirstOrDefault().VATProductPostingGroup;
 
                                 purchOrderLineDTOs.Add(purchOrderLineDTO);
                             }
@@ -812,6 +837,8 @@ namespace Hydra.Such.Portal.Controllers
                             PurchOrderLineDTO purchOrderLineDTO = new PurchOrderLineDTO();
                             List<PurchOrderLineDTO> purchOrderLineDTOs = new List<PurchOrderLineDTO>();
 
+                            string VAT_Fornecedor = DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName).Where(x => x.No_ == registoDePropostas[0].Fornecedor6Code).FirstOrDefault().VATBusinessPostingGroup;
+
                             foreach (RegistoDePropostasView registoDePropostasView in registoDePropostas)
                             {
                                 purchOrderLineDTO.CenterResponsibilityCode = registoDePropostasView.CodCentroResponsabilidade;
@@ -822,13 +849,16 @@ namespace Hydra.Such.Portal.Controllers
                                 purchOrderLineDTO.FunctionalAreaCode = registoDePropostasView.CodAreaFuncional;
                                 purchOrderLineDTO.LineId = registoDePropostasView.NumLinha;
                                 purchOrderLineDTO.LocationCode = registoDePropostasView.CodLocalizacao;
-                                purchOrderLineDTO.OpenOrderLineNo = registoDePropostasView.NumLinhaConsultaMercado;
-                                purchOrderLineDTO.OpenOrderNo = registoDePropostasView.NumConsultaMercado;
+                                //purchOrderLineDTO.OpenOrderLineNo = registoDePropostasView.NumLinhaConsultaMercado;
+                                //purchOrderLineDTO.OpenOrderNo = registoDePropostasView.NumConsultaMercado;
                                 purchOrderLineDTO.ProjectNo = registoDePropostasView.NumProjecto;
                                 purchOrderLineDTO.QuantityRequired = registoDePropostasView.Quantidade;
                                 purchOrderLineDTO.RegionCode = registoDePropostasView.CodRegiao;
                                 purchOrderLineDTO.UnitCost = registoDePropostasView.Fornecedor6Preco;
                                 purchOrderLineDTO.UnitMeasureCode = data.LinhasConsultaMercado.Where(x => x.NumLinha == registoDePropostasView.NumLinhaConsultaMercado).FirstOrDefault().CodUnidadeMedida;
+
+                                purchOrderLineDTO.VATBusinessPostingGroup = VAT_Fornecedor;
+                                purchOrderLineDTO.VATProductPostingGroup = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, registoDePropostasView.CodProduto).FirstOrDefault().VATProductPostingGroup;
 
                                 purchOrderLineDTOs.Add(purchOrderLineDTO);
                             }
@@ -877,7 +907,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (data.eMessages.Any(x => x.Type == TraceType.Error))
                 {
                     data.eReasonCode = 2;
-                    data.eMessage = "Ocorreram erros ao criar encomenda de compra.";
+                    data.eMessage = "Ocorreram erros ao criar encomenda de compra." + Environment.NewLine + data.eMessages[data.eMessages.Count() - 1].Message;
                 }
                 else
                 {

@@ -221,7 +221,7 @@
             }
 
             /*NR20180313*/
-            .subMenu {
+            .subMenuDrop {
                 background-color: #D5662F !important;
                 padding: 0px !important;
                 min-width: 50px !important;
@@ -659,7 +659,25 @@
                    on-response="_deletedAttachResponse"
                    content-type="application/json"></iron-ajax>
         <!-- Anexos.e -->
+        <!-- MenuButton Funções.b -->
+        <iron-ajax url="/ProcedimentosCcps/CloseProcedimentoByRequest"
+                   last-response="{{ procedimentoClosed }}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_request_closing"
+                   on-response="_closingProcedimentoResponse"
+                   content-type="application/json">
+        </iron-ajax>
+        <!-- MenuButton Funções.e -->
         <!-- Controller actions.e -->
+
+        <div class="subMenu">
+            <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+            <paper-button raised id="btnUpdate" class="tablinks" on-tap="_update" disabled="{{ _isCreate }}" title="Gravar" style="background-color:#1DB73C"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Gravar</paper-button>
+            <paper-button raised id="btnCancel" class="tablinks" on-tap="_delete" disabled="{{ _isCreate }}" title="Eliminar" style="background-color:#D84949"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+            <such-dropdown-menu id="actionButtonFuncoes" on-value-changed="_mnuFuncoes_ItemSelected" title=" Funções " items="[[ _mnuFuncoes_MenuItems ]]"></such-dropdown-menu>
+            <paper-button class="tablinks" on-tap="_printProcedimento" id="_btnPrint"><i class="fa fa-print" aria-hidden="true"></i> Imprimir</paper-button>
+        </div>
         <!-- Header section of the Procedimento details -->
         <div class="panel panel-default">
             <div class="panel-heading">Cabeçalho</div>
@@ -1193,7 +1211,7 @@
                                         <div class="clearfix"></div>
                                         <div class="clearfix"></div>
                                         <div class="col-lg-6">
-                                            <such-dropdown-menu class="subMenu" id="actionButtonContabilidade1" on-value-changed="_mnuAccao1_ItemSelected" title=" Acções " items="[[ _mnuAccao1_MenuItems ]]"></such-dropdown-menu>
+                                            <such-dropdown-menu class="subMenuDrop" id="actionButtonContabilidade1" on-value-changed="_mnuAccao1_ItemSelected" title=" Acções " items="[[ _mnuAccao1_MenuItems ]]"></such-dropdown-menu>
                                         </div>
                                     </div>
                                 </div>
@@ -1228,7 +1246,7 @@
                                             </div>
                                             <div class="col-sm-3" id="idDivAccao2">
                                                 <br />
-                                                <such-dropdown-menu class="subMenu" id="actionButtonArea2" disabled="true" on-value-changed="_mnuAccao2_ItemSelected" title=" Acções " items="[[ _mnuAccao2_MenuItems ]]"></such-dropdown-menu>
+                                                <such-dropdown-menu class="subMenuDrop" id="actionButtonArea2" disabled="true" on-value-changed="_mnuAccao2_ItemSelected" title=" Acções " items="[[ _mnuAccao2_MenuItems ]]"></such-dropdown-menu>
                                             </div>
                                         </div>
                                         <div class="clearfix"></div>
@@ -1417,7 +1435,7 @@
                                         </div>
                                     </div>
                                     <div class="col-lg-6">
-                                        <such-dropdown-menu class="subMenu" id="actionButtonCompras" on-value-changed="_mnuAccao4_ItemSelected" title=" Acções " items="[[ _mnuAccao4_MenuItems ]]"></such-dropdown-menu>
+                                        <such-dropdown-menu class="subMenuDrop" id="actionButtonCompras" on-value-changed="_mnuAccao4_ItemSelected" title=" Acções " items="[[ _mnuAccao4_MenuItems ]]"></such-dropdown-menu>
                                     </div>
                                 </div>
                                 <div class="clearfix"></div>
@@ -1450,7 +1468,7 @@
                                         </div>
                                         <div class="col-sm-3">
                                             <br />
-                                            <such-dropdown-menu class="subMenu" id="actionButtonFinanceiros" on-value-changed="_mnuAccao5_ItemSelected" title=" Acções " items="[[ _mnuAccao5_MenuItems ]]"></such-dropdown-menu>
+                                            <such-dropdown-menu class="subMenuDrop" id="actionButtonFinanceiros" on-value-changed="_mnuAccao5_ItemSelected" title=" Acções " items="[[ _mnuAccao5_MenuItems ]]"></such-dropdown-menu>
                                         </div>
                                     </div>
                                 </div>
@@ -2180,15 +2198,15 @@
                 </iron-pages>
 
                 <!-- Save and Create Buttons -->
-                <div id="botoes_accao" class="marginSpace">
-                    <template is="dom-if" if="{{ _isCreate }}">
-                        <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
-                    </template>
-                    <template is="dom-if" if="{{ !_isCreate }}">
-                        <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                        <paper-button raised id="btnCancel" class="btnRemove" on-tap="_delete"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
-                    </template>
-                </div>
+                <!--<div id="botoes_accao" class="marginSpace">
+                <template is="dom-if" if="{{ _isCreate }}">
+                    <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                </template>
+                <template is="dom-if" if="{{ !_isCreate }}">
+                    <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                    <paper-button raised id="btnCancel" class="btnRemove" on-tap="_delete"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                </template>
+            </div>-->
             </div>
         </div>
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
@@ -2217,7 +2235,16 @@
                         type: Array,
                         value: [{ value: 1, description: "Devolver a Compras (4)" }],
                     },
-
+                    // zpgm.MenuFunções.b
+                    _mnuFuncoes_MenuItems: {
+                        type: Array,
+                        value: [
+                            { value: 1, description: "Fecho do Processo (20)" },
+                            { value: 2, description: "Obter Ref. Procedimento" },
+                            { value: 3, description: "Libertar Processo Suspenso" }
+                        ],
+                    },
+                    // zpgm.MenuFunções.e
                     _procedimentoid: {
                         type: String,
                         notify: true,
@@ -2642,7 +2669,7 @@
                             this._openToast(this.deletedData.eMessage);
                             setTimeout(
                                 function () {
-                                    window.location.replace("/");
+                                    window.location.replace("/ProcedimentosCcps/PedidoSimplificado/");
                                 }, 2500);
                         }
                     }
@@ -3775,6 +3802,68 @@
                     }
                 },
 
+                // zpgm.MenuFunçoes.b
+                _closeProcedimentoByUserRequest: function () {
+                    debugger;;
+                    if (!this.__isFechoProcesso) {
+                        this._showErrorMessage("Não está autorizado a executar esta acção!");
+                        return;
+                    }
+
+                    if (this.data.caRatificar) {
+                        this._showErrorMessage("Este Procedimento está pendente de Ratificação pelo CA!");
+                        return;
+                    }
+
+                    var ajax_request = this.$.ajax_request_closing;
+                    ajax_request.body = JSON.stringify(this.data);
+
+                    this._confirmAndExecuteActionToast(
+                        "Confirma o Arquivamento do Processo?",
+                        ajax_request
+                    );
+
+                    ////NR 20180301 - Se não fizer isto, o this.data.nomeProcesso não leva o valor que têm!!!
+                    this.data.nomeProcesso = this.$.nomeProcesso.value;
+                    this.$.ajax_request_closing.body = JSON.stringify(this.data);
+                },
+                _closingProcedimentoResponse: function (e) {
+                    debugger;;
+                    if (this.procedimentoClosed.eReasonCode == 0) {
+                        this._openToast("Procedimento " + this.data.no + " arquivado!");
+                        setTimeout(
+                            function () {
+                            }, 3000);
+
+                        if (this._procedimentotypeid == 1)
+                            window.location.replace("/ProcedimentosCcps/PedidoAquisicao/");
+                        else
+                            window.location.replace("/ProcedimentosCcps/PedidoSimplificado/");
+
+                    } else {
+                        this._openToast(this._procedimentoClosed.eMessage);
+                    }
+                },
+
+                _mnuFuncoes_ItemSelected: function (e) {
+                    debugger;;
+                    var item = e.detail.value;
+
+                    if (item == null)
+                        return;
+
+                    this._newStatus = item.value;
+
+                    switch (this._newStatus) {
+                        case 1:
+                            this._closeProcedimentoByUserRequest();
+                            break;
+                        //case 2:
+                        //    this._imobReturnToArea();
+                        //    break;
+                    }
+                },
+                // zpgm.MenuFunções.e
                 _setFieldsEditability(data) {
                     var _self = this;
                     //if (data.estado == 0) {
@@ -3904,6 +3993,9 @@
                     this.$.page_databound_ajax.url = url;
                     this.$.page_databound_ajax.body = JSON.stringify(data);
                     this.$.page_databound_ajax.generateRequest();
+                },
+                _goBack: function (e) {
+                    window.history.back();
                 }
             });
         });

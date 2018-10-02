@@ -118,8 +118,17 @@
         </div>
 
         <vaadin-grid aria-label="Movimentos de Projeto" id="projectMovementTable" items="[[result]]" class="editGrid">
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.lineNo.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="lineNo">Nº Linha</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="lineNo" />
+                </template>
+                <template>
+                    {{item.lineNo}}
+                </template>
+            </vaadin-grid-column>
 
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.projectNo.hidden }}">
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.projectNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="projectNo">Nº Projeto</vaadin-grid-sorter>
                     <vaadin-grid-filter path="projectNo" />
@@ -129,9 +138,9 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.date.hidden }}">
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.date.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="date">Date</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="date">Data</vaadin-grid-sorter>
                     <vaadin-grid-filter path="date" />
                 </template>
                 <template>
@@ -139,10 +148,10 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.movementType.hidden }}">
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.movementType.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="moveType">Tipo Movimento</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="moveType" />
+                    <vaadin-grid-sorter path="movementType">Tipo Movimento</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="movementType" />
                 </template>
                 <template>
                     <vaadin-combo-box items="[[response2]]" item-value-path="id" disabled item-label-path="value" value="{{item.movementType}}">
@@ -157,7 +166,17 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.type.hidden }}">
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.documentNo.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="documentNo">Nº Documento</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="documentNo" />
+                </template>
+                <template>
+                    {{item.documentNo}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.type.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="type">Tipo</vaadin-grid-sorter>
                     <vaadin-grid-filter path="type" />
@@ -174,25 +193,18 @@
                     </vaadin-combo-box>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.code.hidden }}">
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.code.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="code">Código</vaadin-grid-sorter>
                     <vaadin-grid-filter path="code" />
                 </template>
                 <template>
                     {{item.code}}
-                    <!--@*<vaadin-combo-box items="[[]]" item-value-path="id" disabled item-label-path="value" value="{{item.code}}">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>*@-->
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.description.hidden }}">
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.description.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
                     <vaadin-grid-filter path="description" />
@@ -202,7 +214,17 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.measurementUnitCode.hidden }}">
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.quantity.hidden }}">
+                <template class="header" width="200px" resizable>
+                    <vaadin-grid-sorter path="quantity">Quantidade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="quantity" />
+                </template>
+                <template>
+                    {{item.quantity}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.measurementUnitCode.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="measurementUnitCode">Cód. Unidade Medida</vaadin-grid-sorter>
                     <vaadin-grid-filter path="measurementUnitCode" />
@@ -220,72 +242,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.quantity.hidden }}">
-                <template class="header" width="200px" resizable>
-                    <vaadin-grid-sorter path="quantity">Quantidade</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="quantity" />
-                </template>
-                <template>
-                    {{item.quantity}}
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.unitPrice.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="unitPrice">Preço Unitário</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="unitPrice" />
-                </template>
-                <template>
-                    {{item.unitPrice}}€
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.totalPrice.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="TotalPrice">Preço total</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="TotalPrice" />
-                </template>
-                <template>
-                    {{item.totalPrice}}€
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.unitCost.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="unitCost">Custo Unitário</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="unitCost" />
-                </template>
-                <template>
-                    {{item.unitCost}}€
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.totalCost.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="totalCost">Custo Total</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="totalCost" />
-                </template>
-                <template>
-                    {{item.totalCost}}€
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.invoiceToClientNo.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="invoiceToClientNo">Fatura-a Nº Cliente</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="invoiceToClientNo" />
-                </template>
-                <template>
-                    {{item.invoiceToClientNo}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.clientName.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="clientName">Nome Cliente</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="clientName" />
-                </template>
-                <template>
-                    {{item.clientName}}
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.locationCode.hidden }}">
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.locationCode.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="locationCode">Cód. Localização</vaadin-grid-sorter>
                     <vaadin-grid-filter path="locationCode" />
@@ -302,16 +259,18 @@
                     </vaadin-combo-box>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.serviceObject.hidden }}">
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.projectContabGroup.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="serviceObject">Objeto Serviço</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="serviceObject" />
+                    <vaadin-grid-sorter path="projectContabGroup">Grupo Contab. Projeto</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="projectContabGroup" />
                 </template>
                 <template>
-                    {{item.serviceObject}}
+                    {{item.projectContabGroup}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.regionCode.hidden }}">
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.regionCode.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="regionCode">Cód. Região</vaadin-grid-sorter>
                     <vaadin-grid-filter path="regionCode" />
@@ -328,9 +287,10 @@
                     </vaadin-combo-box>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.functionalAreaCode.hidden }}">
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.functionalAreaCode.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="functionalAreaCode">Cód Área Funcional</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="functionalAreaCode">Cód. Área Funcional</vaadin-grid-sorter>
                     <vaadin-grid-filter path="functionalAreaCode" />
                 </template>
                 <template>
@@ -345,7 +305,8 @@
                     </vaadin-combo-box>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.responsabilityCenterCode.hidden }}">
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.responsabilityCenterCode.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="responsabilityCenterCode">Cód. Centro Responsabilidade</vaadin-grid-sorter>
                     <vaadin-grid-filter path="responsabilityCenterCode" />
@@ -362,7 +323,8 @@
                     </vaadin-combo-box>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.user.hidden }}">
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.user.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="user">Utilizador</vaadin-grid-sorter>
                     <vaadin-grid-filter path="user" />
@@ -372,9 +334,47 @@
                 </template>
             </vaadin-grid-column>
 
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.unitCost.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="unitCost">Custo Unitário</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="unitCost" />
+                </template>
+                <template>
+                    {{item.unitCost}}€
+                </template>
+            </vaadin-grid-column>
 
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.totalCost.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="totalCost">Custo Total</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="totalCost" />
+                </template>
+                <template>
+                    {{item.totalCost}}€
+                </template>
+            </vaadin-grid-column>
 
-            <vaadin-grid-column width="100px" resizable hidden$="{{ _columns.billable.hidden }}">
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.unitPrice.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="unitPrice">Preço Unitário</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="unitPrice" />
+                </template>
+                <template>
+                    {{item.unitPrice}}€
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.totalPrice.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="TotalPrice">Preço Total</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="TotalPrice" />
+                </template>
+                <template>
+                    {{item.totalPrice}}€
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.billable.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="billable">Faturável</vaadin-grid-sorter>
                     <vaadin-grid-filter path="billable" />
@@ -383,22 +383,374 @@
                     <paper-checkbox name="billable" disabled checked="{{item.billable}}"></paper-checkbox>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="140px" resizable hidden$="{{ _columns.folhaHoras.hidden }}">
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.residueGuideNo.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="folhaHoras">Folha de Horas</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="folhaHoras" />
+                    <vaadin-grid-sorter path="residueGuideNo">Nº Guia Resíduos</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="residueGuideNo" />
                 </template>
                 <template>
-                    {{item.folhaHoras}}
+                    {{item.residueGuideNo}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="140px" resizable hidden$="{{ _columns.mealTypeDescription.hidden }}">
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.externalGuideNo.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="externalGuideNo">Nº Guia Externa</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="externalGuideNo" />
+                </template>
+                <template>
+                    {{item.externalGuideNo}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.invoiceToClientNo.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="invoiceToClientNo">Fatura-a Nº Cliente</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="invoiceToClientNo" />
+                </template>
+                <template>
+                    {{item.invoiceToClientNo}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.clientName.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="clientName">Nome Cliente</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="clientName" />
+                </template>
+                <template>
+                    {{item.clientName}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.requestNo.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="requestNo">Nº Requisição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="requestNo" />
+                </template>
+                <template>
+                    {{item.requestNo}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.requestLineNo.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="requestLineNo">Nº Linha Requisição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="requestLineNo" />
+                </template>
+                <template>
+                    {{item.requestLineNo}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.driver.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="driver">Motorista</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="driver" />
+                </template>
+                <template>
+                    {{item.driver}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.mealTypeDescription.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="mealTypeDescription">Tipo de Refeição</vaadin-grid-sorter>
                     <vaadin-grid-filter path="mealTypeDescription" />
                 </template>
                 <template>
                     {{item.mealTypeDescription}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.residueFinalDestinyCode.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="residueFinalDestinyCode">Cód. Destino Final Resíduos</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="residueFinalDestinyCode" />
+                </template>
+                <template>
+                    {{item.residueFinalDestinyCode}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.originalDocument.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="originalDocument">Documento Original</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="originalDocument" />
+                </template>
+                <template>
+                    {{item.originalDocument}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.adjustedDocument.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="adjustedDocument">Documento Corrigido</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="adjustedDocument" />
+                </template>
+                <template>
+                    {{item.adjustedDocument}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.adjustedPrice.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="adjustedPrice">Acerto De Preços</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="adjustedPrice" />
+                </template>
+                <template>
+                    {{item.adjustedPrice}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.adjustedDocumentData.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="adjustedDocumentData">Data Documento Corrigido</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="adjustedDocumentData" />
+                </template>
+                <template>
+                    {{item.adjustedDocumentData}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.autorizatedInvoice.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="autorizatedInvoice">Faturação Autorizada</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="autorizatedInvoice" />
+                </template>
+                <template>
+                    <paper-checkbox name="autorizatedInvoice" disabled checked="{{item.autorizatedInvoice}}"></paper-checkbox>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.autorizatedInvoice2.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="autorizatedInvoice2">Faturação Autorizada 2</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="autorizatedInvoice2" />
+                </template>
+                <template>
+                    {{item.autorizatedInvoice2}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.autorizatedInvoiceData.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="autorizatedInvoiceData">Data Autorização Faturação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="autorizatedInvoiceData" />
+                </template>
+                <template>
+                    {{item.autorizatedInvoiceData}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.serviceGroupCode.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="serviceGroupCode">Cód. Grupo Serviço</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="serviceGroupCode" />
+                </template>
+                <template>
+                    {{item.serviceGroupCode}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.resourceType.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="resourceType">Tipo Recurso</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="resourceType" />
+                </template>
+                <template>
+                    {{item.resourceType}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.folhaHoras.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="folhaHoras">Nº Folha Horas</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="folhaHoras" />
+                </template>
+                <template>
+                    {{item.folhaHoras}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.internalRequest.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="internalRequest">Requisição Interna</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="internalRequest" />
+                </template>
+                <template>
+                    {{item.internalRequest}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.employeeNo.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="employeeNo">Nº Funcionário</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="employeeNo" />
+                </template>
+                <template>
+                    {{item.employeeNo}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.quantityReturned.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="quantityReturned">Quantidade Devolvida</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="quantityReturned" />
+                </template>
+                <template>
+                    {{item.quantityReturned}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.consumptionDate.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="consumptionDate">Data Consumo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="consumptionDate" />
+                </template>
+                <template>
+                    {{item.consumptionDate}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.registered.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="registered">Registado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="registered" />
+                </template>
+                <template>
+                    <paper-checkbox name="registered" disabled checked="{{item.registered}}"></paper-checkbox>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.billed.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="billed">Faturada</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="billed" />
+                </template>
+                <template>
+                    <paper-checkbox name="billed" disabled checked="{{item.billed}}"></paper-checkbox>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.coin.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="coin">Moeda</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="coin" />
+                </template>
+                <template>
+                    {{item.coin}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.unitValueToInvoice.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="unitValueToInvoice">Valor Unitário A Faturar</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="unitValueToInvoice" />
+                </template>
+                <template>
+                    {{item.unitValueToInvoice}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.serviceClientCode.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="serviceClientCode">Cód. Serviço Cliente</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="serviceClientCode" />
+                </template>
+                <template>
+                    {{item.serviceClientCode}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.clientRequest.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="clientRequest">Cód. Cliente</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="clientRequest" />
+                </template>
+                <template>
+                    {{item.clientRequest}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.licensePlate.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="licensePlate">Matrícula</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="licensePlate" />
+                </template>
+                <template>
+                    {{item.licensePlate}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.readingCode.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="readingCode">Código Ler</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="readingCode" />
+                </template>
+                <template>
+                    {{item.readingCode}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.group.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="group">Grupo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="group" />
+                </template>
+                <template>
+                    {{item.group}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.operation.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="operation">Operação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="operation" />
+                </template>
+                <template>
+                    {{item.operation}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.invoiceGroup.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="invoiceGroup">Grupo Fatura</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="invoiceGroup" />
+                </template>
+                <template>
+                    {{item.invoiceGroup}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.invoiceGroupDescription.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="invoiceGroupDescription">Grupo Fatura Descrição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="invoiceGroupDescription" />
+                </template>
+                <template>
+                    {{item.invoiceGroupDescription}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.authorizedBy.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="authorizedBy">Autorizado Por</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="authorizedBy" />
+                </template>
+                <template>
+                    {{item.authorizedBy}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.serviceObject.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="serviceObject">Objeto Serviço</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="serviceObject" />
+                </template>
+                <template>
+                    {{item.serviceObject}}
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
@@ -487,29 +839,64 @@
                 /*start - ColumnToggle*/
                 _startColumnToggle: function () {
                     var columns = {
+                        "lineNo": { hidden: false, label: "Nº Linha" },
                         "projectNo": { hidden: false, label: "Nº Projeto" },
-                        "date": { hidden: false, label: "Date" },
+                        "date": { hidden: false, label: "Data" },
                         "movementType": { hidden: false, label: "Tipo Movimento" },
+                        "documentNo": { hidden: false, label: "Nº Documento" },
                         "type": { hidden: false, label: "Tipo" },
                         "code": { hidden: false, label: "Código" },
                         "description": { hidden: false, label: "Descrição" },
-                        "measurementUnitCode": { hidden: false, label: "Cód. Unidade Medida" },
                         "quantity": { hidden: false, label: "Quantidade" },
-                        "unitPrice": { hidden: false, label: "Preço Unitário" },
-                        "totalPrice": { hidden: false, label: "Preço total" },
-                        "unitCost": { hidden: false, label: "Custo Unitário" },
-                        "totalCost": { hidden: false, label: "Custo Total" },
-                        "invoiceToClientNo": { hidden: false, label: "Fatura-a Nº Cliente" },
-                        "clientName": { hidden: false, label: "Nome Cliente" },
+                        "measurementUnitCode": { hidden: false, label: "Cód. Unidade Medida" },
                         "locationCode": { hidden: false, label: "Cód. Localização" },
-                        "serviceObject": { hidden: false, label: "Objeto Serviço" },
+                        "projectContabGroup": { hidden: false, label: "Grupo Contab. Projeto" },
                         "regionCode": { hidden: false, label: "Cód. Região" },
-                        "functionalAreaCode": { hidden: false, label: "Cód Área Funcional" },
+                        "functionalAreaCode": { hidden: false, label: "Cód. Área Funcional" },
                         "responsabilityCenterCode": { hidden: false, label: "Cód. Centro Responsabilidade" },
                         "user": { hidden: false, label: "Utilizador" },
+                        "unitCost": { hidden: false, label: "Custo Unitário" },
+                        "totalCost": { hidden: false, label: "Custo Total" },
+                        "unitPrice": { hidden: false, label: "Preço Unitário" },
+                        "totalPrice": { hidden: false, label: "Preço Total" },
                         "billable": { hidden: false, label: "Faturável" },
-                        "folhaHoras": { hidden: false, label: "Folha de Horas" },
-                        "mealTypeDescription": { hidden: false, label: "Tipo de Refeição" }
+                        "residueGuideNo": { hidden: false, label: "Nº Guia Resíduos" },
+                        "externalGuideNo": { hidden: false, label: "Nº Guia Externa" },
+                        "invoiceToClientNo": { hidden: false, label: "Fatura-a Nº Cliente" },
+                        "clientName": { hidden: false, label: "Nome Cliente" },
+                        "requestNo": { hidden: false, label: "Nº Requisição" },
+                        "requestLineNo": { hidden: false, label: "Nº Linha Requisição" },
+                        "driver": { hidden: false, label: "Motorista" },
+                        "mealTypeDescription": { hidden: false, label: "Tipo de Refeição" },
+                        "residueFinalDestinyCode": { hidden: false, label: "Cód. Destino Final Resíduos" },
+                        "originalDocument": { hidden: false, label: "Documento Original" },
+                        "adjustedDocument": { hidden: false, label: "Documento Corrigido" },
+                        "adjustedPrice": { hidden: false, label: "Acerto De Preços" },
+                        "adjustedDocumentData": { hidden: false, label: "Data Documento Corrigido" },
+                        "autorizatedInvoice": { hidden: false, label: "Faturação Autorizada" },
+                        "autorizatedInvoice2": { hidden: false, label: "Faturação Autorizada 2" },
+                        "autorizatedInvoiceData": { hidden: false, label: "Data Autorização Faturação" },
+                        "serviceGroupCode": { hidden: false, label: "Cód. Grupo Serviço" },
+                        "resourceType": { hidden: false, label: "Tipo Recurso" },
+                        "folhaHoras": { hidden: false, label: "Nº Folha Horas" },
+                        "internalRequest": { hidden: false, label: "Requisição Interna" },
+                        "employeeNo": { hidden: false, label: "Nº Funcionário" },
+                        "quantityReturned": { hidden: false, label: "Quantidade Devolvida" },
+                        "consumptionDate": { hidden: false, label: "Data Consumo" },
+                        "registered": { hidden: false, label: "Registado" },
+                        "billed": { hidden: false, label: "Faturada" },
+                        "coin": { hidden: false, label: "Moeda" },
+                        "unitValueToInvoice": { hidden: false, label: "Valor Unitário A Faturar" },
+                        "serviceClientCode": { hidden: false, label: "Cód. Serviço Cliente" },
+                        "clientRequest": { hidden: false, label: "Cód. Client" },
+                        "licensePlate": { hidden: false, label: "Matrícula" },
+                        "readingCode": { hidden: false, label: "Código Ler" },
+                        "group": { hidden: false, label: "Grupo" },
+                        "operation": { hidden: false, label: "Operação" },
+                        "invoiceGroup": { hidden: false, label: "Grupo Fatura" },
+                        "invoiceGroupDescription": { hidden: false, label: "Grupo Fatura Descrição" },
+                        "authorizedBy": { hidden: false, label: "Autorizado Por" },
+                        "serviceObject": { hidden: false, label: "Objeto Serviço" }
                     };
 
                     if (localStorage["jobledgerentry.ToggleColumn"]) {
