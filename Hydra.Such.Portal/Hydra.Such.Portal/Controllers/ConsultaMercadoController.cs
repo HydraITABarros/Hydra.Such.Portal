@@ -906,7 +906,8 @@ namespace Hydra.Such.Portal.Controllers
                 string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
                 string sFileName = @Consulta + "_" + Cod + "_" + ".pdf";
 
-                var theURL = (_config.ReportServerURL + "ConsultaMercado&rs:Command=Render&rs:format=PDF&CM=" + Consulta + "&Fornecedor=" + Cod);
+                //var theURL = (_config.ReportServerURL + "ConsultaMercado&rs:Command=Render&rs:format=PDF&CM=" + Consulta + "&Fornecedor=" + Cod);
+                var theURL = (_config.ReportServerURL + "ConsultaMercado&CM=" + Consulta + "&Fornecedor=" + Cod + "&rs:Command=Render&rs:format=PDF");
 
                 WebClient Client = new WebClient
                 {
@@ -960,8 +961,9 @@ namespace Hydra.Such.Portal.Controllers
             string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
             string sFileName = @Consulta + "_" + Cod + "_" + ".pdf";
 
-            var theURL = (_config.ReportServerURL + "ConsultaMercado&rs:Command=Render&rs:format=PDF&CM=" + Consulta + "&Fornecedor=" + Cod);
-
+            //var theURL = (_config.ReportServerURL + "ConsultaMercado&rs:Command=Render&rs:format=PDF&CM=" + Consulta + "&Fornecedor=" + Cod);
+            var theURL = (_config.ReportServerURL + "ConsultaMercado&CM=" + Consulta + "&Fornecedor=" + Cod + "&rs:Command=Render&rs:format=PDF");
+            
             WebClient Client = new WebClient
             {
                 UseDefaultCredentials = true

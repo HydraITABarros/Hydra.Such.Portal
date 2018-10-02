@@ -627,6 +627,24 @@ namespace Hydra.Such.Data.Logic.CCP
 
         #endregion
 
+        public static int ObtainProcedimentoReference(int type_proc, int type, int year)
+        {
+            SuchDBContext _context = new SuchDBContext();
+            int _reference = 1;
+
+            ProcedimentosCcp proc = _context.ProcedimentosCcp.Where(
+                p => p.TipoProcedimento == type_proc && p.Tipo == type && p.Ano == year).
+                OrderBy(p => p.Tipo).
+                ThenBy(p => p.Ano).
+                ThenBy(p => p.Referência).
+                LastOrDefault();
+
+            if (proc != null && proc.Referência != null)
+                _reference = proc.Referência.Value + 1;
+
+            return _reference;
+        }
+
         #region CRUD ElementosJuri
         public static List<ElementosJuri> GetAllElementosJuriProcedimento(string ProcedimentoID)
         {

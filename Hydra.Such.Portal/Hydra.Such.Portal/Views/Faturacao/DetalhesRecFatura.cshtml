@@ -1412,6 +1412,14 @@
                         this._openToastError("Tem que selecionar a Região.");
                         return false;
                     }
+                    if (this._isInternalDestination && this.problemascmb == "") {
+                        this._openToastError("Tem que selecionar o problema.");
+                        return false;
+                    }
+                    else if (!this._isInternalDestination && this.motivoscmb == "") {
+                        this._openToastError("Tem que selecionar o motivo.");
+                        return false;
+                    }
                     return true;
 
                 },
