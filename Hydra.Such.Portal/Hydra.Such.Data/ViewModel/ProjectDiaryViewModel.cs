@@ -97,5 +97,15 @@ namespace Hydra.Such.Data.ViewModel
         public string Coin { get; set; }
         public bool? PreRegistered { get; set; }
         public string ServiceClientDescription { get; set; }
+
+
+        public string LicensePlate { get; set; }
+        public string ReadingCode { get; set; }
+        public string Group { get; set; }
+        public string Operation { get; set; }
+        public int? InvoiceGroup { get; set; }
+        public string InvoiceGroupDescription { get; set; }
+        public string AuthorizedBy { get; set; }
+
     }
 }
