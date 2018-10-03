@@ -465,7 +465,7 @@ namespace Hydra.Such.Portal.Controllers
             List<RecFacturasProblemas> result = new List<RecFacturasProblemas>();
             string AnswerType = "";
 
-            if (data.AreaPendente2 == "Aprovisionamento")
+            if (data.AreaPendente == "Aprovisionamento")
             {
                 if (userPendingProfile == 1 && userDestinyProfile == 0)
                 {
@@ -474,7 +474,7 @@ namespace Hydra.Such.Portal.Controllers
                 } 
             }
 
-            if(data.AreaPendente2 == "UnidadesProdutivas" || data.AreaPendente2 == "UnidadesProdutivas")
+            if(data.AreaPendente == "UnidadesProdutivas" || data.AreaPendente == "UnidadesApoioESuporte")
             {
                 if ((userPendingProfile == 2 || userPendingProfile == 3) && userDestinyProfile == 1)
                 {

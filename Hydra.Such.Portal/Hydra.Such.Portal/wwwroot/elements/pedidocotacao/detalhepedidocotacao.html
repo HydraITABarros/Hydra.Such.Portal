@@ -2502,7 +2502,6 @@
                 },
 
                 _enviarEmailAUm: function (e) {
-                    debugger
                     this.$.page_enviarEmailAUm_ajax.body = JSON.stringify({ "Consulta": this._id, "Cod": this.$._fornecedores.__data.value });
                     this.$.page_enviarEmailAUm_ajax.generateRequest();
                 },
