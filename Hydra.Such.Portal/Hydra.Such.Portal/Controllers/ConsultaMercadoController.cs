@@ -340,6 +340,7 @@ namespace Hydra.Such.Portal.Controllers
                 consultaMercado.ValorAdjudicado = data.ValorAdjudicado;
                 consultaMercado.CodFormaPagamento = data.CodFormaPagamento;
                 consultaMercado.SeleccaoEfectuada = data.SeleccaoEfectuada;
+                consultaMercado.NumEncomenda = data.NumEncomenda;
 
                 consultaMercado = DBConsultaMercado.Update(consultaMercado);
 
@@ -534,9 +535,9 @@ namespace Hydra.Such.Portal.Controllers
                 //Para cada registo, inserir as linhas da consulta de mercado na tabela "Linhas_Condicoes_Propostas_Fornecedores"
                 foreach (LinhasConsultaMercado linhasConsultaMercado in consultaMercado.LinhasConsultaMercado)
                 {
-                    RegistoDePropostas registoDePropostas = DBConsultaMercado.Create(linhasConsultaMercado, _Alternativa);
+                    RegistoDePropostas registoDePropostas = DBConsultaMercado.Create(linhasConsultaMercado, _Alternativa, _config.NAVDatabaseName, _config.NAVCompanyName);
                 }
-
+                
 
                 consultaMercado = DBConsultaMercado.GetDetalheConsultaMercado(data.NumConsultaMercado);
 
@@ -579,7 +580,7 @@ namespace Hydra.Such.Portal.Controllers
                                 purchOrderLineDTO.CenterResponsibilityCode = registoDePropostasView.CodCentroResponsabilidade;
                                 purchOrderLineDTO.Code = registoDePropostasView.CodProduto;
                                 purchOrderLineDTO.Description = registoDePropostasView.Descricao;
-                                purchOrderLineDTO.Description2 = registoDePropostasView.Descricao2;
+                                purchOrderLineDTO.Description2 = registoDePropostasView.Descricao2 ?? string.Empty;
                                 purchOrderLineDTO.DiscountPercentage = 0;
                                 purchOrderLineDTO.FunctionalAreaCode = registoDePropostasView.CodAreaFuncional;
                                 purchOrderLineDTO.LineId = registoDePropostasView.NumLinha;
@@ -592,8 +593,11 @@ namespace Hydra.Such.Portal.Controllers
                                 purchOrderLineDTO.UnitCost = registoDePropostasView.Fornecedor1Preco;
                                 purchOrderLineDTO.UnitMeasureCode = data.LinhasConsultaMercado.Where(x => x.NumLinha == registoDePropostasView.NumLinhaConsultaMercado).FirstOrDefault().CodUnidadeMedida;
 
-                                purchOrderLineDTO.VATBusinessPostingGroup = VAT_Fornecedor;
-                                purchOrderLineDTO.VATProductPostingGroup = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, registoDePropostasView.CodProduto).FirstOrDefault().VATProductPostingGroup;
+                                //purchOrderLineDTO.VATBusinessPostingGroup = VAT_Fornecedor;
+                                //purchOrderLineDTO.VATProductPostingGroup = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, registoDePropostasView.CodProduto).FirstOrDefault().VATProductPostingGroup;
+
+                                purchOrderLineDTO.VATBusinessPostingGroup = registoDePropostasView.VatbusinessPostingGroup1;
+                                purchOrderLineDTO.VATProductPostingGroup = registoDePropostasView.VatproductPostingGroup;
 
                                 purchOrderLineDTOs.Add(purchOrderLineDTO);
                             }
@@ -632,7 +636,7 @@ namespace Hydra.Such.Portal.Controllers
                                 purchOrderLineDTO.CenterResponsibilityCode = registoDePropostasView.CodCentroResponsabilidade;
                                 purchOrderLineDTO.Code = registoDePropostasView.CodProduto;
                                 purchOrderLineDTO.Description = registoDePropostasView.Descricao;
-                                purchOrderLineDTO.Description2 = registoDePropostasView.Descricao2;
+                                purchOrderLineDTO.Description2 = registoDePropostasView.Descricao2 ?? string.Empty;
                                 purchOrderLineDTO.DiscountPercentage = 0;
                                 purchOrderLineDTO.FunctionalAreaCode = registoDePropostasView.CodAreaFuncional;
                                 purchOrderLineDTO.LineId = registoDePropostasView.NumLinha;
@@ -645,8 +649,11 @@ namespace Hydra.Such.Portal.Controllers
                                 purchOrderLineDTO.UnitCost = registoDePropostasView.Fornecedor2Preco;
                                 purchOrderLineDTO.UnitMeasureCode = data.LinhasConsultaMercado.Where(x => x.NumLinha == registoDePropostasView.NumLinhaConsultaMercado).FirstOrDefault().CodUnidadeMedida;
 
-                                purchOrderLineDTO.VATBusinessPostingGroup = VAT_Fornecedor;
-                                purchOrderLineDTO.VATProductPostingGroup = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, registoDePropostasView.CodProduto).FirstOrDefault().VATProductPostingGroup;
+                                //purchOrderLineDTO.VATBusinessPostingGroup = VAT_Fornecedor;
+                                //purchOrderLineDTO.VATProductPostingGroup = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, registoDePropostasView.CodProduto).FirstOrDefault().VATProductPostingGroup;
+
+                                purchOrderLineDTO.VATBusinessPostingGroup = registoDePropostasView.VatbusinessPostingGroup2;
+                                purchOrderLineDTO.VATProductPostingGroup = registoDePropostasView.VatproductPostingGroup;
 
                                 purchOrderLineDTOs.Add(purchOrderLineDTO);
                             }
@@ -685,7 +692,7 @@ namespace Hydra.Such.Portal.Controllers
                                 purchOrderLineDTO.CenterResponsibilityCode = registoDePropostasView.CodCentroResponsabilidade;
                                 purchOrderLineDTO.Code = registoDePropostasView.CodProduto;
                                 purchOrderLineDTO.Description = registoDePropostasView.Descricao;
-                                purchOrderLineDTO.Description2 = registoDePropostasView.Descricao2;
+                                purchOrderLineDTO.Description2 = registoDePropostasView.Descricao2 ?? string.Empty;
                                 purchOrderLineDTO.DiscountPercentage = 0;
                                 purchOrderLineDTO.FunctionalAreaCode = registoDePropostasView.CodAreaFuncional;
                                 purchOrderLineDTO.LineId = registoDePropostasView.NumLinha;
@@ -698,8 +705,11 @@ namespace Hydra.Such.Portal.Controllers
                                 purchOrderLineDTO.UnitCost = registoDePropostasView.Fornecedor3Preco;
                                 purchOrderLineDTO.UnitMeasureCode = data.LinhasConsultaMercado.Where(x => x.NumLinha == registoDePropostasView.NumLinhaConsultaMercado).FirstOrDefault().CodUnidadeMedida;
 
-                                purchOrderLineDTO.VATBusinessPostingGroup = VAT_Fornecedor;
-                                purchOrderLineDTO.VATProductPostingGroup = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, registoDePropostasView.CodProduto).FirstOrDefault().VATProductPostingGroup;
+                                //purchOrderLineDTO.VATBusinessPostingGroup = VAT_Fornecedor;
+                                //purchOrderLineDTO.VATProductPostingGroup = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, registoDePropostasView.CodProduto).FirstOrDefault().VATProductPostingGroup;
+
+                                purchOrderLineDTO.VATBusinessPostingGroup = registoDePropostasView.VatbusinessPostingGroup3;
+                                purchOrderLineDTO.VATProductPostingGroup = registoDePropostasView.VatproductPostingGroup;
 
                                 purchOrderLineDTOs.Add(purchOrderLineDTO);
                             }
@@ -738,7 +748,7 @@ namespace Hydra.Such.Portal.Controllers
                                 purchOrderLineDTO.CenterResponsibilityCode = registoDePropostasView.CodCentroResponsabilidade;
                                 purchOrderLineDTO.Code = registoDePropostasView.CodProduto;
                                 purchOrderLineDTO.Description = registoDePropostasView.Descricao;
-                                purchOrderLineDTO.Description2 = registoDePropostasView.Descricao2;
+                                purchOrderLineDTO.Description2 = registoDePropostasView.Descricao2 ?? string.Empty;
                                 purchOrderLineDTO.DiscountPercentage = 0;
                                 purchOrderLineDTO.FunctionalAreaCode = registoDePropostasView.CodAreaFuncional;
                                 purchOrderLineDTO.LineId = registoDePropostasView.NumLinha;
@@ -751,8 +761,12 @@ namespace Hydra.Such.Portal.Controllers
                                 purchOrderLineDTO.UnitCost = registoDePropostasView.Fornecedor4Preco;
                                 purchOrderLineDTO.UnitMeasureCode = data.LinhasConsultaMercado.Where(x => x.NumLinha == registoDePropostasView.NumLinhaConsultaMercado).FirstOrDefault().CodUnidadeMedida;
 
-                                purchOrderLineDTO.VATBusinessPostingGroup = VAT_Fornecedor;
-                                purchOrderLineDTO.VATProductPostingGroup = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, registoDePropostasView.CodProduto).FirstOrDefault().VATProductPostingGroup;
+                                //purchOrderLineDTO.VATBusinessPostingGroup = VAT_Fornecedor;
+                                //purchOrderLineDTO.VATProductPostingGroup = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, registoDePropostasView.CodProduto).FirstOrDefault().VATProductPostingGroup;
+
+                                purchOrderLineDTO.VATBusinessPostingGroup = registoDePropostasView.VatbusinessPostingGroup4;
+                                purchOrderLineDTO.VATProductPostingGroup = registoDePropostasView.VatproductPostingGroup;
+
 
                                 purchOrderLineDTOs.Add(purchOrderLineDTO);
                             }
@@ -791,7 +805,7 @@ namespace Hydra.Such.Portal.Controllers
                                 purchOrderLineDTO.CenterResponsibilityCode = registoDePropostasView.CodCentroResponsabilidade;
                                 purchOrderLineDTO.Code = registoDePropostasView.CodProduto;
                                 purchOrderLineDTO.Description = registoDePropostasView.Descricao;
-                                purchOrderLineDTO.Description2 = registoDePropostasView.Descricao2;
+                                purchOrderLineDTO.Description2 = registoDePropostasView.Descricao2 ?? string.Empty;
                                 purchOrderLineDTO.DiscountPercentage = 0;
                                 purchOrderLineDTO.FunctionalAreaCode = registoDePropostasView.CodAreaFuncional;
                                 purchOrderLineDTO.LineId = registoDePropostasView.NumLinha;
@@ -804,8 +818,12 @@ namespace Hydra.Such.Portal.Controllers
                                 purchOrderLineDTO.UnitCost = registoDePropostasView.Fornecedor5Preco;
                                 purchOrderLineDTO.UnitMeasureCode = data.LinhasConsultaMercado.Where(x => x.NumLinha == registoDePropostasView.NumLinhaConsultaMercado).FirstOrDefault().CodUnidadeMedida;
 
-                                purchOrderLineDTO.VATBusinessPostingGroup = VAT_Fornecedor;
-                                purchOrderLineDTO.VATProductPostingGroup = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, registoDePropostasView.CodProduto).FirstOrDefault().VATProductPostingGroup;
+                                //purchOrderLineDTO.VATBusinessPostingGroup = VAT_Fornecedor;
+                                //purchOrderLineDTO.VATProductPostingGroup = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, registoDePropostasView.CodProduto).FirstOrDefault().VATProductPostingGroup;
+
+                                purchOrderLineDTO.VATBusinessPostingGroup = registoDePropostasView.VatbusinessPostingGroup5;
+                                purchOrderLineDTO.VATProductPostingGroup = registoDePropostasView.VatproductPostingGroup;
+
 
                                 purchOrderLineDTOs.Add(purchOrderLineDTO);
                             }
@@ -844,7 +862,7 @@ namespace Hydra.Such.Portal.Controllers
                                 purchOrderLineDTO.CenterResponsibilityCode = registoDePropostasView.CodCentroResponsabilidade;
                                 purchOrderLineDTO.Code = registoDePropostasView.CodProduto;
                                 purchOrderLineDTO.Description = registoDePropostasView.Descricao;
-                                purchOrderLineDTO.Description2 = registoDePropostasView.Descricao2;
+                                purchOrderLineDTO.Description2 = registoDePropostasView.Descricao2 ?? string.Empty;
                                 purchOrderLineDTO.DiscountPercentage = 0;
                                 purchOrderLineDTO.FunctionalAreaCode = registoDePropostasView.CodAreaFuncional;
                                 purchOrderLineDTO.LineId = registoDePropostasView.NumLinha;
@@ -857,9 +875,12 @@ namespace Hydra.Such.Portal.Controllers
                                 purchOrderLineDTO.UnitCost = registoDePropostasView.Fornecedor6Preco;
                                 purchOrderLineDTO.UnitMeasureCode = data.LinhasConsultaMercado.Where(x => x.NumLinha == registoDePropostasView.NumLinhaConsultaMercado).FirstOrDefault().CodUnidadeMedida;
 
-                                purchOrderLineDTO.VATBusinessPostingGroup = VAT_Fornecedor;
-                                purchOrderLineDTO.VATProductPostingGroup = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, registoDePropostasView.CodProduto).FirstOrDefault().VATProductPostingGroup;
+                                //purchOrderLineDTO.VATBusinessPostingGroup = VAT_Fornecedor;
+                                //purchOrderLineDTO.VATProductPostingGroup = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, registoDePropostasView.CodProduto).FirstOrDefault().VATProductPostingGroup;
 
+                                purchOrderLineDTO.VATBusinessPostingGroup = registoDePropostasView.VatbusinessPostingGroup6;
+                                purchOrderLineDTO.VATProductPostingGroup = registoDePropostasView.VatproductPostingGroup;
+                                
                                 purchOrderLineDTOs.Add(purchOrderLineDTO);
                             }
 
@@ -1430,6 +1451,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (dp["valorAdjudicado"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Valor Adjudicado"); Col = Col + 1; }
                 if (dp["codFormaPagamento"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cod. Forma Pagamento"); Col = Col + 1; }
                 if (dp["seleccaoEfectuada"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Selecção Efectuada"); Col = Col + 1; }
+                if (dp["numEncomenda"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Encomenda"); Col = Col + 1; }
 
                 if (dp != null)
                 {
@@ -1472,6 +1494,7 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["valorAdjudicado"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ValorAdjudicado.ToString()); Col = Col + 1; }
                         if (dp["codFormaPagamento"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodFormaPagamento); Col = Col + 1; }
                         if (dp["seleccaoEfectuada"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.SeleccaoEfectuada.ToString()); Col = Col + 1; }
+                        if (dp["numEncomenda"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.NumEncomenda == null ? string.Empty : item.NumEncomenda.ToString()); Col = Col + 1; }
                         count++;
                     }
                 }

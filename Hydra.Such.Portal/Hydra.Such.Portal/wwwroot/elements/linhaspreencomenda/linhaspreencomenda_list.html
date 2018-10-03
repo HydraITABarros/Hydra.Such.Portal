@@ -155,7 +155,7 @@
             </vaadin-grid-selection-column>
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.numPreEncomenda.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="numPreEncomenda">Nº Pré-Encomenda</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="numPreEncomenda">Nº Pré-Compra</vaadin-grid-sorter>
                     <vaadin-grid-filter path="numPreEncomenda" />
                 </template>
                 <template>
@@ -164,7 +164,7 @@
             </vaadin-grid-column>
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.numLinhaPreEncomenda.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="numLinhaPreEncomenda">Nº Linha Pré-Encomenda</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="numLinhaPreEncomenda">Nº Linha Pré-Compra</vaadin-grid-sorter>
                     <vaadin-grid-filter path="numLinhaPreEncomenda" />
                 </template>
                 <template>
@@ -236,14 +236,14 @@
             </vaadin-grid-column>
 
             <!--<vaadin-grid-column width="150px" resizable hidden$="{{ _columns.numFornecedor.hidden }}">
-            <template class="header">
-                <vaadin-grid-sorter path="numFornecedor">Código Fornecedor</vaadin-grid-sorter>
-                <vaadin-grid-filter path="numFornecedor" />
-            </template>
-            <template>
-                {{item.numFornecedor}}
-            </template>
-        </vaadin-grid-column>-->
+        <template class="header">
+            <vaadin-grid-sorter path="numFornecedor">Código Fornecedor</vaadin-grid-sorter>
+            <vaadin-grid-filter path="numFornecedor" />
+        </template>
+        <template>
+            {{item.numFornecedor}}
+        </template>
+    </vaadin-grid-column>-->
 
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.nomeFornecedor_Show.hidden }}">
                 <template class="header">
@@ -345,6 +345,15 @@
                     {{item.codigoCentroResponsabilidade}}
                 </template>
             </vaadin-grid-column>
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.utilizadorCriacao.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="utilizadorCriacao">Utilizador Criação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="utilizadorCriacao" />
+                </template>
+                <template>
+                    {{item.utilizadorCriacao}}
+                </template>
+            </vaadin-grid-column>
         </vaadin-grid>
 
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
@@ -404,7 +413,8 @@
                     },
                     _functionsMenuItems: {
                         type: Array,
-                        value: [{ value: 1, description: "Criar Consulta Mercado" }, { value: 2, description: "Criar Encomenda Compromisso" }, { value: 3, description: "Criar Encomenda Cabimento" }],
+                        //value: [{ value: 1, description: "Criar Consulta Mercado" }, { value: 2, description: "Criar Encomenda Compromisso" }, { value: 3, description: "Criar Pré-Encomenda" }],
+                        value: [{ value: 1, description: "Criar Consulta Mercado" }, { value: 3, description: "Criar Pré-Encomenda" }],
                     },
                 },
                 //_rowSelected: function (item) {
@@ -425,9 +435,9 @@
                         case 1: //"Criar Consulta Mercado"
                             this._criarConsultaMercado();
                             break;
-                        case 2://"Criar Encomenda Compromisso"
-                            this._criarEncomendaCompromisso();
-                            break;
+                        //case 2://"Criar Encomenda Compromisso"
+                        //    this._criarEncomendaCompromisso();
+                        //    break;
                         case 3://"Criar Encomenda Cabimento"
                             this._criarEncomendaCabimento();
                             break;
@@ -610,8 +620,8 @@
                 /*start - ColumnToggle*/
                 _startColumnToggle: function () {
                     var columns = {
-                        "numPreEncomenda": { hidden: false, label: "Nº Pré-Encomenda" },
-                        "numLinhaPreEncomenda": { hidden: false, label: "Nº Linha Pré-Encomenda" },
+                        "numPreEncomenda": { hidden: false, label: "Nº Pré-Compra" },
+                        "numLinhaPreEncomenda": { hidden: false, label: "Nº Linha Pré-Compra" },
                         "codigoProduto": { hidden: false, label: "Código Produto" },
                         "descricaoProduto": { hidden: false, label: "Descrição Produto" },
                         "quantidadeDisponibilizada": { hidden: false, label: "Quantidade" },
@@ -628,7 +638,8 @@
                         "numLinhaEncomendaAberto": { hidden: false, label: "Nº Linha Encomenda Aberto" },
                         "codigoRegiao": { hidden: false, label: "Código Região" },
                         "codigoAreaFuncional": { hidden: false, label: "Código Área Funcional" },
-                        "codigoCentroResponsabilidade": { hidden: false, label: "Código Centro Responsabilidade" }
+                        "codigoCentroResponsabilidade": { hidden: false, label: "Código Centro Responsabilidade" },
+                        "utilizadorCriacao": { hidden: false, label: "Utilizador Criação" }
                     };
 
                     if (localStorage["linhaspreencomendaList.ToggleColumn"]) {

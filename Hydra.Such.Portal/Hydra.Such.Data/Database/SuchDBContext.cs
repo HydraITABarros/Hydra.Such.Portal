@@ -25,6 +25,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<CartõesTelemóveis> CartõesTelemóveis { get; set; }
         public virtual DbSet<CatálogoManutenção> CatálogoManutenção { get; set; }
         public virtual DbSet<ClassificaçãoFichasTécnicas> ClassificaçãoFichasTécnicas { get; set; }
+        public virtual DbSet<Comprador> Comprador { get; set; }
         public virtual DbSet<Compras> Compras { get; set; }
         public virtual DbSet<CondicoesPropostasFornecedores> CondicoesPropostasFornecedores { get; set; }
         public virtual DbSet<ConfigMercadoLocal> ConfigMercadoLocal { get; set; }
@@ -154,15 +155,6 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<UtilizadoresMovimentosDeAprovação> UtilizadoresMovimentosDeAprovação { get; set; }
         public virtual DbSet<Viaturas> Viaturas { get; set; }
         public virtual DbSet<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
-
-//        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-//        {
-//            if (!optionsBuilder.IsConfigured)
-//            {
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-//                optionsBuilder.UseSqlServer(@"data source=10.101.1.10\SQLNAVDEV;initial catalog=PlataformaOperacionalSUCH;user id=such_portal_user;password=SuchPW.2K17;");
-//            }
-//        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -856,6 +848,37 @@ namespace Hydra.Such.Data.Database
                     .HasConstraintName("FK_Classificação Fichas Técnicas_Classificação Fichas Técnicas");
             });
 
+            modelBuilder.Entity<Comprador>(entity =>
+            {
+                entity.HasKey(e => e.CodComprador);
+
+                entity.Property(e => e.CodComprador)
+                    .HasColumnName("Cod_Comprador")
+                    .HasMaxLength(10)
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.DataHoraCriação)
+                    .HasColumnName("Data/Hora Criação")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DataHoraModificação)
+                    .HasColumnName("Data/Hora Modificação")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.NomeComprador)
+                    .IsRequired()
+                    .HasColumnName("Nome_Comprador")
+                    .HasMaxLength(60);
+
+                entity.Property(e => e.UtilizadorCriação)
+                    .HasColumnName("Utilizador Criação")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.UtilizadorModificação)
+                    .HasColumnName("Utilizador Modificação")
+                    .HasMaxLength(50);
+            });
+
             modelBuilder.Entity<Compras>(entity =>
             {
                 entity.Property(e => e.Id).HasColumnName("ID");
@@ -1481,6 +1504,10 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.NumDocumentoCompra)
                     .HasColumnName("Num_Documento_Compra")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.NumEncomenda)
+                    .HasColumnName("Num_Encomenda")
                     .HasMaxLength(20);
 
                 entity.Property(e => e.NumRequisicao)
@@ -7993,6 +8020,34 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.NumProjecto)
                     .HasColumnName("Num_Projecto")
                     .HasMaxLength(20);
+
+                entity.Property(e => e.VatbusinessPostingGroup1)
+                    .HasColumnName("VATBusinessPostingGroup1")
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.VatbusinessPostingGroup2)
+                    .HasColumnName("VATBusinessPostingGroup2")
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.VatbusinessPostingGroup3)
+                    .HasColumnName("VATBusinessPostingGroup3")
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.VatbusinessPostingGroup4)
+                    .HasColumnName("VATBusinessPostingGroup4")
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.VatbusinessPostingGroup5)
+                    .HasColumnName("VATBusinessPostingGroup5")
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.VatbusinessPostingGroup6)
+                    .HasColumnName("VATBusinessPostingGroup6")
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.VatproductPostingGroup)
+                    .HasColumnName("VATProductPostingGroup")
+                    .HasMaxLength(10);
 
                 entity.HasOne(d => d.NumConsultaMercadoNavigation)
                     .WithMany(p => p.RegistoDePropostas)

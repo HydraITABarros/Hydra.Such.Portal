@@ -2403,7 +2403,7 @@
                     //this.$.gridUserAccesses.clearCache();
                 },
                 _duplicarContractLine: function (e) {
-                    //debugger;
+                    debugger;
                     var index = this.dataLines.lines.indexOf(e.model.item);
 
                     this.$.prereqLines_DuplicarLinha_ajax.body = JSON.stringify({
@@ -2541,7 +2541,7 @@
                 },
 
                 _PopulatePurchaseLines: function (data) {
-                    debugger;
+                    //debugger;
                     var codArea = this.$.FunctionalAreaCode.value;
                     this.PurchaseLine = "";
                     this.$.purchaselines_ajax.body = JSON.stringify(codArea);
