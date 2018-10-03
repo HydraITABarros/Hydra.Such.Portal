@@ -579,7 +579,7 @@ namespace Hydra.Such.Portal.Controllers
                                 purchOrderLineDTO.CenterResponsibilityCode = registoDePropostasView.CodCentroResponsabilidade;
                                 purchOrderLineDTO.Code = registoDePropostasView.CodProduto;
                                 purchOrderLineDTO.Description = registoDePropostasView.Descricao;
-                                purchOrderLineDTO.Description2 = registoDePropostasView.Descricao2;
+                                purchOrderLineDTO.Description2 = registoDePropostasView.Descricao2 ?? string.Empty;
                                 purchOrderLineDTO.DiscountPercentage = 0;
                                 purchOrderLineDTO.FunctionalAreaCode = registoDePropostasView.CodAreaFuncional;
                                 purchOrderLineDTO.LineId = registoDePropostasView.NumLinha;
@@ -632,7 +632,7 @@ namespace Hydra.Such.Portal.Controllers
                                 purchOrderLineDTO.CenterResponsibilityCode = registoDePropostasView.CodCentroResponsabilidade;
                                 purchOrderLineDTO.Code = registoDePropostasView.CodProduto;
                                 purchOrderLineDTO.Description = registoDePropostasView.Descricao;
-                                purchOrderLineDTO.Description2 = registoDePropostasView.Descricao2;
+                                purchOrderLineDTO.Description2 = registoDePropostasView.Descricao2 ?? string.Empty;
                                 purchOrderLineDTO.DiscountPercentage = 0;
                                 purchOrderLineDTO.FunctionalAreaCode = registoDePropostasView.CodAreaFuncional;
                                 purchOrderLineDTO.LineId = registoDePropostasView.NumLinha;
@@ -685,7 +685,7 @@ namespace Hydra.Such.Portal.Controllers
                                 purchOrderLineDTO.CenterResponsibilityCode = registoDePropostasView.CodCentroResponsabilidade;
                                 purchOrderLineDTO.Code = registoDePropostasView.CodProduto;
                                 purchOrderLineDTO.Description = registoDePropostasView.Descricao;
-                                purchOrderLineDTO.Description2 = registoDePropostasView.Descricao2;
+                                purchOrderLineDTO.Description2 = registoDePropostasView.Descricao2 ?? string.Empty;
                                 purchOrderLineDTO.DiscountPercentage = 0;
                                 purchOrderLineDTO.FunctionalAreaCode = registoDePropostasView.CodAreaFuncional;
                                 purchOrderLineDTO.LineId = registoDePropostasView.NumLinha;
@@ -738,7 +738,7 @@ namespace Hydra.Such.Portal.Controllers
                                 purchOrderLineDTO.CenterResponsibilityCode = registoDePropostasView.CodCentroResponsabilidade;
                                 purchOrderLineDTO.Code = registoDePropostasView.CodProduto;
                                 purchOrderLineDTO.Description = registoDePropostasView.Descricao;
-                                purchOrderLineDTO.Description2 = registoDePropostasView.Descricao2;
+                                purchOrderLineDTO.Description2 = registoDePropostasView.Descricao2 ?? string.Empty;
                                 purchOrderLineDTO.DiscountPercentage = 0;
                                 purchOrderLineDTO.FunctionalAreaCode = registoDePropostasView.CodAreaFuncional;
                                 purchOrderLineDTO.LineId = registoDePropostasView.NumLinha;
@@ -791,7 +791,7 @@ namespace Hydra.Such.Portal.Controllers
                                 purchOrderLineDTO.CenterResponsibilityCode = registoDePropostasView.CodCentroResponsabilidade;
                                 purchOrderLineDTO.Code = registoDePropostasView.CodProduto;
                                 purchOrderLineDTO.Description = registoDePropostasView.Descricao;
-                                purchOrderLineDTO.Description2 = registoDePropostasView.Descricao2;
+                                purchOrderLineDTO.Description2 = registoDePropostasView.Descricao2 ?? string.Empty;
                                 purchOrderLineDTO.DiscountPercentage = 0;
                                 purchOrderLineDTO.FunctionalAreaCode = registoDePropostasView.CodAreaFuncional;
                                 purchOrderLineDTO.LineId = registoDePropostasView.NumLinha;
@@ -844,7 +844,7 @@ namespace Hydra.Such.Portal.Controllers
                                 purchOrderLineDTO.CenterResponsibilityCode = registoDePropostasView.CodCentroResponsabilidade;
                                 purchOrderLineDTO.Code = registoDePropostasView.CodProduto;
                                 purchOrderLineDTO.Description = registoDePropostasView.Descricao;
-                                purchOrderLineDTO.Description2 = registoDePropostasView.Descricao2;
+                                purchOrderLineDTO.Description2 = registoDePropostasView.Descricao2 ?? string.Empty;
                                 purchOrderLineDTO.DiscountPercentage = 0;
                                 purchOrderLineDTO.FunctionalAreaCode = registoDePropostasView.CodAreaFuncional;
                                 purchOrderLineDTO.LineId = registoDePropostasView.NumLinha;

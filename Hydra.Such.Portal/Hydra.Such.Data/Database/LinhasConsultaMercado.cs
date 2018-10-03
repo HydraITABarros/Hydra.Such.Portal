@@ -29,6 +29,9 @@ namespace Hydra.Such.Data.Database
         public string CriadoPor { get; set; }
         public DateTime? ModificadoEm { get; set; }
         public string ModificadoPor { get; set; }
+        public bool? MercadoLocal { get; set; }
+        public string VatbusinessPostingGroup { get; set; }
+        public string VatproductPostingGroup { get; set; }
 
         public ConsultaMercado NumConsultaMercadoNavigation { get; set; }
     }
