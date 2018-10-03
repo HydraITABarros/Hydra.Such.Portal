@@ -936,8 +936,6 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                 ModificadoEm = ObjectToTransform.ModificadoEm,
                 ModificadoPor = ObjectToTransform.ModificadoPor,
                 MercadoLocal = ObjectToTransform.MercadoLocal,
-                VatbusinessPostingGroup = ObjectToTransform.VatbusinessPostingGroup,
-                VatproductPostingGroup = ObjectToTransform.VatproductPostingGroup,
                 DataEntregaPrevista_Show = ObjectToTransform.DataEntregaPrevista == null ? "" : ObjectToTransform.DataEntregaPrevista.Value.ToString("yyyy-MM-dd")
             };
 
@@ -972,9 +970,7 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                 NumProjecto = ObjectToTransform.NumProjecto,
                 NumRequisicao = ObjectToTransform.NumRequisicao,
                 Quantidade = ObjectToTransform.Quantidade,
-                MercadoLocal = ObjectToTransform.MercadoLocal,
-                VatbusinessPostingGroup = ObjectToTransform.VatbusinessPostingGroup,
-                VatproductPostingGroup = ObjectToTransform.VatproductPostingGroup
+                MercadoLocal = ObjectToTransform.MercadoLocal
                 //NumProjectoNavigation = DBProjects.GetById(ObjectToTransform.NumProjecto)
             };
 

@@ -156,15 +156,6 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<Viaturas> Viaturas { get; set; }
         public virtual DbSet<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
 
-//        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-//        {
-//            if (!optionsBuilder.IsConfigured)
-//            {
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-//                optionsBuilder.UseSqlServer(@"data source=10.101.1.10\SQLNAVDEV;initial catalog=PlataformaOperacionalSUCH;user id=such_portal_user;password=SuchPW.2K17;");
-//            }
-//        }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AcessosDimensões>(entity =>
@@ -3909,14 +3900,6 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.NumRequisicao)
                     .HasColumnName("Num_Requisicao")
                     .HasMaxLength(20);
-
-                entity.Property(e => e.VatbusinessPostingGroup)
-                    .HasColumnName("VATBusinessPostingGroup")
-                    .HasMaxLength(10);
-
-                entity.Property(e => e.VatproductPostingGroup)
-                    .HasColumnName("VATProductPostingGroup")
-                    .HasMaxLength(10);
 
                 entity.HasOne(d => d.NumConsultaMercadoNavigation)
                     .WithMany(p => p.LinhasConsultaMercado)
@@ -8037,6 +8020,34 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.NumProjecto)
                     .HasColumnName("Num_Projecto")
                     .HasMaxLength(20);
+
+                entity.Property(e => e.VatbusinessPostingGroup1)
+                    .HasColumnName("VATBusinessPostingGroup1")
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.VatbusinessPostingGroup2)
+                    .HasColumnName("VATBusinessPostingGroup2")
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.VatbusinessPostingGroup3)
+                    .HasColumnName("VATBusinessPostingGroup3")
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.VatbusinessPostingGroup4)
+                    .HasColumnName("VATBusinessPostingGroup4")
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.VatbusinessPostingGroup5)
+                    .HasColumnName("VATBusinessPostingGroup5")
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.VatbusinessPostingGroup6)
+                    .HasColumnName("VATBusinessPostingGroup6")
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.VatproductPostingGroup)
+                    .HasColumnName("VATProductPostingGroup")
+                    .HasMaxLength(10);
 
                 entity.HasOne(d => d.NumConsultaMercadoNavigation)
                     .WithMany(p => p.RegistoDePropostas)
