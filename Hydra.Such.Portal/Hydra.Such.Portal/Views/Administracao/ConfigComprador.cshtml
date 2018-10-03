@@ -1,0 +1,302 @@
+﻿@{
+    ViewData["Title"] = "Config. Compradores";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-grid.html">
+<link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="~/lib/iron-form/iron-form.html" />
+<link rel="import" href="~/lib/paper-input/paper-input.html" />
+<link rel="import" href="~/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html" />
+<link rel="import" href="~/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="~/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="~/lib/paper-collapse-item/paper-collapse-item.html">
+
+<x-requesition-type></x-requesition-type>
+
+<dom-module id="x-requesition-type">
+    <template>
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="~/css/main.css" />
+        <style>
+            /*ACORDEÃO*/
+            paper-collapse-item {
+                --paper-item: {
+                    padding: 0 0;
+                };
+                --paper-collapse-item-header: {
+                    padding: 0 15px;
+                    color: #333;
+                    background-color: #f5f5f5;
+                    border-bottom: solid #ddd 1px;
+                    border-top-left-radius: 3px;
+                    border-top-right-radius: 3px;
+                };
+            }
+        </style>
+
+        <iron-ajax url="/Administracao/GetComprador"
+                   last-response="{{result}}"
+                   method="post"
+                   auto
+                   handle-as="json"
+                   id="page_databound_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Administracao/CreateComprador"
+                   last-response="{{createResult}}"
+                   method="post"
+                   on-response="_createResponse"
+                   handle-as="json"
+                   id="ajax_create"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Administracao/UpdateComprador"
+                   last-response="{{updateResult}}"
+                   method="post"
+                   on-response="_updateResponse"
+                   handle-as="json"
+                   id="ajax_update"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Administracao/DeleteComprador"
+                   last-response="{{deleteResult}}"
+                   method="post"
+                   on-response="_deleteResponse"
+                   handle-as="json"
+                   id="ajax_delete"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <template is="dom-if" if="{{ !_permissionsUpdate }}">
+            <div class="subMenu">
+                <paper-button id="btnGoBack" class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Voltar</paper-button>
+                <paper-button id="btnAddNew" class="tablinks" on-tap="_update" disabled="{{ _permissionsUpdate }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                <paper-button id="btnCancel" class="tablinks" on-tap="_cancel" disabled="{{ _permissionsUpdate }}"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+            </div>
+        </template>
+
+        <paper-collapse-group>
+            <paper-collapse-item class="panel-heading" header="Novo Registo" closed>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-lg-2">
+                            <vaadin-text-field id="ddCodComprador" label="Código do Comprador" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+                        </div>
+
+                        <div class="col-lg-2">
+                            <vaadin-text-field id="ddNomeComprador" label="Nome do Comprador" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+                        </div>
+
+                        <div class="col-lg-2 alignPoga">
+                            <paper-button id="btnAddNew" class="btnSave" on-tap="_createComprador" disabled="{{ _permissionsCreate }}">Criar</paper-button>
+                        </div>
+                    </div>
+                </div>
+            </paper-collapse-item>
+        </paper-collapse-group>
+
+        <vaadin-grid id="gridComprador" aria-label="gridComprador" items="[[result]]" class="grid" multi-sort="true">
+            <vaadin-grid-column resizable width="150px">
+                <template class="header">
+                    <vaadin-grid-sorter path="codComprador">Código Comprador</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codComprador" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.codComprador}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px">
+                <template class="header">
+                    <vaadin-grid-sorter path="nomeComprador">Nome Comprador</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="nomeComprador" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.nomeComprador}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <template is="dom-if" if="{{ !_permissionsDelete }}">
+                <vaadin-grid-column resizable width="150px">
+                    <template class="header">
+                    </template>
+                    <template>
+                        <center>
+                            <paper-button class="btnRemove tableBtn" raised on-tap="_deleteComprador" disabled="{{_permissionsDelete}}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                        </center>
+                    </template>
+                </vaadin-grid-column>
+            </template>
+        </vaadin-grid>
+
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+    </template>
+
+    <script>
+         var CreateValue = true, UpdateValue = true, DeleteValue = true;
+         if ('@Html.Raw(Json.Serialize(ViewBag.CreatePermissions))' =="false") {
+            CreateValue = false;
+        }
+        if ('@Html.Raw(Json.Serialize(ViewBag.UpdatePermissions))' =="false") {
+            UpdateValue = false;
+        }
+        if ('@Html.Raw(Json.Serialize(ViewBag.DeletePermissions))' =="false") {
+            DeleteValue = false;
+        }
+
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-requesition-type',
+                properties: {
+                    _permissionsUpdate: {
+                        type: Boolean,
+                        value: UpdateValue
+                    },
+                    _permissionsCreate: {
+                        type: Boolean,
+                        value: CreateValue
+                    },
+                    _permissionsDelete: {
+                        type: Boolean,
+                        value: DeleteValue
+                    },
+                },
+
+                ready: function () {
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.gridComprador);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top;
+                    var height = parentHeight - offsetTop;
+                    $(this.$.gridComprador).height(height);
+                },
+
+                openToast: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+                openToastError: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                },
+
+                _cancel: function () {
+                    this.$.page_databound_ajax.generateRequest();
+                    this.$.gridComprador.clearCache();
+                },
+
+                _createComprador: function () {
+                    if (this.$.ddCodComprador.value == "" || this.$.ddCodComprador.value == null) {
+                        this.openToastError('É obrigatório preencher o campo Código do Comprador.');
+                    }
+                    else {
+                        if (this.$.ddNomeComprador.value == "" || this.$.ddNomeComprador.value == null) {
+                            this.openToastError('É obrigatório preencher o campo Nome do Comprador.');
+                        } else {
+                            this.$.ajax_create.body = JSON.stringify({
+                                codComprador: this.$.ddCodComprador.value,
+                                nomeComprador: this.$.ddNomeComprador.value,
+                            });
+                            this.$.ajax_create.generateRequest();
+                            this.$.gridComprador.clearCache();
+                        }
+                    }
+                },
+
+                _createResponse: function (e) {
+                    debugger;
+                    var self = this;
+                    if (this.createResult.eReasonCode == 1) {
+
+                        this.openToast(this.createResult.eMessage);
+
+                        this.$.page_databound_ajax.generateRequest();
+                        this.$.gridComprador.clearCache();
+
+                        this.$.ddCodComprador.value = "";
+                        this.$.ddNomeComprador.value = "";
+                    }
+                    else {
+                        this.openToastError(this.createResult.eMessage);
+                    }
+                },
+
+                _update: function () {
+                    debugger;
+                    this.$.ajax_update.body = JSON.stringify(this.result);
+                    this.$.ajax_update.generateRequest();
+                    this.$.gridComprador.clearCache();
+                },
+
+                _updateResponse: function (e) {
+                    debugger;
+                    var self = this;
+                    if (this.updateResult.eReasonCode == 1) {
+
+                        this.openToast(this.updateResult.eMessage);
+
+                        this.$.page_databound_ajax.generateRequest();
+                        this.$.gridComprador.clearCache();
+                    }
+                    else {
+                        this.openToastError(this.updateResult.eMessage);
+                    }
+                },
+
+                _deleteComprador: function (data) {
+                    debugger;
+                    var index = this.result.indexOf(data.model.item);
+
+                    this.$.ajax_delete.body = JSON.stringify({
+                        codComprador: data.model.item.codComprador,
+                        nomeComprador: data.model.item.nomeComprador
+                    });
+                    this.$.ajax_delete.generateRequest();
+                    this.$.gridComprador.clearCache();
+                },
+
+                _deleteResponse: function (e) {
+                    debugger;
+                    var self = this;
+                    if (this.deleteResult.eReasonCode == 1) {
+
+                        this.openToast(this.deleteResult.eMessage);
+
+                        this.$.page_databound_ajax.generateRequest();
+                        this.$.gridComprador.clearCache();
+                    }
+                    else {
+                        this.openToastError(this.deleteResult.eMessage);
+                    }
+                },
+
+                _goBack: function (e) {
+                    window.history.back();
+                }
+
+            });
+        });
+    </script>
+</dom-module>
