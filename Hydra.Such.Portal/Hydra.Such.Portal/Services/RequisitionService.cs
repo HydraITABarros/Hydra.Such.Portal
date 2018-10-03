@@ -403,12 +403,12 @@ namespace Hydra.Such.Portal.Services
                     if (success)
                     {
                         requisition.eReasonCode = 1;
-                        requisition.eMessage = "Pré-Encomenda enviada com sucesso";
+                        requisition.eMessage = "Pré-Compra enviada com sucesso";
                     }
                     else
                     {
                         requisition.eReasonCode = 2;
-                        requisition.eMessage = "Ocorreu um erro ao enviar a pré-encomenda.";
+                        requisition.eMessage = "Ocorreu um erro ao enviar a Pré-Compra.";
                     }
                 }
                 else

@@ -52,6 +52,8 @@
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{RegionData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{ResponsabilityCenterData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{FunctionalAreaCodeData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetLocations" last-response="{{LocationsData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
 
         <div class="subMenu">
             <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
@@ -102,13 +104,13 @@
             </vaadin-grid-column>
 
             @*<vaadin-grid-column width="160px" resizable hidden$="{{ _columns.buyCash.hidden }}">
-            <template class="header">
-                Compra a Dinheiro
-            </template>
-            <template>
-                <vaadin-checkbox checked="{{item.buyCash}}" disabled></vaadin-checkbox>
-            </template>
-        </vaadin-grid-column>*@
+                <template class="header">
+                    Compra a Dinheiro
+                </template>
+                <template>
+                    <vaadin-checkbox checked="{{item.buyCash}}" disabled></vaadin-checkbox>
+                </template>
+            </vaadin-grid-column>*@
 
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.alreadyPerformed.hidden }}">
                 <template class="header">
@@ -143,7 +145,8 @@
                     <vaadin-grid-filter path="regionCode" />
                 </template>
                 <template>
-                    [[ _parseregion(item.regionCode)]]
+                    @*[[ _parseregion(item.regionCode)]]*@
+                    {{item.regionCode}}
                 </template>
             </vaadin-grid-column>
 
@@ -153,7 +156,8 @@
                     <vaadin-grid-filter path="functionalAreaCode" />
                 </template>
                 <template>
-                    [[ _parseArea(item.functionalAreaCode)]]
+                    @*[[ _parseArea(item.functionalAreaCode)]]*@
+                    {{item.functionalAreaCode}}
                 </template>
             </vaadin-grid-column>
 
@@ -163,7 +167,17 @@
                     <vaadin-grid-filter path="centerResponsibilityCode" />
                 </template>
                 <template>
-                    [[ _parsecenterRespons(item.centerResponsibilityCode)]]
+                    {{item.centerResponsibilityCode}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.localCode.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="localCode">Código Localização</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="localCode" />
+                </template>
+                <template>
+                    {{item.localCode}}
                 </template>
             </vaadin-grid-column>
 
@@ -218,9 +232,9 @@
                     },
                 },
                 observers: [
-                    '_onCacheLoaded(resultstatus,RegionData,FunctionalAreaCodeData,ResponsabilityCenterData)'
+                    '_onCacheLoaded(resultstatus,RegionData,FunctionalAreaCodeData,ResponsabilityCenterData,LocationsData)'
                 ],
-                _onCacheLoaded: function (resultstatus, RegionData, FunctionalAreaCodeData, ResponsabilityCenterData) {
+                _onCacheLoaded: function (resultstatus, RegionData, FunctionalAreaCodeData, ResponsabilityCenterData, LocationsData) {
                     if (!this.Flag) {
                         this.$.ajax_getgrid.generateRequest();
                     }
@@ -297,6 +311,16 @@
                     }
                     return "";
                 },
+                _parseLocations: function (param) {
+                    if (param != undefined && this.LocationsData != undefined) {
+                        var sel = this.LocationsData.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+
+                },
 
                 _exportEXCEL: function () {
                     //debugger;
@@ -325,6 +349,7 @@
                         "regionCode": { hidden: false, label: "Código Região" },
                         "functionalAreaCode": { hidden: false, label: "Código Área Funcional" },
                         "centerResponsibilityCode": { hidden: false, label: "Código Centro Responsabilidade" },
+                        //"localCode": { hidden: false, label: "Código Localização" },
                         "comments": { hidden: false, label: "Observações" },
                         "requisitionDate": { hidden: false, label: "Data requisição" },
                         "estimatedValue": { hidden: false, label: "Valor Estimado" }
@@ -350,6 +375,7 @@
                 _getColumnItemClass: function (columnIndex) {
                     return !this._columns[columnIndex].hidden ? "selected" : "";
                 },
+
                 _toArray: function (obj) {
                     return Object.keys(obj).map(function (key) {
                         return {
