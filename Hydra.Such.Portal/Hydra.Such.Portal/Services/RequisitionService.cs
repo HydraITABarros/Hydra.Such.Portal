@@ -40,9 +40,9 @@ namespace Hydra.Such.Portal.Services
             this.changedByUserName = logChangesAsUserName;
         }
 
-        public RequisitionService(IOptions<NAVConfigurations> appSettings, NAVWSConfigurations NAVWSConfigs, string logChangesAsUserName)
+        public RequisitionService(NAVConfigurations appSettings, NAVWSConfigurations NAVWSConfigs, string logChangesAsUserName)
         {
-            _config = appSettings.Value;
+            _config = appSettings;
             this.configws = NAVWSConfigs;
             this.changedByUserName = logChangesAsUserName;
         }
@@ -233,7 +233,7 @@ namespace Hydra.Such.Portal.Services
                     throw new Exception("é obrigatório o preenchimento do fornecedor e do custo unitário nas linhas");
 
                 List<PurchOrderDTO> purchOrders = new List<PurchOrderDTO>();
-
+                List<DBNAV2017SupplierProductRef.SuppliersProductsRefs> supplierProductRef = new List<DBNAV2017SupplierProductRef.SuppliersProductsRefs>();
                 try
                 {
                     purchOrders = requisitionLines.GroupBy(x =>
@@ -273,6 +273,8 @@ namespace Hydra.Such.Portal.Services
                                     .ToList()
                                 })
                         .ToList();
+
+                    supplierProductRef = DBNAV2017SupplierProductRef.GetSuplierProductRefsForRequisition(_config.NAVDatabaseName, _config.NAVCompanyName, requisition.RequisitionNo);
                 }
                 catch
                 {
@@ -285,6 +287,14 @@ namespace Hydra.Such.Portal.Services
                     {
                         try
                         {
+                            purchOrder.Lines.ForEach(line =>
+                                line.SupplierProductCode = supplierProductRef
+                                    .Where(x => x.ProductId == line.Code
+                                                && x.SupplierNo == purchOrder.SupplierId
+                                                && x.UnitOfMeasureCode == line.UnitMeasureCode)
+                                    .FirstOrDefault()
+                                    ?.SupplierProductId
+                            );
                             var result = CreateNAVPurchaseOrderFor(purchOrder);
                             if (result.CompletedSuccessfully)
                             {
@@ -620,7 +630,7 @@ namespace Hydra.Such.Portal.Services
         private GenericResult CreateNAVPurchaseOrderFor(PurchOrderDTO purchOrder)
         {
             GenericResult createPrePurchOrderResult = new GenericResult();
-
+            
             Task<WSPurchaseInvHeader.Create_Result> createPurchaseHeaderTask = NAVPurchaseHeaderIntermService.CreateAsync(purchOrder, configws);
             createPurchaseHeaderTask.Wait();
             if (createPurchaseHeaderTask.IsCompletedSuccessfully)

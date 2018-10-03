@@ -210,6 +210,23 @@ namespace Hydra.Such.Data.Logic.ComprasML
         {
             return ctx.RecFaturacaoConfigDestinatarios.Where(x => x.Codigo.StartsWith("1A") && x.Mostra == true).ToList();
         }
+        public List<RecFaturacaoConfigDestinatarios> GetAreasUPUAS()
+        {
+            return ctx.RecFaturacaoConfigDestinatarios.Where(x => x.Codigo.Length == 5 && x.Codigo.StartsWith("3A-") && x.Mostra == true).ToList();
+        }
+        public List<RecFaturacaoConfigDestinatarios> GetDimensionsForArea(string areaId)
+        {
+            return ctx.RecFaturacaoConfigDestinatarios.Where(x => x.Codigo.StartsWith("3A-") && x.CodArea == areaId && x.Mostra == true && x.CodCentroResponsabilidade != string.Empty).ToList();
+        }
+        public List<RecFaturacaoConfigDestinatarios> GetUsersToResend(string areaId)
+        {
+            return ctx.RecFaturacaoConfigDestinatarios
+                .Where(x => x.Codigo.StartsWith("3A-") && 
+                            x.CodArea == areaId && 
+                            x.Mostra == false 
+                            && string.IsNullOrEmpty(x.CodCentroResponsabilidade))
+                .ToList();
+        }
         public List<RecFaturacaoConfigDestinatarios> GetDestination()
         {
             return ctx.RecFaturacaoConfigDestinatarios.ToList();
