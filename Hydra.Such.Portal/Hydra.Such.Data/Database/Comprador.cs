@@ -7,5 +7,9 @@ namespace Hydra.Such.Data.Database
     {
         public string CodComprador { get; set; }
         public string NomeComprador { get; set; }
+        public DateTime? DataHoraCriação { get; set; }
+        public DateTime? DataHoraModificação { get; set; }
+        public string UtilizadorCriação { get; set; }
+        public string UtilizadorModificação { get; set; }
     }
 }

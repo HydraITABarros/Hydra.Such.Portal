@@ -50,7 +50,6 @@ namespace Hydra.Such.Data.Logic.Request
                 {
                     return ctx.Requisição
                         .Include("LinhasRequisição")
-                        //AROMAO 01/10/2018
                         .Include(x => x.RequisicoesRegAlteracoes)
                         .Where(x => stateValues.Contains(x.Estado.Value))
                         .ToList();
