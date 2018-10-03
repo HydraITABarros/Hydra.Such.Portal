@@ -1815,8 +1815,6 @@
                     var ajax_request = this.$.ajax_gerarRegistoPropostas;
                     ajax_request.body = JSON.stringify(this.data);
 
-
-
                     this._confirmAndExecuteActionToast(
                         "Confirma a Geração de Registo de Propostas?", ajax_request
                     );
@@ -2401,10 +2399,13 @@
                 },
 
                 _criarEncomenda: function (e) {
-                    this.$.page_criarEncomenda_ajax.body = JSON.stringify(this.data);
-                    this.$.page_criarEncomenda_ajax.generateRequest();
+                    if (this.data.numEncomenda)
+                        this._showErrorMessage("Já foi criada uma encomenda para esta Consulta ao Mercado.");
+                    else {
+                        this.$.page_criarEncomenda_ajax.body = JSON.stringify(this.data);
+                        this.$.page_criarEncomenda_ajax.generateRequest();
+                    }
                 },
-
                 _criarEncomendaResponse: function (e) {
                     this._openToast(this.CriarEncomendaCreated.eMessage);
                 },

@@ -40,6 +40,7 @@ namespace Hydra.Such.Data.ViewModel.PedidoCotacao
         public decimal? ValorAdjudicado { get; set; }
         public string CodFormaPagamento { get; set; }
         public bool? SeleccaoEfectuada { get; set; }
+        public string NumEncomenda { get; set; }
 
         public ICollection<CondicoesPropostasFornecedoresView> CondicoesPropostasFornecedores { get; set; }
         public ICollection<LinhasCondicoesPropostasFornecedoresView> LinhasCondicoesPropostasFornecedores { get; set; }

@@ -601,6 +601,7 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                         ValorAdjudicado = ConsultaMercado.ValorAdjudicado,
                         CodFormaPagamento = ConsultaMercado.CodFormaPagamento,
                         SeleccaoEfectuada = ConsultaMercado.SeleccaoEfectuada,
+                        NumEncomenda = ConsultaMercado.NumEncomenda,
                         Destino_Show = ConsultaMercado.Destino == 1 ? "Armazém" : ConsultaMercado.Destino == 2 ? "Projeto" : string.Empty,
                         Estado_Show = ConsultaMercado.Estado == 0 ? "Aberto" : ConsultaMercado.Estado == 1 ? "Liberto" : string.Empty,
                         Fase_Show = ConsultaMercado.Fase == 0 ? "Abertura" : ConsultaMercado.Fase == 1 ? "Consulta" : ConsultaMercado.Fase == 2 ? "Negociação e Contratação" : ConsultaMercado.Fase == 3 ? "Adjudicação" : ConsultaMercado.Fase == 4 ? "Fecho" : string.Empty,
@@ -686,6 +687,7 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                 ValorAdjudicado = ObjectToTransform.ValorAdjudicado,
                 CodFormaPagamento = ObjectToTransform.CodFormaPagamento,
                 SeleccaoEfectuada = ObjectToTransform.SeleccaoEfectuada,
+                NumEncomenda = ObjectToTransform.NumEncomenda,
                 Destino_Show = ObjectToTransform.Destino == 1 ? "Armazém" : ObjectToTransform.Destino == 2 ? "Projeto" : string.Empty,
                 Estado_Show = ObjectToTransform.Estado == 0 ? "Aberto" : ObjectToTransform.Estado == 1 ? "Liberto" : string.Empty,
                 Fase_Show = ObjectToTransform.Fase == 0 ? "Abertura" : ObjectToTransform.Fase == 1 ? "Consulta" : ObjectToTransform.Fase == 2 ? "Negociação e Contratação" : ObjectToTransform.Fase == 3 ? "Adjudicação" : ObjectToTransform.Fase == 4 ? "Fecho" : string.Empty,
@@ -795,7 +797,8 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                 PedidoCotacaoOrigem = ObjectToTransform.PedidoCotacaoOrigem,
                 ValorAdjudicado = ObjectToTransform.ValorAdjudicado,
                 CodFormaPagamento = ObjectToTransform.CodFormaPagamento,
-                SeleccaoEfectuada = ObjectToTransform.SeleccaoEfectuada
+                SeleccaoEfectuada = ObjectToTransform.SeleccaoEfectuada,
+                NumEncomenda = ObjectToTransform.NumEncomenda
             };
 
             //Falta o cast das icollections
@@ -932,6 +935,7 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                 CriadoPor = ObjectToTransform.CriadoPor,
                 ModificadoEm = ObjectToTransform.ModificadoEm,
                 ModificadoPor = ObjectToTransform.ModificadoPor,
+                MercadoLocal = ObjectToTransform.MercadoLocal,
                 DataEntregaPrevista_Show = ObjectToTransform.DataEntregaPrevista == null ? "" : ObjectToTransform.DataEntregaPrevista.Value.ToString("yyyy-MM-dd")
             };
 
@@ -965,7 +969,8 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                 NumLinha = ObjectToTransform.NumLinha,
                 NumProjecto = ObjectToTransform.NumProjecto,
                 NumRequisicao = ObjectToTransform.NumRequisicao,
-                Quantidade = ObjectToTransform.Quantidade
+                Quantidade = ObjectToTransform.Quantidade,
+                MercadoLocal = ObjectToTransform.MercadoLocal
                 //NumProjectoNavigation = DBProjects.GetById(ObjectToTransform.NumProjecto)
             };
 
@@ -1434,7 +1439,7 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
         #region Registo_De_Propostas
 
 
-        public static RegistoDePropostas Create(LinhasConsultaMercado linhasConsultaMercado, string _alternativa)
+        public static RegistoDePropostas Create(LinhasConsultaMercado linhasConsultaMercado, string _alternativa, string _NAVDatabaseName, string _NAVCompanyName)
         {
             try
             {
@@ -1486,11 +1491,17 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                         CodCentroResponsabilidade = linhasConsultaMercado.CodCentroResponsabilidade,
                         CodLocalizacao = linhasConsultaMercado.CodLocalizacao,
                         CodProduto = linhasConsultaMercado.CodProduto,
+
+                        //VATProductPostingGroup = 
+
                         CodRegiao = linhasConsultaMercado.CodRegiao,
                         Descricao = linhasConsultaMercado.Descricao,
                         Descricao2 = linhasConsultaMercado.Descricao2,
                         Fornecedor1Code = fornecedor[0, 0],
                         Fornecedor1Nome = fornecedor[0, 1],
+
+                        //Fornecedor1VATBusinessPostingGroup = DBNAV2017Vendor.GetVendor(_NAVDatabaseName, _NAVCompanyName)
+
                         Fornecedor2Code = fornecedor[1, 0],
                         Fornecedor2Nome = fornecedor[1, 1],
                         Fornecedor3Code = fornecedor[2, 0],

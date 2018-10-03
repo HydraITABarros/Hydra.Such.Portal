@@ -402,6 +402,15 @@
                     </center>
                 </template>
             </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.numEncomenda.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="numEncomenda">Nº Encomenda</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="numEncomenda" />
+                </template>
+                <template>
+                    {{item.numEncomenda}}
+                </template>
+            </vaadin-grid-column>
         </vaadin-grid>
 
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
@@ -526,7 +535,8 @@
                         "pedidoCotacaoOrigem": { hidden: false, label: "Pedido Cotação Origem" },
                         "valorAdjudicado": { hidden: false, label: "Valor Adjudicado" },
                         "codFormaPagamento": { hidden: false, label: "Cod. Forma Pagamento" },
-                        "seleccaoEfectuada": { hidden: false, label: "Selecção Efectuada" }
+                        "seleccaoEfectuada": { hidden: false, label: "Selecção Efectuada" },
+                        "numEncomenda": { hidden: false, label: "Nº Encomenda" }
                     };
 
                     if (localStorage["pedidocotacaoList.ToggleColumn"]) {
