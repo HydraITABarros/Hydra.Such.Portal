@@ -518,7 +518,7 @@
                         <template is="dom-if" if="{{ _isNotes }}">
                             <paper-button raised id="btnSendPending" class="btnSave" hidden="{{ !_hiddeSendButton}}" on-tap="_sendPending">{{_nameButtonSend}}</paper-button>
                             <paper-button raised id="btnSendAnswer" class="btnSave" hidden="{{_hiddeAnswerButton}}" on-tap="_sendaAnswer">Resposta</paper-button>
-                            <paper-button raised id="btnReSendAnswer" class="btnSave" hidden="{{_hiddeAnswerButton}}" on-tap="_resendUAS">Reenvio para UP/UAS</paper-button>
+                            <paper-button raised id="btnReSendAnswer" class="btnSave" style="max-width: 205px !important;" hidden="{{_hiddeAnswerButton}}" on-tap="_resendUAS">Reenvio para UP/UAS</paper-button>
                         </template>
                     </div>
                 </div>
@@ -753,7 +753,7 @@
                         <vaadin-checkbox id="txtAnexoResposta" on-click="_anexoAnswerChanged">Anexo</vaadin-checkbox>
                     </div>
                     <div class="col-sm-4" hidden="{{ !_isAnexarFicheiroResposta }}">
-                        <vaadin-upload id="uploadRequest" target="/Faturacao/ExistFile"
+                        <vaadin-upload id="uploadRequest1" target="/Faturacao/ExistFile"
                                        method="POST"
                                        headers="{'Accept': 'application/json'}"
                                        timeout=15000 files="{{files}}"></vaadin-upload>
@@ -1453,24 +1453,40 @@
                     return false;
                 },
                 _validateInputForAnswer: function () {
-                    if (this.data.estado == null || this.data.estado == "") {
-                        this._openToastError("O Estado tem que estar preenchido.");
+                    if (this.$.cmbRespostasPorPerfil.value == "" || this.$.cmbRespostasPorPerfil.value == null) {
+                        this._openToastError("Cód. Resposta tem que estar preenchido.");
                         return false;
                     }
-                    if (this.data.areaPendente2 == "" || this.data.areaPendente2 == null) {
-                        this._openToastError("Área Pendente tem que estar preenchida.");
-                        return false;
-                    }
-                    if (this.$.txtDestProblema.value == "" || this.$.txtDestProblema.value == null) {
-                        this._openToastError("Destinatário tem que estar preenchido.");
-                        return false;
-                    }
-                    if (this.$.codDescricao.value == "" || this.$.codDescricao.value == null) {
-                        this._openToastError("Cód. Descrição tem que estar preenchido.");
-                        return false;
-                    }
-                    if (this.$.txtDescription.value == "" || this.$.txtDescription.value == null) {
+                    if (this._descricaoResposta == "" || this._descricaoResposta == null) {
                         this._openToastError("Descrição tem que estar preenchida.");
+                        return false;
+                    }
+
+                    //if (this.data.estado == null || this.data.estado == "") {
+                    //    this._openToastError("O Estado tem que estar preenchido.");
+                    //    return false;
+                    //}
+                    //if (this.data.areaPendente2 == "" || this.data.areaPendente2 == null) {
+                    //    this._openToastError("Área Pendente tem que estar preenchida.");
+                    //    return false;
+                    //}
+                    //if (this.$.txtDestProblema.value == "" || this.$.txtDestProblema.value == null) {
+                    //    this._openToastError("Destinatário tem que estar preenchido.");
+                    //    return false;
+                    //}
+                    //if (this.$.codDescricao.value == "" || this.$.codDescricao.value == null) {
+                    //    this._openToastError("Cód. Descrição tem que estar preenchido.");
+                    //    return false;
+                    //}
+                    //if (this.$.txtDescription.value == "" || this.$.txtDescription.value == null) {
+                    //    this._openToastError("Descrição tem que estar preenchida.");
+                    //    return false;
+                    //}
+                    return true;
+                },
+                _validateInputForSendingToUPs: function () {
+                    if (this.$.cmbUAProblems.value == "" || this.$.cmbUAProblems.value == null) {
+                        this._openToastError("Tipo de Problema tem que estar preenchido.");
                         return false;
                     }
                     return true;
@@ -1770,6 +1786,7 @@
                 _sendaAnswer: function () {
                     this.$.dialogSendAnswer.open();
                     var data = this.data;
+                    this.$.uploadRequest1.files = [];
                     this.$.respostasPerfil_ajax.body = JSON.stringify(data);
                     this.$.respostasPerfil_ajax.generateRequest();
                 },
@@ -1862,63 +1879,63 @@
                 },
 
                 _dlgSendUA: function () {
-                        if (this._validateInputForAnswer()) {
-                            var answerDestinyProfile;
-                            var userToAnswer = this.data.criadoPor;
+                    if (this._validateInputForSendingToUPs()) {
+                        var answerDestinyProfile;
+                        var userToAnswer = this.data.criadoPor;
 
-                            var idmotivo = this.$.cmbRespostasPorPerfil.value
-                            var motivoExtra = this.RespostasPorPerfil.find(x => x.id == idmotivo).extra;
+                        var idmotivo = this.$.cmbRespostasPorPerfil.value
+                        var motivoExtra = this.RespostasPorPerfil.find(x => x.id == idmotivo).extra;
 
-                            var workflow = null;;
-                            var idWork = this.data.workflowItems[this.data.workflowItems.length - 1];
+                        var workflow = null;;
+                        var idWork = this.data.workflowItems[this.data.workflowItems.length - 1];
 
-                            //PROCURAR CRIADOR DA ULTIMA LINHA PARA RESPOSTA
-                            var novoDestino = idWork.utilizador;
-                            this.$.get_userprofile_ajax.body = JSON.stringify(novoDestino);
-                            this.$.get_userprofile_ajax.generateRequest();
-                            //**/
-                            var userProfile = this.userProfile;
-                            var Area = idWork.area;
-                            var Anexados= false;
-                            if (this.files != null) {
-                                var anexoNew;
-                                for (i = 0; i < this.files.length; i++) {
-                                    anexoNew = {
-                                        file: this.files[i].name,
-                                        description: this.$.txtDescricaoAnexo.value
-                                    };
-                                    if (this.Anexos == null) {
-                                        this.Anexos = [anexoNew];
-                                    }
-                                    else
-                                        this.Anexos.push(anexoNew);
+                        //PROCURAR CRIADOR DA ULTIMA LINHA PARA RESPOSTA
+                        var novoDestino = idWork.utilizador;
+                        this.$.get_userprofile_ajax.body = JSON.stringify(novoDestino);
+                        this.$.get_userprofile_ajax.generateRequest();
+                        //**/
+                        var userProfile = this.userProfile;
+                        var Area = idWork.area;
+                        var Anexados = false;
+                        if (this.files != null) {
+                            var anexoNew;
+                            for (i = 0; i < this.files.length; i++) {
+                                anexoNew = {
+                                    file: this.files[i].name,
+                                    description: this.$.txtDescricaoAnexo.value
+                                };
+                                if (this.Anexos == null) {
+                                    this.Anexos = [anexoNew];
                                 }
-                                Anexados = true;
+                                else
+                                    this.Anexos.push(anexoNew);
                             }
-                            var selVendor = this.Vendors.find(x => x.no_ == this.$.sbVendors.value);
-                            workflow = {
-                                id: idWork.id + 1,
-                                idRecFaturacao: this.data.id,
-                                codTipoProblema: idmotivo,
-                                codProblema: "RF5P",
-                                descricao: this.$.txtdescricaoResposta.value,
-                                //PROCURAR CRIADOR DA ULTIMA LINHA PARA RESPOSTA
-                                destinatario: novoDestino,
-                                comentario: this.$.txtCommentdglAnswer.value,
-                                enderecoFornecedor: selVendor.email,
-                                area: userProfile,
-                                areaWorkflow: userProfile,
-                                codDestino: this.$.txtCodDestino.value,
-                                attached: this.Anexos,
-                                attachedIs: Anexados
-                            };
-                            this.files = null;
-                            this.data.workflowItems.push(workflow);
-                            this.$.page_send_ajax.body = JSON.stringify(this.data);
-                            this.$.page_send_ajax.generateRequest();
-
-                            this.$.dialogSendAnswer.close();
+                            Anexados = true;
                         }
+                        var selVendor = this.Vendors.find(x => x.no_ == this.$.sbVendors.value);
+                        workflow = {
+                            id: idWork.id + 1,
+                            idRecFaturacao: this.data.id,
+                            codTipoProblema: idmotivo,
+                            codProblema: "RF5P",
+                            descricao: this.$.txtdescricaoResposta.value,
+                            //PROCURAR CRIADOR DA ULTIMA LINHA PARA RESPOSTA
+                            destinatario: novoDestino,
+                            comentario: this.$.txtCommentdglAnswer.value,
+                            enderecoFornecedor: selVendor.email,
+                            area: userProfile,
+                            areaWorkflow: userProfile,
+                            codDestino: this.$.txtCodDestino.value,
+                            attached: this.Anexos,
+                            attachedIs: Anexados
+                        };
+                        this.files = null;
+                        this.data.workflowItems.push(workflow);
+                        this.$.page_send_ajax.body = JSON.stringify(this.data);
+                        this.$.page_send_ajax.generateRequest();
+
+                        this.$.dialogSendAnswer.close();
+                    }
                 },
 
 
