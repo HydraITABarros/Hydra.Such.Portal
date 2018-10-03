@@ -155,7 +155,16 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<UtilizadoresMovimentosDeAprovação> UtilizadoresMovimentosDeAprovação { get; set; }
         public virtual DbSet<Viaturas> Viaturas { get; set; }
         public virtual DbSet<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
-        
+
+//        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+//        {
+//            if (!optionsBuilder.IsConfigured)
+//            {
+//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+//                optionsBuilder.UseSqlServer(@"data source=10.101.1.10\SQLNAVDEV;initial catalog=PlataformaOperacionalSUCH;user id=such_portal_user;password=SuchPW.2K17;");
+//            }
+//        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AcessosDimensões>(entity =>
@@ -857,9 +866,26 @@ namespace Hydra.Such.Data.Database
                     .HasMaxLength(10)
                     .ValueGeneratedNever();
 
+                entity.Property(e => e.DataHoraCriação)
+                    .HasColumnName("Data/Hora Criação")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DataHoraModificação)
+                    .HasColumnName("Data/Hora Modificação")
+                    .HasColumnType("datetime");
+
                 entity.Property(e => e.NomeComprador)
+                    .IsRequired()
                     .HasColumnName("Nome_Comprador")
                     .HasMaxLength(60);
+
+                entity.Property(e => e.UtilizadorCriação)
+                    .HasColumnName("Utilizador Criação")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.UtilizadorModificação)
+                    .HasColumnName("Utilizador Modificação")
+                    .HasMaxLength(50);
             });
 
             modelBuilder.Entity<Compras>(entity =>
