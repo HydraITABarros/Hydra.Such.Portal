@@ -32,7 +32,6 @@
                     margin-right: 0px !important;
                     margin-left: 0px !important;
                 }
-
             </style>
             @*POPULATE DROPDOWNS*@
             <iron-ajax url="/Administracao/GetListConfigNumerations"
@@ -78,43 +77,57 @@
                     <iron-pages selected="{{selected}}">
                         <!--Geral-->
                         <div>
-                            <div class="list-group">
-                                <div class="col-md-2 ">
-                                    <h3 class="titleLabel">Inicio Hora Almoço</h3>
-                                    @*<time-element time="{{response.lunchStartTime}}"></time-element>
-                <time-input time="{{response.lunchStartTim}}"></time-input>*@
-                                    <time-picker time="{{response.lunchStartTime}}"></time-picker>
+                            <div class="row">
+                                <div class="list-group">
+                                    <div class="col-md-2 ">
+                                        <h3 class="titleLabel">Inicio Hora Almoço</h3>
+                                        @*<time-element time="{{response.lunchStartTime}}"></time-element>
+                                            <time-input time="{{response.lunchStartTim}}"></time-input>*@
+                                        <time-picker time="{{response.lunchStartTime}}"></time-picker>
+                                    </div>
+                                    <div class="col-md-2 ">
+                                        <h3 class="titleLabel">Fim Hora Almoço</h3>
+                                        @*<time-element time="{{response.lunchEndTime}}"></time-element>*@
+                                        <time-picker time="{{response.lunchEndTime}}"></time-picker>
+                                    </div>
                                 </div>
-                                <div class="col-md-2 ">
-                                    <h3 class="titleLabel">Fim Hora Almoço</h3>
-                                    @*<time-element time="{{response.lunchEndTime}}"></time-element>*@
-                                    <time-picker time="{{response.lunchEndTime}}"></time-picker>
+                                <div class="list-group">
+                                    <div class="col-md-2 ">
+                                        <h3 class="titleLabel">Inicio Hora Jantar</h3>
+                                        @*<time-element time="{{response.dinnerStartTime}}"></time-element>*@
+                                        <time-picker time="{{response.dinnerStartTime}}"></time-picker>
+                                    </div>
+                                    <div class="col-md-2 ">
+                                        <h3 class="titleLabel">Inicio Hora Jantar</h3>
+                                        @*<time-element time="{{response.dinnerEndTime}}"></time-element>*@
+                                        <time-picker time="{{response.dinnerEndTime}}"></time-picker>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="list-group">
-                                <div class="col-md-2 ">
-                                    <h3 class="titleLabel">Inicio Hora Jantar</h3>
-                                    @*<time-element time="{{response.dinnerStartTime}}"></time-element>*@
-                                    <time-picker time="{{response.dinnerStartTime}}"></time-picker>
-                                </div>
-                                <div class="col-md-2 ">
-                                    <h3 class="titleLabel">Inicio Hora Jantar</h3>
-                                    @*<time-element time="{{response.dinnerEndTime}}"></time-element>*@
-                                    <time-picker time="{{response.dinnerEndTime}}"></time-picker>
+
+                                <div class="list-group">
+                                    <div class="col-md-4 ">
+                                        <such-selectbox id="sbFunctionalAreas" value="{{response.wasteAreaId}}" label="Área de Resíduos"
+                                                        items="[[FunctionalAreas]]"
+                                                        text-path="value"
+                                                        value-path="id"
+                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                                        </such-selectbox>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div class="list-group">
-                                <div class="col-md-4 ">
-                                    <such-selectbox id="sbFunctionalAreas" value="{{response.wasteAreaId}}" label="Área de Resíduos"
-                                                    items="[[FunctionalAreas]]"
-                                                    text-path="value"
-                                                    value-path="id"
-                                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
-                                    </such-selectbox>
+                            <div class="row">
+                                <div class="col-lg-2">
+                                    <vaadin-text-field id="ddReportUsername" label="Report Username" value="{{response.reportUsername}}"></vaadin-text-field>
                                 </div>
+
+                                <div class="col-lg-2">
+                                    <vaadin-text-field id="ddReportPassword" label="Report Password" value="{{response.reportPassword}}"></vaadin-text-field>
+                                </div>
+
                             </div>
                         </div>
+
                         <!--Numerações-->
                         <div class="list-group">
                             <div class="list-group-item" style="padding: 5px 10px; margin: 0;">
