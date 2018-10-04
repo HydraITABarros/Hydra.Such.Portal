@@ -1236,10 +1236,18 @@
                                 <div class="col-sm-3">
                                     <vaadin-text-field type="text" id="_linhacustoTotalObjectivo" required value="{{ item.custoTotalObjectivo }}" label="Custo Total Objectivo" disabled="true"></vaadin-text-field>
                                 </div>
-                                <div class="col-sm-2">
+                                <div class="col-sm-3">
                                     <vaadin-date-picker id="dataEntregaPrevista" name="dataEntregaPrevista" value="{{item.dataEntregaPrevista}}" label="Data Entrega Prevista"></vaadin-date-picker>
                                 </div>
-                                <div class="col-sm-1" style="padding-top:32px">
+                            </div>
+
+                            <div class="row break_clear">
+                                <div class="col-sm-3" style="padding-top:32px">
+                                    <center>
+                                        <vaadin-checkbox id="chkMercadoLocal" checked="{{data.mercadoLocal}}">Mercado Local</vaadin-checkbox>
+                                    </center>
+                                </div>
+                                <div class="col-sm-3" style="padding-top:32px">
                                     <center>
                                         <paper-button id="btn_createLinha" class="btnSave tableBtn" raised on-tap="_createLinha" disabled="{{ !_permissions.create }}" title="Adicionar"><i class="fa fa-plus" aria-hidden="true"></i></paper-button>
                                     </center>
@@ -1516,6 +1524,18 @@
                             <vaadin-date-picker id="tabLinhasdataEntregaPrevista" name="tabLinhasdataEntregaPrevista" value="{{item.dataEntregaPrevista_Show}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
                         </template>
                     </vaadin-grid-column>
+
+                    <vaadin-grid-column width="160px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="mercadoLocal">Mercado Local</vaadin-grid-sorter>
+                        </template>
+                        <template>
+                            <center>
+                                <vaadin-checkbox checked="{{item.mercadoLocal}}"></vaadin-checkbox>
+                            </center>
+                        </template>
+                    </vaadin-grid-column>
+
 
                     <vaadin-grid-column resizable>
                         <template class="header">
@@ -2598,7 +2618,13 @@
                     this.$.page_enviarEmailATodos_ajax.generateRequest();
                 },
                 _enviarEmailATodosResponse: function (e) {
-                    this._openToast(this.EnviarEmailATodosCreated.eMessage);
+                    if (this.$.EnviarEmailATodosCreated = 1) {
+                        this._closerptDialog_EnviarEmail();
+                        this._showMessage(this.EnviarEmailATodosCreated.eMessage);
+                    }
+                    else {
+                        this._showErrorMessage(this.EnviarEmailATodosCreated.eMessage);
+                    }
                 },
 
                 _enviarEmailAUm: function (e) {
@@ -2606,7 +2632,13 @@
                     this.$.page_enviarEmailAUm_ajax.generateRequest();
                 },
                 _enviarEmailAUmResponse: function (e) {
-                    this._openToast(this.EnviarEmailAUmCreated.eMessage);
+                    if (this.$.EnviarEmailAUmCreated = 1) {
+                        this._closerptDialog_EnviarEmail();
+                        this._showMessage(this.EnviarEmailAUmCreated.eMessage);
+                    }
+                    else {
+                        this._showErrorMessage(this.EnviarEmailAUmCreated.eMessage);
+                    }
                 },
 
 

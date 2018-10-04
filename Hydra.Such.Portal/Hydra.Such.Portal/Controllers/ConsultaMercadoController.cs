@@ -948,6 +948,9 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public async Task<JsonResult> EnviarEmailATodos([FromBody] ConsultaMercadoView data)
         {
+            data.eReasonCode = 0;
+            data.eMessage = "Email(s) não enviado(s)!";
+
             //Para cada Fornecedor, criar o pdf da Consulta de Mercado, guardar em algum lado e anexar ao email e enviar!!!
             foreach (SeleccaoEntidadesView fornecedor in data.SeleccaoEntidades)
             {
@@ -960,9 +963,14 @@ namespace Hydra.Such.Portal.Controllers
                 //var theURL = (_config.ReportServerURL + "ConsultaMercado&rs:Command=Render&rs:format=PDF&CM=" + Consulta + "&Fornecedor=" + Cod);
                 var theURL = (_config.ReportServerURL + "ConsultaMercado&CM=" + Consulta + "&Fornecedor=" + Cod + "&rs:Command=Render&rs:format=PDF");
 
+                //WebClient Client = new WebClient
+                //{
+                //    UseDefaultCredentials = true
+                //};
+
                 WebClient Client = new WebClient
                 {
-                    UseDefaultCredentials = true
+                    Credentials = new NetworkCredential("hydra01@such.pt", "nav2017")
                 };
 
                 byte[] myDataBuffer = Client.DownloadData(theURL);
@@ -994,6 +1002,21 @@ namespace Hydra.Such.Portal.Controllers
                 Email.IsBodyHtml = true;
 
                 Email.SendEmail();
+
+                string email = data.SeleccaoEntidades.Where(x => x.CodFornecedor == Cod).First().EmailFornecedor ?? "Fornecedor sem Email definido!";
+
+
+                if (data.eReasonCode == 0)
+                {
+                    data.eReasonCode = 1;
+                    data.eMessage = "Email enviado com sucesso para:" + Environment.NewLine + email;
+                }
+                else
+                {
+                    data.eMessage += Environment.NewLine + email;
+                }
+
+
             }
 
             return Json(data);
@@ -1009,16 +1032,27 @@ namespace Hydra.Such.Portal.Controllers
             ConsultaMercado consultaMercado = DBConsultaMercado.GetDetalheConsultaMercado(Consulta);
             ConsultaMercadoView data = DBConsultaMercado.CastConsultaMercadoToView(consultaMercado);
 
+
+            data.eReasonCode = 0;
+            data.eMessage = "Email não enviado!";
+
+
             string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
             string sFileName = @Consulta + "_" + Cod + "_" + ".pdf";
 
             //var theURL = (_config.ReportServerURL + "ConsultaMercado&rs:Command=Render&rs:format=PDF&CM=" + Consulta + "&Fornecedor=" + Cod);
             var theURL = (_config.ReportServerURL + "ConsultaMercado&CM=" + Consulta + "&Fornecedor=" + Cod + "&rs:Command=Render&rs:format=PDF");
-            
+
+            //WebClient Client = new WebClient
+            //{
+            //    UseDefaultCredentials = true
+            //};
+
             WebClient Client = new WebClient
             {
-                UseDefaultCredentials = true
+                Credentials = new NetworkCredential("hydra01@such.pt", "nav2017")
             };
+
 
             byte[] myDataBuffer = Client.DownloadData(theURL);
 
@@ -1049,6 +1083,11 @@ namespace Hydra.Such.Portal.Controllers
             Email.IsBodyHtml = true;
             
             Email.SendEmail();
+
+            string email = data.SeleccaoEntidades.Where(x => x.CodFornecedor == Cod).First().EmailFornecedor ?? "Fornecedor sem Email definido!";
+
+            data.eReasonCode = 1;
+            data.eMessage = "Email enviado com sucesso para:" + Environment.NewLine + email;
 
             return Json(data);
         }
