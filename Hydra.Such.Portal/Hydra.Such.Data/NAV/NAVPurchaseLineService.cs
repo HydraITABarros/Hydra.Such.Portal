@@ -137,6 +137,9 @@ namespace Hydra.Such.Data.NAV
             if (purchFromSupplier == null)
                 throw new ArgumentNullException("purchFromSupplier");
 
+            var supplierId = purchFromSupplier.SupplierId;
+            var items = purchFromSupplier.Lines.Select(x => new { a = x.Code, b=x.UnitMeasureCode });
+
             itemsToUpdate.ForEach(purchInvLine =>
             {
                 var item = purchFromSupplier.Lines.Single(x => x.LineId == (int)purchInvLine.Requisition_Line_No);
@@ -146,6 +149,7 @@ namespace Hydra.Such.Data.NAV
                 purchInvLine.No = item.Code;
                 //purchInvLine.Buy_from_Vendor_No = purchFromSupplier.SupplierId;
                 //purchInvLine.Pay_to_Vendor_No = purchFromSupplier.SupplierId;
+                purchInvLine.Cross_Reference_No = item.SupplierProductCode;
                 purchInvLine.Quantity = item.QuantityRequired.HasValue ? item.QuantityRequired.Value : 0;
                 purchInvLine.QuantitySpecified = true;
                 purchInvLine.gLocation = item.LocationCode;

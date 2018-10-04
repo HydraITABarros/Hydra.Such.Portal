@@ -465,7 +465,7 @@ namespace Hydra.Such.Portal.Controllers
             List<RecFacturasProblemas> result = new List<RecFacturasProblemas>();
             string AnswerType = "";
 
-            if (data.AreaPendente2 == "Aprovisionamento")
+            if (data.AreaPendente == "Aprovisionamento")
             {
                 if (userPendingProfile == 1 && userDestinyProfile == 0)
                 {
@@ -474,7 +474,7 @@ namespace Hydra.Such.Portal.Controllers
                 } 
             }
 
-            if(data.AreaPendente2 == "UnidadesProdutivas" || data.AreaPendente2 == "UnidadesProdutivas")
+            if(data.AreaPendente == "UnidadesProdutivas" || data.AreaPendente == "UnidadesApoioESuporte")
             {
                 if ((userPendingProfile == 2 || userPendingProfile == 3) && userDestinyProfile == 1)
                 {
@@ -523,8 +523,48 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(result);
         }
+        [HttpGet]
+        public JsonResult GetAreasUPUAS()
+        {
+            List<DDMessageRelated> result = billingRecService.GetAreasUPUAS().Select(x => new DDMessageRelated()
+            {
+                id = x.CodArea,
+                value = x.CodArea
+            })
+            .Distinct()
+            .ToList();
 
-       
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetDimensionsForArea([FromBody] string areaId)
+        {
+            List<DDMessageRelated> result = billingRecService.GetDimensionsForArea(areaId).Select(x => new DDMessageRelated()
+            {
+                id = x.CodCentroResponsabilidade,
+                value = x.CodCentroResponsabilidade
+            })
+            .Distinct()
+            .ToList();
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetUsersToResend([FromBody] string areaId)
+        {
+            List<DDMessageRelated> result = billingRecService.GetUsersToResend(areaId).Select(x => new DDMessageRelated()
+            {
+                id = x.Destinatario,
+                value = x.Destinatario
+            })
+            .Distinct()
+            .ToList();
+
+            return Json(result);
+        }
+
         [HttpGet]
         public JsonResult GetDestino()
         {

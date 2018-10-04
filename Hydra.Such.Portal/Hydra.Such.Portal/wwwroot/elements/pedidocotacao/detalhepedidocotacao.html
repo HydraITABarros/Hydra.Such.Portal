@@ -248,6 +248,7 @@
                     <paper-tab>Controlo Interno</paper-tab>
                     <paper-tab>Seleção de Entidades</paper-tab>
                     <paper-tab>Condições Propostas Fornecedores</paper-tab>
+                    <paper-tab>Mercado Local</paper-tab>
                 </paper-tabs>
 
                 <iron-pages selected="{{selected}}">
@@ -1032,9 +1033,93 @@
                                         <vaadin-text-field name="tabRegistoDePropostascodCentroResponsabilidade" id="tabRegistoDePropostascodCentroResponsabilidade" value="{{item.codCentroResponsabilidade}}" disabled="true"></vaadin-text-field>
                                     </template>
                                 </vaadin-grid-column>
+
+
+
+                                <vaadin-grid-column hidden>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="vatproductPostingGroup" style="text-align:center;">VatproductPostingGroup</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="vatproductPostingGroup"></vaadin-grid-filter>
+                                    </template>
+                                    <template>
+                                        <vaadin-text-field name="tabRegistoDePropostasvatproductPostingGroup" id="tabRegistoDePropostasvatproductPostingGroup" value="{{item.vatproductPostingGroup}}" disabled="true"></vaadin-text-field>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column hidden>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="vatbusinessPostingGroup1" style="text-align:center;">VatbusinessPostingGroup1</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="vatbusinessPostingGroup1"></vaadin-grid-filter>
+                                    </template>
+                                    <template>
+                                        <vaadin-text-field name="tabRegistoDePropostasvatbusinessPostingGroup1" id="tabRegistoDePropostasvatbusinessPostingGroup1" value="{{item.vatbusinessPostingGroup1}}" disabled="true"></vaadin-text-field>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column hidden>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="vatbusinessPostingGroup2" style="text-align:center;">vatbusinessPostingGroup2</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="vatbusinessPostingGroup2"></vaadin-grid-filter>
+                                    </template>
+                                    <template>
+                                        <vaadin-text-field name="tabRegistoDePropostasvatbusinessPostingGroup2" id="tabRegistoDePropostasvatbusinessPostingGroup2" value="{{item.vatbusinessPostingGroup2}}" disabled="true"></vaadin-text-field>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column hidden>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="vatbusinessPostingGroup3" style="text-align:center;">vatbusinessPostingGroup3</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="vatbusinessPostingGroup3"></vaadin-grid-filter>
+                                    </template>
+                                    <template>
+                                        <vaadin-text-field name="tabRegistoDePropostasvatbusinessPostingGroup3" id="tabRegistoDePropostasvatbusinessPostingGroup3" value="{{item.vatbusinessPostingGroup3}}" disabled="true"></vaadin-text-field>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column hidden>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="vatbusinessPostingGroup4" style="text-align:center;">vatbusinessPostingGroup4</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="vatbusinessPostingGroup4"></vaadin-grid-filter>
+                                    </template>
+                                    <template>
+                                        <vaadin-text-field name="tabRegistoDePropostasvatbusinessPostingGroup4" id="tabRegistoDePropostasvatbusinessPostingGroup4" value="{{item.vatbusinessPostingGroup4}}" disabled="true"></vaadin-text-field>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column hidden>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="vatbusinessPostingGroup5" style="text-align:center;">vatbusinessPostingGroup5</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="vatbusinessPostingGroup5"></vaadin-grid-filter>
+                                    </template>
+                                    <template>
+                                        <vaadin-text-field name="tabRegistoDePropostasvatbusinessPostingGroup5" id="tabRegistoDePropostasvatbusinessPostingGroup5" value="{{item.vatbusinessPostingGroup5}}" disabled="true"></vaadin-text-field>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column hidden>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="vatbusinessPostingGroup6" style="text-align:center;">vatbusinessPostingGroup6</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="vatbusinessPostingGroup6"></vaadin-grid-filter>
+                                    </template>
+                                    <template>
+                                        <vaadin-text-field name="tabRegistoDePropostasvatbusinessPostingGroup6" id="tabRegistoDePropostasvatbusinessPostingGroup6" value="{{item.vatbusinessPostingGroup6}}" disabled="true"></vaadin-text-field>
+                                    </template>
+                                </vaadin-grid-column>
+
+
                             </vaadin-grid>
 
                             <paper-button class="btn--confirm pull-right" id="btnCriarEncomenda" raised on-tap="_criarEncomenda"><i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp; Criar Encomenda</paper-button>
+                        </div>
+                    </div>
+
+                    <!-- Tab Mercado Local-->
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <div class="row break_clear">
+                                <div class="col-sm-3">
+                                </div>
+                                <div class="col-sm-3">
+                                </div>
+                                <div class="col-sm-3">
+                                </div>
+                                <div class="col-sm-3">
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </iron-pages>
@@ -1151,10 +1236,18 @@
                                 <div class="col-sm-3">
                                     <vaadin-text-field type="text" id="_linhacustoTotalObjectivo" required value="{{ item.custoTotalObjectivo }}" label="Custo Total Objectivo" disabled="true"></vaadin-text-field>
                                 </div>
-                                <div class="col-sm-2">
+                                <div class="col-sm-3">
                                     <vaadin-date-picker id="dataEntregaPrevista" name="dataEntregaPrevista" value="{{item.dataEntregaPrevista}}" label="Data Entrega Prevista"></vaadin-date-picker>
                                 </div>
-                                <div class="col-sm-1" style="padding-top:32px">
+                            </div>
+
+                            <div class="row break_clear">
+                                <div class="col-sm-3" style="padding-top:32px">
+                                    <center>
+                                        <vaadin-checkbox id="chkMercadoLocal" checked="{{data.mercadoLocal}}">Mercado Local</vaadin-checkbox>
+                                    </center>
+                                </div>
+                                <div class="col-sm-3" style="padding-top:32px">
                                     <center>
                                         <paper-button id="btn_createLinha" class="btnSave tableBtn" raised on-tap="_createLinha" disabled="{{ !_permissions.create }}" title="Adicionar"><i class="fa fa-plus" aria-hidden="true"></i></paper-button>
                                     </center>
@@ -1431,6 +1524,18 @@
                             <vaadin-date-picker id="tabLinhasdataEntregaPrevista" name="tabLinhasdataEntregaPrevista" value="{{item.dataEntregaPrevista_Show}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
                         </template>
                     </vaadin-grid-column>
+
+                    <vaadin-grid-column width="160px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="mercadoLocal">Mercado Local</vaadin-grid-sorter>
+                        </template>
+                        <template>
+                            <center>
+                                <vaadin-checkbox checked="{{item.mercadoLocal}}"></vaadin-checkbox>
+                            </center>
+                        </template>
+                    </vaadin-grid-column>
+
 
                     <vaadin-grid-column resizable>
                         <template class="header">
@@ -1797,8 +1902,6 @@
 
                     var ajax_request = this.$.ajax_gerarRegistoPropostas;
                     ajax_request.body = JSON.stringify(this.data);
-
-
 
                     this._confirmAndExecuteActionToast(
                         "Confirma a Geração de Registo de Propostas?", ajax_request
@@ -2285,13 +2388,14 @@
                         }
                         //this.$.tabRegistoProposta.clearCache();
                         //_self._showErrorMessage("Apenas pode ter uma Entidade Selecionada!");
-
+                        debugger
                         this.$.page_updateLinhaRegistoProposta_ajax.body = JSON.stringify({
                             numLinha: e.model.item.numLinha,
                             numConsultaMercado: e.model.item.numConsultaMercado,
                             numLinhaConsultaMercado: e.model.item.numLinhaConsultaMercado,
                             alternativa: e.model.item.alternativa,
                             codProduto: e.model.item.codProduto,
+                            vatproductPostingGroup: e.model.item.vatproductPostingGroup,
                             descricao: e.model.item.descricao,
                             descricao2: e.model.item.descricao2,
                             numProjecto: e.model.item.numProjecto,
@@ -2302,26 +2406,32 @@
                             quantidade: e.model.item.quantidade,
                             fornecedor1Code: e.model.item.fornecedor1Code,
                             fornecedor1Nome: e.model.item.fornecedor1Nome,
+                            vatbusinessPostingGroup1: e.model.item.vatbusinessPostingGroup1,
                             fornecedor1Preco: e.model.item.fornecedor1Preco,
                             fornecedor1Select: e.model.item.fornecedor1Select,
                             fornecedor2Code: e.model.item.fornecedor2Code,
                             fornecedor2Nome: e.model.item.fornecedor2Nome,
+                            vatbusinessPostingGroup2: e.model.item.vatbusinessPostingGroup2,
                             fornecedor2Preco: e.model.item.fornecedor2Preco,
                             fornecedor2Select: e.model.item.fornecedor2Select,
                             fornecedor3Code: e.model.item.fornecedor3Code,
                             fornecedor3Nome: e.model.item.fornecedor3Nome,
+                            vatbusinessPostingGroup3: e.model.item.vatbusinessPostingGroup3,
                             fornecedor3Preco: e.model.item.fornecedor3Preco,
                             fornecedor3Select: e.model.item.fornecedor3Select,
                             fornecedor4Code: e.model.item.fornecedor4Code,
                             fornecedor4Nome: e.model.item.fornecedor4Nome,
+                            vatbusinessPostingGroup4: e.model.item.vatbusinessPostingGroup4,
                             fornecedor4Preco: e.model.item.fornecedor4Preco,
                             fornecedor4Select: e.model.item.fornecedor4Select,
                             fornecedor5Code: e.model.item.fornecedor5Code,
                             fornecedor5Nome: e.model.item.fornecedor5Nome,
+                            vatbusinessPostingGroup5: e.model.item.vatbusinessPostingGroup5,
                             fornecedor5Preco: e.model.item.fornecedor5Preco,
                             fornecedor5Select: e.model.item.fornecedor5Select,
                             fornecedor6Code: e.model.item.fornecedor6Code,
                             fornecedor6Nome: e.model.item.fornecedor6Nome,
+                            vatbusinessPostingGroup6: e.model.item.vatbusinessPostingGroup6,
                             fornecedor6Preco: e.model.item.fornecedor6Preco,
                             fornecedor6Select: e.model.item.fornecedor6Select
                         });
@@ -2335,6 +2445,7 @@
                             numLinhaConsultaMercado: e.model.item.numLinhaConsultaMercado,
                             alternativa: e.model.item.alternativa,
                             codProduto: e.model.item.codProduto,
+                            vatproductPostingGroup: e.model.item.vatproductPostingGroup,
                             descricao: e.model.item.descricao,
                             descricao2: e.model.item.descricao2,
                             numProjecto: e.model.item.numProjecto,
@@ -2345,26 +2456,32 @@
                             quantidade: e.model.item.quantidade,
                             fornecedor1Code: e.model.item.fornecedor1Code,
                             fornecedor1Nome: e.model.item.fornecedor1Nome,
+                            vatbusinessPostingGroup1: e.model.item.vatbusinessPostingGroup1,
                             fornecedor1Preco: e.model.item.fornecedor1Preco,
                             fornecedor1Select: e.model.item.fornecedor1Select,
                             fornecedor2Code: e.model.item.fornecedor2Code,
                             fornecedor2Nome: e.model.item.fornecedor2Nome,
+                            vatbusinessPostingGroup2: e.model.item.vatbusinessPostingGroup2,
                             fornecedor2Preco: e.model.item.fornecedor2Preco,
                             fornecedor2Select: e.model.item.fornecedor2Select,
                             fornecedor3Code: e.model.item.fornecedor3Code,
                             fornecedor3Nome: e.model.item.fornecedor3Nome,
+                            vatbusinessPostingGroup3: e.model.item.vatbusinessPostingGroup3,
                             fornecedor3Preco: e.model.item.fornecedor3Preco,
                             fornecedor3Select: e.model.item.fornecedor3Select,
                             fornecedor4Code: e.model.item.fornecedor4Code,
                             fornecedor4Nome: e.model.item.fornecedor4Nome,
+                            vatbusinessPostingGroup4: e.model.item.vatbusinessPostingGroup4,
                             fornecedor4Preco: e.model.item.fornecedor4Preco,
                             fornecedor4Select: e.model.item.fornecedor4Select,
                             fornecedor5Code: e.model.item.fornecedor5Code,
                             fornecedor5Nome: e.model.item.fornecedor5Nome,
+                            vatbusinessPostingGroup5: e.model.item.vatbusinessPostingGroup5,
                             fornecedor5Preco: e.model.item.fornecedor5Preco,
                             fornecedor5Select: e.model.item.fornecedor5Select,
                             fornecedor6Code: e.model.item.fornecedor6Code,
                             fornecedor6Nome: e.model.item.fornecedor6Nome,
+                            vatbusinessPostingGroup6: e.model.item.vatbusinessPostingGroup6,
                             fornecedor6Preco: e.model.item.fornecedor6Preco,
                             fornecedor6Select: e.model.item.fornecedor6Select
                         });
@@ -2384,10 +2501,13 @@
                 },
 
                 _criarEncomenda: function (e) {
-                    this.$.page_criarEncomenda_ajax.body = JSON.stringify(this.data);
-                    this.$.page_criarEncomenda_ajax.generateRequest();
+                    if (this.data.numEncomenda)
+                        this._showErrorMessage("Já foi criada uma encomenda para esta Consulta ao Mercado.");
+                    else {
+                        this.$.page_criarEncomenda_ajax.body = JSON.stringify(this.data);
+                        this.$.page_criarEncomenda_ajax.generateRequest();
+                    }
                 },
-
                 _criarEncomendaResponse: function (e) {
                     this._openToast(this.CriarEncomendaCreated.eMessage);
                 },
@@ -2498,16 +2618,27 @@
                     this.$.page_enviarEmailATodos_ajax.generateRequest();
                 },
                 _enviarEmailATodosResponse: function (e) {
-                    this._openToast(this.EnviarEmailATodosCreated.eMessage);
+                    if (this.$.EnviarEmailATodosCreated = 1) {
+                        this._closerptDialog_EnviarEmail();
+                        this._showMessage(this.EnviarEmailATodosCreated.eMessage);
+                    }
+                    else {
+                        this._showErrorMessage(this.EnviarEmailATodosCreated.eMessage);
+                    }
                 },
 
                 _enviarEmailAUm: function (e) {
-                    debugger
                     this.$.page_enviarEmailAUm_ajax.body = JSON.stringify({ "Consulta": this._id, "Cod": this.$._fornecedores.__data.value });
                     this.$.page_enviarEmailAUm_ajax.generateRequest();
                 },
                 _enviarEmailAUmResponse: function (e) {
-                    this._openToast(this.EnviarEmailAUmCreated.eMessage);
+                    if (this.$.EnviarEmailAUmCreated = 1) {
+                        this._closerptDialog_EnviarEmail();
+                        this._showMessage(this.EnviarEmailAUmCreated.eMessage);
+                    }
+                    else {
+                        this._showErrorMessage(this.EnviarEmailAUmCreated.eMessage);
+                    }
                 },
 
 

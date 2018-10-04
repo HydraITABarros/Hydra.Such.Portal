@@ -4098,6 +4098,157 @@ namespace Hydra.Such.Portal.Controllers
         //}
         #endregion
 
+        #region Config Comprador
+        public IActionResult ConfigComprador(string id)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminGeral);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.CreatePermissions = !UPerm.Create.Value;
+                ViewBag.UpdatePermissions = !UPerm.Update.Value;
+                ViewBag.DeletePermissions = !UPerm.Delete.Value;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        [HttpPost]
+        public JsonResult GetComprador()
+        {
+            List<CompradorViewModel> result = DBComprador.GetAll().Select(x => new CompradorViewModel()
+            {
+                CodComprador = x.CodComprador,
+                NomeComprador = x.NomeComprador,
+                DataHoraCriacao = x.DataHoraCriação,
+                DataHoraModificacao = x.DataHoraModificação,
+                UtilizadorCriacao = x.UtilizadorCriação,
+                UtilizadorModificacao = x.UtilizadorModificação
+            }).ToList();
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult CreateComprador([FromBody] CompradorViewModel CPD)
+        {
+            if (CPD != null)
+            {
+                if (DBComprador.GetById(CPD.CodComprador) == null)
+                {
+                    CPD.DataHoraCriacao = DateTime.Now;
+                    CPD.UtilizadorCriacao = User.Identity.Name;
+
+                    if (DBComprador.Create(CPD.ParseToDB()) != null)
+                    {
+                        CPD.eReasonCode = 1;
+                        CPD.eMessage = "O Comprador foi criado com sucesso.";
+                    }
+                    else
+                    {
+                        CPD.eReasonCode = 10;
+                        CPD.eMessage = "Ocorreu um erro ao criar o Comprador.";
+                    }
+                }
+                else
+                {
+                    CPD.eReasonCode = 11;
+                    CPD.eMessage = "Já existe um comprador com esse Código.";
+                }
+            }
+            else
+            {
+                CPD.eReasonCode = 12;
+                CPD.eMessage = "Ocorreu um erro.";
+            }
+
+            return Json(CPD);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateComprador([FromBody] List<CompradorViewModel> CPD)
+        {
+            CompradorViewModel result = new CompradorViewModel();
+            List<Comprador> results = DBComprador.GetAll();
+            results.RemoveAll(x => CPD.Any(u => u.CodComprador == x.CodComprador));
+            //results.ForEach(x => DBComprador.Delete(x));
+            CPD.ForEach(x =>
+            {
+                if (x.NomeComprador != "")
+                {
+                    Comprador cpd = new Comprador()
+                    {
+                        NomeComprador = x.NomeComprador,
+                        DataHoraCriação = x.DataHoraCriacao,
+                        UtilizadorCriação = x.UtilizadorCriacao
+                    };
+                    if (x.CodComprador != "")
+                    {
+                        cpd.CodComprador = x.CodComprador;
+                        cpd.DataHoraModificação = DateTime.Now;
+                        cpd.UtilizadorModificação = User.Identity.Name;
+                        if (DBComprador.Update(cpd) != null)
+                        {
+                            result.eReasonCode = 1;
+                            result.eMessage = "O Comprador foi atualizado com sucesso.";
+                        }
+                        else
+                        {
+                            result.eReasonCode = 20;
+                            result.eMessage = "Ocorreu um erro ao atualizar o Comprador.";
+                        }
+                    }
+                    else
+                    {
+                        result.eReasonCode = 21;
+                        result.eMessage = "O campo Código de Comprador não pode estar vazio.";
+                    }
+                }
+                else
+                {
+                    result.eReasonCode = 22;
+                    result.eMessage = "O campo Nome de Comprador não pode estar vazio.";
+                }
+            });
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteComprador([FromBody] CompradorViewModel CPD)
+        {
+            if (CPD != null)
+            {
+                if (DBComprador.GetById(CPD.CodComprador) != null)
+                {
+                    if (DBComprador.Delete(CPD.ParseToDB()) == true)
+                    {
+                        CPD.eReasonCode = 1;
+                        CPD.eMessage = "O Comprador foi eliminado com sucesso.";
+                    }
+                    else
+                    {
+                        CPD.eReasonCode = 30;
+                        CPD.eMessage = "Ocorreu um erro ao eliminar o Comprador.";
+                    }
+                }
+                else
+                {
+                    CPD.eReasonCode = 31;
+                    CPD.eMessage = "Não existe um comprador com esse Código.";
+                }
+            }
+            else
+            {
+                CPD.eReasonCode = 32;
+                CPD.eMessage = "Ocorreu um erro.";
+            }
+
+            return Json(CPD);
+        }
+        #endregion
+
         #region Configurações Aprovações
 
         public IActionResult ConfiguracaoAprovacoes(string id)

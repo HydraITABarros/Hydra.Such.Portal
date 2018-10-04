@@ -393,11 +393,13 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                     List<CondicoesPropostasFornecedores> condicoesPropostasFornecedores = new List<CondicoesPropostasFornecedores>();
                     List<LinhasCondicoesPropostasFornecedores> linhasCondicoesPropostasFornecedores = new List<LinhasCondicoesPropostasFornecedores>();
                     List<SeleccaoEntidades> seleccaoEntidades = new List<SeleccaoEntidades>();
+                    List<RegistoDePropostas> registoDePropostas = new List<RegistoDePropostas>();
 
                     linhasConsultaMercado = ctx.LinhasConsultaMercado.Where(p => p.NumConsultaMercado == consultaMercado.NumConsultaMercado).ToList();
                     condicoesPropostasFornecedores = ctx.CondicoesPropostasFornecedores.Where(p => p.NumConsultaMercado == consultaMercado.NumConsultaMercado).ToList();
                     linhasCondicoesPropostasFornecedores = ctx.LinhasCondicoesPropostasFornecedores.Where(p => p.NumConsultaMercado == consultaMercado.NumConsultaMercado).ToList();
                     seleccaoEntidades = ctx.SeleccaoEntidades.Where(p => p.NumConsultaMercado == consultaMercado.NumConsultaMercado).ToList();
+                    registoDePropostas = ctx.RegistoDePropostas.Where(p => p.NumConsultaMercado == consultaMercado.NumConsultaMercado).ToList();
 
                     foreach (LinhasConsultaMercado lin in linhasConsultaMercado)
                     {
@@ -417,6 +419,11 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                     foreach (SeleccaoEntidades lin in seleccaoEntidades)
                     {
                         consultaMercado.SeleccaoEntidades.Add(lin);
+                    }
+
+                    foreach (RegistoDePropostas reg in registoDePropostas)
+                    {
+                        consultaMercado.RegistoDePropostas.Add(reg);
                     }
 
 
@@ -601,6 +608,7 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                         ValorAdjudicado = ConsultaMercado.ValorAdjudicado,
                         CodFormaPagamento = ConsultaMercado.CodFormaPagamento,
                         SeleccaoEfectuada = ConsultaMercado.SeleccaoEfectuada,
+                        NumEncomenda = ConsultaMercado.NumEncomenda,
                         Destino_Show = ConsultaMercado.Destino == 1 ? "Armazém" : ConsultaMercado.Destino == 2 ? "Projeto" : string.Empty,
                         Estado_Show = ConsultaMercado.Estado == 0 ? "Aberto" : ConsultaMercado.Estado == 1 ? "Liberto" : string.Empty,
                         Fase_Show = ConsultaMercado.Fase == 0 ? "Abertura" : ConsultaMercado.Fase == 1 ? "Consulta" : ConsultaMercado.Fase == 2 ? "Negociação e Contratação" : ConsultaMercado.Fase == 3 ? "Adjudicação" : ConsultaMercado.Fase == 4 ? "Fecho" : string.Empty,
@@ -686,6 +694,7 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                 ValorAdjudicado = ObjectToTransform.ValorAdjudicado,
                 CodFormaPagamento = ObjectToTransform.CodFormaPagamento,
                 SeleccaoEfectuada = ObjectToTransform.SeleccaoEfectuada,
+                NumEncomenda = ObjectToTransform.NumEncomenda,
                 Destino_Show = ObjectToTransform.Destino == 1 ? "Armazém" : ObjectToTransform.Destino == 2 ? "Projeto" : string.Empty,
                 Estado_Show = ObjectToTransform.Estado == 0 ? "Aberto" : ObjectToTransform.Estado == 1 ? "Liberto" : string.Empty,
                 Fase_Show = ObjectToTransform.Fase == 0 ? "Abertura" : ObjectToTransform.Fase == 1 ? "Consulta" : ObjectToTransform.Fase == 2 ? "Negociação e Contratação" : ObjectToTransform.Fase == 3 ? "Adjudicação" : ObjectToTransform.Fase == 4 ? "Fecho" : string.Empty,
@@ -795,7 +804,8 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                 PedidoCotacaoOrigem = ObjectToTransform.PedidoCotacaoOrigem,
                 ValorAdjudicado = ObjectToTransform.ValorAdjudicado,
                 CodFormaPagamento = ObjectToTransform.CodFormaPagamento,
-                SeleccaoEfectuada = ObjectToTransform.SeleccaoEfectuada
+                SeleccaoEfectuada = ObjectToTransform.SeleccaoEfectuada,
+                NumEncomenda = ObjectToTransform.NumEncomenda
             };
 
             //Falta o cast das icollections
@@ -932,6 +942,7 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                 CriadoPor = ObjectToTransform.CriadoPor,
                 ModificadoEm = ObjectToTransform.ModificadoEm,
                 ModificadoPor = ObjectToTransform.ModificadoPor,
+                MercadoLocal = ObjectToTransform.MercadoLocal,
                 DataEntregaPrevista_Show = ObjectToTransform.DataEntregaPrevista == null ? "" : ObjectToTransform.DataEntregaPrevista.Value.ToString("yyyy-MM-dd")
             };
 
@@ -965,7 +976,8 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                 NumLinha = ObjectToTransform.NumLinha,
                 NumProjecto = ObjectToTransform.NumProjecto,
                 NumRequisicao = ObjectToTransform.NumRequisicao,
-                Quantidade = ObjectToTransform.Quantidade
+                Quantidade = ObjectToTransform.Quantidade,
+                MercadoLocal = ObjectToTransform.MercadoLocal
                 //NumProjectoNavigation = DBProjects.GetById(ObjectToTransform.NumProjecto)
             };
 
@@ -1434,7 +1446,7 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
         #region Registo_De_Propostas
 
 
-        public static RegistoDePropostas Create(LinhasConsultaMercado linhasConsultaMercado, string _alternativa)
+        public static RegistoDePropostas Create(LinhasConsultaMercado linhasConsultaMercado, string _alternativa, string _NAVDatabaseName, string _NAVCompanyName)
         {
             try
             {
@@ -1442,7 +1454,7 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                 {
                     //List<SeleccaoEntidades> seleccaoEntidades = DBConsultaMercado.GetAllSeleccaoEntidadesPorNumConsulta(linhasConsultaMercado.NumConsultaMercado);
                     int entidade = 0;
-                    string[,] fornecedor = new string[6, 2];
+                    string[,] fornecedor = new string[6, 3];
                     foreach (SeleccaoEntidades seleccaoEntidades in DBConsultaMercado.GetAllSeleccaoEntidadesPorNumConsulta(linhasConsultaMercado.NumConsultaMercado))
                     {
                         entidade = entidade + 1;
@@ -1452,26 +1464,32 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                             case 1:
                                 fornecedor[0, 0] = seleccaoEntidades.CodFornecedor;
                                 fornecedor[0, 1] = seleccaoEntidades.NomeFornecedor;
+                                fornecedor[0, 2] = DBNAV2017Vendor.GetVendor(_NAVDatabaseName, _NAVCompanyName).Where(x => x.No_ == fornecedor[0, 0]).FirstOrDefault().VATBusinessPostingGroup;
                                 break;
                             case 2:
                                 fornecedor[1, 0] = seleccaoEntidades.CodFornecedor;
                                 fornecedor[1, 1] = seleccaoEntidades.NomeFornecedor;
+                                fornecedor[1, 2] = DBNAV2017Vendor.GetVendor(_NAVDatabaseName, _NAVCompanyName).Where(x => x.No_ == fornecedor[1, 0]).FirstOrDefault().VATBusinessPostingGroup;
                                 break;
                             case 3:
                                 fornecedor[2, 0] = seleccaoEntidades.CodFornecedor;
                                 fornecedor[2, 1] = seleccaoEntidades.NomeFornecedor;
+                                fornecedor[2, 2] = DBNAV2017Vendor.GetVendor(_NAVDatabaseName, _NAVCompanyName).Where(x => x.No_ == fornecedor[2, 0]).FirstOrDefault().VATBusinessPostingGroup;
                                 break;
                             case 4:
                                 fornecedor[3, 0] = seleccaoEntidades.CodFornecedor;
                                 fornecedor[3, 1] = seleccaoEntidades.NomeFornecedor;
+                                fornecedor[3, 2] = DBNAV2017Vendor.GetVendor(_NAVDatabaseName, _NAVCompanyName).Where(x => x.No_ == fornecedor[3, 0]).FirstOrDefault().VATBusinessPostingGroup;
                                 break;
                             case 5:
                                 fornecedor[4, 0] = seleccaoEntidades.CodFornecedor;
                                 fornecedor[4, 1] = seleccaoEntidades.NomeFornecedor;
+                                fornecedor[4, 2] = DBNAV2017Vendor.GetVendor(_NAVDatabaseName, _NAVCompanyName).Where(x => x.No_ == fornecedor[4, 0]).FirstOrDefault().VATBusinessPostingGroup;
                                 break;
                             case 6:
                                 fornecedor[5, 0] = seleccaoEntidades.CodFornecedor;
                                 fornecedor[5, 1] = seleccaoEntidades.NomeFornecedor;
+                                fornecedor[5, 2] = DBNAV2017Vendor.GetVendor(_NAVDatabaseName, _NAVCompanyName).Where(x => x.No_ == fornecedor[5, 0]).FirstOrDefault().VATBusinessPostingGroup;
                                 break;
                             default:
                                 break;
@@ -1486,21 +1504,30 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                         CodCentroResponsabilidade = linhasConsultaMercado.CodCentroResponsabilidade,
                         CodLocalizacao = linhasConsultaMercado.CodLocalizacao,
                         CodProduto = linhasConsultaMercado.CodProduto,
+
+                        VatproductPostingGroup = DBNAV2017Products.GetAllProducts(_NAVDatabaseName, _NAVCompanyName, linhasConsultaMercado.CodProduto).FirstOrDefault().VATProductPostingGroup,
+
                         CodRegiao = linhasConsultaMercado.CodRegiao,
                         Descricao = linhasConsultaMercado.Descricao,
                         Descricao2 = linhasConsultaMercado.Descricao2,
                         Fornecedor1Code = fornecedor[0, 0],
                         Fornecedor1Nome = fornecedor[0, 1],
+                        VatbusinessPostingGroup1 = fornecedor[0, 2],
                         Fornecedor2Code = fornecedor[1, 0],
                         Fornecedor2Nome = fornecedor[1, 1],
+                        VatbusinessPostingGroup2 = fornecedor[1, 2],
                         Fornecedor3Code = fornecedor[2, 0],
                         Fornecedor3Nome = fornecedor[2, 1],
+                        VatbusinessPostingGroup3 = fornecedor[2, 2],
                         Fornecedor4Code = fornecedor[3, 0],
                         Fornecedor4Nome = fornecedor[3, 1],
+                        VatbusinessPostingGroup4 = fornecedor[3, 2],
                         Fornecedor5Code = fornecedor[4, 0],
                         Fornecedor5Nome = fornecedor[4, 1],
+                        VatbusinessPostingGroup5 = fornecedor[4, 2],
                         Fornecedor6Code = fornecedor[5, 0],
                         Fornecedor6Nome = fornecedor[5, 1],
+                        VatbusinessPostingGroup6 = fornecedor[5, 2],
                         NumConsultaMercado = linhasConsultaMercado.NumConsultaMercado,
                         NumLinhaConsultaMercado = linhasConsultaMercado.NumLinha,
                         NumProjecto = linhasConsultaMercado.NumProjecto,
@@ -1525,6 +1552,16 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
             {
                 using (var ctx = new SuchDBContext())
                 {
+                    //RegistoDePropostas registoDePropostas = ctx.RegistoDePropostas.Where(p => p.NumLinha == ObjectToUpdate.NumLinha).FirstOrDefault();
+
+                    //ObjectToUpdate.VatproductPostingGroup = registoDePropostas.VatproductPostingGroup;
+                    //ObjectToUpdate.VatbusinessPostingGroup1 = registoDePropostas.VatbusinessPostingGroup1;
+                    //ObjectToUpdate.VatbusinessPostingGroup2 = registoDePropostas.VatbusinessPostingGroup2;
+                    //ObjectToUpdate.VatbusinessPostingGroup3 = registoDePropostas.VatbusinessPostingGroup3;
+                    //ObjectToUpdate.VatbusinessPostingGroup4 = registoDePropostas.VatbusinessPostingGroup4;
+                    //ObjectToUpdate.VatbusinessPostingGroup5 = registoDePropostas.VatbusinessPostingGroup5;
+                    //ObjectToUpdate.VatbusinessPostingGroup6 = registoDePropostas.VatbusinessPostingGroup6;
+
                     ctx.RegistoDePropostas.Update(ObjectToUpdate);
                     ctx.SaveChanges();
                 }
@@ -1554,45 +1591,52 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
 
             RegistoDePropostasView view = new RegistoDePropostasView()
             {
-                Alternativa = ObjectToTransform.Alternativa,
-                CodActividade = ObjectToTransform.CodActividade,
-                CodAreaFuncional = ObjectToTransform.CodAreaFuncional,
-                CodCentroResponsabilidade = ObjectToTransform.CodCentroResponsabilidade,
-                CodLocalizacao = ObjectToTransform.CodLocalizacao,
-                CodProduto = ObjectToTransform.CodProduto,
-                CodRegiao = ObjectToTransform.CodRegiao,
-                Descricao = ObjectToTransform.Descricao,
-                Descricao2 = ObjectToTransform.Descricao2,
-                Fornecedor1Code = ObjectToTransform.Fornecedor1Code,
-                Fornecedor1Nome = ObjectToTransform.Fornecedor1Nome,
-                Fornecedor1Preco = ObjectToTransform.Fornecedor1Preco,
-                Fornecedor1Select = ObjectToTransform.Fornecedor1Select,
-                Fornecedor2Code = ObjectToTransform.Fornecedor2Code,
-                Fornecedor2Nome = ObjectToTransform.Fornecedor2Nome,
-                Fornecedor2Preco = ObjectToTransform.Fornecedor2Preco,
-                Fornecedor2Select = ObjectToTransform.Fornecedor2Select,
-                Fornecedor3Code = ObjectToTransform.Fornecedor3Code,
-                Fornecedor3Nome = ObjectToTransform.Fornecedor3Nome,
-                Fornecedor3Preco = ObjectToTransform.Fornecedor3Preco,
-                Fornecedor3Select = ObjectToTransform.Fornecedor3Select,
-                Fornecedor4Code = ObjectToTransform.Fornecedor4Code,
-                Fornecedor4Nome = ObjectToTransform.Fornecedor4Nome,
-                Fornecedor4Preco = ObjectToTransform.Fornecedor4Preco,
-                Fornecedor4Select = ObjectToTransform.Fornecedor4Select,
-                Fornecedor5Code = ObjectToTransform.Fornecedor5Code,
-                Fornecedor5Nome = ObjectToTransform.Fornecedor5Nome,
-                Fornecedor5Preco = ObjectToTransform.Fornecedor5Preco,
-                Fornecedor5Select = ObjectToTransform.Fornecedor5Select,
-                Fornecedor6Code = ObjectToTransform.Fornecedor6Code,
-                Fornecedor6Nome = ObjectToTransform.Fornecedor6Nome,
-                Fornecedor6Preco = ObjectToTransform.Fornecedor6Preco,
-                Fornecedor6Select = ObjectToTransform.Fornecedor6Select,
-                NumConsultaMercado = ObjectToTransform.NumConsultaMercado,
+                Alternativa = registoDePropostas.Alternativa,
+                CodActividade = registoDePropostas.CodActividade,
+                CodAreaFuncional = registoDePropostas.CodAreaFuncional,
+                CodCentroResponsabilidade = registoDePropostas.CodCentroResponsabilidade,
+                CodLocalizacao = registoDePropostas.CodLocalizacao,
+                CodProduto = registoDePropostas.CodProduto,
+                VatproductPostingGroup = registoDePropostas.VatproductPostingGroup,
+                CodRegiao = registoDePropostas.CodRegiao,
+                Descricao = registoDePropostas.Descricao,
+                Descricao2 = registoDePropostas.Descricao2,
+                Fornecedor1Code = registoDePropostas.Fornecedor1Code,
+                Fornecedor1Nome = registoDePropostas.Fornecedor1Nome,
+                VatbusinessPostingGroup1 = registoDePropostas.VatbusinessPostingGroup1,
+                Fornecedor1Preco = registoDePropostas.Fornecedor1Preco,
+                Fornecedor1Select = registoDePropostas.Fornecedor1Select,
+                Fornecedor2Code = registoDePropostas.Fornecedor2Code,
+                Fornecedor2Nome = registoDePropostas.Fornecedor2Nome,
+                VatbusinessPostingGroup2 = registoDePropostas.VatbusinessPostingGroup2,
+                Fornecedor2Preco = registoDePropostas.Fornecedor2Preco,
+                Fornecedor2Select = registoDePropostas.Fornecedor2Select,
+                Fornecedor3Code = registoDePropostas.Fornecedor3Code,
+                Fornecedor3Nome = registoDePropostas.Fornecedor3Nome,
+                VatbusinessPostingGroup3 = registoDePropostas.VatbusinessPostingGroup3,
+                Fornecedor3Preco = registoDePropostas.Fornecedor3Preco,
+                Fornecedor3Select = registoDePropostas.Fornecedor3Select,
+                Fornecedor4Code = registoDePropostas.Fornecedor4Code,
+                Fornecedor4Nome = registoDePropostas.Fornecedor4Nome,
+                VatbusinessPostingGroup4 = registoDePropostas.VatbusinessPostingGroup4,
+                Fornecedor4Preco = registoDePropostas.Fornecedor4Preco,
+                Fornecedor4Select = registoDePropostas.Fornecedor4Select,
+                Fornecedor5Code = registoDePropostas.Fornecedor5Code,
+                Fornecedor5Nome = registoDePropostas.Fornecedor5Nome,
+                VatbusinessPostingGroup5 = registoDePropostas.VatbusinessPostingGroup5,
+                Fornecedor5Preco = registoDePropostas.Fornecedor5Preco,
+                Fornecedor5Select = registoDePropostas.Fornecedor5Select,
+                Fornecedor6Code = registoDePropostas.Fornecedor6Code,
+                Fornecedor6Nome = registoDePropostas.Fornecedor6Nome,
+                VatbusinessPostingGroup6 = registoDePropostas.VatbusinessPostingGroup6,
+                Fornecedor6Preco = registoDePropostas.Fornecedor6Preco,
+                Fornecedor6Select = registoDePropostas.Fornecedor6Select,
+                NumConsultaMercado = registoDePropostas.NumConsultaMercado,
                 //NumConsultaMercadoNavigation = ObjectToTransform.NumConsultaMercadoNavigation,
-                NumLinha = ObjectToTransform.NumLinha,
-                NumLinhaConsultaMercado = ObjectToTransform.NumLinhaConsultaMercado,
-                NumProjecto = ObjectToTransform.NumProjecto,
-                Quantidade = ObjectToTransform.Quantidade
+                NumLinha = registoDePropostas.NumLinha,
+                NumLinhaConsultaMercado = registoDePropostas.NumLinhaConsultaMercado,
+                NumProjecto = registoDePropostas.NumProjecto,
+                Quantidade = registoDePropostas.Quantidade
             };
 
             return view;
@@ -1608,31 +1652,38 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                 CodCentroResponsabilidade = ObjectToTransform.CodCentroResponsabilidade,
                 CodLocalizacao = ObjectToTransform.CodLocalizacao,
                 CodProduto = ObjectToTransform.CodProduto,
+                VatproductPostingGroup = ObjectToTransform.VatproductPostingGroup,
                 CodRegiao = ObjectToTransform.CodRegiao,
                 Descricao = ObjectToTransform.Descricao,
                 Descricao2 = ObjectToTransform.Descricao2,
                 Fornecedor1Code = ObjectToTransform.Fornecedor1Code,
                 Fornecedor1Nome = ObjectToTransform.Fornecedor1Nome,
+                VatbusinessPostingGroup1 = ObjectToTransform.VatbusinessPostingGroup1,
                 Fornecedor1Preco = ObjectToTransform.Fornecedor1Preco,
                 Fornecedor1Select = ObjectToTransform.Fornecedor1Select,
                 Fornecedor2Code = ObjectToTransform.Fornecedor2Code,
                 Fornecedor2Nome = ObjectToTransform.Fornecedor2Nome,
+                VatbusinessPostingGroup2 = ObjectToTransform.VatbusinessPostingGroup2,
                 Fornecedor2Preco = ObjectToTransform.Fornecedor2Preco,
                 Fornecedor2Select = ObjectToTransform.Fornecedor2Select,
                 Fornecedor3Code = ObjectToTransform.Fornecedor3Code,
                 Fornecedor3Nome = ObjectToTransform.Fornecedor3Nome,
+                VatbusinessPostingGroup3 = ObjectToTransform.VatbusinessPostingGroup3,
                 Fornecedor3Preco = ObjectToTransform.Fornecedor3Preco,
                 Fornecedor3Select = ObjectToTransform.Fornecedor3Select,
                 Fornecedor4Code = ObjectToTransform.Fornecedor4Code,
                 Fornecedor4Nome = ObjectToTransform.Fornecedor4Nome,
+                VatbusinessPostingGroup4 = ObjectToTransform.VatbusinessPostingGroup4,
                 Fornecedor4Preco = ObjectToTransform.Fornecedor4Preco,
                 Fornecedor4Select = ObjectToTransform.Fornecedor4Select,
                 Fornecedor5Code = ObjectToTransform.Fornecedor5Code,
                 Fornecedor5Nome = ObjectToTransform.Fornecedor5Nome,
+                VatbusinessPostingGroup5 = ObjectToTransform.VatbusinessPostingGroup5,
                 Fornecedor5Preco = ObjectToTransform.Fornecedor5Preco,
                 Fornecedor5Select = ObjectToTransform.Fornecedor5Select,
                 Fornecedor6Code = ObjectToTransform.Fornecedor6Code,
                 Fornecedor6Nome = ObjectToTransform.Fornecedor6Nome,
+                VatbusinessPostingGroup6 = ObjectToTransform.VatbusinessPostingGroup6,
                 Fornecedor6Preco = ObjectToTransform.Fornecedor6Preco,
                 Fornecedor6Select = ObjectToTransform.Fornecedor6Select,
                 NumConsultaMercado = ObjectToTransform.NumConsultaMercado,

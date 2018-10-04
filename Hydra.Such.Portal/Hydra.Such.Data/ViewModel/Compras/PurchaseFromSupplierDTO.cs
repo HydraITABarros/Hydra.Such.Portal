@@ -34,6 +34,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         //public int? NAVLineId { get; set; }
         public int? Type { get; set; }
         public string Code { get; set; }
+        public string SupplierProductCode { get; set; }
         public string Description { get; set; }
         public string Description2 { get; set; }
         public decimal? QuantityRequired { get; set; }

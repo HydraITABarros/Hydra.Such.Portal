@@ -41,9 +41,8 @@
             vaadin-combo-box {
                 margin-top: 0px !important;
                 width: 100% !important;
-                
             }
-          
+
             vaadin-date-picker {
                 margin-top: 0px !important;
                 width: 100% !important;
@@ -84,6 +83,9 @@
         <iron-ajax auto url="/Faturacao/GetReasons" last-response="{{ TiposMotivos }}" method="get" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax auto url="/Faturacao/GetDestino" last-response="{{ Destinos }}" method="get" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax auto url="/Faturacao/GetAreas" last-response="{{ Areas }}" method="get" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax auto url="/Faturacao/GetAreasUPUAS" last-response="{{ AreasUPUAS }}" method="get" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Faturacao/GetDimensionsForArea" last-response="{{ CentrosResponsabilidade }}" method="post" id="getDimensions_ajax" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Faturacao/GetUsersToResend" last-response="{{ DestinatariosReenvio }}" method="post" id="destinatariosReenvio_ajax" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Faturacao/GetAnswers" last-response="{{ RespostasPorPerfil }}" id="respostasPerfil_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Faturacao/GetUAProblems" last-response="{{ UAProblemas }}" id="uaProblemas_ajax" method="get" handle-as="json" content-type="application/json"></iron-ajax>
 
@@ -518,7 +520,7 @@
                         <template is="dom-if" if="{{ _isNotes }}">
                             <paper-button raised id="btnSendPending" class="btnSave" hidden="{{ !_hiddeSendButton}}" on-tap="_sendPending">{{_nameButtonSend}}</paper-button>
                             <paper-button raised id="btnSendAnswer" class="btnSave" hidden="{{_hiddeAnswerButton}}" on-tap="_sendaAnswer">Resposta</paper-button>
-                            <paper-button raised id="btnReSendAnswer" class="btnSave" hidden="{{_hiddeAnswerButton}}" on-tap="_resendUAS">Reenvio para UP/UAS</paper-button>
+                            <paper-button raised id="btnReSendAnswer" class="btnSave" style="max-width: 205px !important;" hidden="{{_hiddeAnswerButton}}" on-tap="_resendUAS">Reenvio para UP/UAS</paper-button>
                         </template>
                     </div>
                 </div>
@@ -535,7 +537,7 @@
 
                             </template>
                             <template is="dom-if" if="{{ !item.selected }}">
-                               [[ _formateDate(item.dataCriacao)]]
+                                [[ _formateDate(item.dataCriacao)]]
                             </template>
                         </template>
                     </vaadin-grid-column>
@@ -753,7 +755,7 @@
                         <vaadin-checkbox id="txtAnexoResposta" on-click="_anexoAnswerChanged">Anexo</vaadin-checkbox>
                     </div>
                     <div class="col-sm-4" hidden="{{ !_isAnexarFicheiroResposta }}">
-                        <vaadin-upload id="uploadRequest" target="/Faturacao/ExistFile"
+                        <vaadin-upload id="uploadRequest1" target="/Faturacao/ExistFile"
                                        method="POST"
                                        headers="{'Accept': 'application/json'}"
                                        timeout=15000 files="{{files}}"></vaadin-upload>
@@ -795,6 +797,41 @@
             <paper-dialog id="dialogReSendUAS" class="dialgoBox" modal>
                 <div class="row break_clear">
                     <div class="col-sm-3">
+                        <vaadin-combo-box items="[[ AreasUPUAS ]]" id="cmbAreasUPUAS" item-value-path="id" item-label-path="value" label="Área" value="{{areaUPUAS}}" on-value-changed="_areaUPUASChanged">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
+                    <div class="col-sm-3">
+                        <vaadin-combo-box items="[[ CentrosResponsabilidade ]]" id="cmbCentrosResponsabilidade" item-value-path="id" item-label-path="value" label="Centro Responsabilidade" value="{{centroResp}}">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
+                    <div class="col-sm-3">
+                        <vaadin-combo-box items="[[ DestinatariosReenvio ]]" id="cmbDestinatariosReenvio" item-value-path="id" item-label-path="value" label="Utilizador" value="{{destinatariosReenvio}}">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
+                </div>
+                <div class="row break_clear">
+                    <div class="col-sm-3">
                         <vaadin-combo-box items="[[ UAProblemas ]]" id="cmbUAProblems" item-value-path="id" item-label-path="id" label="Tipo Problema" @*on-value-changed="_UAProblemChange" *@>
                             <template>
                                 <paper-icon-item>
@@ -809,6 +846,21 @@
                 <div class="row break_clear">
                     <div class="col-sm-9">
                         <such-textarea rows="3" id="txtCommentUAdgl" name="txtCommentUAdgl" label="Comentário"></such-textarea>
+                    </div>
+                </div>
+                <div class="row break_clear">
+                    <div class="col-sm-2">
+                        <vaadin-checkbox id="txtAnexo" on-click="_anexoChanged">Anexo</vaadin-checkbox>
+
+                    </div>
+                    <div class="col-sm-4" hidden="{{ !_isAnexarFicheiro }}">
+                        <vaadin-upload id="uploadRequest2" target="/Faturacao/ExistFile"
+                                       method="POST"
+                                       headers="{'Accept': 'application/json'}"
+                                       timeout=15000 files="{{files}}"></vaadin-upload>
+                    </div>
+                    <div class="col-sm-3" hidden="{{ !_isAnexarFicheiro }}">
+                        <vaadin-text-field label="Descrição" type="text" id="txtDescricaoAnexo2"></vaadin-text-field>
                     </div>
                 </div>
                 <div class="row break_clear">
@@ -1453,24 +1505,44 @@
                     return false;
                 },
                 _validateInputForAnswer: function () {
-                    if (this.data.estado == null || this.data.estado == "") {
-                        this._openToastError("O Estado tem que estar preenchido.");
+                    if (this.$.cmbRespostasPorPerfil.value == "" || this.$.cmbRespostasPorPerfil.value == null) {
+                        this._openToastError("Cód. Resposta tem que estar preenchido.");
                         return false;
                     }
-                    if (this.data.areaPendente2 == "" || this.data.areaPendente2 == null) {
-                        this._openToastError("Área Pendente tem que estar preenchida.");
-                        return false;
-                    }
-                    if (this.$.txtDestProblema.value == "" || this.$.txtDestProblema.value == null) {
-                        this._openToastError("Destinatário tem que estar preenchido.");
-                        return false;
-                    }
-                    if (this.$.codDescricao.value == "" || this.$.codDescricao.value == null) {
-                        this._openToastError("Cód. Descrição tem que estar preenchido.");
-                        return false;
-                    }
-                    if (this.$.txtDescription.value == "" || this.$.txtDescription.value == null) {
+                    if (this._descricaoResposta == "" || this._descricaoResposta == null) {
                         this._openToastError("Descrição tem que estar preenchida.");
+                        return false;
+                    }
+
+                    //if (this.data.estado == null || this.data.estado == "") {
+                    //    this._openToastError("O Estado tem que estar preenchido.");
+                    //    return false;
+                    //}
+                    //if (this.data.areaPendente2 == "" || this.data.areaPendente2 == null) {
+                    //    this._openToastError("Área Pendente tem que estar preenchida.");
+                    //    return false;
+                    //}
+                    //if (this.$.txtDestProblema.value == "" || this.$.txtDestProblema.value == null) {
+                    //    this._openToastError("Destinatário tem que estar preenchido.");
+                    //    return false;
+                    //}
+                    //if (this.$.codDescricao.value == "" || this.$.codDescricao.value == null) {
+                    //    this._openToastError("Cód. Descrição tem que estar preenchido.");
+                    //    return false;
+                    //}
+                    //if (this.$.txtDescription.value == "" || this.$.txtDescription.value == null) {
+                    //    this._openToastError("Descrição tem que estar preenchida.");
+                    //    return false;
+                    //}
+                    return true;
+                },
+                _validateInputForSendingToUPs: function () {
+                    if (this.areaUPUAS == "" || this.areaUPUAS == null) {
+                        this._openToastError("Campo Área tem que estar preenchido.");
+                        return false;
+                    }
+                    if (this.$.cmbUAProblems.value == "" || this.$.cmbUAProblems.value == null) {
+                        this._openToastError("Tipo de Problema tem que estar preenchido.");
                         return false;
                     }
                     return true;
@@ -1770,6 +1842,7 @@
                 _sendaAnswer: function () {
                     this.$.dialogSendAnswer.open();
                     var data = this.data;
+                    this.$.uploadRequest1.files = [];
                     this.$.respostasPerfil_ajax.body = JSON.stringify(data);
                     this.$.respostasPerfil_ajax.generateRequest();
                 },
@@ -1862,63 +1935,52 @@
                 },
 
                 _dlgSendUA: function () {
-                        if (this._validateInputForAnswer()) {
-                            var answerDestinyProfile;
-                            var userToAnswer = this.data.criadoPor;
+                    if (this._validateInputForSendingToUPs()) {
+                        
+                        var idmotivo = this.$.cmbUAProblems.value;
+                        var descricao = this.$.cmbUAProblems.selectedItem.value;
 
-                            var idmotivo = this.$.cmbRespostasPorPerfil.value
-                            var motivoExtra = this.RespostasPorPerfil.find(x => x.id == idmotivo).extra;
+                        var workflow = null;;
+                        var idWork = this.data.workflowItems[this.data.workflowItems.length - 1];
 
-                            var workflow = null;;
-                            var idWork = this.data.workflowItems[this.data.workflowItems.length - 1];
-
-                            //PROCURAR CRIADOR DA ULTIMA LINHA PARA RESPOSTA
-                            var novoDestino = idWork.utilizador;
-                            this.$.get_userprofile_ajax.body = JSON.stringify(novoDestino);
-                            this.$.get_userprofile_ajax.generateRequest();
-                            //**/
-                            var userProfile = this.userProfile;
-                            var Area = idWork.area;
-                            var Anexados= false;
-                            if (this.files != null) {
-                                var anexoNew;
-                                for (i = 0; i < this.files.length; i++) {
-                                    anexoNew = {
-                                        file: this.files[i].name,
-                                        description: this.$.txtDescricaoAnexo.value
-                                    };
-                                    if (this.Anexos == null) {
-                                        this.Anexos = [anexoNew];
-                                    }
-                                    else
-                                        this.Anexos.push(anexoNew);
+                        var Anexados = false;
+                        if (this.files != null) {
+                            var anexoNew;
+                            for (i = 0; i < this.files.length; i++) {
+                                anexoNew = {
+                                    file: this.files[i].name,
+                                    description: this.$.txtDescricaoAnexo2.value
+                                };
+                                if (this.Anexos == null) {
+                                    this.Anexos = [anexoNew];
                                 }
-                                Anexados = true;
+                                else
+                                    this.Anexos.push(anexoNew);
                             }
-                            var selVendor = this.Vendors.find(x => x.no_ == this.$.sbVendors.value);
-                            workflow = {
-                                id: idWork.id + 1,
-                                idRecFaturacao: this.data.id,
-                                codTipoProblema: idmotivo,
-                                codProblema: "RF5P",
-                                descricao: this.$.txtdescricaoResposta.value,
-                                //PROCURAR CRIADOR DA ULTIMA LINHA PARA RESPOSTA
-                                destinatario: novoDestino,
-                                comentario: this.$.txtCommentdglAnswer.value,
-                                enderecoFornecedor: selVendor.email,
-                                area: userProfile,
-                                areaWorkflow: userProfile,
-                                codDestino: this.$.txtCodDestino.value,
-                                attached: this.Anexos,
-                                attachedIs: Anexados
-                            };
-                            this.files = null;
-                            this.data.workflowItems.push(workflow);
-                            this.$.page_send_ajax.body = JSON.stringify(this.data);
-                            this.$.page_send_ajax.generateRequest();
-
-                            this.$.dialogSendAnswer.close();
+                            Anexados = true;
                         }
+                        var selVendor = this.Vendors.find(x => x.no_ == this.$.sbVendors.value);
+                        workflow = {
+                            id: idWork.id + 1,
+                            idRecFaturacao: this.data.id,
+                            codTipoProblema: idmotivo,
+                            codProblema: "RF5P",
+                            descricao: descricao,
+                            destinatario: this.destinatariosReenvio,
+                            comentario: this.$.txtCommentUAdgl.value,
+                            enderecoFornecedor: selVendor.email,
+                            area: this.centroResp,
+                            areaWorkflow: this.areaUPUAS,
+                            attached: this.Anexos,
+                            attachedIs: Anexados
+                        };
+                        this.files = null;
+                        this.data.workflowItems.push(workflow);
+                        this.$.page_send_ajax.body = JSON.stringify(this.data);
+                        this.$.page_send_ajax.generateRequest();
+
+                        this.$.dialogReSendUAS.close();
+                    }
                 },
 
 
@@ -2219,6 +2281,22 @@
                         }
                     }
                     return param;
+                },
+                _areaUPUASChanged: function (e) {
+                    
+                    this.centroResp = "";
+                    this.destinatariosReenvio = "";
+                    //this.$.cmbCentrosResponsabilidade.items = {};
+                    //this.$.cmbDestinatariosReenvio.items = {};
+                    var area = this.$.cmbAreasUPUAS.value;
+
+                    if (area != "") {
+                        this.$.getDimensions_ajax.body = JSON.stringify(area);
+                        this.$.getDimensions_ajax.generateRequest();
+
+                        this.$.destinatariosReenvio_ajax.body = JSON.stringify(area);
+                        this.$.destinatariosReenvio_ajax.generateRequest();
+                    }
                 },
             });
         });

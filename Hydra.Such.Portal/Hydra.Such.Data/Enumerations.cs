@@ -132,7 +132,7 @@ namespace Hydra.Such.Data
             PreçoServCliente = 49,
             [Description("Mercado Local")]
             MercadoLocal = 50,
-            [Description("Pré-Encomendas")]
+            [Description("Pré-Compra")]
             PréEncomendas = 51,
             [Description("Localizações")]
             Localizações = 52,

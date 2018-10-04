@@ -570,6 +570,7 @@ namespace Hydra.Such.Portal.Controllers
             //ResponsabilityCenter
             if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
                 result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CenterResponsibilityCode));
+
             return Json(result.OrderByDescending(x => x.RequisitionNo));
         }
 
@@ -596,6 +597,9 @@ namespace Hydra.Such.Portal.Controllers
             //ResponsabilityCenter
             if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
                 result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CenterResponsibilityCode));
+
+            result.RemoveAll(x => x.RequestNutrition == true);
+
             return Json(result.OrderByDescending(x => x.RequisitionNo));
         }
 
@@ -1586,7 +1590,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 try
                 {
-                    RequisitionService serv = new RequisitionService(configws, HttpContext.User.Identity.Name);
+                    RequisitionService serv = new RequisitionService(config, configws, HttpContext.User.Identity.Name);
                     item = serv.CreatePurchaseOrderFor(item);
                 }
                 catch (Exception ex)
@@ -1731,7 +1735,7 @@ namespace Hydra.Such.Portal.Controllers
                 catch (Exception ex)
                 {
                     item.eReasonCode = 2;
-                    item.eMessage = "Ocorreu um erro ao enviar pré-encomenda (" + ex.Message + ")";
+                    item.eMessage = "Ocorreu um erro ao enviar para Pré-Compra (" + ex.Message + ")";
                 }
             }
             else
@@ -2074,6 +2078,11 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Código Centro Responsabilidade");
                     Col = Col + 1;
                 }
+                //if (dp["localCode"]["hidden"].ToString() == "False")
+                //{
+                //    row.CreateCell(Col).SetCellValue("Código Localização");
+                //    Col = Col + 1;
+                //}
                 if (dp["comments"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Observações");
@@ -2128,7 +2137,7 @@ namespace Hydra.Such.Portal.Controllers
                             row.CreateCell(Col).SetCellValue(item.RequestNutrition.ToString());
                             Col = Col + 1;
                         }
-                        if (dp["pedirOcamento"]["hidden"].ToString() == "False")
+                        if (dp["pedirOrcamento"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.PedirOrcamento.ToString());
                             Col = Col + 1;
@@ -2148,6 +2157,11 @@ namespace Hydra.Such.Portal.Controllers
                             row.CreateCell(Col).SetCellValue(item.CenterResponsibilityCode);
                             Col = Col + 1;
                         }
+                        //if (dp["localCode"]["hidden"].ToString() == "False")
+                        //{
+                        //    row.CreateCell(Col).SetCellValue(item.LocalCode);
+                        //    Col = Col + 1;
+                        //}
                         if (dp["comments"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.Comments);
