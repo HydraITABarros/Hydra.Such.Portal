@@ -523,8 +523,48 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(result);
         }
+        [HttpGet]
+        public JsonResult GetAreasUPUAS()
+        {
+            List<DDMessageRelated> result = billingRecService.GetAreasUPUAS().Select(x => new DDMessageRelated()
+            {
+                id = x.CodArea,
+                value = x.CodArea
+            })
+            .Distinct()
+            .ToList();
 
-       
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetDimensionsForArea([FromBody] string areaId)
+        {
+            List<DDMessageRelated> result = billingRecService.GetDimensionsForArea(areaId).Select(x => new DDMessageRelated()
+            {
+                id = x.CodCentroResponsabilidade,
+                value = x.CodCentroResponsabilidade
+            })
+            .Distinct()
+            .ToList();
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetUsersToResend([FromBody] string areaId)
+        {
+            List<DDMessageRelated> result = billingRecService.GetUsersToResend(areaId).Select(x => new DDMessageRelated()
+            {
+                id = x.Destinatario,
+                value = x.Destinatario
+            })
+            .Distinct()
+            .ToList();
+
+            return Json(result);
+        }
+
         [HttpGet]
         public JsonResult GetDestino()
         {

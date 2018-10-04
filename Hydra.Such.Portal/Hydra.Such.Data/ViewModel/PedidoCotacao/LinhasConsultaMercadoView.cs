@@ -31,8 +31,6 @@ namespace Hydra.Such.Data.ViewModel.PedidoCotacao
         public DateTime? ModificadoEm { get; set; }
         public string ModificadoPor { get; set; }
         public bool? MercadoLocal { get; set; }
-        public string VatbusinessPostingGroup { get; set; }
-        public string VatproductPostingGroup { get; set; }
 
         //Campos tratados
         public string DataEntregaPrevista_Show { get; set; }
