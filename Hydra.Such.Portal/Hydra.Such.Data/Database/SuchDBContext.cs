@@ -33,6 +33,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<ConfiguracaoAjudaCusto> ConfiguracaoAjudaCusto { get; set; }
         public virtual DbSet<ConfiguraçãoAprovações> ConfiguraçãoAprovações { get; set; }
         public virtual DbSet<ConfiguracaoCcp> ConfiguracaoCcp { get; set; }
+        public virtual DbSet<ConfiguraçãoEmailFornecedores> ConfiguraçãoEmailFornecedores { get; set; }
         public virtual DbSet<ConfiguraçãoNumerações> ConfiguraçãoNumerações { get; set; }
         public virtual DbSet<ConfiguraçãoTemposCcp> ConfiguraçãoTemposCcp { get; set; }
         public virtual DbSet<ConfiguraçãoVendasAlertas> ConfiguraçãoVendasAlertas { get; set; }
@@ -1046,6 +1047,10 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.NumeraçãoRequisiçõesSimplificada).HasColumnName("Numeração Requisições Simplificada");
 
+                entity.Property(e => e.ReportPassword).HasMaxLength(60);
+
+                entity.Property(e => e.ReportUsername).HasMaxLength(60);
+
                 entity.Property(e => e.UtilizadorCriação)
                     .HasColumnName("Utilizador Criação")
                     .HasMaxLength(50);
@@ -1198,6 +1203,31 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.EmailFinanceiros).HasMaxLength(50);
 
                 entity.Property(e => e.EmailJurididos).HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<ConfiguraçãoEmailFornecedores>(entity =>
+            {
+                entity.HasKey(e => new { e.CodFornecedor, e.Cresp });
+
+                entity.ToTable("Configuração Email Fornecedores");
+
+                entity.Property(e => e.CodFornecedor).HasMaxLength(20);
+
+                entity.Property(e => e.Cresp)
+                    .HasColumnName("CResp")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.DataHoraCriacao).HasColumnType("datetime");
+
+                entity.Property(e => e.DataHoraModificacao).HasColumnType("datetime");
+
+                entity.Property(e => e.Email).HasMaxLength(200);
+
+                entity.Property(e => e.Nome).HasMaxLength(200);
+
+                entity.Property(e => e.UtilizadorCriacao).HasMaxLength(50);
+
+                entity.Property(e => e.UtilizadorModificacao).HasMaxLength(50);
             });
 
             modelBuilder.Entity<ConfiguraçãoNumerações>(entity =>
@@ -1483,6 +1513,10 @@ namespace Hydra.Such.Data.Database
                     .HasColumnType("date");
 
                 entity.Property(e => e.Descricao).HasMaxLength(100);
+
+                entity.Property(e => e.EmailEnviado)
+                    .HasColumnName("Email_Enviado")
+                    .HasDefaultValueSql("((0))");
 
                 entity.Property(e => e.EspecificacaoTecnica).HasColumnName("Especificacao_Tecnica");
 
