@@ -316,8 +316,14 @@
             :host([disabled]) [part="value"] {
                 color: var(--valo-disabled-text-color);
             }
+
+    [part="label"]:empty {
+        display: none;
+    }
+
 </style>
 <div class="such-selectbox-container">
+
     <label part="label" on-click="_handleClick" id="[[_labelId]]">[[label]]</label>
 
     <div on-click="_handleClick" part="input-field">
@@ -396,7 +402,10 @@
 
         static get properties() {
             return {
-                label: String,
+                label: {
+                    type: String,
+                    value: ''
+                },
                 value: {
                     type: String,
                     observer: '_valueChanged',
