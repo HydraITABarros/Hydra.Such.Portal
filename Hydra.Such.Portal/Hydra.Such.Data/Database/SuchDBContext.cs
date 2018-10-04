@@ -1056,6 +1056,10 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.NumeraçãoRequisiçõesSimplificada).HasColumnName("Numeração Requisições Simplificada");
 
+                entity.Property(e => e.ReportPassword).HasMaxLength(60);
+
+                entity.Property(e => e.ReportUsername).HasMaxLength(60);
+
                 entity.Property(e => e.UtilizadorCriação)
                     .HasColumnName("Utilizador Criação")
                     .HasMaxLength(50);
@@ -1518,6 +1522,10 @@ namespace Hydra.Such.Data.Database
                     .HasColumnType("date");
 
                 entity.Property(e => e.Descricao).HasMaxLength(100);
+
+                entity.Property(e => e.EmailEnviado)
+                    .HasColumnName("Email_Enviado")
+                    .HasDefaultValueSql("((0))");
 
                 entity.Property(e => e.EspecificacaoTecnica).HasColumnName("Especificacao_Tecnica");
 
