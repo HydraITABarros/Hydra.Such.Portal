@@ -668,6 +668,14 @@
                    on-response="_closingProcedimentoResponse"
                    content-type="application/json">
         </iron-ajax>
+        <iron-ajax url="/ProcedimentosCcps/GetProcedimentoReference"
+                   last-response="{{ procedimentoReference }}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_request_reference"
+                   on-response="_procedimentoReferenceResponse"
+                   content-type="application/json">
+        </iron-ajax>
         <!-- MenuButton Funções.e -->
         <!-- Controller actions.e -->
 
@@ -3803,6 +3811,25 @@
                 },
 
                 // zpgm.MenuFunçoes.b
+                _mnuFuncoes_ItemSelected: function (e) {
+                    debugger;;
+                    var item = e.detail.value;
+
+                    if (item == null)
+                        return;
+
+                    this._newStatus = item.value;
+
+                    switch (this._newStatus) {
+                        case 1:
+                            this._closeProcedimentoByUserRequest();
+                            break;
+                        case 2:
+                            this._obtainProcedimentoReference();
+                            break;
+                    }
+                },
+
                 _closeProcedimentoByUserRequest: function () {
                     debugger;;
                     if (!this.__isFechoProcesso) {
@@ -3845,22 +3872,54 @@
                     }
                 },
 
-                _mnuFuncoes_ItemSelected: function (e) {
+                _obtainProcedimentoReference: function () {
                     debugger;;
-                    var item = e.detail.value;
-
-                    if (item == null)
+                    if (this.data.arquivado) {
+                        this._showErrorMessage("Este Procedimento está suspenso, não pode obter referência!");
                         return;
+                    }
 
-                    this._newStatus = item.value;
+                    if ((this.data.ano != null && this.data.ano != 0) && (this.data.referencia != null && this.data.referencia != 0)) {
+                        this._showErrorMessage("Já existe uma Referência para o Processo!");
+                        return;
+                    }
 
-                    switch (this._newStatus) {
-                        case 1:
-                            this._closeProcedimentoByUserRequest();
-                            break;
-                        //case 2:
-                        //    this._imobReturnToArea();
-                        //    break;
+                    if (!this.__isElementCompras && !this.__isGestorProcesso) {
+                        this._showErrorMessage('Não está autorizado a utilizar esta opção!');
+                        return;
+                    }
+
+                    if (this.data.estado < 9) {
+                        this._showErrorMessage("Não pode atribuir a Referência neste estado!");
+                        return;
+                    }
+
+                    debugger;;
+                    var ajax_request = this.$.ajax_request_reference;
+                    ajax_request.body = JSON.stringify({ "tipoProc": this.data.tipoProcedimento, "tipo": this.data.tipo });
+
+                    this._confirmAndExecuteActionToast(
+                        "Obter a Referência do Processo?",
+                        ajax_request
+                    );
+
+                    this.data.nomeProcesso = this.$.nomeProcesso.value;
+                },   
+                _procedimentoReferenceResponse: function (e) {
+                    if (this.procedimentoReference.eReasonCode == -9) {
+                        debugger;;
+                        this._showErrorMessage("Ocorreu um erro!");
+                    } else {
+                        this.data.ano = this.procedimentoReference.referenceYear;
+                        this.data.referencia = this.procedimentoReference.procReference;
+
+                        this.$.ano.value = this.data.ano;
+                        this.$.referencia.value = this.data.referencia;
+
+                        this.$.ajax_update_procedimento.body = JSON.stringify(this.data);
+
+                        var sav = this.$.ajax_update_procedimento.generateRequest();
+
                     }
                 },
                 // zpgm.MenuFunções.e

@@ -6037,6 +6037,11 @@
 
                 _obtainProcedimentoReference: function () {
                     debugger;;
+                    if (this.data.arquivado) {
+                        this._showErrorMessage("Este Procedimento está suspenso, não pode obter referência!");
+                        return;
+                    }
+
                     if ((this.data.ano != null && this.data.ano != 0) && (this.data.referencia != null && this.data.referencia != 0)) {
                         this._showErrorMessage("Já existe uma Referência para o Processo!");
                         return;
@@ -6062,7 +6067,6 @@
                     );
 
                     this.data.nomeProcesso = this.$.nomeProcesso.value;
-                    //this.$.ajax_request_reference.body = JSON.stringify(this.data);
                 },
 
                 _procedimentoReferenceResponse: function (e) {
@@ -6073,11 +6077,13 @@
                         this.data.ano = this.procedimentoReference.referenceYear;
                         this.data.referencia = this.procedimentoReference.procReference;
 
-                        debugger;;
+                        this.$.ano.value = this.data.ano;
+                        this.$.referencia.value = this.data.referencia;
+
                         this.$.ajax_update_procedimento.body = JSON.stringify(this.data);
 
                         var sav = this.$.ajax_update_procedimento.generateRequest();
-                        this.$.ajax_update_procedimento.clearCache();
+
                     }
                 },
                 // zpgm.MenuFunções.e
