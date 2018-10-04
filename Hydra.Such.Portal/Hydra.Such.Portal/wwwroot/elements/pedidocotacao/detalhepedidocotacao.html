@@ -402,8 +402,11 @@
                                 <div class="col-sm-3">
                                     <vaadin-text-field type="text" value="{{data.codFormaPagamento}}" id="codFormaPagamento" name="codFormaPagamento" label="Cód. Forma Pagamento"> </vaadin-text-field>
                                 </div>
-                                <div class="col-sm-6">
+                                <div class="col-sm-3">
                                     <vaadin-text-field type="text" value="{{data.filtroActividade}}" id="filtroActividade" name="filtroActividade" label="Filtro Actividade"> </vaadin-text-field>
+                                </div>
+                                <div class="col-sm-3">
+                                    <vaadin-checkbox id="emailEnviado" checked="{{data.emailEnviado}}" disabled="true">Email(s) Enviado(s)</vaadin-checkbox>
                                 </div>
                             </div>
                         </div>
@@ -1750,6 +1753,7 @@
                         _self.$.fase.disabled = true;
                         _self.$.pedidoCotacaoOrigem.disabled = true;
                         _self.$.especificacaoTecnica.disabled = true;
+                        _self.$.emailEnviado.disabled = true;
                         _self.$.estado.disabled = true;
                         _self.$.codFormaPagamento.disabled = true;
                         _self.$.filtroActividade.disabled = true;
@@ -2388,7 +2392,7 @@
                         }
                         //this.$.tabRegistoProposta.clearCache();
                         //_self._showErrorMessage("Apenas pode ter uma Entidade Selecionada!");
-                        debugger
+                        
                         this.$.page_updateLinhaRegistoProposta_ajax.body = JSON.stringify({
                             numLinha: e.model.item.numLinha,
                             numConsultaMercado: e.model.item.numConsultaMercado,
@@ -2641,10 +2645,32 @@
                     }
                 },
 
-
-
                 _enviarEmail: function (e) {
-                    this.$.rptDialog_EnviarEmail.open();
+                    var _self = this;
+                    
+                    if (_self.$.emailEnviado.__data.checked) {
+                        bootbox.confirm({
+                            message: "Esta Consulta já tem email(s) enviado(s), deseja continuar?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (result) {
+                                if (result) {
+                                    _self.$.rptDialog_EnviarEmail.open();
+                                }
+                            }
+                        });
+                    }
+                    else {
+                        _self.$.rptDialog_EnviarEmail.open();
+                    }
                 },
                 _closerptDialog_EnviarEmail: function () {
                     this.$.rptDialog_EnviarEmail.src = "about:blank";

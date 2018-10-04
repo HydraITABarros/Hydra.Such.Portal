@@ -609,6 +609,7 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                         CodFormaPagamento = ConsultaMercado.CodFormaPagamento,
                         SeleccaoEfectuada = ConsultaMercado.SeleccaoEfectuada,
                         NumEncomenda = ConsultaMercado.NumEncomenda,
+                        EmailEnviado = ConsultaMercado.EmailEnviado,
                         Destino_Show = ConsultaMercado.Destino == 1 ? "Armazém" : ConsultaMercado.Destino == 2 ? "Projeto" : string.Empty,
                         Estado_Show = ConsultaMercado.Estado == 0 ? "Aberto" : ConsultaMercado.Estado == 1 ? "Liberto" : string.Empty,
                         Fase_Show = ConsultaMercado.Fase == 0 ? "Abertura" : ConsultaMercado.Fase == 1 ? "Consulta" : ConsultaMercado.Fase == 2 ? "Negociação e Contratação" : ConsultaMercado.Fase == 3 ? "Adjudicação" : ConsultaMercado.Fase == 4 ? "Fecho" : string.Empty,
@@ -695,6 +696,7 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                 CodFormaPagamento = ObjectToTransform.CodFormaPagamento,
                 SeleccaoEfectuada = ObjectToTransform.SeleccaoEfectuada,
                 NumEncomenda = ObjectToTransform.NumEncomenda,
+                EmailEnviado = ObjectToTransform.EmailEnviado,
                 Destino_Show = ObjectToTransform.Destino == 1 ? "Armazém" : ObjectToTransform.Destino == 2 ? "Projeto" : string.Empty,
                 Estado_Show = ObjectToTransform.Estado == 0 ? "Aberto" : ObjectToTransform.Estado == 1 ? "Liberto" : string.Empty,
                 Fase_Show = ObjectToTransform.Fase == 0 ? "Abertura" : ObjectToTransform.Fase == 1 ? "Consulta" : ObjectToTransform.Fase == 2 ? "Negociação e Contratação" : ObjectToTransform.Fase == 3 ? "Adjudicação" : ObjectToTransform.Fase == 4 ? "Fecho" : string.Empty,
@@ -805,7 +807,8 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                 ValorAdjudicado = ObjectToTransform.ValorAdjudicado,
                 CodFormaPagamento = ObjectToTransform.CodFormaPagamento,
                 SeleccaoEfectuada = ObjectToTransform.SeleccaoEfectuada,
-                NumEncomenda = ObjectToTransform.NumEncomenda
+                NumEncomenda = ObjectToTransform.NumEncomenda,
+                EmailEnviado = ObjectToTransform.EmailEnviado
             };
 
             //Falta o cast das icollections
