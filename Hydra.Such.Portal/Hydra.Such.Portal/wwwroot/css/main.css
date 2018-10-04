@@ -843,3 +843,115 @@ input:focus::-webkit-datetime-edit {
     border-radius: 0;
     top: 25px;
 }
+
+
+
+/* such selectBox */
+
+#selectBoxModal .modal-dialog {
+    max-width: 1100px !important;
+    width: 97% !important;
+    margin-top: 5vh;
+}
+
+@media (max-height: 580px) {
+    #selectBoxModal .modal-dialog {
+        margin-top: 1vh;
+    }
+}
+
+#selectBoxModal .modal-dialog .modal-body {
+    padding: 0;
+}
+
+#selectBoxModal .modal-dialog .modal-header {
+    background-color: #d9d9d9;
+    color: black;
+}
+
+#selectBoxModal .modal-dialog .modal-header h5 {
+    display: inline-block;
+}
+
+#selectBoxModal .modal-dialog .modal-content {
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+#selectBoxModal vaadin-grid#boxModalGrid {
+    height: 85vh;
+    overflow: auto;
+    max-height: 85vh;
+    outline: none;
+    border: none;
+    font-family: var(--valo-font-family);
+    --divider-color: rgba(0, 0, 0, var(--dark-divider-opacity));
+    --vaadin-grid-cell: {
+                };
+    --vaadin-grid-header-cell: {
+                    height: 64px;
+                    color: rgba(0, 0, 0, var(--dark-secondary-opacity));
+                    font-size: 12px;
+                    border-bottom: none;
+                    background-color: #f2f2f2;
+                };
+    --vaadin-grid-body-cell: {
+                    height: 48px;
+                    color: rgba(0, 0, 0, var(--dark-primary-opacity));
+                    font-size: 13px;
+                    /*padding: 15px 20px;*/
+                };
+    --vaadin-grid-body-row-hover-cell: {
+                    background-color: var(--paper-grey-200);
+                };
+    --vaadin-grid-body-row-selected-cell: {
+                    background-color: var(--paper-grey-100);
+                };
+}
+
+#selectBoxModal vaadin-grid .cell {
+    padding: 7px 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#selectBoxModal vaadin-grid paper-checkbox {
+    --primary-color: var(--paper-indigo-500);
+    margin: 0 24px;
+}
+
+#selectBoxModal vaadin-grid vaadin-grid-sorter {
+    padding: 5px;
+}
+
+#selectBoxModal vaadin-grid vaadin-grid-sorter .cell {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#selectBoxModal vaadin-grid vaadin-grid-sorter iron-icon {
+    transform: scale(0.8) translateZ(0);
+    transition: all 0.3s;
+}
+
+#selectBoxModal vaadin-grid vaadin-grid-sorter:not([direction]) iron-icon {
+    color: rgba(0, 0, 0, var(--dark-disabled-opacity));
+}
+
+#selectBoxModal vaadin-grid vaadin-grid-sorter[direction] {
+    color: rgba(0, 0, 0, var(--dark-primary-opacity));
+}
+
+#selectBoxModal vaadin-grid vaadin-grid-sorter[direction=desc] iron-icon {
+    transform: scale(0.8) rotate(180deg) translateZ(0);
+}
+#selectBoxModal vaadin-grid-cell-content:nth-child(1), #selectBoxModal vaadin-grid-cell-content:nth-child(2) {
+    background: white;
+
+}
+#selectBoxModal {
+    --vaadin-grid-header-cell_-_background-color: white;
+    --vaadin-grid-header-cell_-_border-bottom: 1px solid var(--divider-color, rgba(0, 0, 0, 0.08));
+}
