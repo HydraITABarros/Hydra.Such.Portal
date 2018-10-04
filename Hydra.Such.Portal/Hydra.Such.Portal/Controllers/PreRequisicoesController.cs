@@ -1495,6 +1495,36 @@ namespace Hydra.Such.Portal.Controllers
             return Json(ApprovalMovResult);
         }
 
+
+        [HttpPost]
+        public JsonResult GetUnitCostLinha([FromBody] PreRequisitionLineViewModel linha)
+        {
+            NAVStockKeepingUnitViewModel stock = new NAVStockKeepingUnitViewModel();
+
+            try
+            {
+                if (linha != null && !string.IsNullOrEmpty(linha.LocalCode) && !string.IsNullOrEmpty(linha.Code))
+                {
+                    NAVLocationsViewModel localizacao = DBNAV2017Locations.GetAllLocations(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName).Where(x => x.Code == linha.LocalCode).FirstOrDefault();
+
+                    if (localizacao != null)
+                    {
+                        if (localizacao.ArmazemCDireta == 0) //ARMAZEM DE STOCK
+                        {
+                            stock = DBNAV2017StockKeepingUnit.GetByProductsNo(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, linha.Code).Where(x => x.LocationCode == linha.LocalCode).FirstOrDefault();
+
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(null);
+            }
+
+            return Json(stock);
+        }
+        
         #endregion
 
         #region Numeração Requisição
