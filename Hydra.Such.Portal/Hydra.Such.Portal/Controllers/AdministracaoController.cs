@@ -835,7 +835,9 @@ namespace Hydra.Such.Portal.Controllers
                 DinnerStartTime = Cfg.InicioHoraJantar,
                 LunchEndTime = Cfg.FimHoraAlmoco,
                 LunchStartTime = Cfg.InicioHoraAlmoco,
-                WasteAreaId = Cfg.CodAreaResiduos
+                WasteAreaId = Cfg.CodAreaResiduos,
+                ReportUsername = Cfg.ReportUsername,
+                ReportPassword = Cfg.ReportPassword
             };
             return Json(result);
         }
@@ -872,6 +874,8 @@ namespace Hydra.Such.Portal.Controllers
             configObj.InicioHoraAlmoco = data.LunchStartTime;
             configObj.FimHoraAlmoco = data.LunchEndTime;
             configObj.CodAreaResiduos = data.WasteAreaId;
+            configObj.ReportUsername = data.ReportUsername;
+            configObj.ReportPassword = data.ReportPassword;
 
             configObj.UtilizadorModificação = User.Identity.Name;
             //configObj.UtilizadorCriação = User.Identity.Name;
@@ -4246,6 +4250,170 @@ namespace Hydra.Such.Portal.Controllers
             }
 
             return Json(CPD);
+        }
+        #endregion
+
+        #region Config Email Fornecedores
+        public IActionResult ConfigEmailFornecedores(string id)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminGeral);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.CreatePermissions = !UPerm.Create.Value;
+                ViewBag.UpdatePermissions = !UPerm.Update.Value;
+                ViewBag.DeletePermissions = !UPerm.Delete.Value;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        [HttpPost]
+        public JsonResult GetEmailFornecedor()
+        {
+            List<ConfiguraçãoEmailFornecedores> result = DBConfigEmailFornecedores.GetAll().ToList();
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult CreateEmailFornecedor([FromBody] ConfiguraçãoEmailFornecedores config)
+        {
+            ErrorHandler result = new ErrorHandler();
+            result.eReasonCode = 0;
+            result.eMessage = "Ocorreu um erro.";
+
+            if (config != null)
+            {
+                if (DBConfigEmailFornecedores.GetById(config.CodFornecedor, config.Cresp) == null)
+                {
+                    config.Nome = DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName).Where(y => y.No_ == config.CodFornecedor).FirstOrDefault().Name;
+                    config.DataHoraCriacao = DateTime.Now;
+                    config.UtilizadorCriacao = User.Identity.Name;
+
+                    if (DBConfigEmailFornecedores.Create(config) != null)
+                    {
+                        result.eReasonCode = 1;
+                        result.eMessage = "A Configuração Email Fornecedor foi criada com sucesso.";
+                    }
+                    else
+                    {
+                        result.eReasonCode = 10;
+                        result.eMessage = "Ocorreu um erro ao criar a Configuração Email Fornecedor.";
+                    }
+                }
+                else
+                {
+                    result.eReasonCode = 11;
+                    result.eMessage = "Já existe uma Configuração Email Fornecedor com esses Códigos.";
+                }
+            }
+            else
+            {
+                result.eReasonCode = 12;
+                result.eMessage = "Ocorreu um erro.";
+            }
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateEmailFornecedor([FromBody] List<ConfiguraçãoEmailFornecedores> item)
+        {
+            ErrorHandler result = new ErrorHandler();
+            result.eReasonCode = 0;
+            result.eMessage = "Ocorreu um erro.";
+
+            List<ConfiguraçãoEmailFornecedores> results = DBConfigEmailFornecedores.GetAll();
+            results.RemoveAll(x => item.Any(u => u.CodFornecedor == x.CodFornecedor && u.Cresp == x.Cresp));
+            item.ForEach(x =>
+            {
+                if (x.Email != "")
+                {
+                    ConfiguraçãoEmailFornecedores config = new ConfiguraçãoEmailFornecedores()
+                    {
+                        Email = x.Email,
+                        DataHoraCriacao = x.DataHoraCriacao,
+                        UtilizadorCriacao = x.UtilizadorCriacao
+                    };
+                    if (x.CodFornecedor != "")
+                    {
+                        if (x.Cresp != "")
+                        {
+                            config.CodFornecedor = x.CodFornecedor;
+                            config.Nome = DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName).Where(y => y.No_ == x.CodFornecedor).FirstOrDefault().Name;
+                            config.Cresp = x.Cresp;
+                            config.DataHoraModificacao = DateTime.Now;
+                            config.UtilizadorModificacao = User.Identity.Name;
+                            if (DBConfigEmailFornecedores.Update(config) != null)
+                            {
+                                result.eReasonCode = 1;
+                                result.eMessage = "A Configuração Email Fornecedor foi atualizada com sucesso.";
+                            }
+                            else
+                            {
+                                result.eReasonCode = 20;
+                                result.eMessage = "Ocorreu um erro ao atualizar a Configuração Email Fornecedor.";
+                            }
+                        }
+                        else
+                        {
+                            result.eReasonCode = 21;
+                            result.eMessage = "O campo Centro de Responsabilidade não pode estar vazio.";
+                        }
+                    }
+                    else
+                    {
+                        result.eReasonCode = 22;
+                        result.eMessage = "O campo Código de Fornecedor não pode estar vazio.";
+                    }
+                }
+                else
+                {
+                    result.eReasonCode = 23;
+                    result.eMessage = "O campo Email não pode estar vazio.";
+                }
+            });
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteEmailFornecedor([FromBody] ConfiguraçãoEmailFornecedores config)
+        {
+            ErrorHandler result = new ErrorHandler();
+            result.eReasonCode = 0;
+            result.eMessage = "Ocorreu um erro.";
+
+            if (config != null)
+            {
+                if (DBConfigEmailFornecedores.GetById(config.CodFornecedor, config.Cresp) != null)
+                {
+                    if (DBConfigEmailFornecedores.Delete(config) == true)
+                    {
+                        result.eReasonCode = 1;
+                        result.eMessage = "A Configuração Email Fornecedor foi eliminada com sucesso.";
+                    }
+                    else
+                    {
+                        result.eReasonCode = 30;
+                        result.eMessage = "Ocorreu um erro ao eliminar a Configuração Email Fornecedor.";
+                    }
+                }
+                else
+                {
+                    result.eReasonCode = 31;
+                    result.eMessage = "Não existe uma Configuração Email Fornecedor com esses Códigos.";
+                }
+            }
+            else
+            {
+                result.eReasonCode = 32;
+                result.eMessage = "Ocorreu um erro.";
+            }
+
+            return Json(result);
         }
         #endregion
 
