@@ -3674,8 +3674,8 @@ namespace Hydra.Such.Portal.Controllers
                             Anexos newfile = new Anexos();
                             newfile.NºOrigem = id;
                             newfile.UrlAnexo = full_filename;
-                            
-                            //TipoOrigem: 1-PréRequisição; 2-Requisição; 3-Contratos; 4-Procedimentos
+
+                            //TipoOrigem: 1-PréRequisição; 2-Requisição; 3-Contratos; 4-Procedimentos;5-ConsultaMercado 
                             newfile.TipoOrigem = 3;
 
                             newfile.DataHoraCriação = DateTime.Now;
