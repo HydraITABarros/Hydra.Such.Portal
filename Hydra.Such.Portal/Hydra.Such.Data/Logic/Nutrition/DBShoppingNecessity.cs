@@ -201,7 +201,8 @@ namespace Hydra.Such.Data.Logic.Nutrition
                     UpdateDateTime = item.DataHoraModificação,
                     UpdateUser = item.UtilizadorCriação,
                     DocumentNo = item.NºDocumento,
-                    Observation = item.Observações
+                    Observation = item.Observações,
+                    GrupoRegistoIvaProduto = item.GrupoRegistoIvaProduto
                 };
             }
             return null;
@@ -223,33 +224,34 @@ namespace Hydra.Such.Data.Logic.Nutrition
                 var x =  new DiárioRequisiçãoUnidProdutiva();
                 x.NºLinha = item.LineNo;
                 x.Descrição = item.Description;
-                    x.DataHoraCriação = item.CreateDateTime;
-                    x.UtilizadorCriação = item.CreateUser;
-                    x.DataPPreçoFornecedor = DateTime.Parse(item.DateByPriceSupplier);
-                    x.CustoUnitárioDireto = item.DirectUnitCost;
-                    x.DataReceçãoEsperada = string.IsNullOrEmpty(item.ExpectedReceptionDate) ? (DateTime?)null : DateTime.Parse(item.ExpectedReceptionDate);
-                    x.CodigoLocalização = item.LocalCode;
-                    x.TipoRefeição = item.MealType;
-                    x.NºEncomendaAberto = item.OpenOrderNo;
-                    x.NºLinhaEncomendaAberto = item.OrderLineOpenNo;
-                    x.NºProduto = item.ProductNo;
-                    x.DescriçãoUnidadeProduto = item.ProductUnitDescription;
-                    x.NºUnidadeProdutiva = item.ProductionUnitNo;
-                    x.NºProjeto = item.ProjectNo;
-                    x.Quantidade = item.Quantity;
-                    x.QuantidadePorUnidMedida = item.QuantitybyUnitMeasure;
-                    x.NomeFornecedor = item.SupplierName;
-                    x.NºFornecedor = item.SupplierNo;
-                    x.CodigoProdutoFornecedor = item.SupplierProductCode;
-                    x.DescriçãoProdutoFornecedor = item.SupplierProductDescription;
-                    x.TabelaPreçosFornecedor = item.TableSupplierPrice;
-                    x.Valor = item.TotalValue;
-                    x.CódUnidadeMedida = item.UnitMeasureCode;
-                    x.DataHoraModificação = item.UpdateDateTime;
-                    x.UtilizadorModificação = item.UpdateUser;
-                    x.NºDocumento = item.DocumentNo;
+                x.DataHoraCriação = item.CreateDateTime;
+                x.UtilizadorCriação = item.CreateUser;
+                x.DataPPreçoFornecedor = DateTime.Parse(item.DateByPriceSupplier);
+                x.CustoUnitárioDireto = item.DirectUnitCost;
+                x.DataReceçãoEsperada = string.IsNullOrEmpty(item.ExpectedReceptionDate) ? (DateTime?)null : DateTime.Parse(item.ExpectedReceptionDate);
+                x.CodigoLocalização = item.LocalCode;
+                x.TipoRefeição = item.MealType;
+                x.NºEncomendaAberto = item.OpenOrderNo;
+                x.NºLinhaEncomendaAberto = item.OrderLineOpenNo;
+                x.NºProduto = item.ProductNo;
+                x.DescriçãoUnidadeProduto = item.ProductUnitDescription;
+                x.NºUnidadeProdutiva = item.ProductionUnitNo;
+                x.NºProjeto = item.ProjectNo;
+                x.Quantidade = item.Quantity;
+                x.QuantidadePorUnidMedida = item.QuantitybyUnitMeasure;
+                x.NomeFornecedor = item.SupplierName;
+                x.NºFornecedor = item.SupplierNo;
+                x.CodigoProdutoFornecedor = item.SupplierProductCode;
+                x.DescriçãoProdutoFornecedor = item.SupplierProductDescription;
+                x.TabelaPreçosFornecedor = item.TableSupplierPrice;
+                x.Valor = item.TotalValue;
+                x.CódUnidadeMedida = item.UnitMeasureCode;
+                x.DataHoraModificação = item.UpdateDateTime;
+                x.UtilizadorModificação = item.UpdateUser;
+                x.NºDocumento = item.DocumentNo;
                 x.Observações = item.Observation;
-                return x;
+                x.GrupoRegistoIvaProduto = item.GrupoRegistoIvaProduto;
+            return x;
                 //return new DiárioRequisiçãoUnidProdutiva()
                 //{
                 //    //id = item.NºEncomendaAberto + " " + item.NºLinhaEncomendaAberto + " " + item.NºProduto,
