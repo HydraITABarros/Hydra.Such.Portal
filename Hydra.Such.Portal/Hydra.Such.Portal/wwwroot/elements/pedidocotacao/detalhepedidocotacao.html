@@ -200,6 +200,9 @@
         <iron-ajax url="/ConsultaMercado/CriarEncomenda" last-response="{{CriarEncomendaCreated}}" method="post" handle-as="json" id="page_criarEncomenda_ajax" on-response="_criarEncomendaResponse" content-type="application/json"></iron-ajax>
         <iron-ajax url="/ConsultaMercado/EnviarEmailATodos" last-response="{{EnviarEmailATodosCreated}}" method="post" handle-as="json" id="page_enviarEmailATodos_ajax" on-response="_enviarEmailATodosResponse" content-type="application/json"></iron-ajax>
         <iron-ajax url="/ConsultaMercado/EnviarEmailAUm" last-response="{{EnviarEmailAUmCreated}}" method="post" handle-as="json" id="page_enviarEmailAUm_ajax" on-response="_enviarEmailAUmResponse" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/ConsultaMercado/LoadAttachments" last-response="{{uploads}}" method="post" handle-as="json" id="page_update_ajax" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/ConsultaMercado/DeleteAttachments" last-response="{{deleted_files}}" method="post" handle-as="json" id="delete_files_ajax" on-response="_deletedAttachResponse" content-type="application/json"></iron-ajax>
+
 
         <!-- Dropdowns -->
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{CBRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -1158,14 +1161,50 @@
                     <div class="panel panel-default">
                         <div class="panel-body">
                             <div class="row break_clear">
-                                <div class="col-sm-3">
-                                </div>
-                                <div class="col-sm-3">
-                                </div>
-                                <div class="col-sm-3">
-                                </div>
-                                <div class="col-sm-3">
-                                </div>
+                                <template is="dom-if" if="{{ _permissions.update }}">
+                                    <vaadin-upload id="uploadRequest"
+                                                   target="/ConsultaMercado/FileUpload/{{_id}}"
+                                                   method="POST"
+                                                   headers="{'Accept': 'application/json'}"
+                                                   timeout=15000>
+                                    </vaadin-upload>
+                                </template>
+                            </div>
+                            <div class="row break_clear">
+                                <vaadin-grid aria-label="ReqUpdateGrid" items="[[uploads]]" class="grid" multi-sort="true">
+
+                                    <vaadin-grid-column width="70%" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="url">Anexo</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="url" />
+                                        </template>
+                                        <template>
+                                            <a href="/ConsultaMercado/DownloadFile/{{item.url}}" target="_blank">{{item.url}}</a>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="20%" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="createDateTime">Anexado em</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="createDateTime" />
+                                        </template>
+                                        <template>
+                                            {{item.createDateTime}}
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="10%" resizable>
+                                        <template class="header">
+                                        </template>
+                                        <template>
+                                            <center>
+                                                <template is="dom-if" if="{{ _permissions.update }}">
+                                                    <center>
+                                                        <paper-button class="btnRemove tableBtn" raised on-tap="_deleteFiles" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                                    </center>
+                                                </template>
+                                            </center>
+                                        </template>
+                                    </vaadin-grid-column>
+                                </vaadin-grid>
                             </div>
                         </div>
                     </div>
@@ -1396,6 +1435,7 @@
                         <template>
 
                             <!--<vaadin-text-field name="tabLinhascodUnidadeMedida" id="tabLinhascodUnidadeMedida" value="{{item.codUnidadeMedida}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}"></vaadin-text-field>-->
+                            te
                             <vaadin-combo-box items="[[LCBMeasuresUnit]]" id="tabLinhascodUnidadeMedida" name="tabLinhascodUnidadeMedida" item-value-path="id" item-label-path="id" value="{{item.codUnidadeMedida}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}">
                                 <template>
                                     <table width="200px">
@@ -1416,6 +1456,7 @@
                         </template>
                         <template>
                             <!--<vaadin-text-field name="tabLinhascodActividade" id="tabLinhascodActividade" value="{{item.codActividade}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}"></vaadin-text-field>-->
+                            <te
                             <vaadin-combo-box items="[[CBActividades_List]]" id="tabLinhascodActividade" name="tabLinhascodActividade" item-value-path="id" item-label-path="id" value="{{item.codActividade}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}">
                                 <template>
                                     <table width="200px">
@@ -1437,6 +1478,7 @@
                         <template>
 
                             <!--<vaadin-text-field name="tabLinhascodLocalizacao" id="tabLinhascodLocalizacao" value="{{item.codLocalizacao}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}"></vaadin-text-field>-->
+                            te
                             <vaadin-combo-box items="[[CBLocations]]" id="tabLinhascodLocalizacao" name="tabLinhascodLocalizacao" item-value-path="id" item-label-path="id" value="{{item.codLocalizacao}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}">
                                 <template>
                                     <table width="200px">
@@ -1479,6 +1521,7 @@
                         <template>
 
                             <!--<vaadin-text-field name="tabLinhascodAreaFuncional" id="tabLinhascodAreaFuncional" value="{{item.codAreaFuncional}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}"></vaadin-text-field>-->
+                            te
                             <vaadin-combo-box items="[[CBFunctionalAreas]]" id="tabLinhascodAreaFuncional" name="tabLinhascodAreaFuncional" item-value-path="id" item-label-path="id" value="{{item.codAreaFuncional}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}">
                                 <template>
                                     <table width="200px">
@@ -1499,6 +1542,7 @@
                         </template>
                         <template>
                             <!--<vaadin-text-field name="tabLinhascodCentroResponsabilidade" id="tabLinhascodCentroResponsabilidade" value="{{item.codCentroResponsabilidade}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}"></vaadin-text-field>-->
+                            te
                             <vaadin-combo-box items="[[CBResponsabilityCenterCodes]]" id="tabLinhascodCentroResponsabilidade" name="tabLinhascodCentroResponsabilidade" item-value-path="id" item-label-path="id" value="{{item.codCentroResponsabilidade}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}">
                                 <template>
                                     <table width="200px">
@@ -1768,6 +1812,9 @@
                         this._isCreate = true;
                     }
 
+
+                    this.$.page_update_ajax.body = JSON.stringify({ "id": this._id });
+                    this.$.page_update_ajax.generateRequest();
                 },
 
                 _validateData: function () {
@@ -2436,7 +2483,7 @@
                         }
                         //this.$.tabRegistoProposta.clearCache();
                         //_self._showErrorMessage("Apenas pode ter uma Entidade Selecionada!");
-                        
+
                         this.$.page_updateLinhaRegistoProposta_ajax.body = JSON.stringify({
                             numLinha: e.model.item.numLinha,
                             numConsultaMercado: e.model.item.numConsultaMercado,
@@ -2691,7 +2738,7 @@
 
                 _enviarEmail: function (e) {
                     var _self = this;
-                    
+
                     if (_self.$.emailEnviado.__data.checked) {
                         bootbox.confirm({
                             message: "Esta Consulta já tem email(s) enviado(s), deseja continuar?",
@@ -2720,6 +2767,28 @@
                     this.$.rptDialog_EnviarEmail.src = "about:blank";
                     this.$.rptDialog_EnviarEmail.close();
                 },
+
+                _deleteFiles: function (e) {
+                    var ajax_request = this.$.delete_files_ajax;
+                    ajax_request.body = JSON.stringify(e.model.item);
+
+                    this._confirmAndExecuteActionToast(
+                        "Confirma a eliminação do Anexo?",
+                        ajax_request
+                    );
+                },
+                _deletedAttachResponse: function (e) {
+                    if (this.deleted_files.eReasonCode === 1) {
+                        this._showMessage("Anexo eliminado com sucesso.");
+                        this.$.page_update_ajax.body = JSON.stringify({ "id": this._id });
+                        this.$.page_update_ajax.generateRequest();
+
+                    } else if (this.deleted_files.eReasonCode === 2) {
+                        this._showErrorMessage("Ocorreu um erro ao eliminar o anexo.");
+                    }
+                },
+
+
                 //Helpers
                 _executeRequest: function (url, data) {
                     this.$.page_databound_ajax.url = url;

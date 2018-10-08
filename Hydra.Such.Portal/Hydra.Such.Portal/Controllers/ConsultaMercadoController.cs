@@ -28,12 +28,14 @@ namespace Hydra.Such.Portal.Controllers
     {
         private readonly NAVConfigurations _config;
         private readonly NAVWSConfigurations configws;
+        private readonly GeneralConfigurations _generalConfig;
         private readonly IHostingEnvironment _hostingEnvironment;
 
-        public ConsultaMercadoController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs, IHostingEnvironment _hostingEnvironment)
+        public ConsultaMercadoController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs, IOptions<GeneralConfigurations> appSettingsGeneral, IHostingEnvironment _hostingEnvironment)
         {
             _config = appSettings.Value;
             configws = NAVWSConfigs.Value;
+            _generalConfig = appSettingsGeneral.Value;
             this._hostingEnvironment = _hostingEnvironment;
         }
 
@@ -43,6 +45,7 @@ namespace Hydra.Such.Portal.Controllers
 
             if (UPerm != null && UPerm.Read.Value)
             {
+                ViewBag.UploadURL = _generalConfig.FileUploadFolder;
                 ViewBag.UPermissions = UPerm;
                 return View();
             }
@@ -1448,6 +1451,96 @@ namespace Hydra.Such.Portal.Controllers
         }
 
 
+        #endregion
+
+        #region ANEXOS
+
+        [HttpPost]
+        [Route("ConsultaMercado/FileUpload")]
+        [Route("ConsultaMercado/FileUpload/{id}")]
+        public JsonResult FileUpload(string id)
+        {
+            try
+            {
+                var files = Request.Form.Files;
+                string full_filename;
+                foreach (var file in files)
+                {
+                    try
+                    {
+                        string filename = Path.GetFileName(file.FileName);
+                        //full_filename = id + "_" + filename;
+                        full_filename = filename;
+                        var path = Path.Combine(_generalConfig.FileUploadFolder, full_filename);
+                        using (FileStream dd = new FileStream(path, FileMode.CreateNew))
+                        {
+                            file.CopyTo(dd);
+                            dd.Dispose();
+
+                            Anexos newfile = new Anexos();
+                            newfile.NºOrigem = id;
+                            newfile.UrlAnexo = full_filename;
+
+                            //TipoOrigem: 1-PréRequisição; 2-Requisição; 3-Contratos; 4-Procedimentos;5-ConsultaMercado
+                            newfile.TipoOrigem = 5;
+
+                            newfile.DataHoraCriação = DateTime.Now;
+                            newfile.UtilizadorCriação = User.Identity.Name;
+
+                            DBAttachments.Create(newfile);
+                            if (newfile.NºLinha == 0)
+                            {
+                                System.IO.File.Delete(path);
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        throw;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return Json("");
+        }
+
+        [HttpPost]
+        public JsonResult LoadAttachments([FromBody] JObject requestParams)
+        {
+            string id = requestParams["id"].ToString();
+
+            List<Anexos> list = DBAttachments.GetById(id);
+            List<AttachmentsViewModel> attach = new List<AttachmentsViewModel>();
+            list.ForEach(x => attach.Add(DBAttachments.ParseToViewModel(x)));
+            return Json(attach);
+        }
+
+        [HttpGet]
+        public FileStreamResult DownloadFile(string id)
+        {
+            return new FileStreamResult(new FileStream(_generalConfig.FileUploadFolder + id, FileMode.Open), "application/xlsx");
+        }
+
+        [HttpPost]
+        public JsonResult DeleteAttachments([FromBody] AttachmentsViewModel requestParams)
+        {
+            try
+            {
+                System.IO.File.Delete(_generalConfig.FileUploadFolder + requestParams.Url);
+                DBAttachments.Delete(DBAttachments.ParseToDB(requestParams));
+                requestParams.eReasonCode = 1;
+
+            }
+            catch (Exception ex)
+            {
+                requestParams.eReasonCode = 2;
+                return Json(requestParams);
+            }
+            return Json(requestParams);
+        }
         #endregion
 
         #region EXCEL
