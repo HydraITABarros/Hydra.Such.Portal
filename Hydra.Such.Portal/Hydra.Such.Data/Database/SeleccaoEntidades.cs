@@ -16,6 +16,10 @@ namespace Hydra.Such.Data.Database
         public bool? Selecionado { get; set; }
         public bool? Preferencial { get; set; }
         public string EmailFornecedor { get; set; }
+        public DateTime? DataEnvioAoFornecedor { get; set; }
+        public DateTime? DataRecepcaoProposta { get; set; }
+        public string UtilizadorEnvio { get; set; }
+        public string UtilizadorRecepcaoProposta { get; set; }
 
         public ConsultaMercado NumConsultaMercadoNavigation { get; set; }
     }

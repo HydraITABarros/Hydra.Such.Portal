@@ -1110,16 +1110,14 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-combo-box items="[[CBFunctionalAreas]]" id="_CLGridFunctionalArea" name="_CLGridFunctionalArea" item-value-path="id" item-label-path="value" value="{{item.codeFunctionalArea}}" disabled="{{ !_permissions.update }}">
-                                                <template>
-                                                    <table width="500px">
-                                                        <tr>
-                                                            <td width="10%">[[item.id]]</td>
-                                                            <td width="90%"> <b>[[item.value]]</b></td>
-                                                        </tr>
-                                                    </table>
-                                                </template>
-                                            </vaadin-combo-box>
+
+                                            <such-selectbox id="_CLGridFunctionalArea" name="_CLGridFunctionalArea" value="{{item.codeFunctionalArea}}" disabled="{{ !_permissions.update }}"
+                                                            items="[[CBFunctionalAreas]]"
+                                                            text-path="value"
+                                                            value-path="id"
+                                                            fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                                            </such-selectbox>
+
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             [[ _clFormatFunctionalArea(item.codeFunctionalArea) ]]

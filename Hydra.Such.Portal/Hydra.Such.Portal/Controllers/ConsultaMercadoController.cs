@@ -341,6 +341,12 @@ namespace Hydra.Such.Portal.Controllers
                 consultaMercado.CodFormaPagamento = data.CodFormaPagamento;
                 consultaMercado.SeleccaoEfectuada = data.SeleccaoEfectuada;
                 consultaMercado.NumEncomenda = data.NumEncomenda;
+                consultaMercado.EmailEnviado = data.EmailEnviado;
+                consultaMercado.RegiaoMercadoLocal = data.RegiaoMercadoLocal;
+                consultaMercado.DataEntregaFornecedor = data.DataEntregaFornecedor;
+                consultaMercado.DataRecolha = data.DataRecolha;
+                consultaMercado.DataEntregaArmazem = data.DataEntregaArmazem;
+                consultaMercado.CodComprador = data.CodComprador;
 
                 consultaMercado = DBConsultaMercado.Update(consultaMercado);
 
@@ -968,9 +974,12 @@ namespace Hydra.Such.Portal.Controllers
                 //    UseDefaultCredentials = true
                 //};
 
+                //OBTER CREDENCIAIS PARA O SERVIDOR DE REPORTS
+                Configuração config = DBConfigurations.GetById(1);
+
                 WebClient Client = new WebClient
                 {
-                    Credentials = new NetworkCredential("hydra01@such.pt", "nav2017")
+                    Credentials = new NetworkCredential(config.ReportUsername, config.ReportPassword)
                 };
 
                 byte[] myDataBuffer = Client.DownloadData(theURL);
@@ -1005,11 +1014,13 @@ namespace Hydra.Such.Portal.Controllers
 
                 string email = data.SeleccaoEntidades.Where(x => x.CodFornecedor == Cod).First().EmailFornecedor ?? "Fornecedor sem Email definido!";
 
-
                 if (data.eReasonCode == 0)
                 {
                     data.eReasonCode = 1;
                     data.eMessage = "Email enviado com sucesso para:" + Environment.NewLine + email;
+
+                    data.EmailEnviado = true;
+                    DBConsultaMercado.Update(data);
                 }
                 else
                 {
@@ -1048,9 +1059,12 @@ namespace Hydra.Such.Portal.Controllers
             //    UseDefaultCredentials = true
             //};
 
+            //OBTER CREDENCIAIS PARA O SERVIDOR DE REPORTS
+            Configuração config = DBConfigurations.GetById(1);
+
             WebClient Client = new WebClient
             {
-                Credentials = new NetworkCredential("hydra01@such.pt", "nav2017")
+                Credentials = new NetworkCredential(config.ReportUsername, config.ReportPassword)
             };
 
 
@@ -1088,6 +1102,9 @@ namespace Hydra.Such.Portal.Controllers
 
             data.eReasonCode = 1;
             data.eMessage = "Email enviado com sucesso para:" + Environment.NewLine + email;
+
+            data.EmailEnviado = true;
+            DBConsultaMercado.Update(data);
 
             return Json(data);
         }

@@ -2413,6 +2413,19 @@ namespace Hydra.Such.Portal.Controllers
             }).ToList();
             return Json(result);
         }
+
+        [HttpPost]
+        public JsonResult GetCodComprador()
+        {
+            List<DDMessageString> result = DBComprador.GetAll().Select(x => new DDMessageString()
+            {
+                id = x.CodComprador,
+                value = x.NomeComprador
+            }).ToList();
+            return Json(result);
+        }
+
+
     }
 
 
