@@ -49,6 +49,11 @@ namespace Hydra.Such.Data.Database
         public bool? SeleccaoEfectuada { get; set; }
         public string NumEncomenda { get; set; }
         public bool? EmailEnviado { get; set; }
+        public string RegiaoMercadoLocal { get; set; }
+        public DateTime? DataEntregaFornecedor { get; set; }
+        public DateTime? DataRecolha { get; set; }
+        public DateTime? DataEntregaArmazem { get; set; }
+        public string CodComprador { get; set; }
 
         public ICollection<CondicoesPropostasFornecedores> CondicoesPropostasFornecedores { get; set; }
         public ICollection<LinhasCondicoesPropostasFornecedores> LinhasCondicoesPropostasFornecedores { get; set; }

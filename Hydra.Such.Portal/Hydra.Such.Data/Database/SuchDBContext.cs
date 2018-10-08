@@ -157,15 +157,6 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<Viaturas> Viaturas { get; set; }
         public virtual DbSet<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
 
-//        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-//        {
-//            if (!optionsBuilder.IsConfigured)
-//            {
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-//                optionsBuilder.UseSqlServer(@"data source=10.101.1.10\SQLNAVDEV;initial catalog=PlataformaOperacionalSUCH;user id=such_portal_user;password=SuchPW.2K17;");
-//            }
-//        }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AcessosDimensões>(entity =>
@@ -1489,6 +1480,8 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Cod_Centro_Responsabilidade")
                     .HasMaxLength(20);
 
+                entity.Property(e => e.CodComprador).HasMaxLength(10);
+
                 entity.Property(e => e.CodFormaPagamento)
                     .HasColumnName("Cod_Forma_Pagamento")
                     .HasMaxLength(10);
@@ -1513,6 +1506,10 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Consulta_Por")
                     .HasMaxLength(50);
 
+                entity.Property(e => e.DataEntregaArmazem).HasColumnType("datetime");
+
+                entity.Property(e => e.DataEntregaFornecedor).HasColumnType("datetime");
+
                 entity.Property(e => e.DataLimite)
                     .HasColumnName("Data_Limite")
                     .HasColumnType("date");
@@ -1520,6 +1517,8 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.DataPedidoCotacao)
                     .HasColumnName("Data_Pedido_Cotacao")
                     .HasColumnType("date");
+
+                entity.Property(e => e.DataRecolha).HasColumnType("datetime");
 
                 entity.Property(e => e.Descricao).HasMaxLength(100);
 
@@ -1568,6 +1567,8 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.PedidoCotacaoOrigem)
                     .HasColumnName("Pedido_Cotacao_Origem")
                     .HasMaxLength(20);
+
+                entity.Property(e => e.RegiaoMercadoLocal).HasMaxLength(20);
 
                 entity.Property(e => e.SeleccaoEfectuada).HasColumnName("Seleccao_Efectuada");
 
@@ -8788,6 +8789,10 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Cod_Termos_Pagamento")
                     .HasMaxLength(10);
 
+                entity.Property(e => e.DataEnvioAoFornecedor).HasColumnType("datetime");
+
+                entity.Property(e => e.DataRecepcaoProposta).HasColumnType("datetime");
+
                 entity.Property(e => e.EmailFornecedor)
                     .HasColumnName("Email_Fornecedor")
                     .HasMaxLength(60);
@@ -8799,6 +8804,10 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.NumConsultaMercado)
                     .HasColumnName("Num_Consulta_Mercado")
                     .HasMaxLength(20);
+
+                entity.Property(e => e.UtilizadorEnvio).HasMaxLength(60);
+
+                entity.Property(e => e.UtilizadorRecepcaoProposta).HasMaxLength(60);
 
                 entity.HasOne(d => d.NumConsultaMercadoNavigation)
                     .WithMany(p => p.SeleccaoEntidades)

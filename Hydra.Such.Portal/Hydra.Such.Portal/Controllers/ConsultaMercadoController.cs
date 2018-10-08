@@ -341,6 +341,12 @@ namespace Hydra.Such.Portal.Controllers
                 consultaMercado.CodFormaPagamento = data.CodFormaPagamento;
                 consultaMercado.SeleccaoEfectuada = data.SeleccaoEfectuada;
                 consultaMercado.NumEncomenda = data.NumEncomenda;
+                consultaMercado.EmailEnviado = data.EmailEnviado;
+                consultaMercado.RegiaoMercadoLocal = data.RegiaoMercadoLocal;
+                consultaMercado.DataEntregaFornecedor = data.DataEntregaFornecedor;
+                consultaMercado.DataRecolha = data.DataRecolha;
+                consultaMercado.DataEntregaArmazem = data.DataEntregaArmazem;
+                consultaMercado.CodComprador = data.CodComprador;
 
                 consultaMercado = DBConsultaMercado.Update(consultaMercado);
 
