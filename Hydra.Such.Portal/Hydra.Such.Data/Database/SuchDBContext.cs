@@ -3773,6 +3773,9 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.UserId)
                     .HasColumnName("UserID")
                     .HasMaxLength(30);
+
+                entity.Property(e => e.GrupoRegistoIvaProduto)
+                    .HasColumnName("GrupoRegistoIvaProduto");
             });
 
             modelBuilder.Entity<LinhasCondicoesPropostasFornecedores>(entity =>

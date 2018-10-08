@@ -10,7 +10,7 @@
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
-<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
+<!--<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">-->
 <link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 <link rel="import" href="/lib/vaadin-upload/vaadin-upload.html" />
@@ -31,6 +31,9 @@
 <link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
 <link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
 <link rel="import" href="/lib/iron-form/iron-form.html" />
+
+<!--Datepicker com correção de bug que impede visualização nas grids -->
+<link rel="import" href="/lib/vaadin-date-picker-3.0.0-alpha1/vaadin-date-picker.html">
 
 <!--start ColumnToggle-->
 <link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
@@ -195,6 +198,7 @@
         <iron-ajax url="/ConsultaMercado/CreateLinhaSeleccaoEntidade" last-response="{{LinhaSeleccaoEntidadeCreated}}" method="post" handle-as="json" id="page_createLinhaSeleccaoEntidade_ajax" on-response="_createLinhaSeleccaoEntidadeResponse" content-type="application/json"></iron-ajax>
         <iron-ajax url="/ConsultaMercado/DeleteLinhaSeleccaoEntidade" last-response="{{LinhaSeleccaoEntidadeDeleted}}" method="post" handle-as="json" id="page_deleteLinhaSeleccaoEntidade_ajax" on-response="_deleteLinhaSeleccaoEntidadeResponse" content-type="application/json"></iron-ajax>
         <iron-ajax url="/ConsultaMercado/UpdateLinhaSeleccaoEntidade" last-response="{{LinhaSeleccaoEntidadeUpdated}}" method="post" handle-as="json" id="page_updateLinhaSeleccaoEntidade_ajax" on-response="_updateLinhaSeleccaoEntidadeResponse" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/ConsultaMercado/UpdateLinhaSeleccaoEntidade_DataRecepcaoProposta" last-response="{{LinhaSeleccaoEntidade_DataRecepcaoPropostaUpdated}}" method="post" handle-as="json" id="page_updateLinhaSeleccaoEntidade_DataRecepcaoProposta_ajax" on-response="_updateLinhaSeleccaoEntidade_DataRecepcaoPropostaResponse" content-type="application/json"></iron-ajax>
         <iron-ajax url="/ConsultaMercado/GerarRegistoPropostas" last-response="{{gerarRegistoPropostasData}}" method="post" handle-as="json" id="ajax_gerarRegistoPropostas" on-response="_gerarRegistoPropostasResponse" content-type="application/json"></iron-ajax>
         <iron-ajax url="/ConsultaMercado/UpdateLinhaRegistoProposta" last-response="{{LinhaRegistoPropostaUpdated}}" method="post" handle-as="json" id="page_updateLinhaRegistoProposta_ajax" on-response="_updateLinhaRegistoPropostaResponse" content-type="application/json"></iron-ajax>
         <iron-ajax url="/ConsultaMercado/CriarEncomenda" last-response="{{CriarEncomendaCreated}}" method="post" handle-as="json" id="page_criarEncomenda_ajax" on-response="_criarEncomendaResponse" content-type="application/json"></iron-ajax>
@@ -505,7 +509,7 @@
 
                             <div class="row break_clear">
                                 <div class="panel-body">
-                                    <vaadin-grid id="tabSelecaoEntidades" aria-label="TabelaSelecaoEntidades" items="[[ data.seleccaoEntidades ]]" class="editDialogGrid" selected-items={{selectedItems}} active-item="{{selectedItem}}" multi-sort="true">
+                                    <vaadin-grid id="tabSelecaoEntidades" aria-label="TabelaSelecaoEntidades" items="[[ data.seleccaoEntidades ]]" class="grid" active-item="{{_SelectedLine}}" multi-sort="true">
                                         <vaadin-grid-column resizable hidden>
                                             <template class="header">
                                                 <vaadin-grid-sorter path="idSeleccaoEntidades" style="text-align:center;">ID</vaadin-grid-sorter>
@@ -600,6 +604,62 @@
                                                         </table>
                                                     </template>
                                                 </vaadin-combo-box>
+                                            </template>
+                                        </vaadin-grid-column>
+
+
+                                        <vaadin-grid-column resizable hidden>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="emailFornecedor" style="text-align:center;">EmailFornecedor</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="emailFornecedor"></vaadin-grid-filter>
+                                            </template>
+                                            <template>
+                                                <vaadin-text-field name="tabSelecaoEntidadesemailFornecedor" id="tabSelecaoEntidadesemailFornecedor" value="{{item.emailFornecedor}}" disabled="true"></vaadin-text-field>
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable hidden>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="dataEnvioAoFornecedor" style="text-align:center;">DataEnvioAoFornecedor</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataEnvioAoFornecedor"></vaadin-grid-filter>
+                                            </template>
+                                            <template>
+                                                <vaadin-text-field name="tabSelecaoEntidadesdataEnvioAoFornecedor" id="tabSelecaoEntidadesdataEnvioAoFornecedor" value="{{item.dataEnvioAoFornecedor}}" disabled="true"></vaadin-text-field>
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column width="150px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="dataRecepcaoProposta">Data Recepção Proposta</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataRecepcaoProposta" />
+                                            </template>
+                                            <template>
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <vaadin-date-picker id="_dataRecepcaoProposta" name="_dataRecepcaoProposta" value="{{item.dataRecepcaoProposta_Show}}" on-value-changed="_updateLinhaSeleccaoEntidade" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                                </template>
+                                                <template is="dom-if" if="{{ !item.selected }}">
+                                                    {{item.dataRecepcaoProposta_Show}}
+                                                </template>
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable hidden>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="utilizadorEnvio" style="text-align:center;">UtilizadorEnvio</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="utilizadorEnvio"></vaadin-grid-filter>
+                                            </template>
+                                            <template>
+                                                <vaadin-text-field name="tabSelecaoEntidadesutilizadorEnvio" id="tabSelecaoEntidadesutilizadorEnvio" value="{{item.utilizadorEnvio}}" disabled="true"></vaadin-text-field>
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable hidden>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="utilizadorRecepcaoProposta" style="text-align:center;">UtilizadorRecepcaoProposta</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="utilizadorRecepcaoProposta"></vaadin-grid-filter>
+                                            </template>
+                                            <template>
+                                                <vaadin-text-field name="tabSelecaoEntidadesutilizadorRecepcaoProposta" id="tabSelecaoEntidadesutilizadorRecepcaoProposta" value="{{item.utilizadorRecepcaoProposta}}" disabled="true"></vaadin-text-field>
                                             </template>
                                         </vaadin-grid-column>
 
@@ -1156,7 +1216,6 @@
                         </div>
                     </div>
 
-
                     <!-- Tab Anexos-->
                     <div class="panel panel-default">
                         <div class="panel-body">
@@ -1433,9 +1492,6 @@
                             <vaadin-grid-filter path="codUnidadeMedida"></vaadin-grid-filter>
                         </template>
                         <template>
-
-                            <!--<vaadin-text-field name="tabLinhascodUnidadeMedida" id="tabLinhascodUnidadeMedida" value="{{item.codUnidadeMedida}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}"></vaadin-text-field>-->
-                            te
                             <vaadin-combo-box items="[[LCBMeasuresUnit]]" id="tabLinhascodUnidadeMedida" name="tabLinhascodUnidadeMedida" item-value-path="id" item-label-path="id" value="{{item.codUnidadeMedida}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}">
                                 <template>
                                     <table width="200px">
@@ -1777,6 +1833,9 @@
                     },
                     _reportserverurl: {
                         type: String,
+                    },
+                    _SelectedLine: {
+                        observer: '_lineSelected'
                     }
                 },
                 _functionsMenuItemSelected: function (e) {
@@ -1815,6 +1874,27 @@
 
                     this.$.page_update_ajax.body = JSON.stringify({ "id": this._id });
                     this.$.page_update_ajax.generateRequest();
+                },
+
+                _lineSelected: function (item) {
+                    if (item != null) {
+                        var oSel = this.data.seleccaoEntidades.find(x => x.selected);
+                        if (oSel != undefined) {
+                            oSel.selected = false;
+                        }
+
+                        var sel = this.data.seleccaoEntidades.find(x => x == item);
+                        if (sel != undefined) {
+
+                            this.data.seleccaoEntidades.find(x => x == item).selected = true;
+
+                            //this.$.contractlinecodesgrid_ajax.body = JSON.stringify(item.type);
+                            //this.$.contractlinecodesgrid_ajax.generateRequest();
+
+
+                            this.$.tabSelecaoEntidades.clearCache();
+                        }
+                    }
                 },
 
                 _validateData: function () {
@@ -2269,7 +2349,42 @@
                     }
                 },
                 _updateLinhaSeleccaoEntidade: function (e) {
+                    debugger
                     this.$.page_updateLinhaSeleccaoEntidade_ajax.body = JSON.stringify({
+                        idSeleccaoEntidades: e.model.item.idSeleccaoEntidades,
+                        numConsultaMercado: e.model.item.numConsultaMercado,
+                        codFornecedor: e.model.item.codFornecedor,
+                        nomeFornecedor: e.model.item.nomeFornecedor,
+                        cidadeFornecedor: e.model.item.cidadeFornecedor,
+                        codTermosPagamento: e.model.item.codTermosPagamento,
+                        codFormaPagamento: e.model.item.codFormaPagamento,
+                        selecionado: e.model.item.selecionado,
+                        preferencial: e.model.item.preferencials,
+                        dataEnvioAoFornecedor: e.model.item.dataEnvioAoFornecedor,
+                        dataRecepcaoProposta: e.model.item.dataRecepcaoProposta,
+                        dataRecepcaoProposta_Show: e.model.item.dataRecepcaoProposta_Show,
+                        utilizadorEnvio: e.model.item.utilizadorEnvio,
+                        utilizadorRecepcaoProposta: e.model.item.utilizadorRecepcaoProposta
+                    });
+                    this.$.page_updateLinhaSeleccaoEntidade_ajax.generateRequest();
+                    this.$.tabSelecaoEntidades.clearCache();
+                },
+                _updateLinhaSeleccaoEntidadeResponse: function (e) {
+                    if (this.LinhaSeleccaoEntidadeUpdated == true) {
+                        this.$.page_databound_ajax.generateRequest();
+                        this._showMessage('Linha Entidade Actualizada com sucesso.');
+                    }
+                    else {
+                        this._showErrorMessage('Ocorreu um erro ao Actualizar a linha da Entidade.');
+                    }
+                },
+
+                
+                _updateLinhaSeleccaoEntidade_DataRecepcaoProposta: function (e) {
+                    debugger
+                    var _self = this;
+
+                    this.$.page_updateLinhaSeleccaoEntidade_DataRecepcaoProposta_ajax.body = JSON.stringify({
                         idSeleccaoEntidades: e.model.item.idSeleccaoEntidades,
                         numConsultaMercado: e.model.item.numConsultaMercado,
                         codFornecedor: e.model.item.codFornecedor,
@@ -2279,13 +2394,18 @@
                         codTermosPagamento: e.model.item.codTermosPagamento,
                         codFormaPagamento: e.model.item.codFormaPagamento,
                         selecionado: e.model.item.selecionado,
-                        preferencial: e.model.item.preferencial
+                        preferencial: e.model.item.preferencials,
+                        dataEnvioAoFornecedor: e.model.item.dataEnvioAoFornecedor,
+                        dataRecepcaoProposta: e.model.item.dataRecepcaoProposta,
+                        dataRecepcaoProposta_Show: e.model.item.dataRecepcaoProposta_Show,
+                        utilizadorEnvio: e.model.item.utilizadorEnvio,
+                        utilizadorRecepcaoProposta: e.model.item.utilizadorRecepcaoProposta
                     });
-                    this.$.page_updateLinhaSeleccaoEntidade_ajax.generateRequest();
+                    this.$.page_updateLinhaSeleccaoEntidade_DataRecepcaoProposta_ajax.generateRequest();
                     this.$.tabSelecaoEntidades.clearCache();
                 },
-                _updateLinhaSeleccaoEntidadeResponse: function (e) {
-                    if (this.LinhaSeleccaoEntidadeUpdated == true) {
+                _updateLinhaSeleccaoEntidade_DataRecepcaoPropostaResponse: function (e) {
+                    if (this.LinhaSeleccaoEntidade_DataRecepcaoPropostaUpdated == true) {
                         this.$.page_databound_ajax.generateRequest();
                         this._showMessage('Linha Entidade Actualizada com sucesso.');
                     }

@@ -44,6 +44,7 @@
             <paper-button class="tablinks" on-tap="_requestModels" hidden="{{ _NotSelectedprodUnit }}"><i class="fa fa-chevron-circle-down" aria-hidden="true"></i> Copiar Modelos de requisição</paper-button>
             <paper-button class="tablinks" on-tap="_addRequesition"><i class="fa fa-get-pocket" aria-hidden="true"></i> Geração de requisições </paper-button>
         </div><!--on-response="_gridListResponse"-->
+
         <iron-ajax url="/PopulateDropdowns/GetProdUnits" id="ajax_prodUnit" last-response="{{prodUnitValresult}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/OpenOrderLines" id="ajax_nOrderLines" last-response="{{cbopenorderlines}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/OpenOrderLines" id="ajax_nOrderGridLines" last-response="{{cbopenorderlinesGrid}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -177,7 +178,7 @@
             </template>
         </vaadin-combo-box>
         <vaadin-text-field id="descriptionUnitId" name="descriptionUnitName" label="Descrição" value="{{descriptionUnit}}" hidden></vaadin-text-field>
-        <such-selectbox id="priceAgreement" value="" label="Acordo de Preços"  hidden
+        <such-selectbox id="priceAgreement" value="" label="Acordo de Preços" hidden
                         items="[[priceAgreement]]"
                         text-path="noProcedimento"
                         value-path="noFornecedor"
@@ -196,7 +197,10 @@
                                 items="[[Products]]"
                                 text-path="descricaoProduto"
                                 value-path="codProduto"
-                                fields='[{"field":"noFornecedor", "name":"Nº Fornecedor"},{"field":"codProduto", "name":"Nº Produto"}, {"field":"descricaoProduto", "name":"Descrição"},{"field":"custoUnitario", "name":"Custo Unitário"}]'>
+                                fields='[{"field":"noFornecedor", "name":"Nº Fornecedor"},
+                                    {"field":"codProduto", "name":"Nº Produto"},
+                                    {"field":"descricaoProduto", "name":"Descrição"},
+                                    {"field":"custoUnitario", "name":"Custo Unitário"}]'>
                 </such-selectbox>
             </div>
             <div class="col-md-3">
@@ -205,7 +209,7 @@
         </div>
         <div class="row" hidden="{{ !_permissionsVal.create }}">
             <div class="col-md-3">
-                
+
                 <vaadin-text-field id="supplierNoId" name="supplierNoName" label="Nº Forncedor" value="{{supplierNo}}" disabled></vaadin-text-field>
             </div>
             <div class="col-md-3">
@@ -229,8 +233,8 @@
                 <vaadin-text-field id="supplierProdCodeId" name="supplierProdCodeName" label="Codigo Produto Fornecedor" value=""></vaadin-text-field>
             </div>
             @*<div class="col-md-3 ">
-            <vaadin-text-field id="txtProdDescription" name="txtProdDescription" label="Descrição Produto" value="{{prodDescription}}" disabled></vaadin-text-field>
-        </div>*@
+                <vaadin-text-field id="txtProdDescription" name="txtProdDescription" label="Descrição Produto" value="{{prodDescription}}" disabled></vaadin-text-field>
+            </div>*@
             <div class="col-md-3">
                 <vaadin-text-field id="supplierProdDescriptionId" name="supplierProdDescriptionName" label="Descrição Produto Fornecedor" value=""></vaadin-text-field>
             </div>
@@ -243,6 +247,14 @@
         </div>
         <div class="row" hidden="{{ !_permissionsVal.create }}">
             <div class="col-md-3">
+                <vaadin-text-field id="grupoRegistoIvaProduto" name="grupoRegistoIvaProduto" label="Grupo Registo IVA Produto" class="alignRight" value="{{grupoRegistoIvaProduto}}" type="number"></vaadin-text-field>
+            </div>
+
+            <div class="col-md-3" hidden="{{ !_permissionsVal.create }}">
+                <paper-button class="btnSave" on-tap="_add"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+            </div>
+
+            <div class="col-md-3">
                 <such-selectbox id="codStockUnitId" value="{{codStockUnit}}" label="Código Localização" hidden
                                 items="[[locationsresult]]"
                                 text-path="value"
@@ -250,58 +262,19 @@
                                 fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
                 </such-selectbox>
             </div>
+
             <div class="col-md-3">
-                
+                <such-selectbox id="mOpenOrderLinesId" value="{{_numb}}" label="Nº Produto" on-value-changed="_openOrderLinesOnChange" hidden
+                                items="[[cbopenorderlines]]"
+                                text-path="numb"
+                                value-path="line_No"
+                                fields='[{"field":"documentNO", "name":"Nº Documento"},{"field":"line_No", "name":"Nº Linha"},{"field":"numb", "name":"Nº Produto"}, {"field":"description", "name":"Descrição"}]'>
+                </such-selectbox>
             </div>
-            <div class="col-md-3">
-                
-            </div>
-        </div>
-        <div class="row" hidden="{{ !_permissionsVal.create }}">
-            <div class="col-lg-2 alignPoga">
-                <paper-button class="btnSave" on-tap="_add"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <such-selectbox id="mOpenOrderLinesId" value="{{_numb}}" label="Nº Produto" on-value-changed="_openOrderLinesOnChange" hidden
-                            items="[[cbopenorderlines]]"
-                            text-path="numb"
-                            value-path="line_No"
-                            fields='[{"field":"documentNO", "name":"Nº Documento"},{"field":"line_No", "name":"Nº Linha"},{"field":"numb", "name":"Nº Produto"}, {"field":"description", "name":"Descrição"}]'>
-            </such-selectbox>
         </div>
         @* Grid *@
 
         <vaadin-grid id="gridneedshopping" aria-label="ProfileModelsTabel" items="[[data]]" class="grid" active-item="{{_SelectedLine}}" hidden="{{ _NotSelectedprodUnit }}">
-            @*<vaadin-grid-column width="160px" resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="productionUnitNo">Nº Unidade Produtiva </vaadin-grid-sorter>
-                    <vaadin-grid-filter path="productionUnitNo" />
-                </template>
-                <template>
-                    <template is="dom-if" if="{{ item.selected }}">
-                        <vaadin-text-field value="{{item.productionUnitNo}}" disabled></vaadin-text-field>
-                    </template>
-                    <template is="dom-if" if="{{ !item.selected }}">
-                        {{item.productionUnitNo}}
-                    </template>
-                </template>
-
-            </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="productUnitDescription">Descrição</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="productUnitDescription" />
-                </template>
-                <template>
-                    <template is="dom-if" if="{{ item.selected }}">
-                        <vaadin-text-field value="{{item.productUnitDescription}}" disabled></vaadin-text-field>
-                    </template>
-                    <template is="dom-if" if="{{ !item.selected }}">
-                        {{item.productUnitDescription}}
-                    </template>
-                </template>
-            </vaadin-grid-column>*@
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="expectedReceptionDate">Data Receção Esperada</vaadin-grid-sorter>
@@ -317,6 +290,7 @@
                     </template>
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="dateByPriceSupplier">Data p/ Preço Fornecedor</vaadin-grid-sorter>
@@ -332,29 +306,7 @@
 
                 </template>
             </vaadin-grid-column>
-            @*<vaadin-grid-column width="160px" resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="localCode">Código Localização</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="localCode" />
-                </template>
-                <template>
-                    <template is="dom-if" if="{{ item.selected }}">
-                        <vaadin-combo-box items="[[locationsresult]]" disabled="{{ !_permissionsVal.update }}" id="codStockUnitId" item-value-path="id" item-label-path="value" value="{{item.localCode}}">
-                            <template>
-                                <table width="350px">
-                                    <tr>
-                                        <td width="30%">[[item.id]]</td>
-                                        <td width="70%"><b>[[item.value]]</b></td>
-                                    </tr>
-                                </table>
-                            </template>
-                        </vaadin-combo-box>
-                    </template>
-                    <template is="dom-if" if="{{ !item.selected }}">
-                        [[_parseLocalCode(item.localCode)]]
-                    </template>
-                </template>
-            </vaadin-grid-column>*@
+
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="productNo">Nº Produto</vaadin-grid-sorter>
@@ -378,6 +330,37 @@
                     </template>
                 </template>
             </vaadin-grid-column>
+
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="description">Descrição Produto</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="description" />
+                </template>
+                <template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-text-field value="{{item.description}}" disabled></vaadin-text-field>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        {{item.description}}
+                    </template>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="quantity">Quantidade </vaadin-grid-sorter>
+                    <vaadin-grid-filter path="quantity" />
+                </template>
+                <template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-text-field value="{{item.quantity}}" id="lineQuantity" disabled="{{ !_permissionsVal.update }}" pattern="^[1-9]\d*(\.\d+)?$" class="alignRight" on-value-changed="_lineCalcTotals"></vaadin-text-field>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        {{item.quantity}}
+                    </template>
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="supplierNo">Nº Forncedor</vaadin-grid-sorter>
@@ -392,21 +375,22 @@
                     </template>
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
-                    <vaadin-grid-sorter path="description">Descrição Produto</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="description" />
+                    <vaadin-grid-sorter path="supplierName">Nome Fornecedor</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="supplierName" />
                 </template>
                 <template>
                     <template is="dom-if" if="{{ item.selected }}">
-                        <vaadin-text-field value="{{item.description}}" disabled></vaadin-text-field>
+                        <vaadin-text-field value="{{item.supplierName}}" disabled></vaadin-text-field>
                     </template>
                     <template is="dom-if" if="{{ !item.selected }}">
-                        {{item.description}}
+                        {{item.supplierName}}
                     </template>
-
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="unitMeasureCode">Unidade Medida</vaadin-grid-sorter>
@@ -430,34 +414,7 @@
                     </template>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="quantity">Quantidade </vaadin-grid-sorter>
-                    <vaadin-grid-filter path="quantity" />
-                </template>
-                <template>
-                    <template is="dom-if" if="{{ item.selected }}">
-                        <vaadin-text-field value="{{item.quantity}}" id="lineQuantity" disabled="{{ !_permissionsVal.update }}" pattern="^[1-9]\d*(\.\d+)?$" class="alignRight" on-value-changed="_lineCalcTotals"></vaadin-text-field>
-                    </template>
-                    <template is="dom-if" if="{{ !item.selected }}">
-                        {{item.quantity}}
-                    </template>
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="quantitybyUnitMeasure">Quantidade por Unid. Medida</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="quantitybyUnitMeasure" />
-                </template>
-                <template>
-                    <template is="dom-if" if="{{ item.selected }}">
-                        <vaadin-text-field value="{{item.quantitybyUnitMeasure}}" class="alignRight" disabled></vaadin-text-field>
-                    </template>
-                    <template is="dom-if" if="{{ !item.selected }}">
-                        {{item.quantitybyUnitMeasure}}
-                    </template>
-                </template>
-            </vaadin-grid-column>
+
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="directUnitCost">Custo Unitário</vaadin-grid-sorter>
@@ -472,23 +429,10 @@
                     </template>
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
-                    <vaadin-grid-sorter path="totalValue">Valor Total</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="totalValue" />
-                </template>
-                <template>
-                    <template is="dom-if" if="{{ item.selected }}">
-                        <vaadin-text-field value="{{item.totalValue}}" class="alignRight" disabled><div slot="suffix" on-value-changed="_lineCalcTotals">€</div></vaadin-text-field>
-                    </template>
-                    <template is="dom-if" if="{{ !item.selected }}">
-                        {{item.totalValue}}€
-                    </template>
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="supplierProductCode">Codigo Produto Fornecedor</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="supplierProductCode">Código Produto Fornecedor</vaadin-grid-sorter>
                     <vaadin-grid-filter path="supplierProductCode" />
                 </template>
                 <template>
@@ -500,6 +444,7 @@
                     </template>
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="supplierProductDescription">Descrição Produto Fornecedor</vaadin-grid-sorter>
@@ -514,20 +459,52 @@
                     </template>
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
-                    <vaadin-grid-sorter path="supplierName">Nome Fornecedor</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="supplierName" />
+                    <vaadin-grid-sorter path="quantitybyUnitMeasure">Quantidade por Unid. Medida</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="quantitybyUnitMeasure" />
                 </template>
                 <template>
                     <template is="dom-if" if="{{ item.selected }}">
-                        <vaadin-text-field value="{{item.supplierName}}" disabled></vaadin-text-field>
+                        <vaadin-text-field value="{{item.quantitybyUnitMeasure}}" class="alignRight" disabled></vaadin-text-field>
                     </template>
                     <template is="dom-if" if="{{ !item.selected }}">
-                        {{item.supplierName}}
+                        {{item.quantitybyUnitMeasure}}
                     </template>
                 </template>
             </vaadin-grid-column>
+
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="totalValue">Valor Total</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="totalValue" />
+                </template>
+                <template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-text-field value="{{item.totalValue}}" class="alignRight" disabled><div slot="suffix" on-value-changed="_lineCalcTotals">€</div></vaadin-text-field>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        {{item.totalValue}}€
+                    </template>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="grupoRegistoIvaProduto">Grupo Registo IVA Produto</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="grupoRegistoIvaProduto" />
+                </template>
+                <template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-text-field value="{{item.grupoRegistoIvaProduto}}" disabled="{{ !_permissionsVal.update }}"></vaadin-text-field>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        {{item.grupoRegistoIvaProduto}}
+                    </template>
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column with="10%" hidden="{{ !_permissionsVal.delete }}">
                 <template class="header">
                 </template>
@@ -833,14 +810,19 @@
                     if (e.detail.value != null && e.detail.value != "") {
                         var linhaAcordo = this.$.cmbProducts.activeItem;
                         if (linhaAcordo != null) {
+                            this.$.qtyID.value = "0";
+                            this.$.supplierNoId.value = linhaAcordo.noFornecedor;
+                            this.$.SupplierNameId.value = linhaAcordo.nomeFornecedor;
+                            this.$.unitofMeasureCodeId.value = linhaAcordo.um;
                             this.$.unitCostId.value = linhaAcordo.custoUnitario.toString();
+                            this.$.supplierProdCodeId.value = linhaAcordo.codProdutoFornecedor.toString();
+                            this.$.supplierProdDescriptionId.value = linhaAcordo.descricaoProdFornecedor.toString();
+                            this.$.QtyforMeasId.value = linhaAcordo.qtdPorUm.toString();
+                            this.$.amountId.value = "0";
+                            this.$.grupoRegistoIvaProduto.value = linhaAcordo.grupoRegistoIvaProduto.toString();
+
                             this.$.mOpenOrderLinesId.value = linhaAcordo.codProduto;
                             //this.$.txtProdDescription.value = linhaAcordo.descricaoProduto;
-                            this.$.supplierNoId.value = linhaAcordo.noFornecedor;
-                            this.$.qtyID.value = "0";
-                            this.$.QtyforMeasId.value = linhaAcordo.qtdPorUM;
-                            this.$.unitofMeasureCodeId.value = linhaAcordo.um;
-                            this.$.SupplierNameId.value = linhaAcordo.nomeFornecedor;
                         }
                     }
                 },
@@ -1025,33 +1007,38 @@
                 },
 
                 _add() {
+                    debugger;
                     if (this._NotSelectedprodUnit == true) {
                         if (this.$.dpExpectedReceiptId.value != null &&
                             this.$.dpVendedorPriceId.value != null &&
                             this.$.dpExpectedReceiptId.value != "" &&
                             this.$.dpVendedorPriceId.value != "" &&
                             this.$.prodUnitNoId.value != "" &&
-                            this.$.descriptionUnitId.value != "")
+                            this.$.descriptionUnitId.value != "" &&
+                            this.$.grupoRegistoIvaProduto.value != "")
                         //Validações
                         {
                             var newItem =
                                 {
                                     productionUnitNo: this.$.prodUnitNoId.value,
                                     productUnitDescription: this.$.descriptionUnitId.value,
+
                                     expectedReceptionDate: this.$.dpExpectedReceiptId.value,
                                     dateByPriceSupplier: this.$.dpVendedorPriceId.value,
-                                    localCode: this.$.codStockUnitId.value,
                                     productNo: this.$.cmbProducts.value,//this._numb,
-                                    supplierNo: this.$.supplierNoId.value,
                                     description: this.$.cmbProducts.valueText,//txtProdDescription.value,
-                                    unitMeasureCode: this.$.unitofMeasureCodeId.value,
                                     quantity: this.$.qtyID.value,
-                                    quantitybyUnitMeasure: this.$.QtyforMeasId.value,
+                                    supplierNo: this.$.supplierNoId.value,
+                                    supplierName: this.$.SupplierNameId.value,
+                                    unitMeasureCode: this.$.unitofMeasureCodeId.value,
                                     directUnitCost: this.$.unitCostId.value,
-                                    totalValue: this.$.amountId.value,
                                     supplierProductCode: this.$.supplierProdCodeId.value,
                                     supplierProductDescription: this.$.supplierProdDescriptionId.value,
-                                    supplierName: this.$.SupplierNameId.value,
+                                    quantitybyUnitMeasure: this.$.QtyforMeasId.value,
+                                    totalValue: this.$.amountId.value,
+                                    grupoRegistoIvaProduto: this.$.grupoRegistoIvaProduto.value,
+
+                                    localCode: this.$.codStockUnitId.value,
                                     documentNo: this.$._documentNo,
                                     openOrderNo: this.$._documentNo,
                                     orderLineOpenNo: this._lineNo
@@ -1100,6 +1087,7 @@
                                     quantitybyUnitMeasure: this.$.QtyforMeasId.value,
                                     directUnitCost: this.$.unitCostId.value,
                                     totalValue: this.$.amountId.value,
+                                    grupoRegistoIvaProduto: this.$.grupoRegistoIvaProduto.value,
                                     supplierProductCode: this.$.supplierProdCodeId.value,
                                     supplierProductDescription: this.$.cmbProducts.valueText,// this.$.supplierProdDescriptionId.value,
                                     supplierName: this.$.SupplierNameId.value,
