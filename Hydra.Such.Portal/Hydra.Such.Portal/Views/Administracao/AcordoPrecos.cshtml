@@ -253,7 +253,7 @@
         <div class="subMenu">
             <paper-button id="btnGoBack" class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
             <paper-button id="btnExport" class="tablinks" on-tap="_export" disabled="{{ _permissions.update }}" title="Exportar Linhas"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar Linhas</paper-button>
-            <paper-button id="btnRefresh" class="tablinks" on-tap="_refresh" title="Atualizar"><i class="fa fa-refresh" aria-hidden="true"></i>&nbsp; Atualizar</paper-button>
+            @*<paper-button id="btnRefresh" class="tablinks" on-tap="_refresh" title="Atualizar"><i class="fa fa-refresh" aria-hidden="true"></i>&nbsp; Atualizar</paper-button>*@
         </div>
 
         <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
@@ -286,11 +286,11 @@
                         </div>
 
                         @if (ViewBag.NoProcedimento == "0")
-                    {
-                        <div class="col-sm-2">
-                            <paper-button id="btnAddNew" class="btnSave" on-tap="_createAcordoPrecos" disabled="{{ _permissionsCreate }}">Criar</paper-button>
-                        </div>
-                }
+                        {
+                            <div class="col-sm-2">
+                                <paper-button id="btnAddNew" class="btnSave" on-tap="_createAcordoPrecos" disabled="{{ _permissionsCreate }}">Criar</paper-button>
+                            </div>
+                        }
                     </div>
                 </div>
 
@@ -412,6 +412,10 @@
                                     </div>
 
                                     <div class="col-sm-2">
+                                        <vaadin-text-field id="linhasDescricaoProdutoFornecedor" label="Descrição Produto Fornecedor" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+                                    </div>
+
+                                    <div class="col-sm-2">
                                         <vaadin-combo-box items="[[LLinhasFormaEntrega]]" id="linhasFormaEntrega" item-value-path="id" item-label-path="value" label="Forma Entrega" disabled="{{ _permissionsCreate }}">
                                             <template>
                                                 <table>
@@ -438,8 +442,14 @@
                                     </div>
 
                                     <div class="col-sm-2">
-                                        <paper-button id="btnAddNew" class="btnSave" on-tap="_createLinhaAcordoPrecos" disabled="{{ _permissionsCreate }}">Criar</paper-button>
+                                        <vaadin-text-field id="linhasGrupoRegistoIvaProduto" label="Grupo Registo IVA Produto" disabled="{{ _permissionsCreate }}" type="number" maxlength="18" pattern="[0-9]*"></vaadin-text-field>
                                     </div>
+                                </div>
+                            </div>
+
+                            <div class="row break_clear">
+                                <div class="col-sm-2">
+                                    <paper-button id="btnAddNew" class="btnSave" on-tap="_createLinhaAcordoPrecos" disabled="{{ _permissionsCreate }}">Criar</paper-button>
                                 </div>
                             </div>
 
@@ -480,7 +490,7 @@
 
                             <vaadin-grid-column resizable>
                                 <template class="header">
-                                    <vaadin-grid-sorter path="nomeFornecedor" style="text-align:center;">Fornecedor</vaadin-grid-sorter>
+                                    <vaadin-grid-sorter path="nomeFornecedor" style="text-align:center;">Nº Fornecedor</vaadin-grid-sorter>
                                     <vaadin-grid-filter path="nomeFornecedor" />
                                 </template>
                                 <template>
@@ -495,6 +505,16 @@
                                 </template>
                                 <template>
                                     <vaadin-text-field id="tabLinhascodProduto" value="{{item.codProduto}}" disabled></vaadin-text-field>
+                                </template>
+                            </vaadin-grid-column>
+
+                            <vaadin-grid-column resizable>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="descricaoProduto" style="text-align:center;">Desc. Produto</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="descricaoProduto" />
+                                </template>
+                                <template>
+                                    <vaadin-text-field id="tabLinhasdescricaoProduto" value="{{item.descricaoProduto}}" disabled></vaadin-text-field>
                                 </template>
                             </vaadin-grid-column>
 
@@ -550,7 +570,7 @@
 
                             <vaadin-grid-column resizable>
                                 <template class="header">
-                                    <vaadin-grid-sorter path="localizacaoNome" style="text-align:center;">Localização</vaadin-grid-sorter>
+                                    <vaadin-grid-sorter path="localizacaoNome" style="text-align:center;">Cód. Localização</vaadin-grid-sorter>
                                     <vaadin-grid-filter path="localizacaoNome" />
                                 </template>
                                 <template>
@@ -610,6 +630,16 @@
 
                             <vaadin-grid-column resizable>
                                 <template class="header">
+                                    <vaadin-grid-sorter path="descricaoProdFornecedor" style="text-align:center;">Desc. Produto Fornecedor</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="descricaoProdFornecedor" />
+                                </template>
+                                <template>
+                                    <vaadin-text-field id="tabLinhasdescricaoProdFornecedor" value="{{item.descricaoProdFornecedor}}" disabled></vaadin-text-field>
+                                </template>
+                            </vaadin-grid-column>
+
+                            <vaadin-grid-column resizable>
+                                <template class="header">
                                     <vaadin-grid-sorter path="formaEntregaTexto" style="text-align:center;">Forma Entrega</vaadin-grid-sorter>
                                     <vaadin-grid-filter path="formaEntregaTexto" />
                                 </template>
@@ -625,6 +655,16 @@
                                 </template>
                                 <template>
                                     <vaadin-text-field id="tabLinhastipoPrecoTexto" value="{{item.tipoPrecoTexto}}" disabled></vaadin-text-field>
+                                </template>
+                            </vaadin-grid-column>
+
+                            <vaadin-grid-column resizable>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="grupoRegistoIvaProduto" style="text-align:center;">Grupo Registo IVA Produto</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="grupoRegistoIvaProduto" />
+                                </template>
+                                <template>
+                                    <vaadin-text-field id="tabLinhasgrupoRegistoIvaProduto" value="{{item.grupoRegistoIvaProduto}}" disabled type="number" maxlength="18" pattern="[0-9]*"></vaadin-text-field>
                                 </template>
                             </vaadin-grid-column>
 
@@ -858,7 +898,7 @@
                                 noProcedimento: this.$.acordoPrecosNoProcedimento.value,
                                 dtInicio: this.$.acordoPrecosDtInicio.value,
                                 dtFim: this.$.acordoPrecosDtFim.value,
-                                valorTotal: this.$.acordoPrecosValorTotal.value,
+                                valorTotal: this.$.acordoPrecosValorTotal.value
                             });
                             this.$.ajax_acordoPrecos_create.generateRequest();
                         }
@@ -896,8 +936,10 @@
                                 qtdPorUM: this.$.linhasQuantidadeUM.value,
                                 pesoUnitario: this.$.linhasPesoUnitario.value,
                                 codProdutoFornecedor: this.$.linhasCodProdutoFornecedor.value,
+                                descricaoProdFornecedor: this.$.linhasDescricaoProdutoFornecedor.value,
                                 formaEntrega: this.$.linhasFormaEntrega.value,
-                                tipoPreco: this.$.linhasTipoPreco.value
+                                tipoPreco: this.$.linhasTipoPreco.value,
+                                grupoRegistoIvaProduto: this.$.linhasGrupoRegistoIvaProduto.value
                             });
                             this.$.ajax_linhaAcordoPrecos_create.generateRequest();
                         }
@@ -919,8 +961,10 @@
                             this.$.linhasQuantidadeUM.value = "";
                             this.$.linhasPesoUnitario.value = "";
                             this.$.linhasCodProdutoFornecedor.value = "";
+                            this.$.linhasDescricaoProdutoFornecedor.value = "";
                             this.$.linhasFormaEntrega.value = "";
                             this.$.linhasTipoPreco.value = "";
+                            this.$.linhasGrupoRegistoIvaProduto.value = "";
 
                             this._showMessage('Linha do Acordo de Preços criada com sucesso.');
 

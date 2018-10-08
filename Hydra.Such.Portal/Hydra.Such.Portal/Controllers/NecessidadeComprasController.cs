@@ -166,6 +166,7 @@ namespace Hydra.Such.Portal.Controllers
                             newdp.NºEncomendaAberto = x.OpenOrderNo;
                             newdp.NºLinhaEncomendaAberto = x.OrderLineOpenNo;
                             newdp.DescriçãoUnidadeProduto = x.ProductUnitDescription;
+                            newdp.GrupoRegistoIvaProduto = x.GrupoRegistoIvaProduto;
                             newdp.NºDocumento = x.DocumentNo;
                             newdp = DBShoppingNecessity.Update(newdp);
                             if (newdp == null)
@@ -212,7 +213,8 @@ namespace Hydra.Such.Portal.Controllers
                                 NºEncomendaAberto = x.OpenOrderNo,
                                 NºLinhaEncomendaAberto = x.OrderLineOpenNo,
                                 DescriçãoUnidadeProduto = x.ProductUnitDescription,
-                                NºDocumento = x.DocumentNo
+                                GrupoRegistoIvaProduto = x.GrupoRegistoIvaProduto,
+                                NºDocumento = x.DocumentNo,
                             };
                             newdp.UtilizadorCriação = User.Identity.Name;
 
@@ -425,6 +427,7 @@ namespace Hydra.Such.Portal.Controllers
                             newdp.NºEncomendaAberto = lr.NºEncomendaAberto;
                             newdp.NºLinhaEncomendaAberto = Convert.ToString(lr.NºLinhaEncomendaAberto);
                             newdp.DataPPreçoFornecedor = pricesDate;
+                            newdp.Valor = newdp.Quantidade == null ? 0 : newdp.Quantidade * newdp.CustoUnitárioDireto == null ? 0 : newdp.CustoUnitárioDireto;
                             newdp.UtilizadorCriação = User.Identity.Name;
                             newdp.DataHoraCriação = DateTime.Now;
                             
@@ -434,11 +437,19 @@ namespace Hydra.Such.Portal.Controllers
                                 resultValidation.eMessage =
                                     "Ocorreu um erro ao criar a Diário Requisição Unid. Produtiva";
                             }
-                            if (linhaAcordo != null) //ACORDO DE PREÇOS
+
+                            if (linhaAcordo != null) //LINHA ACORDO DE PREÇOS
                             {
-                                newdp.CustoUnitárioDireto = linhaAcordo.CustoUnitario;
+                                newdp.Descrição = linhaAcordo.DescricaoProduto;
                                 newdp.NºFornecedor = linhaAcordo.NoFornecedor;
                                 newdp.NomeFornecedor = linhaAcordo.NomeFornecedor;
+                                newdp.CódUnidadeMedida = linhaAcordo.Um;
+                                newdp.CustoUnitárioDireto = linhaAcordo.CustoUnitario;
+                                newdp.CodigoProdutoFornecedor = linhaAcordo.CodProdutoFornecedor;
+                                newdp.DescriçãoProdutoFornecedor = linhaAcordo.DescricaoProdFornecedor;
+                                newdp.QuantidadePorUnidMedida = linhaAcordo.QtdPorUm;
+                                newdp.Valor = newdp.Quantidade == null ? 0 : newdp.Quantidade * newdp.CustoUnitárioDireto == null ? 0 : newdp.CustoUnitárioDireto;
+                                newdp.GrupoRegistoIvaProduto = linhaAcordo.GrupoRegistoIvaProduto;
                             }
                             else
                             {
@@ -751,6 +762,7 @@ namespace Hydra.Such.Portal.Controllers
                             newdp.NºEncomendaAberto = x.OpenOrderNo;
                             newdp.NºLinhaEncomendaAberto = x.OrderLineOpenNo;
                             newdp.DescriçãoUnidadeProduto = x.ProductUnitDescription;
+                            newdp.GrupoRegistoIvaProduto = x.GrupoRegistoIvaProduto;
                             newdp.DataReceçãoEsperada = string.IsNullOrEmpty(x.ExpectedReceptionDate)
                                 ? (DateTime?)null
                                 : DateTime.Parse(x.ExpectedReceptionDate);
@@ -785,6 +797,7 @@ namespace Hydra.Such.Portal.Controllers
                                 NºEncomendaAberto = x.OpenOrderNo,
                                 NºLinhaEncomendaAberto = x.OrderLineOpenNo,
                                 DescriçãoUnidadeProduto = x.ProductUnitDescription,
+                                GrupoRegistoIvaProduto = x.GrupoRegistoIvaProduto,
                                 DataReceçãoEsperada = string.IsNullOrEmpty(x.ExpectedReceptionDate)
                                     ? (DateTime?)null
                                     : DateTime.Parse(x.ExpectedReceptionDate),
