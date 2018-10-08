@@ -1030,6 +1030,10 @@ namespace Hydra.Such.Portal.Controllers
                     data.eMessage += Environment.NewLine + email;
                 }
 
+                //Actualizar Tabela "Seleccao_Entidades", com Data de Envio Ao Fornecedor e com Utilizador Envio
+                fornecedor.DataEnvioAoFornecedor = DateTime.Now;
+                fornecedor.UtilizadorEnvio = User.Identity.Name;
+                DBConsultaMercado.Update(DBConsultaMercado.CastSeleccaoEntidadesViewToDB(fornecedor));
 
             }
 
@@ -1108,6 +1112,13 @@ namespace Hydra.Such.Portal.Controllers
 
             data.EmailEnviado = true;
             DBConsultaMercado.Update(data);
+
+
+            //Actualizar Tabela "Seleccao_Entidades", com Data de Envio Ao Fornecedor e com Utilizador Envio
+            SeleccaoEntidadesView fornecedor = data.SeleccaoEntidades.Where(x => x.CodFornecedor == Cod).First();
+            fornecedor.DataEnvioAoFornecedor = DateTime.Now;
+            fornecedor.UtilizadorEnvio = User.Identity.Name;
+            DBConsultaMercado.Update(DBConsultaMercado.CastSeleccaoEntidadesViewToDB(fornecedor));
 
             return Json(data);
         }
@@ -1390,6 +1401,51 @@ namespace Hydra.Such.Portal.Controllers
                 }
 
                 seleccaoEntidades.EmailFornecedor = _Email;
+
+                //Verificar se a Data de Receção de Proposta é diferente da existente na BD
+                SeleccaoEntidades verificacao_Data = DBConsultaMercado.GetSeleccaoEntidadesID(data.IdSeleccaoEntidades);
+
+                if (verificacao_Data.DataRecepcaoProposta != data.DataRecepcaoProposta)
+                {
+                    seleccaoEntidades.DataRecepcaoProposta = DateTime.Now;
+                    seleccaoEntidades.UtilizadorRecepcaoProposta = User.Identity.Name;
+                }
+
+                var dbUpdateResult = DBConsultaMercado.Update(seleccaoEntidades);
+
+                if (dbUpdateResult != null)
+                    result = true;
+                else
+                    result = false;
+            }
+            catch (Exception ex)
+            {
+                //log
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateLinhaSeleccaoEntidade_DataRecepcaoProposta([FromBody] SeleccaoEntidadesView data)
+        {
+            bool result = false;
+            try
+            {
+                SeleccaoEntidades seleccaoEntidades = DBConsultaMercado.CastSeleccaoEntidadesViewToDB(data);
+
+                string _Email = string.Empty;
+                try
+                {
+                    _Email = DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName).Where(x => x.No_ == data.CodFornecedor).First().Email;
+                }
+                catch
+                {
+                    _Email = string.Empty;
+                }
+
+                seleccaoEntidades.EmailFornecedor = _Email;
+                seleccaoEntidades.DataRecepcaoProposta = DateTime.Parse(data.DataRecepcaoProposta_Show);
+                seleccaoEntidades.UtilizadorRecepcaoProposta = User.Identity.Name;
 
                 var dbUpdateResult = DBConsultaMercado.Update(seleccaoEntidades);
 

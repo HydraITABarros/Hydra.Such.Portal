@@ -1296,6 +1296,21 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
         #region Seleccao_Entidades
 
 
+        public static SeleccaoEntidades GetSeleccaoEntidadesID(int _ID)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.SeleccaoEntidades.Where(p => p.IdSeleccaoEntidades == _ID).FirstOrDefault();
+                }
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
         public static SeleccaoEntidades GetSeleccaoEntidadesPorNumConsultaFornecedor(string _NumConsultaMercado, string _CodFornecedor)
         {
             try
@@ -1435,7 +1450,13 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                 CodFormaPagamento = ObjectToTransform.CodFormaPagamento,
                 Preferencial = ObjectToTransform.Preferencial,
                 Selecionado = ObjectToTransform.Selecionado,
-                EmailFornecedor = ObjectToTransform.EmailFornecedor
+                EmailFornecedor = ObjectToTransform.EmailFornecedor,
+                DataEnvioAoFornecedor = ObjectToTransform.DataEnvioAoFornecedor,
+                DataRecepcaoProposta = ObjectToTransform.DataRecepcaoProposta,
+                UtilizadorEnvio = ObjectToTransform.UtilizadorEnvio,
+                UtilizadorRecepcaoProposta = ObjectToTransform.UtilizadorRecepcaoProposta,
+                DataEnvioAoFornecedor_Show = ObjectToTransform.DataEnvioAoFornecedor == null ? "" : ObjectToTransform.DataEnvioAoFornecedor.Value.ToString("yyyy-MM-dd"),
+                DataRecepcaoProposta_Show = ObjectToTransform.DataRecepcaoProposta == null ? "" : ObjectToTransform.DataRecepcaoProposta.Value.ToString("yyyy-MM-dd")
             };
 
             return view;
@@ -1455,7 +1476,13 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                 CodFormaPagamento = ObjectToTransform.CodFormaPagamento,
                 Preferencial = ObjectToTransform.Preferencial,
                 Selecionado = ObjectToTransform.Selecionado,
-                EmailFornecedor = ObjectToTransform.EmailFornecedor
+                EmailFornecedor = ObjectToTransform.EmailFornecedor,
+                DataEnvioAoFornecedor = ObjectToTransform.DataEnvioAoFornecedor,
+                //DataRecepcaoProposta = ObjectToTransform.DataRecepcaoProposta,
+                //DataRecepcaoProposta = ObjectToTransform.DataRecepcaoProposta_Show != string.Empty ? DateTime.Parse(ObjectToTransform.DataRecepcaoProposta_Show) : (DateTime?)null,
+                DataRecepcaoProposta = ObjectToTransform.DataRecepcaoProposta_Show != null ? ObjectToTransform.DataRecepcaoProposta_Show != string.Empty ? DateTime.Parse(ObjectToTransform.DataRecepcaoProposta_Show) : (DateTime?)null : (DateTime?)null,
+                UtilizadorEnvio = ObjectToTransform.UtilizadorEnvio,
+                UtilizadorRecepcaoProposta = ObjectToTransform.UtilizadorRecepcaoProposta
             };
 
             return seleccaoEntidades;
