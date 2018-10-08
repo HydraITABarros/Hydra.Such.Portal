@@ -64,6 +64,7 @@ namespace Hydra.Such.Data.NAV
                     VAT_Registration_No = preInvoiceToCreate.ClientVATReg,
                     Contract_No = preInvoiceToCreate.DocumentNo,
                     Debit_Memo = notaDebito,
+                    Debit_MemoSpecified = true,
                     Posting_No_Series = PostingNoSeries,
                     Codigo_Pedido = preInvoiceToCreate.ClientRequest,
                     Currency_Code = preInvoiceToCreate.Currency,

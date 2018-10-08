@@ -117,11 +117,11 @@
             </vaadin-grid-column>
             <vaadin-grid-column resizable hidden$="{{ _columns.estado.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="descricaoStatus">Estado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="descricaoStatus" />
+                    <vaadin-grid-sorter path="estadoDescricao">Estado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="estadoDescricao" />
                 </template>
                 <template>
-                    [[ _clFormatStatus(item.estado) ]]
+                    {{ item.estadoDescricao }}
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column resizable hidden$="{{ _columns.dataRececao.hidden }}">
