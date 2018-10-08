@@ -427,7 +427,7 @@ namespace Hydra.Such.Portal.Controllers
                             newdp.NºEncomendaAberto = lr.NºEncomendaAberto;
                             newdp.NºLinhaEncomendaAberto = Convert.ToString(lr.NºLinhaEncomendaAberto);
                             newdp.DataPPreçoFornecedor = pricesDate;
-                            newdp.Valor = newdp.Quantidade == null ? 0 : newdp.Quantidade * newdp.CustoUnitárioDireto == null ? 0 : newdp.CustoUnitárioDireto;
+                            newdp.Valor = (newdp.Quantidade == null ? 0 : newdp.Quantidade) * (newdp.CustoUnitárioDireto == null ? 0 : newdp.CustoUnitárioDireto);
                             newdp.UtilizadorCriação = User.Identity.Name;
                             newdp.DataHoraCriação = DateTime.Now;
                             
@@ -448,7 +448,7 @@ namespace Hydra.Such.Portal.Controllers
                                 newdp.CodigoProdutoFornecedor = linhaAcordo.CodProdutoFornecedor;
                                 newdp.DescriçãoProdutoFornecedor = linhaAcordo.DescricaoProdFornecedor;
                                 newdp.QuantidadePorUnidMedida = linhaAcordo.QtdPorUm;
-                                newdp.Valor = newdp.Quantidade == null ? 0 : newdp.Quantidade * newdp.CustoUnitárioDireto == null ? 0 : newdp.CustoUnitárioDireto;
+                                newdp.Valor = (newdp.Quantidade == null ? 0 : newdp.Quantidade) * (newdp.CustoUnitárioDireto == null ? 0 : newdp.CustoUnitárioDireto);
                                 newdp.GrupoRegistoIvaProduto = linhaAcordo.GrupoRegistoIvaProduto;
                             }
                             else
