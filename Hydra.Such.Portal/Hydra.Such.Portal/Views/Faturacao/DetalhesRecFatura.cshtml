@@ -484,7 +484,7 @@
                         <vaadin-text-field type="text" value="{{ data.destinatario }}" id="txtDestProblema" name="txtDestProblema" label="Destinatário" disabled></vaadin-text-field>
                     </div>
                     <div class="col-sm-2">
-                        <vaadin-date-picker value="{{data.dataRececao}}" id="txtData" label="Data" disabled></vaadin-date-picker>
+                        <vaadin-date-picker value="{{data.dataUltimaInteracao}}" id="txtData" label="Data" disabled></vaadin-date-picker>
                     </div>
                 </div>
                 <div class="row break_clear">
@@ -556,6 +556,22 @@
                             </template>
                         </template>
                     </vaadin-grid-column>
+
+                    <vaadin-grid-column width="160px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="area">Unidade</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="area"></vaadin-grid-filter>
+                        </template>
+                        <template>
+                            <template is="dom-if" if="{{ item.selected }}">
+
+                            </template>
+                            <template is="dom-if" if="{{ !item.selected }}">
+                                {{item.area}}
+                            </template>
+                        </template>
+                    </vaadin-grid-column>
+
                     <vaadin-grid-column width="160px" resizable>
                         <template class="header">
                             <vaadin-grid-sorter path="utilizador">Destinatário</vaadin-grid-sorter>
@@ -1330,9 +1346,9 @@
                 _hiddeButtons: function () {
                     if (this.data.estado == 1) {
                         this._nameButtonSend = "Enviar";
-                        if (this.data.areaPendente2 == "Contabilidade") {
+                        if (this.data.areaPendente == "Contabilidade") {
                             this._hiddeAnswerButton = true;
-                        } else if (this.data.areaPendente2 == "Aprovisionamento") {
+                        } else if (this.data.areaPendente == "Aprovisionamento") {
                             if (this._rfperfil == "Aprovisionamento") {
                                 this._hiddeAnswerButton = false;
                                 this._showHiddenProvisioning = true;
@@ -1958,7 +1974,7 @@
 
                         var workflow = null;;
                         var idWork = this.data.workflowItems[this.data.workflowItems.length - 1];
-
+                        
                         var Anexados = false;
                         if (this.files != null) {
                             var anexoNew;
@@ -1985,8 +2001,8 @@
                             destinatario: this.destinatariosReenvio,
                             comentario: this.$.txtCommentUAdgl.value,
                             enderecoFornecedor: selVendor.email,
-                            area: this.centroResp,
-                            areaWorkflow: this.areaUPUAS,
+                            area: this.areaUPUAS,
+                            areaWorkflow: this.data.areaPendente,
                             attached: this.Anexos,
                             attachedIs: Anexados
                         };
@@ -2183,7 +2199,7 @@
                             }
                             break;
                         case 5:
-                            if (this.data.estado != 3 && this.data.areaPendente2 != "") {
+                            if (this.data.estado != 3 && this.data.areaPendente != "") {
                                 if (confirm("Pretende alterar o estado para Resolvido?")) {
                                     this.data.estado = item.value;
                                     this.$.setState_ajax.body = JSON.stringify(this.data);
