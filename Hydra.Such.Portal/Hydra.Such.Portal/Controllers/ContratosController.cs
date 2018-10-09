@@ -1129,6 +1129,9 @@ namespace Hydra.Such.Portal.Controllers
             List<Contratos> contractList = DBContracts.GetAllAvencaFixa2();
             foreach (var item in contractList)
             {
+                string str = "";
+                if (item.NºDeContrato == "VC180001")
+                    str = "";
                 List<NAVSalesLinesViewModel> contractSalesLinesInNAV = DBNAV2017SalesLine.FindSalesLine(_config.NAVDatabaseName, _config.NAVCompanyName, item.NºDeContrato, item.NºCliente);
                 List<LinhasContratos> contractLines = DBContractLines.GetAllByNoTypeVersion(item.NºDeContrato, item.TipoContrato, item.NºVersão, true);
                 contractLines.OrderBy(x => x.NºContrato).ThenBy(y => y.GrupoFatura);
@@ -1194,9 +1197,9 @@ namespace Hydra.Such.Portal.Controllers
                             current = item.DataExpiração.Value;
                         }
                         
-                        if (totalLinesForCurrentInvoiceGroup.HasValue && totalLinesForCurrentInvoiceGroup.Value > 1)
+                        if (totalLinesForCurrentInvoiceGroup.HasValue && totalLinesForCurrentInvoiceGroup.Value > 0)
                         {
-                            RequisiçõesClienteContrato GetReqClientCont = DBContractClientRequisition.GetByContractAndGroup(item.NºContrato, contractLine.GrupoFatura);
+                            RequisiçõesClienteContrato GetReqClientCont = DBContractClientRequisition.GetByContractAndGroup(item.NºDeContrato, contractLine.GrupoFatura);
                             if (GetReqClientCont != null)
                             {
                                 lastInvoiceDate = GetReqClientCont.DataÚltimaFatura;
