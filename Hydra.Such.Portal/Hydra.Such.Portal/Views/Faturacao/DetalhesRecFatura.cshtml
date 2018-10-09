@@ -925,11 +925,11 @@
                     </vaadin-grid-column>
                     <vaadin-grid-column resizable>
                         <template class="header">
-                            <vaadin-grid-sorter path="estado">Estado</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="estado" />
+                            <vaadin-grid-sorter path="estadoDescricao">Estado</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="estadoDescricao" />
                         </template>
                         <template>
-                            [[ _clFormatStatus(item.estado) ]]
+                            {{ item.estadoDescricao }}
                         </template>
                     </vaadin-grid-column>
                     <vaadin-grid-column resizable>
@@ -1448,28 +1448,36 @@
                         this._openToastError("ATENÇÃO! Este documento já se encontra no estado: " + stateDescription);
                         return false;
                     }
-                    if (this.data.codFornecedor == "") {
+                    if (!this.data.codFornecedor || this.data.codFornecedor == "") {
                         this._openToastError("O Fornecedor tem que estar preenchido.");
                         return false;
                     }
-                    if (this.data.numDocFornecedor == "") {
+                    if (!this.data.numDocFornecedor || this.data.numDocFornecedor == "") {
                         this._openToastError("O Nº Documento do Fornecedor tem que estar preenchido.");
                         return false;
                     }
-                    if (this.data.valor == "") {
+                    if (!this.data.valor || this.data.valor == "") {
                         this._openToastError("O valor tem que estar preenchido.");
                         return false;
                     }
-                    if (this.data.codRegiao == "") {
+                    if (!this.data.codRegiao || this.data.codRegiao == "") {
                         this._openToastError("Tem que selecionar a Região.");
                         return false;
                     }
+                    return true;
+
+                },
+                _validateSend: function () {
                     if (this._isInternalDestination && this.problemascmb == "") {
                         this._openToastError("Tem que selecionar o problema.");
                         return false;
                     }
                     else if (!this._isInternalDestination && this.motivoscmb == "") {
                         this._openToastError("Tem que selecionar o motivo.");
+                        return false;
+                    }
+                    if (this.$.txtdestinatarioArea.value == "") {
+                        this._openToastError("Tem que inserir um destinatário.");
                         return false;
                     }
                     return true;
@@ -1836,7 +1844,15 @@
                     this.$.ToastMessageError.close();
                     this.$.ToastMessageSuccess.close();
                     this.$.uploadRequest.files = [];
-                    this.$.dialogSendPeding.open();
+
+                    var isValid = false;// caso ja seja pendente
+                    if (this.data.estado == 1) {
+                        isValid = true;
+                    } else if (this._validateSendPending()) {
+                        isValid = true;
+                    }
+                    if (isValid)
+                        this.$.dialogSendPeding.open();
                 },
 
                 _sendaAnswer: function () {
@@ -1983,17 +1999,9 @@
                     }
                 },
 
-
-
                 _dlgSend: function () {
                     this.Anexos = null;
-                    var validar = false;// caso ja seja pendente
-                    if (this.data.estado == 1) {
-                        validar = true;
-                    } else if (this._validateSendPending()) {
-                        validar = true;
-                    }
-                    if (validar == true) {
+                    if (this._validateSend()) {
                         this._createLink();
                         var ajax_request = this.$.page_linkExist_ajax;
                         ajax_request.body = JSON.stringify(this._link);

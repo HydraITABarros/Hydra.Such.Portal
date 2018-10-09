@@ -155,6 +155,13 @@ namespace Hydra.Such.Data.Logic.Project
         {
             return GetById(navDatabaseName, navCompanyName, (int)navDimensionType, userId, respCenter);
         }
+
+        public bool ValidateDimensions(string navDatabaseName, string navCompanyName, string regionId, string functionalAreaId, string respCenterId)
+        {
+            //Obter as dimensões bloqueadas
+            //Obter dimensões bloqueadas (matriz)
+            return false;
+        }
     }
 }
 
