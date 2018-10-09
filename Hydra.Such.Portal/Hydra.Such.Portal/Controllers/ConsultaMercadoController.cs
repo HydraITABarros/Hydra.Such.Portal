@@ -1444,7 +1444,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
 
                 seleccaoEntidades.EmailFornecedor = _Email;
-                seleccaoEntidades.DataRecepcaoProposta = DateTime.Parse(data.DataRecepcaoProposta_Show);
+                seleccaoEntidades.DataRecepcaoProposta = data.DataRecepcaoProposta_Show == "" ? (DateTime?)null : DateTime.Parse(data.DataRecepcaoProposta_Show);
                 seleccaoEntidades.UtilizadorRecepcaoProposta = User.Identity.Name;
 
                 var dbUpdateResult = DBConsultaMercado.Update(seleccaoEntidades);
