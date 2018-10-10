@@ -2507,6 +2507,7 @@ namespace Hydra.Such.Portal.Controllers
                 row.CreateCell(18).SetCellValue("Grupo Registo IVA Produto");
                 row.CreateCell(19).SetCellValue("Criado Por");
                 row.CreateCell(20).SetCellValue("Data-Hora Criação");
+                row.CreateCell(21).SetCellValue("Cód. Categoria Produto");
 
                 if (dp.LinhasAcordoPrecos != null)
                 {
@@ -2536,6 +2537,7 @@ namespace Hydra.Such.Portal.Controllers
                         row.CreateCell(18).SetCellValue(item.GrupoRegistoIvaProduto.HasValue ? item.GrupoRegistoIvaProduto.ToString() : "");
                         row.CreateCell(19).SetCellValue(item.UserId.ToString());
                         row.CreateCell(20).SetCellValue(item.DataCriacao.HasValue ? item.DataCriacao.ToString() : "");
+                        row.CreateCell(21).SetCellValue(item.CodCategoriaProduto == null ? string.Empty : item.CodCategoriaProduto.ToString());
 
                         count++;
                     }
@@ -2621,6 +2623,7 @@ namespace Hydra.Such.Portal.Controllers
                                 nrow.GrupoRegistoIvaProdutoTexto = row.GetCell(18) != null ? row.GetCell(18).ToString() : "";
                                 nrow.UserId = row.GetCell(19) != null ? row.GetCell(19).ToString() : "";
                                 nrow.DataCriacaoTexto = row.GetCell(20) != null ? row.GetCell(20).ToString() : "";
+                                nrow.CodCategoriaProduto = row.GetCell(21) != null ? row.GetCell(21).ToString() : "";
 
                                 ListToCreate.Add(nrow);
                             }
@@ -5115,7 +5118,8 @@ namespace Hydra.Such.Portal.Controllers
                     DataCriacaoTexto = x.DataCriacao == null ? "" : Convert.ToDateTime(x.DataCriacao).ToShortDateString(),
                     TipoPreco = x.TipoPreco,
                     TipoPrecoTexto = x.TipoPreco == null ? "" : EnumerablesFixed.AP_TipoPreco.Where(y => y.Id == x.TipoPreco).SingleOrDefault()?.Value,
-                    GrupoRegistoIvaProduto = x.GrupoRegistoIvaProduto
+                    GrupoRegistoIvaProduto = x.GrupoRegistoIvaProduto,
+                    CodCategoriaProduto = x.CodCategoriaProduto
                 }).ToList();
 
                 //ORIGEM = 1 » Acordo Preços
@@ -5262,7 +5266,8 @@ namespace Hydra.Such.Portal.Controllers
                 GrupoRegistoIvaProduto = data.GrupoRegistoIvaProduto,
                 NomeFornecedor = DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName).Where(x => x.No_ == data.NoFornecedor).SingleOrDefault().Name,
                 UserId = User.Identity.Name,
-                DataCriacao = DateTime.Now
+                DataCriacao = DateTime.Now,
+                CodCategoriaProduto = data.CodCategoriaProduto
             });
 
             if (toCreate != null)
