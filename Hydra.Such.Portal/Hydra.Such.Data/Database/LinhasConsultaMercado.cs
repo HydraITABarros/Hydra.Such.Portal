@@ -30,6 +30,8 @@ namespace Hydra.Such.Data.Database
         public DateTime? ModificadoEm { get; set; }
         public string ModificadoPor { get; set; }
         public bool? MercadoLocal { get; set; }
+        public int? IdCompra { get; set; }
+        public bool? ValidadoCompras { get; set; }
 
         public ConsultaMercado NumConsultaMercadoNavigation { get; set; }
     }

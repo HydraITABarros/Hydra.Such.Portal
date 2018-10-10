@@ -206,7 +206,7 @@
         <iron-ajax url="/ConsultaMercado/EnviarEmailAUm" last-response="{{EnviarEmailAUmCreated}}" method="post" handle-as="json" id="page_enviarEmailAUm_ajax" on-response="_enviarEmailAUmResponse" content-type="application/json"></iron-ajax>
         <iron-ajax url="/ConsultaMercado/LoadAttachments" last-response="{{uploads}}" method="post" handle-as="json" id="page_update_ajax" content-type="application/json"></iron-ajax>
         <iron-ajax url="/ConsultaMercado/DeleteAttachments" last-response="{{deleted_files}}" method="post" handle-as="json" id="delete_files_ajax" on-response="_deletedAttachResponse" content-type="application/json"></iron-ajax>
-
+        <iron-ajax url="/ConsultaMercado/ValidacaoMercadoLocal" last-response="{{ValidacaoMercadoLocal}}" id="ajax_validacaoMercadoLocal_consultamercado" on-response="_validateLocalMarketResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <!-- Dropdowns -->
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{CBRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -1428,7 +1428,6 @@
                             <vaadin-grid-filter path="numProjecto"></vaadin-grid-filter>
                         </template>
                         <template>
-                            <!--<vaadin-text-field name="tabLinhasnumProjecto" id="tabLinhasnumProjecto" value="{{item.numProjecto}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}"></vaadin-text-field>-->
                             <vaadin-combo-box items="[[CBJobNo_List]]" id="tabLinhasnumProjecto" item-value-path="id" item-label-path="id" value="{{item.numProjecto}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}" style="text-align:left;">
                                 <template>
                                     <table width="200px">
@@ -1448,9 +1447,6 @@
                             <vaadin-grid-filter path="codProduto"></vaadin-grid-filter>
                         </template>
                         <template>
-
-
-                            <!--<vaadin-text-field name="tabLinhascodProduto" id="tabLinhascodProduto" value="{{item.codProduto}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}"></vaadin-text-field>-->
                             <vaadin-combo-box items="[[CBItems_List]]" id="tabLinhascodProduto" item-value-path="id" item-label-path="id" value="{{item.codProduto}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}" style="text-align:left;">
                                 <template>
                                     <table width="200px">
@@ -1509,8 +1505,6 @@
                             <vaadin-grid-filter path="codActividade"></vaadin-grid-filter>
                         </template>
                         <template>
-                            <!--<vaadin-text-field name="tabLinhascodActividade" id="tabLinhascodActividade" value="{{item.codActividade}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}"></vaadin-text-field>-->
-                            <te
                             <vaadin-combo-box items="[[CBActividades_List]]" id="tabLinhascodActividade" name="tabLinhascodActividade" item-value-path="id" item-label-path="id" value="{{item.codActividade}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}">
                                 <template>
                                     <table width="200px">
@@ -1530,9 +1524,6 @@
                             <vaadin-grid-filter path="codLocalizacao"></vaadin-grid-filter>
                         </template>
                         <template>
-
-                            <!--<vaadin-text-field name="tabLinhascodLocalizacao" id="tabLinhascodLocalizacao" value="{{item.codLocalizacao}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}"></vaadin-text-field>-->
-                            te
                             <vaadin-combo-box items="[[CBLocations]]" id="tabLinhascodLocalizacao" name="tabLinhascodLocalizacao" item-value-path="id" item-label-path="id" value="{{item.codLocalizacao}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}">
                                 <template>
                                     <table width="200px">
@@ -1552,8 +1543,6 @@
                             <vaadin-grid-filter path="codRegiao"></vaadin-grid-filter>
                         </template>
                         <template>
-
-                            <!--<vaadin-text-field name="tabLinhascodRegiao" id="tabLinhascodRegiao" value="{{item.codRegiao}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}"></vaadin-text-field>-->
                             <vaadin-combo-box items="[[CBRegions]]" id="tabLinhascodRegiao" name="tabLinhascodRegiao" item-value-path="id" item-label-path="id" value="{{item.codRegiao}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}">
                                 <template>
                                     <table width="200px">
@@ -1592,8 +1581,6 @@
                             <vaadin-grid-filter path="codCentroResponsabilidade"></vaadin-grid-filter>
                         </template>
                         <template>
-                            <!--<vaadin-text-field name="tabLinhascodCentroResponsabilidade" id="tabLinhascodCentroResponsabilidade" value="{{item.codCentroResponsabilidade}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}"></vaadin-text-field>-->
-                            te
                             <vaadin-combo-box items="[[CBResponsabilityCenterCodes]]" id="tabLinhascodCentroResponsabilidade" name="tabLinhascodCentroResponsabilidade" item-value-path="id" item-label-path="id" value="{{item.codCentroResponsabilidade}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}">
                                 <template>
                                     <table width="200px">
@@ -1673,7 +1660,32 @@
                         </template>
                         <template>
                             <center>
-                                <vaadin-checkbox checked="{{item.mercadoLocal}}"></vaadin-checkbox>
+                                <vaadin-checkbox checked="{{item.mercadoLocal}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
+                            </center>
+                        </template>
+                    </vaadin-grid-column>
+
+
+
+
+                    <vaadin-grid-column resizable hidden>
+                        <template class="header">
+                            <vaadin-grid-sorter path="idCompra" style="text-align:center;">IdCompra</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="idCompra"></vaadin-grid-filter>
+                        </template>
+                        <template>
+                            <vaadin-text-field name="tabLinhasidCompra" id="tabLinhasidCompra" value="{{item.idCompra}}" disabled="true"></vaadin-text-field>
+                        </template>
+                    </vaadin-grid-column>
+
+
+                    <vaadin-grid-column width="160px" resizable hidden>
+                        <template class="header">
+                            <vaadin-grid-sorter path="validadoCompras">Validado Compras</vaadin-grid-sorter>
+                        </template>
+                        <template>
+                            <center>
+                                <vaadin-checkbox checked="{{item.validadoCompras}}" disabled="true"></vaadin-checkbox>
                             </center>
                         </template>
                     </vaadin-grid-column>
@@ -1842,7 +1854,7 @@
                     },
                     _functionsMenuItems: {
                         type: Array,
-                        value: [{ value: 1, description: "Confirmar Pedido" }, { value: 2, description: "Fechar Pedido" }, { value: 3, description: "Estado Anterior" }, { value: 4, description: "Estado Seguinte" }, { value: 5, description: "Copiar Consulta Mercado" }, { value: 6, description: "Gerar Registo de Propostas" }],
+                        value: [{ value: 1, description: "Confirmar Pedido" }, { value: 2, description: "Fechar Pedido" }, { value: 3, description: "Estado Anterior" }, { value: 4, description: "Estado Seguinte" }, { value: 5, description: "Copiar Consulta Mercado" }, { value: 6, description: "Gerar Registo de Propostas" }, { value: 7, description: "Validação Mercado Local" }],
                     },
                     _CBItems: {
                         observer: '_setProductData'
@@ -1879,6 +1891,9 @@
                             break;
                         case 6://
                             this._gerarRegistoPropostas();
+                            break;
+                        case 7://
+                            this._validateLocalMarket();
                             break;
                     }
                 },
@@ -2113,6 +2128,22 @@
                     }
                 },
 
+
+                _validateLocalMarket: function () {
+                    this.$.ajax_validacaoMercadoLocal_consultamercado.body = JSON.stringify(this.data);
+                    this.$.ajax_validacaoMercadoLocal_consultamercado.generateRequest();
+                },
+                _validateLocalMarketResponse: function (e) {
+                    debugger
+                    if (this.ValidacaoMercadoLocal.eReasonCode == "1") {
+                        this._showMessage(this.ValidacaoMercadoLocal.eMessage);
+                    }
+                    else {
+                        this._showErrorMessage(this.ValidacaoMercadoLocal.eMessage);
+                    }
+                    this.$.page_databound_ajax.generateRequest();
+                },
+
                 _openToast: function (message) {
                     this.$.ToastMessage.text = message;
                     this.$.ToastMessage.open();
@@ -2224,7 +2255,8 @@
                         //criadoPor: this.$..value,
                         //modificadoEm: this.$..value,
                         //modificadoPor: this.$..value,
-                        dataEntregaPrevista_Show: this.$.dataEntregaPrevista.value
+                        dataEntregaPrevista_Show: this.$.dataEntregaPrevista.value,
+                        mercadoLocal: this.$.chkMercadoLocal.__data.checked
                     });
 
                     this.$.page_createLinha_ajax.generateRequest();
@@ -2301,7 +2333,10 @@
                         codUnidadeMedida: e.model.item.codUnidadeMedida,
                         dataEntregaPrevista: e.model.item.dataEntregaPrevista,
                         dataEntregaPrevista_Show: e.model.item.dataEntregaPrevista_Show,
-                        numRequisicao: e.model.item.numRequisicao
+                        numRequisicao: e.model.item.numRequisicao,
+                        mercadoLocal: e.model.item.mercadoLocal,
+                        idCompra: e.model.item.idCompra,
+                        validadoCompras: e.model.item.validadoCompras
                     });
                     this.$.page_updateLinhaConsultaMercado_ajax.generateRequest();
                     this.$.tabLinhas.clearCache();
