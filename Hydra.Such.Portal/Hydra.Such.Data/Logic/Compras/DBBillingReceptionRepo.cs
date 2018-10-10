@@ -31,7 +31,7 @@ namespace Hydra.Such.Data.Logic.ComprasML
         {
             if (item == null)
                 throw new ArgumentNullException("item");
-
+            item.DataUltimaInteracao = DateTime.Now.ToString("");
             ctx.RececaoFaturacao.Add(item.ParseToDB());
 
             return item;
@@ -39,6 +39,7 @@ namespace Hydra.Such.Data.Logic.ComprasML
 
         public BillingReceptionModel Update(BillingReceptionModel item)
         {
+            item.DataUltimaInteracao = DateTime.Now.ToString("");
             ctx.RececaoFaturacao.Update(item.ParseToDB());
             return item;
         }

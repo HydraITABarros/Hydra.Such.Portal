@@ -233,8 +233,8 @@ namespace Hydra.Such.Portal.Controllers
                     workflow.DataCriacao = DateTime.Now;
                     workflow.Destinatario = NovoDestinatario;
                     workflow.CodTipoProblema = item.TipoProblema;
-                    workflow.Area = item.AreaPendente;
-                    workflow.AreaWorkflow= item.AreaPendente2;  
+                    workflow.Area = item.AreaPendente2;
+                    workflow.AreaWorkflow= item.AreaPendente;  
                     workflow.Comentario = item.Descricao;
                     workflow.Descricao= item.DescricaoProblema;
                     workflow.Comentario = "Alteração Destinatário";

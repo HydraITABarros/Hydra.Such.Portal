@@ -484,7 +484,7 @@
                         <vaadin-text-field type="text" value="{{ data.destinatario }}" id="txtDestProblema" name="txtDestProblema" label="Destinatário" disabled></vaadin-text-field>
                     </div>
                     <div class="col-sm-2">
-                        <vaadin-date-picker value="{{data.dataRececao}}" id="txtData" label="Data" disabled></vaadin-date-picker>
+                        <vaadin-date-picker value="{{data.dataUltimaInteracao}}" id="txtData" label="Data" disabled></vaadin-date-picker>
                     </div>
                 </div>
                 <div class="row break_clear">
@@ -556,6 +556,22 @@
                             </template>
                         </template>
                     </vaadin-grid-column>
+
+                    <vaadin-grid-column width="160px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="area">Unidade</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="area"></vaadin-grid-filter>
+                        </template>
+                        <template>
+                            <template is="dom-if" if="{{ item.selected }}">
+
+                            </template>
+                            <template is="dom-if" if="{{ !item.selected }}">
+                                {{item.area}}
+                            </template>
+                        </template>
+                    </vaadin-grid-column>
+
                     <vaadin-grid-column width="160px" resizable>
                         <template class="header">
                             <vaadin-grid-sorter path="utilizador">Destinatário</vaadin-grid-sorter>
@@ -1260,7 +1276,7 @@
                     '_preventDocumentDuplicates(data.dataDocFornecedor, data.numDocFornecedor, data.codFornecedor)'
                 ],
                 ready: function () {
-               
+
 
 
                     if (this._billingReceptionId != null && this._billingReceptionId != "") {
@@ -1330,9 +1346,9 @@
                 _hiddeButtons: function () {
                     if (this.data.estado == 1) {
                         this._nameButtonSend = "Enviar";
-                        if (this.data.areaPendente2 == "Contabilidade") {
+                        if (this.data.areaPendente == "Contabilidade") {
                             this._hiddeAnswerButton = true;
-                        } else if (this.data.areaPendente2 == "Aprovisionamento") {
+                        } else if (this.data.areaPendente == "Aprovisionamento") {
                             if (this._rfperfil == "Aprovisionamento") {
                                 this._hiddeAnswerButton = false;
                                 this._showHiddenProvisioning = true;
@@ -1359,7 +1375,7 @@
                 },
 
                 _supplierSelected: function (e) {
-                    //Seleção de encomenda seleciona fornecedor. Se encomenda já está selecionada e o fornecedor é o mesmo não é necessário obter novamente as encomendas 
+                    //Seleção de encomenda seleciona fornecedor. Se encomenda já está selecionada e o fornecedor é o mesmo não é necessário obter novamente as encomendas
                     var needsToLoadOrders = false;
                     var ordersElem = this.$.sbOrders;
                     if (ordersElem && ordersElem.activeItem) {
@@ -1382,7 +1398,7 @@
                     if (order != null) {
                         var vendorId = new String(this.$.sbVendors.value).valueOf();
                         var vendorIdFromOrder = new String(order.buyFromVendorNo).valueOf();
-                        
+
                         if (vendorId != vendorIdFromOrder) {
                             this.$.sbVendors.value = order.buyFromVendorNo;
                         }
@@ -1952,7 +1968,7 @@
 
                 _dlgSendUA: function () {
                     if (this._validateInputForSendingToUPs()) {
-                        
+
                         var idmotivo = this.$.cmbUAProblems.value;
                         var descricao = this.$.cmbUAProblems.selectedItem.value;
 
@@ -1985,8 +2001,8 @@
                             destinatario: this.destinatariosReenvio,
                             comentario: this.$.txtCommentUAdgl.value,
                             enderecoFornecedor: selVendor.email,
-                            area: this.centroResp,
-                            areaWorkflow: this.areaUPUAS,
+                            area: this.areaUPUAS,
+                            areaWorkflow: this.data.areaPendente,
                             attached: this.Anexos,
                             attachedIs: Anexados
                         };
@@ -2042,13 +2058,13 @@
 
                 _updateDestinationResponse: function (e) {
                     if (e.detail.status === 200) {
-                        if (updateDestinItem != undefined) {
-                            this._openToastError(this.updatedItem.eMessage);
-                        } else {
+                        if (this.updateDestinItem != undefined) {
+
                             this.$.getPendingTotal_ajax.body = JSON.stringify(this.data);
                             this.$.getPendingTotal_ajax.generateRequest();
                             this._openToast("Destinatário Actualizado");
-
+                        } else {
+                            this._openToastError(this.updateDestinItem.eMessage);
                         }
                     }
                     else {
@@ -2183,7 +2199,7 @@
                             }
                             break;
                         case 5:
-                            if (this.data.estado != 3 && this.data.areaPendente2 != "") {
+                            if (this.data.estado != 3 && this.data.areaPendente != "") {
                                 if (confirm("Pretende alterar o estado para Resolvido?")) {
                                     this.data.estado = item.value;
                                     this.$.setState_ajax.body = JSON.stringify(this.data);
@@ -2291,7 +2307,7 @@
                     return param;
                 },
                 _areaUPUASChanged: function (e) {
-                    
+
                     this.centroResp = "";
                     this.destinatariosReenvio = "";
                     //this.$.cmbCentrosResponsabilidade.items = {};
