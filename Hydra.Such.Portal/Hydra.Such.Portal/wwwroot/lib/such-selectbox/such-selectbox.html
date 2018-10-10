@@ -517,6 +517,7 @@
                         $(_this.$.selectBoxModal).one('hidden.bs.modal', function () {
                             _this.$.input.blur();
                             _this.validate();
+                            _this.dispatchEvent(new CustomEvent('change', { value: _this.value }));
                         })
                         $(_this.$.selectBoxModal).appendTo("body");
                     }
@@ -526,9 +527,8 @@
                         if (!item) {
                             return;
                         }
-
                         _this.value = _this._getFieldValue(_this['value-path'], item);
-                        _this.dispatchEvent(new CustomEvent('change', { value: _this.value }));
+
                         _this.valueText = _this._getFieldValue(_this['text-path'], item);
                         $(_this.$.selectBoxModal).modal('hide');
 
@@ -538,6 +538,7 @@
 
                         //this.value = value;
                         this._setSelected();
+
                     }
 
                     validate() {
