@@ -71,6 +71,7 @@ namespace Hydra.Such.Data.NAV
                     Prices_Including_VATSpecified = purchFromSupplier.PricesIncludingVAT.HasValue,
                     Down_Payment = purchFromSupplier.InAdvance.HasValue ? purchFromSupplier.InAdvance.Value : false,
                     Down_PaymentSpecified = purchFromSupplier.InAdvance.HasValue,
+                    Vendor_Mail = purchFromSupplier.Vendor_Mail,
                 }
             };
             

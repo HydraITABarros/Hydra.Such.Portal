@@ -55,31 +55,9 @@
             </style>
         </custom-style>
 
-        <iron-ajax url="/ConsultaMercado/GetAllConsultaMercado"
-                   last-response="{{result}}"
-                   method="post"
-                   handle-as="json"
-                   id="grid_databound_ajax"
-                   content-type="application/json">
-        </iron-ajax>
-
-        <iron-ajax url="/ConsultaMercado/CreateConsultaMercado"
-                   last-response="{{NewConsultaMercado}}"
-                   method="post"
-                   handle-as="json"
-                   id="ajax_createconsulta"
-                   on-response="_newConsultaMercadoResponse"
-                   content-type="application/json">
-        </iron-ajax>
-
-        <iron-ajax url="/ConsultaMercado/ExportToExcel_ConsultaMercado"
-                   last-response="{{export}}"
-                   id="ajax_Export"
-                   method="post"
-                   handle-as="json"
-                   on-response="_exportEXCELResponse"
-                   content-type="application/json">
-        </iron-ajax>
+        <iron-ajax url="/ConsultaMercado/GetAllConsultaMercado" last-response="{{result}}" method="post" handle-as="json" id="grid_databound_ajax" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/ConsultaMercado/CreateConsultaMercado" last-response="{{NewConsultaMercado}}" method="post" handle-as="json" id="ajax_createconsulta" on-response="_newConsultaMercadoResponse" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/ConsultaMercado/ExportToExcel_ConsultaMercado" last-response="{{export}}" id="ajax_Export" method="post" handle-as="json" on-response="_exportEXCELResponse" content-type="application/json"></iron-ajax>
 
         <div class="subMenu">
             <template is="dom-if" if="{{ _permissions.create }}">
@@ -411,6 +389,61 @@
                     {{item.numEncomenda}}
                 </template>
             </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.emailEnviado.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="emailEnviado">Email(s) Enviado(s)</vaadin-grid-sorter>
+                </template>
+                <template>
+                    <center>
+                        <vaadin-checkbox checked="{{item.emailEnviado}}" disabled></vaadin-checkbox>
+                    </center>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.regiaoMercadoLocal.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="regiaoMercadoLocal">Região Mercado Local</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="regiaoMercadoLocal" />
+                </template>
+                <template>
+                    {{item.regiaoMercadoLocal}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.dataEntregaFornecedor_Show.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="dataEntregaFornecedor_Show">Data Entrega Fornecedor</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataEntregaFornecedor_Show" />
+                </template>
+                <template>
+                    {{item.dataEntregaFornecedor_Show}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.dataRecolha_Show.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="dataRecolha_Show">Data Recolha</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataRecolha_Show" />
+                </template>
+                <template>
+                    {{item.dataRecolha_Show}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.dataEntregaArmazem_Show.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="dataEntregaArmazem_Show">Data Entrega no Armazém</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataEntregaArmazem_Show" />
+                </template>
+                <template>
+                    {{item.dataEntregaArmazem_Show}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.codComprador.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="codComprador">Cód. Comprador</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codComprador" />
+                </template>
+                <template>
+                    {{item.codComprador}}
+                </template>
+            </vaadin-grid-column>
         </vaadin-grid>
 
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
@@ -488,7 +521,7 @@
                 },
 
                 _exportEXCEL: function () {
-                    //debugger;
+                    debugger;
                     this.result[0].ColunasEXCEL = this._columns;
 
                     this.$.ajax_Export.body = JSON.stringify(this.result);
@@ -536,7 +569,13 @@
                         "valorAdjudicado": { hidden: false, label: "Valor Adjudicado" },
                         "codFormaPagamento": { hidden: false, label: "Cod. Forma Pagamento" },
                         "seleccaoEfectuada": { hidden: false, label: "Selecção Efectuada" },
-                        "numEncomenda": { hidden: false, label: "Nº Encomenda" }
+                        "numEncomenda": { hidden: false, label: "Nº Encomenda" },
+                        "emailEnviado": { hidden: false, label: "Email(s) Enviado(s)" },
+                        "regiaoMercadoLocal": { hidden: false, label: "Região Mercado Local" },
+                        "dataEntregaFornecedor_Show": { hidden: false, label: "Data Entrega Fornecedor" },
+                        "dataRecolha_Show": { hidden: false, label: "Data Recolha" },
+                        "dataEntregaArmazem_Show": { hidden: false, label: "Data Entrega no Armazém" },
+                        "codComprador": { hidden: false, label: "Cód. Comprador" }
                     };
 
                     if (localStorage["pedidocotacaoList.ToggleColumn"]) {
