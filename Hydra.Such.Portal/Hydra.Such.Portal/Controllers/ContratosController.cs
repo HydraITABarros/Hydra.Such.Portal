@@ -1194,9 +1194,9 @@ namespace Hydra.Such.Portal.Controllers
                             current = item.DataExpiração.Value;
                         }
                         
-                        if (totalLinesForCurrentInvoiceGroup.HasValue && totalLinesForCurrentInvoiceGroup.Value > 1)
+                        if (totalLinesForCurrentInvoiceGroup.HasValue && totalLinesForCurrentInvoiceGroup.Value > 0)
                         {
-                            RequisiçõesClienteContrato GetReqClientCont = DBContractClientRequisition.GetByContractAndGroup(item.NºContrato, contractLine.GrupoFatura);
+                            RequisiçõesClienteContrato GetReqClientCont = DBContractClientRequisition.GetByContractAndGroup(item.NºDeContrato, contractLine.GrupoFatura);
                             if (GetReqClientCont != null)
                             {
                                 lastInvoiceDate = GetReqClientCont.DataÚltimaFatura;

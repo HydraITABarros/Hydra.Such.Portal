@@ -607,7 +607,6 @@
                                             </template>
                                         </vaadin-grid-column>
 
-
                                         <vaadin-grid-column resizable hidden>
                                             <template class="header">
                                                 <vaadin-grid-sorter path="emailFornecedor" style="text-align:center;">EmailFornecedor</vaadin-grid-sorter>
@@ -635,7 +634,7 @@
                                             </template>
                                             <template>
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-date-picker id="_dataRecepcaoProposta" name="_dataRecepcaoProposta" value="{{item.dataRecepcaoProposta_Show}}" on-value-changed="_updateLinhaSeleccaoEntidade" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                                    <vaadin-date-picker id="_dataRecepcaoProposta" name="_dataRecepcaoProposta" value="{{item.dataRecepcaoProposta_Show}}" on-blur="_updateLinhaSeleccaoEntidade_DataRecepcaoProposta" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
                                                     {{item.dataRecepcaoProposta_Show}}
@@ -835,7 +834,6 @@
                                     </template>
                                 </vaadin-grid-column>
 
-
                                 <vaadin-grid-column hidden>
                                     <template class="header">
                                         <vaadin-grid-sorter path="fornecedor2Code" style="text-align:center;">fornecedor2Code</vaadin-grid-sorter>
@@ -942,7 +940,7 @@
                                             <span class="red2"><span class="glyphicon glyphicon-user red2"></span> &nbsp;&nbsp;{{fornecedor1}}</span>
                                         </template>
                                         <template>
-                                            <vaadin-text-field name="tabRegistoDePropostasfornecedor1Preco" id="tabRegistoDePropostasfornecedor1Preco" value="{{item.fornecedor1Preco}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !_permissions.update }}">
+                                            <vaadin-text-field name="tabRegistoDePropostasfornecedor1Preco" id="tabRegistoDePropostasfornecedor1Preco" value="{{item.fornecedor1Preco}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !enablefornecedor1 }}">
                                                 <div slot="suffix">€</div>
                                             </vaadin-text-field>
                                         </template>
@@ -951,7 +949,7 @@
                                         <template class="header">
                                         </template>
                                         <template>
-                                            <vaadin-checkbox id="tabRegistoDePropostasfornecedor1Select" checked="{{item.fornecedor1Select}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !_permissions.update }}" class="m-r--10"></vaadin-checkbox>
+                                            <vaadin-checkbox id="tabRegistoDePropostasfornecedor1Select" checked="{{item.fornecedor1Select}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !enablefornecedor1 }}" class="m-r--10"></vaadin-checkbox>
                                         </template>
                                     </vaadin-grid-column>
                                 </template>
@@ -962,7 +960,7 @@
                                             <span class="blue2"><span class="glyphicon glyphicon-user blue2"></span> &nbsp;&nbsp;{{fornecedor2}}</span>
                                         </template>
                                         <template>
-                                            <vaadin-text-field name="tabRegistoDePropostasfornecedor2Preco" id="tabRegistoDePropostasfornecedor2Preco" value="{{item.fornecedor2Preco}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !_permissions.update }}">
+                                            <vaadin-text-field name="tabRegistoDePropostasfornecedor2Preco" id="tabRegistoDePropostasfornecedor2Preco" value="{{item.fornecedor2Preco}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !enablefornecedor2 }}">
                                                 <div slot="suffix">€</div>
                                             </vaadin-text-field>
                                         </template>
@@ -971,7 +969,7 @@
                                         <template class="header">
                                         </template>
                                         <template>
-                                            <vaadin-checkbox id="tabRegistoDePropostasfornecedor2Select" checked="{{item.fornecedor2Select}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
+                                            <vaadin-checkbox id="tabRegistoDePropostasfornecedor2Select" checked="{{item.fornecedor2Select}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !enablefornecedor2 }}"></vaadin-checkbox>
                                         </template>
                                     </vaadin-grid-column>
                                 </template>
@@ -982,7 +980,7 @@
                                             <span class="green2"><span class="glyphicon glyphicon-user green2"></span> &nbsp;&nbsp;{{fornecedor3}}</span>
                                         </template>
                                         <template>
-                                            <vaadin-text-field name="tabRegistoDePropostasfornecedor3Preco" id="tabRegistoDePropostasfornecedor3Preco" value="{{item.fornecedor3Preco}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !_permissions.update }}">
+                                            <vaadin-text-field name="tabRegistoDePropostasfornecedor3Preco" id="tabRegistoDePropostasfornecedor3Preco" value="{{item.fornecedor3Preco}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !enablefornecedor3 }}">
                                                 <div slot="suffix">€</div>
                                             </vaadin-text-field>
                                         </template>
@@ -991,7 +989,7 @@
                                         <template class="header">
                                         </template>
                                         <template>
-                                            <vaadin-checkbox id="tabRegistoDePropostasfornecedor3Select" checked="{{item.fornecedor3Select}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
+                                            <vaadin-checkbox id="tabRegistoDePropostasfornecedor3Select" checked="{{item.fornecedor3Select}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !enablefornecedor3 }}"></vaadin-checkbox>
                                         </template>
                                     </vaadin-grid-column>
                                 </template>
@@ -1002,7 +1000,7 @@
                                             <span class="orange2"><span class="glyphicon glyphicon-user orange2"></span> &nbsp;&nbsp;{{fornecedor4}}</span>
                                         </template>
                                         <template>
-                                            <vaadin-text-field name="tabRegistoDePropostasfornecedor4Preco" id="tabRegistoDePropostasfornecedor4Preco" value="{{item.fornecedor4Preco}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !_permissions.update }}">
+                                            <vaadin-text-field name="tabRegistoDePropostasfornecedor4Preco" id="tabRegistoDePropostasfornecedor4Preco" value="{{item.fornecedor4Preco}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !enablefornecedor4 }}">
                                                 <div slot="suffix">€</div>
                                             </vaadin-text-field>
                                         </template>
@@ -1011,7 +1009,7 @@
                                         <template class="header">
                                         </template>
                                         <template>
-                                            <vaadin-checkbox id="tabRegistoDePropostasfornecedor4Select" checked="{{item.fornecedor4Select}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
+                                            <vaadin-checkbox id="tabRegistoDePropostasfornecedor4Select" checked="{{item.fornecedor4Select}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !enablefornecedor4 }}"></vaadin-checkbox>
                                         </template>
                                     </vaadin-grid-column>
                                 </template>
@@ -1022,7 +1020,7 @@
                                             <span class="yellow2"><span class="glyphicon glyphicon-user yellow2"></span> &nbsp;&nbsp;{{fornecedor5}}</span>
                                         </template>
                                         <template>
-                                            <vaadin-text-field name="tabRegistoDePropostasfornecedor5Preco" id="tabRegistoDePropostasfornecedor5Preco" value="{{item.fornecedor5Preco}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !_permissions.update }}">
+                                            <vaadin-text-field name="tabRegistoDePropostasfornecedor5Preco" id="tabRegistoDePropostasfornecedor5Preco" value="{{item.fornecedor5Preco}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !enablefornecedor5 }}">
                                                 <div slot="suffix">€</div>
                                             </vaadin-text-field>
                                         </template>
@@ -1031,7 +1029,7 @@
                                         <template class="header">
                                         </template>
                                         <template>
-                                            <vaadin-checkbox id="tabRegistoDePropostasfornecedor5Select" checked="{{item.fornecedor5Select}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
+                                            <vaadin-checkbox id="tabRegistoDePropostasfornecedor5Select" checked="{{item.fornecedor5Select}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !enablefornecedor5 }}"></vaadin-checkbox>
                                         </template>
                                     </vaadin-grid-column>
                                 </template>
@@ -1042,7 +1040,7 @@
                                             <span class="violet2"><span class="glyphicon glyphicon-user violet2"></span> &nbsp;&nbsp;{{fornecedor6}}</span>
                                         </template>
                                         <template>
-                                            <vaadin-text-field name="tabRegistoDePropostasfornecedor6Preco" id="tabRegistoDePropostasfornecedor6Preco" value="{{item.fornecedor6Preco}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !_permissions.update }}">
+                                            <vaadin-text-field name="tabRegistoDePropostasfornecedor6Preco" id="tabRegistoDePropostasfornecedor6Preco" value="{{item.fornecedor6Preco}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !enablefornecedor6 }}">
                                                 <div slot="suffix">€</div>
                                             </vaadin-text-field>
                                         </template>
@@ -1051,7 +1049,7 @@
                                         <template class="header">
                                         </template>
                                         <template>
-                                            <vaadin-checkbox id="tabRegistoDePropostasfornecedor6Select" checked="{{item.fornecedor6Select}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
+                                            <vaadin-checkbox id="tabRegistoDePropostasfornecedor6Select" checked="{{item.fornecedor6Select}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !enablefornecedor6 }}"></vaadin-checkbox>
                                         </template>
                                     </vaadin-grid-column>
                                 </template>
@@ -1575,9 +1573,6 @@
                             <vaadin-grid-filter path="codAreaFuncional"></vaadin-grid-filter>
                         </template>
                         <template>
-
-                            <!--<vaadin-text-field name="tabLinhascodAreaFuncional" id="tabLinhascodAreaFuncional" value="{{item.codAreaFuncional}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}"></vaadin-text-field>-->
-                            te
                             <vaadin-combo-box items="[[CBFunctionalAreas]]" id="tabLinhascodAreaFuncional" name="tabLinhascodAreaFuncional" item-value-path="id" item-label-path="id" value="{{item.codAreaFuncional}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}">
                                 <template>
                                     <table width="200px">
@@ -1798,6 +1793,30 @@
                         type: String,
                         value: ""
                     },
+                    enablefornecedor1: {
+                        type: Boolean,
+                        value: false
+                    },
+                    enablefornecedor2: {
+                        type: Boolean,
+                        value: false
+                    },
+                    enablefornecedor3: {
+                        type: Boolean,
+                        value: false
+                    },
+                    enablefornecedor4: {
+                        type: Boolean,
+                        value: false
+                    },
+                    enablefornecedor5: {
+                        type: Boolean,
+                        value: false
+                    },
+                    enablefornecedor6: {
+                        type: Boolean,
+                        value: false
+                    },
                     selected: {
                         type: Number,
                         value: 0
@@ -1890,7 +1909,6 @@
 
                             //this.$.contractlinecodesgrid_ajax.body = JSON.stringify(item.type);
                             //this.$.contractlinecodesgrid_ajax.generateRequest();
-
 
                             this.$.tabSelecaoEntidades.clearCache();
                         }
@@ -2349,7 +2367,6 @@
                     }
                 },
                 _updateLinhaSeleccaoEntidade: function (e) {
-                    debugger
                     this.$.page_updateLinhaSeleccaoEntidade_ajax.body = JSON.stringify({
                         idSeleccaoEntidades: e.model.item.idSeleccaoEntidades,
                         numConsultaMercado: e.model.item.numConsultaMercado,
@@ -2378,31 +2395,73 @@
                         this._showErrorMessage('Ocorreu um erro ao Actualizar a linha da Entidade.');
                     }
                 },
-
                 
                 _updateLinhaSeleccaoEntidade_DataRecepcaoProposta: function (e) {
-                    debugger
-                    var _self = this;
-
-                    this.$.page_updateLinhaSeleccaoEntidade_DataRecepcaoProposta_ajax.body = JSON.stringify({
-                        idSeleccaoEntidades: e.model.item.idSeleccaoEntidades,
-                        numConsultaMercado: e.model.item.numConsultaMercado,
-                        codFornecedor: e.model.item.codFornecedor,
-                        nomeFornecedor: e.model.item.nomeFornecedor,
-                        codActividade: e.model.item.codActividade,
-                        cidadeFornecedor: e.model.item.cidadeFornecedor,
-                        codTermosPagamento: e.model.item.codTermosPagamento,
-                        codFormaPagamento: e.model.item.codFormaPagamento,
-                        selecionado: e.model.item.selecionado,
-                        preferencial: e.model.item.preferencials,
-                        dataEnvioAoFornecedor: e.model.item.dataEnvioAoFornecedor,
-                        dataRecepcaoProposta: e.model.item.dataRecepcaoProposta,
-                        dataRecepcaoProposta_Show: e.model.item.dataRecepcaoProposta_Show,
-                        utilizadorEnvio: e.model.item.utilizadorEnvio,
-                        utilizadorRecepcaoProposta: e.model.item.utilizadorRecepcaoProposta
-                    });
-                    this.$.page_updateLinhaSeleccaoEntidade_DataRecepcaoProposta_ajax.generateRequest();
-                    this.$.tabSelecaoEntidades.clearCache();
+                    if (e.model.item.dataRecepcaoProposta == null) {
+                        if (e.model.item.dataRecepcaoProposta_Show != "") {
+                            this.$.page_updateLinhaSeleccaoEntidade_DataRecepcaoProposta_ajax.body = JSON.stringify({
+                                idSeleccaoEntidades: e.model.item.idSeleccaoEntidades,
+                                numConsultaMercado: e.model.item.numConsultaMercado,
+                                codFornecedor: e.model.item.codFornecedor,
+                                nomeFornecedor: e.model.item.nomeFornecedor,
+                                codActividade: e.model.item.codActividade,
+                                cidadeFornecedor: e.model.item.cidadeFornecedor,
+                                codTermosPagamento: e.model.item.codTermosPagamento,
+                                codFormaPagamento: e.model.item.codFormaPagamento,
+                                selecionado: e.model.item.selecionado,
+                                preferencial: e.model.item.preferencials,
+                                dataEnvioAoFornecedor: e.model.item.dataEnvioAoFornecedor,
+                                dataRecepcaoProposta: e.model.item.dataRecepcaoProposta,
+                                dataRecepcaoProposta_Show: e.model.item.dataRecepcaoProposta_Show,
+                                utilizadorEnvio: e.model.item.utilizadorEnvio,
+                                utilizadorRecepcaoProposta: e.model.item.utilizadorRecepcaoProposta
+                            });
+                            this.$.page_updateLinhaSeleccaoEntidade_DataRecepcaoProposta_ajax.generateRequest();
+                            this.$.tabSelecaoEntidades.clearCache();
+                        }
+                    }
+                    else if (e.model.item.dataRecepcaoProposta != null && e.model.item.dataRecepcaoProposta_Show == "") {
+                        this.$.page_updateLinhaSeleccaoEntidade_DataRecepcaoProposta_ajax.body = JSON.stringify({
+                            idSeleccaoEntidades: e.model.item.idSeleccaoEntidades,
+                            numConsultaMercado: e.model.item.numConsultaMercado,
+                            codFornecedor: e.model.item.codFornecedor,
+                            nomeFornecedor: e.model.item.nomeFornecedor,
+                            codActividade: e.model.item.codActividade,
+                            cidadeFornecedor: e.model.item.cidadeFornecedor,
+                            codTermosPagamento: e.model.item.codTermosPagamento,
+                            codFormaPagamento: e.model.item.codFormaPagamento,
+                            selecionado: e.model.item.selecionado,
+                            preferencial: e.model.item.preferencials,
+                            dataEnvioAoFornecedor: e.model.item.dataEnvioAoFornecedor,
+                            dataRecepcaoProposta: e.model.item.dataRecepcaoProposta,
+                            dataRecepcaoProposta_Show: e.model.item.dataRecepcaoProposta_Show,
+                            utilizadorEnvio: e.model.item.utilizadorEnvio,
+                            utilizadorRecepcaoProposta: e.model.item.utilizadorRecepcaoProposta
+                        });
+                        this.$.page_updateLinhaSeleccaoEntidade_DataRecepcaoProposta_ajax.generateRequest();
+                        this.$.tabSelecaoEntidades.clearCache();
+                    }
+                    else if (!e.model.item.dataRecepcaoProposta.startsWith(e.model.item.dataRecepcaoProposta_Show)) {
+                        this.$.page_updateLinhaSeleccaoEntidade_DataRecepcaoProposta_ajax.body = JSON.stringify({
+                            idSeleccaoEntidades: e.model.item.idSeleccaoEntidades,
+                            numConsultaMercado: e.model.item.numConsultaMercado,
+                            codFornecedor: e.model.item.codFornecedor,
+                            nomeFornecedor: e.model.item.nomeFornecedor,
+                            codActividade: e.model.item.codActividade,
+                            cidadeFornecedor: e.model.item.cidadeFornecedor,
+                            codTermosPagamento: e.model.item.codTermosPagamento,
+                            codFormaPagamento: e.model.item.codFormaPagamento,
+                            selecionado: e.model.item.selecionado,
+                            preferencial: e.model.item.preferencials,
+                            dataEnvioAoFornecedor: e.model.item.dataEnvioAoFornecedor,
+                            dataRecepcaoProposta: e.model.item.dataRecepcaoProposta,
+                            dataRecepcaoProposta_Show: e.model.item.dataRecepcaoProposta_Show,
+                            utilizadorEnvio: e.model.item.utilizadorEnvio,
+                            utilizadorRecepcaoProposta: e.model.item.utilizadorRecepcaoProposta
+                        });
+                        this.$.page_updateLinhaSeleccaoEntidade_DataRecepcaoProposta_ajax.generateRequest();
+                        this.$.tabSelecaoEntidades.clearCache();
+                    }
                 },
                 _updateLinhaSeleccaoEntidade_DataRecepcaoPropostaResponse: function (e) {
                     if (this.LinhaSeleccaoEntidade_DataRecepcaoPropostaUpdated == true) {
@@ -2746,6 +2805,20 @@
                                 //self.fornecedores["" + i] = ' ' + data.detail.response.registoDePropostas[0]['fornecedor' + i + 'Nome'];
                                 self["fornecedor" + i] = ' ' + data.detail.response.registoDePropostas[0]['fornecedor' + i + 'Nome'];
                                 self["hasfornecedor" + i] = true;
+
+                                for (var j = 0; j <= data.detail.response.seleccaoEntidades.length; j++) {
+                                    if (data.detail.response.seleccaoEntidades[j]['codFornecedor'] == data.detail.response.registoDePropostas[0]['fornecedor' + i + 'Code']) {
+                                        if (data.detail.response.seleccaoEntidades[j]['dataRecepcaoProposta'] == null) {
+                                            self["enablefornecedor" + i] = false;
+                                            break;
+                                        }
+                                        else {
+                                            self["enablefornecedor" + i] = true;
+                                            break;
+                                        }
+                                    }
+                                }
+
                             }
                         }
                     }
