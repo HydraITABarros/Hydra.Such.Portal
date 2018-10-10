@@ -887,6 +887,17 @@
                                         </template>
                                         <template>
                                             <template is="dom-if" if="{{ item.selected }}">
+
+
+                                                <!--<such-selectbox id="_CLGridSupplierProductCode" value="{{item.code}}" label="Cód. Produto"
+                                                                items="[[Products]]"
+                                                                text-path="code"
+                                                                value-path="code"
+                                                                fields='[{"field":"code", "name":"Cód. Produto"}, {"field":"name", "name":"Descrição"}, {"field":"name2", "name":"Descrição 2"}, {"field":"measureUnit", "name":"Unidade de Medida"}, {"field":"itemCategoryCode", "name":"Cód. Categoria"}, {"field":"productGroupCode", "name":"Cód. Grupo"}]'
+                                                                on-value-changed="_onProductInGridChanged">
+                                                </such-selectbox>-->
+
+
                                                 <vaadin-combo-box items="[[Products]]" id="_CLGridSupplierProductCode" name="_CLGridSupplierProductCode" item-value-path="code" item-label-path="code" value="{{item.code}}" disabled="{{ _setDisabled(item) }}" on-blur="_onProductInGridChanged">
                                                     <template>
                                                         <table width="180px">
@@ -1009,6 +1020,13 @@
                                         </template>
                                         <template>
                                             <template is="dom-if" if="{{ item.selected }}">
+                                                <!--<such-selectbox id="_CLGridProjectNo" value="[[item.projectNo]]" on-value-changed="_GridOrderChange" on-blur="_updateLinhaPreRequisicao"
+                                                                items="[[CBJobNo]]"
+                                                                text-path="no"
+                                                                value-path="no"
+                                                                fields='[{"field":"no", "name":"Nº Projecto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"globalDimension1", "name":"Dimensão Global 1"}, {"field":"globalDimension2", "name":"Dimensão Global 2"}]'
+                                                                disabled="{{ !_permissions.update }}">
+                                                </such-selectbox>-->
                                                 <vaadin-combo-box items="[[CBJobNo]]" id="_CLGridProjectNo" on-change="_GridOrderChange" name="_CLGridProjectNo" item-value-path="no" item-label-path="no" value="{{item.projectNo}}" disabled="{{ !_permissions.update }}" on-blur="_updateLinhaPreRequisicao">
                                                     <template>
                                                         <paper-icon-item>

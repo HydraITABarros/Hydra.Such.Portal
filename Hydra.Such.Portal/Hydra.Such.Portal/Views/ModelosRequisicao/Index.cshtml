@@ -43,6 +43,7 @@
         <link rel="stylesheet" href="/css/main.css" />
         <paper-toast id="ToastError" style="background-color:red" duration="4000" horizontalAlign="right"></paper-toast>
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
+
         <iron-ajax url="/ModelosRequisicao/GetRequisitionTemplates" id="ajax_getgrid" last-response="{{result}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/ModelosRequisicao/ExportToExcel_ModelosRequisicao"
@@ -92,23 +93,33 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.localMarketRegion.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="localMarketRegion">Região Mercado Local</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="localMarketRegion" />
-                </template>
-                <template>
-                    [[ _getLocalMarketRegionDescription(item.localMarketRegion) ]]
-                </template>
-            </vaadin-grid-column>
+            @*<vaadin-grid-column width="160px" resizable hidden$="{{ _columns.localMarketRegion.hidden }}">
+                    <template class="header">
+                        <vaadin-grid-sorter path="localMarketRegion">Região Mercado Local</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="localMarketRegion" />
+                    </template>
+                    <template>
+                        [[ _getLocalMarketRegionDescription(item.localMarketRegion) ]]
+                    </template>
+                </vaadin-grid-column>*@
 
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.localMarketDate.hidden }}">
+            @*<vaadin-grid-column width="160px" resizable hidden$="{{ _columns.localMarketDate.hidden }}">
+                    <template class="header">
+                        <vaadin-grid-sorter path="localMarketDate">Data Mercado Local</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="localMarketDate" />
+                    </template>
+                    <template>
+                        [[ _parseDateFormat(item.localMarketDate)]]
+                    </template>
+                </vaadin-grid-column>*@
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.comments.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="localMarketDate">Data Mercado Local</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="localMarketDate" />
+                    <vaadin-grid-sorter path="comments">Descrição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="comments" />
                 </template>
                 <template>
-                    [[ _parseDateFormat(item.localMarketDate)]]
+                    {{ item.comments }}
                 </template>
             </vaadin-grid-column>
 
@@ -142,45 +153,45 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.marketInquiryNo.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="marketInquiryNo">Nº Consulta Mercado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="marketInquiryNo" />
-                </template>
-                <template>
-                    {{item.marketInquiryNo}}
-                </template>
-            </vaadin-grid-column>
+            @*<vaadin-grid-column width="160px" resizable hidden$="{{ _columns.marketInquiryNo.hidden }}">
+                    <template class="header">
+                        <vaadin-grid-sorter path="marketInquiryNo">Nº Consulta Mercado</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="marketInquiryNo" />
+                    </template>
+                    <template>
+                        {{item.marketInquiryNo}}
+                    </template>
+                </vaadin-grid-column>*@
 
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.orderNo.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="orderNo">Nº Encomenda</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="orderNo" />
-                </template>
-                <template>
-                    {{item.orderNo}}
-                </template>
-            </vaadin-grid-column>
+            @*<vaadin-grid-column width="160px" resizable hidden$="{{ _columns.orderNo.hidden }}">
+                    <template class="header">
+                        <vaadin-grid-sorter path="orderNo">Nº Encomenda</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="orderNo" />
+                    </template>
+                    <template>
+                        {{item.orderNo}}
+                    </template>
+                </vaadin-grid-column>*@
 
             @*<vaadin-grid-column width="160px" resizable hidden$="{{ _columns.requestReclaimNo.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="requestReclaimNo">Nº Requisição Reclamada</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="requestReclaimNo" />
-                </template>
-                <template>
-                    {{item.requestReclaimNo}}
-                </template>
-            </vaadin-grid-column>*@
+                    <template class="header">
+                        <vaadin-grid-sorter path="requestReclaimNo">Nº Requisição Reclamada</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="requestReclaimNo" />
+                    </template>
+                    <template>
+                        {{item.requestReclaimNo}}
+                    </template>
+                </vaadin-grid-column>*@
 
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.requisitionDate.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="requisitionDate">Data requisição</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="requisitionDate" />
-                </template>
-                <template>
-                    [[ _parseDateFormat(item.requisitionDate)]]
-                </template>
-            </vaadin-grid-column>
+            @*<vaadin-grid-column width="160px" resizable hidden$="{{ _columns.requisitionDate.hidden }}">
+                    <template class="header">
+                        <vaadin-grid-sorter path="requisitionDate">Data requisição</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="requisitionDate" />
+                    </template>
+                    <template>
+                        [[ _parseDateFormat(item.requisitionDate)]]
+                    </template>
+                </vaadin-grid-column>*@
         </vaadin-grid>
     </template>
     <script>
@@ -307,15 +318,16 @@
             _startColumnToggle: function () {
                 var columns = {
                     "requisitionNo": { hidden: false, label: "Nº Requisição" },
-                    "localMarketRegion": { hidden: false, label: "Região Mercado Local" },
-                    "localMarketDate": { hidden: false, label: "Data Mercado Local" },
+                    //"localMarketRegion": { hidden: false, label: "Região Mercado Local" },
+                    //"localMarketDate": { hidden: false, label: "Data Mercado Local" },
                     "regionCode": { hidden: false, label: "Código Região" },
                     "functionalAreaCode": { hidden: false, label: "Código Área Funcional" },
                     "centerResponsibilityCode": { hidden: false, label: "Código Centro Responsabilidade" },
-                    "marketInquiryNo": { hidden: false, label: "Nº Consulta Mercado" },
-                    "orderNo": { hidden: false, label: "Nº Encomenda" },
+                    "comments": { hidden: false, label: "Observações" }
+                    //"marketInquiryNo": { hidden: false, label: "Nº Consulta Mercado" },
+                    //"orderNo": { hidden: false, label: "Nº Encomenda" },
                     //"requestReclaimNo": { hidden: false, label: "Nº Requisição Reclamada" },
-                    "requisitionDate": { hidden: false, label: "Data requisição" }
+                    //"requisitionDate": { hidden: false, label: "Data requisição" }
                 };
 
                 if (localStorage["requestmodels.ToggleColumn"]) {

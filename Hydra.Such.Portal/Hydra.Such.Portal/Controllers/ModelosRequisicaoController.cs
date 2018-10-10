@@ -86,6 +86,7 @@ namespace Hydra.Such.Portal.Controllers
             //ResponsabilityCenter
             if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
                 result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CenterResponsibilityCode));
+
             return Json(result.OrderByDescending(x => x.RequisitionNo));
         }
 
@@ -362,16 +363,16 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Nº Requisição");
                     Col = Col + 1;
                 }
-                if (dp["localMarketRegion"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("ERegião Mercado Local");
-                    Col = Col + 1;
-                }
-                if (dp["localMarketDate"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Data Mercado Local");
-                    Col = Col + 1;
-                }
+                //if (dp["localMarketRegion"]["hidden"].ToString() == "False")
+                //{
+                //    row.CreateCell(Col).SetCellValue("ERegião Mercado Local");
+                //    Col = Col + 1;
+                //}
+                //if (dp["localMarketDate"]["hidden"].ToString() == "False")
+                //{
+                //    row.CreateCell(Col).SetCellValue("Data Mercado Local");
+                //    Col = Col + 1;
+                //}
                 if (dp["regionCode"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Código Região");
@@ -387,26 +388,31 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Código Centro Responsabilidade");
                     Col = Col + 1;
                 }
-                if (dp["marketInquiryNo"]["hidden"].ToString() == "False")
+                if (dp["comments"]["hidden"].ToString() == "False")
                 {
-                    row.CreateCell(Col).SetCellValue("Nº Consulta Mercado");
+                    row.CreateCell(Col).SetCellValue("Observações");
                     Col = Col + 1;
                 }
-                if (dp["orderNo"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Nº Encomenda");
-                    Col = Col + 1;
-                }
+                //if (dp["marketInquiryNo"]["hidden"].ToString() == "False")
+                //{
+                //    row.CreateCell(Col).SetCellValue("Nº Consulta Mercado");
+                //    Col = Col + 1;
+                //}
+                //if (dp["orderNo"]["hidden"].ToString() == "False")
+                //{
+                //    row.CreateCell(Col).SetCellValue("Nº Encomenda");
+                //    Col = Col + 1;
+                //}
                 //if (dp["requestReclaimNo"]["hidden"].ToString() == "False")
                 //{
                 //    row.CreateCell(Col).SetCellValue("Nº Requisição Reclamada");
                 //    Col = Col + 1;
                 //}
-                if (dp["requisitionDate"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Data requisição");
-                    Col = Col + 1;
-                }
+                //if (dp["requisitionDate"]["hidden"].ToString() == "False")
+                //{
+                //    row.CreateCell(Col).SetCellValue("Data requisição");
+                //    Col = Col + 1;
+                //}
 
                 if (dp != null)
                 {
@@ -421,16 +427,16 @@ namespace Hydra.Such.Portal.Controllers
                             row.CreateCell(Col).SetCellValue(item.RequisitionNo);
                             Col = Col + 1;
                         }
-                        if (dp["localMarketRegion"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.LocalMarketRegion);
-                            Col = Col + 1;
-                        }
-                        if (dp["localMarketDate"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.LocalMarketDate.ToString());
-                            Col = Col + 1;
-                        }
+                        //if (dp["localMarketRegion"]["hidden"].ToString() == "False")
+                        //{
+                        //    row.CreateCell(Col).SetCellValue(item.LocalMarketRegion);
+                        //    Col = Col + 1;
+                        //}
+                        //if (dp["localMarketDate"]["hidden"].ToString() == "False")
+                        //{
+                        //    row.CreateCell(Col).SetCellValue(item.LocalMarketDate.ToString());
+                        //    Col = Col + 1;
+                        //}
                         if (dp["regionCode"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.RegionCode);
@@ -446,26 +452,31 @@ namespace Hydra.Such.Portal.Controllers
                             row.CreateCell(Col).SetCellValue(item.CenterResponsibilityCode);
                             Col = Col + 1;
                         }
-                        if (dp["marketInquiryNo"]["hidden"].ToString() == "False")
+                        if (dp["comments"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.MarketInquiryNo);
+                            row.CreateCell(Col).SetCellValue(item.Comments);
                             Col = Col + 1;
                         }
-                        if (dp["orderNo"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.OrderNo);
-                            Col = Col + 1;
-                        }
+                        //if (dp["marketInquiryNo"]["hidden"].ToString() == "False")
+                        //{
+                        //    row.CreateCell(Col).SetCellValue(item.MarketInquiryNo);
+                        //    Col = Col + 1;
+                        //}
+                        //if (dp["orderNo"]["hidden"].ToString() == "False")
+                        //{
+                        //    row.CreateCell(Col).SetCellValue(item.OrderNo);
+                        //    Col = Col + 1;
+                        //}
                         //if (dp["requestReclaimNo"]["hidden"].ToString() == "False")
                         //{
                         //    row.CreateCell(Col).SetCellValue(item.RequestReclaimNo);
                         //    Col = Col + 1;
                         //}
-                        if (dp["requisitionDate"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.RequisitionDate);
-                            Col = Col + 1;
-                        }
+                        //if (dp["requisitionDate"]["hidden"].ToString() == "False")
+                        //{
+                        //    row.CreateCell(Col).SetCellValue(item.RequisitionDate);
+                        //    Col = Col + 1;
+                        //}
                         count++;
                     }
                 }

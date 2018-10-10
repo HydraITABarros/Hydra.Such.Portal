@@ -522,6 +522,7 @@
             <vaadin-grid aria-label="Modelos de Requisições" class="editDialogGrid" selected-items={{selectedItems}} active-item="{{selectedItem}}" id="ModelRequisitionTable" items="[[resultModelRequisition]]">
                 <vaadin-grid-selection-column auto-select>
                 </vaadin-grid-selection-column>
+
                 <vaadin-grid-column width="160px" resizable>
                     <template class="header">
                         <vaadin-grid-sorter path="requisitionNo"> Nº Requisição</vaadin-grid-sorter>
@@ -531,33 +532,76 @@
                         {{item.requisitionNo}}
                     </template>
                 </vaadin-grid-column>
+
                 <vaadin-grid-column width="160px" resizable>
                     <template class="header">
-                        <vaadin-grid-sorter path="localCode"> Código Localização</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="localCode" />
+                        <vaadin-grid-sorter path="comments"> Descrição</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="comments" />
                     </template>
                     <template>
-                        [[_parseLocalCode(item.localCode)]]
+                        {{item.comments}}
                     </template>
                 </vaadin-grid-column>
+
                 <vaadin-grid-column width="160px" resizable>
                     <template class="header">
-                        <vaadin-grid-sorter path="unitFoodProduction">Unidade Produtiva Alimentação</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="unitFoodProduction" />
+                        <vaadin-grid-sorter path="regionCode"> Cód. Região</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="regionCode" />
                     </template>
                     <template>
-                        [[ _parseUnitFoodProd(item.unitFoodProduction) ]]
+                        {{item.regionCode}}
                     </template>
                 </vaadin-grid-column>
+
                 <vaadin-grid-column width="160px" resizable>
                     <template class="header">
-                        <vaadin-grid-sorter path="receivedDate">Data Receção</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="receivedDate" />
+                        <vaadin-grid-sorter path="functionalAreaCode"> Cód. Área Funcional</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="functionalAreaCode" />
                     </template>
                     <template>
-                        [[ _parseDateFormat(item.receivedDate) ]]
+                        {{item.functionalAreaCode}}
                     </template>
                 </vaadin-grid-column>
+
+                <vaadin-grid-column width="160px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="centerResponsibilityCode"> Cód. Centro Responsabilidade</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="centerResponsibilityCode" />
+                    </template>
+                    <template>
+                        {{item.centerResponsibilityCode}}
+                    </template>
+                </vaadin-grid-column>
+
+                @*<vaadin-grid-column width="160px" resizable>
+            <template class="header">
+                <vaadin-grid-sorter path="localCode"> Código Localização</vaadin-grid-sorter>
+                <vaadin-grid-filter path="localCode" />
+            </template>
+            <template>
+                [[_parseLocalCode(item.localCode)]]
+            </template>
+        </vaadin-grid-column>*@
+
+                @*<vaadin-grid-column width="160px" resizable>
+            <template class="header">
+                <vaadin-grid-sorter path="unitFoodProduction">Unidade Produtiva Alimentação</vaadin-grid-sorter>
+                <vaadin-grid-filter path="unitFoodProduction" />
+            </template>
+            <template>
+                [[ _parseUnitFoodProd(item.unitFoodProduction) ]]
+            </template>
+        </vaadin-grid-column>*@
+
+                @*<vaadin-grid-column width="160px" resizable>
+            <template class="header">
+                <vaadin-grid-sorter path="receivedDate">Data Receção</vaadin-grid-sorter>
+                <vaadin-grid-filter path="receivedDate" />
+            </template>
+            <template>
+                [[ _parseDateFormat(item.receivedDate) ]]
+            </template>
+        </vaadin-grid-column>*@
             </vaadin-grid>
             <div class="buttons">
                 <paper-button class="btnSave" raised on-tap="_confirm"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
