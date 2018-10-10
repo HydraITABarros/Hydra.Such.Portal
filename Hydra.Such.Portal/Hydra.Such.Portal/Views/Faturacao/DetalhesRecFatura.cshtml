@@ -484,7 +484,7 @@
                         <vaadin-text-field type="text" value="{{ data.destinatario }}" id="txtDestProblema" name="txtDestProblema" label="Destinatário" disabled></vaadin-text-field>
                     </div>
                     <div class="col-sm-2">
-                        <vaadin-date-picker value="{{data.dataRececao}}" id="txtData" label="Data" disabled></vaadin-date-picker>
+                        <vaadin-date-picker value="{{data.dataUltimaInteracao}}" id="txtData" label="Data" disabled></vaadin-date-picker>
                     </div>
                 </div>
                 <div class="row break_clear">
@@ -556,6 +556,22 @@
                             </template>
                         </template>
                     </vaadin-grid-column>
+
+                    <vaadin-grid-column width="160px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="area">Unidade</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="area"></vaadin-grid-filter>
+                        </template>
+                        <template>
+                            <template is="dom-if" if="{{ item.selected }}">
+
+                            </template>
+                            <template is="dom-if" if="{{ !item.selected }}">
+                                {{item.area}}
+                            </template>
+                        </template>
+                    </vaadin-grid-column>
+
                     <vaadin-grid-column width="160px" resizable>
                         <template class="header">
                             <vaadin-grid-sorter path="utilizador">Destinatário</vaadin-grid-sorter>
@@ -925,11 +941,11 @@
                     </vaadin-grid-column>
                     <vaadin-grid-column resizable>
                         <template class="header">
-                            <vaadin-grid-sorter path="estado">Estado</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="estado" />
+                            <vaadin-grid-sorter path="estadoDescricao">Estado</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="estadoDescricao" />
                         </template>
                         <template>
-                            [[ _clFormatStatus(item.estado) ]]
+                            {{ item.estadoDescricao }}
                         </template>
                     </vaadin-grid-column>
                     <vaadin-grid-column resizable>
@@ -1260,7 +1276,7 @@
                     '_preventDocumentDuplicates(data.dataDocFornecedor, data.numDocFornecedor, data.codFornecedor)'
                 ],
                 ready: function () {
-               
+
 
 
                     if (this._billingReceptionId != null && this._billingReceptionId != "") {
@@ -1330,9 +1346,9 @@
                 _hiddeButtons: function () {
                     if (this.data.estado == 1) {
                         this._nameButtonSend = "Enviar";
-                        if (this.data.areaPendente2 == "Contabilidade") {
+                        if (this.data.areaPendente == "Contabilidade") {
                             this._hiddeAnswerButton = true;
-                        } else if (this.data.areaPendente2 == "Aprovisionamento") {
+                        } else if (this.data.areaPendente == "Aprovisionamento") {
                             if (this._rfperfil == "Aprovisionamento") {
                                 this._hiddeAnswerButton = false;
                                 this._showHiddenProvisioning = true;
@@ -1359,7 +1375,7 @@
                 },
 
                 _supplierSelected: function (e) {
-                    //Seleção de encomenda seleciona fornecedor. Se encomenda já está selecionada e o fornecedor é o mesmo não é necessário obter novamente as encomendas 
+                    //Seleção de encomenda seleciona fornecedor. Se encomenda já está selecionada e o fornecedor é o mesmo não é necessário obter novamente as encomendas
                     var needsToLoadOrders = false;
                     var ordersElem = this.$.sbOrders;
                     if (ordersElem && ordersElem.activeItem) {
@@ -1382,7 +1398,7 @@
                     if (order != null) {
                         var vendorId = new String(this.$.sbVendors.value).valueOf();
                         var vendorIdFromOrder = new String(order.buyFromVendorNo).valueOf();
-                        
+
                         if (vendorId != vendorIdFromOrder) {
                             this.$.sbVendors.value = order.buyFromVendorNo;
                         }
@@ -1448,28 +1464,36 @@
                         this._openToastError("ATENÇÃO! Este documento já se encontra no estado: " + stateDescription);
                         return false;
                     }
-                    if (this.data.codFornecedor == "") {
+                    if (!this.data.codFornecedor || this.data.codFornecedor == "") {
                         this._openToastError("O Fornecedor tem que estar preenchido.");
                         return false;
                     }
-                    if (this.data.numDocFornecedor == "") {
+                    if (!this.data.numDocFornecedor || this.data.numDocFornecedor == "") {
                         this._openToastError("O Nº Documento do Fornecedor tem que estar preenchido.");
                         return false;
                     }
-                    if (this.data.valor == "") {
+                    if (!this.data.valor || this.data.valor == "") {
                         this._openToastError("O valor tem que estar preenchido.");
                         return false;
                     }
-                    if (this.data.codRegiao == "") {
+                    if (!this.data.codRegiao || this.data.codRegiao == "") {
                         this._openToastError("Tem que selecionar a Região.");
                         return false;
                     }
+                    return true;
+
+                },
+                _validateSend: function () {
                     if (this._isInternalDestination && this.problemascmb == "") {
                         this._openToastError("Tem que selecionar o problema.");
                         return false;
                     }
                     else if (!this._isInternalDestination && this.motivoscmb == "") {
                         this._openToastError("Tem que selecionar o motivo.");
+                        return false;
+                    }
+                    if (this.$.txtdestinatarioArea.value == "") {
+                        this._openToastError("Tem que inserir um destinatário.");
                         return false;
                     }
                     return true;
@@ -1836,7 +1860,15 @@
                     this.$.ToastMessageError.close();
                     this.$.ToastMessageSuccess.close();
                     this.$.uploadRequest.files = [];
-                    this.$.dialogSendPeding.open();
+
+                    var isValid = false;// caso ja seja pendente
+                    if (this.data.estado == 1) {
+                        isValid = true;
+                    } else if (this._validateSendPending()) {
+                        isValid = true;
+                    }
+                    if (isValid)
+                        this.$.dialogSendPeding.open();
                 },
 
                 _sendaAnswer: function () {
@@ -1936,7 +1968,7 @@
 
                 _dlgSendUA: function () {
                     if (this._validateInputForSendingToUPs()) {
-                        
+
                         var idmotivo = this.$.cmbUAProblems.value;
                         var descricao = this.$.cmbUAProblems.selectedItem.value;
 
@@ -1969,8 +2001,8 @@
                             destinatario: this.destinatariosReenvio,
                             comentario: this.$.txtCommentUAdgl.value,
                             enderecoFornecedor: selVendor.email,
-                            area: this.centroResp,
-                            areaWorkflow: this.areaUPUAS,
+                            area: this.areaUPUAS,
+                            areaWorkflow: this.data.areaPendente,
                             attached: this.Anexos,
                             attachedIs: Anexados
                         };
@@ -1983,17 +2015,9 @@
                     }
                 },
 
-
-
                 _dlgSend: function () {
                     this.Anexos = null;
-                    var validar = false;// caso ja seja pendente
-                    if (this.data.estado == 1) {
-                        validar = true;
-                    } else if (this._validateSendPending()) {
-                        validar = true;
-                    }
-                    if (validar == true) {
+                    if (this._validateSend()) {
                         this._createLink();
                         var ajax_request = this.$.page_linkExist_ajax;
                         ajax_request.body = JSON.stringify(this._link);
@@ -2034,13 +2058,13 @@
 
                 _updateDestinationResponse: function (e) {
                     if (e.detail.status === 200) {
-                        if (updateDestinItem != undefined) {
-                            this._openToastError(this.updatedItem.eMessage);
-                        } else {
+                        if (this.updateDestinItem != undefined) {
+
                             this.$.getPendingTotal_ajax.body = JSON.stringify(this.data);
                             this.$.getPendingTotal_ajax.generateRequest();
                             this._openToast("Destinatário Actualizado");
-
+                        } else {
+                            this._openToastError(this.updateDestinItem.eMessage);
                         }
                     }
                     else {
@@ -2175,7 +2199,7 @@
                             }
                             break;
                         case 5:
-                            if (this.data.estado != 3 && this.data.areaPendente2 != "") {
+                            if (this.data.estado != 3 && this.data.areaPendente != "") {
                                 if (confirm("Pretende alterar o estado para Resolvido?")) {
                                     this.data.estado = item.value;
                                     this.$.setState_ajax.body = JSON.stringify(this.data);
@@ -2283,7 +2307,7 @@
                     return param;
                 },
                 _areaUPUASChanged: function (e) {
-                    
+
                     this.centroResp = "";
                     this.destinatariosReenvio = "";
                     //this.$.cmbCentrosResponsabilidade.items = {};

@@ -6,6 +6,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Hydra.Such.Data.Database;
 using Hydra.Such.Data.Logic;
+using Hydra.Such.Data.Logic.ComprasML;
 using Hydra.Such.Data.Logic.PedidoCotacao;
 using Hydra.Such.Data.NAV;
 using Hydra.Such.Data.ViewModel;
@@ -538,7 +539,6 @@ namespace Hydra.Such.Portal.Controllers
                     }
                 }
 
-
                 //NOVO MÉTODO, QUE SUBSTITUI O USO DAS DUAS TABELAS ACIMA, "Condicoes_Propostas_Fornecedores" e "Linhas_Condicoes_Propostas_Fornecedores"
                 //GRAVA NA NOVA TABELA "Registo_De_Propostas"
                 //Para cada registo, inserir as linhas da consulta de mercado na tabela "Linhas_Condicoes_Propostas_Fornecedores"
@@ -546,7 +546,6 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     RegistoDePropostas registoDePropostas = DBConsultaMercado.Create(linhasConsultaMercado, _Alternativa, _config.NAVDatabaseName, _config.NAVCompanyName);
                 }
-                
 
                 consultaMercado = DBConsultaMercado.GetDetalheConsultaMercado(data.NumConsultaMercado);
 
@@ -559,6 +558,115 @@ namespace Hydra.Such.Portal.Controllers
             data.eReasonCode = -1;
             data.eMessage = "Aconteceu algo errado e não foi possível Gerar o Registo de Proposta!";
             return Json(data);
+        }
+
+        [HttpPost]
+        public JsonResult ValidacaoMercadoLocal([FromBody] ConsultaMercadoView item)
+        {
+            ErrorHandler result = new ErrorHandler
+            {
+                eReasonCode = 1,
+                eMessage = "Os Registos foram atualizados com sucesso."
+            };
+
+            if (item != null)
+            {
+                try
+                {
+                    if (!string.IsNullOrEmpty(item.RegiaoMercadoLocal))
+                    {
+                        List<LinhasConsultaMercadoView> linhasConsultaMercados = item.LinhasConsultaMercado.Where(x => x.MercadoLocal == true && x.Quantidade > 0).ToList();
+
+                        if (linhasConsultaMercados != null && linhasConsultaMercados.Count() > 0)
+                        {
+                            linhasConsultaMercados.ForEach(Linha =>
+                            {
+                                string Responsaveis = "";
+                                string Responsavel1 = "";
+                                string Responsavel2 = "";
+                                string Responsavel3 = "";
+                                string Responsavel4 = "";
+
+                                ConfigMercadoLocal ConfigMercadoLocal = DBConfigMercadoLocal.GetByID(item.RegiaoMercadoLocal);
+                                if (ConfigMercadoLocal != null)
+                                {
+                                    if (!string.IsNullOrEmpty(ConfigMercadoLocal.Responsavel1))
+                                        Responsavel1 = ConfigMercadoLocal.Responsavel1;
+                                    if (!string.IsNullOrEmpty(ConfigMercadoLocal.Responsavel2))
+                                        Responsavel2 = ConfigMercadoLocal.Responsavel2;
+                                    if (!string.IsNullOrEmpty(ConfigMercadoLocal.Responsavel3))
+                                        Responsavel3 = ConfigMercadoLocal.Responsavel3;
+                                    if (!string.IsNullOrEmpty(ConfigMercadoLocal.Responsavel4))
+                                        Responsavel4 = ConfigMercadoLocal.Responsavel4;
+                                    Responsaveis = "-" + Responsavel1 + "-" + Responsavel2 + "-" + Responsavel3 + "-" + Responsavel4 + "-";
+                                }
+
+                                Compras Compra = new Compras
+                                {
+                                    CodigoProduto = Linha.CodProduto,
+                                    Descricao = Linha.Descricao,
+                                    Descricao2 = Linha.Descricao2,
+                                    CodigoUnidadeMedida = Linha.CodUnidadeMedida,
+                                    Quantidade = Linha.Quantidade,
+                                    NoRequisicao = Linha.NumRequisicao,
+                                    NoLinhaRequisicao = Linha.LinhaRequisicao,
+                                    //Urgente = false,
+                                    NoProjeto = Linha.NumProjecto,
+                                    RegiaoMercadoLocal = item.RegiaoMercadoLocal,
+                                    Estado = 2, //0-"";1-"Aprovado";2-"Validado";3-"Recusado";4-"Tratado";
+                                    DataCriacao = DateTime.Now,
+                                    UtilizadorCriacao = User.Identity.Name,
+                                    DataMercadoLocal = DateTime.Now,
+                                    Responsaveis = Responsaveis,
+                                    NoConsultaMercado = Linha.NumConsultaMercado,
+                                    DataConsultaMercado = item.PedidoCotacaoCriadoEm
+                                };
+
+                                Compras CompraReq = DBCompras.Create(Compra);
+                                if (CompraReq != null)
+                                {
+                                    Linha.IdCompra = CompraReq.Id;
+                                    Linha.ValidadoCompras = true;
+
+                                    if (DBConsultaMercado.Update(DBConsultaMercado.CastLinhasConsultaMercadoViewToDB(Linha)) == null)
+                                    {
+                                        result.eReasonCode = 7;
+                                        result.eMessage = "Ocorreu um erro ao atualizar a linha da Consulta ao Mercado.";
+                                    }
+                                }
+                                else
+                                {
+                                    result.eReasonCode = 6;
+                                    result.eMessage = "Ocorreu um erro ao criar a Compra.";
+                                }
+
+                            });
+                        }
+
+                        else
+                        {
+                            result.eReasonCode = 5;
+                            result.eMessage = "Não foram encontradas linhas para Validar.";
+                        }
+                    }
+                    else
+                    {
+                        result.eReasonCode = 4;
+                        result.eMessage = "Preencha o campo Região Mercado Local no Cabeçalho.";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    result.eReasonCode = 3;
+                    result.eMessage = "Ocorreu um erro ao criar encomenda de compra (" + ex.Message + ")";
+                }
+            }
+            else
+            {
+                result.eReasonCode = 2;
+                result.eMessage = "Não é possivel validar o mercado local. A Consulta ao Mercado não pode ser nula.";
+            }
+            return Json(result);
         }
 
         [HttpPost]
@@ -1030,6 +1138,10 @@ namespace Hydra.Such.Portal.Controllers
                     data.eMessage += Environment.NewLine + email;
                 }
 
+                //Actualizar Tabela "Seleccao_Entidades", com Data de Envio Ao Fornecedor e com Utilizador Envio
+                fornecedor.DataEnvioAoFornecedor = DateTime.Now;
+                fornecedor.UtilizadorEnvio = User.Identity.Name;
+                DBConsultaMercado.Update(DBConsultaMercado.CastSeleccaoEntidadesViewToDB(fornecedor));
 
             }
 
@@ -1108,6 +1220,13 @@ namespace Hydra.Such.Portal.Controllers
 
             data.EmailEnviado = true;
             DBConsultaMercado.Update(data);
+
+
+            //Actualizar Tabela "Seleccao_Entidades", com Data de Envio Ao Fornecedor e com Utilizador Envio
+            SeleccaoEntidadesView fornecedor = data.SeleccaoEntidades.Where(x => x.CodFornecedor == Cod).First();
+            fornecedor.DataEnvioAoFornecedor = DateTime.Now;
+            fornecedor.UtilizadorEnvio = User.Identity.Name;
+            DBConsultaMercado.Update(DBConsultaMercado.CastSeleccaoEntidadesViewToDB(fornecedor));
 
             return Json(data);
         }
@@ -1233,7 +1352,8 @@ namespace Hydra.Such.Portal.Controllers
                     //linhaConsultaMercado.NumLinha = data.NumLinha;
                     NumProjecto = data.NumProjecto,
                     NumRequisicao = data.NumRequisicao,
-                    Quantidade = data.Quantidade
+                    Quantidade = data.Quantidade,
+                    MercadoLocal = data.MercadoLocal
                 };
 
                 var dbCreateResult = DBConsultaMercado.Create(linhaConsultaMercado);
@@ -1390,6 +1510,51 @@ namespace Hydra.Such.Portal.Controllers
                 }
 
                 seleccaoEntidades.EmailFornecedor = _Email;
+
+                //Verificar se a Data de Receção de Proposta é diferente da existente na BD
+                SeleccaoEntidades verificacao_Data = DBConsultaMercado.GetSeleccaoEntidadesID(data.IdSeleccaoEntidades);
+
+                if (verificacao_Data.DataRecepcaoProposta != data.DataRecepcaoProposta)
+                {
+                    seleccaoEntidades.DataRecepcaoProposta = DateTime.Now;
+                    seleccaoEntidades.UtilizadorRecepcaoProposta = User.Identity.Name;
+                }
+
+                var dbUpdateResult = DBConsultaMercado.Update(seleccaoEntidades);
+
+                if (dbUpdateResult != null)
+                    result = true;
+                else
+                    result = false;
+            }
+            catch (Exception ex)
+            {
+                //log
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateLinhaSeleccaoEntidade_DataRecepcaoProposta([FromBody] SeleccaoEntidadesView data)
+        {
+            bool result = false;
+            try
+            {
+                SeleccaoEntidades seleccaoEntidades = DBConsultaMercado.CastSeleccaoEntidadesViewToDB(data);
+
+                string _Email = string.Empty;
+                try
+                {
+                    _Email = DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName).Where(x => x.No_ == data.CodFornecedor).First().Email;
+                }
+                catch
+                {
+                    _Email = string.Empty;
+                }
+
+                seleccaoEntidades.EmailFornecedor = _Email;
+                seleccaoEntidades.DataRecepcaoProposta = data.DataRecepcaoProposta_Show == "" ? (DateTime?)null : DateTime.Parse(data.DataRecepcaoProposta_Show);
+                seleccaoEntidades.UtilizadorRecepcaoProposta = User.Identity.Name;
 
                 var dbUpdateResult = DBConsultaMercado.Update(seleccaoEntidades);
 
@@ -1602,6 +1767,13 @@ namespace Hydra.Such.Portal.Controllers
                 if (dp["seleccaoEfectuada"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Selecção Efectuada"); Col = Col + 1; }
                 if (dp["numEncomenda"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Encomenda"); Col = Col + 1; }
 
+                if (dp["emailEnviado"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Email(s) Enviado(s)"); Col = Col + 1; }
+                if (dp["regiaoMercadoLocal"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Região Mercado Local"); Col = Col + 1; }
+                if (dp["dataEntregaFornecedor_Show"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Entrega Fornecedor"); Col = Col + 1; }
+                if (dp["dataRecolha_Show"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Recolha"); Col = Col + 1; }
+                if (dp["dataEntregaArmazem_Show"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Entrega no Armazém"); Col = Col + 1; }
+                if (dp["codComprador"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Comprador"); Col = Col + 1; }
+
                 if (dp != null)
                 {
                     int count = 1;
@@ -1644,6 +1816,14 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["codFormaPagamento"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodFormaPagamento); Col = Col + 1; }
                         if (dp["seleccaoEfectuada"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.SeleccaoEfectuada.ToString()); Col = Col + 1; }
                         if (dp["numEncomenda"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.NumEncomenda == null ? string.Empty : item.NumEncomenda.ToString()); Col = Col + 1; }
+
+
+                        if (dp["emailEnviado"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.EmailEnviado.ToString()); Col = Col + 1; }
+                        if (dp["regiaoMercadoLocal"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RegiaoMercadoLocal == null ? string.Empty : item.RegiaoMercadoLocal.ToString()); Col = Col + 1; }
+                        if (dp["dataEntregaFornecedor_Show"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DataEntregaFornecedor.ToString()); Col = Col + 1; }
+                        if (dp["dataRecolha_Show"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DataRecolha.ToString()); Col = Col + 1; }
+                        if (dp["dataEntregaArmazem_Show"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DataEntregaArmazem.ToString()); Col = Col + 1; }
+                        if (dp["codComprador"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodComprador == null ? string.Empty : item.CodComprador.ToString()); Col = Col + 1; }
                         count++;
                     }
                 }

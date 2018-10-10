@@ -10,7 +10,7 @@
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
-<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
+<!--<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">-->
 <link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 <link rel="import" href="/lib/vaadin-upload/vaadin-upload.html" />
@@ -31,6 +31,9 @@
 <link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
 <link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
 <link rel="import" href="/lib/iron-form/iron-form.html" />
+
+<!--Datepicker com correção de bug que impede visualização nas grids -->
+<link rel="import" href="/lib/vaadin-date-picker-3.0.0-alpha1/vaadin-date-picker.html">
 
 <!--start ColumnToggle-->
 <link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
@@ -195,6 +198,7 @@
         <iron-ajax url="/ConsultaMercado/CreateLinhaSeleccaoEntidade" last-response="{{LinhaSeleccaoEntidadeCreated}}" method="post" handle-as="json" id="page_createLinhaSeleccaoEntidade_ajax" on-response="_createLinhaSeleccaoEntidadeResponse" content-type="application/json"></iron-ajax>
         <iron-ajax url="/ConsultaMercado/DeleteLinhaSeleccaoEntidade" last-response="{{LinhaSeleccaoEntidadeDeleted}}" method="post" handle-as="json" id="page_deleteLinhaSeleccaoEntidade_ajax" on-response="_deleteLinhaSeleccaoEntidadeResponse" content-type="application/json"></iron-ajax>
         <iron-ajax url="/ConsultaMercado/UpdateLinhaSeleccaoEntidade" last-response="{{LinhaSeleccaoEntidadeUpdated}}" method="post" handle-as="json" id="page_updateLinhaSeleccaoEntidade_ajax" on-response="_updateLinhaSeleccaoEntidadeResponse" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/ConsultaMercado/UpdateLinhaSeleccaoEntidade_DataRecepcaoProposta" last-response="{{LinhaSeleccaoEntidade_DataRecepcaoPropostaUpdated}}" method="post" handle-as="json" id="page_updateLinhaSeleccaoEntidade_DataRecepcaoProposta_ajax" on-response="_updateLinhaSeleccaoEntidade_DataRecepcaoPropostaResponse" content-type="application/json"></iron-ajax>
         <iron-ajax url="/ConsultaMercado/GerarRegistoPropostas" last-response="{{gerarRegistoPropostasData}}" method="post" handle-as="json" id="ajax_gerarRegistoPropostas" on-response="_gerarRegistoPropostasResponse" content-type="application/json"></iron-ajax>
         <iron-ajax url="/ConsultaMercado/UpdateLinhaRegistoProposta" last-response="{{LinhaRegistoPropostaUpdated}}" method="post" handle-as="json" id="page_updateLinhaRegistoProposta_ajax" on-response="_updateLinhaRegistoPropostaResponse" content-type="application/json"></iron-ajax>
         <iron-ajax url="/ConsultaMercado/CriarEncomenda" last-response="{{CriarEncomendaCreated}}" method="post" handle-as="json" id="page_criarEncomenda_ajax" on-response="_criarEncomendaResponse" content-type="application/json"></iron-ajax>
@@ -202,7 +206,7 @@
         <iron-ajax url="/ConsultaMercado/EnviarEmailAUm" last-response="{{EnviarEmailAUmCreated}}" method="post" handle-as="json" id="page_enviarEmailAUm_ajax" on-response="_enviarEmailAUmResponse" content-type="application/json"></iron-ajax>
         <iron-ajax url="/ConsultaMercado/LoadAttachments" last-response="{{uploads}}" method="post" handle-as="json" id="page_update_ajax" content-type="application/json"></iron-ajax>
         <iron-ajax url="/ConsultaMercado/DeleteAttachments" last-response="{{deleted_files}}" method="post" handle-as="json" id="delete_files_ajax" on-response="_deletedAttachResponse" content-type="application/json"></iron-ajax>
-
+        <iron-ajax url="/ConsultaMercado/ValidacaoMercadoLocal" last-response="{{ValidacaoMercadoLocal}}" id="ajax_validacaoMercadoLocal_consultamercado" on-response="_validateLocalMarketResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <!-- Dropdowns -->
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{CBRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -505,7 +509,7 @@
 
                             <div class="row break_clear">
                                 <div class="panel-body">
-                                    <vaadin-grid id="tabSelecaoEntidades" aria-label="TabelaSelecaoEntidades" items="[[ data.seleccaoEntidades ]]" class="editDialogGrid" selected-items={{selectedItems}} active-item="{{selectedItem}}" multi-sort="true">
+                                    <vaadin-grid id="tabSelecaoEntidades" aria-label="TabelaSelecaoEntidades" items="[[ data.seleccaoEntidades ]]" class="grid" active-item="{{_SelectedLine}}" multi-sort="true">
                                         <vaadin-grid-column resizable hidden>
                                             <template class="header">
                                                 <vaadin-grid-sorter path="idSeleccaoEntidades" style="text-align:center;">ID</vaadin-grid-sorter>
@@ -600,6 +604,61 @@
                                                         </table>
                                                     </template>
                                                 </vaadin-combo-box>
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable hidden>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="emailFornecedor" style="text-align:center;">EmailFornecedor</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="emailFornecedor"></vaadin-grid-filter>
+                                            </template>
+                                            <template>
+                                                <vaadin-text-field name="tabSelecaoEntidadesemailFornecedor" id="tabSelecaoEntidadesemailFornecedor" value="{{item.emailFornecedor}}" disabled="true"></vaadin-text-field>
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable hidden>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="dataEnvioAoFornecedor" style="text-align:center;">DataEnvioAoFornecedor</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataEnvioAoFornecedor"></vaadin-grid-filter>
+                                            </template>
+                                            <template>
+                                                <vaadin-text-field name="tabSelecaoEntidadesdataEnvioAoFornecedor" id="tabSelecaoEntidadesdataEnvioAoFornecedor" value="{{item.dataEnvioAoFornecedor}}" disabled="true"></vaadin-text-field>
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column width="150px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="dataRecepcaoProposta">Data Recepção Proposta</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataRecepcaoProposta" />
+                                            </template>
+                                            <template>
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <vaadin-date-picker id="_dataRecepcaoProposta" name="_dataRecepcaoProposta" value="{{item.dataRecepcaoProposta_Show}}" on-blur="_updateLinhaSeleccaoEntidade_DataRecepcaoProposta" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                                </template>
+                                                <template is="dom-if" if="{{ !item.selected }}">
+                                                    {{item.dataRecepcaoProposta_Show}}
+                                                </template>
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable hidden>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="utilizadorEnvio" style="text-align:center;">UtilizadorEnvio</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="utilizadorEnvio"></vaadin-grid-filter>
+                                            </template>
+                                            <template>
+                                                <vaadin-text-field name="tabSelecaoEntidadesutilizadorEnvio" id="tabSelecaoEntidadesutilizadorEnvio" value="{{item.utilizadorEnvio}}" disabled="true"></vaadin-text-field>
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable hidden>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="utilizadorRecepcaoProposta" style="text-align:center;">UtilizadorRecepcaoProposta</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="utilizadorRecepcaoProposta"></vaadin-grid-filter>
+                                            </template>
+                                            <template>
+                                                <vaadin-text-field name="tabSelecaoEntidadesutilizadorRecepcaoProposta" id="tabSelecaoEntidadesutilizadorRecepcaoProposta" value="{{item.utilizadorRecepcaoProposta}}" disabled="true"></vaadin-text-field>
                                             </template>
                                         </vaadin-grid-column>
 
@@ -775,7 +834,6 @@
                                     </template>
                                 </vaadin-grid-column>
 
-
                                 <vaadin-grid-column hidden>
                                     <template class="header">
                                         <vaadin-grid-sorter path="fornecedor2Code" style="text-align:center;">fornecedor2Code</vaadin-grid-sorter>
@@ -882,7 +940,7 @@
                                             <span class="red2"><span class="glyphicon glyphicon-user red2"></span> &nbsp;&nbsp;{{fornecedor1}}</span>
                                         </template>
                                         <template>
-                                            <vaadin-text-field name="tabRegistoDePropostasfornecedor1Preco" id="tabRegistoDePropostasfornecedor1Preco" value="{{item.fornecedor1Preco}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !_permissions.update }}">
+                                            <vaadin-text-field name="tabRegistoDePropostasfornecedor1Preco" id="tabRegistoDePropostasfornecedor1Preco" value="{{item.fornecedor1Preco}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !enablefornecedor1 }}">
                                                 <div slot="suffix">€</div>
                                             </vaadin-text-field>
                                         </template>
@@ -891,7 +949,7 @@
                                         <template class="header">
                                         </template>
                                         <template>
-                                            <vaadin-checkbox id="tabRegistoDePropostasfornecedor1Select" checked="{{item.fornecedor1Select}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !_permissions.update }}" class="m-r--10"></vaadin-checkbox>
+                                            <vaadin-checkbox id="tabRegistoDePropostasfornecedor1Select" checked="{{item.fornecedor1Select}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !enablefornecedor1 }}" class="m-r--10"></vaadin-checkbox>
                                         </template>
                                     </vaadin-grid-column>
                                 </template>
@@ -902,7 +960,7 @@
                                             <span class="blue2"><span class="glyphicon glyphicon-user blue2"></span> &nbsp;&nbsp;{{fornecedor2}}</span>
                                         </template>
                                         <template>
-                                            <vaadin-text-field name="tabRegistoDePropostasfornecedor2Preco" id="tabRegistoDePropostasfornecedor2Preco" value="{{item.fornecedor2Preco}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !_permissions.update }}">
+                                            <vaadin-text-field name="tabRegistoDePropostasfornecedor2Preco" id="tabRegistoDePropostasfornecedor2Preco" value="{{item.fornecedor2Preco}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !enablefornecedor2 }}">
                                                 <div slot="suffix">€</div>
                                             </vaadin-text-field>
                                         </template>
@@ -911,7 +969,7 @@
                                         <template class="header">
                                         </template>
                                         <template>
-                                            <vaadin-checkbox id="tabRegistoDePropostasfornecedor2Select" checked="{{item.fornecedor2Select}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
+                                            <vaadin-checkbox id="tabRegistoDePropostasfornecedor2Select" checked="{{item.fornecedor2Select}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !enablefornecedor2 }}"></vaadin-checkbox>
                                         </template>
                                     </vaadin-grid-column>
                                 </template>
@@ -922,7 +980,7 @@
                                             <span class="green2"><span class="glyphicon glyphicon-user green2"></span> &nbsp;&nbsp;{{fornecedor3}}</span>
                                         </template>
                                         <template>
-                                            <vaadin-text-field name="tabRegistoDePropostasfornecedor3Preco" id="tabRegistoDePropostasfornecedor3Preco" value="{{item.fornecedor3Preco}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !_permissions.update }}">
+                                            <vaadin-text-field name="tabRegistoDePropostasfornecedor3Preco" id="tabRegistoDePropostasfornecedor3Preco" value="{{item.fornecedor3Preco}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !enablefornecedor3 }}">
                                                 <div slot="suffix">€</div>
                                             </vaadin-text-field>
                                         </template>
@@ -931,7 +989,7 @@
                                         <template class="header">
                                         </template>
                                         <template>
-                                            <vaadin-checkbox id="tabRegistoDePropostasfornecedor3Select" checked="{{item.fornecedor3Select}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
+                                            <vaadin-checkbox id="tabRegistoDePropostasfornecedor3Select" checked="{{item.fornecedor3Select}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !enablefornecedor3 }}"></vaadin-checkbox>
                                         </template>
                                     </vaadin-grid-column>
                                 </template>
@@ -942,7 +1000,7 @@
                                             <span class="orange2"><span class="glyphicon glyphicon-user orange2"></span> &nbsp;&nbsp;{{fornecedor4}}</span>
                                         </template>
                                         <template>
-                                            <vaadin-text-field name="tabRegistoDePropostasfornecedor4Preco" id="tabRegistoDePropostasfornecedor4Preco" value="{{item.fornecedor4Preco}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !_permissions.update }}">
+                                            <vaadin-text-field name="tabRegistoDePropostasfornecedor4Preco" id="tabRegistoDePropostasfornecedor4Preco" value="{{item.fornecedor4Preco}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !enablefornecedor4 }}">
                                                 <div slot="suffix">€</div>
                                             </vaadin-text-field>
                                         </template>
@@ -951,7 +1009,7 @@
                                         <template class="header">
                                         </template>
                                         <template>
-                                            <vaadin-checkbox id="tabRegistoDePropostasfornecedor4Select" checked="{{item.fornecedor4Select}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
+                                            <vaadin-checkbox id="tabRegistoDePropostasfornecedor4Select" checked="{{item.fornecedor4Select}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !enablefornecedor4 }}"></vaadin-checkbox>
                                         </template>
                                     </vaadin-grid-column>
                                 </template>
@@ -962,7 +1020,7 @@
                                             <span class="yellow2"><span class="glyphicon glyphicon-user yellow2"></span> &nbsp;&nbsp;{{fornecedor5}}</span>
                                         </template>
                                         <template>
-                                            <vaadin-text-field name="tabRegistoDePropostasfornecedor5Preco" id="tabRegistoDePropostasfornecedor5Preco" value="{{item.fornecedor5Preco}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !_permissions.update }}">
+                                            <vaadin-text-field name="tabRegistoDePropostasfornecedor5Preco" id="tabRegistoDePropostasfornecedor5Preco" value="{{item.fornecedor5Preco}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !enablefornecedor5 }}">
                                                 <div slot="suffix">€</div>
                                             </vaadin-text-field>
                                         </template>
@@ -971,7 +1029,7 @@
                                         <template class="header">
                                         </template>
                                         <template>
-                                            <vaadin-checkbox id="tabRegistoDePropostasfornecedor5Select" checked="{{item.fornecedor5Select}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
+                                            <vaadin-checkbox id="tabRegistoDePropostasfornecedor5Select" checked="{{item.fornecedor5Select}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !enablefornecedor5 }}"></vaadin-checkbox>
                                         </template>
                                     </vaadin-grid-column>
                                 </template>
@@ -982,7 +1040,7 @@
                                             <span class="violet2"><span class="glyphicon glyphicon-user violet2"></span> &nbsp;&nbsp;{{fornecedor6}}</span>
                                         </template>
                                         <template>
-                                            <vaadin-text-field name="tabRegistoDePropostasfornecedor6Preco" id="tabRegistoDePropostasfornecedor6Preco" value="{{item.fornecedor6Preco}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !_permissions.update }}">
+                                            <vaadin-text-field name="tabRegistoDePropostasfornecedor6Preco" id="tabRegistoDePropostasfornecedor6Preco" value="{{item.fornecedor6Preco}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !enablefornecedor6 }}">
                                                 <div slot="suffix">€</div>
                                             </vaadin-text-field>
                                         </template>
@@ -991,7 +1049,7 @@
                                         <template class="header">
                                         </template>
                                         <template>
-                                            <vaadin-checkbox id="tabRegistoDePropostasfornecedor6Select" checked="{{item.fornecedor6Select}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
+                                            <vaadin-checkbox id="tabRegistoDePropostasfornecedor6Select" checked="{{item.fornecedor6Select}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !enablefornecedor6 }}"></vaadin-checkbox>
                                         </template>
                                     </vaadin-grid-column>
                                 </template>
@@ -1155,7 +1213,6 @@
                             </div>
                         </div>
                     </div>
-
 
                     <!-- Tab Anexos-->
                     <div class="panel panel-default">
@@ -1371,7 +1428,6 @@
                             <vaadin-grid-filter path="numProjecto"></vaadin-grid-filter>
                         </template>
                         <template>
-                            <!--<vaadin-text-field name="tabLinhasnumProjecto" id="tabLinhasnumProjecto" value="{{item.numProjecto}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}"></vaadin-text-field>-->
                             <vaadin-combo-box items="[[CBJobNo_List]]" id="tabLinhasnumProjecto" item-value-path="id" item-label-path="id" value="{{item.numProjecto}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}" style="text-align:left;">
                                 <template>
                                     <table width="200px">
@@ -1391,9 +1447,6 @@
                             <vaadin-grid-filter path="codProduto"></vaadin-grid-filter>
                         </template>
                         <template>
-
-
-                            <!--<vaadin-text-field name="tabLinhascodProduto" id="tabLinhascodProduto" value="{{item.codProduto}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}"></vaadin-text-field>-->
                             <vaadin-combo-box items="[[CBItems_List]]" id="tabLinhascodProduto" item-value-path="id" item-label-path="id" value="{{item.codProduto}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}" style="text-align:left;">
                                 <template>
                                     <table width="200px">
@@ -1433,9 +1486,6 @@
                             <vaadin-grid-filter path="codUnidadeMedida"></vaadin-grid-filter>
                         </template>
                         <template>
-
-                            <!--<vaadin-text-field name="tabLinhascodUnidadeMedida" id="tabLinhascodUnidadeMedida" value="{{item.codUnidadeMedida}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}"></vaadin-text-field>-->
-                            te
                             <vaadin-combo-box items="[[LCBMeasuresUnit]]" id="tabLinhascodUnidadeMedida" name="tabLinhascodUnidadeMedida" item-value-path="id" item-label-path="id" value="{{item.codUnidadeMedida}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}">
                                 <template>
                                     <table width="200px">
@@ -1455,8 +1505,6 @@
                             <vaadin-grid-filter path="codActividade"></vaadin-grid-filter>
                         </template>
                         <template>
-                            <!--<vaadin-text-field name="tabLinhascodActividade" id="tabLinhascodActividade" value="{{item.codActividade}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}"></vaadin-text-field>-->
-                            <te
                             <vaadin-combo-box items="[[CBActividades_List]]" id="tabLinhascodActividade" name="tabLinhascodActividade" item-value-path="id" item-label-path="id" value="{{item.codActividade}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}">
                                 <template>
                                     <table width="200px">
@@ -1476,9 +1524,6 @@
                             <vaadin-grid-filter path="codLocalizacao"></vaadin-grid-filter>
                         </template>
                         <template>
-
-                            <!--<vaadin-text-field name="tabLinhascodLocalizacao" id="tabLinhascodLocalizacao" value="{{item.codLocalizacao}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}"></vaadin-text-field>-->
-                            te
                             <vaadin-combo-box items="[[CBLocations]]" id="tabLinhascodLocalizacao" name="tabLinhascodLocalizacao" item-value-path="id" item-label-path="id" value="{{item.codLocalizacao}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}">
                                 <template>
                                     <table width="200px">
@@ -1498,8 +1543,6 @@
                             <vaadin-grid-filter path="codRegiao"></vaadin-grid-filter>
                         </template>
                         <template>
-
-                            <!--<vaadin-text-field name="tabLinhascodRegiao" id="tabLinhascodRegiao" value="{{item.codRegiao}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}"></vaadin-text-field>-->
                             <vaadin-combo-box items="[[CBRegions]]" id="tabLinhascodRegiao" name="tabLinhascodRegiao" item-value-path="id" item-label-path="id" value="{{item.codRegiao}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}">
                                 <template>
                                     <table width="200px">
@@ -1519,9 +1562,6 @@
                             <vaadin-grid-filter path="codAreaFuncional"></vaadin-grid-filter>
                         </template>
                         <template>
-
-                            <!--<vaadin-text-field name="tabLinhascodAreaFuncional" id="tabLinhascodAreaFuncional" value="{{item.codAreaFuncional}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}"></vaadin-text-field>-->
-                            te
                             <vaadin-combo-box items="[[CBFunctionalAreas]]" id="tabLinhascodAreaFuncional" name="tabLinhascodAreaFuncional" item-value-path="id" item-label-path="id" value="{{item.codAreaFuncional}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}">
                                 <template>
                                     <table width="200px">
@@ -1541,8 +1581,6 @@
                             <vaadin-grid-filter path="codCentroResponsabilidade"></vaadin-grid-filter>
                         </template>
                         <template>
-                            <!--<vaadin-text-field name="tabLinhascodCentroResponsabilidade" id="tabLinhascodCentroResponsabilidade" value="{{item.codCentroResponsabilidade}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}"></vaadin-text-field>-->
-                            te
                             <vaadin-combo-box items="[[CBResponsabilityCenterCodes]]" id="tabLinhascodCentroResponsabilidade" name="tabLinhascodCentroResponsabilidade" item-value-path="id" item-label-path="id" value="{{item.codCentroResponsabilidade}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}">
                                 <template>
                                     <table width="200px">
@@ -1622,7 +1660,32 @@
                         </template>
                         <template>
                             <center>
-                                <vaadin-checkbox checked="{{item.mercadoLocal}}"></vaadin-checkbox>
+                                <vaadin-checkbox checked="{{item.mercadoLocal}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
+                            </center>
+                        </template>
+                    </vaadin-grid-column>
+
+
+
+
+                    <vaadin-grid-column resizable hidden>
+                        <template class="header">
+                            <vaadin-grid-sorter path="idCompra" style="text-align:center;">IdCompra</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="idCompra"></vaadin-grid-filter>
+                        </template>
+                        <template>
+                            <vaadin-text-field name="tabLinhasidCompra" id="tabLinhasidCompra" value="{{item.idCompra}}" disabled="true"></vaadin-text-field>
+                        </template>
+                    </vaadin-grid-column>
+
+
+                    <vaadin-grid-column width="160px" resizable hidden>
+                        <template class="header">
+                            <vaadin-grid-sorter path="validadoCompras">Validado Compras</vaadin-grid-sorter>
+                        </template>
+                        <template>
+                            <center>
+                                <vaadin-checkbox checked="{{item.validadoCompras}}" disabled="true"></vaadin-checkbox>
                             </center>
                         </template>
                     </vaadin-grid-column>
@@ -1742,6 +1805,30 @@
                         type: String,
                         value: ""
                     },
+                    enablefornecedor1: {
+                        type: Boolean,
+                        value: false
+                    },
+                    enablefornecedor2: {
+                        type: Boolean,
+                        value: false
+                    },
+                    enablefornecedor3: {
+                        type: Boolean,
+                        value: false
+                    },
+                    enablefornecedor4: {
+                        type: Boolean,
+                        value: false
+                    },
+                    enablefornecedor5: {
+                        type: Boolean,
+                        value: false
+                    },
+                    enablefornecedor6: {
+                        type: Boolean,
+                        value: false
+                    },
                     selected: {
                         type: Number,
                         value: 0
@@ -1767,7 +1854,7 @@
                     },
                     _functionsMenuItems: {
                         type: Array,
-                        value: [{ value: 1, description: "Confirmar Pedido" }, { value: 2, description: "Fechar Pedido" }, { value: 3, description: "Estado Anterior" }, { value: 4, description: "Estado Seguinte" }, { value: 5, description: "Copiar Consulta Mercado" }, { value: 6, description: "Gerar Registo de Propostas" }],
+                        value: [{ value: 1, description: "Confirmar Pedido" }, { value: 2, description: "Fechar Pedido" }, { value: 3, description: "Estado Anterior" }, { value: 4, description: "Estado Seguinte" }, { value: 5, description: "Copiar Consulta Mercado" }, { value: 6, description: "Gerar Registo de Propostas" }, { value: 7, description: "Validação Mercado Local" }],
                     },
                     _CBItems: {
                         observer: '_setProductData'
@@ -1777,6 +1864,9 @@
                     },
                     _reportserverurl: {
                         type: String,
+                    },
+                    _SelectedLine: {
+                        observer: '_lineSelected'
                     }
                 },
                 _functionsMenuItemSelected: function (e) {
@@ -1802,6 +1892,9 @@
                         case 6://
                             this._gerarRegistoPropostas();
                             break;
+                        case 7://
+                            this._validateLocalMarket();
+                            break;
                     }
                 },
                 ready: function () {
@@ -1815,6 +1908,26 @@
 
                     this.$.page_update_ajax.body = JSON.stringify({ "id": this._id });
                     this.$.page_update_ajax.generateRequest();
+                },
+
+                _lineSelected: function (item) {
+                    if (item != null) {
+                        var oSel = this.data.seleccaoEntidades.find(x => x.selected);
+                        if (oSel != undefined) {
+                            oSel.selected = false;
+                        }
+
+                        var sel = this.data.seleccaoEntidades.find(x => x == item);
+                        if (sel != undefined) {
+
+                            this.data.seleccaoEntidades.find(x => x == item).selected = true;
+
+                            //this.$.contractlinecodesgrid_ajax.body = JSON.stringify(item.type);
+                            //this.$.contractlinecodesgrid_ajax.generateRequest();
+
+                            this.$.tabSelecaoEntidades.clearCache();
+                        }
+                    }
                 },
 
                 _validateData: function () {
@@ -2015,6 +2128,20 @@
                     }
                 },
 
+                _validateLocalMarket: function () {
+                    this.$.ajax_validacaoMercadoLocal_consultamercado.body = JSON.stringify(this.data);
+                    this.$.ajax_validacaoMercadoLocal_consultamercado.generateRequest();
+                },
+                _validateLocalMarketResponse: function (e) {
+                    if (this.ValidacaoMercadoLocal.eReasonCode == "1") {
+                        this._showMessage(this.ValidacaoMercadoLocal.eMessage);
+                    }
+                    else {
+                        this._showErrorMessage(this.ValidacaoMercadoLocal.eMessage);
+                    }
+                    this.$.page_databound_ajax.generateRequest();
+                },
+
                 _openToast: function (message) {
                     this.$.ToastMessage.text = message;
                     this.$.ToastMessage.open();
@@ -2126,7 +2253,8 @@
                         //criadoPor: this.$..value,
                         //modificadoEm: this.$..value,
                         //modificadoPor: this.$..value,
-                        dataEntregaPrevista_Show: this.$.dataEntregaPrevista.value
+                        dataEntregaPrevista_Show: this.$.dataEntregaPrevista.value,
+                        mercadoLocal: this.$.chkMercadoLocal.__data.checked
                     });
 
                     this.$.page_createLinha_ajax.generateRequest();
@@ -2203,7 +2331,10 @@
                         codUnidadeMedida: e.model.item.codUnidadeMedida,
                         dataEntregaPrevista: e.model.item.dataEntregaPrevista,
                         dataEntregaPrevista_Show: e.model.item.dataEntregaPrevista_Show,
-                        numRequisicao: e.model.item.numRequisicao
+                        numRequisicao: e.model.item.numRequisicao,
+                        mercadoLocal: e.model.item.mercadoLocal,
+                        idCompra: e.model.item.idCompra,
+                        validadoCompras: e.model.item.validadoCompras
                     });
                     this.$.page_updateLinhaConsultaMercado_ajax.generateRequest();
                     this.$.tabLinhas.clearCache();
@@ -2274,18 +2405,99 @@
                         numConsultaMercado: e.model.item.numConsultaMercado,
                         codFornecedor: e.model.item.codFornecedor,
                         nomeFornecedor: e.model.item.nomeFornecedor,
-                        codActividade: e.model.item.codActividade,
                         cidadeFornecedor: e.model.item.cidadeFornecedor,
                         codTermosPagamento: e.model.item.codTermosPagamento,
                         codFormaPagamento: e.model.item.codFormaPagamento,
                         selecionado: e.model.item.selecionado,
-                        preferencial: e.model.item.preferencial
+                        preferencial: e.model.item.preferencials,
+                        dataEnvioAoFornecedor: e.model.item.dataEnvioAoFornecedor,
+                        dataRecepcaoProposta: e.model.item.dataRecepcaoProposta,
+                        dataRecepcaoProposta_Show: e.model.item.dataRecepcaoProposta_Show,
+                        utilizadorEnvio: e.model.item.utilizadorEnvio,
+                        utilizadorRecepcaoProposta: e.model.item.utilizadorRecepcaoProposta
                     });
                     this.$.page_updateLinhaSeleccaoEntidade_ajax.generateRequest();
                     this.$.tabSelecaoEntidades.clearCache();
                 },
                 _updateLinhaSeleccaoEntidadeResponse: function (e) {
                     if (this.LinhaSeleccaoEntidadeUpdated == true) {
+                        this.$.page_databound_ajax.generateRequest();
+                        this._showMessage('Linha Entidade Actualizada com sucesso.');
+                    }
+                    else {
+                        this._showErrorMessage('Ocorreu um erro ao Actualizar a linha da Entidade.');
+                    }
+                },
+                
+                _updateLinhaSeleccaoEntidade_DataRecepcaoProposta: function (e) {
+                    if (e.model.item.dataRecepcaoProposta == null) {
+                        if (e.model.item.dataRecepcaoProposta_Show != "") {
+                            this.$.page_updateLinhaSeleccaoEntidade_DataRecepcaoProposta_ajax.body = JSON.stringify({
+                                idSeleccaoEntidades: e.model.item.idSeleccaoEntidades,
+                                numConsultaMercado: e.model.item.numConsultaMercado,
+                                codFornecedor: e.model.item.codFornecedor,
+                                nomeFornecedor: e.model.item.nomeFornecedor,
+                                codActividade: e.model.item.codActividade,
+                                cidadeFornecedor: e.model.item.cidadeFornecedor,
+                                codTermosPagamento: e.model.item.codTermosPagamento,
+                                codFormaPagamento: e.model.item.codFormaPagamento,
+                                selecionado: e.model.item.selecionado,
+                                preferencial: e.model.item.preferencials,
+                                dataEnvioAoFornecedor: e.model.item.dataEnvioAoFornecedor,
+                                dataRecepcaoProposta: e.model.item.dataRecepcaoProposta,
+                                dataRecepcaoProposta_Show: e.model.item.dataRecepcaoProposta_Show,
+                                utilizadorEnvio: e.model.item.utilizadorEnvio,
+                                utilizadorRecepcaoProposta: e.model.item.utilizadorRecepcaoProposta
+                            });
+                            this.$.page_updateLinhaSeleccaoEntidade_DataRecepcaoProposta_ajax.generateRequest();
+                            this.$.tabSelecaoEntidades.clearCache();
+                        }
+                    }
+                    else if (e.model.item.dataRecepcaoProposta != null && e.model.item.dataRecepcaoProposta_Show == "") {
+                        this.$.page_updateLinhaSeleccaoEntidade_DataRecepcaoProposta_ajax.body = JSON.stringify({
+                            idSeleccaoEntidades: e.model.item.idSeleccaoEntidades,
+                            numConsultaMercado: e.model.item.numConsultaMercado,
+                            codFornecedor: e.model.item.codFornecedor,
+                            nomeFornecedor: e.model.item.nomeFornecedor,
+                            codActividade: e.model.item.codActividade,
+                            cidadeFornecedor: e.model.item.cidadeFornecedor,
+                            codTermosPagamento: e.model.item.codTermosPagamento,
+                            codFormaPagamento: e.model.item.codFormaPagamento,
+                            selecionado: e.model.item.selecionado,
+                            preferencial: e.model.item.preferencials,
+                            dataEnvioAoFornecedor: e.model.item.dataEnvioAoFornecedor,
+                            dataRecepcaoProposta: e.model.item.dataRecepcaoProposta,
+                            dataRecepcaoProposta_Show: e.model.item.dataRecepcaoProposta_Show,
+                            utilizadorEnvio: e.model.item.utilizadorEnvio,
+                            utilizadorRecepcaoProposta: e.model.item.utilizadorRecepcaoProposta
+                        });
+                        this.$.page_updateLinhaSeleccaoEntidade_DataRecepcaoProposta_ajax.generateRequest();
+                        this.$.tabSelecaoEntidades.clearCache();
+                    }
+                    else if (!e.model.item.dataRecepcaoProposta.startsWith(e.model.item.dataRecepcaoProposta_Show)) {
+                        this.$.page_updateLinhaSeleccaoEntidade_DataRecepcaoProposta_ajax.body = JSON.stringify({
+                            idSeleccaoEntidades: e.model.item.idSeleccaoEntidades,
+                            numConsultaMercado: e.model.item.numConsultaMercado,
+                            codFornecedor: e.model.item.codFornecedor,
+                            nomeFornecedor: e.model.item.nomeFornecedor,
+                            codActividade: e.model.item.codActividade,
+                            cidadeFornecedor: e.model.item.cidadeFornecedor,
+                            codTermosPagamento: e.model.item.codTermosPagamento,
+                            codFormaPagamento: e.model.item.codFormaPagamento,
+                            selecionado: e.model.item.selecionado,
+                            preferencial: e.model.item.preferencials,
+                            dataEnvioAoFornecedor: e.model.item.dataEnvioAoFornecedor,
+                            dataRecepcaoProposta: e.model.item.dataRecepcaoProposta,
+                            dataRecepcaoProposta_Show: e.model.item.dataRecepcaoProposta_Show,
+                            utilizadorEnvio: e.model.item.utilizadorEnvio,
+                            utilizadorRecepcaoProposta: e.model.item.utilizadorRecepcaoProposta
+                        });
+                        this.$.page_updateLinhaSeleccaoEntidade_DataRecepcaoProposta_ajax.generateRequest();
+                        this.$.tabSelecaoEntidades.clearCache();
+                    }
+                },
+                _updateLinhaSeleccaoEntidade_DataRecepcaoPropostaResponse: function (e) {
+                    if (this.LinhaSeleccaoEntidade_DataRecepcaoPropostaUpdated == true) {
                         this.$.page_databound_ajax.generateRequest();
                         this._showMessage('Linha Entidade Actualizada com sucesso.');
                     }
@@ -2626,6 +2838,20 @@
                                 //self.fornecedores["" + i] = ' ' + data.detail.response.registoDePropostas[0]['fornecedor' + i + 'Nome'];
                                 self["fornecedor" + i] = ' ' + data.detail.response.registoDePropostas[0]['fornecedor' + i + 'Nome'];
                                 self["hasfornecedor" + i] = true;
+
+                                for (var j = 0; j <= data.detail.response.seleccaoEntidades.length; j++) {
+                                    if (data.detail.response.seleccaoEntidades[j]['codFornecedor'] == data.detail.response.registoDePropostas[0]['fornecedor' + i + 'Code']) {
+                                        if (data.detail.response.seleccaoEntidades[j]['dataRecepcaoProposta'] == null) {
+                                            self["enablefornecedor" + i] = false;
+                                            break;
+                                        }
+                                        else {
+                                            self["enablefornecedor" + i] = true;
+                                            break;
+                                        }
+                                    }
+                                }
+
                             }
                         }
                     }

@@ -35,6 +35,7 @@ namespace Hydra.Such.Data.ViewModel.Nutrition
         public string ProductUnitDescription { get; set; }
         public string DocumentNo { get; set; }
         public string Observation { get; set; }
+        public int? GrupoRegistoIvaProduto { get; set; }
 
     }
 }

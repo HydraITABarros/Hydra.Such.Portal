@@ -143,7 +143,7 @@ namespace Hydra.Such.Data.Logic.Contracts
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.RequisiçõesClienteContrato.Where(x => x.NºContrato == ContractNo && x.GrupoFatura == group).FirstOrDefault();
+                    return ctx.RequisiçõesClienteContrato.Where(x => x.NºContrato == ContractNo && x.GrupoFatura == group).OrderByDescending(x => x.DataInícioCompromisso).FirstOrDefault();
                 }
             }
             catch (Exception ex)

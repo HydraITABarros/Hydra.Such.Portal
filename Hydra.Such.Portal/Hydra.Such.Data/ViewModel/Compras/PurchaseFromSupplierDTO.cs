@@ -18,6 +18,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string FunctionalAreaCode { get; set; }
         public string CenterResponsibilityCode { get; set; }
         public string LocalMarketRegion { get; set; }
+        public string Vendor_Mail { get; set; }
 
         public string OpenOrderNo { get; set; }
         public int? OpenOrderLineNo { get; set; }

@@ -126,6 +126,7 @@ namespace Hydra.Such.Data.Logic.Request
                     Estado = (Enumerations.BillingReceptionStates)item.Estado,
                     ModificadoPor = item.ModificadoPor,
                     AreaWorkflow = item.AreaWorkflow,
+                    Area = item.Area,
                     Data = item.Data,
                     Descricao = item.Descricao,
                     IdRecFaturacao = item.IdRecFaturacao,
@@ -135,7 +136,8 @@ namespace Hydra.Such.Data.Logic.Request
                     EnderecoEnvio = item.EnderecoEnvio,
                     EnderecoFornecedor = item.EnderecoFornecedor,
                     Comentario = item.Comentario,
-                    AttachedIs=item.Anexo
+                    AttachedIs=item.Anexo,
+                    Destinatario = item.Destinatario,
                 };
     
             }
@@ -164,6 +166,7 @@ namespace Hydra.Such.Data.Logic.Request
                     Estado = (int)item.Estado,
                     ModificadoPor = item.ModificadoPor,
                     AreaWorkflow = item.AreaWorkflow,
+                    Area = item.Area,
                     Data = item.Data,
                     Descricao = item.Descricao,
                     IdRecFaturacao = item.IdRecFaturacao,
@@ -173,7 +176,8 @@ namespace Hydra.Such.Data.Logic.Request
                     EnderecoEnvio = item.EnderecoEnvio,
                     EnderecoFornecedor = item.EnderecoFornecedor,
                     Comentario = item.Comentario,
-                    Anexo=item.AttachedIs
+                    Anexo=item.AttachedIs,
+                    Destinatario = item.Destinatario
                 };
             }
             return null;

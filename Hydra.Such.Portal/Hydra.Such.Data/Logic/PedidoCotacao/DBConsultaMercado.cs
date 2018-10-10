@@ -964,6 +964,8 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                 ModificadoEm = ObjectToTransform.ModificadoEm,
                 ModificadoPor = ObjectToTransform.ModificadoPor,
                 MercadoLocal = ObjectToTransform.MercadoLocal,
+                IdCompra = ObjectToTransform.IdCompra,
+                ValidadoCompras = ObjectToTransform.ValidadoCompras,
                 DataEntregaPrevista_Show = ObjectToTransform.DataEntregaPrevista == null ? "" : ObjectToTransform.DataEntregaPrevista.Value.ToString("yyyy-MM-dd")
             };
 
@@ -998,7 +1000,9 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                 NumProjecto = ObjectToTransform.NumProjecto,
                 NumRequisicao = ObjectToTransform.NumRequisicao,
                 Quantidade = ObjectToTransform.Quantidade,
-                MercadoLocal = ObjectToTransform.MercadoLocal
+                MercadoLocal = ObjectToTransform.MercadoLocal,
+                IdCompra = ObjectToTransform.IdCompra,
+                ValidadoCompras = ObjectToTransform.ValidadoCompras
                 //NumProjectoNavigation = DBProjects.GetById(ObjectToTransform.NumProjecto)
             };
 
@@ -1296,6 +1300,21 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
         #region Seleccao_Entidades
 
 
+        public static SeleccaoEntidades GetSeleccaoEntidadesID(int _ID)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.SeleccaoEntidades.Where(p => p.IdSeleccaoEntidades == _ID).FirstOrDefault();
+                }
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
         public static SeleccaoEntidades GetSeleccaoEntidadesPorNumConsultaFornecedor(string _NumConsultaMercado, string _CodFornecedor)
         {
             try
@@ -1435,7 +1454,13 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                 CodFormaPagamento = ObjectToTransform.CodFormaPagamento,
                 Preferencial = ObjectToTransform.Preferencial,
                 Selecionado = ObjectToTransform.Selecionado,
-                EmailFornecedor = ObjectToTransform.EmailFornecedor
+                EmailFornecedor = ObjectToTransform.EmailFornecedor,
+                DataEnvioAoFornecedor = ObjectToTransform.DataEnvioAoFornecedor,
+                DataRecepcaoProposta = ObjectToTransform.DataRecepcaoProposta,
+                UtilizadorEnvio = ObjectToTransform.UtilizadorEnvio,
+                UtilizadorRecepcaoProposta = ObjectToTransform.UtilizadorRecepcaoProposta,
+                DataEnvioAoFornecedor_Show = ObjectToTransform.DataEnvioAoFornecedor == null ? "" : ObjectToTransform.DataEnvioAoFornecedor.Value.ToString("yyyy-MM-dd"),
+                DataRecepcaoProposta_Show = ObjectToTransform.DataRecepcaoProposta == null ? "" : ObjectToTransform.DataRecepcaoProposta.Value.ToString("yyyy-MM-dd")
             };
 
             return view;
@@ -1455,7 +1480,13 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                 CodFormaPagamento = ObjectToTransform.CodFormaPagamento,
                 Preferencial = ObjectToTransform.Preferencial,
                 Selecionado = ObjectToTransform.Selecionado,
-                EmailFornecedor = ObjectToTransform.EmailFornecedor
+                EmailFornecedor = ObjectToTransform.EmailFornecedor,
+                DataEnvioAoFornecedor = ObjectToTransform.DataEnvioAoFornecedor,
+                //DataRecepcaoProposta = ObjectToTransform.DataRecepcaoProposta,
+                //DataRecepcaoProposta = ObjectToTransform.DataRecepcaoProposta_Show != string.Empty ? DateTime.Parse(ObjectToTransform.DataRecepcaoProposta_Show) : (DateTime?)null,
+                DataRecepcaoProposta = ObjectToTransform.DataRecepcaoProposta_Show != null ? ObjectToTransform.DataRecepcaoProposta_Show != string.Empty ? DateTime.Parse(ObjectToTransform.DataRecepcaoProposta_Show) : (DateTime?)null : (DateTime?)null,
+                UtilizadorEnvio = ObjectToTransform.UtilizadorEnvio,
+                UtilizadorRecepcaoProposta = ObjectToTransform.UtilizadorRecepcaoProposta
             };
 
             return seleccaoEntidades;
@@ -1467,6 +1498,22 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
         #region Registo_De_Propostas
 
 
+        public static RegistoDePropostas GetAllRegistoDePropostas(string _NumConsultaMercado, int _NumLinhaConsultaMercado)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.RegistoDePropostas.Where(p => p.NumConsultaMercado == _NumConsultaMercado).Where(p => p.NumLinhaConsultaMercado == _NumLinhaConsultaMercado).FirstOrDefault();
+                }
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+
         public static RegistoDePropostas Create(LinhasConsultaMercado linhasConsultaMercado, string _alternativa, string _NAVDatabaseName, string _NAVCompanyName)
         {
             try
@@ -1476,7 +1523,7 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                     //List<SeleccaoEntidades> seleccaoEntidades = DBConsultaMercado.GetAllSeleccaoEntidadesPorNumConsulta(linhasConsultaMercado.NumConsultaMercado);
                     int entidade = 0;
                     string[,] fornecedor = new string[6, 3];
-                    foreach (SeleccaoEntidades seleccaoEntidades in DBConsultaMercado.GetAllSeleccaoEntidadesPorNumConsulta(linhasConsultaMercado.NumConsultaMercado))
+                    foreach (SeleccaoEntidades seleccaoEntidades in GetAllSeleccaoEntidadesPorNumConsulta(linhasConsultaMercado.NumConsultaMercado))
                     {
                         entidade = entidade + 1;
 
@@ -1515,6 +1562,35 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                             default:
                                 break;
                         }
+                    }
+
+                    //Verificar se já existe registo para esta Consulta Mercado, com este produto e esta linha de consulta
+                    RegistoDePropostas propostas = GetAllRegistoDePropostas(linhasConsultaMercado.NumConsultaMercado, linhasConsultaMercado.NumLinha);
+                    if (propostas.NumLinha >= 0)
+                    {
+                        propostas.Fornecedor1Code = fornecedor[0, 0];
+                        propostas.Fornecedor1Nome = fornecedor[0, 1];
+                        propostas.VatbusinessPostingGroup1 = fornecedor[0, 2];
+                        propostas.Fornecedor2Code = fornecedor[1, 0];
+                        propostas.Fornecedor2Nome = fornecedor[1, 1];
+                        propostas.VatbusinessPostingGroup2 = fornecedor[1, 2];
+                        propostas.Fornecedor3Code = fornecedor[2, 0];
+                        propostas.Fornecedor3Nome = fornecedor[2, 1];
+                        propostas.VatbusinessPostingGroup3 = fornecedor[2, 2];
+                        propostas.Fornecedor4Code = fornecedor[3, 0];
+                        propostas.Fornecedor4Nome = fornecedor[3, 1];
+                        propostas.VatbusinessPostingGroup4 = fornecedor[3, 2];
+                        propostas.Fornecedor5Code = fornecedor[4, 0];
+                        propostas.Fornecedor5Nome = fornecedor[4, 1];
+                        propostas.VatbusinessPostingGroup5 = fornecedor[4, 2];
+                        propostas.Fornecedor6Code = fornecedor[5, 0];
+                        propostas.Fornecedor6Nome = fornecedor[5, 1];
+                        propostas.VatbusinessPostingGroup6 = fornecedor[5, 2];
+
+                        ctx.RegistoDePropostas.Update(propostas);
+                        ctx.SaveChanges();
+
+                        return propostas;
                     }
 
                     RegistoDePropostas registoDePropostas = new RegistoDePropostas()

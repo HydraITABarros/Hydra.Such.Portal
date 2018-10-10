@@ -26,5 +26,7 @@ namespace Hydra.Such.Data.Database
         public string UserId { get; set; }
         public DateTime? DataCriacao { get; set; }
         public int? TipoPreco { get; set; }
+        public int? GrupoRegistoIvaProduto { get; set; }
+        public string CodCategoriaProduto { get; set; }
     }
 }
