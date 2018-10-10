@@ -5019,12 +5019,14 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult AcordoPrecos_List()
         {
-            UserAccessesViewModel UPerm = GetPermissions("Administracao");
-            if (UPerm != null && UPerm.Read.Value)
+            //UserAccessesViewModel UPerm = GetPermissions("Administracao");
+            UserAccessesViewModel userPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminAcordosPrecos);
+
+            if (userPerm != null && userPerm.Read.Value)
             {
-                ViewBag.CreatePermissions = !UPerm.Create.Value;
-                ViewBag.UpdatePermissions = !UPerm.Update.Value;
-                ViewBag.DeletePermissions = !UPerm.Delete.Value;
+                ViewBag.CreatePermissions = !userPerm.Create.Value;
+                ViewBag.UpdatePermissions = !userPerm.Update.Value;
+                ViewBag.DeletePermissions = !userPerm.Delete.Value;
                 return View();
             }
             else
@@ -5037,12 +5039,13 @@ namespace Hydra.Such.Portal.Controllers
         {
             ViewBag.NoProcedimento = id;
 
-            UserAccessesViewModel UPerm = GetPermissions("Administracao");
-            if (UPerm != null && UPerm.Read.Value)
+            //UserAccessesViewModel UPerm = GetPermissions("Administracao");
+            UserAccessesViewModel userPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminAcordosPrecos);
+            if (userPerm != null && userPerm.Read.Value)
             {
-                ViewBag.CreatePermissions = !UPerm.Create.Value;
-                ViewBag.UpdatePermissions = !UPerm.Update.Value;
-                ViewBag.DeletePermissions = !UPerm.Delete.Value;
+                ViewBag.CreatePermissions = !userPerm.Create.Value;
+                ViewBag.UpdatePermissions = !userPerm.Update.Value;
+                ViewBag.DeletePermissions = !userPerm.Delete.Value;
                 return View();
             }
             else

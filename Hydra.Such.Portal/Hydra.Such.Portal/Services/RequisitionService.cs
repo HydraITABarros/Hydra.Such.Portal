@@ -249,6 +249,7 @@ namespace Hydra.Such.Portal.Services
                                     LocalMarketRegion = requisition.LocalMarketRegion,
                                     InAdvance = requisition.InAdvance.HasValue ? requisition.InAdvance.Value : false,
                                     PricesIncludingVAT = requisition.PricesIncludingVAT.HasValue ? requisition.PricesIncludingVAT.Value : false,
+                                    
                                     Lines = items.Select(line => new PurchOrderLineDTO()
                                     {
                                         LineId = line.LineNo,
@@ -630,7 +631,15 @@ namespace Hydra.Such.Portal.Services
         private GenericResult CreateNAVPurchaseOrderFor(PurchOrderDTO purchOrder)
         {
             GenericResult createPrePurchOrderResult = new GenericResult();
-            
+
+            if (!string.IsNullOrEmpty(purchOrder.SupplierId) && !string.IsNullOrEmpty(purchOrder.CenterResponsibilityCode))
+            {
+                ConfiguraçãoEmailFornecedores ConfigEmailForne = DBConfigEmailFornecedores.GetById(purchOrder.SupplierId, purchOrder.CenterResponsibilityCode);
+
+                if (ConfigEmailForne != null && !string.IsNullOrEmpty(ConfigEmailForne.Email))
+                    purchOrder.Vendor_Mail = ConfigEmailForne.Email;
+            }
+
             Task<WSPurchaseInvHeader.Create_Result> createPurchaseHeaderTask = NAVPurchaseHeaderIntermService.CreateAsync(purchOrder, configws);
             createPurchaseHeaderTask.Wait();
             if (createPurchaseHeaderTask.IsCompletedSuccessfully)

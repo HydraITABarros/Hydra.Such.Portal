@@ -748,7 +748,7 @@
                                         <vaadin-text-field value="{{_QuantityToOpen}}" id="_QuantityToOpen" name="_QuantityToOpen" label="Qt. Disponivel" disabled="true" type="number" pattern="^[1-9]\d*(\.\d+)?$" on-value-changed="_ConvertDecimals"> </vaadin-text-field>
                                     </div>
                                     <div class="col-lg-2">
-                                        <vaadin-text-field value="{{_QuantityToRequire}}" on-value-changed="_onChangeQuantity" id="_QuantityToRequire" name="_QuantityToRequire" label="Qt. a Requerer" required error-message="Este campo é obrigatório e tem que ser superior a 0" disabled="{{ !_permissions.update }}" type="number" pattern="^[1-9]\d*(\.\d+)?$"> </vaadin-text-field>
+                                        <vaadin-text-field value="{{_QuantityToRequire}}" on-value-changed="_onChangeQuantity" id="_QuantityToRequire" name="_QuantityToRequire" label="Qt. a Requerer" required error-message="Este campo é obrigatório, tem que ser superior a 0 e só pode ter 4 casas decimais" disabled="{{ !_permissions.update }}" pattern="\d+(\.\d{1,4})?"> </vaadin-text-field>
                                     </div>
                                     <div class="col-lg-2">
                                         <vaadin-text-field value="{{_UnitCost}}" id="_UnitCost" name="_UnitCost" label="Custo Unitário" disabled="{{ !_permissions.update }}" type="number" pattern="^[1-9]\d*(\.\d+)?$" on-value-changed="_ConvertDecimals">
@@ -1627,7 +1627,13 @@
                     this.$._UnitCost.disabled = e.detail.value !== "";
                 },
                 _onChangeQuantity: function (e) {
+                    debugger;
                     if (e != undefined) {
+
+                        var stringVal = "" + e.detail.value;
+                        e.detail.value = stringVal.replace(",", ".");
+                         this.$._QuantityToRequire.value = e.detail.value
+
                         if (this._QuantityToOpen != "") {
                             if (parseInt(this._QuantityToOpen) < parseInt(e.detail.value)) {
                                 this._QuantityToRequire = 0;
@@ -2249,7 +2255,7 @@
                                 var purchLineNo = "";
                                 if (this.$._CBPurchaseLine.value != undefined & this.$._CBPurchaseLine.value != "") {
                                     var composedKey = this.$._CBPurchaseLine.value.split(" ", 2);
-                                    purchHeaderNo = composedKey[0];
+                                    purchHeaderNo = composedKey[0]; 
                                     purchLineNo = composedKey[1];
                                 }
 
@@ -2282,7 +2288,7 @@
                                 this.$.prereqLines_databound_ajax.generateRequest();
                             }
                             else {
-                                this._openToastError('O valor do campo Qt. a Requerer tem que estar preenchido e superior a 0.');
+                                this._openToastError('O valor do campo Qt. a Requerer tem que estar preenchido, ser superior a 0 e só pode ter 4 casas decimais.');
                             }
                         }
                         else {
