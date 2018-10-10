@@ -160,6 +160,8 @@ namespace Hydra.Such.Data
             AdminReceçãoFaturação = 109,
             [Description("Taxa Resíduos")]
             AdminTaxaResiduos = 110,
+            [Description("Administração Acordos de Preços")]
+            AdminAcordosPrecos = 111,
         }
 
         public enum Areas
