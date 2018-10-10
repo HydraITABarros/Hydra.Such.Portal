@@ -360,16 +360,6 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Descrição");
                     Col = Col + 1;
                 }
-                if (dp["startDateExploration"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Data Inicio Exploração");
-                    Col = Col + 1;
-                }
-                if (dp["endDateExploration"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Data Fim Exploração");
-                    Col = Col + 1;
-                }
                 if (dp["codeRegion"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Cód. Região");
@@ -383,6 +373,16 @@ namespace Hydra.Such.Portal.Controllers
                 if (dp["codeResponsabilityCenter"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Cód. Area Funcional");
+                    Col = Col + 1;
+                }
+                if (dp["startDateExploration"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Data Inicio Exploração");
+                    Col = Col + 1;
+                }
+                if (dp["endDateExploration"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Data Fim Exploração");
                     Col = Col + 1;
                 }
                 if (dp["projectKitchen"]["hidden"].ToString() == "False")
@@ -414,16 +414,6 @@ namespace Hydra.Such.Portal.Controllers
                             row.CreateCell(Col).SetCellValue(item.Description);
                             Col = Col + 1;
                         }
-                        if (dp["startDateExploration"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.StartDateExploration);
-                            Col = Col + 1;
-                        }
-                        if (dp["endDateExploration"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.EndDateExploration);
-                            Col = Col + 1;
-                        }
                         if (dp["codeRegion"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.CodeRegion);
@@ -437,6 +427,16 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["codeResponsabilityCenter"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.CodeResponsabilityCenter);
+                            Col = Col + 1;
+                        }
+                        if (dp["startDateExploration"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.StartDateExploration);
+                            Col = Col + 1;
+                        }
+                        if (dp["endDateExploration"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.EndDateExploration);
                             Col = Col + 1;
                         }
                         if (dp["projectKitchen"]["hidden"].ToString() == "False")

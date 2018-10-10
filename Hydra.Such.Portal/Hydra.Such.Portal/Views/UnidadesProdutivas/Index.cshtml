@@ -71,7 +71,7 @@
         </div>
 
         <vaadin-grid id="grdProductivityUnitsTable" aria-label="ProductivityUnitsTable" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
-            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.productivityUnitNo.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.productivityUnitNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="productivityUnitNo">Nº Unidade Produtiva</vaadin-grid-sorter>
                     <vaadin-grid-filter path="productivityUnitNo" />
@@ -81,7 +81,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="30%" resizable hidden$="{{ _columns.description.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.description.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
                     <vaadin-grid-filter path="description" />
@@ -91,27 +91,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="30%" resizable hidden$="{{ _columns.startDateExploration.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="startDateExploration">Data Inicio Exploração</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="startDateExploration" />
-                </template>
-                <template>
-                    {{item.startDateExploration}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="30%" resizable hidden$="{{ _columns.endDateExploration.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="endDateExploration">Data Fim Exploração</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="endDateExploration" />
-                </template>
-                <template>
-                    {{item.endDateExploration}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="30%" resizable hidden$="{{ _columns.codeRegion.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codeRegion.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codeRegion">Cód. Região</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codeRegion" />
@@ -121,7 +101,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="30%" resizable hidden$="{{ _columns.codeFunctionalArea.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codeFunctionalArea.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codeFunctionalArea">Cód. Centro Responsabilidade</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codeFunctionalArea" />
@@ -131,7 +111,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="30%" resizable hidden$="{{ _columns.codeResponsabilityCenter.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codeResponsabilityCenter.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codeResponsabilityCenter">Cód. Area Funcional</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codeResponsabilityCenter" />
@@ -141,7 +121,27 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="30%" resizable hidden$="{{ _columns.projectKitchen.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.startDateExploration.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="startDateExploration">Data Inicio Exploração</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="startDateExploration" />
+                </template>
+                <template>
+                    {{item.startDateExploration}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.endDateExploration.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="endDateExploration">Data Fim Exploração</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="endDateExploration" />
+                </template>
+                <template>
+                    {{item.endDateExploration}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.projectKitchen.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="projectKitchen">Proj. Cozinha</vaadin-grid-sorter>
                     <vaadin-grid-filter path="projectKitchen" />
@@ -151,7 +151,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="30%" resizable hidden$="{{ _columns.projectSubsidiaries.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.projectSubsidiaries.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="projectSubsidiaries">Proj. Mat. Subsidiárias</vaadin-grid-sorter>
                     <vaadin-grid-filter path="projectSubsidiaries" />
@@ -235,11 +235,11 @@
                     var columns = {
                         "productivityUnitNo": { hidden: false, label: "Nº Unidade Produtiva" },
                         "description": { hidden: false, label: "Descrição" },
-                        "startDateExploration": { hidden: false, label: "Data Inicio Exploração" },
-                        "endDateExploration": { hidden: false, label: "Data Fim Exploração" },
                         "codeRegion": { hidden: false, label: "Cód. Região" },
                         "codeFunctionalArea": { hidden: false, label: "Cód. Centro Responsabilidade" },
                         "codeResponsabilityCenter": { hidden: false, label: "Cód. Area Funcional" },
+                        "startDateExploration": { hidden: false, label: "Data Inicio Exploração" },
+                        "endDateExploration": { hidden: false, label: "Data Fim Exploração" },
                         "projectKitchen": { hidden: false, label: "Proj. Cozinha" },
                         "projectSubsidiaries": { hidden: false, label: "Proj. Mat. Subsidiárias" }
                     };
