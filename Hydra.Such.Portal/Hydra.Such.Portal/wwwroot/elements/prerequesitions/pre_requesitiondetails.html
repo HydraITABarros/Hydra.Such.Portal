@@ -1009,15 +1009,18 @@
                                         </template>
                                         <template>
                                             <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-combo-box items="[[CBJobNo]]" id="_CLGridProjectNo" on-change="_GridOrderChange" name="_CLGridProjectNo" item-value-path="no" item-label-path="no" value="{{item.projectNo}}" disabled="{{ !_permissions.update }}" on-blur="_updateLinhaPreRequisicao">
-                                                    <template>
-                                                        <paper-icon-item>
-                                                            <paper-item-body two-line>
-                                                                <div>[[item.no]]</div>
-                                                            </paper-item-body>
-                                                        </paper-icon-item>
-                                                    </template>
-                                                </vaadin-combo-box>
+                                                
+                                                <such-selectbox id="_CLGridProjectNo"
+                                                                value="{{item.projectNo}}"
+                                                                on-change="_updateLinhaPreRequisicao"
+                                                                label=""
+                                                                items="[[CBJobNo]]"
+                                                                text-path="no"
+                                                                value-path="no"
+                                                                fields='[{"field":"no", "name":"Nº Projecto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"globalDimension1", "name":"Área"}, {"field":"centerResponsibilityCode", "name":"Cresp"}]'
+                                                                disabled="{{ !_permissions.update }}">
+                                                </such-selectbox>
+
                                             </template>
                                             <template is="dom-if" if="{{ !item.selected }}">
                                                 {{item.projectNo}}
@@ -1068,15 +1071,19 @@
                                         </template>
                                         <template>
                                             <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-combo-box items="[[CBVendor]]" id="_CLGridSupplierNo" name="_CLGridSupplierNo" item-value-path="no_" item-label-path="name" value="{{item.supplierNo}}" disabled="{{ !_permissions.update }}" on-blur="_updateLinhaPreRequisicao">
-                                                    <template>
-                                                        <paper-icon-item>
-                                                            <paper-item-body two-line>
-                                                                <div>[[item.name]]</div>
-                                                            </paper-item-body>
-                                                        </paper-icon-item>
-                                                    </template>
-                                                </vaadin-combo-box>
+
+
+                                                <such-selectbox id="_CLGridSupplierNo"
+                                                                value="{{item.supplierNo}}"
+                                                                label=""
+                                                                items="[[CBVendor]]"
+                                                                text-path="name"
+                                                                value-path="no_"
+                                                                fields='[{"field":"no_", "name":"Nº Fornecedor"}, {"field":"name", "name":"Nome"}, {"field":"vatRegistrationNo", "name":"Nº VAT"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Código Postal"}]'
+                                                                disabled="{{ !_permissions.update }}"
+                                                                on-change="_updateLinhaPreRequisicao">
+                                                </such-selectbox>
+
                                             </template>
                                             <template is="dom-if" if="{{ !item.selected }}">
                                                 [[ _clFormatsupplierNo(item.supplierNo) ]]
