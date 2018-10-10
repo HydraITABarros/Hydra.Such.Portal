@@ -83,22 +83,22 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetListUsers()
         {
-            List<ConfigUtilizadores> result = DBUserConfigurations.GetAll();
+            List<UserConfigurationsViewModel> result = DBUserConfigurations.GetAll().ParseToViewModel();
 
-            if (result != null)
-            {
-                result.ForEach(Utilizador =>
-                {
-                    var nomeRegião = DBNAV2017DimensionValues.GetById(_config.NAVDatabaseName, _config.NAVCompanyName, 1, User.Identity.Name, Utilizador.RegiãoPorDefeito).FirstOrDefault();
-                    Utilizador.RegiãoPorDefeito = nomeRegião == null ? "" : nomeRegião.Name;
+            //if (result != null)
+            //{
+            //    result.ForEach(Utilizador =>
+            //    {
+            //        var nomeRegião = DBNAV2017DimensionValues.GetById(_config.NAVDatabaseName, _config.NAVCompanyName, 1, User.Identity.Name, Utilizador.RegiãoPorDefeito).FirstOrDefault();
+            //        Utilizador.RegiãoPorDefeito = nomeRegião == null ? "" : nomeRegião.Name;
 
-                    var nomeÁreaPorDefeito = DBNAV2017DimensionValues.GetById(_config.NAVDatabaseName, _config.NAVCompanyName, 2, User.Identity.Name, Utilizador.AreaPorDefeito).FirstOrDefault();
-                    Utilizador.AreaPorDefeito = nomeÁreaPorDefeito == null ? "" : nomeÁreaPorDefeito.Name;
+            //        var nomeÁreaPorDefeito = DBNAV2017DimensionValues.GetById(_config.NAVDatabaseName, _config.NAVCompanyName, 2, User.Identity.Name, Utilizador.AreaPorDefeito).FirstOrDefault();
+            //        Utilizador.AreaPorDefeito = nomeÁreaPorDefeito == null ? "" : nomeÁreaPorDefeito.Name;
 
-                    var nomeCentroRespPorDefeito = DBNAV2017DimensionValues.GetById(_config.NAVDatabaseName, _config.NAVCompanyName, 3, User.Identity.Name, Utilizador.CentroRespPorDefeito).FirstOrDefault();
-                    Utilizador.CentroRespPorDefeito = nomeCentroRespPorDefeito == null ? "" : nomeCentroRespPorDefeito.Name;
-                });
-            };
+            //        var nomeCentroRespPorDefeito = DBNAV2017DimensionValues.GetById(_config.NAVDatabaseName, _config.NAVCompanyName, 3, User.Identity.Name, Utilizador.CentroRespPorDefeito).FirstOrDefault();
+            //        Utilizador.CentroRespPorDefeito = nomeCentroRespPorDefeito == null ? "" : nomeCentroRespPorDefeito.Name;
+            //    });
+            //};
 
             return Json(result);
         }

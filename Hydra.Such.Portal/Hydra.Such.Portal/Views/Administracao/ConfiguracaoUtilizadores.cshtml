@@ -43,21 +43,21 @@
         <vaadin-grid id="grid" aria-label="UsersTable" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column resizable width="150px">
                 <template class="header">
-                    <vaadin-grid-sorter path="id">ID</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="id" />
+                    <vaadin-grid-sorter path="idUser">ID</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="idUser" />
                 </template>
                 <template>
-                    {{item.idUtilizador}}
+                    {{item.idUser}}
                 </template>
             </vaadin-grid-column>
 
             <vaadin-grid-column resizable width="150px">
                 <template class="header">
-                    <vaadin-grid-sorter path="nome">Nome</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="nome" />
+                    <vaadin-grid-sorter path="name">Nome</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="name" />
                 </template>
                 <template>
-                    {{item.nome}}
+                    {{item.name}}
                 </template>
             </vaadin-grid-column>
 
@@ -73,55 +73,55 @@
 
             <vaadin-grid-column resizable width="150px">
                 <template class="header">
-                    <vaadin-grid-sorter path="regiaoPorDefeito">Região</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="regiaoPorDefeito" />
+                    <vaadin-grid-sorter path="regiao">Região</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="regiao" />
                 </template>
                 <template>
-                    {{item.regiaoPorDefeito}}
+                    {{item.regiao}}
                 </template>
             </vaadin-grid-column>
 
             <vaadin-grid-column resizable width="150px">
                 <template class="header">
-                    <vaadin-grid-sorter path="areaPorDefeito">Área</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="areaPorDefeito" />
+                    <vaadin-grid-sorter path="area">Área</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="area" />
                 </template>
                 <template>
-                    {{item.areaPorDefeito}}
+                    {{item.area}}
                 </template>
             </vaadin-grid-column>
 
             <vaadin-grid-column resizable width="150px">
                 <template class="header">
-                    <vaadin-grid-sorter path="centroRespPorDefeito">CRESP</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="centroRespPorDefeito" />
+                    <vaadin-grid-sorter path="cresp">CRESP</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="cresp" />
                 </template>
                 <template>
-                    {{item.centroRespPorDefeito}}
+                    {{item.cresp}}
                 </template>
             </vaadin-grid-column>
 
             <vaadin-grid-column resizable width="150px">
                 <template class="header">
-                    <vaadin-grid-sorter path="ativo">Ativo</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="ativo" value="[[_filterActive]]">
+                    <vaadin-grid-sorter path="active">Ativo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="active" value="[[_filterActive]]">
                         <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
                     </vaadin-grid-filter>
                 </template>
                 <template>
                     <center>
-                        <vaadin-checkbox checked="{{item.ativo}}" disabled></vaadin-checkbox>
+                        <vaadin-checkbox checked="{{item.active}}" disabled></vaadin-checkbox>
                     </center>
                 </template>
             </vaadin-grid-column>
 
             <vaadin-grid-column resizable width="150px">
                 <template class="header">
-                    <vaadin-grid-sorter path="administrador">Administrador</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="administrator">Administrador</vaadin-grid-sorter>
                 </template>
                 <template>
                     <center>
-                        <vaadin-checkbox checked="{{item.administrador}}" disabled></vaadin-checkbox>
+                        <vaadin-checkbox checked="{{item.administrator}}" disabled></vaadin-checkbox>
                     </center>
                 </template>
             </vaadin-grid-column>
@@ -167,7 +167,7 @@
 
                 _rowSelected: function (item) {
                     if (item != null) {
-                        window.location.href = "/Administracao/ConfiguracaoUtilizadoresDetalhes/" + item.idUtilizador;
+                        window.location.href = "/Administracao/ConfiguracaoUtilizadoresDetalhes/" + item.idUser;
                     }
                 },
                 _create: function (item) {
