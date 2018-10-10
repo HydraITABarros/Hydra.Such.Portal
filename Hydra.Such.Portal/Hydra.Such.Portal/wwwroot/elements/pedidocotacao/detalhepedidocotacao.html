@@ -2128,13 +2128,11 @@
                     }
                 },
 
-
                 _validateLocalMarket: function () {
                     this.$.ajax_validacaoMercadoLocal_consultamercado.body = JSON.stringify(this.data);
                     this.$.ajax_validacaoMercadoLocal_consultamercado.generateRequest();
                 },
                 _validateLocalMarketResponse: function (e) {
-                    debugger
                     if (this.ValidacaoMercadoLocal.eReasonCode == "1") {
                         this._showMessage(this.ValidacaoMercadoLocal.eMessage);
                     }

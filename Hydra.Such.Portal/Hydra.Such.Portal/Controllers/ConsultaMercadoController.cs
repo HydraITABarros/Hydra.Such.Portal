@@ -539,7 +539,6 @@ namespace Hydra.Such.Portal.Controllers
                     }
                 }
 
-
                 //NOVO MÉTODO, QUE SUBSTITUI O USO DAS DUAS TABELAS ACIMA, "Condicoes_Propostas_Fornecedores" e "Linhas_Condicoes_Propostas_Fornecedores"
                 //GRAVA NA NOVA TABELA "Registo_De_Propostas"
                 //Para cada registo, inserir as linhas da consulta de mercado na tabela "Linhas_Condicoes_Propostas_Fornecedores"
@@ -547,7 +546,6 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     RegistoDePropostas registoDePropostas = DBConsultaMercado.Create(linhasConsultaMercado, _Alternativa, _config.NAVDatabaseName, _config.NAVCompanyName);
                 }
-                
 
                 consultaMercado = DBConsultaMercado.GetDetalheConsultaMercado(data.NumConsultaMercado);
 
@@ -561,16 +559,6 @@ namespace Hydra.Such.Portal.Controllers
             data.eMessage = "Aconteceu algo errado e não foi possível Gerar o Registo de Proposta!";
             return Json(data);
         }
-
-
-
-
-
-
-
-
-
-
 
         [HttpPost]
         public JsonResult ValidacaoMercadoLocal([FromBody] ConsultaMercadoView item)
@@ -639,8 +627,6 @@ namespace Hydra.Such.Portal.Controllers
                                 {
                                     Linha.IdCompra = CompraReq.Id;
                                     Linha.ValidadoCompras = true;
-                                    //Linha.UtilizadorModificação = User.Identity.Name;
-                                    //Linha.DataHoraModificação = DateTime.Now;
 
                                     if (DBConsultaMercado.Update(DBConsultaMercado.CastLinhasConsultaMercadoViewToDB(Linha)) == null)
                                     {
@@ -682,22 +668,6 @@ namespace Hydra.Such.Portal.Controllers
             }
             return Json(result);
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         [HttpPost]
         public JsonResult CriarEncomenda([FromBody] ConsultaMercadoView data)
