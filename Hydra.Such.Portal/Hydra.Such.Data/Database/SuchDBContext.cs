@@ -3926,6 +3926,8 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.Descricao2).HasMaxLength(100);
 
+                entity.Property(e => e.IdCompra).HasColumnName("IdCompra");
+
                 entity.Property(e => e.LinhaRequisicao).HasColumnName("Linha_Requisicao");
 
                 entity.Property(e => e.ModificadoEm)
