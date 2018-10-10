@@ -200,6 +200,7 @@
                                 fields='[{"field":"noFornecedor", "name":"Nº Fornecedor"},
                                     {"field":"codProduto", "name":"Nº Produto"},
                                     {"field":"descricaoProduto", "name":"Descrição"},
+                                    {"field":"itemCategoryCode", "name":"Cód. Categoria"},
                                     {"field":"custoUnitario", "name":"Custo Unitário"}]'>
                 </such-selectbox>
             </div>
@@ -851,6 +852,7 @@
                     catch (err) { }
                 },
                 _productChanged: function (e) {
+                    debugger
                     if (e.detail.value != null && e.detail.value != "") {
                         var linhaAcordo = this.$.cmbProducts.activeItem;
                         if (linhaAcordo != null) {

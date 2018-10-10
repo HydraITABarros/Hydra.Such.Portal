@@ -421,11 +421,11 @@
                 },
                 _gridListResponse: function () {
                     this._locked = false;
+                    this.checked = true;
                     if (this.result == null || this.result == undefined || this.result.length == 0) {
                         this.openToastSuccess("Não existem linhas para faturar.");
                     }
                     else {
-                        this.checked = true;
                         this.openToastSuccess("Tabela de faturas atualizada com sucesso.");
                     }
                 },
@@ -481,12 +481,12 @@
                     }
                 },
                 _gridListPedingResponse: function (e) {
+                    this.checked = false;
                     if (this.result == null || this.result == undefined || this.result.length == 0) {
                         this.openToastSuccess("Não existem linhas para faturar.");
                     }
                     else {
                         this.openToastSuccess("Tabela de faturas atualizada com sucesso.");
-                        this.checked = false;
                     }
                 },
                 _count: function () {                  
