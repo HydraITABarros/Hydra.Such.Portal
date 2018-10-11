@@ -25,6 +25,21 @@ namespace Hydra.Such.Data.Logic.Nutrition
                 return null;
             }
         }
+        public static List<DiárioRequisiçãoUnidProdutiva> GetAllByIdAndType(int NºUnidadeProdutiva, int type)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.DiárioRequisiçãoUnidProdutiva.Where(x => x.NºUnidadeProdutiva == NºUnidadeProdutiva && x.Tipo == type).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
         public static List<DiárioRequisiçãoUnidProdutiva> GetAllDirectById(int NºUnidadeProdutiva)
         {
             try
@@ -163,6 +178,21 @@ namespace Hydra.Such.Data.Logic.Nutrition
                 return null;
             }
         }
+
+        public static DiárioRequisiçãoUnidProdutiva GetByOnlyLineNo(int LineNo)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.DiárioRequisiçãoUnidProdutiva.Where(x => x.NºLinha == LineNo).FirstOrDefault();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
         #endregion
 
 
@@ -202,7 +232,8 @@ namespace Hydra.Such.Data.Logic.Nutrition
                     UpdateUser = item.UtilizadorCriação,
                     DocumentNo = item.NºDocumento,
                     Observation = item.Observações,
-                    GrupoRegistoIvaProduto = item.GrupoRegistoIvaProduto
+                    GrupoRegistoIvaProduto = item.GrupoRegistoIvaProduto,
+                    Tipo = item.Tipo
                 };
             }
             return null;
@@ -251,6 +282,7 @@ namespace Hydra.Such.Data.Logic.Nutrition
                 x.NºDocumento = item.DocumentNo;
                 x.Observações = item.Observation;
                 x.GrupoRegistoIvaProduto = item.GrupoRegistoIvaProduto;
+                x.Tipo = item.Tipo;
             return x;
                 //return new DiárioRequisiçãoUnidProdutiva()
                 //{

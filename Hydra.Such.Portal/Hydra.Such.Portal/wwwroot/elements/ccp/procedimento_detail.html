@@ -7,6 +7,9 @@
 <link rel="import" href="/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
 
+<link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
+<link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
+
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
@@ -901,18 +904,18 @@
                         </div>
                         <div class="col-sm-3">
                             <!--<vaadin-combo-box items="[[CBRegions]]" id="codigoRegiao" item-value-path="id" item-label-path="value" value="{{data.codigoRegiao}}" label="Cód. Região" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
-                            <template>
-                                <table width="250px">
-                                    <tr>
-                                        <td width="20%">[[item.id]]</td>
-                                        <td width="80%">
-                                            <b>[[item.value]]</b>
-                                        </td>
-                                    </tr>
+                                <template>
+                                    <table width="250px">
+                                        <tr>
+                                            <td width="20%">[[item.id]]</td>
+                                            <td width="80%">
+                                                <b>[[item.value]]</b>
+                                            </td>
+                                        </tr>
 
-                                </table>
-                            </template>
-                        </vaadin-combo-box>-->
+                                    </table>
+                                </template>
+                            </vaadin-combo-box>-->
 
                             <such-selectbox id="codigoRegiao" name="codigoRegiao" value="{{data.codigoRegiao}}" label="Cód. Região" disabled="{{ !_permissions.update }}"
                                             items="[[CBRegions]]"
@@ -925,17 +928,17 @@
                         </div>
                         <div class="col-sm-3">
                             <!--<vaadin-combo-box items="[[CBFunctionalAreas]]" id="codigoAreaFuncional" item-value-path="id" item-label-path="value" value="{{data.codigoAreaFuncional}}" label="Àrea Funcional" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
-                            <template>
-                                <table width="250px">
-                                    <tr>
-                                        <td width="30%">[[item.id]]</td>
-                                        <td width="70%">
-                                            <b>[[item.value]]</b>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </template>
-                        </vaadin-combo-box>-->
+                                <template>
+                                    <table width="250px">
+                                        <tr>
+                                            <td width="30%">[[item.id]]</td>
+                                            <td width="70%">
+                                                <b>[[item.value]]</b>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </template>
+                            </vaadin-combo-box>-->
 
 
                             <such-selectbox id="codigoAreaFuncional" name="codigoAreaFuncional" value="{{data.codigoAreaFuncional}}" label="Cód. Área Funcional" disabled="{{ !_permissions.update }}"
@@ -948,17 +951,17 @@
                         </div>
                         <div class="col-sm-3">
                             <!--<vaadin-combo-box items="[[CBResponsabilityCenterCodes]]" id="codigoCentroResponsabilidade" item-value-path="id" item-label-path="value" value="{{data.codigoCentroResponsabilidade}}" label="Centro Responsabilidade" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
-                            <template>
-                                <table width="180px">
-                                    <tr>
-                                        <td width="40%">[[item.id]]</td>
-                                        <td width="60%">
-                                            <b>[[item.value]]</b>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </template>
-                        </vaadin-combo-box>-->
+                                <template>
+                                    <table width="180px">
+                                        <tr>
+                                            <td width="40%">[[item.id]]</td>
+                                            <td width="60%">
+                                                <b>[[item.value]]</b>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </template>
+                            </vaadin-combo-box>-->
 
                             <such-selectbox id="codigoCentroResponsabilidade" name="codigoCentroResponsabilidade" value="{{data.codigoCentroResponsabilidade}}" label="Cód. Centro Respon." disabled="{{ !_permissions.update }}"
                                             items="[[CBResponsabilityCenterCodes]]"
@@ -2499,38 +2502,38 @@
                                 </div>
                             </div>
                             <!--<div class="col-xs-6">
-                            <div class="panel panel-default">
-                                <div class="panel-heading">Acordos c/ fornecedores</div>
-                                <div class="panel-body">
-                                    <div class="">
-                                        <div class="row">
-                                            <div class="col-xs-12">
-                                                <vaadin-text-field type="number" value="{{data.adjudicacaoAcordosNo}}" id="adjudicacaoAcordosNo" name="adjudicacaoAcordosNo" label="Nº Contratos/Acordos"></vaadin-text-field>
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">Acordos c/ fornecedores</div>
+                                    <div class="panel-body">
+                                        <div class="">
+                                            <div class="row">
+                                                <div class="col-xs-12">
+                                                    <vaadin-text-field type="number" value="{{data.adjudicacaoAcordosNo}}" id="adjudicacaoAcordosNo" name="adjudicacaoAcordosNo" label="Nº Contratos/Acordos"></vaadin-text-field>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="row break_clear">
-                                            <div class="col-sm-6">
-                                                <vaadin-combo-box value="{{data.fornecedor}}" label="Fornecedor" items="[[cboSupplier]]" item-value-path="id" id="adjudicacaoAcordosFornecedor" item-label-path="value">
-                                                    <template>
-                                                        <paper-icon-item>
-                                                            <paper-item-body two-line>
-                                                                <div>[[item.value]]</div>
-                                                            </paper-item-body>
-                                                        </paper-icon-item>
-                                                    </template>
-                                                </vaadin-combo-box>
+                                            <div class="row break_clear">
+                                                <div class="col-sm-6">
+                                                    <vaadin-combo-box value="{{data.fornecedor}}" label="Fornecedor" items="[[cboSupplier]]" item-value-path="id" id="adjudicacaoAcordosFornecedor" item-label-path="value">
+                                                        <template>
+                                                            <paper-icon-item>
+                                                                <paper-item-body two-line>
+                                                                    <div>[[item.value]]</div>
+                                                                </paper-item-body>
+                                                            </paper-icon-item>
+                                                        </template>
+                                                    </vaadin-combo-box>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="row break_clear">
-                                            <div class="col-sm-12">
-                                                <br />
-                                                <paper-button raised id="btnNovoAcordoAdjudicacaoAcordos" class="btn--confirm pull-right" on-tap="_novoAcordoAdjudicacaoAcordos">Criar Novo Contrato/Acordo</paper-button>
+                                            <div class="row break_clear">
+                                                <div class="col-sm-12">
+                                                    <br />
+                                                    <paper-button raised id="btnNovoAcordoAdjudicacaoAcordos" class="btn--confirm pull-right" on-tap="_novoAcordoAdjudicacaoAcordos">Criar Novo Contrato/Acordo</paper-button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>-->
+                            </div>-->
                             <div class="col-xs-6">
                                 <div class="panel panel-default">
                                     <div class="panel-heading">Acordo de Preços</div>
@@ -2568,42 +2571,42 @@
                             </div>
                             <div class="clearfix"></div>
                             <!--<div class="col-xs-6">
-                            <div class="panel panel-default">
-                                <div class="panel-heading">Contratos Fornecedores</div>
-                                <div class="panel-body">
-                                    <div class="">
-                                        <div class="row">
-                                            <div class="col-xs-12">
-                                                <vaadin-text-field type="number" value="{{data.adjudicacaoContratosNo}}" id="adjudicacaoContratosNo" name="adjudicacaoContratosNo" label="Nº Contratos"></vaadin-text-field>
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">Contratos Fornecedores</div>
+                                    <div class="panel-body">
+                                        <div class="">
+                                            <div class="row">
+                                                <div class="col-xs-12">
+                                                    <vaadin-text-field type="number" value="{{data.adjudicacaoContratosNo}}" id="adjudicacaoContratosNo" name="adjudicacaoContratosNo" label="Nº Contratos"></vaadin-text-field>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="row break_clear">
-                                            <div class="col-sm-6">
-                                                <vaadin-combo-box value="{{data.adjudicacaoContratosFornecedor}}" label="Fornecedor" items="[[cboSupplier]]" item-value-path="id" id="adjudicacaoContratosFornecedor" item-label-path="value">
-                                                    <template>
-                                                        <paper-icon-item>
-                                                            <paper-item-body two-line>
-                                                                <div>[[item.value]]</div>
-                                                            </paper-item-body>
-                                                        </paper-icon-item>
-                                                    </template>
-                                                </vaadin-combo-box>
+                                            <div class="row break_clear">
+                                                <div class="col-sm-6">
+                                                    <vaadin-combo-box value="{{data.adjudicacaoContratosFornecedor}}" label="Fornecedor" items="[[cboSupplier]]" item-value-path="id" id="adjudicacaoContratosFornecedor" item-label-path="value">
+                                                        <template>
+                                                            <paper-icon-item>
+                                                                <paper-item-body two-line>
+                                                                    <div>[[item.value]]</div>
+                                                                </paper-item-body>
+                                                            </paper-icon-item>
+                                                        </template>
+                                                    </vaadin-combo-box>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <vaadin-text-field type="text" value="{{data.adjudicacaoContratosValor}}" id="adjudicacaoContratosValor" name="adjudicacaoContratosValor" label="Valor Contrato" maxlength="18" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"> </vaadin-text-field>
+                                                </div>
                                             </div>
-                                            <div class="col-sm-6">
-                                                <vaadin-text-field type="text" value="{{data.adjudicacaoContratosValor}}" id="adjudicacaoContratosValor" name="adjudicacaoContratosValor" label="Valor Contrato" maxlength="18" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"> </vaadin-text-field>
-                                            </div>
-                                        </div>
-                                        <div class="row break_clear">
+                                            <div class="row break_clear">
 
-                                            <div class="col-sm-12">
-                                                <br />
-                                                <paper-button raised id="btnNovoContratoAdjudicacaoAcordos" class="btn--confirm pull-right" on-tap="_novoContratoAdjudicacaoAcordos">Criar Contrato</paper-button>
+                                                <div class="col-sm-12">
+                                                    <br />
+                                                    <paper-button raised id="btnNovoContratoAdjudicacaoAcordos" class="btn--confirm pull-right" on-tap="_novoContratoAdjudicacaoAcordos">Criar Contrato</paper-button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>-->
+                            </div>-->
                             <div class="col-xs-6">
                                 <div class="panel panel-default">
                                     <div class="panel-heading">Encomendas a Fornecedores</div>
@@ -3569,19 +3572,25 @@
 
                 <!-- Save and Create Buttons -->
                 <!--<div id="botoes_accao" class="marginSpace">
-                <template is="dom-if" if="{{ _isCreate }}">
-                    <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
-                </template>
-                <template is="dom-if" if="{{ !_isCreate }}">
-                    <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                    <paper-button raised id="btnCancel" class="btnRemove" on-tap="_delete"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
-                </template>
-            </div>-->
+                    <template is="dom-if" if="{{ _isCreate }}">
+                        <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                    </template>
+                    <template is="dom-if" if="{{ !_isCreate }}">
+                        <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                        <paper-button raised id="btnCancel" class="btnRemove" on-tap="_delete"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                    </template>
+                </div>-->
             </div>
         </div>
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+        <paper-dialog id="rptDialog" class="dialgoBox" modal>
+            <div class="buttons">
+                <paper-button class="btnRemove" on-tap="_closeRptDialog" title="Fechar"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
+            </div>
+            <iframe id="rptContainer" src="" frameborder="0" style="width: 100%; height: 92%; margin: 0px; padding: 0px"></iframe>
+        </paper-dialog>
     </template>
 
     <script>
@@ -3621,7 +3630,7 @@
                         type: Array,
                         value: [{ value: 1, description: "Enviar p/ Compras(15)" }],
                     },
-                     // zpgm.MenuFunções.b
+                    // zpgm.MenuFunções.b
                     _mnuFuncoes_MenuItems: {
                         type: Array,
                         value: [
@@ -3758,6 +3767,9 @@
                     _isUploadError: {
                         type: Boolean,
                         value: false
+                    },
+                    _reportserverurl: {
+                        type: String,
                     }
 
                 },
@@ -3803,7 +3815,7 @@
                         this.$.page_update_ajax.body = JSON.stringify({ "id": this._procedimentoid });
                         this.$.page_update_ajax.generateRequest();
                     }
-                    
+
                     // Anexos.e
                 },
                 // Anexos.b
@@ -6002,7 +6014,7 @@
                     if (!this.__isFechoProcesso) {
                         this._showErrorMessage("Não está autorizado a executar esta acção!");
                         return;
-                    } 
+                    }
 
                     if (this.data.caRatificar) {
                         this._showErrorMessage("Este Procedimento está pendente de Ratificação pelo CA!");
@@ -6023,7 +6035,7 @@
                 },
                 _closingProcedimentoResponse: function (e) {
                     if (this.procedimentoClosed.eReasonCode == 0) {
-                            this._openToast("Procedimento " + this.data.no + " arquivado!");
+                        this._openToast("Procedimento " + this.data.no + " arquivado!");
                         setTimeout(
                             function () {
                             }, 3000);
@@ -6106,6 +6118,23 @@
                     this.$.ajax_update_procedimento.body = JSON.stringify(this.data);
 
                     var sav = this.$.ajax_update_procedimento.generateRequest();
+                },
+
+                _printProcedimento: function (e) {
+                    debugger;;
+
+                    if (this._reportserverurl != undefined) {
+                        this.$.rptContainer.src = this._reportserverurl + "Procedimento&ProcedimentoNo=" + this.data.no;
+                        this.$.rptDialog.open();
+                    }
+                    else {
+                        this._showErrorMessage("Não é possivel imprimir. Não foi definido o servidor de relatórios.");
+                    }
+                },
+                _closeRptDialog: function () {
+                    debugger;;
+                    this.$.rptContainer.src = "about:blank";
+                    this.$.rptDialog.close();
                 },
                 // zpgm.MenuFunções.e
 

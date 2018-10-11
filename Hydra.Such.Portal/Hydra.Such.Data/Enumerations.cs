@@ -138,6 +138,8 @@ namespace Hydra.Such.Data
             Localizações = 52,
             [Description("Pedido Cotação")]
             PedidoCotacao = 53,
+            [Description("Linhas de Acordos de Preços")]
+            LinhasAcordosPrecos = 54,
             [Description("Administração Geral")]
             AdminGeral = 100,
             [Description("Administração Aprovações")]

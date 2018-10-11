@@ -4,6 +4,7 @@ using System.Text;
 using Hydra.Such.Data.Database;
 using System.Linq;
 using Hydra.Such.Data.ViewModel;
+using static Hydra.Such.Data.Enumerations;
 
 namespace Hydra.Such.Data.Logic
 {
@@ -30,6 +31,8 @@ namespace Hydra.Such.Data.Logic
 
         public static List<LinhasAcordoPrecos> GetAll()
         {
+            
+
             try
             {
                 using (var ctx = new SuchDBContext())
@@ -43,6 +46,42 @@ namespace Hydra.Such.Data.Logic
                 return null;
             }
         }
+
+        public static List<LinhasAcordoPrecos> GetAllByDimensionsUser(string _user)
+        {
+            List<LinhasAcordoPrecos> _result = new List<LinhasAcordoPrecos>();
+
+            //Apply User Dimensions Validations
+            List<AcessosDimensões> CUserDimensions = DBUserDimensions.GetByUserId(_user);
+
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    _result = ctx.LinhasAcordoPrecos.ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+               
+            }
+
+            if (_result.Count > 0)
+            {
+                //Regions
+                if (CUserDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
+                    _result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.Regiao));
+                //FunctionalAreas
+                if (CUserDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                    _result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.Area));
+                //ResponsabilityCenter
+                if (CUserDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                    _result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.Cresp));
+            }
+
+            return _result;
+        }
+
 
         public static List<LinhasAcordoPrecos> GetAllByNoProcedimento(string NoProcedimento)
         {
@@ -164,6 +203,45 @@ namespace Hydra.Such.Data.Logic
                         .Where(x => x.Cresp == respCenterId 
                                  && x.Area == funcAreaId
                                  && x.Regiao == regionId
+                                 && (x.DtValidadeInicio <= date && x.DtValidadeFim >= date))
+                        .ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
+        public static List<LinhasAcordoPrecos> GetMateriaPrima(DateTime date, string armazem)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.LinhasAcordoPrecos
+                        .Where(x => x.Localizacao == armazem
+                                 && (x.DtValidadeInicio <= date && x.DtValidadeFim >= date))
+                        .ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
+        public static List<LinhasAcordoPrecos> GetMateriaSubsidiaria(DateTime date, string armazem, string cresp)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.LinhasAcordoPrecos
+                        .Where(x => x.Localizacao == armazem
+                                && x.Cresp == cresp
                                  && (x.DtValidadeInicio <= date && x.DtValidadeFim >= date))
                         .ToList();
                 }
