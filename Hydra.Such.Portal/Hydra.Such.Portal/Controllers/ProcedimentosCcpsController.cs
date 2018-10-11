@@ -180,6 +180,8 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult DetalhePedidoAquisicao(string id, bool isHistoric = false)
         {
+            ViewBag.reportServerURL = _config.ReportServerURL;
+
             ViewBag.No = id == null ? "" : id;
 
             if (isHistoric == true)
