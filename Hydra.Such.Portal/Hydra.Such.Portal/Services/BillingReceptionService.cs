@@ -556,9 +556,13 @@ namespace Hydra.Such.Portal.Services
         {
             return repo.GetDimensionsForArea(areaId);
         }
-        public List<RecFaturacaoConfigDestinatarios> GetUsersToResend(string areaId)
+        public List<RecFaturacaoConfigDestinatarios> GetUsersToResendByAreaName(string areaName)
         {
-            return repo.GetUsersToResend(areaId);
+            return repo.GetUsersToResendByAreaName(areaName);
+        }
+        public List<RecFaturacaoConfigDestinatarios> GetUsersToResendByAreaNumber(string areaNumber)
+        {
+            return repo.GetUsersToResendByAreaNumber(areaNumber);
         }
         public static string MakeEmailBodyContent(string Into, string IfFactura, string Fornecedor, string Data, string Valor, string Utilizador)
         {
