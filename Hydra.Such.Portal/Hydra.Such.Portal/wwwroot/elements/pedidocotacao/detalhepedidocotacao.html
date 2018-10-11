@@ -1898,6 +1898,7 @@
                     }
                 },
                 ready: function () {
+                    debugger
                     this.$.page_databound_ajax.body = JSON.stringify({ "NumConsultaMercado": this._id });
                     this.$.page_databound_ajax.generateRequest();
 
@@ -2155,32 +2156,38 @@
                     this.$.ToastMessageError.open();
                 },
                 _setProductData: function (e) {
-                    var item = this.CBItems.find(x => x.code == e);
-                    if (item != null) {
-                        this.$._DescricaoProduto.value = item.name;
-                        this.$._UnitMeasureCode.value = item.measureUnit;
-                        this.$._linhacustoUnitarioPrevisto.value = item.unitCost;
-                        this.$._linhacustoUnitarioObjectivo.value = item.unitCost;
+                    debugger
+                    if (e != "") {
+                        var item = this.CBItems.find(x => x.code == e);
+                        if (item != null) {
+                            this.$._DescricaoProduto.value = item.name;
+                            this.$._UnitMeasureCode.value = item.measureUnit;
+                            this.$._linhacustoUnitarioPrevisto.value = item.unitCost;
+                            this.$._linhacustoUnitarioObjectivo.value = item.unitCost;
+                        }
                     }
                 },
                 _setSuppliersData: function (e) {
+                    debugger
                     var self = this;
 
-                    var item = self.Suppliers.find(x => x.no_ == e);
-                    if (item != null) {
-                        self.$._CodTermosPagamento.value = item.cod_Termos_Pagamento;
-                        self.$._CodFormasPagamento.value = item.cod_Formas_Pagamento;
-                        self.chkPreferencial = item.preferencial == 0 ? false : true;
-                    }
-                    else {
-                        self.$._Suppliers.value = "";
-                        self.$._CodTermosPagamento.value = "";
-                        self.$._CodFormasPagamento.value = "";
-                        self.chkPreferencial = false;
+                    if (e != "") {
+                        var item = self.Suppliers.find(x => x.no_ == e);
+                        if (item != null) {
+                            self.$._CodTermosPagamento.value = item.cod_Termos_Pagamento;
+                            self.$._CodFormasPagamento.value = item.cod_Formas_Pagamento;
+                            self.chkPreferencial = item.preferencial == 0 ? false : true;
+                        }
+                        else {
+                            self.$._Suppliers.value = "";
+                            self.$._CodTermosPagamento.value = "";
+                            self.$._CodFormasPagamento.value = "";
+                            self.chkPreferencial = false;
 
-                        self.$._Suppliers.valueText = "";
-                        self.$._CodTermosPagamento.valueText = "";
-                        self.$._CodFormasPagamento.valueText = "";
+                            self.$._Suppliers.valueText = "";
+                            self.$._CodTermosPagamento.valueText = "";
+                            self.$._CodFormasPagamento.valueText = "";
+                        }
                     }
                 },
                 _formulaCalculoAutomatica: function () {

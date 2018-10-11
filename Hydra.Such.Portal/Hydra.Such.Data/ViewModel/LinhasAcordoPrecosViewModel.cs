@@ -42,5 +42,8 @@ namespace Hydra.Such.Data.ViewModel
         public int? GrupoRegistoIvaProduto { get; set; }
         public string GrupoRegistoIvaProdutoTexto { get; set; }
         public string CodCategoriaProduto { get; set; }
+
+        //EXPORTAR PARA EXCEL
+        public Object ColunasEXCEL { get; set; }
     }
 }
