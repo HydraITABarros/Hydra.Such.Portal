@@ -56,6 +56,10 @@
         <iron-ajax url="/PopulateDropdowns/GetUnitOfMeasureByCode" last-response="{{unitmeasureresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/NecessidadeCompras/GetGridValues" id="ajax_getgrid" last-response="{{data}}" on-response="_getgridResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/NecessidadeCompras/UpdateShoppingNecessity" id="ajax_update" last-response="{{updatedata}}" method="post" on-response="_updateResponse" handle-as="json" content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/NecessidadeCompras/DeleteShoppingNecessity" id="ajax_delete" last-response="{{deletedata}}" method="post" on-response="_deleteResponse" handle-as="json" content-type="application/json"></iron-ajax>
+
+
         <iron-ajax url="/NecessidadeCompras/CreateShoppingNecessity" id="ajax_Create" last-response="{{updatedata}}" method="post" on-response="_createResponse" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/NecessidadeCompras/GenerateRequesition" id="ajax_requesitionupdate" last-response="{{datarequesition}}" method="post" on-response="_requesitionResponse" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/NecessidadeCompras/GetModelRequisition" last-response="{{resultModelRequisition}}" auto method="post" handle-as="json" id="grid_databound_ajax" content-type="application/json"></iron-ajax>
@@ -196,12 +200,12 @@
                                 items="[[Products]]"
                                 text-path="descricaoProduto"
                                 value-path="codProduto"
-                                fields='[{"field":"noFornecedor", "name":"Nº Fornecedor"},
-                                    {"field":"noProcedimento", "name":"Nº Acordo Preço"},
-                                    {"field":"codProduto", "name":"Nº Produto"},
-                                    {"field":"descricaoProduto", "name":"Descrição"},
-                                    {"field":"itemCategoryCode", "name":"Cód. Categoria"},
-                                    {"field":"custoUnitario", "name":"Custo Unitário"}]'>
+                                fields='[{"field":"noProcedimento", "name":"Nº Acordo Preço"},
+                                        {"field":"codProduto", "name":"Nº Produto"},
+                                        {"field":"descricaoProduto", "name":"Descrição"},
+                                        {"field":"itemCategoryCode", "name":"Cód. Categoria"},
+                                        {"field":"custoUnitario", "name":"Custo Unitário"},
+                                        {"field":"noFornecedor", "name":"Nº Fornecedor"}]'>
                 </such-selectbox>
             </div>
             <div class="col-md-3">
@@ -575,34 +579,34 @@
                 </vaadin-grid-column>
 
                 @*<vaadin-grid-column width="160px" resizable>
-            <template class="header">
-                <vaadin-grid-sorter path="localCode"> Código Localização</vaadin-grid-sorter>
-                <vaadin-grid-filter path="localCode" />
-            </template>
-            <template>
-                [[_parseLocalCode(item.localCode)]]
-            </template>
-        </vaadin-grid-column>*@
+                    <template class="header">
+                        <vaadin-grid-sorter path="localCode"> Código Localização</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="localCode" />
+                    </template>
+                    <template>
+                        [[_parseLocalCode(item.localCode)]]
+                    </template>
+                </vaadin-grid-column>*@
 
                 @*<vaadin-grid-column width="160px" resizable>
-            <template class="header">
-                <vaadin-grid-sorter path="unitFoodProduction">Unidade Produtiva Alimentação</vaadin-grid-sorter>
-                <vaadin-grid-filter path="unitFoodProduction" />
-            </template>
-            <template>
-                [[ _parseUnitFoodProd(item.unitFoodProduction) ]]
-            </template>
-        </vaadin-grid-column>*@
+                    <template class="header">
+                        <vaadin-grid-sorter path="unitFoodProduction">Unidade Produtiva Alimentação</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="unitFoodProduction" />
+                    </template>
+                    <template>
+                        [[ _parseUnitFoodProd(item.unitFoodProduction) ]]
+                    </template>
+                </vaadin-grid-column>*@
 
                 @*<vaadin-grid-column width="160px" resizable>
-            <template class="header">
-                <vaadin-grid-sorter path="receivedDate">Data Receção</vaadin-grid-sorter>
-                <vaadin-grid-filter path="receivedDate" />
-            </template>
-            <template>
-                [[ _parseDateFormat(item.receivedDate) ]]
-            </template>
-        </vaadin-grid-column>*@
+                    <template class="header">
+                        <vaadin-grid-sorter path="receivedDate">Data Receção</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="receivedDate" />
+                    </template>
+                    <template>
+                        [[ _parseDateFormat(item.receivedDate) ]]
+                    </template>
+                </vaadin-grid-column>*@
             </vaadin-grid>
             <div class="buttons">
                 <paper-button class="btnSave" raised on-tap="_confirm"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
@@ -1182,12 +1186,29 @@
                     this.$.gridneedshopping.clearCache();
                 },
                 _delete: function (e) {
+                    debugger;
                     var index = this.data.indexOf(e.model.item);
                     this.data.splice(index, 1);
                     // Save to DB
-                    this.$.ajax_update.body = JSON.stringify(this.data);
-                    this.$.ajax_update.generateRequest();
+                    this.$.ajax_delete.body = JSON.stringify(e.model.item.lineNo);
+                    this.$.ajax_delete.generateRequest();
                     this.$.gridneedshopping.clearCache();
+                },
+                _deleteResponse: function (e) {
+                    if (e.detail.status === 200) {
+                        if (this.deletedata.eReasonCode === 1) {
+                            this._openToast(this.deletedata.eMessage);
+                            var prodUnitId = @ViewBag.ProductivityUnitId;
+                            this.$.ajax_getgrid.body = JSON.stringify(prodUnitId);
+                            this.$.ajax_getgrid.generateRequest();
+                            this.$.gridneedshopping.clearCache();
+                            this.$.dialog.close();
+                        } else {
+                            this._openToastError(this.deletedata.eMessage);
+                        }
+                    } else {
+                        this._openToastError("Occorreu um erro ao eliminar.");
+                    }
                 },
                 _updateResponse: function (e) {
                     if (e.detail.status === 200) {
@@ -1322,7 +1343,7 @@
                         var expectedReceipDate = this.$.dpExpectedReceiptDateDlg != null ? this.$.dpExpectedReceiptDateDlg.value : "";
 
                         //this.$.grid_generatebyreq_ajax.body = JSON.stringify({ "prodUnit": { "nºUnidadeProdutiva": this.prodUnitNo, "descrição": this.descriptionUnit }, "reqprodUnits": selItms, "pricesDate": date });
-                        this.$.grid_generatebyreq_ajax.body = JSON.stringify({ "prodUnit": this.prodUnit, "reqModels": selItms, "pricesDate": date, "expectedReceipDate": expectedReceipDate  });
+                        this.$.grid_generatebyreq_ajax.body = JSON.stringify({ "prodUnit": this.prodUnit, "reqModels": selItms, "pricesDate": date, "expectedReceipDate": expectedReceipDate, "Tipo": this.type });
                         this.$.grid_generatebyreq_ajax.generateRequest();
                     } else {
                         this._openToastError("Não foi selecionada nenhuma linha.");
