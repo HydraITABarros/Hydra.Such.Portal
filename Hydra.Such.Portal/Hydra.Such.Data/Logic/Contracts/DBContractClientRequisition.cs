@@ -153,6 +153,33 @@ namespace Hydra.Such.Data.Logic.Contracts
             }
         }
 
+        public static DateTime? GetLatsInvoiceDateFor(string contractNo, int? invoiceGroupNumber)
+        {
+            try
+            {
+                DateTime? lastInvoiceDate = null;
+                using (var ctx = new SuchDBContext())
+                {
+                    //var x = ctx.RequisiçõesClienteContrato.Where(x => x.NºContrato == contractNo && x.GrupoFatura == invoiceGroupNumber).OrderByDescending(x => x.DataInícioCompromisso).FirstOrDefault();
+                    //if (x != null && x.DataÚltimaFatura.HasValue)
+                    //    lastInvoiceDate = x.DataÚltimaFatura.Value;
+                    //else
+                    //{
+                        var req = ctx.RequisiçõesClienteContrato.Where(x => x.NºContrato == contractNo && x.GrupoFatura == invoiceGroupNumber && x.DataÚltimaFatura.HasValue).OrderByDescending(x => x.DataInícioCompromisso).FirstOrDefault();
+                        if (req != null)
+                            lastInvoiceDate = req.DataÚltimaFatura.Value;
+                    //}
+                   
+                }
+                return lastInvoiceDate;
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
 
 
         public static RequisiçõesClienteContrato ParseToDB(ContractClientRequisitionViewModel  ObjectToParse)

@@ -469,7 +469,8 @@ namespace Hydra.Such.Portal.Services
             bool isValid = true;
             if(Convert.ToDateTime(item.DataDocFornecedor)>item.DataModificacao)
             {
-                item.eMessages.Add(new TraceInformation(TraceType.Error, "A data do documento: " + item.DataDocFornecedor + " é maior que a data do registo: " + item.DataModificacao));
+                item.eMessage = "A data do documento (" + item.DataDocFornecedor + ") é maior que a data do registo (" + (item.DataModificacao.HasValue ? item.DataModificacao.Value.ToString("yyyy-MM-dd") : string.Empty) + ")";
+                //item.eMessages.Add(new TraceInformation(TraceType.Error, "A data do documento: " + item.DataDocFornecedor + " é maior que a data do registo: " + item.DataModificacao));
                 isValid = false;
             }
             else if (!string.IsNullOrEmpty(item.NumEncomenda))
@@ -477,7 +478,8 @@ namespace Hydra.Such.Portal.Services
                 var purchOrderInfo = DBNAV2017Purchases.GetOrderById(_config.NAVDatabaseName, _config.NAVCompanyName, item.NumEncomenda);
                 if (purchOrderInfo.No != item.NumEncomenda)
                 {
-                    item.eMessages.Add(new TraceInformation(TraceType.Error, "A encomenda " + item.NumEncomenda + " não existe ou já está registada."));
+                    item.eMessage = "A encomenda " + item.NumEncomenda + " não existe ou já está registada.";
+                    //item.eMessages.Add(new TraceInformation(TraceType.Error, "A encomenda " + item.NumEncomenda + " não existe ou já está registada."));
                     isValid = false;
                 }
             }
@@ -488,7 +490,8 @@ namespace Hydra.Such.Portal.Services
                     var purchOrderInfo = DBNAV2017Purchases.GetOrderById(_config.NAVDatabaseName, _config.NAVCompanyName, item.NumEncomendaManual);
                     if (purchOrderInfo.No != item.NumEncomendaManual)
                     {
-                        item.eMessages.Add(new TraceInformation(TraceType.Error, "A encomenda (Núm. Encomenda Manual) " + item.NumEncomendaManual + " não existe ou já está registada."));
+                        item.eMessage = "A encomenda (Núm. Encomenda Manual) " + item.NumEncomendaManual + " não existe ou já está registada.";
+                        //item.eMessages.Add(new TraceInformation(TraceType.Error, "A encomenda (Núm. Encomenda Manual) " + item.NumEncomendaManual + " não existe ou já está registada."));
                         isValid = false;
                     }
                 }

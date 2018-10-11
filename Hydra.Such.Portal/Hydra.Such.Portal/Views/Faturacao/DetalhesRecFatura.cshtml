@@ -1496,32 +1496,34 @@
 
                 },
                 _validateInputForAccounting: function () {
-                    if (this._validateInputForNew()) {
-                        if (this.data.estado != this._states.Rececao && this.data.estado != this._states.Pendente) {
-                            var selState = this.States.find(x => x.id == this.data.estado);
-                            var stateDescription = selState != null ? selState.value : this.data.estado;
-                            this._openToastError("ATENÇÃO! Este documento já se encontra no estado: " + stateDescription);
-                            return false;
-                        }
-                        if (this.data.codFornecedor == "") {
-                            this._openToastError("O Fornecedor tem que estar preenchido.");
-                            return false;
-                        }
-                        if (this.data.numDocFornecedor == "") {
-                            this._openToastError("O Nº Documento do Fornecedor tem que estar preenchido.");
-                            return false;
-                        }
-                        if (this.data.valor == "") {
-                            this._openToastError("O valor tem que estar preenchido.");
-                            return false;
-                        }
-                        if (this.data.codRegiao == "") {
-                            this._openToastError("Tem que selecionar a Região.");
-                            return false;
-                        }
-                        return true;
+                    if (this.data.estado != this._states.Rececao && this.data.estado != this._states.Pendente) {
+                        var selState = this.States.find(x => x.id == this.data.estado);
+                        var stateDescription = selState != null ? selState.value : this.data.estado;
+                        this._openToastError("ATENÇÃO! Este documento já se encontra no estado: " + stateDescription);
+                        return false;
                     }
-                    return false;
+                    if (this.data.codFornecedor == "") {
+                        this.$.sbVendors.validate();
+                        this._openToastError("O Fornecedor tem que estar preenchido.");
+                        return false;
+                    }
+                    if (this.data.numDocFornecedor == "") {
+                        this._openToastError("O Nº Documento do Fornecedor tem que estar preenchido.");
+                        return false;
+                    }
+                    if (!this.$.dpDataDocFornecedor.validate()) {
+                        this._openToastError("A Data Doc. Fornecedor tem que estar preenchida.");
+                        return false;
+                    }
+                    if (this.data.valor == "") {
+                        this._openToastError("O valor tem que estar preenchido.");
+                        return false;
+                    }
+                    if (this.data.codRegiao == "") {
+                        this._openToastError("Tem que selecionar a Região.");
+                        return false;
+                    }
+                    return true;
                 },
                 _validateInputForAnswer: function () {
                     if (this.$.cmbRespostasPorPerfil.value == "" || this.$.cmbRespostasPorPerfil.value == null) {
