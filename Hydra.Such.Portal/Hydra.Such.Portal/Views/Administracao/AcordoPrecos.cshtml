@@ -869,18 +869,19 @@
                     },
 
                     _setProductData: function (e) {
-                        var item = this.CBItems.find(x => x.code == e);
-                        if (item != null) {
-                            this.$.linhasCustoUnitario.value = item.unitCost;
-                            this.$.linhasUM.value = item.measureUnit;
-                            this.$.linhasCodCategoriaProduto.value = item.itemCategoryCode;
+                        if (this.CBItems != undefined) {
+                            var item = this.CBItems.find(x => x.code == e);
+                            if (item != null) {
+                                this.$.linhasCustoUnitario.value = item.unitCost;
+                                this.$.linhasUM.value = item.measureUnit;
+                                this.$.linhasCodCategoriaProduto.value = item.itemCategoryCode;
+                            }
+                            else {
+                                this.$.linhasCustoUnitario.value = "";
+                                this.$.linhasUM.value = "";
+                                this.$.linhasCodCategoriaProduto.value = "";
+                            }
                         }
-                        else {
-                            this.$.linhasCustoUnitario.value = "";
-                            this.$.linhasUM.value = "";
-                            this.$.linhasCodCategoriaProduto.value = "";
-                        }
-                        
                     },
 
                     //Mostra Mensagens

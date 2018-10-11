@@ -523,13 +523,23 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(result);
         }
+        private static string ExtractAreaFromConfigId(string @configId)
+        {
+            int startindex = @configId.IndexOf('-');
+            int endindex = @configId.IndexOf('.');
+            if (endindex == -1)
+                endindex = @configId.Length;
+
+            return @configId.Substring(startindex + 1, endindex - startindex - 1);
+        }
         [HttpGet]
         public JsonResult GetAreasUPUAS()
         {
             List<DDMessageRelated> result = billingRecService.GetAreasUPUAS().Select(x => new DDMessageRelated()
             {
-                id = x.CodArea,
-                value = x.CodArea
+                id = ExtractAreaFromConfigId(x.Codigo),
+                value = x.CodArea,
+                extra = x.Destinatario
             })
             .Distinct()
             .ToList();
@@ -552,16 +562,38 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetUsersToResend([FromBody] string areaId)
-        {
-            List<DDMessageRelated> result = billingRecService.GetUsersToResend(areaId).Select(x => new DDMessageRelated()
-            {
-                id = x.Destinatario,
-                value = x.Destinatario
-            })
-            .Distinct()
-            .ToList();
+        public JsonResult GetUsersToResend([FromBody] JObject requestParams)
+        { 
+            string area = string.Empty;
+            bool byNumber = false;
 
+            if (requestParams != null)
+            {
+                area = requestParams["area"].ToString();
+                bool.TryParse(requestParams["byNumber"].ToString(), out byNumber);
+            }
+
+            List<DDMessageRelated> result = null;
+            if (byNumber)
+            {
+                result = billingRecService.GetUsersToResendByAreaNumber(area).Select(x => new DDMessageRelated()
+                {
+                    id = x.Destinatario,
+                    value = x.Destinatario
+                })
+                .GroupBy(x => x.value).Select(x => x.FirstOrDefault())
+                .ToList();
+            }
+            else
+            {
+                result = billingRecService.GetUsersToResendByAreaName(area).Select(x => new DDMessageRelated()
+                {
+                    id = x.Destinatario,
+                    value = x.Destinatario
+                })
+                .GroupBy(x => x.value).Select(x => x.FirstOrDefault())
+                .ToList();
+            }
             return Json(result);
         }
 

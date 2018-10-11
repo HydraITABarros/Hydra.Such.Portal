@@ -379,12 +379,12 @@
                     </div>
                 </div>
                 <div class="row break_clear">
-                    <div class="col-sm-3">
+                    @*<div class="col-sm-3">
                         <vaadin-text-field label="Destinatário" type="text" value="{{data.destinatario}}" id="txtDestinatario" disabled></vaadin-text-field>
                     </div>
                     <div class="col-sm-3">
                         <vaadin-date-picker label="Data Última Interação" id="dpDataUltimaInteracao " disabled value="{{data.dataUltimaInteracao }}"></vaadin-date-picker>
-                    </div>
+                    </div>*@
                     <div class="col-sm-3">
                         <such-selectbox id="sbOrders" value="{{ data.numEncomenda }}" label="Nº Encomenda"
                                         items="[[ Orders ]]"
@@ -418,30 +418,25 @@
                     <div class="col-sm-3">
                         <vaadin-text-field label="Núm. Encomenda Manual" type="text" value="{{data.numEncomendaManual}}" id="txtNumEncomendaManual" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                     </div>
-                </div>
-                <div class="row break_clear">
-                    <div class="col-sm-3" hidden>
-                        <vaadin-text-field label="Valor Encomenda Original" type="text" value="{{data.valorEncomendaOriginal}}" id="txtValorEncomendaOriginal" disabled="{{ !_permissions.update }}"></vaadin-text-field>
-                    </div>
-                    <div class="col-sm-3" hidden>
-                        <vaadin-text-field label="Quantidade Encomenda" type="text" value="{{data.quantidadeEncomenda}}" id="txtQuantidadeEncomenda" disabled="{{ !_permissions.update }}"></vaadin-text-field>
-                    </div>
-                </div>
-                <div class="row break_clear">
-                    <div class="col-sm-3" hidden>
-                        <vaadin-text-field label="Quantidade Recebida" type="text" value="{{data.quantidadeRecebida}}" id="txtQuantidadeRecebida" disabled="{{ !_permissions.update }}"></vaadin-text-field>
-                    </div>
                     <div class="col-sm-3">
                         <vaadin-text-field label="Valor Encomenda p/faturar" type="text" value="{{data.valorEncomendaActual}}" id="dpValorEncomendaActual" disabled></vaadin-text-field>
                     </div>
                     <div class="col-sm-3">
                         <vaadin-text-field label="Valor Recebido Não Contabilizado" type="text" value="{{data.valorRecebidoNaoContabilizado}}" id="txtValorRecebidoNaoContabilizado" disabled></vaadin-text-field>
                     </div>
+                </div>
+                <div class="row break_clear">
                     <div class="col-sm-3">
                         <vaadin-text-field label="Valor" type="text" value="{{data.valor}}" pattern="[0-9]+([\.][0-9]+)?" id="txtValor" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                     </div>
-                    <div class="col-sm-3">
-
+                    <div class="col-sm-3" hidden>
+                        <vaadin-text-field label="Valor Encomenda Original" type="text" value="{{data.valorEncomendaOriginal}}" id="txtValorEncomendaOriginal" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                    </div>
+                    <div class="col-sm-3" hidden>
+                        <vaadin-text-field label="Quantidade Encomenda" type="text" value="{{data.quantidadeEncomenda}}" id="txtQuantidadeEncomenda" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                    </div>
+                    <div class="col-sm-3" hidden>
+                        <vaadin-text-field label="Quantidade Recebida" type="text" value="{{data.quantidadeRecebida}}" id="txtQuantidadeRecebida" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                     </div>
                 </div>
                 <div class="marginSpace">
@@ -813,7 +808,7 @@
             <paper-dialog id="dialogReSendUAS" class="dialgoBox" modal>
                 <div class="row break_clear">
                     <div class="col-sm-3">
-                        <vaadin-combo-box items="[[ AreasUPUAS ]]" id="cmbAreasUPUAS" item-value-path="id" item-label-path="value" label="Área" value="{{areaUPUAS}}" on-value-changed="_areaUPUASChanged">
+                        <vaadin-combo-box items="[[ AreasUPUAS ]]" id="cmbAreasUPUAS" item-value-path="value" item-label-path="value" label="Área" value="{{areaUPUAS}}" on-value-changed="_areaUPUASChanged">
                             <template>
                                 <paper-icon-item>
                                     <paper-item-body two-line>
@@ -848,7 +843,7 @@
                 </div>
                 <div class="row break_clear">
                     <div class="col-sm-3">
-                        <vaadin-combo-box items="[[ UAProblemas ]]" id="cmbUAProblems" item-value-path="id" item-label-path="id" label="Tipo Problema" @*on-value-changed="_UAProblemChange" *@>
+                        <vaadin-combo-box items="[[ UAProblemas ]]" id="cmbUAProblems" item-value-path="id" item-label-path="id" label="Tipo Problema" on-value-changed="_UAProblemChange">
                             <template>
                                 <paper-icon-item>
                                     <paper-item-body two-line>
@@ -1270,15 +1265,16 @@
                     _uploadurl: {
                         type: String,
                         value: @Html.Raw(Json.Serialize(ViewBag.UploadURL)),
-                    }
+                    },
+                    _usersLoadedByAreaNumber: {
+                        type: Boolean,
+                        value: false,
+                    },
                 },
                 observers: [
                     '_preventDocumentDuplicates(data.dataDocFornecedor, data.numDocFornecedor, data.codFornecedor)'
                 ],
                 ready: function () {
-
-
-
                     if (this._billingReceptionId != null && this._billingReceptionId != "") {
                         this._isCreate = false;
                         this.$.page_databound_ajax.url += this._billingReceptionId;
@@ -1524,8 +1520,7 @@
                             return false;
                         }
                         return true;
-                  }
-                    this._openToastError("Verifique os dados inseridos.");
+                    }
                     return false;
                 },
                 _validateInputForAnswer: function () {
@@ -1562,11 +1557,15 @@
                 },
                 _validateInputForSendingToUPs: function () {
                     if (this.areaUPUAS == "" || this.areaUPUAS == null) {
-                        this._openToastError("Campo Área tem que estar preenchido.");
+                        this._openToastError("O campo Área tem que estar preenchido.");
+                        return false;
+                    }
+                    if (this.$.cmbDestinatariosReenvio.value == "" || this.$.cmbDestinatariosReenvio.value == null) {
+                        this._openToastError("O campo Utilizador tem que estar preenchido.");
                         return false;
                     }
                     if (this.$.cmbUAProblems.value == "" || this.$.cmbUAProblems.value == null) {
-                        this._openToastError("Tipo de Problema tem que estar preenchido.");
+                        this._openToastError("O campo Tipo Problema tem que estar preenchido.");
                         return false;
                     }
                     return true;
@@ -2311,17 +2310,46 @@
                     this.centroResp = "";
                     this.destinatariosReenvio = "";
                     //this.$.cmbCentrosResponsabilidade.items = {};
-                    //this.$.cmbDestinatariosReenvio.items = {};
-                    var area = this.$.cmbAreasUPUAS.value;
+                    this.$.cmbDestinatariosReenvio.items = [];
 
-                    if (area != "") {
+                    //var area = this.$.cmbAreasUPUAS.value;
+                    //Preencher utilizador da area
+                    var selectedArea = this.$.cmbAreasUPUAS.selectedItem;
+                    if(selectedArea){
+                        var area = selectedArea.value;
+                        this.destinatariosReenvio = selectedArea.extra;
+
                         this.$.getDimensions_ajax.body = JSON.stringify(area);
                         this.$.getDimensions_ajax.generateRequest();
 
-                        this.$.destinatariosReenvio_ajax.body = JSON.stringify(area);
-                        this.$.destinatariosReenvio_ajax.generateRequest();
+                        this._loadUsersForArea(area);
                     }
                 },
+                _loadUsersForArea:function(area){
+                    this._usersLoadedByAreaNumber = false;
+                    this.$.destinatariosReenvio_ajax.body = JSON.stringify({"area" : area, "byNumber" : this._usersLoadedByAreaNumber});
+                    this.$.destinatariosReenvio_ajax.generateRequest();
+
+                    this.$.cmbUAProblems.value = "";
+                },
+                _UAProblemChange: function (e) {
+                    var selectedProblem = this.$.cmbUAProblems.selectedItem;
+                    if(selectedProblem && selectedProblem.extra == "=VALIDADOR_AREA="){
+                        var selectedArea = this.$.cmbAreasUPUAS.selectedItem;
+                        if(selectedArea)
+                        {
+                            this._usersLoadedByAreaNumber = true;
+                            this.$.destinatariosReenvio_ajax.body = JSON.stringify({"area" : selectedArea.id, "byNumber" : this._usersLoadedByAreaNumber});
+                            this.$.destinatariosReenvio_ajax.generateRequest();
+                        }
+                    }
+                    else if(this._usersLoadedByAreaNumber){
+                        var selectedArea = this.$.cmbAreasUPUAS.selectedItem;
+                        if(selectedArea){
+                            this._loadUsersForArea(selectedArea.value);
+                        }
+                    }
+                }
             });
         });
     </script>
