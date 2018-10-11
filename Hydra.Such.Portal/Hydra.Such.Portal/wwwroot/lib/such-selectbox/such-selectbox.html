@@ -1,5 +1,6 @@
 <link rel="import" href="../polymer/polymer-element.html" />
 <link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
@@ -9,587 +10,591 @@
 <link rel="import" href="../vaadin-control-state-mixin/vaadin-control-state-mixin.html">
 <link rel="import" href="vaadin-form-element-mixin.html">
 
-
 <dom-module id="such-selectbox">
 
-<template is="dom-bind">
-<link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
-<link rel="stylesheet" href="/lib/font-awesome-4.7.0/css\font-awesome.css" />
+    <template is="dom-bind">
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css\font-awesome.css" />
 
-<style>
-        :host {
-            display: block;
-            color: var(--valo-body-text-color);
-            font-size: var(--valo-font-size, var(--valo-font-size-m));
-            font-family: var(--valo-font-family);
-            width: var(--valo-text-field-default-width, calc(var(--valo-size-m) * 5));
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            -webkit-tap-highlight-color: transparent;
-            width: 100%;
-            line-height: 1.2;
-        }
+        <style>
+                    :host {
+                        display: block;
+                        color: var(--valo-body-text-color);
+                        font-size: var(--valo-font-size, var(--valo-font-size-m));
+                        font-family: var(--valo-font-family);
+                        width: var(--valo-text-field-default-width, calc(var(--valo-size-m) * 5));
+                        -webkit-font-smoothing: antialiased;
+                        -moz-osx-font-smoothing: grayscale;
+                        -webkit-tap-highlight-color: transparent;
+                        width: 100%;
+                        line-height: 1.2;
+                    }
 
-        :host([label]) {
-            margin-top: 0px;
-            vertical-align: var(---vaadin-text-field-vertical-align-offset);
-        }
+                    :host([label]) {
+                        margin-top: 0px;
+                        vertical-align: var(---vaadin-text-field-vertical-align-offset);
+                    }
 
-        :host([focused]:not([readonly])) [part="label"] {
-            color: var(--valo-primary-text-color);
-        }
+                    :host([focused]:not([readonly])) [part="label"] {
+                        color: var(--valo-primary-text-color);
+                    }
 
-        [part="label"]::after {
-            content: var(--valo-required-field-indicator, "�");
-            transition: all 0.2s;
-            margin-left: 0.2em;
-            opacity: 0;
-            color: var(--valo-primary-text-color);
-        }
+                    [part="label"]::after {
+                        content: var(--valo-required-field-indicator, "�");
+                        transition: all 0.2s;
+                        margin-left: 0.2em;
+                        opacity: 0;
+                        color: var(--valo-primary-text-color);
+                    }
 
-        [part="label"] {
-            font-size: 12px !important;
-        }
+                    [part="label"] {
+                        font-size: 12px !important;
+                    }
 
-        [part="error-message"] {
-            font-size: 0.875em;
-            margin-top: 0.25em;
-            color: red;
-        }
+                    [part="error-message"] {
+                        font-size: 0.875em;
+                        margin-top: 0.25em;
+                        color: red;
+                    }
 
-        .hidden {
-            display: none;
-        }
+                    .hidden {
+                        display: none;
+                    }
 
-        [part="input-field"] {
-            display: flex;
-            align-items: center;
-            color: #000;
-            margin-top: var(--valo-space-xs);
-            margin-bottom: var(--valo-space-xs);
-            border-radius: var(--valo-text-field-border-radius, var(--valo-border-radius));
-            background-color: var(--valo-contrast-5pct);
-            padding: 0 calc(var(--valo-size, var(--valo-size-m)) / 6 + var(--valo-text-field-border-radius, var(--valo-border-radius)) / 4);
-            transition: all 0.5s;
-            font-weight: 500;
-            position: relative;
-            will-change: transform;
-            height: var(--valo-size, var(--valo-size-m));
-        }
+                    [part="input-field"] {
+                        display: flex;
+                        align-items: center;
+                        color: #000;
+                        margin-top: var(--valo-space-xs);
+                        margin-bottom: var(--valo-space-xs);
+                        border-radius: var(--valo-text-field-border-radius, var(--valo-border-radius));
+                        background-color: var(--valo-contrast-5pct);
+                        padding: 0 calc(var(--valo-size, var(--valo-size-m)) / 6 + var(--valo-text-field-border-radius, var(--valo-border-radius)) / 4);
+                        transition: all 0.5s;
+                        font-weight: 500;
+                        position: relative;
+                        will-change: transform;
+                        height: var(--valo-size, var(--valo-size-m));
+                    }
 
-        [part="value"] {
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            outline: none;
-            margin: 0;
-            border: 0;
-            border-radius: 0;
-            padding: 0 calc(var(--valo-size, var(--valo-size-m)) / 9);
-            width: 100%;
-            height: 100%;
-            font-family: inherit;
-            font-size: 12px;
-            font-weight: 500;
-            color: inherit;
-            background-color: transparent;
-            align-self: baseline;
-            text-align: var(--valo-text-field-text-align);
-            box-shadow: none;
-            width: 100%;
-            box-sizing: border-box;
-            flex: 1;
-            min-width: 0;
-            color: rgba(48, 64, 84, 0.91);
-        }
+                    [part="value"] {
+                        -webkit-appearance: none;
+                        -moz-appearance: none;
+                        outline: none;
+                        margin: 0;
+                        border: 0;
+                        border-radius: 0;
+                        padding: 0 calc(var(--valo-size, var(--valo-size-m)) / 9);
+                        width: 100%;
+                        height: 100%;
+                        font-family: inherit;
+                        font-size: 12px;
+                        font-weight: 500;
+                        color: inherit;
+                        background-color: transparent;
+                        align-self: baseline;
+                        text-align: var(--valo-text-field-text-align);
+                        box-shadow: none;
+                        width: 100%;
+                        box-sizing: border-box;
+                        flex: 1;
+                        min-width: 0;
+                        color: rgba(48, 64, 84, 0.91);
+                    }
 
-            [part="value"]::-webkit-input-placeholder {
-                color: var(--valo-tertiary-text-color);
-                transition: opacity 0.175s 0.05s;
-                opacity: 1;
-            }
+                        [part="value"]::-webkit-input-placeholder {
+                            color: var(--valo-tertiary-text-color);
+                            transition: opacity 0.175s 0.05s;
+                            opacity: 1;
+                        }
 
-            [part="value"]:-ms-input-placeholder {
-                color: var(--valo-tertiary-text-color);
-            }
+                        [part="value"]:-ms-input-placeholder {
+                            color: var(--valo-tertiary-text-color);
+                        }
 
-            [part="value"]::-moz-placeholder {
-                color: var(--valo-tertiary-text-color);
-                transition: opacity 0.175s 0.05s;
-                opacity: 1;
-            }
+                        [part="value"]::-moz-placeholder {
+                            color: var(--valo-tertiary-text-color);
+                            transition: opacity 0.175s 0.05s;
+                            opacity: 1;
+                        }
 
-            [part="value"]::placeholder {
-                color: var(--valo-tertiary-text-color);
-                transition: opacity 0.175s 0.1s;
-                opacity: 1;
-            }
+                        [part="value"]::placeholder {
+                            color: var(--valo-tertiary-text-color);
+                            transition: opacity 0.175s 0.1s;
+                            opacity: 1;
+                        }
 
-        [part="label"] {
-            color: var(--valo-contrast-60pct);
-            font-weight: 500;
-            font-size: var(--valo-font-size-s);
-            margin-left: calc(var(--valo-text-field-border-radius, var(--valo-border-radius)) / 4);
-            margin-bottom: var(--valo-space-xs);
-            transition: color 0.4s;
-            line-height: 1;
-        }
+                    [part="label"] {
+                        color: var(--valo-contrast-60pct);
+                        font-weight: 500;
+                        font-size: var(--valo-font-size-s);
+                        margin-left: calc(var(--valo-text-field-border-radius, var(--valo-border-radius)) / 4);
+                        margin-bottom: var(--valo-space-xs);
+                        transition: color 0.4s;
+                        line-height: 1;
+                    }
 
-        @media (hover: hover) {
-            :host(:hover:not([readonly]):not([invalid]):not([focused])) [part="label"] {
-                color: var(--valo-body-text-color);
-            }
+                    @media (hover: hover) {
+                        :host(:hover:not([readonly]):not([invalid]):not([focused])) [part="label"] {
+                            color: var(--valo-body-text-color);
+                        }
 
-            :host(:hover:not([readonly]):not([invalid]):not([focused])) [part="input-field"] {
-                background-color: var(--valo-contrast-10pct);
-            }
-        }
+                        :host(:hover:not([readonly]):not([invalid]):not([focused])) [part="input-field"] {
+                            background-color: var(--valo-contrast-10pct);
+                        }
+                    }
 
-        :host([focused]:not([readonly])) [part="input-field"] {
-            background-color: var(--valo-base-color);
-            box-shadow: 0 0 0 1px var(--valo-contrast-10pct), 0 1px 4px 1px var(--valo-shade-10pct);
-        }
+                    :host([focused]:not([readonly])) [part="input-field"] {
+                        background-color: var(--valo-base-color);
+                        box-shadow: 0 0 0 1px var(--valo-contrast-10pct), 0 1px 4px 1px var(--valo-shade-10pct);
+                    }
 
-        :host([focus-ring]) [part="input-field"] {
-            transition-duration: 0.2s;
-        }
+                    :host([focus-ring]) [part="input-field"] {
+                        transition-duration: 0.2s;
+                    }
 
-        .such-selectbox-container:hover [part="label"] {
-            color: rgba(48, 64, 84, 1);
-        }
+                    .such-selectbox-container:hover [part="label"] {
+                        color: rgba(48, 64, 84, 1);
+                    }
 
-        :host, .such-selectbox-container:focus {
-            border: none !important;
-            outline: none !important;
-            box-shadow: none !important;
-        }
+                    :host, .such-selectbox-container:focus {
+                        border: none !important;
+                        outline: none !important;
+                        box-shadow: none !important;
+                    }
 
-        .modal-dialog {
-            max-width: 1100px !important;
-            width: 97% !important;
-        }
+                    .modal-dialog {
+                        max-width: 1100px !important;
+                        width: 97% !important;
+                    }
 
-        [part="error-message"] {
-            margin-left: calc(var(--valo-text-field-border-radius, var(--valo-border-radius)) / 4);
-            font-size: var(--valo-font-size-xs);
-            line-height: var(--valo-line-height-xs);
-            color: var(--valo-secondary-text-color);
-            will-change: max-height;
-            transition: 0.4s max-height;
-            max-height: 5em;
-        }
+                    [part="error-message"] {
+                        margin-left: calc(var(--valo-text-field-border-radius, var(--valo-border-radius)) / 4);
+                        font-size: var(--valo-font-size-xs);
+                        line-height: var(--valo-line-height-xs);
+                        color: var(--valo-secondary-text-color);
+                        will-change: max-height;
+                        transition: 0.4s max-height;
+                        max-height: 5em;
+                    }
 
-        [part="label"]::after {
-            content: var(--valo-required-field-indicator, "•");
-            transition: all 0.2s;
-            margin-left: 0.2em;
-            opacity: 0;
-            color: var(--valo-primary-text-color);
-        }
+                    [part="label"]::after {
+                        content: var(--valo-required-field-indicator, "•");
+                        transition: all 0.2s;
+                        margin-left: 0.2em;
+                        opacity: 0;
+                        color: var(--valo-primary-text-color);
+                    }
 
-        [part="input-field"]:hover {
-            background-color: rgba(48, 64, 84, 0.1);
-        }
+                    [part="input-field"]:hover {
+                        background-color: rgba(48, 64, 84, 0.1);
+                    }
 
-        :host([required]:not([has-value])) [part="label"]::after {
-            opacity: 1;
-        }
+                    :host([required]:not([has-value])) [part="label"]::after {
+                        opacity: 1;
+                    }
 
-        :host([invalid]) [part="label"] {
-            color: var(--valo-error-color) !important;
-        }
+                    :host([invalid]) [part="label"] {
+                        color: var(--valo-error-color) !important;
+                    }
 
-        :host([invalid]) [part="input-field"] {
-            background-color: var(--valo-error-color-10pct);
-        }
+                    :host([invalid]) [part="input-field"] {
+                        background-color: var(--valo-error-color-10pct);
+                    }
 
-        :host([invalid]) [part="label"]::after {
-            color: inherit;
-        }
+                    :host([invalid]) [part="label"]::after {
+                        color: inherit;
+                    }
 
-        .fa {
-            font-size: 13px;
-            color: grey;
-            width: 14px;
-            cursor: pointer;
-        }
+                    .fa {
+                        font-size: 13px;
+                        color: grey;
+                        width: 14px;
+                        cursor: pointer;
+                    }
 
-        .modal-dialog .modal-body {
-            padding: 0;
-        }
+                    .modal-dialog .modal-body {
+                        padding: 0;
+                    }
 
-        .modal-dialog .modal-header {
-            background-color: #d9d9d9;
-            color: black;
-        }
+                    .modal-dialog .modal-header {
+                        background-color: #d9d9d9;
+                        color: black;
+                    }
 
-            .modal-dialog .modal-header h5 {
-                display: inline-block;
-            }
+                        .modal-dialog .modal-header h5 {
+                            display: inline-block;
+                        }
 
-        .modal-dialog .modal-content {
-            border-radius: 5px;
-            overflow: hidden;
-        }
+                    .modal-dialog .modal-content {
+                        border-radius: 5px;
+                        overflow: hidden;
+                    }
 
-        vaadin-grid#boxModalGrid {
-            height: 85vh;
-            overflow: auto;
-            max-height: 85vh;
-            outline: none;
-            border: none;
-            font-family: var(--valo-font-family);
-            --divider-color: rgba(0, 0, 0, var(--dark-divider-opacity));
-            --vaadin-grid-cell: {
-    };
-            --vaadin-grid-header-cell: {
-        height: 64px;
-        color: rgba(0, 0, 0, var(--dark-secondary-opacity));
-        font-size: 12px;
-        border-bottom: none;
-        background-color: #f2f2f2;
-    };
-            --vaadin-grid-body-cell: {
-        height: 48px;
-        color: rgba(0, 0, 0, var(--dark-primary-opacity));
-        font-size: 13px;
-        /*padding: 15px 20px;*/
-    };
-            --vaadin-grid-body-row-hover-cell: {
-        background-color: var(--paper-grey-200);
-    };
-            --vaadin-grid-body-row-selected-cell: {
-        background-color: var(--paper-grey-100);
-    };
-        }
-
-        vaadin-grid .cell {
-            padding: 7px 12px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        vaadin-grid paper-checkbox {
-            --primary-color: var(--paper-indigo-500);
-            margin: 0 24px;
-        }
-
-        vaadin-grid vaadin-grid-sorter {
-            padding: 5px;
-        }
-
-            vaadin-grid vaadin-grid-sorter .cell {
-                flex: 1;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            }
-
-            vaadin-grid vaadin-grid-sorter iron-icon {
-                transform: scale(0.8) translateZ(0);
-                transition: all 0.3s;
-            }
-
-            vaadin-grid vaadin-grid-sorter:not([direction]) iron-icon {
-                color: rgba(0, 0, 0, var(--dark-disabled-opacity));
-            }
-
-            vaadin-grid vaadin-grid-sorter[direction] {
+                    vaadin-grid#boxModalGrid {
+                        height: 85vh;
+                        overflow: auto;
+                        max-height: 85vh;
+                        outline: none;
+                        border: none;
+                        font-family: var(--valo-font-family);
+                        --divider-color: rgba(0, 0, 0, var(--dark-divider-opacity));
+                        --vaadin-grid-cell: {
+            };
+                        --vaadin-grid-header-cell: {
+                height: 64px;
+                color: rgba(0, 0, 0, var(--dark-secondary-opacity));
+                font-size: 12px;
+                border-bottom: none;
+                background-color: #f2f2f2;
+            };
+                        --vaadin-grid-body-cell: {
+                height: 48px;
                 color: rgba(0, 0, 0, var(--dark-primary-opacity));
-            }
+                font-size: 13px;
+                /*padding: 15px 20px;*/
+            };
+                        --vaadin-grid-body-row-hover-cell: {
+                background-color: var(--paper-grey-200);
+            };
+                        --vaadin-grid-body-row-selected-cell: {
+                background-color: var(--paper-grey-100);
+            };
+                    }
 
-            vaadin-grid vaadin-grid-sorter[direction=desc] iron-icon {
-                transform: scale(0.8) rotate(180deg) translateZ(0);
-            }
+                    vaadin-grid .cell {
+                        padding: 7px 12px;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                    }
 
-        :host([disabled]) [part="label"]::after {
-            color: var(--valo-primary-text-color) !important;
-        }
+                    vaadin-grid paper-checkbox {
+                        --primary-color: var(--paper-indigo-500);
+                        margin: 0 24px;
+                    }
 
-        :host([disabled]) {
-            pointer-events: none;
-        }
+                    vaadin-grid vaadin-grid-sorter {
+                        padding: 5px;
+                    }
 
-            :host([disabled]) [part="input-field"] {
-                background-color: var(--valo-contrast-10pct);
-            }
+                        vaadin-grid vaadin-grid-sorter .cell {
+                            flex: 1;
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                        }
 
-            :host([disabled]) [part="value"] {
-                color: var(--valo-disabled-text-color);
-            }
+                        vaadin-grid vaadin-grid-sorter iron-icon {
+                            transform: scale(0.8) translateZ(0);
+                            transition: all 0.3s;
+                        }
 
-    [part="label"]:empty {
-        display: none;
-    }
+                        vaadin-grid vaadin-grid-sorter:not([direction]) iron-icon {
+                            color: rgba(0, 0, 0, var(--dark-disabled-opacity));
+                        }
 
-</style>
-<div class="such-selectbox-container">
+                        vaadin-grid vaadin-grid-sorter[direction] {
+                            color: rgba(0, 0, 0, var(--dark-primary-opacity));
+                        }
 
-    <label part="label" on-click="_handleClick" id="[[_labelId]]">[[label]]</label>
+                        vaadin-grid vaadin-grid-sorter[direction=desc] iron-icon {
+                            transform: scale(0.8) rotate(180deg) translateZ(0);
+                        }
 
-    <div on-click="_handleClick" part="input-field">
-        <slot name="prefix"></slot>
-        <input part="value"
-                id="input"
-                value="{{valueText}}"
-                aria-describedby$="[[_getActiveErrorId(invalid, errorMessage, _errorId)]]"
-                aria-labelledby$="[[_getActiveLabelId(label, _labelId)]]"
-                aria-invalid$="[[invalid]]"
-                required$="[[required]]"
-                aria-required$="[[required]]"
-                disabled$="[[disabled]]" />
-        <i class="fa fa-remove" aria-hidden="true" on-click="_clearElement" style="padding-right: 20px;"></i>
-        <i class="fa fa-angle-double-up" aria-hidden="true"></i>
-        <slot name="suffix"></slot>
-    </div>
+                    :host([disabled]) [part="label"]::after {
+                        color: var(--valo-primary-text-color) !important;
+                    }
+
+                    :host([disabled]) {
+                        pointer-events: none;
+                    }
+
+                        :host([disabled]) [part="input-field"] {
+                            background-color: var(--valo-contrast-10pct);
+                        }
+
+                        :host([disabled]) [part="value"] {
+                            color: var(--valo-disabled-text-color);
+                        }
+
+                    [part="label"]:empty {
+                        display: none;
+                    }
+        </style>
+        <div class="such-selectbox-container">
+
+            <label part="label" on-click="_handleClick" id="[[_labelId]]">[[label]]</label>
+
+            <div on-click="_handleClick" part="input-field">
+                <slot name="prefix"></slot>
+                <input part="value"
+                       id="input"
+                       value="{{valueText}}"
+                       aria-describedby$="[[_getActiveErrorId(invalid, errorMessage, _errorId)]]"
+                       aria-labelledby$="[[_getActiveLabelId(label, _labelId)]]"
+                       aria-invalid$="[[invalid]]"
+                       required$="[[required]]"
+                       aria-required$="[[required]]"
+                       disabled$="[[disabled]]" />
+                <i class="fa fa-remove" aria-hidden="true" on-click="_clearElement" style="padding-right: 20px;"></i>
+                <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+                <slot name="suffix"></slot>
+            </div>
 
 
-    <div id="[[_errorId]]" aria-live="assertive" part="error-message" hidden$="[[!_getActiveErrorId(invalid, errorMessage, _errorId)]]">[[errorMessage]]</div>
+            <div id="[[_errorId]]" aria-live="assertive" part="error-message" hidden$="[[!_getActiveErrorId(invalid, errorMessage, _errorId)]]">[[errorMessage]]</div>
+
+            <div id="selectBoxModal" class="modal fade" role="dialog" style="display:none;">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">{{ modalTitle }}</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
 
 
-    <div id="selectBoxModal" class="modal fade" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">{{ modalTitle }}</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-
-
-                    <vaadin-grid id="boxModalGrid" aria-label="ViaturasGrid" items="[[items]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
-                        <template is="dom-repeat" items="{{fields}}" as="field">
-                            <vaadin-grid-column width="190px">
-                                <template class="header">
-                                    <vaadin-grid-sorter path="[[field.field]]">{{field.name}}</vaadin-grid-sorter>
-                                    <vaadin-grid-filter path="[[field.field]]" />
+                            <vaadin-grid id="boxModalGrid" aria-label="ViaturasGrid" items="[[items]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+                                <template is="dom-repeat" items="{{fields}}" as="field">
+                                    <vaadin-grid-column width="190px">
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="[[field.field]]">{{field.name}}</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="[[field.field]]" />
+                                        </template>
+                                        <template>
+                                            <div class="cell" title="{{ _getFieldValue(field.field, item) }}">
+                                                {{ _getFieldValue(field.field, item) }}
+                                            </div>
+                                        </template>
+                                    </vaadin-grid-column>
                                 </template>
-                                <template>
-                                    <div class="cell" title="{{ _getFieldValue(field.field, item) }}">
-                                        {{ _getFieldValue(field.field, item) }}
-                                    </div>
-                                </template>
-                            </vaadin-grid-column>
-                        </template>
-                    </vaadin-grid>
+                            </vaadin-grid>
 
 
+                        </div>
+                    </div>
                 </div>
             </div>
+
+
+
         </div>
-    </div>
+    </template>
 
-
-
-</div>
-</template>
-
-<script>
-(function () {
-    /**
-        * `such-selectbox`
-        *
-        *
-        * @customElement
-        * @polymer
-        * @demo demo/index.html
-        */
-    class SuchSelectbox extends Vaadin.ControlStateMixin(Vaadin.FormElementMixin(Vaadin.ThemableMixin(Polymer.Element))) {
-        static get is() {
-            return 'such-selectbox';
-        }
-
-        static get properties() {
-            return {
-                label: {
-                    type: String,
-                    value: ''
-                },
-                value: {
-                    type: String,
-                    observer: '_valueChanged',
-                    notify: true
-                },
-                valueText: String,
-                id: String,
-                'value-path': String,
-                'text-path': String,
-                activeItem: {
-                    observer: '_rowSelected'
-                },
-                items: {
-                    type: Object,
-                    observer: '_setSelected'
-
-                },
-                fields: Object,
-                required: Boolean,
+    <script>
+            (function () {
                 /**
-                    * Error to show when the input value is invalid.
+                    * `such-selectbox`
+                    *
+                    *
+                    * @customElement
+                    * @polymer
+                    * @demo demo/index.html
                     */
-                errorMessage: {
-                    type: String,
-                    value: ''
-                },
-                disabled: {
-                    type: Boolean,
-                    value: false
-                }, /**
-        * This property is set to true when the control value is invalid.
-        */
-                invalid: {
-                    type: Boolean,
-                    reflectToAttribute: true,
-                    notify: true,
-                    value: false
-                },
-                _errorId: {
-                    type: String
-                },
-                _labelId: {
-                    type: String
-                },
-                modalTitle: String,
-                clearFlag: {
-                    type: Boolean,
-                    value: false,
-                }
-            };
-        }
+                class SuchSelectbox extends Vaadin.ControlStateMixin(Vaadin.FormElementMixin(Vaadin.ThemableMixin(Polymer.Element))) {
 
-        get focusElement() {
-            return this.root.querySelector('[part=value]');
-        }
-
-        ready() {
-            var _this = this;
-
-
-            super.ready();
-            if (!(window.ShadyCSS && window.ShadyCSS.nativeCss)) {
-                this.updateStyles();
-            }
-
-            var uniqueId = SuchSelectbox._uniqueId = 1 + SuchSelectbox._uniqueId || 0;
-            this._errorId = `${this.constructor.is}-error-${uniqueId}`;
-            this._labelId = `${this.constructor.is}-label-${uniqueId}`;
-
-            if (!this.modalTitle) {
-                this.modalTitle = "Selecione o valor para: " + this.label;
-            }
-        }
-
-        _getFieldValue(field, item) {
-            try {
-                return item[field];
-            } catch (e) {
-                return '';
-            }
-        }
-
-        _setSelected() {
-            var _this = this;
-            if (_this.items && _this.items.length > 0) {
-                _this.items.forEach(function (item) {
-                    if (_this.value == item[_this['value-path']]) {
-                        _this.activeItem = item;
-                        _this.title = _this._getFieldValue(_this['text-path'], item);
+                    static get is() {
+                        return 'such-selectbox';
                     }
-                });
-            }
-        }
 
-        _handleClick() {
-            var _this = this;
-            if (_this.clearFlag) {
-                _this.clearFlag = false;
-                return false;
-            }
+                    static get properties() {
+                        return {
+                            label: {
+                                type: String,
+                                value: ''
+                            },
+                            value: {
+                                type: String,
+                                value: '',
+                                observer: '_valueChanged',
+                                notify: true,
+                                reflectToAttribute: true,
+                            },
+                            valueText: String,
+                            id: String,
+                            'value-path': String,
+                            'text-path': String,
+                            activeItem: {
+                                observer: '_rowSelected'
+                            },
+                            items: {
+                                type: Object,
+                                observer: '_setSelected'
 
-            if (!!this.disabled) {
-                return false;
-            }
-            _this.$.input.blur();
+                            },
+                            fields: Object,
+                            required: Boolean,
+                            /**
+                                * Error to show when the input value is invalid.
+                                */
+                            errorMessage: {
+                                type: String,
+                                value: ''
+                            },
+                            disabled: {
+                                type: Boolean,
+                                value: false
+                            }, /**
+* This property is set to true when the control value is invalid.
+*/
+                            invalid: {
+                                type: Boolean,
+                                reflectToAttribute: true,
+                                notify: true,
+                                value: false
+                            },
+                            _errorId: {
+                                type: String
+                            },
+                            _labelId: {
+                                type: String
+                            },
+                            modalTitle: String,
+                            clearFlag: {
+                                type: Boolean,
+                                value: false,
+                            }
+                        };
+                    }
+
+                    get focusElement() {
+                        return this.root.querySelector('[part=value]');
+                    }
+
+                    ready() {
+                        var _this = this;
+                        super.ready();
+                        if (!(window.ShadyCSS && window.ShadyCSS.nativeCss)) {
+                            this.updateStyles();
+                        }
+
+                        var uniqueId = SuchSelectbox._uniqueId = 1 + SuchSelectbox._uniqueId || 0;
+                        this._errorId = `${this.constructor.is}-error-${uniqueId}`;
+                        this._labelId = `${this.constructor.is}-label-${uniqueId}`;
+
+                        if (!this.modalTitle) {
+                            this.modalTitle = "Selecione o valor para: " + this.label;
+                        }
+                    }
+
+                    _getFieldValue(field, item) {
+                        try {
+                            return item[field];
+                        } catch (e) {
+                            return '';
+                        }
+                    }
+
+                    _setSelected() {
+                        var _this = this;
+                        if (_this.items && _this.items.length > 0) {
+                            _this.items.forEach(function (item) {
+                                if (_this.value == item[_this['value-path']]) {
+                                    _this.activeItem = item;
+                                    _this.title = _this._getFieldValue(_this['text-path'], item);
+                                }
+                            });
+                        }
+                    }
+
+                    _handleClick() {
+                        var _this = this;
+                        if (_this.clearFlag) {
+                            _this.clearFlag = false;
+                            return false;
+                        }
+
+                        if (!!this.disabled) {
+                            return false;
+                        }
+                        _this.$.input.blur();
 
 
-            $(_this.$.selectBoxModal).modal('show');
-            $(_this.$.selectBoxModal).one('hidden.bs.modal', function () {
-                _this.$.input.blur();
-                _this.validate();
-            })
-            $(_this.$.selectBoxModal).appendTo("body");
-        }
+                        $(_this.$.selectBoxModal).modal('show');
+                        $(_this.$.selectBoxModal).one('hidden.bs.modal', function () {
+                            _this.$.input.blur();
+                            _this.validate();
+                            _this.dispatchEvent(new CustomEvent('change', { value: _this.value }));
+                        })
+                        $(_this.$.selectBoxModal).appendTo("body");
+                    }
 
-        _rowSelected(item) {
-            var _this = this;
-            if (!item) {
-                return;
-            }
-            _this.value = _this._getFieldValue(_this['value-path'], item);
-            _this.valueText = _this._getFieldValue(_this['text-path'], item);
-            $(_this.$.selectBoxModal).modal('hide');
-        }
+                    _rowSelected(item) {
+                        var _this = this;
+                        if (!item) {
+                            return;
+                        }
+                        _this.value = _this._getFieldValue(_this['value-path'], item);
 
-        _valueChanged(value) {
-            this._setSelected();
-        }
+                        _this.valueText = _this._getFieldValue(_this['text-path'], item);
+                        $(_this.$.selectBoxModal).modal('hide');
 
-        validate() {
-            if (this.focusElement.checkValidity()) {
-                return this.invalid = false;
-            }
-            return this.invalid = true;
-        }
+                    }
 
-        _getActiveErrorId(invalid, errorMessage, errorId) {
-            return errorMessage && invalid ? errorId : undefined;
-        }
+                    _valueChanged(value) {
 
-        _getActiveLabelId(label, labelId) {
-            return label ? labelId : undefined;
-        }
+                        //this.value = value;
+                        this._setSelected();
 
-        attributeChangedCallback(prop, oldVal, newVal) {
-            super.attributeChangedCallback(prop, oldVal, newVal);
-            // Needed until Edge has CSS Custom Properties (present in Edge Preview)
-            if (!(window.ShadyCSS && window.ShadyCSS.nativeCss) &&
-                /^(focused|focus-ring|invalid|disabled|placeholder|has-value)$/.test(prop)) {
-                this.updateStyles();
-            }
+                    }
 
-            // Safari has an issue with repainting shadow root element styles when a host attribute changes.
-            // Need this workaround (toggle any inline css property on and off) until the issue gets fixed.
-            const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-            if (isSafari && this.root) {
-                const WEBKIT_PROPERTY = '-webkit-backface-visibility';
-                this.root.querySelectorAll('*').forEach(el => {
-                    el.style[WEBKIT_PROPERTY] = 'visible';
-                    el.style[WEBKIT_PROPERTY] = '';
-                });
-            }
-        }
+                    validate() {
+                        if (this.focusElement.checkValidity()) {
+                            return this.invalid = false;
+                        }
+                        return this.invalid = true;
+                    }
 
-        _clearSelection() {
-            var _this = this;
-            _this.activeItem = null;
-            _this.title = "";
-            _this.value = "";
-            _this.valueText = "";
-        }
-        _clearElement() {
-            var _this = this;
-            _this._clearSelection();
-            _this.clearFlag = true;
-        }
-    }
+                    _getActiveErrorId(invalid, errorMessage, errorId) {
+                        return errorMessage && invalid ? errorId : undefined;
+                    }
 
-    window.customElements.define(SuchSelectbox.is, SuchSelectbox);
-    /**
-        * @namespace Vaadin
-        */
-    window.Vaadin = window.Vaadin || {};
-    Vaadin.SuchSelectbox = SuchSelectbox;
-})();
-</script>
+                    _getActiveLabelId(label, labelId) {
+                        return label ? labelId : undefined;
+                    }
+
+                    attributeChangedCallback(prop, oldVal, newVal) {
+                        super.attributeChangedCallback(prop, oldVal, newVal);
+                        // Needed until Edge has CSS Custom Properties (present in Edge Preview)
+                        if (!(window.ShadyCSS && window.ShadyCSS.nativeCss) &&
+                            /^(focused|focus-ring|invalid|disabled|placeholder|has-value)$/.test(prop)) {
+                            this.updateStyles();
+                        }
+
+                        // Safari has an issue with repainting shadow root element styles when a host attribute changes.
+                        // Need this workaround (toggle any inline css property on and off) until the issue gets fixed.
+                        const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+                        if (isSafari && this.root) {
+                            const WEBKIT_PROPERTY = '-webkit-backface-visibility';
+                            this.root.querySelectorAll('*').forEach(el => {
+                                el.style[WEBKIT_PROPERTY] = 'visible';
+                                el.style[WEBKIT_PROPERTY] = '';
+                            });
+                        }
+                    }
+
+                    _clearSelection() {
+                        var _this = this;
+                        _this.activeItem = null;
+                        _this.title = "";
+                        _this.value = "";
+                        _this.valueText = "";
+                    }
+                    _clearElement() {
+                        var _this = this;
+                        _this._clearSelection();
+                        _this.clearFlag = true;
+                    }
+                }
+
+                window.customElements.define(SuchSelectbox.is, SuchSelectbox);
+                /**
+                    * @namespace Vaadin
+                    */
+                window.Vaadin = window.Vaadin || {};
+                Vaadin.SuchSelectbox = SuchSelectbox;
+            })();
+    </script>
 </dom-module>

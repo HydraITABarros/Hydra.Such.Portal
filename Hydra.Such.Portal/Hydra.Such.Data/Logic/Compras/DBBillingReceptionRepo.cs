@@ -31,7 +31,7 @@ namespace Hydra.Such.Data.Logic.ComprasML
         {
             if (item == null)
                 throw new ArgumentNullException("item");
-
+            item.DataUltimaInteracao = DateTime.Now.ToString("");
             ctx.RececaoFaturacao.Add(item.ParseToDB());
 
             return item;
@@ -39,6 +39,7 @@ namespace Hydra.Such.Data.Logic.ComprasML
 
         public BillingReceptionModel Update(BillingReceptionModel item)
         {
+            item.DataUltimaInteracao = DateTime.Now.ToString("");
             ctx.RececaoFaturacao.Update(item.ParseToDB());
             return item;
         }
@@ -218,15 +219,41 @@ namespace Hydra.Such.Data.Logic.ComprasML
         {
             return ctx.RecFaturacaoConfigDestinatarios.Where(x => x.Codigo.StartsWith("3A-") && x.CodArea == areaId && x.Mostra == true && x.CodCentroResponsabilidade != string.Empty).ToList();
         }
-        public List<RecFaturacaoConfigDestinatarios> GetUsersToResend(string areaId)
+        public List<RecFaturacaoConfigDestinatarios> GetUsersToResendByAreaName(string areaId)
         {
-            return ctx.RecFaturacaoConfigDestinatarios
+            List<RecFaturacaoConfigDestinatarios> users = new List<RecFaturacaoConfigDestinatarios>();
+            
+            users = ctx.RecFaturacaoConfigDestinatarios
                 .Where(x => x.Codigo.StartsWith("3A-") && 
                             x.CodArea == areaId && 
                             x.Mostra == false 
                             && string.IsNullOrEmpty(x.CodCentroResponsabilidade))
                 .ToList();
+
+            var areas = GetAreasUPUAS();
+            if (areas.Count > 0)
+            {
+                var selectedArea = areas.FirstOrDefault(x => x.CodArea == areaId);
+                if (selectedArea != null && !users.Any(x => x.Destinatario == selectedArea.Destinatario))
+                {
+                    users.Add(selectedArea);
+                }
+            }
+            return users;
         }
+
+        public List<RecFaturacaoConfigDestinatarios> GetUsersToResendByAreaNumber(string areaNumber)
+        {
+            List<RecFaturacaoConfigDestinatarios> users = new List<RecFaturacaoConfigDestinatarios>();
+
+            users = ctx.RecFaturacaoConfigDestinatarios
+                .Where(x => x.Codigo.StartsWith("V" + areaNumber) &&
+                            !string.IsNullOrEmpty(x.Destinatario))
+                .ToList();
+            
+            return users;
+        }
+
         public List<RecFaturacaoConfigDestinatarios> GetDestination()
         {
             return ctx.RecFaturacaoConfigDestinatarios.ToList();

@@ -41,5 +41,6 @@ namespace Hydra.Such.Data.ViewModel
         public string TipoPrecoTexto { get; set; }
         public int? GrupoRegistoIvaProduto { get; set; }
         public string GrupoRegistoIvaProdutoTexto { get; set; }
+        public string CodCategoriaProduto { get; set; }
     }
 }

@@ -143,7 +143,9 @@ namespace WSPurchaseInvHeader
         private bool down_PaymentFieldSpecified;
         
         private string buy_from_Vendor_NoField;
-        
+
+        private string vendor_Mail;
+
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=0)]
         public string Key
@@ -675,8 +677,22 @@ namespace WSPurchaseInvHeader
                 this.buy_from_Vendor_NoField = value;
             }
         }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order = 33)]
+        public string Vendor_Mail
+        {
+            get
+            {
+                return this.vendor_Mail;
+            }
+            set
+            {
+                this.vendor_Mail = value;
+            }
+        }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspurchinvheaderinterm")]

@@ -74,6 +74,7 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetModelRequisition()
         {
             List<RequisitionViewModel> result = DBRequestTemplates.GetAll().ParseToViewModel();
+
             //Apply User Dimensions Validations
             List<AcessosDimensões> CUserDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
             //Regions
@@ -85,6 +86,7 @@ namespace Hydra.Such.Portal.Controllers
             //ResponsabilityCenter
             if (CUserDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
                 result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CenterResponsibilityCode));
+
             return Json(result);
         }
         [HttpPost]
@@ -506,8 +508,17 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GenerateRequesition([FromBody] List<DailyRequisitionProductiveUnitViewModel> data)
         {
             ErrorHandler result = new ErrorHandler();
+
             if (data != null && data.Count > 0)
             {
+                if (data.Where(x => x.DirectUnitCost == null || x.SupplierNo == null || x.SupplierNo == "").Count() > 0)
+                {
+                    result.eReasonCode = 2;
+                    result.eMessage = "Existe linhas sem custo unitário ou Cód Fornecedor preenchidos.";
+
+                    return Json(result);
+                }
+
                 int? productivityUnitId = data.Where(x => x.ProductionUnitNo.HasValue).Select(x => x.ProductionUnitNo).FirstOrDefault();
                 DateTime expextedDate = data.Where(x => !string.IsNullOrEmpty(x.ExpectedReceptionDate)).Select(x => DateTime.Parse(x.ExpectedReceptionDate)).OrderBy(x => x).FirstOrDefault();
                 if (productivityUnitId.HasValue)

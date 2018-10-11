@@ -395,6 +395,8 @@
 
                                     <div class="col-sm-2">
                                         <vaadin-text-field id="linhasUM" label="UM" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+
+                                        <vaadin-text-field id="linhasCodCategoriaProduto" label="CodCategoriaProduto" hidden></vaadin-text-field>
                                     </div>
 
                                     <div class="col-sm-2">
@@ -670,6 +672,16 @@
 
                             <vaadin-grid-column resizable>
                                 <template class="header">
+                                    <vaadin-grid-sorter path="codCategoriaProduto" style="text-align:center;">Cód. Categoria Produto</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="codCategoriaProduto" />
+                                </template>
+                                <template>
+                                    <vaadin-text-field id="tabLinhascodCategoriaProduto" value="{{item.codCategoriaProduto}}" disabled></vaadin-text-field>
+                                </template>
+                            </vaadin-grid-column>
+
+                            <vaadin-grid-column resizable>
+                                <template class="header">
                                 </template>
                                 <template>
                                     <center>
@@ -845,31 +857,46 @@
                             type: String,
                             notify: true,
                             value: ""
+                        },
+                        _CBItems: {
+                            observer: '_setProductData'
                         }
                     },
 
                     ready: function () {
-                        //debugger;
                         this.$.page_databound_ajax.body = JSON.stringify({ "NoProcedimento": "@ViewBag.NoProcedimento" });
                         this.$.page_databound_ajax.generateRequest();
                     },
 
+                    _setProductData: function (e) {
+                        if (this.CBItems != undefined) {
+                            var item = this.CBItems.find(x => x.code == e);
+                            if (item != null) {
+                                this.$.linhasCustoUnitario.value = item.unitCost;
+                                this.$.linhasUM.value = item.measureUnit;
+                                this.$.linhasCodCategoriaProduto.value = item.itemCategoryCode;
+                            }
+                            else {
+                                this.$.linhasCustoUnitario.value = "";
+                                this.$.linhasUM.value = "";
+                                this.$.linhasCodCategoriaProduto.value = "";
+                            }
+                        }
+                    },
+
                     //Mostra Mensagens
                     _showMessage: function (message) {
-                        //debugger;
                         this.$.ToastMessageSuccess.text = message;
                         this.$.ToastMessageSuccess.open();
                     },
 
                     //Mostra Mensagens de Erro
                     _showErrorMessage: function (message) {
-                        //debugger;
                         this.$.ToastMessageError.text = message;
                         this.$.ToastMessageError.open();
                     },
 
                     _validateData: function (container) {
-                        //debugger;
                         var polymerDom = Polymer.dom(this.$[container]);
                         var errors = 0;
                         var formSelector = "vaadin-text-field, vaadin-date-picker, vaadin-combo-box";
@@ -877,13 +904,11 @@
 
                         formFields.forEach(function (element) {
                             if (!element.validate()) {
-                                debugger;
                                 errors++;
                             }
                         });
 
                         if (errors > 0) {
-                            debugger;
                             this._showErrorMessage('Verifique os dados inseridos.');
                             return false;
                         }
@@ -892,7 +917,6 @@
                     },
 
                     _createAcordoPrecos: function () {
-                        //debugger;
                         if (this._validateData("acordoPrecosCreate")) {
                             this.$.ajax_acordoPrecos_create.body = JSON.stringify({
                                 noProcedimento: this.$.acordoPrecosNoProcedimento.value,
@@ -905,7 +929,6 @@
                     },
 
                     _createAcordoPrecos_Response: function (e) {
-                        //debugger;
                         if (this._createResult == 0) {
                             this.$.linhasNoProcedimento.value = this.$.acordoPrecosNoProcedimento.value;
                             this.$.fornecedorNoProcedimento.value = this.$.acordoPrecosNoProcedimento.value;
@@ -919,7 +942,6 @@
                     },
 
                     _createLinhaAcordoPrecos: function () {
-                        //debugger;
                         if (this._validateData("linhaAcordoPrecosCreate") & this.$.linhasNoFornecedor.value != "" & this.$.linhasCodProduto.value != "") {
                             this.$.ajax_linhaAcordoPrecos_create.body = JSON.stringify({
                                 noProcedimento: this.$.linhasNoProcedimento.value,
@@ -939,14 +961,14 @@
                                 descricaoProdFornecedor: this.$.linhasDescricaoProdutoFornecedor.value,
                                 formaEntrega: this.$.linhasFormaEntrega.value,
                                 tipoPreco: this.$.linhasTipoPreco.value,
-                                grupoRegistoIvaProduto: this.$.linhasGrupoRegistoIvaProduto.value
+                                grupoRegistoIvaProduto: this.$.linhasGrupoRegistoIvaProduto.value,
+                                codCategoriaProduto: this.$.linhasCodCategoriaProduto.value
                             });
                             this.$.ajax_linhaAcordoPrecos_create.generateRequest();
                         }
                     },
 
                     _createLinhaAcordoPrecos_Response: function (e) {
-                        //debugger;
                         if (this._createResult == 0) {
                             this.$.linhasNoFornecedor.value = "";
                             this.$.linhasCodProduto.value = "";
@@ -978,7 +1000,6 @@
                     },
 
                     _createFornecedor: function () {
-                        //debugger;
                         if (this._validateData("fornecedorAcordoPrecosCreate")) {
                             this.$.ajax_fornecedor_create.body = JSON.stringify({
                                 noProcedimento: this.$.fornecedorNoProcedimento.value,
@@ -991,7 +1012,6 @@
                     },
 
                     _createFornecedorResponse: function (e) {
-                        //debugger;
                         if (this._createResult == 0) {
                             this.$.fornecedorNoFornecedor.value = "";
                             this.$.fornecedorValor.value = "";
@@ -1009,7 +1029,6 @@
                     },
 
                     _validarNoProcedimento: function () {
-                        //debugger;
                         if (this.$.acordoPrecosNoProcedimento.value != "") {
                             this.$.ajax_verificarNoProcedimento.body = JSON.stringify({
                                 noProcedimento: this.$.acordoPrecosNoProcedimento.value,
@@ -1019,14 +1038,12 @@
                     },
 
                     _validarNoProcedimento_Response: function (e) {
-                        //debugger;
                         if (this._verificarNoProcedimento_Result == 1) {
                             this._showErrorMessage('O Nº de Procedimento já existe na Base de Dados.');
                         }
                     },
 
                     _deleteLinha: function (e) {
-                        //debugger;
                         var noProcedimento = e.model.item.noProcedimento;
                         var noFornecedor = e.model.item.noFornecedor;
                         var codProduto = e.model.item.codProduto;
@@ -1066,7 +1083,6 @@
                     },
 
                     _deleteLinhaResponse: function (e) {
-                        //debugger;
                         var self = this;
 
                         setTimeout(function () {
@@ -1088,7 +1104,6 @@
                     },
 
                     _deleteFornecedor: function (e) {
-                        //debugger;
                         var noProcedimento = e.model.item.noProcedimento;
                         var noFornecedor = e.model.item.noFornecedor;
 
@@ -1120,7 +1135,6 @@
                     },
 
                     _deleteFornecedorResponse: function (e) {
-                        //debugger;
                         var self = this;
 
                         setTimeout(function () {
@@ -1142,13 +1156,11 @@
                     },
 
                     _refreshAnexosErros: function (e) {
-                        //debugger;
                         this.$.page_databound_ajax.body = JSON.stringify({ "NoProcedimento": "@ViewBag.NoProcedimento" });
                         this.$.page_databound_ajax.generateRequest();
                     },
 
                     _deleteFileAnexosErros: function (e) {
-                        //debugger;
                         var code = e.model.item.codeTexto;
 
                         var ajax_request = this.$.page_deleteAnexosErros_ajax;
@@ -1178,7 +1190,6 @@
                     },
 
                     _deleteFileAnexosErrosResponse: function (e) {
-                        //debugger;
                         var self = this;
 
                         setTimeout(function () {
@@ -1204,14 +1215,12 @@
                     },
 
                     _export: function () {
-                        //debugger;
                         this.$.ajax_Export.body = JSON.stringify(this.data);
                         this.$.ajax_Export.generateRequest();
                         this.$.tabLinhas.clearCache();
                     },
 
                     _ExportResponse: function (e) {
-                        debugger
                         var FileName = this.export;
                         location.href = '../ExportToExcelDownload_AcordoPrecos?sFileName=' + FileName;
                     },
@@ -1253,7 +1262,6 @@
                     },
 
                     _updateCreateResponse: function (e) {
-                        debugger;
                         var self = this;
                         if (e.detail.status === 200) {
                             this.$.ajax_GetAll.generateRequest();

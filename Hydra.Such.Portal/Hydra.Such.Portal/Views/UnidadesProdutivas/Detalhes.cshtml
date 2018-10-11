@@ -105,7 +105,7 @@
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{CBRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{CBFunctionalAreas}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetAllClientsComboGrid" last-response="{{CBClients}}" auto method="post" handle-as="json" content-type="application/json" id="clients_ajax"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetProjectList" last-response="{{CBProjects}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProjectNavList" last-response="{{CBProjects}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetLocations" last-response="{{CBWarehouses}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetNutritionCoffeShopTypes" last-response="{{CBCoffeShopTypes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
@@ -234,9 +234,9 @@
                                         <div class="col-md-3 ">
                                             <such-selectbox id="projectKitchen" value="{{data.projectKitchen}}" label="Projeto Cozinha"
                                                             items="[[CBProjects]]"
-                                                            text-path="value"
-                                                            value-path="id"
-                                                            fields='[{"field":"id", "name":"Cód."}, {"field":"value", "name":"Descrição"}]'
+                                                            text-path="no"
+                                                            value-path="no"
+                                                            fields='[{"field":"no", "name":"Cód."}, {"field":"description", "name":"Descrição"}]'
                                                             disabled="{{ !_permissions.update }}"
                                                             on-value-changed="_projectKitchenChange">
                                             </such-selectbox>
@@ -250,9 +250,9 @@
                                         <div class="col-md-3 ">
                                             <such-selectbox id="projectWaste" value="{{data.projectWaste}}" label="Projeto Desperdicios"
                                                             items="[[CBProjects]]"
-                                                            text-path="value"
-                                                            value-path="id"
-                                                            fields='[{"field":"id", "name":"Cód."}, {"field":"value", "name":"Descrição"}]'
+                                                            text-path="no"
+                                                            value-path="no"
+                                                            fields='[{"field":"no", "name":"Cód."}, {"field":"description", "name":"Descrição"}]'
                                                             disabled="{{ !_permissions.update }}"
                                                             on-value-changed="_projectWasteChange">
                                             </such-selectbox>
@@ -263,9 +263,9 @@
                                         <div class="col-md-3 ">
                                             <such-selectbox id="projectSubsidiaries" value="{{data.projectSubsidiaries}}" label="Projeto Mat. Subsidiárias"
                                                             items="[[CBProjects]]"
-                                                            text-path="value"
-                                                            value-path="id"
-                                                            fields='[{"field":"id", "name":"Cód."}, {"field":"value", "name":"Descrição"}]'
+                                                            text-path="no"
+                                                            value-path="no"
+                                                            fields='[{"field":"no", "name":"Cód."}, {"field":"description", "name":"Descrição"}]'
                                                             disabled="{{ !_permissions.update }}"
                                                             on-value-changed="_projectSubsidiariesChange">
                                             </such-selectbox>
@@ -290,15 +290,23 @@
                                                     <paper-collapse-item class="panel-heading" header="Criar" closed>
                                                         <div class="row">
                                                             <div class="col-lg-3">
-                                                                <vaadin-combo-box items="[[CBProjects]]" id="BPProjectNo" name="BPProjectNo" item-value-path="id" item-label-path="value" label="Projeto" disabled="{{ !_permissions.update }}" on-value-changed="_getProjectBillingData">
-                                                                    <template>
-                                                                        <table width="300px">
-                                                                            <tr>
-                                                                                <td width="30%">[[item.id]]</td>
-                                                                                <td width="70%"> <b>[[item.value]]</b></td>
-                                                                            </tr>
-                                                                        </table>
-                                                                    </template>
+                                                                <such-selectbox id="BPProjectNo" label="Projeto"
+                                                                                items="[[CBProjects]]"
+                                                                                text-path="no"
+                                                                                value-path="no"
+                                                                                fields='[{"field":"no", "name":"Cód."}, {"field":"description", "name":"Descrição"}]'
+                                                                                disabled="{{ !_permissions.update }}"
+                                                                                on-value-changed="_getProjectBillingData">
+                                                                </such-selectbox>
+                                                                @*<vaadin-combo-box items="[[CBProjects]]" id="BPProjectNo" name="BPProjectNo" item-value-path="id" item-label-path="value" label="Projeto" disabled="{{ !_permissions.update }}" on-value-changed="_getProjectBillingData">*@
+                                                                <template>
+                                                                    <table width="300px">
+                                                                        <tr>
+                                                                            <td width="30%">[[item.id]]</td>
+                                                                            <td width="70%"> <b>[[item.value]]</b></td>
+                                                                        </tr>
+                                                                    </table>
+                                                                </template>
                                                                 </vaadin-combo-box>
                                                             </div>
                                                             <div class="col-lg-3">
