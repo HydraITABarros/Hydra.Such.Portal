@@ -32,22 +32,35 @@ namespace Hydra.Such.Portal.Controllers
 
         #region Necessidade de Compras
         
-        public IActionResult Detalhes(int id)
+        public IActionResult Detalhes(int productivityUnitNo, int type)
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.NecessidadeCompras);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.UPermissions = UPerm;
                 ProductivityUnitViewModel productivityUnit;
-                if (id > 0)
+                if (productivityUnitNo > 0)
                 {
-                    productivityUnit = DBProductivityUnits.GetById(id).ParseToViewModel();
+                    productivityUnit = DBProductivityUnits.GetById(productivityUnitNo).ParseToViewModel();
 
-                    ViewBag.ProductivityUnityNo = id;
-                    ViewBag.ProductivityUnitId = productivityUnit.ProductivityUnitNo;//.NºUnidadeProdutiva;
-                    ViewBag.ProductivityUnitDesc = productivityUnit.Description;//.Descrição;
-                    ViewBag.ProductivityArea = "10";// ProductivityUnitDB.CódigoÁreaFuncional;
-                    ViewBag.ProductivityUnit = productivityUnit;
+                    if (type == 1)
+                    {
+                        ViewBag.ProductivityUnityNo = productivityUnitNo;
+                        ViewBag.ProductivityUnitId = productivityUnit.ProductivityUnitNo;//.NºUnidadeProdutiva;
+                        ViewBag.ProductivityUnitDesc = productivityUnit.Description;//.Descrição;
+                        ViewBag.ProductivityArea = "10";// ProductivityUnitDB.CódigoÁreaFuncional;
+                        ViewBag.ProductivityUnit = productivityUnit;
+                        ViewBag.Type = type; // 1 = Matéria Prima
+                    }
+                    else
+                    {
+                        ViewBag.ProductivityUnityNo = productivityUnitNo;
+                        ViewBag.ProductivityUnitId = productivityUnit.ProductivityUnitNo;//.NºUnidadeProdutiva;
+                        ViewBag.ProductivityUnitDesc = productivityUnit.Description;//.Descrição;
+                        ViewBag.ProductivityArea = "10";// ProductivityUnitDB.CódigoÁreaFuncional;
+                        ViewBag.ProductivityUnit = productivityUnit;
+                        ViewBag.Type = type; // 2 = Matéria Subsidiária
+                    }
                 }
                 else
                 {
@@ -62,21 +75,22 @@ namespace Hydra.Such.Portal.Controllers
                 return Redirect(Url.Content("~/Error/AccessDenied"));
             }
         }
+
         [HttpPost]
-        
-        public JsonResult GetGridValues([FromBody]int id)
+        public JsonResult GetGridValues([FromBody]int id, int type)
         {
-            List<DailyRequisitionProductiveUnitViewModel> result = DBShoppingNecessity.GetAllById(id).ParseToViewModel();
+            List<DailyRequisitionProductiveUnitViewModel> result = DBShoppingNecessity.GetAllByIdAndType(id, type).ParseToViewModel();
             return Json(result);
         }
+
         [HttpPost]
-        
         public JsonResult GetModelRequisition()
         {
             List<RequisitionViewModel> result = DBRequestTemplates.GetAll().ParseToViewModel();
 
             //Apply User Dimensions Validations
             List<AcessosDimensões> CUserDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+
             //Regions
             if (CUserDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
                 result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.RegionCode));
@@ -95,24 +109,24 @@ namespace Hydra.Such.Portal.Controllers
             ErrorHandler result = new ErrorHandler();
             if (dp != null)
             {
-                List<DiárioRequisiçãoUnidProdutiva> previousList;
-                // Get All
-                previousList = DBShoppingNecessity.GetAll();
-                foreach (DiárioRequisiçãoUnidProdutiva line in previousList)
-                {
-                    if (!dp.Any(x => x.LineNo == line.NºLinha))
-                    {
-                        DBShoppingNecessity.Delete(line);
-                    }
-                }
+                //List<DiárioRequisiçãoUnidProdutiva> previousList;
+                //// Get All
+                //previousList = DBShoppingNecessity.GetAll();
+                //foreach (DiárioRequisiçãoUnidProdutiva line in previousList)
+                //{
+                //    if (!dp.Any(x => x.LineNo == line.NºLinha))
+                //    {
+                //        DBShoppingNecessity.Delete(line);
+                //    }
+                //}
 
 
-                if (dp.Count == 0)
-                {
-                    result.eReasonCode = 1;
-                    result.eMessage = "Diário requisição Unid. Produtiva foi atualizado";
-                    return Json(result);
-                }
+                //if (dp.Count == 0)
+                //{
+                //    result.eReasonCode = 1;
+                //    result.eMessage = "Diário requisição Unid. Produtiva foi atualizado";
+                //    return Json(result);
+                //}
 
                 //Update or Create
                 try
@@ -170,6 +184,7 @@ namespace Hydra.Such.Portal.Controllers
                             newdp.DescriçãoUnidadeProduto = x.ProductUnitDescription;
                             newdp.GrupoRegistoIvaProduto = x.GrupoRegistoIvaProduto;
                             newdp.NºDocumento = x.DocumentNo;
+                            newdp.Tipo = x.Tipo;
                             newdp = DBShoppingNecessity.Update(newdp);
                             if (newdp == null)
                             {
@@ -217,7 +232,8 @@ namespace Hydra.Such.Portal.Controllers
                                 DescriçãoUnidadeProduto = x.ProductUnitDescription,
                                 GrupoRegistoIvaProduto = x.GrupoRegistoIvaProduto,
                                 NºDocumento = x.DocumentNo,
-                            };
+                                Tipo = x.Tipo,
+                        };
                             newdp.UtilizadorCriação = User.Identity.Name;
 
                             newdp.DataHoraCriação = DateTime.Now;
@@ -356,7 +372,15 @@ namespace Hydra.Such.Portal.Controllers
                             prodVal = string.Empty;
 
                             //RUI DESENVOLVIMENTO: Get Supplier and Unit Cost  
-                            LinhasAcordoPrecos linhaAcordo = DBLinhasAcordoPrecos.GetAll().Where(x => x.DtValidadeInicio <= expectedReceipDate && x.DtValidadeFim >= pricesDate && x.CodProduto == lr.Código).FirstOrDefault();
+                            LinhasAcordoPrecos linhaAcordo = new LinhasAcordoPrecos();
+                            if (lr.Tipo == 1)
+                            {
+                                linhaAcordo = DBLinhasAcordoPrecos.GetAll().Where(x => x.DtValidadeInicio <= expectedReceipDate && x.DtValidadeFim >= pricesDate && x.CodProduto == lr.Código).FirstOrDefault();
+                            }
+                            if (lr.Tipo == 2)
+                            {
+                                linhaAcordo = DBLinhasAcordoPrecos.GetAll().Where(x => x.DtValidadeInicio <= expectedReceipDate && x.DtValidadeFim >= pricesDate && x.CodProduto == lr.Código).FirstOrDefault();
+                            }
 
                             //Get Supplier by Code //ACORDO DE PREÇOS
                             //List<DDMessageString> supplierval = DBNAV2017Supplier

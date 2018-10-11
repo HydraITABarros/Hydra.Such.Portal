@@ -175,6 +175,45 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
+        public static List<LinhasAcordoPrecos> GetMateriaPrima(DateTime date, string armazem)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.LinhasAcordoPrecos
+                        .Where(x => x.Localizacao == armazem
+                                 && (x.DtValidadeInicio <= date && x.DtValidadeFim >= date))
+                        .ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
+        public static List<LinhasAcordoPrecos> GetMateriaSubsidiaria(DateTime date, string armazem, string cresp)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.LinhasAcordoPrecos
+                        .Where(x => x.Localizacao == armazem
+                                && x.Cresp == cresp
+                                 && (x.DtValidadeInicio <= date && x.DtValidadeFim >= date))
+                        .ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
         #endregion
     }
 }

@@ -33,6 +33,7 @@ namespace Hydra.Such.Data.Database
         public string CodAreaResiduos { get; set; }
         public string ReportUsername { get; set; }
         public string ReportPassword { get; set; }
+        public string ArmazemCompraDireta { get; set; }
 
         public ConfiguraçãoNumerações NumeraçãoContratosNavigation { get; set; }
         public ConfiguraçãoNumerações NumeraçãoFolhasDeHorasNavigation { get; set; }

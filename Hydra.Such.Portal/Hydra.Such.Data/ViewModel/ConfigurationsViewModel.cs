@@ -29,5 +29,6 @@ namespace Hydra.Such.Data.ViewModel
         public string WasteAreaId { get; set; }
         public string ReportUsername { get; set; }
         public string ReportPassword { get; set; }
+        public string ArmazemCompraDireta { get; set; }
     }
 }
