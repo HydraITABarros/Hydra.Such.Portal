@@ -393,12 +393,22 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetpriceAgreementByDate([FromBody] DateTime date, int produtivityUnitId)
+        public JsonResult GetpriceAgreementByDate([FromBody] DateTime date, int produtivityUnitId, int type)
         {
             try
             {
-                var prodUnit = DBProductivityUnits.GetById(produtivityUnitId);
-                List<LinhasAcordoPrecos> result = DBLinhasAcordoPrecos.GetForDimensions(date, prodUnit.CódigoCentroResponsabilidade, prodUnit.CódigoRegião, prodUnit.CódigoÁreaFuncional);
+                List<LinhasAcordoPrecos> result = new List<LinhasAcordoPrecos>();
+                if (type == 1) //Matéria Prima
+                {
+                    var prodUnit = DBProductivityUnits.GetById(produtivityUnitId);
+                    result = DBLinhasAcordoPrecos.GetMateriaPrima(date, prodUnit.Armazém);
+                }
+                else //Matéria Subsidiária
+                {
+                    var prodUnit = DBProductivityUnits.GetById(produtivityUnitId);
+                    var config = DBConfigurations.GetById(1);
+                    result = DBLinhasAcordoPrecos.GetMateriaSubsidiaria(date, config.ArmazemCompraDireta, prodUnit.CódigoCentroResponsabilidade);
+                }
                 return Json(result);
             }
             catch (Exception e)

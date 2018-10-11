@@ -165,8 +165,7 @@
             }
         </style>
 
-        <vaadin-text-field id="prodUnitNoId" name="prodUnitNoName" label="Nº Unidade Produtiva" value="{{prodUnitNo}}" disabled hidden>
-        </vaadin-text-field>
+        <vaadin-text-field id="prodUnitNoId" name="prodUnitNoName" label="Nº Unidade Produtiva" value="{{prodUnitNo}}" disabled hidden></vaadin-text-field>
         <vaadin-combo-box items="[[prodUnitValresult]]" id="prodUnitId" on-value-changed="_prodUnitChange" item-value-path="id" item-label-path="id" value="" label="Nº Unidade Produtiva" hidden>
             <template>
                 <table width="350px">
@@ -197,8 +196,7 @@
                                 items="[[Products]]"
                                 text-path="descricaoProduto"
                                 value-path="codProduto"
-                                fields='[{"field":"noProcedimento", "name":"Nº Acordo Preço"},
-                                    {"field":"noFornecedor", "name":"Nº Fornecedor"},
+                                fields='[{"field":"noFornecedor", "name":"Nº Fornecedor"},
                                     {"field":"codProduto", "name":"Nº Produto"},
                                     {"field":"descricaoProduto", "name":"Descrição"},
                                     {"field":"codCategoriaProduto", "name":"Cód. Categoria"},
@@ -651,6 +649,11 @@
                         notify: true,
                         value: ""
                     },
+                    type: {
+                        type: Number,
+                        notify: true,
+                        value: ""
+                    },
                     descriptionUnit: {
                         type: String,
                         notify: true,
@@ -799,6 +802,9 @@
                         }
                         if (prodUnitId != null && prodUnitDesc != "") {
                             this.$.ajax_getgrid.body = JSON.stringify(prodUnitId);
+                            this.$.ajax_getgrid.params = {
+                                "type": this.type
+                            };
                             this.$.ajax_getgrid.generateRequest();
                             this.$.grid_databound_ajax.generateRequest();
                         } else {
@@ -812,6 +818,7 @@
                 ready: function () {
                     var prodUnitId = @ViewBag.ProductivityUnitId;
                     var prodUnitDesc = @Html.Raw(Json.Serialize(ViewBag.ProductivityUnitDesc));
+                    var typeId = @Html.Raw(Json.Serialize(ViewBag.Type));
                     //get premissions to CRUD
                     this._permissionsVal = @Html.Raw(Json.Serialize(@ViewBag.UPermissions));
                     if (this._permissionsVal.create == false && this._permissionsVal.update == false) {
@@ -820,9 +827,11 @@
                     if (prodUnitId != null && prodUnitDesc != "") {
                         this.prodUnitNo = prodUnitId;
                         this.descriptionUnit = prodUnitDesc;
+                        this.type = typeId;
                     } else {
                         this.prodUnitNo = "";
                         this.descriptionUnit = "";
+                        this.type = "";
                         this._NotSelectedprodUnit = true;
                         this.$.ajax_prodUnit.generateRequest();
                     }
@@ -897,7 +906,8 @@
                     if (e.detail.value != null && e.detail.value) {
                         this.$.products_ajax.body = JSON.stringify(e.detail.value);
                         this.$.products_ajax.params = {
-                            "produtivityUnitId": this.prodUnit.productivityUnitNo
+                            "produtivityUnitId": this.prodUnit.productivityUnitNo,
+                            "type": this.type
                         };
                         this.$.products_ajax.generateRequest();
                     }
@@ -1088,7 +1098,8 @@
                                     localCode: this.$.codStockUnitId.value,
                                     documentNo: this.$._documentNo,
                                     openOrderNo: this.$._documentNo,
-                                    orderLineOpenNo: this._lineNo
+                                    orderLineOpenNo: this._lineNo,
+                                    tipo: this.type
                                 };
 
 
@@ -1138,6 +1149,7 @@
                                     supplierProductCode: this.$.supplierProdCodeId.value,
                                     supplierProductDescription: this.$.cmbProducts.valueText,// this.$.supplierProdDescriptionId.value,
                                     supplierName: this.$.SupplierNameId.value,
+                                    tipo: this.type
                                 };
 
                             // Save to DB
@@ -1399,7 +1411,7 @@
                         if (this.datarequesition.eReasonCode === 1) {
                             this._openToast(this.datarequesition.eMessage);
                         }
-                        else { 
+                        else {
                             this._openToastError(this.datarequesition.eMessage);
                         }
                         this.$.ajax_getgrid.generateRequest();
@@ -1418,8 +1430,8 @@
                             //}
                             //this.$.grid_updateAgreementByVendor_ajax.body = JSON.stringify(selItms);
                             //this.$.grid_updateAgreementByVendor_ajax.generateRequest();
-                            
-                            
+
+
                         //}
 
                     } else {

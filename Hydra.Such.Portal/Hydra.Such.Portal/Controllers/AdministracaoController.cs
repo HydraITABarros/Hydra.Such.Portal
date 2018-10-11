@@ -838,7 +838,8 @@ namespace Hydra.Such.Portal.Controllers
                 LunchStartTime = Cfg.InicioHoraAlmoco,
                 WasteAreaId = Cfg.CodAreaResiduos,
                 ReportUsername = Cfg.ReportUsername,
-                ReportPassword = Cfg.ReportPassword
+                ReportPassword = Cfg.ReportPassword,
+                ArmazemCompraDireta = Cfg.ArmazemCompraDireta
             };
             return Json(result);
         }
@@ -877,6 +878,7 @@ namespace Hydra.Such.Portal.Controllers
             configObj.CodAreaResiduos = data.WasteAreaId;
             configObj.ReportUsername = data.ReportUsername;
             configObj.ReportPassword = data.ReportPassword;
+            configObj.ArmazemCompraDireta = data.ArmazemCompraDireta;
 
             configObj.UtilizadorModificação = User.Identity.Name;
             //configObj.UtilizadorCriação = User.Identity.Name;
