@@ -1,0 +1,376 @@
+﻿@{
+    ViewData["Title"] = "Linhas dos Acordo de Preços";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="~/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="~/lib/iron-form/iron-form.html" />
+<link rel="import" href="~/lib/paper-button/paper-button.html" />
+<link rel="import" href="~/lib/paper-toast-master/paper-toast.html" />
+
+<!--start ColumnToggle-->
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-icons/iron-icons.html" />
+<link rel="import" href="/lib/iron-behaviors/iron-button-state.html" />
+<link rel="import" href="/lib/paper-menu-button/paper-menu-button.html" />
+<!--end ColumnToggle-->
+
+<x-linhasacordosprecos></x-linhasacordosprecos>
+
+<dom-module id="x-linhasacordosprecos">
+    <template>
+        <!-- STYLES -->
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+
+        <iron-ajax url="/Administracao/GetAllLinhasAcordosPrecos" last-response="{{result}}" auto method="post" handle-as="json" id="grid_databound_ajax" content-type="application/json"> </iron-ajax>
+        <iron-ajax url="/Administracao/ExportToExcel_LinhasAcordosPrecos" last-response="{{export}}" id="ajax_Export" method="post" handle-as="json" on-response="_exportEXCELResponse" content-type="application/json"></iron-ajax>
+
+        <div class="subMenu">
+            <paper-button id="btnGoBack" class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Voltar</paper-button>
+            <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+
+            <!--start ColumnToggle-->
+            <paper-menu-button class="column-toggle" no-animations>
+                <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
+                <div class="list-group" slot="dropdown-content">
+                    <template is="dom-repeat" items="[[ _toArray(_columns)]]" id="columnsList">
+                        <a href="javascript:void(0);" on-tap="_toggleColumn" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClass( item.key ) ]]">
+                            {{ item.value.label }}
+                        </a>
+                        <hr />
+                    </template>
+                </div>
+            </paper-menu-button>
+            <!--end ColumnToggle-->
+        </div>
+
+        <vaadin-grid id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.noProcedimento.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="noProcedimento">Nº Procedimento</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="noProcedimento" />
+                </template>
+                <template>
+                    {{item.noProcedimento}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.noFornecedor.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="noFornecedor">Nº Fornecedor</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="noFornecedor" />
+                </template>
+                <template>
+                    {{item.noFornecedor}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.nomeFornecedor.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="nomeFornecedor">Nome Fornecedor</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="nomeFornecedor" />
+                </template>
+                <template>
+                    {{item.nomeFornecedor}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.dtValidadeInicioTexto.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="dtValidadeInicioTexto">Data Início Validade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dtValidadeInicioTexto" />
+                </template>
+                <template>
+                    {{item.dtValidadeInicioTexto}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.dtValidadeFimTexto.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="dtValidadeFimTexto">Data Fim Validade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dtValidadeFimTexto" />
+                </template>
+                <template>
+                    {{item.dtValidadeFimTexto}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.codProduto.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="codProduto">Cód. Produto</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codProduto" />
+                </template>
+                <template>
+                    {{item.codProduto}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.descricaoProduto.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="descricaoProduto">Descrição Produto</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="descricaoProduto" />
+                </template>
+                <template>
+                    {{item.descricaoProduto}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.codCategoriaProduto.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="codCategoriaProduto">Cód. Categoria Produto</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codCategoriaProduto" />
+                </template>
+                <template>
+                    {{item.codCategoriaProduto}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.custoUnitarioTexto.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="custoUnitarioTexto">Custo Unitário</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="custoUnitarioTexto" />
+                </template>
+                <template>
+                    {{item.custoUnitarioTexto}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.um.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="um">Unid. Medida</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="um" />
+                </template>
+                <template>
+                    {{item.um}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.qtdPorUmTexto.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="qtdPorUmTexto">Qtd. Por Unid. Medida</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="qtdPorUmTexto" />
+                </template>
+                <template>
+                    {{item.qtdPorUmTexto}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.pesoUnitarioTexto.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="pesoUnitarioTexto">Peso Unitário</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="pesoUnitarioTexto" />
+                </template>
+                <template>
+                    {{item.pesoUnitarioTexto}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.formaEntregaTexto.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="formaEntregaTexto">Forma Entrega</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="formaEntregaTexto" />
+                </template>
+                <template>
+                    {{item.formaEntregaTexto}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.codProdutoFornecedor.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="codProdutoFornecedor">Cód. Produto Fornecedor</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codProdutoFornecedor" />
+                </template>
+                <template>
+                    {{item.codProdutoFornecedor}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.descricaoProdFornecedor.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="descricaoProdFornecedor">Descr. Produto Fornecedor</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="descricaoProdFornecedor" />
+                </template>
+                <template>
+                    {{item.descricaoProdFornecedor}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.regiao.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="regiao">Região</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="regiao" />
+                </template>
+                <template>
+                    {{item.regiao}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.area.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="area">Área Funcional</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="area" />
+                </template>
+                <template>
+                    {{item.area}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.cresp.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="cresp">Centro Resp.</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="cresp" />
+                </template>
+                <template>
+                    {{item.cresp}}
+                </template>
+            </vaadin-grid-column>
+
+
+
+
+        </vaadin-grid>
+
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+    </template>
+
+
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-linhasacordosprecos',
+                properties: {
+                    activeItem: {
+                        observer: '_rowSelected'
+                    },
+                    _filterActive: {
+                        type: Boolean,
+                        value: true
+                    },
+                    _columns: {
+                        type: Object,
+                        value: function () {
+                            return {};
+                        }
+                    }
+                },
+
+                //Mostra Mensagens
+                _showMessage: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+
+                //Mostra Mensagens de Erro
+                _showErrorMessage: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                },
+
+                ready: function () {
+                    this.$.grid_databound_ajax.body = JSON.stringify();
+                    this.$.grid_databound_ajax.generateRequest();
+
+                    /*ColumnToggle*/
+                    this._startColumnToggle();
+
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.grid);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top;
+                    var height = parentHeight - offsetTop;
+                    $(this.$.grid).height(height);
+                },
+
+
+                _exportEXCEL: function () {
+                    debugger;
+                    this.result[0].ColunasEXCEL = this._columns;
+
+                    this.$.ajax_Export.body = JSON.stringify(this.result);
+                    this.$.ajax_Export.generateRequest();
+                },
+
+                _exportEXCELResponse: function (e) {
+                    debugger
+                    var FileName = this.export;
+                    location.href = '../Administracao/ExportToExcelDownload_LinhasAcordoPrecos?sFileName=' + FileName;
+                },
+
+                /*start - ColumnToggle*/
+                _startColumnToggle: function () {
+                    var columns = {
+                        "noProcedimento": { hidden: false, label: "Nº Procedimento" },
+                        "noFornecedor": { hidden: false, label: "Nº Fornecedor" },
+                        "nomeFornecedor": { hidden: false, label: "Nome Fornecedor" },
+                        "dtValidadeInicioTexto": { hidden: false, label: "Data Início Validade" },
+                        "dtValidadeFimTexto": { hidden: false, label: "Data Fim Validade" },
+                        "codProduto": { hidden: false, label: "Cód. Produto" },
+                        "descricaoProduto": { hidden: false, label: "Descrição Produto" },
+                        "codCategoriaProduto": { hidden: false, label: "Cód. Categoria Produto" },
+                        "custoUnitarioTexto": { hidden: false, label: "Custo Unitário" },
+                        "um": { hidden: false, label: "Unid. Medida" },
+                        "qtdPorUmTexto": { hidden: false, label: "Qtd. Por Unid. Medida" },
+                        "pesoUnitarioTexto": { hidden: false, label: "Peso Unitário" },
+                        "formaEntregaTexto": { hidden: false, label: "Forma Entrega" },
+                        "codProdutoFornecedor": { hidden: false, label: "Cód. Produto Fornecedor" },
+                        "descricaoProdFornecedor": { hidden: false, label: "Descr. Produto Fornecedor" },
+                        "regiao": { hidden: false, label: "Região" },
+                        "area": { hidden: false, label: "Área Funcional" },
+                        "cresp": { hidden: false, label: "Centro Resp." }
+                    };
+
+                    if (localStorage["linhasacordoprecos.ToggleColumn"]) {
+                        var keys = Object.keys(columns);
+                        var storedColumns = JSON.parse(localStorage["linhasacordoprecos.ToggleColumn"]);
+                        for (var i = 0; i < keys.length; i++) {
+                            columns[keys[i]] = storedColumns[keys[i]];
+                        }
+                    };
+                    this._columns = columns;
+                },
+                _toggleColumn: function (event) {
+                    var columnIndex = JSON.parse(event.target.dataset.item).key;
+                    event.path[0].classList.toggle("selected");
+                    this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
+                    if (typeof (Storage) !== "undefined") {
+                        localStorage["linhasacordoprecos.ToggleColumn"] = JSON.stringify(this._columns);
+                    }
+                },
+                _getColumnItemClass: function (columnIndex) {
+                    return !this._columns[columnIndex].hidden ? "selected" : "";
+                },
+                _toArray: function (obj) {
+                    return Object.keys(obj).map(function (key) {
+                        return {
+                            key: key,
+                            value: obj[key]
+                        };
+                    });
+                },
+                /* end - ColumnToggle */
+
+                _goBack: function (e) {
+                    window.history.back();
+                },
+            });
+        });
+    </script>
+</dom-module>

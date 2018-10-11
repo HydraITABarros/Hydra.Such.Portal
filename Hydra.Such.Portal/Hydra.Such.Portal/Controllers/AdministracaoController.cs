@@ -41,6 +41,7 @@ using System.Text;
 using NPOI.HSSF.UserModel;
 using Hydra.Such.Data.Logic.Request;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -5059,6 +5060,21 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
+        public IActionResult LinhasAcordosPrecos()
+        {
+            //UserAccessesViewModel UPerm= GetPermissions("Administracao");
+            UserAccessesViewModel userPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.LinhasAcordosPrecos);
+            if (userPerm != null && userPerm.Read.Value)
+            {
+                ViewBag.UPermissions = userPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
         [HttpPost]
         public JsonResult GetAcordoPrecosConfigData([FromBody] AcordoPrecosModelView data)
         {
@@ -5155,6 +5171,50 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetListAcordoPrecos()
         {
             List<AcordoPrecosModelView> result = DBAcordoPrecos.GetAll();
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetAllLinhasAcordosPrecos()
+        {
+            List<LinhasAcordoPrecosViewModel> result = DBLinhasAcordoPrecos.GetAllByDimensionsUser(User.Identity.Name).Select(x => new LinhasAcordoPrecosViewModel()
+            {
+                NoProcedimento = x.NoProcedimento,
+                NoFornecedor = x.NoFornecedor,
+                CodProduto = x.CodProduto,
+                DtValidadeInicio = x.DtValidadeInicio,
+                DtValidadeInicioTexto = x.DtValidadeInicio == null ? "" : Convert.ToDateTime(x.DtValidadeInicio).ToShortDateString(),
+                DtValidadeFim = x.DtValidadeFim,
+                DtValidadeFimTexto = x.DtValidadeFim == null ? "" : Convert.ToDateTime(x.DtValidadeFim).ToShortDateString(),
+                Cresp = x.Cresp,
+                //CrespNome = x.Cresp == null ? "" : x.Cresp.ToString() + " - " + DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 3).Where(y => y.Code == x.Cresp).SingleOrDefault()?.Name,
+                Area = x.Area,
+                //AreaNome = x.Area == null ? "" : x.Area.ToString() + " - " + DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 2).Where(y => y.Code == x.Area).SingleOrDefault()?.Name,
+                Regiao = x.Regiao,
+                //RegiaoNome = x.Regiao == null ? "" : x.Regiao.ToString() + " - " + DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 1).Where(y => y.Code == x.Regiao).SingleOrDefault()?.Name,
+                Localizacao = x.Localizacao,
+                //LocalizacaoNome = x.Localizacao == null ? "" : x.Localizacao.ToString() + " - " + DBNAV2017Locations.GetAllLocations(_config.NAVDatabaseName, _config.NAVCompanyName).Where(y => y.Code == x.Localizacao).SingleOrDefault()?.Name,
+                CustoUnitario = x.CustoUnitario,
+                //NomeFornecedor = x.NoFornecedor == null ? "" : x.NoFornecedor.ToString() + " - " + DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName).Where(y => y.No_ == x.NoFornecedor).SingleOrDefault()?.Name,
+                DescricaoProduto = x.DescricaoProduto,
+                Um = x.Um,
+                QtdPorUm = x.QtdPorUm,
+                QtdPorUmTexto = x.QtdPorUm == null ? "" : x.QtdPorUm.ToString(),
+                PesoUnitario = x.PesoUnitario,
+                PesoUnitarioTexto = x.PesoUnitario == null ? "" : x.PesoUnitario.ToString(),
+                CodProdutoFornecedor = x.CodProdutoFornecedor,
+                DescricaoProdFornecedor = x.DescricaoProdFornecedor,
+                FormaEntrega = x.FormaEntrega,
+                FormaEntregaTexto = x.FormaEntrega == null ? "" : EnumerablesFixed.AP_FormaEntrega.Where(y => y.Id == x.FormaEntrega).SingleOrDefault()?.Value,
+                UserId = x.UserId,
+                DataCriacao = x.DataCriacao,
+                DataCriacaoTexto = x.DataCriacao == null ? "" : Convert.ToDateTime(x.DataCriacao).ToShortDateString(),
+                TipoPreco = x.TipoPreco,
+                TipoPrecoTexto = x.TipoPreco == null ? "" : EnumerablesFixed.AP_TipoPreco.Where(y => y.Id == x.TipoPreco).SingleOrDefault()?.Value,
+                GrupoRegistoIvaProduto = x.GrupoRegistoIvaProduto,
+                CodCategoriaProduto = x.CodCategoriaProduto
+            }).ToList();
 
             return Json(result);
         }
@@ -5802,6 +5862,99 @@ namespace Hydra.Such.Portal.Controllers
             }
             return Json(result);
         }
+
+
+
+
+        //1
+        [HttpPost]
+        public async Task<JsonResult> ExportToExcel_LinhasAcordosPrecos([FromBody] List<LinhasAcordoPrecosViewModel> Lista)
+        {
+            JObject dp = (JObject)Lista[0].ColunasEXCEL;
+
+            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + "_ExportEXCEL.xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Linhas dos Acordos de Preços");
+                IRow row = excelSheet.CreateRow(0);
+                int Col = 0;
+
+                if (dp["noProcedimento"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Procedimento"); Col = Col + 1; }
+                if (dp["noFornecedor"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Fornecedor"); Col = Col + 1; }
+                if (dp["nomeFornecedor"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nome Fornecedor"); Col = Col + 1; }
+                if (dp["dtValidadeInicioTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Início Validade"); Col = Col + 1; }
+                if (dp["dtValidadeFimTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Fim Validade"); Col = Col + 1; }
+                if (dp["codProduto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Produto"); Col = Col + 1; }
+                if (dp["descricaoProduto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Descrição Produto"); Col = Col + 1; }
+                if (dp["codCategoriaProduto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Categoria Produto"); Col = Col + 1; }
+                if (dp["custoUnitarioTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Custo Unitário"); Col = Col + 1; }
+                if (dp["um"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Unid. Medida"); Col = Col + 1; }
+                if (dp["qtdPorUmTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Qtd. Por Unid. Medida"); Col = Col + 1; }
+                if (dp["pesoUnitarioTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Peso Unitário"); Col = Col + 1; }
+                if (dp["formaEntregaTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Forma Entrega"); Col = Col + 1; }
+                if (dp["codProdutoFornecedor"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Produto Fornecedor"); Col = Col + 1; }
+                if (dp["descricaoProdFornecedor"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Descr. Produto Fornecedor"); Col = Col + 1; }
+                if (dp["regiao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Região"); Col = Col + 1; }
+                if (dp["area"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Área Funcional"); Col = Col + 1; }
+                if (dp["cresp"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Centro Resp."); Col = Col + 1; }
+
+                if (dp != null)
+                {
+                    int count = 1;
+                    foreach (LinhasAcordoPrecosViewModel item in Lista)
+                    {
+                        Col = 0;
+                        row = excelSheet.CreateRow(count);
+
+                        if (dp["noProcedimento"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.NoProcedimento); Col = Col + 1; }
+                        if (dp["noFornecedor"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.NoFornecedor); Col = Col + 1; }
+                        if (dp["nomeFornecedor"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.NomeFornecedor); Col = Col + 1; }
+                        if (dp["dtValidadeInicioTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DtValidadeInicioTexto); Col = Col + 1; }
+                        if (dp["dtValidadeFimTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DtValidadeFimTexto); Col = Col + 1; }
+                        if (dp["codProduto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodProduto); Col = Col + 1; }
+                        if (dp["descricaoProduto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DescricaoProduto); Col = Col + 1; }
+                        if (dp["codCategoriaProduto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodCategoriaProduto == null ? string.Empty : item.CodCategoriaProduto.ToString()); Col = Col + 1; }
+                        if (dp["custoUnitarioTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CustoUnitarioTexto); Col = Col + 1; }
+                        if (dp["um"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Um); Col = Col + 1; }
+                        if (dp["qtdPorUmTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.QtdPorUmTexto); Col = Col + 1; }
+                        if (dp["pesoUnitarioTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.PesoUnitarioTexto); Col = Col + 1; }
+                        if (dp["formaEntregaTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.FormaEntregaTexto.ToString()); Col = Col + 1; }
+                        if (dp["codProdutoFornecedor"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodProdutoFornecedor.ToString()); Col = Col + 1; }
+                        if (dp["descricaoProdFornecedor"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DescricaoProdFornecedor); Col = Col + 1; }
+                        if (dp["regiao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Regiao); Col = Col + 1; }
+                        if (dp["area"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Area.ToString()); Col = Col + 1; }
+                        if (dp["cresp"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Cresp.ToString()); Col = Col + 1; }
+                        
+                        count++;
+                    }
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+        }
+        //2
+        public IActionResult ExportToExcelDownload_LinhasAcordoPrecos(string sFileName)
+        {
+            sFileName = @"/Upload/temp/" + sFileName;
+            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Linhas dos Acordos de Preços.xlsx");
+        }
+
+
+
 
         #endregion Acordo de Preços
 
