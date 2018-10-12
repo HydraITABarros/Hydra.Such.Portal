@@ -223,7 +223,7 @@
                     {{item.employeeNo}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="150px" resizable>
+            <vaadin-grid-column width="50px" resizable>
                 <template class="header">
                 </template>
                 <template>
@@ -232,7 +232,7 @@
                     </center>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="150px" resizable hidden="{{ !_permissions.update }}">
+            <vaadin-grid-column width="50px" resizable hidden="{{ !_permissions.update }}">
                 <template class="header">
                 </template>
                 <template>
@@ -241,7 +241,7 @@
                     </center>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="150px" resizable hidden="{{ !_permissions.update }}">
+            <vaadin-grid-column width="50px" resizable hidden="{{ !_permissions.update }}">
                 <template class="header">
                 </template>
                 <template>
@@ -389,7 +389,7 @@
                 _GoToReq: function (e) {
                     var index = this.result.indexOf(e.model.item);
                     this.result.splice(index, 1);
-                    window.location.href = "/GestaoRequisicoes/LinhasRequisicao/" + e.model.item.requisitionNo;
+                    window.location.href = "/GestaoRequisicoes/MinhaRequisicao/" + e.model.item.requisitionNo;
                 },
                 _ToApproved: function (e) {
                     if (e != null) {

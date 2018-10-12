@@ -1,0 +1,15 @@
+﻿
+@{
+    ViewData["Title"] = "Minha Requisição";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="import" href="~/elements/requisitions/minharequisicao.html">
+
+<x-requisitiondetails _requisitionid="@ViewBag.RequisitionId"
+                      _requisitionstatus="@ViewBag.ValidatedRequisitionEnumValue"
+                      _requisitionstatesenum='@Html.Raw(Json.Serialize(ViewBag.RequisitionStatesEnumString))'
+                      _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'
+                      _reportserverurl="@ViewBag.ReportServerURL"
+                      _sentReqToAprove="@ViewBag.SentReqToAprove">
+                </x-requisitiondetails>
