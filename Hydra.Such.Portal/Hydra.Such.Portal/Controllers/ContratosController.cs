@@ -850,7 +850,6 @@ namespace Hydra.Such.Portal.Controllers
             return Json(data);
         }
 
-
         public IActionResult CreateProjectContract(string id, string versionNo = "")
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Projetos);
@@ -871,6 +870,35 @@ namespace Hydra.Such.Portal.Controllers
             {
                 return RedirectToAction("AccessDenied", "Error");
             }
+        }
+
+        [HttpPost]
+        public JsonResult DeleteClientRequisition([FromBody] ContractClientRequisitionViewModel requisition)
+        {
+            ErrorHandler result = new ErrorHandler();
+            try
+            {
+                if (requisition != null)
+                {
+                    DBContractClientRequisition.Delete(DBContractClientRequisition.ParseToDB(requisition));
+
+                    requisition.eReasonCode = 1;
+                    requisition.eMessage = "Requisição eliminada com sucesso.";
+                }
+                else
+                {
+                    requisition = new ContractClientRequisitionViewModel();
+                    requisition.eReasonCode = 2;
+                    requisition.eMessage = "Não foi possivel obter a requisição.";
+                }
+            }
+            catch (Exception ex)
+            {
+                result.eReasonCode = 2;
+                result.eMessage = "Ocorreu um erro ao eliminar a requisição.";
+            }
+            return Json(requisition);
+
         }
         #endregion
 
@@ -1196,39 +1224,42 @@ namespace Hydra.Such.Portal.Controllers
                         
                         if (totalLinesForCurrentInvoiceGroup.HasValue && totalLinesForCurrentInvoiceGroup.Value > 0)
                         {
-                            RequisiçõesClienteContrato GetReqClientCont = DBContractClientRequisition.GetByContractAndGroup(item.NºDeContrato, contractLine.GrupoFatura);
-                            if (GetReqClientCont != null)
+                            lastInvoiceDate = DBContractClientRequisition.GetLatsInvoiceDateFor(item.NºDeContrato, contractLine.GrupoFatura);
+                            //RequisiçõesClienteContrato GetReqClientCont = DBContractClientRequisition.GetByContractAndGroup(item.NºDeContrato, contractLine.GrupoFatura);
+                            //if (GetReqClientCont != null)
+                            if (lastInvoiceDate.HasValue)
                             {
-                                lastInvoiceDate = GetReqClientCont.DataÚltimaFatura;
-                                if (lastInvoiceDate != null)
+                                //lastInvoiceDate = GetReqClientCont.DataÚltimaFatura;
+                                //lastInvoiceDate = lastInvoiceDateFromReq.Value;
+                                //if (lastInvoiceDate != null)
                                     nextInvoiceDate = lastInvoiceDate.Value;
-                                else
-                                {
-                                    if (item.DataInicial != null)
-                                        nextInvoiceDate = item.DataInicial.Value;
-                                }
+                                //else
+                                //{
+                                //    if (item.DataInicial != null)
+                                //        nextInvoiceDate = item.DataInicial.Value;
+                                //}
                             }
                             else
                             {
-                                //if (item.DataInicial != null)
-                                //{
-                                //    nextInvoice = item.DataInicial.Value;
-                                //    lastInvoice = item.DataInicial.Value.Month;
-                                //}
-                                if (item.ÚltimaDataFatura != null)
+                                ////if (item.DataInicial != null)
+                                ////{
+                                ////    nextInvoice = item.DataInicial.Value;
+                                ////    lastInvoice = item.DataInicial.Value.Month;
+                                ////}
+                                if (item.ÚltimaDataFatura.HasValue)
                                     nextInvoiceDate = item.ÚltimaDataFatura.Value;
                                 else
                                 {
-                                    if (item.DataInicial != null)
+                                    if (item.DataInicial.HasValue)
                                         nextInvoiceDate = item.DataInicial.Value;
                                 }
                             }
                         }
-                        else if (item.ÚltimaDataFatura != null)
+                        else if (item.ÚltimaDataFatura.HasValue)
                             nextInvoiceDate = item.ÚltimaDataFatura.Value;
                         else
                         {
-                            if (item.DataInicial != null)
+                            if (item.DataInicial.HasValue)
                                 nextInvoiceDate = item.DataInicial.Value;
                         }
                         

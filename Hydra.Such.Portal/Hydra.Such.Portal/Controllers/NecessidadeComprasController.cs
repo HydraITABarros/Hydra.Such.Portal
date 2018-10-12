@@ -103,6 +103,32 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(result);
         }
+
+        [HttpPost]
+        public JsonResult DeleteShoppingNecessity([FromBody] int linha)
+        {
+            ErrorHandler result = new ErrorHandler();
+
+            DiárioRequisiçãoUnidProdutiva toDelete = DBShoppingNecessity.GetByOnlyLineNo(linha);
+
+            if (toDelete != null)
+            {
+                if (DBShoppingNecessity.Delete(toDelete) == true)
+                {
+                    result.eReasonCode = 1;
+                    result.eMessage = "A linha do Diário requisição Unid. Produtiva foi eliminada com sucesso.";
+
+                    return Json(result);
+                }
+            }
+
+            result.eReasonCode = 2;
+            result.eMessage = "Ocorreu um erro ao eliminar a linha do Diário requisição Unid. Produtiva";
+
+            return Json(result);
+        }
+
+
         [HttpPost]
         public JsonResult UpdateShoppingNecessity([FromBody] List<DailyRequisitionProductiveUnitViewModel> dp)
         {
@@ -338,14 +364,15 @@ namespace Hydra.Such.Portal.Controllers
         {
             ProductivityUnitViewModel prodUnit = requestParams["prodUnit"].ToObject<ProductivityUnitViewModel>();
             List<RequisitionViewModel> data = requestParams["reqModels"].ToObject<List<RequisitionViewModel>>();
-            string pricesDateValue = requestParams["pricesDate"].ToObject<string>();
+            string pricesDateValue = requestParams["pricesDate"].ToObject<string>(); // Data p/ Preço Fornecedor
             string expectedReceipDateValue = requestParams["expectedReceipDate"].ToObject<string>();
+            string tipovalue = requestParams["Tipo"].ToObject<string>();
 
             if (!DateTime.TryParse(pricesDateValue, out DateTime pricesDate))
                 pricesDate = DateTime.Now;
-
             if (!DateTime.TryParse(expectedReceipDateValue, out DateTime expectedReceipDate))
                 expectedReceipDate = DateTime.MinValue;
+            int tipo = Convert.ToInt32(tipovalue);
 
             ErrorHandler resultValidation = new ErrorHandler();
             string rqWithOutLines = "";
@@ -373,13 +400,13 @@ namespace Hydra.Such.Portal.Controllers
 
                             //RUI DESENVOLVIMENTO: Get Supplier and Unit Cost  
                             LinhasAcordoPrecos linhaAcordo = new LinhasAcordoPrecos();
-                            if (lr.Tipo == 1)
+                            if (tipo == 1)
                             {
-                                linhaAcordo = DBLinhasAcordoPrecos.GetAll().Where(x => x.DtValidadeInicio <= expectedReceipDate && x.DtValidadeFim >= pricesDate && x.CodProduto == lr.Código).FirstOrDefault();
+                                linhaAcordo = DBLinhasAcordoPrecos.GetAll().Where(x => (pricesDate >= x.DtValidadeInicio && pricesDate <= x.DtValidadeFim) && (prodUnit.Warehouse == x.Localizacao) && (x.CodProduto == lr.Código)).FirstOrDefault();
                             }
-                            if (lr.Tipo == 2)
+                            if (tipo == 2)
                             {
-                                linhaAcordo = DBLinhasAcordoPrecos.GetAll().Where(x => x.DtValidadeInicio <= expectedReceipDate && x.DtValidadeFim >= pricesDate && x.CodProduto == lr.Código).FirstOrDefault();
+                                linhaAcordo = DBLinhasAcordoPrecos.GetAll().Where(x => (pricesDate >= x.DtValidadeInicio && pricesDate <= x.DtValidadeFim) && (prodUnit.Warehouse == x.Localizacao) && (prodUnit.CodeResponsabilityCenter == x.Cresp) && (x.CodProduto == lr.Código)).FirstOrDefault();
                             }
 
                             //Get Supplier by Code //ACORDO DE PREÇOS
@@ -456,6 +483,7 @@ namespace Hydra.Such.Portal.Controllers
                             newdp.Valor = (newdp.Quantidade == null ? 0 : newdp.Quantidade) * (newdp.CustoUnitárioDireto == null ? 0 : newdp.CustoUnitárioDireto);
                             newdp.UtilizadorCriação = User.Identity.Name;
                             newdp.DataHoraCriação = DateTime.Now;
+                            newdp.Tipo = tipo;
                             
                             if (newdp == null)
                             {

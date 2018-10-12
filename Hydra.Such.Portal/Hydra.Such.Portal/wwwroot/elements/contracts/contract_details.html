@@ -239,6 +239,14 @@
                    id="get_invoiceheaderLinesList_ajax"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/Contratos/DeleteClientRequisition"
+                   last-response="{{deleteReqResponse}}"
+                   method="post"
+                   handle-as="json"
+                   id="delete_requisition_ajax"
+                   on-response="_onDeleteReqResponse"
+                   content-type="application/json"></iron-ajax>
+
         <template is="dom-if" if="{{ !_isCreate }}">
             <div class="subMenu">
                 <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
@@ -368,15 +376,15 @@
 
                                         <div class="col-md-3 ">
                                             <!--<vaadin-combo-box items="[[CBResponsabilityCenterCodes]]" id="mResponsabilityCenter" item-value-path="id" item-label-path="value" value="{{data.codeResponsabilityCenter}}" label="Cód. Centro Responsabilidade" disabled="{{ _lockFields }}">
-                                            <template>
-                                                <table width="520px">
-                                                    <tr>
-                                                        <td width="10%">[[item.id]]</td>
-                                                        <td width="90%"> <b>[[item.value]]</b></td>
-                                                    </tr>
-                                                </table>
-                                            </template>
-                                           </vaadin-combo-box>-->
+                                         <template>
+                                             <table width="520px">
+                                                 <tr>
+                                                     <td width="10%">[[item.id]]</td>
+                                                     <td width="90%"> <b>[[item.value]]</b></td>
+                                                 </tr>
+                                             </table>
+                                         </template>
+                                        </vaadin-combo-box>-->
 
                                             <such-selectbox id="mResponsabilityCenter" name="mResponsabilityCenter" value="{{data.codeResponsabilityCenter}}" label="Cód. Centro Respon." disabled="{{ _lockFields }}"
                                                             items="[[CBResponsabilityCenterCodes]]"
@@ -387,7 +395,7 @@
                                         </div>
 
 
-                                    </div> 
+                                    </div>
                                     <div class="row break_clear">
                                         <div class="col-md-3 ">
                                             <vaadin-text-field value="{{data.proposalNo}}" maxlength="20" id="mProposalNo" name="proposalNo" label="Nº Proposta" disabled="true"> </vaadin-text-field>
@@ -402,7 +410,7 @@
                                                     </tr>
                                                 </table>
                                             </template>
-                                        </vaadin-combo-box>--> 
+                                        </vaadin-combo-box>-->
 
                                             <such-selectbox id="mPaymentTerms" name="mPaymentTerms" value="{{data.codePaymentTerms}}" label="Cód. Termos Pagamento" disabled="{{ _lockFields }}"
                                                             items="[[CBPaymentTerms]]"
@@ -2484,12 +2492,25 @@
                     window.location.href = "/Contratos/DetalhesContrato/" + this.data.contractNo + "?version=" + this.data.versionNo + "&" + "isHistoric=" + false;
                 },
                 _deleteClientRequisition: function (data) {
+                    this.$.delete_requisition_ajax.body = JSON.stringify(data.model.item);
+                    this.$.delete_requisition_ajax.generateRequest();
+
                     var index = this.data.clientRequisitions.indexOf(data.model.item);
-                    this.data.clientRequisitions.splice(index, 1);
-
-                    this.$.grid_ClientRequisitions.clearCache();
+                    if (index >= 0) {
+                        this.data.clientRequisitions.splice(index, 1);
+                        this.$.grid_ClientRequisitions.clearCache();
+                    }
                 },
-
+                _onDeleteReqResponse: function (data) {
+                    if (data.detail.status === 200) {
+                        if (this.deleteReqResponse.eReasonCode != 1) {
+                            this._openToastError(this.deleteReqResponse.eMessage);
+                        }
+                        else {
+                            this._openToast(this.deleteReqResponse.eMessage);
+                        }
+                    }
+                },
                 //Invoice Texts Functions
                 _createInvoiceText: function () {
                     this.data.invoiceTexts.unshift({

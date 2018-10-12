@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Hydra.Such.Data.ViewModel.Contracts
 {
-    public class ContractClientRequisitionViewModel
+    public class ContractClientRequisitionViewModel : ErrorHandler
     {
         public string ContractNo { get; set; }
         public int InvoiceGroup { get; set; }
