@@ -349,12 +349,11 @@
                                             <vaadin-text-field id="ClaimedRequesitionNo" name="ClaimedRequesitionNo" label="Nº Requisição Reclamada" value="{{Requisition.requestReclaimNo}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                                         </div>
                                         <div class="col-lg-3">
-                                            <such-selectbox id="CBHeaderProjects" value="{{Requisition.projectNo}}" label="Nº Ordem/Projeto"
+                                            <such-selectbox id="CBHeaderProjects" name="CBHeaderProjects" value="{{Requisition.projectNo}}" label="Nº Ordem/Projeto" disabled="{{ !_permissions.update }}"
                                                             items="[[Projects]]"
                                                             text-path="no"
                                                             value-path="no"
-                                                            fields='[{"field":"no", "name":"Nº Projeto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"globalDimension1", "name":"Dimensão Global 1"}, {"field":"globalDimension2", "name":"Dimensão Global 2"}]'
-                                                            disabled="{{ !_permissions.update }}">
+                                                            fields='[{"field":"no", "name":"Nº Projeto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"globalDimension1", "name":"Dimensão Global 1"}, {"field":"globalDimension2", "name":"Dimensão Global 2"}]'>
                                             </such-selectbox>
                                         </div>
 
