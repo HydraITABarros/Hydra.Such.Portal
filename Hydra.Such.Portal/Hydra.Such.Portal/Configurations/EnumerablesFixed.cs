@@ -2529,6 +2529,31 @@ namespace Hydra.Such.Portal.Configurations
                 Value = "Rejeitado"
             }
         };
+
+        //Pedidos de Cotação - Fase_Entidades
+        public static readonly List<EnumData> Fase_Entidades = new List<EnumData>(){
+            new EnumData()
+            {
+                Id = 1,
+                Value = "FASE 1 - Pendente Proposta Fornecedor"
+            },
+            new EnumData()
+            {
+                Id = 2,
+                Value = "FASE 2 - Pendente Esclarecimentos"
+            },
+            new EnumData()
+            {
+                Id = 3,
+                Value = "FASE 3 - Pendente Aceitação Área"
+            },
+            new EnumData()
+            {
+                Id = 4,
+                Value = "FASE 4 - Pendente Compras"
+            }
+        };
+
     }
 
     public class EnumDataString
