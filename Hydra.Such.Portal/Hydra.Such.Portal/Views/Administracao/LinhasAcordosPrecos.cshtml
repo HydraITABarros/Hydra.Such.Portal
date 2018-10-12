@@ -85,26 +85,6 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.dtValidadeInicioTexto.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="dtValidadeInicioTexto">Data Início Validade</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dtValidadeInicioTexto" />
-                </template>
-                <template>
-                    {{item.dtValidadeInicioTexto}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.dtValidadeFimTexto.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="dtValidadeFimTexto">Data Fim Validade</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dtValidadeFimTexto" />
-                </template>
-                <template>
-                    {{item.dtValidadeFimTexto}}
-                </template>
-            </vaadin-grid-column>
-
             <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.codProduto.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codProduto">Cód. Produto</vaadin-grid-sorter>
@@ -175,6 +155,26 @@
                 </template>
             </vaadin-grid-column>
 
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.dtValidadeInicioTexto.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="dtValidadeInicioTexto">Data Início Validade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dtValidadeInicioTexto" />
+                </template>
+                <template>
+                    {{item.dtValidadeInicioTexto}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.dtValidadeFimTexto.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="dtValidadeFimTexto">Data Fim Validade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dtValidadeFimTexto" />
+                </template>
+                <template>
+                    {{item.dtValidadeFimTexto}}
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.formaEntregaTexto.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="formaEntregaTexto">Forma Entrega</vaadin-grid-sorter>
@@ -202,6 +202,16 @@
                 </template>
                 <template>
                     {{item.descricaoProdFornecedor}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.localizacao.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="localizacao">Localização</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="localizacao" />
+                </template>
+                <template>
+                    {{item.localizacao}}
                 </template>
             </vaadin-grid-column>
 
@@ -234,10 +244,6 @@
                     {{item.cresp}}
                 </template>
             </vaadin-grid-column>
-
-
-
-
         </vaadin-grid>
 
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
@@ -320,8 +326,6 @@
                         "noProcedimento": { hidden: false, label: "Nº Procedimento" },
                         "noFornecedor": { hidden: false, label: "Nº Fornecedor" },
                         "nomeFornecedor": { hidden: false, label: "Nome Fornecedor" },
-                        "dtValidadeInicioTexto": { hidden: false, label: "Data Início Validade" },
-                        "dtValidadeFimTexto": { hidden: false, label: "Data Fim Validade" },
                         "codProduto": { hidden: false, label: "Cód. Produto" },
                         "descricaoProduto": { hidden: false, label: "Descrição Produto" },
                         "codCategoriaProduto": { hidden: false, label: "Cód. Categoria Produto" },
@@ -329,9 +333,12 @@
                         "um": { hidden: false, label: "Unid. Medida" },
                         "qtdPorUmTexto": { hidden: false, label: "Qtd. Por Unid. Medida" },
                         "pesoUnitarioTexto": { hidden: false, label: "Peso Unitário" },
+                        "dtValidadeInicioTexto": { hidden: false, label: "Data Início Validade" },
+                        "dtValidadeFimTexto": { hidden: false, label: "Data Fim Validade" },
                         "formaEntregaTexto": { hidden: false, label: "Forma Entrega" },
                         "codProdutoFornecedor": { hidden: false, label: "Cód. Produto Fornecedor" },
                         "descricaoProdFornecedor": { hidden: false, label: "Descr. Produto Fornecedor" },
+                        "localizacao": { hidden: false, label: "Localização" },
                         "regiao": { hidden: false, label: "Região" },
                         "area": { hidden: false, label: "Área Funcional" },
                         "cresp": { hidden: false, label: "Centro Resp." }
