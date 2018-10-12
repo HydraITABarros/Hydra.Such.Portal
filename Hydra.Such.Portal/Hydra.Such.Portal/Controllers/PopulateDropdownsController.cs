@@ -2381,6 +2381,13 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult Get_Selecao_Entidades_Fase()
+        {
+            List<EnumData> result = EnumerablesFixed.Fase_Entidades;
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult Get_Consulta_Mercado_Modalidade()
         {
             List<EnumData> result = EnumerablesFixed.Modalidade;

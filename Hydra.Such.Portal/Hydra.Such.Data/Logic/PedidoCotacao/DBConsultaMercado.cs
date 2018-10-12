@@ -382,6 +382,24 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
             }
         }
 
+        public static List<ConsultaMercado> GetAllConsultaMercado_Historico_ToList(int hist)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    bool _historico = hist == 1;
+
+                    return ctx.ConsultaMercado.Where(p => p.Historico == _historico).ToList();
+
+                }
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
         public static ConsultaMercado GetDetalheConsultaMercado(string NumConsultaMercado)
         {
             try
@@ -615,6 +633,11 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                         DataRecolha = ConsultaMercado.DataRecolha,
                         DataEntregaArmazem = ConsultaMercado.DataEntregaArmazem,
                         CodComprador = ConsultaMercado.CodComprador,
+                        LocalEntrega = ConsultaMercado.LocalEntrega,
+                        Equipamento = ConsultaMercado.Equipamento,
+                        Amostra = ConsultaMercado.Amostra,
+                        Urgente = ConsultaMercado.Urgente,
+                        Historico = ConsultaMercado.Historico,
                         Destino_Show = ConsultaMercado.Destino == 1 ? "Armazém" : ConsultaMercado.Destino == 2 ? "Projeto" : string.Empty,
                         Estado_Show = ConsultaMercado.Estado == 0 ? "Aberto" : ConsultaMercado.Estado == 1 ? "Liberto" : string.Empty,
                         Fase_Show = ConsultaMercado.Fase == 0 ? "Abertura" : ConsultaMercado.Fase == 1 ? "Consulta" : ConsultaMercado.Fase == 2 ? "Negociação e Contratação" : ConsultaMercado.Fase == 3 ? "Adjudicação" : ConsultaMercado.Fase == 4 ? "Fecho" : string.Empty,
@@ -624,7 +647,8 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                         PedidoCotacaoCriadoEm_Show = ConsultaMercado.PedidoCotacaoCriadoEm == null ? "" : ConsultaMercado.PedidoCotacaoCriadoEm.Value.ToString("yyyy-MM-dd"),
                         ConsultaEm_Show = ConsultaMercado.ConsultaEm == null ? "" : ConsultaMercado.ConsultaEm.Value.ToString("yyyy-MM-dd"),
                         NegociacaoContratacaoEm_Show = ConsultaMercado.NegociacaoContratacaoEm == null ? "" : ConsultaMercado.NegociacaoContratacaoEm.Value.ToString("yyyy-MM-dd"),
-                        AdjudicacaoEm_Show = ConsultaMercado.AdjudicacaoEm == null ? "" : ConsultaMercado.AdjudicacaoEm.Value.ToString("yyyy-MM-dd")
+                        AdjudicacaoEm_Show = ConsultaMercado.AdjudicacaoEm == null ? "" : ConsultaMercado.AdjudicacaoEm.Value.ToString("yyyy-MM-dd"),
+                        LocalEntrega_Show = ConsultaMercado.LocalEntrega == null ? "" : ConsultaMercado.LocalEntrega.ToString()
                     }).ToList();
                 }
             }
@@ -707,6 +731,11 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                 DataRecolha = ObjectToTransform.DataRecolha,
                 DataEntregaArmazem = ObjectToTransform.DataEntregaArmazem,
                 CodComprador = ObjectToTransform.CodComprador,
+                LocalEntrega = ObjectToTransform.LocalEntrega,
+                Equipamento = ObjectToTransform.Equipamento,
+                Amostra = ObjectToTransform.Amostra,
+                Urgente = ObjectToTransform.Urgente,
+                Historico = ObjectToTransform.Historico,
                 Destino_Show = ObjectToTransform.Destino == 1 ? "Armazém" : ObjectToTransform.Destino == 2 ? "Projeto" : string.Empty,
                 Estado_Show = ObjectToTransform.Estado == 0 ? "Aberto" : ObjectToTransform.Estado == 1 ? "Liberto" : string.Empty,
                 Fase_Show = ObjectToTransform.Fase == 0 ? "Abertura" : ObjectToTransform.Fase == 1 ? "Consulta" : ObjectToTransform.Fase == 2 ? "Negociação e Contratação" : ObjectToTransform.Fase == 3 ? "Adjudicação" : ObjectToTransform.Fase == 4 ? "Fecho" : string.Empty,
@@ -720,7 +749,8 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                 AdjudicacaoEm_Show = ObjectToTransform.AdjudicacaoEm == null ? "" : ObjectToTransform.AdjudicacaoEm.Value.ToString("yyyy-MM-dd"),
                 DataEntregaFornecedor_Show = ObjectToTransform.DataEntregaFornecedor == null ? "" : ObjectToTransform.DataEntregaFornecedor.Value.ToString("yyyy-MM-dd"),
                 DataRecolha_Show = ObjectToTransform.DataRecolha == null ? "" : ObjectToTransform.DataRecolha.Value.ToString("yyyy-MM-dd"),
-                DataEntregaArmazem_Show = ObjectToTransform.DataEntregaArmazem == null ? "" : ObjectToTransform.DataEntregaArmazem.Value.ToString("yyyy-MM-dd")
+                DataEntregaArmazem_Show = ObjectToTransform.DataEntregaArmazem == null ? "" : ObjectToTransform.DataEntregaArmazem.Value.ToString("yyyy-MM-dd"),
+                LocalEntrega_Show = ObjectToTransform.LocalEntrega == null ? "" : ObjectToTransform.LocalEntrega.ToString()
             };
 
             if (linhasConsultaMercado != null && linhasConsultaMercado.Count > 0)
@@ -826,7 +856,12 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                 DataEntregaFornecedor = ObjectToTransform.DataEntregaFornecedor_Show != string.Empty ? DateTime.Parse(ObjectToTransform.DataEntregaFornecedor_Show) : (DateTime?)null,
                 DataRecolha = ObjectToTransform.DataRecolha_Show != string.Empty ? DateTime.Parse(ObjectToTransform.DataRecolha_Show) : (DateTime?)null,
                 DataEntregaArmazem = ObjectToTransform.DataEntregaArmazem_Show != string.Empty ? DateTime.Parse(ObjectToTransform.DataEntregaArmazem_Show) : (DateTime?)null,
-                CodComprador = ObjectToTransform.CodComprador
+                CodComprador = ObjectToTransform.CodComprador,
+                LocalEntrega = ObjectToTransform.LocalEntrega,
+                Equipamento = ObjectToTransform.Equipamento,
+                Amostra = ObjectToTransform.Amostra,
+                Urgente = ObjectToTransform.Urgente,
+                Historico = ObjectToTransform.Historico
             };
 
             //Falta o cast das icollections
