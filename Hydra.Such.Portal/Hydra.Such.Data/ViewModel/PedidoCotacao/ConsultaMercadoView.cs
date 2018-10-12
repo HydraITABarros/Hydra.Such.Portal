@@ -47,6 +47,11 @@ namespace Hydra.Such.Data.ViewModel.PedidoCotacao
         public DateTime? DataRecolha { get; set; }
         public DateTime? DataEntregaArmazem { get; set; }
         public string CodComprador { get; set; }
+        public int? LocalEntrega { get; set; }
+        public bool? Equipamento { get; set; }
+        public bool? Amostra { get; set; }
+        public bool? Urgente { get; set; }
+        public bool? Historico { get; set; }
 
         public ICollection<CondicoesPropostasFornecedoresView> CondicoesPropostasFornecedores { get; set; }
         public ICollection<LinhasCondicoesPropostasFornecedoresView> LinhasCondicoesPropostasFornecedores { get; set; }
@@ -71,7 +76,8 @@ namespace Hydra.Such.Data.ViewModel.PedidoCotacao
         public string DataEntregaFornecedor_Show { get; set; }
         public string DataRecolha_Show { get; set; }
         public string DataEntregaArmazem_Show { get; set; }
-        
+        public string LocalEntrega_Show { get; set; }
+
         //Campos Calculados
         public string NumVersoesArquivadas_CalcField { get; set; }
     }

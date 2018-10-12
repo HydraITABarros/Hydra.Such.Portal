@@ -1468,6 +1468,8 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Adjudicacao_Por")
                     .HasMaxLength(50);
 
+                entity.Property(e => e.Amostra).HasDefaultValueSql("((0))");
+
                 entity.Property(e => e.CodActividade)
                     .HasColumnName("Cod_Actividade")
                     .HasMaxLength(20);
@@ -1522,6 +1524,8 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.Descricao).HasMaxLength(100);
 
+                entity.Property(e => e.Equipamento).HasDefaultValueSql("((0))");
+
                 entity.Property(e => e.EmailEnviado)
                     .HasColumnName("Email_Enviado")
                     .HasDefaultValueSql("((0))");
@@ -1535,6 +1539,8 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.FornecedorSelecionado)
                     .HasColumnName("Fornecedor_Selecionado")
                     .HasMaxLength(20);
+
+                entity.Property(e => e.Historico).HasDefaultValueSql("((0))");
 
                 entity.Property(e => e.NegociacaoContratacaoEm)
                     .HasColumnName("Negociacao_Contratacao_Em")
@@ -1571,6 +1577,8 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.RegiaoMercadoLocal).HasMaxLength(20);
 
                 entity.Property(e => e.SeleccaoEfectuada).HasColumnName("Seleccao_Efectuada");
+
+                entity.Property(e => e.Urgente).HasDefaultValueSql("((0))");
 
                 entity.Property(e => e.UtilizadorRequisicao)
                     .HasColumnName("Utilizador_Requisicao")

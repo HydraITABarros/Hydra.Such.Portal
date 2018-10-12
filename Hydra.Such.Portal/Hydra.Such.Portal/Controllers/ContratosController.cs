@@ -1166,6 +1166,8 @@ namespace Hydra.Such.Portal.Controllers
                 DateTime current = Convert.ToDateTime(dateCont);
                 DateTime lastDay = Convert.ToDateTime(dateCont);
                 string Problema;
+                int? totalInvoiceGroups = contractLines.Where(x => x.NºContrato == item.NºDeContrato).Select(x => x.GrupoFatura).Distinct().Count();
+
                 foreach (var contractLine in contractLines)
                 {
                     Decimal lineQuantity = 1;
@@ -1214,58 +1216,43 @@ namespace Hydra.Such.Portal.Controllers
                             crMemo = DBNAV2017SalesCrMemo.GetSalesCrMemoLines(_config.NAVDatabaseName, _config.NAVCompanyName, item.NºDeContrato, item.DataInicial.Value, item.DataExpiração.Value);
                         }
 
-                        DateTime nextInvoiceDate = lastDay;
+                        DateTime nextInvoiceDate = DateTime.MinValue;// lastDay;
                         DateTime? lastInvoiceDate = null;
                         int invoiceNumber = 0;
                         if (item.DataExpiração != null && current >= item.DataExpiração)
                         {
                             current = item.DataExpiração.Value;
                         }
-                        
-                        if (totalLinesForCurrentInvoiceGroup.HasValue && totalLinesForCurrentInvoiceGroup.Value > 0)
+
+                        #region Obter Data ultima fatura
+                        //Contratos com 1 única fatura - Tentar obter a data da ultima fatura a partir da Data da Ultima fatura do contrato;
+                        if (totalInvoiceGroups.HasValue && totalInvoiceGroups.Value == 1)
                         {
-                            lastInvoiceDate = DBContractClientRequisition.GetLatsInvoiceDateFor(item.NºDeContrato, contractLine.GrupoFatura);
-                            //RequisiçõesClienteContrato GetReqClientCont = DBContractClientRequisition.GetByContractAndGroup(item.NºDeContrato, contractLine.GrupoFatura);
-                            //if (GetReqClientCont != null)
-                            if (lastInvoiceDate.HasValue)
+                            if (item.ÚltimaDataFatura.HasValue)
+                                nextInvoiceDate = item.ÚltimaDataFatura.Value;
+                        }
+                        else
+                        {
+                            //Contratos com n Faturas - Tentar obter a data da ultima fatura a partir das requisições de cliente;
+                            if (totalLinesForCurrentInvoiceGroup.HasValue && totalLinesForCurrentInvoiceGroup.Value > 0)
                             {
-                                //lastInvoiceDate = GetReqClientCont.DataÚltimaFatura;
-                                //lastInvoiceDate = lastInvoiceDateFromReq.Value;
-                                //if (lastInvoiceDate != null)
-                                    nextInvoiceDate = lastInvoiceDate.Value;
-                                //else
-                                //{
-                                //    if (item.DataInicial != null)
-                                //        nextInvoiceDate = item.DataInicial.Value;
-                                //}
-                            }
-                            else
-                            {
-                                ////if (item.DataInicial != null)
-                                ////{
-                                ////    nextInvoice = item.DataInicial.Value;
-                                ////    lastInvoice = item.DataInicial.Value.Month;
-                                ////}
-                                if (item.ÚltimaDataFatura.HasValue)
-                                    nextInvoiceDate = item.ÚltimaDataFatura.Value;
-                                else
+                                lastInvoiceDate = DBContractClientRequisition.GetLatsInvoiceDateFor(item.NºDeContrato, contractLine.GrupoFatura);
+                                if (lastInvoiceDate.HasValue)
                                 {
-                                    if (item.DataInicial.HasValue)
-                                        nextInvoiceDate = item.DataInicial.Value;
+                                    nextInvoiceDate = lastInvoiceDate.Value;
                                 }
                             }
                         }
-                        else if (item.ÚltimaDataFatura.HasValue)
-                            nextInvoiceDate = item.ÚltimaDataFatura.Value;
-                        else
-                        {
-                            if (item.DataInicial.HasValue)
-                                nextInvoiceDate = item.DataInicial.Value;
-                        }
-                        
-                        //É imserido o ultimo dia do mês. Adicionar um dia para evitar contabilizar o mês selecionado.
-                        if(GetMonthDiff(nextInvoiceDate, lastDay) == 0)
+                        //Se ainda não houver nenhuma fatura do contrato (data ultima fatura vazia) - Tentar obter a data da ultima fatura a partir da Data Inicio do Contrato. 
+                        if (nextInvoiceDate.Equals(DateTime.MinValue))
+                            nextInvoiceDate = item.DataInicial.HasValue ? item.DataInicial.Value : lastDay;
+
+                        //Para a data de faturação, o utilizador insere o ultimo dia do mês. Adicionar um dia para evitar contabilizar o mês selecionado.
+                        //TODO: Verificar se existe necessidade de aplicar regra mais sólida 
+                        if (GetMonthDiff(nextInvoiceDate, lastDay) == 0)
                             nextInvoiceDate = nextInvoiceDate.AddDays(1);
+
+                        #endregion
 
                         if (contractLine.Quantidade != 0)
                         {
@@ -1500,7 +1487,7 @@ namespace Hydra.Such.Portal.Controllers
                             }
                         }
 
-                        //Validações para registar situações
+                        #region  Validações para registar situações
                         Problema = "";
                         if (item.TipoFaturação != 1 && item.TipoFaturação != 4)
                         {
@@ -1598,7 +1585,8 @@ namespace Hydra.Such.Portal.Controllers
                                 }
                             }
                         }
-                       
+                        #endregion
+
                         AutorizarFaturaçãoContratos newInvoiceContract = new AutorizarFaturaçãoContratos
                         {
                             NºContrato = item.NºDeContrato,

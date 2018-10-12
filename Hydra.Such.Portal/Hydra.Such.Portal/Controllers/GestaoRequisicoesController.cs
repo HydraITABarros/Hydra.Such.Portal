@@ -178,6 +178,62 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
+        public IActionResult MinhaRequisicao(string id)
+        {
+            //UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Requisições);
+            UserAccessesViewModel userPermissions = new UserAccessesViewModel();
+
+            userPermissions.Area = 1;
+            userPermissions.Create = true;
+            userPermissions.Delete = true;
+            //userPermissions.Feature
+            userPermissions.IdUser = User.Identity.Name;
+            userPermissions.Read = true;
+            userPermissions.Update = true;
+
+            int SentReqToAprove = 0;
+            RequisitionViewModel REQ = DBRequest.GetById(id).ParseToViewModel();
+            List<ApprovalMovementsViewModel> AproveList = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAllAssignedToUserFilteredByStatus(User.Identity.Name, 1));
+            if (REQ.State == RequisitionStates.Pending || REQ.State == RequisitionStates.Rejected)
+                SentReqToAprove = 1;
+            else
+                SentReqToAprove = 0;
+            if (AproveList != null && AproveList.Count > 0)
+            {
+                foreach (ApprovalMovementsViewModel apmov in AproveList)
+                {
+                    if (apmov.Number == REQ.RequisitionNo)
+                    {
+                        SentReqToAprove = 0;
+                    }
+                }
+            }
+
+            ViewBag.UPermissions = userPermissions;
+            ViewBag.RequisitionId = id;
+            ViewBag.ValidatedRequisitionEnumValue = (int)RequisitionStates.Validated;// REQ.State;
+            ViewBag.RequisitionStatesEnumString = EnumHelper.GetItemsAsDictionary(typeof(RequisitionStates));
+            ViewBag.ReportServerURL = config.ReportServerURL;
+            ViewBag.SentReqToAprove = (int)SentReqToAprove;
+
+            return View();
+
+            //if (userPermissions != null && userPermissions.Read.Value)
+            //{
+            //    ViewBag.UPermissions = userPermissions;
+            //    ViewBag.RequisitionId = id;
+            //    ViewBag.ValidatedRequisitionEnumValue = (int)RequisitionStates.Validated;
+            //    ViewBag.RequisitionStatesEnumString = EnumHelper.GetItemsAsDictionary(typeof(RequisitionStates));
+            //    ViewBag.ReportServerURL = config.ReportServerURL;
+
+            //    return View();
+            //}
+            //else
+            //{
+            //    return Redirect(Url.Content("~/Error/AccessDenied"));
+            //}
+        }
+
         public IActionResult Arquivadas()
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.HistóricoRequisições);
