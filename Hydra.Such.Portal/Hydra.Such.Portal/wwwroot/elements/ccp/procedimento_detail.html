@@ -3862,11 +3862,14 @@
 
                 //NR 20180226
                 _setProductData: function (e) {
-                    var item = this.CBItems.find(x => x.code == e);
-                    if (item != null) {
-                        this.$._DescricaoProduto.value = item.name;
-                        this.$._UnitMeasureCode.value = item.measureUnit;
+                    if (e != "") {
+                        var item = this.CBItems.find(x => x.code == e);
+                        if (item != null) {
+                            this.$._DescricaoProduto.value = item.name;
+                            this.$._UnitMeasureCode.value = item.measureUnit;
+                        }
                     }
+                    
                 },
                 _confirmAndExecuteActionToast: function (_message, _ajaxRequest) {
                     bootbox.confirm({
@@ -6124,6 +6127,7 @@
                     debugger;;
 
                     if (this._reportserverurl != undefined) {
+                        debugger;;
                         this.$.rptContainer.src = this._reportserverurl + "Procedimento&ProcedimentoNo=" + this.data.no;
                         this.$.rptDialog.open();
                     }
