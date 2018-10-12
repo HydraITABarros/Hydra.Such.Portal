@@ -23,7 +23,7 @@
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
 <link rel="import" href="/lib/such-selectbox/such-selectbox.html">
 
-<dom-module id="x-requisitiondetails">
+<dom-module id="x-minharequisitiondetails">
     <template>
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
@@ -167,6 +167,8 @@
         <iron-ajax url="/PopulateDropdowns/GetVATProductsPostingGroups" last-response="{{VATProductsPostingGroups}}" auto method="get" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetVATBusinessPostingGroups" last-response="{{VATBusinessPostingGroups}}" auto method="get" handle-as="json" content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/GestaoRequisicoes/VerificarParaAprovacao" last-response="{{ParaAprovar}}" auto method="get" handle-as="json" on-response="_ParaAprovar" content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/GestaoRequisicoes/GetRequisition"
                    id="requisition_datasource"
                    last-response="{{Requisition}}"
@@ -299,25 +301,15 @@
 
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" id="btnGoBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
-            <!--<paper-button class="tablinks" id="btnLocalMarketValidation" disabled="{{ !_permissions.update }}" style="width: 200px !important;" on-tap="_validateLocalMarket"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Validação Mercado Local</paper-button>
-            <paper-button class="tablinks" id="btnValidate" disabled="{{ !_permissions.update }}" on-tap="_validateRequisition"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Validar</paper-button>
-            <paper-button class="tablinks" id="btnAnularAprovacao" disabled="{{ !_permissions.update }}" on-tap="_anularAprovacao"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Anular Aprovação</paper-button>
-            <paper-button class="tablinks" id="btnAprovar" disabled="{{ !_permissions.update }}" on-tap="_aprovarRequisicao" title="Aprovar"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Aprovar</paper-button>-->
-
-            <!--<such-dropdown-menu id="menuRegister" disabled="{{ !_permissions.update }}" on-value-changed="_registerMenuItemSelected" title="Registar" items='[[ _registerMenuItems ]]'></such-dropdown-menu>
-    <such-dropdown-menu id="menuFunctios" disabled="{{ !_permissions.update }}" on-value-changed="_functionsMenuItemSelected" title="Funções" items='[[ _functionsMenuItems ]]'></such-dropdown-menu>-->
-            <!--<template is="dom-if" if="{{ _permissions.update }}">-->
-            <!--<paper-button class="tablinks" id="btnLocalMarketValidation" style="width: 200px !important;" on-tap="_validateLocalMarket"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Validação Mercado Local</paper-button>-->
-            <!--<paper-button class="tablinks" id="btnValidate" on-tap="_validateRequisition"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Validar</paper-button>-->
-            <!--<such-dropdown-menu id="menuRegister" on-value-changed="_registerMenuItemSelected" title="Registar" items='[[ _registerMenuItems ]]'></such-dropdown-menu>-->
-            <!--<such-dropdown-menu id="menuFunctios" on-value-changed="_functionsMenuItemSelected" title="Funções" items='[[ _functionsMenuItems ]]'></such-dropdown-menu>-->
-            <!--</template>-->
 
             <paper-button class="tablinks" id="btnPrint" on-tap="_printRequisition"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Imprimir</paper-button>
+
             <paper-button class="tablinks" id="btnStatOfPlay" on-tap="_redirectToStatOfPlay"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Ponto situação</paper-button>
+
             <paper-button class="tablinks" id="btnShowChangeLog" on-tap="_showChangeLog"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Workflow</paper-button>
 
-            <paper-button class="tablinks" id="btnToApproved" on-tap="_ToApproved" disabled="{{_permissionsCreate}}" title="Enviar para Aprovação"><i class="fa fa-check">&nbsp; Enviar para Aprovação</i></paper-button>
+            <!--<paper-button type="button" class="tablinks" id="btnToApproved2" on-tap="_ToApproved"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Enviar para Aprovação1</paper-button>-->
+            <button type="button" class="tablinks" id="btnToApproved" onclick="_ToApproved"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Enviar para Aprovação</button>
         </div>
 
         <div class="row break_frm">
@@ -327,7 +319,7 @@
 
                         <div class="panel-body">
                             <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
-                                <paper-tab>Geral</paper-tab>
+                                <paper-tab>Geral---</paper-tab>
                                 <paper-tab>Reparação</paper-tab>
                                 <paper-tab>Recolha</paper-tab>
                                 <paper-tab>Entrega (Fornecedor)</paper-tab>
@@ -628,8 +620,8 @@
                                                         text-path="code"
                                                         value-path="code"
                                                         fields='[{"field":"code", "name":"Cód. Produto"}, {"field":"name", "name":"Descrição"}, {"field":"name2", "name":"Descrição 2"}, {"field":"measureUnit", "name":"Unidade de Medida"}, {"field":"itemCategoryCode", "name":"Cód. Categoria"}, {"field":"productGroupCode", "name":"Cód. Grupo"}]'
-                                                        disabled="{{ !_permissions.update }}"
-                                                        on-value-changed="_onProductChanged">
+                                                        disabled="{{ !_permissions.update }}">
+                                            <!--on-value-changed="_onProductChanged">-->
                                         </such-selectbox>
                                     </div>
                                     <div class="col-lg-3">
@@ -1463,7 +1455,7 @@
     <script>
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
-                is: 'x-requisitiondetails',
+                is: 'x-minharequisitiondetails',
                 properties: {
                     selected: {
                         type: Number,
@@ -1620,11 +1612,11 @@
                     debugger;
                     var _self = this;
 
-                    if (_self._sentReqToAprove === 0) { //Não Aprovação
-                        $(_self.$.btnToApproved).addClass('hidden');
-                    } else {
-                        $(_self.$.btnToApproved).removeClass('hidden');
-                    }
+                    //if (this._sentReqToAprove === 0) { //Não Aprovação
+                    //    $(_self.$.btnToApproved).addClass('hidden');
+                    //} else {
+                    //    $(_self.$.btnToApproved).removeClass('hidden');
+                    //}
 
                     if (this._requisitionstatus === 3) { //Validado - GESTÃO REQUISIÇÕES
                         $(_self.$.btnLocalMarketValidation).addClass('hidden');
@@ -2083,6 +2075,7 @@
                     //Approved; Archived; Available; Pending; Received; Rejected; Treated; Validated
                     if (state == this._requisitionstatesenum.Pending | state == this._requisitionstatesenum.Archived) {
                         this.$.requesitionType.disabled = true;
+                        this.$.CBHeaderProjects.disabled = true;
 
                         var elementsToIgnore = ["btnGoBack", "btnShowChangeLog", "btnCloseChangeLogDlg", "btnCloseMultipleToastMessageDlg", "btnClose", "btnPrint", "btnStatOfPlay"];
 
@@ -2184,13 +2177,16 @@
                         this._openToastError("Ocorreu um erro desconhecido.")
                     }
 
-                    if (this.$.Vehicle.value != "") {
-                        this.$.CBHeaderProjects.disabled = true;
-                        //this.$.CBLineProjects.disabled = true;
-                    }
-                    else {
-                        this.$.CBHeaderProjects.disabled = false;
-                        //this.$.CBLineProjects.disabled = false;
+                    if (this.$.txtStatus.value != "") {
+                        if (this.$.Vehicle.value == "" & this.$.txtStatus.value != "Pendente") {
+                            debugger;
+                            this.$.CBHeaderProjects.disabled = false;
+                            //this.$.CBLineProjects.disabled = false;
+                        }
+                        else {
+                            this.$.CBHeaderProjects.disabled = true;
+                            //this.$.CBLineProjects.disabled = true;
+                        }
                     }
 
                 },
@@ -2339,18 +2335,22 @@
                     }
                 },
                 _onProductChanged: function (e) {
-                    var item = this.Products.find(x => x.code == e.detail.value);
-                    if (item != null) {
-                        this.$.txtProductDesciption.value = item.name;
-                        this.$.txtProductDesciption2.value = item.name2;
-                        this.$.CBUnitsOfMmeasure.value = item.measureUnit;
-                        this.$.unitCostId.value = item.unitCost;
-                    }
-                    else {
-                        this.$.txtProductDesciption.value = "";
-                        this.$.txtProductDesciption2.value = "";
-                        this.$.CBUnitsOfMmeasure.value = "";
-                        this.$.unitCostId.value = "";
+                    debugger;
+                    if (e != "") {
+                        var item = this.Products.find(x => x.code == e.detail.value);
+                        //var item = this.Products.find(x => x.code == e);
+                        if (item != null) {
+                            this.$.txtProductDesciption.value = item.name;
+                            this.$.txtProductDesciption2.value = item.name2;
+                            this.$.CBUnitsOfMmeasure.value = item.measureUnit;
+                            this.$.unitCostId.value = item.unitCost;
+                        }
+                        else {
+                            this.$.txtProductDesciption.value = "";
+                            this.$.txtProductDesciption2.value = "";
+                            this.$.CBUnitsOfMmeasure.value = "";
+                            this.$.unitCostId.value = "";
+                        }
                     }
                 },
                 _RespChange: function (e) {
@@ -2475,11 +2475,14 @@
                 _GetNoProjetoCabecalho: function (e) {
                     var matricula = this.$.Vehicle.value;
 
-                    if (matricula != "") {
-                        this.$.CBHeaderProjects.disabled = true;
-                    }
-                    else {
-                        this.$.CBHeaderProjects.disabled = false;
+                    if (this.$.txtStatus.value != "") {
+                        if (matricula == "" & this.$.txtStatus.value != "Pendente") {
+                            debugger;
+                            this.$.CBHeaderProjects.disabled = false;
+                        }
+                        else {
+                            this.$.CBHeaderProjects.disabled = true;
+                        }
                     }
 
                     this.$.page_GetProjetoNoCabecalho_ajax.body = JSON.stringify(matricula);
@@ -2487,12 +2490,12 @@
                 },
                 _GetProjetoNoCabecalhoResponse: function (e) {
                     //debugger;
-                    if (this.ProjetoNo != "") {
+                    if (this.ProjetoNo == "") {
                         this.$.CBHeaderProjects.value = this.ProjetoNo;
+                        this.$.CBHeaderProjects.valueText = this.ProjetoNo;
                     }
                     else {
                         this.$.CBHeaderProjects.value = this.ProjetoNo;
-                        this.$.CBHeaderProjects.valueText = this.ProjetoNo;
                     }
                 },
 
@@ -2521,11 +2524,9 @@
                     }
                 },
 
-                _ToApproved: function (e) {
-                    if (e != null) {
-                        this.$.SendReq_databound.body = JSON.stringify({ requisitionNo: e.model.item.requisitionNo });
-                        this.$.SendReq_databound.generateRequest();
-                    }
+                _ToApproved: function () {
+                    this.$.SendReq_databound.body = JSON.stringify({ requisitionNo: this.$.requisitionNo.value });
+                    this.$.SendReq_databound.generateRequest();
                 },
                 _SendReqResponse: function (e) {
                     if (e.detail.status === 200) {
@@ -2539,7 +2540,7 @@
                     }
                 },
 
-
+                
             });
         });
     </script>
