@@ -42,7 +42,7 @@
         <div class="subMenu" hidden="{{ _permissionssubMenu }}">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
             <paper-button class="tablinks" on-tap="_requestModels" hidden="{{ _NotSelectedprodUnit }}"><i class="fa fa-chevron-circle-down" aria-hidden="true"></i> Copiar Modelos de requisição</paper-button>
-            <paper-button class="tablinks" on-tap="_addRequesition"><i class="fa fa-get-pocket" aria-hidden="true"></i> Geração de requisições </paper-button>
+            <paper-button class="tablinks" on-tap="_addRequesition"><i class="fa fa-get-pocket" aria-hidden="true"></i> Criar Requisições </paper-button>
         </div><!--on-response="_gridListResponse"-->
 
         <iron-ajax url="/PopulateDropdowns/GetProdUnits" id="ajax_prodUnit" last-response="{{prodUnitValresult}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -56,6 +56,10 @@
         <iron-ajax url="/PopulateDropdowns/GetUnitOfMeasureByCode" last-response="{{unitmeasureresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/NecessidadeCompras/GetGridValues" id="ajax_getgrid" last-response="{{data}}" on-response="_getgridResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/NecessidadeCompras/UpdateShoppingNecessity" id="ajax_update" last-response="{{updatedata}}" method="post" on-response="_updateResponse" handle-as="json" content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/NecessidadeCompras/DeleteShoppingNecessity" id="ajax_delete" last-response="{{deletedata}}" method="post" on-response="_deleteResponse" handle-as="json" content-type="application/json"></iron-ajax>
+
+
         <iron-ajax url="/NecessidadeCompras/CreateShoppingNecessity" id="ajax_Create" last-response="{{updatedata}}" method="post" on-response="_createResponse" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/NecessidadeCompras/GenerateRequesition" id="ajax_requesitionupdate" last-response="{{datarequesition}}" method="post" on-response="_requesitionResponse" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/NecessidadeCompras/GetModelRequisition" last-response="{{resultModelRequisition}}" auto method="post" handle-as="json" id="grid_databound_ajax" content-type="application/json"></iron-ajax>
@@ -165,8 +169,7 @@
             }
         </style>
 
-        <vaadin-text-field id="prodUnitNoId" name="prodUnitNoName" label="Nº Unidade Produtiva" value="{{prodUnitNo}}" disabled hidden>
-        </vaadin-text-field>
+        <vaadin-text-field id="prodUnitNoId" name="prodUnitNoName" label="Nº Unidade Produtiva" value="{{prodUnitNo}}" disabled hidden></vaadin-text-field>
         <vaadin-combo-box items="[[prodUnitValresult]]" id="prodUnitId" on-value-changed="_prodUnitChange" item-value-path="id" item-label-path="id" value="" label="Nº Unidade Produtiva" hidden>
             <template>
                 <table width="350px">
@@ -197,11 +200,12 @@
                                 items="[[Products]]"
                                 text-path="descricaoProduto"
                                 value-path="codProduto"
-                                fields='[{"field":"noFornecedor", "name":"Nº Fornecedor"},
-                                    {"field":"codProduto", "name":"Nº Produto"},
-                                    {"field":"descricaoProduto", "name":"Descrição"},
-                                    {"field":"itemCategoryCode", "name":"Cód. Categoria"},
-                                    {"field":"custoUnitario", "name":"Custo Unitário"}]'>
+                                fields='[{"field":"noProcedimento", "name":"Nº Acordo Preço"},
+                                        {"field":"codProduto", "name":"Nº Produto"},
+                                        {"field":"descricaoProduto", "name":"Descrição"},
+                                        {"field":"itemCategoryCode", "name":"Cód. Categoria"},
+                                        {"field":"custoUnitario", "name":"Custo Unitário"},
+                                        {"field":"noFornecedor", "name":"Nº Fornecedor"}]'>
                 </such-selectbox>
             </div>
             <div class="col-md-3">
@@ -575,34 +579,34 @@
                 </vaadin-grid-column>
 
                 @*<vaadin-grid-column width="160px" resizable>
-            <template class="header">
-                <vaadin-grid-sorter path="localCode"> Código Localização</vaadin-grid-sorter>
-                <vaadin-grid-filter path="localCode" />
-            </template>
-            <template>
-                [[_parseLocalCode(item.localCode)]]
-            </template>
-        </vaadin-grid-column>*@
+                    <template class="header">
+                        <vaadin-grid-sorter path="localCode"> Código Localização</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="localCode" />
+                    </template>
+                    <template>
+                        [[_parseLocalCode(item.localCode)]]
+                    </template>
+                </vaadin-grid-column>*@
 
                 @*<vaadin-grid-column width="160px" resizable>
-            <template class="header">
-                <vaadin-grid-sorter path="unitFoodProduction">Unidade Produtiva Alimentação</vaadin-grid-sorter>
-                <vaadin-grid-filter path="unitFoodProduction" />
-            </template>
-            <template>
-                [[ _parseUnitFoodProd(item.unitFoodProduction) ]]
-            </template>
-        </vaadin-grid-column>*@
+                    <template class="header">
+                        <vaadin-grid-sorter path="unitFoodProduction">Unidade Produtiva Alimentação</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="unitFoodProduction" />
+                    </template>
+                    <template>
+                        [[ _parseUnitFoodProd(item.unitFoodProduction) ]]
+                    </template>
+                </vaadin-grid-column>*@
 
                 @*<vaadin-grid-column width="160px" resizable>
-            <template class="header">
-                <vaadin-grid-sorter path="receivedDate">Data Receção</vaadin-grid-sorter>
-                <vaadin-grid-filter path="receivedDate" />
-            </template>
-            <template>
-                [[ _parseDateFormat(item.receivedDate) ]]
-            </template>
-        </vaadin-grid-column>*@
+                    <template class="header">
+                        <vaadin-grid-sorter path="receivedDate">Data Receção</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="receivedDate" />
+                    </template>
+                    <template>
+                        [[ _parseDateFormat(item.receivedDate) ]]
+                    </template>
+                </vaadin-grid-column>*@
             </vaadin-grid>
             <div class="buttons">
                 <paper-button class="btnSave" raised on-tap="_confirm"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
@@ -646,6 +650,11 @@
                         type: Array
                     },
                     prodUnitNo: {
+                        type: Number,
+                        notify: true,
+                        value: ""
+                    },
+                    type: {
                         type: Number,
                         notify: true,
                         value: ""
@@ -798,6 +807,9 @@
                         }
                         if (prodUnitId != null && prodUnitDesc != "") {
                             this.$.ajax_getgrid.body = JSON.stringify(prodUnitId);
+                            this.$.ajax_getgrid.params = {
+                                "type": this.type
+                            };
                             this.$.ajax_getgrid.generateRequest();
                             this.$.grid_databound_ajax.generateRequest();
                         } else {
@@ -811,6 +823,7 @@
                 ready: function () {
                     var prodUnitId = @ViewBag.ProductivityUnitId;
                     var prodUnitDesc = @Html.Raw(Json.Serialize(ViewBag.ProductivityUnitDesc));
+                    var typeId = @Html.Raw(Json.Serialize(ViewBag.Type));
                     //get premissions to CRUD
                     this._permissionsVal = @Html.Raw(Json.Serialize(@ViewBag.UPermissions));
                     if (this._permissionsVal.create == false && this._permissionsVal.update == false) {
@@ -819,9 +832,11 @@
                     if (prodUnitId != null && prodUnitDesc != "") {
                         this.prodUnitNo = prodUnitId;
                         this.descriptionUnit = prodUnitDesc;
+                        this.type = typeId;
                     } else {
                         this.prodUnitNo = "";
                         this.descriptionUnit = "";
+                        this.type = "";
                         this._NotSelectedprodUnit = true;
                         this.$.ajax_prodUnit.generateRequest();
                     }
@@ -896,7 +911,8 @@
                     if (e.detail.value != null && e.detail.value) {
                         this.$.products_ajax.body = JSON.stringify(e.detail.value);
                         this.$.products_ajax.params = {
-                            "produtivityUnitId": this.prodUnit.productivityUnitNo
+                            "produtivityUnitId": this.prodUnit.productivityUnitNo,
+                            "type": this.type
                         };
                         this.$.products_ajax.generateRequest();
                     }
@@ -1087,7 +1103,8 @@
                                     localCode: this.$.codStockUnitId.value,
                                     documentNo: this.$._documentNo,
                                     openOrderNo: this.$._documentNo,
-                                    orderLineOpenNo: this._lineNo
+                                    orderLineOpenNo: this._lineNo,
+                                    tipo: this.type
                                 };
 
 
@@ -1137,6 +1154,7 @@
                                     supplierProductCode: this.$.supplierProdCodeId.value,
                                     supplierProductDescription: this.$.cmbProducts.valueText,// this.$.supplierProdDescriptionId.value,
                                     supplierName: this.$.SupplierNameId.value,
+                                    tipo: this.type
                                 };
 
                             // Save to DB
@@ -1168,12 +1186,29 @@
                     this.$.gridneedshopping.clearCache();
                 },
                 _delete: function (e) {
+                    debugger;
                     var index = this.data.indexOf(e.model.item);
                     this.data.splice(index, 1);
                     // Save to DB
-                    this.$.ajax_update.body = JSON.stringify(this.data);
-                    this.$.ajax_update.generateRequest();
+                    this.$.ajax_delete.body = JSON.stringify(e.model.item.lineNo);
+                    this.$.ajax_delete.generateRequest();
                     this.$.gridneedshopping.clearCache();
+                },
+                _deleteResponse: function (e) {
+                    if (e.detail.status === 200) {
+                        if (this.deletedata.eReasonCode === 1) {
+                            this._openToast(this.deletedata.eMessage);
+                            var prodUnitId = @ViewBag.ProductivityUnitId;
+                            this.$.ajax_getgrid.body = JSON.stringify(prodUnitId);
+                            this.$.ajax_getgrid.generateRequest();
+                            this.$.gridneedshopping.clearCache();
+                            this.$.dialog.close();
+                        } else {
+                            this._openToastError(this.deletedata.eMessage);
+                        }
+                    } else {
+                        this._openToastError("Occorreu um erro ao eliminar.");
+                    }
                 },
                 _updateResponse: function (e) {
                     if (e.detail.status === 200) {
@@ -1308,7 +1343,7 @@
                         var expectedReceipDate = this.$.dpExpectedReceiptDateDlg != null ? this.$.dpExpectedReceiptDateDlg.value : "";
 
                         //this.$.grid_generatebyreq_ajax.body = JSON.stringify({ "prodUnit": { "nºUnidadeProdutiva": this.prodUnitNo, "descrição": this.descriptionUnit }, "reqprodUnits": selItms, "pricesDate": date });
-                        this.$.grid_generatebyreq_ajax.body = JSON.stringify({ "prodUnit": this.prodUnit, "reqModels": selItms, "pricesDate": date, "expectedReceipDate": expectedReceipDate  });
+                        this.$.grid_generatebyreq_ajax.body = JSON.stringify({ "prodUnit": this.prodUnit, "reqModels": selItms, "pricesDate": date, "expectedReceipDate": expectedReceipDate, "Tipo": this.type });
                         this.$.grid_generatebyreq_ajax.generateRequest();
                     } else {
                         this._openToastError("Não foi selecionada nenhuma linha.");
@@ -1398,7 +1433,7 @@
                         if (this.datarequesition.eReasonCode === 1) {
                             this._openToast(this.datarequesition.eMessage);
                         }
-                        else { 
+                        else {
                             this._openToastError(this.datarequesition.eMessage);
                         }
                         this.$.ajax_getgrid.generateRequest();
@@ -1417,8 +1452,8 @@
                             //}
                             //this.$.grid_updateAgreementByVendor_ajax.body = JSON.stringify(selItms);
                             //this.$.grid_updateAgreementByVendor_ajax.generateRequest();
-                            
-                            
+
+
                         //}
 
                     } else {

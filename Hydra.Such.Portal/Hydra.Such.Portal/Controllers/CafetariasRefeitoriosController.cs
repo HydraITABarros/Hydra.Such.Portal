@@ -104,6 +104,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                 else
                 {
                     item = new CoffeeShopViewModel();
+                    item.ProductivityUnitNo = productivityUnitNo;
                 }
             }
             else
