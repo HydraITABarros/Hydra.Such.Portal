@@ -3,11 +3,16 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid.html" />
-<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-active-item-behavior.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
-<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html">
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-selection-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-selection-column.html" />
+
 <link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html" />
 <link rel="import" href="/lib/iron-form/iron-form.html" />
 <link rel="import" href="/lib/paper-input/paper-input.html" />
@@ -19,6 +24,8 @@
 <link rel="import" href="/lib/such-dropdown-menu/such-dropdown-menu.html" />
 <link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
 <link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 
 <!--start ColumnToggle-->
 <link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
@@ -28,7 +35,7 @@
 <link rel="import" href="/lib/paper-menu-button/paper-menu-button.html" />
 <!--end ColumnToggle-->
 
-<x-rececaofaturas></x-rececaofaturas>
+<x-rececaofaturas _rfperfil="@ViewBag.RFPerfil" _RFPerfilVisualizacao="@ViewBag._RFPerfilVisualizacao"></x-rececaofaturas>
 
 <dom-module id="x-rececaofaturas">
     <template>
@@ -347,7 +354,7 @@
                     <vaadin-text-field label="Área " value="{{_rfperfil}}" type="text" id="txtAreaDesti" disabled></vaadin-text-field>
                 </div>
                 <div class="col-sm-3">
-                    <vaadin-combo-box items="[[ User ]]" id="cmbDestinatarios" item-value-path="id" item-label-path="id" label="Destinatarios">
+                    <vaadin-combo-box items="[[ Users ]]" id="cmbDestinatarios" item-value-path="id" item-label-path="id" label="Destinatarios">
                         <template>
                             <paper-icon-item>
                                 <paper-item-body two-line>
@@ -364,7 +371,7 @@
 
             </div>
             <vaadin-grid id="grdBillingView" aria-label="grdBillingView" items="[[getViewResponse]]" class="grid" selected-items={{selectedItems}} active-item="{{selectedItem}}" multi-sort="true">
-                <vaadin-grid-selection-column auto-select hidden="{{_showOptionDestitation}}">
+                <vaadin-grid-selection-column auto-select>
                 </vaadin-grid-selection-column>
                 <vaadin-grid-column resizable>
                     <template class="header">
@@ -605,6 +612,14 @@
                     _showChangeDestitationForm: {
                         type: Boolean,
                         value: false,
+                    },
+                    _rfperfil: {
+                        type: String,
+                        value: "",
+                    },
+                    _RFPerfilVisualizacao: {
+                        type: String,
+                        value: "",
                     },
                 },
                 ready: function () {
