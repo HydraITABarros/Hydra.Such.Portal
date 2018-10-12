@@ -356,7 +356,7 @@ namespace Hydra.Such.Portal.Services
                     createPurchHeaderTask.Wait();
                     if (createPurchHeaderTask.IsCompletedSuccessfully)
                     {
-                        item.Id = item.Id.Remove(0, 2);                     
+                        item.Id = item.Id.Remove(0, 2);
                         repo.Update(item);
 
                         try
