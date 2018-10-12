@@ -354,9 +354,17 @@ namespace Hydra.Such.Portal.Controllers
         {
             BillingReceptionModel postedDocument;
             if (item != null)
-            {               
-                postedDocument = billingRecService.PostDocument(item, User.Identity.Name, _config, _configws);
-                item = postedDocument;            
+            {
+                try
+                {
+                    postedDocument = billingRecService.PostDocument(item, User.Identity.Name, _config, _configws);
+                    item = postedDocument;
+                }
+                catch (Exception ex)
+                {
+                    item.eReasonCode = 2;
+                    item.eMessage = "Ocorreu um erro ao criar fatura: " + ex.Message;
+                }
             }
             else
             {
