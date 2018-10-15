@@ -20,6 +20,15 @@ namespace Hydra.Such.Data.Database
         public DateTime? DataRecepcaoProposta { get; set; }
         public string UtilizadorEnvio { get; set; }
         public string UtilizadorRecepcaoProposta { get; set; }
+        public int Fase { get; set; }
+        public int? PrazoResposta { get; set; }
+        public DateTime? DataRespostaEsperada { get; set; }
+        public DateTime? DataPedidoEsclarecimento { get; set; }
+        public DateTime? DataRespostaEsclarecimento { get; set; }
+        public DateTime? DataRespostaDoFornecedor { get; set; }
+        public bool? NaoRespostaDoFornecedor { get; set; }
+        public DateTime? DataEnvioPropostaArea { get; set; }
+        public DateTime? DataRespostaArea { get; set; }
 
         public ConsultaMercado NumConsultaMercadoNavigation { get; set; }
     }

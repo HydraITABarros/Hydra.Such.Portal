@@ -1412,6 +1412,45 @@ namespace Hydra.Such.Portal.Controllers
                     seleccaoEntidades.UtilizadorRecepcaoProposta = User.Identity.Name;
                 }
 
+                //Actualizar Data Resposta Esperada
+                seleccaoEntidades.DataRespostaEsperada = seleccaoEntidades.DataEnvioAoFornecedor == null ? (DateTime?)null : seleccaoEntidades.DataEnvioAoFornecedor.Value.AddDays(seleccaoEntidades.PrazoResposta.HasValue ? seleccaoEntidades.PrazoResposta.Value : 0);
+
+                //Actualizar Fase em que se encontra
+                seleccaoEntidades.Fase = 0;
+                if (seleccaoEntidades.DataEnvioAoFornecedor.HasValue)
+                {
+                    seleccaoEntidades.Fase = 1;
+                }
+
+                if (seleccaoEntidades.DataPedidoEsclarecimento.HasValue)
+                {
+                    seleccaoEntidades.Fase = 2;
+                }
+                if (seleccaoEntidades.DataRespostaEsclarecimento.HasValue)
+                {
+                    seleccaoEntidades.Fase = 1;
+                }
+
+                if (seleccaoEntidades.DataRespostaDoFornecedor.HasValue)
+                {
+                    seleccaoEntidades.Fase = 3;
+                }
+
+                if (seleccaoEntidades.NaoRespostaDoFornecedor.HasValue && seleccaoEntidades.NaoRespostaDoFornecedor.Value == true)
+                {
+                    seleccaoEntidades.Fase = 3;
+                }
+
+                if (seleccaoEntidades.DataEnvioPropostaArea.HasValue)
+                {
+                    seleccaoEntidades.Fase = 3;
+                }
+
+                if (seleccaoEntidades.DataRespostaArea.HasValue)
+                {
+                    seleccaoEntidades.Fase = 4;
+                }
+
                 var dbUpdateResult = DBConsultaMercado.Update(seleccaoEntidades);
 
                 if (dbUpdateResult != null)

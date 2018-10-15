@@ -196,6 +196,13 @@
         <iron-ajax url="/ConsultaMercado/DeleteLinhaSeleccaoEntidade" last-response="{{LinhaSeleccaoEntidadeDeleted}}" method="post" handle-as="json" id="page_deleteLinhaSeleccaoEntidade_ajax" on-response="_deleteLinhaSeleccaoEntidadeResponse" content-type="application/json"></iron-ajax>
         <iron-ajax url="/ConsultaMercado/UpdateLinhaSeleccaoEntidade" last-response="{{LinhaSeleccaoEntidadeUpdated}}" method="post" handle-as="json" id="page_updateLinhaSeleccaoEntidade_ajax" on-response="_updateLinhaSeleccaoEntidadeResponse" content-type="application/json"></iron-ajax>
         <iron-ajax url="/ConsultaMercado/UpdateLinhaSeleccaoEntidade_DataRecepcaoProposta" last-response="{{LinhaSeleccaoEntidade_DataRecepcaoPropostaUpdated}}" method="post" handle-as="json" id="page_updateLinhaSeleccaoEntidade_DataRecepcaoProposta_ajax" on-response="_updateLinhaSeleccaoEntidade_DataRecepcaoPropostaResponse" content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/ConsultaMercado/UpdateLinhaSeleccaoEntidade" last-response="{{LinhaSeleccaoEntidade_DataPedidoEsclarecimentoUpdated}}" method="post" handle-as="json" id="page_updateLinhaSeleccaoEntidade_DataPedidoEsclarecimento_ajax" on-response="_updateLinhaSeleccaoEntidade_DataPedidoEsclarecimentoResponse" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/ConsultaMercado/UpdateLinhaSeleccaoEntidade" last-response="{{LinhaSeleccaoEntidade_DataRespostaEsclarecimentoUpdated}}" method="post" handle-as="json" id="page_updateLinhaSeleccaoEntidade_DataRespostaEsclarecimento_ajax" on-response="_updateLinhaSeleccaoEntidade_DataRespostaEsclarecimentoResponse" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/ConsultaMercado/UpdateLinhaSeleccaoEntidade" last-response="{{LinhaSeleccaoEntidade_DataRespostaDoFornecedorUpdated}}" method="post" handle-as="json" id="page_updateLinhaSeleccaoEntidade_DataRespostaDoFornecedor_ajax" on-response="_updateLinhaSeleccaoEntidade_DataRespostaDoFornecedorResponse" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/ConsultaMercado/UpdateLinhaSeleccaoEntidade" last-response="{{LinhaSeleccaoEntidade_DataEnvioPropostaAreaUpdated}}" method="post" handle-as="json" id="page_updateLinhaSeleccaoEntidade_DataEnvioPropostaArea_ajax" on-response="_updateLinhaSeleccaoEntidade_DataEnvioPropostaAreaResponse" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/ConsultaMercado/UpdateLinhaSeleccaoEntidade" last-response="{{LinhaSeleccaoEntidade_DataRespostaAreaUpdated}}" method="post" handle-as="json" id="page_updateLinhaSeleccaoEntidade_DataRespostaArea_ajax" on-response="_updateLinhaSeleccaoEntidade_DataRespostaAreaResponse" content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/ConsultaMercado/GerarRegistoPropostas" last-response="{{gerarRegistoPropostasData}}" method="post" handle-as="json" id="ajax_gerarRegistoPropostas" on-response="_gerarRegistoPropostasResponse" content-type="application/json"></iron-ajax>
         <iron-ajax url="/ConsultaMercado/UpdateLinhaRegistoProposta" last-response="{{LinhaRegistoPropostaUpdated}}" method="post" handle-as="json" id="page_updateLinhaRegistoProposta_ajax" on-response="_updateLinhaRegistoPropostaResponse" content-type="application/json"></iron-ajax>
         <iron-ajax url="/ConsultaMercado/CriarEncomenda" last-response="{{CriarEncomendaCreated}}" method="post" handle-as="json" id="page_criarEncomenda_ajax" on-response="_criarEncomendaResponse" content-type="application/json"></iron-ajax>
@@ -229,6 +236,8 @@
         <iron-ajax url="/PopulateDropdowns/GetLocalMarketRegions" last-response="{{CBLocalMarketRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetCodComprador" last-response="{{CBGetCodComprador}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/PopulateDropdowns/GetPlaces" last-response="{{CBLocal}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> </paper-button>
             <paper-button id="btnUpdate" raised class="tablinks" on-tap="_update" disabled="{{ _isCreate }}" title="Gravar" style="background-color:#5A9E49"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Gravar</paper-button>
@@ -237,7 +246,7 @@
             <paper-button class="tablinks" id="btnPrint" on-tap="_printConsulta"><i class="fa fa-print" aria-hidden="true"></i>&nbsp; Imprimir</paper-button>
             <paper-button class="tablinks" id="btnEnviarEmail" on-tap="_enviarEmail"><i class="fa fa-envelope" aria-hidden="true"></i>&nbsp; Enviar Emails</paper-button>
         </div>
-        
+
         <div class="panel panel-default">
             <div class="panel-body">
                 <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
@@ -307,11 +316,11 @@
                             <div class="row break_clear">
                                 <div class="col-sm-3">
                                     <br />
-                                    <vaadin-checkbox id="equipamento" checked="{{data.equipamento}}" disabled="true">Equipamento</vaadin-checkbox>
+                                    <vaadin-checkbox id="equipamento" checked="{{data.equipamento}}" on-blur="_update" disabled="{{ !_permissions.update }}">Equipamento</vaadin-checkbox>
                                 </div>
                                 <div class="col-sm-3">
                                     <br />
-                                    <vaadin-checkbox id="amostra" checked="{{data.amostra}}" disabled="true">Amostra</vaadin-checkbox>
+                                    <vaadin-checkbox id="amostra" checked="{{data.amostra}}" on-blur="_update" disabled="{{ !_permissions.update }}">Amostra</vaadin-checkbox>
                                 </div>
                                 <div class="col-sm-3">
                                     <br />
@@ -562,7 +571,10 @@
                                                                 fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
                                                 </such-selectbox>
                                             </div>
-                                            <div class="col-sm-3" style="padding-top:16px">
+                                            <div class="col-sm-3">
+                                                <vaadin-text-field type="text" value="{{data.prazoResposta}}" id="prazoResposta" name="prazoResposta" label="Prazo Resposta" disabled="{{ !_permissions.create }}"> </vaadin-text-field>
+                                            </div>
+                                            <div class="col-sm-3" style="padding-top:16px" hidden>
                                                 <vaadin-checkbox id="_Preferencial" checked="{{chkPreferencial}}">Preferencial</vaadin-checkbox>
                                             </div>
                                             <div class="col-sm-1" style="padding-top:32px">
@@ -614,6 +626,16 @@
                                                         </table>
                                                     </template>
                                                 </vaadin-combo-box>
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable width="80px">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="fase" style="text-align:center;">Fase</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="fase"></vaadin-grid-filter>
+                                            </template>
+                                            <template>
+                                                <vaadin-text-field name="tabSelecaoEntidadesfase" id="tabSelecaoEntidadesfase" value="{{item.fase}}" disabled="true"></vaadin-text-field>
                                             </template>
                                         </vaadin-grid-column>
 
@@ -706,6 +728,115 @@
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
                                                     {{item.dataRecepcaoProposta_Show}}
+                                                </template>
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable width="250px">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="prazoResposta" style="text-align:center;">Prazo Resposta</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="prazoResposta"></vaadin-grid-filter>
+                                            </template>
+                                            <template>
+                                                <vaadin-text-field name="tabSelecaoEntidadesprazoResposta" id="tabSelecaoEntidadesprazoResposta" value="{{item.prazoResposta}}" on-blur="_updateLinhaSeleccaoEntidade" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column width="150px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="dataRespostaEsperada">Data Resposta Esperada</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataRespostaEsperada" />
+                                            </template>
+                                            <template>
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <vaadin-date-picker id="_dataRespostaEsperada" name="_dataRecepcaoProposta" value="{{item.dataRespostaEsperada_Show}}" disabled="true"></vaadin-date-picker>
+                                                </template>
+                                                <template is="dom-if" if="{{ !item.selected }}">
+                                                    {{item.dataRespostaEsperada_Show}}
+                                                </template>
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column width="150px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="dataPedidoEsclarecimento">Data Pedido Esclarecimento</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataPedidoEsclarecimento" />
+                                            </template>
+                                            <template>
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <vaadin-date-picker id="_dataPedidoEsclarecimento" name="_dataPedidoEsclarecimento" value="{{item.dataPedidoEsclarecimento_Show}}" on-blur="_updateLinhaSeleccaoEntidade_DataPedidoEsclarecimento" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                                </template>
+                                                <template is="dom-if" if="{{ !item.selected }}">
+                                                    {{item.dataPedidoEsclarecimento_Show}}
+                                                </template>
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column width="150px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="dataRespostaEsclarecimento">Data Resposta Esclarecimento</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataRespostaEsclarecimento" />
+                                            </template>
+                                            <template>
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <vaadin-date-picker id="_dataRespostaEsclarecimento" name="_dataRespostaEsclarecimento" value="{{item.dataRespostaEsclarecimento_Show}}" on-blur="_updateLinhaSeleccaoEntidade_DataRespostaEsclarecimento" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                                </template>
+                                                <template is="dom-if" if="{{ !item.selected }}">
+                                                    {{item.dataRespostaEsclarecimento_Show}}
+                                                </template>
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column width="150px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="dataRespostaDoFornecedor">Data Resposta Fornecedor</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataRespostaDoFornecedor" />
+                                            </template>
+                                            <template>
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <vaadin-date-picker id="_dataRespostaDoFornecedor" name="_dataRespostaDoFornecedor" value="{{item.dataRespostaDoFornecedor_Show}}" on-blur="_updateLinhaSeleccaoEntidade_DataRespostaDoFornecedor" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                                </template>
+                                                <template is="dom-if" if="{{ !item.selected }}">
+                                                    {{item.dataRespostaDoFornecedor_Show}}
+                                                </template>
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="naoRespostaDoFornecedor" style="text-align:center;">Não Resposta Fornecedor</vaadin-grid-sorter>
+                                            </template>
+                                            <template>
+                                                <vaadin-checkbox id="tabSelecaoEntidadesnaoRespostaDoFornecedor" checked="{{item.naoRespostaDoFornecedor}}" on-blur="_updateLinhaSeleccaoEntidade" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column width="150px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="dataEnvioPropostaArea">Data Envio Proposta Área</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataEnvioPropostaArea" />
+                                            </template>
+                                            <template>
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <vaadin-date-picker id="_dataEnvioPropostaArea" name="_dataEnvioPropostaArea" value="{{item.dataEnvioPropostaArea_Show}}" on-blur="_updateLinhaSeleccaoEntidade_DataEnvioPropostaArea" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                                </template>
+                                                <template is="dom-if" if="{{ !item.selected }}">
+                                                    {{item.dataEnvioPropostaArea_Show}}
+                                                </template>
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column width="150px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="dataRespostaArea">Data Resposta Área</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataRespostaArea" />
+                                            </template>
+                                            <template>
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <vaadin-date-picker id="_dataRespostaArea" name="_dataRespostaArea" value="{{item.dataRespostaArea_Show}}" on-blur="_updateLinhaSeleccaoEntidade_DataRespostaArea" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                                </template>
+                                                <template is="dom-if" if="{{ !item.selected }}">
+                                                    {{item.dataRespostaArea_Show}}
                                                 </template>
                                             </template>
                                         </vaadin-grid-column>
@@ -1272,7 +1403,17 @@
                                                     disabled="{{ !_permissions.update }}">
                                     </such-selectbox>
                                 </div>
-                                <div class="col-sm-3">
+                                <div class="col-md-3 ">
+                                    <vaadin-combo-box items="[[CBLocal]]" on-change="_onLocalCollectionChange" id="CollectionLocal" item-value-path="id" item-label-path="value" value="{{data.localEntrega}}" label="Local de Recolha" disabled="{{ !_permissions.update }}">
+                                        <template>
+                                            <table width="180px">
+                                                <tr>
+                                                    <td width="40%">[[item.id]]</td>
+                                                    <td width="60%"> <b>[[item.value]]</b></td>
+                                                </tr>
+                                            </table>
+                                        </template>
+                                    </vaadin-combo-box>
                                 </div>
                                 <div class="col-sm-3">
                                 </div>
@@ -2050,6 +2191,23 @@
                         $(_self.$.uploadbutton).addClass('hidden');
                     }
 
+                    if (data.amostra == true || data.equipamento == true) {
+                        _self.$.requesitionType.disabled = false;
+                        _self.$.dataEntregaFornecedor.disabled = false;
+                        _self.$.dataRecolha.disabled = false;
+                        _self.$.dataEntregaArmazem.disabled = false;
+                        _self.$.codComprador.disabled = false;
+                        _self.$.CollectionLocal.disabled = false;
+                    }
+                    else {
+                        _self.$.requesitionType.disabled = true;
+                        _self.$.dataEntregaFornecedor.disabled = true;
+                        _self.$.dataRecolha.disabled = true;
+                        _self.$.dataEntregaArmazem.disabled = true;
+                        _self.$.codComprador.disabled = true;
+                        _self.$.CollectionLocal.disabled = true;
+                    }
+
                     //if (data.fase > 0) {
                     //    _self.$.descricao.disabled = true;
                     //    _self.$.codProjecto.disabled = true;
@@ -2234,11 +2392,15 @@
                     this.$.ajax_update_consultamercado.generateRequest();
                 },
                 _updateConsultaMercadoResponse: function (e) {
+                    var _self = this;
+
                     if (this.ConsultaMercadoUpdated.eReasonCode != 0) {
                         this._showErrorMessage("Ocorreu um erro na gravação da Consulta de Mercado");
                     } else {
                         this._showMessage("Consulta de Mercado gravada com sucesso.")
                     }
+
+                    self._setFieldsEditability(self.data);
                 },
 
                 _delete: function () {
@@ -2431,22 +2593,7 @@
                     }
                 },
                 _updateLinhaSeleccaoEntidade: function (e) {
-                    this.$.page_updateLinhaSeleccaoEntidade_ajax.body = JSON.stringify({
-                        idSeleccaoEntidades: e.model.item.idSeleccaoEntidades,
-                        numConsultaMercado: e.model.item.numConsultaMercado,
-                        codFornecedor: e.model.item.codFornecedor,
-                        nomeFornecedor: e.model.item.nomeFornecedor,
-                        cidadeFornecedor: e.model.item.cidadeFornecedor,
-                        codTermosPagamento: e.model.item.codTermosPagamento,
-                        codFormaPagamento: e.model.item.codFormaPagamento,
-                        selecionado: e.model.item.selecionado,
-                        preferencial: e.model.item.preferencials,
-                        dataEnvioAoFornecedor: e.model.item.dataEnvioAoFornecedor,
-                        dataRecepcaoProposta: e.model.item.dataRecepcaoProposta,
-                        dataRecepcaoProposta_Show: e.model.item.dataRecepcaoProposta_Show,
-                        utilizadorEnvio: e.model.item.utilizadorEnvio,
-                        utilizadorRecepcaoProposta: e.model.item.utilizadorRecepcaoProposta
-                    });
+                    this.$.page_updateLinhaSeleccaoEntidade_ajax.body = JSON.stringify(e.model.item);
                     this.$.page_updateLinhaSeleccaoEntidade_ajax.generateRequest();
                     this.$.tabSelecaoEntidades.clearCache();
                 },
@@ -2460,69 +2607,100 @@
                     }
                 },
                 
+                //_updateLinhaSeleccaoEntidade_DataRecepcaoProposta: function (e) {
+                //    if (e.model.item.dataRecepcaoProposta == null) {
+                //        if (e.model.item.dataRecepcaoProposta_Show != "") {
+                //            this.$.page_updateLinhaSeleccaoEntidade_DataRecepcaoProposta_ajax.body = JSON.stringify({
+                //                idSeleccaoEntidades: e.model.item.idSeleccaoEntidades,
+                //                numConsultaMercado: e.model.item.numConsultaMercado,
+                //                codFornecedor: e.model.item.codFornecedor,
+                //                nomeFornecedor: e.model.item.nomeFornecedor,
+                //                codActividade: e.model.item.codActividade,
+                //                cidadeFornecedor: e.model.item.cidadeFornecedor,
+                //                codTermosPagamento: e.model.item.codTermosPagamento,
+                //                codFormaPagamento: e.model.item.codFormaPagamento,
+                //                selecionado: e.model.item.selecionado,
+                //                preferencial: e.model.item.preferencials,
+                //                dataEnvioAoFornecedor: e.model.item.dataEnvioAoFornecedor,
+                //                dataRecepcaoProposta: e.model.item.dataRecepcaoProposta,
+                //                dataRecepcaoProposta_Show: e.model.item.dataRecepcaoProposta_Show,
+                //                utilizadorEnvio: e.model.item.utilizadorEnvio,
+                //                utilizadorRecepcaoProposta: e.model.item.utilizadorRecepcaoProposta
+                //            });
+                //            this.$.page_updateLinhaSeleccaoEntidade_DataRecepcaoProposta_ajax.generateRequest();
+                //            this.$.tabSelecaoEntidades.clearCache();
+                //        }
+                //    }
+                //    else if (e.model.item.dataRecepcaoProposta != null && e.model.item.dataRecepcaoProposta_Show == "") {
+                //        this.$.page_updateLinhaSeleccaoEntidade_DataRecepcaoProposta_ajax.body = JSON.stringify({
+                //            idSeleccaoEntidades: e.model.item.idSeleccaoEntidades,
+                //            numConsultaMercado: e.model.item.numConsultaMercado,
+                //            codFornecedor: e.model.item.codFornecedor,
+                //            nomeFornecedor: e.model.item.nomeFornecedor,
+                //            codActividade: e.model.item.codActividade,
+                //            cidadeFornecedor: e.model.item.cidadeFornecedor,
+                //            codTermosPagamento: e.model.item.codTermosPagamento,
+                //            codFormaPagamento: e.model.item.codFormaPagamento,
+                //            selecionado: e.model.item.selecionado,
+                //            preferencial: e.model.item.preferencials,
+                //            dataEnvioAoFornecedor: e.model.item.dataEnvioAoFornecedor,
+                //            dataRecepcaoProposta: e.model.item.dataRecepcaoProposta,
+                //            dataRecepcaoProposta_Show: e.model.item.dataRecepcaoProposta_Show,
+                //            utilizadorEnvio: e.model.item.utilizadorEnvio,
+                //            utilizadorRecepcaoProposta: e.model.item.utilizadorRecepcaoProposta
+                //        });
+                //        this.$.page_updateLinhaSeleccaoEntidade_DataRecepcaoProposta_ajax.generateRequest();
+                //        this.$.tabSelecaoEntidades.clearCache();
+                //    }
+                //    else if (!e.model.item.dataRecepcaoProposta.startsWith(e.model.item.dataRecepcaoProposta_Show)) {
+                //        this.$.page_updateLinhaSeleccaoEntidade_DataRecepcaoProposta_ajax.body = JSON.stringify({
+                //            idSeleccaoEntidades: e.model.item.idSeleccaoEntidades,
+                //            numConsultaMercado: e.model.item.numConsultaMercado,
+                //            codFornecedor: e.model.item.codFornecedor,
+                //            nomeFornecedor: e.model.item.nomeFornecedor,
+                //            codActividade: e.model.item.codActividade,
+                //            cidadeFornecedor: e.model.item.cidadeFornecedor,
+                //            codTermosPagamento: e.model.item.codTermosPagamento,
+                //            codFormaPagamento: e.model.item.codFormaPagamento,
+                //            selecionado: e.model.item.selecionado,
+                //            preferencial: e.model.item.preferencials,
+                //            dataEnvioAoFornecedor: e.model.item.dataEnvioAoFornecedor,
+                //            dataRecepcaoProposta: e.model.item.dataRecepcaoProposta,
+                //            dataRecepcaoProposta_Show: e.model.item.dataRecepcaoProposta_Show,
+                //            utilizadorEnvio: e.model.item.utilizadorEnvio,
+                //            utilizadorRecepcaoProposta: e.model.item.utilizadorRecepcaoProposta
+                //        });
+                //        this.$.page_updateLinhaSeleccaoEntidade_DataRecepcaoProposta_ajax.generateRequest();
+                //        this.$.tabSelecaoEntidades.clearCache();
+                //    }
+                //},
+                //_updateLinhaSeleccaoEntidade_DataRecepcaoPropostaResponse: function (e) {
+                //    if (this.LinhaSeleccaoEntidade_DataRecepcaoPropostaUpdated == true) {
+                //        this.$.page_databound_ajax.generateRequest();
+                //        this._showMessage('Linha Entidade Actualizada com sucesso.');
+                //    }
+                //    else {
+                //        this._showErrorMessage('Ocorreu um erro ao Actualizar a linha da Entidade.');
+                //    }
+                //},
+
+
+
                 _updateLinhaSeleccaoEntidade_DataRecepcaoProposta: function (e) {
                     if (e.model.item.dataRecepcaoProposta == null) {
                         if (e.model.item.dataRecepcaoProposta_Show != "") {
-                            this.$.page_updateLinhaSeleccaoEntidade_DataRecepcaoProposta_ajax.body = JSON.stringify({
-                                idSeleccaoEntidades: e.model.item.idSeleccaoEntidades,
-                                numConsultaMercado: e.model.item.numConsultaMercado,
-                                codFornecedor: e.model.item.codFornecedor,
-                                nomeFornecedor: e.model.item.nomeFornecedor,
-                                codActividade: e.model.item.codActividade,
-                                cidadeFornecedor: e.model.item.cidadeFornecedor,
-                                codTermosPagamento: e.model.item.codTermosPagamento,
-                                codFormaPagamento: e.model.item.codFormaPagamento,
-                                selecionado: e.model.item.selecionado,
-                                preferencial: e.model.item.preferencials,
-                                dataEnvioAoFornecedor: e.model.item.dataEnvioAoFornecedor,
-                                dataRecepcaoProposta: e.model.item.dataRecepcaoProposta,
-                                dataRecepcaoProposta_Show: e.model.item.dataRecepcaoProposta_Show,
-                                utilizadorEnvio: e.model.item.utilizadorEnvio,
-                                utilizadorRecepcaoProposta: e.model.item.utilizadorRecepcaoProposta
-                            });
+                            this.$.page_updateLinhaSeleccaoEntidade_DataRecepcaoProposta_ajax.body = JSON.stringify(e.model.item);
                             this.$.page_updateLinhaSeleccaoEntidade_DataRecepcaoProposta_ajax.generateRequest();
                             this.$.tabSelecaoEntidades.clearCache();
                         }
                     }
                     else if (e.model.item.dataRecepcaoProposta != null && e.model.item.dataRecepcaoProposta_Show == "") {
-                        this.$.page_updateLinhaSeleccaoEntidade_DataRecepcaoProposta_ajax.body = JSON.stringify({
-                            idSeleccaoEntidades: e.model.item.idSeleccaoEntidades,
-                            numConsultaMercado: e.model.item.numConsultaMercado,
-                            codFornecedor: e.model.item.codFornecedor,
-                            nomeFornecedor: e.model.item.nomeFornecedor,
-                            codActividade: e.model.item.codActividade,
-                            cidadeFornecedor: e.model.item.cidadeFornecedor,
-                            codTermosPagamento: e.model.item.codTermosPagamento,
-                            codFormaPagamento: e.model.item.codFormaPagamento,
-                            selecionado: e.model.item.selecionado,
-                            preferencial: e.model.item.preferencials,
-                            dataEnvioAoFornecedor: e.model.item.dataEnvioAoFornecedor,
-                            dataRecepcaoProposta: e.model.item.dataRecepcaoProposta,
-                            dataRecepcaoProposta_Show: e.model.item.dataRecepcaoProposta_Show,
-                            utilizadorEnvio: e.model.item.utilizadorEnvio,
-                            utilizadorRecepcaoProposta: e.model.item.utilizadorRecepcaoProposta
-                        });
+                        this.$.page_updateLinhaSeleccaoEntidade_DataRecepcaoProposta_ajax.body = JSON.stringify(e.model.item);
                         this.$.page_updateLinhaSeleccaoEntidade_DataRecepcaoProposta_ajax.generateRequest();
                         this.$.tabSelecaoEntidades.clearCache();
                     }
                     else if (!e.model.item.dataRecepcaoProposta.startsWith(e.model.item.dataRecepcaoProposta_Show)) {
-                        this.$.page_updateLinhaSeleccaoEntidade_DataRecepcaoProposta_ajax.body = JSON.stringify({
-                            idSeleccaoEntidades: e.model.item.idSeleccaoEntidades,
-                            numConsultaMercado: e.model.item.numConsultaMercado,
-                            codFornecedor: e.model.item.codFornecedor,
-                            nomeFornecedor: e.model.item.nomeFornecedor,
-                            codActividade: e.model.item.codActividade,
-                            cidadeFornecedor: e.model.item.cidadeFornecedor,
-                            codTermosPagamento: e.model.item.codTermosPagamento,
-                            codFormaPagamento: e.model.item.codFormaPagamento,
-                            selecionado: e.model.item.selecionado,
-                            preferencial: e.model.item.preferencials,
-                            dataEnvioAoFornecedor: e.model.item.dataEnvioAoFornecedor,
-                            dataRecepcaoProposta: e.model.item.dataRecepcaoProposta,
-                            dataRecepcaoProposta_Show: e.model.item.dataRecepcaoProposta_Show,
-                            utilizadorEnvio: e.model.item.utilizadorEnvio,
-                            utilizadorRecepcaoProposta: e.model.item.utilizadorRecepcaoProposta
-                        });
+                        this.$.page_updateLinhaSeleccaoEntidade_DataRecepcaoProposta_ajax.body = JSON.stringify(e.model.item);
                         this.$.page_updateLinhaSeleccaoEntidade_DataRecepcaoProposta_ajax.generateRequest();
                         this.$.tabSelecaoEntidades.clearCache();
                     }
@@ -2536,6 +2714,196 @@
                         this._showErrorMessage('Ocorreu um erro ao Actualizar a linha da Entidade.');
                     }
                 },
+
+
+
+
+
+
+
+                _updateLinhaSeleccaoEntidade_DataPedidoEsclarecimento: function (e) {
+                    if (e.model.item.dataPedidoEsclarecimento == null) {
+                        if (e.model.item.dataPedidoEsclarecimento_Show != "") {
+                            this.$.page_updateLinhaSeleccaoEntidade_DataPedidoEsclarecimento_ajax.body = JSON.stringify(e.model.item);
+                            this.$.page_updateLinhaSeleccaoEntidade_DataPedidoEsclarecimento_ajax.generateRequest();
+                            this.$.tabSelecaoEntidades.clearCache();
+                        }
+                    }
+                    else if (e.model.item.dataPedidoEsclarecimento != null && e.model.item.dataPedidoEsclarecimento_Show == "") {
+                        this.$.page_updateLinhaSeleccaoEntidade_DataPedidoEsclarecimento_ajax.body = JSON.stringify(e.model.item);
+                        this.$.page_updateLinhaSeleccaoEntidade_DataPedidoEsclarecimento_ajax.generateRequest();
+                        this.$.tabSelecaoEntidades.clearCache();
+                    }
+                    else if (!e.model.item.dataPedidoEsclarecimento.startsWith(e.model.item.dataPedidoEsclarecimento_Show)) {
+                        this.$.page_updateLinhaSeleccaoEntidade_DataPedidoEsclarecimento_ajax.body = JSON.stringify(e.model.item);
+                        this.$.page_updateLinhaSeleccaoEntidade_DataPedidoEsclarecimento_ajax.generateRequest();
+                        this.$.tabSelecaoEntidades.clearCache();
+                    }
+                },
+                _updateLinhaSeleccaoEntidade_DataPedidoEsclarecimentoResponse: function (e) {
+                    if (this.LinhaSeleccaoEntidade_DataPedidoEsclarecimentoUpdated == true) {
+                        this.$.page_databound_ajax.generateRequest();
+                        this._showMessage('Linha Entidade Actualizada com sucesso.');
+                    }
+                    else {
+                        this._showErrorMessage('Ocorreu um erro ao Actualizar a linha da Entidade.');
+                    }
+                },
+
+
+
+
+
+
+
+                _updateLinhaSeleccaoEntidade_DataRespostaEsclarecimento: function (e) {
+                    if (e.model.item.dataRespostaEsclarecimento == null) {
+                        if (e.model.item.dataRespostaEsclarecimento_Show != "") {
+                            this.$.page_updateLinhaSeleccaoEntidade_DataRespostaEsclarecimento_ajax.body = JSON.stringify(e.model.item);
+                            this.$.page_updateLinhaSeleccaoEntidade_DataRespostaEsclarecimento_ajax.generateRequest();
+                            this.$.tabSelecaoEntidades.clearCache();
+                        }
+                    }
+                    else if (e.model.item.dataRespostaEsclarecimento != null && e.model.item.dataRespostaEsclarecimento_Show == "") {
+                        this.$.page_updateLinhaSeleccaoEntidade_DataRespostaEsclarecimento_ajax.body = JSON.stringify(e.model.item);
+                        this.$.page_updateLinhaSeleccaoEntidade_DataRespostaEsclarecimento_ajax.generateRequest();
+                        this.$.tabSelecaoEntidades.clearCache();
+                    }
+                    else if (!e.model.item.dataRespostaEsclarecimento.startsWith(e.model.item.dataRespostaEsclarecimento_Show)) {
+                        this.$.page_updateLinhaSeleccaoEntidade_DataRespostaEsclarecimento_ajax.body = JSON.stringify(e.model.item);
+                        this.$.page_updateLinhaSeleccaoEntidade_DataRespostaEsclarecimento_ajax.generateRequest();
+                        this.$.tabSelecaoEntidades.clearCache();
+                    }
+                },
+                _updateLinhaSeleccaoEntidade_DataRespostaEsclarecimentoResponse: function (e) {
+                    if (this.LinhaSeleccaoEntidade_DataRespostaEsclarecimentoUpdated == true) {
+                        this.$.page_databound_ajax.generateRequest();
+                        this._showMessage('Linha Entidade Actualizada com sucesso.');
+                    }
+                    else {
+                        this._showErrorMessage('Ocorreu um erro ao Actualizar a linha da Entidade.');
+                    }
+                },
+
+
+
+
+
+
+
+
+                _updateLinhaSeleccaoEntidade_DataRespostaDoFornecedor: function (e) {
+                    if (e.model.item.dataRespostaDoFornecedor == null) {
+                        if (e.model.item.dataRespostaDoFornecedor_Show != "") {
+                            this.$.page_updateLinhaSeleccaoEntidade_DataRespostaDoFornecedor_ajax.body = JSON.stringify(e.model.item);
+                            this.$.page_updateLinhaSeleccaoEntidade_DataRespostaDoFornecedor_ajax.generateRequest();
+                            this.$.tabSelecaoEntidades.clearCache();
+                        }
+                    }
+                    else if (e.model.item.dataRespostaDoFornecedor != null && e.model.item.dataRespostaDoFornecedor_Show == "") {
+                        this.$.page_updateLinhaSeleccaoEntidade_DataRespostaDoFornecedor_ajax.body = JSON.stringify(e.model.item);
+                        this.$.page_updateLinhaSeleccaoEntidade_DataRespostaDoFornecedor_ajax.generateRequest();
+                        this.$.tabSelecaoEntidades.clearCache();
+                    }
+                    else if (!e.model.item.dataRespostaDoFornecedor.startsWith(e.model.item.dataRespostaDoFornecedor_Show)) {
+                        this.$.page_updateLinhaSeleccaoEntidade_DataRespostaDoFornecedor_ajax.body = JSON.stringify(e.model.item);
+                        this.$.page_updateLinhaSeleccaoEntidade_DataRespostaDoFornecedor_ajax.generateRequest();
+                        this.$.tabSelecaoEntidades.clearCache();
+                    }
+                },
+                _updateLinhaSeleccaoEntidade_DataRespostaDoFornecedorResponse: function (e) {
+                    if (this.LinhaSeleccaoEntidade_DataRespostaDoFornecedorUpdated == true) {
+                        this.$.page_databound_ajax.generateRequest();
+                        this._showMessage('Linha Entidade Actualizada com sucesso.');
+                    }
+                    else {
+                        this._showErrorMessage('Ocorreu um erro ao Actualizar a linha da Entidade.');
+                    }
+                },
+
+
+
+
+
+
+
+
+                _updateLinhaSeleccaoEntidade_DataEnvioPropostaArea: function (e) {
+                    if (e.model.item.dataEnvioPropostaArea == null) {
+                        if (e.model.item.dataEnvioPropostaArea_Show != "") {
+                            this.$.page_updateLinhaSeleccaoEntidade_DataEnvioPropostaArea_ajax.body = JSON.stringify(e.model.item);
+                            this.$.page_updateLinhaSeleccaoEntidade_DataEnvioPropostaArea_ajax.generateRequest();
+                            this.$.tabSelecaoEntidades.clearCache();
+                        }
+                    }
+                    else if (e.model.item.dataEnvioPropostaArea != null && e.model.item.dataEnvioPropostaArea_Show == "") {
+                        this.$.page_updateLinhaSeleccaoEntidade_DataEnvioPropostaArea_ajax.body = JSON.stringify(e.model.item);
+                        this.$.page_updateLinhaSeleccaoEntidade_DataEnvioPropostaArea_ajax.generateRequest();
+                        this.$.tabSelecaoEntidades.clearCache();
+                    }
+                    else if (!e.model.item.dataEnvioPropostaArea.startsWith(e.model.item.dataEnvioPropostaArea_Show)) {
+                        this.$.page_updateLinhaSeleccaoEntidade_DataEnvioPropostaArea_ajax.body = JSON.stringify(e.model.item);
+                        this.$.page_updateLinhaSeleccaoEntidade_DataEnvioPropostaArea_ajax.generateRequest();
+                        this.$.tabSelecaoEntidades.clearCache();
+                    }
+                },
+                _updateLinhaSeleccaoEntidade_DataEnvioPropostaAreaResponse: function (e) {
+                    if (this.LinhaSeleccaoEntidade_DataEnvioPropostaAreaUpdated == true) {
+                        this.$.page_databound_ajax.generateRequest();
+                        this._showMessage('Linha Entidade Actualizada com sucesso.');
+                    }
+                    else {
+                        this._showErrorMessage('Ocorreu um erro ao Actualizar a linha da Entidade.');
+                    }
+                },
+
+
+
+
+
+
+
+
+                _updateLinhaSeleccaoEntidade_DataRespostaArea: function (e) {
+                    if (e.model.item.dataRespostaArea == null) {
+                        if (e.model.item.dataRespostaArea_Show != "") {
+                            this.$.page_updateLinhaSeleccaoEntidade_DataRespostaArea_ajax.body = JSON.stringify(e.model.item);
+                            this.$.page_updateLinhaSeleccaoEntidade_DataRespostaArea_ajax.generateRequest();
+                            this.$.tabSelecaoEntidades.clearCache();
+                        }
+                    }
+                    else if (e.model.item.dataRespostaArea != null && e.model.item.dataRespostaArea_Show == "") {
+                        this.$.page_updateLinhaSeleccaoEntidade_DataRespostaArea_ajax.body = JSON.stringify(e.model.item);
+                        this.$.page_updateLinhaSeleccaoEntidade_DataRespostaArea_ajax.generateRequest();
+                        this.$.tabSelecaoEntidades.clearCache();
+                    }
+                    else if (!e.model.item.dataRespostaArea.startsWith(e.model.item.dataRespostaArea_Show)) {
+                        this.$.page_updateLinhaSeleccaoEntidade_DataRespostaArea_ajax.body = JSON.stringify(e.model.item);
+                        this.$.page_updateLinhaSeleccaoEntidade_DataRespostaArea_ajax.generateRequest();
+                        this.$.tabSelecaoEntidades.clearCache();
+                    }
+                },
+                _updateLinhaSeleccaoEntidade_DataRespostaAreaResponse: function (e) {
+                    if (this.LinhaSeleccaoEntidade_DataRespostaAreaUpdated == true) {
+                        this.$.page_databound_ajax.generateRequest();
+                        this._showMessage('Linha Entidade Actualizada com sucesso.');
+                    }
+                    else {
+                        this._showErrorMessage('Ocorreu um erro ao Actualizar a linha da Entidade.');
+                    }
+                },
+
+
+
+
+
+
+
+
+
+
+
+
 
                 _updateLinhaRegistoProposta: function (e) {
                     /* É preciso efectuar validações e verificações
