@@ -1861,19 +1861,25 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult PontoSituacaoRequisicao([FromQuery] string reqId, [FromQuery] string lineId)
         {
-            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Requisições);
-            if (userPermissions != null && userPermissions.Read.Value)
-            {
-                ViewBag.UPermissions = userPermissions;
-                ViewBag.RequisitionNo = reqId;
-                ViewBag.AutoOpenDialogOnLineNo = lineId;
+            //NR20181015 - Retirar Feature de acesso 
+            //UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Requisições);
+            //if (userPermissions != null && userPermissions.Read.Value)
+            //{
+            //    ViewBag.UPermissions = userPermissions;
+            //    ViewBag.RequisitionNo = reqId;
+            //    ViewBag.AutoOpenDialogOnLineNo = lineId;
 
-                return View();
-            }
-            else
-            {
-                return Redirect(Url.Content("~/Error/AccessDenied"));
-            }
+            //    return View();
+            //}
+            //else
+            //{
+            //    return Redirect(Url.Content("~/Error/AccessDenied"));
+            //}
+
+            ViewBag.RequisitionNo = reqId;
+            ViewBag.AutoOpenDialogOnLineNo = lineId;
+
+            return View();
         }
 
         //public IActionResult PontoSituacaoRequisicao([FromQuery] string reqId, [FromQuery] string lineId)
