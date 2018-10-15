@@ -63,11 +63,10 @@ namespace Hydra.Such.Portal.Controllers
         {
             //UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Requisições);
             UserAccessesViewModel UPerm = new UserAccessesViewModel();
-
             UPerm.Area = 1;
             UPerm.Create = true;
             UPerm.Delete = true;
-            //UPerm.Feature =
+            UPerm.Feature = (int)Enumerations.Features.Requisições;
             UPerm.IdUser = User.Identity.Name;
             UPerm.Read = true;
             UPerm.Update = true;
@@ -985,7 +984,7 @@ namespace Hydra.Such.Portal.Controllers
             //requisition = DBRequest.GetReqByUserAreaStatus(User.Identity.Name, states);
             requisition = DBRequest.GetReqByUser(User.Identity.Name);
             List<RequisitionViewModel> result = new List<RequisitionViewModel>();
-            List<ApprovalMovementsViewModel> AproveList = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAllAssignedToUserFilteredByStatus(User.Identity.Name, 1));
+            List<ApprovalMovementsViewModel> AproveList = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAll()); //.GetAllAssignedToUserFilteredByStatus(User.Identity.Name, 1));
             if (requisition != null)
             {
                 requisition.ForEach(x => result.Add(x.ParseToViewModel()));
@@ -1463,7 +1462,7 @@ namespace Hydra.Such.Portal.Controllers
 
             List<ConfiguraçãoAprovações> approv = DBApprovalConfigurations.GetAll();
 
-            List<ApprovalMovementsViewModel> result = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAllAssignedToUserFilteredByStatus(User.Identity.Name, 1));
+            List<ApprovalMovementsViewModel> result = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAll());// .GetAllAssignedToUserFilteredByStatus(User.Identity.Name, 1));
 
             if (result != null && result.Count > 0)
             {

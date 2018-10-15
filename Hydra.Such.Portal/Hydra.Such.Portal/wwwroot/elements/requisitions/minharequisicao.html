@@ -308,8 +308,9 @@
 
             <paper-button class="tablinks" id="btnShowChangeLog" on-tap="_showChangeLog"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Workflow</paper-button>
 
-            <!--<paper-button type="button" class="tablinks" id="btnToApproved2" on-tap="_ToApproved"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Enviar para Aprovação1</paper-button>-->
-            <button type="button" class="tablinks" id="btnToApproved" onclick="_ToApproved"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Enviar para Aprovação</button>
+            <!--<paper-button type="button" class="tablinks" id="btnToApproved" on-tap="_ToApproved" style="display: {{Requisition.sentReqToAproveText}};"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Enviar para Aprovação</paper-button>-->
+
+            <button type="button" class="tablinks" id="btnToApproved" on-click="_ToApproved" style="display: {{Requisition.sentReqToAproveText}};"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Enviar para Aprovação</button>
         </div>
 
         <div class="row break_frm">
@@ -319,7 +320,7 @@
 
                         <div class="panel-body">
                             <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
-                                <paper-tab>Geral---</paper-tab>
+                                <paper-tab>Geral</paper-tab>
                                 <paper-tab>Reparação</paper-tab>
                                 <paper-tab>Recolha</paper-tab>
                                 <paper-tab>Entrega (Fornecedor)</paper-tab>
@@ -1609,7 +1610,7 @@
                     }
                 },
                 ready: function () {
-                    debugger;
+                    //debugger;
                     var _self = this;
 
                     //if (this._sentReqToAprove === 0) { //Não Aprovação
@@ -2179,7 +2180,7 @@
 
                     if (this.$.txtStatus.value != "") {
                         if (this.$.Vehicle.value == "" & this.$.txtStatus.value != "Pendente") {
-                            debugger;
+                            //debugger;
                             this.$.CBHeaderProjects.disabled = false;
                             //this.$.CBLineProjects.disabled = false;
                         }
@@ -2335,7 +2336,7 @@
                     }
                 },
                 _onProductChanged: function (e) {
-                    debugger;
+                    //debugger;
                     if (e != "") {
                         var item = this.Products.find(x => x.code == e.detail.value);
                         //var item = this.Products.find(x => x.code == e);
@@ -2374,7 +2375,7 @@
                     }
                 },
                 _registTypeResponse: function (e) {
-                    debugger;
+                    //debugger;
                     if (this.regist.eReasonCode == "1") {
                         this._openToast(this.regist.eMessage);
                         this.Requisition = this.regist;
@@ -2477,7 +2478,7 @@
 
                     if (this.$.txtStatus.value != "") {
                         if (matricula == "" & this.$.txtStatus.value != "Pendente") {
-                            debugger;
+                            //debugger;
                             this.$.CBHeaderProjects.disabled = false;
                         }
                         else {

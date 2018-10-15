@@ -150,7 +150,8 @@
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goHistory"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Histórico</paper-button>
         </div>
-        <vaadin-grid id="grdPendingReqGrid" aria-label="PendingReqGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+        <vaadin-grid id="grdPendingReqGrid" aria-label="PendingReqGrid" items="[[result]]" class="grid" multi-sort="true"> <!--active-item="{{activeItem}}"-->
+
             <vaadin-grid-column width="120px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="requisitionNo">Nº Requisição</vaadin-grid-sorter>
@@ -337,9 +338,9 @@
                     _permissions: {
                         type: Array
                     },
-                    activeItem: {
-                        observer: '_rowSelected'
-                    },
+                    //activeItem: {
+                    //    observer: '_rowSelected'
+                    //},
                     _areaid: {
                         type: Number,
                         notify: true,
@@ -369,13 +370,13 @@
                     var height = parentHeight - offsetTop;
                     grid_el.height(height);
                 },
-                _rowSelected: function (item) {
-                    if (item != null) {
-                        this.$.dialog.open();
-                        this.$.grid_datareqlines_ajax.body = JSON.stringify({ "ReqNo": item.requisitionNo });
-                        this.$.grid_datareqlines_ajax.generateRequest();
-                    }
-                },
+                //_rowSelected: function (item) {
+                //    if (item != null) {
+                //        this.$.dialog.open();
+                //        this.$.grid_datareqlines_ajax.body = JSON.stringify({ "ReqNo": item.requisitionNo });
+                //        this.$.grid_datareqlines_ajax.generateRequest();
+                //    }
+                //},
                 _clFormatState: function (param) {
                     if (param != undefined) {
                         var sel = this.CBStatus.find(x => x.id == param);

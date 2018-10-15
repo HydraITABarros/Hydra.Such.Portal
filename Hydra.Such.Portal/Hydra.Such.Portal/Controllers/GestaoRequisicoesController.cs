@@ -182,18 +182,17 @@ namespace Hydra.Such.Portal.Controllers
         {
             //UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Requisições);
             UserAccessesViewModel userPermissions = new UserAccessesViewModel();
-
             userPermissions.Area = 1;
             userPermissions.Create = true;
             userPermissions.Delete = true;
-            //userPermissions.Feature
+            userPermissions.Feature = (int)Enumerations.Features.Requisições;
             userPermissions.IdUser = User.Identity.Name;
             userPermissions.Read = true;
             userPermissions.Update = true;
 
             int SentReqToAprove = 0;
             RequisitionViewModel REQ = DBRequest.GetById(id).ParseToViewModel();
-            List<ApprovalMovementsViewModel> AproveList = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAllAssignedToUserFilteredByStatus(User.Identity.Name, 1));
+            List<ApprovalMovementsViewModel> AproveList = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAll()); //  .GetAllAssignedToUserFilteredByStatus(User.Identity.Name, 1));
             if (REQ.State == RequisitionStates.Pending || REQ.State == RequisitionStates.Rejected)
                 SentReqToAprove = 1;
             else
@@ -236,7 +235,16 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult Arquivadas()
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.HistóricoRequisições);
+            //UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.HistóricoRequisições);
+            UserAccessesViewModel UPerm = new UserAccessesViewModel();
+            UPerm.Area = 1;
+            UPerm.Create = true;
+            UPerm.Delete = true;
+            UPerm.Feature = (int)Enumerations.Features.HistóricoRequisições;
+            UPerm.IdUser = User.Identity.Name;
+            UPerm.Read = true;
+            UPerm.Update = true;
+
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.Area = 4;
@@ -731,6 +739,23 @@ namespace Hydra.Such.Portal.Controllers
             }
             else
                 item = new RequisitionViewModel();
+
+            
+            List<ApprovalMovementsViewModel> AproveList = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAll());
+            if (item.State == RequisitionStates.Pending || item.State == RequisitionStates.Rejected)
+                item.SentReqToAproveText = "normal";
+            else
+                item.SentReqToAproveText = "none";
+            if (AproveList != null && AproveList.Count > 0)
+            {
+                foreach (ApprovalMovementsViewModel apmov in AproveList)
+                {
+                    if (apmov.Number == item.RequisitionNo)
+                    {
+                        item.SentReqToAproveText = "none";
+                    }
+                }
+            }
 
             return Json(item);
         }
@@ -1876,6 +1901,16 @@ namespace Hydra.Such.Portal.Controllers
             //    return Redirect(Url.Content("~/Error/AccessDenied"));
             //}
 
+            UserAccessesViewModel userPermissions = new UserAccessesViewModel();
+            userPermissions.Area = 1;
+            userPermissions.Create = true;
+            userPermissions.Delete = true;
+            userPermissions.Feature = (int)Enumerations.Features.Requisições;
+            userPermissions.IdUser = User.Identity.Name;
+            userPermissions.Read = true;
+            userPermissions.Update = true;
+
+            ViewBag.UPermissions = userPermissions;
             ViewBag.RequisitionNo = reqId;
             ViewBag.AutoOpenDialogOnLineNo = lineId;
 

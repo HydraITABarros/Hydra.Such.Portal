@@ -77,7 +77,7 @@ namespace Hydra.Such.Portal.Controllers
                 switch (x.Type)
                 {
                     case 1:
-                        x.NumberLink = "/GestaoRequisicoes/DetalhesReqAprovada/" + x.Number;
+                        x.NumberLink = "/GestaoRequisicoes/MinhaRequisicao/" + x.Number; //"/GestaoRequisicoes/DetalhesReqAprovada/"
                         break;
                     case 2:
                         x.NumberLink = "/ModelosReqSimplificada";
