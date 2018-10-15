@@ -4779,6 +4779,8 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.QuantidadeRequerida).HasColumnName("Quantidade Requerida");
 
+                entity.Property(e => e.QuantidadeInicial).HasColumnName("QuantidadeInicial");
+
                 entity.Property(e => e.RecusadoCompras).HasColumnName("Recusado Compras");
 
                 entity.Property(e => e.RegiãoMercadoLocal)
