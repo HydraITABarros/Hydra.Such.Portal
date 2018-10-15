@@ -3,11 +3,16 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid.html" />
-<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-active-item-behavior.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
-<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html">
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-selection-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-selection-column.html" />
+
 <link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html" />
 <link rel="import" href="/lib/iron-form/iron-form.html" />
 <link rel="import" href="/lib/paper-input/paper-input.html" />
@@ -15,6 +20,12 @@
 <link rel="import" href="/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/datetime-picker-master/date-picker.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/such-dropdown-menu/such-dropdown-menu.html" />
+<link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
+<link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 
 <!--start ColumnToggle-->
 <link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
@@ -24,7 +35,7 @@
 <link rel="import" href="/lib/paper-menu-button/paper-menu-button.html" />
 <!--end ColumnToggle-->
 
-<x-rececaofaturas></x-rececaofaturas>
+<x-rececaofaturas _rfperfil="@ViewBag.RFPerfil" _RFPerfilVisualizacao="@ViewBag._RFPerfilVisualizacao"></x-rececaofaturas>
 
 <dom-module id="x-rececaofaturas">
     <template>
@@ -65,7 +76,35 @@
                    id="grid_databound_ajax"
                    content-type="application/json">
         </iron-ajax>
-
+        <iron-ajax url="/Faturacao/GetBillingReceptionsPendingExcept"
+                   last-response="{{ BillingReceptions }}"
+                   id="getPending_ajax"
+                   method="get"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/Faturacao/GetBillingReceptionsHistory"
+                   last-response="{{ BillingReceptions }}"
+                   id="getHistory_ajax"
+                   method="get"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/Faturacao/GetBillingReceptionsPending"
+                   last-response="{{ BillingReceptions }}"
+                   id="getPendingTotal_ajax"
+                   method="get"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/Faturacao/GetBillingReceptionsPending"
+                   last-response="{{ getViewResponse }}"
+                   id="getPendingTotal1_ajax"
+                   method="get"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax auto url="/PopulateDropdowns/GetUtilizadoresByArea" last-response="{{ Users }}" method="get" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Faturacao/ExportToExcel_RececaoFaturas"
                    last-response="{{export}}"
                    id="ajax_Export"
@@ -79,6 +118,10 @@
             <template is="dom-if" if="{{ _permissions.create }}">
                 <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar Nova</paper-button>
             </template>
+            <such-dropdown-menu on-value-changed="_provisioningOptionSelected" title="Opções" items='[[ _provisioningMenuItems ]]' "></such-dropdown-menu>
+            <paper-button class="tablinks" on-tap="_showPending"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Pendentes</paper-button>
+            <paper-button class="tablinks" on-tap="_showPendingAreas"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Pendentes Áreas</paper-button>
+            <paper-button class="tablinks" on-tap="_showHistory"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Histórico</paper-button>
             <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
 
             <!--start ColumnToggle-->
@@ -305,6 +348,244 @@
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
+        <paper-dialog id="dialogViewHist_Pending" class="dialgoBox" modal>
+            <div class="row break_clear" hidden="{{_showOptionDestitation}}">
+                <div class="col-sm-3">
+                    <vaadin-text-field label="Área " value="{{_rfperfil}}" type="text" id="txtAreaDesti" disabled></vaadin-text-field>
+                </div>
+                <div class="col-sm-3">
+                    <vaadin-combo-box items="[[ Users ]]" id="cmbDestinatarios" item-value-path="id" item-label-path="id" label="Destinatarios">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.id]]</div>
+                                    <div>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
+                </div>
+                <div class="col-sm-3">
+                    <paper-button class="btnSave" raised on-tap="_dlgUpdateDesti">Alterar</paper-button>
+                </div>
+
+            </div>
+            <vaadin-grid id="grdBillingView" aria-label="grdBillingView" items="[[getViewResponse]]" class="grid" selected-items={{selectedItems}} active-item="{{selectedItem}}" multi-sort="true">
+                <vaadin-grid-selection-column auto-select>
+                </vaadin-grid-selection-column>
+                <vaadin-grid-column resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="id">Nº</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="id" />
+                    </template>
+                    <template>
+                        {{item.id}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="tipoDocumento">Tipo de Documento</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="tipoDocumento" />
+                    </template>
+                    <template>
+                        [[ _clFormatTypeDoc(item.tipoDocumento) ]]
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="areaPendente">Àrea Pendente</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="areaPendente" />
+                    </template>
+                    <template>
+                        {{ item.areaPendente }}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="estadoDescricao">Estado</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="estadoDescricao" />
+                    </template>
+                    <template>
+                        {{ item.estadoDescricao }}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="dataRececao">Data de Receção</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="dataRececao" />
+                    </template>
+                    <template>
+                        {{item.dataRececao}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="codFornecedor">Fornecedor</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="codFornecedor" />
+                    </template>
+                    <template>
+                        {{item.codFornecedor}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="numDocFornecedor">Núm. Doc. Fornecedor</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="numDocFornecedor" />
+                    </template>
+                    <template>
+                        {{item.numDocFornecedor}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="dataDocFornecedor">Data Doc. Fornecedor</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="dataDocFornecedor" />
+                    </template>
+                    <template>
+                        {{item.dataDocFornecedor}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="numEncomenda">Núm. Encomenda</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="numEncomenda" />
+                    </template>
+                    <template>
+                        {{item.numEncomenda}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="numEncomendaManual">Núm. Encomenda Manual</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="numEncomendaManual" />
+                    </template>
+                    <template>
+                        {{item.numEncomendaManual}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="valorEncomendaOriginal">Valor Encomenda Original</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="valorEncomendaOriginal" />
+                    </template>
+                    <template>
+                        {{item.valorEncomendaOriginal}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="quantidadeEncomenda">Quantidade Encomenda</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="quantidadeEncomenda" />
+                    </template>
+                    <template>
+                        {{item.quantidadeEncomenda}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="quantidadeRecebida">Quantidade Recebida</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="quantidadeRecebida" />
+                    </template>
+                    <template>
+                        {{item.quantidadeRecebida}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="valorRecebidoNaoContabilizado">Valor Recebido não Contabilizado</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="valorRecebidoNaoContabilizado" />
+                    </template>
+                    <template>
+                        {{item.valorRecebidoNaoContabilizado}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="valor">Valor</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="valor" />
+                    </template>
+                    <template>
+                        {{item.valor}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="codRegiao">Cód. Região</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="codRegiao" />
+                    </template>
+                    <template>
+                        {{item.codRegiao}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="codAreaFuncional">Cód. Área Funcional</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="codAreaFuncional" />
+                    </template>
+                    <template>
+                        {{item.codAreaFuncional}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="codCentroResponsabilidade">Cód. Centro Responsabilidade</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="codCentroResponsabilidade" />
+                    </template>
+                    <template>
+                        {{item.codCentroResponsabilidade}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="codLocalizacao">Cód. Localização</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="codLocalizacao" />
+                    </template>
+                    <template>
+                        {{item.codLocalizacao}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="local">Local</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="local" />
+                    </template>
+                    <template>
+                        {{ item.local }}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="numAcordoFornecedor">Núm. Acordo Fornecedor</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="numAcordoFornecedor" />
+                    </template>
+                    <template>
+                        {{ item.numAcordoFornecedor }}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="destinatario">Destinatario</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="destinatario" />
+                    </template>
+                    <template>
+                        {{ item.destinatario }}
+                    </template>
+                </vaadin-grid-column>
+
+                <vaadin-grid-column resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="dataUltimaInteracao">Data Última Interação</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="dataUltimaInteracao" />
+                    </template>
+                    <template>
+                        {{ item.dataUltimaInteracao }}
+                    </template>
+                </vaadin-grid-column>
+            </vaadin-grid>
+            <paper-button class="btnRemove" dialog-dismiss>&nbsp; Fechar</paper-button>
+
+        </paper-dialog>
+
     </template>
     <script>
         document.addEventListener('WebComponentsReady', function () {
@@ -323,6 +604,22 @@
                         value: function () {
                             return {};
                         }
+                    },
+                    _provisioningMenuItems: {
+                        type: Array,
+                        value: [{ value: 1, description: "Alterar Destinatários" }],
+                    },
+                    _showChangeDestitationForm: {
+                        type: Boolean,
+                        value: false,
+                    },
+                    _rfperfil: {
+                        type: String,
+                        value: "",
+                    },
+                    _RFPerfilVisualizacao: {
+                        type: String,
+                        value: "",
                     },
                 },
                 ready: function () {
@@ -352,7 +649,33 @@
                 _create: function () {
                     window.location.href = "/Faturacao/DetalhesRecFatura";
                 },
+                _showPending: function (e) {
+                    this.$.getPending_ajax.body = JSON.stringify();
+                    this.$.getPending_ajax.generateRequest();
+                },
+                _showHistory: function (e) {
+                    this.$.getHistory_ajax.body = JSON.stringify();
+                    this.$.getHistory_ajax.generateRequest();
+                },
+                _showPendingAreas: function (e) {
+                    this.$.getPendingTotal_ajax.body = JSON.stringify();
+                    this.$.getPendingTotal_ajax.generateRequest();
+                },
+                _provisioningOptionSelected: function (e) {
+                    if (e.detail.value == 0)
+                        return;
+                    var item = e.detail.value;
 
+                    if (item == null)
+                        return;
+                    switch (item.value) {
+                        case 1:
+                            this.$.getPendingTotal1_ajax.body = JSON.stringify();
+                            this.$.getPendingTotal1_ajax.generateRequest();
+                            this.$.dialogViewHist_Pending.open();
+                            break;
+                    }
+                },
                 _exportEXCEL: function () {
                     //debugger;
                     this.BillingReceptions[0].ColunasEXCEL = this._columns;
@@ -360,7 +683,23 @@
                     this.$.ajax_Export.body = JSON.stringify(this.BillingReceptions);
                     this.$.ajax_Export.generateRequest();
                 },
+                _dlgUpdateDesti: function (selectedItem, selectedItems) {
+                    if (this.$.cmbDestinatarios.value != null && this.$.cmbDestinatarios.value != "") {
+                        if (this.selectedItems != null && this.selectedItems != "") {
+                            var selItms = this.selectedItems;
+                            selItms[0].destinatario = this.$.cmbDestinatarios.value;
+                            this.$.updateDestination.body = JSON.stringify(selItms);
+                            this.$.updateDestination.generateRequest();
+                            this.$.grdBillingView.clearCache();
 
+                        } else {
+                            this._openToastError("Não foi selecionada nenhuma linha.");
+                        }
+                    }
+                    else {
+                        this._openToastError("Não foi selecionada nenhum Destinatário.");
+                    }
+                },
                 _exportEXCELResponse: function (e) {
                     //debugger
                     var FileName = this.export;
