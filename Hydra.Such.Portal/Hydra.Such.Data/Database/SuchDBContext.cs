@@ -8806,11 +8806,27 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.DataEnvioAoFornecedor).HasColumnType("datetime");
 
+                entity.Property(e => e.DataEnvioPropostaArea).HasColumnType("datetime");
+
+                entity.Property(e => e.DataPedidoEsclarecimento).HasColumnType("datetime");
+
                 entity.Property(e => e.DataRecepcaoProposta).HasColumnType("datetime");
+
+                entity.Property(e => e.DataRespostaArea).HasColumnType("datetime");
+
+                entity.Property(e => e.DataRespostaDoFornecedor).HasColumnType("datetime");
+
+                entity.Property(e => e.DataRespostaEsclarecimento).HasColumnType("datetime");
+
+                entity.Property(e => e.DataRespostaEsperada).HasColumnType("datetime");
 
                 entity.Property(e => e.EmailFornecedor)
                     .HasColumnName("Email_Fornecedor")
                     .HasMaxLength(60);
+
+                entity.Property(e => e.Fase).HasDefaultValueSql("((1))");
+
+                entity.Property(e => e.NaoRespostaDoFornecedor).HasDefaultValueSql("((0))");
 
                 entity.Property(e => e.NomeFornecedor)
                     .HasColumnName("Nome_Fornecedor")
