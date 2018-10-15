@@ -368,7 +368,7 @@
 
                                     <div class="row break_clear">
                                         <div class="col-lg-3">
-                                            <such-selectbox id="RegionCode" name="RegionCode" value="{{Requisition.regionCode}}" label="Cód. Região" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"
+                                            <such-selectbox id="RegionCode" name="RegionCode" value="{{Requisition.regionCode}}" label="Cód. Região" disabled required error-message="Este campo é obrigatório"
                                                             items="[[LProjectRegionCodes]]"
                                                             text-path="value"
                                                             value-path="id"
@@ -376,7 +376,7 @@
                                             </such-selectbox>
                                         </div>
                                         <div class="col-lg-3">
-                                            <such-selectbox id="FunctionalAreaCode" name="FunctionalAreaCode" value="{{Requisition.functionalAreaCode}}" label="Cód. Área Funcional" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"
+                                            <such-selectbox id="FunctionalAreaCode" name="FunctionalAreaCode" value="{{Requisition.functionalAreaCode}}" label="Cód. Área Funcional" disabled required error-message="Este campo é obrigatório"
                                                             items="[[LProjectFunctionalAreaCodes]]"
                                                             text-path="value"
                                                             value-path="id"
@@ -384,7 +384,7 @@
                                             </such-selectbox>
                                         </div>
                                         <div class="col-lg-3">
-                                            <such-selectbox id="ResponsabilityCenterCode" name="ResponsabilityCenterCode" value="{{Requisition.centerResponsibilityCode}}" label="Cód. Centro Responsabilidade" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"
+                                            <such-selectbox id="ResponsabilityCenterCode" name="ResponsabilityCenterCode" value="{{Requisition.centerResponsibilityCode}}" label="Cód. Centro Responsabilidade" disabled required error-message="Este campo é obrigatório"
                                                             items="[[LProjectResponsabilityCenterCodes]]"
                                                             text-path="value"
                                                             value-path="id"
@@ -700,7 +700,7 @@
                                         </such-selectbox>
                                     </div>
                                     <div class="col-lg-3">
-                                        <vaadin-combo-box items="[[LProjectRegionCodes]]" id="_CLRegion" name="_CLRegion" item-value-path="id" item-label-path="value" value="[[Requisition.regionCode]]" label="Cód. Região" disabled="{{ !_permissions.update }}">
+                                        <vaadin-combo-box items="[[LProjectRegionCodes]]" id="_CLRegion" name="_CLRegion" item-value-path="id" item-label-path="value" value="[[Requisition.regionCode]]" label="Cód. Região" disabled>
                                             <template>
                                                 <table width="200px">
                                                     <tr>
@@ -712,7 +712,7 @@
                                         </vaadin-combo-box>
                                     </div>
                                     <div class="col-lg-3">
-                                        <vaadin-combo-box items="[[LProjectFunctionalAreaCodes]]" id="_CLFunctionalAreaCode" name="_CLFunctionalAreaCode" item-value-path="id" item-label-path="value" value="[[Requisition.functionalAreaCode]]" label="Cód. Área Funcional" disabled="{{ !_permissions.update }}">
+                                        <vaadin-combo-box items="[[LProjectFunctionalAreaCodes]]" id="_CLFunctionalAreaCode" name="_CLFunctionalAreaCode" item-value-path="id" item-label-path="value" value="[[Requisition.functionalAreaCode]]" label="Cód. Área Funcional" disabled>
                                             <template>
                                                 <table width="500px">
                                                     <tr>
@@ -726,7 +726,7 @@
                                 </div>
                                 <div class="row break_clear" hidden="{{_isArchived}}">
                                     <div class="col-lg-3">
-                                        <vaadin-combo-box items="[[LProjectResponsabilityCenterCodes]]" id="_CLResponsabilityCenterCode" name="_CLResponsabilityCenterCode" item-value-path="id" item-label-path="value" on-change="_RespChange" value="[[Requisition.centerResponsibilityCode]]" label="Cód. Centro Responsabilidade" disabled="{{ !_permissions.update }}">
+                                        <vaadin-combo-box items="[[LProjectResponsabilityCenterCodes]]" id="_CLResponsabilityCenterCode" name="_CLResponsabilityCenterCode" item-value-path="id" item-label-path="value" on-change="_RespChange" value="[[Requisition.centerResponsibilityCode]]" label="Cód. Centro Responsabilidade" disabled>
                                             <template>
                                                 <table width="550px">
                                                     <tr>
@@ -771,6 +771,10 @@
                                 <div class="row break_clear" hidden="{{_isArchived}}">
                                     <div class="col-lg-3">
                                         <vaadin-text-field id="txtDiscountPercentage" on-value-changed="_ConvertDecimals" pattern="^-?[0-9]+([\.][0-9]+)?" name="txtDiscountPercentage" label="% Desconto"></vaadin-text-field>
+                                    </div>
+
+                                    <div class="col-lg-3">
+                                        <vaadin-text-field id="txtQuantidadeInicial" on-value-changed="_ConvertDecimals" pattern="^-?[0-9]+([\.][0-9]+)?" name="txtQuantidadeInicial" label="Quantidade Inicial"></vaadin-text-field>
                                     </div>
                                 </div>
                                 <div class="row break_clear" hidden="{{_isArchived}}">
@@ -998,6 +1002,22 @@
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
+
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="quantidadeInicial">Qt. Inicial</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="quantidadeInicial"></vaadin-grid-filter>
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-text-field value="{{item.quantidadeInicial}}" id="_CLGridQuantidadeInicial" name="_CLGridQuantidadeInicial" disabled on-value-changed="_ConvertDecimals"> </vaadin-text-field>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            {{item.quantidadeInicial}}
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+
                                 <vaadin-grid-column width="160px" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="unitCostsould">Preço Unitário Venda</vaadin-grid-sorter>
@@ -1044,7 +1064,7 @@
                                     <template class="header">
                                         <p class="alignCenter">Criar Consulta Mercado</p>
                                         <!--<vaadin-grid-filter path="createMarketSearchStringValue">
-                                    </vaadin-grid-filter>-->
+            </vaadin-grid-filter>-->
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
@@ -1196,7 +1216,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-combo-box items="[[LProjectRegionCodes]]" id="_CLGridRegion" name="_CLGridRegion" item-value-path="id" item-label-path="value" value="{{item.regionCode}}" disabled="{{ !_permissions.update }}">
+                                            <vaadin-combo-box items="[[LProjectRegionCodes]]" id="_CLGridRegion" name="_CLGridRegion" item-value-path="id" item-label-path="value" value="{{item.regionCode}}" disabled>
                                                 <template>
                                                     <table width="300px">
                                                         <tr>
@@ -1220,7 +1240,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-combo-box items="[[LProjectFunctionalAreaCodes]]" id="_CLGridFunctionalArea" name="_CLGridFunctionalArea" item-value-path="id" item-label-path="value" value="{{item.functionalAreaCode}}" disabled="{{ !_permissions.update }}">
+                                            <vaadin-combo-box items="[[LProjectFunctionalAreaCodes]]" id="_CLGridFunctionalArea" name="_CLGridFunctionalArea" item-value-path="id" item-label-path="value" value="{{item.functionalAreaCode}}" disabled>
                                                 <template>
                                                     <table width="500px">
                                                         <tr>
@@ -1244,7 +1264,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-combo-box items="[[LProjectResponsabilityCenterCodes]]" id="_CLGridResponsabilityCenter" on-change="_GridRespCenterChange" name="_CLGridResponsabilityCenter" item-value-path="id" item-label-path="value" value="{{item.centerResponsibilityCode}}" disabled="{{ !_permissions.update }}">
+                                            <vaadin-combo-box items="[[LProjectResponsabilityCenterCodes]]" id="_CLGridResponsabilityCenter" on-change="_GridRespCenterChange" name="_CLGridResponsabilityCenter" item-value-path="id" item-label-path="value" value="{{item.centerResponsibilityCode}}" disabled>
                                                 <template>
                                                     <table width="550px">
                                                         <tr>
@@ -2015,7 +2035,8 @@
                             projectNo: this.$.CBLineProjects.value,
                             localMarket: this.$.chkLocalMarket.__data.checked ? 1 : 0,              //Mercado Local
                             vatBusinessPostingGroup: "",
-                            vatProductPostingGroup: ""
+                            vatProductPostingGroup: "",
+                            quantidadeInicial: this.$.txtQuantidadeInicial.value
                         };
                         //Set default VATPostingGroups
                         var supplier = this.Suppliers.find(x => x.no_ == newReqLine.supplierNo);

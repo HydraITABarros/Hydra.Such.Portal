@@ -69,7 +69,6 @@ namespace Hydra.Such.Data.Logic.Request
                 {
                     return ctx.Requisição
                         .Include(x => x.LinhasRequisição)//("LinhasRequisição")
-                        //AROMAO 01/10/2018
                         .Include(x => x.RequisicoesRegAlteracoes)
                         .SingleOrDefault(x => x.NºRequisição == requestId);
                 }
