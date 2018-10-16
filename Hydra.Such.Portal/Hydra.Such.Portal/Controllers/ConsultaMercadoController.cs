@@ -340,6 +340,8 @@ namespace Hydra.Such.Portal.Controllers
 
                     consultaMercado.Estado = Estados[1].Id;
                     consultaMercado.Fase = Fases[4].Id;
+
+                    consultaMercado.Historico = true;
                     consultaMercado = DBConsultaMercado.Update(consultaMercado);
 
                     //Criar uma versão no histórico, com versão incrementada em 1
