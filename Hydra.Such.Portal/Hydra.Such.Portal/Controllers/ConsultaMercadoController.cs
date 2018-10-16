@@ -344,37 +344,37 @@ namespace Hydra.Such.Portal.Controllers
                     consultaMercado.Historico = true;
                     consultaMercado = DBConsultaMercado.Update(consultaMercado);
 
-                    //Criar uma versão no histórico, com versão incrementada em 1
-                    HistoricoConsultaMercado historicoconsultaMercado = DBConsultaMercado.Create(consultaMercado);
+                    ////Criar uma versão no histórico, com versão incrementada em 1
+                    //HistoricoConsultaMercado historicoconsultaMercado = DBConsultaMercado.Create(consultaMercado);
 
-                    if (historicoconsultaMercado != null || historicoconsultaMercado.NumConsultaMercado != "")
-                    {
-                        int _numversao = historicoconsultaMercado.NumVersao;
+                    //if (historicoconsultaMercado != null || historicoconsultaMercado.NumConsultaMercado != "")
+                    //{
+                    //    int _numversao = historicoconsultaMercado.NumVersao;
 
-                        //Histórico Linhas Consulta Mercado
-                        foreach (LinhasConsultaMercado lin in consultaMercado.LinhasConsultaMercado)
-                        {
-                            DBConsultaMercado.Create_Hist(lin, _numversao);
-                        }
+                    //    //Histórico Linhas Consulta Mercado
+                    //    foreach (LinhasConsultaMercado lin in consultaMercado.LinhasConsultaMercado)
+                    //    {
+                    //        DBConsultaMercado.Create_Hist(lin, _numversao);
+                    //    }
 
-                        //Histórico Condições Propostas Fornecedores
-                        foreach (CondicoesPropostasFornecedores lin in consultaMercado.CondicoesPropostasFornecedores)
-                        {
-                            DBConsultaMercado.Create_Hist(lin, _numversao);
-                        }
+                    //    //Histórico Condições Propostas Fornecedores
+                    //    foreach (CondicoesPropostasFornecedores lin in consultaMercado.CondicoesPropostasFornecedores)
+                    //    {
+                    //        DBConsultaMercado.Create_Hist(lin, _numversao);
+                    //    }
 
-                        //Histórico Linhas Condições Propostas Fornecedores
-                        foreach (LinhasCondicoesPropostasFornecedores lin in consultaMercado.LinhasCondicoesPropostasFornecedores)
-                        {
-                            DBConsultaMercado.Create_Hist(lin, _numversao);
-                        }
+                    //    //Histórico Linhas Condições Propostas Fornecedores
+                    //    foreach (LinhasCondicoesPropostasFornecedores lin in consultaMercado.LinhasCondicoesPropostasFornecedores)
+                    //    {
+                    //        DBConsultaMercado.Create_Hist(lin, _numversao);
+                    //    }
 
-                        //Histórico Selecção Entidades
-                        foreach (SeleccaoEntidades lin in consultaMercado.SeleccaoEntidades)
-                        {
-                            DBConsultaMercado.Create_Hist(lin, _numversao);
-                        }
-                    }
+                    //    //Histórico Selecção Entidades
+                    //    foreach (SeleccaoEntidades lin in consultaMercado.SeleccaoEntidades)
+                    //    {
+                    //        DBConsultaMercado.Create_Hist(lin, _numversao);
+                    //    }
+                    //}
 
                     ConsultaMercadoView result = DBConsultaMercado.CastConsultaMercadoToView(consultaMercado);
                     result.eReasonCode = 0;
@@ -409,33 +409,34 @@ namespace Hydra.Such.Portal.Controllers
             {
                 ConsultaMercado consultaMercado = DBConsultaMercado.GetDetalheConsultaMercado(data.NumConsultaMercado);
 
-                string _Alternativa = string.Empty;
-                foreach (SeleccaoEntidades seleccaoEntidades in consultaMercado.SeleccaoEntidades)
-                {
-                    _Alternativa = DBConsultaMercado.Get_MAX_Alternativa_CondicoesPropostasFornecedores(data.NumConsultaMercado, seleccaoEntidades.CodFornecedor);
+                //string _Alternativa = string.Empty;
+                //foreach (SeleccaoEntidades seleccaoEntidades in consultaMercado.SeleccaoEntidades)
+                //{
+                //    _Alternativa = DBConsultaMercado.Get_MAX_Alternativa_CondicoesPropostasFornecedores(data.NumConsultaMercado, seleccaoEntidades.CodFornecedor);
 
-                    if (_Alternativa == null)
-                    {
-                        _Alternativa = "0";
-                    }
-                    else
-                    {
-                        _Alternativa = (int.Parse(_Alternativa) + 1).ToString();
-                    }
+                //    if (_Alternativa == null)
+                //    {
+                //        _Alternativa = "0";
+                //    }
+                //    else
+                //    {
+                //        _Alternativa = (int.Parse(_Alternativa) + 1).ToString();
+                //    }
 
-                    //Inserir registo na tabela "Condicoes_Propostas_Fornecedores", com o valor Alternativa calculado acima
-                    CondicoesPropostasFornecedores condicoesPropostasFornecedores = DBConsultaMercado.Create(seleccaoEntidades, _Alternativa);
+                //    //Inserir registo na tabela "Condicoes_Propostas_Fornecedores", com o valor Alternativa calculado acima
+                //    CondicoesPropostasFornecedores condicoesPropostasFornecedores = DBConsultaMercado.Create(seleccaoEntidades, _Alternativa);
 
-                    //Para cada registo, inserir as linhas da consulta de mercado na tabela "Linhas_Condicoes_Propostas_Fornecedores"
-                    foreach (LinhasConsultaMercado linhasConsultaMercado in consultaMercado.LinhasConsultaMercado)
-                    {
-                        LinhasCondicoesPropostasFornecedores linhasCondicoesPropostasFornecedores = DBConsultaMercado.Create(linhasConsultaMercado, _Alternativa, seleccaoEntidades.CodFornecedor);
-                    }
-                }
+                //    //Para cada registo, inserir as linhas da consulta de mercado na tabela "Linhas_Condicoes_Propostas_Fornecedores"
+                //    foreach (LinhasConsultaMercado linhasConsultaMercado in consultaMercado.LinhasConsultaMercado)
+                //    {
+                //        LinhasCondicoesPropostasFornecedores linhasCondicoesPropostasFornecedores = DBConsultaMercado.Create(linhasConsultaMercado, _Alternativa, seleccaoEntidades.CodFornecedor);
+                //    }
+                //}
 
                 //NOVO MÉTODO, QUE SUBSTITUI O USO DAS DUAS TABELAS ACIMA, "Condicoes_Propostas_Fornecedores" e "Linhas_Condicoes_Propostas_Fornecedores"
                 //GRAVA NA NOVA TABELA "Registo_De_Propostas"
                 //Para cada registo, inserir as linhas da consulta de mercado na tabela "Linhas_Condicoes_Propostas_Fornecedores"
+                string _Alternativa = "0";
                 foreach (LinhasConsultaMercado linhasConsultaMercado in consultaMercado.LinhasConsultaMercado)
                 {
                     RegistoDePropostas registoDePropostas = DBConsultaMercado.Create(linhasConsultaMercado, _Alternativa, _config.NAVDatabaseName, _config.NAVCompanyName);
@@ -1376,7 +1377,8 @@ namespace Hydra.Such.Portal.Controllers
                     NumConsultaMercado = data.NumConsultaMercado,
                     Preferencial = data.Preferencial,
                     Selecionado = true,
-                    EmailFornecedor = _Email
+                    EmailFornecedor = _Email,
+                    PrazoResposta = data.PrazoResposta
                 };
 
                 var dbCreateResult = DBConsultaMercado.Create(seleccaoEntidades);
