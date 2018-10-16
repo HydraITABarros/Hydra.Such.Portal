@@ -2554,6 +2554,9 @@
                         if (this.ProductLocation.locationCode != null) {
                             this.$._CBLocations.value = this.ProductLocation.locationCode;
                         }
+                        else {
+                            this._openToastError("Este produto não têm Cód. Localização contate a área das compras.");
+                        }
                     }
                     else {
                         this.$._CBLocations.value = "";

@@ -1043,7 +1043,7 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             foreach (RequisitionViewModel req in result)
                             {
-                                if (apmov.Number == req.RequisitionNo)
+                                if (apmov.Number == req.RequisitionNo && (apmov.Status == 1 || apmov.Status == 2))
                                 {
                                     req.SentReqToAprove = false;
                                 }
