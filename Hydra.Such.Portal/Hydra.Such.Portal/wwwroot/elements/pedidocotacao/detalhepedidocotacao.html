@@ -3207,11 +3207,44 @@
                 },
 
                 _criarEncomenda: function (e) {
+                    debugger
                     if (this.data.numEncomenda)
                         this._showErrorMessage("Já foi criada uma encomenda para esta Consulta ao Mercado.");
                     else {
-                        this.$.page_criarEncomenda_ajax.body = JSON.stringify(this.data);
-                        this.$.page_criarEncomenda_ajax.generateRequest();
+                        //this.$.page_criarEncomenda_ajax.body = JSON.stringify(this.data);
+                        //this.$.page_criarEncomenda_ajax.generateRequest();
+
+
+                        var ajax_request = this.$.page_criarEncomenda_ajax;
+                        ajax_request.body = JSON.stringify(this.data);
+
+                        bootbox.confirm({
+                            message: "Após a criação da Encomenda, deseja enviar esta Consulta para Histórico?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (result) {
+                                if (result) {
+                                    ajax_request.params = { "Arquivar": true };
+                                    ajax_request.generateRequest();
+                                }
+                                else {
+                                    ajax_request.params = { "Arquivar": false };
+                                    ajax_request.generateRequest();
+                                }
+                            }
+                        });
+
+
+
+
                     }
                 },
                 _criarEncomendaResponse: function (e) {
