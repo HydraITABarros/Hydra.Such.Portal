@@ -4638,7 +4638,26 @@ namespace Hydra.Such.Portal.Controllers
         {
             string eReasonCode = "";
             //Create new 
+            data.CreateUser = User.Identity.Name;
             eReasonCode = DBApprovalUserGroup.Create(DBApprovalUserGroup.ParseToDb(data)) == null ? "101" : "";
+
+            if (String.IsNullOrEmpty(eReasonCode))
+            {
+                return Json(data);
+            }
+            else
+            {
+                return Json(eReasonCode);
+            }
+
+        }
+
+        public JsonResult UpdateLinhaGrupoAprovacao([FromBody] ApprovalUserGroupViewModel data)
+        {
+            string eReasonCode = "";
+            //Update 
+            data.UpdateUser = User.Identity.Name;
+            eReasonCode = DBApprovalUserGroup.Update(DBApprovalUserGroup.ParseToDb(data)) == null ? "101" : "";
 
             if (String.IsNullOrEmpty(eReasonCode))
             {

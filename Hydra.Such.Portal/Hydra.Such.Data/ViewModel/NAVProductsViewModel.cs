@@ -18,5 +18,6 @@ namespace Hydra.Such.Data.ViewModel
         public decimal? UnitCost { get; set; }
         public string LocationCode { get; set; }
         public string VATProductPostingGroup { get; set; }
+        public byte? InventoryValueZero { get; set; }
     }
 }

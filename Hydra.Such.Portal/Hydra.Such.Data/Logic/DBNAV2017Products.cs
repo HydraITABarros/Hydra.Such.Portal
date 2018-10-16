@@ -41,7 +41,8 @@ namespace Hydra.Such.Data.Logic
                             LastCostDirect = (decimal)temp.Last_Direct_Cost,
                             VendorNo = (string)temp.Vendor_No_,
                             VATProductPostingGroup = (string)temp.VATProductPostingGroup,
-                            UnitCost = (decimal)temp.UnitCost
+                            UnitCost = (decimal)temp.UnitCost,
+                            InventoryValueZero = (byte)temp.InventoryValueZero
                         });
                     }
                 }
@@ -146,7 +147,7 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
-        public static List<NAVProductsViewModel> GetProductsForPreRequisitions(string NAVDatabaseName, string NAVCompanyName, string allowedDimensions, string requisitionType, string locationCode)
+        public static List<NAVProductsViewModel> GetProductsForPreRequisitions(string NAVDatabaseName, string NAVCompanyName, string allowedDimensions, string requisitionType)
         {
             try
             {
@@ -158,7 +159,7 @@ namespace Hydra.Such.Data.Logic
                         new SqlParameter("@CompanyName", NAVCompanyName),
                         new SqlParameter("@AllowedDimensions", allowedDimensions),
                         new SqlParameter("@RequisitionType", requisitionType),
-                        new SqlParameter("@LocationCode", locationCode)
+                        new SqlParameter("@LocationCode", "")
                     };
 
                     IEnumerable<dynamic> data = ctx.execStoredProcedure(@"exec NAV2017ProdutosPreRequisicao @DBName, @CompanyName, @AllowedDimensions, @RequisitionType, @LocationCode", parameters);

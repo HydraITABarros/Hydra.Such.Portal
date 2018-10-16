@@ -1234,6 +1234,7 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetProjectNavList()
         {
             List<NAVProjectsViewModel> result = DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, "").ToList();
+
             List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
             if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
                 result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && (y.ValorDimensão == x.RegionCode || string.IsNullOrEmpty(x.RegionCode))));
@@ -1241,6 +1242,7 @@ namespace Hydra.Such.Portal.Controllers
                 result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && (y.ValorDimensão == x.AreaCode || string.IsNullOrEmpty(x.AreaCode))));
             if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
                 result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && (y.ValorDimensão == x.CenterResponsibilityCode || string.IsNullOrEmpty(x.CenterResponsibilityCode))));
+
             return Json(result);
         }
 
@@ -1951,7 +1953,7 @@ namespace Hydra.Such.Portal.Controllers
             string allowedProductsFilter = string.Empty;
             string rootAreaId = string.Empty;
             string requisitionType = string.Empty;
-            string locationCode = string.Empty;
+            //string locationCode = string.Empty;
             List<NAVProductsViewModel> products = new List<NAVProductsViewModel>();
             //products = null;
 
@@ -1960,11 +1962,12 @@ namespace Hydra.Such.Portal.Controllers
                 allowedProductsFilter = "";
                 rootAreaId = "";
                 requisitionType = requestParams["requisitionType"].ToString();
-                locationCode = requestParams["locationCode"].ToString();
+                //locationCode = requestParams["locationCode"].ToString();
 
-                if (requisitionType != "" && locationCode != "")
+                if (requisitionType != "")// && locationCode != "")
                 {
-                    List<NAVProductsViewModel> productsReqParams = DBNAV2017Products.GetProductsForPreRequisitions(_config.NAVDatabaseName, _config.NAVCompanyName, allowedProductsFilter, requisitionType, locationCode).ToList();
+                    List<NAVProductsViewModel> productsReqParams = DBNAV2017Products.GetProductsForPreRequisitions(_config.NAVDatabaseName, _config.NAVCompanyName, allowedProductsFilter, requisitionType).ToList();
+                    //List<NAVProductsViewModel> productsReqParams = DBNAV2017Products.GetProductsForPreRequisitions(_config.NAVDatabaseName, _config.NAVCompanyName, allowedProductsFilter, requisitionType, locationCode).ToList();
 
                     if (productsReqParams != null && productsReqParams.Count > 0)
                     {
