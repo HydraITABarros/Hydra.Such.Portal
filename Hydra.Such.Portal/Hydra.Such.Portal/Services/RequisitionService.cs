@@ -467,6 +467,7 @@ namespace Hydra.Such.Portal.Services
                 consultaMercado.PedidoCotacaoCriadoEm = DateTime.Now;
                 consultaMercado.PedidoCotacaoCriadoPor = changedByUserName;
                 consultaMercado.NumRequisicao = requisition.RequisitionNo;
+                consultaMercado.Urgente = requisition.Urgent;
 
                 consultaMercado = DBConsultaMercado.Update(consultaMercado);
 
