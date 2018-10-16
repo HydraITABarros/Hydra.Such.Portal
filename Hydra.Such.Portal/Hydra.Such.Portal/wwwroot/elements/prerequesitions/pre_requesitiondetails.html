@@ -688,7 +688,7 @@
                                                         text-path="documentNO"
                                                         value-path="id"
                                                         fields='[{"field":"documentNO", "name":"Nº Documento"},{"field":"line_No", "name":"Nº Linha Aberta"}, {"field":"numb", "name":"Cód. Produto"}, {"field":"description", "name":"Descrição"}, {"field":"buyFromVendorNo", "name":"Fornecedor"},
-                                                                {"field":"outstandingQtyBase", "name":"Quantidade Disponível"}, {"field":"functionalAreaDescription", "name":"Área Funcional"},{"field":"regionDescription", "name":"Região"},{"field":"responsabilityCenterDescription", "name":"Centro Resonsabilidade"}]'
+                                                                {"field":"availableQuantity", "name":"Quantidade Disponível"}, {"field":"functionalAreaDescription", "name":"Área Funcional"},{"field":"regionDescription", "name":"Região"},{"field":"responsabilityCenterDescription", "name":"Centro Resonsabilidade"}]'
                                                         disabled="{{ !_permissions.update }}">
                                         </such-selectbox>
                                     </div>
@@ -1643,7 +1643,7 @@
                             this.$._Description.value = proj.description;
                             this.$._UnitMeasureCode.value = proj.unitofMeasureCode;
                             this.$._UnitCost.value = proj.unitCost;
-                            this._QuantityToOpen = proj.outstandingQtyBase;
+                            this._QuantityToOpen = proj.availableQuantity;
                             this._CBVendor = proj.buyFromVendorNo;
                             this.$._CBPurchaseHeader.value = proj.documentNO;
                             this._Products = proj.numb;
