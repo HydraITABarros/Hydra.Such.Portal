@@ -211,30 +211,62 @@ namespace Hydra.Such.Data.Logic.ComprasML
         {
             return ctx.RecFaturacaoConfigDestinatarios.Where(x => x.Codigo.StartsWith("1A") && x.Mostra == true).ToList();
         }
-        public List<RecFaturacaoConfigDestinatarios> GetAreasUPUAS()
+        public List<RecFaturacaoConfigDestinatarios> GetAreasUPUAS(string respCenterId)
         {
-            return ctx.RecFaturacaoConfigDestinatarios.Where(x => x.Codigo.Length == 5 && x.Codigo.StartsWith("3A-") && x.Mostra == true).ToList();
+            if (string.IsNullOrEmpty(respCenterId))
+                return ctx.RecFaturacaoConfigDestinatarios
+                    .Where(x => x.Codigo.Length == 5 && 
+                                x.Codigo.StartsWith("3A-") && 
+                                x.Mostra == true)
+                    .ToList();
+            else
+                return ctx.RecFaturacaoConfigDestinatarios
+                    .Where(x => x.Codigo.StartsWith("3A-") &&
+                                x.Mostra == true &&
+                                x.CodCentroResponsabilidade == respCenterId &&
+                                !string.IsNullOrEmpty(x.Destinatario))
+                    .ToList();
         }
         public List<RecFaturacaoConfigDestinatarios> GetDimensionsForArea(string areaId)
         {
-            return ctx.RecFaturacaoConfigDestinatarios.Where(x => x.Codigo.StartsWith("3A-") && x.CodArea == areaId && x.Mostra == true && x.CodCentroResponsabilidade != string.Empty).ToList();
+            var dimensions = ctx.RecFaturacaoConfigDestinatarios.Where(x => x.Codigo.StartsWith("3A-") && x.CodArea == areaId && x.Mostra == true && x.CodCentroResponsabilidade != string.Empty).ToList();
+            dimensions.ForEach(dim =>
+                dim.Destinatario = ctx.RecFaturacaoConfigDestinatarios
+                                    .Where(x => x.Codigo.StartsWith("3A-") &&
+                                        x.Mostra == false &&
+                                        x.CodCentroResponsabilidade == dim.CodCentroResponsabilidade &&
+                                        !string.IsNullOrEmpty(x.Destinatario))
+                                    .FirstOrDefault()?.Destinatario
+            );
+            return dimensions;// ctx.RecFaturacaoConfigDestinatarios.Where(x => x.Codigo.StartsWith("3A-") && x.CodArea == areaId && x.Mostra == true && x.CodCentroResponsabilidade != string.Empty).ToList();
         }
-        public List<RecFaturacaoConfigDestinatarios> GetUsersToResendByAreaName(string areaId)
+        public List<RecFaturacaoConfigDestinatarios> GetUsersToResendByAreaName(string areaId, string respCenterId)
         {
             List<RecFaturacaoConfigDestinatarios> users = new List<RecFaturacaoConfigDestinatarios>();
-            
-            users = ctx.RecFaturacaoConfigDestinatarios
-                .Where(x => x.Codigo.StartsWith("3A-") && 
-                            x.CodArea == areaId && 
-                            x.Mostra == false 
-                            && string.IsNullOrEmpty(x.CodCentroResponsabilidade))
-                .ToList();
 
-            var areas = GetAreasUPUAS();
+            if (string.IsNullOrEmpty(respCenterId))
+            {
+                users = ctx.RecFaturacaoConfigDestinatarios
+                    .Where(x => x.Codigo.StartsWith("3A-") &&
+                                x.CodArea == areaId &&
+                                x.Mostra == false
+                                && string.IsNullOrEmpty(x.CodCentroResponsabilidade))
+                    .ToList();
+            }
+            else
+            {
+                users = ctx.RecFaturacaoConfigDestinatarios
+                    .Where(x => x.Codigo.StartsWith("3A-") &&
+                                x.CodArea == areaId &&
+                                x.Mostra == false
+                                && x.CodCentroResponsabilidade == respCenterId)
+                    .ToList();
+            }
+            var areas = GetAreasUPUAS(respCenterId);
             if (areas.Count > 0)
             {
                 var selectedArea = areas.FirstOrDefault(x => x.CodArea == areaId);
-                if (selectedArea != null && !users.Any(x => x.Destinatario == selectedArea.Destinatario))
+                if (selectedArea != null && !string.IsNullOrEmpty(selectedArea.Destinatario) && !users.Any(x => x.Destinatario == selectedArea.Destinatario))
                 {
                     users.Add(selectedArea);
                 }
