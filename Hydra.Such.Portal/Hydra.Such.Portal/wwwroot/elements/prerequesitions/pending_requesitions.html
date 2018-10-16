@@ -150,7 +150,8 @@
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goHistory"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Histórico</paper-button>
         </div>
-        <vaadin-grid id="grdPendingReqGrid" aria-label="PendingReqGrid" items="[[result]]" class="grid" multi-sort="true"> <!--active-item="{{activeItem}}"-->
+        <vaadin-grid id="grdPendingReqGrid" aria-label="PendingReqGrid" items="[[result]]" class="grid" multi-sort="true">
+            <!--active-item="{{activeItem}}"-->
 
             <vaadin-grid-column width="120px" resizable>
                 <template class="header">
@@ -222,6 +223,24 @@
                 </template>
                 <template>
                     {{item.employeeNo}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="100px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="regionCode">Cód. Região</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="regionCode" />
+                </template>
+                <template>
+                    {{item.regionCode}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="150px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="centerResponsibilityCode">Cód. Cresp</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="centerResponsibilityCode" />
+                </template>
+                <template>
+                    {{item.centerResponsibilityCode}}
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="50px" resizable>

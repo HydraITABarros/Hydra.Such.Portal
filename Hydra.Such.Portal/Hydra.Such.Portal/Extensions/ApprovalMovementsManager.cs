@@ -68,7 +68,8 @@ namespace Hydra.Such.Portal.Extensions
                     }
                     else if (approvalConfiguration.GrupoAprovação.HasValue)
                     {
-                        List<string> GUsers = DBApprovalUserGroup.GetAllFromGroup(approvalConfiguration.GrupoAprovação.Value);
+                        //List<string> GUsers = DBApprovalUserGroup.GetAllFromGroup(approvalConfiguration.GrupoAprovação.Value);
+                        List<string> GUsers = DBApprovalUserGroup.GetAllFromGroupWithEmailAlerta(approvalConfiguration.GrupoAprovação.Value);
 
                         GUsers.ForEach(y =>
                         {
@@ -88,6 +89,7 @@ namespace Hydra.Such.Portal.Extensions
                     //Notify Users
                     UsersToNotify.ForEach(e =>
                     {
+                        
                         //if(e.RfmailEnvio != "" && e.RfmailEnvio != null)
                         //{
                             EmailsAprovações EmailApproval = new EmailsAprovações();

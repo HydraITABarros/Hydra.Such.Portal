@@ -147,7 +147,7 @@
         <iron-ajax url="/PopulateDropdowns/GetProjectNavList" last-response="{{CBJobNo}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetNAVVendorComboGrid" last-response="{{CBVendor}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetPlaces" last-response="{{CBLocal}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetProductsPreRequisition" last-response="{{Products}}" id="filteredProducts_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProductsPreRequisition" last-response="{{Products}}" id="filteredProducts_ajax" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <!--<iron-ajax url="/PopulateDropdowns/GetAllProductsComprasPortal" last-response="{{Products}}" id="filteredProducts_ajax" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
         <!--<iron-ajax url="/PopulateDropdowns/GetProductsForCurrentUser" last-response="{{CBItems}}" id="filteredProducts_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
         <iron-ajax url="/PopulateDropdowns/GetLocations" last-response="{{CBLocations}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -171,6 +171,7 @@
                    method="post"
                    handle-as="json"
                    id="page_update_ajax"
+                   on-response="_loadAttachResponse"
                    content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/PreRequisicoes/DeleteAttachments"
@@ -341,6 +342,14 @@
                    on-response="_GetUnitCostLinhaResponse"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/PreRequisicoes/GetProductLocation"
+                   last-response="{{ProductLocation}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_GetProductLocation_ajax"
+                   on-response="_GetProductLocationResponse"
+                   content-type="application/json"></iron-ajax>
+
         <!--//-------------------------------------------------------------//-->
         <template is="dom-if" if="{{ !_isCreate }}">
             <template is="dom-if" if="{{ _permissions.update }}">
@@ -416,7 +425,7 @@
                                                             items="[[CBJobNo]]"
                                                             text-path="no"
                                                             value-path="no"
-                                                            fields='[{"field":"no", "name":"Nº Projecto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"globalDimension1", "name":"Área"}, {"field":"centerResponsibilityCode", "name":"Cresp"}]'
+                                                            fields='[{"field":"no", "name":"Nº Projecto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"regionCode", "name":"Cód. Região"}, {"field":"areaCode", "name":"Cód. Área"}, {"field":"centerResponsibilityCode", "name":"Cód. Cresp"}]'
                                                             disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                             </such-selectbox>
                                         </div>
@@ -472,7 +481,7 @@
                                             <vaadin-checkbox id="UrgentId" checked="{{data.urgent}}">Urgente</vaadin-checkbox>
                                         </div>
                                         <div class="col-sm-2">
-                                            <vaadin-checkbox id="FittingBudgetId" checked="{{data.fittingBudget}}">Orçamento em Anexo</vaadin-checkbox>
+                                            <vaadin-checkbox id="FittingBudgetId" checked="{{data.fittingBudget}}" disabled>Orçamento em Anexo</vaadin-checkbox>
                                         </div>
                                         <div class="col-sm-2">
                                             <vaadin-checkbox id="ImmobilizedId" checked="{{data.immobilized}}">Imobilizado</vaadin-checkbox>
@@ -696,19 +705,7 @@
                                     <div class="col-lg-2" hidden>
                                         <vaadin-text-field value="{{_CBItemsCDirect}}" id="_CBItemsCDirect" name="_CBItemsCDirect" label="Compra Direta" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                     </div>
-                                    <div class="col-sm-2">
-                                        <vaadin-combo-box items="[[CBLocations]]" on-value-changed="_getCDirect" id="_CBLocations" item-value-path="id" value="{{_LocalCode}}" item-label-path="value" label="Cód. Localização" required error-message="Este campo é obrigatório" disabled="{{ !_permissions.update }}">
-                                            <template>
-                                                <table width="200px">
-                                                    <tr>
-                                                        <td width="40%">[[item.id]]</td>
-                                                        <td width="60%"> <b>[[item.value]]</b></td>
-                                                    </tr>
-                                                </table>
-                                            </template>
-                                        </vaadin-combo-box>
-                                        <vaadin-text-field id="txtLocalCode" label="Cód. Localização" disabled hidden> </vaadin-text-field>
-                                    </div>
+
                                     <div class="col-sm-2">
                                         <such-selectbox id="_Products" value="{{_Products}}" label="Cód. Produto"
                                                         items="[[Products]]"
@@ -720,6 +717,21 @@
                                                         on-click="_onProductClick">
                                         </such-selectbox>
                                         <vaadin-text-field value="[[_Products]]" id="txtProductCode" label="Código Produto" disabled hidden> </vaadin-text-field>
+                                    </div>
+
+                                    <div class="col-sm-2">
+                                        <!--on-value-changed="_getCDirect"-->
+                                        <vaadin-combo-box items="[[CBLocations]]" id="_CBLocations" item-value-path="id" value="{{_LocalCode}}" item-label-path="id" label="Cód. Localização" required error-message="Este campo é obrigatório" disabled="{{ !_permissions.update }}">
+                                            <template>
+                                                <table width="200px">
+                                                    <tr>
+                                                        <td width="40%">[[item.id]]</td>
+                                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                                    </tr>
+                                                </table>
+                                            </template>
+                                        </vaadin-combo-box>
+                                        <vaadin-text-field id="txtLocalCode" label="Cód. Localização" disabled hidden> </vaadin-text-field>
                                     </div>
 
                                     <div class="col-lg-2">
@@ -760,7 +772,7 @@
                                                         items="[[CBJobNo]]"
                                                         text-path="no"
                                                         value-path="no"
-                                                        fields='[{"field":"no", "name":"Nº Projecto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"globalDimension1", "name":"Dimensão Global 1"}, {"field":"globalDimension2", "name":"Dimensão Global 2"}]'
+                                                        fields='[{"field":"no", "name":"Nº Projecto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"regionCode", "name":"Cód. Região"}, {"field":"areaCode", "name":"Cód. Área"}, {"field":"centerResponsibilityCode", "name":"Cód. Cresp"}]'
                                                         disabled="{{ !_permissions.update }}">
                                         </such-selectbox>
                                     </div>
@@ -796,8 +808,6 @@
                                                 </table>
                                             </template>
                                         </vaadin-combo-box>
-
-
                                     </div>
                                     <div class="col-lg-2">
                                         <vaadin-combo-box items="[[LProjectFunctionalAreaCodes]]" id="_CLFunctionalAreaCode" name="_CLFunctionalAreaCode" item-value-path="id" item-label-path="value" value="[[data.functionalAreaCode]]" label="Cód. Área Funcional" disabled>
@@ -887,17 +897,13 @@
                                         </template>
                                         <template>
                                             <template is="dom-if" if="{{ item.selected }}">
-
-
                                                 <!--<such-selectbox id="_CLGridSupplierProductCode" value="{{item.code}}" label="Cód. Produto"
-                                items="[[Products]]"
-                                text-path="code"
-                                value-path="code"
-                                fields='[{"field":"code", "name":"Cód. Produto"}, {"field":"name", "name":"Descrição"}, {"field":"name2", "name":"Descrição 2"}, {"field":"measureUnit", "name":"Unidade de Medida"}, {"field":"itemCategoryCode", "name":"Cód. Categoria"}, {"field":"productGroupCode", "name":"Cód. Grupo"}]'
-                                on-value-changed="_onProductInGridChanged">
-                </such-selectbox>-->
-
-
+                                                            items="[[Products]]"
+                                                            text-path="code"
+                                                            value-path="code"
+                                                            fields='[{"field":"code", "name":"Cód. Produto"}, {"field":"name", "name":"Descrição"}, {"field":"name2", "name":"Descrição 2"}, {"field":"measureUnit", "name":"Unidade de Medida"}, {"field":"itemCategoryCode", "name":"Cód. Categoria"}, {"field":"productGroupCode", "name":"Cód. Grupo"}]'
+                                                            on-value-changed="_onProductInGridChanged">
+                                            </such-selectbox>-->
                                                 <vaadin-combo-box items="[[Products]]" id="_CLGridSupplierProductCode" name="_CLGridSupplierProductCode" item-value-path="code" item-label-path="code" value="{{item.code}}" disabled="{{ _setDisabled(item) }}" on-blur="_onProductInGridChanged">
                                                     <template>
                                                         <table width="180px">
@@ -1043,7 +1049,7 @@
                                                                 items="[[CBJobNo]]"
                                                                 text-path="no"
                                                                 value-path="no"
-                                                                fields='[{"field":"no", "name":"Nº Projecto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"globalDimension1", "name":"Área"}, {"field":"centerResponsibilityCode", "name":"Cresp"}]'
+                                                                fields='[{"field":"no", "name":"Nº Projecto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"regionCode", "name":"Cód. Região"}, {"field":"areaCode", "name":"Cód. Área"}, {"field":"centerResponsibilityCode", "name":"Cód. Cresp"}]'
                                                                 disabled="{{ !_permissions.update }}">
                                                 </such-selectbox>
 
@@ -1097,8 +1103,6 @@
                                         </template>
                                         <template>
                                             <template is="dom-if" if="{{ item.selected }}">
-
-
                                                 <such-selectbox value="{{item.supplierNo}}"
                                                                 label=""
                                                                 items="[[CBVendor]]"
@@ -1108,7 +1112,6 @@
                                                                 disabled="{{ !_permissions.update }}"
                                                                 on-change="_updateLinhaPreRequisicao">
                                                 </such-selectbox>
-
                                             </template>
                                             <template is="dom-if" if="{{ !item.selected }}">
                                                 [[ _clFormatsupplierNo(item.supplierNo) ]]
@@ -1185,27 +1188,27 @@
                                         </template>
                                     </vaadin-grid-column>
                                     <!--<vaadin-grid-column width="200px" resizable>
-        <template class="header">
-            <vaadin-grid-sorter path="openOrderNo">Nº Encomenda Aberto</vaadin-grid-sorter>
-            <vaadin-grid-filter path="openOrderNo" />
-        </template>
-        <template>
-            <template is="dom-if" if="{{ item.selected }}">
-                <vaadin-combo-box items="[[GridCBPurchaseHeader]]" id="_CBGridPurchaseHeader" item-value-path="id" item-label-path="id" value="{{item.openOrderNo}}" on-change="_PopulatePurchaseLinesGrid" disabled="{{ !_permissions.update }}">
-                    <template>
-                        <table width="200px">
-                            <tr>
-                                <td width="60%"> <b>[[item.id]]</b></td>
-                            </tr>
-                        </table>
-                    </template>
-                </vaadin-combo-box>
-            </template>
-            <template is="dom-if" if="{{ !item.selected }}">
-                [[item.openOrderNo ]]
-            </template>
-        </template>
-    </vaadin-grid-column>-->
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="openOrderNo">Nº Encomenda Aberto</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="openOrderNo" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-combo-box items="[[GridCBPurchaseHeader]]" id="_CBGridPurchaseHeader" item-value-path="id" item-label-path="id" value="{{item.openOrderNo}}" on-change="_PopulatePurchaseLinesGrid" disabled="{{ !_permissions.update }}">
+                                                <template>
+                                                    <table width="200px">
+                                                        <tr>
+                                                            <td width="60%"> <b>[[item.id]]</b></td>
+                                                        </tr>
+                                                    </table>
+                                                </template>
+                                            </vaadin-combo-box>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            [[item.openOrderNo ]]
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>-->
                                     <vaadin-grid-column width="150px" resizable>
                                         <template class="header">
                                             <vaadin-grid-sorter path="openOrderLineNo">Nº Linha Encomenda Aberto</vaadin-grid-sorter>
@@ -1554,7 +1557,7 @@
                         _self.$._ProjectNo.disabled = false;
                     }
 
-                    this.$.filteredProducts_ajax.body = JSON.stringify({ "rootAreaId": this._areaid, "requisitionType": requesitionType, "locationCode": locationId });
+                    this.$.filteredProducts_ajax.body = JSON.stringify({ "rootAreaId": this._areaid, "requisitionType": requesitionType });
                     this.$.filteredProducts_ajax.generateRequest();
                 },
 
@@ -1562,7 +1565,7 @@
                     var requesitionType = this.$.requesitionType.value;
                     var locationId = e.detail.value;
 
-                    this.$.filteredProducts_ajax.body = JSON.stringify({ "rootAreaId": this._areaid, "requisitionType": requesitionType, "locationCode": locationId });
+                    this.$.filteredProducts_ajax.body = JSON.stringify({ "rootAreaId": this._areaid, "requisitionType": requesitionType });
                     this.$.filteredProducts_ajax.generateRequest();
                     if (this.CBLocations != null) {
                         var whareHouse = this.CBLocations.find(x => x.id == locationId);
@@ -1664,7 +1667,7 @@
 
                         var stringVal = "" + e.detail.value;
                         e.detail.value = stringVal.replace(",", ".");
-                         this.$._QuantityToRequire.value = e.detail.value
+                        this.$._QuantityToRequire.value = e.detail.value
 
                         if (this._QuantityToOpen != "") {
                             if (parseInt(this._QuantityToOpen) < parseInt(e.detail.value)) {
@@ -1777,6 +1780,12 @@
                         this._openToastError("Ocorreu um erro ao eliminar o anexo.");
                     }
                 },
+
+                _loadAttachResponse: function (e) {
+                    this.$.page_databound_ajax.body = JSON.stringify({ "PreRequesitionsNo": this._prerequesitionno });
+                    this.$.page_databound_ajax.generateRequest();
+                },
+
                 _onSearchTermChanged: function (value) {
                     var id = this.$.requesitionType.value;
                     if (id != "" && id.length > 0) {
@@ -1915,8 +1924,8 @@
                     }
                 },
                 _loadProductsByAreaAndType: function (requisitionType) {
-                    if (this._areaid != null && requisitionType != null && this._LocalCode != null && this._LocalCode != "") {
-                        this.$.filteredProducts_ajax.body = JSON.stringify({ "rootAreaId": this._areaid, "requisitionType": requisitionType, "locationCode": this._LocalCode });
+                    if (this._areaid != null && requisitionType != null) {
+                        this.$.filteredProducts_ajax.body = JSON.stringify({ "rootAreaId": this._areaid, "requisitionType": requisitionType });
                         this.$.filteredProducts_ajax.generateRequest();
                     }
                 },
@@ -2290,7 +2299,7 @@
                                 var purchLineNo = "";
                                 if (this.$._CBPurchaseLine.value != undefined & this.$._CBPurchaseLine.value != "") {
                                     var composedKey = this.$._CBPurchaseLine.value.split(" ", 2);
-                                    purchHeaderNo = composedKey[0]; 
+                                    purchHeaderNo = composedKey[0];
                                     purchLineNo = composedKey[1];
                                 }
 
@@ -2390,7 +2399,7 @@
                     else {
                         this._openToastError(this.updateLinhaPreRequisicaoResponse.eMessage);
                     }
-                    //this.$.page_databound_ajax.generateRequest();
+                    this.$.page_databound_ajax.generateRequest();
                 },
 
                 _onProductInGridChanged: function (e) {
@@ -2488,7 +2497,7 @@
                     }
                 },
                 _onProductChanged: function (e) {
-                    //debugger;
+                    debugger;
                     var item = this.Products.find(x => x.code == e.detail.value);
                     if (item != null) {
                         this.$._Description.value = item.name;
@@ -2504,25 +2513,25 @@
                     }
 
                     this.$.page_GetUnitCostLinha_ajax.body = JSON.stringify({
-                        localCode: this.$._CBLocations.value,
                         code: this.$._Products.value
                     });
                     this.$.page_GetUnitCostLinha_ajax.generateRequest()
                 },
                 _onProductClick: function (e) {
                     var requesitionType = this.$.requesitionType.value;
-                    var locationId = this.$._CBLocations.value;
+                    //var locationId = this.$._CBLocations.value;
 
                     if (requesitionType == null | requesitionType == "") {
                         this._openToastError('É obrigatório preencher o campo Tipo Requesição.');
-                    } else {
-                        if (locationId == null | locationId == "") {
-                            this._openToastError('É obrigatório preencher o campo Cód. Localização.');
-                        }
                     }
+                    //} else {
+                    //    if (locationId == null | locationId == "") {
+                    //        this._openToastError('É obrigatório preencher o campo Cód. Localização.');
+                    //    }
+                    //}
                 },
                 _GetUnitCostLinhaResponse: function (e) {
-                    //debugger;
+                    debugger;
                     if (this.UnitCostLinha.locationCode != null) {
                         if (this.UnitCostLinha.unitCost != null) {
                             this.$._UnitCost.value = this.UnitCostLinha.unitCost;
@@ -2532,6 +2541,25 @@
                     else {
                         this.$._UnitCost.disabled = false;
                         this.$._UnitCost.value = "";
+                    }
+
+                    this.$.page_GetProductLocation_ajax.body = JSON.stringify({
+                        code: this.$._Products.value
+                    });
+                    this.$.page_GetProductLocation_ajax.generateRequest()
+                },
+                _GetProductLocationResponse: function (e) {
+                    debugger;
+                    if (this.ProductLocation != null) {
+                        if (this.ProductLocation.locationCode != null) {
+                            this.$._CBLocations.value = this.ProductLocation.locationCode;
+                        }
+                        else {
+                            this._openToastError("Este produto não têm Cód. Localização contate a área das compras.");
+                        }
+                    }
+                    else {
+                        this.$._CBLocations.value = "";
                     }
                 },
 
@@ -2569,8 +2597,8 @@
                             var PurchaseNo = item.openOrderNo;
                             this.$.purchaselinesgrid_ajax.body = JSON.stringify(PurchaseNo);
                             this.$.purchaselinesgrid_ajax.generateRequest();
-                            if (sel.localCode != null && sel.localCode != "" && this._areaid != null && this.$.requesitionType.value) {
-                                this.$.filteredProducts_ajax.body = JSON.stringify({ "rootAreaId": this._areaid, "requisitionType": this.$.requesitionType.value, "locationCode": sel.localCode });
+                            if (this._areaid != null && this.$.requesitionType.value) {
+                                this.$.filteredProducts_ajax.body = JSON.stringify({ "rootAreaId": this._areaid, "requisitionType": this.$.requesitionType.value });
                                 this.$.filteredProducts_ajax.generateRequest();
                             }
 
@@ -2584,8 +2612,8 @@
                     }
                 },
                 _GridLocationChange: function (e) {
-                    if (e.target.value != null && e.target.value != "" && this._areaid != null && this.$.requesitionType.value) {
-                        this.$.filteredProducts_ajax.body = JSON.stringify({ "rootAreaId": this._areaid, "requisitionType": this.$.requesitionType.value, "locationCode": e.target.value });
+                    if (this._areaid != null && this.$.requesitionType.value) {
+                        this.$.filteredProducts_ajax.body = JSON.stringify({ "rootAreaId": this._areaid, "requisitionType": this.$.requesitionType.value });
                         this.$.filteredProducts_ajax.generateRequest();
                     }
                 },

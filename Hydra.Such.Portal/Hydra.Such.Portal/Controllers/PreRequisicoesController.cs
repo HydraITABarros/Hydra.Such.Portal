@@ -315,6 +315,20 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         LinhasPréRequisição CLine = PreRequesitionLines.Where(y => x.PreRequisitionLineNo == y.NºPréRequisição && x.LineNo == y.NºLinha).FirstOrDefault();
 
+                        NAVProjectsViewModel Project = DBNAV2017Projects.GetAll(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, x.ProjectNo).FirstOrDefault();
+                        if (Project != null)
+                        {
+                            CLine.CódigoRegião = Project.RegionCode ?? "";
+                            CLine.CódigoÁreaFuncional = Project.AreaCode ?? "";
+                            CLine.CódigoCentroResponsabilidade = Project.CenterResponsibilityCode ?? "";
+                        }
+                        else
+                        {
+                            CLine.CódigoRegião = "";
+                            CLine.CódigoÁreaFuncional = "";
+                            CLine.CódigoCentroResponsabilidade = "";
+                        }
+
                         if (CLine != null)
                         {
                             CLine.NºPréRequisição = x.PreRequisitionLineNo;
@@ -326,9 +340,9 @@ namespace Hydra.Such.Portal.Controllers
                             CLine.CódigoLocalização = x.LocalCode;
                             CLine.CódigoUnidadeMedida = x.UnitMeasureCode;
                             CLine.QuantidadeARequerer = x.QuantityToRequire;
-                            CLine.CódigoRegião = x.RegionCode;
-                            CLine.CódigoÁreaFuncional = x.FunctionalAreaCode;
-                            CLine.CódigoCentroResponsabilidade = x.CenterResponsibilityCode;
+                            //CLine.CódigoRegião = Project.RegionCode;
+                            //CLine.CódigoÁreaFuncional = Project.AreaCode;
+                            //CLine.CódigoCentroResponsabilidade = Project.CenterResponsibilityCode;
                             CLine.NºProjeto = x.ProjectNo;
                             CLine.DataHoraCriação = x.CreateDateTime != null && x.CreateDateTime != "" ? DateTime.Parse(x.CreateDateTime) : (DateTime?)null;
                             CLine.UtilizadorCriação = x.CreateUser;
@@ -467,6 +481,20 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         if (linha.QuantityToRequire > 0)
                         {
+                            NAVProjectsViewModel Project = DBNAV2017Projects.GetAll(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, linha.ProjectNo).FirstOrDefault();
+                            if (Project != null)
+                            {
+                                linha.RegionCode = Project.RegionCode ?? "";
+                                linha.FunctionalAreaCode = Project.AreaCode ?? "";
+                                linha.CenterResponsibilityCode = Project.CenterResponsibilityCode ?? "";
+                            }
+                            else
+                            {
+                                linha.RegionCode = "";
+                                linha.FunctionalAreaCode = "";
+                                linha.CenterResponsibilityCode = "";
+                            }
+
                             if (DBPreRequesitionLines.Update(DBPreRequesitionLines.ParseToDB(linha)) != null)
                             {
                                 result.eReasonCode = 1;
@@ -1015,7 +1043,7 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             foreach (RequisitionViewModel req in result)
                             {
-                                if (apmov.Number == req.RequisitionNo)
+                                if (apmov.Number == req.RequisitionNo && (apmov.Status == 1 || apmov.Status == 2))
                                 {
                                     req.SentReqToAprove = false;
                                 }
@@ -1539,7 +1567,34 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(stock);
         }
-        
+
+        [HttpPost]
+        public JsonResult GetProductLocation([FromBody] PreRequisitionLineViewModel linha)
+        {
+            NAVProductsViewModel product = new NAVProductsViewModel();
+
+            try
+            {
+                product = DBNAV2017Products.GetAllProducts(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, linha.Code).FirstOrDefault();
+
+                if (product.InventoryValueZero == 1)
+                {
+                    product.LocationCode = DBConfigurations.GetById(1).ArmazemCompraDireta;
+                }
+                else
+                {
+                    NAVStockKeepingUnitViewModel localizacao = DBNAV2017StockKeepingUnit.GetByProductsNo(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, linha.Code).FirstOrDefault();
+                    product.LocationCode = localizacao.LocationCode;
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(null);
+            }
+
+            return Json(product);
+        }
+
         #endregion
 
         #region Numeração Requisição
@@ -1599,6 +1654,17 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 System.IO.File.Delete(path);
                             }
+
+                            if (DBAttachments.GetAll().Where(x => x.TipoOrigem == 1 && x.NºOrigem == id).Count() > 0)
+                            {
+                                PréRequisição preREQ = DBPreRequesition.GetByNo(id);
+                                if (preREQ != null)
+                                {
+                                    preREQ.CabimentoOrçamental = true;
+                                    preREQ.UtilizadorModificação = User.Identity.Name;
+                                    DBPreRequesition.Update(preREQ);
+                                }
+                            }
                         }
                     }
                     catch (Exception ex)
@@ -1642,6 +1708,27 @@ namespace Hydra.Such.Portal.Controllers
                 System.IO.File.Delete(_config.FileUploadFolder + requestParams.Url);
                 DBAttachments.Delete(DBAttachments.ParseToDB(requestParams));
                 requestParams.eReasonCode = 1;
+
+                if (DBAttachments.GetAll().Where(x => x.TipoOrigem == 1 && x.NºOrigem == requestParams.DocNumber).Count() > 0)
+                {
+                    PréRequisição preREQ = DBPreRequesition.GetByNo(requestParams.DocNumber);
+                    if (preREQ != null)
+                    {
+                        preREQ.CabimentoOrçamental = true;
+                        preREQ.UtilizadorModificação = User.Identity.Name;
+                        DBPreRequesition.Update(preREQ);
+                    }
+                }
+                else
+                {
+                    PréRequisição preREQ = DBPreRequesition.GetByNo(requestParams.DocNumber);
+                    if (preREQ != null)
+                    {
+                        preREQ.CabimentoOrçamental = false;
+                        preREQ.UtilizadorModificação = User.Identity.Name;
+                        DBPreRequesition.Update(preREQ);
+                    }
+                }
 
             }
             catch (Exception ex)

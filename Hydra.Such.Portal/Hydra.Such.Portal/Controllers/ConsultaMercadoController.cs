@@ -1378,7 +1378,8 @@ namespace Hydra.Such.Portal.Controllers
                     Preferencial = data.Preferencial,
                     Selecionado = true,
                     EmailFornecedor = _Email,
-                    PrazoResposta = data.PrazoResposta
+                    PrazoResposta = data.PrazoResposta,
+                    Fase = 0
                 };
 
                 var dbCreateResult = DBConsultaMercado.Create(seleccaoEntidades);
