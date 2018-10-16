@@ -2280,10 +2280,10 @@
                 },
 
                 _gerarRegistoPropostas: function () {
-                    if (this.$.fase.value != 1) {
-                        this._showErrorMessage("Só é possível Gerar o Registo de Propostas quando a Fase se encontra em 'Consulta'")
-                        return;
-                    }
+                    //if (this.$.fase.value != 1) {
+                    //    this._showErrorMessage("Só é possível Gerar o Registo de Propostas quando a Fase se encontra em 'Consulta'")
+                    //    return;
+                    //}
 
                     for (i = 0; i < this.data.seleccaoEntidades.length; i++) {
                         if (((this.data.seleccaoEntidades[i].codTermosPagamento == null) || (this.data.seleccaoEntidades[i].codTermosPagamento == "")) &&

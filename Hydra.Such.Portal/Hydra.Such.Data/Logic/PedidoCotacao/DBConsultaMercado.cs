@@ -1631,7 +1631,7 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
 
                     //Verificar se já existe registo para esta Consulta Mercado, com este produto e esta linha de consulta
                     RegistoDePropostas propostas = GetAllRegistoDePropostas(linhasConsultaMercado.NumConsultaMercado, linhasConsultaMercado.NumLinha);
-                    if (propostas.NumLinha >= 0)
+                    if (propostas != null && propostas.NumLinha >= 0)
                     {
                         propostas.Fornecedor1Code = fornecedor[0, 0];
                         propostas.Fornecedor1Nome = fornecedor[0, 1];
