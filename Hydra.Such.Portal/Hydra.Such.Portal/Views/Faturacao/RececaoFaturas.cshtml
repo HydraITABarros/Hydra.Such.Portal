@@ -2,7 +2,37 @@
     ViewData["Title"] = "Receção de Faturas";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+
+<link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
+<link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
+<link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-active-item-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-selection-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-selection-column.html" />
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/such-textarea/such-textarea.html">
+<link rel="import" href="/lib/such-dropdown-menu/such-dropdown-menu.html" />
+
+
+
+
+
+@*<link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
 
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-active-item-behavior.html" />
@@ -25,7 +55,7 @@
 <link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
 <link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
 <link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
-<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">*@
 
 <!--start ColumnToggle-->
 <link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
@@ -113,6 +143,14 @@
                    on-response="_exportEXCELResponse"
                    content-type="application/json">
         </iron-ajax>
+        <iron-ajax url="/Faturacao/UpdateBillingList"
+                   id="updateDestination"
+                   last-response="{{ updateDestinItem }}"
+                   on-response="_updateDestinationResponse"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
 
         <div class="subMenu">
             <template is="dom-if" if="{{ _permissions.create }}">
@@ -149,13 +187,13 @@
                     {{item.id}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column resizable hidden$="{{ _columns.tipoDocumento.hidden }}">
+            <vaadin-grid-column resizable hidden$="{{ _columns.tipoDocumentoDescricao.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="tipoDocumento">Tipo de Documento</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="tipoDocumento" />
+                    <vaadin-grid-sorter path="tipoDocumentoDescricao">Tipo de Documento</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="tipoDocumentoDescricao" />
                 </template>
                 <template>
-                    {{item.tipoDocumento}}
+                    {{item.tipoDocumentoDescricao}}
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column resizable hidden$="{{ _columns.estado.hidden }}">
@@ -349,11 +387,11 @@
             </vaadin-grid-column>
         </vaadin-grid>
         <paper-dialog id="dialogViewHist_Pending" class="dialgoBox" modal>
-            <div class="row break_clear" hidden="{{_showOptionDestitation}}">
+            <div class="row break_clear">
                 <div class="col-sm-3">
                     <vaadin-text-field label="Área " value="{{_rfperfil}}" type="text" id="txtAreaDesti" disabled></vaadin-text-field>
                 </div>
-                <div class="col-sm-3">
+                <div class="col-sm-3" style="padding-top: 10px;">
                     <vaadin-combo-box items="[[ Users ]]" id="cmbDestinatarios" item-value-path="id" item-label-path="id" label="Destinatarios">
                         <template>
                             <paper-icon-item>
@@ -365,11 +403,11 @@
                         </template>
                     </vaadin-combo-box>
                 </div>
-                <div class="col-sm-3">
+                <div class="col-sm-3" style="padding-top: 35px;">
                     <paper-button class="btnSave" raised on-tap="_dlgUpdateDesti">Alterar</paper-button>
                 </div>
-
             </div>
+
             <vaadin-grid id="grdBillingView" aria-label="grdBillingView" items="[[getViewResponse]]" class="grid" selected-items={{selectedItems}} active-item="{{selectedItem}}" multi-sort="true">
                 <vaadin-grid-selection-column auto-select>
                 </vaadin-grid-selection-column>
@@ -384,11 +422,12 @@
                 </vaadin-grid-column>
                 <vaadin-grid-column resizable>
                     <template class="header">
-                        <vaadin-grid-sorter path="tipoDocumento">Tipo de Documento</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="tipoDocumento" />
+                        <vaadin-grid-sorter path="tipoDocumentoDescricao">Tipo de Documento</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="tipoDocumentoDescricao" />
                     </template>
                     <template>
-                        [[ _clFormatTypeDoc(item.tipoDocumento) ]]
+                        @*[[ _clFormatTypeDoc(item.tipoDocumento) ]]*@
+                        [[item.tipoDocumentoDescricao]]
                     </template>
                 </vaadin-grid-column>
                 <vaadin-grid-column resizable>
@@ -585,7 +624,8 @@
             <paper-button class="btnRemove" dialog-dismiss>&nbsp; Fechar</paper-button>
 
         </paper-dialog>
-
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
     <script>
         document.addEventListener('WebComponentsReady', function () {
@@ -699,6 +739,29 @@
                     else {
                         this._openToastError("Não foi selecionada nenhum Destinatário.");
                     }
+                },
+                _updateDestinationResponse: function (e) {
+                    if (e.detail.status === 200) {
+                        if (this.updateDestinItem != undefined) {
+
+                            this.$.getPendingTotal_ajax.body = JSON.stringify(this.data);
+                            this.$.getPendingTotal_ajax.generateRequest();
+                            this._openToast("Destinatário Actualizado");
+                        } else {
+                            this._openToastError(this.updateDestinItem.eMessage);
+                        }
+                    }
+                    else {
+                        this._openToastError("O servidor não conseguiu processar o pedido.");
+                    }
+                },
+                _openToast: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+                _openToastError: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
                 },
                 _exportEXCELResponse: function (e) {
                     //debugger

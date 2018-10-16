@@ -258,6 +258,7 @@ namespace Hydra.Such.Data.Logic.Request
                     VATBusinessPostingGroup = item.GrupoRegistoIvanegocio,
                     VATProductPostingGroup = item.GrupoRegistoIvaproduto,
                     DiscountPercentage = item.PercentagemDesconto.HasValue ? item.PercentagemDesconto.Value : 0,
+                    QuantidadeInicial = item.QuantidadeInicial.HasValue ? item.QuantidadeInicial.Value : 0,
                 };
             }
             return null;
@@ -337,6 +338,7 @@ namespace Hydra.Such.Data.Logic.Request
                     GrupoRegistoIvanegocio = item.VATBusinessPostingGroup,
                     GrupoRegistoIvaproduto = item.VATProductPostingGroup,
                     PercentagemDesconto = item.DiscountPercentage.HasValue ? item.DiscountPercentage.Value : (decimal?)null,
+                    QuantidadeInicial = item.QuantidadeInicial.HasValue ? item.QuantidadeInicial.Value : (decimal?)null,
                 };
             }
             return null;

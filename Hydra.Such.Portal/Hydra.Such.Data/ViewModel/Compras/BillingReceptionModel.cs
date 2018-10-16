@@ -8,9 +8,26 @@ namespace Hydra.Such.Data.ViewModel.Compras
     public class BillingReceptionModel : ErrorHandler
     {
         private BillingReceptionStates estado;
+        private BillingDocumentTypes tipoDocumento;
 
         public string Id { get; set; }
-        public BillingDocumentTypes TipoDocumento { get; set; }
+        public BillingDocumentTypes TipoDocumento
+        {
+            get
+            {
+                return tipoDocumento;
+            }
+            set
+            {
+                tipoDocumento = value;
+                TipoDocumentoDescricao = EnumHelper.GetDescriptionFor(typeof(BillingDocumentTypes), (int)tipoDocumento);
+            }
+        }
+        public string TipoDocumentoDescricao
+        {
+            get;
+            private set;
+        }
         public BillingReceptionStates Estado
         {
             get

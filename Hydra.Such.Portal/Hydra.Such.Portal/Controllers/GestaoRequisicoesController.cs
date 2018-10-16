@@ -767,6 +767,8 @@ namespace Hydra.Such.Portal.Controllers
             if (item != null)
             {
                 item.CreateUser = User.Identity.Name;
+                if (item.QuantidadeInicial == null)
+                    item.QuantidadeInicial = item.QuantityReceivable;
                 var createdItem = DBRequestLine.Create(item.ParseToDB());
                 if (createdItem != null)
                 {

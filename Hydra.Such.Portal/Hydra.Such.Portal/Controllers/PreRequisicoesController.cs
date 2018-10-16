@@ -337,6 +337,7 @@ namespace Hydra.Such.Portal.Controllers
                             CLine.QtdPorUnidadeMedida = x.QtyByUnitOfMeasure;
                             CLine.QuantidadeRequerida = x.QuantityRequired;
                             CLine.QuantidadePendente = x.QuantityPending;
+                            CLine.QuantidadeInicial = x.QuantityToRequire;
                             CLine.CustoUnitário = x.UnitCost;
                             CLine.PreçoUnitárioVenda = x.SellUnityPrice;
                             CLine.ValorOrçamento = x.BudgetValue;
@@ -1183,6 +1184,7 @@ namespace Hydra.Such.Portal.Controllers
                                     Description2 = line.Description2,
                                     UnitMeasureCode = line.UnitMeasureCode,
                                     QuantityToRequire = line.QuantityToRequire,
+                                    QuantidadeInicial = line.QuantidadeInicial,
                                     UnitCost = line.UnitCost,
                                     ProjectNo = line.ProjectNo,
                                     MaintenanceOrderLineNo = line.MaintenanceOrderLineNo,
@@ -1265,6 +1267,7 @@ namespace Hydra.Such.Portal.Controllers
                                     Description2 = line.Description2,
                                     UnitMeasureCode = line.UnitMeasureCode,
                                     QuantityToRequire = line.QuantityToRequire,
+                                    QuantidadeInicial = line.QuantidadeInicial,
                                     UnitCost = line.UnitCost,
                                     ProjectNo = line.ProjectNo,
                                     MaintenanceOrderLineNo = line.MaintenanceOrderLineNo,
