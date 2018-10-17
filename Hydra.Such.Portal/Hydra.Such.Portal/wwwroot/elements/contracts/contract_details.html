@@ -2651,23 +2651,26 @@
                     }
                 },
                 _ResponseProcessorInvoice: function (data) {
-
-                    if (this.CreateInvoiceResponse == true) {
-                        this._openToast("Fatura Criada com Sucesso!");
-                        window.location.href = "/Contratos/DetalhesContrato/" + this.data.contractNo + "?version=" + this.data.versionNo + "&" + "isHistoric=" + false;
-                    }
-                    else if (this.CreateInvoiceResponse.eReasonCode == 2) {
-
-                        var errors = this.CreateInvoiceResponse.eMessages.find(x => x.type != 1);
-                        this._hasErrors = !(errors == undefined);
-                        if (this._hasErrors)
-                            //keep open
-                            this.$.ToastMessageMultiple.duration = 0;
-                        else
-                            //close
-                            this.$.ToastMessageMultiple.duration = 8000;
-                        this.$.ToastMessageMultiple.toggle();
-                        this.CreateInvoiceResponse.eMessages = [];
+                    if (this.CreateInvoiceResponse != null) {
+                        if (this.CreateInvoiceResponse == true) {
+                            this._openToast("Fatura Criada com Sucesso!");
+                            window.location.href = "/Contratos/DetalhesContrato/" + this.data.contractNo + "?version=" + this.data.versionNo + "&" + "isHistoric=" + false;
+                        }
+                        else if (this.CreateInvoiceResponse.eReasonCode == 2) {
+                            var errors = this.CreateInvoiceResponse.eMessages.find(x => x.type != 1);
+                            this._hasErrors = !(errors == undefined);
+                            if (this._hasErrors)
+                                //keep open
+                                this.$.ToastMessageMultiple.duration = 0;
+                            else
+                                //close
+                                this.$.ToastMessageMultiple.duration = 8000;
+                            this.$.ToastMessageMultiple.toggle();
+                            this.CreateInvoiceResponse.eMessages = [];
+                        }
+                        else {
+                            this._openToastError(this.CreateInvoiceResponse.eMessage);
+                        }
                     }
                     else {
                         this._openToastError("Erro ao criar a fatura!");
