@@ -85,7 +85,7 @@
         <iron-ajax auto url="/Faturacao/GetAreas" last-response="{{ Areas }}" method="get" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax auto url="/Faturacao/GetAreasUPUAS" last-response="{{ AreasUPUAS }}" method="get" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Faturacao/GetDimensionsForArea" last-response="{{ CentrosResponsabilidade }}" method="post" id="getDimensions_ajax" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Faturacao/GetUsersToResend" last-response="{{ DestinatariosReenvio }}" method="post" id="destinatariosReenvio_ajax" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Faturacao/GetUsersToResend" last-response="{{ DestinatariosReenvio }}" method="post" id="destinatariosReenvio_ajax" handle-as="json" content-type="application/json" on-response="_destinatariosReenvioResponse"></iron-ajax>
         <iron-ajax url="/Faturacao/GetAnswers" last-response="{{ RespostasPorPerfil }}" id="respostasPerfil_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Faturacao/GetUAProblems" last-response="{{ UAProblemas }}" id="uaProblemas_ajax" method="get" handle-as="json" content-type="application/json"></iron-ajax>
 
@@ -819,7 +819,7 @@
                         </vaadin-combo-box>
                     </div>
                     <div class="col-sm-3">
-                        <vaadin-combo-box items="[[ CentrosResponsabilidade ]]" id="cmbCentrosResponsabilidade" item-value-path="id" item-label-path="value" label="Centro Responsabilidade" value="{{centroResp}}">
+                        <vaadin-combo-box items="[[ CentrosResponsabilidade ]]" id="cmbCentrosResponsabilidade" item-value-path="id" item-label-path="value" label="Centro Responsabilidade" value="{{centroResp}}" on-value-changed="_respCenterChanged">
                             <template>
                                 <paper-icon-item>
                                     <paper-item-body two-line>
@@ -1338,7 +1338,6 @@
                         this._hiddeButtons();
                     }
                 },
-
                 _hiddeButtons: function () {
                     if (this.data.estado == 1) {
                         this._nameButtonSend = "Enviar";
@@ -2327,9 +2326,16 @@
                         this._loadUsersForArea(area);
                     }
                 },
-                _loadUsersForArea:function(area){
+                _respCenterChanged: function (e) {
+                    var selectedDimension = this.$.cmbCentrosResponsabilidade.selectedItem;
+                    if (selectedDimension) {
+                        this.$.cmbDestinatariosReenvio.value = selectedDimension.extra;
+                        this._loadUsersForArea(this.areaUPUAS, selectedDimension.value);
+                    }
+                },
+                _loadUsersForArea:function(area, respCenter){
                     this._usersLoadedByAreaNumber = false;
-                    this.$.destinatariosReenvio_ajax.body = JSON.stringify({"area" : area, "byNumber" : this._usersLoadedByAreaNumber});
+                    this.$.destinatariosReenvio_ajax.body = JSON.stringify({ "area": area, "byNumber": this._usersLoadedByAreaNumber, "respCenter": respCenter });
                     this.$.destinatariosReenvio_ajax.generateRequest();
 
                     this.$.cmbUAProblems.value = "";
@@ -2341,17 +2347,26 @@
                         if(selectedArea)
                         {
                             this._usersLoadedByAreaNumber = true;
-                            this.$.destinatariosReenvio_ajax.body = JSON.stringify({"area" : selectedArea.id, "byNumber" : this._usersLoadedByAreaNumber});
+                            this.$.destinatariosReenvio_ajax.body = JSON.stringify({ "area": selectedArea.id, "byNumber": this._usersLoadedByAreaNumber, "respCenter": this.centroResp});
                             this.$.destinatariosReenvio_ajax.generateRequest();
                         }
                     }
                     else if(this._usersLoadedByAreaNumber){
                         var selectedArea = this.$.cmbAreasUPUAS.selectedItem;
                         if(selectedArea){
-                            this._loadUsersForArea(selectedArea.value);
+                            this._loadUsersForArea(selectedArea.value, this.centroResp);
                         }
                     }
-                }
+                },
+                _destinatariosReenvioResponse: function (e) {
+                    if (e.detail.status === 200 && this.DestinatariosReenvio) {
+                        if (this.destinatariosReenvio != "") {
+                            var user = this.DestinatariosReenvio.find(x => x.value == this.destinatariosReenvio)
+                            if (!user)
+                                this.destinatariosReenvio = "";
+                        }
+                    }
+                },
             });
         });
     </script>

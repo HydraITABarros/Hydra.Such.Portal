@@ -546,7 +546,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpGet]
         public JsonResult GetAreasUPUAS()
         {
-            List<DDMessageRelated> result = billingRecService.GetAreasUPUAS().Select(x => new DDMessageRelated()
+            List<DDMessageRelated> result = billingRecService.GetAreasUPUAS(string.Empty).Select(x => new DDMessageRelated()
             {
                 id = ExtractAreaFromConfigId(x.Codigo),
                 value = x.CodArea,
@@ -564,7 +564,8 @@ namespace Hydra.Such.Portal.Controllers
             List<DDMessageRelated> result = billingRecService.GetDimensionsForArea(areaId).Select(x => new DDMessageRelated()
             {
                 id = x.CodCentroResponsabilidade,
-                value = x.CodCentroResponsabilidade
+                value = x.CodCentroResponsabilidade,
+                extra = x.Destinatario
             })
             .Distinct()
             .ToList();
@@ -577,11 +578,14 @@ namespace Hydra.Such.Portal.Controllers
         { 
             string area = string.Empty;
             bool byNumber = false;
+            string respCenter = string.Empty;
 
             if (requestParams != null)
             {
                 area = requestParams["area"].ToString();
                 bool.TryParse(requestParams["byNumber"].ToString(), out byNumber);
+                if(requestParams["respCenter"] != null)
+                    respCenter = requestParams["respCenter"].ToString();
             }
 
             List<DDMessageRelated> result = null;
@@ -597,7 +601,7 @@ namespace Hydra.Such.Portal.Controllers
             }
             else
             {
-                result = billingRecService.GetUsersToResendByAreaName(area).Select(x => new DDMessageRelated()
+                result = billingRecService.GetUsersToResendByAreaName(area, respCenter).Select(x => new DDMessageRelated()
                 {
                     id = x.Destinatario,
                     value = x.Destinatario
