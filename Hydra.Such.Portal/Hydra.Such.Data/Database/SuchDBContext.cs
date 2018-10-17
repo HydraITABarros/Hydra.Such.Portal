@@ -39,6 +39,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<ConfiguraçãoVendasAlertas> ConfiguraçãoVendasAlertas { get; set; }
         public virtual DbSet<ConfigUtilizadores> ConfigUtilizadores { get; set; }
         public virtual DbSet<ConsultaMercado> ConsultaMercado { get; set; }
+        public virtual DbSet<ConsultaPendentes> ConsultaPendentes { get; set; }
         public virtual DbSet<Contactos> Contactos { get; set; }
         public virtual DbSet<Contratos> Contratos { get; set; }
         public virtual DbSet<DestinosFinaisResíduos> DestinosFinaisResíduos { get; set; }
@@ -156,7 +157,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<UtilizadoresMovimentosDeAprovação> UtilizadoresMovimentosDeAprovação { get; set; }
         public virtual DbSet<Viaturas> Viaturas { get; set; }
         public virtual DbSet<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
-
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AcessosDimensões>(entity =>
@@ -1015,6 +1016,8 @@ namespace Hydra.Such.Data.Database
 
             modelBuilder.Entity<Configuração>(entity =>
             {
+                entity.Property(e => e.ArmazemCompraDireta).HasMaxLength(50);
+
                 entity.Property(e => e.CodAreaResiduos).HasMaxLength(20);
 
                 entity.Property(e => e.DataHoraCriação)
@@ -1408,6 +1411,10 @@ namespace Hydra.Such.Data.Database
                     .HasMaxLength(20)
                     .IsUnicode(false);
 
+                entity.Property(e => e.NumSeriePreFaturasCompra)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.ProcedimentosEmailEnvioParaArea).HasMaxLength(50);
 
                 entity.Property(e => e.ProcedimentosEmailEnvioParaArea2).HasMaxLength(50);
@@ -1524,11 +1531,11 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.Descricao).HasMaxLength(100);
 
-                entity.Property(e => e.Equipamento).HasDefaultValueSql("((0))");
-
                 entity.Property(e => e.EmailEnviado)
                     .HasColumnName("Email_Enviado")
                     .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Equipamento).HasDefaultValueSql("((0))");
 
                 entity.Property(e => e.EspecificacaoTecnica).HasColumnName("Especificacao_Tecnica");
 
@@ -1587,6 +1594,89 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.ValorAdjudicado).HasColumnName("Valor_Adjudicado");
 
                 entity.Property(e => e.ValorPedidoCotacao).HasColumnName("Valor_Pedido_Cotacao");
+            });
+
+            modelBuilder.Entity<ConsultaPendentes>(entity =>
+            {
+                entity.HasKey(e => new { e.IdUser, e.TipoDocumento, e.NoDocumento });
+
+                entity.ToTable("Consulta Pendentes");
+
+                entity.Property(e => e.IdUser).HasMaxLength(50);
+
+                entity.Property(e => e.NoDocumento).HasMaxLength(20);
+
+                entity.Property(e => e.Area).HasMaxLength(20);
+
+                entity.Property(e => e.CentroResponsabilidade).HasMaxLength(20);
+
+                entity.Property(e => e.Cliente).HasMaxLength(20);
+
+                entity.Property(e => e.ConsultaMercado).HasMaxLength(20);
+
+                entity.Property(e => e.DataAprovacao).HasColumnType("date");
+
+                entity.Property(e => e.DataConsultaMercado).HasColumnType("date");
+
+                entity.Property(e => e.DataCriacao).HasColumnType("date");
+
+                entity.Property(e => e.DataDisponibilizado).HasColumnType("date");
+
+                entity.Property(e => e.DataEncomenda).HasColumnType("date");
+
+                entity.Property(e => e.DataEntregaArmazem).HasColumnType("date");
+
+                entity.Property(e => e.DataEnvioArea).HasColumnType("date");
+
+                entity.Property(e => e.DataEnvioMercadoLocal).HasColumnType("date");
+
+                entity.Property(e => e.DataHoraAlteracao).HasColumnType("date");
+
+                entity.Property(e => e.DataHoraCriacao).HasColumnType("date");
+
+                entity.Property(e => e.DataRecebimento).HasColumnType("date");
+
+                entity.Property(e => e.DataRececaoArea).HasColumnType("date");
+
+                entity.Property(e => e.DataRececaoEsperada).HasColumnType("date");
+
+                entity.Property(e => e.DataRespostaFornecedor).HasColumnType("date");
+
+                entity.Property(e => e.DataValidacao).HasColumnType("date");
+
+                entity.Property(e => e.EstadoRequisicao).HasMaxLength(20);
+
+                entity.Property(e => e.Fornecedor).HasMaxLength(20);
+
+                entity.Property(e => e.FornecedorBloqueado).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.NoEncomenda).HasMaxLength(20);
+
+                entity.Property(e => e.NoProjeto).HasMaxLength(20);
+
+                entity.Property(e => e.NomeCliente).HasMaxLength(100);
+
+                entity.Property(e => e.NomeCliente2).HasMaxLength(100);
+
+                entity.Property(e => e.NomeFornecedor).HasMaxLength(100);
+
+                entity.Property(e => e.NomeFornecedor2).HasMaxLength(100);
+
+                entity.Property(e => e.Regiao).HasMaxLength(20);
+
+                entity.Property(e => e.RegistoMercadoLocal).HasMaxLength(20);
+
+                entity.Property(e => e.Requisicao).HasMaxLength(20);
+
+                entity.Property(e => e.UserAprovacao).HasMaxLength(50);
+
+                entity.Property(e => e.UserCriacao).HasMaxLength(50);
+
+                entity.Property(e => e.UserValidacao).HasMaxLength(50);
+
+                entity.Property(e => e.UtilizadorCriacao).HasMaxLength(50);
+
+                entity.Property(e => e.UtilizadorModificacao).HasMaxLength(50);
             });
 
             modelBuilder.Entity<Contactos>(entity =>
@@ -3748,8 +3838,6 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.NoFornecedor).HasMaxLength(20);
 
-                entity.Property(e => e.CodCategoriaProduto).HasMaxLength(20);
-
                 entity.Property(e => e.CodProduto).HasMaxLength(20);
 
                 entity.Property(e => e.DtValidadeInicio).HasColumnType("datetime");
@@ -3760,7 +3848,11 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.Area).HasMaxLength(20);
 
+                entity.Property(e => e.CodCategoriaProduto).HasMaxLength(20);
+
                 entity.Property(e => e.CodProdutoFornecedor).HasMaxLength(20);
+
+                entity.Property(e => e.CustoUnitario).HasColumnType("decimal(18, 4)");
 
                 entity.Property(e => e.DataCriacao).HasColumnType("datetime");
 
@@ -3783,9 +3875,6 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.UserId)
                     .HasColumnName("UserID")
                     .HasMaxLength(30);
-
-                entity.Property(e => e.GrupoRegistoIvaProduto)
-                    .HasColumnName("GrupoRegistoIvaProduto");
             });
 
             modelBuilder.Entity<LinhasCondicoesPropostasFornecedores>(entity =>
@@ -3935,8 +4024,6 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.Descricao).HasMaxLength(100);
 
                 entity.Property(e => e.Descricao2).HasMaxLength(100);
-
-                entity.Property(e => e.IdCompra).HasColumnName("IdCompra");
 
                 entity.Property(e => e.LinhaRequisicao).HasColumnName("Linha_Requisicao");
 
@@ -4651,7 +4738,9 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.CriarConsultaMercado).HasColumnName("Criar Consulta Mercado");
 
-                entity.Property(e => e.CustoUnitário).HasColumnName("Custo Unitário");
+                entity.Property(e => e.CustoUnitário)
+                    .HasColumnName("Custo Unitário")
+                    .HasColumnType("decimal(18, 4)");
 
                 entity.Property(e => e.Código).HasMaxLength(20);
 
@@ -4761,25 +4850,45 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Nº Projeto")
                     .HasMaxLength(20);
 
-                entity.Property(e => e.PreçoUnitárioVenda).HasColumnName("Preço Unitário Venda");
+                entity.Property(e => e.PercentagemDesconto).HasColumnType("decimal(18, 4)");
 
-                entity.Property(e => e.QtdPorUnidadeDeMedida).HasColumnName("Qtd por Unidade de Medida");
+                entity.Property(e => e.PreçoUnitárioVenda)
+                    .HasColumnName("Preço Unitário Venda")
+                    .HasColumnType("decimal(18, 4)");
 
-                entity.Property(e => e.QuantidadeADisponibilizar).HasColumnName("Quantidade a Disponibilizar");
+                entity.Property(e => e.QtdPorUnidadeDeMedida)
+                    .HasColumnName("Qtd por Unidade de Medida")
+                    .HasColumnType("decimal(18, 4)");
 
-                entity.Property(e => e.QuantidadeAReceber).HasColumnName("Quantidade a Receber");
+                entity.Property(e => e.QuantidadeADisponibilizar)
+                    .HasColumnName("Quantidade a Disponibilizar")
+                    .HasColumnType("decimal(18, 4)");
 
-                entity.Property(e => e.QuantidadeARequerer).HasColumnName("Quantidade a Requerer");
+                entity.Property(e => e.QuantidadeAReceber)
+                    .HasColumnName("Quantidade a Receber")
+                    .HasColumnType("decimal(18, 4)");
 
-                entity.Property(e => e.QuantidadeDisponibilizada).HasColumnName("Quantidade Disponibilizada");
+                entity.Property(e => e.QuantidadeARequerer)
+                    .HasColumnName("Quantidade a Requerer")
+                    .HasColumnType("decimal(18, 4)");
 
-                entity.Property(e => e.QuantidadePendente).HasColumnName("Quantidade Pendente");
+                entity.Property(e => e.QuantidadeDisponibilizada)
+                    .HasColumnName("Quantidade Disponibilizada")
+                    .HasColumnType("decimal(18, 4)");
 
-                entity.Property(e => e.QuantidadeRecebida).HasColumnName("Quantidade Recebida");
+                entity.Property(e => e.QuantidadeInicial).HasColumnType("decimal(18, 4)");
 
-                entity.Property(e => e.QuantidadeRequerida).HasColumnName("Quantidade Requerida");
+                entity.Property(e => e.QuantidadePendente)
+                    .HasColumnName("Quantidade Pendente")
+                    .HasColumnType("decimal(18, 4)");
 
-                entity.Property(e => e.QuantidadeInicial).HasColumnName("QuantidadeInicial");
+                entity.Property(e => e.QuantidadeRecebida)
+                    .HasColumnName("Quantidade Recebida")
+                    .HasColumnType("decimal(18, 4)");
+
+                entity.Property(e => e.QuantidadeRequerida)
+                    .HasColumnName("Quantidade Requerida")
+                    .HasColumnType("decimal(18, 4)");
 
                 entity.Property(e => e.RecusadoCompras).HasColumnName("Recusado Compras");
 
@@ -4805,7 +4914,9 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.ValidadoCompras).HasColumnName("Validado Compras");
 
-                entity.Property(e => e.ValorOrçamento).HasColumnName("Valor Orçamento");
+                entity.Property(e => e.ValorOrçamento)
+                    .HasColumnName("Valor Orçamento")
+                    .HasColumnType("decimal(18, 4)");
 
                 entity.Property(e => e.Viatura).HasMaxLength(10);
 
@@ -4842,7 +4953,9 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.CriarConsultaMercado).HasColumnName("Criar Consulta Mercado");
 
-                entity.Property(e => e.CustoUnitário).HasColumnName("Custo Unitário");
+                entity.Property(e => e.CustoUnitário)
+                    .HasColumnName("Custo Unitário")
+                    .HasColumnType("decimal(18, 4)");
 
                 entity.Property(e => e.Código).HasMaxLength(20);
 
@@ -4952,23 +5065,43 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Nº Projeto")
                     .HasMaxLength(20);
 
-                entity.Property(e => e.PreçoUnitárioVenda).HasColumnName("Preço Unitário Venda");
+                entity.Property(e => e.PercentagemDesconto).HasColumnType("decimal(18, 4)");
 
-                entity.Property(e => e.QtdPorUnidadeDeMedida).HasColumnName("Qtd por Unidade de Medida");
+                entity.Property(e => e.PreçoUnitárioVenda)
+                    .HasColumnName("Preço Unitário Venda")
+                    .HasColumnType("decimal(18, 4)");
 
-                entity.Property(e => e.QuantidadeADisponibilizar).HasColumnName("Quantidade a Disponibilizar");
+                entity.Property(e => e.QtdPorUnidadeDeMedida)
+                    .HasColumnName("Qtd por Unidade de Medida")
+                    .HasColumnType("decimal(18, 4)");
 
-                entity.Property(e => e.QuantidadeAReceber).HasColumnName("Quantidade a Receber");
+                entity.Property(e => e.QuantidadeADisponibilizar)
+                    .HasColumnName("Quantidade a Disponibilizar")
+                    .HasColumnType("decimal(18, 4)");
 
-                entity.Property(e => e.QuantidadeARequerer).HasColumnName("Quantidade a Requerer");
+                entity.Property(e => e.QuantidadeAReceber)
+                    .HasColumnName("Quantidade a Receber")
+                    .HasColumnType("decimal(18, 4)");
 
-                entity.Property(e => e.QuantidadeDisponibilizada).HasColumnName("Quantidade Disponibilizada");
+                entity.Property(e => e.QuantidadeARequerer)
+                    .HasColumnName("Quantidade a Requerer")
+                    .HasColumnType("decimal(18, 4)");
 
-                entity.Property(e => e.QuantidadePendente).HasColumnName("Quantidade Pendente");
+                entity.Property(e => e.QuantidadeDisponibilizada)
+                    .HasColumnName("Quantidade Disponibilizada")
+                    .HasColumnType("decimal(18, 4)");
 
-                entity.Property(e => e.QuantidadeRecebida).HasColumnName("Quantidade Recebida");
+                entity.Property(e => e.QuantidadePendente)
+                    .HasColumnName("Quantidade Pendente")
+                    .HasColumnType("decimal(18, 4)");
 
-                entity.Property(e => e.QuantidadeRequerida).HasColumnName("Quantidade Requerida");
+                entity.Property(e => e.QuantidadeRecebida)
+                    .HasColumnName("Quantidade Recebida")
+                    .HasColumnType("decimal(18, 4)");
+
+                entity.Property(e => e.QuantidadeRequerida)
+                    .HasColumnName("Quantidade Requerida")
+                    .HasColumnType("decimal(18, 4)");
 
                 entity.Property(e => e.RecusadoCompras).HasColumnName("Recusado Compras");
 
@@ -4994,7 +5127,9 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.ValidadoCompras).HasColumnName("Validado Compras");
 
-                entity.Property(e => e.ValorOrçamento).HasColumnName("Valor Orçamento");
+                entity.Property(e => e.ValorOrçamento)
+                    .HasColumnName("Valor Orçamento")
+                    .HasColumnType("decimal(18, 4)");
 
                 entity.Property(e => e.Viatura).HasMaxLength(10);
 
@@ -8315,7 +8450,9 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Utilizador Modificação")
                     .HasMaxLength(50);
 
-                entity.Property(e => e.ValorEstimado).HasColumnName("Valor Estimado");
+                entity.Property(e => e.ValorEstimado)
+                    .HasColumnName("Valor Estimado")
+                    .HasColumnType("decimal(18, 4)");
 
                 entity.Property(e => e.Viatura).HasMaxLength(10);
 
@@ -8531,7 +8668,9 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Utilizador Modificação")
                     .HasMaxLength(50);
 
-                entity.Property(e => e.ValorEstimado).HasColumnName("Valor Estimado");
+                entity.Property(e => e.ValorEstimado)
+                    .HasColumnName("Valor Estimado")
+                    .HasColumnType("decimal(18, 4)");
 
                 entity.Property(e => e.Viatura).HasMaxLength(10);
             });
@@ -8826,7 +8965,7 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Email_Fornecedor")
                     .HasMaxLength(60);
 
-                entity.Property(e => e.Fase).HasDefaultValueSql("((1))");
+                entity.Property(e => e.Fase).HasDefaultValueSql("((0))");
 
                 entity.Property(e => e.NaoRespostaDoFornecedor).HasDefaultValueSql("((0))");
 
@@ -10136,6 +10275,8 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.DataHoraModificação)
                     .HasColumnName("Data/Hora Modificação")
                     .HasColumnType("datetime");
+
+                entity.Property(e => e.EnviarEmailAlerta).HasDefaultValueSql("((0))");
 
                 entity.Property(e => e.UtilizadorCriação)
                     .HasColumnName("Utilizador Criação")

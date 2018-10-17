@@ -78,7 +78,7 @@ namespace Hydra.Such.Data.Logic.ComprasML
             try
             {
                 //history
-                return ctx.RececaoFaturacao.Where(x => (x.AreaPendente == null || x.AreaPendente == "")).OrderByDescending(x => x.Id).ToList().ParseToViewModel();
+                return ctx.RececaoFaturacao.Where(x => string.IsNullOrEmpty(x.AreaPendente)).OrderByDescending(x => x.Id).ToList().ParseToViewModel();
             }
             catch (Exception ex)
             {

@@ -344,7 +344,7 @@ namespace Hydra.Such.Portal.Services
             return item;
         }
 
-        public BillingReceptionModel PostDocument(BillingReceptionModel item, string postedByUserName, NAVConfigurations _config, NAVWSConfigurations _configws)
+        public BillingReceptionModel PostDocument(BillingReceptionModel item, string postedByUserName, string prePurchInvoiceNoSerie, NAVConfigurations _config, NAVWSConfigurations _configws)
         {
             if (item != null)
             {
@@ -352,7 +352,7 @@ namespace Hydra.Such.Portal.Services
                 {
                     item.DocumentoCriadoEm = DateTime.Now;
                     item.DocumentoCriadoPor = postedByUserName;
-                    Task<WsPrePurchaseDocs.Create_Result> createPurchHeaderTask = NAVPurchaseHeaderService.CreateAsync(item, _configws);
+                    Task<WsPrePurchaseDocs.Create_Result> createPurchHeaderTask = NAVPurchaseHeaderService.CreateAsync(item, prePurchInvoiceNoSerie, _configws);
                     createPurchHeaderTask.Wait();
                     if (createPurchHeaderTask.IsCompletedSuccessfully)
                     {
@@ -377,7 +377,7 @@ namespace Hydra.Such.Portal.Services
                     else
                     {
                         item.Id = item.Id.Remove(0, 2);
-                       
+
                     }
                 }
             }
