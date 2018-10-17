@@ -315,19 +315,14 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         LinhasPréRequisição CLine = PreRequesitionLines.Where(y => x.PreRequisitionLineNo == y.NºPréRequisição && x.LineNo == y.NºLinha).FirstOrDefault();
 
-                        NAVProjectsViewModel Project = DBNAV2017Projects.GetAll(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, x.ProjectNo).FirstOrDefault();
-                        if (Project != null)
-                        {
-                            CLine.CódigoRegião = Project.RegionCode ?? "";
-                            CLine.CódigoÁreaFuncional = Project.AreaCode ?? "";
-                            CLine.CódigoCentroResponsabilidade = Project.CenterResponsibilityCode ?? "";
-                        }
-                        else
-                        {
-                            CLine.CódigoRegião = "";
-                            CLine.CódigoÁreaFuncional = "";
-                            CLine.CódigoCentroResponsabilidade = "";
-                        }
+                        //NAVProjectsViewModel Project = DBNAV2017Projects.GetAll(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, x.ProjectNo).FirstOrDefault();
+
+                        //if (CLine.CódigoRegião == "")
+                        //    CLine.CódigoRegião = Project.RegionCode ?? "";
+                        //if (CLine.CódigoÁreaFuncional == "")
+                        //    CLine.CódigoÁreaFuncional = Project.AreaCode ?? "";
+                        //if (CLine.CódigoCentroResponsabilidade == "")
+                        //    CLine.CódigoCentroResponsabilidade = Project.CenterResponsibilityCode ?? "";
 
                         if (CLine != null)
                         {
@@ -340,9 +335,9 @@ namespace Hydra.Such.Portal.Controllers
                             CLine.CódigoLocalização = x.LocalCode;
                             CLine.CódigoUnidadeMedida = x.UnitMeasureCode;
                             CLine.QuantidadeARequerer = x.QuantityToRequire;
-                            //CLine.CódigoRegião = Project.RegionCode;
-                            //CLine.CódigoÁreaFuncional = Project.AreaCode;
-                            //CLine.CódigoCentroResponsabilidade = Project.CenterResponsibilityCode;
+                            CLine.CódigoRegião = x.RegionCode;
+                            CLine.CódigoÁreaFuncional = x.FunctionalAreaCode;
+                            CLine.CódigoCentroResponsabilidade = x.CenterResponsibilityCode;
                             CLine.NºProjeto = x.ProjectNo;
                             CLine.DataHoraCriação = x.CreateDateTime != null && x.CreateDateTime != "" ? DateTime.Parse(x.CreateDateTime) : (DateTime?)null;
                             CLine.UtilizadorCriação = x.CreateUser;
