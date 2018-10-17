@@ -1494,8 +1494,8 @@ namespace Hydra.Such.Portal.Controllers
             {
                 foreach (ApprovalMovementsViewModel req in result)
                 {
-                    if (req.Number == ReqNo)
-                    {
+                    if (req.Number == ReqNo && (req.Status == 1 || req.Status == 2))
+                        {
                         Error = "Esta Requisição já está à espera de Aprovação.";
                     }
                 }
@@ -1535,23 +1535,25 @@ namespace Hydra.Such.Portal.Controllers
 
 
         [HttpPost]
-        public JsonResult GetUnitCostLinha([FromBody] PreRequisitionLineViewModel linha)
+        public JsonResult GetProductInfo([FromBody] PreRequisitionLineViewModel linha)
         {
-            NAVStockKeepingUnitViewModel stock = new NAVStockKeepingUnitViewModel();
+            NAVProductsViewModel product = new NAVProductsViewModel();
 
             try
             {
-                if (linha != null && !string.IsNullOrEmpty(linha.LocalCode) && !string.IsNullOrEmpty(linha.Code))
+                if (!string.IsNullOrEmpty(linha.Code))
                 {
-                    NAVLocationsViewModel localizacao = DBNAV2017Locations.GetAllLocations(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName).Where(x => x.Code == linha.LocalCode).FirstOrDefault();
+                    product = DBNAV2017Products.GetAllProducts(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, linha.Code).FirstOrDefault();
 
-                    if (localizacao != null)
+                    if (product.InventoryValueZero == 1)
                     {
-                        if (localizacao.ArmazemCDireta == 0) //ARMAZEM DE STOCK
-                        {
-                            stock = DBNAV2017StockKeepingUnit.GetByProductsNo(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, linha.Code).Where(x => x.LocationCode == linha.LocalCode).FirstOrDefault();
-
-                        }
+                        product.LocationCode = DBConfigurations.GetById(1).ArmazemCompraDireta;
+                    }
+                    else
+                    {
+                        NAVStockKeepingUnitViewModel localizacao = DBNAV2017StockKeepingUnit.GetByProductsNo(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, linha.Code).FirstOrDefault();
+                        product.UnitCost = localizacao.UnitCost;
+                        product.LocationCode = localizacao.LocationCode;
                     }
                 }
             }
@@ -1560,7 +1562,7 @@ namespace Hydra.Such.Portal.Controllers
                 return Json(null);
             }
 
-            return Json(stock);
+            return Json(product);
         }
 
         [HttpPost]
@@ -1579,6 +1581,7 @@ namespace Hydra.Such.Portal.Controllers
                 else
                 {
                     NAVStockKeepingUnitViewModel localizacao = DBNAV2017StockKeepingUnit.GetByProductsNo(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, linha.Code).FirstOrDefault();
+                    product.UnitCost = localizacao.UnitCost;
                     product.LocationCode = localizacao.LocationCode;
                 }
             }
