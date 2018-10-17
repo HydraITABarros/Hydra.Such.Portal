@@ -2227,10 +2227,18 @@ namespace Hydra.Such.Portal.Controllers
                         proj.ResponsabilityCenterCode = Contract.CodeResponsabilityCenter;
                         proj.FunctionalAreaCode = Contract.CodeFunctionalArea;
                         proj.Description = Contract.Description;
-                        Task<WSCreateNAVProject.Create_Result> createProject = WSProject.CreateNavProject(proj, _configws);
-                        createProject.Wait();
+                        try
+                        {
+                            Task<WSCreateNAVProject.Create_Result> createProject = WSProject.CreateNavProject(proj, _configws);
+                            createProject.Wait();
+                        }
+                        catch (Exception ex)
+                        {
+                            result.eReasonCode = 3;
+                            result.eMessage = "Ocorreu um erro ao criar projeto: " + ex.Message;
+                            return Json(result);
+                        }
                     }
-
                  
                     DateTime dataInicio;
                     DateTime dataFim;
