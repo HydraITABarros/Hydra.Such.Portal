@@ -551,17 +551,17 @@ namespace Hydra.Such.Portal.Services
         {
             return repo.GetAreas();
         }
-        public List<RecFaturacaoConfigDestinatarios> GetAreasUPUAS()
+        public List<RecFaturacaoConfigDestinatarios> GetAreasUPUAS(string respCenterId)
         {
-            return repo.GetAreasUPUAS();
+            return repo.GetAreasUPUAS(respCenterId);
         }
         public List<RecFaturacaoConfigDestinatarios> GetDimensionsForArea(string areaId)
         {
             return repo.GetDimensionsForArea(areaId);
         }
-        public List<RecFaturacaoConfigDestinatarios> GetUsersToResendByAreaName(string areaName)
+        public List<RecFaturacaoConfigDestinatarios> GetUsersToResendByAreaName(string areaName, string respCenterId)
         {
-            return repo.GetUsersToResendByAreaName(areaName);
+            return repo.GetUsersToResendByAreaName(areaName, respCenterId);
         }
         public List<RecFaturacaoConfigDestinatarios> GetUsersToResendByAreaNumber(string areaNumber)
         {

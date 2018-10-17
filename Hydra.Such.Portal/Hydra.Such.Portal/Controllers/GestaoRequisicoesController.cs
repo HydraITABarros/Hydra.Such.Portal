@@ -750,7 +750,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 foreach (ApprovalMovementsViewModel apmov in AproveList)
                 {
-                    if (apmov.Number == item.RequisitionNo)
+                    if (apmov.Number == item.RequisitionNo && (apmov.Status == 1 || apmov.Status == 2))
                     {
                         item.SentReqToAproveText = "none";
                     }
