@@ -318,7 +318,6 @@ namespace Hydra.Such.Portal.Controllers
                         LinhasPréRequisição CLine = PreRequesitionLines.Where(y => x.PreRequisitionLineNo == y.NºPréRequisição && x.LineNo == y.NºLinha).FirstOrDefault();
 
                         //NAVProjectsViewModel Project = DBNAV2017Projects.GetAll(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, x.ProjectNo).FirstOrDefault();
-
                         //if (CLine.CódigoRegião == "")
                         //    CLine.CódigoRegião = Project.RegionCode ?? "";
                         //if (CLine.CódigoÁreaFuncional == "")
@@ -373,6 +372,8 @@ namespace Hydra.Such.Portal.Controllers
                         }
                     }//);
 
+                    //data = DBPreRequesition.ParseToViewModel(DBPreRequesition.GetByNo(data.PreRequisitionNo));
+
                     data.eReasonCode = 1;
                     data.eMessage = "Linhas de Pré-Requisição atualizadas com sucesso.";
                 }
@@ -383,6 +384,7 @@ namespace Hydra.Such.Portal.Controllers
                 data.eMessage = "Ocorreu um erro ao atualizar as linhas de Pré-Requisição.";
                 data.eMessages.Add(new TraceInformation(TraceType.Error, ex.ToString()));
             }
+
             return Json(data);
         }
 
@@ -481,15 +483,12 @@ namespace Hydra.Such.Portal.Controllers
                             NAVProjectsViewModel Project = DBNAV2017Projects.GetAll(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, linha.ProjectNo).FirstOrDefault();
                             if (Project != null)
                             {
-                                linha.RegionCode = Project.RegionCode ?? "";
-                                linha.FunctionalAreaCode = Project.AreaCode ?? "";
-                                linha.CenterResponsibilityCode = Project.CenterResponsibilityCode ?? "";
-                            }
-                            else
-                            {
-                                linha.RegionCode = "";
-                                linha.FunctionalAreaCode = "";
-                                linha.CenterResponsibilityCode = "";
+                                if (string.IsNullOrEmpty(linha.RegionCode))
+                                    linha.RegionCode = Project.RegionCode ?? "";
+                                if (string.IsNullOrEmpty(linha.FunctionalAreaCode))
+                                    linha.FunctionalAreaCode = Project.AreaCode ?? "";
+                                if (string.IsNullOrEmpty(linha.CenterResponsibilityCode))
+                                    linha.CenterResponsibilityCode = Project.CenterResponsibilityCode ?? "";
                             }
 
                             if (DBPreRequesitionLines.Update(DBPreRequesitionLines.ParseToDB(linha)) != null)
@@ -597,6 +596,17 @@ namespace Hydra.Such.Portal.Controllers
         #endregion
 
         #region CRUD
+
+        [HttpPost]
+        public JsonResult GetPreReq([FromBody] string preReqID)
+        {
+            PreRequesitionsViewModel result = new PreRequesitionsViewModel();
+
+            if (!string.IsNullOrEmpty(preReqID))
+                result = DBPreRequesition.ParseToViewModel(DBPreRequesition.GetByNo(preReqID));
+
+            return Json(result);
+        }
 
         [HttpPost]
         public JsonResult CreateNewForThisUser([FromBody] JObject requestParams)
@@ -1032,6 +1042,60 @@ namespace Hydra.Such.Portal.Controllers
                             item.ApprovalDateString = item.ApprovalDate.Value.ToString("yyyy-MM-dd");
                         }
                         
+                        item.LocalCode = DBRequestLine.GetByRequisitionId(item.RequisitionNo).FirstOrDefault()?.CódigoLocalização;
+                    }
+                    if (AproveList != null && AproveList.Count > 0)
+                    {
+                        foreach (ApprovalMovementsViewModel apmov in AproveList)
+                        {
+                            foreach (RequisitionViewModel req in result)
+                            {
+                                if (apmov.Number == req.RequisitionNo && (apmov.Status == 1 || apmov.Status == 2))
+                                {
+                                    req.SentReqToAprove = false;
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
+            return Json(result.OrderByDescending(x => x.RequisitionNo));
+        }
+
+        public JsonResult GetReqByUserResponsibleForApproval()
+        {
+            List<Requisição> requisition = null;
+            //List<RequisitionStates> states = new List<RequisitionStates>()
+            //{
+            //    RequisitionStates.Pending,
+            //    RequisitionStates.Rejected
+            //};
+            //requisition = DBRequest.GetReqByUserAreaStatus(User.Identity.Name, states);
+            requisition = DBRequest.GetReqByUserResponsibleForApproval(User.Identity.Name);
+            List<RequisitionViewModel> result = new List<RequisitionViewModel>();
+            List<ApprovalMovementsViewModel> AproveList = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAll()); //.GetAllAssignedToUserFilteredByStatus(User.Identity.Name, 1));
+            if (requisition != null)
+            {
+                requisition.ForEach(x => result.Add(x.ParseToViewModel()));
+                if (result.Count > 0)
+                {
+                    foreach (RequisitionViewModel item in result)
+                    {
+                        if (item.State == RequisitionStates.Pending || item.State == RequisitionStates.Rejected)
+                        {
+                            item.SentReqToAprove = true;
+                        }
+                        else
+                        {
+                            item.SentReqToAprove = false;
+                        }
+
+                        if (item.ApprovalDate != null)
+                        {
+                            item.ApprovalDateString = item.ApprovalDate.Value.ToString("yyyy-MM-dd");
+                        }
+
                         item.LocalCode = DBRequestLine.GetByRequisitionId(item.RequisitionNo).FirstOrDefault()?.CódigoLocalização;
                     }
                     if (AproveList != null && AproveList.Count > 0)
@@ -1529,8 +1593,18 @@ namespace Hydra.Such.Portal.Controllers
 
             if (ApprovalMovResult.eReasonCode != 3 && ApprovalMovResult.eReasonCode != 2)
             {
-                ApprovalMovResult.eReasonCode = 1;
-                ApprovalMovResult.eMessage = "Foi iniciado o processo de aprovação para esta requisição";
+                createReq.Estado = (int)RequisitionStates.Pending;
+                createReq.UtilizadorModificação = User.Identity.Name;
+                if (DBRequest.Update(createReq) != null)
+                {
+                    ApprovalMovResult.eReasonCode = 1;
+                    ApprovalMovResult.eMessage = "Foi iniciado o processo de aprovação para esta requisição";
+                }
+                else
+                {
+                    ApprovalMovResult.eReasonCode = 4;
+                    ApprovalMovResult.eMessage = "Ocorreu um erro ao atualizar o estado da Requisição.";
+                }
             }
             return Json(ApprovalMovResult);
         }
