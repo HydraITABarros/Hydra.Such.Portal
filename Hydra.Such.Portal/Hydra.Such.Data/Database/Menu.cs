@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using static Hydra.Such.Data.Enumerations;
 
 namespace Hydra.Such.Data.Database
 {
@@ -19,5 +21,10 @@ namespace Hydra.Such.Data.Database
         public string CreatedBy { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public string UpdatedBy { get; set; }
+
+        public ICollection<FeaturesMenus> FeaturesMenus { get; set; }
+
+        [NotMapped]
+        public ICollection<Features> Features { get; set; }
     }
 }
