@@ -89,7 +89,6 @@ namespace Hydra.Such.Portal.Controllers
                 return RedirectToAction("AccessDenied", "Error");
             }
         }
-      
 
         public JsonResult GetBillingReceptions()
         {
@@ -99,12 +98,12 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult GetBillingReceptionsHistory()
         {
-
             UserConfigurationsViewModel userConfig = DBUserConfigurations.GetById(User.Identity.Name).ParseToViewModel();
             BillingReceptionAreas areaPendente = userConfig.RFPerfil ?? BillingReceptionAreas.Aprovisionamento;
-            var billingReceptions = billingRecService.GetAllForUserHist(User.Identity.Name,0, areaPendente);
+            var billingReceptions = billingRecService.GetAllForUserHist(User.Identity.Name, 0, areaPendente);
             return Json(billingReceptions);
         }
+
         public JsonResult GetBillingReceptionsPendingExcept()
         {
 
@@ -115,6 +114,7 @@ namespace Hydra.Such.Portal.Controllers
             var billingReceptions = billingRecService.GetAllForUserPendingExcept(User.Identity.Name, perfil, perfilVisulalizacao);
             return Json(billingReceptions);
         }
+
         public JsonResult GetBillingReceptionsPending()
         {
 
@@ -131,7 +131,6 @@ namespace Hydra.Such.Portal.Controllers
             return Json(billingReception);
         }
 
-      
         [HttpPost]
         public JsonResult CreateBillingReception([FromBody] BillingReceptionModel item)
         {
@@ -273,7 +272,6 @@ namespace Hydra.Such.Portal.Controllers
             return Json(updatedItem);
         }
 
-
         [HttpPost]
         public JsonResult SendBillingReception([FromBody] BillingReceptionModel item)
         {
@@ -311,7 +309,6 @@ namespace Hydra.Such.Portal.Controllers
             return Json(updatedItem);
         }
 
-       
         [HttpPost]
         public JsonResult GetWorkflowAttached([FromBody] BillingRecWorkflowModel item)
         {
@@ -319,7 +316,6 @@ namespace Hydra.Such.Portal.Controllers
             return Json(items);
         }
 
-         
         [HttpPost]
         public JsonResult UpdateWorkFlow([FromBody] BillingReceptionModel item)
         {
