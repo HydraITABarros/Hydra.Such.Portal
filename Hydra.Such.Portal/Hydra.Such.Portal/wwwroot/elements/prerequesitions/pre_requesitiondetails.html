@@ -2114,7 +2114,7 @@
 
                                 this.$.ajax_cbReqType.body = JSON.stringify(id);
                                 this.$.ajax_cbReqType.generateRequest();
-
+                                this.$.prereqLines_databound_ajax.url = "/PreRequisicoes/GetPreReqLines";
                                 this.$.prereqLines_databound_ajax.body = JSON.stringify(this.data);
                                 this.$.prereqLines_databound_ajax.generateRequest();
 
