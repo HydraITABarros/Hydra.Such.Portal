@@ -195,6 +195,12 @@
                    id="page_databound_ajax"
                    on-response="_responseProcessor"
                    content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PreRequisicoes/GetPreRequesitionDetails"
+                   last-response="{{data}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_databoundNoMessage_ajax"
+                   content-type="application/json"></iron-ajax>
 
         <iron-request id="page_reqmodellines_ajax"></iron-request>
 
@@ -342,8 +348,8 @@
                    on-response="_GetUnitCostLinhaResponse"
                    content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/PreRequisicoes/GetProductLocation"
-                   last-response="{{ProductLocation}}"
+        <iron-ajax url="/PreRequisicoes/GetProductInfo"
+                   last-response="{{productInfo}}"
                    method="post"
                    handle-as="json"
                    id="page_GetProductLocation_ajax"
@@ -1724,8 +1730,10 @@
                             this.$.ResponsabilityCenterCode.valueText = "";
                         }
 
-                        this.data.area = this._areaid;
-                        this._executeRequest("/PreRequisicoes/UpdatePreRequesition", this.data)
+                        this.data.contractType = 3;
+                        this.$.page_databoundNoMessage_ajax.url = "/PreRequisicoes/UpdatePreRequesition";
+                        this.$.page_databoundNoMessage_ajax.body = JSON.stringify(this.data);
+                        this.$.page_databoundNoMessage_ajax.generateRequest();
                     }
                 },
 
@@ -2273,7 +2281,7 @@
 
                 //Pre Requesition Lines
                 _createPreReqLine: function () {
-                    debugger;
+                    //debugger;
                     var requesitionType = this.$.requesitionType.value;
 
                     var localCode = "";
@@ -2498,25 +2506,34 @@
                     }
                 },
                 _onProductChanged: function (e) {
-                    debugger;
-                    var item = this.Products.find(x => x.code == e.detail.value);
-                    if (item != null) {
-                        this.$._Description.value = item.name;
-                        this.$._Description2.value = item.name2;
-                        this.$._UnitMeasureCode.value = item.measureUnit;
-                        //this.$._UnitCost.value = item.unitCost;
+                    //debugger;
+                    //var item = this.Products.find(x => x.code == e.detail.value);
+                    //if (item != null) {
+                    //    this.$._Description.value = item.name;
+                    //    this.$._Description2.value = item.name2;
+                    //    this.$._UnitMeasureCode.value = item.measureUnit;
+                    //    this.$._UnitCost.value = item.unitCost;
+                    //}
+                    //else {
+                    //    this.$._Description.value = "";
+                    //    this.$._Description2.value = "";
+                    //    this.$._UnitMeasureCode.value = "";
+                    //    this.$._UnitCost.value = "";
+                    //}
+
+                    if (this.$._Products.value != "") {
+                        this.$.page_GetProductLocation_ajax.body = JSON.stringify({ code: this.$._Products.value });
+                        this.$.page_GetProductLocation_ajax.generateRequest()
                     }
                     else {
                         this.$._Description.value = "";
                         this.$._Description2.value = "";
                         this.$._UnitMeasureCode.value = "";
-                        //this.$._UnitCost.value = "";
-                    }
+                        this.$._UnitCost.value = "";
+                        this.$._CBLocations.value = "";
 
-                    this.$.page_GetUnitCostLinha_ajax.body = JSON.stringify({
-                        code: this.$._Products.value
-                    });
-                    this.$.page_GetUnitCostLinha_ajax.generateRequest()
+                        this.$._UnitCost.disabled = false;
+                    }
                 },
                 _onProductClick: function (e) {
                     var requesitionType = this.$.requesitionType.value;
@@ -2532,7 +2549,7 @@
                     //}
                 },
                 _GetUnitCostLinhaResponse: function (e) {
-                    debugger;
+                    //debugger;
                     if (this.UnitCostLinha.locationCode != null) {
                         if (this.UnitCostLinha.unitCost != null) {
                             this.$._UnitCost.value = this.UnitCostLinha.unitCost;
@@ -2550,10 +2567,22 @@
                     this.$.page_GetProductLocation_ajax.generateRequest()
                 },
                 _GetProductLocationResponse: function (e) {
-                    debugger;
-                    if (this.ProductLocation != null) {
-                        if (this.ProductLocation.locationCode != null) {
-                            this.$._CBLocations.value = this.ProductLocation.locationCode;
+                    //debugger;
+                    if (this.productInfo != null) {
+                        this.$._Description.value = this.productInfo.name;
+                        this.$._Description2.value = this.productInfo.name2;
+                        this.$._UnitMeasureCode.value = this.productInfo.measureUnit;
+                        this.$._UnitCost.value = this.productInfo.unitCost;
+
+                        if (this.productInfo.inventoryValueZero == 1) {
+                            this.$._UnitCost.disabled = false;
+                        }
+                        else {
+                            this.$._UnitCost.disabled = true;
+                        }
+
+                        if (this.productInfo.locationCode != null) {
+                            this.$._CBLocations.value = this.productInfo.locationCode;
                         }
                         else {
                             this._openToastError("Este produto não têm Cód. Localização contate a área das compras.");

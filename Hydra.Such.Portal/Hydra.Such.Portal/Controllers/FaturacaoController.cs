@@ -53,6 +53,13 @@ namespace Hydra.Such.Portal.Controllers
                 ViewBag.UserPermissions = UPerm;
                 ViewBag.RFPerfil = userConfig.RFPerfil;
                 ViewBag.RFPerfilVisualizacao = userConfig.RFPerfilVisualizacao;
+                ViewBag.UserCanChangeDestination = userConfig.RFAlterarDestinatarios.HasValue ? userConfig.RFAlterarDestinatarios.Value : false;
+
+                bool userCanSeePending = false;
+                if (userConfig.RFPerfilVisualizacao.HasValue)
+                    userCanSeePending = userConfig.RFPerfilVisualizacao.Value == (BillingReceptionUserProfiles.Perfil | BillingReceptionUserProfiles.Tudo);
+                ViewBag.UserCanSeePending = userCanSeePending;
+
                 return View();
             }
             else
@@ -89,11 +96,12 @@ namespace Hydra.Such.Portal.Controllers
             var billingReceptions = billingRecService.GetAllForUser(User.Identity.Name);
             return Json(billingReceptions);
         }
+
         public JsonResult GetBillingReceptionsHistory()
         {
 
             UserConfigurationsViewModel userConfig = DBUserConfigurations.GetById(User.Identity.Name).ParseToViewModel();
-            BillingReceptionAreas areaPendente= userConfig.RFPerfil ?? BillingReceptionAreas.Aprovisionamento;
+            BillingReceptionAreas areaPendente = userConfig.RFPerfil ?? BillingReceptionAreas.Aprovisionamento;
             var billingReceptions = billingRecService.GetAllForUserHist(User.Identity.Name,0, areaPendente);
             return Json(billingReceptions);
         }
@@ -360,7 +368,8 @@ namespace Hydra.Such.Portal.Controllers
             {
                 try
                 {
-                    postedDocument = billingRecService.PostDocument(item, User.Identity.Name, _config, _configws);
+                    UserConfigurationsViewModel userConfig = DBUserConfigurations.GetById(User.Identity.Name).ParseToViewModel();
+                    postedDocument = billingRecService.PostDocument(item, User.Identity.Name, userConfig.NumSeriePreFaturasCompra, _config, _configws);
                     item = postedDocument;
                 }
                 catch (Exception ex)
@@ -1030,6 +1039,7 @@ namespace Hydra.Such.Portal.Controllers
         [Route("Faturacao/ExistFile")]
         public JsonResult ExistFile()
         {
+            ErrorHandler result = new ErrorHandler();
             try
             {
               
@@ -1043,15 +1053,24 @@ namespace Hydra.Such.Portal.Controllers
 
                     if (System.IO.File.Exists(path))
                     {
-                        throw new System.ArgumentException();
+                        result.eReasonCode = 2;
+                        result.eMessage = "O ficheiro " + file.FileName + " já existe";
+                    }
+                    else
+                    {
+                        using (FileStream dd = new FileStream(path, FileMode.CreateNew))
+                        {
+                            file.CopyTo(dd);
+                            dd.Dispose();
+                        }
                     }
                 } 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                result.eMessage = "Ocorreu um erro ";
             }
-            return Json("");
+            return Json(result);
         }
 
         public JsonResult UploadFile(BillingRecWorkflowModel workflow)

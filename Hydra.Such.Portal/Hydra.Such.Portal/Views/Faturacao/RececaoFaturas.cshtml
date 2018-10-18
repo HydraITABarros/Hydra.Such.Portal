@@ -156,8 +156,12 @@
             <template is="dom-if" if="{{ _permissions.create }}">
                 <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar Nova</paper-button>
             </template>
-            <such-dropdown-menu on-value-changed="_provisioningOptionSelected" title="Opções" items='[[ _provisioningMenuItems ]]' "></such-dropdown-menu>
-            <paper-button class="tablinks" on-tap="_showPending"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Pendentes</paper-button>
+            <template is="dom-if" if="{{ _userCanChangeDestination }}">
+                <such-dropdown-menu on-value-changed="_provisioningOptionSelected" title="Opções" items='[[ _provisioningMenuItems ]]' "></such-dropdown-menu>
+            </template>
+            <template is="dom-if" if="{{ _userCanSeePending }}">
+                <paper-button class="tablinks" on-tap="_showPending"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Pendentes</paper-button>
+            </template>    
             <paper-button class="tablinks" on-tap="_showPendingAreas"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Pendentes Áreas</paper-button>
             <paper-button class="tablinks" on-tap="_showHistory"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Histórico</paper-button>
             <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
@@ -649,10 +653,6 @@
                         type: Array,
                         value: [{ value: 1, description: "Alterar Destinatários" }],
                     },
-                    _showChangeDestitationForm: {
-                        type: Boolean,
-                        value: false,
-                    },
                     _rfperfil: {
                         type: String,
                         value: "",
@@ -661,11 +661,19 @@
                         type: String,
                         value: "",
                     },
+                    _userCanChangeDestination: {
+                        type: Boolean,
+                        value: @Html.Raw(Json.Serialize(ViewBag.UserCanChangeDestination)),
+                    },
+                    _userCanSeePending: {
+                        type: Boolean,
+                        value: @Html.Raw(Json.Serialize(ViewBag.UserCanSeePending)),
+                    },
                 },
                 ready: function () {
                     /*ColumnToggle*/
                     this._startColumnToggle();
-
+                    
                     var _this = this;
                     $(window).resize(function () {
                         _this.fixGridToBottom();

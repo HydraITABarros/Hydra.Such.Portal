@@ -725,7 +725,8 @@
                         <vaadin-upload id="uploadRequest" target="/Faturacao/ExistFile"
                                        method="POST"
                                        headers="{'Accept': 'application/json'}"
-                                       timeout=15000 files="{{files}}"></vaadin-upload>
+                                       timeout=15000 files="{{files}}"
+                                       on-upload-response="_uploadResponse"></vaadin-upload>
                     </div>
                     <div class="col-sm-3" hidden="{{ !_isAnexarFicheiro }}">
                         <vaadin-text-field label="Descrição" type="text" id="txtDescricaoAnexo"></vaadin-text-field>
@@ -1274,6 +1275,15 @@
                 observers: [
                     '_preventDocumentDuplicates(data.dataDocFornecedor, data.numDocFornecedor, data.codFornecedor)'
                 ],
+                _uploadResponse: function (event) {
+
+                    console.log('upload xhr after server response: ', event.detail.xhr);
+                    event.detail.file.error = 'Duplicado.';
+                    event.detail.xhr.status = 500;
+                    // Interpret any server response as success:
+                    // event.detail.xhr.status = 200;
+                    
+                },
                 ready: function () {
                     if (this._billingReceptionId != null && this._billingReceptionId != "") {
                         this._isCreate = false;
@@ -1886,23 +1896,29 @@
 
                 _postInvoiceCF: function () {
                     if (this._validateInputForAccounting()) {
+                        var itemId = this.data.id;
                         this.data.id = "CF" + this.data.id;
                         this.$.page_billing_ajax.body = JSON.stringify(this.data);
                         this.$.page_billing_ajax.generateRequest();
+                        this.data.id = itemId;
                     }
                 },
                 _postInvoiceCP: function () {
                     if (this._validateInputForAccounting()) {
+                        var itemId = this.data.id;
                         this.data.id = "CP" + this.data.id;
                         this.$.page_billing_ajax.body = JSON.stringify(this.data);
                         this.$.page_billing_ajax.generateRequest();
+                        this.data.id = itemId;
                     }
                 },
                 _postNotaCredito: function () {
                     if (this._validateInputForAccounting()) {
+                        var itemId = this.data.id;
                         this.data.id = "CC" + this.data.id;
                         this.$.page_billing_ajax.body = JSON.stringify(this.data);
                         this.$.page_billing_ajax.generateRequest();
+                        this.data.id = itemId;
                     }
                 },
                 _dlgSendAnswer: function () {

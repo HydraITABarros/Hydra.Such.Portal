@@ -23,7 +23,7 @@ namespace Hydra.Such.Data.NAV
             navWSBinding.Security.Transport.ClientCredentialType = HttpClientCredentialType.Windows; 
         }
 
-        public static async Task<WsPrePurchaseDocs.Create_Result> CreateAsync(BillingReceptionModel purchDoc, NAVWSConfigurations WSConfigurations)
+        public static async Task<WsPrePurchaseDocs.Create_Result> CreateAsync(BillingReceptionModel purchDoc, string prePurchInvoiceNoSerie, NAVWSConfigurations WSConfigurations)
         {
             if (purchDoc == null)
                 throw new ArgumentNullException("purchDoc");
@@ -35,6 +35,7 @@ namespace Hydra.Such.Data.NAV
             itemToCreate.ResponsabilityCenterCode20 = purchDoc.CodCentroResponsabilidade;
             itemToCreate.Buy_from_Vendor_No = purchDoc.CodFornecedor;
             itemToCreate.Rececao_Faturacao = purchDoc.Id;
+            itemToCreate.No_Series = prePurchInvoiceNoSerie;
             if (purchDoc.Valor.HasValue)
             {
                 itemToCreate.Valor_Factura = purchDoc.Valor.Value;
@@ -44,7 +45,7 @@ namespace Hydra.Such.Data.NAV
                 itemToCreate.Vendor_Invoice_No = purchDoc.NumDocFornecedor;
             else
                 itemToCreate.Vendor_Cr_Memo_No = purchDoc.NumDocFornecedor;
-            
+
             WsPrePurchaseDocs.Create navCreate = new WsPrePurchaseDocs.Create(itemToCreate);
 
             //Configure NAV Client
@@ -55,7 +56,7 @@ namespace Hydra.Such.Data.NAV
 
             //try
             //{
-                return await ws_Client.CreateAsync(navCreate);
+            return await ws_Client.CreateAsync(navCreate);
             //}
             //catch (Exception ex)
             //{
