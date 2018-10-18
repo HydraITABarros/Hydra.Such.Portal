@@ -2485,13 +2485,14 @@
 
                     if (matricula != "") {
                         this.$.CBHeaderProjects.disabled = true;
+
+                        this.$.page_GetProjetoNoCabecalho_ajax.body = JSON.stringify(matricula);
+                        this.$.page_GetProjetoNoCabecalho_ajax.generateRequest();
                     }
                     else {
                         this.$.CBHeaderProjects.disabled = false;
                     }
 
-                    this.$.page_GetProjetoNoCabecalho_ajax.body = JSON.stringify(matricula);
-                    this.$.page_GetProjetoNoCabecalho_ajax.generateRequest();
                 },
                 _GetProjetoNoCabecalhoResponse: function (e) {
                     //debugger;

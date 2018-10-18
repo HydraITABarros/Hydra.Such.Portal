@@ -114,7 +114,6 @@
         <iron-ajax url="/PopulateDropdowns/GetRequestStatus" last-response="{{CBStatus}}" on-response="_responsehead" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/PreRequisicoes/GetPendingReq"
-                
                    last-response="{{result}}"
                    method="post"
                    handle-as="json"
@@ -453,6 +452,9 @@
                     if (e.detail.status === 200) {
                         if (this.actionResult.eReasonCode === 1) {
                             this._openToast(this.actionResult.eMessage);
+
+                            this.$.grid_databound_ajax.generateRequest();
+                            this.$.grdPendingReqGrid.clearCache();
                         } else {
                             this._openToastError(this.actionResult.eMessage);
                         }

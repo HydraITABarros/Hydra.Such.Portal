@@ -1494,7 +1494,7 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                 DataRecepcaoProposta = ObjectToTransform.DataRecepcaoProposta,
                 UtilizadorEnvio = ObjectToTransform.UtilizadorEnvio,
                 UtilizadorRecepcaoProposta = ObjectToTransform.UtilizadorRecepcaoProposta,
-                Fase = ObjectToTransform.Fase,
+                //Fase = ObjectToTransform.Fase,
                 PrazoResposta = ObjectToTransform.PrazoResposta,
                 DataRespostaEsperada = ObjectToTransform.DataRespostaEsperada,
                 DataPedidoEsclarecimento = ObjectToTransform.DataPedidoEsclarecimento,

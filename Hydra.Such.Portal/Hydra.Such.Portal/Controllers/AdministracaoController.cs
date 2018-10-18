@@ -155,6 +155,7 @@ namespace Hydra.Such.Portal.Controllers
                 result.RFAlterarDestinatarios = userConfig.RfalterarDestinatarios;
                 result.RFMailEnvio = userConfig.RfmailEnvio;
                 result.NumSerieFaturas = userConfig.NumSerieFaturas;
+                result.NumSeriePreFaturasCompra = userConfig.NumSeriePreFaturasCompra;
                 result.NumSerieNotasCredito = userConfig.NumSerieNotasCredito;
                 result.NumSerieNotasDebito = userConfig.NumSerieNotasDebito;
                 result.Centroresp = userConfig.CentroDeResponsabilidade;
@@ -210,6 +211,7 @@ namespace Hydra.Such.Portal.Controllers
                 RfalterarDestinatarios = data.RFAlterarDestinatarios,
                 RfmailEnvio = data.RFMailEnvio,
                 NumSerieFaturas = data.NumSerieFaturas,
+                NumSeriePreFaturasCompra = data.NumSeriePreFaturasCompra,
                 NumSerieNotasCredito = data.NumSerieNotasCredito,
                 NumSerieNotasDebito = data.NumSerieNotasDebito,
                 CentroDeResponsabilidade=data.Centroresp,
@@ -281,6 +283,7 @@ namespace Hydra.Such.Portal.Controllers
                 userConfig.RfalterarDestinatarios = data.RFAlterarDestinatarios;
                 userConfig.RfmailEnvio = data.RFMailEnvio;
                 userConfig.NumSerieFaturas = data.NumSerieFaturas;
+                userConfig.NumSeriePreFaturasCompra = data.NumSeriePreFaturasCompra;
                 userConfig.NumSerieNotasCredito = data.NumSerieNotasCredito;
                 userConfig.NumSerieNotasDebito = data.NumSerieNotasDebito;
                 userConfig.CentroDeResponsabilidade = data.Centroresp;
