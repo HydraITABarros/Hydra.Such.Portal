@@ -311,8 +311,10 @@ namespace Hydra.Such.Portal.Controllers
 
                     CLToDelete.ForEach(x => DBPreRequesitionLines.Delete(x));
 
-                    data.Lines.ForEach(x =>
+                    //data.Lines.ForEach(x =>
+                    for (int i = 0; i < data.Lines.Count;i++)
                     {
+                        PreRequisitionLineViewModel x = data.Lines[i];
                         LinhasPréRequisição CLine = PreRequesitionLines.Where(y => x.PreRequisitionLineNo == y.NºPréRequisição && x.LineNo == y.NºLinha).FirstOrDefault();
 
                         //NAVProjectsViewModel Project = DBNAV2017Projects.GetAll(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, x.ProjectNo).FirstOrDefault();
@@ -367,9 +369,9 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         else
                         {
-                            x = DBPreRequesitionLines.ParseToViewModel(DBPreRequesitionLines.Create(DBPreRequesitionLines.ParseToDB(x)));
+                            data.Lines[i] = DBPreRequesitionLines.ParseToViewModel(DBPreRequesitionLines.Create(DBPreRequesitionLines.ParseToDB(x)));
                         }
-                    });
+                    }//);
 
                     data.eReasonCode = 1;
                     data.eMessage = "Linhas de Pré-Requisição atualizadas com sucesso.";

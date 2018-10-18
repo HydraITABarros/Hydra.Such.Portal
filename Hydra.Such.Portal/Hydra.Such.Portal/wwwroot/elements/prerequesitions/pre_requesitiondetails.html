@@ -386,10 +386,10 @@
         </template>
 
         <!--<div class="row" style="display: {{ _showPreReqLines }};">
-        <div class="col-lg-12">
-            <paper-button raised id="btnContractAdd" class="" on-tap="_createNewPreReq"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
-        </div>
-    </div>-->
+            <div class="col-lg-12">
+                <paper-button raised id="btnContractAdd" class="" on-tap="_createNewPreReq"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
+            </div>
+        </div>-->
 
         <div class="row break_frm">
             <div class="col-md-12 col-md-12 col-lg-12">
@@ -669,34 +669,34 @@
                                 </div>
                             </iron-pages>
                             <!--<div class="col-lg-12">
-                            <div class="row">
-                                <div class="marginSpace">
-                                    <template is="dom-if" if="{{ _permissions.create }}">
-                                        <template is="dom-if" if="{{ _isCreate }}">
-                                            <hr />
-                                            <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
-                                        </template>
-                                        <template is="dom-if" if="{{ !_isCreate }}">
-                                            <hr />
-                                            <template is="dom-if" if="{{ _permissions.update }}">
-                                                <paper-button raised id="btnUpdate" class="btnEdit" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                                <div class="row">
+                                    <div class="marginSpace">
+                                        <template is="dom-if" if="{{ _permissions.create }}">
+                                            <template is="dom-if" if="{{ _isCreate }}">
+                                                <hr />
+                                                <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                             </template>
-                                            <template is="dom-if" if="{{ _permissions.delete }}">
-                                                <paper-button raised id="btnDelete" class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                                            <template is="dom-if" if="{{ !_isCreate }}">
+                                                <hr />
+                                                <template is="dom-if" if="{{ _permissions.update }}">
+                                                    <paper-button raised id="btnUpdate" class="btnEdit" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                                                </template>
+                                                <template is="dom-if" if="{{ _permissions.delete }}">
+                                                    <paper-button raised id="btnDelete" class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                                                </template>
                                             </template>
                                         </template>
-                                    </template>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>-->
+                            </div>-->
                         </div>
 
                         <paper-collapse-group>
                             <paper-collapse-item class="panel-heading" header="Linhas" closed>
                                 <div class="row break_clear">
                                     <!--<div class="col-lg-2">
-                                    <vaadin-text-field value="{{_LocalCode}}" id="_LocalCode" name="_LocalCode" label="Código Localização" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
-                                </div>-->
+                                        <vaadin-text-field value="{{_LocalCode}}" id="_LocalCode" name="_LocalCode" label="Código Localização" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                    </div>-->
                                     <div class="col-lg-2">
                                         <such-selectbox id="_CBPurchaseLine" value="{{PurchaseLine}}" label="Nº Linha Enc. Aberto" on-value-changed="_setPurchaseLine"
                                                         items="[[CBPurchaseLine]]"
@@ -904,12 +904,12 @@
                                         <template>
                                             <template is="dom-if" if="{{ item.selected }}">
                                                 <!--<such-selectbox id="_CLGridSupplierProductCode" value="{{item.code}}" label="Cód. Produto"
-                                                            items="[[Products]]"
-                                                            text-path="code"
-                                                            value-path="code"
-                                                            fields='[{"field":"code", "name":"Cód. Produto"}, {"field":"name", "name":"Descrição"}, {"field":"name2", "name":"Descrição 2"}, {"field":"measureUnit", "name":"Unidade de Medida"}, {"field":"itemCategoryCode", "name":"Cód. Categoria"}, {"field":"productGroupCode", "name":"Cód. Grupo"}]'
-                                                            on-value-changed="_onProductInGridChanged">
-                                            </such-selectbox>-->
+                                                                items="[[Products]]"
+                                                                text-path="code"
+                                                                value-path="code"
+                                                                fields='[{"field":"code", "name":"Cód. Produto"}, {"field":"name", "name":"Descrição"}, {"field":"name2", "name":"Descrição 2"}, {"field":"measureUnit", "name":"Unidade de Medida"}, {"field":"itemCategoryCode", "name":"Cód. Categoria"}, {"field":"productGroupCode", "name":"Cód. Grupo"}]'
+                                                                on-value-changed="_onProductInGridChanged">
+                                                </such-selectbox>-->
                                                 <vaadin-combo-box items="[[Products]]" id="_CLGridSupplierProductCode" name="_CLGridSupplierProductCode" item-value-path="code" item-label-path="code" value="{{item.code}}" disabled="{{ _setDisabled(item) }}" on-blur="_onProductInGridChanged">
                                                     <template>
                                                         <table width="180px">
@@ -1194,27 +1194,27 @@
                                         </template>
                                     </vaadin-grid-column>
                                     <!--<vaadin-grid-column width="200px" resizable>
-                                    <template class="header">
-                                        <vaadin-grid-sorter path="openOrderNo">Nº Encomenda Aberto</vaadin-grid-sorter>
-                                        <vaadin-grid-filter path="openOrderNo" />
-                                    </template>
-                                    <template>
-                                        <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-combo-box items="[[GridCBPurchaseHeader]]" id="_CBGridPurchaseHeader" item-value-path="id" item-label-path="id" value="{{item.openOrderNo}}" on-change="_PopulatePurchaseLinesGrid" disabled="{{ !_permissions.update }}">
-                                                <template>
-                                                    <table width="200px">
-                                                        <tr>
-                                                            <td width="60%"> <b>[[item.id]]</b></td>
-                                                        </tr>
-                                                    </table>
-                                                </template>
-                                            </vaadin-combo-box>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="openOrderNo">Nº Encomenda Aberto</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="openOrderNo" />
                                         </template>
-                                        <template is="dom-if" if="{{ !item.selected }}">
-                                            [[item.openOrderNo ]]
+                                        <template>
+                                            <template is="dom-if" if="{{ item.selected }}">
+                                                <vaadin-combo-box items="[[GridCBPurchaseHeader]]" id="_CBGridPurchaseHeader" item-value-path="id" item-label-path="id" value="{{item.openOrderNo}}" on-change="_PopulatePurchaseLinesGrid" disabled="{{ !_permissions.update }}">
+                                                    <template>
+                                                        <table width="200px">
+                                                            <tr>
+                                                                <td width="60%"> <b>[[item.id]]</b></td>
+                                                            </tr>
+                                                        </table>
+                                                    </template>
+                                                </vaadin-combo-box>
+                                            </template>
+                                            <template is="dom-if" if="{{ !item.selected }}">
+                                                [[item.openOrderNo ]]
+                                            </template>
                                         </template>
-                                    </template>
-                                </vaadin-grid-column>-->
+                                    </vaadin-grid-column>-->
                                     <vaadin-grid-column width="150px" resizable>
                                         <template class="header">
                                             <vaadin-grid-sorter path="openOrderLineNo">Nº Linha Encomenda Aberto</vaadin-grid-sorter>
@@ -1359,63 +1359,63 @@
         </paper-dialog>
         <!-- Paper Dialog Anexos-->
         <!--<paper-dialog id="dialogAttach" style="width:70%">
-        <h2>Anexos</h2>
-        <div>
-            <vaadin-upload id="UploadRequest" target="/PreRequisicoes/FileUpload/{{_prerequesitionno}}/{{_lineno}}" method="POST" headers="{'Accept': 'application/json'}" timeout=15000>
+            <h2>Anexos</h2>
+            <div>
+                <vaadin-upload id="UploadRequest" target="/PreRequisicoes/FileUpload/{{_prerequesitionno}}/{{_lineno}}" method="POST" headers="{'Accept': 'application/json'}" timeout=15000>
 
-            </vaadin-upload>
-            <vaadin-grid aria-label="ReqUpdateGrid" items="[[uploads]]" class="grid" multi-sort="true">
-                <vaadin-grid-column width="120px" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="docType">Tipo Origem</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="docType" />
-                    </template>
-                    <template>
-                        {{item.docType}}
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="110px" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="docNumber">Nº Origem</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="docNumber" />
-                    </template>
-                    <template>
-                        {{item.docNumber}}
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="110px" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="docLineNo">Nº Linha</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="docLineNo" />
-                    </template>
-                    <template>
-                        {{item.docLineNo}}
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="80%" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="url">Anexo</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="url" />
-                    </template>
-                    <template>
-                        {{item.url}}
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="20%" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="createDateTime">Anexado em</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="createDateTime" />
-                    </template>
-                    <template>
-                        {{item.createDateTime}}
-                    </template>
-                </vaadin-grid-column>
-            </vaadin-grid>
-        </div>
-        <div class="buttons">
-            <paper-button dialog-dismiss>Cancelar</paper-button>
-        </div>
-    </paper-dialog>-->
+                </vaadin-upload>
+                <vaadin-grid aria-label="ReqUpdateGrid" items="[[uploads]]" class="grid" multi-sort="true">
+                    <vaadin-grid-column width="120px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="docType">Tipo Origem</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="docType" />
+                        </template>
+                        <template>
+                            {{item.docType}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="110px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="docNumber">Nº Origem</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="docNumber" />
+                        </template>
+                        <template>
+                            {{item.docNumber}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="110px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="docLineNo">Nº Linha</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="docLineNo" />
+                        </template>
+                        <template>
+                            {{item.docLineNo}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="80%" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="url">Anexo</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="url" />
+                        </template>
+                        <template>
+                            {{item.url}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="20%" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="createDateTime">Anexado em</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="createDateTime" />
+                        </template>
+                        <template>
+                            {{item.createDateTime}}
+                        </template>
+                    </vaadin-grid-column>
+                </vaadin-grid>
+            </div>
+            <div class="buttons">
+                <paper-button dialog-dismiss>Cancelar</paper-button>
+            </div>
+        </paper-dialog>-->
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
@@ -1954,7 +1954,7 @@
 
                                 this.$.ajax_cbReqType.body = JSON.stringify(id);
                                 this.$.ajax_cbReqType.generateRequest();
-
+                                this.$.prereqLines_databound_ajax.url = "/PreRequisicoes/GetPreReqLines";
                                 this.$.prereqLines_databound_ajax.body = JSON.stringify(this.data);
                                 this.$.prereqLines_databound_ajax.generateRequest();
 
@@ -2465,7 +2465,7 @@
                     else {
                         this._openToastError(this.updateLinhaPreRequisicaoProdutoResponse.eMessage);
                     }
-                    this.$.page_databound_ajax.generateRequest();
+                    //this.$.page_databound_ajax.generateRequest();
                 },
 
                 _updateContractLines: function () {
