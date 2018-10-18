@@ -1779,7 +1779,7 @@ namespace Hydra.Such.Portal.Controllers
             var createTransferShipResult = new FileActionResult()
             {
                 eReasonCode = 2,
-                eMessage = "Ocorreu um erro ao criar a guia de transporte."
+                eMessage = "Ocorreu um erro ao criar a guia de transporte. "
             };
 
             try
@@ -1795,11 +1795,12 @@ namespace Hydra.Such.Portal.Controllers
                     }
                     else
                     {
-                        createTransferShipResult.eMessages.Add(new TraceInformation(TraceType.Error, result.ErrorMessage));
+                        //createTransferShipResult.eMessages.Add(new TraceInformation(TraceType.Error, result.ErrorMessage));
+                        createTransferShipResult.eMessage += result.ErrorMessage;
                     }
                 }
             }
-            catch { }
+            catch(Exception ex) { createTransferShipResult.eMessage += ex.Message; }
 
             return Json(createTransferShipResult);
         }
