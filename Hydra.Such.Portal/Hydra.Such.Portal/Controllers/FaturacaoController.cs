@@ -96,6 +96,7 @@ namespace Hydra.Such.Portal.Controllers
             var billingReceptions = billingRecService.GetAllForUser(User.Identity.Name);
             return Json(billingReceptions);
         }
+
         public JsonResult GetBillingReceptionsHistory()
         {
 
@@ -1052,6 +1053,7 @@ namespace Hydra.Such.Portal.Controllers
 
                     if (System.IO.File.Exists(path))
                     {
+                        result.eReasonCode = 2;
                         result.eMessage = "O ficheiro " + file.FileName + " já existe";
                     }
                     else
@@ -1068,7 +1070,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 result.eMessage = "Ocorreu um erro ";
             }
-            return Json("");
+            return Json(result);
         }
 
         public JsonResult UploadFile(BillingRecWorkflowModel workflow)

@@ -124,6 +124,7 @@ namespace Hydra.Such.Portal.Services
 
             return billingReceptions;
         }
+
         public List<BillingReceptionModel> GetAllForUserHist(string userName,int option,BillingReceptionAreas perfil)
         {
             var billingReceptions = repo.GetAllHistory();
@@ -142,6 +143,7 @@ namespace Hydra.Such.Portal.Services
 
             return billingReceptions;
         }
+
         public List<BillingReceptionModel> GetAllForUserPendingExcept(string userName, BillingReceptionAreas perfil,BillingReceptionUserProfiles PerfilVisualizacao)
         {
             var billingReceptions = repo.GetAllPeddingExcept(perfil, PerfilVisualizacao);
@@ -160,6 +162,7 @@ namespace Hydra.Such.Portal.Services
 
             return billingReceptions;
         }
+
         public List<BillingReceptionModel> GetAllForUserPending()
         {
             var billingReceptions = repo.GetAllPending();
@@ -197,6 +200,7 @@ namespace Hydra.Such.Portal.Services
             }
             return true;
         }
+
         public BillingReceptionModel UpdateWorkFlow(BillingReceptionModel item,BillingRecWorkflowModel wfItemLast, string postedByUserName)
         {
             RececaoFaturacaoWorkflow wfItem = new RececaoFaturacaoWorkflow();
@@ -220,6 +224,7 @@ namespace Hydra.Such.Portal.Services
             }
             return item;
         }
+
         public BillingReceptionModel CreateWorkFlowSend(BillingReceptionModel item, BillingRecWorkflowModel wfItemLast, string postedByUserName)
         {
             //Update Header
@@ -464,6 +469,7 @@ namespace Hydra.Such.Portal.Services
             }
             return item;
         }
+
         private bool ValidateForPosting(ref BillingReceptionModel item, NAVConfigurations _config)
         {
             bool isValid = true;
