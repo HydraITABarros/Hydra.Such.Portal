@@ -1231,6 +1231,7 @@
                         if (this.updatedata.eReasonCode === 1) {
                             this._openToast(this.updatedata.eMessage);
                             var prodUnitId = @ViewBag.ProductivityUnitId;
+
                             this.$.ajax_getgrid.body = JSON.stringify(prodUnitId);
                             this.$.ajax_getgrid.generateRequest();
                             this.$.gridneedshopping.clearCache();
