@@ -2820,6 +2820,7 @@ namespace Hydra.Such.Data.Database
             modelBuilder.Entity<FeaturesMenus>(entity =>
             {
                 entity.HasKey(e => new { e.IdFeature, e.IdMenu });
+                entity.HasOne<Menu>().WithMany(m => m.FeaturesMenus).HasForeignKey(mf => mf.IdMenu);
             });
 
             modelBuilder.Entity<FichaProduto>(entity =>
