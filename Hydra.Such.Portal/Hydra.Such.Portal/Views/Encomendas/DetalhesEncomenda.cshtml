@@ -1,0 +1,21 @@
+﻿
+@{
+    ViewData["Title"] = "Detalhes Encomenda " + @ViewBag.No;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@*@if (ViewBag.No == "" || ViewBag.No == null)
+    {
+        <h1 class="title">Criar Cliente</h1>
+    }
+    else
+    {
+        <h1 class="title">Cliente @ViewBag.No</h1>
+    }*@
+
+<link rel="import" href="/elements/encomendas/encomenda_details.html">
+
+<x-encomendadetails _no="@ViewBag.No"
+                 _reportserverurl='@ViewBag.reportServerURL'
+                 _userlogin='@ViewBag.userLogin'
+                 _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'>
+</x-encomendadetails>
