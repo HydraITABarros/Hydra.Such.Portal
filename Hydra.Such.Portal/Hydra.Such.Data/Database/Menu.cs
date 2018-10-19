@@ -17,14 +17,14 @@ namespace Hydra.Such.Data.Database
         public string RouteParameters { get; set; }
         public string HtmlAttributes { get; set; }
         public bool Active { get; set; }
+        public DateTime? CreatedAt { get; set; }
+        public string CreatedBy { get; set; }
+        public DateTime? UpdatedAt { get; set; }
+        public string UpdatedBy { get; set; }
 
         public ICollection<FeaturesMenus> FeaturesMenus { get; set; }
 
         [NotMapped]
         public ICollection<Features> Features { get; set; }
-        public DateTime? CreatedAt { get; set; }
-        public DateTime? UpdatedAt { get; set; }
-        public string CreatedBy { get; set; }
-        public string UpdatedBy { get; set; }
     }
 }

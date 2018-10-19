@@ -69,7 +69,6 @@ namespace Hydra.Such.Data.Logic.Request
                 {
                     return ctx.Requisição
                         .Include(x => x.LinhasRequisição)//("LinhasRequisição")
-                        //AROMAO 01/10/2018
                         .Include(x => x.RequisicoesRegAlteracoes)
                         .SingleOrDefault(x => x.NºRequisição == requestId);
                 }
@@ -214,6 +213,22 @@ namespace Hydra.Such.Data.Logic.Request
                 return null;
             }
         }
+
+        public static List<Requisição> GetReqByUserResponsibleForApproval(string UserName)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.Requisição.Where(x => x.ResponsávelAprovação == UserName && !x.ModeloDeRequisição.HasValue || !x.ModeloDeRequisição.Value).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+        
         #region Parse Utilities
         public static RequisiçãoHist TransferToRequisitionHist(this RequisitionViewModel item)
         {

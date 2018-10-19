@@ -53,6 +53,13 @@ namespace Hydra.Such.Portal.Controllers
                 ViewBag.UserPermissions = UPerm;
                 ViewBag.RFPerfil = userConfig.RFPerfil;
                 ViewBag.RFPerfilVisualizacao = userConfig.RFPerfilVisualizacao;
+                ViewBag.UserCanChangeDestination = userConfig.RFAlterarDestinatarios.HasValue ? userConfig.RFAlterarDestinatarios.Value : false;
+
+                bool userCanSeePending = false;
+                if (userConfig.RFPerfilVisualizacao.HasValue)
+                    userCanSeePending = userConfig.RFPerfilVisualizacao.Value == (BillingReceptionUserProfiles.Perfil | BillingReceptionUserProfiles.Tudo);
+                ViewBag.UserCanSeePending = userCanSeePending;
+
                 return View();
             }
             else
@@ -82,21 +89,21 @@ namespace Hydra.Such.Portal.Controllers
                 return RedirectToAction("AccessDenied", "Error");
             }
         }
-      
 
         public JsonResult GetBillingReceptions()
         {
             var billingReceptions = billingRecService.GetAllForUser(User.Identity.Name);
             return Json(billingReceptions);
         }
+
         public JsonResult GetBillingReceptionsHistory()
         {
-
             UserConfigurationsViewModel userConfig = DBUserConfigurations.GetById(User.Identity.Name).ParseToViewModel();
-            BillingReceptionAreas areaPendente= userConfig.RFPerfil ?? BillingReceptionAreas.Aprovisionamento;
-            var billingReceptions = billingRecService.GetAllForUserHist(User.Identity.Name,0, areaPendente);
+            BillingReceptionAreas areaPendente = userConfig.RFPerfil ?? BillingReceptionAreas.Aprovisionamento;
+            var billingReceptions = billingRecService.GetAllForUserHist(User.Identity.Name, 0, areaPendente);
             return Json(billingReceptions);
         }
+
         public JsonResult GetBillingReceptionsPendingExcept()
         {
 
@@ -107,6 +114,7 @@ namespace Hydra.Such.Portal.Controllers
             var billingReceptions = billingRecService.GetAllForUserPendingExcept(User.Identity.Name, perfil, perfilVisulalizacao);
             return Json(billingReceptions);
         }
+
         public JsonResult GetBillingReceptionsPending()
         {
 
@@ -123,7 +131,6 @@ namespace Hydra.Such.Portal.Controllers
             return Json(billingReception);
         }
 
-      
         [HttpPost]
         public JsonResult CreateBillingReception([FromBody] BillingReceptionModel item)
         {
@@ -265,7 +272,6 @@ namespace Hydra.Such.Portal.Controllers
             return Json(updatedItem);
         }
 
-
         [HttpPost]
         public JsonResult SendBillingReception([FromBody] BillingReceptionModel item)
         {
@@ -303,7 +309,6 @@ namespace Hydra.Such.Portal.Controllers
             return Json(updatedItem);
         }
 
-       
         [HttpPost]
         public JsonResult GetWorkflowAttached([FromBody] BillingRecWorkflowModel item)
         {
@@ -311,7 +316,6 @@ namespace Hydra.Such.Portal.Controllers
             return Json(items);
         }
 
-         
         [HttpPost]
         public JsonResult UpdateWorkFlow([FromBody] BillingReceptionModel item)
         {
@@ -360,7 +364,8 @@ namespace Hydra.Such.Portal.Controllers
             {
                 try
                 {
-                    postedDocument = billingRecService.PostDocument(item, User.Identity.Name, _config, _configws);
+                    UserConfigurationsViewModel userConfig = DBUserConfigurations.GetById(User.Identity.Name).ParseToViewModel();
+                    postedDocument = billingRecService.PostDocument(item, User.Identity.Name, userConfig.NumSeriePreFaturasCompra, _config, _configws);
                     item = postedDocument;
                 }
                 catch (Exception ex)
@@ -546,7 +551,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpGet]
         public JsonResult GetAreasUPUAS()
         {
-            List<DDMessageRelated> result = billingRecService.GetAreasUPUAS().Select(x => new DDMessageRelated()
+            List<DDMessageRelated> result = billingRecService.GetAreasUPUAS(string.Empty).Select(x => new DDMessageRelated()
             {
                 id = ExtractAreaFromConfigId(x.Codigo),
                 value = x.CodArea,
@@ -564,7 +569,8 @@ namespace Hydra.Such.Portal.Controllers
             List<DDMessageRelated> result = billingRecService.GetDimensionsForArea(areaId).Select(x => new DDMessageRelated()
             {
                 id = x.CodCentroResponsabilidade,
-                value = x.CodCentroResponsabilidade
+                value = x.CodCentroResponsabilidade,
+                extra = x.Destinatario
             })
             .Distinct()
             .ToList();
@@ -577,11 +583,14 @@ namespace Hydra.Such.Portal.Controllers
         { 
             string area = string.Empty;
             bool byNumber = false;
+            string respCenter = string.Empty;
 
             if (requestParams != null)
             {
                 area = requestParams["area"].ToString();
                 bool.TryParse(requestParams["byNumber"].ToString(), out byNumber);
+                if(requestParams["respCenter"] != null)
+                    respCenter = requestParams["respCenter"].ToString();
             }
 
             List<DDMessageRelated> result = null;
@@ -597,7 +606,7 @@ namespace Hydra.Such.Portal.Controllers
             }
             else
             {
-                result = billingRecService.GetUsersToResendByAreaName(area).Select(x => new DDMessageRelated()
+                result = billingRecService.GetUsersToResendByAreaName(area, respCenter).Select(x => new DDMessageRelated()
                 {
                     id = x.Destinatario,
                     value = x.Destinatario
@@ -1026,6 +1035,7 @@ namespace Hydra.Such.Portal.Controllers
         [Route("Faturacao/ExistFile")]
         public JsonResult ExistFile()
         {
+            ErrorHandler result = new ErrorHandler();
             try
             {
               
@@ -1039,15 +1049,24 @@ namespace Hydra.Such.Portal.Controllers
 
                     if (System.IO.File.Exists(path))
                     {
-                        throw new System.ArgumentException();
+                        result.eReasonCode = 2;
+                        result.eMessage = "O ficheiro " + file.FileName + " já existe";
+                    }
+                    else
+                    {
+                        using (FileStream dd = new FileStream(path, FileMode.CreateNew))
+                        {
+                            file.CopyTo(dd);
+                            dd.Dispose();
+                        }
                     }
                 } 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                result.eMessage = "Ocorreu um erro ";
             }
-            return Json("");
+            return Json(result);
         }
 
         public JsonResult UploadFile(BillingRecWorkflowModel workflow)

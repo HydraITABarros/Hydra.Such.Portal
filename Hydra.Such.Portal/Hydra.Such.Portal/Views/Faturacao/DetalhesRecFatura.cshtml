@@ -85,7 +85,7 @@
         <iron-ajax auto url="/Faturacao/GetAreas" last-response="{{ Areas }}" method="get" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax auto url="/Faturacao/GetAreasUPUAS" last-response="{{ AreasUPUAS }}" method="get" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Faturacao/GetDimensionsForArea" last-response="{{ CentrosResponsabilidade }}" method="post" id="getDimensions_ajax" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Faturacao/GetUsersToResend" last-response="{{ DestinatariosReenvio }}" method="post" id="destinatariosReenvio_ajax" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Faturacao/GetUsersToResend" last-response="{{ DestinatariosReenvio }}" method="post" id="destinatariosReenvio_ajax" handle-as="json" content-type="application/json" on-response="_destinatariosReenvioResponse"></iron-ajax>
         <iron-ajax url="/Faturacao/GetAnswers" last-response="{{ RespostasPorPerfil }}" id="respostasPerfil_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Faturacao/GetUAProblems" last-response="{{ UAProblemas }}" id="uaProblemas_ajax" method="get" handle-as="json" content-type="application/json"></iron-ajax>
 
@@ -212,29 +212,29 @@
                    content-type="application/json"
                    on-response="_updateResponse">
         </iron-ajax>
-        <iron-ajax url="/Faturacao/GetBillingReceptionsHistory"
+        @*<iron-ajax url="/Faturacao/GetBillingReceptionsHistory"
                    last-response="{{ getViewResponse }}"
                    id="getHistory_ajax"
                    method="post"
                    handle-as="json"
                    content-type="application/json">
-        </iron-ajax>
+        </iron-ajax>*@
 
-        <iron-ajax url="/Faturacao/GetBillingReceptionsPending"
+        @*<iron-ajax url="/Faturacao/GetBillingReceptionsPending"
                    last-response="{{ getViewResponse }}"
                    id="getPendingTotal_ajax"
                    method="post"
                    on-response="_getPendingTotalReponse"
                    handle-as="json"
                    content-type="application/json">
-        </iron-ajax>
-        <iron-ajax url="/Faturacao/GetBillingReceptionsPendingExcept"
+        </iron-ajax>*@
+        @*<iron-ajax url="/Faturacao/GetBillingReceptionsPendingExcept"
                    last-response="{{ getViewResponse }}"
                    id="getPending_ajax"
                    method="post"
                    handle-as="json"
                    content-type="application/json">
-        </iron-ajax>
+        </iron-ajax>*@
         <iron-ajax url="/Faturacao/OpenOrderNav"
                    last-response="{{ updatedItem }}"
                    id="openEncomenda_ajax"
@@ -273,13 +273,13 @@
                     <paper-button class="tablinks" on-tap="_postNotaCredito"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Notas de Crédito</paper-button>
                 </template>
                 <template is="dom-if" if="{{ !_isCreate }}">
-                    <such-dropdown-menu style="display: {{ _showOptionsForProvisioning }};" on-value-changed="_provisioningOptionSelected" title="Opções" items='[[ _provisioningMenuItems ]]' hidden="{{_showHiddenProvisioning}}"></such-dropdown-menu>
+                    @*<such-dropdown-menu style="display: {{ _showOptionsForProvisioning }};" on-value-changed="_provisioningOptionSelected" title="Opções" items='[[ _provisioningMenuItems ]]' hidden="{{_showHiddenProvisioning}}"></such-dropdown-menu>*@
                     <such-dropdown-menu style="display: {{ _showOptionsForAccounting }};" on-value-changed="_accountingOptionSelected" title="Opções" items='[[ _accountingMenuItems ]]' hidden="{{_showHiddenAccounting}}"></such-dropdown-menu>
                     <paper-button class="tablinks" on-tap="_openNEncomenda"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Enc. por Nº</paper-button>
                     <paper-button class="tablinks" on-tap="_openRequisicao"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Enc. Requisição</paper-button>
                     <paper-button class="tablinks" on-tap="_openDocument"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Documento</paper-button>
-                    <paper-button class="tablinks" on-tap="_openHistory"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Histórico</paper-button>
-                    <paper-button class="tablinks" on-tap="_openPending"><i class="fa fa-eye" aria-hidden="true" hidden="{{_showHiddenPendingList}}"></i>&nbsp;Ver Pendente</paper-button>
+                    @*<paper-button class="tablinks" on-tap="_openHistory"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Histórico</paper-button>*@
+                    @*<paper-button class="tablinks" on-tap="_openPending"><i class="fa fa-eye" aria-hidden="true" hidden="{{_showHiddenPendingList}}"></i>&nbsp;Ver Pendente</paper-button>*@
                 </template>
             </template>
 
@@ -725,7 +725,8 @@
                         <vaadin-upload id="uploadRequest" target="/Faturacao/ExistFile"
                                        method="POST"
                                        headers="{'Accept': 'application/json'}"
-                                       timeout=15000 files="{{files}}"></vaadin-upload>
+                                       timeout=15000 files="{{files}}"
+                                       on-upload-response="_uploadResponse"></vaadin-upload>
                     </div>
                     <div class="col-sm-3" hidden="{{ !_isAnexarFicheiro }}">
                         <vaadin-text-field label="Descrição" type="text" id="txtDescricaoAnexo"></vaadin-text-field>
@@ -819,7 +820,7 @@
                         </vaadin-combo-box>
                     </div>
                     <div class="col-sm-3">
-                        <vaadin-combo-box items="[[ CentrosResponsabilidade ]]" id="cmbCentrosResponsabilidade" item-value-path="id" item-label-path="value" label="Centro Responsabilidade" value="{{centroResp}}">
+                        <vaadin-combo-box items="[[ CentrosResponsabilidade ]]" id="cmbCentrosResponsabilidade" item-value-path="id" item-label-path="value" label="Centro Responsabilidade" value="{{centroResp}}" on-value-changed="_respCenterChanged">
                             <template>
                                 <paper-icon-item>
                                     <paper-item-body two-line>
@@ -882,7 +883,7 @@
                 </div>
             </paper-dialog>
 
-            <paper-dialog id="dialogViewHist_Pending" class="dialgoBox" modal>
+            @*<paper-dialog id="dialogViewHist_Pending" class="dialgoBox" modal>
                 <div class="row break_clear" hidden="{{_showOptionDestitation}}">
                     <div class="col-sm-3">
                         <vaadin-text-field label="Área " value="{{_rfperfil}}" type="text" id="txtAreaDesti" disabled></vaadin-text-field>
@@ -1118,7 +1119,7 @@
                 </vaadin-grid>
                 <paper-button class="btnRemove" dialog-dismiss>&nbsp; Fechar</paper-button>
 
-            </paper-dialog>
+            </paper-dialog>*@
         </div>
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
@@ -1206,10 +1207,10 @@
                         type: Boolean,
                         value: false,
                     },
-                    _showOptionDestitation: {
-                        type: Boolean,
-                        value: true,
-                    },
+                    //_showOptionDestitation: {
+                    //    type: Boolean,
+                    //    value: true,
+                    //},
                     _showHiddenAccounting: {
                         type: Boolean,
                         value: true,
@@ -1218,10 +1219,10 @@
                         type: Boolean,
                         value: true,
                     },
-                    _showHiddenPendingList: {
-                        type: Boolean,
-                        value: true,
-                    },
+                    //_showHiddenPendingList: {
+                    //    type: Boolean,
+                    //    value: true,
+                    //},
                     _rfperfil: {
                         type: String,
                         value: "",
@@ -1258,10 +1259,10 @@
                         type: Array,
                         value: [{ value: 1, description: "Pendente" }, { value: 2, description: "Contabilizado" }, { value: 4, description: "Sem Efeito" }, { value: 5, description: "Resolvido" }],
                     },
-                    _provisioningMenuItems: {
-                        type: Array,
-                        value: [{ value: 1, description: "Alterar Destinatários" }, { value: 2, description: "Pendentes Áreas" }],
-                    },
+                    //_provisioningMenuItems: {
+                    //    type: Array,
+                    //    value: [{ value: 1, description: "Alterar Destinatários" }, { value: 2, description: "Pendentes Áreas" }],
+                    //},
                     _uploadurl: {
                         type: String,
                         value: @Html.Raw(Json.Serialize(ViewBag.UploadURL)),
@@ -1274,6 +1275,15 @@
                 observers: [
                     '_preventDocumentDuplicates(data.dataDocFornecedor, data.numDocFornecedor, data.codFornecedor)'
                 ],
+                _uploadResponse: function (event) {
+
+                    console.log('upload xhr after server response: ', event.detail.xhr);
+                    event.detail.file.error = 'Duplicado.';
+                    event.detail.xhr.status = 500;
+                    // Interpret any server response as success:
+                    // event.detail.xhr.status = 200;
+                    
+                },
                 ready: function () {
                     if (this._billingReceptionId != null && this._billingReceptionId != "") {
                         this._isCreate = false;
@@ -1338,7 +1348,6 @@
                         this._hiddeButtons();
                     }
                 },
-
                 _hiddeButtons: function () {
                     if (this.data.estado == 1) {
                         this._nameButtonSend = "Enviar";
@@ -1365,9 +1374,9 @@
                         this._showHiddenProvisioning = false;
                         this._hiddeSendButton = false;
                     }
-                    if (this._RFPerfilVisualizacao == "Todos" || this._RFPerfilVisualizacao == "Perfil") {
-                        this._showHiddenPendingList = false;
-                    }
+                    //if (this._RFPerfilVisualizacao == "Todos" || this._RFPerfilVisualizacao == "Perfil") {
+                    //    this._showHiddenPendingList = false;
+                    //}
                 },
 
                 _supplierSelected: function (e) {
@@ -1887,23 +1896,29 @@
 
                 _postInvoiceCF: function () {
                     if (this._validateInputForAccounting()) {
+                        var itemId = this.data.id;
                         this.data.id = "CF" + this.data.id;
                         this.$.page_billing_ajax.body = JSON.stringify(this.data);
                         this.$.page_billing_ajax.generateRequest();
+                        this.data.id = itemId;
                     }
                 },
                 _postInvoiceCP: function () {
                     if (this._validateInputForAccounting()) {
+                        var itemId = this.data.id;
                         this.data.id = "CP" + this.data.id;
                         this.$.page_billing_ajax.body = JSON.stringify(this.data);
                         this.$.page_billing_ajax.generateRequest();
+                        this.data.id = itemId;
                     }
                 },
                 _postNotaCredito: function () {
                     if (this._validateInputForAccounting()) {
+                        var itemId = this.data.id;
                         this.data.id = "CC" + this.data.id;
                         this.$.page_billing_ajax.body = JSON.stringify(this.data);
                         this.$.page_billing_ajax.generateRequest();
+                        this.data.id = itemId;
                     }
                 },
                 _dlgSendAnswer: function () {
@@ -2057,21 +2072,21 @@
                     ajax_request.generateRequest();
                 },
 
-                _updateDestinationResponse: function (e) {
-                    if (e.detail.status === 200) {
-                        if (this.updateDestinItem != undefined) {
+                //_updateDestinationResponse: function (e) {
+                //    if (e.detail.status === 200) {
+                //        if (this.updateDestinItem != undefined) {
 
-                            this.$.getPendingTotal_ajax.body = JSON.stringify(this.data);
-                            this.$.getPendingTotal_ajax.generateRequest();
-                            this._openToast("Destinatário Actualizado");
-                        } else {
-                            this._openToastError(this.updateDestinItem.eMessage);
-                        }
-                    }
-                    else {
-                        this._openToastError("O servidor não conseguiu processar o pedido.");
-                    }
-                },
+                //            this.$.getPendingTotal_ajax.body = JSON.stringify(this.data);
+                //            this.$.getPendingTotal_ajax.generateRequest();
+                //            this._openToast("Destinatário Actualizado");
+                //        } else {
+                //            this._openToastError(this.updateDestinItem.eMessage);
+                //        }
+                //    }
+                //    else {
+                //        this._openToastError("O servidor não conseguiu processar o pedido.");
+                //    }
+                //},
                 _viewLinkResponse: function (e) {
                     if (e.detail.status === 200) {
                         if (this.updatedItem.eReasonCode == "1") {
@@ -2093,19 +2108,19 @@
                         this._openToastError("O servidor não conseguiu processar o pedido.");
                     }
                 },
-                _getPendingTotalReponse: function (e) {
-                    if (e.detail.status === 200) {
-                        if (this.getViewResponse != undefined) {
-                            this.$.dialogViewHist_Pending.open();
-                        }
-                        else {
-                            this._openToastError(this.updatedItem.eMessage);
-                        }
-                    }
-                    else {
-                        this._openToastError("O servidor não conseguiu processar o pedido.");
-                    }
-                },
+                //_getPendingTotalReponse: function (e) {
+                //    if (e.detail.status === 200) {
+                //        if (this.getViewResponse != undefined) {
+                //            this.$.dialogViewHist_Pending.open();
+                //        }
+                //        else {
+                //            this._openToastError(this.updatedItem.eMessage);
+                //        }
+                //    }
+                //    else {
+                //        this._openToastError("O servidor não conseguiu processar o pedido.");
+                //    }
+                //},
                 _goBack: function (e) {
                     window.history.back();
                 },
@@ -2135,26 +2150,26 @@
 
 
                 },
-                _provisioningOptionSelected: function (e) {
-                    if (e.detail.value == 0)
-                        return;
-                    var item = e.detail.value;
+                //_provisioningOptionSelected: function (e) {
+                //    if (e.detail.value == 0)
+                //        return;
+                //    var item = e.detail.value;
 
-                    if (item == null)
-                        return;
-                    switch (item.value) {
-                        case 1:
-                            this._showOptionDestitation = false;
-                            this.$.getPendingTotal_ajax.body = JSON.stringify(this.data);
-                            this.$.getPendingTotal_ajax.generateRequest();
-                            break;
-                        case 2:
-                            this._showOptionDestitation = true;
-                            this.$.getPendingTotal_ajax.body = JSON.stringify(this.data);
-                            this.$.getPendingTotal_ajax.generateRequest();
-                            break;
-                    }
-                },
+                //    if (item == null)
+                //        return;
+                //    switch (item.value) {
+                //        case 1:
+                //            this._showOptionDestitation = false;
+                //            this.$.getPendingTotal_ajax.body = JSON.stringify(this.data);
+                //            this.$.getPendingTotal_ajax.generateRequest();
+                //            break;
+                //        case 2:
+                //            this._showOptionDestitation = true;
+                //            this.$.getPendingTotal_ajax.body = JSON.stringify(this.data);
+                //            this.$.getPendingTotal_ajax.generateRequest();
+                //            break;
+                //    }
+                //},
                 _accountingOptionSelected: function (e) {
                     if (e.detail.value == 0)
                         return;
@@ -2214,20 +2229,20 @@
                     }
                 },
 
-                _openHistory: function (e) {
-                    this.getViewResponse = null;
-                    this._showOptionDestitation = true;
-                    this.$.dialogViewHist_Pending.open();
-                    this.$.getHistory_ajax.body = JSON.stringify(this.data);
-                    this.$.getHistory_ajax.generateRequest();
-                },
-                _openPending: function (e) {
-                    this.getViewResponse = null;
-                    this._showOptionDestitation = true;
-                    this.$.dialogViewHist_Pending.open();
-                    this.$.getPending_ajax.body = JSON.stringify(this.data);
-                    this.$.getPending_ajax.generateRequest();
-                },
+                //_openHistory: function (e) {
+                //    this.getViewResponse = null;
+                //    this._showOptionDestitation = true;
+                //    this.$.dialogViewHist_Pending.open();
+                //    this.$.getHistory_ajax.body = JSON.stringify(this.data);
+                //    this.$.getHistory_ajax.generateRequest();
+                //},
+                //_openPending: function (e) {
+                //    this.getViewResponse = null;
+                //    this._showOptionDestitation = true;
+                //    this.$.dialogViewHist_Pending.open();
+                //    this.$.getPending_ajax.body = JSON.stringify(this.data);
+                //    this.$.getPending_ajax.generateRequest();
+                //},
                 _openNEncomenda: function (e) {
                     if (this.$.sbOrders.value != null && this.$.sbOrders.value != "") {
                         this.$.openEncomenda_ajax.body = JSON.stringify(this.data);
@@ -2327,9 +2342,16 @@
                         this._loadUsersForArea(area);
                     }
                 },
-                _loadUsersForArea:function(area){
+                _respCenterChanged: function (e) {
+                    var selectedDimension = this.$.cmbCentrosResponsabilidade.selectedItem;
+                    if (selectedDimension) {
+                        this.$.cmbDestinatariosReenvio.value = selectedDimension.extra;
+                        this._loadUsersForArea(this.areaUPUAS, selectedDimension.value);
+                    }
+                },
+                _loadUsersForArea:function(area, respCenter){
                     this._usersLoadedByAreaNumber = false;
-                    this.$.destinatariosReenvio_ajax.body = JSON.stringify({"area" : area, "byNumber" : this._usersLoadedByAreaNumber});
+                    this.$.destinatariosReenvio_ajax.body = JSON.stringify({ "area": area, "byNumber": this._usersLoadedByAreaNumber, "respCenter": respCenter });
                     this.$.destinatariosReenvio_ajax.generateRequest();
 
                     this.$.cmbUAProblems.value = "";
@@ -2341,17 +2363,26 @@
                         if(selectedArea)
                         {
                             this._usersLoadedByAreaNumber = true;
-                            this.$.destinatariosReenvio_ajax.body = JSON.stringify({"area" : selectedArea.id, "byNumber" : this._usersLoadedByAreaNumber});
+                            this.$.destinatariosReenvio_ajax.body = JSON.stringify({ "area": selectedArea.id, "byNumber": this._usersLoadedByAreaNumber, "respCenter": this.centroResp});
                             this.$.destinatariosReenvio_ajax.generateRequest();
                         }
                     }
                     else if(this._usersLoadedByAreaNumber){
                         var selectedArea = this.$.cmbAreasUPUAS.selectedItem;
                         if(selectedArea){
-                            this._loadUsersForArea(selectedArea.value);
+                            this._loadUsersForArea(selectedArea.value, this.centroResp);
                         }
                     }
-                }
+                },
+                _destinatariosReenvioResponse: function (e) {
+                    if (e.detail.status === 200 && this.DestinatariosReenvio) {
+                        if (this.destinatariosReenvio != "") {
+                            var user = this.DestinatariosReenvio.find(x => x.value == this.destinatariosReenvio)
+                            if (!user)
+                                this.destinatariosReenvio = "";
+                        }
+                    }
+                },
             });
         });
     </script>

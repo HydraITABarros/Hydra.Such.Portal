@@ -63,11 +63,10 @@ namespace Hydra.Such.Portal.Controllers
         {
             //UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Requisições);
             UserAccessesViewModel UPerm = new UserAccessesViewModel();
-
             UPerm.Area = 1;
             UPerm.Create = true;
             UPerm.Delete = true;
-            //UPerm.Feature =
+            UPerm.Feature = (int)Enumerations.Features.Requisições;
             UPerm.IdUser = User.Identity.Name;
             UPerm.Read = true;
             UPerm.Update = true;
@@ -312,9 +311,19 @@ namespace Hydra.Such.Portal.Controllers
 
                     CLToDelete.ForEach(x => DBPreRequesitionLines.Delete(x));
 
-                    data.Lines.ForEach(x =>
+                    //data.Lines.ForEach(x =>
+                    for (int i = 0; i < data.Lines.Count;i++)
                     {
+                        PreRequisitionLineViewModel x = data.Lines[i];
                         LinhasPréRequisição CLine = PreRequesitionLines.Where(y => x.PreRequisitionLineNo == y.NºPréRequisição && x.LineNo == y.NºLinha).FirstOrDefault();
+
+                        //NAVProjectsViewModel Project = DBNAV2017Projects.GetAll(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, x.ProjectNo).FirstOrDefault();
+                        //if (CLine.CódigoRegião == "")
+                        //    CLine.CódigoRegião = Project.RegionCode ?? "";
+                        //if (CLine.CódigoÁreaFuncional == "")
+                        //    CLine.CódigoÁreaFuncional = Project.AreaCode ?? "";
+                        //if (CLine.CódigoCentroResponsabilidade == "")
+                        //    CLine.CódigoCentroResponsabilidade = Project.CenterResponsibilityCode ?? "";
 
                         if (CLine != null)
                         {
@@ -338,6 +347,7 @@ namespace Hydra.Such.Portal.Controllers
                             CLine.QtdPorUnidadeMedida = x.QtyByUnitOfMeasure;
                             CLine.QuantidadeRequerida = x.QuantityRequired;
                             CLine.QuantidadePendente = x.QuantityPending;
+                            CLine.QuantidadeInicial = x.QuantityToRequire;
                             CLine.CustoUnitário = x.UnitCost;
                             CLine.PreçoUnitárioVenda = x.SellUnityPrice;
                             CLine.ValorOrçamento = x.BudgetValue;
@@ -358,9 +368,11 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         else
                         {
-                            x = DBPreRequesitionLines.ParseToViewModel(DBPreRequesitionLines.Create(DBPreRequesitionLines.ParseToDB(x)));
+                            data.Lines[i] = DBPreRequesitionLines.ParseToViewModel(DBPreRequesitionLines.Create(DBPreRequesitionLines.ParseToDB(x)));
                         }
-                    });
+                    }//);
+
+                    //data = DBPreRequesition.ParseToViewModel(DBPreRequesition.GetByNo(data.PreRequisitionNo));
 
                     data.eReasonCode = 1;
                     data.eMessage = "Linhas de Pré-Requisição atualizadas com sucesso.";
@@ -372,6 +384,7 @@ namespace Hydra.Such.Portal.Controllers
                 data.eMessage = "Ocorreu um erro ao atualizar as linhas de Pré-Requisição.";
                 data.eMessages.Add(new TraceInformation(TraceType.Error, ex.ToString()));
             }
+
             return Json(data);
         }
 
@@ -467,6 +480,17 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         if (linha.QuantityToRequire > 0)
                         {
+                            NAVProjectsViewModel Project = DBNAV2017Projects.GetAll(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, linha.ProjectNo).FirstOrDefault();
+                            if (Project != null)
+                            {
+                                if (string.IsNullOrEmpty(linha.RegionCode))
+                                    linha.RegionCode = Project.RegionCode ?? "";
+                                if (string.IsNullOrEmpty(linha.FunctionalAreaCode))
+                                    linha.FunctionalAreaCode = Project.AreaCode ?? "";
+                                if (string.IsNullOrEmpty(linha.CenterResponsibilityCode))
+                                    linha.CenterResponsibilityCode = Project.CenterResponsibilityCode ?? "";
+                            }
+
                             if (DBPreRequesitionLines.Update(DBPreRequesitionLines.ParseToDB(linha)) != null)
                             {
                                 result.eReasonCode = 1;
@@ -572,6 +596,17 @@ namespace Hydra.Such.Portal.Controllers
         #endregion
 
         #region CRUD
+
+        [HttpPost]
+        public JsonResult GetPreReq([FromBody] string preReqID)
+        {
+            PreRequesitionsViewModel result = new PreRequesitionsViewModel();
+
+            if (!string.IsNullOrEmpty(preReqID))
+                result = DBPreRequesition.ParseToViewModel(DBPreRequesition.GetByNo(preReqID));
+
+            return Json(result);
+        }
 
         [HttpPost]
         public JsonResult CreateNewForThisUser([FromBody] JObject requestParams)
@@ -985,7 +1020,7 @@ namespace Hydra.Such.Portal.Controllers
             //requisition = DBRequest.GetReqByUserAreaStatus(User.Identity.Name, states);
             requisition = DBRequest.GetReqByUser(User.Identity.Name);
             List<RequisitionViewModel> result = new List<RequisitionViewModel>();
-            List<ApprovalMovementsViewModel> AproveList = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAllAssignedToUserFilteredByStatus(User.Identity.Name, 1));
+            List<ApprovalMovementsViewModel> AproveList = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAll()); //.GetAllAssignedToUserFilteredByStatus(User.Identity.Name, 1));
             if (requisition != null)
             {
                 requisition.ForEach(x => result.Add(x.ParseToViewModel()));
@@ -1015,7 +1050,61 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             foreach (RequisitionViewModel req in result)
                             {
-                                if (apmov.Number == req.RequisitionNo)
+                                if (apmov.Number == req.RequisitionNo && (apmov.Status == 1 || apmov.Status == 2))
+                                {
+                                    req.SentReqToAprove = false;
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
+            return Json(result.OrderByDescending(x => x.RequisitionNo));
+        }
+
+        public JsonResult GetReqByUserResponsibleForApproval()
+        {
+            List<Requisição> requisition = null;
+            //List<RequisitionStates> states = new List<RequisitionStates>()
+            //{
+            //    RequisitionStates.Pending,
+            //    RequisitionStates.Rejected
+            //};
+            //requisition = DBRequest.GetReqByUserAreaStatus(User.Identity.Name, states);
+            requisition = DBRequest.GetReqByUserResponsibleForApproval(User.Identity.Name);
+            List<RequisitionViewModel> result = new List<RequisitionViewModel>();
+            List<ApprovalMovementsViewModel> AproveList = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAll()); //.GetAllAssignedToUserFilteredByStatus(User.Identity.Name, 1));
+            if (requisition != null)
+            {
+                requisition.ForEach(x => result.Add(x.ParseToViewModel()));
+                if (result.Count > 0)
+                {
+                    foreach (RequisitionViewModel item in result)
+                    {
+                        if (item.State == RequisitionStates.Pending || item.State == RequisitionStates.Rejected)
+                        {
+                            item.SentReqToAprove = true;
+                        }
+                        else
+                        {
+                            item.SentReqToAprove = false;
+                        }
+
+                        if (item.ApprovalDate != null)
+                        {
+                            item.ApprovalDateString = item.ApprovalDate.Value.ToString("yyyy-MM-dd");
+                        }
+
+                        item.LocalCode = DBRequestLine.GetByRequisitionId(item.RequisitionNo).FirstOrDefault()?.CódigoLocalização;
+                    }
+                    if (AproveList != null && AproveList.Count > 0)
+                    {
+                        foreach (ApprovalMovementsViewModel apmov in AproveList)
+                        {
+                            foreach (RequisitionViewModel req in result)
+                            {
+                                if (apmov.Number == req.RequisitionNo && (apmov.Status == 1 || apmov.Status == 2))
                                 {
                                     req.SentReqToAprove = false;
                                 }
@@ -1184,6 +1273,7 @@ namespace Hydra.Such.Portal.Controllers
                                     Description2 = line.Description2,
                                     UnitMeasureCode = line.UnitMeasureCode,
                                     QuantityToRequire = line.QuantityToRequire,
+                                    QuantidadeInicial = line.QuantidadeInicial,
                                     UnitCost = line.UnitCost,
                                     ProjectNo = line.ProjectNo,
                                     MaintenanceOrderLineNo = line.MaintenanceOrderLineNo,
@@ -1266,6 +1356,7 @@ namespace Hydra.Such.Portal.Controllers
                                     Description2 = line.Description2,
                                     UnitMeasureCode = line.UnitMeasureCode,
                                     QuantityToRequire = line.QuantityToRequire,
+                                    QuantidadeInicial = line.QuantidadeInicial,
                                     UnitCost = line.UnitCost,
                                     ProjectNo = line.ProjectNo,
                                     MaintenanceOrderLineNo = line.MaintenanceOrderLineNo,
@@ -1463,14 +1554,14 @@ namespace Hydra.Such.Portal.Controllers
 
             List<ConfiguraçãoAprovações> approv = DBApprovalConfigurations.GetAll();
 
-            List<ApprovalMovementsViewModel> result = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAllAssignedToUserFilteredByStatus(User.Identity.Name, 1));
+            List<ApprovalMovementsViewModel> result = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAll());// .GetAllAssignedToUserFilteredByStatus(User.Identity.Name, 1));
 
             if (result != null && result.Count > 0)
             {
                 foreach (ApprovalMovementsViewModel req in result)
                 {
-                    if (req.Number == ReqNo)
-                    {
+                    if (req.Number == ReqNo && (req.Status == 1 || req.Status == 2))
+                        {
                         Error = "Esta Requisição já está à espera de Aprovação.";
                     }
                 }
@@ -1502,31 +1593,43 @@ namespace Hydra.Such.Portal.Controllers
 
             if (ApprovalMovResult.eReasonCode != 3 && ApprovalMovResult.eReasonCode != 2)
             {
-                ApprovalMovResult.eReasonCode = 1;
-                ApprovalMovResult.eMessage = "Foi iniciado o processo de aprovação para esta requisição";
+                createReq.Estado = (int)RequisitionStates.Pending;
+                createReq.UtilizadorModificação = User.Identity.Name;
+                if (DBRequest.Update(createReq) != null)
+                {
+                    ApprovalMovResult.eReasonCode = 1;
+                    ApprovalMovResult.eMessage = "Foi iniciado o processo de aprovação para esta requisição";
+                }
+                else
+                {
+                    ApprovalMovResult.eReasonCode = 4;
+                    ApprovalMovResult.eMessage = "Ocorreu um erro ao atualizar o estado da Requisição.";
+                }
             }
             return Json(ApprovalMovResult);
         }
 
 
         [HttpPost]
-        public JsonResult GetUnitCostLinha([FromBody] PreRequisitionLineViewModel linha)
+        public JsonResult GetProductInfo([FromBody] PreRequisitionLineViewModel linha)
         {
-            NAVStockKeepingUnitViewModel stock = new NAVStockKeepingUnitViewModel();
+            NAVProductsViewModel product = new NAVProductsViewModel();
 
             try
             {
-                if (linha != null && !string.IsNullOrEmpty(linha.LocalCode) && !string.IsNullOrEmpty(linha.Code))
+                if (!string.IsNullOrEmpty(linha.Code))
                 {
-                    NAVLocationsViewModel localizacao = DBNAV2017Locations.GetAllLocations(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName).Where(x => x.Code == linha.LocalCode).FirstOrDefault();
+                    product = DBNAV2017Products.GetAllProducts(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, linha.Code).FirstOrDefault();
 
-                    if (localizacao != null)
+                    if (product.InventoryValueZero == 1)
                     {
-                        if (localizacao.ArmazemCDireta == 0) //ARMAZEM DE STOCK
-                        {
-                            stock = DBNAV2017StockKeepingUnit.GetByProductsNo(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, linha.Code).Where(x => x.LocationCode == linha.LocalCode).FirstOrDefault();
-
-                        }
+                        product.LocationCode = DBConfigurations.GetById(1).ArmazemCompraDireta;
+                    }
+                    else
+                    {
+                        NAVStockKeepingUnitViewModel localizacao = DBNAV2017StockKeepingUnit.GetByProductsNo(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, linha.Code).FirstOrDefault();
+                        product.UnitCost = localizacao.UnitCost;
+                        product.LocationCode = localizacao.LocationCode;
                     }
                 }
             }
@@ -1535,9 +1638,37 @@ namespace Hydra.Such.Portal.Controllers
                 return Json(null);
             }
 
-            return Json(stock);
+            return Json(product);
         }
-        
+
+        [HttpPost]
+        public JsonResult GetProductLocation([FromBody] PreRequisitionLineViewModel linha)
+        {
+            NAVProductsViewModel product = new NAVProductsViewModel();
+
+            try
+            {
+                product = DBNAV2017Products.GetAllProducts(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, linha.Code).FirstOrDefault();
+
+                if (product.InventoryValueZero == 1)
+                {
+                    product.LocationCode = DBConfigurations.GetById(1).ArmazemCompraDireta;
+                }
+                else
+                {
+                    NAVStockKeepingUnitViewModel localizacao = DBNAV2017StockKeepingUnit.GetByProductsNo(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, linha.Code).FirstOrDefault();
+                    product.UnitCost = localizacao.UnitCost;
+                    product.LocationCode = localizacao.LocationCode;
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(null);
+            }
+
+            return Json(product);
+        }
+
         #endregion
 
         #region Numeração Requisição
@@ -1597,6 +1728,17 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 System.IO.File.Delete(path);
                             }
+
+                            if (DBAttachments.GetAll().Where(x => x.TipoOrigem == 1 && x.NºOrigem == id).Count() > 0)
+                            {
+                                PréRequisição preREQ = DBPreRequesition.GetByNo(id);
+                                if (preREQ != null)
+                                {
+                                    preREQ.CabimentoOrçamental = true;
+                                    preREQ.UtilizadorModificação = User.Identity.Name;
+                                    DBPreRequesition.Update(preREQ);
+                                }
+                            }
                         }
                     }
                     catch (Exception ex)
@@ -1640,6 +1782,27 @@ namespace Hydra.Such.Portal.Controllers
                 System.IO.File.Delete(_config.FileUploadFolder + requestParams.Url);
                 DBAttachments.Delete(DBAttachments.ParseToDB(requestParams));
                 requestParams.eReasonCode = 1;
+
+                if (DBAttachments.GetAll().Where(x => x.TipoOrigem == 1 && x.NºOrigem == requestParams.DocNumber).Count() > 0)
+                {
+                    PréRequisição preREQ = DBPreRequesition.GetByNo(requestParams.DocNumber);
+                    if (preREQ != null)
+                    {
+                        preREQ.CabimentoOrçamental = true;
+                        preREQ.UtilizadorModificação = User.Identity.Name;
+                        DBPreRequesition.Update(preREQ);
+                    }
+                }
+                else
+                {
+                    PréRequisição preREQ = DBPreRequesition.GetByNo(requestParams.DocNumber);
+                    if (preREQ != null)
+                    {
+                        preREQ.CabimentoOrçamental = false;
+                        preREQ.UtilizadorModificação = User.Identity.Name;
+                        DBPreRequesition.Update(preREQ);
+                    }
+                }
 
             }
             catch (Exception ex)

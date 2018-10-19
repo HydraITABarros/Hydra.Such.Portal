@@ -8,6 +8,7 @@ namespace Hydra.Such.Data.ViewModel.Approvals
     {
         public int ApprovalGroup { get; set; }
         public string ApprovalUser { get; set; }
+        public bool? EnviarEmailAlerta { get; set; }
         public DateTime? CreateDate { get; set; }
         public string CreateUser { get; set; }
         public DateTime? UpdateDate { get; set; }

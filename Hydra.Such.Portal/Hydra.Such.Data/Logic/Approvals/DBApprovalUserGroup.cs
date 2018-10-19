@@ -133,6 +133,21 @@ namespace Hydra.Such.Data.Logic.Approvals
             }
         }
 
+        public static List<string> GetAllFromGroupWithEmailAlerta(int groupId)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.UtilizadoresGruposAprovação.Where(x => x.GrupoAprovação == groupId && x.EnviarEmailAlerta == true).Select(x => x.UtilizadorAprovação).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
 
         #region Parses
         public static UtilizadoresGruposAprovação ParseToDb(ApprovalUserGroupViewModel x)
@@ -141,6 +156,7 @@ namespace Hydra.Such.Data.Logic.Approvals
             {
                 UtilizadorAprovação=x.ApprovalUser,
                 GrupoAprovação=x.ApprovalGroup,
+                EnviarEmailAlerta = x.EnviarEmailAlerta,
                 DataHoraCriação=x.CreateDate,
                 DataHoraModificação=x.UpdateDate,
                 UtilizadorCriação=x.CreateUser,
@@ -156,6 +172,7 @@ namespace Hydra.Such.Data.Logic.Approvals
                 {
                     ApprovalGroup = x.GrupoAprovação,
                     ApprovalUser = x.UtilizadorAprovação,
+                    EnviarEmailAlerta = x.EnviarEmailAlerta,
                     CreateDate = x.DataHoraCriação,
                     CreateUser = x.UtilizadorCriação,
                     UpdateDate = x.DataHoraModificação,

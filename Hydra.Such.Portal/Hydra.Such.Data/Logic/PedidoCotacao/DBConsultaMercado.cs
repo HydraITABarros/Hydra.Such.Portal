@@ -1494,8 +1494,23 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                 DataRecepcaoProposta = ObjectToTransform.DataRecepcaoProposta,
                 UtilizadorEnvio = ObjectToTransform.UtilizadorEnvio,
                 UtilizadorRecepcaoProposta = ObjectToTransform.UtilizadorRecepcaoProposta,
+                Fase = ObjectToTransform.Fase == null ? 0 : (int)ObjectToTransform.Fase,
+                PrazoResposta = ObjectToTransform.PrazoResposta,
+                DataRespostaEsperada = ObjectToTransform.DataRespostaEsperada,
+                DataPedidoEsclarecimento = ObjectToTransform.DataPedidoEsclarecimento,
+                DataRespostaEsclarecimento = ObjectToTransform.DataRespostaEsclarecimento,
+                DataRespostaDoFornecedor = ObjectToTransform.DataRespostaDoFornecedor,
+                NaoRespostaDoFornecedor = ObjectToTransform.NaoRespostaDoFornecedor,
+                DataEnvioPropostaArea = ObjectToTransform.DataEnvioPropostaArea,
+                DataRespostaArea = ObjectToTransform.DataRespostaArea,
                 DataEnvioAoFornecedor_Show = ObjectToTransform.DataEnvioAoFornecedor == null ? "" : ObjectToTransform.DataEnvioAoFornecedor.Value.ToString("yyyy-MM-dd"),
-                DataRecepcaoProposta_Show = ObjectToTransform.DataRecepcaoProposta == null ? "" : ObjectToTransform.DataRecepcaoProposta.Value.ToString("yyyy-MM-dd")
+                DataRecepcaoProposta_Show = ObjectToTransform.DataRecepcaoProposta == null ? "" : ObjectToTransform.DataRecepcaoProposta.Value.ToString("yyyy-MM-dd"),
+                DataRespostaEsperada_Show = ObjectToTransform.DataRespostaEsperada == null ? "" : ObjectToTransform.DataRespostaEsperada.Value.ToString("yyyy-MM-dd"),
+                DataPedidoEsclarecimento_Show = ObjectToTransform.DataPedidoEsclarecimento == null ? "" : ObjectToTransform.DataPedidoEsclarecimento.Value.ToString("yyyy-MM-dd"),
+                DataRespostaEsclarecimento_Show = ObjectToTransform.DataRespostaEsclarecimento == null ? "" : ObjectToTransform.DataRespostaEsclarecimento.Value.ToString("yyyy-MM-dd"),
+                DataRespostaDoFornecedor_Show = ObjectToTransform.DataRespostaDoFornecedor == null ? "" : ObjectToTransform.DataRespostaDoFornecedor.Value.ToString("yyyy-MM-dd"),
+                DataEnvioPropostaArea_Show = ObjectToTransform.DataEnvioPropostaArea == null ? "" : ObjectToTransform.DataEnvioPropostaArea.Value.ToString("yyyy-MM-dd"),
+                DataRespostaArea_Show = ObjectToTransform.DataRespostaArea == null ? "" : ObjectToTransform.DataRespostaArea.Value.ToString("yyyy-MM-dd")
             };
 
             return view;
@@ -1521,7 +1536,22 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                 //DataRecepcaoProposta = ObjectToTransform.DataRecepcaoProposta_Show != string.Empty ? DateTime.Parse(ObjectToTransform.DataRecepcaoProposta_Show) : (DateTime?)null,
                 DataRecepcaoProposta = ObjectToTransform.DataRecepcaoProposta_Show != null ? ObjectToTransform.DataRecepcaoProposta_Show != string.Empty ? DateTime.Parse(ObjectToTransform.DataRecepcaoProposta_Show) : (DateTime?)null : (DateTime?)null,
                 UtilizadorEnvio = ObjectToTransform.UtilizadorEnvio,
-                UtilizadorRecepcaoProposta = ObjectToTransform.UtilizadorRecepcaoProposta
+                UtilizadorRecepcaoProposta = ObjectToTransform.UtilizadorRecepcaoProposta,
+                Fase = ObjectToTransform.Fase,
+                PrazoResposta = ObjectToTransform.PrazoResposta,
+                //DataRespostaEsperada = ObjectToTransform.DataRespostaEsperada,
+                //DataPedidoEsclarecimento = ObjectToTransform.DataPedidoEsclarecimento,
+                //DataRespostaEsclarecimento = ObjectToTransform.DataRespostaEsclarecimento,
+                //DataRespostaDoFornecedor = ObjectToTransform.DataRespostaDoFornecedor,
+                //DataEnvioPropostaArea = ObjectToTransform.DataEnvioPropostaArea,
+                //DataRespostaArea = ObjectToTransform.DataRespostaArea,
+                NaoRespostaDoFornecedor = ObjectToTransform.NaoRespostaDoFornecedor,
+                DataRespostaEsperada = ObjectToTransform.DataRespostaEsperada_Show != null ? ObjectToTransform.DataRespostaEsperada_Show != string.Empty ? DateTime.Parse(ObjectToTransform.DataRespostaEsperada_Show) : (DateTime?)null : (DateTime?)null,
+                DataPedidoEsclarecimento = ObjectToTransform.DataPedidoEsclarecimento_Show != null ? ObjectToTransform.DataPedidoEsclarecimento_Show != string.Empty ? DateTime.Parse(ObjectToTransform.DataPedidoEsclarecimento_Show) : (DateTime?)null : (DateTime?)null,
+                DataRespostaEsclarecimento = ObjectToTransform.DataRespostaEsclarecimento_Show != null ? ObjectToTransform.DataRespostaEsclarecimento_Show != string.Empty ? DateTime.Parse(ObjectToTransform.DataRespostaEsclarecimento_Show) : (DateTime?)null : (DateTime?)null,
+                DataRespostaDoFornecedor = ObjectToTransform.DataRespostaDoFornecedor_Show != null ? ObjectToTransform.DataRespostaDoFornecedor_Show != string.Empty ? DateTime.Parse(ObjectToTransform.DataRespostaDoFornecedor_Show) : (DateTime?)null : (DateTime?)null,
+                DataEnvioPropostaArea = ObjectToTransform.DataEnvioPropostaArea_Show != null ? ObjectToTransform.DataEnvioPropostaArea_Show != string.Empty ? DateTime.Parse(ObjectToTransform.DataEnvioPropostaArea_Show) : (DateTime?)null : (DateTime?)null,
+                DataRespostaArea = ObjectToTransform.DataRespostaArea_Show != null ? ObjectToTransform.DataRespostaArea_Show != string.Empty ? DateTime.Parse(ObjectToTransform.DataRespostaArea_Show) : (DateTime?)null : (DateTime?)null,
             };
 
             return seleccaoEntidades;
@@ -1601,7 +1631,7 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
 
                     //Verificar se já existe registo para esta Consulta Mercado, com este produto e esta linha de consulta
                     RegistoDePropostas propostas = GetAllRegistoDePropostas(linhasConsultaMercado.NumConsultaMercado, linhasConsultaMercado.NumLinha);
-                    if (propostas.NumLinha >= 0)
+                    if (propostas != null && propostas.NumLinha >= 0)
                     {
                         propostas.Fornecedor1Code = fornecedor[0, 0];
                         propostas.Fornecedor1Nome = fornecedor[0, 1];
