@@ -555,7 +555,6 @@ namespace Hydra.Such.Portal.Services
             }
 
             return requisition;
-            //throw new NotImplementedException("CreateMarketConsultFor");
         }
 
         public GenericResult CreateTransferShipmentFor(string requisitionId)

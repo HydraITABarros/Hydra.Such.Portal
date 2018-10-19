@@ -1276,12 +1276,13 @@
                     '_preventDocumentDuplicates(data.dataDocFornecedor, data.numDocFornecedor, data.codFornecedor)'
                 ],
                 _uploadResponse: function (event) {
+
                     console.log('upload xhr after server response: ', event.detail.xhr);
                     event.detail.file.error = 'Duplicado.';
                     event.detail.xhr.status = 500;
                     // Interpret any server response as success:
                     // event.detail.xhr.status = 200;
-                    alert("aa");
+                    
                 },
                 ready: function () {
                     if (this._billingReceptionId != null && this._billingReceptionId != "") {

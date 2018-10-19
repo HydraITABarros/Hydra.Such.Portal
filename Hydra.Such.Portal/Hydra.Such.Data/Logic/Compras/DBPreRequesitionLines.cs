@@ -240,7 +240,6 @@ namespace Hydra.Such.Data.Logic.ComprasML
                 NºEncomendaAberto = x.OpenOrderNo,
                 NºLinhaEncomendaAberto = x.OpenOrderLineNo,
                 LocalCompraDireta = x.ArmazemCDireta
-                
             };
         }
     }

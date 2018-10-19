@@ -89,21 +89,21 @@ namespace Hydra.Such.Portal.Controllers
                 return RedirectToAction("AccessDenied", "Error");
             }
         }
-      
 
         public JsonResult GetBillingReceptions()
         {
             var billingReceptions = billingRecService.GetAllForUser(User.Identity.Name);
             return Json(billingReceptions);
         }
+
         public JsonResult GetBillingReceptionsHistory()
         {
-
             UserConfigurationsViewModel userConfig = DBUserConfigurations.GetById(User.Identity.Name).ParseToViewModel();
             BillingReceptionAreas areaPendente = userConfig.RFPerfil ?? BillingReceptionAreas.Aprovisionamento;
-            var billingReceptions = billingRecService.GetAllForUserHist(User.Identity.Name,0, areaPendente);
+            var billingReceptions = billingRecService.GetAllForUserHist(User.Identity.Name, 0, areaPendente);
             return Json(billingReceptions);
         }
+
         public JsonResult GetBillingReceptionsPendingExcept()
         {
 
@@ -114,6 +114,7 @@ namespace Hydra.Such.Portal.Controllers
             var billingReceptions = billingRecService.GetAllForUserPendingExcept(User.Identity.Name, perfil, perfilVisulalizacao);
             return Json(billingReceptions);
         }
+
         public JsonResult GetBillingReceptionsPending()
         {
 
@@ -130,7 +131,6 @@ namespace Hydra.Such.Portal.Controllers
             return Json(billingReception);
         }
 
-      
         [HttpPost]
         public JsonResult CreateBillingReception([FromBody] BillingReceptionModel item)
         {
@@ -272,7 +272,6 @@ namespace Hydra.Such.Portal.Controllers
             return Json(updatedItem);
         }
 
-
         [HttpPost]
         public JsonResult SendBillingReception([FromBody] BillingReceptionModel item)
         {
@@ -310,7 +309,6 @@ namespace Hydra.Such.Portal.Controllers
             return Json(updatedItem);
         }
 
-       
         [HttpPost]
         public JsonResult GetWorkflowAttached([FromBody] BillingRecWorkflowModel item)
         {
@@ -318,7 +316,6 @@ namespace Hydra.Such.Portal.Controllers
             return Json(items);
         }
 
-         
         [HttpPost]
         public JsonResult UpdateWorkFlow([FromBody] BillingReceptionModel item)
         {
@@ -1052,6 +1049,7 @@ namespace Hydra.Such.Portal.Controllers
 
                     if (System.IO.File.Exists(path))
                     {
+                        result.eReasonCode = 2;
                         result.eMessage = "O ficheiro " + file.FileName + " já existe";
                     }
                     else
@@ -1068,7 +1066,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 result.eMessage = "Ocorreu um erro ";
             }
-            return Json("");
+            return Json(result);
         }
 
         public JsonResult UploadFile(BillingRecWorkflowModel workflow)
