@@ -125,65 +125,65 @@ namespace Hydra.Such.Portal.Services
             return billingReceptions;
         }
 
-        public List<BillingReceptionModel> GetAllForUserHist(string userName,int option,BillingReceptionAreas perfil)
+        public List<BillingReceptionModel> GetAllForUserHist(string userName, BillingReceptionUserProfiles? viewProfile)
         {
             var billingReceptions = repo.GetAllHistory();
 
             //Apply User Dimensions Validations
             List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(userName);
-            //Regions
-            if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.Region).Count() > 0)
-                billingReceptions.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.CodRegiao));
-            //FunctionalAreas
-            if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
-                billingReceptions.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.CodAreaFuncional));
-            //ResponsabilityCenter
-            if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
-                billingReceptions.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CodCentroResponsabilidade));
+            if (viewProfile.HasValue && viewProfile.Value == BillingReceptionUserProfiles.Tudo)
+            {
+                if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.Region).Count() > 0)
+                    billingReceptions.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.CodRegiao));
 
+                if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                    billingReceptions.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CodCentroResponsabilidade));
+            }
+            return billingReceptions;
+        }
+        
+        public List<BillingReceptionModel> GetPendingForUser(BillingReceptionAreas? userAreaProfile, string shortUserName)
+        {
+            var billingReceptions = repo.GetPendingForUser(userAreaProfile, shortUserName);
             return billingReceptions;
         }
 
-        public List<BillingReceptionModel> GetAllForUserPendingExcept(string userName, BillingReceptionAreas perfil,BillingReceptionUserProfiles PerfilVisualizacao)
+        public List<BillingReceptionModel> GetPendingOnAreas(string userName)
         {
-            var billingReceptions = repo.GetAllPeddingExcept(perfil, PerfilVisualizacao);
+            UserConfigurationsViewModel userConfig = DBUserConfigurations.GetById(userName).ParseToViewModel();
+            if (userConfig != null)
+            {
+                var billingReceptions = repo.GetPendingOnAreas(userConfig.RFPerfil, userConfig.RFFiltroArea, userConfig.RFPerfilVisualizacao);
+                //Apply User Dimensions Validations
+                List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(userName);
+                if (userConfig.RFPerfilVisualizacao.HasValue && userConfig.RFPerfilVisualizacao.Value == BillingReceptionUserProfiles.Tudo)
+                {
+                    if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.Region).Count() > 0)
+                        billingReceptions.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.CodRegiao));
 
-            //Apply User Dimensions Validations
-            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(userName);
-            //Regions
-            if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.Region).Count() > 0)
-                billingReceptions.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.CodRegiao));
-            //FunctionalAreas
-            if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
-                billingReceptions.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.CodAreaFuncional));
-            //ResponsabilityCenter
-            if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
-                billingReceptions.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CodCentroResponsabilidade));
-
-            return billingReceptions;
+                    if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                        billingReceptions.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CodCentroResponsabilidade));
+                }
+                return billingReceptions;
+            }
+            else
+                return null;
         }
-
-        public List<BillingReceptionModel> GetAllForUserPending()
+        
+        public List<BillingReceptionModel> GetChangeableDestination(string userName)
         {
-            var billingReceptions = repo.GetAllPending();
-            return billingReceptions;
+            UserConfigurationsViewModel userConfig = DBUserConfigurations.GetById(userName).ParseToViewModel();
+            if (userConfig != null)
+            {
+                var billingReceptions = repo.GetChangeableDestination(userName, userConfig.RFPerfil, userConfig.RFPerfilVisualizacao);
+                return billingReceptions;
+            }
+            else
+                return null;
         }
 
         public BillingReceptionModel GetById(string id)
         {
-
-            //if (billingReception != null)
-            //{
-            //    List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
-
-            //    if (!userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == billingReception.CodRegiao))
-            //        return Json(null);
-            //    if (!userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == billingReception.CodAreaFuncional))
-            //        return Json(null);
-            //    if (!userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == billingReception.CodCentroResponsabilidade))
-            //        return Json(null);
-            //}
-
             return repo.GetById(id);
         }
 

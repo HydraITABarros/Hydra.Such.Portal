@@ -106,7 +106,7 @@
                    id="grid_databound_ajax"
                    content-type="application/json">
         </iron-ajax>
-        <iron-ajax url="/Faturacao/GetBillingReceptionsPendingExcept"
+        <iron-ajax url="/Faturacao/GetBillingReceptionsPending"
                    last-response="{{ BillingReceptions }}"
                    id="getPending_ajax"
                    method="get"
@@ -120,16 +120,16 @@
                    handle-as="json"
                    content-type="application/json">
         </iron-ajax>
-        <iron-ajax url="/Faturacao/GetBillingReceptionsPending"
+        <iron-ajax url="/Faturacao/GetBillingReceptionsPendingOnAreas"
                    last-response="{{ BillingReceptions }}"
                    id="getPendingTotal_ajax"
                    method="get"
                    handle-as="json"
                    content-type="application/json">
         </iron-ajax>
-        <iron-ajax url="/Faturacao/GetBillingReceptionsPending"
+        <iron-ajax url="/Faturacao/GetChangeableDestination"
                    last-response="{{ getViewResponse }}"
-                   id="getPendingTotal1_ajax"
+                   id="getChangeableDestination_ajax"
                    method="get"
                    handle-as="json"
                    content-type="application/json">
@@ -161,8 +161,10 @@
             </template>
             <template is="dom-if" if="{{ _userCanSeePending }}">
                 <paper-button class="tablinks" on-tap="_showPending"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Pendentes</paper-button>
-            </template>    
-            <paper-button class="tablinks" on-tap="_showPendingAreas"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Pendentes Áreas</paper-button>
+            </template>
+            <template is="dom-if" if="{{ _userBelongsToProvisioning }}">
+                <paper-button class="tablinks" on-tap="_showPendingAreas"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Pendentes Áreas</paper-button>
+            </template>
             <paper-button class="tablinks" on-tap="_showHistory"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Histórico</paper-button>
             <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
 
@@ -669,6 +671,10 @@
                         type: Boolean,
                         value: @Html.Raw(Json.Serialize(ViewBag.UserCanSeePending)),
                     },
+                    _userBelongsToProvisioning: {
+                        type: Boolean,
+                        value: @Html.Raw(Json.Serialize(ViewBag.UserBelongsToProvisioning)),
+                    },
                 },
                 ready: function () {
                     /*ColumnToggle*/
@@ -718,8 +724,8 @@
                         return;
                     switch (item.value) {
                         case 1:
-                            this.$.getPendingTotal1_ajax.body = JSON.stringify();
-                            this.$.getPendingTotal1_ajax.generateRequest();
+                            this.$.getChangeableDestination_ajax.body = JSON.stringify();
+                            this.$.getChangeableDestination_ajax.generateRequest();
                             this.$.dialogViewHist_Pending.open();
                             break;
                     }
