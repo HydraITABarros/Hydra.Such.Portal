@@ -151,6 +151,27 @@
                     {{item.level}}
                 </template>
             </vaadin-grid-column>
+
+            <vaadin-grid-column width="100px" resizable hidden$="{{ _columns.region.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="region">Cód. Região</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="region" />
+                </template>
+                <template>
+                    {{item.region}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="100px" resizable hidden$="{{ _columns.responsabilityCenter.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="responsabilityCenter">Cód. Cresp</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="responsabilityCenter" />
+                </template>
+                <template>
+                    {{item.responsabilityCenter}}
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column width="140px">
                 <template class="header">
                 </template>
@@ -291,7 +312,9 @@
                         "requestUser": { hidden: false, label: "Solicitado Por" },
                         "value": { hidden: false, label: "Valor" },
                         "statusText": { hidden: false, label: "Estado" },
-                        "level": { hidden: false, label: "Nivel" }
+                        "level": { hidden: false, label: "Nivel" },
+                        "region": { hidden: false, label: "Cód. Região" },
+                        "responsabilityCenter": { hidden: false, label: "Cód. Cresp" }
                     };
 
                     if (localStorage["approvals.ToggleColumn"]) {

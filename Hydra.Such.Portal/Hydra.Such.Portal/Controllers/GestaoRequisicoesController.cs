@@ -732,10 +732,10 @@ namespace Hydra.Such.Portal.Controllers
             RequisitionViewModel item;
             if (!string.IsNullOrEmpty(requisitionId) && requisitionId != "0" && statusIsValid)
             {
-                if (status != (int)RequisitionStates.Archived) //ARQUIVO
+                //if (status != (int)RequisitionStates.Archived) //ARQUIVO
                     item = DBRequest.GetById(requisitionId).ParseToViewModel();
-                else
-                    item = DBRequesitionHist.TransferToRequisition(DBRequesitionHist.GetByNo(requisitionId)).ParseToViewModel();
+                //else
+                    //item = DBRequesitionHist.TransferToRequisition(DBRequesitionHist.GetByNo(requisitionId)).ParseToViewModel();
             }
             else
                 item = new RequisitionViewModel();
@@ -750,7 +750,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 foreach (ApprovalMovementsViewModel apmov in AproveList)
                 {
-                    if (apmov.Number == item.RequisitionNo && (apmov.Status == 1 || apmov.Status == 2))
+                    if (apmov.Number == item.RequisitionNo && (apmov.Status == (int)RequisitionStates.Received || apmov.Status == (int)RequisitionStates.Treated))
                     {
                         item.SentReqToAproveText = "none";
                     }
@@ -761,7 +761,6 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-
         public JsonResult CreateRequisitionLine([FromBody] RequisitionLineViewModel item)
         {
             if (item != null)
@@ -1296,91 +1295,91 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         break;
                     case "Fechar Requisicao":
-                        bool okFechar = true;
-                        RequisiçãoHist REQHistFechar = DBRequest.TransferToRequisitionHist(item);
-                        if (REQHistFechar != null)
-                        {
-                            REQHistFechar.Estado = (int)RequisitionStates.Archived;
-                            REQHistFechar.UtilizadorModificação = User.Identity.Name;
-                            REQHistFechar.DataHoraModificação = DateTime.Now;
-
-                            if (DBRequesitionHist.Create(REQHistFechar) != null)
-                            {
-                                List<LinhasRequisiçãoHist> REQLinhasHistFechar = DBRequest.TransferToRequisitionLinesHist(item.Lines);
-                                if (REQLinhasHistFechar.Count > 0)
-                                {
-                                    REQLinhasHistFechar.ForEach(Linha =>
-                                    {
-                                        Linha.UtilizadorModificação = User.Identity.Name;
-                                        Linha.DataHoraModificação = DateTime.Now;
-                                        if (DBRequesitionLinesHist.Create(Linha) == null)
-                                        {
-                                            okFechar = false;
-                                            item.eReasonCode = 14;
-                                            item.eMessage = "Ocorreu Um erro ao fechar na criação da linha no Histórico";
-                                        }
-                                    });
-                                }
-
-                                if (okFechar == true)
-                                {
-                                    if (item.Lines.Count > 0)
-                                    {
-                                        item.Lines.ForEach(Linha =>
-                                        {
-                                            if (DBRequestLine.Delete(Linha.ParseToDB()) == false)
-                                            {
-                                                okFechar = false;
-                                                item.eReasonCode = 15;
-                                                item.eMessage = "Ocorreu Um erro ao fechar ao Eliminar linha.";
-                                            }
-                                        });
-                                    }
-
-                                    if (okFechar == true)
-                                    {
-                                        if (DBRequest.Delete(item.ParseToDB()) == false)
-                                        {
-                                            okFechar = false;
-                                            item.eReasonCode = 16;
-                                            item.eMessage = "Ocorreu Um erro ao fechar na Eliminação da Requisição";
-                                        }
-                                        else
-                                        {
-                                            item.eReasonCode = 1;
-                                            item.eMessage = "Requisição foi fechada";
-                                        }
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                item.eReasonCode = 17;
-                                item.eMessage = "Ocorreu Um erro ao fechar ao criar Requisição Histórico.";
-                            }
-                        }
-                        else
-                        {
-                            item.eReasonCode = 18;
-                            item.eMessage = "Ocorreu Um erro ao fechar na transferência de dados para Histórico.";
-                        }
-
                         //CODIGO ORIGINAL
-                        //item.State = RequisitionStates.Archived;
-                        //item.UpdateUser = User.Identity.Name;
-                        //item.UpdateDate = DateTime.Now;
-                        //RequisitionViewModel reqArchived = DBRequest.Update(item.ParseToDB(), false, true).ParseToViewModel();
-                        //if (reqArchived == null)
-                        //{
-                        //    item.eReasonCode = 14;
-                        //    item.eMessage = "Ocorreu Um erro ao fechar";
-                        //}
-                        //if (item.eReasonCode == 1)
-                        //{
-                        //    item.eMessage = "Requisição foi fechada";
-                        //}
+                        item.State = RequisitionStates.Archived;
+                        item.UpdateUser = User.Identity.Name;
+                        item.UpdateDate = DateTime.Now;
+                        RequisitionViewModel reqArchived = DBRequest.Update(item.ParseToDB(), false, true).ParseToViewModel();
+                        if (reqArchived == null)
+                        {
+                            item.eReasonCode = 14;
+                            item.eMessage = "Ocorreu Um erro ao fechar";
+                        }
+                        if (item.eReasonCode == 1)
+                        {
+                            item.eMessage = "Requisição foi fechada";
+                        }
                         //FIM
 
+                        //bool okFechar = true;
+
+                        //RequisiçãoHist REQHistFechar = DBRequest.TransferToRequisitionHist(item);
+                        //if (REQHistFechar != null)
+                        //{
+                        //    REQHistFechar.Estado = (int)RequisitionStates.Archived;
+                        //    REQHistFechar.UtilizadorModificação = User.Identity.Name;
+                        //    REQHistFechar.DataHoraModificação = DateTime.Now;
+
+                        //    if (DBRequesitionHist.Create(REQHistFechar) != null)
+                        //    {
+                        //        List<LinhasRequisiçãoHist> REQLinhasHistFechar = DBRequest.TransferToRequisitionLinesHist(item.Lines);
+                        //        if (REQLinhasHistFechar.Count > 0)
+                        //        {
+                        //            REQLinhasHistFechar.ForEach(Linha =>
+                        //            {
+                        //                Linha.UtilizadorModificação = User.Identity.Name;
+                        //                Linha.DataHoraModificação = DateTime.Now;
+                        //                if (DBRequesitionLinesHist.Create(Linha) == null)
+                        //                {
+                        //                    okFechar = false;
+                        //                    item.eReasonCode = 14;
+                        //                    item.eMessage = "Ocorreu Um erro ao fechar na criação da linha no Histórico";
+                        //                }
+                        //            });
+                        //        }
+
+                        //        if (okFechar == true)
+                        //        {
+                        //            if (item.Lines.Count > 0)
+                        //            {
+                        //                item.Lines.ForEach(Linha =>
+                        //                {
+                        //                    if (DBRequestLine.Delete(Linha.ParseToDB()) == false)
+                        //                    {
+                        //                        okFechar = false;
+                        //                        item.eReasonCode = 15;
+                        //                        item.eMessage = "Ocorreu Um erro ao fechar ao Eliminar linha.";
+                        //                    }
+                        //                });
+                        //            }
+
+                        //            if (okFechar == true)
+                        //            {
+                        //                if (DBRequest.Delete(item.ParseToDB()) == false)
+                        //                {
+                        //                    okFechar = false;
+                        //                    item.eReasonCode = 16;
+                        //                    item.eMessage = "Ocorreu Um erro ao fechar na Eliminação da Requisição";
+                        //                }
+                        //                else
+                        //                {
+                        //                    item.eReasonCode = 1;
+                        //                    item.eMessage = "Requisição foi fechada";
+                        //                }
+                        //            }
+                        //        }
+                        //    }
+                        //    else
+                        //    {
+                        //        item.eReasonCode = 17;
+                        //        item.eMessage = "Ocorreu Um erro ao fechar ao criar Requisição Histórico.";
+                        //    }
+                        //}
+                        //else
+                        //{
+                        //    item.eReasonCode = 18;
+                        //    item.eMessage = "Ocorreu Um erro ao fechar na transferência de dados para Histórico.";
+                        //}
                         break;
                     default:
                         item.eReasonCode = 10;
