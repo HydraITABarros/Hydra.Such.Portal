@@ -30,7 +30,7 @@ namespace Hydra.Such.Data.Logic
                         new SqlParameter("@CompanyName", NAVCompanyName),
                         new SqlParameter("@Regions", regions != null && regions.Count() > 0 ? string.Join(',', regions) : null),
                         new SqlParameter("@FunctionalAreas",functionalAreas != null && functionalAreas.Count() > 0 ?  string.Join(',', functionalAreas): null),
-                        new SqlParameter("@RespCenters", responsabilityCenters != null && responsabilityCenters.Count() > 0 ?  string.Join(',',responsabilityCenters): null),
+                        new SqlParameter("@RespCenters", responsabilityCenters != null && responsabilityCenters.Count() > 0 ? '\'' + string.Join("',\'",responsabilityCenters) + '\'': null),
                         new SqlParameter("@No_FilterExpression", No_FilterExpression )
                     };
 
