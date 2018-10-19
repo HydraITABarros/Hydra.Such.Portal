@@ -1700,14 +1700,15 @@ namespace Hydra.Such.Portal.Controllers
                     if (!string.IsNullOrEmpty(area))
                     {
                         string date = DateTime.Now.ToString();
+                        string codArea = "";
+
+                        codArea = DBNAV2017DimensionValues.GetByDimTypeAndUserId(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, 2, User.Identity.Name).Where(z => z.Name == area).FirstOrDefault().Code;
                         List < NAVOpenOrderLinesViewModels> OpenOrderLines = new List<NAVOpenOrderLinesViewModels>();
-                        OpenOrderLines = DBNAV2017OpenOrderLines.GetAll(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, date, "", area, true);
+                        OpenOrderLines = DBNAV2017OpenOrderLines.GetAll(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, date, "", codArea, true);
 
                         if (OpenOrderLines.Count > 0)
                             if (OpenOrderLines.Where(x => x.Numb == linha.Code).Count() > 0)
                                 product.OpenOrderLines = true;
-
-                        product.OpenOrderLines = true;
                     }
                 }
             }

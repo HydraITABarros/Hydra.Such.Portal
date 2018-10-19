@@ -2701,7 +2701,7 @@
 
                     if (this.$._Products.value != "") {
                         this.$.page_GetProductLocation_ajax.body = JSON.stringify({ code: this.$._Products.value });
-                        this.$.page_GetProductLocation_ajax.params = { "area": this.$.FunctionalAreaCode.value };
+                        this.$.page_GetProductLocation_ajax.params = { "area": this.$.FunctionalAreaCode.valueText };
                         this.$.page_GetProductLocation_ajax.generateRequest()
                     }
                     else {
@@ -2741,7 +2741,7 @@
                     }
 
                     this.$.page_GetProductLocation_ajax.body = JSON.stringify({ code: this.$._Products.value });
-                    this.$.page_GetProductLocation_ajax.params = { "area": this.$.FunctionalAreaCode.value };
+                    this.$.page_GetProductLocation_ajax.params = { "area": this.$.FunctionalAreaCode.valueText };
                     this.$.page_GetProductLocation_ajax.generateRequest()
                 },
                 _GetProductLocationResponse: function (e) {
