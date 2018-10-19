@@ -28,6 +28,9 @@
 <link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
 <link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
 
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
+
+
 <!--ACORDEÃO-->
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
@@ -69,7 +72,7 @@
         <iron-ajax url="/PopulateDropdowns/GetUtilizadores" last-response="{{LListaUtilizadores}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetNAVResponsabilityCenter" last-response="{{LRespoCenterNav}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
-        
+
         <iron-ajax url="/PopulateDropdowns/GetNumerations"
                    last-response="{{LReceptionConfig}}"
                    auto
@@ -478,16 +481,22 @@
                             </template>
                         </vaadin-combo-box>
                     </div>
-                    <div class="col-lg-2">
-                        <vaadin-combo-box items="[[DimensionValueData]]" id="_DimensionValue" item-value-path="id" item-label-path="value" label="Valor Dimensão" value="{{ddDimensionValue}}">
-                            <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
-                            </template>
-                        </vaadin-combo-box>
+                    <div class="col-lg-4">
+                        <such-selectbox id="_DimensionValue" value="{{ddDimensionValue}}" label="Valor Dimensão"
+                                        items="[[DimensionValueData]]"
+                                        text-path="value"
+                                        value-path="id"
+                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                        </such-selectbox>
+                        @*<vaadin-combo-box items="[[DimensionValueData]]" id="_DimensionValue" item-value-path="id" item-label-path="value" label="Valor Dimensão" value="{{ddDimensionValue}}">
+                                <template>
+                                    <paper-icon-item>
+                                        <paper-item-body two-line>
+                                            <div>[[item.value]]</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
+                                </template>
+                            </vaadin-combo-box>*@
                     </div>
                     <div class="col-lg-3 alignPoga">
                         <paper-button class="btnSave" raised on-tap="_createUserDimensionAccess"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>

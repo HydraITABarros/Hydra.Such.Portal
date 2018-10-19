@@ -32,6 +32,7 @@ namespace Hydra.Such.Data.Logic.ComprasML
             if (item == null)
                 throw new ArgumentNullException("item");
             item.DataUltimaInteracao = DateTime.Now.ToString("");
+            item.Destinatario = ExtractUserNameFromEmail(item.Destinatario);
             ctx.RececaoFaturacao.Add(item.ParseToDB());
 
             return item;
@@ -40,6 +41,7 @@ namespace Hydra.Such.Data.Logic.ComprasML
         public BillingReceptionModel Update(BillingReceptionModel item)
         {
             item.DataUltimaInteracao = DateTime.Now.ToString("");
+            item.Destinatario = ExtractUserNameFromEmail(item.Destinatario);
             ctx.RececaoFaturacao.Update(item.ParseToDB());
             return item;
         }
@@ -58,40 +60,105 @@ namespace Hydra.Such.Data.Logic.ComprasML
                 return null;
             }
         }
-        public List<BillingReceptionModel> GetAllPeddingExcept(BillingReceptionAreas perfil, BillingReceptionUserProfiles perfilVisualizacao)
+
+        private string ExtractUserNameFromEmail(string emailAddress)
+        {
+            string userName = emailAddress;
+            if (!string.IsNullOrEmpty(emailAddress))
+            {
+                int pos = emailAddress.IndexOf('@');
+                if (pos > -1)
+                    userName = emailAddress.Substring(0, pos);
+            }
+            return userName;
+        }
+
+        public List<BillingReceptionModel> GetPendingForUser(BillingReceptionAreas? userAreaProfile, string userName)
         {
             try
             {
-                if (perfilVisualizacao == BillingReceptionUserProfiles.Tudo)// Pending Tudo
-                    return ctx.RececaoFaturacao.Where(x => x.Estado == 1).OrderByDescending(x => x.Id).ToList().ParseToViewModel();
+                string shortUserName = ExtractUserNameFromEmail(userName);
+                if(userAreaProfile.HasValue && userAreaProfile.Value == BillingReceptionAreas.Contabilidade)
+                {   
+                    return ctx.RececaoFaturacao.Where(x => x.AreaPendente == userAreaProfile.Value.ToString()).OrderByDescending(x => x.Id).ToList().ParseToViewModel();
+                }
                 else
-                    return ctx.RececaoFaturacao.Where(x => x.Estado == 1 && x.AreaPendente== perfil.ToString()).OrderByDescending(x => x.Id).ToList().ParseToViewModel();
-              
+                    return ctx.RececaoFaturacao.Where(x => x.Destinatario == shortUserName).OrderByDescending(x => x.Id).ToList().ParseToViewModel();
+
             }
             catch (Exception ex)
             {
                 return null;
             }
         }
+
+        public List<BillingReceptionModel> GetPendingOnAreas(BillingReceptionAreas? userAreaProfile, string area, BillingReceptionUserProfiles? userViewProfile)
+        {
+            try
+            {
+                if (userAreaProfile.HasValue && userAreaProfile.Value == BillingReceptionAreas.Aprovisionamento)
+                {
+                    var items = ctx.RececaoFaturacao.Where(x => x.Estado == (int)BillingReceptionStates.Pendente);
+
+                    if (!string.IsNullOrEmpty(area))
+                    {
+                        items = items.Where(x => x.AreaPendente == area);
+                    }
+                    else
+                    {
+                        List<string> areasToExclude = new List<string>
+                        {
+                            BillingReceptionAreas.Aprovisionamento.ToString(),
+                            BillingReceptionAreas.Contabilidade.ToString(),
+                            string.Empty,
+                        };
+                        items = items.Where(x => !areasToExclude.Contains(x.AreaPendente));
+                    }
+                    return items.OrderByDescending(x => x.Id).ToList().ParseToViewModel();
+                }
+                else
+                    return null;
+
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+        
+        public List<BillingReceptionModel> GetChangeableDestination(string userName, BillingReceptionAreas? userAreaProfile, BillingReceptionUserProfiles? userViewProfile)
+        {
+            try
+            {
+                if (userAreaProfile.HasValue && userAreaProfile.Value == BillingReceptionAreas.Aprovisionamento)
+                {
+                    var items = ctx.RececaoFaturacao
+                        .Where(x => x.Estado == (int)BillingReceptionStates.Pendente &&
+                        x.AreaPendente != BillingReceptionAreas.Contabilidade.ToString());
+
+                    if (userViewProfile.HasValue && userViewProfile.Value == BillingReceptionUserProfiles.Utilizador)
+                    {
+                        string shortUserName = ExtractUserNameFromEmail(userName);
+                        items = items.Where(x => x.Destinatario == shortUserName);
+                    }
+                    return items.OrderByDescending(x => x.Id).ToList().ParseToViewModel();
+                }
+                else
+                    return null;
+
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public List<BillingReceptionModel> GetAllHistory()
         {
             try
             {
                 //history
                 return ctx.RececaoFaturacao.Where(x => string.IsNullOrEmpty(x.AreaPendente)).OrderByDescending(x => x.Id).ToList().ParseToViewModel();
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
-        public List<BillingReceptionModel> GetAllPending()
-        {
-            try
-            {
-               //Expecto a Area Contabilidade
-               return ctx.RececaoFaturacao.Where(x =>  x.Estado == 1).OrderByDescending(x => x.Id).ToList().ParseToViewModel();
-
             }
             catch (Exception ex)
             {
@@ -136,7 +203,7 @@ namespace Hydra.Such.Data.Logic.ComprasML
 
             ctx.RececaoFaturacao.Remove(item.ParseToDB());
         }
-
+        
         #endregion
 
         #region WF
@@ -147,6 +214,7 @@ namespace Hydra.Such.Data.Logic.ComprasML
                 throw new ArgumentNullException("item");
 
             item.DataCriacao = DateTime.Now;
+            item.Destinatario = ExtractUserNameFromEmail(item.Destinatario);
             var item1 = ctx.RececaoFaturacaoWorkflow.Add(item);
 
             return item;
@@ -158,6 +226,7 @@ namespace Hydra.Such.Data.Logic.ComprasML
                 throw new ArgumentNullException("item");
 
             item.DataModificacao = DateTime.Now;
+            item.Destinatario = ExtractUserNameFromEmail(item.Destinatario);
             ctx.RececaoFaturacaoWorkflow.Update(item);
 
             return item;

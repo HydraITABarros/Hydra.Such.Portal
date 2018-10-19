@@ -30,6 +30,7 @@ namespace Hydra.Such.Data.NAV
 
             WsPrePurchaseDocs.WSPrePurchaseDocs itemToCreate = new WsPrePurchaseDocs.WSPrePurchaseDocs();
             itemToCreate.Document_Type = (WsPrePurchaseDocs.Document_Type)purchDoc.TipoDocumento;
+            itemToCreate.Document_TypeSpecified = true;
             itemToCreate.RegionCode20 = purchDoc.CodRegiao;
             itemToCreate.FunctionAreaCode20 = purchDoc.CodAreaFuncional;
             itemToCreate.ResponsabilityCenterCode20 = purchDoc.CodCentroResponsabilidade;

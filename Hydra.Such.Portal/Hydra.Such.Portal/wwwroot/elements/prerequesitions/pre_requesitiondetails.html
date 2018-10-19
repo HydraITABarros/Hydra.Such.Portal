@@ -384,7 +384,7 @@
                                 <paper-button id="btnUpdate" class="btnEdit tablinks" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
                             </template>
                             <template is="dom-if" if="{{ _permissions.delete }}">
-                                <paper-button id="btnDelete" class="btnRemove tablinks" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                                <paper-button id="btnDelete" class="btnRemove tablinks" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Limpar</paper-button>
                             </template>
                         </template>
                     </template>
@@ -725,7 +725,7 @@
                         </div>
 
                         <paper-collapse-group>
-                            <paper-collapse-item class="panel-heading" header="Linhas" closed>
+                            <paper-collapse-item class="panel-heading" header="Linhas" opened>
                                 <div class="row break_clear">
                                     <!--<div class="col-lg-2">
                                         <vaadin-text-field value="{{_LocalCode}}" id="_LocalCode" name="_LocalCode" label="Código Localização" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
@@ -735,7 +735,7 @@
                                                         items="[[CBPurchaseLine]]"
                                                         text-path="documentNO"
                                                         value-path="id"
-                                                        fields='[{"field":"documentNO", "name":"Nº Documento"},{"field":"line_No", "name":"Nº Linha Aberta"}, {"field":"numb", "name":"Cód. Produto"}, {"field":"description", "name":"Descrição"}, {"field":"buyFromVendorNo", "name":"Fornecedor"},
+                                                        fields='[{"field":"documentNO", "name":"Nº Documento"}, {"field":"line_No", "name":"Nº Linha Aberta"}, {"field":"numb", "name":"Cód. Produto"}, {"field":"description", "name":"Descrição"}, {"field":"buyFromVendorNo", "name":"Fornecedor"},
                                                                 {"field":"availableQuantity", "name":"Quantidade Disponível"}, {"field":"functionalAreaDescription", "name":"Área Funcional"},{"field":"regionDescription", "name":"Região"},{"field":"responsabilityCenterDescription", "name":"Centro Resonsabilidade"}]'
                                                         disabled="{{ !_permissions.update }}">
                                         </such-selectbox>
@@ -1868,6 +1868,7 @@
                             this.$._CLFunctionalAreaCode.value = this.ProjectDims.functionalAreaCode;
 
                             this.$.FunctionalAreaCode.value = this.ProjectDims.functionalAreaCode;
+                            this._PopulatePurchaseLines();
                         }
                         else {
                             this.$._CLFunctionalAreaCode.value = "";
@@ -2045,7 +2046,7 @@
                     var _dataPreReq = this.data;
                     var ajax_request = this.$.ajax_delete_prereq;
                     bootbox.confirm({
-                        message: "Tem a certeza que pretende remover o pré-requisição " + this.data.preRequesitionsNo + "?",
+                        message: "Tem a certeza que pretende limpar a pré-requisição?",
                         buttons: {
                             confirm: {
                                 label: 'Sim',
@@ -2162,6 +2163,11 @@
                         this.$.projectNo.disabled = false;
                         this.$._ProjectNo.disabled = false;
                     }
+
+                    this.data.contractType = 3;
+                    this.$.page_databoundNoMessage_ajax.url = "/PreRequisicoes/UpdatePreRequesition";
+                    this.$.page_databoundNoMessage_ajax.body = JSON.stringify(this.data);
+                    this.$.page_databoundNoMessage_ajax.generateRequest();
                 },
 
                 _copyFromTemplateResponse: function (data) {
@@ -2474,25 +2480,37 @@
 
                                 this.dataLines.lines.unshift({
                                     preRequisitionLineNo: this.data.preRequesitionsNo,
-                                    localCode: localCode,
+                                    type: 2, //PRODUTO
                                     code: this._Products,
                                     description: this._Description,
                                     description2: this._Description2,
+                                    localCode: localCode,
                                     unitMeasureCode: this._UnitMeasureCode,
                                     quantityToRequire: this._QuantityToRequire,
-                                    quantidadeInicial: this._QuantityToRequire,
-                                    unitCost: this._UnitCost,
-                                    projectNo: this.$._ProjectNo.value,
-                                    maintenanceOrderLineNo: this._MaintenanceOrderLineNo,
-                                    vehicle: this.data.vehicle,
-                                    supplierNo: this._CBVendor,
                                     regionCode: this.$._CLRegion.value,
                                     functionalAreaCode: this.$._CLFunctionalAreaCode.value,
                                     centerResponsibilityCode: this.$._CLResponsabilityCenterCode.value,
+                                    projectNo: this.$._ProjectNo.value,
+                                    //qtyByUnitOfMeasure
+                                    //quantityRequired
+                                    //quantityPending:
+                                    quantidadeInicial: this._QuantityToRequire,
+                                    unitCost: this._UnitCost,
+                                    //sellUnityPrice
+                                    //budgetValue
+                                    //expectedReceivingDate
+                                    //billable
+                                    maintenanceOrderLineNo: this._MaintenanceOrderLineNo,
+                                    //employeeNo
+                                    vehicle: this.data.vehicle,
+                                    supplierNo: this._CBVendor,
+                                    //supplierProductCode
+                                    armazemCDireta: this._CBItemsCDirect,
+                                    //unitNutritionProduction
+                                    //customerNo
                                     openOrderNo: purchHeaderNo,
                                     openOrderLineNo: purchLineNo,
                                     totalCost: totalCost > 0 ? totalCost : "",
-                                    armazemCDireta: this._CBItemsCDirect
                                 });
 
                                 this.$.prereqLines_databound_ajax.url = "/PreRequisicoes/UpdateContractLines";
@@ -2527,7 +2545,7 @@
                         localCode: e.model.item.localCode,
                         unitMeasureCode: e.model.item.unitMeasureCode,
                         quantityToRequire: e.model.item.quantityToRequire,
-                        quantidadeInicial: e.model.item.quantidadeInicial,
+                        quantidadeInicial: e.model.item.quantityToRequire,
                         regionCode: e.model.item.regionCode,
                         functionalAreaCode: e.model.item.functionalAreaCode,
                         centerResponsibilityCode: e.model.item.centerResponsibilityCode,
@@ -2645,7 +2663,7 @@
                     //this.$.gridUserAccesses.clearCache();
                 },
                 _duplicarContractLine: function (e) {
-                    debugger;
+                    //debugger;
                     var index = this.dataLines.lines.indexOf(e.model.item);
 
                     this.$.prereqLines_DuplicarLinha_ajax.body = JSON.stringify({
@@ -2683,6 +2701,7 @@
 
                     if (this.$._Products.value != "") {
                         this.$.page_GetProductLocation_ajax.body = JSON.stringify({ code: this.$._Products.value });
+                        this.$.page_GetProductLocation_ajax.params = { "area": this.$.FunctionalAreaCode.valueText };
                         this.$.page_GetProductLocation_ajax.generateRequest()
                     }
                     else {
@@ -2721,13 +2740,12 @@
                         this.$._UnitCost.value = "";
                     }
 
-                    this.$.page_GetProductLocation_ajax.body = JSON.stringify({
-                        code: this.$._Products.value
-                    });
+                    this.$.page_GetProductLocation_ajax.body = JSON.stringify({ code: this.$._Products.value });
+                    this.$.page_GetProductLocation_ajax.params = { "area": this.$.FunctionalAreaCode.valueText };
                     this.$.page_GetProductLocation_ajax.generateRequest()
                 },
                 _GetProductLocationResponse: function (e) {
-                    //debugger;
+                    debugger;
                     if (this.productInfo != null) {
                         this.$._Description.value = this.productInfo.name;
                         this.$._Description2.value = this.productInfo.name2;
@@ -2746,6 +2764,15 @@
                         }
                         else {
                             this._openToastError("Este produto não têm Cód. Localização contate a área das compras.");
+                        }
+
+                        if (this.productInfo.openOrderLines == true) {
+                            setTimeout(
+                                function () {
+                                    bootbox.alert({
+                                        message: "O produto selecionado já existe em acordo de fornecedor.",
+                                    });
+                                }, 0);
                         }
                     }
                     else {
@@ -2856,11 +2883,11 @@
                 _PopulatePurchaseLines: function (data) {
                     //debugger;
                     var codArea = this.$.FunctionalAreaCode.value;
-                    this.PurchaseLine = "";
-                    this.$.purchaselines_ajax.body = JSON.stringify(codArea);
-                    this.$.purchaselines_ajax.generateRequest();
-
-
+                    if (codArea != "") {
+                        this.PurchaseLine = "";
+                        this.$.purchaselines_ajax.body = JSON.stringify(codArea);
+                        this.$.purchaselines_ajax.generateRequest();
+                    }
                 },
 
                 _responsePurchaseLinesProcessor: function (data) {
