@@ -97,7 +97,8 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult GetBillingReceptions()
         {
-            var billingReceptions = billingRecService.GetAllForUser(User.Identity.Name);
+            UserConfigurationsViewModel userConfig = DBUserConfigurations.GetById(User.Identity.Name).ParseToViewModel();
+            var billingReceptions = billingRecService.GetAllForUser(userConfig);
             return Json(billingReceptions);
         }
 
@@ -487,7 +488,7 @@ namespace Hydra.Such.Portal.Controllers
             int userPendingProfile = (int)DBUserConfigurations.GetById(user).Rfperfil;
             return Json(userPendingProfile);
         }
-            
+
 
         [HttpPost]
         public JsonResult GetAnswers([FromBody] BillingReceptionModel data)

@@ -1923,9 +1923,6 @@
                 },
                 _dlgSendAnswer: function () {
                     if (this._validateInputForAnswer()) {
-                        var answerDestinyProfile;
-                        var userToAnswer = this.data.criadoPor;
-
                         var idmotivo = this.$.cmbRespostasPorPerfil.value
                         var motivoExtra = this.RespostasPorPerfil.find(x => x.id == idmotivo).extra;
 
@@ -1934,8 +1931,8 @@
 
                         //PROCURAR CRIADOR DA ULTIMA LINHA PARA RESPOSTA
                         var novoDestino = idWork.utilizador;
-                        this.$.get_userprofile_ajax.body = JSON.stringify(novoDestino);
-                        this.$.get_userprofile_ajax.generateRequest();
+                        //this.$.get_userprofile_ajax.body = JSON.stringify(novoDestino);
+                        //this.$.get_userprofile_ajax.generateRequest();
                         //**/
                         var userProfile = this.userProfile;
                         var Area = idWork.area;

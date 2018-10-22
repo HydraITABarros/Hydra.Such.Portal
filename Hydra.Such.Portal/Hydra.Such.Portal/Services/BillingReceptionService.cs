@@ -106,22 +106,21 @@ namespace Hydra.Such.Portal.Services
             return item;
         }
 
-        public List<BillingReceptionModel> GetAllForUser(string userName)
+        public List<BillingReceptionModel> GetAllForUser(UserConfigurationsViewModel userConfig)
         {
-            var billingReceptions = repo.GetAll();
-
-            //Apply User Dimensions Validations
-            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(userName);
-            //Regions
-            if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.Region).Count() > 0)
-                billingReceptions.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.CodRegiao));
-            //FunctionalAreas
-            if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
-                billingReceptions.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.CodAreaFuncional));
-            //ResponsabilityCenter
-            if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
-                billingReceptions.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CodCentroResponsabilidade));
-
+            
+            var billingReceptions = repo.GetAllFor(userConfig);
+            //if (viewProfile.HasValue && viewProfile.Value == BillingReceptionUserProfiles.Tudo)
+            //{
+            //    //Apply User Dimensions Validations
+            //    List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(userName);
+            //    //Regions
+            //    if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.Region).Count() > 0)
+            //        billingReceptions.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.CodRegiao));
+            //    //ResponsabilityCenter
+            //    if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+            //        billingReceptions.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CodCentroResponsabilidade));
+            //}
             return billingReceptions;
         }
 
@@ -129,10 +128,10 @@ namespace Hydra.Such.Portal.Services
         {
             var billingReceptions = repo.GetAllHistory();
 
-            //Apply User Dimensions Validations
-            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(userName);
             if (viewProfile.HasValue && viewProfile.Value == BillingReceptionUserProfiles.Tudo)
             {
+                //Apply User Dimensions Validations
+                List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(userName);
                 if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.Region).Count() > 0)
                     billingReceptions.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.CodRegiao));
 
@@ -154,10 +153,11 @@ namespace Hydra.Such.Portal.Services
             if (userConfig != null)
             {
                 var billingReceptions = repo.GetPendingOnAreas(userConfig.RFPerfil, userConfig.RFFiltroArea, userConfig.RFPerfilVisualizacao);
-                //Apply User Dimensions Validations
-                List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(userName);
+                
                 if (userConfig.RFPerfilVisualizacao.HasValue && userConfig.RFPerfilVisualizacao.Value == BillingReceptionUserProfiles.Tudo)
                 {
+                    //Apply User Dimensions Validations
+                    List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(userName);
                     if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.Region).Count() > 0)
                         billingReceptions.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.CodRegiao));
 
@@ -370,7 +370,6 @@ namespace Hydra.Such.Portal.Services
 
                             item.eReasonCode = 1;
                             item.eMessage = "Fatura criada com sucesso.";
-
                         }
                         catch
                         {
@@ -382,8 +381,11 @@ namespace Hydra.Such.Portal.Services
                     else
                     {
                         item.Id = item.Id.Remove(0, 2);
-
                     }
+                }
+                else
+                {
+                    item.eReasonCode = 2;
                 }
             }
             else
@@ -473,7 +475,27 @@ namespace Hydra.Such.Portal.Services
         private bool ValidateForPosting(ref BillingReceptionModel item, NAVConfigurations _config)
         {
             bool isValid = true;
-            if(Convert.ToDateTime(item.DataDocFornecedor)>item.DataModificacao)
+            try
+            {
+                //Check if exists
+                bool documentAlreadyExist = DBNAV2017Purchases.DocumentExistsFor(_config.NAVDatabaseName, _config.NAVCompanyName, item.Id);
+                if (documentAlreadyExist)
+                {
+                    item.eMessage = "Já foi criada uma fatura para a receção selecionada.";
+                    isValid = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                item.eMessage = "Não foi possivel validar existência da fatura. Por favor tente novamente. Se o problema persistir contacte o administrador.";
+                isValid = false;
+            }
+            if (!isValid)
+                return isValid;
+
+
+            PurchaseHeader purchOrderInfo = null;
+            if (Convert.ToDateTime(item.DataDocFornecedor)>item.DataModificacao)
             {
                 item.eMessage = "A data do documento (" + item.DataDocFornecedor + ") é maior que a data do registo (" + (item.DataModificacao.HasValue ? item.DataModificacao.Value.ToString("yyyy-MM-dd") : string.Empty) + ")";
                 //item.eMessages.Add(new TraceInformation(TraceType.Error, "A data do documento: " + item.DataDocFornecedor + " é maior que a data do registo: " + item.DataModificacao));
@@ -481,7 +503,7 @@ namespace Hydra.Such.Portal.Services
             }
             else if (!string.IsNullOrEmpty(item.NumEncomenda))
             {
-                var purchOrderInfo = DBNAV2017Purchases.GetOrderById(_config.NAVDatabaseName, _config.NAVCompanyName, item.NumEncomenda);
+                purchOrderInfo = DBNAV2017Purchases.GetOrderById(_config.NAVDatabaseName, _config.NAVCompanyName, item.NumEncomenda);
                 if (purchOrderInfo.No != item.NumEncomenda)
                 {
                     item.eMessage = "A encomenda " + item.NumEncomenda + " não existe ou já está registada.";
@@ -493,7 +515,7 @@ namespace Hydra.Such.Portal.Services
             {
                 if (!string.IsNullOrEmpty(item.NumEncomendaManual))
                 {
-                    var purchOrderInfo = DBNAV2017Purchases.GetOrderById(_config.NAVDatabaseName, _config.NAVCompanyName, item.NumEncomendaManual);
+                    purchOrderInfo = DBNAV2017Purchases.GetOrderById(_config.NAVDatabaseName, _config.NAVCompanyName, item.NumEncomendaManual);
                     if (purchOrderInfo.No != item.NumEncomendaManual)
                     {
                         item.eMessage = "A encomenda (Núm. Encomenda Manual) " + item.NumEncomendaManual + " não existe ou já está registada.";
@@ -502,7 +524,6 @@ namespace Hydra.Such.Portal.Services
                     }
                 }
             }
-
             return isValid;
         }
 
