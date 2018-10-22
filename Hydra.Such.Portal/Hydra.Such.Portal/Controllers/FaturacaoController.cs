@@ -1057,19 +1057,16 @@ namespace Hydra.Such.Portal.Controllers
             ErrorHandler result = new ErrorHandler();
             try
             {
-              
+                result.eReasonCode = 1;
                 var files = Request.Form.Files;
-                string full_filename;
                 foreach (var file in files)
                 {
                     string filename = Path.GetFileName(file.FileName);
-                    full_filename = filename;
-                    var path = Path.Combine(_generalConfig.FileUploadFolder, full_filename);
-
+                    result.eMessage = filename;
+                    var path = Path.Combine(_generalConfig.FileUploadFolder, filename);
                     if (System.IO.File.Exists(path))
                     {
                         result.eReasonCode = 2;
-                        result.eMessage = "O ficheiro " + file.FileName + " já existe";
                     }
                     else
                     {
@@ -1083,7 +1080,8 @@ namespace Hydra.Such.Portal.Controllers
             }
             catch (Exception ex)
             {
-                result.eMessage = "Ocorreu um erro ";
+                result.eReasonCode = 2;
+                result.eMessage = ex.Message;
             }
             return Json(result);
         }

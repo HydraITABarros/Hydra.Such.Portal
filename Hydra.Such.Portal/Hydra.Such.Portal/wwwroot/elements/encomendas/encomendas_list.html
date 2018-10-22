@@ -1,0 +1,311 @@
+﻿
+<link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html" />
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/paper-input/paper-input.html" />
+<link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/datetime-picker-master/date-picker.html" />
+
+<!--start ColumnToggle-->
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-icons/iron-icons.html" />
+<link rel="import" href="/lib/iron-behaviors/iron-button-state.html" />
+<link rel="import" href="/lib/paper-menu-button/paper-menu-button.html" />
+<!--end ColumnToggle-->
+
+<dom-module id="x-encomendaslist">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+        <custom-style>
+            <style is="custom-style">
+                input[readonly] {
+                    border: 2px solid transparent;
+                }
+
+                input {
+                    font: inherit;
+                }
+
+                .grid {
+                    font-size: 13px;
+                }
+
+                    .grid input {
+                        border: none;
+                        padding-left: 5px;
+                    }
+
+                paper-input {
+                    max-width: 200px !important;
+                }
+            </style>
+        </custom-style>
+
+        <iron-ajax url="/Encomendas/GetList"
+                   last-response="{{result}}"
+                   method="post"
+                   handle-as="json"
+                   id="grid_databound_ajax"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Encomendas/ExportToExcel"
+                   last-response="{{export}}"
+                   id="ajax_Export"
+                   method="post"
+                   handle-as="json"
+                   on-response="_exportEXCELResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <div class="subMenu">
+
+
+                <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+            
+            <!--start ColumnToggle-->
+            <paper-menu-button class="column-toggle" no-animations>
+                <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
+                <div class="list-group" slot="dropdown-content">
+                    <template is="dom-repeat" items="[[ _toArray(_columns)]]" id="columnsList">
+                        <a href="javascript:void(0);" on-tap="_toggleColumn" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClass( item.key ) ]]">
+                            {{ item.value.label }}
+                        </a>
+                        <hr />
+                    </template>
+                </div>
+            </paper-menu-button>
+            <!--end ColumnToggle-->
+
+        </div>
+
+        <vaadin-grid aria-label="CustomersGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+            <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.no.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="no">Nº</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="no" />
+                </template>
+                <template>
+                    {{item.no}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="170px" resizable hidden$="{{ _columns.payToVendorNo.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="payToVendorNo">Código Fornecedor</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="payToVendorNo" />
+                </template>
+                <template>
+                    {{item.payToVendorNo}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="220px" resizable hidden$="{{ _columns.payToName.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="payToName">Nome Fornecedor</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="payToName" />
+                </template>
+                <template>
+                    {{item.payToName}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="220px" resizable hidden$="{{ _columns.yourReference.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="yourReference">Sua Referência</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="yourReference" />
+                </template>
+                <template>
+                    {{item.yourReference}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="220px" resizable hidden$="{{ _columns.orderDate.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="orderDate">Data da Encomenda</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="orderDate" />
+                </template>
+                <template>
+                    {{item.orderDate}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="220px" resizable hidden$="{{ _columns.noConsulta.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="noConsulta">Nº Consulta Mercado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="noConsulta" />
+                </template>
+                <template>
+                    {{item.noConsulta}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="220px" resizable hidden$="{{ _columns.expectedReceiptDate.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="expectedReceiptDate">Data Recepção Esperada</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="expectedReceiptDate" />
+                </template>
+                <template>
+                    {{item.expectedReceiptDate}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="220px" resizable hidden$="{{ _columns.requisitionNo.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="requisitionNo">Pedido Interno</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="requisitionNo" />
+                </template>
+                <template>
+                    {{item.requisitionNo}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.regionId.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="regionId">Cód. Região</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="regionId" />
+                </template>
+                <template>
+                    {{item.regionId}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="170px" resizable hidden$="{{ _columns.functionalAreaId.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="functionalAreaId">Cód. Área Funcional</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="functionalAreaId" />
+                </template>
+                <template>
+                    {{item.functionalAreaId}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="220px" resizable hidden$="{{ _columns.respCenterId.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="respCenterId">Cód. Centro de Responsabilidade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="respCenterId" />
+                </template>
+                <template>
+                    {{item.respCenterId}}
+                </template>
+            </vaadin-grid-column>
+        </vaadin-grid>
+
+
+    </template>
+
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-encomendaslist',
+                properties: {
+                    _permissions: {
+                        type: Array
+                    },
+                    activeItem: {
+                        observer: '_rowSelected'
+                    },
+                    _areaid: {
+                        type: Number,
+                        notify: true,
+                        value: 0
+                    },
+                    _columns: {
+                        type: Object,
+                        value: function () {
+                            return {};
+                        }
+                    }
+                },
+                _rowSelected: function (item) {
+                    if (item != null) {
+                        window.location.href = "Encomendas/DetalhesEncomenda/" + item.no;
+                    }
+                },
+                ready: function () {
+
+                    this.$.grid_databound_ajax.generateRequest();
+
+                    /*ColumnToggle*/
+                    this._startColumnToggle();
+
+                    var _this = this;
+                    var gridToBottomTimeout;
+                    $(window).resize(function () {
+                        clearTimeout(gridToBottomTimeout);
+                        gridToBottomTimeout = setTimeout(function () { _this.fixGridToBottom(); }, 200);
+                    });
+                    $(window).trigger('resize');
+                },
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.grid);
+                    var parentHeight = $(this).offsetParent().height();
+                    var windowHeight = $(window).height();
+                    var paddingTop = $(this).offsetParent().css('padding-top').replace("px", "");
+                    var offsetTop = $(this).offset().top;
+                    var height = windowHeight - offsetTop - paddingTop;
+                    $(this.$.grid).height(height);
+                },
+
+                _exportEXCEL: function () {
+                    //debugger;
+                    var payload = { list: this.result, columns: this._columns };
+                    console.log(payload);
+
+                    this.$.ajax_Export.body = JSON.stringify(payload);
+                    this.$.ajax_Export.generateRequest();
+                },
+
+                _exportEXCELResponse: function (e) {
+                    //debugger
+                    var FileName = this.export;
+                    location.href = '../Encomendas/ExportToExcel?fileName=' + FileName;
+                },
+                /*start - ColumnToggle*/
+
+                _startColumnToggle: function () {
+                    var columns = {
+                        "no": { hidden: false, label: "Nº" },
+                        "payToVendorNo": { hidden: false, label: "Código Fornecedor" },
+                        "payToName": { hidden: false, label: "Nome Fornecedor" },
+                        "yourReference": { hidden: false, label: "Sua Referência" },
+                        "noConsulta": { hidden: false, label: "Nº Consulta Mercado" },
+                        "expectedReceiptDate": { hidden: false, label: "Data da Encomenda" },
+                        "requisitionNo": { hidden: false, label: "Pedido Interno" },
+                        "regionId": { hidden: false, label: "Cód. Região" },
+                        "functionalAreaId": { hidden: false, label: "Cód. Área Funcional" },
+                        "respCenterId": { hidden: false, label: "Cód. Centro de Responsabilidade" }
+                    };
+
+                    if (localStorage["encomendaslist.ToggleColumn"]) {
+                        var keys = Object.keys(columns);
+                        var storedColumns = JSON.parse(localStorage["encomendaslist.ToggleColumn"]);
+                        for (var i = 0; i < keys.length; i++) {
+                            columns[keys[i]] = storedColumns[keys[i]];
+                        }
+                    };
+                    this._columns = columns;
+                },
+                _toggleColumn: function (event) {
+                    var columnIndex = JSON.parse(event.target.dataset.item).key;
+                    event.path[0].classList.toggle("selected");
+                    this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
+                    if (typeof (Storage) !== "undefined") {
+                        localStorage["encomendaslist.ToggleColumn"] = JSON.stringify(this._columns);
+                    }
+                },
+                _getColumnItemClass: function (columnIndex) {
+                    return !this._columns[columnIndex].hidden ? "selected" : "";
+                },
+                _toArray: function (obj) {
+                    return Object.keys(obj).map(function (key) {
+                        return {
+                            key: key,
+                            value: obj[key]
+                        };
+                    });
+                }
+                /* end - ColumnToggle */
+            });
+        });
+    </script>
+
+</dom-module>
