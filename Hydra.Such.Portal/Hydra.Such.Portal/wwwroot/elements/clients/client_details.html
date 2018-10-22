@@ -152,9 +152,10 @@
                 </template>
             </template>
 
-            <template is="dom-if" if="{{ !_isCreate }}">
-                <paper-button id="btn_imprimirE" class="tablinks" on-tap="_printE" disabled="{{ !_permissions.create }}"><i class="fa fa-print" aria-hidden="true"></i> Imprimir Extracto</paper-button>
-            </template>
+            <!--<template is="dom-if" if="{{ !_isCreate }}">-->
+            <!--<paper-button id="btn_imprimirE" class="tablinks" on-tap="_printE" disabled="{{ !_permissions.create }}"><i class="fa fa-print" aria-hidden="true"></i> Imprimir Extracto</paper-button>-->
+            <paper-button id="btn_imprimirE" class="tablinks" on-tap="_printE"><i class="fa fa-print" aria-hidden="true"></i> Imprimir Extracto</paper-button>
+            <!--</template>-->
             <!--<paper-button id="btn_imprimirCD" class="tablinks" on-tap="_printCD" disabled="{{ !_permissions.create }}"><i class="fa fa-print" aria-hidden="true"></i> Imprimir Cliente</paper-button>-->
         </div>
 

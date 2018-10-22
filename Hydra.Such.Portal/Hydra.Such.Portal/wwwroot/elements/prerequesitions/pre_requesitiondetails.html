@@ -965,7 +965,7 @@
                                                 </vaadin-combo-box>-->
                                                 <such-selectbox id="_CBLocalizations" value="{{item.localCode}}"
                                                                 items="[[CBLocations]]"
-                                                                onchange="_GridLocationChange" on-blur="_updateLinhaPreRequisicao"
+                                                                on-change="_updateLinhaPreRequisicao"
                                                                 text-path="id"
                                                                 value-path="id"
                                                                 fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Localização"}]'
@@ -1015,7 +1015,7 @@
                                                 </vaadin-combo-box>-->
                                                 <such-selectbox id="_CLGridSupplierProductCode" value="{{item.code}}"
                                                                 items="[[Products]]"
-                                                                on-blur="_onProductInGridChanged"
+                                                                on-change="_onProductInGridChanged"
                                                                 text-path="code"
                                                                 value-path="code"
                                                                 fields='[{"field":"code", "name":"Código"}, {"field":"name", "name":"Produto"}]'
@@ -1077,7 +1077,7 @@
                                                 </vaadin-combo-box>-->
                                                 <such-selectbox id="_CLGridUnitMeasureCode" value="{{item.unitMeasureCode}}"
                                                                 items="[[LCBMeasuresUnit]]"
-                                                                on-blur="_updateLinhaPreRequisicao"
+                                                                on-change="_updateLinhaPreRequisicao"
                                                                 text-path="id"
                                                                 value-path="id"
                                                                 fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Unidade Medida"}]'
@@ -1210,7 +1210,7 @@
                                                 </vaadin-combo-box>-->
                                                 <such-selectbox id="_CLGridVehicle" value="{{item.vehicle}}"
                                                                 items="[[CBVehicle]]"
-                                                                on-blur="_updateLinhaPreRequisicao"
+                                                                on-change="_updateLinhaPreRequisicao"
                                                                 text-path="id"
                                                                 value-path="id"
                                                                 fields='[{"field":"id", "name":"Matrícula"}]'
@@ -1265,7 +1265,7 @@
                                                 </vaadin-combo-box>-->
                                                 <such-selectbox id="_CLGridRegion" value="{{item.regionCode}}"
                                                                 items="[[LProjectRegionCodes]]"
-                                                                on-blur="_updateLinhaPreRequisicao"
+                                                                on-change="_updateLinhaPreRequisicao"
                                                                 text-path="value"
                                                                 value-path="id"
                                                                 fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Região"}]'
@@ -1297,7 +1297,7 @@
                                                 </vaadin-combo-box>-->
                                                 <such-selectbox id="_CLGridFunctionalArea" value="{{item.functionalAreaCode}}"
                                                                 items="[[LProjectFunctionalAreaCodes]]"
-                                                                on-blur="_updateLinhaPreRequisicao"
+                                                                on-change="_updateLinhaPreRequisicao"
                                                                 text-path="value"
                                                                 value-path="id"
                                                                 fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Área Funcional"}]'
@@ -1327,9 +1327,11 @@
                                                         </table>
                                                     </template>
                                                 </vaadin-combo-box>-->
+
+                                                <!--on-change="_GridRespCenterChange"-->
                                                 <such-selectbox id="_CLGridResponsabilityCenter" value="{{item.centerResponsibilityCode}}"
                                                                 items="[[LProjectResponsabilityCenterCodes]]"
-                                                                on-change="_GridRespCenterChange" on-blur="_updateLinhaPreRequisicao"
+                                                                on-change="_updateLinhaPreRequisicao"
                                                                 text-path="value"
                                                                 value-path="id"
                                                                 fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Centro Responsabilidade"}]'
@@ -1382,9 +1384,10 @@
                                                         </table>
                                                     </template>
                                                 </vaadin-combo-box>-->
+                                                <!--on-change="_GridOpenLineChange"-->
                                                 <such-selectbox id="_CBGridPurchaseLine" value="{{item.openOrderLineNo}}"
                                                                 items="[[CBPurchaseLine]]"
-                                                                on-change="_GridOpenLineChange" on-blur="_updateLinhaPreRequisicao"
+                                                                on-change="_updateLinhaPreRequisicao"
                                                                 text-path="line_No"
                                                                 value-path="line_No"
                                                                 fields='[{"field":"documentNO", "name":"Código"}, {"field":"line_No", "name":"Linha Encomenda Aberto"}]'
@@ -1397,8 +1400,9 @@
                                         </template>
                                     </vaadin-grid-column>
 
-                                    <vaadin-grid-column width="2%">
+                                    <vaadin-grid-column width="50px">
                                         <template class="header">
+                                            ="
                                         </template>
                                         <template>
                                             <center>
@@ -1513,7 +1517,9 @@
             <div>
                 <h2>Valor Total: <b>{{_TotalLine}} €</b></h2>
             </div>
+            to
             <div class="buttons">
+                s"
                 <paper-button raised class="btnEdit" dialog-dismiss>Fechar</paper-button>
             </div>
         </paper-dialog>
@@ -2532,8 +2538,13 @@
                 },
 
                 _updateLinhaPreRequisicao: function (e) {
-                    //debugger;
+                    debugger;
                     var index = this.dataLines.lines.indexOf(e.model.item);
+
+                    //var line = this.CBPurchaseLine.find(x => x.id == e.currentTarget.__data.selectedItem.id);
+                    //if (line != null) {
+                    //    e.model.item.openOrderNo = line.documentNO;
+                    //}
 
                     this.$.prereqLines_UpdateLinhaPreRequisicao_ajax.body = JSON.stringify({
                         preRequisitionLineNo: e.model.item.preRequisitionLineNo,

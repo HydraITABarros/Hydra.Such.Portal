@@ -320,13 +320,16 @@ namespace Hydra.Such.Portal.Controllers
                         NAVProjectsViewModel Project = DBNAV2017Projects.GetAll(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, x.ProjectNo).FirstOrDefault();
                         if (Project != null)
                         {
-                            if (string.IsNullOrEmpty(x.RegionCode))
-                                x.RegionCode = Project.RegionCode ?? "";
-                            if (string.IsNullOrEmpty(x.FunctionalAreaCode))
-                                x.FunctionalAreaCode = Project.AreaCode ?? "";
-                            if (string.IsNullOrEmpty(x.CenterResponsibilityCode))
-                                x.CenterResponsibilityCode = Project.CenterResponsibilityCode ?? "";
+                            x.RegionCode = Project.RegionCode ?? "";
+                            x.FunctionalAreaCode = Project.AreaCode ?? "";
+                            x.CenterResponsibilityCode = Project.CenterResponsibilityCode ?? "";
                         }
+
+                        NAVProductsViewModel  product = DBNAV2017Products.GetAllProducts(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, x.Code).FirstOrDefault();
+                        if (product.InventoryValueZero == 1)
+                            x.ArmazemCDireta = "1";
+                        else
+                            x.ArmazemCDireta = "0";
 
                         if (CLine != null)
                         {
@@ -488,12 +491,9 @@ namespace Hydra.Such.Portal.Controllers
                             NAVProjectsViewModel Project = DBNAV2017Projects.GetAll(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, linha.ProjectNo).FirstOrDefault();
                             if (Project != null)
                             {
-                                if (string.IsNullOrEmpty(linha.RegionCode))
-                                    linha.RegionCode = Project.RegionCode ?? "";
-                                if (string.IsNullOrEmpty(linha.FunctionalAreaCode))
-                                    linha.FunctionalAreaCode = Project.AreaCode ?? "";
-                                if (string.IsNullOrEmpty(linha.CenterResponsibilityCode))
-                                    linha.CenterResponsibilityCode = Project.CenterResponsibilityCode ?? "";
+                                linha.RegionCode = Project.RegionCode ?? "";
+                                linha.FunctionalAreaCode = Project.AreaCode ?? "";
+                                linha.CenterResponsibilityCode = Project.CenterResponsibilityCode ?? "";
                             }
 
                             linha.UpdateUser = User.Identity.Name;
@@ -1016,12 +1016,14 @@ namespace Hydra.Such.Portal.Controllers
                                     newline.CódigoLocalização = DBConfigurations.GetById(1).ArmazemCompraDireta;
                                     newline.CustoUnitário = x.UnitCost;
                                     newline.CódigoLocalização = x.LocalCode;
+                                    newline.LocalCompraDireta = "1";
                                 }
                                 else
                                 {
                                     NAVStockKeepingUnitViewModel localizacao = DBNAV2017StockKeepingUnit.GetByProductsNo(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, x.Code).FirstOrDefault();
                                     newline.CustoUnitário = localizacao.UnitCost;
                                     newline.CódigoLocalização = localizacao.LocationCode;
+                                    newline.LocalCompraDireta = "0";
                                 }
 
                                 newline.Descrição = product.Name;
