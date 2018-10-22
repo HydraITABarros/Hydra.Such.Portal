@@ -98,13 +98,13 @@ namespace Hydra.Such.Data.Logic.ComprasML
                         if (userConfig.RFPerfil.HasValue && userConfig.RFPerfil.Value != BillingReceptionAreas.Contabilidade)
                         {
                             items = items.Where(x => x.Estado.HasValue && (x.Estado.Value == (int)BillingReceptionStates.Pendente || x.Estado.Value == (int)BillingReceptionStates.Rececao));
-                            List<string> areasFilter = userConfig.RFFiltroArea.Split('|').ToList();
+                            List<string> areasFilter = string.IsNullOrEmpty(userConfig.RFFiltroArea) ? new List<string>() : userConfig.RFFiltroArea.Split('|').ToList();
                             if (userConfig.RFPerfil.HasValue && userConfig.RFPerfil.Value == BillingReceptionAreas.Aprovisionamento)
                             {
                                 items = items.Where(x => x.AreaPendente == "Aprovisionamento");
                                 if (!string.IsNullOrEmpty(userConfig.RFFiltroArea))
                                     items = items.Where(x => areasFilter.Contains(x.AreaPendente2));
-                                var test = ctx.RececaoFaturacao.Where(x => areasFilter.Contains(x.AreaPendente2)).ToList();
+                                //var test = ctx.RececaoFaturacao.Where(x => areasFilter.Contains(x.AreaPendente2)).ToList();
                             }
                             else
                             {
