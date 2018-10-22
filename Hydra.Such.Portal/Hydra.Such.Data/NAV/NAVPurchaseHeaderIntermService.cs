@@ -38,7 +38,7 @@ namespace Hydra.Such.Data.NAV
                 {
                     Buy_from_Vendor_No = purchFromSupplier.SupplierId,
                     Pay_to_Vendor_No = purchFromSupplier.SupplierId,
-                    //LocationCode = purchFromSupplier
+                    LocationCode = purchFromSupplier.LocationCode,
                     RegionCode20 = purchFromSupplier.RegionCode,
                     FunctionAreaCode20 = purchFromSupplier.FunctionalAreaCode,
                     ResponsabilityCenterCode20 = purchFromSupplier.CenterResponsibilityCode,

@@ -7,6 +7,14 @@
 <link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
 <link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
 
+<!--start ColumnToggle-->
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-icons/iron-icons.html" />
+<link rel="import" href="/lib/iron-behaviors/iron-button-state.html" />
+<link rel="import" href="/lib/paper-menu-button/paper-menu-button.html" />
+<!--end ColumnToggle-->
+
 <dom-module id="x-pendingreq">
     <template>
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
@@ -120,6 +128,13 @@
                    id="grid_databound_ajax"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/PreRequisicoes/GetReqByUserResponsibleForApproval"
+                   last-response="{{result}}"
+                   method="post"
+                   handle-as="json"
+                   id="grid_databoundApproval_ajax"
+                   content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/PreRequisicoes/GetPendingReqLines"
                    last-response="{{resultlines}}"
                    method="post"
@@ -147,12 +162,29 @@
 
 
         <div class="subMenu">
+            <paper-button class="tablinks" on-tap="_goBack" id="btnGoBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+
             <paper-button class="tablinks" on-tap="_goHistory"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Histórico</paper-button>
+            <paper-button class="tablinks" on-tap="_goApproval"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{ _showMenuMessage }}</paper-button>
+
+            <!--start ColumnToggle-->
+            <paper-menu-button class="column-toggle" no-animations id="gridOpcaoGeral">
+                <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
+                <div class="list-group" slot="dropdown-content">
+                    <template is="dom-repeat" items="[[ _toArray(_columns)]]" id="columnsList">
+                        <a href="javascript:void(0);" on-tap="_toggleColumn" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClass( item.key ) ]]">
+                            {{ item.value.label }}
+                        </a>
+                        <hr />
+                    </template>
+                </div>
+            </paper-menu-button>
+            <!--end ColumnToggle-->
         </div>
-        <vaadin-grid id="grdPendingReqGrid" aria-label="PendingReqGrid" items="[[result]]" class="grid" multi-sort="true">
+        <vaadin-grid id="grdPendingReqGrid" aria-label="PendingReqGrid" items="[[result]]" class="grid" multi-sort="true" active-item="{{activeItem}}">
             <!--active-item="{{activeItem}}"-->
 
-            <vaadin-grid-column width="120px" resizable>
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.requisitionNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="requisitionNo">Nº Requisição</vaadin-grid-sorter>
                     <vaadin-grid-filter path="requisitionNo" />
@@ -161,7 +193,8 @@
                     {{item.requisitionNo}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="110px" resizable>
+            
+            <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.state.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="state">Estado</vaadin-grid-sorter>
                     <!--<vaadin-grid-filter path="state" />-->
@@ -170,7 +203,8 @@
                     [[ _clFormatState(item.state) ]]
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="110px" resizable>
+            
+            <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.createDate.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="createDate">Data Requisição</vaadin-grid-sorter>
                     <vaadin-grid-filter path="createDate" />
@@ -179,7 +213,8 @@
                     {{item.createDate}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="200px" resizable>
+
+            <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.localCode.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="localCode">Código Localização</vaadin-grid-sorter>
                     <vaadin-grid-filter path="localCode" />
@@ -188,7 +223,8 @@
                     {{item.localCode}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="200px" resizable>
+
+            <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.responsibleApproval.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="responsibleApproval">Responsável Aprovação</vaadin-grid-sorter>
                     <vaadin-grid-filter path="responsibleApproval" />
@@ -197,7 +233,8 @@
                     {{item.responsibleApproval}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="110px" resizable>
+
+            <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.approvalDateString.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="approvalDateString">Data/Hora Aprovação</vaadin-grid-sorter>
                     <vaadin-grid-filter path="approvalDateString" />
@@ -206,7 +243,8 @@
                     {{item.approvalDateString}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.comments.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="comments">Observações</vaadin-grid-sorter>
                     <vaadin-grid-filter path="comments" />
@@ -215,7 +253,8 @@
                     {{item.comments}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="150px" resizable>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.employeeNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="employeeNo">Nº Funcionário</vaadin-grid-sorter>
                     <vaadin-grid-filter path="employeeNo" />
@@ -224,7 +263,8 @@
                     {{item.employeeNo}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="100px" resizable>
+
+            <vaadin-grid-column width="100px" resizable hidden$="{{ _columns.regionCode.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="regionCode">Cód. Região</vaadin-grid-sorter>
                     <vaadin-grid-filter path="regionCode" />
@@ -233,7 +273,8 @@
                     {{item.regionCode}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="150px" resizable>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.centerResponsibilityCode.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="centerResponsibilityCode">Cód. Cresp</vaadin-grid-sorter>
                     <vaadin-grid-filter path="centerResponsibilityCode" />
@@ -242,6 +283,7 @@
                     {{item.centerResponsibilityCode}}
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="50px" resizable>
                 <template class="header">
                 </template>
@@ -251,6 +293,7 @@
                     </center>
                 </template>
             </vaadin-grid-column>
+            
             <vaadin-grid-column width="50px" resizable hidden="{{ !_permissions.update }}">
                 <template class="header">
                 </template>
@@ -260,6 +303,7 @@
                     </center>
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="50px" resizable hidden="{{ !_permissions.update }}">
                 <template class="header">
                 </template>
@@ -356,24 +400,38 @@
                     _permissions: {
                         type: Array
                     },
-                    //activeItem: {
-                    //    observer: '_rowSelected'
-                    //},
+                    activeItem: {
+                        observer: '_rowSelected'
+                    },
                     _areaid: {
                         type: Number,
                         notify: true,
                         value: 0
-                    }
+                    },
+                    _menuOpcao: {
+                        type: Number,
+                        notify: true,
+                        value: 0
+                    },
+                    _showMenuMessage: {
+                        type: String,
+                        value: "Minhas Aprovações"
+                    },
                 },
+
                 observers: [
                     '_onCacheLoaded(CBStatus)'
                 ],
+
                 _onCacheLoaded: function (CBStatus) {
 
                     if (!this.Flag) {
                         this.$.grid_databound_ajax.generateRequest();
                     }
                     this.Flag = true;
+
+                    /*ColumnToggle*/
+                    this._startColumnToggle();
 
                     var _this = this;
                     $(window).resize(function () {
@@ -388,13 +446,17 @@
                     var height = parentHeight - offsetTop;
                     grid_el.height(height);
                 },
-                //_rowSelected: function (item) {
+                _rowSelected: function (item) {
+                    if (item != null) {
+                        window.location.href = "/GestaoRequisicoes/MinhaRequisicao/" + item.requisitionNo;
+                    }
+
                 //    if (item != null) {
                 //        this.$.dialog.open();
                 //        this.$.grid_datareqlines_ajax.body = JSON.stringify({ "ReqNo": item.requisitionNo });
                 //        this.$.grid_datareqlines_ajax.generateRequest();
                 //    }
-                //},
+                },
                 _clFormatState: function (param) {
                     if (param != undefined) {
                         var sel = this.CBStatus.find(x => x.id == param);
@@ -462,7 +524,72 @@
                         this._openToastError("Occorreu um erro ao atualizar.");
                     }
                 },
-               
+
+                _goBack: function (e) {
+                    window.history.back();
+                },
+
+                _goApproval: function (item) {
+                    if (this._menuOpcao == 0) {
+                        this._menuOpcao = 1;
+                        this._showMenuMessage = "Minhas Requisições";
+
+                        this.$.grid_databoundApproval_ajax.generateRequest();
+                        this.$.grdPendingReqGrid.clearCache();
+                    } else {
+                        this._menuOpcao = 0
+                        this._showMenuMessage = "Minhas Aprovações";
+
+                        this.$.grid_databound_ajax.generateRequest();
+                        this.$.grdPendingReqGrid.clearCache();
+                    }
+                },
+
+                /*start - ColumnToggle*/
+                _startColumnToggle: function () {
+                    var columns = {
+                        "requisitionNo": { hidden: false, label: "Nº Requisição" },
+                        "state": { hidden: false, label: "Estado" },
+                        "createDate": { hidden: false, label: "Data Requisição" },
+                        "localCode": { hidden: false, label: "Código Localização" },
+                        "responsibleApproval": { hidden: false, label: "Responsável Aprovação" },
+                        "approvalDateString": { hidden: false, label: "Data/Hora Aprovação" },
+                        "comments": { hidden: false, label: "Observações" },
+                        "employeeNo": { hidden: false, label: "Nº Funcionário" },
+                        "regionCode": { hidden: false, label: "Cód. Região" },
+                        "centerResponsibilityCode": { hidden: false, label: "Cód. Cresp" }
+                    };
+
+                    if (localStorage["minhasreqlist.ToggleColumn"]) {
+                        var keys = Object.keys(columns);
+                        var storedColumns = JSON.parse(localStorage["minhasreqlist.ToggleColumn"]);
+                        for (var i = 0; i < keys.length; i++) {
+                            columns[keys[i]] = storedColumns[keys[i]];
+                        }
+                    };
+                    this._columns = columns;
+                },
+                _toggleColumn: function (event) {
+                    var columnIndex = JSON.parse(event.target.dataset.item).key;
+                    event.path[0].classList.toggle("selected");
+                    this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
+                    if (typeof (Storage) !== "undefined") {
+                        localStorage["minhasreqlist.ToggleColumn"] = JSON.stringify(this._columns);
+                    }
+                },
+                _getColumnItemClass: function (columnIndex) {
+                    return !this._columns[columnIndex].hidden ? "selected" : "";
+                },
+                _toArray: function (obj) {
+                    return Object.keys(obj).map(function (key) {
+                        return {
+                            key: key,
+                            value: obj[key]
+                        };
+                    });
+                },
+                /* end - ColumnToggle */
+
             });
         });
     </script>

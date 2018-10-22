@@ -311,18 +311,25 @@ namespace Hydra.Such.Portal.Controllers
 
                     CLToDelete.ForEach(x => DBPreRequesitionLines.Delete(x));
 
-                    data.Lines.ForEach(x =>
+                    //data.Lines.ForEach(x =>
+                    for (int i = 0; i < data.Lines.Count;i++)
                     {
+                        PreRequisitionLineViewModel x = data.Lines[i];
                         LinhasPréRequisição CLine = PreRequesitionLines.Where(y => x.PreRequisitionLineNo == y.NºPréRequisição && x.LineNo == y.NºLinha).FirstOrDefault();
 
-                        //NAVProjectsViewModel Project = DBNAV2017Projects.GetAll(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, x.ProjectNo).FirstOrDefault();
+                        NAVProjectsViewModel Project = DBNAV2017Projects.GetAll(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, x.ProjectNo).FirstOrDefault();
+                        if (Project != null)
+                        {
+                            x.RegionCode = Project.RegionCode ?? "";
+                            x.FunctionalAreaCode = Project.AreaCode ?? "";
+                            x.CenterResponsibilityCode = Project.CenterResponsibilityCode ?? "";
+                        }
 
-                        //if (CLine.CódigoRegião == "")
-                        //    CLine.CódigoRegião = Project.RegionCode ?? "";
-                        //if (CLine.CódigoÁreaFuncional == "")
-                        //    CLine.CódigoÁreaFuncional = Project.AreaCode ?? "";
-                        //if (CLine.CódigoCentroResponsabilidade == "")
-                        //    CLine.CódigoCentroResponsabilidade = Project.CenterResponsibilityCode ?? "";
+                        NAVProductsViewModel  product = DBNAV2017Products.GetAllProducts(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, x.Code).FirstOrDefault();
+                        if (product.InventoryValueZero == 1)
+                            x.ArmazemCDireta = "1";
+                        else
+                            x.ArmazemCDireta = "0";
 
                         if (CLine != null)
                         {
@@ -367,9 +374,12 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         else
                         {
-                            x = DBPreRequesitionLines.ParseToViewModel(DBPreRequesitionLines.Create(DBPreRequesitionLines.ParseToDB(x)));
+                            x.CreateUser = User.Identity.Name;
+                            data.Lines[i] = DBPreRequesitionLines.ParseToViewModel(DBPreRequesitionLines.Create(DBPreRequesitionLines.ParseToDB(x)));
                         }
-                    });
+                    }//);
+
+                    //data = DBPreRequesition.ParseToViewModel(DBPreRequesition.GetByNo(data.PreRequisitionNo));
 
                     data.eReasonCode = 1;
                     data.eMessage = "Linhas de Pré-Requisição atualizadas com sucesso.";
@@ -381,6 +391,7 @@ namespace Hydra.Such.Portal.Controllers
                 data.eMessage = "Ocorreu um erro ao atualizar as linhas de Pré-Requisição.";
                 data.eMessages.Add(new TraceInformation(TraceType.Error, ex.ToString()));
             }
+
             return Json(data);
         }
 
@@ -405,6 +416,7 @@ namespace Hydra.Such.Portal.Controllers
                     LinhaDuplicada.CódigoLocalização = LinhaOriginal.CódigoLocalização;
                     LinhaDuplicada.CódigoUnidadeMedida = LinhaOriginal.CódigoUnidadeMedida;
                     LinhaDuplicada.QuantidadeARequerer = LinhaOriginal.QuantidadeARequerer;
+                    LinhaDuplicada.QuantidadeInicial = LinhaOriginal.QuantidadeInicial;
                     LinhaDuplicada.CódigoRegião = LinhaOriginal.CódigoRegião;
                     LinhaDuplicada.CódigoÁreaFuncional = LinhaOriginal.CódigoÁreaFuncional;
                     LinhaDuplicada.CódigoCentroResponsabilidade = LinhaOriginal.CódigoCentroResponsabilidade;
@@ -483,13 +495,8 @@ namespace Hydra.Such.Portal.Controllers
                                 linha.FunctionalAreaCode = Project.AreaCode ?? "";
                                 linha.CenterResponsibilityCode = Project.CenterResponsibilityCode ?? "";
                             }
-                            else
-                            {
-                                linha.RegionCode = "";
-                                linha.FunctionalAreaCode = "";
-                                linha.CenterResponsibilityCode = "";
-                            }
 
+                            linha.UpdateUser = User.Identity.Name;
                             if (DBPreRequesitionLines.Update(DBPreRequesitionLines.ParseToDB(linha)) != null)
                             {
                                 result.eReasonCode = 1;
@@ -595,6 +602,17 @@ namespace Hydra.Such.Portal.Controllers
         #endregion
 
         #region CRUD
+
+        [HttpPost]
+        public JsonResult GetPreReq([FromBody] string preReqID)
+        {
+            PreRequesitionsViewModel result = new PreRequesitionsViewModel();
+
+            if (!string.IsNullOrEmpty(preReqID))
+                result = DBPreRequesition.ParseToViewModel(DBPreRequesition.GetByNo(preReqID));
+
+            return Json(result);
+        }
 
         [HttpPost]
         public JsonResult CreateNewForThisUser([FromBody] JObject requestParams)
@@ -923,6 +941,7 @@ namespace Hydra.Such.Portal.Controllers
                 eMessage = "Ocorreu um erro ao copiar as linhas",
                 eReasonCode = 2,
             };
+
             Projetos project = null;
             if (!string.IsNullOrEmpty(req.ProjectNo))
             {
@@ -940,35 +959,79 @@ namespace Hydra.Such.Portal.Controllers
                     List<LinhasPréRequisição> preReqLines = new List<LinhasPréRequisição>();
                     reqLines.ForEach(x =>
                     {
-                        LinhasPréRequisição newline = new LinhasPréRequisição();
+                        LinhasPréRequisição newline = new LinhasPréRequisição
+                        {
+                            NºPréRequisição = req.PreRequisitionNo,
+                            Tipo = 2, //PRODUTO
+                            Código = x.Code,
+                            Descrição = x.Description,
+                            CódigoLocalização = x.LocalCode,
+                            CódigoUnidadeMedida = x.UnitMeasureCode,
+                            QuantidadeARequerer = x.QuantityToRequire,
+                            QuantidadeInicial = x.QuantidadeInicial ?? (decimal?)null,
+                            CódigoRegião = x.RegionCode,
+                            CódigoÁreaFuncional = x.FunctionalAreaCode,
+                            CódigoCentroResponsabilidade = x.CenterResponsibilityCode,
+                            NºProjeto = x.ProjectNo,
+                            DataHoraCriação = DateTime.Now,
+                            UtilizadorCriação = User.Identity.Name,
+                            DataHoraModificação = null,
+                            UtilizadorModificação = null,
+                            Descrição2 = x.Description2,
+                            QtdPorUnidadeMedida = x.QtyByUnitOfMeasure,
+                            QuantidadeRequerida = x.QuantityRequired,
+                            QuantidadePendente = x.QuantityPending,
+                            CustoUnitário = x.UnitCost,
+                            PreçoUnitárioVenda = x.UnitCostsould,
+                            ValorOrçamento = x.BudgetValue,
+                            DataReceçãoEsperada = string.IsNullOrEmpty(x.ExpectedReceivingDate) ? (DateTime?)null : DateTime.Parse(x.ExpectedReceivingDate),
+                            Faturável = x.Billable == null ? false : x.Billable,
+                            NºLinhaOrdemManutenção = x.MaintenanceOrderLineNo,
+                            NºFuncionário = x.FunctionalNo,
+                            Viatura = x.Vehicle,
+                            NºFornecedor = x.SupplierNo,
+                            CódigoProdutoFornecedor = x.SupplierProductCode,
+                            UnidadeProdutivaNutrição = x.UnitNutritionProduction,
+                            NºCliente = x.CustomerNo,
+                            NºEncomendaAberto = x.OpenOrderNo,
+                            NºLinhaEncomendaAberto = x.OpenOrderLineNo
+                        };
 
-                        newline.NºPréRequisição = req.PreRequisitionNo;
-                        newline.CódigoLocalização = x.LocalCode;
-                        newline.CódigoProdutoFornecedor = x.SupplierProductCode;
-                        newline.Código = x.Code;
-                        newline.Descrição = x.Description;
-                        newline.Descrição2 = x.Description2;
-                        newline.CódigoUnidadeMedida = x.UnitMeasureCode;
-                        newline.QuantidadeARequerer = x.QuantityToRequire;
-                        newline.CustoUnitário = x.UnitCost;
-                        newline.NºLinhaOrdemManutenção = x.MaintenanceOrderLineNo;
-                        newline.Viatura = x.Vehicle;
-                        newline.NºFornecedor = x.SupplierNo;
-                        newline.NºEncomendaAberto = x.OpenOrderNo;
-                        newline.NºLinhaEncomendaAberto = x.OpenOrderLineNo;
-                        newline.NºProjeto = x.ProjectNo;
                         if (project != null)
                         {
                             newline.CódigoRegião = project.CódigoRegião;
                             newline.CódigoÁreaFuncional = project.CódigoÁreaFuncional;
                             newline.CódigoCentroResponsabilidade = project.CódigoCentroResponsabilidade;
                         }
-                        else
+
+                        if (!string.IsNullOrEmpty(x.Code))
                         {
-                            newline.CódigoRegião = x.RegionCode;
-                            newline.CódigoÁreaFuncional = x.FunctionalAreaCode;
-                            newline.CódigoCentroResponsabilidade = x.CenterResponsibilityCode;
+                            NAVProductsViewModel product = new NAVProductsViewModel();
+                            product = DBNAV2017Products.GetAllProducts(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, x.Code).FirstOrDefault();
+
+                            if (product != null)
+                            {
+                                if (product.InventoryValueZero == 1)
+                                {
+                                    newline.CódigoLocalização = DBConfigurations.GetById(1).ArmazemCompraDireta;
+                                    newline.CustoUnitário = x.UnitCost;
+                                    newline.CódigoLocalização = x.LocalCode;
+                                    newline.LocalCompraDireta = "1";
+                                }
+                                else
+                                {
+                                    NAVStockKeepingUnitViewModel localizacao = DBNAV2017StockKeepingUnit.GetByProductsNo(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, x.Code).FirstOrDefault();
+                                    newline.CustoUnitário = localizacao.UnitCost;
+                                    newline.CódigoLocalização = localizacao.LocationCode;
+                                    newline.LocalCompraDireta = "0";
+                                }
+
+                                newline.Descrição = product.Name;
+                                newline.Descrição2 = product.Name2;
+                                newline.CódigoUnidadeMedida = product.MeasureUnit;
+                            }
                         }
+
                         preReqLines.Add(newline);
                     });
 
@@ -1051,6 +1114,60 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result.OrderByDescending(x => x.RequisitionNo));
         }
 
+        public JsonResult GetReqByUserResponsibleForApproval()
+        {
+            List<Requisição> requisition = null;
+            //List<RequisitionStates> states = new List<RequisitionStates>()
+            //{
+            //    RequisitionStates.Pending,
+            //    RequisitionStates.Rejected
+            //};
+            //requisition = DBRequest.GetReqByUserAreaStatus(User.Identity.Name, states);
+            requisition = DBRequest.GetReqByUserResponsibleForApproval(User.Identity.Name);
+            List<RequisitionViewModel> result = new List<RequisitionViewModel>();
+            List<ApprovalMovementsViewModel> AproveList = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAll()); //.GetAllAssignedToUserFilteredByStatus(User.Identity.Name, 1));
+            if (requisition != null)
+            {
+                requisition.ForEach(x => result.Add(x.ParseToViewModel()));
+                if (result.Count > 0)
+                {
+                    foreach (RequisitionViewModel item in result)
+                    {
+                        if (item.State == RequisitionStates.Pending || item.State == RequisitionStates.Rejected)
+                        {
+                            item.SentReqToAprove = true;
+                        }
+                        else
+                        {
+                            item.SentReqToAprove = false;
+                        }
+
+                        if (item.ApprovalDate != null)
+                        {
+                            item.ApprovalDateString = item.ApprovalDate.Value.ToString("yyyy-MM-dd");
+                        }
+
+                        item.LocalCode = DBRequestLine.GetByRequisitionId(item.RequisitionNo).FirstOrDefault()?.CódigoLocalização;
+                    }
+                    if (AproveList != null && AproveList.Count > 0)
+                    {
+                        foreach (ApprovalMovementsViewModel apmov in AproveList)
+                        {
+                            foreach (RequisitionViewModel req in result)
+                            {
+                                if (apmov.Number == req.RequisitionNo && (apmov.Status == 1 || apmov.Status == 2))
+                                {
+                                    req.SentReqToAprove = false;
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
+            return Json(result.OrderByDescending(x => x.RequisitionNo));
+        }
+
         public JsonResult GetPendingReqLines([FromBody] JObject requestParams)
         {
             string ReqNo = requestParams["ReqNo"].ToString();
@@ -1067,18 +1184,33 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult GetHistoryReq()
         {
-            List<RequisiçãoHist> requisition = null;
+            List<Requisição> requisition = null;
             List<RequisitionStates> states = new List<RequisitionStates>()
             {
                 RequisitionStates.Archived,
             };
-            requisition = DBRequesitionHist.GetReqByUserAreaStatus(User.Identity.Name, states);
+            requisition = DBRequest.GetReqByUserAreaStatus(User.Identity.Name, states);
 
-            List<RequisitionHistViewModel> result = new List<RequisitionHistViewModel>();
+            List<RequisitionViewModel> result = new List<RequisitionViewModel>();
 
-            requisition.ForEach(x => result.Add(DBRequesitionHist.ParseToViewModel(x)));
+            requisition.ForEach(x => result.Add(DBRequest.ParseToViewModel(x)));
 
             return Json(result.OrderByDescending(x => x.RequisitionNo));
+
+            //CODIGO ORIGINAL
+            //List<RequisiçãoHist> requisition = null;
+            //List<RequisitionStates> states = new List<RequisitionStates>()
+            //{
+            //    RequisitionStates.Archived,
+            //};
+            //requisition = DBRequesitionHist.GetReqByUserAreaStatus(User.Identity.Name, states);
+
+            //List<RequisitionHistViewModel> result = new List<RequisitionHistViewModel>();
+
+            //requisition.ForEach(x => result.Add(DBRequesitionHist.ParseToViewModel(x)));
+
+            //return Json(result.OrderByDescending(x => x.RequisitionNo));
+            //FIM
         }
 
         public JsonResult GetHistoryReqLines([FromBody] JObject requestParams)
@@ -1527,15 +1659,25 @@ namespace Hydra.Such.Portal.Controllers
 
             if (ApprovalMovResult.eReasonCode != 3 && ApprovalMovResult.eReasonCode != 2)
             {
-                ApprovalMovResult.eReasonCode = 1;
-                ApprovalMovResult.eMessage = "Foi iniciado o processo de aprovação para esta requisição";
+                createReq.Estado = (int)RequisitionStates.Pending;
+                createReq.UtilizadorModificação = User.Identity.Name;
+                if (DBRequest.Update(createReq) != null)
+                {
+                    ApprovalMovResult.eReasonCode = 1;
+                    ApprovalMovResult.eMessage = "Foi iniciado o processo de aprovação para esta requisição";
+                }
+                else
+                {
+                    ApprovalMovResult.eReasonCode = 4;
+                    ApprovalMovResult.eMessage = "Ocorreu um erro ao atualizar o estado da Requisição.";
+                }
             }
             return Json(ApprovalMovResult);
         }
 
 
         [HttpPost]
-        public JsonResult GetProductInfo([FromBody] PreRequisitionLineViewModel linha)
+        public JsonResult GetProductInfo([FromBody] PreRequisitionLineViewModel linha, string area)
         {
             NAVProductsViewModel product = new NAVProductsViewModel();
 
@@ -1544,6 +1686,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (!string.IsNullOrEmpty(linha.Code))
                 {
                     product = DBNAV2017Products.GetAllProducts(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, linha.Code).FirstOrDefault();
+                    product.OpenOrderLines = false;
 
                     if (product.InventoryValueZero == 1)
                     {
@@ -1554,6 +1697,20 @@ namespace Hydra.Such.Portal.Controllers
                         NAVStockKeepingUnitViewModel localizacao = DBNAV2017StockKeepingUnit.GetByProductsNo(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, linha.Code).FirstOrDefault();
                         product.UnitCost = localizacao.UnitCost;
                         product.LocationCode = localizacao.LocationCode;
+                    }
+
+                    if (!string.IsNullOrEmpty(area))
+                    {
+                        string date = DateTime.Now.ToString();
+                        string codArea = "";
+
+                        codArea = DBNAV2017DimensionValues.GetByDimTypeAndUserId(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, 2, User.Identity.Name).Where(z => z.Name == area).FirstOrDefault().Code;
+                        List < NAVOpenOrderLinesViewModels> OpenOrderLines = new List<NAVOpenOrderLinesViewModels>();
+                        OpenOrderLines = DBNAV2017OpenOrderLines.GetAll(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, date, "", codArea, true);
+
+                        if (OpenOrderLines.Count > 0)
+                            if (OpenOrderLines.Where(x => x.Numb == linha.Code).Count() > 0)
+                                product.OpenOrderLines = true;
                     }
                 }
             }

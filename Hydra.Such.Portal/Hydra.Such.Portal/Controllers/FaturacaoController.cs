@@ -57,8 +57,13 @@ namespace Hydra.Such.Portal.Controllers
 
                 bool userCanSeePending = false;
                 if (userConfig.RFPerfilVisualizacao.HasValue)
-                    userCanSeePending = userConfig.RFPerfilVisualizacao.Value == (BillingReceptionUserProfiles.Perfil | BillingReceptionUserProfiles.Tudo);
+                    userCanSeePending = (userConfig.RFPerfilVisualizacao.Value == BillingReceptionUserProfiles.Perfil) | (userConfig.RFPerfilVisualizacao.Value == BillingReceptionUserProfiles.Tudo);
                 ViewBag.UserCanSeePending = userCanSeePending;
+
+                bool userBelongsToProvisioning = false;
+                if (userConfig.RFPerfilVisualizacao.HasValue)
+                    userBelongsToProvisioning = userConfig.RFPerfil.Value == BillingReceptionAreas.Aprovisionamento;
+                ViewBag.UserBelongsToProvisioning = userBelongsToProvisioning;
 
                 return View();
             }
@@ -89,7 +94,6 @@ namespace Hydra.Such.Portal.Controllers
                 return RedirectToAction("AccessDenied", "Error");
             }
         }
-      
 
         public JsonResult GetBillingReceptions()
         {
@@ -99,28 +103,42 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult GetBillingReceptionsHistory()
         {
-
             UserConfigurationsViewModel userConfig = DBUserConfigurations.GetById(User.Identity.Name).ParseToViewModel();
-            BillingReceptionAreas areaPendente = userConfig.RFPerfil ?? BillingReceptionAreas.Aprovisionamento;
-            var billingReceptions = billingRecService.GetAllForUserHist(User.Identity.Name,0, areaPendente);
+            var billingReceptions = billingRecService.GetAllForUserHist(User.Identity.Name, userConfig.RFPerfilVisualizacao);
+
             return Json(billingReceptions);
         }
-        public JsonResult GetBillingReceptionsPendingExcept()
-        {
 
-            UserConfigurationsViewModel userConfig = DBUserConfigurations.GetById(User.Identity.Name).ParseToViewModel();
-            BillingReceptionAreas perfil = userConfig.RFPerfil ?? BillingReceptionAreas.Contabilidade;
-            BillingReceptionUserProfiles perfilVisulalizacao = userConfig.RFPerfilVisualizacao ?? BillingReceptionUserProfiles.Tudo;
-
-            var billingReceptions = billingRecService.GetAllForUserPendingExcept(User.Identity.Name, perfil, perfilVisulalizacao);
-            return Json(billingReceptions);
-        }
         public JsonResult GetBillingReceptionsPending()
         {
-
             UserConfigurationsViewModel userConfig = DBUserConfigurations.GetById(User.Identity.Name).ParseToViewModel();
-            BillingReceptionAreas areaPendente = userConfig.RFPerfil ?? BillingReceptionAreas.Aprovisionamento;
-            var billingReceptions = billingRecService.GetAllForUserPending();
+            var billingReceptions = billingRecService.GetPendingForUser(userConfig.RFPerfil, User.Identity.Name);
+            return Json(billingReceptions);
+            //UserConfigurationsViewModel userConfig = DBUserConfigurations.GetById(User.Identity.Name).ParseToViewModel();
+            //BillingReceptionAreas perfil = userConfig.RFPerfil ?? BillingReceptionAreas.Contabilidade;
+            //BillingReceptionUserProfiles perfilVisulalizacao = userConfig.RFPerfilVisualizacao ?? BillingReceptionUserProfiles.Tudo;
+
+            //var billingReceptions = billingRecService.GetAllForUserPendingExcept(User.Identity.Name, perfil, perfilVisulalizacao);
+            //return Json(billingReceptions);
+        }
+
+        public JsonResult GetBillingReceptionsPendingOnAreas()
+        {
+
+            //UserConfigurationsViewModel userConfig = DBUserConfigurations.GetById(User.Identity.Name).ParseToViewModel();
+            //BillingReceptionAreas areaPendente = userConfig.RFPerfil ?? BillingReceptionAreas.Aprovisionamento;
+            //var billingReceptions = billingRecService.GetAllForUserPending();
+            var billingReceptions = billingRecService.GetPendingOnAreas(User.Identity.Name);
+            return Json(billingReceptions);
+        }
+
+        public JsonResult GetChangeableDestination()
+        {
+
+            //UserConfigurationsViewModel userConfig = DBUserConfigurations.GetById(User.Identity.Name).ParseToViewModel();
+            //BillingReceptionAreas areaPendente = userConfig.RFPerfil ?? BillingReceptionAreas.Aprovisionamento;
+            //var billingReceptions = billingRecService.GetAllForUserPending();
+            var billingReceptions = billingRecService.GetChangeableDestination(User.Identity.Name);
             return Json(billingReceptions);
         }
 
@@ -131,7 +149,6 @@ namespace Hydra.Such.Portal.Controllers
             return Json(billingReception);
         }
 
-      
         [HttpPost]
         public JsonResult CreateBillingReception([FromBody] BillingReceptionModel item)
         {
@@ -273,7 +290,6 @@ namespace Hydra.Such.Portal.Controllers
             return Json(updatedItem);
         }
 
-
         [HttpPost]
         public JsonResult SendBillingReception([FromBody] BillingReceptionModel item)
         {
@@ -311,7 +327,6 @@ namespace Hydra.Such.Portal.Controllers
             return Json(updatedItem);
         }
 
-       
         [HttpPost]
         public JsonResult GetWorkflowAttached([FromBody] BillingRecWorkflowModel item)
         {
@@ -319,7 +334,6 @@ namespace Hydra.Such.Portal.Controllers
             return Json(items);
         }
 
-         
         [HttpPost]
         public JsonResult UpdateWorkFlow([FromBody] BillingReceptionModel item)
         {
