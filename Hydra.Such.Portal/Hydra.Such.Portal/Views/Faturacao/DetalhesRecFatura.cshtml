@@ -770,7 +770,8 @@
                         <vaadin-upload id="uploadRequest1" target="/Faturacao/ExistFile"
                                        method="POST"
                                        headers="{'Accept': 'application/json'}"
-                                       timeout=15000 files="{{files}}"></vaadin-upload>
+                                       timeout=15000 files="{{files}}"
+                                        on-upload-response="_uploadResponse1"></vaadin-upload>
                     </div>
 
                     <div class="col-sm-3" hidden="{{ !_isAnexarFicheiroResposta }}">
@@ -869,7 +870,8 @@
                         <vaadin-upload id="uploadRequest2" target="/Faturacao/ExistFile"
                                        method="POST"
                                        headers="{'Accept': 'application/json'}"
-                                       timeout=15000 files="{{files}}"></vaadin-upload>
+                                       timeout=15000 files="{{files}}"
+                                        on-upload-response="_uploadResponse2"></vaadin-upload>
                     </div>
                     <div class="col-sm-3" hidden="{{ !_isAnexarFicheiro }}">
                         <vaadin-text-field label="Descrição" type="text" id="txtDescricaoAnexo2"></vaadin-text-field>
@@ -1276,13 +1278,50 @@
                     '_preventDocumentDuplicates(data.dataDocFornecedor, data.numDocFornecedor, data.codFornecedor)'
                 ],
                 _uploadResponse: function (event) {
-
-                    console.log('upload xhr after server response: ', event.detail.xhr);
-                    event.detail.file.error = 'Duplicado.';
-                    event.detail.xhr.status = 500;
+                    debugger;
+                    var SplitMessage = event.detail.xhr.response.split(',')
+                    var eReasonCode = SplitMessage[0].split('{')[1].split(':')[1];
+                    var eMessage = SplitMessage[1].split(':')[1];
+                    eMessage = eMessage.substring(1, eMessage.length - 1);
+                    if (eReasonCode != "1") {
+                        console.log('upload xhr after server response: ', event.detail.xhr);
+                        event.detail.file.error = "O ficheiro " + eMessage + " já existe" ;
+                        event.detail.xhr.status = 500;
+                    }
+                   
                     // Interpret any server response as success:
                     // event.detail.xhr.status = 200;
                     
+                },
+                _uploadResponse1: function (event) {
+                    debugger;
+                    var SplitMessage = event.detail.xhr.response.split(',');
+                    var eReasonCode = SplitMessage[0].split('{')[1].split(':')[1];
+                    var eMessage = SplitMessage[1].split(':')[1];
+                    if (eReasonCode != "1") {
+                        console.log('upload xhr after server response: ', event.detail.xhr);
+                        event.detail.file.error = "O ficheiro " + eMessage + " já existe" ;
+                        event.detail.xhr.status = 500;
+                    }
+                    //event.detail.file.name = eMessage;
+                    // Interpret any server response as success:
+                    // event.detail.xhr.status = 200;
+
+                },
+                _uploadResponse2: function (event) {
+                    debugger;
+                    var SplitMessage = event.detail.xhr.response.split(',')
+                    var eReasonCode = SplitMessage[0].split('{')[1].split(':')[1];
+                    var eMessage = SplitMessage[1].split(':')[1];
+                    if (eReasonCode != "1") {
+                        console.log('upload xhr after server response: ', event.detail.xhr);
+                        event.detail.file.error = "O ficheiro " + eMessage + " já existe";
+                        event.detail.xhr.status = 500;
+                    }
+                    //event.detail.file.name = eMessage;
+                    // Interpret any server response as success:
+                    // event.detail.xhr.status = 200;
+
                 },
                 ready: function () {
                     if (this._billingReceptionId != null && this._billingReceptionId != "") {
