@@ -487,7 +487,7 @@ namespace Hydra.Such.Portal.Services
             }
             catch (Exception ex)
             {
-                item.eMessage = "Não foi possivel validar existência da fatura. Por favor tente novamente. Se o problema persistir contacte o administrador.";
+                item.eMessage = "Não foi possivel validar a existência da fatura. Por favor tente novamente. Se o problema persistir contacte o administrador.";
                 isValid = false;
             }
             if (!isValid)

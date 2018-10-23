@@ -104,7 +104,6 @@ namespace Hydra.Such.Data.Logic.ComprasML
                                 items = items.Where(x => x.AreaPendente == "Aprovisionamento");
                                 if (!string.IsNullOrEmpty(userConfig.RFFiltroArea))
                                     items = items.Where(x => areasFilter.Contains(x.AreaPendente2));
-                                //var test = ctx.RececaoFaturacao.Where(x => areasFilter.Contains(x.AreaPendente2)).ToList();
                             }
                             else
                             {
