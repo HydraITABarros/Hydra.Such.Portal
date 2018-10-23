@@ -189,6 +189,11 @@
                                         <vaadin-text-field id="requisitionNo" name="requisitionNo" label="Pedido Interno" value="{{data.details.requisitionNo}}" disabled="disabled">  </vaadin-text-field>
                                     </div>
                                 </div>
+                                <div class="row break_clear">
+                                    <div class="col-md-3">                                        
+                                        <vaadin-checkbox checked="{{data.details.hasAnAdvance}}" id="hasAnAdvance" disabled="disabled">Adiantamento</vaadin-checkbox>
+                                    </div>
+                                </div>
                             </div>
 
                             <!-- Encomenda Lines -->
@@ -203,8 +208,8 @@
 
                                 <vaadin-grid-column width="180px" resizable>
                                     <template class="header">
-                                        <vaadin-grid-sorter path="type">Numero da Linha</vaadin-grid-sorter>
-                                        <vaadin-grid-filter path="type" />
+                                        <vaadin-grid-sorter path="lineNo">Numero da Linha</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="lineNo" />
                                     </template>
                                     <template>
                                         [[ item.lineNo ]]
@@ -213,8 +218,8 @@
 
                                 <vaadin-grid-column width="110px" resizable>
                                     <template class="header">
-                                        <vaadin-grid-sorter path="type">Numero</vaadin-grid-sorter>
-                                        <vaadin-grid-filter path="type" />
+                                        <vaadin-grid-sorter path="no">Numero</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="no" />
                                     </template>
                                     <template>
                                         [[ item.no ]]
@@ -223,8 +228,8 @@
 
                                 <vaadin-grid-column width="230px" resizable>
                                     <template class="header">
-                                        <vaadin-grid-sorter path="type">Descrição</vaadin-grid-sorter>
-                                        <vaadin-grid-filter path="type" />
+                                        <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="description" />
                                     </template>
                                     <template>
                                         [[ item.description ]] [[ item.description2 ]]
@@ -233,8 +238,8 @@
 
                                 <vaadin-grid-column width="160px" resizable>
                                     <template class="header">
-                                        <vaadin-grid-sorter path="type">Unidade de Medida</vaadin-grid-sorter>
-                                        <vaadin-grid-filter path="type" />
+                                        <vaadin-grid-sorter path="unitOfMeasure">Unidade de Medida</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="unitOfMeasure" />
                                     </template>
                                     <template>
                                         [[ item.unitOfMeasure ]]
@@ -243,8 +248,8 @@
 
                                 <vaadin-grid-column width="130px" resizable>
                                     <template class="header">
-                                        <vaadin-grid-sorter path="type">Quantidade</vaadin-grid-sorter>
-                                        <vaadin-grid-filter path="type" />
+                                        <vaadin-grid-sorter path="quantity">Quantidade</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="quantity" />
                                     </template>
                                     <template>
                                         [[ item.quantity ]]
@@ -253,8 +258,8 @@
 
                                 <vaadin-grid-column width="170px" resizable>
                                     <template class="header">
-                                        <vaadin-grid-sorter path="type">Custo Unitário Directo</vaadin-grid-sorter>
-                                        <vaadin-grid-filter path="type" />
+                                        <vaadin-grid-sorter path="directUnitCost">Custo Unitário Directo</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="directUnitCost" />
                                     </template>
                                     <template>
                                         [[ item.directUnitCost ]]
@@ -263,8 +268,8 @@
 
                                 <vaadin-grid-column width="130px" resizable>
                                     <template class="header">
-                                        <vaadin-grid-sorter path="type">Taxa de IVA</vaadin-grid-sorter>
-                                        <vaadin-grid-filter path="type" />
+                                        <vaadin-grid-sorter path="vat">Taxa de IVA</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="vat" />
                                     </template>
                                     <template>
                                         [[ item.vat ]]
@@ -273,8 +278,8 @@
 
                                 <vaadin-grid-column width="130px" resizable>
                                     <template class="header">
-                                        <vaadin-grid-sorter path="type">Valor</vaadin-grid-sorter>
-                                        <vaadin-grid-filter path="type" />
+                                        <vaadin-grid-sorter path="amount">Valor</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="amount" />
                                     </template>
                                     <template>
                                         [[ item.amount ]]
@@ -283,8 +288,8 @@
 
                                 <vaadin-grid-column width="170px" resizable>
                                     <template class="header">
-                                        <vaadin-grid-sorter path="type">Valor (IVA Incluido)</vaadin-grid-sorter>
-                                        <vaadin-grid-filter path="type" />
+                                        <vaadin-grid-sorter path="amountIncludingVAT">Valor (IVA Incluido)</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="amountIncludingVAT" />
                                     </template>
                                     <template>
                                         [[ item.amountIncludingVAT ]]
@@ -293,8 +298,8 @@
 
                                 <vaadin-grid-column width="130px" resizable>
                                     <template class="header">
-                                        <vaadin-grid-sorter path="type">Numero de Projecto</vaadin-grid-sorter>
-                                        <vaadin-grid-filter path="type" />
+                                        <vaadin-grid-sorter path="jobNo">Numero de Projecto</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="jobNo" />
                                     </template>
                                     <template>
                                         [[ item.jobNo ]]
@@ -303,8 +308,8 @@
 
                                 <vaadin-grid-column width="180px" resizable>
                                     <template class="header">
-                                        <vaadin-grid-sorter path="type">Código de Localização</vaadin-grid-sorter>
-                                        <vaadin-grid-filter path="type" />
+                                        <vaadin-grid-sorter path="allocationNo">Código de Localização</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="allocationNo" />
                                     </template>
                                     <template>
                                         [[ item.allocationNo ]]
@@ -313,8 +318,8 @@
 
                                 <vaadin-grid-column width="130px" resizable>
                                     <template class="header">
-                                        <vaadin-grid-sorter path="type">Quantidade Recebida</vaadin-grid-sorter>
-                                        <vaadin-grid-filter path="type" />
+                                        <vaadin-grid-sorter path="quantityReceived">Quantidade Recebida</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="quantityReceived" />
                                     </template>
                                     <template>
                                         [[ item.quantityReceived ]]
@@ -323,8 +328,8 @@
 
                                 <vaadin-grid-column width="130px" resizable>
                                     <template class="header">
-                                        <vaadin-grid-sorter path="type">Quantidade Faturada</vaadin-grid-sorter>
-                                        <vaadin-grid-filter path="type" />
+                                        <vaadin-grid-sorter path="quantityInvoiced">Quantidade Faturada</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="quantityInvoiced" />
                                     </template>
                                     <template>
                                         [[ item.quantityInvoiced ]]
@@ -333,6 +338,35 @@
 
 
 
+                                <vaadin-grid-column width="180px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="regionId">Cód. Região</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="regionId" />
+                                    </template>
+                                    <template>
+                                        [[ item.regionId ]]
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column width="130px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="functionalAreaId">Cód. Área Funcional</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="functionalAreaId" />
+                                    </template>
+                                    <template>
+                                        [[ item.functionalAreaId ]]
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column width="130px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="respCenterId">Cód. Centro de Responsabilidade</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="respCenterId" />
+                                    </template>
+                                    <template>
+                                        [[ item.respCenterId ]]
+                                    </template>
+                                </vaadin-grid-column>
                             </vaadin-grid>
                         </div>
                     </div>
