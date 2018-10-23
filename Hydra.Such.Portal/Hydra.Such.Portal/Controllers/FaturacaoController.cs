@@ -1065,7 +1065,7 @@ namespace Hydra.Such.Portal.Controllers
                     string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file.FileName);
                     string dateToken = DateTime.Now.ToString("yy") + DateTime.Now.Month.ToString() + DateTime.Now.Day.ToString() + DateTime.Now.Hour.ToString() + DateTime.Now.Minute.ToString() + DateTime.Now.Second.ToString();
 
-                    string fileName = string.Format("{0}_{1}.{2}", fileNameWithoutExtension, dateToken, extension);
+                    string fileName = string.Format("{0}_{1}{2}", fileNameWithoutExtension, dateToken, extension);
 
                     var path = Path.Combine(_generalConfig.FileUploadFolder, fileName);
                     if (System.IO.File.Exists(path))
