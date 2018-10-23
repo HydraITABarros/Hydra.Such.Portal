@@ -28,6 +28,9 @@
 <link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
 <link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
 
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
+
+
 <!--ACORDEÃO-->
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
@@ -69,7 +72,7 @@
         <iron-ajax url="/PopulateDropdowns/GetUtilizadores" last-response="{{LListaUtilizadores}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetNAVResponsabilityCenter" last-response="{{LRespoCenterNav}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
-        
+
         <iron-ajax url="/PopulateDropdowns/GetNumerations"
                    last-response="{{LReceptionConfig}}"
                    auto
@@ -290,55 +293,60 @@
 
         @if (ViewBag.UserId != "0")
         {
-            <h2 class="separator">Perfis Utilizadores</h2>
-            <template is="dom-if" if="{{ _permissions.update }}">
-                <div class="row">
-                    <div class="col-lg-3">
-                        <vaadin-combo-box items="[[UserProfileModelsData]]" id="_Profiles" item-value-path="id" item-label-path="value" value="{{ddUserProfile}}" label="Perfil">
-                            <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
+            <paper-collapse-item class="panel-heading" header="Perfis Utilizadores" closed>
+                <div class="panel-body">
+                    @*<h2 class="separator">Perfis Utilizadores</h2>*@
+                    <template is="dom-if" if="{{ _permissions.update }}">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <vaadin-combo-box items="[[UserProfileModelsData]]" id="_Profiles" item-value-path="id" item-label-path="value" value="{{ddUserProfile}}" label="Perfil">
+                                    <template>
+                                        <paper-icon-item>
+                                            <paper-item-body two-line>
+                                                <div>[[item.value]]</div>
+                                            </paper-item-body>
+                                        </paper-icon-item>
+                                    </template>
+                                </vaadin-combo-box>
+                            </div>
+                            <div class="col-lg-3 alignPoga">
+                                <paper-button class="btnEdit" raised on-tap="_createUserProfile"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Associar</paper-button>
+                            </div>
+                        </div>
+                    </template>
+                    <vaadin-grid id="gridUserProfiles" aria-label="gridUserProfiles" items="{{ data.userProfiles }}" class="grid">
+                        <vaadin-grid-column width="20%">
+                            <template class="header">
+                                Perfil
                             </template>
-                        </vaadin-combo-box>
-                    </div>
-                    <div class="col-lg-3 alignPoga">
-                        <paper-button class="btnEdit" raised on-tap="_createUserProfile"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Associar</paper-button>
-                    </div>
+                            <template>
+                                <vaadin-combo-box items="[[UserProfileModelsData]]" disabled item-value-path="id" item-label-path="value" value="{{item.id}}">
+                                    <template>
+                                        <paper-icon-item>
+                                            <paper-item-body two-line>
+                                                <div>[[item.value]]</div>
+                                            </paper-item-body>
+                                        </paper-icon-item>
+                                    </template>
+                                </vaadin-combo-box>
+                            </template>
+                        </vaadin-grid-column>
+                        <template is="dom-if" if="{{ _permissions.update }}">
+                            <vaadin-grid-column width="80%">
+                                <template class="header">
+                                </template>
+                                <template>
+                                    <center>
+                                        @*<paper-button raised id="btnCancel" class="btnRemove" on-tap="_deleteUserProfile"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>*@
+                                        <paper-button raised id="btnCancel" class="btnRemove tableBtn" on-tap="_deleteUserProfile" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                    </center>
+                                </template>
+                            </vaadin-grid-column>
+                        </template>
+                    </vaadin-grid>
                 </div>
-            </template>
-            <vaadin-grid id="gridUserProfiles" aria-label="gridUserProfiles" items="{{ data.userProfiles }}" class="grid">
-                <vaadin-grid-column width="20%">
-                    <template class="header">
-                        Perfil
-                    </template>
-                    <template>
-                        <vaadin-combo-box items="[[UserProfileModelsData]]" disabled item-value-path="id" item-label-path="value" value="{{item.id}}">
-                            <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
-                            </template>
-                        </vaadin-combo-box>
-                    </template>
-                </vaadin-grid-column>
-                <template is="dom-if" if="{{ _permissions.update }}">
-                    <vaadin-grid-column width="80%">
-                        <template class="header">
-                        </template>
-                        <template>
-                            <center>
-                                @*<paper-button raised id="btnCancel" class="btnRemove" on-tap="_deleteUserProfile"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>*@
-                                <paper-button raised id="btnCancel" class="btnRemove tableBtn" on-tap="_deleteUserProfile" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
-                            </center>
-                        </template>
-                    </vaadin-grid-column>
-                </template>
-            </vaadin-grid>
+            </paper-collapse-item>
+
             <div class="row">
                 <div class="col-lg-12">
                     <h2 class="separator">Acessos Utilizador</h2>
@@ -346,7 +354,7 @@
             </div>
             <template is="dom-if" if="{{ _permissions.create }}">
                 <div class="row">
-                    <div class="col-lg-2">
+                    <div class="col-lg-3">
                         <vaadin-combo-box items="[[FeaturesData]]" id="_Features" item-value-path="id" item-label-path="value" value="{{ddFeature}}" label="Funcionalidade">
                             <template>
                                 <paper-icon-item>
@@ -478,16 +486,22 @@
                             </template>
                         </vaadin-combo-box>
                     </div>
-                    <div class="col-lg-2">
-                        <vaadin-combo-box items="[[DimensionValueData]]" id="_DimensionValue" item-value-path="id" item-label-path="value" label="Valor Dimensão" value="{{ddDimensionValue}}">
-                            <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
-                            </template>
-                        </vaadin-combo-box>
+                    <div class="col-lg-4">
+                        <such-selectbox id="_DimensionValue" value="{{ddDimensionValue}}" label="Valor Dimensão"
+                                        items="[[DimensionValueData]]"
+                                        text-path="value"
+                                        value-path="id"
+                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                        </such-selectbox>
+                        @*<vaadin-combo-box items="[[DimensionValueData]]" id="_DimensionValue" item-value-path="id" item-label-path="value" label="Valor Dimensão" value="{{ddDimensionValue}}">
+                                <template>
+                                    <paper-icon-item>
+                                        <paper-item-body two-line>
+                                            <div>[[item.value]]</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
+                                </template>
+                            </vaadin-combo-box>*@
                     </div>
                     <div class="col-lg-3 alignPoga">
                         <paper-button class="btnSave" raised on-tap="_createUserDimensionAccess"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>

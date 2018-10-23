@@ -37,7 +37,17 @@ namespace Hydra.Such.Data.Logic
             return null;
         }
 
-        private static List<PurchaseHeader> GetPurchasesBy(string NAVDatabaseName, string NAVCompanyName, NAVBaseDocumentTypes type, string supplierId, string orderId, string externalDocNo)
+        public static PurchaseHeader GetByBillingReceptionNo(string NAVDatabaseName, string NAVCompanyName, string billingReceptionNo)
+        {
+            var items = GetPurchasesBy(NAVDatabaseName, NAVCompanyName, null, null,null,null,billingReceptionNo);
+            if (items != null)
+            {
+                return items.FirstOrDefault();
+            }
+            return null;
+        }
+
+        private static List<PurchaseHeader> GetPurchasesBy(string NAVDatabaseName, string NAVCompanyName, NAVBaseDocumentTypes? type, string supplierId, string orderId, string externalDocNo, string billingReceptionNo = null)
         {
             try
             {
@@ -47,13 +57,14 @@ namespace Hydra.Such.Data.Logic
                     var parameters = new[]{
                         new SqlParameter("@DBName", NAVDatabaseName),
                         new SqlParameter("@CompanyName", NAVCompanyName),
-                        new SqlParameter("@Type", (int)type),
+                        new SqlParameter("@Type", type.HasValue ? (int)type.Value : -1),
                         new SqlParameter("@SupplierId", supplierId),
                         new SqlParameter("@OrderId", orderId),
-                        new SqlParameter("@ExternalDocNo", externalDocNo)
+                        new SqlParameter("@ExternalDocNo", externalDocNo),
+                        new SqlParameter("@BillingReceptionNo", billingReceptionNo)
                     };
                     
-                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017Encomendas @DBName, @CompanyName, @Type, @SupplierId, @OrderId, @ExternalDocNo", parameters);
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017Encomendas @DBName, @CompanyName, @Type, @SupplierId, @OrderId, @BillingReceptionNo", parameters);
 
                     foreach (dynamic temp in data)
                     {
@@ -93,6 +104,55 @@ namespace Hydra.Such.Data.Logic
             {
                 return null;
             }
+        }
+
+        public static bool DocumentExistsFor(string NAVDatabaseName, string NAVCompanyName, string billingReceptionNo)
+        {
+            //List<PurchaseHeader> result = new List<PurchaseHeader>();
+            //using (var ctx = new SuchDBContextExtention())
+            //{
+            //    var parameters = new[]{
+            //            new SqlParameter("@DBName", NAVDatabaseName),
+            //            new SqlParameter("@CompanyName", NAVCompanyName),
+            //            new SqlParameter("@BillingReceptionNo", billingReceptionNo)
+            //        };
+
+            //    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017RecFaturacao @DBName, @CompanyName, @BillingReceptionNo", parameters);
+
+            //    foreach (dynamic temp in data)
+            //    {
+            //        var item = new PurchaseHeader();
+
+            //        //item.DocumentType = (int)temp.DocumentType;
+            //        item.No = temp.No;
+            //        //item.OrderDate = temp.OrderDate is DBNull ? string.Empty : ((DateTime)temp.OrderDate).ToString("yyyy-MM-dd");
+            //        //item.DueDate = temp.DueDate is DBNull ? string.Empty : ((DateTime)temp.DueDate).ToString("yyyy-MM-dd");
+            //        //item.LocationCode = temp.LocationCode;
+            //        //item.RegionId = temp.RegionId is DBNull ? string.Empty : temp.RegionId;
+            //        //item.FunctionalAreaId = temp.FunctionalAreaId is DBNull ? string.Empty : temp.FunctionalAreaId;
+            //        //item.RespCenterId = temp.RespCenterId is DBNull ? string.Empty : temp.RespCenterId;
+            //        //item.VendorOrderNo = temp.VendorOrderNo;
+            //        //item.VendorInvoiceNo = temp.VendorInvoiceNo;
+            //        //item.VendorCrMemoNo = temp.VendorCrMemoNo;
+            //        //item.BuyFromVendorNo = temp.BuyFromVendorNo;
+            //        //item.BuyFromVendorName = temp.BuyFromVendorName;
+            //        //item.DocumentDate = temp.DocumentDate is DBNull ? string.Empty : ((DateTime)temp.DocumentDate).ToString("yyyy-MM-dd");
+            //        //item.DimensionSetID = temp.DimensionSetID;
+            //        //item.RelatedDocument = temp.RelatedDocument;
+            //        //item.ValorFactura = temp.ValorFactura;
+            //        //item.SourceDocNo = temp.SourceDocNo;
+            //        //item.Quantity = temp.Quantity;
+            //        //item.QuantityReceived = temp.QuantityReceived;
+            //        //item.AmountRcdNotInvoiced = temp.AmountRcdNotInvoiced;
+            //        //item.Amount = temp.Amount;
+            //        //item.AmountIncludingVAT = temp.AmountIncludingVAT;
+
+
+            //        result.Add(item);
+            //    }
+            //}
+            //return result.Count > 0;
+            return false;
         }
     }
 }

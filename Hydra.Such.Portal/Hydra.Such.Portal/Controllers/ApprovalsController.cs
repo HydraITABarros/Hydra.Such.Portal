@@ -878,6 +878,16 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Nivel");
                     Col = Col + 1;
                 }
+                if (dp["region"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Cód. Região");
+                    Col = Col + 1;
+                }
+                if (dp["responsabilityCenter"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Cód. Cresp");
+                    Col = Col + 1;
+                }
 
                 if (dp != null)
                 {
@@ -920,6 +930,16 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["level"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.Level);
+                            Col = Col + 1;
+                        }
+                        if (dp["region"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Region);
+                            Col = Col + 1;
+                        }
+                        if (dp["responsabilityCenter"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ResponsabilityCenter);
                             Col = Col + 1;
                         }
                         count++;

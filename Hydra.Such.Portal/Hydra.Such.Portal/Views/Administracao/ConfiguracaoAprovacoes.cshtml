@@ -145,7 +145,7 @@
                         </div>
 
                         <div class="col-lg-3">
-                            <vaadin-combo-box items="[[ddFunctionalAreasData]]" id="ddFunctionalArea" item-value-path="id" item-label-path="value" value="{{ddFunctionalAreas}}" label="Área Funcional" disabled="{{ _permissionsCreate }}">
+                            <vaadin-combo-box items="[[ddFunctionalAreasData]]" id="ddFunctionalArea" item-value-path="id" item-label-path="id" value="{{ddFunctionalAreas}}" label="Área Funcional" disabled="{{ _permissionsCreate }}">
                                 <template>
                                     <table width="500px">
                                         <tr>
@@ -158,7 +158,7 @@
                         </div>
 
                         <div class="col-lg-3">
-                            <vaadin-combo-box items="[[ddResponsabilityCenterData]]" id="ddResponsabilityCenter" item-value-path="id" item-label-path="value" value="{{ddResponsabilityCenter}}" label="Centro Responsabilidade" disabled="{{ _permissionsCreate }}">
+                            <vaadin-combo-box items="[[ddResponsabilityCenterData]]" id="ddResponsabilityCenter" item-value-path="id" item-label-path="id" value="{{ddResponsabilityCenter}}" label="Centro Responsabilidade" disabled="{{ _permissionsCreate }}">
                                 <template>
                                     <table width="500px">
                                         <tr>
@@ -171,7 +171,7 @@
                         </div>
 
                         <div class="col-lg-3">
-                            <vaadin-combo-box items="[[ddRegionsData]]" id="ddRegion" item-value-path="id" item-label-path="value" value="{{ddRegion}}" label="Região" disabled="{{ _permissionsCreate }}">
+                            <vaadin-combo-box items="[[ddRegionsData]]" id="ddRegion" item-value-path="id" item-label-path="id" value="{{ddRegion}}" label="Região" disabled="{{ _permissionsCreate }}">
                                 <template>
                                     <table width="300px">
                                         <tr>
@@ -273,7 +273,7 @@
                     <vaadin-grid-filter path="functionalArea" />
                 </template>
                 <template>
-                    <vaadin-combo-box items="[[ddFunctionalAreasData]]" item-value-path="id" item-label-path="value" value="{{item.functionalArea}}" disabled="{{ _permissionsCreate }}">
+                    <vaadin-combo-box items="[[ddFunctionalAreasData]]" item-value-path="id" item-label-path="id" value="{{item.functionalArea}}" disabled="{{ _permissionsCreate }}">
                         <template>
                             <table width="500px">
                                 <tr>
@@ -292,7 +292,7 @@
                     <vaadin-grid-filter path="responsabilityCenter" />
                 </template>
                 <template>
-                    <vaadin-combo-box items="[[ddResponsabilityCenterData]]" item-value-path="id" item-label-path="value" value="{{item.responsabilityCenter}}" disabled="{{ _permissionsCreate }}">
+                    <vaadin-combo-box items="[[ddResponsabilityCenterData]]" item-value-path="id" item-label-path="id" value="{{item.responsabilityCenter}}" disabled="{{ _permissionsCreate }}">
                         <template>
                             <table width="500px">
                                 <tr>
@@ -312,7 +312,7 @@
                     <vaadin-grid-filter path="region" />
                 </template>
                 <template>
-                    <vaadin-combo-box items="[[ddRegionsData]]" item-value-path="id" item-label-path="value" value="{{item.region}}" disabled="{{ _permissionsCreate }}">
+                    <vaadin-combo-box items="[[ddRegionsData]]" item-value-path="id" item-label-path="id" value="{{item.region}}" disabled="{{ _permissionsCreate }}">
                         <template>
                             <table width="500px">
                                 <tr>

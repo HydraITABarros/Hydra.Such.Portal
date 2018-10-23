@@ -181,7 +181,7 @@
             </paper-menu-button>
             <!--end ColumnToggle-->
         </div>
-        <vaadin-grid id="grdPendingReqGrid" aria-label="PendingReqGrid" items="[[result]]" class="grid" multi-sort="true">
+        <vaadin-grid id="grdPendingReqGrid" aria-label="PendingReqGrid" items="[[result]]" class="grid" multi-sort="true" active-item="{{activeItem}}">
             <!--active-item="{{activeItem}}"-->
 
             <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.requisitionNo.hidden }}">
@@ -400,9 +400,9 @@
                     _permissions: {
                         type: Array
                     },
-                    //activeItem: {
-                    //    observer: '_rowSelected'
-                    //},
+                    activeItem: {
+                        observer: '_rowSelected'
+                    },
                     _areaid: {
                         type: Number,
                         notify: true,
@@ -446,13 +446,17 @@
                     var height = parentHeight - offsetTop;
                     grid_el.height(height);
                 },
-                //_rowSelected: function (item) {
+                _rowSelected: function (item) {
+                    if (item != null) {
+                        window.location.href = "/GestaoRequisicoes/MinhaRequisicao/" + item.requisitionNo;
+                    }
+
                 //    if (item != null) {
                 //        this.$.dialog.open();
                 //        this.$.grid_datareqlines_ajax.body = JSON.stringify({ "ReqNo": item.requisitionNo });
                 //        this.$.grid_datareqlines_ajax.generateRequest();
                 //    }
-                //},
+                },
                 _clFormatState: function (param) {
                     if (param != undefined) {
                         var sel = this.CBStatus.find(x => x.id == param);
