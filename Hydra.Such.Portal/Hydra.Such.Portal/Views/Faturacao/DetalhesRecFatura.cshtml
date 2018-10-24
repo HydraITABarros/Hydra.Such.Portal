@@ -1278,50 +1278,32 @@
                     '_preventDocumentDuplicates(data.dataDocFornecedor, data.numDocFornecedor, data.codFornecedor)'
                 ],
                 _uploadResponse: function (event) {
-                    debugger;
                     var SplitMessage = event.detail.xhr.response.split(',')
                     var eReasonCode = SplitMessage[0].split('{')[1].split(':')[1];
                     var eMessage = SplitMessage[1].split(':')[1];
                     eMessage = eMessage.substring(1, eMessage.length - 1);
                     if (eReasonCode != "1") {
-                        console.log('upload xhr after server response: ', event.detail.xhr);
-                        event.detail.file.error = "O ficheiro " + eMessage + " já existe" ;
+                        event.detail.file.error = eMessage;
                         event.detail.xhr.status = 500;
                     }
-                   
-                    // Interpret any server response as success:
-                    // event.detail.xhr.status = 200;
-                    
                 },
                 _uploadResponse1: function (event) {
-                    debugger;
                     var SplitMessage = event.detail.xhr.response.split(',');
                     var eReasonCode = SplitMessage[0].split('{')[1].split(':')[1];
                     var eMessage = SplitMessage[1].split(':')[1];
                     if (eReasonCode != "1") {
-                        console.log('upload xhr after server response: ', event.detail.xhr);
-                        event.detail.file.error = "O ficheiro " + eMessage + " já existe" ;
+                        event.detail.file.error = eMessage;
                         event.detail.xhr.status = 500;
                     }
-                    //event.detail.file.name = eMessage;
-                    // Interpret any server response as success:
-                    // event.detail.xhr.status = 200;
-
                 },
                 _uploadResponse2: function (event) {
-                    debugger;
                     var SplitMessage = event.detail.xhr.response.split(',')
                     var eReasonCode = SplitMessage[0].split('{')[1].split(':')[1];
                     var eMessage = SplitMessage[1].split(':')[1];
                     if (eReasonCode != "1") {
-                        console.log('upload xhr after server response: ', event.detail.xhr);
-                        event.detail.file.error = "O ficheiro " + eMessage + " já existe";
+                        event.detail.file.error = eMessage;
                         event.detail.xhr.status = 500;
                     }
-                    //event.detail.file.name = eMessage;
-                    // Interpret any server response as success:
-                    // event.detail.xhr.status = 200;
-
                 },
                 ready: function () {
                     if (this._billingReceptionId != null && this._billingReceptionId != "") {
