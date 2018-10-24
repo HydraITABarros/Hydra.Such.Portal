@@ -12,7 +12,7 @@ namespace Hydra.Such.Data.Logic
 {
     public class DBNAV2017Encomendas
     {
-        
+
         public static List<EncomendasViewModel> ListByDimListAndNoFilter(string NAVDatabaseName, string NAVCompanyName, List<AcessosDimensões> Dimensions, string No_FilterExpression)
         {
             try
@@ -38,20 +38,24 @@ namespace Hydra.Such.Data.Logic
 
                     foreach (dynamic temp in data)
                     {
-                        result.Add(new EncomendasViewModel()
+                        if (!temp.NoFirstTwoInt.Equals(DBNull.Value) && ((int)temp.NoFirstTwoInt >= 18))
                         {
-                            No = temp.No.Equals(DBNull.Value) ? "" : (string)temp.No,
-                            PayToVendorNo = temp.PayToVendorNo.Equals(DBNull.Value) ? "" : (string)temp.PayToVendorNo,
-                            PayToName = temp.PayToName.Equals(DBNull.Value) ? "" : (string)temp.PayToName,
-                            YourReference = temp.YourReference.Equals(DBNull.Value) ? "" : (string)temp.YourReference,
-                            OrderDate = (DateTime)temp.OrderDate,
-                            NoConsulta = temp.NConsulta.Equals(DBNull.Value) ? "" : (string)temp.NConsulta,
-                            ExpectedReceiptDate = (DateTime)temp.ExpectedReceiptDate,
-                            RequisitionNo = temp.RequisitionNo.Equals(DBNull.Value) ? "" : (string)temp.RequisitionNo,
-                            RegionId = temp.RegionId.Equals(DBNull.Value) ? "" : (string)temp.RegionId,
-                            FunctionalAreaId = temp.FunctionalAreaId.Equals(DBNull.Value) ? "" : (string)temp.FunctionalAreaId,
-                            RespCenterId = temp.RespCenterId.Equals(DBNull.Value) ? "" : (string)temp.RespCenterId,
-                        });
+                            result.Add(new EncomendasViewModel()
+                            {
+                                No = temp.No.Equals(DBNull.Value) ? "" : (string)temp.No,
+                                PayToVendorNo = temp.PayToVendorNo.Equals(DBNull.Value) ? "" : (string)temp.PayToVendorNo,
+                                PayToName = temp.PayToName.Equals(DBNull.Value) ? "" : (string)temp.PayToName,
+                                YourReference = temp.YourReference.Equals(DBNull.Value) ? "" : (string)temp.YourReference,
+                                OrderDate = (DateTime)temp.OrderDate,
+                                NoConsulta = temp.NConsulta.Equals(DBNull.Value) ? "" : (string)temp.NConsulta,
+                                ExpectedReceiptDate = (DateTime)temp.ExpectedReceiptDate,
+                                RequisitionNo = temp.RequisitionNo.Equals(DBNull.Value) ? "" : (string)temp.RequisitionNo,
+                                RegionId = temp.RegionId.Equals(DBNull.Value) ? "" : (string)temp.RegionId,
+                                FunctionalAreaId = temp.FunctionalAreaId.Equals(DBNull.Value) ? "" : (string)temp.FunctionalAreaId,
+                                RespCenterId = temp.RespCenterId.Equals(DBNull.Value) ? "" : (string)temp.RespCenterId,
+                                HasAnAdvance = (bool)temp.HasAnAdvance,
+                            });
+                        }
                     }
                 }
 
@@ -92,6 +96,7 @@ namespace Hydra.Such.Data.Logic
                         RegionId = data.RegionId.Equals(DBNull.Value) ? "" : (string)data.RegionId,
                         FunctionalAreaId = data.FunctionalAreaId.Equals(DBNull.Value) ? "" : (string)data.FunctionalAreaId,
                         RespCenterId = data.RespCenterId.Equals(DBNull.Value) ? "" : (string)data.RespCenterId,
+                        HasAnAdvance = (bool)data.HasAnAdvance,
                     };
 
                 }
@@ -140,7 +145,7 @@ namespace Hydra.Such.Data.Logic
                             RegionId = temp.RegionId.Equals(DBNull.Value) ? "" : (string)temp.RegionId,
                             RespCenterId = temp.RespCenterId.Equals(DBNull.Value) ? "" : (string)temp.RespCenterId,
                             UnitOfMeasure = temp.UnitOfMeasure.Equals(DBNull.Value) ? "" : (string)temp.UnitOfMeasure,
-                            VAT = (decimal)temp.VAT,                            
+                            VAT = (decimal)temp.VAT,
                         });
                     }
                 }
