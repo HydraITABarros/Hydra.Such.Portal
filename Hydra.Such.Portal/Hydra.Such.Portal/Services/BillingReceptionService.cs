@@ -323,7 +323,8 @@ namespace Hydra.Such.Portal.Services
                     SendEmailBillingReception Email = new SendEmailBillingReception
                     {
                         Subject = "eSUCH - Recepção da Factura : " + item.Id,
-                        From = "plataforma@such.pt"
+                        //From = "plataforma@such.pt"
+                        From = postedByUserName
                     };
 
                     Email.To.Add(wfItem.EnderecoFornecedor);

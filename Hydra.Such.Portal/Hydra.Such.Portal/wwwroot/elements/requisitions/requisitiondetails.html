@@ -318,6 +318,7 @@
                         <div class="panel-body">
                             <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
                                 <paper-tab>Geral</paper-tab>
+                                <paper-tab>Detalhe</paper-tab>
                                 <paper-tab>Reparação</paper-tab>
                                 <paper-tab>Recolha</paper-tab>
                                 <paper-tab>Entrega (Fornecedor)</paper-tab>
@@ -450,6 +451,75 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <!--Detalhe-->
+                                <div>
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <vaadin-text-field id="txtResponsibleCreation" name="txtResponsibleCreation" label="Responsável Criação" value="{{Requisition.responsibleCreation}}" disabled></vaadin-text-field>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <vaadin-text-field id="txtRequisitionDate" name="txtRequisitionDate" label="Data Requisição" value="{{Requisition.requisitionDate}}" disabled></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-sm-3">
+                                            <vaadin-text-field id="txtResponsibleApproval" name="txtResponsibleApproval" label="Responsável Aprovação" value="{{Requisition.responsibleApproval}}" disabled></vaadin-text-field>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <label class="label_custom">Data/Hora Aprovação</label>
+                                            <div class="row">
+                                                <div class="col-sm-8" style="padding-right: 5px;">
+                                                    <vaadin-text-field id="txtapprovalDateText" name="txtapprovalDateText" value="{{Requisition.approvalDateText}}" disabled></vaadin-text-field>
+                                                </div>
+                                                <div class="col-sm-4" style="padding-left: 0px">
+                                                    <vaadin-text-field id="txtapprovalDateHour" name="txtapprovalDateHour" value="{{Requisition.approvalDateHour}}" disabled></vaadin-text-field>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <vaadin-text-field id="txtResponsibleValidation" name="txtResponsibleValidation" label="Responsável Validação" value="{{Requisition.responsibleValidation}}" disabled></vaadin-text-field>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <label class="label_custom">Data/Hora Validação</label>
+                                            <div class="row">
+                                                <div class="col-sm-8" style="padding-right: 5px;">
+                                                    <vaadin-text-field id="txtvalidationDateText" name="txtvalidationDateText" value="{{Requisition.validationDateText}}" disabled></vaadin-text-field>
+                                                </div>
+                                                <div class="col-sm-4" style="padding-left: 0px">
+                                                    <vaadin-text-field id="txtvalidationDateHour" name="txtvalidationDateHour" value="{{Requisition.validationDateHour}}" disabled></vaadin-text-field>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-3">
+                                            <vaadin-text-field id="txtResponsibleReception" name="txtResponsibleReception" label="Responsável de Recebimento" value="{{Requisition.responsibleReception}}" disabled></vaadin-text-field>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <label class="label_custom">Data/Hora de Recebimento</label>
+                                            <div class="row">
+                                                <div class="col-sm-8" style="padding-right: 5px;">
+                                                    <vaadin-text-field id="txtreceivedDate" name="txtreceivedDate" value="{{Requisition.receivedDate}}" disabled></vaadin-text-field>
+                                                </div>
+                                                <div class="col-sm-4" style="padding-left: 0px">
+                                                    <vaadin-text-field id="txtreceivedDateHour" name="txtreceivedDateHour" value="{{Requisition.receivedDateHour}}" disabled></vaadin-text-field>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <vaadin-text-field id="txtMarketInquiryNo" name="txtMarketInquiryNo" label="Nº Consulta Mercado" value="{{Requisition.marketInquiryNo}}" disabled></vaadin-text-field>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <vaadin-text-field id="txtRequisiçãoNutrição" name="txtRequisiçãoNutrição" label="Requisição Nutrição" value="{{Requisition.requestNutrition}}" disabled></vaadin-text-field>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <!--Reparação-->
                                 <div>
                                     <div class="col-lg-3 alignPoga">
@@ -1601,7 +1671,7 @@
                                         TMessageError.open();
                                         return false;
                                     } else if (result == null) {
-                                        
+
                                     } else {
                                         loads._RegistCancelApproval(result);
                                     }
@@ -2158,7 +2228,7 @@
                                 this._isCreate = this.Requisition.requisitionNo == null;
                                 this.$.stateDescription_ajax.body = JSON.stringify(this.Requisition.state);
                                 this.$.stateDescription_ajax.generateRequest();
-                
+
                             }
                             else
                                 this._isCreate = false;
@@ -2412,7 +2482,7 @@
                         else {
                             this.$.stateDescription_ajax.body = JSON.stringify(this.Requisition.state);
                             this.$.stateDescription_ajax.generateRequest();
-                            
+
                         }
                         try {
                             this.$.grdRequisitionLines.clearCache();

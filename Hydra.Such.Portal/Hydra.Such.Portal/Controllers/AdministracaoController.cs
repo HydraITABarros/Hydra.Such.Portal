@@ -159,6 +159,7 @@ namespace Hydra.Such.Portal.Controllers
                 result.NumSerieNotasCredito = userConfig.NumSerieNotasCredito;
                 result.NumSerieNotasDebito = userConfig.NumSerieNotasDebito;
                 result.Centroresp = userConfig.CentroDeResponsabilidade;
+                result.SuperiorHierarquico = userConfig.SuperiorHierarquico;
 
                 result.UserAccesses = DBUserAccesses.GetByUserId(data.IdUser).Select(x => new UserAccessesViewModel()
                 {
@@ -215,6 +216,7 @@ namespace Hydra.Such.Portal.Controllers
                 NumSerieNotasCredito = data.NumSerieNotasCredito,
                 NumSerieNotasDebito = data.NumSerieNotasDebito,
                 CentroDeResponsabilidade=data.Centroresp,
+                SuperiorHierarquico = data.SuperiorHierarquico
         });
 
             data.IdUser = ObjectCreated.IdUtilizador;
@@ -287,6 +289,7 @@ namespace Hydra.Such.Portal.Controllers
                 userConfig.NumSerieNotasCredito = data.NumSerieNotasCredito;
                 userConfig.NumSerieNotasDebito = data.NumSerieNotasDebito;
                 userConfig.CentroDeResponsabilidade = data.Centroresp;
+                userConfig.SuperiorHierarquico = data.SuperiorHierarquico;
 
                 DBUserConfigurations.Update(userConfig);
 

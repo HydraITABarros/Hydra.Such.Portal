@@ -488,6 +488,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (item.RequisitionNo != null)
                 {
                     item.CreateUser = User.Identity.Name;
+                    item.ResponsibleCreation = User.Identity.Name;
                     item.State = RequisitionStates.Validated;
                     var createdItem = DBRequest.Create(item.ParseToDB());
                     if (createdItem != null)

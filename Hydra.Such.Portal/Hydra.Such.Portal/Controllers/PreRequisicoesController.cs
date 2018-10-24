@@ -1504,6 +1504,7 @@ namespace Hydra.Such.Portal.Controllers
                     DBNumerationConfigurations.Update(ConfigNumerations);
 
                     req.RequisitionNo = RequisitionNo;
+                    req.ResponsibleCreation = User.Identity.Name;
                     Requisição createReq = DBRequest.ParseToDB(req);
 
                     createReq = DBRequest.Create(createReq);
