@@ -87,6 +87,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public bool? Budget { get; set; }
         public bool? SentReqToAprove { get; set; }
         public string SentReqToAproveText { get; set; }
+        public bool GoAprove { get; set; }
         public string PreRequisitionNo { get; set; }
         public bool? PricesIncludingVAT { get; set; }
         public bool? InAdvance { get; set; }
