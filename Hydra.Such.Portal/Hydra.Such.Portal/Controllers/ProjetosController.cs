@@ -2077,14 +2077,24 @@ namespace Hydra.Such.Portal.Controllers
 
                 Projetos project = null;
                 Contratos contract = null;
+                NAVClientsViewModel customer = null;
 
                 if (!string.IsNullOrEmpty(projectNo))
                 {
                     project = DBProjects.GetById(projectNo);
                     if (project != null)
+                    {
                         contract = DBContracts.GetByIdLastVersion(project.NºContrato);
+                        customer = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, project.NºCliente);
+                    }
                 }
-                
+
+                if (customer != null)
+                    if (string.IsNullOrEmpty(customer.RegionCode))
+                        result.eMessages.Add(new TraceInformation(TraceType.Error, "É necessário configurar a região na Ficha do Cliente."));
+                else
+                    result.eMessages.Add(new TraceInformation(TraceType.Error, "Ocorreu um erro ao validar o cliente."));
+
                 if (project != null)
                 {
                     //Apenas movimentos de projeto faturáveis.
@@ -2113,25 +2123,12 @@ namespace Hydra.Such.Portal.Controllers
                     }
 
                     //Validar se o cliente está ao abrigo da lei dos compromissos
-                    if (string.IsNullOrEmpty(commitmentNumber))
+                    if (string.IsNullOrEmpty(commitmentNumber) && customer != null)
                     {
-                        string customerNo = project.NºCliente;
-                        var customers = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, customerNo);
-                        if (customers != null)
-                        {
-                            var customer = customers.FirstOrDefault();
-                            if (customer != null)
-                            {
-                                if (customer.UnderCompromiseLaw)
-                                    result.eMessages.Add(new TraceInformation(TraceType.Error, "O cliente está ao abrigo da lei de compromissos."));
-                                else
-                                    result.eMessages.Add(new TraceInformation(TraceType.Warning, "Não foi indicado um Nº do Compromisso."));
-                            }
-                            else
-                                result.eMessages.Add(new TraceInformation(TraceType.Error, "Ocorreu um erro ao validar o cliente.")); 
-                        }
+                        if (customer.UnderCompromiseLaw)
+                            result.eMessages.Add(new TraceInformation(TraceType.Error, "O cliente está ao abrigo da lei de compromissos."));
                         else
-                            result.eMessages.Add(new TraceInformation(TraceType.Error, "Ocorreu um erro ao validar o cliente."));
+                            result.eMessages.Add(new TraceInformation(TraceType.Warning, "Não foi indicado um Nº do Compromisso."));
                     }
 
                     Configuração conf = DBConfigurations.GetById(1);
