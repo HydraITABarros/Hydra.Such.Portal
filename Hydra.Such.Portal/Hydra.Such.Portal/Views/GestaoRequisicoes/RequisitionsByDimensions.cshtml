@@ -1,0 +1,503 @@
+﻿@{
+    ViewData["Title"] = "Lista de Requisições";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="~/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-text-field.html">
+<link rel="import" href="~/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-date-picker.html" />
+<link rel="import" href="~/lib/vaadin-date-picker/vaadin-date-picker.html" />
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-combo-box.html" />
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box-behavior.html" />
+<link rel="import" href="~/lib/iron-form/iron-form.html" />
+<link rel="import" href="~/lib/paper-button/paper-button.html" />
+<link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout.html" />
+<link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout-classes.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="~/elements/comboboxs/MovementTypeList.html" />
+<link rel="import" href="~/elements/comboboxs/ProjectTypeList.html" />
+<link rel="import" href="~/elements/comboboxs/ProjectList.html" />
+
+<!--start ColumnToggle-->
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-icons/iron-icons.html" />
+<link rel="import" href="/lib/iron-behaviors/iron-button-state.html" />
+<link rel="import" href="/lib/paper-menu-button/paper-menu-button.html" />
+<!--end ColumnToggle-->
+
+<x-request></x-request>
+
+<dom-module id="x-request">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+
+        <iron-ajax url="/GestaoRequisicoes/GetRequisitionsByDimensions" id="ajax_getgrid" last-response="{{result}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetRequestStatus" id="ajax_getstatus" auto last-response="{{resultstatus}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{RegionData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{ResponsabilityCenterData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{FunctionalAreaCodeData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetLocalMarketRegions" last-response="{{LocalMarketRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/GestaoRequisicoes/ExportToExcel_GestaoRequisicoes"
+                   last-response="{{export}}"
+                   id="ajax_Export"
+                   method="post"
+                   handle-as="json"
+                   on-response="_exportEXCELResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <div class="subMenu">
+            <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+            <paper-button id="showHistory" class="tablinks" on-tap="_showHistory"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{_showHistoryMessage}}</paper-button>
+
+            <!--start ColumnToggle-->
+            <paper-menu-button class="column-toggle" no-animations id="gridOpcaoGeral">
+                <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
+                <div class="list-group" slot="dropdown-content">
+                    <template is="dom-repeat" items="[[ _toArray(_columns)]]" id="columnsList">
+                        <a href="javascript:void(0);" on-tap="_toggleColumn" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClass( item.key ) ]]">
+                            {{ item.value.label }}
+                        </a>
+                        <hr />
+                    </template>
+                </div>
+            </paper-menu-button>
+            <!--end ColumnToggle-->
+        </div>
+
+        <vaadin-grid id="gridrequest" aria-label="ProfileModelsTabel" items="[[result]]" class="grid" active-item="{{_SelectedLine}}">
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.requisitionNo.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="requisitionNo">Nº Requisição </vaadin-grid-sorter>
+                    <vaadin-grid-filter path="requisitionNo" />
+                </template>
+                <template>
+                    {{item.requisitionNo}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.state.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="state">Estado</vaadin-grid-sorter>
+                </template>
+                <template>
+                    [[ _parsestate(item.state)]]
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.urgent.hidden }}">
+                <template class="header">
+                    Urgente
+                </template>
+                <template>
+                    <vaadin-checkbox checked="{{item.urgent}}" disabled></vaadin-checkbox>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.alreadyPerformed.hidden }}">
+                <template class="header">
+                    Trabalho já executado
+                </template>
+                <template>
+                    <vaadin-checkbox checked="{{item.alreadyPerformed}}" disabled></vaadin-checkbox>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.requestNutrition.hidden }}">
+                <template class="header">
+                    Requisição Nutrição
+                </template>
+                <template>
+                    <vaadin-checkbox checked="{{item.requestNutrition}}" disabled></vaadin-checkbox>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.localMarket.hidden }}">
+                <template class="header">
+                    Mercado Local
+                </template>
+                <template>
+                    <vaadin-checkbox checked="{{item.localMarket}}" disabled></vaadin-checkbox>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.pedirOrcamento.hidden }}">
+                <template class="header">
+                    Pedir Orçamento
+                </template>
+                <template>
+                    <vaadin-checkbox checked="{{item.pedirOrcamento}}" disabled></vaadin-checkbox>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.budget.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="budget">Orçamento</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="budget" />
+                </template>
+                <template>
+                    {{item.budget}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.localMarketRegion.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="localMarketRegion">Região Mercado Local</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="localMarketRegion" />
+                </template>
+                <template>
+                    [[ _getLocalMarketRegionDescription(item.localMarketRegion) ]]
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.localMarketDate.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="localMarketDate">Data Mercado Local</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="localMarketDate" />
+                </template>
+                <template>
+                    [[ _parseDateFormat(item.localMarketDate)]]
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.regionCode.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="regionCode">Código Região</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="regionCode" />
+                </template>
+                <template>
+                    {{item.regionCode}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.functionalAreaCode.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="functionalAreaCode">Código Área Funcional</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="functionalAreaCode" />
+                </template>
+                <template>
+                    {{item.functionalAreaCode}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.centerResponsibilityCode.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="centerResponsibilityCode">Código Centro Responsabilidade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="centerResponsibilityCode" />
+                </template>
+                <template>
+                    {{item.centerResponsibilityCode}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.comments.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="comments">Observações</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="comments" />
+                </template>
+                <template>
+                    {{item.comments}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.marketInquiryNo.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="marketInquiryNo">Nº Consulta Mercado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="marketInquiryNo" />
+                </template>
+                <template>
+                    {{item.marketInquiryNo}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.orderNo.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="orderNo">Nº Encomenda</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="orderNo" />
+                </template>
+                <template>
+                    {{item.orderNo}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.stockReplacement.hidden }}">
+                <template class="header">
+                    Reposição Stock
+                </template>
+                <template>
+                    <vaadin-checkbox checked="{{item.stockReplacement}}" disabled></vaadin-checkbox>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.requisitionDate.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="requisitionDate">Data requisição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="requisitionDate" />
+                </template>
+                <template>
+                    [[ _parseDateFormat(item.requisitionDate)]]
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.createUser.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="createUser">Utilizador Criação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="createUser" />
+                </template>
+                <template>
+                    {{item.createUser}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.estimatedValue.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="estimatedValue">Valor Estimado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="estimatedValue" />
+                </template>
+                <template>
+                    {{item.estimatedValue}}
+                </template>
+            </vaadin-grid-column>
+        </vaadin-grid>
+
+        <paper-toast id="ToastError" style="background-color:red" duration="4000" horizontalAlign="right"></paper-toast>
+        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
+    </template>
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-request',
+                properties: {
+                    _SelectedLine: {
+                        observer: '_rowSelected'
+                    },
+                    _columns: {
+                        type: Object,
+                        value: function () {
+                            return {};
+                        }
+                    },
+                    _historico: {
+                        type: Number,
+                        notify: true,
+                        value: 0
+                    },
+                    _isHistoric: {
+                        type: String,
+                        value: "false"
+                    },
+                    _showHistoryMessage: {
+                        type: String,
+                        value: "Mostrar Histórico"
+                    },
+                },
+
+                observers: [
+                    '_onCacheLoaded(resultstatus, RegionData, FunctionalAreaCodeData, ResponsabilityCenterData, LocalMarketRegions)'
+                ],
+
+                _onCacheLoaded: function (resultstatus, RegionData, FunctionalAreaCodeData, ResponsabilityCenterData, LocalMarketRegions) {
+                    if (!this.Flag) {
+                        this.$.ajax_getgrid.body = JSON.stringify({ "Historic": this._historico });
+                        this.$.ajax_getgrid.generateRequest();
+                    }
+                    this.Flag = true;
+
+                    /*ColumnToggle*/
+                    this._startColumnToggle();
+
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.gridrequest);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top;
+                    var height = parentHeight - offsetTop;
+                    grid_el.height(height);
+                },
+
+                _rowSelected: function (item) {
+                    if (item != null) {
+                        window.location.href = "/GestaoRequisicoes/LinhasRequisicaoReadOnly/" + item.requisitionNo;
+                    }
+                },
+
+                _parsestate: function (param1) {
+                    if (param1 != undefined) {
+                        if (this.resultstatus != null) {
+                            var array = this.resultstatus;
+                            if (param1 != undefined) {
+                                return array.find(x => x.id == param1).value;
+                            }
+                        }
+                    }
+                    return "";
+                },
+
+                _parseregion: function (param) {
+                    if (param != undefined && this.RegionData != undefined) {
+                        var sel = this.RegionData.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+
+                _parseArea: function (param) {
+                    if (param != undefined && this.FunctionalAreaCodeData != undefined) {
+                        var sel = this.FunctionalAreaCodeData.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+
+                _parsecenterRespons: function (param) {
+                    if (param != undefined && this.ResponsabilityCenterData != undefined) {
+                        var sel = this.ResponsabilityCenterData.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+
+                _getLocalMarketRegionDescription: function (param) {
+                    if (param != undefined && this.LocalMarketRegions != undefined) {
+                        var sel = this.LocalMarketRegions.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+
+                _parseDateFormat: function (date) {
+                    if (date != null && date != "") {
+                        var Date = date.split("T");
+                        if (Date != "" && Date != undefined) {
+                            var x = Date[0].split("-");
+                            return x[2] + "-" + x[1] + "-" + x[0];
+                        }
+                    }
+                },
+
+                _exportEXCEL: function () {
+                    this.result[0].ColunasEXCEL = this._columns;
+
+                    this.$.ajax_Export.body = JSON.stringify(this.result);
+                    this.$.ajax_Export.generateRequest();
+                },
+
+                _exportEXCELResponse: function (e) {
+                    var FileName = this.export;
+                    location.href = '../GestaoRequisicoes/ExportToExcelDownload_GestaoRequisicoes?sFileName=' + FileName;
+                },
+
+                /*start - ColumnToggle*/
+                _startColumnToggle: function () {
+                    var columns = {
+                        "requisitionNo": { hidden: false, label: "Nº Requisição" },
+                        "state": { hidden: false, label: "Estado" },
+                        "urgent": { hidden: false, label: "Urgente" },
+                        "alreadyPerformed": { hidden: false, label: "Trabalho já executado" },
+                        "requestNutrition": { hidden: false, label: "Requisição Nutrição" },
+                        "localMarket": { hidden: false, label: "Mercado Local" },
+                        "pedirOrcamento": { hidden: false, label: "Pedir Orçamento" },
+                        "budget": { hidden: false, label: "Orçamento" },
+                        "localMarketRegion": { hidden: false, label: "Região Mercado Local" },
+                        "localMarketDate": { hidden: false, label: "Data Mercado Local" },
+                        "regionCode": { hidden: false, label: "Código Região" },
+                        "functionalAreaCode": { hidden: false, label: "Código Área Funcional" },
+                        "centerResponsibilityCode": { hidden: false, label: "Código Centro Responsabilidade" },
+                        "comments": { hidden: false, label: "Observações" },
+                        "marketInquiryNo": { hidden: false, label: "Nº Consulta Mercado" },
+                        "orderNo": { hidden: false, label: "Nº Encomenda" },
+                        "stockReplacement": { hidden: false, label: "Reposição Stock" },
+                        "requisitionDate": { hidden: false, label: "Data requisição" },
+                        "createUser": { hidden: false, label: "Utilizador Criação" },
+                        "estimatedValue": { hidden: false, label: "Valor Estimado" }
+
+                    };
+
+                    if (localStorage["request.ToggleColumn"]) {
+                        var keys = Object.keys(columns);
+                        var storedColumns = JSON.parse(localStorage["request.ToggleColumn"]);
+                        for (var i = 0; i < keys.length; i++) {
+                            columns[keys[i]] = storedColumns[keys[i]];
+                        }
+                    };
+                    this._columns = columns;
+                },
+
+                _toggleColumn: function (event) {
+                    var columnIndex = JSON.parse(event.target.dataset.item).key;
+                    event.path[0].classList.toggle("selected");
+                    this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
+                    if (typeof (Storage) !== "undefined") {
+                        localStorage["request.ToggleColumn"] = JSON.stringify(this._columns);
+                    }
+                },
+
+                _getColumnItemClass: function (columnIndex) {
+                    return !this._columns[columnIndex].hidden ? "selected" : "";
+                },
+
+                _toArray: function (obj) {
+                    return Object.keys(obj).map(function (key) {
+                        return {
+                            key: key,
+                            value: obj[key]
+                        };
+                    });
+                },
+                /* end - ColumnToggle */
+
+                _showHistory: function (item) {
+                    if (item != null) {
+                        if (this._historico == 0) {
+                            this._historico = 1;
+                            this._isHistoric = "true";
+                        } else {
+                            this._historico = 0;
+                            this._isHistoric = "false";
+                        }
+                        this.$.ajax_getgrid.body = JSON.stringify({ "Historic": this._historico });
+                        this.$.ajax_getgrid.generateRequest();
+                        this._setButtonTexts();
+                    }
+                },
+
+                _setButtonTexts: function () {
+                    if (this._historico == 0) {
+                        this._showHistoryMessage = "Mostrar Histórico";
+                    }
+                    if (this._historico == 1) {
+                        this._showHistoryMessage = "Mostrar Ativos";
+                    }
+                },
+
+
+            });
+        });
+    </script>
+</dom-module>

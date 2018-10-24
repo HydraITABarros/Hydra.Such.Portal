@@ -118,6 +118,20 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
+        public IActionResult RequisitionsByDimensions()
+        {
+            UserAccessesViewModel userPermissions =
+                DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.RequisicoesPorDimensoes);
+            if (userPermissions != null && userPermissions.Read.Value)
+            {
+                ViewBag.UPermissions = userPermissions;
+                return View();
+            }
+            else
+            {
+                return Redirect(Url.Content("~/Error/AccessDenied"));
+            }
+        }
 
         public IActionResult DetalhesReqAprovada(string id)
         {
@@ -161,6 +175,26 @@ namespace Hydra.Such.Portal.Controllers
         {
             UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Requisições);
 
+
+            if (userPermissions != null && userPermissions.Read.Value)
+            {
+                ViewBag.UPermissions = userPermissions;
+                ViewBag.RequisitionId = id;
+                ViewBag.ValidatedRequisitionEnumValue = (int)RequisitionStates.Validated;
+                ViewBag.RequisitionStatesEnumString = EnumHelper.GetItemsAsDictionary(typeof(RequisitionStates));
+                ViewBag.ReportServerURL = config.ReportServerURL;
+
+                return View();
+            }
+            else
+            {
+                return Redirect(Url.Content("~/Error/AccessDenied"));
+            }
+        }
+
+        public IActionResult LinhasRequisicaoReadOnly(string id)
+        {
+            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.RequisicoesPorDimensoes);
 
             if (userPermissions != null && userPermissions.Read.Value)
             {
@@ -532,7 +566,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             if (item != null)
             {
-                item.CreateUser = User.Identity.Name;
+                item.UpdateUser = User.Identity.Name;
                 var updatedItem = DBRequest.Update(item.ParseToDB());
                 if (updatedItem != null)
                 {
@@ -669,6 +703,54 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetRequisitionsByDimensions([FromBody] JObject requestParams)
+        {
+            int Historic = 0;
+            if (requestParams["Historic"] != null)
+                Historic = int.Parse(requestParams["Historic"].ToString());
+            List<RequisitionStates> states = new List<RequisitionStates>();
+            
+            if (Historic == 0)
+            {
+                states = new List<RequisitionStates>()
+                {
+                    RequisitionStates.Pending,
+                    RequisitionStates.Received,
+                    RequisitionStates.Treated,
+                    RequisitionStates.Validated,
+                    RequisitionStates.Approved,
+                    RequisitionStates.Rejected,
+                    RequisitionStates.Available,
+                };
+            }
+            else
+            {
+                states = new List<RequisitionStates>()
+                {
+                    RequisitionStates.Archived
+                };
+            }
+
+            List<RequisitionViewModel> result = DBRequest.GetByState(states).ParseToViewModel();
+
+            //Apply User Dimensions Validations
+            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            //Regions
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.RegionCode));
+            //FunctionalAreas
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.FunctionalAreaCode));
+            //ResponsabilityCenter
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CenterResponsibilityCode));
+
+            result.RemoveAll(x => x.RequestNutrition == true);
+
+            return Json(result.OrderByDescending(x => x.RequisitionNo));
+        }
+
+        [HttpPost]
         public JsonResult GetRequisitionsAcordosPrecos()
         {
             List<RequisitionStates> states = new List<RequisitionStates>()
@@ -756,6 +838,12 @@ namespace Hydra.Such.Portal.Controllers
                         item.SentReqToAproveText = "none";
                     }
                 }
+            }
+
+            item.GoAprove = false;
+            if (DBApprovalMovements.GetAllAssignedToUserFilteredByStatus(User.Identity.Name, 1).Where(x => x.Número == requisitionId).Count() > 0)
+            {
+                item.GoAprove = true;
             }
 
             return Json(item);
@@ -1706,21 +1794,21 @@ namespace Hydra.Such.Portal.Controllers
             {
                 if (Requisicoes != null && Requisicoes.Count > 0)
                 {
-                    UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Requisições);
-                    if (UPerm.Create == true)
-                    {
+                    //UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Requisições);
+                    //if (UPerm.Create == true)
+                    //{
                         Requisicoes.ForEach(Requisicao =>
                         {
                             if (result.eReasonCode == 1)
                             {
-                                RequisitionService serv = new RequisitionService(configws, HttpContext.User.Identity.Name);
+                                RequisitionService serv = new RequisitionService(config, configws, HttpContext.User.Identity.Name);
                                 Requisicao = serv.CreatePurchaseOrderFor(Requisicao);
 
                                 result.eReasonCode = Requisicao.eReasonCode;
                                 result.eMessage = Requisicao.eMessage;
                             }
                         });
-                    }
+                    //}
                 }
                 else
                 {
@@ -2735,6 +2823,5 @@ namespace Hydra.Such.Portal.Controllers
             sFileName = @"/Upload/temp/" + sFileName;
             return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Pontos Situação de Requisições.xlsx");
         }
-
     }
 }

@@ -496,7 +496,7 @@
                                         <div class="col-md-3 ">
                                             <such-selectbox id="ResponsabilityCenterCode" name="ResponsabilityCenterCode" value="{{data.responsabilityCenterCode}}" label="Cód. Centro Responsabilidade" disabled required error-message="Este campo é obrigatório"
                                                             items="[[LProjectResponsabilityCenterCodes]]"
-                                                            text-path="value"
+                                                            text-path="id"
                                                             value-path="id"
                                                             fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
                                             </such-selectbox>
@@ -909,7 +909,7 @@
                                         <such-selectbox id="_CLResponsabilityCenterCode" value="{{data.responsabilityCenterCode}}" label="Cód. Centro Responsabilidade"
                                                         items="[[LProjectResponsabilityCenterCodes]]"
                                                         on-change="_RespChange"
-                                                        text-path="value"
+                                                        text-path="id"
                                                         value-path="id"
                                                         fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Centro Responsabilidade"}]'
                                                         disabled>
@@ -1332,14 +1332,14 @@
                                                 <such-selectbox id="_CLGridResponsabilityCenter" value="{{item.centerResponsibilityCode}}"
                                                                 items="[[LProjectResponsabilityCenterCodes]]"
                                                                 on-change="_updateLinhaPreRequisicao"
-                                                                text-path="value"
+                                                                text-path="id"
                                                                 value-path="id"
                                                                 fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Centro Responsabilidade"}]'
                                                                 disabled>
                                                 </such-selectbox>
                                             </template>
                                             <template is="dom-if" if="{{ !item.selected }}">
-                                                [[ _clFormatResponsabilityCenter(item.centerResponsibilityCode) ]]
+                                                {{item.centerResponsibilityCode}}
                                             </template>
                                         </template>
                                     </vaadin-grid-column>
@@ -1486,7 +1486,7 @@
                         <vaadin-grid-filter path="responsabilityCenterCode" />
                     </template>
                     <template>
-                        [[ _clFormatResponsabilityCenter(item.centerResponsibilityCode) ]]
+                        {{item.centerResponsibilityCode}}
                     </template>
                 </vaadin-grid-column>
                 <vaadin-grid-column width="110px" resizable>

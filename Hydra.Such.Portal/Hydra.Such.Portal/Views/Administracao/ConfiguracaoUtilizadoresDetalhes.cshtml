@@ -66,12 +66,19 @@
 
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{LRegionCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{LAreaCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{LResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        @*<iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{LResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>*@
         <iron-ajax url="/PopulateDropdowns/GetBillingReceptionAreas" last-response="{{BillingReceptionAreas}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetBillingReceptionUserProfiles" last-response="{{BillingReceptionUserProfiles}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetUtilizadores" last-response="{{LListaUtilizadores}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetNAVResponsabilityCenter" last-response="{{LRespoCenterNav}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
+
+        <iron-ajax url="/PopulateDropdowns/GetAllResponsabilityCenterCodeFilterByAreaCode"
+                   last-response="{{LResponsabilityCenterCodes}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_GetAllResponsabilityCenterCodeFilterByAreaCode_ajax"
+                   content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/PopulateDropdowns/GetNumerations"
                    last-response="{{LReceptionConfig}}"
@@ -114,7 +121,6 @@
         </template>
 }
 
-        <h2 class="separator">Geral</h2>
         <div class="row">
             <div class="col-lg-3">
                 <vaadin-text-field id="idUser" name="idUser" label="Id Utilizador" value="{{data.idUser}}"></vaadin-text-field>
@@ -143,7 +149,14 @@
                 </vaadin-combo-box>
             </div>
             <div class="col-sm-3">
-                <vaadin-combo-box items="[[LAreaCodes]]" id="codigoAreaFuncional" item-value-path="id" item-label-path="value" value="{{data.area}}" label="Dim. Área Funcional">
+                <such-selectbox id="codigoAreaFuncional" value="{{data.area}}" label="Dim. Área Funcional"
+                                items="[[LAreaCodes]]"
+                                text-path="value"
+                                value-path="id"
+                                on-change="_GetAllcodigoCentroResponsabilidade"
+                                fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Área Funcional"}]'>
+                </such-selectbox>
+                @*<vaadin-combo-box items="[[LAreaCodes]]" id="codigoAreaFuncional" item-value-path="id" item-label-path="value" value="{{data.area}}" label="Dim. Área Funcional">
                     <template>
                         <table width="400px">
                             <tr>
@@ -152,11 +165,16 @@
                             </tr>
                         </table>
                     </template>
-
-                </vaadin-combo-box>
+                </vaadin-combo-box>*@
             </div>
             <div class="col-sm-3">
-                <vaadin-combo-box items="[[LResponsabilityCenterCodes]]" id="codigoCentroResponsabilidade" item-value-path="id" item-label-path="value" value="{{data.cresp}}" label="Dim. Centro Responsabilidade">
+                <such-selectbox id="codigoCentroResponsabilidade" value="{{data.cresp}}" label="Dim. Centro Responsabilidade"
+                                items="[[LResponsabilityCenterCodes]]"
+                                text-path="value"
+                                value-path="id"
+                                fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Centro Responsabilidade"}]'>
+                </such-selectbox>
+                @*<vaadin-combo-box items="[[LResponsabilityCenterCodes]]" id="codigoCentroResponsabilidade" item-value-path="id" item-label-path="value" value="{{data.cresp}}" label="Dim. Centro Responsabilidade">
                     <template>
                         <table width="350px">
                             <tr>
@@ -165,7 +183,7 @@
                             </tr>
                         </table>
                     </template>
-                </vaadin-combo-box>
+                </vaadin-combo-box>*@
             </div>
 
             <div class="col-sm-3">
@@ -552,12 +570,14 @@
                     </template>
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="20%">
                 <template class="header">
                     Valor Dimensão
                 </template>
                 <template>
-                    <template is="dom-if" if="{{ item.selected }}">
+                    {{item.dimensionValue}}
+                    @*<template is="dom-if" if="{{ item.selected }}">
                         <vaadin-combo-box items="[[DimensionValueGridData]]" item-value-path="id" item-label-path="value" value="{{item.dimensionValue}}">
                             <template>
                                 <paper-icon-item>
@@ -570,9 +590,10 @@
                     </template>
                     <template is="dom-if" if="{{ !item.selected }}">
                         [[ _formatDimensionValue(item.dimension, item.dimensionValue) ]]
-                    </template>
+                    </template>*@
                 </template>
             </vaadin-grid-column>
+
             <template is="dom-if" if="{{ _permissions.update }}">
                 <vaadin-grid-column width="60%">
                     <template class="header">
@@ -770,7 +791,7 @@
 
                 },
                 ready: function () {
-
+                    this._GetAllcodigoCentroResponsabilidade();
                 },
                 _showMessage: function (message) {
                     this.$.ToastMessageSuccess.text = message;
@@ -1138,13 +1159,14 @@
                 },
 
                 _copiarAcessosUtilizadorResponse: function (e) {
-                    if (this.copiarAcessosUtilizador == 0) {
-                        this._showMessage('Não foi copiado nenhum acesso.');
-                    }
-                    else {
-                        this._showMessage('Foram copiados com sucesso ' + this.copiarAcessosUtilizador + ' acessos.');
-                    }
+                    this._showMessage(this.copiarAcessosUtilizador.eMessage);
                 },
+
+                _GetAllcodigoCentroResponsabilidade: function () {
+                    debugger;
+                    this.$.page_GetAllResponsabilityCenterCodeFilterByAreaCode_ajax.body = JSON.stringify(this.$.codigoAreaFuncional.value);
+                    this.$.page_GetAllResponsabilityCenterCodeFilterByAreaCode_ajax.generateRequest();
+                }
             });
         });
     </script>
