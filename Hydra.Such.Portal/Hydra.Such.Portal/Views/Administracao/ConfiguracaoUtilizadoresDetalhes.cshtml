@@ -114,11 +114,14 @@
 
         @if (ViewBag.UserId != "0")
     {
-        <template is="dom-if" if="{{ _permissions.create }}">
-            <div class="subMenu">
+        <div class="subMenu">
+            <template is="dom-if" if="{{ _permissions.create }}">
                 <paper-button class="tablinks" on-tap="_redirectToNewUserConfigForm"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
-            </div>
-        </template>
+            </template>
+            <template is="dom-if" if="{{ _permissions.update }}">
+                <paper-button class="tablinks" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Atualizar</paper-button>
+            </template>
+        </div>
 }
 
         <div class="row">
