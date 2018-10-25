@@ -36,6 +36,7 @@ namespace Hydra.Such.Data.Database
         public string RfmailEnvio { get; set; }
         public string NumSerieNotasCredito { get; set; }
         public string NumSeriePreFaturasCompra { get; set; }
+        public string NumSerieNotasCreditoCompra { get; set; }
         public string NumSerieFaturas { get; set; }
         public string NumSerieNotasDebito { get; set; }
         public string CentroDeResponsabilidade { get; set; }

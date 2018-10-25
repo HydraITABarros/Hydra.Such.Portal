@@ -57,7 +57,7 @@ namespace Hydra.Such.Data.Logic
                         Action = m.Action,
                         Active = m.Active,
                         Controller = m.Controller,
-                        Features = FeaturesMenus.Where(f => f.IdMenu == m.Id).Select(f => (Features)f.IdFeature).ToHashSet(),
+                        //Features = FeaturesMenus.Where(f => f.IdMenu == m.Id).Select(f => (Features)f.IdFeature).ToHashSet(),
                         HtmlAttributes = m.HtmlAttributes,
                         Icon = m.Icon,
                         Id = m.Id,

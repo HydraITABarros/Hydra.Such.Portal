@@ -253,7 +253,6 @@ namespace Hydra.Such.Portal.Controllers
                 string NovoDestinatario=items[0].Destinatario;
                 foreach (BillingReceptionModel item in items)
                 {
-
                     item.ModificadoPor = User.Identity.Name;
                     BillingRecWorkflowModel workflow = new BillingRecWorkflowModel();
                     item.WorkflowItems.Add(workflow);
@@ -272,13 +271,9 @@ namespace Hydra.Such.Portal.Controllers
                     updatedItem = billingRecService.CreateWorkFlowSend(item, workflow, User.Identity.Name);
                     if (updatedItem == null)
                     {
-
                         item.eReasonCode = 2;
                         updatedItem = item;
-
                     }
-
-
                 }
             }
             else
@@ -310,7 +305,6 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     updatedItem.eReasonCode = 1;
                     updatedItem.eMessage = "Registo atualizado com sucesso";
-                    
                 }
                 else
                 {
@@ -384,7 +378,17 @@ namespace Hydra.Such.Portal.Controllers
                 try
                 {
                     UserConfigurationsViewModel userConfig = DBUserConfigurations.GetById(User.Identity.Name).ParseToViewModel();
-                    postedDocument = billingRecService.PostDocument(item, User.Identity.Name, userConfig.NumSeriePreFaturasCompra, _config, _configws);
+                    string serialNumber = string.Empty;
+                    switch (item.TipoDocumento)
+                    {
+                        case BillingDocumentTypes.Fatura:
+                            serialNumber = userConfig.NumSeriePreFaturasCompra;
+                            break;
+                        case BillingDocumentTypes.NotaCredito:
+                            serialNumber = userConfig.NumSerieNotasCreditoCompra;
+                            break;
+                    }
+                    postedDocument = billingRecService.PostDocument(item, User.Identity.Name, serialNumber, _config, _configws);
                     item = postedDocument;
                 }
                 catch (Exception ex)
