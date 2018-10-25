@@ -1,0 +1,10 @@
+﻿
+@{
+    ViewData["Title"] = "Encomendas";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@*<h1 class="title">Clientes</h1>*@
+<link rel="import" href="~/elements/encomendas/encomendas_list.html">
+
+<x-encomendaslist _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-encomendaslist>

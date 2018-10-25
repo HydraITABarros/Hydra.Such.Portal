@@ -28,6 +28,9 @@
 <link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
 <link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
 
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
+
+
 <!--ACORDEÃO-->
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
@@ -63,13 +66,20 @@
 
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{LRegionCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{LAreaCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{LResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        @*<iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{LResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>*@
         <iron-ajax url="/PopulateDropdowns/GetBillingReceptionAreas" last-response="{{BillingReceptionAreas}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetBillingReceptionUserProfiles" last-response="{{BillingReceptionUserProfiles}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetUtilizadores" last-response="{{LListaUtilizadores}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetNAVResponsabilityCenter" last-response="{{LRespoCenterNav}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
-        
+
+        <iron-ajax url="/PopulateDropdowns/GetAllResponsabilityCenterCodeFilterByAreaCode"
+                   last-response="{{LResponsabilityCenterCodes}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_GetAllResponsabilityCenterCodeFilterByAreaCode_ajax"
+                   content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/PopulateDropdowns/GetNumerations"
                    last-response="{{LReceptionConfig}}"
                    auto
@@ -93,16 +103,27 @@
                    content-type="application/json">
         </iron-ajax>
 
-        @if (ViewBag.UserId != "0")
-        {
-            <template is="dom-if" if="{{ _permissions.create }}">
-                <div class="subMenu">
-                    <paper-button class="tablinks" on-tap="_redirectToNewUserConfigForm"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
-                </div>
-            </template>
-        }
+        <iron-ajax url="/PopulateDropdowns/GetUtilizadores"
+                   last-response="{{superiorHierarquicoList}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
 
-        <h2 class="separator">Geral</h2>
+
+        @if (ViewBag.UserId != "0")
+    {
+        <div class="subMenu">
+            <template is="dom-if" if="{{ _permissions.create }}">
+                <paper-button class="tablinks" on-tap="_redirectToNewUserConfigForm"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
+            </template>
+            <template is="dom-if" if="{{ _permissions.update }}">
+                <paper-button class="tablinks" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Atualizar</paper-button>
+            </template>
+        </div>
+}
+
         <div class="row">
             <div class="col-lg-3">
                 <vaadin-text-field id="idUser" name="idUser" label="Id Utilizador" value="{{data.idUser}}"></vaadin-text-field>
@@ -131,7 +152,14 @@
                 </vaadin-combo-box>
             </div>
             <div class="col-sm-3">
-                <vaadin-combo-box items="[[LAreaCodes]]" id="codigoAreaFuncional" item-value-path="id" item-label-path="value" value="{{data.area}}" label="Dim. Área Funcional">
+                <such-selectbox id="codigoAreaFuncional" value="{{data.area}}" label="Dim. Área Funcional"
+                                items="[[LAreaCodes]]"
+                                text-path="value"
+                                value-path="id"
+                                on-change="_GetAllcodigoCentroResponsabilidade"
+                                fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Área Funcional"}]'>
+                </such-selectbox>
+                @*<vaadin-combo-box items="[[LAreaCodes]]" id="codigoAreaFuncional" item-value-path="id" item-label-path="value" value="{{data.area}}" label="Dim. Área Funcional">
                     <template>
                         <table width="400px">
                             <tr>
@@ -140,11 +168,16 @@
                             </tr>
                         </table>
                     </template>
-
-                </vaadin-combo-box>
+                </vaadin-combo-box>*@
             </div>
             <div class="col-sm-3">
-                <vaadin-combo-box items="[[LResponsabilityCenterCodes]]" id="codigoCentroResponsabilidade" item-value-path="id" item-label-path="value" value="{{data.cresp}}" label="Dim. Centro Responsabilidade">
+                <such-selectbox id="codigoCentroResponsabilidade" value="{{data.cresp}}" label="Dim. Centro Responsabilidade"
+                                items="[[LResponsabilityCenterCodes]]"
+                                text-path="value"
+                                value-path="id"
+                                fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Centro Responsabilidade"}]'>
+                </such-selectbox>
+                @*<vaadin-combo-box items="[[LResponsabilityCenterCodes]]" id="codigoCentroResponsabilidade" item-value-path="id" item-label-path="value" value="{{data.cresp}}" label="Dim. Centro Responsabilidade">
                     <template>
                         <table width="350px">
                             <tr>
@@ -153,7 +186,7 @@
                             </tr>
                         </table>
                     </template>
-                </vaadin-combo-box>
+                </vaadin-combo-box>*@
             </div>
 
             <div class="col-sm-3">
@@ -199,12 +232,31 @@
                 </vaadin-combo-box>
             </div>
             <div class="col-sm-3">
+                <vaadin-combo-box items="[[LNoSeries]]" id="PurchCreditNoteNoSerie" item-value-path="id" item-label-path="value" value="{{data.numSerieNotasCreditoCompra}}" label="Numeração Notas Crédito Compra">
+                    <template>
+                        <b>[[item.value]]</b>
+                    </template>
+                </vaadin-combo-box>
+            </div>
+            <div class="col-sm-3">
                 <vaadin-combo-box items="[[LRespoCenterNav]]" id="codigoCentroResponsabilidade" item-value-path="code" item-label-path="name" value="{{data.centroresp}}" label="Centro Responsabilidade">
                     <template>
                         <table width="350px">
                             <tr>
                                 <td width="10%">[[item.code]]</td>
                                 <td width="90%"> <b>[[item.name]]</b></td>
+                            </tr>
+                        </table>
+                    </template>
+                </vaadin-combo-box>
+            </div>
+            <div class="col-sm-3">
+                <vaadin-combo-box items="[[superiorHierarquicoList]]" id="ddsuperiorHierarquico" item-value-path="id" item-label-path="value" value="{{data.superiorHierarquico}}" label="Superior Hierárquico">
+                    <template>
+                        <table width="200px">
+                            <tr>
+                                <td width="60%"> <b>[[item.value]]</b></td>
+                                <td width="40%">[[item.id]]</td>
                             </tr>
                         </table>
                     </template>
@@ -289,220 +341,35 @@
         <iron-ajax url="/Administracao/DeleteUserAcessosLocalizacoes" last-response="{{UserAcessosLocalizacoesDeleted}}" method="post" handle-as="json" id="page_deleteuserAcessosLocalizacoes_ajax" on-response="_deleteUserAcessosLocalizacoesResponse" content-type="application/json"></iron-ajax>
 
         @if (ViewBag.UserId != "0")
-        {
-            <h2 class="separator">Perfis Utilizadores</h2>
-            <template is="dom-if" if="{{ _permissions.update }}">
-                <div class="row">
-                    <div class="col-lg-3">
-                        <vaadin-combo-box items="[[UserProfileModelsData]]" id="_Profiles" item-value-path="id" item-label-path="value" value="{{ddUserProfile}}" label="Perfil">
-                            <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
-                            </template>
-                        </vaadin-combo-box>
-                    </div>
-                    <div class="col-lg-3 alignPoga">
-                        <paper-button class="btnEdit" raised on-tap="_createUserProfile"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Associar</paper-button>
-                    </div>
-                </div>
-            </template>
-            <vaadin-grid id="gridUserProfiles" aria-label="gridUserProfiles" items="{{ data.userProfiles }}" class="grid">
-                <vaadin-grid-column width="20%">
-                    <template class="header">
-                        Perfil
-                    </template>
-                    <template>
-                        <vaadin-combo-box items="[[UserProfileModelsData]]" disabled item-value-path="id" item-label-path="value" value="{{item.id}}">
-                            <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
-                            </template>
-                        </vaadin-combo-box>
-                    </template>
-                </vaadin-grid-column>
+    {
+        <paper-collapse-item class="panel-heading" header="Perfis Utilizadores" closed>
+            <div class="panel-body">
+                @*<h2 class="separator">Perfis Utilizadores</h2>*@
                 <template is="dom-if" if="{{ _permissions.update }}">
-                    <vaadin-grid-column width="80%">
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <vaadin-combo-box items="[[UserProfileModelsData]]" id="_Profiles" item-value-path="id" item-label-path="value" value="{{ddUserProfile}}" label="Perfil">
+                                <template>
+                                    <paper-icon-item>
+                                        <paper-item-body two-line>
+                                            <div>[[item.value]]</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
+                        <div class="col-lg-3 alignPoga">
+                            <paper-button class="btnEdit" raised on-tap="_createUserProfile"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Associar</paper-button>
+                        </div>
+                    </div>
+                </template>
+                <vaadin-grid id="gridUserProfiles" aria-label="gridUserProfiles" items="{{ data.userProfiles }}" class="grid">
+                    <vaadin-grid-column width="20%">
                         <template class="header">
+                            Perfil
                         </template>
                         <template>
-                            <center>
-                                @*<paper-button raised id="btnCancel" class="btnRemove" on-tap="_deleteUserProfile"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>*@
-                                <paper-button raised id="btnCancel" class="btnRemove tableBtn" on-tap="_deleteUserProfile" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
-                            </center>
-                        </template>
-                    </vaadin-grid-column>
-                </template>
-            </vaadin-grid>
-            <div class="row">
-                <div class="col-lg-12">
-                    <h2 class="separator">Acessos Utilizador</h2>
-                </div>
-            </div>
-            <template is="dom-if" if="{{ _permissions.create }}">
-                <div class="row">
-                    <div class="col-lg-2">
-                        <vaadin-combo-box items="[[FeaturesData]]" id="_Features" item-value-path="id" item-label-path="value" value="{{ddFeature}}" label="Funcionalidade">
-                            <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
-                            </template>
-                        </vaadin-combo-box>
-                    </div>
-                    <div class="col-lg-1 alignPoga">
-                        <vaadin-checkbox id="_chkCreate" checked="{{chkCreate}}"> Inserção</vaadin-checkbox>
-                    </div>
-                    <div class="col-lg-1 alignPoga">
-                        <vaadin-checkbox id="_chkRead" checked="{{chkRead}}"> Leitura</vaadin-checkbox>
-                    </div>
-                    <div class="col-lg-1 alignPoga">
-                        <vaadin-checkbox id="_chkUpdate" checked="{{chkUpdate}}"> Modificação</vaadin-checkbox>
-                    </div>
-                    <div class="col-lg-1 alignPoga">
-                        <vaadin-checkbox id="_chkDelete" checked="{{chkDelete}}"> Eliminação</vaadin-checkbox>
-                    </div>
-                    <div class="col-lg-2 alignPoga">
-                        <center>
-                            <paper-button class="btnSave" raised on-tap="_createUserAccess"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
-                        </center>
-                    </div>
-                    <div class="col-lg-2 alignPoga">
-                        <center>
-                            <paper-button class="tablinks" raised on-tap="_openCopiarAcessosUtilizador" title="Copiar Acessos" style="background-color:#71BCC1; color:white;"><i class="fa fa-copy" aria-hidden="true"></i>&nbsp; COPIAR ACESSOS</paper-button>
-                        </center>
-                    </div>
-                </div>
-            </template>
-            <br />
-            <vaadin-grid id="gridUserAccesses" aria-label="gridUserAccesses" items="{{ data.userAccesses }}" class="grid">
-                <vaadin-grid-column width="20%">
-                    <template class="header">
-                        Funcionalidade
-                    </template>
-                    <template>
-                        <vaadin-combo-box items="[[FeaturesData]]" item-value-path="id" item-label-path="value" value="{{item.feature}}">
-                            <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
-                            </template>
-                        </vaadin-combo-box>
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="12%">
-                    <template class="header">
-                        <center>
-                            Inserção
-                        </center>
-                    </template>
-                    <template>
-                        <center>
-                            <vaadin-checkbox checked="{{item.create}}"></vaadin-checkbox>
-                        </center>
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="12%">
-                    <template class="header">
-                        <center>
-                            Leitura
-                        </center>
-                    </template>
-                    <template>
-                        <center>
-                            <vaadin-checkbox checked="{{item.read}}"></vaadin-checkbox>
-                        </center>
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="12%">
-                    <template class="header">
-                        <center>
-                            Modificação
-                        </center>
-                    </template>
-                    <template>
-                        <center>
-                            <vaadin-checkbox checked="{{item.update}}"></vaadin-checkbox>
-                        </center>
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="12%">
-                    <template class="header">
-                        <center>
-                            Eliminação
-                        </center>
-                    </template>
-                    <template>
-                        <center>
-                            <vaadin-checkbox checked="{{item.delete}}"></vaadin-checkbox>
-                        </center>
-                    </template>
-                </vaadin-grid-column>
-                <template is="dom-if" if="{{ _permissions.update }}">
-                    <vaadin-grid-column width="12%">
-                        <template class="header">
-                        </template>
-                        <template>
-                            <center>
-                                @*<paper-button raised class="btnRemove" on-tap="_deleteUserAccess"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>*@
-                                <paper-button raised class="btnRemove tableBtn" on-tap="_deleteUserAccess" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
-                            </center>
-                        </template>
-                    </vaadin-grid-column>
-                </template>
-            </vaadin-grid>
-            <div class="row">
-                <div class="col-lg-12">
-                    <h2 class="separator">Acessos Dimensões</h2>
-                </div>
-            </div>
-            <template is="dom-if" if="{{ _permissions.update }}">
-                <div class="row">
-                    <div class="col-lg-2">
-                        <vaadin-combo-box items="[[DimensionData]]" id="_Dimension" name="_Dimension" item-value-path="id" item-label-path="value" label="Dimensão" value="{{ddDimension}}" on-value-changed="_onDimensionChanged">
-                            <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
-                            </template>
-                        </vaadin-combo-box>
-                    </div>
-                    <div class="col-lg-2">
-                        <vaadin-combo-box items="[[DimensionValueData]]" id="_DimensionValue" item-value-path="id" item-label-path="value" label="Valor Dimensão" value="{{ddDimensionValue}}">
-                            <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
-                            </template>
-                        </vaadin-combo-box>
-                    </div>
-                    <div class="col-lg-3 alignPoga">
-                        <paper-button class="btnSave" raised on-tap="_createUserDimensionAccess"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
-                    </div>
-                </div>
-            </template>
-            <br />
-            <vaadin-grid id="gridAllowedUserDimensions" aria-label="gridAllowedUserDimensions" items="{{ data.allowedUserDimensions }}" class="grid" active-item="{{_SelectedLine}}">
-                <vaadin-grid-column width="20%">
-                    <template class="header">
-                        Dimensão
-                    </template>
-                    <template>
-                        <template is="dom-if" if="{{ item.selected }}">
-                            <vaadin-combo-box items="[[DimensionData]]" item-value-path="id" item-label-path="value" value="{{item.dimension}}" on-value-changed="_onDimensionInGridChanged">
+                            <vaadin-combo-box items="[[UserProfileModelsData]]" disabled item-value-path="id" item-label-path="value" value="{{item.id}}">
                                 <template>
                                     <paper-icon-item>
                                         <paper-item-body two-line>
@@ -512,124 +379,323 @@
                                 </template>
                             </vaadin-combo-box>
                         </template>
-                        <template is="dom-if" if="{{ !item.selected }}">
-                            [[ _formatDimension(item.dimension) ]]
-                        </template>
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="20%">
-                    <template class="header">
-                        Valor Dimensão
-                    </template>
-                    <template>
-                        <template is="dom-if" if="{{ item.selected }}">
-                            <vaadin-combo-box items="[[DimensionValueGridData]]" item-value-path="id" item-label-path="value" value="{{item.dimensionValue}}">
-                                <template>
-                                    <paper-icon-item>
-                                        <paper-item-body two-line>
-                                            <div>[[item.value]]</div>
-                                        </paper-item-body>
-                                    </paper-icon-item>
-                                </template>
-                            </vaadin-combo-box>
-                        </template>
-                        <template is="dom-if" if="{{ !item.selected }}">
-                            [[ _formatDimensionValue(item.dimension, item.dimensionValue) ]]
-                        </template>
-                    </template>
-                </vaadin-grid-column>
-                <template is="dom-if" if="{{ _permissions.update }}">
-                    <vaadin-grid-column width="60%">
-                        <template class="header">
-                        </template>
-                        <template>
-                            <center>
-                                @*<paper-button raised class="btnRemove" on-tap="_onDeleteUserDimensionAccess"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>*@
-                                <paper-button raised class="btnRemove tableBtn" on-tap="_onDeleteUserDimensionAccess" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
-                            </center>
-                        </template>
                     </vaadin-grid-column>
-                </template>
-            </vaadin-grid>
-
-            <div class="row">
-                <div class="col-lg-12">
-                    <h2 class="separator">Acessos Localizações</h2>
-                </div>
+                    <template is="dom-if" if="{{ _permissions.update }}">
+                        <vaadin-grid-column width="80%">
+                            <template class="header">
+                            </template>
+                            <template>
+                                <center>
+                                    @*<paper-button raised id="btnCancel" class="btnRemove" on-tap="_deleteUserProfile"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>*@
+                                    <paper-button raised id="btnCancel" class="btnRemove tableBtn" on-tap="_deleteUserProfile" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                </center>
+                            </template>
+                        </vaadin-grid-column>
+                    </template>
+                </vaadin-grid>
             </div>
-            <template is="dom-if" if="{{ _permissions.update }}">
-                <div class="row">
+        </paper-collapse-item>
 
-                    <div class="col-sm-3">
-                        <vaadin-combo-box items="[[CBLocations]]" id="_acessoLocalizacao" item-value-path="id" item-label-path="value" value="{{acessoLocalizacao}}" label="Cód. Localização" disabled="{{ !_permissions.update }}">
-                            <template>
-                                <table width="300px">
-                                    <tr>
-                                        <td width="15%">[[item.id]]</td>
-                                        <td width="85%"> <b>[[item.value]]</b></td>
-                                    </tr>
-                                </table>
-                            </template>
-                        </vaadin-combo-box>
-                    </div>
-
-                    <div class="col-sm-3 alignPoga">
-                        <paper-button class="btnSave" raised on-tap="_createUserAcessosLocalizacoes"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
-                    </div>
-                </div>
-            </template>
-            <br />
-            <vaadin-grid id="gridAllowedUserAcessosLocalizacoes" aria-label="gridAllowedUserAcessosLocalizacoes" items="{{ data.userAcessosLocalizacoes }}" class="editGrid" multi-sort="true">
-                <vaadin-grid-column width="40%">
-                    <template class="header">
-                        Localização
-                    </template>
-                    <template>
-                        <vaadin-combo-box items="[[CBLocations]]" id="tabAcessosLocalizacoes" name="tabAcessosLocalizacoes" item-value-path="id" item-label-path="value" value="{{item.localizacao}}" on-blur="_updateLinhaMaoDeObra" disabled="true">
-                            <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
-                            </template>
-                        </vaadin-combo-box>
-                    </template>
-                </vaadin-grid-column>
-                <template is="dom-if" if="{{ _permissions.update }}">
-                    <vaadin-grid-column width="60%">
-                        <template class="header">
-                        </template>
+        <div class="row">
+            <div class="col-lg-12">
+                <h2 class="separator">Acessos Utilizador</h2>
+            </div>
+        </div>
+        <template is="dom-if" if="{{ _permissions.create }}">
+            <div class="row">
+                <div class="col-lg-3">
+                    <vaadin-combo-box items="[[FeaturesData]]" id="_Features" item-value-path="id" item-label-path="value" value="{{ddFeature}}" label="Funcionalidade">
                         <template>
-                            <center>
-                                @*<paper-button raised class="btnRemove" on-tap="_onDeleteUserAcessosLocalizacao"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>*@
-                                <paper-button raised class="btnRemove tableBtn" on-tap="_onDeleteUserAcessosLocalizacao" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
-                            </center>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
                         </template>
-                    </vaadin-grid-column>
-                </template>
-            </vaadin-grid>
-
-        }
-        <div class="marginSpace">
-            @if (ViewBag.UserId == "0")
-            {
-                <template is="dom-if" if="{{ _permissions.create }}">
-                    <paper-button class="btnSave" raised on-tap="_create"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Gravar</paper-button>
-                </template>
-            }
-            else
-            {
-                <template is="dom-if" if="{{ _permissions.update }}">
-                    <paper-button class="btnEdit" raised on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Atualizar</paper-button>
-                </template>
-                <template is="dom-if" if="{{ _permissions.delete }}">
+                    </vaadin-combo-box>
+                </div>
+                <div class="col-lg-1 alignPoga">
+                    <vaadin-checkbox id="_chkCreate" checked="{{chkCreate}}"> Inserção</vaadin-checkbox>
+                </div>
+                <div class="col-lg-1 alignPoga">
+                    <vaadin-checkbox id="_chkRead" checked="{{chkRead}}"> Leitura</vaadin-checkbox>
+                </div>
+                <div class="col-lg-1 alignPoga">
+                    <vaadin-checkbox id="_chkUpdate" checked="{{chkUpdate}}"> Modificação</vaadin-checkbox>
+                </div>
+                <div class="col-lg-1 alignPoga">
+                    <vaadin-checkbox id="_chkDelete" checked="{{chkDelete}}"> Eliminação</vaadin-checkbox>
+                </div>
+                <div class="col-lg-2 alignPoga">
                     <center>
-                        @*<paper-button class="btnRemove" raised on-tap="_delete"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>*@
-                        <paper-button class="btnRemove tableBtn" raised on-tap="_delete" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                        <paper-button class="btnSave" raised on-tap="_createUserAccess"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                    </center>
+                </div>
+                <div class="col-lg-2 alignPoga">
+                    <center>
+                        <paper-button class="tablinks" raised on-tap="_openCopiarAcessosUtilizador" title="Copiar Acessos" style="background-color:#71BCC1; color:white;"><i class="fa fa-copy" aria-hidden="true"></i>&nbsp; COPIAR ACESSOS</paper-button>
+                    </center>
+                </div>
+            </div>
+        </template>
+        <br />
+        <vaadin-grid id="gridUserAccesses" aria-label="gridUserAccesses" items="{{ data.userAccesses }}" class="grid">
+            <vaadin-grid-column width="20%">
+                <template class="header">
+                    Funcionalidade
+                </template>
+                <template>
+                    <vaadin-combo-box items="[[FeaturesData]]" item-value-path="id" item-label-path="value" value="{{item.feature}}">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="12%">
+                <template class="header">
+                    <center>
+                        Inserção
                     </center>
                 </template>
-            }
+                <template>
+                    <center>
+                        <vaadin-checkbox checked="{{item.create}}"></vaadin-checkbox>
+                    </center>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="12%">
+                <template class="header">
+                    <center>
+                        Leitura
+                    </center>
+                </template>
+                <template>
+                    <center>
+                        <vaadin-checkbox checked="{{item.read}}"></vaadin-checkbox>
+                    </center>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="12%">
+                <template class="header">
+                    <center>
+                        Modificação
+                    </center>
+                </template>
+                <template>
+                    <center>
+                        <vaadin-checkbox checked="{{item.update}}"></vaadin-checkbox>
+                    </center>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="12%">
+                <template class="header">
+                    <center>
+                        Eliminação
+                    </center>
+                </template>
+                <template>
+                    <center>
+                        <vaadin-checkbox checked="{{item.delete}}"></vaadin-checkbox>
+                    </center>
+                </template>
+            </vaadin-grid-column>
+            <template is="dom-if" if="{{ _permissions.update }}">
+                <vaadin-grid-column width="12%">
+                    <template class="header">
+                    </template>
+                    <template>
+                        <center>
+                            @*<paper-button raised class="btnRemove" on-tap="_deleteUserAccess"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>*@
+                            <paper-button raised class="btnRemove tableBtn" on-tap="_deleteUserAccess" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                        </center>
+                    </template>
+                </vaadin-grid-column>
+            </template>
+        </vaadin-grid>
+        <div class="row">
+            <div class="col-lg-12">
+                <h2 class="separator">Acessos Dimensões</h2>
+            </div>
+        </div>
+        <template is="dom-if" if="{{ _permissions.update }}">
+            <div class="row">
+                <div class="col-lg-2">
+                    <vaadin-combo-box items="[[DimensionData]]" id="_Dimension" name="_Dimension" item-value-path="id" item-label-path="value" label="Dimensão" value="{{ddDimension}}" on-value-changed="_onDimensionChanged">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
+                </div>
+                <div class="col-lg-4">
+                    <such-selectbox id="_DimensionValue" value="{{ddDimensionValue}}" label="Valor Dimensão"
+                                    items="[[DimensionValueData]]"
+                                    text-path="value"
+                                    value-path="id"
+                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                    </such-selectbox>
+                    @*<vaadin-combo-box items="[[DimensionValueData]]" id="_DimensionValue" item-value-path="id" item-label-path="value" label="Valor Dimensão" value="{{ddDimensionValue}}">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>*@
+                </div>
+                <div class="col-lg-3 alignPoga">
+                    <paper-button class="btnSave" raised on-tap="_createUserDimensionAccess"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                </div>
+            </div>
+        </template>
+        <br />
+        <vaadin-grid id="gridAllowedUserDimensions" aria-label="gridAllowedUserDimensions" items="{{ data.allowedUserDimensions }}" class="grid" active-item="{{_SelectedLine}}">
+            <vaadin-grid-column width="20%">
+                <template class="header">
+                    Dimensão
+                </template>
+                <template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-combo-box items="[[DimensionData]]" item-value-path="id" item-label-path="value" value="{{item.dimension}}" on-value-changed="_onDimensionInGridChanged">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        [[ _formatDimension(item.dimension) ]]
+                    </template>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="20%">
+                <template class="header">
+                    Valor Dimensão
+                </template>
+                <template>
+                    {{item.dimensionValue}}
+                    @*<template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-combo-box items="[[DimensionValueGridData]]" item-value-path="id" item-label-path="value" value="{{item.dimensionValue}}">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        [[ _formatDimensionValue(item.dimension, item.dimensionValue) ]]
+                    </template>*@
+                </template>
+            </vaadin-grid-column>
+
+            <template is="dom-if" if="{{ _permissions.update }}">
+                <vaadin-grid-column width="60%">
+                    <template class="header">
+                    </template>
+                    <template>
+                        <center>
+                            @*<paper-button raised class="btnRemove" on-tap="_onDeleteUserDimensionAccess"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>*@
+                            <paper-button raised class="btnRemove tableBtn" on-tap="_onDeleteUserDimensionAccess" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                        </center>
+                    </template>
+                </vaadin-grid-column>
+            </template>
+        </vaadin-grid>
+
+        <div class="row">
+            <div class="col-lg-12">
+                <h2 class="separator">Acessos Localizações</h2>
+            </div>
+        </div>
+        <template is="dom-if" if="{{ _permissions.update }}">
+            <div class="row">
+
+                <div class="col-sm-3">
+                    <vaadin-combo-box items="[[CBLocations]]" id="_acessoLocalizacao" item-value-path="id" item-label-path="value" value="{{acessoLocalizacao}}" label="Cód. Localização" disabled="{{ !_permissions.update }}">
+                        <template>
+                            <table width="300px">
+                                <tr>
+                                    <td width="15%">[[item.id]]</td>
+                                    <td width="85%"> <b>[[item.value]]</b></td>
+                                </tr>
+                            </table>
+                        </template>
+                    </vaadin-combo-box>
+                </div>
+
+                <div class="col-sm-3 alignPoga">
+                    <paper-button class="btnSave" raised on-tap="_createUserAcessosLocalizacoes"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                </div>
+            </div>
+        </template>
+        <br />
+        <vaadin-grid id="gridAllowedUserAcessosLocalizacoes" aria-label="gridAllowedUserAcessosLocalizacoes" items="{{ data.userAcessosLocalizacoes }}" class="editGrid" multi-sort="true">
+            <vaadin-grid-column width="40%">
+                <template class="header">
+                    Localização
+                </template>
+                <template>
+                    <vaadin-combo-box items="[[CBLocations]]" id="tabAcessosLocalizacoes" name="tabAcessosLocalizacoes" item-value-path="id" item-label-path="value" value="{{item.localizacao}}" on-blur="_updateLinhaMaoDeObra" disabled="true">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
+                </template>
+            </vaadin-grid-column>
+            <template is="dom-if" if="{{ _permissions.update }}">
+                <vaadin-grid-column width="60%">
+                    <template class="header">
+                    </template>
+                    <template>
+                        <center>
+                            @*<paper-button raised class="btnRemove" on-tap="_onDeleteUserAcessosLocalizacao"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>*@
+                            <paper-button raised class="btnRemove tableBtn" on-tap="_onDeleteUserAcessosLocalizacao" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                        </center>
+                    </template>
+                </vaadin-grid-column>
+            </template>
+        </vaadin-grid>
+
+}
+        <div class="marginSpace">
+            @if (ViewBag.UserId == "0")
+        {
+            <template is="dom-if" if="{{ _permissions.create }}">
+                <paper-button class="btnSave" raised on-tap="_create"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Gravar</paper-button>
+            </template>
+    }
+    else
+    {
+        <template is="dom-if" if="{{ _permissions.update }}">
+            <paper-button class="btnEdit" raised on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Atualizar</paper-button>
+        </template>
+        <template is="dom-if" if="{{ _permissions.delete }}">
+            <center>
+                @*<paper-button class="btnRemove" raised on-tap="_delete"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>*@
+                <paper-button class="btnRemove tableBtn" raised on-tap="_delete" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+            </center>
+        </template>
+}
         </div>
 
         <paper-dialog id="dlgCopiarAcessos" style="width: 800px; height: 230px; padding: 10px; box-shadow: 4px 8px 14px 8px #888888;" modal>
@@ -735,7 +801,7 @@
 
                 },
                 ready: function () {
-
+                    this._GetAllcodigoCentroResponsabilidade();
                 },
                 _showMessage: function (message) {
                     this.$.ToastMessageSuccess.text = message;
@@ -1103,13 +1169,14 @@
                 },
 
                 _copiarAcessosUtilizadorResponse: function (e) {
-                    if (this.copiarAcessosUtilizador == 0) {
-                        this._showMessage('Não foi copiado nenhum acesso.');
-                    }
-                    else {
-                        this._showMessage('Foram copiados com sucesso ' + this.copiarAcessosUtilizador + ' acessos.');
-                    }
+                    this._showMessage(this.copiarAcessosUtilizador.eMessage);
                 },
+
+                _GetAllcodigoCentroResponsabilidade: function () {
+                    debugger;
+                    this.$.page_GetAllResponsabilityCenterCodeFilterByAreaCode_ajax.body = JSON.stringify(this.$.codigoAreaFuncional.value);
+                    this.$.page_GetAllResponsabilityCenterCodeFilterByAreaCode_ajax.generateRequest();
+                }
             });
         });
     </script>

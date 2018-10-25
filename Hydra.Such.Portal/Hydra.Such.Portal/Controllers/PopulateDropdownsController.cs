@@ -368,7 +368,7 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
-       
+
 
         [HttpPost]
         public JsonResult GetPurchaseHeader([FromBody] string respcenter)
@@ -416,7 +416,7 @@ namespace Hydra.Such.Portal.Controllers
                 return null;
             }
         }
-     
+
 
         [HttpPost]
         public JsonResult getOpenOrderLine([FromBody] string numb, string documentNO, int LineNo, DateTime? date)
@@ -466,9 +466,9 @@ namespace Hydra.Such.Portal.Controllers
                 return Json(getorderline);
             }
 
-}
+        }
 
-        
+
 
         [HttpPost]
         public JsonResult getSupplier([FromBody] string suppliercode)
@@ -804,7 +804,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
 
-        
+
         [HttpPost]
         public JsonResult GetAllRegionCode()
         {
@@ -863,6 +863,17 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        [HttpPost]
+        public JsonResult GetAllResponsabilityCenterCodeFilterByAreaCode([FromBody] string areaCode)
+        {
+            List<DDMessageString> result = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 3).Where(x => x.Code.Contains(areaCode)).Select(x => new DDMessageString()
+            {
+                id = x.Code,
+                value = x.Name
+            }).ToList();
+
+            return Json(result);
+        }
 
         [HttpPost]
         public JsonResult GetMeasureUnits()
@@ -1066,7 +1077,7 @@ namespace Hydra.Such.Portal.Controllers
                 value = x.Name,
                 extra = x.MeasureUnit
             }).ToList();
-           
+
             return Json(result);
         }
         [HttpPost]
@@ -1344,7 +1355,7 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
-       
+
         [HttpPost]
         public JsonResult GetAllClientsComboGrid()
         {
@@ -1422,11 +1433,11 @@ namespace Hydra.Such.Portal.Controllers
         }
 
 
-        public JsonResult GetPriceAgreementLines([FromBody]string Area,DateTime DataFornecedor)
+        public JsonResult GetPriceAgreementLines([FromBody]string Area, DateTime DataFornecedor)
         {
             List<LinhasAcordoPrecos> LinhasAcordoPrecos = DBLinhasAcordoPrecos.GetAll().ToList();
- 
-            List<DDMessageString> result = LinhasAcordoPrecos.Where(x=> x.Area == Area && x.DtValidadeInicio== DataFornecedor).Select(x => new DDMessageString()
+
+            List<DDMessageString> result = LinhasAcordoPrecos.Where(x => x.Area == Area && x.DtValidadeInicio == DataFornecedor).Select(x => new DDMessageString()
             {
                 id = x.NoProcedimento,
                 value = x.DescricaoProduto
@@ -1529,7 +1540,7 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(result);
         }
-       
+
 
         [HttpPost]
         public JsonResult GetNutritionCoffeShopTypes()
@@ -1671,7 +1682,8 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetTiposRefeicao()
         {
-            List<EnumData> result = DBMealTypes.GetAll().Select(x => new EnumData() {
+            List<EnumData> result = DBMealTypes.GetAll().Select(x => new EnumData()
+            {
                 Id = x.Código,
                 Value = x.Descrição
             }).ToList();
@@ -1975,7 +1987,7 @@ namespace Hydra.Such.Portal.Controllers
                     }
                 }
             }
-            
+
             return Json(products);
         }
 
@@ -2426,7 +2438,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetMenus()
         {
-            List<DDMessage> result = DBMenu.GetAll().Where(m=> m.Active).Select(x => new DDMessage()
+            List<DDMessage> result = DBMenu.GetAll().Where(m => m.Active).Select(x => new DDMessage()
             {
                 id = x.Id,
                 value = x.Title

@@ -14,9 +14,13 @@ namespace Hydra.Such.Data.Logic
         {
             try
             {
+                if (!string.IsNullOrEmpty(id) && !id.Contains('@'))
+                {
+                    id += "@";
+                }
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.ConfigUtilizadores.Where(x => x.IdUtilizador.ToLower() == id.ToLower()).FirstOrDefault();
+                    return ctx.ConfigUtilizadores.Where(x => x.IdUtilizador.ToLower().StartsWith(id.ToLower())).FirstOrDefault();
                 }
             }
             catch (Exception ex)
@@ -130,6 +134,7 @@ namespace Hydra.Such.Data.Logic
                     NumSerieNotasCredito = item.NumSerieNotasCredito,
                     NumSerieNotasDebito = item.NumSerieNotasDebito,
                     NumSeriePreFaturasCompra = item.NumSeriePreFaturasCompra,
+                    NumSerieNotasCreditoCompra = item.NumSerieNotasCreditoCompra
                 };
             }
             return null;
@@ -173,7 +178,8 @@ namespace Hydra.Such.Data.Logic
                     NumSerieFaturas = item.NumSerieFaturas,
                     NumSerieNotasCredito = item.NumSerieNotasCredito,
                     NumSerieNotasDebito = item.NumSerieNotasDebito,
-                    NumSeriePreFaturasCompra = item.NumSeriePreFaturasCompra
+                    NumSeriePreFaturasCompra = item.NumSeriePreFaturasCompra,
+                    NumSerieNotasCreditoCompra = item.NumSerieNotasCreditoCompra
                 };
             }
             return null;

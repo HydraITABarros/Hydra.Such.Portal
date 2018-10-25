@@ -289,6 +289,15 @@
                    on-response="_GetProjetoNoLinhaResponse"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/Approvals/UpdateMovementStatus"
+                   last-response="{{actionResult}}"
+                   method="post"
+                   handle-as="json"
+                   id="action_databound"
+                   on-response="_actionResponseProcessor"
+                   content-type="application/json"></iron-ajax>
+
+
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" id="btnGoBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
 
@@ -318,6 +327,7 @@
                         <div class="panel-body">
                             <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
                                 <paper-tab>Geral</paper-tab>
+                                <paper-tab>Detalhe</paper-tab>
                                 <paper-tab>Reparação</paper-tab>
                                 <paper-tab>Recolha</paper-tab>
                                 <paper-tab>Entrega (Fornecedor)</paper-tab>
@@ -386,7 +396,7 @@
                                         <div class="col-lg-3">
                                             <such-selectbox id="ResponsabilityCenterCode" name="ResponsabilityCenterCode" value="{{Requisition.centerResponsibilityCode}}" label="Cód. Centro Responsabilidade" disabled required error-message="Este campo é obrigatório"
                                                             items="[[LProjectResponsabilityCenterCodes]]"
-                                                            text-path="value"
+                                                            text-path="id"
                                                             value-path="id"
                                                             fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
                                             </such-selectbox>
@@ -450,6 +460,75 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <!--Detalhe-->
+                                <div>
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <vaadin-text-field id="txtResponsibleCreation" name="txtResponsibleCreation" label="Responsável Criação" value="{{Requisition.responsibleCreation}}" disabled></vaadin-text-field>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <vaadin-text-field id="txtRequisitionDate" name="txtRequisitionDate" label="Data Requisição" value="{{Requisition.requisitionDate}}" disabled></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-sm-3">
+                                            <vaadin-text-field id="txtResponsibleApproval" name="txtResponsibleApproval" label="Responsável Aprovação" value="{{Requisition.responsibleApproval}}" disabled></vaadin-text-field>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <label class="label_custom">Data/Hora Aprovação</label>
+                                            <div class="row">
+                                                <div class="col-sm-8" style="padding-right: 5px;">
+                                                    <vaadin-text-field id="txtapprovalDateText" name="txtapprovalDateText" value="{{Requisition.approvalDateText}}" disabled></vaadin-text-field>
+                                                </div>
+                                                <div class="col-sm-4" style="padding-left: 0px">
+                                                    <vaadin-text-field id="txtapprovalDateHour" name="txtapprovalDateHour" value="{{Requisition.approvalDateHour}}" disabled></vaadin-text-field>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <vaadin-text-field id="txtResponsibleValidation" name="txtResponsibleValidation" label="Responsável Validação" value="{{Requisition.responsibleValidation}}" disabled></vaadin-text-field>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <label class="label_custom">Data/Hora Validação</label>
+                                            <div class="row">
+                                                <div class="col-sm-8" style="padding-right: 5px;">
+                                                    <vaadin-text-field id="txtvalidationDateText" name="txtvalidationDateText" value="{{Requisition.validationDateText}}" disabled></vaadin-text-field>
+                                                </div>
+                                                <div class="col-sm-4" style="padding-left: 0px">
+                                                    <vaadin-text-field id="txtvalidationDateHour" name="txtvalidationDateHour" value="{{Requisition.validationDateHour}}" disabled></vaadin-text-field>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-3">
+                                            <vaadin-text-field id="txtResponsibleReception" name="txtResponsibleReception" label="Responsável de Recebimento" value="{{Requisition.responsibleReception}}" disabled></vaadin-text-field>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <label class="label_custom">Data/Hora de Recebimento</label>
+                                            <div class="row">
+                                                <div class="col-sm-8" style="padding-right: 5px;">
+                                                    <vaadin-text-field id="txtreceivedDate" name="txtreceivedDate" value="{{Requisition.receivedDate}}" disabled></vaadin-text-field>
+                                                </div>
+                                                <div class="col-sm-4" style="padding-left: 0px">
+                                                    <vaadin-text-field id="txtreceivedDateHour" name="txtreceivedDateHour" value="{{Requisition.receivedDateHour}}" disabled></vaadin-text-field>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <vaadin-text-field id="txtMarketInquiryNo" name="txtMarketInquiryNo" label="Nº Consulta Mercado" value="{{Requisition.marketInquiryNo}}" disabled></vaadin-text-field>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <vaadin-text-field id="txtRequisiçãoNutrição" name="txtRequisiçãoNutrição" label="Requisição Nutrição" value="{{Requisition.requestNutrition}}" disabled></vaadin-text-field>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <!--Reparação-->
                                 <div>
                                     <div class="col-lg-3 alignPoga">
@@ -567,7 +646,6 @@
                                                 <template>
                                                     <center>
                                                         <template is="dom-if" if="{{ _permissions.update }}">
-                                                            <!--<paper-button class="btnRemove" raised on-tap="_deleteFiles">Eliminar</paper-button>-->
                                                             <center>
                                                                 <paper-button class="btnRemove tableBtn" raised on-tap="_deleteFiles" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
                                                             </center>
@@ -726,7 +804,7 @@
                                 </div>
                                 <div class="row break_clear" hidden="{{_isArchived}}">
                                     <div class="col-lg-3">
-                                        <vaadin-combo-box items="[[LProjectResponsabilityCenterCodes]]" id="_CLResponsabilityCenterCode" name="_CLResponsabilityCenterCode" item-value-path="id" item-label-path="value" on-change="_RespChange" value="[[Requisition.centerResponsibilityCode]]" label="Cód. Centro Responsabilidade" disabled>
+                                        <vaadin-combo-box items="[[LProjectResponsabilityCenterCodes]]" id="_CLResponsabilityCenterCode" name="_CLResponsabilityCenterCode" item-value-path="id" item-label-path="id" on-change="_RespChange" value="[[Requisition.centerResponsibilityCode]]" label="Cód. Centro Responsabilidade" disabled>
                                             <template>
                                                 <table width="550px">
                                                     <tr>
@@ -1076,7 +1154,7 @@
                                     <template class="header">
                                         <p class="alignCenter">Criar Consulta Mercado</p>
                                         <!--<vaadin-grid-filter path="createMarketSearchStringValue">
-                                        </vaadin-grid-filter>-->
+                                    </vaadin-grid-filter>-->
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
@@ -1282,7 +1360,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-combo-box items="[[LProjectResponsabilityCenterCodes]]" id="_CLGridResponsabilityCenter" on-change="_GridRespCenterChange" name="_CLGridResponsabilityCenter" item-value-path="id" item-label-path="value" value="{{item.centerResponsibilityCode}}" disabled>
+                                            <vaadin-combo-box items="[[LProjectResponsabilityCenterCodes]]" id="_CLGridResponsabilityCenter" on-change="_GridRespCenterChange" name="_CLGridResponsabilityCenter" item-value-path="id" item-label-path="id" value="{{item.centerResponsibilityCode}}" disabled>
                                                 <template>
                                                     <table width="550px">
                                                         <tr>
@@ -1294,7 +1372,7 @@
                                             </vaadin-combo-box>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
-                                            [[ _getResponsCenterDescription(item.centerResponsibilityCode) ]]
+                                            {{item.centerResponsibilityCode}}
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
@@ -1423,10 +1501,10 @@
                             </vaadin-grid>
                         </div>
                         <!--<div class="marginSpace">
-                            <template is="dom-if" if="{{ _permissions.update }}">
-                                <paper-button raised id="btnSaveLine" class="btnEdit" on-tap="_updateRequisitionLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                            </template>
-                        </div>-->
+                        <template is="dom-if" if="{{ _permissions.update }}">
+                            <paper-button raised id="btnSaveLine" class="btnEdit" on-tap="_updateRequisitionLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                        </template>
+                    </div>-->
                     </div>
                 </iron-form>
             </div>
@@ -1601,7 +1679,7 @@
                                         TMessageError.open();
                                         return false;
                                     } else if (result == null) {
-                                        
+
                                     } else {
                                         loads._RegistCancelApproval(result);
                                     }
@@ -1609,7 +1687,7 @@
                             });
                             break;
                         case 5: //"Fechar Requisição"
-                            //this._RegistCloseRequest();
+                            this._RegistCloseRequest();
                             break;
                     }
 
@@ -2158,7 +2236,7 @@
                                 this._isCreate = this.Requisition.requisitionNo == null;
                                 this.$.stateDescription_ajax.body = JSON.stringify(this.Requisition.state);
                                 this.$.stateDescription_ajax.generateRequest();
-                
+
                             }
                             else
                                 this._isCreate = false;
@@ -2412,7 +2490,7 @@
                         else {
                             this.$.stateDescription_ajax.body = JSON.stringify(this.Requisition.state);
                             this.$.stateDescription_ajax.generateRequest();
-                            
+
                         }
                         try {
                             this.$.grdRequisitionLines.clearCache();
@@ -2546,6 +2624,23 @@
                     else {
                         this.$.CBLineProjects.value = this.ProjetoNo;
                         this.$.CBLineProjects.valueText = this.ProjetoNo;
+                    }
+                },
+
+                _Approve: function (e) {
+                    if (e != null) {
+                        this.$.action_databound.body = JSON.stringify({ movementNo: e.model.item.movementNo, status: 1, rejectReason: "" });
+                        this.$.action_databound.generateRequest();
+                    }
+                },
+                _actionResponseProcessor: function (e) {
+                    var self = this;
+                    if (this.actionResult.eReasonCode == 100) {
+                        this._openToast(this.actionResult.eMessage);
+
+                        window.history.back();
+                    } else {
+                        this._openToastError(this.actionResult.eMessage);
                     }
                 },
 

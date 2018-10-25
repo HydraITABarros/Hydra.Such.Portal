@@ -1,13 +1,14 @@
-﻿using Hydra.Such.Data.Database;
+﻿using System;
+using System.Collections.Generic;
+using Hydra.Such.Data.Database;
 using Hydra.Such.Data.Logic;
 using Hydra.Such.Data.Logic.Approvals;
 using Hydra.Such.Data.Logic.FolhaDeHora;
 using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.ViewModel.Approvals;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 
 namespace Hydra.Such.Portal.Extensions
 {
@@ -26,6 +27,7 @@ namespace Hydra.Such.Portal.Extensions
                     eMessage = "Fluxo Iniciado com sucesso",
                     eMessages = new List<TraceInformation>()
                 };
+
 
                 //Get Compatible ApprovalConfigurations
                 List<ConfiguraçãoAprovações> ApprovalConfigurations = DBApprovalConfigurations.GetByTypeAreaValueDateAndDimensions(type, functionalArea, responsabilityCenter, region, value, DateTime.Now);
@@ -68,13 +70,18 @@ namespace Hydra.Such.Portal.Extensions
                     }
                     else if (approvalConfiguration.GrupoAprovação.HasValue)
                     {
-                        //List<string> GUsers = DBApprovalUserGroup.GetAllFromGroup(approvalConfiguration.GrupoAprovação.Value);
-                        List<string> GUsers = DBApprovalUserGroup.GetAllFromGroupWithEmailAlerta(approvalConfiguration.GrupoAprovação.Value);
+                        List<string> GUsers = DBApprovalUserGroup.GetAllFromGroup(approvalConfiguration.GrupoAprovação.Value);
 
                         GUsers.ForEach(y =>
                         {
                             DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = y });
                             //ConfigUtilizadores users = DBUserConfigurations.GetById(y);
+                            //UsersToNotify.Add(y);
+                        });
+
+                        List<string> GUsersWithEmailAlerta = DBApprovalUserGroup.GetAllFromGroupWithEmailAlerta(approvalConfiguration.GrupoAprovação.Value);
+                        GUsersWithEmailAlerta.ForEach(y =>
+                        {
                             UsersToNotify.Add(y);
                         });
                     }
@@ -89,7 +96,6 @@ namespace Hydra.Such.Portal.Extensions
                     //Notify Users
                     UsersToNotify.ForEach(e =>
                     {
-                        
                         //if(e.RfmailEnvio != "" && e.RfmailEnvio != null)
                         //{
                             EmailsAprovações EmailApproval = new EmailsAprovações();
@@ -115,7 +121,8 @@ namespace Hydra.Such.Portal.Extensions
                             SendEmailApprovals Email = new SendEmailApprovals
                             {
                                 Subject = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Aprovação Pendente" : "eSUCH - Aprovação Pendente" + itemToApproveInfo,
-                                From = "plataforma@such.pt"
+                                //From = "plataforma@such.pt"
+                                From = requestUser
                             };
 
                             Email.To.Add(e);
@@ -234,7 +241,8 @@ namespace Hydra.Such.Portal.Extensions
                         SendEmailApprovals Email = new SendEmailApprovals
                         {
                             Subject = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Aprovação Pendente" : "eSUCH - Aprovação Pendente" + itemToApproveInfo,
-                            From = "plataforma@such.pt"
+                            //From = "plataforma@such.pt"
+                            From = ApproveUser
                         };
 
                         Email.To.Add(e);
@@ -269,7 +277,8 @@ namespace Hydra.Such.Portal.Extensions
                     SendEmailApprovals Email = new SendEmailApprovals
                     {
                         Subject = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Tarefa aprovada" : "eSUCH - Tarefa aprovada" + itemToApproveInfo,
-                        From = "plataforma@such.pt"
+                        //From = "plataforma@such.pt"
+                        From = ApproveUser
                     };
 
                     Email.To.Add(ApprovalMovement.RequestUser);
@@ -387,7 +396,8 @@ namespace Hydra.Such.Portal.Extensions
                         SendEmailApprovals Email = new SendEmailApprovals
                         {
                             Subject = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Aprovação Pendente" : "eSUCH - Aprovação Pendente" + itemToApproveInfo,
-                            From = "plataforma@such.pt"
+                            //From = "plataforma@such.pt"
+                            From = requestUser
                         };
 
                         Email.To.Add(e);
@@ -538,7 +548,8 @@ namespace Hydra.Such.Portal.Extensions
                                 SendEmailApprovals Email = new SendEmailApprovals
                                 {
                                     Subject = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Aprovação Pendente" : "eSUCH - Aprovação Pendente" + itemToApproveInfo,
-                                    From = "plataforma@such.pt"
+                                    //From = "plataforma@such.pt"
+                                    From = ApproveUser
                                 };
 
                                 Email.To.Add(e);
@@ -571,7 +582,8 @@ namespace Hydra.Such.Portal.Extensions
                             SendEmailApprovals Email = new SendEmailApprovals
                             {
                                 Subject = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Tarefa aprovada" : "eSUCH - Tarefa aprovada" + itemToApproveInfo,
-                                From = "plataforma@such.pt"
+                                //From = "plataforma@such.pt"
+                                From = ApproveUser
                             };
 
                             Email.To.Add(ApprovalMovement.RequestUser);
@@ -662,7 +674,8 @@ namespace Hydra.Such.Portal.Extensions
                                 SendEmailApprovals Email = new SendEmailApprovals
                                 {
                                     Subject = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Aprovação Pendente" : "eSUCH - Aprovação Pendente" + itemToApproveInfo,
-                                    From = "plataforma@such.pt"
+                                    //From = "plataforma@such.pt"
+                                    From = ApproveUser
                                 };
 
                                 Email.To.Add(e);
@@ -695,7 +708,8 @@ namespace Hydra.Such.Portal.Extensions
                             SendEmailApprovals Email = new SendEmailApprovals
                             {
                                 Subject = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Tarefa aprovada" : "eSUCH - Tarefa aprovada" + itemToApproveInfo,
-                                From = "plataforma@such.pt"
+                                //From = "plataforma@such.pt"
+                                From = ApproveUser
                             };
 
                             Email.To.Add(ApprovalMovement.RequestUser);
@@ -775,7 +789,8 @@ namespace Hydra.Such.Portal.Extensions
                 SendEmailApprovals Email = new SendEmailApprovals
                 {
                     Subject = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Tarefa rejeitada" : "eSUCH - Tarefa rejeitada" + itemToApproveInfo,
-                    From = "plataforma@such.pt"
+                    //From = "plataforma@such.pt"
+                    From = rejectUser
                 };
 
                 Email.To.Add(FH.CriadoPor); // ApprovalMovement.RequestUser);
@@ -839,7 +854,8 @@ namespace Hydra.Such.Portal.Extensions
                 SendEmailApprovals Email = new SendEmailApprovals
                 {
                     Subject = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Tarefa rejeitada" : "eSUCH - Tarefa rejeitada" + itemToApproveInfo,
-                    From = "plataforma@such.pt"
+                    //From = "plataforma@such.pt"
+                    From = rejectUser
                 };
 
                 Email.To.Add(ApprovalMovement.RequestUser);

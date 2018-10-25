@@ -158,9 +158,11 @@ namespace Hydra.Such.Portal.Controllers
                 result.RFMailEnvio = userConfig.RfmailEnvio;
                 result.NumSerieFaturas = userConfig.NumSerieFaturas;
                 result.NumSeriePreFaturasCompra = userConfig.NumSeriePreFaturasCompra;
+                result.NumSerieNotasCreditoCompra = userConfig.NumSerieNotasCreditoCompra;
                 result.NumSerieNotasCredito = userConfig.NumSerieNotasCredito;
                 result.NumSerieNotasDebito = userConfig.NumSerieNotasDebito;
                 result.Centroresp = userConfig.CentroDeResponsabilidade;
+                result.SuperiorHierarquico = userConfig.SuperiorHierarquico;
 
                 result.UserAccesses = DBUserAccesses.GetByUserId(data.IdUser).Select(x => new UserAccessesViewModel()
                 {
@@ -214,9 +216,11 @@ namespace Hydra.Such.Portal.Controllers
                 RfmailEnvio = data.RFMailEnvio,
                 NumSerieFaturas = data.NumSerieFaturas,
                 NumSeriePreFaturasCompra = data.NumSeriePreFaturasCompra,
+                NumSerieNotasCreditoCompra = data.NumSerieNotasCreditoCompra,
                 NumSerieNotasCredito = data.NumSerieNotasCredito,
                 NumSerieNotasDebito = data.NumSerieNotasDebito,
                 CentroDeResponsabilidade=data.Centroresp,
+                SuperiorHierarquico = data.SuperiorHierarquico
         });
 
             data.IdUser = ObjectCreated.IdUtilizador;
@@ -286,9 +290,11 @@ namespace Hydra.Such.Portal.Controllers
                 userConfig.RfmailEnvio = data.RFMailEnvio;
                 userConfig.NumSerieFaturas = data.NumSerieFaturas;
                 userConfig.NumSeriePreFaturasCompra = data.NumSeriePreFaturasCompra;
+                userConfig.NumSerieNotasCreditoCompra = data.NumSerieNotasCreditoCompra;
                 userConfig.NumSerieNotasCredito = data.NumSerieNotasCredito;
                 userConfig.NumSerieNotasDebito = data.NumSerieNotasDebito;
                 userConfig.CentroDeResponsabilidade = data.Centroresp;
+                userConfig.SuperiorHierarquico = data.SuperiorHierarquico;
 
                 DBUserConfigurations.Update(userConfig);
 
@@ -586,10 +592,13 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult CopiarAcessosUtilizador([FromBody] AccessProfileModelView data)
         {
+            ErrorHandler result = new ErrorHandler();
             int AcessosCopiados = 0;
+            int LocalizacoesCopiados = 0;
             string IdUtilizadorOriginal = data.CreateUser; // "nunorato@such.pt";
             string IdUtilizadorDestino = data.UpdateUser; // "ARomao@such.pt";
 
+            //COPIAR ACESSOS
             List<AcessosUtilizador> ListaAcessosOriginal = DBUserAccesses.GetByUserId(IdUtilizadorOriginal);
             List<AcessosUtilizador> ListaAcessosDestino = DBUserAccesses.GetByUserId(IdUtilizadorDestino);
 
@@ -615,7 +624,31 @@ namespace Hydra.Such.Portal.Controllers
                 }
             });
 
-            return Json(AcessosCopiados);
+            //COPIAR LOCALIZAÇÕES
+            List<AcessosLocalizacoes> ListaLocalizacoesOriginal = DBAcessosLocalizacoes.GetByUserId(IdUtilizadorOriginal);
+            List<AcessosLocalizacoes> ListaLocalizacoesDestino = DBAcessosLocalizacoes.GetByUserId(IdUtilizadorDestino);
+
+            ListaLocalizacoesOriginal.ForEach(Localizacao =>
+            {
+                if (ListaLocalizacoesDestino.Where(x => x.Localizacao == Localizacao.Localizacao).Count() == 0)
+                {
+                    AcessosLocalizacoes CopiarLocalizacao = new AcessosLocalizacoes();
+                    CopiarLocalizacao.IdUtilizador = IdUtilizadorDestino;
+                    CopiarLocalizacao.Localizacao = Localizacao.Localizacao;
+                    CopiarLocalizacao.DataHoraCriacao = DateTime.Now;
+                    CopiarLocalizacao.UtilizadorCriacao = User.Identity.Name;
+                    CopiarLocalizacao.DataHoraModificacao = (DateTime?)null;
+                    CopiarLocalizacao.UtilizadorModificacao = null;
+
+                    if (DBAcessosLocalizacoes.Create(CopiarLocalizacao) != null)
+                        LocalizacoesCopiados = LocalizacoesCopiados + 1;
+                }
+            });
+
+            result.eReasonCode = 1;
+            result.eMessage = "Foram copiados com sucesso " + AcessosCopiados.ToString() + " acessos e " + LocalizacoesCopiados.ToString() + " localizações.";
+
+            return Json(result);
         }
 
         #endregion

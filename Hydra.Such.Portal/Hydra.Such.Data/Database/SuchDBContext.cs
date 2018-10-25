@@ -157,7 +157,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<UtilizadoresMovimentosDeAprovação> UtilizadoresMovimentosDeAprovação { get; set; }
         public virtual DbSet<Viaturas> Viaturas { get; set; }
         public virtual DbSet<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
-        
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AcessosDimensões>(entity =>
@@ -653,11 +653,6 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.UtilizadorModificação)
                     .HasColumnName("Utilizador Modificação")
                     .HasMaxLength(50);
-
-                entity.HasOne(d => d.NºProjetoNavigation)
-                    .WithMany(p => p.CafetariasRefeitórios)
-                    .HasForeignKey(d => d.NºProjeto)
-                    .HasConstraintName("FK_Cafetarias/Refeitórios_Projetos");
 
                 entity.HasOne(d => d.NºUnidadeProdutivaNavigation)
                     .WithMany(p => p.CafetariasRefeitórios)
@@ -1407,6 +1402,10 @@ namespace Hydra.Such.Data.Database
                     .HasMaxLength(20)
                     .IsUnicode(false);
 
+                entity.Property(e => e.NumSerieNotasCreditoCompra)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.NumSerieNotasDebito)
                     .HasMaxLength(20)
                     .IsUnicode(false);
@@ -1446,6 +1445,8 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.RfperfilVisualizacao).HasColumnName("RFPerfilVisualizacao");
 
                 entity.Property(e => e.RfrespostaContabilidade).HasColumnName("RFRespostaContabilidade");
+
+                entity.Property(e => e.SuperiorHierarquico).HasMaxLength(50);
 
                 entity.Property(e => e.UtilizadorCriação)
                     .HasColumnName("Utilizador Criação")

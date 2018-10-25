@@ -384,7 +384,7 @@
                                 <paper-button id="btnUpdate" class="btnEdit tablinks" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
                             </template>
                             <template is="dom-if" if="{{ _permissions.delete }}">
-                                <paper-button id="btnDelete" class="btnRemove tablinks" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                                <paper-button id="btnDelete" class="btnRemove tablinks" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Limpar</paper-button>
                             </template>
                         </template>
                     </template>
@@ -496,7 +496,7 @@
                                         <div class="col-md-3 ">
                                             <such-selectbox id="ResponsabilityCenterCode" name="ResponsabilityCenterCode" value="{{data.responsabilityCenterCode}}" label="Cód. Centro Responsabilidade" disabled required error-message="Este campo é obrigatório"
                                                             items="[[LProjectResponsabilityCenterCodes]]"
-                                                            text-path="value"
+                                                            text-path="id"
                                                             value-path="id"
                                                             fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
                                             </such-selectbox>
@@ -725,7 +725,7 @@
                         </div>
 
                         <paper-collapse-group>
-                            <paper-collapse-item class="panel-heading" header="Linhas" closed>
+                            <paper-collapse-item class="panel-heading" header="Linhas" opened>
                                 <div class="row break_clear">
                                     <!--<div class="col-lg-2">
                                         <vaadin-text-field value="{{_LocalCode}}" id="_LocalCode" name="_LocalCode" label="Código Localização" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
@@ -735,7 +735,7 @@
                                                         items="[[CBPurchaseLine]]"
                                                         text-path="documentNO"
                                                         value-path="id"
-                                                        fields='[{"field":"documentNO", "name":"Nº Documento"},{"field":"line_No", "name":"Nº Linha Aberta"}, {"field":"numb", "name":"Cód. Produto"}, {"field":"description", "name":"Descrição"}, {"field":"buyFromVendorNo", "name":"Fornecedor"},
+                                                        fields='[{"field":"documentNO", "name":"Nº Documento"}, {"field":"line_No", "name":"Nº Linha Aberta"}, {"field":"numb", "name":"Cód. Produto"}, {"field":"description", "name":"Descrição"}, {"field":"buyFromVendorNo", "name":"Fornecedor"},
                                                                 {"field":"availableQuantity", "name":"Quantidade Disponível"}, {"field":"functionalAreaDescription", "name":"Área Funcional"},{"field":"regionDescription", "name":"Região"},{"field":"responsabilityCenterDescription", "name":"Centro Resonsabilidade"}]'
                                                         disabled="{{ !_permissions.update }}">
                                         </such-selectbox>
@@ -909,7 +909,7 @@
                                         <such-selectbox id="_CLResponsabilityCenterCode" value="{{data.responsabilityCenterCode}}" label="Cód. Centro Responsabilidade"
                                                         items="[[LProjectResponsabilityCenterCodes]]"
                                                         on-change="_RespChange"
-                                                        text-path="value"
+                                                        text-path="id"
                                                         value-path="id"
                                                         fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Centro Responsabilidade"}]'
                                                         disabled>
@@ -965,7 +965,7 @@
                                                 </vaadin-combo-box>-->
                                                 <such-selectbox id="_CBLocalizations" value="{{item.localCode}}"
                                                                 items="[[CBLocations]]"
-                                                                onchange="_GridLocationChange" on-blur="_updateLinhaPreRequisicao"
+                                                                on-change="_updateLinhaPreRequisicao"
                                                                 text-path="id"
                                                                 value-path="id"
                                                                 fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Localização"}]'
@@ -1015,7 +1015,7 @@
                                                 </vaadin-combo-box>-->
                                                 <such-selectbox id="_CLGridSupplierProductCode" value="{{item.code}}"
                                                                 items="[[Products]]"
-                                                                on-blur="_onProductInGridChanged"
+                                                                on-change="_onProductInGridChanged"
                                                                 text-path="code"
                                                                 value-path="code"
                                                                 fields='[{"field":"code", "name":"Código"}, {"field":"name", "name":"Produto"}]'
@@ -1077,7 +1077,7 @@
                                                 </vaadin-combo-box>-->
                                                 <such-selectbox id="_CLGridUnitMeasureCode" value="{{item.unitMeasureCode}}"
                                                                 items="[[LCBMeasuresUnit]]"
-                                                                on-blur="_updateLinhaPreRequisicao"
+                                                                on-change="_updateLinhaPreRequisicao"
                                                                 text-path="id"
                                                                 value-path="id"
                                                                 fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Unidade Medida"}]'
@@ -1210,7 +1210,7 @@
                                                 </vaadin-combo-box>-->
                                                 <such-selectbox id="_CLGridVehicle" value="{{item.vehicle}}"
                                                                 items="[[CBVehicle]]"
-                                                                on-blur="_updateLinhaPreRequisicao"
+                                                                on-change="_updateLinhaPreRequisicao"
                                                                 text-path="id"
                                                                 value-path="id"
                                                                 fields='[{"field":"id", "name":"Matrícula"}]'
@@ -1265,7 +1265,7 @@
                                                 </vaadin-combo-box>-->
                                                 <such-selectbox id="_CLGridRegion" value="{{item.regionCode}}"
                                                                 items="[[LProjectRegionCodes]]"
-                                                                on-blur="_updateLinhaPreRequisicao"
+                                                                on-change="_updateLinhaPreRequisicao"
                                                                 text-path="value"
                                                                 value-path="id"
                                                                 fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Região"}]'
@@ -1297,7 +1297,7 @@
                                                 </vaadin-combo-box>-->
                                                 <such-selectbox id="_CLGridFunctionalArea" value="{{item.functionalAreaCode}}"
                                                                 items="[[LProjectFunctionalAreaCodes]]"
-                                                                on-blur="_updateLinhaPreRequisicao"
+                                                                on-change="_updateLinhaPreRequisicao"
                                                                 text-path="value"
                                                                 value-path="id"
                                                                 fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Área Funcional"}]'
@@ -1327,17 +1327,19 @@
                                                         </table>
                                                     </template>
                                                 </vaadin-combo-box>-->
+
+                                                <!--on-change="_GridRespCenterChange"-->
                                                 <such-selectbox id="_CLGridResponsabilityCenter" value="{{item.centerResponsibilityCode}}"
                                                                 items="[[LProjectResponsabilityCenterCodes]]"
-                                                                on-change="_GridRespCenterChange" on-blur="_updateLinhaPreRequisicao"
-                                                                text-path="value"
+                                                                on-change="_updateLinhaPreRequisicao"
+                                                                text-path="id"
                                                                 value-path="id"
                                                                 fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Centro Responsabilidade"}]'
                                                                 disabled>
                                                 </such-selectbox>
                                             </template>
                                             <template is="dom-if" if="{{ !item.selected }}">
-                                                [[ _clFormatResponsabilityCenter(item.centerResponsibilityCode) ]]
+                                                {{item.centerResponsibilityCode}}
                                             </template>
                                         </template>
                                     </vaadin-grid-column>
@@ -1382,9 +1384,10 @@
                                                         </table>
                                                     </template>
                                                 </vaadin-combo-box>-->
+                                                <!--on-change="_GridOpenLineChange"-->
                                                 <such-selectbox id="_CBGridPurchaseLine" value="{{item.openOrderLineNo}}"
                                                                 items="[[CBPurchaseLine]]"
-                                                                on-change="_GridOpenLineChange" on-blur="_updateLinhaPreRequisicao"
+                                                                on-change="_updateLinhaPreRequisicao"
                                                                 text-path="line_No"
                                                                 value-path="line_No"
                                                                 fields='[{"field":"documentNO", "name":"Código"}, {"field":"line_No", "name":"Linha Encomenda Aberto"}]'
@@ -1397,8 +1400,9 @@
                                         </template>
                                     </vaadin-grid-column>
 
-                                    <vaadin-grid-column width="2%">
+                                    <vaadin-grid-column width="50px">
                                         <template class="header">
+                                            ="
                                         </template>
                                         <template>
                                             <center>
@@ -1482,7 +1486,7 @@
                         <vaadin-grid-filter path="responsabilityCenterCode" />
                     </template>
                     <template>
-                        [[ _clFormatResponsabilityCenter(item.centerResponsibilityCode) ]]
+                        {{item.centerResponsibilityCode}}
                     </template>
                 </vaadin-grid-column>
                 <vaadin-grid-column width="110px" resizable>
@@ -1513,7 +1517,9 @@
             <div>
                 <h2>Valor Total: <b>{{_TotalLine}} €</b></h2>
             </div>
+            to
             <div class="buttons">
+                s"
                 <paper-button raised class="btnEdit" dialog-dismiss>Fechar</paper-button>
             </div>
         </paper-dialog>
@@ -1868,6 +1874,7 @@
                             this.$._CLFunctionalAreaCode.value = this.ProjectDims.functionalAreaCode;
 
                             this.$.FunctionalAreaCode.value = this.ProjectDims.functionalAreaCode;
+                            this._PopulatePurchaseLines();
                         }
                         else {
                             this.$._CLFunctionalAreaCode.value = "";
@@ -2045,7 +2052,7 @@
                     var _dataPreReq = this.data;
                     var ajax_request = this.$.ajax_delete_prereq;
                     bootbox.confirm({
-                        message: "Tem a certeza que pretende remover o pré-requisição " + this.data.preRequesitionsNo + "?",
+                        message: "Tem a certeza que pretende limpar a pré-requisição?",
                         buttons: {
                             confirm: {
                                 label: 'Sim',
@@ -2162,6 +2169,11 @@
                         this.$.projectNo.disabled = false;
                         this.$._ProjectNo.disabled = false;
                     }
+
+                    this.data.contractType = 3;
+                    this.$.page_databoundNoMessage_ajax.url = "/PreRequisicoes/UpdatePreRequesition";
+                    this.$.page_databoundNoMessage_ajax.body = JSON.stringify(this.data);
+                    this.$.page_databoundNoMessage_ajax.generateRequest();
                 },
 
                 _copyFromTemplateResponse: function (data) {
@@ -2474,25 +2486,37 @@
 
                                 this.dataLines.lines.unshift({
                                     preRequisitionLineNo: this.data.preRequesitionsNo,
-                                    localCode: localCode,
+                                    type: 2, //PRODUTO
                                     code: this._Products,
                                     description: this._Description,
                                     description2: this._Description2,
+                                    localCode: localCode,
                                     unitMeasureCode: this._UnitMeasureCode,
                                     quantityToRequire: this._QuantityToRequire,
-                                    quantidadeInicial: this._QuantityToRequire,
-                                    unitCost: this._UnitCost,
-                                    projectNo: this.$._ProjectNo.value,
-                                    maintenanceOrderLineNo: this._MaintenanceOrderLineNo,
-                                    vehicle: this.data.vehicle,
-                                    supplierNo: this._CBVendor,
                                     regionCode: this.$._CLRegion.value,
                                     functionalAreaCode: this.$._CLFunctionalAreaCode.value,
                                     centerResponsibilityCode: this.$._CLResponsabilityCenterCode.value,
+                                    projectNo: this.$._ProjectNo.value,
+                                    //qtyByUnitOfMeasure
+                                    //quantityRequired
+                                    //quantityPending:
+                                    quantidadeInicial: this._QuantityToRequire,
+                                    unitCost: this._UnitCost,
+                                    //sellUnityPrice
+                                    //budgetValue
+                                    //expectedReceivingDate
+                                    //billable
+                                    maintenanceOrderLineNo: this._MaintenanceOrderLineNo,
+                                    //employeeNo
+                                    vehicle: this.data.vehicle,
+                                    supplierNo: this._CBVendor,
+                                    //supplierProductCode
+                                    armazemCDireta: this._CBItemsCDirect,
+                                    //unitNutritionProduction
+                                    //customerNo
                                     openOrderNo: purchHeaderNo,
                                     openOrderLineNo: purchLineNo,
                                     totalCost: totalCost > 0 ? totalCost : "",
-                                    armazemCDireta: this._CBItemsCDirect
                                 });
 
                                 this.$.prereqLines_databound_ajax.url = "/PreRequisicoes/UpdateContractLines";
@@ -2514,8 +2538,13 @@
                 },
 
                 _updateLinhaPreRequisicao: function (e) {
-                    //debugger;
+                    debugger;
                     var index = this.dataLines.lines.indexOf(e.model.item);
+
+                    //var line = this.CBPurchaseLine.find(x => x.id == e.currentTarget.__data.selectedItem.id);
+                    //if (line != null) {
+                    //    e.model.item.openOrderNo = line.documentNO;
+                    //}
 
                     this.$.prereqLines_UpdateLinhaPreRequisicao_ajax.body = JSON.stringify({
                         preRequisitionLineNo: e.model.item.preRequisitionLineNo,
@@ -2527,7 +2556,7 @@
                         localCode: e.model.item.localCode,
                         unitMeasureCode: e.model.item.unitMeasureCode,
                         quantityToRequire: e.model.item.quantityToRequire,
-                        quantidadeInicial: e.model.item.quantidadeInicial,
+                        quantidadeInicial: e.model.item.quantityToRequire,
                         regionCode: e.model.item.regionCode,
                         functionalAreaCode: e.model.item.functionalAreaCode,
                         centerResponsibilityCode: e.model.item.centerResponsibilityCode,
@@ -2645,7 +2674,7 @@
                     //this.$.gridUserAccesses.clearCache();
                 },
                 _duplicarContractLine: function (e) {
-                    debugger;
+                    //debugger;
                     var index = this.dataLines.lines.indexOf(e.model.item);
 
                     this.$.prereqLines_DuplicarLinha_ajax.body = JSON.stringify({
@@ -2683,6 +2712,7 @@
 
                     if (this.$._Products.value != "") {
                         this.$.page_GetProductLocation_ajax.body = JSON.stringify({ code: this.$._Products.value });
+                        this.$.page_GetProductLocation_ajax.params = { "area": this.$.FunctionalAreaCode.valueText };
                         this.$.page_GetProductLocation_ajax.generateRequest()
                     }
                     else {
@@ -2721,13 +2751,12 @@
                         this.$._UnitCost.value = "";
                     }
 
-                    this.$.page_GetProductLocation_ajax.body = JSON.stringify({
-                        code: this.$._Products.value
-                    });
+                    this.$.page_GetProductLocation_ajax.body = JSON.stringify({ code: this.$._Products.value });
+                    this.$.page_GetProductLocation_ajax.params = { "area": this.$.FunctionalAreaCode.valueText };
                     this.$.page_GetProductLocation_ajax.generateRequest()
                 },
                 _GetProductLocationResponse: function (e) {
-                    //debugger;
+                    debugger;
                     if (this.productInfo != null) {
                         this.$._Description.value = this.productInfo.name;
                         this.$._Description2.value = this.productInfo.name2;
@@ -2746,6 +2775,15 @@
                         }
                         else {
                             this._openToastError("Este produto não têm Cód. Localização contate a área das compras.");
+                        }
+
+                        if (this.productInfo.openOrderLines == true) {
+                            setTimeout(
+                                function () {
+                                    bootbox.alert({
+                                        message: "O produto selecionado já existe em acordo de fornecedor.",
+                                    });
+                                }, 0);
                         }
                     }
                     else {
@@ -2856,11 +2894,11 @@
                 _PopulatePurchaseLines: function (data) {
                     //debugger;
                     var codArea = this.$.FunctionalAreaCode.value;
-                    this.PurchaseLine = "";
-                    this.$.purchaselines_ajax.body = JSON.stringify(codArea);
-                    this.$.purchaselines_ajax.generateRequest();
-
-
+                    if (codArea != "") {
+                        this.PurchaseLine = "";
+                        this.$.purchaselines_ajax.body = JSON.stringify(codArea);
+                        this.$.purchaselines_ajax.generateRequest();
+                    }
                 },
 
                 _responsePurchaseLinesProcessor: function (data) {

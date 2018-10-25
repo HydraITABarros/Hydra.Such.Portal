@@ -94,5 +94,29 @@ namespace Hydra.Such.Data.Logic
                 return null;
             }
         }
+
+        public static bool DocumentExistsFor(string NAVDatabaseName, string NAVCompanyName, string billingReceptionNo)
+        {
+            List<PurchaseHeader> result = new List<PurchaseHeader>();
+            using (var ctx = new SuchDBContextExtention())
+            {
+                var parameters = new[]{
+                        new SqlParameter("@DBName", NAVDatabaseName),
+                        new SqlParameter("@CompanyName", NAVCompanyName),
+                        new SqlParameter("@BillingReceptionNo", billingReceptionNo)
+                    };
+
+                IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017RecFaturacao @DBName, @CompanyName, @BillingReceptionNo", parameters);
+
+                foreach (dynamic temp in data)
+                {
+                    var item = new PurchaseHeader();
+
+                    item.No = temp.No;
+                    result.Add(item);
+                }
+            }
+            return result.Count > 0;
+        }
     }
 }

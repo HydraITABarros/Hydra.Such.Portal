@@ -212,29 +212,7 @@
                    content-type="application/json"
                    on-response="_updateResponse">
         </iron-ajax>
-        @*<iron-ajax url="/Faturacao/GetBillingReceptionsHistory"
-                   last-response="{{ getViewResponse }}"
-                   id="getHistory_ajax"
-                   method="post"
-                   handle-as="json"
-                   content-type="application/json">
-        </iron-ajax>*@
-
-        @*<iron-ajax url="/Faturacao/GetBillingReceptionsPending"
-                   last-response="{{ getViewResponse }}"
-                   id="getPendingTotal_ajax"
-                   method="post"
-                   on-response="_getPendingTotalReponse"
-                   handle-as="json"
-                   content-type="application/json">
-        </iron-ajax>*@
-        @*<iron-ajax url="/Faturacao/GetBillingReceptionsPendingExcept"
-                   last-response="{{ getViewResponse }}"
-                   id="getPending_ajax"
-                   method="post"
-                   handle-as="json"
-                   content-type="application/json">
-        </iron-ajax>*@
+        
         <iron-ajax url="/Faturacao/OpenOrderNav"
                    last-response="{{ updatedItem }}"
                    id="openEncomenda_ajax"
@@ -273,13 +251,10 @@
                     <paper-button class="tablinks" on-tap="_postNotaCredito"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Notas de Crédito</paper-button>
                 </template>
                 <template is="dom-if" if="{{ !_isCreate }}">
-                    @*<such-dropdown-menu style="display: {{ _showOptionsForProvisioning }};" on-value-changed="_provisioningOptionSelected" title="Opções" items='[[ _provisioningMenuItems ]]' hidden="{{_showHiddenProvisioning}}"></such-dropdown-menu>*@
                     <such-dropdown-menu style="display: {{ _showOptionsForAccounting }};" on-value-changed="_accountingOptionSelected" title="Opções" items='[[ _accountingMenuItems ]]' hidden="{{_showHiddenAccounting}}"></such-dropdown-menu>
                     <paper-button class="tablinks" on-tap="_openNEncomenda"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Enc. por Nº</paper-button>
                     <paper-button class="tablinks" on-tap="_openRequisicao"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Enc. Requisição</paper-button>
                     <paper-button class="tablinks" on-tap="_openDocument"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Documento</paper-button>
-                    @*<paper-button class="tablinks" on-tap="_openHistory"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Histórico</paper-button>*@
-                    @*<paper-button class="tablinks" on-tap="_openPending"><i class="fa fa-eye" aria-hidden="true" hidden="{{_showHiddenPendingList}}"></i>&nbsp;Ver Pendente</paper-button>*@
                 </template>
             </template>
 
@@ -379,12 +354,6 @@
                     </div>
                 </div>
                 <div class="row break_clear">
-                    @*<div class="col-sm-3">
-                        <vaadin-text-field label="Destinatário" type="text" value="{{data.destinatario}}" id="txtDestinatario" disabled></vaadin-text-field>
-                    </div>
-                    <div class="col-sm-3">
-                        <vaadin-date-picker label="Data Última Interação" id="dpDataUltimaInteracao " disabled value="{{data.dataUltimaInteracao }}"></vaadin-date-picker>
-                    </div>*@
                     <div class="col-sm-3">
                         <such-selectbox id="sbOrders" value="{{ data.numEncomenda }}" label="Nº Encomenda"
                                         items="[[ Orders ]]"
@@ -770,7 +739,8 @@
                         <vaadin-upload id="uploadRequest1" target="/Faturacao/ExistFile"
                                        method="POST"
                                        headers="{'Accept': 'application/json'}"
-                                       timeout=15000 files="{{files}}"></vaadin-upload>
+                                       timeout=15000 files="{{files}}"
+                                        on-upload-response="_uploadResponse1"></vaadin-upload>
                     </div>
 
                     <div class="col-sm-3" hidden="{{ !_isAnexarFicheiroResposta }}">
@@ -784,6 +754,7 @@
                     </div>
                 </div>
             </paper-dialog>
+
             <paper-dialog id="dialogAttached" class="dialgoBox" modal>
                 <vaadin-grid id="grdAttachedView" aria-label="grdAttachedView" items="[[attacheds]]" selected-items={{attachedItems}} active-item="{{attachedItem}}" class="grid" multi-sort="true">
                     <vaadin-grid-column resizable>
@@ -806,6 +777,7 @@
                 </vaadin-grid>
                 <paper-button class="btnRemove" dialog-dismiss>&nbsp; Fechar</paper-button>
             </paper-dialog>
+
             <paper-dialog id="dialogReSendUAS" class="dialgoBox" modal>
                 <div class="row break_clear">
                     <div class="col-sm-3">
@@ -854,6 +826,9 @@
                             </template>
                         </vaadin-combo-box>
                     </div>
+                    <div class="col-sm-6">
+                        <vaadin-text-field label=" " type="text" value="" id="txtUAProblemDescription"></vaadin-text-field>
+                    </div>
                 </div>
                 <div class="row break_clear">
                     <div class="col-sm-9">
@@ -869,7 +844,8 @@
                         <vaadin-upload id="uploadRequest2" target="/Faturacao/ExistFile"
                                        method="POST"
                                        headers="{'Accept': 'application/json'}"
-                                       timeout=15000 files="{{files}}"></vaadin-upload>
+                                       timeout=15000 files="{{files}}"
+                                        on-upload-response="_uploadResponse2"></vaadin-upload>
                     </div>
                     <div class="col-sm-3" hidden="{{ !_isAnexarFicheiro }}">
                         <vaadin-text-field label="Descrição" type="text" id="txtDescricaoAnexo2"></vaadin-text-field>
@@ -882,244 +858,6 @@
                     </div>
                 </div>
             </paper-dialog>
-
-            @*<paper-dialog id="dialogViewHist_Pending" class="dialgoBox" modal>
-                <div class="row break_clear" hidden="{{_showOptionDestitation}}">
-                    <div class="col-sm-3">
-                        <vaadin-text-field label="Área " value="{{_rfperfil}}" type="text" id="txtAreaDesti" disabled></vaadin-text-field>
-                    </div>
-                    <div class="col-sm-3">
-                        <vaadin-combo-box items="[[ User ]]" id="cmbDestinatarios" item-value-path="id" item-label-path="id" label="Destinatarios">
-                            <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.id]]</div>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
-                            </template>
-                        </vaadin-combo-box>
-                    </div>
-                    <div class="col-sm-3">
-                        <paper-button class="btnSave" raised on-tap="_dlgUpdateDesti">Alterar</paper-button>
-                    </div>
-
-                </div>
-                <vaadin-grid id="grdBillingView" aria-label="grdBillingView" items="[[getViewResponse]]" class="grid" selected-items={{selectedItems}} active-item="{{selectedItem}}" multi-sort="true">
-                    <vaadin-grid-selection-column auto-select hidden="{{_showOptionDestitation}}">
-                    </vaadin-grid-selection-column>
-                    <vaadin-grid-column resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="id">Nº</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="id" />
-                        </template>
-                        <template>
-                            {{item.id}}
-                        </template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="tipoDocumento">Tipo de Documento</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="tipoDocumento" />
-                        </template>
-                        <template>
-                            [[ _clFormatTypeDoc(item.tipoDocumento) ]]
-                        </template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="areaPendente">Àrea Pendente</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="areaPendente" />
-                        </template>
-                        <template>
-                            {{ item.areaPendente }}
-                        </template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="estadoDescricao">Estado</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="estadoDescricao" />
-                        </template>
-                        <template>
-                            {{ item.estadoDescricao }}
-                        </template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="dataRececao">Data de Receção</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="dataRececao" />
-                        </template>
-                        <template>
-                            {{item.dataRececao}}
-                        </template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="codFornecedor">Fornecedor</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="codFornecedor" />
-                        </template>
-                        <template>
-                            {{item.codFornecedor}}
-                        </template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="numDocFornecedor">Núm. Doc. Fornecedor</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="numDocFornecedor" />
-                        </template>
-                        <template>
-                            {{item.numDocFornecedor}}
-                        </template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="dataDocFornecedor">Data Doc. Fornecedor</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="dataDocFornecedor" />
-                        </template>
-                        <template>
-                            {{item.dataDocFornecedor}}
-                        </template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="numEncomenda">Núm. Encomenda</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="numEncomenda" />
-                        </template>
-                        <template>
-                            {{item.numEncomenda}}
-                        </template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="numEncomendaManual">Núm. Encomenda Manual</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="numEncomendaManual" />
-                        </template>
-                        <template>
-                            {{item.numEncomendaManual}}
-                        </template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="valorEncomendaOriginal">Valor Encomenda Original</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="valorEncomendaOriginal" />
-                        </template>
-                        <template>
-                            {{item.valorEncomendaOriginal}}
-                        </template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="quantidadeEncomenda">Quantidade Encomenda</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="quantidadeEncomenda" />
-                        </template>
-                        <template>
-                            {{item.quantidadeEncomenda}}
-                        </template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="quantidadeRecebida">Quantidade Recebida</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="quantidadeRecebida" />
-                        </template>
-                        <template>
-                            {{item.quantidadeRecebida}}
-                        </template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="valorRecebidoNaoContabilizado">Valor Recebido não Contabilizado</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="valorRecebidoNaoContabilizado" />
-                        </template>
-                        <template>
-                            {{item.valorRecebidoNaoContabilizado}}
-                        </template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="valor">Valor</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="valor" />
-                        </template>
-                        <template>
-                            {{item.valor}}
-                        </template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="codRegiao">Cód. Região</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="codRegiao" />
-                        </template>
-                        <template>
-                            {{item.codRegiao}}
-                        </template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="codAreaFuncional">Cód. Área Funcional</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="codAreaFuncional" />
-                        </template>
-                        <template>
-                            {{item.codAreaFuncional}}
-                        </template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="codCentroResponsabilidade">Cód. Centro Responsabilidade</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="codCentroResponsabilidade" />
-                        </template>
-                        <template>
-                            {{item.codCentroResponsabilidade}}
-                        </template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="codLocalizacao">Cód. Localização</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="codLocalizacao" />
-                        </template>
-                        <template>
-                            {{item.codLocalizacao}}
-                        </template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="local">Local</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="local" />
-                        </template>
-                        <template>
-                            {{ item.local }}
-                        </template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="numAcordoFornecedor">Núm. Acordo Fornecedor</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="numAcordoFornecedor" />
-                        </template>
-                        <template>
-                            {{ item.numAcordoFornecedor }}
-                        </template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="destinatario">Destinatario</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="destinatario" />
-                        </template>
-                        <template>
-                            {{ item.destinatario }}
-                        </template>
-                    </vaadin-grid-column>
-
-                    <vaadin-grid-column resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="dataUltimaInteracao">Data Última Interação</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="dataUltimaInteracao" />
-                        </template>
-                        <template>
-                            {{ item.dataUltimaInteracao }}
-                        </template>
-                    </vaadin-grid-column>
-                </vaadin-grid>
-                <paper-button class="btnRemove" dialog-dismiss>&nbsp; Fechar</paper-button>
-
-            </paper-dialog>*@
         </div>
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
@@ -1207,10 +945,6 @@
                         type: Boolean,
                         value: false,
                     },
-                    //_showOptionDestitation: {
-                    //    type: Boolean,
-                    //    value: true,
-                    //},
                     _showHiddenAccounting: {
                         type: Boolean,
                         value: true,
@@ -1219,10 +953,6 @@
                         type: Boolean,
                         value: true,
                     },
-                    //_showHiddenPendingList: {
-                    //    type: Boolean,
-                    //    value: true,
-                    //},
                     _rfperfil: {
                         type: String,
                         value: "",
@@ -1259,10 +989,6 @@
                         type: Array,
                         value: [{ value: 1, description: "Pendente" }, { value: 2, description: "Contabilizado" }, { value: 4, description: "Sem Efeito" }, { value: 5, description: "Resolvido" }],
                     },
-                    //_provisioningMenuItems: {
-                    //    type: Array,
-                    //    value: [{ value: 1, description: "Alterar Destinatários" }, { value: 2, description: "Pendentes Áreas" }],
-                    //},
                     _uploadurl: {
                         type: String,
                         value: @Html.Raw(Json.Serialize(ViewBag.UploadURL)),
@@ -1276,13 +1002,32 @@
                     '_preventDocumentDuplicates(data.dataDocFornecedor, data.numDocFornecedor, data.codFornecedor)'
                 ],
                 _uploadResponse: function (event) {
-
-                    console.log('upload xhr after server response: ', event.detail.xhr);
-                    event.detail.file.error = 'Duplicado.';
-                    event.detail.xhr.status = 500;
-                    // Interpret any server response as success:
-                    // event.detail.xhr.status = 200;
-                    
+                    var SplitMessage = event.detail.xhr.response.split(',')
+                    var eReasonCode = SplitMessage[0].split('{')[1].split(':')[1];
+                    var eMessage = SplitMessage[1].split(':')[1];
+                    eMessage = eMessage.substring(1, eMessage.length - 1);
+                    if (eReasonCode != "1") {
+                        event.detail.file.error = eMessage;
+                        event.detail.xhr.status = 500;
+                    }
+                },
+                _uploadResponse1: function (event) {
+                    var SplitMessage = event.detail.xhr.response.split(',');
+                    var eReasonCode = SplitMessage[0].split('{')[1].split(':')[1];
+                    var eMessage = SplitMessage[1].split(':')[1];
+                    if (eReasonCode != "1") {
+                        event.detail.file.error = eMessage;
+                        event.detail.xhr.status = 500;
+                    }
+                },
+                _uploadResponse2: function (event) {
+                    var SplitMessage = event.detail.xhr.response.split(',')
+                    var eReasonCode = SplitMessage[0].split('{')[1].split(':')[1];
+                    var eMessage = SplitMessage[1].split(':')[1];
+                    if (eReasonCode != "1") {
+                        event.detail.file.error = eMessage;
+                        event.detail.xhr.status = 500;
+                    }
                 },
                 ready: function () {
                     if (this._billingReceptionId != null && this._billingReceptionId != "") {
@@ -1331,19 +1076,6 @@
                         if (this.data.estado == 2) {
                             this._checkPending = false;
                         }
-                        ////Ponto de situação
-                        //var workFlow = this.data.workflowItems[this.data.workflowItems.length - 1];
-                        //if (workFlow != null) {
-                        //    this.$.txtComment.value = workFlow.comentario;
-                        //    this.$.codDescricao.value = workFlow.codTipoProblema;
-                        //    this.$.txtDescription.value = workFlow.descricao;
-                        //    var data = new Date(workFlow.dataCriacao);
-                        //    var dataFormatada = ("0" + data.getDate()).substr(-2) + "/" + ("0" + (data.getMonth() + 1)).substr(-2) + "/" + data.getFullYear();
-                        //    if (dataFormatada != undefined) {
-                        //        this.$.txtDatePeding.value = dataFormatada;
-                        //    }
-                        //    this.$.txtDestProblema.value = workFlow.utilizador;
-                        //}
                         //Botão Resposta
                         this._hiddeButtons();
                     }
@@ -1374,9 +1106,6 @@
                         this._showHiddenProvisioning = false;
                         this._hiddeSendButton = false;
                     }
-                    //if (this._RFPerfilVisualizacao == "Todos" || this._RFPerfilVisualizacao == "Perfil") {
-                    //    this._showHiddenPendingList = false;
-                    //}
                 },
 
                 _supplierSelected: function (e) {
@@ -1412,11 +1141,9 @@
                         this.$.cmbResponsabilityCenters.value = order.respCenterId;
                         this.$.dpValorEncomendaActual.value = order.amountIncludingVAT;
                         this.$.txtLocal.value = order.locationCode;
-                        //this.$.txtValorEncomendaOriginal.value = order.
                         this.$.txtQuantidadeEncomenda.value = order.quantity;
                         this.$.txtQuantidadeRecebida.value = order.quantityReceived;
                         this.$.txtValorRecebidoNaoContabilizado.value = order.amountRcdNotInvoiced;
-                        //this.$.txtValor.value = order.amount;
 
                         this._preventDocumentDuplicates();
                         if (!this._docIsValid)
@@ -1543,27 +1270,6 @@
                         this._openToastError("Descrição tem que estar preenchida.");
                         return false;
                     }
-
-                    //if (this.data.estado == null || this.data.estado == "") {
-                    //    this._openToastError("O Estado tem que estar preenchido.");
-                    //    return false;
-                    //}
-                    //if (this.data.areaPendente2 == "" || this.data.areaPendente2 == null) {
-                    //    this._openToastError("Área Pendente tem que estar preenchida.");
-                    //    return false;
-                    //}
-                    //if (this.$.txtDestProblema.value == "" || this.$.txtDestProblema.value == null) {
-                    //    this._openToastError("Destinatário tem que estar preenchido.");
-                    //    return false;
-                    //}
-                    //if (this.$.codDescricao.value == "" || this.$.codDescricao.value == null) {
-                    //    this._openToastError("Cód. Descrição tem que estar preenchido.");
-                    //    return false;
-                    //}
-                    //if (this.$.txtDescription.value == "" || this.$.txtDescription.value == null) {
-                    //    this._openToastError("Descrição tem que estar preenchida.");
-                    //    return false;
-                    //}
                     return true;
                 },
                 _validateInputForSendingToUPs: function () {
@@ -1591,7 +1297,6 @@
                     if (e.detail.status === 200) {
                         if (this.createdItem.eReasonCode == "1") {
                             this._openToast(this.createdItem.eMessage);
-                            //this.data = this.createdItem;
                             var id = this.createdItem.id;
                             setTimeout(
                                 function () {
@@ -1923,9 +1628,6 @@
                 },
                 _dlgSendAnswer: function () {
                     if (this._validateInputForAnswer()) {
-                        var answerDestinyProfile;
-                        var userToAnswer = this.data.criadoPor;
-
                         var idmotivo = this.$.cmbRespostasPorPerfil.value
                         var motivoExtra = this.RespostasPorPerfil.find(x => x.id == idmotivo).extra;
 
@@ -1934,8 +1636,8 @@
 
                         //PROCURAR CRIADOR DA ULTIMA LINHA PARA RESPOSTA
                         var novoDestino = idWork.utilizador;
-                        this.$.get_userprofile_ajax.body = JSON.stringify(novoDestino);
-                        this.$.get_userprofile_ajax.generateRequest();
+                        //this.$.get_userprofile_ajax.body = JSON.stringify(novoDestino);
+                        //this.$.get_userprofile_ajax.generateRequest();
                         //**/
                         var userProfile = this.userProfile;
                         var Area = idWork.area;
@@ -1986,7 +1688,7 @@
                     if (this._validateInputForSendingToUPs()) {
 
                         var idmotivo = this.$.cmbUAProblems.value;
-                        var descricao = this.$.cmbUAProblems.selectedItem.value;
+                        var descricao = this.$.txtUAProblemDescription.value;// this.$.cmbUAProblems.selectedItem.value;
 
                         var workflow = null;;
                         var idWork = this.data.workflowItems[this.data.workflowItems.length - 1];
@@ -2072,21 +1774,6 @@
                     ajax_request.generateRequest();
                 },
 
-                //_updateDestinationResponse: function (e) {
-                //    if (e.detail.status === 200) {
-                //        if (this.updateDestinItem != undefined) {
-
-                //            this.$.getPendingTotal_ajax.body = JSON.stringify(this.data);
-                //            this.$.getPendingTotal_ajax.generateRequest();
-                //            this._openToast("Destinatário Actualizado");
-                //        } else {
-                //            this._openToastError(this.updateDestinItem.eMessage);
-                //        }
-                //    }
-                //    else {
-                //        this._openToastError("O servidor não conseguiu processar o pedido.");
-                //    }
-                //},
                 _viewLinkResponse: function (e) {
                     if (e.detail.status === 200) {
                         if (this.updatedItem.eReasonCode == "1") {
@@ -2108,19 +1795,7 @@
                         this._openToastError("O servidor não conseguiu processar o pedido.");
                     }
                 },
-                //_getPendingTotalReponse: function (e) {
-                //    if (e.detail.status === 200) {
-                //        if (this.getViewResponse != undefined) {
-                //            this.$.dialogViewHist_Pending.open();
-                //        }
-                //        else {
-                //            this._openToastError(this.updatedItem.eMessage);
-                //        }
-                //    }
-                //    else {
-                //        this._openToastError("O servidor não conseguiu processar o pedido.");
-                //    }
-                //},
+                
                 _goBack: function (e) {
                     window.history.back();
                 },
@@ -2150,26 +1825,7 @@
 
 
                 },
-                //_provisioningOptionSelected: function (e) {
-                //    if (e.detail.value == 0)
-                //        return;
-                //    var item = e.detail.value;
-
-                //    if (item == null)
-                //        return;
-                //    switch (item.value) {
-                //        case 1:
-                //            this._showOptionDestitation = false;
-                //            this.$.getPendingTotal_ajax.body = JSON.stringify(this.data);
-                //            this.$.getPendingTotal_ajax.generateRequest();
-                //            break;
-                //        case 2:
-                //            this._showOptionDestitation = true;
-                //            this.$.getPendingTotal_ajax.body = JSON.stringify(this.data);
-                //            this.$.getPendingTotal_ajax.generateRequest();
-                //            break;
-                //    }
-                //},
+                
                 _accountingOptionSelected: function (e) {
                     if (e.detail.value == 0)
                         return;
@@ -2229,20 +1885,6 @@
                     }
                 },
 
-                //_openHistory: function (e) {
-                //    this.getViewResponse = null;
-                //    this._showOptionDestitation = true;
-                //    this.$.dialogViewHist_Pending.open();
-                //    this.$.getHistory_ajax.body = JSON.stringify(this.data);
-                //    this.$.getHistory_ajax.generateRequest();
-                //},
-                //_openPending: function (e) {
-                //    this.getViewResponse = null;
-                //    this._showOptionDestitation = true;
-                //    this.$.dialogViewHist_Pending.open();
-                //    this.$.getPending_ajax.body = JSON.stringify(this.data);
-                //    this.$.getPending_ajax.generateRequest();
-                //},
                 _openNEncomenda: function (e) {
                     if (this.$.sbOrders.value != null && this.$.sbOrders.value != "") {
                         this.$.openEncomenda_ajax.body = JSON.stringify(this.data);
@@ -2358,6 +2000,7 @@
                 },
                 _UAProblemChange: function (e) {
                     var selectedProblem = this.$.cmbUAProblems.selectedItem;
+
                     if(selectedProblem && selectedProblem.extra == "=VALIDADOR_AREA="){
                         var selectedArea = this.$.cmbAreasUPUAS.selectedItem;
                         if(selectedArea)
@@ -2372,6 +2015,10 @@
                         if(selectedArea){
                             this._loadUsersForArea(selectedArea.value, this.centroResp);
                         }
+                    }
+
+                    if (selectedProblem) {
+                        this.$.txtUAProblemDescription.value = selectedProblem.value;
                     }
                 },
                 _destinatariosReenvioResponse: function (e) {
