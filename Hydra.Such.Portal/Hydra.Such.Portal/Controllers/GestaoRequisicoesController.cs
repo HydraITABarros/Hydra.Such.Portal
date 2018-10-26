@@ -2194,6 +2194,25 @@ namespace Hydra.Such.Portal.Controllers
             return Json(stateDescription);
         }
 
+        [HttpPost]
+        public JsonResult GetReqAprovadores([FromBody] string ReqId)
+        {
+            int MovAprovacao = 0;
+            List<UtilizadoresMovimentosDeAprovação> UsersMovAprovacao = new List<UtilizadoresMovimentosDeAprovação>();
+
+            MovAprovacao = DBApprovalMovements.GetAll().Where(x => x.Número == ReqId && x.Tipo == 1).LastOrDefault().NºMovimento;
+
+            if (MovAprovacao > 0)
+            {
+                UsersMovAprovacao = DBUserApprovalMovements.GetAll().Where(x => x.NºMovimento == MovAprovacao).ToList();
+            }
+
+            return Json(UsersMovAprovacao);
+        }
+
+
+
+
         //1
         [HttpPost]
         public async Task<JsonResult> ExportToExcel_RequisicoesValidar([FromBody] List<RequisitionViewModel> Lista)
