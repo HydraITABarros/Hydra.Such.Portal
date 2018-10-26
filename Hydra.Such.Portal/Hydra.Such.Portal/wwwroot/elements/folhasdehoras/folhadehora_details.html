@@ -736,7 +736,7 @@
                         <div class="panel-body">
                             <div class="row break_clear">
                                 <div class="col-sm-2">
-                                    <vaadin-combo-box id="ajudaTipoCusto" items="[[LFolhaDeHoraAjudaTipoCusto]]" item-value-path="id" item-label-path="value" label="Tipo Custo" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                                    <vaadin-combo-box id="ajudaTipoCusto" items="[[LFolhaDeHoraAjudaTipoCusto]]" item-value-path="id" item-label-path="value" label="Tipo Custo" on-value-changed="_GetCodTipoCusto" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                         <template>
                                             <paper-icon-item>
                                                 <paper-item-body two-line>
@@ -1683,7 +1683,13 @@
                     e.target.value = e.target.value.replace(",", ".");
                 },
 
-                _validateFolhaHoras: function () {
+                _GetCodTipoCusto: function () {
+                    debugger;
+                    this.$.get_codtipocusto.body = JSON.stringify({ id: this.$.ajudaTipoCusto.value || 0 });
+                    this.$.get_codtipocusto.generateRequest();
+                },
+                
+                _validateFolhaHoras: function() {
                     //debugger;
                     if (this.$.projetoNo.value != "") {
                         if (this.$.empregadoNo.validate() & this.$.empregadoNo.value != "") {
