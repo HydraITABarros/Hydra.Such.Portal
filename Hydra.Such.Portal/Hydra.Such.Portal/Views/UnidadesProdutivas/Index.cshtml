@@ -71,7 +71,7 @@
         </div>
 
         <vaadin-grid id="grdProductivityUnitsTable" aria-label="ProductivityUnitsTable" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.productivityUnitNo.hidden }}">
+            <vaadin-grid-column width="50px" resizable hidden$="{{ _columns.productivityUnitNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="productivityUnitNo">Nº Unidade Produtiva</vaadin-grid-sorter>
                     <vaadin-grid-filter path="productivityUnitNo" />
@@ -81,7 +81,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.description.hidden }}">
+            <vaadin-grid-column width="350px" resizable hidden$="{{ _columns.description.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
                     <vaadin-grid-filter path="description" />
@@ -91,9 +91,9 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codeRegion.hidden }}">
+            <vaadin-grid-column width="50px" resizable hidden$="{{ _columns.codeRegion.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="codeRegion">Cód. Região</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="codeRegion">Região</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codeRegion" />
                 </template>
                 <template>
@@ -101,9 +101,9 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codeFunctionalArea.hidden }}">
+            <vaadin-grid-column width="50px" resizable hidden$="{{ _columns.codeFunctionalArea.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="codeFunctionalArea">Cód. Centro Responsabilidade</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="codeFunctionalArea">Área Funcional</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codeFunctionalArea" />
                 </template>
                 <template>
@@ -113,7 +113,7 @@
 
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codeResponsabilityCenter.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="codeResponsabilityCenter">Cód. Area Funcional</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="codeResponsabilityCenter">Centro Responsabilidade</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codeResponsabilityCenter" />
                 </template>
                 <template>

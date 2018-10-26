@@ -178,7 +178,7 @@ namespace Hydra.Such.Data.Logic
 
         public static List<MenuViewModel> ParseToViewModel(this List<Menu> menu)
         {
-            if (menu == null) { return new List<MenuViewModel>(); }
+          if (menu == null) { return new List<MenuViewModel>(); }
             return menu.GroupBy(m => m.Parent).ToList().ParseToViewModel();
         }
 

@@ -997,11 +997,15 @@ namespace Hydra.Such.Portal.Controllers
                             NºLinhaEncomendaAberto = x.OpenOrderLineNo
                         };
 
-                        if (project != null)
+                        if (string.IsNullOrEmpty(newline.NºProjeto))
                         {
-                            newline.CódigoRegião = project.CódigoRegião;
-                            newline.CódigoÁreaFuncional = project.CódigoÁreaFuncional;
-                            newline.CódigoCentroResponsabilidade = project.CódigoCentroResponsabilidade;
+                            if (project != null)
+                            {
+                                newline.NºProjeto = project.NºProjeto;
+                                newline.CódigoRegião = project.CódigoRegião;
+                                newline.CódigoÁreaFuncional = project.CódigoÁreaFuncional;
+                                newline.CódigoCentroResponsabilidade = project.CódigoCentroResponsabilidade;
+                            }
                         }
 
                         if (!string.IsNullOrEmpty(x.Code))
@@ -1286,7 +1290,7 @@ namespace Hydra.Such.Portal.Controllers
                         var vendors = DBNAV2017Vendor.GetVendor(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName);
 
                         List<PreRequisitionLineViewModel> GroupedListOpenOrderLine = new List<PreRequisitionLineViewModel>();
-                        PreRequesitionLines.Where(x => x.NºLinhaEncomendaAberto.HasValue).ToList().ForEach(x => GroupedListOpenOrderLine.Add(DBPreRequesitionLines.ParseToViewModel(x)));
+                        PreRequesitionLines.Where(x => x.NºLinhaEncomendaAberto.HasValue && x.QuantidadeARequerer > 0).ToList().ForEach(x => GroupedListOpenOrderLine.Add(DBPreRequesitionLines.ParseToViewModel(x)));
 
                         List<RequisitionViewModel> newlistOpenOrder = GroupedListOpenOrderLine.GroupBy(
                             x => x.OpenOrderNo,
@@ -1369,7 +1373,7 @@ namespace Hydra.Such.Portal.Controllers
                             data = CreateRequesition(newlistOpenOrder, data);
 
                         List<PreRequisitionLineViewModel> GroupedList = new List<PreRequisitionLineViewModel>();
-                        PreRequesitionLines.Where(x => x.NºLinhaEncomendaAberto == 0 || x.NºLinhaEncomendaAberto == null).ToList().ForEach(x => GroupedList.Add(DBPreRequesitionLines.ParseToViewModel(x)));
+                        PreRequesitionLines.Where(x => (x.NºLinhaEncomendaAberto == 0 || x.NºLinhaEncomendaAberto == null) && x.QuantidadeARequerer > 0).ToList().ForEach(x => GroupedList.Add(DBPreRequesitionLines.ParseToViewModel(x)));
 
                         List<RequisitionViewModel> newlist = GroupedList.GroupBy(
                             x => x.ArmazemCDireta,

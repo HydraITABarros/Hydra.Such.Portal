@@ -315,6 +315,13 @@
                    on-response="_verificarUserAprovacaoResponseProcessor"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/GestaoRequisicoes/GetReqAprovadores"
+                   id="dlg_GetAprovadores_ajax"
+                   last-response="{{Aprovadores}}"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json"></iron-ajax>
+
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" id="btnGoBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
 
@@ -323,6 +330,9 @@
             <paper-button class="tablinks" id="btnStatOfPlay" on-tap="_redirectToStatOfPlay"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Ponto situação</paper-button>
 
             <paper-button class="tablinks" id="btnShowChangeLog" on-tap="_showChangeLog"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Workflow</paper-button>
+
+            <!--<paper-button class="tablinks" id="btnAprovadores" on-tap="_Aprovadores"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Aprovadores</paper-button>-->
+            <button type="button" class="tablinks" id="btnAprovadores" on-click="_Aprovadores"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Aprovadores</button>
 
             <paper-button class="tablinks" id="btnGoApprove" on-tap="_Approve" hidden="{{ !Requisition.goAprove }}"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Aprovar</paper-button>
 
@@ -1578,6 +1588,25 @@
                 <paper-button class="btnRemove" id="btnCloseChangeLogDlg" on-tap="_closeChangeLogDlg"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
             </div>
         </paper-dialog>
+
+        <paper-dialog id="dlgAprovadores" class="dialgoBox" modal>
+            <vaadin-grid id="grdChangeLog" aria-label="ChangeLog" items="[[Aprovadores]]" class="grid">
+                <vaadin-grid-column width="100px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="utilizador">Aprovadores</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="utilizador" />
+                    </template>
+                    <template>
+                        {{item.utilizador}}
+                    </template>
+                </vaadin-grid-column>
+            </vaadin-grid>
+            <div class="buttons">
+                <!--<paper-button class="btnRemove" id="btnCloseAprovadores" on-tap="_closeAprovadoresdlg"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>-->
+                <button type="button" class="btnRemove" id="btnCloseAprovadores" on-click="_closeAprovadoresdlg"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</button>
+            </div>
+        </paper-dialog>
+
     </template>
     <script>
         document.addEventListener('WebComponentsReady', function () {
@@ -1745,20 +1774,20 @@
                     //    $(_self.$.btnToApproved).removeClass('hidden');
                     //}
 
-                    if (this._requisitionstatus === 3) { //Validado - GESTÃO REQUISIÇÕES
-                        $(_self.$.btnLocalMarketValidation).addClass('hidden');
-                        $(_self.$.btnValidate).addClass('hidden');
-                        $(_self.$.btnAnularAprovacao).addClass('hidden');
-                        $(_self.$.menuRegister).removeClass('hidden');
-                        $(_self.$.menuFunctios).removeClass('hidden');
-                    }
+                    //if (this._requisitionstatus === 3) { //Validado - GESTÃO REQUISIÇÕES
+                        //$(_self.$.btnLocalMarketValidation).addClass('hidden');
+                        //$(_self.$.btnValidate).addClass('hidden');
+                        //$(_self.$.btnAnularAprovacao).addClass('hidden');
+                        //$(_self.$.menuRegister).removeClass('hidden');
+                        //$(_self.$.menuFunctios).removeClass('hidden');
+                    //}
 
-                    if (this._requisitionstatus === 4) { //Aprovado - VALIDAÇÃO REQUISIÇÕES
-                        $(_self.$.btnValidate).removeClass('hidden');
-                        $(_self.$.btnAnularAprovacao).removeClass('hidden');
-                        $(_self.$.menuRegister).addClass('hidden');
-                        $(_self.$.menuFunctios).addClass('hidden');
-                    }
+                    //if (this._requisitionstatus === 4) { //Aprovado - VALIDAÇÃO REQUISIÇÕES
+                        //$(_self.$.btnValidate).removeClass('hidden');
+                        //$(_self.$.btnAnularAprovacao).removeClass('hidden');
+                        //$(_self.$.menuRegister).addClass('hidden');
+                        //$(_self.$.menuFunctios).addClass('hidden');
+                    //}
 
                     if (this._isCreate == false && this.$.UploadRequest != null) {
                         this.$.UploadRequest.addEventListener('upload-response', function (e) {
@@ -2547,7 +2576,7 @@
                     window.history.back();
                 },
                 _showChangeLog: function () {
-                    this.$.dlgChangeLog.open();;
+                    this.$.dlgChangeLog.open();
                 },
                 _closeChangeLogDlg: function () {
                     this.$.dlgChangeLog.close();
@@ -2684,6 +2713,15 @@
                     }
                 },
                 
+                _Aprovadores: function () {
+                    this.$.dlg_GetAprovadores_ajax.body = JSON.stringify(this._requisitionid);
+                    this.$.dlg_GetAprovadores_ajax.generateRequest();
+
+                    this.$.dlgAprovadores.open();
+                },
+                _closeAprovadoresdlg: function () {
+                    this.$.dlgAprovadores.close();
+                },
             });
         });
     </script>

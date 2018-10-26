@@ -475,6 +475,43 @@ namespace Hydra.Such.Data.Logic.CCP
         }
         #endregion
 
+        public static List<ConfiguracaoTemposCcpView> GetAllConfiguracaoTemposToView()
+        {
+            SuchDBContext _context = new SuchDBContext();
+            try
+            {
+                List<ConfiguraçãoTemposCcp> ConfigTemposCccp = _context.ConfiguraçãoTemposCcp.ToList();
+                List<ConfiguracaoTemposCcpView> ConfigView = new List<ConfiguracaoTemposCcpView>();
+                if(ConfigTemposCccp != null)
+                {
+                     foreach(var c in ConfigTemposCccp)
+                    {
+                        ConfigView.Add(CCPFunctions.CastConfigTemposToConfigTemposView(c));
+                    }
+                }
+
+                return ConfigView;
+            }
+            catch (Exception)
+            {
+
+                return null;
+            }
+        }
+
+        public static ConfiguracaoTemposCcpView GetConfiguracaoTemposToView(int type)
+        {
+            SuchDBContext _context = new SuchDBContext();
+            try
+            {
+                return CCPFunctions.CastConfigTemposToConfigTemposView(_context.ConfiguraçãoTemposCcp.Where(t => t.Tipo == type).FirstOrDefault());
+                
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
         #region CRUD RegistoDeActas
         public static string GetActaNumber(string ProcedimentoID)
         {

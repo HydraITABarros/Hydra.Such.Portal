@@ -1420,10 +1420,10 @@
                             </div>
 
                             <div class="marginSpace">
-                                <template is="dom-if" if="{{ _permissions.update }}">
+                                <!--<template is="dom-if" if="{{ _permissions.update }}">
                                     <paper-button raised id="btnSaveLine" class="btnEdit" on-tap="_updateContractLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
                                     <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
-                                </template>
+                                </template>-->
                                 <paper-button raised id="btnSumLines" class="btnSave" on-tap="_sumLines"><i class="fa fa-calculator" aria-hidden="true"></i>&nbsp; Total</paper-button>
                             </div>
                         </paper-collapse-group>
@@ -1517,9 +1517,7 @@
             <div>
                 <h2>Valor Total: <b>{{_TotalLine}} €</b></h2>
             </div>
-            to
             <div class="buttons">
-                s"
                 <paper-button raised class="btnEdit" dialog-dismiss>Fechar</paper-button>
             </div>
         </paper-dialog>
@@ -2021,18 +2019,27 @@
                 },
 
                 _reqmodel: function (e) {
-
-                    if (e != null) {
-                        this.$.dialog.open();
-                        this.$.grid_datareqmodel_ajax.generateRequest();
+                    if (this.$.projectNo.value != "" & this.$.projectNo.value != null) {
+                        if (e != null) {
+                            this.$.dialog.open();
+                            this.$.grid_datareqmodel_ajax.generateRequest();
+                        }
                     }
-
+                    else {
+                        this._openToastError('O campo Nº Ordem/Projecto é de preenchimento obrigatório.');
+                    }
                 },
 
                 _createnewreq: function (e) {
+                    //debugger;
                     this.data.area = this._areaid;
-                    this.$.page_validator_req_ajax.body = JSON.stringify(this.data);
-                    this.$.page_validator_req_ajax.generateRequest();
+                    if (this.$.projectNo.value != "" & this.$.projectNo.value != null) {
+                        this.$.page_validator_req_ajax.body = JSON.stringify(this.data);
+                        this.$.page_validator_req_ajax.generateRequest();
+                    }
+                    else {
+                        this._openToastError('O campo Nº Ordem/Projecto é de preenchimento obrigatório.');
+                    }
                 },
 
                 //CRUDS
@@ -2045,7 +2052,12 @@
                 _update: function () {
                     //debugger;
                     this.data.area = this._areaid;
-                    this._executeRequest("/PreRequisicoes/UpdatePreRequesition", this.data)
+                    if (this.$.projectNo.value != "" & this.$.projectNo.value != null) {
+                        this._executeRequest("/PreRequisicoes/UpdatePreRequesition", this.data)
+                    }
+                    else {
+                        this._openToastError('O campo Nº Ordem/Projecto é de preenchimento obrigatório.');
+                    }
                 },
 
                 _delete: function () {
@@ -2076,25 +2088,58 @@
                     var self = this;
                     if (data.detail.status === 200) {
                         if (this.validateResponse == "") {
-                            this._executeRequest("/PreRequisicoes/CreatePreRequesition", this.data)
+                            if (this.$.projectNo.value != "" & this.$.projectNo.value != null) {
+                                this._executeRequest("/PreRequisicoes/CreatePreRequesition", this.data)
+                            }
+                            else {
+                                this._openToastError('O campo Nº Ordem/Projecto é de preenchimento obrigatório.');
+                            }
                         } else {
                             this._openToastError("Ocorreu um erro desconhecido.");
                         }
                     }
                 },
 
-
                 _responseReqValidatorProcessor: function (data) {
+                    //debugger;
                     var self = this;
 
                     if (data.detail.status === 200) {
-                        if (this.validateReqResponse == "") {
-                            //this._executeRequest("/PreRequisicoes/CreateRequesition", this.data)
-                            this.$.page_create_requisition_ajax.body = JSON.stringify(this.data);
-                            this.$.page_create_requisition_ajax.generateRequest();
+                        if (self.validateReqResponse == "") {
+                            var ajax_request = self.$.page_create_requisition_ajax;
+                            ajax_request.body = JSON.stringify(self.data);
 
+                            var ok = 0;
+                            for (i = 0; i < self.dataLines.lines.length; i++) {
+                                if (self.dataLines.lines[i].quantityToRequire == null || self.dataLines.lines[i].quantityToRequire == "" || self.dataLines.lines[i].quantityToRequire <= 0) {
+                                    ok = 1
+                                }
+                            }
+
+                            if (ok == 0) {
+                                ajax_request.generateRequest();                            }
+                            else {
+                                bootbox.confirm({
+                                    message: "Existe(m) linha(s) sem Qt. a Requerer definida(s), deseja continuar (Sim/Não)?",
+                                    buttons: {
+                                        confirm: {
+                                            label: 'Sim',
+                                            className: 'btn-success'
+                                        },
+                                        cancel: {
+                                            label: 'Não',
+                                            className: 'btn-danger'
+                                        }
+                                    },
+                                    callback: function (result) {
+                                        if (result) {
+                                            ajax_request.generateRequest();
+                                        }
+                                    }
+                                });
+                            }
                         } else {
-                            this._openToastError(this.validateReqResponse);
+                            self._openToastError(self.validateReqResponse);
                         }
                     }
                 },
@@ -2467,78 +2512,82 @@
                         validLocalCode = (localCode !== null && localCode !== "");
                     }
 
+                    if (this.$._ProjectNo.value != "" & this.$._ProjectNo.value != null) {
+                        if (validLocalCode) {
+                            if (this._Products != undefined & this._Products != "") {
+                                if (this.$._QuantityToRequire.validate() && parseFloat(this.$._QuantityToRequire.value) > 0) {
+                                    var totalCost = this._QuantityToRequire * this._UnitCost;
+                                    if (isNaN(totalCost)) {
+                                        totalCost = 0;
+                                    }
 
-                    if (validLocalCode) {
-                        if (this._Products != undefined & this._Products != "") {
-                            if (this.$._QuantityToRequire.validate()) {
-                                var totalCost = this._QuantityToRequire * this._UnitCost;
-                                if (isNaN(totalCost)) {
-                                    totalCost = 0;
+                                    var purchHeaderNo = "";
+                                    var purchLineNo = "";
+                                    if (this.$._CBPurchaseLine.value != undefined & this.$._CBPurchaseLine.value != "") {
+                                        var composedKey = this.$._CBPurchaseLine.value.split(" ", 2);
+                                        purchHeaderNo = composedKey[0];
+                                        purchLineNo = composedKey[1];
+                                    }
+
+                                    this.dataLines.lines.unshift({
+                                        preRequisitionLineNo: this.data.preRequesitionsNo,
+                                        type: 2, //PRODUTO
+                                        code: this._Products,
+                                        description: this._Description,
+                                        description2: this._Description2,
+                                        localCode: localCode,
+                                        unitMeasureCode: this._UnitMeasureCode,
+                                        quantityToRequire: this._QuantityToRequire,
+                                        regionCode: this.$._CLRegion.value,
+                                        functionalAreaCode: this.$._CLFunctionalAreaCode.value,
+                                        centerResponsibilityCode: this.$._CLResponsabilityCenterCode.value,
+                                        projectNo: this.$._ProjectNo.value,
+                                        //qtyByUnitOfMeasure
+                                        //quantityRequired
+                                        //quantityPending:
+                                        quantidadeInicial: this._QuantityToRequire,
+                                        unitCost: this._UnitCost,
+                                        //sellUnityPrice
+                                        //budgetValue
+                                        //expectedReceivingDate
+                                        //billable
+                                        maintenanceOrderLineNo: this._MaintenanceOrderLineNo,
+                                        //employeeNo
+                                        vehicle: this.data.vehicle,
+                                        supplierNo: this._CBVendor,
+                                        //supplierProductCode
+                                        armazemCDireta: this._CBItemsCDirect,
+                                        //unitNutritionProduction
+                                        //customerNo
+                                        openOrderNo: purchHeaderNo,
+                                        openOrderLineNo: purchLineNo,
+                                        totalCost: totalCost > 0 ? totalCost : "",
+                                    });
+
+                                    this.$.prereqLines_databound_ajax.url = "/PreRequisicoes/UpdateContractLines";
+                                    this.$.prereqLines_databound_ajax.body = JSON.stringify(this.dataLines);
+                                    this.$.prereqLines_databound_ajax.generateRequest();
+                                    this.$.grid_prereqlines.clearCache();
                                 }
-
-                                var purchHeaderNo = "";
-                                var purchLineNo = "";
-                                if (this.$._CBPurchaseLine.value != undefined & this.$._CBPurchaseLine.value != "") {
-                                    var composedKey = this.$._CBPurchaseLine.value.split(" ", 2);
-                                    purchHeaderNo = composedKey[0];
-                                    purchLineNo = composedKey[1];
+                                else {
+                                    this._openToastError('O valor do campo Qt. a Requerer tem que estar preenchido, ser superior a 0 e só pode ter 4 casas decimais.');
                                 }
-
-                                this.dataLines.lines.unshift({
-                                    preRequisitionLineNo: this.data.preRequesitionsNo,
-                                    type: 2, //PRODUTO
-                                    code: this._Products,
-                                    description: this._Description,
-                                    description2: this._Description2,
-                                    localCode: localCode,
-                                    unitMeasureCode: this._UnitMeasureCode,
-                                    quantityToRequire: this._QuantityToRequire,
-                                    regionCode: this.$._CLRegion.value,
-                                    functionalAreaCode: this.$._CLFunctionalAreaCode.value,
-                                    centerResponsibilityCode: this.$._CLResponsabilityCenterCode.value,
-                                    projectNo: this.$._ProjectNo.value,
-                                    //qtyByUnitOfMeasure
-                                    //quantityRequired
-                                    //quantityPending:
-                                    quantidadeInicial: this._QuantityToRequire,
-                                    unitCost: this._UnitCost,
-                                    //sellUnityPrice
-                                    //budgetValue
-                                    //expectedReceivingDate
-                                    //billable
-                                    maintenanceOrderLineNo: this._MaintenanceOrderLineNo,
-                                    //employeeNo
-                                    vehicle: this.data.vehicle,
-                                    supplierNo: this._CBVendor,
-                                    //supplierProductCode
-                                    armazemCDireta: this._CBItemsCDirect,
-                                    //unitNutritionProduction
-                                    //customerNo
-                                    openOrderNo: purchHeaderNo,
-                                    openOrderLineNo: purchLineNo,
-                                    totalCost: totalCost > 0 ? totalCost : "",
-                                });
-
-                                this.$.prereqLines_databound_ajax.url = "/PreRequisicoes/UpdateContractLines";
-                                this.$.prereqLines_databound_ajax.body = JSON.stringify(this.dataLines);
-                                this.$.prereqLines_databound_ajax.generateRequest();
-                                this.$.grid_prereqlines.clearCache();
                             }
                             else {
-                                this._openToastError('O valor do campo Qt. a Requerer tem que estar preenchido, ser superior a 0 e só pode ter 4 casas decimais.');
+                                this._openToastError('O valor do campo Cód. Produto tem que estar preenchido.');
                             }
                         }
                         else {
-                            this._openToastError('O valor do campo Cód. Produto tem que estar preenchido.');
+                            this._openToastError('O valor do campo Cód. Localização tem que estar preenchido.');
                         }
                     }
                     else {
-                        this._openToastError('O valor do campo Cód. Localização tem que estar preenchido.');
+                        this._openToastError('O valor do campo Nº Ordem/Projecto tem que estar preenchido.');
                     }
                 },
 
                 _updateLinhaPreRequisicao: function (e) {
-                    debugger;
+                    //debugger;
                     var index = this.dataLines.lines.indexOf(e.model.item);
 
                     //var line = this.CBPurchaseLine.find(x => x.id == e.currentTarget.__data.selectedItem.id);
@@ -2546,48 +2595,53 @@
                     //    e.model.item.openOrderNo = line.documentNO;
                     //}
 
-                    this.$.prereqLines_UpdateLinhaPreRequisicao_ajax.body = JSON.stringify({
-                        preRequisitionLineNo: e.model.item.preRequisitionLineNo,
-                        lineNo: e.model.item.lineNo,
-                        type: e.model.item.type,
-                        code: e.model.item.code,
-                        description: e.model.item.description,
-                        description2: e.model.item.description2,
-                        localCode: e.model.item.localCode,
-                        unitMeasureCode: e.model.item.unitMeasureCode,
-                        quantityToRequire: e.model.item.quantityToRequire,
-                        quantidadeInicial: e.model.item.quantityToRequire,
-                        regionCode: e.model.item.regionCode,
-                        functionalAreaCode: e.model.item.functionalAreaCode,
-                        centerResponsibilityCode: e.model.item.centerResponsibilityCode,
-                        projectNo: e.model.item.projectNo,
-                        createDateTime: e.model.item.createDateTime,
-                        createUser: e.model.item.createUser,
-                        updateDateTime: e.model.item.updateDateTime,
-                        updateUser: e.model.item.updateUser,
-                        qtyByUnitOfMeasure: e.model.item.qtyByUnitOfMeasure,
-                        quantityRequired: e.model.item.quantityRequired,
-                        quantityPending: e.model.item.quantityPending,
-                        unitCost: e.model.item.unitCost,
-                        sellUnityPrice: e.model.item.sellUnityPrice,
-                        budgetValue: e.model.item.budgetValue,
-                        expectedReceivingDate: e.model.item.expectedReceivingDate,
-                        billable: e.model.item.billable,
-                        maintenanceOrderLineNo: e.model.item.maintenanceOrderLineNo,
-                        employeeNo: e.model.item.employeeNo,
-                        vehicle: e.model.item.vehicle,
-                        supplierNo: e.model.item.supplierNo,
-                        supplierProductCode: e.model.item.supplierProductCode,
-                        unitNutritionProduction: e.model.item.unitNutritionProduction,
-                        customerNo: e.model.item.customerNo,
-                        openOrderNo: e.model.item.openOrderNo,
-                        openOrderLineNo: e.model.item.openOrderLineNo,
-                        totalCost: e.model.item.totalCost,
-                        armazemCDireta: e.model.item.armazemCDireta,
-                        selected: e.model.item.selected,
-                    });
-                    this.$.prereqLines_UpdateLinhaPreRequisicao_ajax.generateRequest();
-                    this.$.grid_prereqlines.clearCache();
+                    if (e.model.item.projectNo != "" & e.model.item.projectNo != null) {
+                        this.$.prereqLines_UpdateLinhaPreRequisicao_ajax.body = JSON.stringify({
+                            preRequisitionLineNo: e.model.item.preRequisitionLineNo,
+                            lineNo: e.model.item.lineNo,
+                            type: e.model.item.type,
+                            code: e.model.item.code,
+                            description: e.model.item.description,
+                            description2: e.model.item.description2,
+                            localCode: e.model.item.localCode,
+                            unitMeasureCode: e.model.item.unitMeasureCode,
+                            quantityToRequire: e.model.item.quantityToRequire,
+                            quantidadeInicial: e.model.item.quantityToRequire,
+                            regionCode: e.model.item.regionCode,
+                            functionalAreaCode: e.model.item.functionalAreaCode,
+                            centerResponsibilityCode: e.model.item.centerResponsibilityCode,
+                            projectNo: e.model.item.projectNo,
+                            createDateTime: e.model.item.createDateTime,
+                            createUser: e.model.item.createUser,
+                            updateDateTime: e.model.item.updateDateTime,
+                            updateUser: e.model.item.updateUser,
+                            qtyByUnitOfMeasure: e.model.item.qtyByUnitOfMeasure,
+                            quantityRequired: e.model.item.quantityRequired,
+                            quantityPending: e.model.item.quantityPending,
+                            unitCost: e.model.item.unitCost,
+                            sellUnityPrice: e.model.item.sellUnityPrice,
+                            budgetValue: e.model.item.budgetValue,
+                            expectedReceivingDate: e.model.item.expectedReceivingDate,
+                            billable: e.model.item.billable,
+                            maintenanceOrderLineNo: e.model.item.maintenanceOrderLineNo,
+                            employeeNo: e.model.item.employeeNo,
+                            vehicle: e.model.item.vehicle,
+                            supplierNo: e.model.item.supplierNo,
+                            supplierProductCode: e.model.item.supplierProductCode,
+                            unitNutritionProduction: e.model.item.unitNutritionProduction,
+                            customerNo: e.model.item.customerNo,
+                            openOrderNo: e.model.item.openOrderNo,
+                            openOrderLineNo: e.model.item.openOrderLineNo,
+                            totalCost: e.model.item.totalCost,
+                            armazemCDireta: e.model.item.armazemCDireta,
+                            selected: e.model.item.selected,
+                        });
+                        this.$.prereqLines_UpdateLinhaPreRequisicao_ajax.generateRequest();
+                        this.$.grid_prereqlines.clearCache();
+                    }
+                    else {
+                        this._openToastError('Na linha o campo Nº Ordem/Projeto é de preenchimento obrigatório.');
+                    }
                 },
                 _UpdateLinhaPreRequisicao_ResponseProcessor: function (e) {
                     //debugger;
@@ -2756,7 +2810,7 @@
                     this.$.page_GetProductLocation_ajax.generateRequest()
                 },
                 _GetProductLocationResponse: function (e) {
-                    debugger;
+                    //debugger;
                     if (this.productInfo != null) {
                         this.$._Description.value = this.productInfo.name;
                         this.$._Description2.value = this.productInfo.name2;

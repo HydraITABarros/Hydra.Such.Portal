@@ -43,6 +43,8 @@ using Hydra.Such.Data.Logic.Request;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
+using Hydra.Such.Data.ViewModel.CCP;
+
 namespace Hydra.Such.Portal.Controllers
 {
     [Authorize]
@@ -6335,6 +6337,21 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
+        public IActionResult ConfiguracaoTemposCCP()
+        {
+            //UserAccessesViewModel UPerm= GetPermissions("Administracao");
+            UserAccessesViewModel userPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminGeral);
+            if (userPerm != null && userPerm.Read.Value)
+            {
+                ViewBag.UPermissions = userPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
         [HttpPost]
         public JsonResult GetConfiguracaoCCP()
         {
@@ -6372,6 +6389,50 @@ namespace Hydra.Such.Portal.Controllers
             DBConfiguracaoCCP.Update(CCP);
 
             return Json(data);
+        }
+
+        [HttpPost]
+        public JsonResult GetConfiguracaoTemposCcp()
+        {
+            List<ConfiguracaoTemposCcpView> result = DBConfiguracaoCCP.GetAllConfiguracaoTemposToView();
+            List<EnumData> CCPTypes = EnumerablesFixed.ProcedimentosCcpType;
+            foreach (var t in result)
+            {
+                t.TipoDescription = CCPTypes.Where(c => c.Id == t.Tipo).FirstOrDefault().Value;
+            }
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult CreateConfigTempos([FromBody] ConfiguracaoTemposCcpView data)
+        {
+            ConfiguraçãoTemposCcp config = CCPFunctions.CastConfigTemposViewToConfigTempos(data);
+            config.UtilizadorCriação = User.Identity.Name;
+            config.DataHoraCriação = DateTime.Now;
+
+            return Json(DBConfiguracaoCCP.CreateConfiguracaoTempo(config));
+        }
+
+        [HttpPost]
+        public JsonResult UpdateConfigTempos([FromBody] ConfiguracaoTemposCcpView data)
+        {
+            ConfiguraçãoTemposCcp config = CCPFunctions.CastConfigTemposViewToConfigTempos(data);
+
+            config.UtilizadorCriação = User.Identity.Name;
+            config.DataHoraModificação = DateTime.Now;
+
+            return Json(DBConfiguracaoCCP.UpdateConfiguracaoTempo(config));
+        }
+
+        public JsonResult DeleteConfigTempos([FromBody] ConfiguracaoTemposCcpView data)
+        {
+            if(data == null)
+            {
+                return Json(false);
+            }
+
+            return Json(DBConfiguracaoCCP.DeleteConfiguracaoTempo(data.Tipo));
         }
         #endregion
 

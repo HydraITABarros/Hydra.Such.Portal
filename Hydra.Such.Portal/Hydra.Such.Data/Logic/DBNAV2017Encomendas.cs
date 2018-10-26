@@ -40,6 +40,9 @@ namespace Hydra.Such.Data.Logic
                     {
                         if (!temp.NoFirstTwoInt.Equals(DBNull.Value) && ((int)temp.NoFirstTwoInt >= 18))
                         {
+                            DateTime? ExpectedReceiptDate = (DateTime)temp.ExpectedReceiptDate;
+                            var minDate = new DateTime(2008, 1, 1);
+        
                             result.Add(new EncomendasViewModel()
                             {
                                 No = temp.No.Equals(DBNull.Value) ? "" : (string)temp.No,
@@ -48,7 +51,7 @@ namespace Hydra.Such.Data.Logic
                                 YourReference = temp.YourReference.Equals(DBNull.Value) ? "" : (string)temp.YourReference,
                                 OrderDate = (DateTime)temp.OrderDate,
                                 NoConsulta = temp.NConsulta.Equals(DBNull.Value) ? "" : (string)temp.NConsulta,
-                                ExpectedReceiptDate = (DateTime)temp.ExpectedReceiptDate,
+                                ExpectedReceiptDate = ExpectedReceiptDate != null && ExpectedReceiptDate > minDate ? ExpectedReceiptDate : null,
                                 RequisitionNo = temp.RequisitionNo.Equals(DBNull.Value) ? "" : (string)temp.RequisitionNo,
                                 RegionId = temp.RegionId.Equals(DBNull.Value) ? "" : (string)temp.RegionId,
                                 FunctionalAreaId = temp.FunctionalAreaId.Equals(DBNull.Value) ? "" : (string)temp.FunctionalAreaId,
