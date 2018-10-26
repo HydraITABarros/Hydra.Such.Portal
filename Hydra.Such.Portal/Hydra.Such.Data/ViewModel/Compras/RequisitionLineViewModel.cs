@@ -33,6 +33,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public decimal? QuantityReceivable { get; set; }
         public decimal? QuantityReceived { get; set; }
         public decimal? QuantityPending { get; set; }
+        public decimal? QuantidadeInicial { get; set; }
         public decimal? UnitCost { get; set; }
         public string ExpectedReceivingDate { get; set; }
         public bool? Billable { get; set; }

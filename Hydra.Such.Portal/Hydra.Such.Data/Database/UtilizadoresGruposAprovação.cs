@@ -7,6 +7,7 @@ namespace Hydra.Such.Data.Database
     {
         public int GrupoAprovação { get; set; }
         public string UtilizadorAprovação { get; set; }
+        public bool? EnviarEmailAlerta { get; set; }
         public DateTime? DataHoraCriação { get; set; }
         public string UtilizadorCriação { get; set; }
         public DateTime? DataHoraModificação { get; set; }

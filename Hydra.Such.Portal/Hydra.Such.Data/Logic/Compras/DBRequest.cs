@@ -69,7 +69,6 @@ namespace Hydra.Such.Data.Logic.Request
                 {
                     return ctx.Requisição
                         .Include(x => x.LinhasRequisição)//("LinhasRequisição")
-                        //AROMAO 01/10/2018
                         .Include(x => x.RequisicoesRegAlteracoes)
                         .SingleOrDefault(x => x.NºRequisição == requestId);
                 }
@@ -214,6 +213,22 @@ namespace Hydra.Such.Data.Logic.Request
                 return null;
             }
         }
+
+        public static List<Requisição> GetReqByUserResponsibleForApproval(string UserName)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.Requisição.Where(x => x.ResponsávelAprovação == UserName && !x.ModeloDeRequisição.HasValue || !x.ModeloDeRequisição.Value).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+        
         #region Parse Utilities
         public static RequisiçãoHist TransferToRequisitionHist(this RequisitionViewModel item)
         {
@@ -389,6 +404,7 @@ namespace Hydra.Such.Data.Logic.Request
                     EmployeeNo = item.NºFuncionário,
                     Vehicle = item.Viatura,
                     ReceivedDate = !item.DataReceção.HasValue ? "" : item.DataReceção.Value.ToString("yyyy-MM-dd"),
+                    ReceivedDateHour = !item.DataReceção.HasValue ? "" : item.DataReceção.Value.ToString("HH:mm"),
                     Urgent = item.Urgente,
                     Sample = item.Amostra,
                     Attachment = item.Anexo,
@@ -414,9 +430,14 @@ namespace Hydra.Such.Data.Logic.Request
                     ResponsibleValidation = item.ResponsávelValidação,
                     ResponsibleReception = item.ResponsávelReceção,
                     ApprovalDate = item.DataAprovação,
+                    ApprovalDateText = !item.DataAprovação.HasValue ? "" : item.DataAprovação.Value.ToString("yyyy-MM-dd"),
+                    ApprovalDateHour = !item.DataAprovação.HasValue ? "" : item.DataAprovação.Value.ToString("HH:mm"),
                     ValidationDate = item.DataValidação,
+                    ValidationDateText = !item.DataValidação.HasValue ? "" : item.DataValidação.Value.ToString("yyyy-MM-dd"),
+                    ValidationDateHour = !item.DataValidação.HasValue ? "" : item.DataValidação.Value.ToString("HH:mm"),
                     UnitFoodProduction = item.UnidadeProdutivaAlimentação,
                     RequestNutrition = item.RequisiçãoNutrição,
+                    RequestNutritionText = !item.RequisiçãoNutrição.HasValue ? "" : item.RequisiçãoNutrição == true ? "Sim" : "Não",
                     RequestforDetergents = item.RequisiçãoDetergentes,
                     ProcedureCcpNo = item.NºProcedimentoCcp,
                     Approvers = item.Aprovadores,

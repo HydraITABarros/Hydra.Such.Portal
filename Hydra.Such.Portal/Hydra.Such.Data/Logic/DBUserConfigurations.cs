@@ -14,9 +14,13 @@ namespace Hydra.Such.Data.Logic
         {
             try
             {
+                if (!string.IsNullOrEmpty(id) && !id.Contains('@'))
+                {
+                    id += "@";
+                }
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.ConfigUtilizadores.Where(x => x.IdUtilizador.ToLower() == id.ToLower()).FirstOrDefault();
+                    return ctx.ConfigUtilizadores.Where(x => x.IdUtilizador.ToLower().StartsWith(id.ToLower())).FirstOrDefault();
                 }
             }
             catch (Exception ex)
@@ -125,7 +129,13 @@ namespace Hydra.Such.Data.Logic
                     RFRespostaContabilidade = item.RfrespostaContabilidade,
                     RFAlterarDestinatarios = item.RfalterarDestinatarios,
                     RFMailEnvio = item.RfmailEnvio,
-                    Centroresp=item.CentroDeResponsabilidade
+                    Centroresp = item.CentroDeResponsabilidade,
+                    NumSerieFaturas = item.NumSerieFaturas,
+                    NumSerieNotasCredito = item.NumSerieNotasCredito,
+                    NumSerieNotasDebito = item.NumSerieNotasDebito,
+                    NumSeriePreFaturasCompraCP = item.NumSeriePreFaturasCompraCp,
+                    NumSeriePreFaturasCompraCF = item.NumSeriePreFaturasCompraCf,
+                    NumSerieNotasCreditoCompra = item.NumSerieNotasCreditoCompra
                 };
             }
             return null;
@@ -165,7 +175,13 @@ namespace Hydra.Such.Data.Logic
                     RfrespostaContabilidade = item.RFRespostaContabilidade,
                     RfalterarDestinatarios = item.RFAlterarDestinatarios,
                     RfmailEnvio = item.RFMailEnvio,
-                    CentroDeResponsabilidade=item.Centroresp
+                    CentroDeResponsabilidade=item.Centroresp,
+                    NumSerieFaturas = item.NumSerieFaturas,
+                    NumSerieNotasCredito = item.NumSerieNotasCredito,
+                    NumSerieNotasDebito = item.NumSerieNotasDebito,
+                    NumSeriePreFaturasCompraCf = item.NumSeriePreFaturasCompraCF,
+                    NumSeriePreFaturasCompraCp = item.NumSeriePreFaturasCompraCP,
+                    NumSerieNotasCreditoCompra = item.NumSerieNotasCreditoCompra
                 };
             }
             return null;

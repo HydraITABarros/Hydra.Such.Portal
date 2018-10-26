@@ -190,7 +190,7 @@
 
         <div class="row" hidden="{{ !_permissionsVal.create }}">
             <div class="col-md-3">
-                <vaadin-date-picker label="Data Receção Esperada" id="dpExpectedReceiptId" name="dpExpectedReceiptName" value="{{_expectedReceiptDate}}"></vaadin-date-picker>
+                <vaadin-date-picker label="Data Receção Esperada" id="dpExpectedReceiptId" name="dpExpectedReceiptName" value="{{_expectedReceiptDate}}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
             </div>
             <div class="col-md-3 ">
                 <vaadin-date-picker label="Data p/ Preço Fornecedor" id="dpVendedorPriceId" name="dpVendedorPriceName" value="{{_pricesDate}}" on-value-changed="_DatePriceChange" required error-message="Este campo é obrigatório"></vaadin-date-picker>
@@ -209,7 +209,7 @@
                 </such-selectbox>
             </div>
             <div class="col-md-3">
-                <vaadin-text-field id="qtyID" name="qtyName" pattern="^[0-9]\d*(\.\d+)?$" label="Quantidade" class="alignRight" value="{{qty}}" on-value-changed="_calcTotals"></vaadin-text-field>
+                <vaadin-text-field id="qtyID" name="qtyName" type="number" pattern="^[0-9]\d*(\.\d+)?$" label="Quantidade" class="alignRight" value="{{qty}}" on-value-changed="_calcTotals" required error-message="Este campo é obrigatório"></vaadin-text-field>
             </div>
         </div>
         <div class="row" hidden="{{ !_permissionsVal.create }}">
@@ -1077,7 +1077,8 @@
                             this.$.dpVendedorPriceId.value != "" &&
                             this.$.prodUnitNoId.value != "" &&
                             this.$.descriptionUnitId.value != "" &&
-                            this.$.grupoRegistoIvaProduto.value != "")
+                            this.$.grupoRegistoIvaProduto.value != "" &&
+                            (this.$.qtyID.value != "" && parseFloat(this.$.qtyID.value) > 0))
                         //Validações
                         {
                             var newItem =
@@ -1120,14 +1121,15 @@
                             }
 
                         } else {
-                            this._openToastError("Os campos Data Receção Esperada, Data p/ Preço Fornecedor, Nº Unidade Produtiva e Descrição são obrigatorios.");
+                            this._openToastError("Os campos Data Receção Esperada, Data p/ Preço Fornecedor, Nº Unidade Produtiva, Descrição e Quantidade superior a 0 são obrigatorios.");
                         }
                     }
                     else {
                         if (this.$.dpExpectedReceiptId.value != null &&
                             this.$.dpVendedorPriceId.value != null &&
                             this.$.dpExpectedReceiptId.value != "" &&
-                            this.$.dpVendedorPriceId.value != "")
+                            this.$.dpVendedorPriceId.value != "" &&
+                            (this.$.qtyID.value != "" && parseFloat(this.$.qtyID.value) > 0))
                         //Validações
                         {
                             var priceAgreementId = "";
@@ -1170,7 +1172,7 @@
 
                         }
                         else {
-                            this._openToastError("Os campos Data Receção Esperada e Data p/ Preço Fornecedor são obrigatorios.");
+                            this._openToastError("Os campos Data Receção Esperada, Data p/ Preço Fornecedor e Quantidade superior a 0 são obrigatorios.");
                         }
                     }
 
@@ -1231,6 +1233,7 @@
                         if (this.updatedata.eReasonCode === 1) {
                             this._openToast(this.updatedata.eMessage);
                             var prodUnitId = @ViewBag.ProductivityUnitId;
+
                             this.$.ajax_getgrid.body = JSON.stringify(prodUnitId);
                             this.$.ajax_getgrid.generateRequest();
                             this.$.gridneedshopping.clearCache();

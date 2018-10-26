@@ -333,7 +333,7 @@
                                     </div>
 
                                     <div class="col-sm-2">
-                                        <vaadin-combo-box items="[[LLinhasRegiao]]" id="linhasRegiao" item-value-path="id" item-label-path="value" disabled="{{ _permissionsCreate }}" label="Região">
+                                        @*<vaadin-combo-box items="[[LLinhasRegiao]]" id="linhasRegiao" item-value-path="id" item-label-path="value" disabled="{{ _permissionsCreate }}" label="Região">
                                             <template>
                                                 <table>
                                                     <tr>
@@ -342,13 +342,20 @@
                                                     </tr>
                                                 </table>
                                             </template>
-                                        </vaadin-combo-box>
+                                        </vaadin-combo-box>*@
+                                        <such-selectbox id="linhasRegiao" label="Região"
+                                                        items="[[LLinhasRegiao]]"
+                                                        text-path="value"
+                                                        value-path="id"
+                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Região"}]'
+                                                        disabled="{{ _permissionsCreate }}">
+                                        </such-selectbox>
                                     </div>
                                 </div>
 
                                 <div class="row break_clear">
                                     <div class="col-sm-2">
-                                        <vaadin-combo-box items="[[LLinhasArea]]" id="linhasArea" item-value-path="id" item-label-path="value" label="Área" disabled="{{ _permissionsCreate }}">
+                                        @*<vaadin-combo-box items="[[LLinhasArea]]" id="linhasArea" item-value-path="id" item-label-path="value" label="Área" disabled="{{ _permissionsCreate }}">
                                             <template>
                                                 <table>
                                                     <tr>
@@ -357,11 +364,18 @@
                                                     </tr>
                                                 </table>
                                             </template>
-                                        </vaadin-combo-box>
+                                        </vaadin-combo-box>*@
+                                        <such-selectbox id="linhasArea" label="Área"
+                                                        items="[[LLinhasArea]]"
+                                                        text-path="value"
+                                                        value-path="id"
+                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Área"}]'
+                                                        disabled="{{ _permissionsCreate }}">
+                                        </such-selectbox>
                                     </div>
 
                                     <div class="col-sm-2">
-                                        <vaadin-combo-box items="[[LLinhasCresp]]" id="linhasCresp" item-value-path="id" item-label-path="value" label="Cresp" disabled="{{ _permissionsCreate }}" required error-message="Este campo é obrigatório">
+                                        @*<vaadin-combo-box items="[[LLinhasCresp]]" id="linhasCresp" item-value-path="id" item-label-path="value" label="Cresp" disabled="{{ _permissionsCreate }}" required error-message="Este campo é obrigatório">
                                             <template>
                                                 <table>
                                                     <tr>
@@ -370,11 +384,18 @@
                                                     </tr>
                                                 </table>
                                             </template>
-                                        </vaadin-combo-box>
+                                        </vaadin-combo-box>*@
+                                        <such-selectbox id="linhasCresp" label="Cresp"
+                                                        items="[[LLinhasCresp]]"
+                                                        text-path="value"
+                                                        value-path="id"
+                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Cresp"}]'
+                                                        disabled="{{ _permissionsCreate }}" required error-message="Este campo é obrigatório">
+                                        </such-selectbox>
                                     </div>
 
                                     <div class="col-sm-2">
-                                        <vaadin-combo-box items="[[CBLocations]]" id="linhasLocalizacao" item-value-path="id" item-label-path="value" label="Cód. Localização" disabled="{{ _permissionsCreate }}" required error-message="Este campo é obrigatório">
+                                        @*<vaadin-combo-box items="[[CBLocations]]" id="linhasLocalizacao" item-value-path="id" item-label-path="value" label="Cód. Localização" disabled="{{ _permissionsCreate }}" required error-message="Este campo é obrigatório">
                                             <template>
                                                 <table>
                                                     <tr>
@@ -383,7 +404,14 @@
                                                     </tr>
                                                 </table>
                                             </template>
-                                        </vaadin-combo-box>
+                                        </vaadin-combo-box>*@
+                                        <such-selectbox id="linhasLocalizacao" label="Cód. Localização"
+                                                        items="[[CBLocations]]"
+                                                        text-path="value"
+                                                        value-path="id"
+                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Localização"}]'
+                                                        disabled="{{ _permissionsCreate }}" required error-message="Este campo é obrigatório">
+                                        </such-selectbox>
                                     </div>
 
                                     <div class="col-sm-2">

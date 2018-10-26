@@ -25,6 +25,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public bool? PricesIncludingVAT { get; set; }
         public bool? InAdvance { get; set; }
         public List<PurchOrderLineDTO> Lines { get; set; }
+        public string LocationCode { get; set; }
     }
     /// <summary>
     /// Purchase Order Line DTO

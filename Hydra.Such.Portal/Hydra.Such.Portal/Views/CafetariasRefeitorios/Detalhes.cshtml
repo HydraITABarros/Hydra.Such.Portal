@@ -375,8 +375,8 @@
                     this.$.ToastMessageError.open();
                 },
                 _validateData: function () {
-                    if (this.$.productivityUnits.validate() &
-                        this.$.types.validate() &
+                    if (this.$.productivityUnits.value != "" &
+                        this.$.types.value != "" &
                         this.$.startDateExploration.validate()){
                             return true;
                     }

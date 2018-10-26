@@ -27,10 +27,13 @@
 <link rel="import" href="~/lib/vaadin-valo-theme/vaadin-date-picker.html">
 <link rel="import" href="~/lib/vaadin-date-picker/vaadin-date-picker.html">
 
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html" />
+
 <link rel="import" href="~/lib/vaadin-combo-box/vaadin-combo-box.html">
 <link rel="import" href="~/lib/vaadin-valo-theme/vaadin-combo-box.html">
 
-<x-detailsgroupapprovals _requestno="@ViewBag.IDGroupApproval" ></x-detailsgroupapprovals>
+<x-detailsgroupapprovals _requestno="@ViewBag.IDGroupApproval"></x-detailsgroupapprovals>
 
 <dom-module id="x-detailsgroupapprovals">
     <template>
@@ -111,11 +114,21 @@
                    handle-as="json"
                    content-type="application/json">
         </iron-ajax>
+
+        <iron-ajax url="/Administracao/UpdateLinhaGrupoAprovacao"
+                   last-response="{{linhaGrupoAprovacaoUpdated}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_updateLinhaGrupoAprovacao_ajax"
+                   on-response="_updateLinhaGrupoAprovacaoResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
         <div class="row break_frm">
             <div class="col-md-12 col-lg-12">
                 <iron-form id="formContract">
 
-                    <div class="panel panel-default">                       
+                    <div class="panel panel-default">
                         <div class="panel-heading">Grupo</div>
                         <div class="panel-body">
                             <div class="row">
@@ -126,6 +139,7 @@
                                     <vaadin-text-field value="{{groupresult.description}}" id="lgroupName" name="groupName" label="Nome Grupo" required error-message="Este campo é obrigatório"> </vaadin-text-field>
                                 </div>
                             </div>
+
                             <div class="row">
                                 <div class="marginSpace" id="ddmarginSpaceCabe">
                                     <template is="dom-if" if="{{ _isCreate }}">
@@ -154,6 +168,7 @@
                 </iron-form>
             </div>
         </div>
+
         <div class="row break_frm" style="display: {{ _showLines }};">
             <div class="col-md-12 col-lg-12">
                 <iron-form id="formContract">
@@ -174,6 +189,11 @@
                                             </template>
                                         </vaadin-combo-box>
                                     </div>
+
+                                    <div class="col-lg-2 alignPoga">
+                                        <vaadin-checkbox id="enviarEmailAlerta" checked="{{chkEnviarEmailAlerta}}">Enviar Email de Alerta</vaadin-checkbox>
+                                    </div>
+
                                     <div class="col-lg-2 alignPoga">
                                         <paper-button id="btnAddNew" class="btnSave" on-tap="_createApprovalGroupDetails" disabled="{{ _permissionsCreate }}">Criar</paper-button>
                                     </div>
@@ -188,9 +208,20 @@
                                         <vaadin-grid-filter path="approvalUser" />
                                     </template>
                                     <template>
-                                        <vaadin-text-field value="{{item.approvalUser}}" disabled></vaadin-text-field>
+                                        <vaadin-text-field id="linhaApprovalUser" value="{{item.approvalUser}}" disabled></vaadin-text-field>
                                     </template>
                                 </vaadin-grid-column>
+
+                                <vaadin-grid-column resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="enviarEmailAlerta">Enviar Email de Alerta</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="enviarEmailAlerta" />
+                                    </template>
+                                    <template>
+                                        <vaadin-checkbox id="linhaEnviarEmailAlerta" checked="{{item.enviarEmailAlerta}}" on-blur="_updateLinhaGrupoAprovacao"></vaadin-checkbox>
+                                    </template>
+                                </vaadin-grid-column>
+
                                 <template is="dom-if" if="{{ !_permissionsUpdate }}">
                                     <vaadin-grid-column width="10%" resizable>
                                         <template class="header">
@@ -245,6 +276,11 @@
                         type: String,
                         notify: true,
                         value: ""
+                    },
+                    chkEnviarEmailAlerta: {
+                        type: Boolean,
+                        notify: true,
+                        value: true
                     },
                     _isCreate: {
                         type: Boolean,
@@ -305,11 +341,14 @@
                     this.$.ajax_delete_group.body = JSON.stringify(line);
                     this.$.ajax_delete_group.generateRequest();
                 },
+
                 _createApprovalGroupDetails: function () {
+                    //debugger;
                     if (this.ddUser != null && this.ddUser != "") {
                         var line = {
                             approvalGroup: this.$.lRequestNo.value,
-                            approvalUser: this.ddUser
+                            approvalUser: this.ddUser,
+                            enviarEmailAlerta: this.chkEnviarEmailAlerta
                         }
                         if (this.result == null) {
                             this.result = line;
@@ -393,15 +432,48 @@
                     this.$.gridDetailsGroupApprovals.clearCache();
                 },
 
-
-
                 _deleteAccessProfile: function (data) {
                     var index = this.result.indexOf(data.model.item);
                     this.result.splice(index, 1);
                     this.$.ajax_delete.url = "/Administracao/DeteleDetailsApprovalGroup";
                     this.$.ajax_delete.body = JSON.stringify(data.model.item);
                     this.$.ajax_delete.generateRequest();
-                }
+                },
+
+                _updateLinhaGrupoAprovacao: function (e) {
+                    debugger;
+                    var index = this.result.indexOf(e.model.item);
+
+                    this.$.page_updateLinhaGrupoAprovacao_ajax.body = JSON.stringify({
+                        approvalGroup: this.$.lRequestNo.value,
+                        approvalUser: e.model.item.approvalUser,
+                        enviarEmailAlerta: e.model.item.enviarEmailAlerta,
+                        createDate: e.model.item.createDate,
+                        createUser: e.model.item.createUser
+                    });
+                    this.$.page_updateLinhaGrupoAprovacao_ajax.generateRequest();
+                    this.$.gridDetailsGroupApprovals.clearCache();
+                },
+                _updateLinhaGrupoAprovacaoResponse: function (e) {
+                    var self = this;
+                    if (e.detail.status === 200) {
+                        if (this.linhaGrupoAprovacaoUpdated == "101") {
+                            this.openToastError('Erro ao atualizar!');
+                            this.$.page_databound_ajax.generateRequest();
+
+                        } else {
+                            this.ddUser = "";
+                            this.openToast('Atualizado com sucesso!');
+                            this.$.page_databound_ajax.body = JSON.stringify(this._requestno);
+                            this.$.page_databound_ajax.generateRequest();
+                            this.$.gridDetailsGroupApprovals.clearCache();
+                        }
+                    }
+                    else {
+                        this.openToastError('Ocorreu um erro ao atualizar o utilizador do grupo.');
+                    }
+                },
+
             });
         });
     </script>

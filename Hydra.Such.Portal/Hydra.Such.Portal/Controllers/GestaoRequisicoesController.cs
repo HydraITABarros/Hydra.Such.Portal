@@ -118,6 +118,20 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
+        public IActionResult RequisitionsByDimensions()
+        {
+            UserAccessesViewModel userPermissions =
+                DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.RequisicoesPorDimensoes);
+            if (userPermissions != null && userPermissions.Read.Value)
+            {
+                ViewBag.UPermissions = userPermissions;
+                return View();
+            }
+            else
+            {
+                return Redirect(Url.Content("~/Error/AccessDenied"));
+            }
+        }
 
         public IActionResult DetalhesReqAprovada(string id)
         {
@@ -178,22 +192,41 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
+        public IActionResult LinhasRequisicaoReadOnly(string id)
+        {
+            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.RequisicoesPorDimensoes);
+
+            if (userPermissions != null && userPermissions.Read.Value)
+            {
+                ViewBag.UPermissions = userPermissions;
+                ViewBag.RequisitionId = id;
+                ViewBag.ValidatedRequisitionEnumValue = (int)RequisitionStates.Validated;
+                ViewBag.RequisitionStatesEnumString = EnumHelper.GetItemsAsDictionary(typeof(RequisitionStates));
+                ViewBag.ReportServerURL = config.ReportServerURL;
+
+                return View();
+            }
+            else
+            {
+                return Redirect(Url.Content("~/Error/AccessDenied"));
+            }
+        }
+
         public IActionResult MinhaRequisicao(string id)
         {
             //UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Requisições);
             UserAccessesViewModel userPermissions = new UserAccessesViewModel();
-
             userPermissions.Area = 1;
             userPermissions.Create = true;
             userPermissions.Delete = true;
-            //userPermissions.Feature
+            userPermissions.Feature = (int)Enumerations.Features.Requisições;
             userPermissions.IdUser = User.Identity.Name;
             userPermissions.Read = true;
             userPermissions.Update = true;
 
             int SentReqToAprove = 0;
             RequisitionViewModel REQ = DBRequest.GetById(id).ParseToViewModel();
-            List<ApprovalMovementsViewModel> AproveList = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAllAssignedToUserFilteredByStatus(User.Identity.Name, 1));
+            List<ApprovalMovementsViewModel> AproveList = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAll()); //  .GetAllAssignedToUserFilteredByStatus(User.Identity.Name, 1));
             if (REQ.State == RequisitionStates.Pending || REQ.State == RequisitionStates.Rejected)
                 SentReqToAprove = 1;
             else
@@ -236,7 +269,16 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult Arquivadas()
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.HistóricoRequisições);
+            //UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.HistóricoRequisições);
+            UserAccessesViewModel UPerm = new UserAccessesViewModel();
+            UPerm.Area = 1;
+            UPerm.Create = true;
+            UPerm.Delete = true;
+            UPerm.Feature = (int)Enumerations.Features.HistóricoRequisições;
+            UPerm.IdUser = User.Identity.Name;
+            UPerm.Read = true;
+            UPerm.Update = true;
+
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.Area = 4;
@@ -480,6 +522,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (item.RequisitionNo != null)
                 {
                     item.CreateUser = User.Identity.Name;
+                    item.ResponsibleCreation = User.Identity.Name;
                     item.State = RequisitionStates.Validated;
                     var createdItem = DBRequest.Create(item.ParseToDB());
                     if (createdItem != null)
@@ -523,7 +566,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             if (item != null)
             {
-                item.CreateUser = User.Identity.Name;
+                item.UpdateUser = User.Identity.Name;
                 var updatedItem = DBRequest.Update(item.ParseToDB());
                 if (updatedItem != null)
                 {
@@ -660,6 +703,54 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetRequisitionsByDimensions([FromBody] JObject requestParams)
+        {
+            int Historic = 0;
+            if (requestParams["Historic"] != null)
+                Historic = int.Parse(requestParams["Historic"].ToString());
+            List<RequisitionStates> states = new List<RequisitionStates>();
+            
+            if (Historic == 0)
+            {
+                states = new List<RequisitionStates>()
+                {
+                    RequisitionStates.Pending,
+                    RequisitionStates.Received,
+                    RequisitionStates.Treated,
+                    RequisitionStates.Validated,
+                    RequisitionStates.Approved,
+                    RequisitionStates.Rejected,
+                    RequisitionStates.Available,
+                };
+            }
+            else
+            {
+                states = new List<RequisitionStates>()
+                {
+                    RequisitionStates.Archived
+                };
+            }
+
+            List<RequisitionViewModel> result = DBRequest.GetByState(states).ParseToViewModel();
+
+            //Apply User Dimensions Validations
+            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            //Regions
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.RegionCode));
+            //FunctionalAreas
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.FunctionalAreaCode));
+            //ResponsabilityCenter
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CenterResponsibilityCode));
+
+            result.RemoveAll(x => x.RequestNutrition == true);
+
+            return Json(result.OrderByDescending(x => x.RequisitionNo));
+        }
+
+        [HttpPost]
         public JsonResult GetRequisitionsAcordosPrecos()
         {
             List<RequisitionStates> states = new List<RequisitionStates>()
@@ -724,24 +815,48 @@ namespace Hydra.Such.Portal.Controllers
             RequisitionViewModel item;
             if (!string.IsNullOrEmpty(requisitionId) && requisitionId != "0" && statusIsValid)
             {
-                if (status != (int)RequisitionStates.Archived) //ARQUIVO
+                //if (status != (int)RequisitionStates.Archived) //ARQUIVO
                     item = DBRequest.GetById(requisitionId).ParseToViewModel();
-                else
-                    item = DBRequesitionHist.TransferToRequisition(DBRequesitionHist.GetByNo(requisitionId)).ParseToViewModel();
+                //else
+                    //item = DBRequesitionHist.TransferToRequisition(DBRequesitionHist.GetByNo(requisitionId)).ParseToViewModel();
             }
             else
                 item = new RequisitionViewModel();
+
+            
+            List<ApprovalMovementsViewModel> AproveList = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAll());
+            if (item.State == RequisitionStates.Pending || item.State == RequisitionStates.Rejected)
+                item.SentReqToAproveText = "normal";
+            else
+                item.SentReqToAproveText = "none";
+            if (AproveList != null && AproveList.Count > 0)
+            {
+                foreach (ApprovalMovementsViewModel apmov in AproveList)
+                {
+                    if (apmov.Number == item.RequisitionNo && (apmov.Status == (int)RequisitionStates.Received || apmov.Status == (int)RequisitionStates.Treated))
+                    {
+                        item.SentReqToAproveText = "none";
+                    }
+                }
+            }
+
+            item.GoAprove = false;
+            if (DBApprovalMovements.GetAllAssignedToUserFilteredByStatus(User.Identity.Name, 1).Where(x => x.Número == requisitionId).Count() > 0)
+            {
+                item.GoAprove = true;
+            }
 
             return Json(item);
         }
 
         [HttpPost]
-
         public JsonResult CreateRequisitionLine([FromBody] RequisitionLineViewModel item)
         {
             if (item != null)
             {
                 item.CreateUser = User.Identity.Name;
+                if (item.QuantidadeInicial == null)
+                    item.QuantidadeInicial = item.QuantityReceivable;
                 var createdItem = DBRequestLine.Create(item.ParseToDB());
                 if (createdItem != null)
                 {
@@ -1269,91 +1384,91 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         break;
                     case "Fechar Requisicao":
-                        bool okFechar = true;
-                        RequisiçãoHist REQHistFechar = DBRequest.TransferToRequisitionHist(item);
-                        if (REQHistFechar != null)
-                        {
-                            REQHistFechar.Estado = (int)RequisitionStates.Archived;
-                            REQHistFechar.UtilizadorModificação = User.Identity.Name;
-                            REQHistFechar.DataHoraModificação = DateTime.Now;
-
-                            if (DBRequesitionHist.Create(REQHistFechar) != null)
-                            {
-                                List<LinhasRequisiçãoHist> REQLinhasHistFechar = DBRequest.TransferToRequisitionLinesHist(item.Lines);
-                                if (REQLinhasHistFechar.Count > 0)
-                                {
-                                    REQLinhasHistFechar.ForEach(Linha =>
-                                    {
-                                        Linha.UtilizadorModificação = User.Identity.Name;
-                                        Linha.DataHoraModificação = DateTime.Now;
-                                        if (DBRequesitionLinesHist.Create(Linha) == null)
-                                        {
-                                            okFechar = false;
-                                            item.eReasonCode = 14;
-                                            item.eMessage = "Ocorreu Um erro ao fechar na criação da linha no Histórico";
-                                        }
-                                    });
-                                }
-
-                                if (okFechar == true)
-                                {
-                                    if (item.Lines.Count > 0)
-                                    {
-                                        item.Lines.ForEach(Linha =>
-                                        {
-                                            if (DBRequestLine.Delete(Linha.ParseToDB()) == false)
-                                            {
-                                                okFechar = false;
-                                                item.eReasonCode = 15;
-                                                item.eMessage = "Ocorreu Um erro ao fechar ao Eliminar linha.";
-                                            }
-                                        });
-                                    }
-
-                                    if (okFechar == true)
-                                    {
-                                        if (DBRequest.Delete(item.ParseToDB()) == false)
-                                        {
-                                            okFechar = false;
-                                            item.eReasonCode = 16;
-                                            item.eMessage = "Ocorreu Um erro ao fechar na Eliminação da Requisição";
-                                        }
-                                        else
-                                        {
-                                            item.eReasonCode = 1;
-                                            item.eMessage = "Requisição foi fechada";
-                                        }
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                item.eReasonCode = 17;
-                                item.eMessage = "Ocorreu Um erro ao fechar ao criar Requisição Histórico.";
-                            }
-                        }
-                        else
-                        {
-                            item.eReasonCode = 18;
-                            item.eMessage = "Ocorreu Um erro ao fechar na transferência de dados para Histórico.";
-                        }
-
                         //CODIGO ORIGINAL
-                        //item.State = RequisitionStates.Archived;
-                        //item.UpdateUser = User.Identity.Name;
-                        //item.UpdateDate = DateTime.Now;
-                        //RequisitionViewModel reqArchived = DBRequest.Update(item.ParseToDB(), false, true).ParseToViewModel();
-                        //if (reqArchived == null)
-                        //{
-                        //    item.eReasonCode = 14;
-                        //    item.eMessage = "Ocorreu Um erro ao fechar";
-                        //}
-                        //if (item.eReasonCode == 1)
-                        //{
-                        //    item.eMessage = "Requisição foi fechada";
-                        //}
+                        item.State = RequisitionStates.Archived;
+                        item.UpdateUser = User.Identity.Name;
+                        item.UpdateDate = DateTime.Now;
+                        RequisitionViewModel reqArchived = DBRequest.Update(item.ParseToDB(), false, true).ParseToViewModel();
+                        if (reqArchived == null)
+                        {
+                            item.eReasonCode = 14;
+                            item.eMessage = "Ocorreu Um erro ao fechar";
+                        }
+                        if (item.eReasonCode == 1)
+                        {
+                            item.eMessage = "Requisição foi fechada";
+                        }
                         //FIM
 
+                        //bool okFechar = true;
+
+                        //RequisiçãoHist REQHistFechar = DBRequest.TransferToRequisitionHist(item);
+                        //if (REQHistFechar != null)
+                        //{
+                        //    REQHistFechar.Estado = (int)RequisitionStates.Archived;
+                        //    REQHistFechar.UtilizadorModificação = User.Identity.Name;
+                        //    REQHistFechar.DataHoraModificação = DateTime.Now;
+
+                        //    if (DBRequesitionHist.Create(REQHistFechar) != null)
+                        //    {
+                        //        List<LinhasRequisiçãoHist> REQLinhasHistFechar = DBRequest.TransferToRequisitionLinesHist(item.Lines);
+                        //        if (REQLinhasHistFechar.Count > 0)
+                        //        {
+                        //            REQLinhasHistFechar.ForEach(Linha =>
+                        //            {
+                        //                Linha.UtilizadorModificação = User.Identity.Name;
+                        //                Linha.DataHoraModificação = DateTime.Now;
+                        //                if (DBRequesitionLinesHist.Create(Linha) == null)
+                        //                {
+                        //                    okFechar = false;
+                        //                    item.eReasonCode = 14;
+                        //                    item.eMessage = "Ocorreu Um erro ao fechar na criação da linha no Histórico";
+                        //                }
+                        //            });
+                        //        }
+
+                        //        if (okFechar == true)
+                        //        {
+                        //            if (item.Lines.Count > 0)
+                        //            {
+                        //                item.Lines.ForEach(Linha =>
+                        //                {
+                        //                    if (DBRequestLine.Delete(Linha.ParseToDB()) == false)
+                        //                    {
+                        //                        okFechar = false;
+                        //                        item.eReasonCode = 15;
+                        //                        item.eMessage = "Ocorreu Um erro ao fechar ao Eliminar linha.";
+                        //                    }
+                        //                });
+                        //            }
+
+                        //            if (okFechar == true)
+                        //            {
+                        //                if (DBRequest.Delete(item.ParseToDB()) == false)
+                        //                {
+                        //                    okFechar = false;
+                        //                    item.eReasonCode = 16;
+                        //                    item.eMessage = "Ocorreu Um erro ao fechar na Eliminação da Requisição";
+                        //                }
+                        //                else
+                        //                {
+                        //                    item.eReasonCode = 1;
+                        //                    item.eMessage = "Requisição foi fechada";
+                        //                }
+                        //            }
+                        //        }
+                        //    }
+                        //    else
+                        //    {
+                        //        item.eReasonCode = 17;
+                        //        item.eMessage = "Ocorreu Um erro ao fechar ao criar Requisição Histórico.";
+                        //    }
+                        //}
+                        //else
+                        //{
+                        //    item.eReasonCode = 18;
+                        //    item.eMessage = "Ocorreu Um erro ao fechar na transferência de dados para Histórico.";
+                        //}
                         break;
                     default:
                         item.eReasonCode = 10;
@@ -1679,21 +1794,21 @@ namespace Hydra.Such.Portal.Controllers
             {
                 if (Requisicoes != null && Requisicoes.Count > 0)
                 {
-                    UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Requisições);
-                    if (UPerm.Create == true)
-                    {
+                    //UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Requisições);
+                    //if (UPerm.Create == true)
+                    //{
                         Requisicoes.ForEach(Requisicao =>
                         {
                             if (result.eReasonCode == 1)
                             {
-                                RequisitionService serv = new RequisitionService(configws, HttpContext.User.Identity.Name);
+                                RequisitionService serv = new RequisitionService(config, configws, HttpContext.User.Identity.Name);
                                 Requisicao = serv.CreatePurchaseOrderFor(Requisicao);
 
                                 result.eReasonCode = Requisicao.eReasonCode;
                                 result.eMessage = Requisicao.eMessage;
                             }
                         });
-                    }
+                    //}
                 }
                 else
                 {
@@ -1752,7 +1867,7 @@ namespace Hydra.Such.Portal.Controllers
             var createTransferShipResult = new FileActionResult()
             {
                 eReasonCode = 2,
-                eMessage = "Ocorreu um erro ao criar a guia de transporte."
+                eMessage = "Ocorreu um erro ao criar a guia de transporte. "
             };
 
             try
@@ -1768,11 +1883,12 @@ namespace Hydra.Such.Portal.Controllers
                     }
                     else
                     {
-                        createTransferShipResult.eMessages.Add(new TraceInformation(TraceType.Error, result.ErrorMessage));
+                        //createTransferShipResult.eMessages.Add(new TraceInformation(TraceType.Error, result.ErrorMessage));
+                        createTransferShipResult.eMessage += result.ErrorMessage;
                     }
                 }
             }
-            catch { }
+            catch(Exception ex) { createTransferShipResult.eMessage += ex.Message; }
 
             return Json(createTransferShipResult);
         }
@@ -1861,19 +1977,35 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult PontoSituacaoRequisicao([FromQuery] string reqId, [FromQuery] string lineId)
         {
-            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Requisições);
-            if (userPermissions != null && userPermissions.Read.Value)
-            {
-                ViewBag.UPermissions = userPermissions;
-                ViewBag.RequisitionNo = reqId;
-                ViewBag.AutoOpenDialogOnLineNo = lineId;
+            //NR20181015 - Retirar Feature de acesso 
+            //UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Requisições);
+            //if (userPermissions != null && userPermissions.Read.Value)
+            //{
+            //    ViewBag.UPermissions = userPermissions;
+            //    ViewBag.RequisitionNo = reqId;
+            //    ViewBag.AutoOpenDialogOnLineNo = lineId;
 
-                return View();
-            }
-            else
-            {
-                return Redirect(Url.Content("~/Error/AccessDenied"));
-            }
+            //    return View();
+            //}
+            //else
+            //{
+            //    return Redirect(Url.Content("~/Error/AccessDenied"));
+            //}
+
+            UserAccessesViewModel userPermissions = new UserAccessesViewModel();
+            userPermissions.Area = 1;
+            userPermissions.Create = true;
+            userPermissions.Delete = true;
+            userPermissions.Feature = (int)Enumerations.Features.Requisições;
+            userPermissions.IdUser = User.Identity.Name;
+            userPermissions.Read = true;
+            userPermissions.Update = true;
+
+            ViewBag.UPermissions = userPermissions;
+            ViewBag.RequisitionNo = reqId;
+            ViewBag.AutoOpenDialogOnLineNo = lineId;
+
+            return View();
         }
 
         //public IActionResult PontoSituacaoRequisicao([FromQuery] string reqId, [FromQuery] string lineId)
@@ -2061,6 +2193,25 @@ namespace Hydra.Such.Portal.Controllers
             string stateDescription = EnumHelper.GetDescriptionFor(typeof(RequisitionStates), id);
             return Json(stateDescription);
         }
+
+        [HttpPost]
+        public JsonResult GetReqAprovadores([FromBody] string ReqId)
+        {
+            int MovAprovacao = 0;
+            List<UtilizadoresMovimentosDeAprovação> UsersMovAprovacao = new List<UtilizadoresMovimentosDeAprovação>();
+
+            MovAprovacao = DBApprovalMovements.GetAll().Where(x => x.Número == ReqId && x.Tipo == 1).LastOrDefault().NºMovimento;
+
+            if (MovAprovacao > 0)
+            {
+                UsersMovAprovacao = DBUserApprovalMovements.GetAll().Where(x => x.NºMovimento == MovAprovacao).ToList();
+            }
+
+            return Json(UsersMovAprovacao);
+        }
+
+
+
 
         //1
         [HttpPost]
@@ -2691,6 +2842,5 @@ namespace Hydra.Such.Portal.Controllers
             sFileName = @"/Upload/temp/" + sFileName;
             return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Pontos Situação de Requisições.xlsx");
         }
-
     }
 }

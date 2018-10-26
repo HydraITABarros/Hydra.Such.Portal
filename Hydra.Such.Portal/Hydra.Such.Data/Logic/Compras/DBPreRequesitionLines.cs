@@ -167,6 +167,7 @@ namespace Hydra.Such.Data.Logic.ComprasML
                 LocalCode = x.CódigoLocalização,
                 UnitMeasureCode = x.CódigoUnidadeMedida,
                 QuantityToRequire = x.QuantidadeARequerer,
+                QuantidadeInicial = x.QuantidadeInicial,
                 RegionCode = x.CódigoRegião,
                 FunctionalAreaCode = x.CódigoÁreaFuncional,
                 CenterResponsibilityCode = x.CódigoCentroResponsabilidade,
@@ -212,6 +213,7 @@ namespace Hydra.Such.Data.Logic.ComprasML
                 CódigoLocalização = x.LocalCode,
                 CódigoUnidadeMedida = x.UnitMeasureCode,
                 QuantidadeARequerer = x.QuantityToRequire,
+                QuantidadeInicial = x.QuantidadeInicial,
                 CódigoRegião = x.RegionCode,
                 CódigoÁreaFuncional = x.FunctionalAreaCode,
                 CódigoCentroResponsabilidade = x.CenterResponsibilityCode,
@@ -238,7 +240,6 @@ namespace Hydra.Such.Data.Logic.ComprasML
                 NºEncomendaAberto = x.OpenOrderNo,
                 NºLinhaEncomendaAberto = x.OpenOrderLineNo,
                 LocalCompraDireta = x.ArmazemCDireta
-                
             };
         }
     }

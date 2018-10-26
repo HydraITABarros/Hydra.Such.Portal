@@ -588,6 +588,7 @@ namespace Hydra.Such.Portal.Controllers
                         req.RequestNutrition = true;
                         req.RequisitionDate = DateTime.Now.ToString();
                         req.ReceivedDate = expextedDate != DateTime.MinValue ? expextedDate.ToString() : string.Empty;
+                        req.ProjectNo = productivityUnit.ProjetoCozinha;
                         req.CreateUser = User.Identity.Name;
                         req.CreateDate = DateTime.Now.ToString();
                         req.State = RequisitionStates.Pending;
@@ -695,6 +696,7 @@ namespace Hydra.Such.Portal.Controllers
                     DBNumerationConfigurations.Update(ConfigNumerations);
 
                     requisition.RequisitionNo = RequisitionNo;
+                    requisition.ResponsibleCreation = User.Identity.Name;
                     Requisição createReq = DBRequest.ParseToDB(requisition);
 
                     createReq = DBRequest.Create(createReq);
@@ -950,6 +952,7 @@ namespace Hydra.Such.Portal.Controllers
                                     resultRq.UtilizadorCriação = User.Identity.Name;
                                     resultRq.DataHoraCriação = DateTime.Now;
                                     resultRq.Estado = (int)RequisitionStates.Pending;
+                                    resultRq.ResponsávelCriação = User.Identity.Name;
                                     resultRq = DBRequest.Create(resultRq);
                                     if (resultRq == null)
                                     {

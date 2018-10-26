@@ -1,13 +1,14 @@
-﻿using Hydra.Such.Data.Database;
+﻿using System;
+using System.Collections.Generic;
+using Hydra.Such.Data.Database;
 using Hydra.Such.Data.Logic;
 using Hydra.Such.Data.Logic.Approvals;
 using Hydra.Such.Data.Logic.FolhaDeHora;
 using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.ViewModel.Approvals;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 
 namespace Hydra.Such.Portal.Extensions
 {
@@ -26,6 +27,7 @@ namespace Hydra.Such.Portal.Extensions
                     eMessage = "Fluxo Iniciado com sucesso",
                     eMessages = new List<TraceInformation>()
                 };
+
 
                 //Get Compatible ApprovalConfigurations
                 List<ConfiguraçãoAprovações> ApprovalConfigurations = DBApprovalConfigurations.GetByTypeAreaValueDateAndDimensions(type, functionalArea, responsabilityCenter, region, value, DateTime.Now);
@@ -62,18 +64,50 @@ namespace Hydra.Such.Portal.Extensions
                     var approvalConfiguration = ApprovalConfigurations[0];
                     if (approvalConfiguration.UtilizadorAprovação != "" && approvalConfiguration.UtilizadorAprovação != null)
                     {
-                        DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = approvalConfiguration.UtilizadorAprovação });
-                        //ConfigUtilizadores users = DBUserConfigurations.GetById(approvalConfiguration.UtilizadorAprovação);
-                        UsersToNotify.Add(approvalConfiguration.UtilizadorAprovação);
+                        if (approvalConfiguration.UtilizadorAprovação == requestUser)
+                            approvalConfiguration.UtilizadorAprovação = DBUserConfigurations.GetById(requestUser).SuperiorHierarquico;
+
+                        if (approvalConfiguration.UtilizadorAprovação != "" && approvalConfiguration.UtilizadorAprovação != null && approvalConfiguration.UtilizadorAprovação != requestUser)
+                        {
+                            DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = approvalConfiguration.UtilizadorAprovação });
+                            //ConfigUtilizadores users = DBUserConfigurations.GetById(approvalConfiguration.UtilizadorAprovação);
+                            UsersToNotify.Add(approvalConfiguration.UtilizadorAprovação);
+                        }
                     }
                     else if (approvalConfiguration.GrupoAprovação.HasValue)
                     {
                         List<string> GUsers = DBApprovalUserGroup.GetAllFromGroup(approvalConfiguration.GrupoAprovação.Value);
+                        if (GUsers.Exists(x => x == requestUser))
+                        {
+                            string SH = DBUserConfigurations.GetById(requestUser).SuperiorHierarquico;
+                            if (!string.IsNullOrEmpty(SH))
+                                GUsers.Add(SH);
+                            GUsers.RemoveAll(x => x == requestUser);
+                        }
+                        GUsers = GUsers.Distinct().ToList();
 
                         GUsers.ForEach(y =>
                         {
-                            DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = y });
-                            //ConfigUtilizadores users = DBUserConfigurations.GetById(y);
+                            if (y != "" && y != null && y != requestUser)
+                            {
+                                DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = y });
+                                //ConfigUtilizadores users = DBUserConfigurations.GetById(y);
+                                //UsersToNotify.Add(y);
+                            }
+                        });
+
+                        List<string> GUsersWithEmailAlerta = DBApprovalUserGroup.GetAllFromGroupWithEmailAlerta(approvalConfiguration.GrupoAprovação.Value);
+                        if (GUsersWithEmailAlerta.Exists(x => x == requestUser))
+                        {
+                            string SH = DBUserConfigurations.GetById(requestUser).SuperiorHierarquico;
+                            if (!string.IsNullOrEmpty(SH))
+                                GUsersWithEmailAlerta.Add(SH);
+                            GUsersWithEmailAlerta.RemoveAll(x => x == requestUser);
+                        }
+                        GUsersWithEmailAlerta = GUsersWithEmailAlerta.Distinct().ToList();
+
+                        GUsersWithEmailAlerta.ForEach(y =>
+                        {
                             UsersToNotify.Add(y);
                         });
                     }
@@ -113,7 +147,8 @@ namespace Hydra.Such.Portal.Extensions
                             SendEmailApprovals Email = new SendEmailApprovals
                             {
                                 Subject = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Aprovação Pendente" : "eSUCH - Aprovação Pendente" + itemToApproveInfo,
-                                From = "plataforma@such.pt"
+                                //From = "plataforma@such.pt"
+                                From = requestUser
                             };
 
                             Email.To.Add(e);
@@ -198,16 +233,48 @@ namespace Hydra.Such.Portal.Extensions
                     var approvalConfiguration = ApprovalConfigurations[0];
                     if (approvalConfiguration.UtilizadorAprovação != "" && approvalConfiguration.UtilizadorAprovação != null)
                     {
-                        DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = approvalConfiguration.UtilizadorAprovação });
-                        UsersToNotify.Add(approvalConfiguration.UtilizadorAprovação);
+                        if (approvalConfiguration.UtilizadorAprovação == ApproveUser)
+                            approvalConfiguration.UtilizadorAprovação = DBUserConfigurations.GetById(ApproveUser).SuperiorHierarquico;
+
+                        if (approvalConfiguration.UtilizadorAprovação != "" && approvalConfiguration.UtilizadorAprovação != null && approvalConfiguration.UtilizadorAprovação != ApproveUser)
+                        {
+                            DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = approvalConfiguration.UtilizadorAprovação });
+                            UsersToNotify.Add(approvalConfiguration.UtilizadorAprovação);
+                        }
                     }
                     else if (approvalConfiguration.GrupoAprovação.HasValue)
                     {
                         List<string> GUsers = DBApprovalUserGroup.GetAllFromGroup(approvalConfiguration.GrupoAprovação.Value);
+                        if (GUsers.Exists(x => x == ApproveUser))
+                        {
+                            string SH = DBUserConfigurations.GetById(ApproveUser).SuperiorHierarquico;
+                            if (!string.IsNullOrEmpty(SH))
+                                GUsers.Add(SH);
+                            GUsers.RemoveAll(x => x == ApproveUser);
+                        }
+                        GUsers = GUsers.Distinct().ToList();
 
                         GUsers.ForEach(y =>
                         {
-                            DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = y });
+                            if (y != "" && y != null && y != ApproveUser)
+                            {
+                                DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = y });
+                                //UsersToNotify.Add(y);
+                            }
+                        });
+
+                        List<string> GUsersWithEmailAlerta = DBApprovalUserGroup.GetAllFromGroupWithEmailAlerta(approvalConfiguration.GrupoAprovação.Value);
+                        if (GUsersWithEmailAlerta.Exists(x => x == ApproveUser))
+                        {
+                            string SH = DBUserConfigurations.GetById(ApproveUser).SuperiorHierarquico;
+                            if (!string.IsNullOrEmpty(SH))
+                                GUsersWithEmailAlerta.Add(SH);
+                            GUsersWithEmailAlerta.RemoveAll(x => x == ApproveUser);
+                        }
+                        GUsersWithEmailAlerta = GUsersWithEmailAlerta.Distinct().ToList();
+
+                        GUsersWithEmailAlerta.ForEach(y =>
+                        {
                             UsersToNotify.Add(y);
                         });
                     }
@@ -232,7 +299,8 @@ namespace Hydra.Such.Portal.Extensions
                         SendEmailApprovals Email = new SendEmailApprovals
                         {
                             Subject = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Aprovação Pendente" : "eSUCH - Aprovação Pendente" + itemToApproveInfo,
-                            From = "plataforma@such.pt"
+                            //From = "plataforma@such.pt"
+                            From = ApproveUser
                         };
 
                         Email.To.Add(e);
@@ -267,7 +335,8 @@ namespace Hydra.Such.Portal.Extensions
                     SendEmailApprovals Email = new SendEmailApprovals
                     {
                         Subject = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Tarefa aprovada" : "eSUCH - Tarefa aprovada" + itemToApproveInfo,
-                        From = "plataforma@such.pt"
+                        //From = "plataforma@such.pt"
+                        From = ApproveUser
                     };
 
                     Email.To.Add(ApprovalMovement.RequestUser);
@@ -346,16 +415,48 @@ namespace Hydra.Such.Portal.Extensions
                     var approvalConfiguration = ApprovalConfigurations[0];
                     if (approvalConfiguration.UtilizadorAprovação != "" && approvalConfiguration.UtilizadorAprovação != null)
                     {
-                        DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = approvalConfiguration.UtilizadorAprovação });
-                        UsersToNotify.Add(approvalConfiguration.UtilizadorAprovação);
+                        if (approvalConfiguration.UtilizadorAprovação == requestUser)
+                            approvalConfiguration.UtilizadorAprovação = DBUserConfigurations.GetById(requestUser).SuperiorHierarquico;
+
+                        if (approvalConfiguration.UtilizadorAprovação != "" && approvalConfiguration.UtilizadorAprovação != null && approvalConfiguration.UtilizadorAprovação != requestUser)
+                        {
+                            DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = approvalConfiguration.UtilizadorAprovação });
+                            UsersToNotify.Add(approvalConfiguration.UtilizadorAprovação);
+                        }
                     }
                     else if (approvalConfiguration.GrupoAprovação.HasValue)
                     {
                         List<string> GUsers = DBApprovalUserGroup.GetAllFromGroup(approvalConfiguration.GrupoAprovação.Value);
+                        if (GUsers.Exists(x => x == requestUser))
+                        {
+                            string SH = DBUserConfigurations.GetById(requestUser).SuperiorHierarquico;
+                            if (!string.IsNullOrEmpty(SH))
+                                GUsers.Add(SH);
+                            GUsers.RemoveAll(x => x == requestUser);
+                        }
+                        GUsers = GUsers.Distinct().ToList();
 
                         GUsers.ForEach(y =>
                         {
-                            DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = y });
+                            if (y != "" && y != null && y != requestUser)
+                            {
+                                DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = y });
+                                //UsersToNotify.Add(y);
+                            }
+                        });
+
+                        List<string> GUsersWithEmailAlerta = DBApprovalUserGroup.GetAllFromGroupWithEmailAlerta(approvalConfiguration.GrupoAprovação.Value);
+                        if (GUsersWithEmailAlerta.Exists(x => x == requestUser))
+                        {
+                            string SH = DBUserConfigurations.GetById(requestUser).SuperiorHierarquico;
+                            if (!string.IsNullOrEmpty(SH))
+                                GUsersWithEmailAlerta.Add(SH);
+                            GUsersWithEmailAlerta.RemoveAll(x => x == requestUser);
+                        }
+                        GUsersWithEmailAlerta = GUsersWithEmailAlerta.Distinct().ToList();
+
+                        GUsersWithEmailAlerta.ForEach(y =>
+                        {
                             UsersToNotify.Add(y);
                         });
                     }
@@ -385,7 +486,8 @@ namespace Hydra.Such.Portal.Extensions
                         SendEmailApprovals Email = new SendEmailApprovals
                         {
                             Subject = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Aprovação Pendente" : "eSUCH - Aprovação Pendente" + itemToApproveInfo,
-                            From = "plataforma@such.pt"
+                            //From = "plataforma@such.pt"
+                            From = requestUser
                         };
 
                         Email.To.Add(e);
@@ -502,16 +604,48 @@ namespace Hydra.Such.Portal.Extensions
                             var approvalConfiguration = ApprovalConfigurations[0];
                             if (approvalConfiguration.UtilizadorAprovação != "" && approvalConfiguration.UtilizadorAprovação != null)
                             {
-                                DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = approvalConfiguration.UtilizadorAprovação });
-                                UsersToNotify.Add(approvalConfiguration.UtilizadorAprovação);
+                                if (approvalConfiguration.UtilizadorAprovação == ApproveUser)
+                                    approvalConfiguration.UtilizadorAprovação = DBUserConfigurations.GetById(ApproveUser).SuperiorHierarquico;
+
+                                if (approvalConfiguration.UtilizadorAprovação != "" && approvalConfiguration.UtilizadorAprovação != null && approvalConfiguration.UtilizadorAprovação != ApproveUser)
+                                {
+                                    DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = approvalConfiguration.UtilizadorAprovação });
+                                    UsersToNotify.Add(approvalConfiguration.UtilizadorAprovação);
+                                }
                             }
                             else if (approvalConfiguration.GrupoAprovação.HasValue)
                             {
                                 List<string> GUsers = DBApprovalUserGroup.GetAllFromGroup(approvalConfiguration.GrupoAprovação.Value);
+                                if (GUsers.Exists(x => x == ApproveUser))
+                                {
+                                    string SH = DBUserConfigurations.GetById(ApproveUser).SuperiorHierarquico;
+                                    if (!string.IsNullOrEmpty(SH))
+                                        GUsers.Add(SH);
+                                    GUsers.RemoveAll(x => x == ApproveUser);
+                                }
+                                GUsers = GUsers.Distinct().ToList();
 
                                 GUsers.ForEach(y =>
                                 {
-                                    DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = y });
+                                    if (y != "" && y != null && y != ApproveUser)
+                                    { 
+                                        DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = y });
+                                        //UsersToNotify.Add(y);
+                                    }
+                                });
+
+                                List<string> GUsersWithEmailAlerta = DBApprovalUserGroup.GetAllFromGroupWithEmailAlerta(approvalConfiguration.GrupoAprovação.Value);
+                                if (GUsersWithEmailAlerta.Exists(x => x == ApproveUser))
+                                {
+                                    string SH = DBUserConfigurations.GetById(ApproveUser).SuperiorHierarquico;
+                                    if (!string.IsNullOrEmpty(SH))
+                                        GUsersWithEmailAlerta.Add(SH);
+                                    GUsersWithEmailAlerta.RemoveAll(x => x == ApproveUser);
+                                }
+                                GUsersWithEmailAlerta = GUsersWithEmailAlerta.Distinct().ToList();
+
+                                GUsersWithEmailAlerta.ForEach(y =>
+                                {
                                     UsersToNotify.Add(y);
                                 });
                             }
@@ -536,7 +670,8 @@ namespace Hydra.Such.Portal.Extensions
                                 SendEmailApprovals Email = new SendEmailApprovals
                                 {
                                     Subject = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Aprovação Pendente" : "eSUCH - Aprovação Pendente" + itemToApproveInfo,
-                                    From = "plataforma@such.pt"
+                                    //From = "plataforma@such.pt"
+                                    From = ApproveUser
                                 };
 
                                 Email.To.Add(e);
@@ -569,7 +704,8 @@ namespace Hydra.Such.Portal.Extensions
                             SendEmailApprovals Email = new SendEmailApprovals
                             {
                                 Subject = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Tarefa aprovada" : "eSUCH - Tarefa aprovada" + itemToApproveInfo,
-                                From = "plataforma@such.pt"
+                                //From = "plataforma@such.pt"
+                                From = ApproveUser
                             };
 
                             Email.To.Add(ApprovalMovement.RequestUser);
@@ -626,16 +762,48 @@ namespace Hydra.Such.Portal.Extensions
                             var approvalConfiguration = ApprovalConfigurations[0];
                             if (approvalConfiguration.UtilizadorAprovação != "" && approvalConfiguration.UtilizadorAprovação != null)
                             {
-                                DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = approvalConfiguration.UtilizadorAprovação });
-                                UsersToNotify.Add(approvalConfiguration.UtilizadorAprovação);
+                                if (approvalConfiguration.UtilizadorAprovação == ApproveUser)
+                                    approvalConfiguration.UtilizadorAprovação = DBUserConfigurations.GetById(ApproveUser).SuperiorHierarquico;
+
+                                if (approvalConfiguration.UtilizadorAprovação != "" && approvalConfiguration.UtilizadorAprovação != null && approvalConfiguration.UtilizadorAprovação != ApproveUser)
+                                {
+                                    DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = approvalConfiguration.UtilizadorAprovação });
+                                    UsersToNotify.Add(approvalConfiguration.UtilizadorAprovação);
+                                }
                             }
                             else if (approvalConfiguration.GrupoAprovação.HasValue)
                             {
                                 List<string> GUsers = DBApprovalUserGroup.GetAllFromGroup(approvalConfiguration.GrupoAprovação.Value);
+                                if (GUsers.Exists(x => x == ApproveUser))
+                                {
+                                    string SH = DBUserConfigurations.GetById(ApproveUser).SuperiorHierarquico;
+                                    if (!string.IsNullOrEmpty(SH))
+                                        GUsers.Add(SH);
+                                    GUsers.RemoveAll(x => x == ApproveUser);
+                                }
+                                GUsers = GUsers.Distinct().ToList();
 
                                 GUsers.ForEach(y =>
                                 {
-                                    DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = y });
+                                    if (y != "" && y != null && y != ApproveUser)
+                                    {
+                                        DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = y });
+                                        //UsersToNotify.Add(y);
+                                    }
+                                });
+
+                                List<string> GUsersWithEmailAlerta = DBApprovalUserGroup.GetAllFromGroupWithEmailAlerta(approvalConfiguration.GrupoAprovação.Value);
+                                if (GUsersWithEmailAlerta.Exists(x => x == ApproveUser))
+                                {
+                                    string SH = DBUserConfigurations.GetById(ApproveUser).SuperiorHierarquico;
+                                    if (!string.IsNullOrEmpty(SH))
+                                        GUsersWithEmailAlerta.Add(SH);
+                                    GUsersWithEmailAlerta.RemoveAll(x => x == ApproveUser);
+                                }
+                                GUsersWithEmailAlerta = GUsersWithEmailAlerta.Distinct().ToList();
+
+                                GUsersWithEmailAlerta.ForEach(y =>
+                                {
                                     UsersToNotify.Add(y);
                                 });
                             }
@@ -660,7 +828,8 @@ namespace Hydra.Such.Portal.Extensions
                                 SendEmailApprovals Email = new SendEmailApprovals
                                 {
                                     Subject = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Aprovação Pendente" : "eSUCH - Aprovação Pendente" + itemToApproveInfo,
-                                    From = "plataforma@such.pt"
+                                    //From = "plataforma@such.pt"
+                                    From = ApproveUser
                                 };
 
                                 Email.To.Add(e);
@@ -693,7 +862,8 @@ namespace Hydra.Such.Portal.Extensions
                             SendEmailApprovals Email = new SendEmailApprovals
                             {
                                 Subject = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Tarefa aprovada" : "eSUCH - Tarefa aprovada" + itemToApproveInfo,
-                                From = "plataforma@such.pt"
+                                //From = "plataforma@such.pt"
+                                From = ApproveUser
                             };
 
                             Email.To.Add(ApprovalMovement.RequestUser);
@@ -730,6 +900,71 @@ namespace Hydra.Such.Portal.Extensions
                 {
                     eReasonCode = 351,
                     eMessage = "Ocorreu um erro desconhecido ao aprovar a tarefa."
+                };
+            }
+        }
+
+        //100 - Tarefa rejeitada com sucesso
+        //101 - Erro desconhecido
+        public static ErrorHandler RejectMovement(int movementNo, string rejectUser, string rejectReason)
+        {
+            try
+            {
+                //Update Old Movement
+                ApprovalMovementsViewModel ApprovalMovement = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetById(movementNo));
+                ApprovalMovement.Status = 3;
+                ApprovalMovement.DateTimeApprove = DateTime.Now;
+                ApprovalMovement.DateTimeUpdate = DateTime.Now;
+                ApprovalMovement.UserUpdate = rejectUser;
+                ApprovalMovement.ReproveReason = rejectReason;
+                ApprovalMovement = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.Update(DBApprovalMovements.ParseToDatabase(ApprovalMovement)));
+
+                //Delete All User Approval Movements
+                DBUserApprovalMovements.DeleteFromMovementExcept(ApprovalMovement.MovementNo, rejectUser);
+
+                string itemToApproveInfo = string.Empty;
+                if (ApprovalMovement.Type.Value == 1 && !string.IsNullOrEmpty(ApprovalMovement.Number))
+                    itemToApproveInfo += " - Requisição " + ApprovalMovement.Number;
+
+                EmailsAprovações EmailApproval = new EmailsAprovações()
+                {
+                    NºMovimento = ApprovalMovement.MovementNo,
+                    EmailDestinatário = ApprovalMovement.RequestUser,
+                    NomeDestinatário = ApprovalMovement.RequestUser,
+                    Assunto = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Tarefa rejeitada" : "eSUCH - Tarefa rejeitada" + itemToApproveInfo,
+                    DataHoraEmail = DateTime.Now,
+                    TextoEmail = "A sua tarefa com o Nº " + ApprovalMovement.Number + " foi rejeitada pelo seguinte motivo \"" + ApprovalMovement.ReproveReason + "\"!",
+                    Enviado = false
+                };
+
+
+                SendEmailApprovals Email = new SendEmailApprovals
+                {
+                    Subject = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Tarefa rejeitada" : "eSUCH - Tarefa rejeitada" + itemToApproveInfo,
+                    //From = "plataforma@such.pt"
+                    From = rejectUser
+                };
+
+                Email.To.Add(ApprovalMovement.RequestUser);
+
+                Email.Body = MakeEmailBodyContent("A sua tarefa com o Nº " + ApprovalMovement.Number + " foi rejeitada pelo seguinte motivo \"" + ApprovalMovement.ReproveReason + "\"!");
+
+                Email.IsBodyHtml = true;
+                Email.EmailApproval = EmailApproval;
+
+                Email.SendEmail();
+                return new ErrorHandler()
+                {
+                    eReasonCode = 100,
+                    eMessage = "Tarefa rejeitada com sucesso."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ErrorHandler()
+                {
+                    eReasonCode = 101,
+                    eMessage = "Ocorreu um erro desconhecido."
                 };
             }
         }
@@ -773,7 +1008,8 @@ namespace Hydra.Such.Portal.Extensions
                 SendEmailApprovals Email = new SendEmailApprovals
                 {
                     Subject = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Tarefa rejeitada" : "eSUCH - Tarefa rejeitada" + itemToApproveInfo,
-                    From = "plataforma@such.pt"
+                    //From = "plataforma@such.pt"
+                    From = rejectUser
                 };
 
                 Email.To.Add(FH.CriadoPor); // ApprovalMovement.RequestUser);
@@ -799,71 +1035,6 @@ namespace Hydra.Such.Portal.Extensions
                 };
             }
         }
-
-        //100 - Tarefa rejeitada com sucesso
-        //101 - Erro desconhecido
-        public static ErrorHandler RejectMovement(int movementNo, string rejectUser, string rejectReason)
-        {
-            try
-            {
-                //Update Old Movement
-                ApprovalMovementsViewModel ApprovalMovement = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetById(movementNo));
-                ApprovalMovement.Status = 3;
-                ApprovalMovement.DateTimeApprove = DateTime.Now;
-                ApprovalMovement.DateTimeUpdate = DateTime.Now;
-                ApprovalMovement.UserUpdate = rejectUser;
-                ApprovalMovement.ReproveReason = rejectReason;
-                ApprovalMovement = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.Update(DBApprovalMovements.ParseToDatabase(ApprovalMovement)));
-
-                //Delete All User Approval Movements
-                DBUserApprovalMovements.DeleteFromMovementExcept(ApprovalMovement.MovementNo, rejectUser);
-
-                string itemToApproveInfo = string.Empty;
-                if (ApprovalMovement.Type.Value == 1 && !string.IsNullOrEmpty(ApprovalMovement.Number))
-                    itemToApproveInfo += " - Requisição " + ApprovalMovement.Number;
-
-                EmailsAprovações EmailApproval = new EmailsAprovações()
-                {
-                    NºMovimento = ApprovalMovement.MovementNo,
-                    EmailDestinatário = ApprovalMovement.RequestUser,
-                    NomeDestinatário = ApprovalMovement.RequestUser,
-                    Assunto = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Tarefa rejeitada" : "eSUCH - Tarefa rejeitada" + itemToApproveInfo,
-                    DataHoraEmail = DateTime.Now,
-                    TextoEmail = "A sua tarefa com o Nº " + ApprovalMovement.Number + " foi rejeitada pelo seguinte motivo \"" + ApprovalMovement.ReproveReason + "\"!",
-                    Enviado = false
-                };
-
-
-                SendEmailApprovals Email = new SendEmailApprovals
-                {
-                    Subject = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Tarefa rejeitada" : "eSUCH - Tarefa rejeitada" + itemToApproveInfo,
-                    From = "plataforma@such.pt"
-                };
-
-                Email.To.Add(ApprovalMovement.RequestUser);
-
-                Email.Body = MakeEmailBodyContent("A sua tarefa com o Nº " + ApprovalMovement.Number + " foi rejeitada pelo seguinte motivo \"" + ApprovalMovement.ReproveReason + "\"!");
-
-                Email.IsBodyHtml = true;
-                Email.EmailApproval = EmailApproval;
-
-                Email.SendEmail();
-                return new ErrorHandler()
-                {
-                    eReasonCode = 100,
-                    eMessage = "Tarefa rejeitada com sucesso."
-                };
-            }
-            catch (Exception ex)
-            {
-                return new ErrorHandler()
-                {
-                    eReasonCode = 101,
-                    eMessage = "Ocorreu um erro desconhecido."
-                };
-            }
-        }
-
 
         public static string MakeEmailBodyContent(string BodyText)
         {

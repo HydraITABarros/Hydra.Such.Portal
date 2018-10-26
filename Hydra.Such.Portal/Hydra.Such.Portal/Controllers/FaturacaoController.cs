@@ -47,9 +47,24 @@ namespace Hydra.Such.Portal.Controllers
         public IActionResult RececaoFaturas()
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.ReceçãoFaturação);
+            UserConfigurationsViewModel userConfig = DBUserConfigurations.GetById(User.Identity.Name).ParseToViewModel();
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.UserPermissions = UPerm;
+                ViewBag.RFPerfil = userConfig.RFPerfil;
+                ViewBag.RFPerfilVisualizacao = userConfig.RFPerfilVisualizacao;
+                ViewBag.UserCanChangeDestination = userConfig.RFAlterarDestinatarios.HasValue ? userConfig.RFAlterarDestinatarios.Value : false;
+
+                bool userCanSeePending = false;
+                if (userConfig.RFPerfilVisualizacao.HasValue)
+                    userCanSeePending = (userConfig.RFPerfilVisualizacao.Value == BillingReceptionUserProfiles.Perfil) | (userConfig.RFPerfilVisualizacao.Value == BillingReceptionUserProfiles.Tudo);
+                ViewBag.UserCanSeePending = userCanSeePending;
+
+                bool userBelongsToProvisioning = false;
+                if (userConfig.RFPerfilVisualizacao.HasValue)
+                    userBelongsToProvisioning = userConfig.RFPerfil.Value == BillingReceptionAreas.Aprovisionamento;
+                ViewBag.UserBelongsToProvisioning = userBelongsToProvisioning;
+
                 return View();
             }
             else
@@ -79,37 +94,52 @@ namespace Hydra.Such.Portal.Controllers
                 return RedirectToAction("AccessDenied", "Error");
             }
         }
-      
 
         public JsonResult GetBillingReceptions()
         {
-            var billingReceptions = billingRecService.GetAllForUser(User.Identity.Name);
+            UserConfigurationsViewModel userConfig = DBUserConfigurations.GetById(User.Identity.Name).ParseToViewModel();
+            var billingReceptions = billingRecService.GetAllForUser(userConfig);
             return Json(billingReceptions);
         }
+
         public JsonResult GetBillingReceptionsHistory()
         {
-
             UserConfigurationsViewModel userConfig = DBUserConfigurations.GetById(User.Identity.Name).ParseToViewModel();
-            BillingReceptionAreas areaPendente= userConfig.RFPerfil ?? BillingReceptionAreas.Aprovisionamento;
-            var billingReceptions = billingRecService.GetAllForUserHist(User.Identity.Name,0, areaPendente);
+            var billingReceptions = billingRecService.GetAllForUserHist(User.Identity.Name, userConfig.RFPerfilVisualizacao);
+
             return Json(billingReceptions);
         }
-        public JsonResult GetBillingReceptionsPendingExcept()
-        {
 
-            UserConfigurationsViewModel userConfig = DBUserConfigurations.GetById(User.Identity.Name).ParseToViewModel();
-            BillingReceptionAreas perfil = userConfig.RFPerfil ?? BillingReceptionAreas.Contabilidade;
-            BillingReceptionUserProfiles perfilVisulalizacao = userConfig.RFPerfilVisualizacao ?? BillingReceptionUserProfiles.Tudo;
-
-            var billingReceptions = billingRecService.GetAllForUserPendingExcept(User.Identity.Name, perfil, perfilVisulalizacao);
-            return Json(billingReceptions);
-        }
         public JsonResult GetBillingReceptionsPending()
         {
-
             UserConfigurationsViewModel userConfig = DBUserConfigurations.GetById(User.Identity.Name).ParseToViewModel();
-            BillingReceptionAreas areaPendente = userConfig.RFPerfil ?? BillingReceptionAreas.Aprovisionamento;
-            var billingReceptions = billingRecService.GetAllForUserPending();
+            var billingReceptions = billingRecService.GetPendingForUser(userConfig.RFPerfil, User.Identity.Name);
+            return Json(billingReceptions);
+            //UserConfigurationsViewModel userConfig = DBUserConfigurations.GetById(User.Identity.Name).ParseToViewModel();
+            //BillingReceptionAreas perfil = userConfig.RFPerfil ?? BillingReceptionAreas.Contabilidade;
+            //BillingReceptionUserProfiles perfilVisulalizacao = userConfig.RFPerfilVisualizacao ?? BillingReceptionUserProfiles.Tudo;
+
+            //var billingReceptions = billingRecService.GetAllForUserPendingExcept(User.Identity.Name, perfil, perfilVisulalizacao);
+            //return Json(billingReceptions);
+        }
+
+        public JsonResult GetBillingReceptionsPendingOnAreas()
+        {
+
+            //UserConfigurationsViewModel userConfig = DBUserConfigurations.GetById(User.Identity.Name).ParseToViewModel();
+            //BillingReceptionAreas areaPendente = userConfig.RFPerfil ?? BillingReceptionAreas.Aprovisionamento;
+            //var billingReceptions = billingRecService.GetAllForUserPending();
+            var billingReceptions = billingRecService.GetPendingOnAreas(User.Identity.Name);
+            return Json(billingReceptions);
+        }
+
+        public JsonResult GetChangeableDestination()
+        {
+
+            //UserConfigurationsViewModel userConfig = DBUserConfigurations.GetById(User.Identity.Name).ParseToViewModel();
+            //BillingReceptionAreas areaPendente = userConfig.RFPerfil ?? BillingReceptionAreas.Aprovisionamento;
+            //var billingReceptions = billingRecService.GetAllForUserPending();
+            var billingReceptions = billingRecService.GetChangeableDestination(User.Identity.Name);
             return Json(billingReceptions);
         }
 
@@ -120,7 +150,6 @@ namespace Hydra.Such.Portal.Controllers
             return Json(billingReception);
         }
 
-      
         [HttpPost]
         public JsonResult CreateBillingReception([FromBody] BillingReceptionModel item)
         {
@@ -224,7 +253,6 @@ namespace Hydra.Such.Portal.Controllers
                 string NovoDestinatario=items[0].Destinatario;
                 foreach (BillingReceptionModel item in items)
                 {
-
                     item.ModificadoPor = User.Identity.Name;
                     BillingRecWorkflowModel workflow = new BillingRecWorkflowModel();
                     item.WorkflowItems.Add(workflow);
@@ -243,13 +271,9 @@ namespace Hydra.Such.Portal.Controllers
                     updatedItem = billingRecService.CreateWorkFlowSend(item, workflow, User.Identity.Name);
                     if (updatedItem == null)
                     {
-
                         item.eReasonCode = 2;
                         updatedItem = item;
-
                     }
-
-
                 }
             }
             else
@@ -261,7 +285,6 @@ namespace Hydra.Such.Portal.Controllers
             }
             return Json(updatedItem);
         }
-
 
         [HttpPost]
         public JsonResult SendBillingReception([FromBody] BillingReceptionModel item)
@@ -282,7 +305,6 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     updatedItem.eReasonCode = 1;
                     updatedItem.eMessage = "Registo atualizado com sucesso";
-                    
                 }
                 else
                 {
@@ -300,7 +322,6 @@ namespace Hydra.Such.Portal.Controllers
             return Json(updatedItem);
         }
 
-       
         [HttpPost]
         public JsonResult GetWorkflowAttached([FromBody] BillingRecWorkflowModel item)
         {
@@ -308,7 +329,6 @@ namespace Hydra.Such.Portal.Controllers
             return Json(items);
         }
 
-         
         [HttpPost]
         public JsonResult UpdateWorkFlow([FromBody] BillingReceptionModel item)
         {
@@ -357,7 +377,21 @@ namespace Hydra.Such.Portal.Controllers
             {
                 try
                 {
-                    postedDocument = billingRecService.PostDocument(item, User.Identity.Name, _config, _configws);
+                    UserConfigurationsViewModel userConfig = DBUserConfigurations.GetById(User.Identity.Name).ParseToViewModel();
+                    string serialNumber = string.Empty;
+                    switch (item.TipoDocumento)
+                    {
+                        case BillingDocumentTypes.Fatura:
+                            if(item.Id.StartsWith("CF"))
+                                serialNumber = userConfig.NumSeriePreFaturasCompraCF;
+                            else if (item.Id.StartsWith("CP"))
+                                serialNumber = userConfig.NumSeriePreFaturasCompraCP;
+                            break;
+                        case BillingDocumentTypes.NotaCredito:
+                            serialNumber = userConfig.NumSerieNotasCreditoCompra;
+                            break;
+                    }
+                    postedDocument = billingRecService.PostDocument(item, User.Identity.Name, serialNumber, _config, _configws);
                     item = postedDocument;
                 }
                 catch (Exception ex)
@@ -461,7 +495,7 @@ namespace Hydra.Such.Portal.Controllers
             int userPendingProfile = (int)DBUserConfigurations.GetById(user).Rfperfil;
             return Json(userPendingProfile);
         }
-            
+
 
         [HttpPost]
         public JsonResult GetAnswers([FromBody] BillingReceptionModel data)
@@ -543,7 +577,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpGet]
         public JsonResult GetAreasUPUAS()
         {
-            List<DDMessageRelated> result = billingRecService.GetAreasUPUAS().Select(x => new DDMessageRelated()
+            List<DDMessageRelated> result = billingRecService.GetAreasUPUAS(string.Empty).Select(x => new DDMessageRelated()
             {
                 id = ExtractAreaFromConfigId(x.Codigo),
                 value = x.CodArea,
@@ -561,7 +595,8 @@ namespace Hydra.Such.Portal.Controllers
             List<DDMessageRelated> result = billingRecService.GetDimensionsForArea(areaId).Select(x => new DDMessageRelated()
             {
                 id = x.CodCentroResponsabilidade,
-                value = x.CodCentroResponsabilidade
+                value = x.CodCentroResponsabilidade,
+                extra = x.Destinatario
             })
             .Distinct()
             .ToList();
@@ -574,11 +609,14 @@ namespace Hydra.Such.Portal.Controllers
         { 
             string area = string.Empty;
             bool byNumber = false;
+            string respCenter = string.Empty;
 
             if (requestParams != null)
             {
                 area = requestParams["area"].ToString();
                 bool.TryParse(requestParams["byNumber"].ToString(), out byNumber);
+                if(requestParams["respCenter"] != null)
+                    respCenter = requestParams["respCenter"].ToString();
             }
 
             List<DDMessageRelated> result = null;
@@ -594,7 +632,7 @@ namespace Hydra.Such.Portal.Controllers
             }
             else
             {
-                result = billingRecService.GetUsersToResendByAreaName(area).Select(x => new DDMessageRelated()
+                result = billingRecService.GetUsersToResendByAreaName(area, respCenter).Select(x => new DDMessageRelated()
                 {
                     id = x.Destinatario,
                     value = x.Destinatario
@@ -1023,28 +1061,41 @@ namespace Hydra.Such.Portal.Controllers
         [Route("Faturacao/ExistFile")]
         public JsonResult ExistFile()
         {
+            ErrorHandler result = new ErrorHandler();
             try
             {
-              
+                result.eReasonCode = 1;
                 var files = Request.Form.Files;
-                string full_filename;
                 foreach (var file in files)
                 {
-                    string filename = Path.GetFileName(file.FileName);
-                    full_filename = filename;
-                    var path = Path.Combine(_generalConfig.FileUploadFolder, full_filename);
+                    string extension = Path.GetExtension(file.FileName);
+                    string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file.FileName);
+                    string dateToken = DateTime.Now.ToString("yy") + DateTime.Now.Month.ToString() + DateTime.Now.Day.ToString() + DateTime.Now.Hour.ToString() + DateTime.Now.Minute.ToString() + DateTime.Now.Second.ToString();
 
+                    string fileName = string.Format("{0}_{1}{2}", fileNameWithoutExtension, dateToken, extension);
+
+                    var path = Path.Combine(_generalConfig.FileUploadFolder, fileName);
                     if (System.IO.File.Exists(path))
                     {
-                        throw new System.ArgumentException();
+                        result.eReasonCode = 2;
+                        result.eMessage = "O ficheiro já existe";
+                    }
+                    else
+                    {
+                        using (FileStream dd = new FileStream(path, FileMode.CreateNew))
+                        {
+                            file.CopyTo(dd);
+                            dd.Dispose();
+                        }
                     }
                 } 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                result.eReasonCode = 2;
+                result.eMessage = ex.Message;
             }
-            return Json("");
+            return Json(result);
         }
 
         public JsonResult UploadFile(BillingRecWorkflowModel workflow)

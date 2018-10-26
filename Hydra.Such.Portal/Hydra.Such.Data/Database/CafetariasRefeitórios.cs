@@ -26,7 +26,6 @@ namespace Hydra.Such.Data.Database
         public string UtilizadorCriação { get; set; }
         public int? NºRefeições { get; set; }
 
-        public Projetos NºProjetoNavigation { get; set; }
         public UnidadesProdutivas NºUnidadeProdutivaNavigation { get; set; }
     }
 }

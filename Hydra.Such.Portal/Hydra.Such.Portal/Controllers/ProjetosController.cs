@@ -1228,92 +1228,103 @@ namespace Hydra.Such.Portal.Controllers
             //SET INTEGRATED IN DB
             if (dp != null)
             {
-                Guid transactID = Guid.NewGuid();
-                try
-                {
-                    //Create Lines in NAV
-                    Task<WSCreateProjectDiaryLine.CreateMultiple_Result> TCreateNavDiaryLine = WSProjectDiaryLine.CreateNavDiaryLines(dp, transactID, _configws);
-                    TCreateNavDiaryLine.Wait();
-                }
-                catch (Exception ex)
+                bool hasItemsWithoutDimensions = dp.Any(x => string.IsNullOrEmpty(x.RegionCode) ||
+                                                            string.IsNullOrEmpty(x.FunctionalAreaCode) ||
+                                                            string.IsNullOrEmpty(x.ResponsabilityCenterCode));
+                if (hasItemsWithoutDimensions)
                 {
                     result.eReasonCode = 2;
-                    result.eMessage = "Não foi possivel registar: " + ex.Message;
-                    return Json(result);
+                    result.eMessage = "Existem linhas inválidas: a Região, Área Funcional e Centro de Responsabilidade são obrigatórios.";
                 }
-
-                try
+                else
                 {
-                    ////Register Lines in NAV
-                    Task<WSGenericCodeUnit.FxPostJobJrnlLines_Result> TRegisterNavDiaryLine = WSProjectDiaryLine.RegsiterNavDiaryLines(transactID, _configws);
-                    TRegisterNavDiaryLine.Wait();
-
-                    //if (TRegisterNavDiaryLine == null)
-                    //{
-                    //    Response.StatusCode = (int)HttpStatusCode.NoContent;
-                    //    return Json(result);
-                    //}
-                }
-                catch (Exception ex)
-                {
-                    //Response.StatusCode = (int)HttpStatusCode.NoContent;
-                    //return Json(result);
-                }
-
-                dp.ForEach(x =>
-                {
-                    if (x.Code != null)
+                    Guid transactID = Guid.NewGuid();
+                    try
                     {
-                        DiárioDeProjeto newdp = DBProjectDiary.GetAllByCode(User.Identity.Name, x.Code);
-                        if (newdp != null)
+                        //Create Lines in NAV
+                        Task<WSCreateProjectDiaryLine.CreateMultiple_Result> TCreateNavDiaryLine = WSProjectDiaryLine.CreateNavDiaryLines(dp, transactID, _configws);
+                        TCreateNavDiaryLine.Wait();
+                    }
+                    catch (Exception ex)
+                    {
+                        result.eReasonCode = 2;
+                        result.eMessage = "Não foi possivel registar: " + ex.Message;
+                        return Json(result);
+                    }
+
+                    try
+                    {
+                        ////Register Lines in NAV
+                        Task<WSGenericCodeUnit.FxPostJobJrnlLines_Result> TRegisterNavDiaryLine = WSProjectDiaryLine.RegsiterNavDiaryLines(transactID, _configws);
+                        TRegisterNavDiaryLine.Wait();
+
+                        //if (TRegisterNavDiaryLine == null)
+                        //{
+                        //    Response.StatusCode = (int)HttpStatusCode.NoContent;
+                        //    return Json(result);
+                        //}
+                    }
+                    catch (Exception ex)
+                    {
+                        //Response.StatusCode = (int)HttpStatusCode.NoContent;
+                        //return Json(result);
+                    }
+
+                    dp.ForEach(x =>
+                    {
+                        if (x.Code != null)
                         {
+                            DiárioDeProjeto newdp = DBProjectDiary.GetAllByCode(User.Identity.Name, x.Code);
+                            if (newdp != null)
+                            {
                             //newdp.Registado = true;
                             //newdp.UtilizadorModificação = User.Identity.Name;
                             //newdp.DataHoraModificação = DateTime.Now;
                             DBProjectDiary.Delete(newdp);
 
-                            MovimentosDeProjeto ProjectMovement = new MovimentosDeProjeto()
-                            {
+                                MovimentosDeProjeto ProjectMovement = new MovimentosDeProjeto()
+                                {
                                 //NºLinha = newdp.NºLinha,
                                 NºProjeto = newdp.NºProjeto,
-                                Data = newdp.Data,
-                                TipoMovimento = newdp.TipoMovimento,
-                                Tipo = newdp.Tipo,
-                                Código = newdp.Código,
-                                Descrição = newdp.Descrição,
-                                Quantidade = newdp.Quantidade,
-                                CódUnidadeMedida = newdp.CódUnidadeMedida,
-                                CódLocalização = newdp.CódLocalização,
-                                GrupoContabProjeto = newdp.GrupoContabProjeto,
-                                CódigoRegião = newdp.CódigoRegião,
-                                CódigoÁreaFuncional = newdp.CódigoÁreaFuncional,
-                                CódigoCentroResponsabilidade = newdp.CódigoCentroResponsabilidade,
-                                Utilizador = User.Identity.Name,
-                                CustoUnitário = newdp.CustoUnitário,
-                                CustoTotal = newdp.CustoTotal,
-                                PreçoUnitário = newdp.PreçoUnitário,
-                                PreçoTotal = newdp.PreçoTotal,
-                                Faturável = newdp.Faturável,
-                                Registado = true,
-                                Faturada = false,
-                                FaturaANºCliente = newdp.FaturaANºCliente,
-                                Moeda = newdp.Moeda,
-                                ValorUnitárioAFaturar = newdp.ValorUnitárioAFaturar,
-                                TipoRefeição = newdp.TipoRefeição,
-                                CódGrupoServiço = newdp.CódGrupoServiço,
-                                NºGuiaResíduos = newdp.NºGuiaResíduos,
-                                NºGuiaExterna = newdp.NºGuiaExterna,
-                                DataConsumo = newdp.DataConsumo,
-                                CódServiçoCliente = newdp.CódServiçoCliente,
-                                UtilizadorCriação = User.Identity.Name,
-                                DataHoraCriação = DateTime.Now,
-                                FaturaçãoAutorizada = false,
-                            };
+                                    Data = newdp.Data,
+                                    TipoMovimento = newdp.TipoMovimento,
+                                    Tipo = newdp.Tipo,
+                                    Código = newdp.Código,
+                                    Descrição = newdp.Descrição,
+                                    Quantidade = newdp.Quantidade,
+                                    CódUnidadeMedida = newdp.CódUnidadeMedida,
+                                    CódLocalização = newdp.CódLocalização,
+                                    GrupoContabProjeto = newdp.GrupoContabProjeto,
+                                    CódigoRegião = newdp.CódigoRegião,
+                                    CódigoÁreaFuncional = newdp.CódigoÁreaFuncional,
+                                    CódigoCentroResponsabilidade = newdp.CódigoCentroResponsabilidade,
+                                    Utilizador = User.Identity.Name,
+                                    CustoUnitário = newdp.CustoUnitário,
+                                    CustoTotal = newdp.CustoTotal,
+                                    PreçoUnitário = newdp.PreçoUnitário,
+                                    PreçoTotal = newdp.PreçoTotal,
+                                    Faturável = newdp.Faturável,
+                                    Registado = true,
+                                    Faturada = false,
+                                    FaturaANºCliente = newdp.FaturaANºCliente,
+                                    Moeda = newdp.Moeda,
+                                    ValorUnitárioAFaturar = newdp.ValorUnitárioAFaturar,
+                                    TipoRefeição = newdp.TipoRefeição,
+                                    CódGrupoServiço = newdp.CódGrupoServiço,
+                                    NºGuiaResíduos = newdp.NºGuiaResíduos,
+                                    NºGuiaExterna = newdp.NºGuiaExterna,
+                                    DataConsumo = newdp.DataConsumo,
+                                    CódServiçoCliente = newdp.CódServiçoCliente,
+                                    UtilizadorCriação = User.Identity.Name,
+                                    DataHoraCriação = DateTime.Now,
+                                    FaturaçãoAutorizada = false,
+                                };
 
-                            DBProjectMovements.Create(ProjectMovement);
+                                DBProjectMovements.Create(ProjectMovement);
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
             else
             {
@@ -1850,12 +1861,13 @@ namespace Hydra.Such.Portal.Controllers
                 if (billingPeriodValue != null)
                     billingPeriod = (string)billingPeriodValue.Value;
 
-                decimal authorizationTotal;
+                decimal authorizationTotal = 0;
                 JValue authorizationTotalValue = requestParams["authorizationTotalValue"] as JValue;
                 if (authorizationTotalValue != null)
                 {
-                    string str = (string)authorizationTotalValue.Value;
-                    authorizationTotal = decimal.Parse(str, CultureInfo.InvariantCulture);
+                    string str = authorizationTotalValue.Value as string;
+                    if (!string.IsNullOrEmpty(str))
+                        authorizationTotal = decimal.Parse(str, CultureInfo.InvariantCulture);
                 }
 
                 string projectObs = string.Empty;
@@ -1900,7 +1912,7 @@ namespace Hydra.Such.Portal.Controllers
                         authorizedProject.CodContrato = contract?.NºDeContrato;
                         authorizedProject.CodTermosPagamento = contract != null ? contract.CódTermosPagamento : customer?.PaymentTermsCode;
                         authorizedProject.CodMetodoPagamento = customer?.PaymentMethodCode;
-                        authorizedProject.CodRegiao = customer.National ? project.CódigoRegião : customer.RegionCode;
+                        authorizedProject.CodRegiao = customer.National || customer.InternalClient ? project.CódigoRegião : customer.RegionCode;
                         authorizedProject.CodAreaFuncional = project.CódigoÁreaFuncional;
                         authorizedProject.CodCentroResponsabilidade = project.CódigoCentroResponsabilidade;
                         authorizedProject.PedidoCliente = customerRequestNo;
@@ -2077,14 +2089,26 @@ namespace Hydra.Such.Portal.Controllers
 
                 Projetos project = null;
                 Contratos contract = null;
+                NAVClientsViewModel customer = null;
 
                 if (!string.IsNullOrEmpty(projectNo))
                 {
                     project = DBProjects.GetById(projectNo);
                     if (project != null)
+                    {
                         contract = DBContracts.GetByIdLastVersion(project.NºContrato);
+                        customer = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, project.NºCliente);
+                    }
                 }
-                
+
+                if (customer != null)
+                {
+                    if (string.IsNullOrEmpty(customer.RegionCode))
+                        result.eMessages.Add(new TraceInformation(TraceType.Error, "É necessário configurar a região na Ficha do Cliente."));
+                }
+                else
+                    result.eMessages.Add(new TraceInformation(TraceType.Error, "Ocorreu um erro ao validar o cliente."));
+
                 if (project != null)
                 {
                     //Apenas movimentos de projeto faturáveis.
@@ -2113,25 +2137,12 @@ namespace Hydra.Such.Portal.Controllers
                     }
 
                     //Validar se o cliente está ao abrigo da lei dos compromissos
-                    if (string.IsNullOrEmpty(commitmentNumber))
+                    if (string.IsNullOrEmpty(commitmentNumber) && customer != null)
                     {
-                        string customerNo = project.NºCliente;
-                        var customers = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, customerNo);
-                        if (customers != null)
-                        {
-                            var customer = customers.FirstOrDefault();
-                            if (customer != null)
-                            {
-                                if (customer.UnderCompromiseLaw)
-                                    result.eMessages.Add(new TraceInformation(TraceType.Error, "O cliente está ao abrigo da lei de compromissos."));
-                                else
-                                    result.eMessages.Add(new TraceInformation(TraceType.Warning, "Não foi indicado um Nº do Compromisso."));
-                            }
-                            else
-                                result.eMessages.Add(new TraceInformation(TraceType.Error, "Ocorreu um erro ao validar o cliente.")); 
-                        }
+                        if (customer.UnderCompromiseLaw)
+                            result.eMessages.Add(new TraceInformation(TraceType.Error, "O cliente está ao abrigo da lei de compromissos."));
                         else
-                            result.eMessages.Add(new TraceInformation(TraceType.Error, "Ocorreu um erro ao validar o cliente."));
+                            result.eMessages.Add(new TraceInformation(TraceType.Warning, "Não foi indicado um Nº do Compromisso."));
                     }
 
                     Configuração conf = DBConfigurations.GetById(1);

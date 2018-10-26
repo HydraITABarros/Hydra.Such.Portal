@@ -2187,6 +2187,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             bool registado = false;
             ErrorHandler result = new ErrorHandler();
+            ContractViewModel Contract = null;
             if (requestParams["Contrato"].ToString() != null && requestParams["LinhasContrato"].ToString() != null)
             {
               
@@ -2198,7 +2199,7 @@ namespace Hydra.Such.Portal.Controllers
                 bool hasErrors = false;
                 
 
-                ContractViewModel Contract = JsonConvert.DeserializeObject<ContractViewModel>(requestParams["Contrato"].ToString());
+                Contract = JsonConvert.DeserializeObject<ContractViewModel>(requestParams["Contrato"].ToString());
                 List<ContractLineViewModel> ContractLines = JsonConvert.DeserializeObject<List<ContractLineViewModel>>(requestParams["LinhasContrato"].ToString());
                 string groupInvoice = requestParams["GrupoFatura"].ToString();
                 List<int> groups = new List<int>();
@@ -2227,10 +2228,18 @@ namespace Hydra.Such.Portal.Controllers
                         proj.ResponsabilityCenterCode = Contract.CodeResponsabilityCenter;
                         proj.FunctionalAreaCode = Contract.CodeFunctionalArea;
                         proj.Description = Contract.Description;
-                        Task<WSCreateNAVProject.Create_Result> createProject = WSProject.CreateNavProject(proj, _configws);
-                        createProject.Wait();
+                        try
+                        {
+                            Task<WSCreateNAVProject.Create_Result> createProject = WSProject.CreateNavProject(proj, _configws);
+                            createProject.Wait();
+                        }
+                        catch (Exception ex)
+                        {
+                            result.eReasonCode = 3;
+                            result.eMessage = "Ocorreu um erro ao criar projeto: " + ex.Message;
+                            return Json(result);
+                        }
                     }
-
                  
                     DateTime dataInicio;
                     DateTime dataFim;
@@ -2246,7 +2255,7 @@ namespace Hydra.Such.Portal.Controllers
 
                     //UPDATE LASTINVOICEDATE
                     Contract.LastInvoiceDate = dataFim.ToString("dd/MM/yyyy");
-                    DBContracts.Update(DBContracts.ParseToDB(Contract));
+                    //DBContracts.Update(DBContracts.ParseToDB(Contract));
 
                     //CREATE SALES HEADER
                     NAVSalesHeaderViewModel PreInvoiceToCreate = new NAVSalesHeaderViewModel();
@@ -2315,6 +2324,7 @@ namespace Hydra.Such.Portal.Controllers
                                     {
                                         LinhasFaturaçãoContrato PreInvoiceLinesToCreate = new LinhasFaturaçãoContrato();
                                         PreInvoiceLinesToCreate.Tipo = line.Type.Value.ToString();
+                                        PreInvoiceLinesToCreate.Código = line.Code;
                                         PreInvoiceLinesToCreate.Descrição = line.Description;
                                         PreInvoiceLinesToCreate.CódUnidadeMedida = line.CodeMeasureUnit;
                                         PreInvoiceLinesToCreate.CódigoÁreaFuncional = line.CodeFunctionalArea;
@@ -2357,7 +2367,10 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         foreach (ContractLineViewModel line in ContractLines)
                         {
-                            if (groups.Find(x => x == line.InvoiceGroup) == 0)
+                            if (!line.InvoiceGroup.HasValue)
+                                line.InvoiceGroup = 0;
+
+                            if (!groups.Contains(line.InvoiceGroup.Value))
                             {
                                 groups.Add(line.InvoiceGroup ?? 0);
                             }
@@ -2392,6 +2405,7 @@ namespace Hydra.Such.Portal.Controllers
                                     {
                                         LinhasFaturaçãoContrato PreInvoiceLinesToCreate = new LinhasFaturaçãoContrato();
                                         PreInvoiceLinesToCreate.Tipo = line.Type.Value.ToString();
+                                        PreInvoiceLinesToCreate.Código = line.Code;
                                         PreInvoiceLinesToCreate.Descrição = line.Description;
                                         PreInvoiceLinesToCreate.CódUnidadeMedida = line.CodeMeasureUnit;
                                         PreInvoiceLinesToCreate.CódigoÁreaFuncional = line.CodeFunctionalArea;
@@ -2439,6 +2453,9 @@ namespace Hydra.Such.Portal.Controllers
             }
             else
             {
+                if(Contract != null && registado)
+                    DBContracts.Update(DBContracts.ParseToDB(Contract));
+
                 return Json(registado);
             }
         }

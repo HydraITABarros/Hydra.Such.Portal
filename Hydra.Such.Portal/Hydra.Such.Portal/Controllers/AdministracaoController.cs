@@ -43,6 +43,8 @@ using Hydra.Such.Data.Logic.Request;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
+using Hydra.Such.Data.ViewModel.CCP;
+
 namespace Hydra.Such.Portal.Controllers
 {
     [Authorize]
@@ -155,9 +157,13 @@ namespace Hydra.Such.Portal.Controllers
                 result.RFAlterarDestinatarios = userConfig.RfalterarDestinatarios;
                 result.RFMailEnvio = userConfig.RfmailEnvio;
                 result.NumSerieFaturas = userConfig.NumSerieFaturas;
+                result.NumSeriePreFaturasCompraCF = userConfig.NumSeriePreFaturasCompraCf;
+                result.NumSeriePreFaturasCompraCP = userConfig.NumSeriePreFaturasCompraCp;
+                result.NumSerieNotasCreditoCompra = userConfig.NumSerieNotasCreditoCompra;
                 result.NumSerieNotasCredito = userConfig.NumSerieNotasCredito;
                 result.NumSerieNotasDebito = userConfig.NumSerieNotasDebito;
                 result.Centroresp = userConfig.CentroDeResponsabilidade;
+                result.SuperiorHierarquico = userConfig.SuperiorHierarquico;
 
                 result.UserAccesses = DBUserAccesses.GetByUserId(data.IdUser).Select(x => new UserAccessesViewModel()
                 {
@@ -210,9 +216,13 @@ namespace Hydra.Such.Portal.Controllers
                 RfalterarDestinatarios = data.RFAlterarDestinatarios,
                 RfmailEnvio = data.RFMailEnvio,
                 NumSerieFaturas = data.NumSerieFaturas,
+                NumSeriePreFaturasCompraCf = data.NumSeriePreFaturasCompraCF,
+                NumSeriePreFaturasCompraCp = data.NumSeriePreFaturasCompraCP,
+                NumSerieNotasCreditoCompra = data.NumSerieNotasCreditoCompra,
                 NumSerieNotasCredito = data.NumSerieNotasCredito,
                 NumSerieNotasDebito = data.NumSerieNotasDebito,
                 CentroDeResponsabilidade=data.Centroresp,
+                SuperiorHierarquico = data.SuperiorHierarquico
         });
 
             data.IdUser = ObjectCreated.IdUtilizador;
@@ -281,9 +291,13 @@ namespace Hydra.Such.Portal.Controllers
                 userConfig.RfalterarDestinatarios = data.RFAlterarDestinatarios;
                 userConfig.RfmailEnvio = data.RFMailEnvio;
                 userConfig.NumSerieFaturas = data.NumSerieFaturas;
+                userConfig.NumSeriePreFaturasCompraCf = data.NumSeriePreFaturasCompraCF;
+                userConfig.NumSeriePreFaturasCompraCp = data.NumSeriePreFaturasCompraCP;
+                userConfig.NumSerieNotasCreditoCompra = data.NumSerieNotasCreditoCompra;
                 userConfig.NumSerieNotasCredito = data.NumSerieNotasCredito;
                 userConfig.NumSerieNotasDebito = data.NumSerieNotasDebito;
                 userConfig.CentroDeResponsabilidade = data.Centroresp;
+                userConfig.SuperiorHierarquico = data.SuperiorHierarquico;
 
                 DBUserConfigurations.Update(userConfig);
 
@@ -581,10 +595,13 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult CopiarAcessosUtilizador([FromBody] AccessProfileModelView data)
         {
+            ErrorHandler result = new ErrorHandler();
             int AcessosCopiados = 0;
+            int LocalizacoesCopiados = 0;
             string IdUtilizadorOriginal = data.CreateUser; // "nunorato@such.pt";
             string IdUtilizadorDestino = data.UpdateUser; // "ARomao@such.pt";
 
+            //COPIAR ACESSOS
             List<AcessosUtilizador> ListaAcessosOriginal = DBUserAccesses.GetByUserId(IdUtilizadorOriginal);
             List<AcessosUtilizador> ListaAcessosDestino = DBUserAccesses.GetByUserId(IdUtilizadorDestino);
 
@@ -610,7 +627,31 @@ namespace Hydra.Such.Portal.Controllers
                 }
             });
 
-            return Json(AcessosCopiados);
+            //COPIAR LOCALIZAÇÕES
+            List<AcessosLocalizacoes> ListaLocalizacoesOriginal = DBAcessosLocalizacoes.GetByUserId(IdUtilizadorOriginal);
+            List<AcessosLocalizacoes> ListaLocalizacoesDestino = DBAcessosLocalizacoes.GetByUserId(IdUtilizadorDestino);
+
+            ListaLocalizacoesOriginal.ForEach(Localizacao =>
+            {
+                if (ListaLocalizacoesDestino.Where(x => x.Localizacao == Localizacao.Localizacao).Count() == 0)
+                {
+                    AcessosLocalizacoes CopiarLocalizacao = new AcessosLocalizacoes();
+                    CopiarLocalizacao.IdUtilizador = IdUtilizadorDestino;
+                    CopiarLocalizacao.Localizacao = Localizacao.Localizacao;
+                    CopiarLocalizacao.DataHoraCriacao = DateTime.Now;
+                    CopiarLocalizacao.UtilizadorCriacao = User.Identity.Name;
+                    CopiarLocalizacao.DataHoraModificacao = (DateTime?)null;
+                    CopiarLocalizacao.UtilizadorModificacao = null;
+
+                    if (DBAcessosLocalizacoes.Create(CopiarLocalizacao) != null)
+                        LocalizacoesCopiados = LocalizacoesCopiados + 1;
+                }
+            });
+
+            result.eReasonCode = 1;
+            result.eMessage = "Foram copiados com sucesso " + AcessosCopiados.ToString() + " acessos e " + LocalizacoesCopiados.ToString() + " localizações.";
+
+            return Json(result);
         }
 
         #endregion
@@ -4638,7 +4679,26 @@ namespace Hydra.Such.Portal.Controllers
         {
             string eReasonCode = "";
             //Create new 
+            data.CreateUser = User.Identity.Name;
             eReasonCode = DBApprovalUserGroup.Create(DBApprovalUserGroup.ParseToDb(data)) == null ? "101" : "";
+
+            if (String.IsNullOrEmpty(eReasonCode))
+            {
+                return Json(data);
+            }
+            else
+            {
+                return Json(eReasonCode);
+            }
+
+        }
+
+        public JsonResult UpdateLinhaGrupoAprovacao([FromBody] ApprovalUserGroupViewModel data)
+        {
+            string eReasonCode = "";
+            //Update 
+            data.UpdateUser = User.Identity.Name;
+            eReasonCode = DBApprovalUserGroup.Update(DBApprovalUserGroup.ParseToDb(data)) == null ? "101" : "";
 
             if (String.IsNullOrEmpty(eReasonCode))
             {
@@ -6274,6 +6334,21 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
+        public IActionResult ConfiguracaoTemposCCP()
+        {
+            //UserAccessesViewModel UPerm= GetPermissions("Administracao");
+            UserAccessesViewModel userPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminGeral);
+            if (userPerm != null && userPerm.Read.Value)
+            {
+                ViewBag.UPermissions = userPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
         [HttpPost]
         public JsonResult GetConfiguracaoCCP()
         {
@@ -6311,6 +6386,50 @@ namespace Hydra.Such.Portal.Controllers
             DBConfiguracaoCCP.Update(CCP);
 
             return Json(data);
+        }
+
+        [HttpPost]
+        public JsonResult GetConfiguracaoTemposCcp()
+        {
+            List<ConfiguracaoTemposCcpView> result = DBConfiguracaoCCP.GetAllConfiguracaoTemposToView();
+            List<EnumData> CCPTypes = EnumerablesFixed.ProcedimentosCcpType;
+            foreach (var t in result)
+            {
+                t.TipoDescription = CCPTypes.Where(c => c.Id == t.Tipo).FirstOrDefault().Value;
+            }
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult CreateConfigTempos([FromBody] ConfiguracaoTemposCcpView data)
+        {
+            ConfiguraçãoTemposCcp config = CCPFunctions.CastConfigTemposViewToConfigTempos(data);
+            config.UtilizadorCriação = User.Identity.Name;
+            config.DataHoraCriação = DateTime.Now;
+
+            return Json(DBConfiguracaoCCP.CreateConfiguracaoTempo(config));
+        }
+
+        [HttpPost]
+        public JsonResult UpdateConfigTempos([FromBody] ConfiguracaoTemposCcpView data)
+        {
+            ConfiguraçãoTemposCcp config = CCPFunctions.CastConfigTemposViewToConfigTempos(data);
+
+            config.UtilizadorCriação = User.Identity.Name;
+            config.DataHoraModificação = DateTime.Now;
+
+            return Json(DBConfiguracaoCCP.UpdateConfiguracaoTempo(config));
+        }
+
+        public JsonResult DeleteConfigTempos([FromBody] ConfiguracaoTemposCcpView data)
+        {
+            if(data == null)
+            {
+                return Json(false);
+            }
+
+            return Json(DBConfiguracaoCCP.DeleteConfiguracaoTempo(data.Tipo));
         }
         #endregion
 
