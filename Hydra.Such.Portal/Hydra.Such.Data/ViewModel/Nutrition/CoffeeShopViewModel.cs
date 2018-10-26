@@ -8,6 +8,7 @@ namespace Hydra.Such.Data.ViewModel.Nutrition
     {
         public int ProductivityUnitNo { get; set; } = 0;
         public int Type { get; set; } = 0;
+        public string TypeText { get; set; }
         public int Code { get; set; } = 0;
         public string Description { get; set; } = string.Empty;
         public string CodeRegion { get; set; } = string.Empty;

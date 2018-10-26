@@ -201,6 +201,7 @@ namespace Hydra.Such.Data.Logic.Nutrition
             {
                 ProductivityUnitNo = x.NºUnidadeProdutiva,
                 Type = x.Tipo,
+                TypeText = x.Tipo == 1 ? "Cafetaria" : x.Tipo == 2 ? "Refeitório" : "",
                 Code = x.Código,
                 StartDateExploration = x.DataInícioExploração.ToString("yyyy-MM-dd"),
                 EndDateExploration = x.DataFimExploração.HasValue ? x.DataFimExploração.Value.ToString("yyyy-MM-dd") : "",
