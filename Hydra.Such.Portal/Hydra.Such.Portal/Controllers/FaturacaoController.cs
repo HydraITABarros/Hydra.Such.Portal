@@ -382,7 +382,10 @@ namespace Hydra.Such.Portal.Controllers
                     switch (item.TipoDocumento)
                     {
                         case BillingDocumentTypes.Fatura:
-                            serialNumber = userConfig.NumSeriePreFaturasCompra;
+                            if(item.Id.StartsWith("CF"))
+                                serialNumber = userConfig.NumSeriePreFaturasCompraCF;
+                            else if (item.Id.StartsWith("CP"))
+                                serialNumber = userConfig.NumSeriePreFaturasCompraCP;
                             break;
                         case BillingDocumentTypes.NotaCredito:
                             serialNumber = userConfig.NumSerieNotasCreditoCompra;
