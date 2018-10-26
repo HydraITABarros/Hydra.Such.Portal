@@ -513,17 +513,27 @@
                                     <vaadin-grid-filter path="noProcedimento" />
                                 </template>
                                 <template>
-                                    <vaadin-text-field id="tabLinhasnoProcedimento" value="{{item.noProcedimento}}" disabled></vaadin-text-field>
+                                    {{item.noProcedimento}}
                                 </template>
                             </vaadin-grid-column>
 
                             <vaadin-grid-column resizable>
                                 <template class="header">
-                                    <vaadin-grid-sorter path="nomeFornecedor" style="text-align:center;">Nº Fornecedor</vaadin-grid-sorter>
+                                    <vaadin-grid-sorter path="noFornecedor" style="text-align:center;">Nº Fornecedor</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="noFornecedor" />
+                                </template>
+                                <template>
+                                    {{item.noFornecedor}}
+                                </template>
+                            </vaadin-grid-column>
+
+                            <vaadin-grid-column resizable>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="nomeFornecedor" style="text-align:center;">Nome Fornecedor</vaadin-grid-sorter>
                                     <vaadin-grid-filter path="nomeFornecedor" />
                                 </template>
                                 <template>
-                                    <vaadin-text-field id="tabLinhasnomeFornecedor" value="{{item.nomeFornecedor}}" disabled></vaadin-text-field>
+                                    {{item.nomeFornecedor}}
                                 </template>
                             </vaadin-grid-column>
 
@@ -533,7 +543,7 @@
                                     <vaadin-grid-filter path="codProduto" />
                                 </template>
                                 <template>
-                                    <vaadin-text-field id="tabLinhascodProduto" value="{{item.codProduto}}" disabled></vaadin-text-field>
+                                    {{item.codProduto}}
                                 </template>
                             </vaadin-grid-column>
 
@@ -543,7 +553,7 @@
                                     <vaadin-grid-filter path="descricaoProduto" />
                                 </template>
                                 <template>
-                                    <vaadin-text-field id="tabLinhasdescricaoProduto" value="{{item.descricaoProduto}}" disabled></vaadin-text-field>
+                                    {{item.descricaoProduto}}
                                 </template>
                             </vaadin-grid-column>
 
@@ -553,7 +563,7 @@
                                     <vaadin-grid-filter path="dtValidadeInicioTexto" />
                                 </template>
                                 <template>
-                                    <vaadin-text-field id="tabLinhasdtValidadeInicioTexto" value="{{item.dtValidadeInicioTexto}}" disabled></vaadin-text-field>
+                                    {{item.dtValidadeInicioTexto}}
                                 </template>
                             </vaadin-grid-column>
 
@@ -563,47 +573,47 @@
                                     <vaadin-grid-filter path="dtValidadeFimTexto" />
                                 </template>
                                 <template>
-                                    <vaadin-text-field id="tabLinhasdtValidadeFimTexto" value="{{item.dtValidadeFimTexto}}" disabled></vaadin-text-field>
+                                    {{item.dtValidadeFimTexto}}
                                 </template>
                             </vaadin-grid-column>
 
                             <vaadin-grid-column resizable>
                                 <template class="header">
-                                    <vaadin-grid-sorter path="regiaoNome" style="text-align:center;">Região</vaadin-grid-sorter>
-                                    <vaadin-grid-filter path="regiaoNome" />
+                                    <vaadin-grid-sorter path="regiao" style="text-align:center;">Região</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="regiao" />
                                 </template>
                                 <template>
-                                    <vaadin-text-field id="tabLinhasregiaoNome" value="{{item.regiaoNome}}" disabled></vaadin-text-field>
+                                    {{item.regiao}}
                                 </template>
                             </vaadin-grid-column>
 
                             <vaadin-grid-column resizable>
                                 <template class="header">
-                                    <vaadin-grid-sorter path="areaNome" style="text-align:center;">Área</vaadin-grid-sorter>
-                                    <vaadin-grid-filter path="areaNome" />
+                                    <vaadin-grid-sorter path="area" style="text-align:center;">Área</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="area" />
                                 </template>
                                 <template>
-                                    <vaadin-text-field id="tabLinhasareaNome" value="{{item.areaNome}}" disabled></vaadin-text-field>
+                                    {{item.area}}
                                 </template>
                             </vaadin-grid-column>
 
                             <vaadin-grid-column resizable>
                                 <template class="header">
-                                    <vaadin-grid-sorter path="crespNome" style="text-align:center;">Cresp</vaadin-grid-sorter>
-                                    <vaadin-grid-filter path="crespNome" />
+                                    <vaadin-grid-sorter path="cresp" style="text-align:center;">Cresp</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="cresp" />
                                 </template>
                                 <template>
-                                    <vaadin-text-field id="tabLinhascrespNome" value="{{item.crespNome}}" disabled></vaadin-text-field>
+                                    {{item.cresp}}
                                 </template>
                             </vaadin-grid-column>
 
                             <vaadin-grid-column resizable>
                                 <template class="header">
-                                    <vaadin-grid-sorter path="localizacaoNome" style="text-align:center;">Cód. Localização</vaadin-grid-sorter>
-                                    <vaadin-grid-filter path="localizacaoNome" />
+                                    <vaadin-grid-sorter path="localizacao" style="text-align:center;">Cód. Localização</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="localizacao" />
                                 </template>
                                 <template>
-                                    <vaadin-text-field id="tabLinhaslocalizacaoNome" value="{{item.localizacaoNome}}" disabled></vaadin-text-field>
+                                    {{item.localizacao}}
                                 </template>
                             </vaadin-grid-column>
 
@@ -613,7 +623,7 @@
                                     <vaadin-grid-filter path="custoUnitario" />
                                 </template>
                                 <template>
-                                    <vaadin-text-field id="tabLinhascustoUnitario" value="{{item.custoUnitario}}" disabled></vaadin-text-field>
+                                    {{item.custoUnitario}}
                                 </template>
                             </vaadin-grid-column>
 
@@ -623,7 +633,7 @@
                                     <vaadin-grid-filter path="um" />
                                 </template>
                                 <template>
-                                    <vaadin-text-field id="tabLinhasum" value="{{item.um}}" disabled></vaadin-text-field>
+                                    {{item.um}}
                                 </template>
                             </vaadin-grid-column>
 
@@ -633,7 +643,7 @@
                                     <vaadin-grid-filter path="qtdPorUm" />
                                 </template>
                                 <template>
-                                    <vaadin-text-field id="tabLinhasqtdPorUm" value="{{item.qtdPorUm}}" disabled></vaadin-text-field>
+                                    {{item.qtdPorUm}}
                                 </template>
                             </vaadin-grid-column>
 
@@ -643,7 +653,7 @@
                                     <vaadin-grid-filter path="pesoUnitario" />
                                 </template>
                                 <template>
-                                    <vaadin-text-field id="tabLinhaspesoUnitario" value="{{item.pesoUnitario}}" disabled></vaadin-text-field>
+                                    {{item.pesoUnitario}}
                                 </template>
                             </vaadin-grid-column>
 
@@ -653,7 +663,7 @@
                                     <vaadin-grid-filter path="codProdutoFornecedor" />
                                 </template>
                                 <template>
-                                    <vaadin-text-field id="tabLinhascodProdutoFornecedor" value="{{item.codProdutoFornecedor}}" disabled></vaadin-text-field>
+                                    {{item.codProdutoFornecedor}}
                                 </template>
                             </vaadin-grid-column>
 
@@ -663,7 +673,7 @@
                                     <vaadin-grid-filter path="descricaoProdFornecedor" />
                                 </template>
                                 <template>
-                                    <vaadin-text-field id="tabLinhasdescricaoProdFornecedor" value="{{item.descricaoProdFornecedor}}" disabled></vaadin-text-field>
+                                    {{item.descricaoProdFornecedor}}
                                 </template>
                             </vaadin-grid-column>
 
@@ -673,7 +683,7 @@
                                     <vaadin-grid-filter path="formaEntregaTexto" />
                                 </template>
                                 <template>
-                                    <vaadin-text-field id="tabLinhasformaEntregaTexto" value="{{item.formaEntregaTexto}}" disabled></vaadin-text-field>
+                                    {{item.formaEntregaTexto}}
                                 </template>
                             </vaadin-grid-column>
 
@@ -683,7 +693,7 @@
                                     <vaadin-grid-filter path="tipoPrecoTexto" />
                                 </template>
                                 <template>
-                                    <vaadin-text-field id="tabLinhastipoPrecoTexto" value="{{item.tipoPrecoTexto}}" disabled></vaadin-text-field>
+                                    {{item.tipoPrecoTexto}}
                                 </template>
                             </vaadin-grid-column>
 
@@ -693,7 +703,7 @@
                                     <vaadin-grid-filter path="grupoRegistoIvaProduto" />
                                 </template>
                                 <template>
-                                    <vaadin-text-field id="tabLinhasgrupoRegistoIvaProduto" value="{{item.grupoRegistoIvaProduto}}" disabled type="number" maxlength="18" pattern="[0-9]*"></vaadin-text-field>
+                                    {{item.grupoRegistoIvaProduto}}
                                 </template>
                             </vaadin-grid-column>
 
@@ -703,7 +713,7 @@
                                     <vaadin-grid-filter path="codCategoriaProduto" />
                                 </template>
                                 <template>
-                                    <vaadin-text-field id="tabLinhascodCategoriaProduto" value="{{item.codCategoriaProduto}}" disabled></vaadin-text-field>
+                                    {{item.codCategoriaProduto}}
                                 </template>
                             </vaadin-grid-column>
 

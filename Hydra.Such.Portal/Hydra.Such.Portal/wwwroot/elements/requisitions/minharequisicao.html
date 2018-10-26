@@ -1282,14 +1282,14 @@
                                     </template>
                                 </vaadin-grid-column>
 
-                                <vaadin-grid-column width="125px" resizable>
+                                <vaadin-grid-column width="200px" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="supplierNo">Fornecedor</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="supplierNo" />
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-combo-box items="[[Suppliers]]" id="_CLGridSupplierNo" name="_CLGridSupplierNo" item-value-path="no_" item-label-path="name" value="{{item.supplierNo}}" on-change="_onSupplierInGridChanged" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLines">
+                                            <!--<vaadin-combo-box items="[[Suppliers]]" id="_CLGridSupplierNo" name="_CLGridSupplierNo" item-value-path="no_" item-label-path="name" value="{{item.supplierNo}}" on-change="_onSupplierInGridChanged" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLines">
                                                 <template>
                                                     <paper-icon-item>
                                                         <paper-item-body two-line>
@@ -1297,7 +1297,16 @@
                                                         </paper-item-body>
                                                     </paper-icon-item>
                                                 </template>
-                                            </vaadin-combo-box>
+                                            </vaadin-combo-box>-->
+                                            <such-selectbox id="_CLGridSupplierNo"
+                                                            items="[[Suppliers]]"
+                                                            value="{{item.supplierNo}}"
+                                                            text-path="name"
+                                                            value-path="no_"
+                                                            fields='[{"field":"no_", "name":"Nº Fornecedor"}, {"field":"name", "name":"Nome"}, {"field":"vatRegistrationNo", "name":"Nº VAT"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Código Postal"}]'
+                                                            on-change="_onSupplierInGridChanged"
+                                                            disabled="{{ !_permissions.update }}">
+                                            </such-selectbox>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             [[ _getSupplierDescription(item.supplierNo) ]]
@@ -1720,7 +1729,6 @@
                                     }
                                 },
                                 callback: function (result) {
-                                    //debugger;
                                     if (result == "") {
                                         TMessageError.text = "É necessário preencher o motivo de rejeição.";
                                         TMessageError.open();
@@ -1765,7 +1773,6 @@
                     }
                 },
                 ready: function () {
-                    //debugger;
                     var _self = this;
 
                     //if (this._sentReqToAprove === 0) { //Não Aprovação
@@ -1905,7 +1912,6 @@
                     return true;
                 },
                 _resetUserInputForLine() {
-                    //debugger;
                     this.$.CBProducts._clearSelection();
                     this.$.txtProductDesciption.value = "";
                     this.$.CBUnitsOfMmeasure.value = "";
@@ -2143,7 +2149,6 @@
                     }
                 },
                 _createRequisitionLine: function () {
-                    //debugger
                     if (this._validateUserInputForLine()) {
                         var newReqLine = {
                             requestNo: this.$.requisitionNo.value,
@@ -2335,7 +2340,6 @@
 
                     if (this.$.txtStatus.value != "") {
                         if (this.$.Vehicle.value == "" & this.$.txtStatus.value != "Pendente") {
-                            //debugger;
                             this.$.CBHeaderProjects.disabled = false;
                             //this.$.CBLineProjects.disabled = false;
                         }
@@ -2421,7 +2425,6 @@
                     }
                 },
                 _printRequisition: function () {
-                    //debugger;;
                     if (this._reportserverurl != undefined) {
                         //window.open(this._reportserverurl + "Requisi%C3%A7%C3%B5es&CodRequisicao=" + this.Requisition.requisitionNo, "_blank");
                         this.$.rptContainer.src = this._reportserverurl + "RequisitionReport&NoRequisicao=" + this.Requisition.requisitionNo;
@@ -2491,7 +2494,6 @@
                     }
                 },
                 _onProductChanged: function (e) {
-                    //debugger;
                     if (e != "") {
                         var item = this.Products.find(x => x.code == e.detail.value);
                         //var item = this.Products.find(x => x.code == e);
@@ -2530,7 +2532,6 @@
                     }
                 },
                 _registTypeResponse: function (e) {
-                    //debugger;
                     if (this.regist.eReasonCode == "1") {
                         this._openToast(this.regist.eMessage);
                         this.Requisition = this.regist;
@@ -2568,7 +2569,6 @@
                     }
                 },
                 _redirectToStatOfPlay: function () {
-                    //debugger;
                     window.location.href = "/GestaoRequisicoes/PontoSituacaoRequisicao/?reqId=" + this._requisitionid;
                     //window.location.href = "/GestaoRequisicoes/PontoSituacaoRequisicao/" + this._requisitionid;
                 },
@@ -2601,7 +2601,6 @@
                             }
                         },
                         callback: function (result) {
-                            //debugger;
                             if (result == "") {
                                 TMessageError.text = "É necessário preencher o motivo de rejeição.";
                                 TMessageError.open();
@@ -2633,7 +2632,6 @@
 
                     if (this.$.txtStatus.value != "") {
                         if (matricula == "" & this.$.txtStatus.value != "Pendente") {
-                            //debugger;
                             this.$.CBHeaderProjects.disabled = false;
                         }
                         else {
@@ -2645,7 +2643,6 @@
                     }
                 },
                 _GetProjetoNoCabecalhoResponse: function (e) {
-                    //debugger;
                     if (this.ProjetoNo == "") {
                         this.$.CBHeaderProjects.value = this.ProjetoNo;
                         this.$.CBHeaderProjects.valueText = this.ProjetoNo;
@@ -2656,7 +2653,6 @@
                 },
 
                 _GetNoProjetoLinha: function (e) {
-                    //debugger;
                     var matricula = this.$.CBVehicles.value;
 
                     if (matricula != "") {
@@ -2670,7 +2666,6 @@
                     this.$.page_GetProjetoNoLinha_ajax.generateRequest();
                 },
                 _GetProjetoNoLinhaResponse: function (e) {
-                    //debugger;
                     if (this.ProjetoNo != "") {
                         this.$.CBLineProjects.value = this.ProjetoNo;
                     }

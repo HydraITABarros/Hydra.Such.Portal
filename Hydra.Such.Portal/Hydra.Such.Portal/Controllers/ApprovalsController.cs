@@ -108,7 +108,22 @@ namespace Hydra.Such.Portal.Controllers
                     Requisição REQ = DBRequest.GetById(x.Number);
 
                     if (REQ != null)
+                    {
                         x.RequisicaoAcordosPrecos = REQ.RequisiçãoNutrição;
+                        x.RequisicaoUrgente = REQ.Urgente;
+                        x.RequisicaoOrcamentoEmAnexo = REQ.Orçamento;
+                        x.RequisicaoImobilizado = REQ.Imobilizado;
+                        x.RequisicaoExclusivo = REQ.Exclusivo;
+                        x.RequisicaoJaExecutado = REQ.JáExecutado;
+                        x.RequisicaoAmostra = REQ.Amostra;
+                        x.RequisicaoEquipamento = REQ.Equipamento;
+                        x.RequisicaoReposicaoDeStock = REQ.ReposiçãoDeStock;
+                        x.RequisicaoPrecoIvaIncluido = REQ.PrecoIvaincluido;
+                        x.RequisicaoAdiantamento = REQ.Adiantamento;
+                        x.RequisicaoPedirOrcamento = REQ.PedirOrcamento;
+                    }
+
+
                 }
             });
 
@@ -858,6 +873,66 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Associado");
                     Col = Col + 1;
                 }
+                if (dp["requisicaoAcordosPrecos"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Req Acordos Preços");
+                    Col = Col + 1;
+                }
+                if (dp["requisicaoUrgente"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Req Urgente");
+                    Col = Col + 1;
+                }
+                if (dp["requisicaoOrcamentoEmAnexo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Req Oçamento Em Anexo");
+                    Col = Col + 1;
+                }
+                if (dp["requisicaoImobilizado"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Req Imobilizado");
+                    Col = Col + 1;
+                }
+                if (dp["requisicaoExclusivo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Req Exclusivo");
+                    Col = Col + 1;
+                }
+                if (dp["requisicaoJaExecutado"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Req Já Executado");
+                    Col = Col + 1;
+                }
+                if (dp["requisicaoAmostra"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Req Amostra");
+                    Col = Col + 1;
+                }
+                if (dp["requisicaoEquipamento"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Req Equipamento");
+                    Col = Col + 1;
+                }
+                if (dp["requisicaoReposicaoDeStock"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Req Reposição De Stock");
+                    Col = Col + 1;
+                }
+                if (dp["requisicaoPrecoIvaIncluido"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Req Preço IVA Incluído");
+                    Col = Col + 1;
+                }
+                if (dp["requisicaoAdiantamento"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Req Adiantamento");
+                    Col = Col + 1;
+                }
+                if (dp["requisicaoPedirOrcamento"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Req Pedir Orçamento");
+                    Col = Col + 1;
+                }
                 if (dp["requestUser"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("CSolicitado Por");
@@ -910,6 +985,66 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["number"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.Number);
+                            Col = Col + 1;
+                        }
+                        if (dp["requisicaoAcordosPrecos"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.RequisicaoAcordosPrecos == true ? "Sim" : "Não");
+                            Col = Col + 1;
+                        }
+                        if (dp["requisicaoUrgente"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.RequisicaoUrgente == true ? "Sim" : "Não");
+                            Col = Col + 1;
+                        }
+                        if (dp["requisicaoOrcamentoEmAnexo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.RequisicaoOrcamentoEmAnexo == true ? "Sim" : "Não");
+                            Col = Col + 1;
+                        }
+                        if (dp["requisicaoImobilizado"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.RequisicaoImobilizado == true ? "Sim" : "Não");
+                            Col = Col + 1;
+                        }
+                        if (dp["requisicaoExclusivo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.RequisicaoExclusivo == true ? "Sim" : "Não");
+                            Col = Col + 1;
+                        }
+                        if (dp["requisicaoJaExecutado"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.RequisicaoJaExecutado == true ? "Sim" : "Não");
+                            Col = Col + 1;
+                        }
+                        if (dp["requisicaoAmostra"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.RequisicaoAmostra == true ? "Sim" : "Não");
+                            Col = Col + 1;
+                        }
+                        if (dp["requisicaoEquipamento"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.RequisicaoEquipamento == true ? "Sim" : "Não");
+                            Col = Col + 1;
+                        }
+                        if (dp["requisicaoReposicaoDeStock"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.RequisicaoReposicaoDeStock == true ? "Sim" : "Não");
+                            Col = Col + 1;
+                        }
+                        if (dp["requisicaoPrecoIvaIncluido"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.RequisicaoPrecoIvaIncluido == true ? "Sim" : "Não");
+                            Col = Col + 1;
+                        }
+                        if (dp["requisicaoAdiantamento"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.RequisicaoAdiantamento == true ? "Sim" : "Não");
+                            Col = Col + 1;
+                        }
+                        if (dp["requisicaoPedirOrcamento"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.RequisicaoPedirOrcamento == true ? "Sim" : "Não");
                             Col = Col + 1;
                         }
                         if (dp["requestUser"]["hidden"].ToString() == "False")

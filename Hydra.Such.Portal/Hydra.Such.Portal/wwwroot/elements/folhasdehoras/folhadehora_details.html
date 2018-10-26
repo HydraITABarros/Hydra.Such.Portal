@@ -1582,7 +1582,6 @@
 
     <script>
         document.addEventListener('WebComponentsReady', function () {
-            //debugger;
             Polymer({
                 is: 'x-folhadehoradetails',
                 properties: {
@@ -1658,7 +1657,6 @@
                 },
 
                 ready: function () {
-                    //debugger;
                     //GET FOLHADEHORA DATA
                     this.$.page_databound_ajax.body = JSON.stringify({ "folhaDeHorasNo": this._folhadehoraid });
                     this.$.page_databound_ajax.generateRequest();
@@ -1666,14 +1664,12 @@
 
                 //Mostra Mensagens
                 _showMessage: function (message) {
-                    //debugger;
                     this.$.ToastMessageSuccess.text = message;
                     this.$.ToastMessageSuccess.open();
                 },
 
                 //Mostra Mensagens de Erro
                 _showErrorMessage: function (message) {
-                    //debugger;
                     this.$.ToastMessageError.text = message;
                     this.$.ToastMessageError.open();
                 },
@@ -1684,13 +1680,11 @@
                 },
 
                 _GetCodTipoCusto: function () {
-                    debugger;
                     this.$.get_codtipocusto.body = JSON.stringify({ id: this.$.ajudaTipoCusto.value || 0 });
                     this.$.get_codtipocusto.generateRequest();
                 },
                 
                 _validateFolhaHoras: function() {
-                    //debugger;
                     if (this.$.projetoNo.value != "") {
                         if (this.$.empregadoNo.validate() & this.$.empregadoNo.value != "") {
                             if (this.$.dataPartidaTexto.validate() & this.$.dataPartidaTexto.value != "") {
@@ -1922,13 +1916,11 @@
 
                 //FOLHA DE HORAS
                 _updateFH: function () {
-                    //debugger;
                     this.$.page_updatefolhadehorasvalidacao_ajax.body = JSON.stringify(this.data);
                     this.$.page_updatefolhadehorasvalidacao_ajax.generateRequest();
                 },
 
                 _deleteFH: function () {
-                    //debugger;
                     var ajax_request = this.$.page_deletefolhadehoras_ajax;
                     ajax_request.body = JSON.stringify(this.data)
 
@@ -1953,7 +1945,6 @@
                 },
 
                 _toHistoricFH: function () {
-                    //debugger;
                     var ajax_request = this.$.page_tohistoricfolhadehoras_ajax;
                     ajax_request.body = JSON.stringify(this.data)
 
@@ -1978,7 +1969,6 @@
                 },
 
                 _validacaoDataPartidaChegada: function () {
-                    //debugger;
                     if (this.$.dataPartidaTexto.value != "" & this.$.dataPartidaTexto.validate() &
                         this.$.dataChegadaTexto.value != "" & this.$.dataChegadaTexto.validate()) {
 
@@ -2005,7 +1995,6 @@
                 },
 
                 _validacaoHoraPartidaChegada: function () {
-                    //debugger;
                     if (this.$.dataPartidaTexto.value != "" & this.$.dataPartidaTexto.validate() &
                         this.$.dataChegadaTexto.value != "" & this.$.dataChegadaTexto.validate()) {
 
@@ -2029,7 +2018,6 @@
                 },
 
                 _validacaoTipoDeslocacao: function () {
-                    //debugger;
                     if (this.$.tipoDeslocacao.value != "" & this.$.tipoDeslocacao.value != "1") {
 
                         if (this.$.matricula.value != "") {
@@ -2039,7 +2027,6 @@
                 },
 
                 _validacaoTerminada: function () {
-                    //debugger;
                     var _self = this;
                     var ok = 0;
 
@@ -2103,7 +2090,6 @@
                 },
 
                 _validarFolhaDeHoras: function () {
-                    //debugger;
                     if (this._validateFolhaHoras()) {
                         if (this.$.tipoDeslocacao.value == 1) {
                             if (this.$.matricula.validate() & this.$.matricula.value != "") {
@@ -2122,7 +2108,6 @@
                 },
 
                 _integrarEmRH: function () {
-                    //debugger;
                     if (this._validateFolhaHoras()) {
                         if (this.$.integradorEmRH.value == null) {
                             if (this.$.tipoDeslocacao.value == 1) {
@@ -2146,7 +2131,6 @@
                 },
 
                 _integrarEmRHKM: function () {
-                    //debugger;
                     if (this._validateFolhaHoras()) {
                         if (this.$.integradorEmRHKM.value == null) {
                             if (this.$.tipoDeslocacao.value == 1) {
@@ -2173,7 +2157,6 @@
 
                 //PERCURSO
                 _createPercurso: function () {
-                    //debugger;
                     if (this.$.projetoNo.value != "") {
                         if (this.$.empregadoNo.validate() & this.$.empregadoNo.value != "") {
                             if (this.$.codigoTipoKms.validate() & this.$.codigoTipoKms.value != "") {
@@ -2236,7 +2219,6 @@
                 },
 
                 _deletePercurso: function (e) {
-                    //debugger;
                     var index = this.data.folhaDeHorasPercurso.indexOf(e.model.item);
                     var percursoFH = this.$.folhaDeHorasNo.value;
                     var percursoNoLinha = e.model.item.noLinha;
@@ -2272,14 +2254,12 @@
                 },
 
                 //_updatePercurso: function () {
-                //    //debugger;
                 //    this.$.page_updatepercurso_ajax.body = JSON.stringify(this.data);
                 //    this.$.page_updatepercurso_ajax.generateRequest();
                 //    this.$.tabPercurso.clearCache();
                 //},
 
                 _updateLinhaPercurso: function (e) {
-                    //debugger;
                     var index = this.data.folhaDeHorasPercurso.indexOf(e.model.item);
 
                     this.$.page_updatelinhapercurso_ajax.body = JSON.stringify({
@@ -2297,7 +2277,6 @@
                 },
 
                 _PercursoDataValidar: function () {
-                    //debugger;
                     if (this.$.percursoDataViagem.value != undefined & this.$.dataPartidaTexto.value != "" & this.$.dataChegadaTexto.value != "") {
                         if (this.$.percursoDataViagem.validate() & this.$.dataPartidaTexto.validate() & this.$.dataChegadaTexto.validate()) {
                             var myDataPartida = new Date(this.$.dataPartidaTexto.value);
@@ -2324,7 +2303,6 @@
 
                 //AJUDA
                 _createAjuda: function () {
-                    //debugger;
                     if (this.$.projetoNo.value != "") {
                         if (this.$.empregadoNo.validate() & this.$.empregadoNo.value != "") {
                             if (this.$.ajudaTipoCusto.validate() & this.$.ajudaTipoCusto.value != "") {
@@ -2414,7 +2392,6 @@
                 },
 
                 _deleteAjuda: function (e) {
-                    //debugger;
                     var index = this.data.folhaDeHorasAjuda.indexOf(e.model.item);
                     var ajudaFH = this.$.folhaDeHorasNo.value;
                     var ajudaNoLinha = e.model.item.noLinha;
@@ -2449,14 +2426,12 @@
                 },
 
                 //_updateAjuda: function () {
-                //    //debugger;
                 //    this.$.page_updateajuda_ajax.body = JSON.stringify(this.data);
                 //    this.$.page_updateajuda_ajax.generateRequest();
                 //    this.$.tabAjuda.clearCache();
                 //},
 
                 _updateLinhaAjuda: function (e) {
-                    //debugger;
                     var index = this.data.folhaDeHorasAjuda.indexOf(e.model.item);
 
                     this.$.page_updatelinhaajuda_ajax.body = JSON.stringify({
@@ -2477,7 +2452,6 @@
                 },
 
                 _AjudaDataValidar: function () {
-                    //debugger;
                     if (this.$.ajudaDataDespesa.value != undefined & this.$.dataPartidaTexto.value != "" & this.$.dataChegadaTexto.value != "") {
                         if (this.$.ajudaDataDespesa.validate() & this.$.dataPartidaTexto.validate() & this.$.dataChegadaTexto.validate()) {
                             var myDataPartida = new Date(this.$.dataPartidaTexto.value);
@@ -2501,7 +2475,6 @@
                 },
 
                 _AjudaQuantidadeValidar: function () {
-                    //debugger;
                     if (this.$.ajudaQuantidade.value != "") {
                         var quant = parseInt(this.$.ajudaQuantidade.value);
                         if (quant < 0) {
@@ -2514,7 +2487,6 @@
                 },
 
                 _AjudaCustoUnitarioValidar: function () {
-                    //debugger;
                     if (this.$.ajudaCustoUnitario.value != "") {
                         var custo = parseInt(this.$.ajudaCustoUnitario.value);
                         if (custo < 0) {
@@ -2527,7 +2499,6 @@
                 },
 
                 _AjudaPrecoUnitarioValidar: function () {
-                    //debugger;
                     if (this.$.ajudaPrecoUnitario.value != "") {
                         var preco = parseInt(this.$.ajudaPrecoUnitario.value);
                         if (preco < 0) {
@@ -2542,7 +2513,6 @@
 
                 //AJUDAS DE CUSTO
                 _calcularAjudasCusto: function () {
-                    //debugger;
                     if (this._validateFolhaHoras()) {
                         if (this.$.tipoDeslocacao.value == 1) {
                             if (this.$.matricula.validate() & this.$.matricula.value != "") {
@@ -2565,7 +2535,6 @@
 
                 //MAODEOBRA
                 _createMaoDeObra: function () {
-                    debugger;
                     if (this.$.empregadoNo.validate() & this.$.empregadoNo.value != "") {
                         if (this.$.maoDeObraDate.validate() & this.$.maoDeObraDate.value != "") {
                             if (this.$.maoDeObraProjetoNo.value != "") {
@@ -2630,7 +2599,6 @@
                 },
 
                 _deleteMaoDeObra: function (e) {
-                    //debugger;
                     var index = this.data.folhaDeHorasMaoDeObra.indexOf(e.model.item);
                     var maoDeObraFH = this.$.folhaDeHorasNo.value;
                     var maoDeObraNoLinha = e.model.item.linhaNo;
@@ -2665,14 +2633,12 @@
                 },
 
                 //_updateMaoDeObra: function () {
-                //    //debugger;
                 //    this.$.page_updatemaodeobra_ajax.body = JSON.stringify(this.data);
                 //    this.$.page_updatemaodeobra_ajax.generateRequest();
                 //    this.$.tabMaoDeObra.clearCache();
                 //},
 
                 _updateLinhaMaoDeObra: function (e) {
-                    //debugger;
                     var index = this.data.folhaDeHorasMaoDeObra.indexOf(e.model.item);
 
                     this.$.page_updatelinhamaodeobra_ajax.body = JSON.stringify({
@@ -2700,7 +2666,6 @@
                 },
 
                 _MaoDeObraData: function () {
-                    //debugger;
                     if (this.$.maoDeObraDate.value != "") {
                         this.$.maoDeObraProjetoNo.value = this.$.projetoNo.value;
                         this.$.maoDeObraCodigoTipoTrabalho.value = "";
@@ -2720,7 +2685,6 @@
                 },
 
                 _MaoDeObraDataValidar: function () {
-                    //debugger;
                     if (this.$.maoDeObraDate.value != undefined & this.$.dataPartidaTexto.value != "" & this.$.dataChegadaTexto.value != "") {
                         if (this.$.maoDeObraDate.validate() & this.$.dataPartidaTexto.validate() & this.$.dataChegadaTexto.validate()) {
                             var myDataPartida = new Date(this.$.dataPartidaTexto.value);
@@ -2762,7 +2726,6 @@
                 },
 
                 _MaoDeObraHoraInicioValidar: function () {
-                    //debugger;
                     if (this.$.maoDeObraDate.value != undefined & this.$.dataPartidaTexto.value != "" & this.$.dataChegadaTexto.value != "" &
                         this.$.maoDeObraHoraInicio.value != "" & this.$.horaPartidaTexto.value != "" & this.$.horaChegadaTexto.value != "") {
 
@@ -2790,7 +2753,6 @@
                 },
 
                 _MaoDeObraHoraFimValidar: function () {
-                    //debugger;
                     if (this.$.maoDeObraDate.value != undefined & this.$.dataPartidaTexto.value != "" & this.$.dataChegadaTexto.value != "" &
                         this.$.maoDeObraHoraFim.value != "" & this.$.horaPartidaTexto.value != "" & this.$.horaChegadaTexto.value != "") {
 
@@ -2818,7 +2780,6 @@
                 },
 
                 _MaoDeObraHoraInicioFim: function () {
-                    //debugger;
                     if ((this.$.maoDeObraHoraInicio.validate() & this.$.maoDeObraHoraInicio.value != "" & this.$.maoDeObraHoraInicio.value != "00:00") &
                         (this.$.maoDeObraHoraFim.validate() & this.$.maoDeObraHoraFim.value != "" & this.$.maoDeObraHoraFim.value != "00:00")) {
                         this.$.page_maodeobrahorainiciofim_ajax.body = JSON.stringify({
@@ -2841,7 +2802,6 @@
 
                 //PRENSENÇAS
                 _createPresenca: function () {
-                    //debugger;
                     if (this.$.projetoNo.value != "") {
                         if (this.$.empregadoNo.validate() & this.$.empregadoNo.value != "") {
                             if (this.$.presencaDataTexto.validate() & this.$.presencaDataTexto.value != "") {
@@ -2907,7 +2867,6 @@
                 },
 
                 _deletePresenca: function (e) {
-                    //debugger;
                     var index = this.data.folhaDeHorasPresenca.indexOf(e.model.item);
                     var presencaFH = this.$.folhaDeHorasNo.value;
                     var presencaData = e.model.item.dataTexto;
@@ -2942,14 +2901,12 @@
                 },
 
                 //_updatePresenca: function () {
-                //    //debugger;
                 //    this.$.page_updatepresenca_ajax.body = JSON.stringify(this.data);
                 //    this.$.page_updatepresenca_ajax.generateRequest();
                 //    this.$.tabPresenca.clearCache();
                 //},
 
                 _updateLinhaPresenca: function (e) {
-                    //debugger;
                     var index = this.data.folhaDeHorasPresenca.indexOf(e.model.item);
 
                     this.$.page_updatelinhapresenca_ajax.body = JSON.stringify({
@@ -2967,7 +2924,6 @@
                 },
 
                 _PresencaData: function () {
-                    //debugger;
                     if (this.$.presencaDataTexto.value != "") {
                         this.$.presencaHora1Entrada.value = "00:00";
                         this.$.presencaHora1Saida.value = "00:00";
@@ -2985,7 +2941,6 @@
                 },
 
                 _PresencaVerificarHoras: function () {
-                    //debugger;
                     if ((this.$.presencaHora1Entrada.validate() & this.$.presencaHora1Entrada.value != "" & this.$.presencaHora1Entrada.value != "00:00") &
                         (this.$.presencaHora1Saida.validate() & this.$.presencaHora1Saida.value != "" & this.$.presencaHora1Saida.value != "00:00") &
                         (this.$.presencaHora2Entrada.validate() & this.$.presencaHora2Entrada.value != "" & this.$.presencaHora2Entrada.value != "00:00") &
@@ -3004,7 +2959,6 @@
                 },
 
                 _PresencaDataValidar: function () {
-                    //debugger;
                     if (this.$.presencaDataTexto.value != undefined & this.$.dataPartidaTexto.value != "" & this.$.dataChegadaTexto.value != "") {
                         if (this.$.presencaDataTexto.validate() & this.$.dataPartidaTexto.validate() & this.$.dataChegadaTexto.validate()) {
                             var myDataPartida = new Date(this.$.dataPartidaTexto.value);
@@ -3044,7 +2998,6 @@
                 },
 
                 _presencaHora1EntradaValidar: function () {
-                    //debugger;
                     if (this.$.presencaDataTexto.value != undefined & this.$.dataPartidaTexto.value != "" & this.$.dataChegadaTexto.value != "" &
                         this.$.presencaHora1Entrada.value != "" & this.$.horaPartidaTexto.value != "" & this.$.horaChegadaTexto.value != "") {
 
@@ -3072,7 +3025,6 @@
                 },
 
                 _presencaHora1SaidaValidar: function () {
-                    //debugger;
                     if (this.$.presencaDataTexto.value != undefined & this.$.dataPartidaTexto.value != "" & this.$.dataChegadaTexto.value != "" &
                         this.$.presencaHora1Saida.value != "" & this.$.horaPartidaTexto.value != "" & this.$.horaChegadaTexto.value != "") {
 
@@ -3100,7 +3052,6 @@
                 },
 
                 _presencaHora2EntradaValidar: function () {
-                    //debugger;
                     if (this.$.presencaDataTexto.value != undefined & this.$.dataPartidaTexto.value != "" & this.$.dataChegadaTexto.value != "" &
                         this.$.presencaHora2Entrada.value != "" & this.$.horaPartidaTexto.value != "" & this.$.horaChegadaTexto.value != "") {
 
@@ -3128,7 +3079,6 @@
                 },
 
                 _presencaHora2SaidaValidar: function () {
-                    //debugger;
                     if (this.$.presencaDataTexto.value != undefined & this.$.dataPartidaTexto.value != "" & this.$.dataChegadaTexto.value != "" &
                         this.$.presencaHora2Saida.value != "" & this.$.horaPartidaTexto.value != "" & this.$.horaChegadaTexto.value != "") {
 
@@ -3157,7 +3107,6 @@
 
                 //RESPONSES PROCESSORS
                 _responseProcessor: function (data) {
-                    //debugger;
                     var self = this;
 
                     if (data.detail.status === 200) {
@@ -3180,7 +3129,6 @@
                 },
 
                 _createResponseProcessor: function () {
-                    //debugger;
                     if (this.data.eReasonCode == 1) {
                         this._isCreate = false;
                         this._showMessage('Folha de Horas criada com sucesso.');
@@ -3190,7 +3138,6 @@
                 },
 
                 _responseValidatorProcessor: function (data) {
-                    //debugger;
                     var self = this;
                     if (data.detail.status === 200) {
                         if (this.validateResponse == "") {
@@ -3202,7 +3149,6 @@
                 },
 
                 _responseDeleteProcessor: function (data) {
-                    //debugger;
                     var self = this;
                     if (data.detail.status === 200) {
                         if (this.deletedData.eReasonCode == 1) {
@@ -3219,7 +3165,6 @@
 
                 //FOLHA DE HORAS
                 _updatefolhadehorasvalidacaoResponse: function (e) {
-                    //debugger;
                     var ajax_request = this.$.page_updatefolhadehoras_ajax;
                     ajax_request.body = JSON.stringify(this.data);
 
@@ -3352,7 +3297,6 @@
                 },
 
                 _updatefolhadehorasResponse: function (e) {
-                    //debugger;
                     var self = this;
 
                     if (this.FolhaDeHorasUpdated == 0) {
@@ -3379,7 +3323,6 @@
                 },
 
                 _deletefolhadehorasResponse: function (e) {
-                    //debugger;
                     var self = this;
 
                     if (this.FolhaDeHorasDeleted == 0) {
@@ -3401,7 +3344,6 @@
                 },
 
                 _tohistoricfolhadehorasResponse: function (e) {
-                    //debugger;
                     var self = this;
 
                     if (this.FolhaDeHorasToHistoric == 0) {
@@ -3423,7 +3365,6 @@
                 },
 
                 _terminarfolhadehorasResponse: function (e) {
-                    //debugger;
                     setTimeout(function () {
                         bootbox.hideAll();
                     }, 0);
@@ -3443,7 +3384,6 @@
                 },
 
                 _validarfolhadehorasResponse: function (e) {
-                    //debugger;
                     if (this.validarFolhaDeHoras.eReasonCode == 0 || this.validarFolhaDeHoras.eReasonCode == 100) {
                         this._showMessage(this.validarFolhaDeHoras.eMessage);
                         this.$.page_databound_ajax.generateRequest();
@@ -3453,7 +3393,6 @@
                 },
 
                 _integraremrhfolhadehorasResponse: function (e) {
-                    //debugger;
                     if (this.integrarEmRHFolhaDeHoras.eReasonCode == 0 || this.integrarEmRHFolhaDeHoras.eReasonCode == 100) {
                         this._showMessage(this.integrarEmRHFolhaDeHoras.eMessage);
                         this.$.page_databound_ajax.generateRequest();
@@ -3463,7 +3402,6 @@
                 },
 
                 _integraremrhkmfolhadehorasResponse: function (e) {
-                    //debugger;
                     if (this.integrarEmRHKMFolhaDeHoras.eReasonCode == 0 || this.integrarEmRHKMFolhaDeHoras.eReasonCode == 100) {
                         this._showMessage(this.integrarEmRHKMFolhaDeHoras.eMessage);
                         this.$.page_databound_ajax.generateRequest();
@@ -3475,7 +3413,6 @@
 
                 //PERCURSO
                 _createPercursoResponse: function (e) {
-                    //debugger;
                     if (this.PercursoCreated) {
                         this._showMessage('Adicionado Percurso com sucesso.');
                         this.$.page_databound_ajax.generateRequest();
@@ -3490,7 +3427,6 @@
                 },
 
                 _deletePercursoResponse: function (e) {
-                    //debugger;
                     var self = this;
 
                     setTimeout(function () {
@@ -3506,7 +3442,6 @@
                 },
 
                 _updatePercursoResponse: function (e) {
-                    //debugger;
                     if (this.PercursoUpdated) {
                         this._showMessage('Percurso(s) actualizado(s) com sucesso.');
                         this.$.page_databound_ajax.generateRequest();
@@ -3517,7 +3452,6 @@
                 },
 
                 _updateLinhaPercursoResponse: function (e) {
-                    //debugger;
                     if (this.LinhaPercursoUpdated == 0) {
                         this._showMessage('Percurso(s) actualizado(s) com sucesso.');
                     }
@@ -3534,7 +3468,6 @@
 
                 //AJUDA
                 _createAjudaResponse: function (e) {
-                    //debugger;
                     if (this.AjudaCreated) {
                         this._showMessage('Adicionada Ajuda com sucesso.');
                         this.$.page_databound_ajax.generateRequest();
@@ -3553,7 +3486,6 @@
                 },
 
                 _deleteAjudaResponse: function (data) {
-                    //debugger;
                     var self = this;
 
                     setTimeout(function () {
@@ -3569,7 +3501,6 @@
                 },
 
                 _updateAjudaResponse: function (e) {
-                    //debugger;
                     if (this.AjudaUpdated) {
                         this._showMessage('Ajuda(s) actualizada(s) com sucesso.');
                         this.$.page_databound_ajax.generateRequest();
@@ -3580,7 +3511,6 @@
                 },
 
                 _updateLinhaAjudaResponse: function (e) {
-                    //debugger;
                     if (this.LinhaAjudaUpdated == 0) {
                         this._showMessage('Ajuda actualizada com sucesso.');
                     }
@@ -3612,7 +3542,6 @@
 
                 //AJUDA DE CUSTOS
                 _updateCalcularAjudasCustoResponse: function (e) {
-                    //debugger;
                     if (this.CalcularAjudasCustoUpdated.eReasonCode == 0) {
                         this._showMessage(this.CalcularAjudasCustoUpdated.eMessage);
                         this.$.page_databound_ajax.generateRequest();
@@ -3631,7 +3560,6 @@
 
                 //MAODEOBRA
                 _createMaoDeObraResponse: function (e) {
-                    //debugger;
                     if (this.MaoDeObraCreated == 0) {
                         this._showMessage('Adicionada Mão de Obra com sucesso.');
                         this.$.page_databound_ajax.generateRequest();
@@ -3663,7 +3591,6 @@
                 },
 
                 _deleteMaoDeObraResponse: function (e) {
-                    //debugger;
                     var self = this;
 
                     setTimeout(function () {
@@ -3680,7 +3607,6 @@
                 },
 
                 _updateMaoDeObraResponse: function (e) {
-                    //debugger;
                     if (this.MaoDeObraUpdated == 0) {
                         this._showMessage('Mão de Obra(s) actualizada(s) com sucesso.');
                         this.$.page_databound_ajax.generateRequest();
@@ -3704,7 +3630,6 @@
                 },
 
                 _updateLinhaMaoDeObraResponse: function (e) {
-                    //debugger;
                     if (this.LinhaMaoDeObraUpdated == 0) {
                         this._showMessage('Mão de Obra atualizada com sucesso.');
                     }
@@ -3740,7 +3665,6 @@
                 },
 
                 _MaoDeObraHoraInicioFimResponse: function (e) {
-                    //debugger;
                     if (this.MaoDeObraHoraInicioFim == 1 | this.MaoDeObraHoraInicioFim == 2) {
                         this._showErrorMessage('Horário de trabalho não pode cair dentro do intervalo da Hora de Almoço.');
                     }
@@ -3757,7 +3681,6 @@
 
                 //PRESENCA
                 _createPresencaResponse: function (e) {
-                    //debugger;
                     if (this.PresencaCreated == 0) {
                         this._showMessage('Presença adicionada Presença com sucesso.');
 
@@ -3804,7 +3727,6 @@
                 },
 
                 _deletePresencaResponse: function (e) {
-                    //debugger;
                     var self = this;
 
                     setTimeout(function () {
@@ -3821,7 +3743,6 @@
                 },
 
                 _updatePresencaResponse: function (e) {
-                    //debugger;
                     if (this.PresencaUpdated) {
                         this._showMessage('Presença(s) actualizada(s) com sucesso.');
                         this.$.page_databound_ajax.generateRequest();
@@ -3832,7 +3753,6 @@
                 },
 
                 _updateLinhaPresencaResponse: function (e) {
-                    //debugger;
                     if (this.LinhaPresencaUpdated == 0) {
                         this._showMessage('Presença atualizada com sucesso.');
                     }
@@ -3873,7 +3793,6 @@
 
                 //EMPREGADO FUNÇÕES
                 _codeChange: function (e) {
-                    //debugger;
                     //this.$.getEmpoyeeNAV_ajax.body = JSON.stringify(e.detail.value, this.$.folhaDeHorasNo.value);
                     if (e.detail.value != "") {
                         this.data.empregadoNo = e.detail.value;
@@ -3883,7 +3802,6 @@
                 },
 
                 _getEmpoyeeNAVResponse: function (e) {
-                    //debugger;
 
                     if (this.getEmpoyeeNAV.empregadoNo == null | this.getEmpoyeeNAV.empregadoNo == "") {
                         this.data.empregadoNo = "";
@@ -3975,7 +3893,6 @@
 
                 //DATA INICIO
                 _DataInicio: function (e) {
-                    //debugger;
                     var self = this;
                     if (this.$.dataPartidaTexto.value != null) {
                         this.$.percursoDataViagem.value = this.$.dataPartidaTexto.value;
@@ -3983,7 +3900,6 @@
                 },
 
                 _getAjudaCodTipoCusto: function (e) {
-                    //debugger;
                     this.$.ajudaDataDespesa.value = this.$.dataPartidaTexto.value;
                     this.$.get_codtipocusto.body = JSON.stringify({ id: this.$.ajudaTipoCusto.value || 0 });
                     this.$.get_codtipocusto.generateRequest();
@@ -3993,7 +3909,6 @@
                 },
 
                 _getAjudaCodTipoCustoTAB: function (e) {
-                    //debugger;
                     this.$.get_codtipocustotab.body = JSON.stringify({ id: e.model.item.tabAjudaTipoCusto.id || 0 });
                     this.$.get_codtipocustotab.generateRequest();
                     if (typeof e != 'undefined') {
@@ -4002,7 +3917,6 @@
                 },
 
                 _setCodTipoCustoResponse: function (data) {
-                    //debugger;
                     if (this.LFolhaDeHoraAjudaCodTipoCusto.length > 0) {
                         this.$.ajudaCodigoTipoCusto.disabled = false;
                     } else {
@@ -4011,7 +3925,6 @@
                 },
 
                 _setCodTipoCustoTabResponse: function (e) {
-                    //debugger;
                     if (this.LFolhaDeHoraAjudaCodTipoCusto_TAB.length > 0) {
                         this.$.tabAjudaTipoCusto.disabled = false;
                     } else {
@@ -4020,13 +3933,11 @@
                 },
 
                 _goBack: function (e) {
-                    //debugger;
                     window.history.back();
                 },
 
 
                 _setFieldsEditability(data) {
-                    //debugger;;
                     var _self = this;
 
                     //BOTÕES
@@ -4206,8 +4117,6 @@
                 },
 
                 _printFH: function () {
-                    //debugger;
-
                     if (this._reportserverurl != undefined) {
                         this.$.rptContainer.src = this._reportserverurl + "FolhaHora&FH=" + this._folhadehoraid + "&Utilizador=" + this._userlogin;
                         this.$.rptDialog.open();
@@ -4224,8 +4133,6 @@
 
                 //Helpers
                 _executeRequest: function (url, data) {
-                    //debugger;
-
                     this.$.page_databound_ajax.url = url;
                     this.$.page_databound_ajax.body = JSON.stringify(data);
                     this.$.page_databound_ajax.generateRequest();
