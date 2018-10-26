@@ -16,8 +16,10 @@ namespace Hydra.Such.Data.ViewModel.Encomendas
         [JsonConverter(typeof(DateFormatConverter), "MM-dd-yyyy")]
         public DateTime OrderDate { get; set; }
         public string NoConsulta { get; set; }
+
         [JsonConverter(typeof(DateFormatConverter), "MM-dd-yyyy")]
-        public DateTime ExpectedReceiptDate { get; set; }
+        public DateTime? ExpectedReceiptDate { get; set; }
+
         public string RequisitionNo { get; set; }
         public string RegionId { get; set; }
         public string FunctionalAreaId { get; set; }

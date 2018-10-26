@@ -7,7 +7,6 @@ namespace Hydra.Such.Data.Database
     {
         public Projetos()
         {
-            CafetariasRefeitórios = new HashSet<CafetariasRefeitórios>();
             DistribuiçãoCustoFolhaDeHoras = new HashSet<DistribuiçãoCustoFolhaDeHoras>();
             DiárioCafetariaRefeitório = new HashSet<DiárioCafetariaRefeitório>();
             DiárioDeProjeto = new HashSet<DiárioDeProjeto>();
@@ -67,7 +66,6 @@ namespace Hydra.Such.Data.Database
         public TipoDeProjeto CódTipoProjetoNavigation { get; set; }
         public TiposGrupoContabOmProjeto TipoGrupoContabOmProjetoNavigation { get; set; }
         public TiposGrupoContabProjeto TipoGrupoContabProjetoNavigation { get; set; }
-        public ICollection<CafetariasRefeitórios> CafetariasRefeitórios { get; set; }
         public ICollection<DistribuiçãoCustoFolhaDeHoras> DistribuiçãoCustoFolhaDeHoras { get; set; }
         public ICollection<DiárioCafetariaRefeitório> DiárioCafetariaRefeitório { get; set; }
         public ICollection<DiárioDeProjeto> DiárioDeProjeto { get; set; }

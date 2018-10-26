@@ -370,13 +370,13 @@ namespace Hydra.Such.Portal.Services
                             repo.SaveChanges();
 
                             item.eReasonCode = 1;
-                            item.eMessage = "Fatura criada com sucesso.";
+                            item.eMessage = "Documento criado com sucesso.";
                         }
                         catch
                         {
                             //TODO: Rever comportamento no caso de erro
                             item.eReasonCode = 2;
-                            item.eMessage = "Fatura rececionada mas não foi possivel atualizar os dados da receção.";
+                            item.eMessage = "Documento rececionado mas não foi possivel atualizar os dados da receção.";
                         }
                     }
                     else
@@ -478,13 +478,13 @@ namespace Hydra.Such.Portal.Services
             bool isValid = true;
             try
             {
-                //Check if exists
-                bool documentAlreadyExist = DBNAV2017Purchases.DocumentExistsFor(_config.NAVDatabaseName, _config.NAVCompanyName, item.Id);
-                if (documentAlreadyExist)
-                {
-                    item.eMessage = "Já foi criada uma fatura para a receção selecionada.";
-                    isValid = false;
-                }
+                ////Check if exists
+                //bool documentAlreadyExist = DBNAV2017Purchases.DocumentExistsFor(_config.NAVDatabaseName, _config.NAVCompanyName, item.Id);
+                //if (documentAlreadyExist)
+                //{
+                //    item.eMessage = "Já foi criada uma fatura para a receção selecionada.";
+                //    isValid = false;
+                //}
             }
             catch (Exception ex)
             {
