@@ -187,7 +187,6 @@
                     }
                 },
                 _create: function (item) {
-                    debugger;
                     if (item != null) {
                         window.location.href = "PreRequisicoesDetalhes/";
                     }
@@ -211,7 +210,6 @@
                 },
 
                 _responseDeleteProcessor: function (data) {
-                    debugger;
                     var self = this;
                     if (data.detail.status === 200) {
                         this._openToast(this.deletedData.eMessage);
@@ -228,7 +226,6 @@
 
                 _clFormatReqType: function (param) {
                     if (param != undefined) {
-                        debugger;
                         var sel = this.CBRequesitionType.find(x => x.id == param);
                         if (sel != undefined) {
                             return sel.value;
@@ -247,7 +244,6 @@
                 },
 
                 _deleteOprotunity: function (data) {
-                    debugger;
                     var index = this.result.indexOf(data.model.item);
                     this.result.splice(index, 1);
                     this.$.ajax_delete_contract.body = JSON.stringify(data.model.item);

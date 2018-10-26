@@ -2532,26 +2532,27 @@ namespace Hydra.Such.Portal.Controllers
 
                 row.CreateCell(0).SetCellValue("Nº Procedimento");
                 row.CreateCell(1).SetCellValue("Nº Fornecedor");
-                row.CreateCell(2).SetCellValue("Cód. Produto");
-                row.CreateCell(3).SetCellValue("Desc. Produto");
-                row.CreateCell(4).SetCellValue("Data Validade Início");
-                row.CreateCell(5).SetCellValue("Data Validade Fim");
-                row.CreateCell(6).SetCellValue("Região");
-                row.CreateCell(7).SetCellValue("Área");
-                row.CreateCell(8).SetCellValue("Cresp");
-                row.CreateCell(9).SetCellValue("Cód. Localização");
-                row.CreateCell(10).SetCellValue("Custo Unitário");
-                row.CreateCell(11).SetCellValue("UM");
-                row.CreateCell(12).SetCellValue("Quantidade por UM");
-                row.CreateCell(13).SetCellValue("Peso Unitário");
-                row.CreateCell(14).SetCellValue("Cód. Produto Fornecedor");
-                row.CreateCell(15).SetCellValue("Desc. Produto Fornecedor");
-                row.CreateCell(16).SetCellValue("Forma Entrega");
-                row.CreateCell(17).SetCellValue("Tipo Preço");
-                row.CreateCell(18).SetCellValue("Grupo Registo IVA Produto");
-                row.CreateCell(19).SetCellValue("Criado Por");
-                row.CreateCell(20).SetCellValue("Data-Hora Criação");
-                row.CreateCell(21).SetCellValue("Cód. Categoria Produto");
+                row.CreateCell(2).SetCellValue("Nome Fornecedor");
+                row.CreateCell(3).SetCellValue("Cód. Produto");
+                row.CreateCell(4).SetCellValue("Desc. Produto");
+                row.CreateCell(5).SetCellValue("Data Validade Início");
+                row.CreateCell(6).SetCellValue("Data Validade Fim");
+                row.CreateCell(7).SetCellValue("Região");
+                row.CreateCell(8).SetCellValue("Área");
+                row.CreateCell(9).SetCellValue("Cresp");
+                row.CreateCell(10).SetCellValue("Cód. Localização");
+                row.CreateCell(11).SetCellValue("Custo Unitário");
+                row.CreateCell(12).SetCellValue("UM");
+                row.CreateCell(13).SetCellValue("Quantidade por UM");
+                row.CreateCell(14).SetCellValue("Peso Unitário");
+                row.CreateCell(15).SetCellValue("Cód. Produto Fornecedor");
+                row.CreateCell(16).SetCellValue("Desc. Produto Fornecedor");
+                row.CreateCell(17).SetCellValue("Forma Entrega");
+                row.CreateCell(18).SetCellValue("Tipo Preço");
+                row.CreateCell(19).SetCellValue("Grupo Registo IVA Produto");
+                row.CreateCell(20).SetCellValue("Cód. Categoria Produto");
+                row.CreateCell(21).SetCellValue("Criado Por");
+                row.CreateCell(22).SetCellValue("Data-Hora Criação");
 
                 if (dp.LinhasAcordoPrecos != null)
                 {
@@ -2562,26 +2563,27 @@ namespace Hydra.Such.Portal.Controllers
 
                         row.CreateCell(0).SetCellValue(item.NoProcedimento.ToString());
                         row.CreateCell(1).SetCellValue(item.NoFornecedor.ToString());
-                        row.CreateCell(2).SetCellValue(item.CodProduto.ToString());
-                        row.CreateCell(3).SetCellValue(item.DescricaoProduto.ToString());
-                        row.CreateCell(4).SetCellValue(Convert.ToDateTime(item.DtValidadeInicio).ToShortDateString());
-                        row.CreateCell(5).SetCellValue(item.DtValidadeFim.HasValue ? Convert.ToDateTime(item.DtValidadeFim).ToShortDateString() : "");
-                        row.CreateCell(6).SetCellValue(item.Regiao.ToString());
-                        row.CreateCell(7).SetCellValue(item.Area.ToString());
-                        row.CreateCell(8).SetCellValue(item.Cresp.ToString());
-                        row.CreateCell(9).SetCellValue(item.Localizacao.ToString());
-                        row.CreateCell(10).SetCellValue(item.CustoUnitario.HasValue ? item.CustoUnitario.ToString() : "");
-                        row.CreateCell(11).SetCellValue(item.Um.ToString());
-                        row.CreateCell(12).SetCellValue(item.QtdPorUm.HasValue ? item.QtdPorUm.ToString() : "");
-                        row.CreateCell(13).SetCellValue(item.PesoUnitario.HasValue ? item.PesoUnitario.ToString() : "");
-                        row.CreateCell(14).SetCellValue(item.CodProdutoFornecedor.ToString());
-                        row.CreateCell(15).SetCellValue(item.DescricaoProdFornecedor.ToString());
-                        row.CreateCell(16).SetCellValue(item.FormaEntrega.HasValue ? item.FormaEntrega.ToString() : "");
-                        row.CreateCell(17).SetCellValue(item.TipoPreco.HasValue ? item.TipoPreco.ToString() : "");
-                        row.CreateCell(18).SetCellValue(item.GrupoRegistoIvaProduto.HasValue ? item.GrupoRegistoIvaProduto.ToString() : "");
-                        row.CreateCell(19).SetCellValue(item.UserId.ToString());
-                        row.CreateCell(20).SetCellValue(item.DataCriacao.HasValue ? item.DataCriacao.ToString() : "");
-                        row.CreateCell(21).SetCellValue(item.CodCategoriaProduto == null ? string.Empty : item.CodCategoriaProduto.ToString());
+                        row.CreateCell(2).SetCellValue(item.NomeFornecedor.ToString());
+                        row.CreateCell(3).SetCellValue(item.CodProduto.ToString());
+                        row.CreateCell(4).SetCellValue(item.DescricaoProduto.ToString());
+                        row.CreateCell(5).SetCellValue(Convert.ToDateTime(item.DtValidadeInicio).ToShortDateString());
+                        row.CreateCell(6).SetCellValue(item.DtValidadeFim.HasValue ? Convert.ToDateTime(item.DtValidadeFim).ToShortDateString() : "");
+                        row.CreateCell(7).SetCellValue(item.Regiao.ToString());
+                        row.CreateCell(8).SetCellValue(item.Area.ToString());
+                        row.CreateCell(9).SetCellValue(item.Cresp.ToString());
+                        row.CreateCell(10).SetCellValue(item.Localizacao.ToString());
+                        row.CreateCell(11).SetCellValue(item.CustoUnitario.HasValue ? item.CustoUnitario.ToString() : "");
+                        row.CreateCell(12).SetCellValue(item.Um.ToString());
+                        row.CreateCell(13).SetCellValue(item.QtdPorUm.HasValue ? item.QtdPorUm.ToString() : "");
+                        row.CreateCell(14).SetCellValue(item.PesoUnitario.HasValue ? item.PesoUnitario.ToString() : "");
+                        row.CreateCell(15).SetCellValue(item.CodProdutoFornecedor.ToString());
+                        row.CreateCell(16).SetCellValue(item.DescricaoProdFornecedor.ToString());
+                        row.CreateCell(17).SetCellValue(item.FormaEntrega.HasValue ? item.FormaEntrega.ToString() : "");
+                        row.CreateCell(18).SetCellValue(item.TipoPreco.HasValue ? item.TipoPreco.ToString() : "");
+                        row.CreateCell(19).SetCellValue(item.GrupoRegistoIvaProduto.HasValue ? item.GrupoRegistoIvaProduto.ToString() : "");
+                        row.CreateCell(20).SetCellValue(item.CodCategoriaProduto == null ? string.Empty : item.CodCategoriaProduto.ToString());
+                        row.CreateCell(21).SetCellValue(item.UserId.ToString());
+                        row.CreateCell(22).SetCellValue(item.DataCriacao.HasValue ? item.DataCriacao.ToString() : "");
 
                         count++;
                     }
@@ -2771,32 +2773,43 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         toCreate.NoProcedimento = x.NoProcedimento;
                         toCreate.NoFornecedor = x.NoFornecedor;
+                        if (string.IsNullOrEmpty(x.NomeFornecedor))
+                            toCreate.NomeFornecedor = Vendor.Name;
+                        else
+                            toCreate.NomeFornecedor = x.NomeFornecedor;
                         toCreate.CodProduto = x.CodProduto;
+                        if (string.IsNullOrEmpty(x.DescricaoProduto))
+                            toCreate.DescricaoProduto = Product.Name;
+                        else
+                            toCreate.DescricaoProduto = x.DescricaoProduto;
                         toCreate.DtValidadeInicio = x.DtValidadeInicio;
                         toCreate.DtValidadeFim = x.DtValidadeFim;
                         toCreate.Regiao = x.Regiao;
                         toCreate.Area = x.Area;
                         toCreate.Cresp = x.Cresp;
                         toCreate.Localizacao = x.Localizacao;
-                        toCreate.CustoUnitario = x.CustoUnitario;
-                        if (Vendor != null)
-                            toCreate.NomeFornecedor = Vendor.Name;
+                        if (x.CustoUnitario == null)
+                            toCreate.CustoUnitario = Product.UnitCost;
                         else
-                            toCreate.NomeFornecedor = null;
-                        if (Product != null)
-                            toCreate.DescricaoProduto = Product.Name;
+                            toCreate.CustoUnitario = x.CustoUnitario;
+                        if (string.IsNullOrEmpty(x.Um))
+                            toCreate.Um = Product.MeasureUnit;
                         else
-                            toCreate.DescricaoProduto = null;
-                        toCreate.Um = x.Um;
+                            toCreate.Um = x.Um;
                         toCreate.QtdPorUm = x.QtdPorUm;
                         toCreate.PesoUnitario = x.PesoUnitario;
                         toCreate.CodProdutoFornecedor = x.CodProdutoFornecedor;
                         toCreate.DescricaoProdFornecedor = x.DescricaoProdFornecedor;
                         toCreate.FormaEntrega = x.FormaEntrega;
-                        toCreate.UserId = User.Identity.Name;
-                        toCreate.DataCriacao = DateTime.Now;
                         toCreate.TipoPreco = x.TipoPreco;
                         toCreate.GrupoRegistoIvaProduto = x.GrupoRegistoIvaProduto;
+                        if (string.IsNullOrEmpty(x.CodCategoriaProduto))
+                            toCreate.CodCategoriaProduto = Product.ItemCategoryCode;
+                        else
+                            toCreate.CodCategoriaProduto = x.CodCategoriaProduto;
+
+                        toCreate.UserId = User.Identity.Name;
+                        toCreate.DataCriacao = DateTime.Now;
 
                         DBLinhasAcordoPrecos.Create(toCreate);
                     }
@@ -2804,32 +2817,43 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         toUpdate.NoProcedimento = x.NoProcedimento;
                         toUpdate.NoFornecedor = x.NoFornecedor;
+                        if (string.IsNullOrEmpty(x.NomeFornecedor))
+                            toUpdate.NomeFornecedor = Vendor.Name;
+                        else
+                            toUpdate.NomeFornecedor = x.NomeFornecedor;
                         toUpdate.CodProduto = x.CodProduto;
+                        if (string.IsNullOrEmpty(x.DescricaoProduto))
+                            toUpdate.DescricaoProduto = Product.Name;
+                        else
+                            toUpdate.DescricaoProduto = x.DescricaoProduto;
                         toUpdate.DtValidadeInicio = x.DtValidadeInicio;
                         toUpdate.DtValidadeFim = x.DtValidadeFim;
                         toUpdate.Regiao = x.Regiao;
                         toUpdate.Area = x.Area;
                         toUpdate.Cresp = x.Cresp;
                         toUpdate.Localizacao = x.Localizacao;
-                        toUpdate.CustoUnitario = x.CustoUnitario;
-                        if (Vendor != null)
-                            toUpdate.NomeFornecedor = Vendor.Name;
+                        if (x.CustoUnitario == null)
+                            toUpdate.CustoUnitario = Product.UnitCost;
                         else
-                            toUpdate.NomeFornecedor = null;
-                        if (Product != null)
-                            toUpdate.DescricaoProduto = Product.Name;
+                            toUpdate.CustoUnitario = x.CustoUnitario;
+                        if (string.IsNullOrEmpty(x.Um))
+                            toUpdate.Um = Product.MeasureUnit;
                         else
-                            toUpdate.DescricaoProduto = null;
-                        toUpdate.Um = x.Um;
+                            toUpdate.Um = x.Um;
                         toUpdate.QtdPorUm = x.QtdPorUm;
                         toUpdate.PesoUnitario = x.PesoUnitario;
                         toUpdate.CodProdutoFornecedor = x.CodProdutoFornecedor;
                         toUpdate.DescricaoProdFornecedor = x.DescricaoProdFornecedor;
                         toUpdate.FormaEntrega = x.FormaEntrega;
-                        toUpdate.UserId = x.UserId;
-                        toUpdate.DataCriacao = x.DataCriacao;
                         toUpdate.TipoPreco = x.TipoPreco;
                         toUpdate.GrupoRegistoIvaProduto = x.GrupoRegistoIvaProduto;
+                        if (Product != null)
+                            toUpdate.CodCategoriaProduto = Product.ItemCategoryCode;
+                        else
+                            toUpdate.CodCategoriaProduto = null;
+
+                        toUpdate.UserId = x.UserId;
+                        toUpdate.DataCriacao = x.DataCriacao;
 
                         DBLinhasAcordoPrecos.Update(toUpdate);
                     }
@@ -5168,22 +5192,22 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     NoProcedimento = x.NoProcedimento,
                     NoFornecedor = x.NoFornecedor,
+                    NomeFornecedor = x.NomeFornecedor,
                     CodProduto = x.CodProduto,
+                    DescricaoProduto = x.DescricaoProduto,
                     DtValidadeInicio = x.DtValidadeInicio,
                     DtValidadeInicioTexto = x.DtValidadeInicio == null ? "" : Convert.ToDateTime(x.DtValidadeInicio).ToShortDateString(),
                     DtValidadeFim = x.DtValidadeFim,
                     DtValidadeFimTexto = x.DtValidadeFim == null ? "" : Convert.ToDateTime(x.DtValidadeFim).ToShortDateString(),
-                    Cresp = x.Cresp,
-                    CrespNome = x.Cresp == null ? "" : x.Cresp.ToString() + " - " + DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 3).Where(y => y.Code == x.Cresp).SingleOrDefault()?.Name,
-                    Area = x.Area,
-                    AreaNome = x.Area == null ? "" : x.Area.ToString() + " - " + DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 2).Where(y => y.Code == x.Area).SingleOrDefault()?.Name,
                     Regiao = x.Regiao,
-                    RegiaoNome = x.Regiao == null ? "" : x.Regiao.ToString() + " - " + DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 1).Where(y => y.Code == x.Regiao).SingleOrDefault()?.Name,
+                    //RegiaoNome = x.Regiao == null ? "" : x.Regiao.ToString() + " - " + DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 1).Where(y => y.Code == x.Regiao).SingleOrDefault()?.Name,
+                    Area = x.Area,
+                    //AreaNome = x.Area == null ? "" : x.Area.ToString() + " - " + DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 2).Where(y => y.Code == x.Area).SingleOrDefault()?.Name,
+                    Cresp = x.Cresp,
+                    //CrespNome = x.Cresp == null ? "" : x.Cresp.ToString() + " - " + DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 3).Where(y => y.Code == x.Cresp).SingleOrDefault()?.Name,
                     Localizacao = x.Localizacao,
-                    LocalizacaoNome = x.Localizacao == null ? "" : x.Localizacao.ToString() + " - " + DBNAV2017Locations.GetAllLocations(_config.NAVDatabaseName, _config.NAVCompanyName).Where(y => y.Code == x.Localizacao).SingleOrDefault()?.Name,
+                    //LocalizacaoNome = x.Localizacao == null ? "" : x.Localizacao.ToString() + " - " + DBNAV2017Locations.GetAllLocations(_config.NAVDatabaseName, _config.NAVCompanyName).Where(y => y.Code == x.Localizacao).SingleOrDefault()?.Name,
                     CustoUnitario = x.CustoUnitario,
-                    NomeFornecedor = x.NoFornecedor == null ? "" : x.NoFornecedor.ToString() + " - " + DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName).Where(y => y.No_ == x.NoFornecedor).SingleOrDefault()?.Name,
-                    DescricaoProduto = x.DescricaoProduto,
                     Um = x.Um,
                     QtdPorUm = x.QtdPorUm,
                     PesoUnitario = x.PesoUnitario,
@@ -5191,13 +5215,15 @@ namespace Hydra.Such.Portal.Controllers
                     DescricaoProdFornecedor = x.DescricaoProdFornecedor,
                     FormaEntrega = x.FormaEntrega,
                     FormaEntregaTexto = x.FormaEntrega == null ? "" : EnumerablesFixed.AP_FormaEntrega.Where(y => y.Id == x.FormaEntrega).SingleOrDefault()?.Value,
-                    UserId = x.UserId,
-                    DataCriacao = x.DataCriacao,
-                    DataCriacaoTexto = x.DataCriacao == null ? "" : Convert.ToDateTime(x.DataCriacao).ToShortDateString(),
                     TipoPreco = x.TipoPreco,
                     TipoPrecoTexto = x.TipoPreco == null ? "" : EnumerablesFixed.AP_TipoPreco.Where(y => y.Id == x.TipoPreco).SingleOrDefault()?.Value,
                     GrupoRegistoIvaProduto = x.GrupoRegistoIvaProduto,
-                    CodCategoriaProduto = x.CodCategoriaProduto
+                    CodCategoriaProduto = x.CodCategoriaProduto,
+
+                    UserId = x.UserId,
+                    DataCriacao = x.DataCriacao,
+                    DataCriacaoTexto = x.DataCriacao == null ? "" : Convert.ToDateTime(x.DataCriacao).ToShortDateString(),
+                    
                 }).ToList();
 
                 //ORIGEM = 1 » Acordo Preços
@@ -5370,6 +5396,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 NoProcedimento = data.NoProcedimento,
                 NoFornecedor = data.NoFornecedor,
+                NomeFornecedor = DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName).Where(x => x.No_ == data.NoFornecedor).SingleOrDefault().Name,
                 CodProduto = data.CodProduto,
                 DescricaoProduto = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, data.CodProduto).SingleOrDefault().Name,
                 DtValidadeInicio = data.DtValidadeInicio,
@@ -5387,10 +5414,10 @@ namespace Hydra.Such.Portal.Controllers
                 FormaEntrega = data.FormaEntrega,
                 TipoPreco = data.TipoPreco,
                 GrupoRegistoIvaProduto = data.GrupoRegistoIvaProduto,
-                NomeFornecedor = DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName).Where(x => x.No_ == data.NoFornecedor).SingleOrDefault().Name,
+                CodCategoriaProduto = data.CodCategoriaProduto,
+
                 UserId = User.Identity.Name,
                 DataCriacao = DateTime.Now,
-                CodCategoriaProduto = data.CodCategoriaProduto
             });
 
             if (toCreate != null)

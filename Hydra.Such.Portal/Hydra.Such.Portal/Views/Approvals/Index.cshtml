@@ -107,11 +107,121 @@
 
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.requisicaoAcordosPrecos.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="requisicaoAcordosPrecos">Req A Preços</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="requisicaoAcordosPrecos">Req Acordos Preços</vaadin-grid-sorter>
                     <vaadin-grid-filter path="requisicaoAcordosPrecos" />
                 </template>
                 <template>
                     <vaadin-checkbox checked="{{item.requisicaoAcordosPrecos}}" disabled></vaadin-checkbox>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.requisicaoUrgente.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="requisicaoUrgente">Req Urgente</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="requisicaoUrgente" />
+                </template>
+                <template>
+                    <vaadin-checkbox checked="{{item.requisicaoUrgente}}" disabled></vaadin-checkbox>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.requisicaoOrcamentoEmAnexo.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="requisicaoOrcamentoEmAnexo">Req Orçamento Em Anexo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="requisicaoOrcamentoEmAnexo" />
+                </template>
+                <template>
+                    <vaadin-checkbox checked="{{item.requisicaoOrcamentoEmAnexo}}" disabled></vaadin-checkbox>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.requisicaoImobilizado.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="requisicaoImobilizado">Req Imobilizado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="requisicaoImobilizado" />
+                </template>
+                <template>
+                    <vaadin-checkbox checked="{{item.requisicaoImobilizado}}" disabled></vaadin-checkbox>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.requisicaoExclusivo.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="requisicaoExclusivo">Req Exclusivo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="requisicaoExclusivo" />
+                </template>
+                <template>
+                    <vaadin-checkbox checked="{{item.requisicaoExclusivo}}" disabled></vaadin-checkbox>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.requisicaoJaExecutado.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="requisicaoJaExecutado">Req Já Executado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="requisicaoJaExecutado" />
+                </template>
+                <template>
+                    <vaadin-checkbox checked="{{item.requisicaoJaExecutado}}" disabled></vaadin-checkbox>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.requisicaoAmostra.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="requisicaoAmostra">Req Amostra</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="requisicaoAmostra" />
+                </template>
+                <template>
+                    <vaadin-checkbox checked="{{item.requisicaoAmostra}}" disabled></vaadin-checkbox>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.requisicaoEquipamento.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="requisicaoEquipamento">Req Equipamento</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="requisicaoEquipamento" />
+                </template>
+                <template>
+                    <vaadin-checkbox checked="{{item.requisicaoEquipamento}}" disabled></vaadin-checkbox>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.requisicaoReposicaoDeStock.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="requisicaoReposicaoDeStock">Req Reposição De Stock</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="requisicaoReposicaoDeStock" />
+                </template>
+                <template>
+                    <vaadin-checkbox checked="{{item.requisicaoReposicaoDeStock}}" disabled></vaadin-checkbox>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.requisicaoPrecoIvaIncluido.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="requisicaoPrecoIvaIncluido">Req Preço IVA Incluído</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="requisicaoPrecoIvaIncluido" />
+                </template>
+                <template>
+                    <vaadin-checkbox checked="{{item.requisicaoPrecoIvaIncluido}}" disabled></vaadin-checkbox>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.requisicaoAdiantamento.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="requisicaoAdiantamento">Req Adiantamento</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="requisicaoAdiantamento" />
+                </template>
+                <template>
+                    <vaadin-checkbox checked="{{item.requisicaoAdiantamento}}" disabled></vaadin-checkbox>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.requisicaoPedirOrcamento.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="requisicaoPedirOrcamento">Req Pedir Orçamento</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="requisicaoPedirOrcamento" />
+                </template>
+                <template>
+                    <vaadin-checkbox checked="{{item.requisicaoPedirOrcamento}}" disabled></vaadin-checkbox>
                 </template>
             </vaadin-grid-column>
 
@@ -309,6 +419,18 @@
                         "movementNo": { hidden: false, label: "Nº" },
                         "typeText": { hidden: false, label: "Tipo" },
                         "number": { hidden: false, label: "Associado" },
+                        "requisicaoAcordosPrecos": { hidden: false, label: "Req Acordos Preços" },
+                        "requisicaoUrgente": { hidden: false, label: "Req Urgente" },
+                        "requisicaoOrcamentoEmAnexo": { hidden: false, label: "Req Oçamento Em Anexo" },
+                        "requisicaoImobilizado": { hidden: false, label: "Req Imobilizado" },
+                        "requisicaoExclusivo": { hidden: false, label: "Req Exclusivo" },
+                        "requisicaoJaExecutado": { hidden: false, label: "Req Já Executado" },
+                        "requisicaoAmostra": { hidden: false, label: "Req Amostra" },
+                        "requisicaoEquipamento": { hidden: false, label: "Req Equipamento" },
+                        "requisicaoReposicaoDeStock": { hidden: false, label: "Req Reposição De Stock" },
+                        "requisicaoPrecoIvaIncluido": { hidden: false, label: "Req Preço IVA Incluído" },
+                        "requisicaoAdiantamento": { hidden: false, label: "Req Adiantamento" },
+                        "requisicaoPedirOrcamento": { hidden: false, label: "Req Pedir Orçamento" },
                         "requestUser": { hidden: false, label: "Solicitado Por" },
                         "value": { hidden: false, label: "Valor" },
                         "statusText": { hidden: false, label: "Estado" },

@@ -794,7 +794,6 @@
                 },
 
                 _exportEXCEL: function () {
-                    debugger;
                     this.result[0].ColunasEXCEL = this._columns;
 
                     this.$.ajax_Export.body = JSON.stringify(this.result);
@@ -802,7 +801,6 @@
                 },
 
                 _exportEXCELResponse: function (e) {
-                    debugger
                     var FileName = this.export;
                     location.href = '../PreRequisicoes/ExportToExcelDownload_RequisicoesLinhasArquivadas?sFileName=' + FileName;
                 },

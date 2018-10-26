@@ -1751,7 +1751,6 @@
                 //    this.$.filteredProducts_ajax.generateRequest();
                 //},
                 _setProjectDim: function (e) {
-                    //debugger;
                     var projectNo = this.$.projectNo.value;
                     if (projectNo != "") {
                         this.$.page_getProject_ajax.body = JSON.stringify(projectNo);
@@ -1776,7 +1775,6 @@
                 },
 
                 _setProjectDim2: function (e) {
-                    //debugger;
                     var projectNo = this.$._ProjectNo.value;
                     this.$.page_getProject2_ajax.body = JSON.stringify(projectNo);
                     this.$.page_getProject2_ajax.generateRequest();
@@ -1832,7 +1830,6 @@
                     this.$._UnitCost.disabled = e.detail.value !== "";
                 },
                 _onChangeQuantity: function (e) {
-                    //debugger;
                     if (e != undefined) {
 
                         var stringVal = "" + e.detail.value;
@@ -1849,7 +1846,6 @@
                     }
                 },
                 _getProjectDimsResponse: function (e) {
-                    //debugger;
                     if (e.detail.status === 200) {
                         this.$.page_GetRegionCode_ajax.generateRequest();
                         this.$.page_GetResponsabilityCenterCode_ajax.generateRequest();
@@ -2031,7 +2027,6 @@
                 },
 
                 _createnewreq: function (e) {
-                    //debugger;
                     this.data.area = this._areaid;
                     if (this.$.projectNo.value != "" & this.$.projectNo.value != null) {
                         this.$.page_validator_req_ajax.body = JSON.stringify(this.data);
@@ -2050,7 +2045,6 @@
                 },
 
                 _update: function () {
-                    //debugger;
                     this.data.area = this._areaid;
                     if (this.$.projectNo.value != "" & this.$.projectNo.value != null) {
                         this._executeRequest("/PreRequisicoes/UpdatePreRequesition", this.data)
@@ -2101,7 +2095,6 @@
                 },
 
                 _responseReqValidatorProcessor: function (data) {
-                    //debugger;
                     var self = this;
 
                     if (data.detail.status === 200) {
@@ -2498,7 +2491,6 @@
 
                 //Pre Requesition Lines
                 _createPreReqLine: function () {
-                    //debugger;
                     var requesitionType = this.$.requesitionType.value;
 
                     var localCode = "";
@@ -2587,7 +2579,6 @@
                 },
 
                 _updateLinhaPreRequisicao: function (e) {
-                    //debugger;
                     var index = this.dataLines.lines.indexOf(e.model.item);
 
                     //var line = this.CBPurchaseLine.find(x => x.id == e.currentTarget.__data.selectedItem.id);
@@ -2644,7 +2635,6 @@
                     }
                 },
                 _UpdateLinhaPreRequisicao_ResponseProcessor: function (e) {
-                    //debugger;
                     if (this.updateLinhaPreRequisicaoResponse.eReasonCode == 1) {
                         this._openToast(this.updateLinhaPreRequisicaoResponse.eMessage);
                     }
@@ -2655,7 +2645,6 @@
                 },
 
                 _onProductInGridChanged: function (e) {
-                    //debugger;
                     var index = this.dataLines.lines.indexOf(e.model.item);
 
                     this.$.prereqLines_UpdateLinhaPreRequisicaoProduto_ajax.body = JSON.stringify({
@@ -2701,7 +2690,6 @@
                     this.$.grid_prereqlines.clearCache();
                 },
                 _UpdateLinhaPreRequisicaoProduto_ResponseProcessor: function (e) {
-                    //debugger;
                     if (this.updateLinhaPreRequisicaoProdutoResponse.eReasonCode == 1) {
                         this._openToast(this.updateLinhaPreRequisicaoProdutoResponse.eMessage);
                     }
@@ -2728,7 +2716,6 @@
                     //this.$.gridUserAccesses.clearCache();
                 },
                 _duplicarContractLine: function (e) {
-                    //debugger;
                     var index = this.dataLines.lines.indexOf(e.model.item);
 
                     this.$.prereqLines_DuplicarLinha_ajax.body = JSON.stringify({
@@ -2739,7 +2726,6 @@
                     this.$.grid_prereqlines.clearCache();
                 },
                 _dlResponseProcessor: function (e) {
-                    //debugger;
                     if (this.duplicarLinhasResponse.eReasonCode == 1) {
                         this._openToast(this.duplicarLinhasResponse.eMessage);
                         this.$.page_databound_ajax.generateRequest();
@@ -2749,7 +2735,6 @@
                     }
                 },
                 _onProductChanged: function (e) {
-                    //debugger;
                     //var item = this.Products.find(x => x.code == e.detail.value);
                     //if (item != null) {
                     //    this.$._Description.value = item.name;
@@ -2793,7 +2778,6 @@
                     //}
                 },
                 _GetUnitCostLinhaResponse: function (e) {
-                    //debugger;
                     if (this.UnitCostLinha.locationCode != null) {
                         if (this.UnitCostLinha.unitCost != null) {
                             this.$._UnitCost.value = this.UnitCostLinha.unitCost;
@@ -2810,7 +2794,6 @@
                     this.$.page_GetProductLocation_ajax.generateRequest()
                 },
                 _GetProductLocationResponse: function (e) {
-                    //debugger;
                     if (this.productInfo != null) {
                         this.$._Description.value = this.productInfo.name;
                         this.$._Description2.value = this.productInfo.name2;
@@ -2900,7 +2883,6 @@
                     }
                 },
                 _clResponseProcessor: function (data) {
-                    //debugger;
                     if (data.detail.status === 200) {
                         if (!(data.detail.url.indexOf("GetPreReqLines") !== -1)) {
                             if (this.dataLines.eReasonCode != 1) {
@@ -2946,7 +2928,6 @@
                 },
 
                 _PopulatePurchaseLines: function (data) {
-                    //debugger;
                     var codArea = this.$.FunctionalAreaCode.value;
                     if (codArea != "") {
                         this.PurchaseLine = "";
@@ -3038,7 +3019,6 @@
                     this.$.page_GetProjetoNoCabecalho_ajax.generateRequest();
                 },
                 _GetProjetoNoCabecalhoResponse: function (e) {
-                    //debugger;
                     //if (this.ProjetoNo != "") {
                     //    this.$.projectNo.value = this.ProjetoNo;
                     //}
@@ -3052,13 +3032,11 @@
                 },
 
                 _GetNoProjetoLinha: function (e) {
-                    //debugger;
                     var matricula = this.$._VehicleLines.value;
                     this.$.page_GetProjetoNoLinha_ajax.body = JSON.stringify(matricula);
                     this.$.page_GetProjetoNoLinha_ajax.generateRequest();
                 },
                 _GetProjetoNoLinhaResponse: function (e) {
-                    //debugger;
                     if (this.ProjetoNo != "") {
                         this.$._ProjectNo.value = this.ProjetoNo;
                     }
