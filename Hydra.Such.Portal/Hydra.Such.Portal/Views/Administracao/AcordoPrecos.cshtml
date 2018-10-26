@@ -903,6 +903,20 @@
                     ready: function () {
                         this.$.page_databound_ajax.body = JSON.stringify({ "NoProcedimento": "@ViewBag.NoProcedimento" });
                         this.$.page_databound_ajax.generateRequest();
+
+                        var _this = this;
+                        $(window).resize(function () {
+                            _this.fixGridToBottom();
+                        });
+                        $(window).trigger('resize');
+                    },
+
+                    fixGridToBottom: function () {
+                        var grid_el = $(this.$.tabLinhas);
+                        var parentHeight = $(this).offsetParent().height();
+                        var offsetTop = $(this).offset().top;
+                        var height = parentHeight - offsetTop;
+                        grid_el.height(height);
                     },
 
                     _setProductData: function (e) {
