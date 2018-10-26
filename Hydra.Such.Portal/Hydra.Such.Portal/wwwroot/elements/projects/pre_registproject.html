@@ -200,22 +200,27 @@
                     <vaadin-date-picker label="Data" id="dpDate" name="dpDate" value="{{date}}" disabled="{{ !_permissions.create }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
                 </div>
                 <div class="col-lg-2">
-                    <such-selectbox id="projectMovementList" name="projectMovementList" value="{{projectMovementNumber}}" label="Tipo Movimento" disabled="{{ !_permissions.create }}"
-                                    required error-message="Este campo é obrigatório"
-                                    items="[[response2]]"
-                                    text-path="value"
-                                    value-path="id"
-                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
-                    </such-selectbox>
+                    <vaadin-combo-box items="[[response2]]" id="projectMovementList" name="projectMovementList" item-value-path="id" item-label-path="value" value="{{projectMovementNumber}}" label="Tipo Movimento" disabled="{{ !_permissions.create }}"
+                                      required error-message="Este campo é obrigatório">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
                 </div>
                 <div class="col-lg-2">
-                    <such-selectbox id="projectTypeList" name="projectTypeList" value="{{projectTypeNumber}}" label="Tipo" disabled="{{ !_permissions.create }}"
-                                    on-value-changed="_projectTypeChange"
-                                    items="[[response3]]"
-                                    text-path="value"
-                                    value-path="id"
-                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
-                    </such-selectbox>
+                    <vaadin-combo-box items="[[response3]]" id="projectTypeList" name="projectTypeList" item-value-path="id" item-label-path="value" value="{{projectTypeNumber}}" label="Tipo" disabled="{{ !_permissions.create }}" on-value-changed="_projectTypeChange">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
                 </div>
                 <div class="col-lg-2">
                     <such-selectbox id="piCode" name="piCode" value="{{codeNumber}}" label="Código" disabled="{{ !_permissions.create }}"
@@ -1857,8 +1862,8 @@
                             this.$.piExternalGuideNo.value = "";
                             this.$.dpcompDate.value = "";
                             this.$.piCodeMeasurementUnit._clearSelection();
-                            this.$.projectMovementList._clearSelection();
-                            this.$.projectTypeList._clearSelection();
+                            this.$.projectMovementList.value = "";
+                            this.$.projectTypeList.value = "";
                         }
                         else {
                             this.openToastError(this.result.eMessage);
