@@ -134,6 +134,8 @@ namespace Hydra.Such.Data.Logic
                     NumSerieNotasCredito = item.NumSerieNotasCredito,
                     NumSerieNotasDebito = item.NumSerieNotasDebito,
                     NumSeriePreFaturasCompra = item.NumSeriePreFaturasCompra,
+                    NumSeriePreFaturasCompraCP = item.NumSeriePreFaturasCompraCp,
+                    NumSeriePreFaturasCompraCF = item.NumSeriePreFaturasCompraCf,
                     NumSerieNotasCreditoCompra = item.NumSerieNotasCreditoCompra
                 };
             }
