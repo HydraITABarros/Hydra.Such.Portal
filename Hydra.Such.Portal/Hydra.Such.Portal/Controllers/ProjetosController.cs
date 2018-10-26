@@ -3898,43 +3898,8 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 if (premov != null && premov.Count>0)
                 {
-                    Guid transactID = Guid.NewGuid();
-                    try
-                    {
-                        //Create Lines in NAV
-                        try
-                        {
-                            Task<WSCreateProjectDiaryLine.CreateMultiple_Result> TCreateNavDiaryLine = WSProjectDiaryLine.CreateNavDiaryLines(premov, transactID, _configws);
-                            TCreateNavDiaryLine.Wait();
-                        }
-                        catch (Exception ex)
-                        {
-                            erro.eReasonCode = 3;
-                            erro.eMessage = ex.Message;
-                            //Response.StatusCode = (int)HttpStatusCode.NoContent;
-                            return Json(erro);
-                        }
-                       
 
-                        //Register Lines in NAV
-                        Task<WSGenericCodeUnit.FxPostJobJrnlLines_Result> TRegisterNavDiaryLine = WSProjectDiaryLine.RegsiterNavDiaryLines(transactID, _configws);
-                        TRegisterNavDiaryLine.Wait();
-
-                        if (TRegisterNavDiaryLine == null)
-                        {
-                             erro.eReasonCode = 3;
-                             erro.eMessage = "Não foi possivel criar as linhas no nav";
-                            Response.StatusCode = (int)HttpStatusCode.NoContent;
-                            return Json(premov);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        erro.eReasonCode = 3;
-                        erro.eMessage = "Não foi possivel criar as linhas no nav";
-                        //Response.StatusCode = (int)HttpStatusCode.NoContent;
-                        return Json(erro);
-                    }
+                   
 
                     var PreRegistGrouped = premov.GroupBy(x => new { x.ProjectNo, x.Code, x.ServiceGroupCode, x.ServiceClientCode },
                      x => x,
@@ -3945,6 +3910,7 @@ namespace Hydra.Such.Portal.Controllers
                          ServiceClientCode = Key.ServiceClientCode,
                          Items = items,
                      }).ToList();
+
                     foreach (var item in PreRegistGrouped)
                     {
                         List<ProjectDiaryViewModel> nwl = new List<ProjectDiaryViewModel>();
@@ -3952,6 +3918,42 @@ namespace Hydra.Such.Portal.Controllers
                         if (item.Items.ToList().Count > 0)
                         {
                             nwl = item.Items.ToList();
+                            Guid transactID = Guid.NewGuid();
+                            try
+                            {
+                                //Create Lines in NAV
+                                try
+                                {
+                                    Task<WSCreateProjectDiaryLine.CreateMultiple_Result> TCreateNavDiaryLine = WSProjectDiaryLine.CreateNavDiaryLines(nwl, transactID, _configws);
+                                    TCreateNavDiaryLine.Wait();
+                                }
+                                catch (Exception ex)
+                                {
+                                    erro.eReasonCode = 3;
+                                    erro.eMessage = ex.Message;
+                                    //Response.StatusCode = (int)HttpStatusCode.NoContent;
+                                    return Json(erro);
+                                }
+
+                                //Register Lines in NAV
+                                Task<WSGenericCodeUnit.FxPostJobJrnlLines_Result> TRegisterNavDiaryLine = WSProjectDiaryLine.RegsiterNavDiaryLines(transactID, _configws);
+                                TRegisterNavDiaryLine.Wait();
+
+                                if (TRegisterNavDiaryLine == null)
+                                {
+                                    erro.eReasonCode = 3;
+                                    erro.eMessage = "Não foi possivel criar as linhas no nav";
+                                    Response.StatusCode = (int)HttpStatusCode.NoContent;
+                                    return Json(premov);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                erro.eReasonCode = 3;
+                                erro.eMessage = "Não foi possivel criar as linhas no nav";
+                                //Response.StatusCode = (int)HttpStatusCode.NoContent;
+                                return Json(erro);
+                            }
                         }
                         List<int> premovId = new List<int>();
                         foreach (ProjectDiaryViewModel preReg in nwl)

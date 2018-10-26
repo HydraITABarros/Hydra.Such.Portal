@@ -478,13 +478,13 @@ namespace Hydra.Such.Portal.Services
             bool isValid = true;
             try
             {
-                ////Check if exists
-                //bool documentAlreadyExist = DBNAV2017Purchases.DocumentExistsFor(_config.NAVDatabaseName, _config.NAVCompanyName, item.Id);
-                //if (documentAlreadyExist)
-                //{
-                //    item.eMessage = "Já foi criada uma fatura para a receção selecionada.";
-                //    isValid = false;
-                //}
+                //Check if exists
+                bool documentAlreadyExist = DBNAV2017Purchases.DocumentExistsFor(_config.NAVDatabaseName, _config.NAVCompanyName, item.Id);
+                if (documentAlreadyExist)
+                {
+                    item.eMessage = "Já foi criada uma fatura para a receção selecionada.";
+                    isValid = false;
+                }
             }
             catch (Exception ex)
             {
