@@ -23,7 +23,7 @@ namespace Hydra.Such.Data.NAV
             navWSBinding.Security.Mode = BasicHttpSecurityMode.TransportCredentialOnly;
             navWSBinding.Security.Transport.ClientCredentialType = HttpClientCredentialType.Windows;
         }
-
+        
         public static async Task<WSCreatePreInvoice.Create_Result> CreatePreInvoice(SPInvoiceListViewModel preInvoiceToCreate, NAVWSConfigurations WSConfigurations)
         {
             WSCreatePreInvoice.Document_Type tipo;
@@ -99,6 +99,31 @@ namespace Hydra.Such.Data.NAV
 
             return await WS_Client.CreateAsync(NAVCreate);
             
+        }
+
+        public static async Task<WSCreatePreInvoice.Create_Result> CreatePreInvoice(AuthorizedCustomerBillingHeader billingHeader, NAVWSConfigurations WSConfigurations)
+        {
+            SPInvoiceListViewModel invoiceHeader = new SPInvoiceListViewModel();
+            invoiceHeader.InvoiceToClientNo = billingHeader.InvoiceToClientNo;
+            invoiceHeader.Date = billingHeader.Date;
+            invoiceHeader.CommitmentNumber = billingHeader.CommitmentNumber;
+            invoiceHeader.ClientRequest = billingHeader.ClientRequest;
+            invoiceHeader.ClientVATReg = billingHeader.ClientVATReg;
+            invoiceHeader.ContractNo = billingHeader.ContractNo;
+            invoiceHeader.Currency = billingHeader.Currency;
+            invoiceHeader.ServiceDate = billingHeader.ServiceDate;
+            invoiceHeader.UpdateDate = billingHeader.UpdateDate;
+            invoiceHeader.RegionCode = billingHeader.RegionCode;
+            invoiceHeader.FunctionalAreaCode = billingHeader.FunctionalAreaCode;
+            invoiceHeader.ResponsabilityCenterCode = billingHeader.ResponsabilityCenterCode;
+            invoiceHeader.LocationCode = billingHeader.LocationCode;
+            invoiceHeader.Comments = billingHeader.Comments;
+            invoiceHeader.CodTermosPagamento = billingHeader.CodTermosPagamento;
+            invoiceHeader.CodMetodoPagamento = billingHeader.CodMetodoPagamento;
+            invoiceHeader.CreateUser = billingHeader.CreateUser;
+
+            return await CreatePreInvoice(invoiceHeader, WSConfigurations);
+
         }
 
         public static async Task<WSCreatePreInvoice.Create_Result> CreatePreInvoiceHeader(NAVSalesHeaderViewModel PreInvoiceToCreate, NAVWSConfigurations WSConfigurations)

@@ -2540,75 +2540,79 @@ namespace Hydra.Such.Portal.Controllers
                         mp => mp.NºLinha,
                         (mpa, mp) => new SPInvoiceListViewModel
                         {
+                            /*
+                            ProjectDimension;
+                            */
                             //##################################    Obter de projetos autorizados (campos editaveis)
-                            InvoiceToClientNo = authProjectMovements.FirstOrDefault(y => y.CodProjeto == mpa.CodProjeto && y.GrupoFactura == mpa.GrupoFactura).CodCliente,
-                            CodTermosPagamento = authProjectMovements.FirstOrDefault(y => y.CodProjeto == mpa.CodProjeto && y.GrupoFactura == mpa.GrupoFactura).CodTermosPagamento,
-                            CodMetodoPagamento = authProjectMovements.FirstOrDefault(y => y.CodProjeto == mpa.CodProjeto && y.GrupoFactura == mpa.GrupoFactura).CodMetodoPagamento,
-                            ServiceDate = authProjectMovements.FirstOrDefault(y => y.CodProjeto == mpa.CodProjeto && y.GrupoFactura == mpa.GrupoFactura).DataPrestacaoServico,
+                            //CodTermosPagamento = authProjectMovements.FirstOrDefault(y => y.CodProjeto == mpa.CodProjeto && y.GrupoFactura == mpa.GrupoFactura).CodTermosPagamento,
+                            //CodMetodoPagamento = authProjectMovements.FirstOrDefault(y => y.CodProjeto == mpa.CodProjeto && y.GrupoFactura == mpa.GrupoFactura).CodMetodoPagamento,
+                            //ServiceDate = authProjectMovements.FirstOrDefault(y => y.CodProjeto == mpa.CodProjeto && y.GrupoFactura == mpa.GrupoFactura).DataPrestacaoServico,
                             CommitmentNumber = authProjectMovements.FirstOrDefault(y => y.CodProjeto == mpa.CodProjeto && y.GrupoFactura == mpa.GrupoFactura).NumCompromisso,
-                            SituacoesPendentes = authProjectMovements.FirstOrDefault(y => y.CodProjeto == mpa.CodProjeto && y.GrupoFactura == mpa.GrupoFactura).SituacoesPendentes,
-                            Comments = authProjectMovements.FirstOrDefault(y => y.CodProjeto == mpa.CodProjeto && y.GrupoFactura == mpa.GrupoFactura).Observacoes,
+                            //SituacoesPendentes = authProjectMovements.FirstOrDefault(y => y.CodProjeto == mpa.CodProjeto && y.GrupoFactura == mpa.GrupoFactura).SituacoesPendentes,
+                            //Comments = authProjectMovements.FirstOrDefault(y => y.CodProjeto == mpa.CodProjeto && y.GrupoFactura == mpa.GrupoFactura).Observacoes,
+                            Date = authProjectMovements.FirstOrDefault(y => y.CodProjeto == mpa.CodProjeto && y.GrupoFactura == mpa.GrupoFactura).DataPrestacaoServico,
 
                             //##################################    Obter de projetos autorizados (campos não editaveis)
-                            RegionCode = authProjectMovements.FirstOrDefault(y => y.CodProjeto == mpa.CodProjeto && y.GrupoFactura == mpa.GrupoFactura).CodRegiao,
-                            FunctionalAreaCode = authProjectMovements.FirstOrDefault(y => y.CodProjeto == mpa.CodProjeto && y.GrupoFactura == mpa.GrupoFactura).CodAreaFuncional,
-                            ResponsabilityCenterCode = authProjectMovements.FirstOrDefault(y => y.CodProjeto == mpa.CodProjeto && y.GrupoFactura == mpa.GrupoFactura).CodCentroResponsabilidade,
-                            InvoiceGroupDescription = authProjectMovements.FirstOrDefault(y => y.CodProjeto == mpa.CodProjeto && y.GrupoFactura == mpa.GrupoFactura).DescricaoGrupo,
+                            InvoiceToClientNo = authProjectMovements.FirstOrDefault(y => y.CodProjeto == mpa.CodProjeto && y.GrupoFactura == mpa.GrupoFactura).CodCliente,
+                            //InvoiceGroupDescription = authProjectMovements.FirstOrDefault(y => y.CodProjeto == mpa.CodProjeto && y.GrupoFactura == mpa.GrupoFactura).DescricaoGrupo,
                             ClientRequest = authProjectMovements.FirstOrDefault(y => y.CodProjeto == mpa.CodProjeto && y.GrupoFactura == mpa.GrupoFactura).PedidoCliente,
-                            Opcao = authProjectMovements.FirstOrDefault(y => y.CodProjeto == mpa.CodProjeto && y.GrupoFactura == mpa.GrupoFactura).Opcao,
-                            AutorizatedInvoiceData = authProjectMovements.FirstOrDefault(y => y.CodProjeto == mpa.CodProjeto && y.GrupoFactura == mpa.GrupoFactura).DataAutorizacao,
-                            Billed = authProjectMovements.FirstOrDefault(y => y.CodProjeto == mpa.CodProjeto && y.GrupoFactura == mpa.GrupoFactura).Faturado,
-                            User = authProjectMovements.FirstOrDefault(y => y.CodProjeto == mpa.CodProjeto && y.GrupoFactura == mpa.GrupoFactura).Utilizador,
+                            //Opcao = authProjectMovements.FirstOrDefault(y => y.CodProjeto == mpa.CodProjeto && y.GrupoFactura == mpa.GrupoFactura).Opcao,
+                            //AutorizatedInvoiceData = authProjectMovements.FirstOrDefault(y => y.CodProjeto == mpa.CodProjeto && y.GrupoFactura == mpa.GrupoFactura).DataAutorizacao,
+                            //Billed = authProjectMovements.FirstOrDefault(y => y.CodProjeto == mpa.CodProjeto && y.GrupoFactura == mpa.GrupoFactura).Faturado,
+                            //User = authProjectMovements.FirstOrDefault(y => y.CodProjeto == mpa.CodProjeto && y.GrupoFactura == mpa.GrupoFactura).Utilizador,
 
                             //##################################    Obter de movimentos de projeto autorizados
-                            ProjectNo = mpa.CodProjeto,
-                            ContractNo = projectsDetails.Select(x => x.NºContrato).FirstOrDefault(x => x == mpa.CodProjeto),
-                            LineNo = mpa.NumMovimento,
-                            MovementType = mpa.Tipo,
-                            ConsumptionDate = mpa.DataConsumo.HasValue ? mpa.DataConsumo.Value.ToString("yyyy-MM-dd") : "",
-                            ServiceClientCode = mpa.CodServCliente,
+                            MealType = mpa.TipoRefeicao,
                             Type = mpa.Tipo,
                             Code = mpa.Codigo,
                             Description = mpa.Descricao,
+                            RegionCode = mpa.CodRegiao,
+                            FunctionalAreaCode = mpa.CodAreaFuncional,
+                            ResponsabilityCenterCode = mpa.CodCentroResponsabilidade,
+                            ProjectNo = mpa.CodProjeto,
+                            ContractNo = projectsDetails.Select(x => x.NºContrato).FirstOrDefault(x => x == mpa.CodProjeto),
+                            ConsumptionDate = mpa.DataConsumo.HasValue ? mpa.DataConsumo.Value.ToString("yyyy-MM-dd") : "",
+                            ServiceClientCode = mpa.CodServCliente,
                             MeasurementUnitCode = mpa.CodUnidadeMedida,
                             Quantity = mpa.Quantidade,
-                            TotalCost = mpa.CustoTotal,
-                            TotalPrice = mpa.PrecoTotal,
-                            MealType = mpa.TipoRefeicao,
-                            InvoiceGroup = mpa.GrupoFactura,
-                            DocumentNo = mpa.NumDocumento,
-                            ResourceType = mpa.TipoRecurso,
                             ServiceGroupCode = mpa.CodGrupoServico,
                             ExternalGuideNo = mpa.NumGuiaExterna,
                             WasteGuideNo_GAR = mpa.NumGuiaResiduosGar,
+                            InvoiceGroup = mpa.GrupoFactura,
+                            //LineNo = mpa.NumMovimento,
+                            //MovementType = mpa.Tipo,
+                            //TotalCost = mpa.CustoTotal,
+                            //TotalPrice = mpa.PrecoTotal,
+                            //DocumentNo = mpa.NumDocumento,
+                            //ResourceType = mpa.TipoRecurso,                            
 
                             //##################################    Se necessário, obter de movimentos de projeto
                             UnitPrice = mp.PreçoUnitário,
                             UnitCost = mp.CustoUnitário,
                             LocationCode = mp.CódLocalização,
-                            ProjectContabGroup = mp.GrupoContabProjeto,
-                            AdjustedDocument = mp.DocumentoCorrigido,
-                            AdjustedDocumentData = mp.DataDocumentoCorrigido.HasValue ? mp.DataDocumentoCorrigido.Value.ToString("yyyy-MM-dd") : "",
-                            AdjustedPrice = mp.AcertoDePreços,
-                            Currency = mp.Moeda,
-                            Driver = mp.Motorista,
-                            EmployeeNo = mp.NºFuncionário,
-                            InternalRequest = mp.RequisiçãoInterna,
-                            OriginalDocument = mp.DocumentoOriginal,
-                            RequestNo = mp.NºRequisição,
-                            RequestLineNo = mp.NºLinhaRequisição,
-                            ResidueFinalDestinyCode = mp.CódDestinoFinalResíduos,
-                            ResidueGuideNo = mp.NºGuiaResíduos,
-                            TimesheetNo = mp.NºFolhaHoras,
-                            UnitValueToInvoice = mp.ValorUnitárioAFaturar,
-                            CreateDate = mp.DataHoraCriação,
-                            CreateUser = mp.UtilizadorCriação,
-                            Registered = mp.Registado,
-                            QuantityReturned = mp.QuantidadeDevolvida,
-                            AutorizatedInvoice = mp.FaturaçãoAutorizada,
-                            Billable = mp.Faturável,
-                            UpdateDate = mp.DataHoraModificação,
-                            UpdateUser = mp.UtilizadorModificação,
+                            //CreateUser = mp.UtilizadorCriação,
+                            //ProjectContabGroup = mp.GrupoContabProjeto,
+                            //AdjustedDocument = mp.DocumentoCorrigido,
+                            //AdjustedDocumentData = mp.DataDocumentoCorrigido.HasValue ? mp.DataDocumentoCorrigido.Value.ToString("yyyy-MM-dd") : "",
+                            //AdjustedPrice = mp.AcertoDePreços,
+                            //Currency = mp.Moeda,
+                            //Driver = mp.Motorista,
+                            //EmployeeNo = mp.NºFuncionário,
+                            //InternalRequest = mp.RequisiçãoInterna,
+                            //OriginalDocument = mp.DocumentoOriginal,
+                            //RequestNo = mp.NºRequisição,
+                            //RequestLineNo = mp.NºLinhaRequisição,
+                            //ResidueFinalDestinyCode = mp.CódDestinoFinalResíduos,
+                            //ResidueGuideNo = mp.NºGuiaResíduos,
+                            //TimesheetNo = mp.NºFolhaHoras,
+                            //UnitValueToInvoice = mp.ValorUnitárioAFaturar,
+                            //CreateDate = mp.DataHoraCriação,
+                            //Registered = mp.Registado,
+                            //QuantityReturned = mp.QuantidadeDevolvida,
+                            //AutorizatedInvoice = mp.FaturaçãoAutorizada,
+                            //Billable = mp.Faturável,
+                            //UpdateDate = mp.DataHoraModificação,
+                            //UpdateUser = mp.UtilizadorModificação,
                         }
                     )
                     .Where(x => x.InvoiceGroup.HasValue &&
@@ -2645,7 +2649,50 @@ namespace Hydra.Such.Portal.Controllers
                         CommitmentNumber = key.CommitmentNumber,
                         ClientRequest = key.ClientRequest,
                         ClientVATReg = DBNAV2017Clients.GetClientVATByNo(key.InvoiceToClientNo, _config.NAVDatabaseName, _config.NAVCompanyName),
+                        ContractNo = projectsDetails.Select(x => x.NºContrato).FirstOrDefault(y => !string.IsNullOrEmpty(y)),
+                        Currency = items.FirstOrDefault(y => y.InvoiceToClientNo == key.InvoiceToClientNo) ?.Currency,
+                        LocationCode = items.FirstOrDefault(y => y.InvoiceToClientNo == key.InvoiceToClientNo) ?.LocationCode,
+                        MovementType = Convert.ToInt32(OptionInvoice),
+                        CreateUser = User.Identity.Name,
+
                         Items = items.ToList(),
+
+                        //##################################    Obter de projetos autorizados
+                        CodMetodoPagamento = authProjectMovements
+                            .FirstOrDefault(y => y.CodCliente == key.InvoiceToClientNo &&
+                                                 y.DataPrestacaoServico == key.Date &&
+                                                 y.NumCompromisso == key.CommitmentNumber &&
+                                                 y.PedidoCliente == key.ClientRequest)?.CodMetodoPagamento,
+                        CodTermosPagamento = authProjectMovements
+                            .FirstOrDefault(y => y.CodCliente == key.InvoiceToClientNo &&
+                                                 y.DataPrestacaoServico == key.Date &&
+                                                 y.NumCompromisso == key.CommitmentNumber &&
+                                                 y.PedidoCliente == key.ClientRequest)?.CodTermosPagamento,
+                        Comments = authProjectMovements
+                            .FirstOrDefault(y => y.CodCliente == key.InvoiceToClientNo &&
+                                                 y.DataPrestacaoServico == key.Date &&
+                                                 y.NumCompromisso == key.CommitmentNumber &&
+                                                 y.PedidoCliente == key.ClientRequest)?.Observacoes,
+                        RegionCode = authProjectMovements
+                            .FirstOrDefault(y => y.CodCliente == key.InvoiceToClientNo &&
+                                                 y.DataPrestacaoServico == key.Date &&
+                                                 y.NumCompromisso == key.CommitmentNumber &&
+                                                 y.PedidoCliente == key.ClientRequest)?.CodRegiao,
+                        FunctionalAreaCode = authProjectMovements
+                            .FirstOrDefault(y => y.CodCliente == key.InvoiceToClientNo &&
+                                                 y.DataPrestacaoServico == key.Date &&
+                                                 y.NumCompromisso == key.CommitmentNumber &&
+                                                 y.PedidoCliente == key.ClientRequest)?.CodAreaFuncional,
+                        ResponsabilityCenterCode = authProjectMovements
+                            .FirstOrDefault(y => y.CodCliente == key.InvoiceToClientNo &&
+                                                 y.DataPrestacaoServico == key.Date &&
+                                                 y.NumCompromisso == key.CommitmentNumber &&
+                                                 y.PedidoCliente == key.ClientRequest)?.CodCentroResponsabilidade,
+                        ServiceDate = authProjectMovements
+                            .FirstOrDefault(y => y.CodCliente == key.InvoiceToClientNo &&
+                                                 y.DataPrestacaoServico == key.Date &&
+                                                 y.NumCompromisso == key.CommitmentNumber &&
+                                                 y.PedidoCliente == key.ClientRequest)?.DataServPrestado,
                     })
                 .ToList();
 
@@ -2692,13 +2739,14 @@ namespace Hydra.Such.Portal.Controllers
                         var itemsToInvoice = header.Items.Select(x => new Tuple<string, int>(x.ProjectNo, x.InvoiceGroup.Value)).Distinct().ToList();
                         try
                         {
-                            var invoiceHeader = header.Items.First();
-                            invoiceHeader.ClientVATReg = header.ClientVATReg;
-                            invoiceHeader.MovementType = Convert.ToInt32(OptionInvoice);
-                            invoiceHeader.CreateUser = User.Identity.Name;
+                            //var invoiceHeader = header.Items.First();
+                            //invoiceHeader.ClientVATReg = header.ClientVATReg;
+                            //invoiceHeader.MovementType = Convert.ToInt32(OptionInvoice);
+                            //invoiceHeader.CreateUser = User.Identity.Name;
+                            header.CreateUser = User.Identity.Name;
 
                             execDetails = string.Format("Fat. Cliente: {0}, Data: {1}, Nº Compromisso: {2} - ", header.InvoiceToClientNo, header.Date, header.CommitmentNumber);
-                            Task<WSCreatePreInvoice.Create_Result> TCreatePreInvoice = WSPreInvoice.CreatePreInvoice(invoiceHeader, _configws);
+                            Task<WSCreatePreInvoice.Create_Result> TCreatePreInvoice = WSPreInvoice.CreatePreInvoice(header, _configws);
                             TCreatePreInvoice.Wait();
 
                             if (TCreatePreInvoice.IsCompletedSuccessfully)
@@ -2716,9 +2764,9 @@ namespace Hydra.Such.Portal.Controllers
                                                             .FirstOrDefault(y => y.ProjectNo == x.ProjectNo)?.ContractNo;
 
                                         //Para Nota de crédito passar o valor para positivo
-                                        if (invoiceHeader.MovementType == 4 && x.TotalPrice.HasValue && x.TotalPrice < 0)
+                                        if (header.MovementType == 4 && x.TotalPrice.HasValue && x.TotalPrice < 0)
                                             x.TotalPrice = Math.Abs(x.TotalPrice.Value);
-                                        if (invoiceHeader.MovementType == 4 && x.Quantity.HasValue && x.Quantity < 0)
+                                        if (header.MovementType == 4 && x.Quantity.HasValue && x.Quantity < 0)
                                             x.Quantity = Math.Abs(x.Quantity.Value);
                                     });
 
