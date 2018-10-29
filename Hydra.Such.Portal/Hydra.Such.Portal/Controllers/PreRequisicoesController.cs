@@ -1029,9 +1029,8 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 if (product.InventoryValueZero == 1)
                                 {
-                                    newline.CódigoLocalização = DBConfigurations.GetById(1).ArmazemCompraDireta;
                                     newline.CustoUnitário = x.UnitCost;
-                                    newline.CódigoLocalização = x.LocalCode;
+                                    newline.CódigoLocalização = DBConfigurations.GetById(1).ArmazemCompraDireta;
                                     newline.LocalCompraDireta = "1";
                                 }
                                 else

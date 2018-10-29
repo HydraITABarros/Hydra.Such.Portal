@@ -35,9 +35,6 @@
 <link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
 <link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
 
-<link rel="import" href="/lib/vaadin-upload/vaadin-upload-file.html">
-<link rel="import" href="/lib/vaadin-upload/vaadin-upload.html">
-
 <!--ACORDEÃO-->
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
@@ -559,11 +556,13 @@
 
                             <vaadin-grid-column resizable>
                                 <template class="header">
-                                    <vaadin-grid-sorter path="dtValidadeInicioTexto" style="text-align:center;">Data Validade Início</vaadin-grid-sorter>
+                                    <vaadin-grid-sorter path="dtValidadeInicioTexto" style="text-align:center;">Data Validade Início2</vaadin-grid-sorter>
                                     <vaadin-grid-filter path="dtValidadeInicioTexto" />
                                 </template>
                                 <template>
-                                    {{item.dtValidadeInicioTexto}}
+                                    <div style="text-align:right">
+                                        {{item.dtValidadeInicioTexto}}
+                                    </div>
                                 </template>
                             </vaadin-grid-column>
 
@@ -573,7 +572,9 @@
                                     <vaadin-grid-filter path="dtValidadeFimTexto" />
                                 </template>
                                 <template>
-                                    {{item.dtValidadeFimTexto}}
+                                    <div style="text-align:right">
+                                        {{item.dtValidadeFimTexto}}
+                                    </div>
                                 </template>
                             </vaadin-grid-column>
 
@@ -623,7 +624,9 @@
                                     <vaadin-grid-filter path="custoUnitario" />
                                 </template>
                                 <template>
-                                    {{item.custoUnitario}}
+                                    <div style="text-align:right">
+                                        {{item.custoUnitario}} €
+                                    </div>
                                 </template>
                             </vaadin-grid-column>
 
@@ -643,7 +646,9 @@
                                     <vaadin-grid-filter path="qtdPorUm" />
                                 </template>
                                 <template>
-                                    {{item.qtdPorUm}}
+                                    <div style="text-align:right">
+                                        {{item.qtdPorUm}}
+                                    </div>
                                 </template>
                             </vaadin-grid-column>
 
@@ -653,7 +658,9 @@
                                     <vaadin-grid-filter path="pesoUnitario" />
                                 </template>
                                 <template>
-                                    {{item.pesoUnitario}}
+                                    <div style="text-align:right">
+                                        {{item.pesoUnitario}}
+                                    </div>
                                 </template>
                             </vaadin-grid-column>
 
@@ -783,7 +790,7 @@
                                 <vaadin-grid-filter path="noProcedimento" />
                             </template>
                             <template>
-                                <vaadin-text-field id="tabFornecedoresnoProcedimento" value="{{item.noProcedimento}}" disabled></vaadin-text-field>
+                                {{item.noProcedimento}}
                             </template>
                         </vaadin-grid-column>
 
@@ -793,7 +800,7 @@
                                 <vaadin-grid-filter path="nomeFornecedor" />
                             </template>
                             <template>
-                                <vaadin-text-field id="tabFornecedoresnomeFornecedor" value="{{item.nomeFornecedor}}" disabled></vaadin-text-field>
+                                {{item.nomeFornecedor}}
                             </template>
                         </vaadin-grid-column>
 
@@ -803,7 +810,9 @@
                                 <vaadin-grid-filter path="valor" />
                             </template>
                             <template>
-                                <vaadin-text-field id="tabFornecedoresvalor" value="{{item.valor}}" disabled></vaadin-text-field>
+                                <div style="text-align:right">
+                                    {{item.valor}} €
+                                </div>
                             </template>
                         </vaadin-grid-column>
 
@@ -813,7 +822,9 @@
                                 <vaadin-grid-filter path="valorConsumido" />
                             </template>
                             <template>
-                                <vaadin-text-field id="tabFornecedoresvalorConsumido" value="{{item.valorConsumido}}" disabled></vaadin-text-field>
+                                <div style="text-align:right">
+                                    {{item.valorConsumido}} €
+                                </div>
                             </template>
                         </vaadin-grid-column>
 
