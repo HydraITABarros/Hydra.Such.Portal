@@ -764,6 +764,7 @@ namespace Hydra.Such.Portal.Controllers
 
             //Remove todas as requisições em que o campo Requisição Nutrição seja != de true
             result.RemoveAll(x => x.RequestNutrition != true);
+            result.RemoveAll(x => !string.IsNullOrEmpty(x.OrderNo));
 
             //Apply User Dimensions Validations
             List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);

@@ -655,10 +655,11 @@
                                         <vaadin-upload id="UploadRequest"
                                                        target="/PreRequisicoes/FileUpload/{{_prerequesitionno}}/{{_lineno}}"
                                                        method="POST"
+                                                       accept="application/pdf, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.template, image/jpeg, image/png, image/gif"
                                                        headers="{'Accept': 'application/json'}"
                                                        hidden="{{ !_permissions.update }}"
                                                        timeout=15000>
-
+                                                       
                                         </vaadin-upload>
                                         <!--</template>-->
                                     </div>
@@ -868,7 +869,7 @@
                                                 </table>
                                             </template>
                                         </vaadin-combo-box>-->
-                                        <such-selectbox id="_CLRegion" value="{{data.regionCode}}" label="Cód. Região"
+                                        <such-selectbox id="_CLRegion" value="[[data.regionCode]]" label="Cód. Região"
                                                         items="[[LProjectRegionCodes]]"
                                                         text-path="value"
                                                         value-path="id"
@@ -887,7 +888,7 @@
                                                 </table>
                                             </template>
                                         </vaadin-combo-box>-->
-                                        <such-selectbox id="_CLFunctionalAreaCode" value="{{data.functionalAreaCode}}" label="Cód. Área Funcional"
+                                        <such-selectbox id="_CLFunctionalAreaCode" value="[[data.functionalAreaCode]]" label="Cód. Área Funcional"
                                                         items="[[LProjectFunctionalAreaCodes]]"
                                                         text-path="value"
                                                         value-path="id"
@@ -906,7 +907,7 @@
                                                 </table>
                                             </template>
                                         </vaadin-combo-box>-->
-                                        <such-selectbox id="_CLResponsabilityCenterCode" value="{{data.responsabilityCenterCode}}" label="Cód. Centro Responsabilidade"
+                                        <such-selectbox id="_CLResponsabilityCenterCode" value="[[data.responsabilityCenterCode]]" label="Cód. Centro Responsabilidade"
                                                         items="[[LProjectResponsabilityCenterCodes]]"
                                                         on-change="_RespChange"
                                                         text-path="id"
@@ -1444,6 +1445,7 @@
                         {{item.requisitionNo}}
                     </template>
                 </vaadin-grid-column>
+
                 <vaadin-grid-column width="110px" resizable>
                     <template class="header">
                         <vaadin-grid-sorter path="requisitionDate">Data Requisição</vaadin-grid-sorter>
@@ -1453,6 +1455,7 @@
                         {{item.requisitionDate}}
                     </template>
                 </vaadin-grid-column>
+
                 <vaadin-grid-column width="110px" resizable>
                     <template class="header">
                         <vaadin-grid-sorter path="comments">Comentários</vaadin-grid-sorter>
@@ -1462,6 +1465,7 @@
                         {{item.comments}}
                     </template>
                 </vaadin-grid-column>
+
                 <vaadin-grid-column width="110px" resizable>
                     <template class="header">
                         <vaadin-grid-sorter path="regionCode">Cód. Região</vaadin-grid-sorter>
@@ -1471,6 +1475,7 @@
                         [[ _clFormatRegion(item.regionCode) ]]
                     </template>
                 </vaadin-grid-column>
+
                 <vaadin-grid-column width="160px" resizable>
                     <template class="header">
                         <vaadin-grid-sorter path="functionalAreaCode">Cód. Área Funcional</vaadin-grid-sorter>
@@ -1480,6 +1485,7 @@
                         [[ _clFormatFunctionalArea(item.functionalAreaCode) ]]
                     </template>
                 </vaadin-grid-column>
+
                 <vaadin-grid-column width="150px" resizable>
                     <template class="header">
                         <vaadin-grid-sorter path="responsabilityCenterCode">Cód. Centro Responsabilidade</vaadin-grid-sorter>
@@ -1489,6 +1495,7 @@
                         {{item.centerResponsibilityCode}}
                     </template>
                 </vaadin-grid-column>
+
                 <vaadin-grid-column width="110px" resizable>
                     <template class="header">
                         <vaadin-grid-sorter path="createDate">Criado em</vaadin-grid-sorter>
@@ -1498,6 +1505,7 @@
                         {{item.createDate}}
                     </template>
                 </vaadin-grid-column>
+
                 <vaadin-grid-column width="10%" resizable>
                     <template class="header">
                     </template>
@@ -1900,32 +1908,34 @@
 
                 _getProjectDimsResponse2: function (e) {
                     if (e.detail.status === 200) {
-                        this.$.page_GetRegionCode_ajax.generateRequest();
-                        this.$.page_GetResponsabilityCenterCode_ajax.generateRequest();
-                        this.$.page_GetFunctionalAreaCode_ajax.generateRequest();
+                        if (this.ProjectDims2 != null || this.ProjectDims2 != undefined) {
+                            this.$.page_GetRegionCode_ajax.generateRequest();
+                            this.$.page_GetResponsabilityCenterCode_ajax.generateRequest();
+                            this.$.page_GetFunctionalAreaCode_ajax.generateRequest();
 
-                        if (this.ProjectDims2.regionCode != "") {
-                            this.$._CLRegion.value = this.ProjectDims2.regionCode;
-                        }
-                        else {
-                            this.$._CLRegion.value = "";
-                            this.$._CLRegion.valueText = "";
-                        }
+                            if (this.ProjectDims2.regionCode != "") {
+                                this.$._CLRegion.value = this.ProjectDims2.regionCode;
+                            }
+                            //else {
+                            //    this.$._CLRegion.value = "";
+                            //    this.$._CLRegion.valueText = "";
+                            //}
 
-                        if (this.ProjectDims2.functionalAreaCode != "") {
-                            this.$._CLFunctionalAreaCode.value = this.ProjectDims2.functionalAreaCode;
-                        }
-                        else {
-                            this.$._CLFunctionalAreaCode.value = "";
-                            this.$._CLFunctionalAreaCode.valueText = "";
-                        }
+                            if (this.ProjectDims2.functionalAreaCode != "") {
+                                this.$._CLFunctionalAreaCode.value = this.ProjectDims2.functionalAreaCode;
+                            }
+                            //else {
+                            //    this.$._CLFunctionalAreaCode.value = "";
+                            //    this.$._CLFunctionalAreaCode.valueText = "";
+                            //}
 
-                        if (this.ProjectDims2.responsabilityCenterCode != "") {
-                            this.$._CLResponsabilityCenterCode.value = this.ProjectDims2.responsabilityCenterCode;
-                        }
-                        else {
-                            this.$._CLResponsabilityCenterCode.value = "";
-                            this.$._CLResponsabilityCenterCode.valueText = "";
+                            if (this.ProjectDims2.responsabilityCenterCode != "") {
+                                this.$._CLResponsabilityCenterCode.value = this.ProjectDims2.responsabilityCenterCode;
+                            }
+                            //else {
+                            //    this.$._CLResponsabilityCenterCode.value = "";
+                            //    this.$._CLResponsabilityCenterCode.valueText = "";
+                            //}
                         }
                     }
                 },
