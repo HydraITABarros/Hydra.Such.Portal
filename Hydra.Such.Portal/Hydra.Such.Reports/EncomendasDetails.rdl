@@ -957,7 +957,7 @@ Medida</Value>
             </cl:ComponentMetadata>
           </Tablix>
         </ReportItems>
-        <Height>2in</Height>
+        <Height>0.84375in</Height>
         <Style />
       </Body>
       <Width>8.59458in</Width>
@@ -1274,6 +1274,98 @@ DATA</Value>
             </Border>
           </Style>
         </PageHeader>
+        <PageFooter>
+          <Height>2.54cm</Height>
+          <PrintOnFirstPage>true</PrintOnFirstPage>
+          <PrintOnLastPage>true</PrintOnLastPage>
+          <ReportItems>
+            <Line Name="Line2">
+              <Left>0.3175cm</Left>
+              <Height>0cm</Height>
+              <Width>18.28862cm</Width>
+              <Style>
+                <Border>
+                  <Style>Solid</Style>
+                </Border>
+              </Style>
+            </Line>
+            <Textbox Name="Textbox48">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>Total</Value>
+                      <Style>
+                        <FontSize>8pt</FontSize>
+                        <FontWeight>Bold</FontWeight>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style>
+                    <TextAlign>Right</TextAlign>
+                  </Style>
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>Textbox48</rd:DefaultName>
+              <Left>14.03536cm</Left>
+              <Height>0.6cm</Height>
+              <Width>2.50037cm</Width>
+              <ZIndex>1</ZIndex>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+            <Textbox Name="Textbox49">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>=System.Math.Round(Sum(Fields!AmountIncludingVAT.Value, "EncomendasLinhasList"), 2)</Value>
+                      <Style>
+                        <FontSize>8pt</FontSize>
+                        <FontWeight>Bold</FontWeight>
+                        <Format>#,0.00 '€';(#,0.00 '€')</Format>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style>
+                    <TextAlign>Right</TextAlign>
+                  </Style>
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>Textbox49</rd:DefaultName>
+              <Left>16.6535cm</Left>
+              <Height>0.6cm</Height>
+              <Width>1.98437cm</Width>
+              <ZIndex>2</ZIndex>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+                <rd:FormatSymbolCulture>pt-PT</rd:FormatSymbolCulture>
+              </Style>
+            </Textbox>
+          </ReportItems>
+          <Style>
+            <Border>
+              <Style>None</Style>
+            </Border>
+          </Style>
+        </PageFooter>
         <PageHeight>27.94cm</PageHeight>
         <PageWidth>21.59cm</PageWidth>
         <LeftMargin>1.5cm</LeftMargin>
@@ -1316,7 +1408,13 @@ DATA</Value>
     </ReportParameter>
     <ReportParameter Name="No">
       <DataType>String</DataType>
+      <DefaultValue>
+        <Values>
+          <Value>C1800382</Value>
+        </Values>
+      </DefaultValue>
       <Prompt>No</Prompt>
+      <Hidden>true</Hidden>
       <cl:ComponentMetadata>
         <cl:ComponentId>24a002a2-e6b2-422b-abec-f077ac397b7f</cl:ComponentId>
       </cl:ComponentMetadata>
