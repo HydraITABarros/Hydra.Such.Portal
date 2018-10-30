@@ -374,13 +374,15 @@
                                 }
                             },
                             callback: function (result) {
-                                if (result == "") {
-                                    TMessageError.text = "É necessário preencher o motivo de rejeição.";
-                                    TMessageError.open();
-                                    return false;
-                                } else {
-                                    ARequest.body = JSON.stringify({ movementNo: e.model.item.movementNo, status: 2, rejectReason: result });
-                                    ARequest.generateRequest();
+                                if (result != null) {
+                                    if (result == "") {
+                                        TMessageError.text = "É necessário preencher o motivo de rejeição.";
+                                        TMessageError.open();
+                                        return false;
+                                    } else {
+                                        ARequest.body = JSON.stringify({ movementNo: e.model.item.movementNo, status: 2, rejectReason: result });
+                                        ARequest.generateRequest();
+                                    }
                                 }
                             }
                         });
