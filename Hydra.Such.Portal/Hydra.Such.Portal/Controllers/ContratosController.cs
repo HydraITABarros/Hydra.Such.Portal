@@ -226,13 +226,17 @@ namespace Hydra.Such.Portal.Controllers
             if (data != null)
             {
                 Contratos cContract = null;
+                ContractType? contractType = null;
+                if (EnumHelper.ValidateRange(typeof(ContractType), data.ContractType))
+                    contractType = (ContractType)data.ContractType;
+;
                 if (data.VersionNo != 0)
                 {
-                    cContract = DBContracts.GetByIdAndVersion(data.ContractNo, data.VersionNo, ContractType.Contract);
+                    cContract = DBContracts.GetByIdAndVersion(data.ContractNo, data.VersionNo, contractType);
                 }
                 else
                 {
-                    cContract = DBContracts.GetByIdLastVersion(data.ContractNo);
+                    cContract = DBContracts.GetByIdLastVersion(data.ContractNo, contractType);
                 }
 
                 ContractViewModel result = new ContractViewModel();
