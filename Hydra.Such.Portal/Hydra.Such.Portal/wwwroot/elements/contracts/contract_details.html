@@ -2480,10 +2480,26 @@
                     this.$.grid_ClientRequisitions.clearCache();
 
                     if (!this._isCreate) {
-                        if (this._validateData()) {
+                        //if (this._validateRequisitionData()) {
                             this._executeRequest("/Contratos/UpdateContract", this.data);
-                        }
+                        //}
                     }
+                },
+                _validateRequisitionData: function () {
+                    var startDateElem = Polymer.dom(this.root).querySelector('#_CRStartDate');
+                    var promisseNoElem = Polymer.dom(this.root).querySelector('#_CRPromiseNo');
+                    var invGoupElem = Polymer.dom(this.root).querySelector('#_CRInvoiceGroup');
+                    var projNoElem = Polymer.dom(this.root).querySelector('#_CRProjectNo');
+
+                    if (startDateElem.validate() &
+                        promisseNoElem.validate() &
+                        invGoupElem.validate() &
+                        projNoElem.validate()) {
+
+                        return true;
+                    }
+                    this._openToastError("Verifique os dados inseridos.");
+                    return false;
                 },
                 _toggleToastMultiple: function () {
                         //close

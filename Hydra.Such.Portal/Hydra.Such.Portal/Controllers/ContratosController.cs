@@ -228,7 +228,7 @@ namespace Hydra.Such.Portal.Controllers
                 Contratos cContract = null;
                 if (data.VersionNo != 0)
                 {
-                    cContract = DBContracts.GetByIdAndVersion(data.ContractNo, data.VersionNo);
+                    cContract = DBContracts.GetByIdAndVersion(data.ContractNo, data.VersionNo, ContractType.Contract);
                 }
                 else
                 {
@@ -376,7 +376,6 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         //Contratos cContract = DBContracts.ParseToDB(data);
                         Contratos ContratoDB = DBContracts.GetByIdAndVersion(data.ContractNo, data.VersionNo);
-
 
                         if (ContratoDB != null)
                         {
