@@ -1525,7 +1525,7 @@
 
                                 <template is="dom-if" if="{{ !isReadOnly() }}">
                                     <template is="dom-if" if="{{ _permissions.delete }}">
-                                        <vaadin-grid-column width="100px" resizable hidden="{{_isArchived}}">
+                                        <vaadin-grid-column width="100px" resizable hidden="{{_isValidated}}">
                                             <template class="header">
                                             </template>
                                             <template>
@@ -1687,6 +1687,10 @@
                         type: String,
                     },
                     _isArchived: {
+                        type: Boolean,
+                        value: false
+                    },
+                    _isValidated: {
                         type: Boolean,
                         value: false
                     },
@@ -2353,6 +2357,9 @@
                         }
                     }
 
+                    if (this.Requisition.state == 0 || this.Requisition.state == 3 || this.Requisition.state == 6 || this.Requisition.state == 7) {
+                        this._isValidated = true;
+                    }
                 },
                 _deleteReqLineResponse: function (e) {
                     if (this.DelReqLineResponse.eReasonCode == "1") {

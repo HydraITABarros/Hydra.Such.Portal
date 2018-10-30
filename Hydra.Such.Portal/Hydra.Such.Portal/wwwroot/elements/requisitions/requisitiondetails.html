@@ -1503,11 +1503,11 @@
 
                                 <template is="dom-if" if="{{ !isReadOnly() }}">
                                     <template is="dom-if" if="{{ _permissions.delete }}">
-                                        <vaadin-grid-column width="100px" resizable hidden="{{_isArchived}}">
+                                        <vaadin-grid-column width="100px" resizable hidden="{{_isValidated}}"> <!--hidden="{{_isArchived}}"-->
                                             <template class="header">
                                             </template>
                                             <template>
-                                                <paper-button class="btnRemove tableBtn" on-tap="_deleteRequisitionLine" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                                <paper-button id="btnEliminarLinha" class="btnRemove tableBtn" on-tap="_deleteRequisitionLine" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
                                             </template>
                                         </vaadin-grid-column>
                                     </template>
@@ -1641,6 +1641,10 @@
                         type: String,
                     },
                     _isArchived: {
+                        type: Boolean,
+                        value: false
+                    },
+                    _isValidated: {
                         type: Boolean,
                         value: false
                     },
@@ -2308,6 +2312,10 @@
                     else {
                         this.$.CBHeaderProjects.disabled = false;
                         //this.$.CBLineProjects.disabled = false;
+                    }
+
+                    if (this.Requisition.state == 0 || this.Requisition.state == 3 || this.Requisition.state == 6 || this.Requisition.state == 7) {
+                        this._isValidated = true;
                     }
 
                 },
