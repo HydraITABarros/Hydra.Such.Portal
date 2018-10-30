@@ -337,6 +337,10 @@
                             return {};
                         }
                     },
+                    _hasErrors: {
+                        type: Boolean,
+                        value: false
+                    },
                 },
                 observers: [
                     '_onCacheLoaded(resultstatus,RegionData,FunctionalAreaCodeData,ResponsabilityCenterData,LocalMarketRegions)'
@@ -375,6 +379,19 @@
                     //debugger;
                     this.$.ToastMessageError.text = message;
                     this.$.ToastMessageError.open();
+                },
+                _toggleToastMultiple: function () {
+                    this._checkForErrors();
+                    if (this._hasErrors)
+                        this.$.ToastMessageMultiple.duration = 0;
+                    else
+                        this.$.ToastMessageMultiple.duration = 8000;
+                    this.$.ToastMessageMultiple.toggle();
+                    this.Requisition.eMessages = [];
+                },
+                _checkForErrors: function () {
+                    var errors = this.Requisition.eMessages.find(x => x.type == 0);
+                    this._hasErrors = !(errors == undefined);
                 },
 
                 _parsestate: function (param1) {
@@ -455,14 +472,17 @@
                 },
 
                 _createPurchaseOrderResponse: function (e) {
+                    debugger;
                     if (this.Requisition.eReasonCode == "1") {
-                        this._openToast(this.Requisition.eMessage);
+                        this._showMessage(this.Requisition.eMessage);
+                        this.$.gridrequest.clearCache();
+                        this.$.ajax_getgrid.generateRequest();
                     }
                     else {
                         if (this.Requisition.eMessages.length > 0)
                             this._toggleToastMultiple();
                         else
-                            this._openToastError(this.Requisition.eMessage);
+                            this._showErrorMessage(this.Requisition.eMessage);
                     }
                 },
 

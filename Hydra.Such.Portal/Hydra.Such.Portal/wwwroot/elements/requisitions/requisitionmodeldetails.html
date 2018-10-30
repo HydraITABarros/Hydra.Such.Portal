@@ -1341,40 +1341,55 @@
                     return false;
                 },
                 _createRequisitionLine: function () {
-                    if (this._validateUserInputForLine()) {
-                        var newReqLine = {
-                            requestNo: this.Requisition.requisitionNo,
-                            localCode: this.$.CBLocations.value,
-                            code: this.$.CBProducts.value,
-                            description: this.$.txtProductDesciption.value,
-                            description2: this.$.txtProductDesciption2.value,
-                            unitMeasureCode: this.$.CBUnitsOfMmeasure.value,
-                            quantityToRequire: this.$.txtQuantityToRequire.value,
-                            //quantityRequired: this.$.quantityRequiredId.value,
-                            //quantityToProvide: this.$.quantityToProvideId.value,
-                            //quantityAvailable: this.$.quantityAvailableId.value,
-                            //quantityReceivable: this.$.quantityReceivableId.value,
-                            //quantityReceived: this.$.quantityReceivedId.value,
-                            unitCost: this.$.txtUnitCost.value,
-                            projectNo: this.$.CBLineProjects.value,
-                            regionCode: this.$._CLRegion.value,
-                            functionalAreaCode: this.$._CLFunctionalAreaCode.value,
-                            centerResponsibilityCode: this.$._CLResponsabilityCenterCode.value
-                            //vehicle: this.$.CBVehicles.value,
-                            //unitCostSould: this.$.unitCostsouldId.value,
-                            //budgetValue: this.$.budgetValueId.value,
-                            //maintenanceOrderLineNo: this.$.maintenanceOrderLineNoId.value,
-                            //createMarketSearch: this.$.createMarketSearchId.checked,
-                            //submitPrePurchase: this.$.submitPrePurchaseId.checked,
-                            //sendPrePurchase: this.$.sendPrePurchaseId.checked,
-                            //supplierNo: this.$.CBSuppliers.value,
-                            //openOrderNo: this.$.CBPurchaseHeader.value,
-                            //openOrderLineNo: this.$.CBPurchaseLine.value,
-                            //queryCreatedMarketNo: this.$.queryCreatedMarketNoId.value,
-                            //localMarket: this.$.chkLocalMarket.checked,
-                        };
-                        this.$.createReqLine_ajax.body = JSON.stringify(newReqLine);
-                        this.$.createReqLine_ajax.generateRequest();
+                    if (this.$.CBLineProjects.value != "" & this.$.CBLineProjects.value != null) {
+                        if (this.$.CBLocations.value != "" & this.$.CBLocations.value != null) {
+                            if (this.$.CBProducts.value != "" & this.$.CBProducts.value != null) {
+                                if (this._validateUserInputForLine()) {
+                                    var newReqLine = {
+                                        requestNo: this.Requisition.requisitionNo,
+                                        localCode: this.$.CBLocations.value,
+                                        code: this.$.CBProducts.value,
+                                        description: this.$.txtProductDesciption.value,
+                                        description2: this.$.txtProductDesciption2.value,
+                                        unitMeasureCode: this.$.CBUnitsOfMmeasure.value,
+                                        quantityToRequire: this.$.txtQuantityToRequire.value,
+                                        //quantityRequired: this.$.quantityRequiredId.value,
+                                        //quantityToProvide: this.$.quantityToProvideId.value,
+                                        //quantityAvailable: this.$.quantityAvailableId.value,
+                                        //quantityReceivable: this.$.quantityReceivableId.value,
+                                        //quantityReceived: this.$.quantityReceivedId.value,
+                                        unitCost: this.$.txtUnitCost.value,
+                                        projectNo: this.$.CBLineProjects.value,
+                                        regionCode: this.$._CLRegion.value,
+                                        functionalAreaCode: this.$._CLFunctionalAreaCode.value,
+                                        centerResponsibilityCode: this.$._CLResponsabilityCenterCode.value
+                                        //vehicle: this.$.CBVehicles.value,
+                                        //unitCostSould: this.$.unitCostsouldId.value,
+                                        //budgetValue: this.$.budgetValueId.value,
+                                        //maintenanceOrderLineNo: this.$.maintenanceOrderLineNoId.value,
+                                        //createMarketSearch: this.$.createMarketSearchId.checked,
+                                        //submitPrePurchase: this.$.submitPrePurchaseId.checked,
+                                        //sendPrePurchase: this.$.sendPrePurchaseId.checked,
+                                        //supplierNo: this.$.CBSuppliers.value,
+                                        //openOrderNo: this.$.CBPurchaseHeader.value,
+                                        //openOrderLineNo: this.$.CBPurchaseLine.value,
+                                        //queryCreatedMarketNo: this.$.queryCreatedMarketNoId.value,
+                                        //localMarket: this.$.chkLocalMarket.checked,
+                                    };
+                                    this.$.createReqLine_ajax.body = JSON.stringify(newReqLine);
+                                    this.$.createReqLine_ajax.generateRequest();
+                                }
+                            }
+                            else {
+                                this._openToastError('O valor do campo Cód. Produto tem que estar preenchido.');
+                            }
+                        }
+                        else {
+                            this._openToastError('O valor do campo Cód. Localização tem que estar preenchido.');
+                        }
+                    }
+                    else {
+                        this._openToastError('O valor do campo Nº Ordem/Projecto tem que estar preenchido.');
                     }
                 },
                 _updateRequisitionLines: function () {

@@ -2650,26 +2650,27 @@ namespace Hydra.Such.Portal.Controllers
 
                                 nrow.NoProcedimento = row.GetCell(0) != null ? row.GetCell(0).ToString() : "";
                                 nrow.NoFornecedor = row.GetCell(1) != null ? row.GetCell(1).ToString() : "";
-                                nrow.CodProduto = row.GetCell(2) != null ? row.GetCell(2).ToString() : "";
-                                nrow.DescricaoProduto = row.GetCell(3) != null ? row.GetCell(3).ToString() : "";
-                                nrow.DtValidadeInicioTexto = row.GetCell(4) != null ? row.GetCell(4).ToString() : "";
-                                nrow.DtValidadeFimTexto = row.GetCell(5) != null ? row.GetCell(5).ToString() : "";
-                                nrow.Regiao = row.GetCell(6) != null ? row.GetCell(6).ToString() : "";
-                                nrow.Area = row.GetCell(7) != null ? row.GetCell(7).ToString() : "";
-                                nrow.Cresp = row.GetCell(8) != null ? row.GetCell(8).ToString() : "";
-                                nrow.Localizacao = row.GetCell(9) != null ? row.GetCell(9).ToString() : "";
-                                nrow.CustoUnitarioTexto = row.GetCell(10) != null ? row.GetCell(10).ToString() : "";
-                                nrow.Um = row.GetCell(11) != null ? row.GetCell(11).ToString() : "";
-                                nrow.QtdPorUmTexto = row.GetCell(12) != null ? row.GetCell(12).ToString() : "";
-                                nrow.PesoUnitarioTexto = row.GetCell(13) != null ? row.GetCell(13).ToString() : "";
-                                nrow.CodProdutoFornecedor = row.GetCell(14) != null ? row.GetCell(14).ToString() : "";
-                                nrow.DescricaoProdFornecedor = row.GetCell(15) != null ? row.GetCell(15).ToString() : "";
-                                nrow.FormaEntregaTexto = row.GetCell(16) != null ? row.GetCell(16).ToString() : "";
-                                nrow.TipoPrecoTexto = row.GetCell(17) != null ? row.GetCell(17).ToString() : "";
-                                nrow.GrupoRegistoIvaProdutoTexto = row.GetCell(18) != null ? row.GetCell(18).ToString() : "";
-                                nrow.UserId = row.GetCell(19) != null ? row.GetCell(19).ToString() : "";
-                                nrow.DataCriacaoTexto = row.GetCell(20) != null ? row.GetCell(20).ToString() : "";
-                                nrow.CodCategoriaProduto = row.GetCell(21) != null ? row.GetCell(21).ToString() : "";
+                                nrow.NomeFornecedor = row.GetCell(2) != null ? row.GetCell(2).ToString() : "";
+                                nrow.CodProduto = row.GetCell(3) != null ? row.GetCell(3).ToString() : "";
+                                nrow.DescricaoProduto = row.GetCell(4) != null ? row.GetCell(4).ToString() : "";
+                                nrow.DtValidadeInicioTexto = row.GetCell(5) != null ? row.GetCell(5).ToString() : "";
+                                nrow.DtValidadeFimTexto = row.GetCell(6) != null ? row.GetCell(6).ToString() : "";
+                                nrow.Regiao = row.GetCell(7) != null ? row.GetCell(7).ToString() : "";
+                                nrow.Area = row.GetCell(8) != null ? row.GetCell(8).ToString() : "";
+                                nrow.Cresp = row.GetCell(9) != null ? row.GetCell(9).ToString() : "";
+                                nrow.Localizacao = row.GetCell(10) != null ? row.GetCell(10).ToString() : "";
+                                nrow.CustoUnitarioTexto = row.GetCell(11) != null ? row.GetCell(11).ToString() : "";
+                                nrow.Um = row.GetCell(12) != null ? row.GetCell(12).ToString() : "";
+                                nrow.QtdPorUmTexto = row.GetCell(13) != null ? row.GetCell(13).ToString() : "";
+                                nrow.PesoUnitarioTexto = row.GetCell(14) != null ? row.GetCell(14).ToString() : "";
+                                nrow.CodProdutoFornecedor = row.GetCell(15) != null ? row.GetCell(15).ToString() : "";
+                                nrow.DescricaoProdFornecedor = row.GetCell(16) != null ? row.GetCell(16).ToString() : "";
+                                nrow.FormaEntregaTexto = row.GetCell(17) != null ? row.GetCell(17).ToString() : "";
+                                nrow.TipoPrecoTexto = row.GetCell(18) != null ? row.GetCell(18).ToString() : "";
+                                nrow.GrupoRegistoIvaProdutoTexto = row.GetCell(19) != null ? row.GetCell(19).ToString() : "";
+                                nrow.CodCategoriaProduto = row.GetCell(20) != null ? row.GetCell(20).ToString() : "";
+                                nrow.UserId = row.GetCell(21) != null ? row.GetCell(21).ToString() : "";
+                                nrow.DataCriacaoTexto = row.GetCell(22) != null ? row.GetCell(22).ToString() : "";
 
                                 ListToCreate.Add(nrow);
                             }
