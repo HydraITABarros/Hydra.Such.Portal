@@ -614,8 +614,13 @@
                                 <div>
                                     <div class="row break_clear">
                                         <!--<template is="dom-if" if="{{ _permissions.update }}">-->
-                                        <vaadin-upload id="UploadRequest" target="/PreRequisicoes/FileUpload/{{_prerequesitionno}}/{{_lineno}}" method="POST" headers="{'Accept': 'application/json'}" hidden="{{ !_permissions.update }}" timeout=15000>
-
+                                        <vaadin-upload id="UploadRequest"
+                                                       target="/PreRequisicoes/FileUpload/{{_prerequesitionno}}/{{_lineno}}"
+                                                       accept="application/pdf, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.template, image/jpeg, image/png, image/gif"
+                                                       method="POST"
+                                                       headers="{'Accept': 'application/json'}"
+                                                       hidden="{{ !_permissions.update }}"
+                                                       timeout=15000>
                                         </vaadin-upload>
                                         <!--</template>-->
                                     </div>
