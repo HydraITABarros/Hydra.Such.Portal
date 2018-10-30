@@ -79,13 +79,48 @@ namespace Hydra.Such.Data.ViewModel.Projects
 
     }
 
-    public class AuthorizedCustomerBilling
+    public class AuthorizedCustomerBilling : AuthorizedCustomerBillingHeader
+    {
+        //public string InvoiceToClientNo { get; set; }
+        //public string Date { get; set; }
+        //public string CommitmentNumber { get; set; }
+        //public string ClientRequest { get; set; }
+        //public string ClientVATReg { get; set; }
+        //public string ContractNo { get; set; }
+        //public string Currency { get; set; }
+        //public string ServiceDate { get; set; }
+        //public DateTime? UpdateDate { get; set; }
+        //public string RegionCode { get; set; }
+        //public string FunctionalAreaCode { get; set; }
+        //public string ResponsabilityCenterCode { get; set; }
+        //public string LocationCode { get; set; }
+        //public string Comments { get; set; }
+        //public string CodTermosPagamento { get; set; }
+        //public string CodMetodoPagamento { get; set; }
+
+        public List<SPInvoiceListViewModel> Items { get; set; }
+    }
+
+    public class AuthorizedCustomerBillingHeader
     {
         public string InvoiceToClientNo { get; set; }
         public string Date { get; set; }
         public string CommitmentNumber { get; set; }
         public string ClientRequest { get; set; }
         public string ClientVATReg { get; set; }
-        public List<SPInvoiceListViewModel> Items { get; set; }
+        public int? MovementType { get; set; }
+        public string ContractNo { get; set; }
+        public string Currency { get; set; }
+        public string ServiceDate { get; set; }
+        public DateTime? UpdateDate { get; set; }
+        public string RegionCode { get; set; }
+        public string FunctionalAreaCode { get; set; }
+        public string ResponsabilityCenterCode { get; set; }
+        public string LocationCode { get; set; }
+        public string Comments { get; set; }
+        public string CodTermosPagamento { get; set; }
+        public string CodMetodoPagamento { get; set; }
+        public string CreateUser { get; set; }
+        //public List<SPInvoiceListViewModel> Items { get; set; }
     }
 }
