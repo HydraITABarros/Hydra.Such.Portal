@@ -15,16 +15,16 @@
         <DataSourceName>eSuchDS</DataSourceName>
         <QueryParameters>
           <QueryParameter Name="@DBName">
-            <Value>=Parameters!DBName.Value</Value>
+            <Value>SUCH_NAV_PROD</Value>
           </QueryParameter>
           <QueryParameter Name="@CompanyName">
-            <Value>=Parameters!CompanyName.Value</Value>
+            <Value>SUCH</Value>
           </QueryParameter>
           <QueryParameter Name="@No">
             <Value>=Parameters!No.Value</Value>
           </QueryParameter>
           <QueryParameter Name="@NoLikeExpression">
-            <Value>=Parameters!NoLikeExpression.Value</Value>
+            <Value xml:space="preserve"> </Value>
           </QueryParameter>
         </QueryParameters>
         <CommandType>StoredProcedure</CommandType>
@@ -126,16 +126,16 @@
         <DataSourceName>eSuchDS</DataSourceName>
         <QueryParameters>
           <QueryParameter Name="@DBName">
-            <Value>=Parameters!DBName.Value</Value>
+            <Value>SUCH_NAV_PROD</Value>
           </QueryParameter>
           <QueryParameter Name="@CompanyName">
-            <Value>=Parameters!CompanyName.Value</Value>
+            <Value>SUCH</Value>
           </QueryParameter>
           <QueryParameter Name="@No">
             <Value>=Parameters!No.Value</Value>
           </QueryParameter>
           <QueryParameter Name="@NoLikeExpression">
-            <Value>=Parameters!NoLikeExpression.Value</Value>
+            <Value xml:space="preserve"> </Value>
           </QueryParameter>
         </QueryParameters>
         <CommandType>StoredProcedure</CommandType>
@@ -216,25 +216,25 @@
                   <Width>0.66088in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>2.91771in</Width>
+                  <Width>2.66771in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>0.41971in</Width>
+                  <Width>0.29471in</Width>
                 </TablixColumn>
                 <TablixColumn>
                   <Width>0.56897in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>0.73929in</Width>
+                  <Width>0.5325in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>0.58615in</Width>
+                  <Width>0.54309in</Width>
                 </TablixColumn>
                 <TablixColumn>
                   <Width>0.51693in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>0.78125in</Width>
+                  <Width>0.72917in</Width>
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
@@ -947,20 +947,20 @@ Medida</Value>
               </TablixMembers>
             </TablixRowHierarchy>
             <DataSetName>EncomendasLinhasList</DataSetName>
-            <Top>0.025in</Top>
+            <Top>0.15in</Top>
             <Left>0.37304cm</Left>
             <Height>0.77375in</Height>
-            <Width>7.19088in</Width>
+            <Width>6.51395in</Width>
             <Style />
             <cl:ComponentMetadata>
               <cl:ComponentId>c9c8d7a9-ec34-49f8-9236-68de838a6660</cl:ComponentId>
             </cl:ComponentMetadata>
           </Tablix>
         </ReportItems>
-        <Height>0.84375in</Height>
+        <Height>1.03125in</Height>
         <Style />
       </Body>
-      <Width>8.59458in</Width>
+      <Width>6.71958in</Width>
       <Page>
         <PageHeader>
           <Height>5.56251cm</Height>
@@ -1150,7 +1150,7 @@ DATA</Value>
               </Paragraphs>
               <rd:DefaultName>Textbox12</rd:DefaultName>
               <Top>0.96424in</Top>
-              <Left>9.75507cm</Left>
+              <Left>8.80257cm</Left>
               <Height>0.48944in</Height>
               <Width>1.07118in</Width>
               <ZIndex>3</ZIndex>
@@ -1195,7 +1195,7 @@ DATA</Value>
               </Paragraphs>
               <rd:DefaultName>Textbox12</rd:DefaultName>
               <Top>1.09983in</Top>
-              <Left>12.65225cm</Left>
+              <Left>11.69975cm</Left>
               <Height>0.35386in</Height>
               <Width>1.931in</Width>
               <ZIndex>4</ZIndex>
@@ -1241,7 +1241,7 @@ DATA</Value>
               </Paragraphs>
               <rd:DefaultName>Textbox12</rd:DefaultName>
               <Top>1.5375in</Top>
-              <Left>9.75153cm</Left>
+              <Left>8.79903cm</Left>
               <Height>0.48719in</Height>
               <Width>3.07163in</Width>
               <ZIndex>5</ZIndex>
@@ -1259,7 +1259,7 @@ DATA</Value>
               <Top>5.56251cm</Top>
               <Left>0.34925cm</Left>
               <Height>0cm</Height>
-              <Width>18.28862cm</Width>
+              <Width>16.56922cm</Width>
               <ZIndex>6</ZIndex>
               <Style>
                 <Border>
@@ -1275,20 +1275,10 @@ DATA</Value>
           </Style>
         </PageHeader>
         <PageFooter>
-          <Height>2.54cm</Height>
+          <Height>2.14312cm</Height>
           <PrintOnFirstPage>true</PrintOnFirstPage>
           <PrintOnLastPage>true</PrintOnLastPage>
           <ReportItems>
-            <Line Name="Line2">
-              <Left>0.3175cm</Left>
-              <Height>0cm</Height>
-              <Width>18.28862cm</Width>
-              <Style>
-                <Border>
-                  <Style>Solid</Style>
-                </Border>
-              </Style>
-            </Line>
             <Textbox Name="Textbox48">
               <CanGrow>true</CanGrow>
               <KeepTogether>true</KeepTogether>
@@ -1309,10 +1299,10 @@ DATA</Value>
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox48</rd:DefaultName>
-              <Left>14.03536cm</Left>
+              <Top>0.127cm</Top>
+              <Left>12.17485cm</Left>
               <Height>0.6cm</Height>
-              <Width>2.50037cm</Width>
-              <ZIndex>1</ZIndex>
+              <Width>2.78259cm</Width>
               <Style>
                 <Border>
                   <Style>None</Style>
@@ -1344,10 +1334,11 @@ DATA</Value>
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox49</rd:DefaultName>
-              <Left>16.6535cm</Left>
+              <Top>0.127cm</Top>
+              <Left>15.13383cm</Left>
               <Height>0.6cm</Height>
-              <Width>1.98437cm</Width>
-              <ZIndex>2</ZIndex>
+              <Width>1.78464cm</Width>
+              <ZIndex>1</ZIndex>
               <Style>
                 <Border>
                   <Style>None</Style>
@@ -1359,6 +1350,18 @@ DATA</Value>
                 <rd:FormatSymbolCulture>pt-PT</rd:FormatSymbolCulture>
               </Style>
             </Textbox>
+            <Line Name="Line2">
+              <Top>0.10583cm</Top>
+              <Left>0.37304cm</Left>
+              <Height>0cm</Height>
+              <Width>16.54543cm</Width>
+              <ZIndex>2</ZIndex>
+              <Style>
+                <Border>
+                  <Style>Solid</Style>
+                </Border>
+              </Style>
+            </Line>
           </ReportItems>
           <Style>
             <Border>
@@ -1378,34 +1381,6 @@ DATA</Value>
     </ReportSection>
   </ReportSections>
   <ReportParameters>
-    <ReportParameter Name="DBName">
-      <DataType>String</DataType>
-      <Nullable>true</Nullable>
-      <DefaultValue>
-        <Values>
-          <Value>SUCH_NAV_PROD</Value>
-        </Values>
-      </DefaultValue>
-      <AllowBlank>true</AllowBlank>
-      <Hidden>true</Hidden>
-      <cl:ComponentMetadata>
-        <cl:ComponentId>79f6e8a9-73a8-467a-afbb-8ba8be496e3e</cl:ComponentId>
-      </cl:ComponentMetadata>
-    </ReportParameter>
-    <ReportParameter Name="CompanyName">
-      <DataType>String</DataType>
-      <Nullable>true</Nullable>
-      <DefaultValue>
-        <Values>
-          <Value>SUCH</Value>
-        </Values>
-      </DefaultValue>
-      <AllowBlank>true</AllowBlank>
-      <Hidden>true</Hidden>
-      <cl:ComponentMetadata>
-        <cl:ComponentId>c4627e59-1e60-48fc-b7a9-0086df581899</cl:ComponentId>
-      </cl:ComponentMetadata>
-    </ReportParameter>
     <ReportParameter Name="No">
       <DataType>String</DataType>
       <DefaultValue>
@@ -1419,92 +1394,16 @@ DATA</Value>
         <cl:ComponentId>24a002a2-e6b2-422b-abec-f077ac397b7f</cl:ComponentId>
       </cl:ComponentMetadata>
     </ReportParameter>
-    <ReportParameter Name="NoLikeExpression">
-      <DataType>String</DataType>
-      <Nullable>true</Nullable>
-      <DefaultValue>
-        <Values>
-          <Value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:nil="true" />
-        </Values>
-      </DefaultValue>
-      <AllowBlank>true</AllowBlank>
-      <Hidden>true</Hidden>
-      <cl:ComponentMetadata>
-        <cl:ComponentId>22147d15-4c60-48ff-a7f6-815a36b36b26</cl:ComponentId>
-      </cl:ComponentMetadata>
-    </ReportParameter>
-    <ReportParameter Name="FunctionalAreas">
-      <DataType>String</DataType>
-      <Nullable>true</Nullable>
-      <DefaultValue>
-        <Values>
-          <Value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:nil="true" />
-        </Values>
-      </DefaultValue>
-      <AllowBlank>true</AllowBlank>
-      <Hidden>true</Hidden>
-      <cl:ComponentMetadata>
-        <cl:ComponentId>eb68a077-0182-41e6-9219-5068eee34f9a</cl:ComponentId>
-      </cl:ComponentMetadata>
-    </ReportParameter>
-    <ReportParameter Name="RespCenters">
-      <DataType>String</DataType>
-      <Nullable>true</Nullable>
-      <AllowBlank>true</AllowBlank>
-      <Hidden>true</Hidden>
-      <cl:ComponentMetadata>
-        <cl:ComponentId>51504b65-a3a3-40fc-a163-94f698173cef</cl:ComponentId>
-      </cl:ComponentMetadata>
-    </ReportParameter>
-    <ReportParameter Name="Regions">
-      <DataType>String</DataType>
-      <Nullable>true</Nullable>
-      <AllowBlank>true</AllowBlank>
-      <Hidden>true</Hidden>
-      <cl:ComponentMetadata>
-        <cl:ComponentId>424e47d6-73a0-4668-8ad9-d586d6e78faf</cl:ComponentId>
-      </cl:ComponentMetadata>
-    </ReportParameter>
   </ReportParameters>
   <ReportParametersLayout>
     <GridLayoutDefinition>
-      <NumberOfColumns>5</NumberOfColumns>
+      <NumberOfColumns>1</NumberOfColumns>
       <NumberOfRows>2</NumberOfRows>
       <CellDefinitions>
         <CellDefinition>
           <ColumnIndex>0</ColumnIndex>
           <RowIndex>0</RowIndex>
-          <ParameterName>DBName</ParameterName>
-        </CellDefinition>
-        <CellDefinition>
-          <ColumnIndex>1</ColumnIndex>
-          <RowIndex>0</RowIndex>
-          <ParameterName>CompanyName</ParameterName>
-        </CellDefinition>
-        <CellDefinition>
-          <ColumnIndex>2</ColumnIndex>
-          <RowIndex>0</RowIndex>
           <ParameterName>No</ParameterName>
-        </CellDefinition>
-        <CellDefinition>
-          <ColumnIndex>3</ColumnIndex>
-          <RowIndex>0</RowIndex>
-          <ParameterName>NoLikeExpression</ParameterName>
-        </CellDefinition>
-        <CellDefinition>
-          <ColumnIndex>2</ColumnIndex>
-          <RowIndex>1</RowIndex>
-          <ParameterName>Regions</ParameterName>
-        </CellDefinition>
-        <CellDefinition>
-          <ColumnIndex>0</ColumnIndex>
-          <RowIndex>1</RowIndex>
-          <ParameterName>FunctionalAreas</ParameterName>
-        </CellDefinition>
-        <CellDefinition>
-          <ColumnIndex>1</ColumnIndex>
-          <RowIndex>1</RowIndex>
-          <ParameterName>RespCenters</ParameterName>
         </CellDefinition>
       </CellDefinitions>
     </GridLayoutDefinition>
