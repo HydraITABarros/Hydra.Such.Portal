@@ -18,6 +18,13 @@ namespace Hydra.Such.Data.Logic
             return null;
         }
 
+        public static List<NAVClientsViewModel> GetClients(string NAVDatabaseName, string NAVCompanyName, IEnumerable<string> navCustomerIds)
+        {
+            string navCustomerIdsFilter = string.Join(",", navCustomerIds); 
+            List<NAVClientsViewModel> customers = GetClients(NAVDatabaseName, NAVCompanyName, navCustomerIdsFilter);
+            return customers;
+        }
+
         public static List<NAVClientsViewModel> GetClients(string NAVDatabaseName, string NAVCompanyName, string NAVClientNo)
         {
             try
@@ -50,8 +57,8 @@ namespace Hydra.Such.Data.Logic
                             PaymentTermsCode = temp.PaymentTermsCode.Equals(DBNull.Value) ? "" : (string)temp.PaymentTermsCode,
                             PaymentMethodCode = temp.PaymentMethodCode.Equals(DBNull.Value) ? "" : (string)temp.PaymentMethodCode,
                             RegionCode = temp.RegionCode.Equals(DBNull.Value) ? "" : (string)temp.RegionCode,
-
-
+                            FunctionalAreaCode = temp.FunctionalAreaCode.Equals(DBNull.Value) ? "" : (string)temp.FunctionalAreaCode,
+                            ResponsabilityCenterCode = temp.ResponsabilityCenterCode.Equals(DBNull.Value) ? "" : (string)temp.ResponsabilityCenterCode,
                         });
                     }
                     return result;

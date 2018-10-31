@@ -515,14 +515,14 @@ namespace Hydra.Such.Portal.Controllers
                     result = billingRecService.GetProblem(AnswerType).ToList();
                 } 
             }
-
-            if(data.AreaPendente == "UnidadesProdutivas" || data.AreaPendente == "UnidadesApoioESuporte")
+            else
+            //if(data.AreaPendente == "UnidadesProdutivas" || data.AreaPendente == "UnidadesApoioESuporte")
             {
-                if ((userPendingProfile == 2 || userPendingProfile == 3) && userDestinyProfile == 1)
-                {
+                //if ((userPendingProfile == 2 || userPendingProfile == 3))// && userDestinyProfile == 1)
+                //{
                     AnswerType = "RF5R";
                     result = billingRecService.GetProblem(AnswerType).ToList();
-                }
+                //}
             }
             
             //if(QuestionArea == "")
