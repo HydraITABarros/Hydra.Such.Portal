@@ -2698,8 +2698,29 @@ namespace Hydra.Such.Portal.Controllers
                                     }
                                     else
                                     {
-                                        result.eReasonCode = 101;
+                                        result.eReasonCode = 199;
                                         result.eMessage = "Ocorreu um erro no script SQL de Validaçãodo na Folha de Horas.";
+
+                                        if (result.eReasonCode == 1)
+                                        {
+                                            result.eReasonCode = 101;
+                                            result.eMessage = "Não tem permissões para validar.";
+                                        }
+                                        if (result.eReasonCode == 2)
+                                        {
+                                            result.eReasonCode = 102;
+                                            result.eMessage = "O projecto não existe no eSUCH e no Evolution.";
+                                        }
+                                        if (result.eReasonCode == 3)
+                                        {
+                                            result.eReasonCode = 103;
+                                            result.eMessage = "O projecto na Mão de Obra não existe no eSUCH e no Evolution.";
+                                        }
+                                        if (result.eReasonCode == 5)
+                                        {
+                                            result.eReasonCode = 105;
+                                            result.eMessage = "Não Pode validar pois já se encontra validada.";
+                                        }
                                     }
                                 }
                             }
