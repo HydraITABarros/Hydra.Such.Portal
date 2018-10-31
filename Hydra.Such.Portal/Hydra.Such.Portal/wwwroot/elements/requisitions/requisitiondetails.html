@@ -502,7 +502,6 @@
                                                 </div>
                                             </div>
                                         </div>
-
                                         <div class="col-sm-3">
                                             <vaadin-text-field id="txtResponsibleReception" name="txtResponsibleReception" label="Responsável de Recebimento" value="{{Requisition.responsibleReception}}" disabled></vaadin-text-field>
                                         </div>
@@ -525,6 +524,9 @@
                                         </div>
                                         <div class="col-sm-3">
                                             <vaadin-text-field id="txtRequisiçãoNutrição" name="txtRequisiçãoNutrição" label="Requisição Nutrição" value="{{Requisition.requestNutrition}}" disabled></vaadin-text-field>
+                                        </div>
+                                        <div class="col-sm-6 ">
+                                            <such-textarea rows="5" value="{{Requisition.rejeicaoMotivo}}" id="txtRejeicaoMotivo" name="txtRejeicaoMotivo" label="Motivo de Rejeição" disabled> </such-textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -1726,7 +1728,7 @@
                         case 3://"Criar Guia Transporte"
                             this._createTransferShipment();
                             break;
-                        case 4://"Enviar Pré- Encomenda"
+                        case 4://"Enviar Pré-Encomenda"
                             this._sendPrePurchase();
                             break;
                         case 5://"Validação Mercado Local"

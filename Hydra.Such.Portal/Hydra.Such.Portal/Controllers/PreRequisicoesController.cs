@@ -1540,6 +1540,9 @@ namespace Hydra.Such.Portal.Controllers
 
                     req.RequisitionNo = RequisitionNo;
                     req.ResponsibleCreation = User.Identity.Name;
+                    req.RequisitionDate = DateTime.Now.ToString();
+                    req.CreateUser = User.Identity.Name;
+                    req.CreateDate = DateTime.Now.ToString();
                     Requisição createReq = DBRequest.ParseToDB(req);
 
                     createReq = DBRequest.Create(createReq);

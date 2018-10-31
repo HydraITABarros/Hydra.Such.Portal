@@ -8,7 +8,7 @@ using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.ViewModel.Approvals;
 using System.Linq;
 using System.Threading.Tasks;
-
+using Hydra.Such.Data.Logic.Request;
 
 namespace Hydra.Such.Portal.Extensions
 {
@@ -62,6 +62,7 @@ namespace Hydra.Such.Portal.Extensions
                     //ApprovalConfigurations.ForEach(x =>
                     //{
                     var approvalConfiguration = ApprovalConfigurations[0];
+                    string Aprovadores = "";
                     if (approvalConfiguration.UtilizadorAprovação != "" && approvalConfiguration.UtilizadorAprovação != null)
                     {
                         if (approvalConfiguration.UtilizadorAprovação == requestUser)
@@ -69,6 +70,7 @@ namespace Hydra.Such.Portal.Extensions
 
                         if (approvalConfiguration.UtilizadorAprovação != "" && approvalConfiguration.UtilizadorAprovação != null && approvalConfiguration.UtilizadorAprovação != requestUser)
                         {
+                            Aprovadores = approvalConfiguration.UtilizadorAprovação;
                             DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = approvalConfiguration.UtilizadorAprovação });
                             //ConfigUtilizadores users = DBUserConfigurations.GetById(approvalConfiguration.UtilizadorAprovação);
                             UsersToNotify.Add(approvalConfiguration.UtilizadorAprovação);
@@ -90,6 +92,7 @@ namespace Hydra.Such.Portal.Extensions
                         {
                             if (y != "" && y != null && y != requestUser)
                             {
+                                Aprovadores = Aprovadores + y + " - ";
                                 DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = y });
                                 //ConfigUtilizadores users = DBUserConfigurations.GetById(y);
                                 //UsersToNotify.Add(y);
@@ -113,6 +116,12 @@ namespace Hydra.Such.Portal.Extensions
                     }
                     //});
 
+                    if (type == 1)
+                    {
+                        Requisição REQ = DBRequest.GetById(number);
+                        REQ.Aprovadores = Aprovadores;
+                        DBRequest.Update(REQ);
+                    }
 
                     string itemToApproveInfo = string.Empty;
                     if (type == 1 && !string.IsNullOrEmpty(number))

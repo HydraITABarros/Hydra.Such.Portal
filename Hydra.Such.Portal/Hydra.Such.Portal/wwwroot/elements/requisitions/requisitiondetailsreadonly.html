@@ -485,7 +485,6 @@
                                                 </div>
                                             </div>
                                         </div>
-
                                         <div class="col-sm-3">
                                             <vaadin-text-field id="txtResponsibleReception" name="txtResponsibleReception" label="Responsável de Recebimento" value="{{Requisition.responsibleReception}}" disabled></vaadin-text-field>
                                         </div>
@@ -508,6 +507,9 @@
                                         </div>
                                         <div class="col-sm-3">
                                             <vaadin-text-field id="txtRequisiçãoNutrição" name="txtRequisiçãoNutrição" label="Requisição Nutrição" value="{{Requisition.requestNutrition}}" disabled></vaadin-text-field>
+                                        </div>
+                                        <div class="col-sm-6 ">
+                                            <such-textarea rows="5" value="{{Requisition.rejeicaoMotivo}}" id="txtRejeicaoMotivo" name="txtRejeicaoMotivo" label="Motivo de Rejeição" disabled> </such-textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -623,18 +625,18 @@
                                                 </template>
                                             </vaadin-grid-column>
                                             <!--<vaadin-grid-column width="10%" resizable>
-                                                <template class="header">
-                                                </template>
-                                                <template>
-                                                    <center>
-                                                        <template is="dom-if" if="{{ _permissions.update }}">
-                                                            <center>
-                                                                <paper-button class="btnRemove tableBtn" raised on-tap="_deleteFiles" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
-                                                            </center>
-                                                        </template>
-                                                    </center>
-                                                </template>
-                                            </vaadin-grid-column>-->
+                    <template class="header">
+                    </template>
+                    <template>
+                        <center>
+                            <template is="dom-if" if="{{ _permissions.update }}">
+                                <center>
+                                    <paper-button class="btnRemove tableBtn" raised on-tap="_deleteFiles" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                </center>
+                            </template>
+                        </center>
+                    </template>
+                </vaadin-grid-column>-->
                                         </vaadin-grid>
                                     </div>
                                 </div>
