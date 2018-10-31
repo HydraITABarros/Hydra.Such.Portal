@@ -502,12 +502,22 @@
                                     </div>
 
                                     <div class="row">
-                                        <div class="col-sm-3">
-                                            <vaadin-text-field id="txtMarketInquiryNo" name="txtMarketInquiryNo" label="Nº Consulta Mercado" value="{{Requisition.marketInquiryNo}}" disabled></vaadin-text-field>
+                                        <div class="col-sm-6">
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <vaadin-text-field id="txtMarketInquiryNo" name="txtMarketInquiryNo" label="Nº Consulta Mercado" value="{{Requisition.marketInquiryNo}}" disabled></vaadin-text-field>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <vaadin-text-field id="txtRequisiçãoNutrição" name="txtRequisiçãoNutrição" label="Requisição Nutrição" value="{{Requisition.requestNutrition}}" disabled></vaadin-text-field>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-12">
+                                                    <vaadin-text-field id="txtApprovers" name="txtApprovers" label="Aprovadores" value="{{Requisition.approvers}}" disabled></vaadin-text-field>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="col-sm-3">
-                                            <vaadin-text-field id="txtRequisiçãoNutrição" name="txtRequisiçãoNutrição" label="Requisição Nutrição" value="{{Requisition.requestNutrition}}" disabled></vaadin-text-field>
-                                        </div>
+
                                         <div class="col-sm-6 ">
                                             <such-textarea rows="5" value="{{Requisition.rejeicaoMotivo}}" id="txtRejeicaoMotivo" name="txtRejeicaoMotivo" label="Motivo de Rejeição" disabled> </such-textarea>
                                         </div>
@@ -517,21 +527,20 @@
                                 <!--Reparação-->
                                 <div>
                                     <div class="col-lg-3 alignPoga">
-                                        <vaadin-checkbox id="chkrepairWithWarranty" checked="{{Requisition.repairWithWarranty}}" disabled>Reparação com Garantia</vaadin-checkbox>
+                                        <vaadin-checkbox id="chkrepairWithWarranty" checked="{{Requisition.repairWithWarranty}}" disabled="{{ !_permissions.update }}">Reparação com Garantia</vaadin-checkbox>
                                     </div>
                                     <div class="col-lg-3 alignPoga">
-                                        <vaadin-checkbox id="chkemm" checked="{{Requisition.emm}}" disabled>EMM</vaadin-checkbox>
+                                        <vaadin-checkbox id="chkemm" checked="{{Requisition.emm}}" disabled="{{ !_permissions.update }}">EMM</vaadin-checkbox>
                                     </div>
                                     <div class="col-md-3 ">
-                                        <vaadin-date-picker label="Data Entrega Armazém" id="DeliveryWarehouseDate" name="DeliveryWarehouseDate" value="{{Requisition.warehouseDeliveryDate}}" disabled></vaadin-date-picker>
+                                        <vaadin-date-picker label="Data Entrega Armazém" id="DeliveryWarehouseDate" name="DeliveryWarehouseDate" value="{{Requisition.warehouseDeliveryDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
                                     </div>
                                 </div>
-
                                 <!--Recolha-->
                                 <div>
                                     <div class="row break_clear">
                                         <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[CBLocal]]" on-change="_onLocalCollectionChange" id="CollectionLocal" item-value-path="id" item-label-path="value" value="{{Requisition.localCollection}}" label="Local de Recolha" disabled>
+                                            <vaadin-combo-box items="[[CBLocal]]" on-change="_onLocalCollectionChange" id="CollectionLocal" item-value-path="id" item-label-path="value" value="{{Requisition.localCollection}}" label="Local de Recolha" disabled="{{ !_permissions.update }}">
                                                 <template>
                                                     <table width="180px">
                                                         <tr>
@@ -543,21 +552,21 @@
                                             </vaadin-combo-box>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field id="CollectionAddress" name="CollectionAddress" label="Morada" value="{{Requisition.collectionAddress}}" disabled></vaadin-text-field>
+                                            <vaadin-text-field id="CollectionAddress" name="CollectionAddress" label="Morada" value="{{Requisition.collectionAddress}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field id="CollectionPostalCode" name="CollectionPostalCode" label="Código-Postal" value="{{Requisition.collectionPostalCode}}" disabled></vaadin-text-field>
+                                            <vaadin-text-field id="CollectionPostalCode" name="CollectionPostalCode" label="Código-Postal" value="{{Requisition.collectionPostalCode}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field id="CollectionLocality" name="CollectionLocality" label="Localidade" value="{{Requisition.collectionLocality}}" disabled></vaadin-text-field>
+                                            <vaadin-text-field id="CollectionLocality" name="CollectionLocality" label="Localidade" value="{{Requisition.collectionLocality}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                                         </div>
                                     </div>
                                     <div class="row break_clear">
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field id="CollectionContact" name="CollectionContact" label="Contato" value="{{Requisition.collectionContact}}" disabled></vaadin-text-field>
+                                            <vaadin-text-field id="CollectionContact" name="CollectionContact" label="Contato" value="{{Requisition.collectionContact}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field id="CollectionReceptionResponsible" name="CollectionReceptionResponsible" label="Responsável Receção" value="{{Requisition.responsibleReception}}" disabled></vaadin-text-field>
+                                            <vaadin-text-field id="CollectionReceptionResponsible" name="CollectionReceptionResponsible" label="Responsável Receção" value="{{Requisition.responsibleReception}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                                         </div>
                                     </div>
                                 </div>

@@ -534,12 +534,22 @@
                                     </div>
 
                                     <div class="row">
-                                        <div class="col-sm-3">
-                                            <vaadin-text-field id="txtMarketInquiryNo" name="txtMarketInquiryNo" label="Nº Consulta Mercado" value="{{Requisition.marketInquiryNo}}" disabled></vaadin-text-field>
+                                        <div class="col-sm-6">
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <vaadin-text-field id="txtMarketInquiryNo" name="txtMarketInquiryNo" label="Nº Consulta Mercado" value="{{Requisition.marketInquiryNo}}" disabled></vaadin-text-field>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <vaadin-text-field id="txtRequisiçãoNutrição" name="txtRequisiçãoNutrição" label="Requisição Nutrição" value="{{Requisition.requestNutrition}}" disabled></vaadin-text-field>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-12">
+                                                    <vaadin-text-field id="txtApprovers" name="txtApprovers" label="Aprovadores" value="{{Requisition.approvers}}" disabled></vaadin-text-field>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="col-sm-3">
-                                            <vaadin-text-field id="txtRequisiçãoNutrição" name="txtRequisiçãoNutrição" label="Requisição Nutrição" value="{{Requisition.requestNutrition}}" disabled></vaadin-text-field>
-                                        </div>
+
                                         <div class="col-sm-6 ">
                                             <such-textarea rows="5" value="{{Requisition.rejeicaoMotivo}}" id="txtRejeicaoMotivo" name="txtRejeicaoMotivo" label="Motivo de Rejeição" disabled> </such-textarea>
                                         </div>
@@ -592,6 +602,8 @@
                                         </div>
                                     </div>
                                 </div>
+
+
                                 <!--Entrega (Fornecedor)-->
                                 <div>
                                     <div class="row break_clear">
