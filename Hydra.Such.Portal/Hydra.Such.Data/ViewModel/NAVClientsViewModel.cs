@@ -19,5 +19,7 @@ namespace Hydra.Such.Data.ViewModel
         public string PaymentTermsCode { get; set; }
         public string PaymentMethodCode { get; set; }
         public string RegionCode { get; set; }
+        public string FunctionalAreaCode { get; set; }
+        public string ResponsabilityCenterCode { get; set; }
     }
 }

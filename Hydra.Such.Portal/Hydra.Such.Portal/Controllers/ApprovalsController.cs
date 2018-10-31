@@ -337,7 +337,8 @@ namespace Hydra.Such.Portal.Controllers
                                 requisition.ApprovalDate = DateTime.Now;
                                 requisition.UpdateDate = DateTime.Now;
                                 requisition.UpdateUser = User.Identity.Name;
-                                requisition.Comments += rejectionComments;
+                                //requisition.Comments += rejectionComments;
+                                requisition.RejeicaoMotivo = rejectionComments;
                                 DBRequest.Update(requisition.ParseToDB());
 
                                 //Create Workflow
@@ -505,8 +506,29 @@ namespace Hydra.Such.Portal.Controllers
                                             }
                                             else
                                             {
-                                                result.eReasonCode = 101;
-                                                result.eMessage = "Ocorreu um erro no script SQL de Validaçãodo na Folha de Horas.";
+                                                result.eReasonCode = 199;
+                                                result.eMessage = "Ocorreu no script SQL de Validação.";
+
+                                                if (Resultado == 1)
+                                                {
+                                                    result.eReasonCode = 101;
+                                                    result.eMessage = "Não tem permissões para validar.";
+                                                }
+                                                if (Resultado == 2)
+                                                {
+                                                    result.eReasonCode = 102;
+                                                    result.eMessage = "O projecto não existe no eSUCH e no Evolution.";
+                                                }
+                                                if (Resultado == 3)
+                                                {
+                                                    result.eReasonCode = 103;
+                                                    result.eMessage = "O projecto na Mão de Obra não existe no eSUCH e no Evolution.";
+                                                }
+                                                if (Resultado == 5)
+                                                {
+                                                    result.eReasonCode = 105;
+                                                    result.eMessage = "Não Pode validar pois já se encontra validada.";
+                                                }
                                             }
                                         }
                                     }

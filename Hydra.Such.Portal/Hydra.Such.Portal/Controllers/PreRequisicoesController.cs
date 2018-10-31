@@ -1279,6 +1279,26 @@ namespace Hydra.Such.Portal.Controllers
                             }
                         }
 
+                        if (data.Sample == true)
+                        {
+                            if (data.CollectionLocal == null || String.IsNullOrEmpty(data.CollectionAddress) || String.IsNullOrEmpty(data.CollectionPostalCode) || String.IsNullOrEmpty(data.CollectionLocality) || String.IsNullOrEmpty(data.CollectionContact) || String.IsNullOrEmpty(data.CollectionReceptionResponsible))
+                            {
+                                data.eReasonCode = 4;
+                                data.eMessage = "Os campos de Recolha devem ser todos preenchidos.";
+                                return Json(data);
+                            }
+                        }
+
+                        if (data.AlreadyExecuted == true)
+                        {
+                            if (String.IsNullOrEmpty(data.InvoiceNo))
+                            {
+                                data.eReasonCode = 4;
+                                data.eMessage = "O campo Nº Fatura na Entrega (Fornecedor) deve estar preenchido.";
+                                return Json(data);
+                            }
+                        }
+
                         if (data.Equipment == true)
                         {
                             if (data.CollectionLocal == null || String.IsNullOrEmpty(data.CollectionAddress) || String.IsNullOrEmpty(data.CollectionPostalCode) || String.IsNullOrEmpty(data.CollectionLocality) || String.IsNullOrEmpty(data.CollectionContact) || String.IsNullOrEmpty(data.CollectionReceptionResponsible))
@@ -1520,6 +1540,9 @@ namespace Hydra.Such.Portal.Controllers
 
                     req.RequisitionNo = RequisitionNo;
                     req.ResponsibleCreation = User.Identity.Name;
+                    req.RequisitionDate = DateTime.Now.ToString();
+                    req.CreateUser = User.Identity.Name;
+                    req.CreateDate = DateTime.Now.ToString();
                     Requisição createReq = DBRequest.ParseToDB(req);
 
                     createReq = DBRequest.Create(createReq);
@@ -1805,35 +1828,41 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     try
                     {
-                        string filename = Path.GetFileName(file.FileName);
-                        full_filename = id + "_" + filename;
-                        var path = Path.Combine(_config.FileUploadFolder, full_filename);
-                        using (FileStream dd = new FileStream(path, FileMode.CreateNew))
+                        string extension = Path.GetExtension(file.FileName);
+                        if (extension.ToLower() == ".pdf" || extension.ToLower() == ".xls" || extension.ToLower() == ".xlsx" ||
+                            extension.ToLower() == ".doc" || extension.ToLower() == ".docx" ||
+                            extension.ToLower() == ".jpg" || extension.ToLower() == ".png" || extension.ToLower() == ".pdf")
                         {
-                            file.CopyTo(dd);
-                            dd.Dispose();
-
-                            Anexos newfile = new Anexos();
-                            newfile.NºOrigem = id;
-                            newfile.UrlAnexo = full_filename;
-                            newfile.TipoOrigem = 1;
-                            newfile.DataHoraCriação = DateTime.Now;
-                            newfile.UtilizadorCriação = User.Identity.Name;
-
-                            DBAttachments.Create(newfile);
-                            if (newfile.NºLinha == 0)
+                            string filename = Path.GetFileName(file.FileName);
+                            full_filename = id + "_" + filename;
+                            var path = Path.Combine(_config.FileUploadFolder, full_filename);
+                            using (FileStream dd = new FileStream(path, FileMode.CreateNew))
                             {
-                                System.IO.File.Delete(path);
-                            }
+                                file.CopyTo(dd);
+                                dd.Dispose();
 
-                            if (DBAttachments.GetAll().Where(x => x.TipoOrigem == 1 && x.NºOrigem == id).Count() > 0)
-                            {
-                                PréRequisição preREQ = DBPreRequesition.GetByNo(id);
-                                if (preREQ != null)
+                                Anexos newfile = new Anexos();
+                                newfile.NºOrigem = id;
+                                newfile.UrlAnexo = full_filename;
+                                newfile.TipoOrigem = 1;
+                                newfile.DataHoraCriação = DateTime.Now;
+                                newfile.UtilizadorCriação = User.Identity.Name;
+
+                                DBAttachments.Create(newfile);
+                                if (newfile.NºLinha == 0)
                                 {
-                                    preREQ.CabimentoOrçamental = true;
-                                    preREQ.UtilizadorModificação = User.Identity.Name;
-                                    DBPreRequesition.Update(preREQ);
+                                    System.IO.File.Delete(path);
+                                }
+
+                                if (DBAttachments.GetAll().Where(x => x.TipoOrigem == 1 && x.NºOrigem == id).Count() > 0)
+                                {
+                                    PréRequisição preREQ = DBPreRequesition.GetByNo(id);
+                                    if (preREQ != null)
+                                    {
+                                        preREQ.CabimentoOrçamental = true;
+                                        preREQ.UtilizadorModificação = User.Identity.Name;
+                                        DBPreRequesition.Update(preREQ);
+                                    }
                                 }
                             }
                         }

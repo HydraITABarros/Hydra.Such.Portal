@@ -521,8 +521,10 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 if (item.RequisitionNo != null)
                 {
-                    item.CreateUser = User.Identity.Name;
                     item.ResponsibleCreation = User.Identity.Name;
+                    item.RequisitionDate = DateTime.Now.ToString();
+                    item.CreateUser = User.Identity.Name;
+                    item.CreateDate = DateTime.Now.ToString();
                     item.State = RequisitionStates.Validated;
                     var createdItem = DBRequest.Create(item.ParseToDB());
                     if (createdItem != null)
@@ -825,24 +827,24 @@ namespace Hydra.Such.Portal.Controllers
                 item = new RequisitionViewModel();
 
             
-            List<ApprovalMovementsViewModel> AproveList = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAll());
-            if (item.State == RequisitionStates.Pending || item.State == RequisitionStates.Rejected)
-                item.SentReqToAproveText = "normal";
-            else
-                item.SentReqToAproveText = "none";
-            if (AproveList != null && AproveList.Count > 0)
-            {
-                foreach (ApprovalMovementsViewModel apmov in AproveList)
-                {
-                    if (apmov.Number == item.RequisitionNo && (apmov.Status == (int)RequisitionStates.Received || apmov.Status == (int)RequisitionStates.Treated))
-                    {
-                        item.SentReqToAproveText = "none";
-                    }
-                }
-            }
+            //List<ApprovalMovementsViewModel> AproveList = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAll());
+            //if (item.State == RequisitionStates.Pending || item.State == RequisitionStates.Rejected)
+            //    item.SentReqToAproveText = "normal";
+            //else
+            //    item.SentReqToAproveText = "none";
+            //if (AproveList != null && AproveList.Count > 0)
+            //{
+            //    foreach (ApprovalMovementsViewModel apmov in AproveList)
+            //    {
+            //        if (apmov.Number == item.RequisitionNo && (apmov.Status == (int)RequisitionStates.Received || apmov.Status == (int)RequisitionStates.Treated))
+            //        {
+            //            item.SentReqToAproveText = "none";
+            //        }
+            //    }
+            //}
 
             item.GoAprove = false;
-            if (DBApprovalMovements.GetAllAssignedToUserFilteredByStatus(User.Identity.Name, 1).Where(x => x.Número == requisitionId).Count() > 0)
+            if (DBApprovalMovements.GetAllREQAssignedToUserFilteredByStatus(User.Identity.Name, 1).Where(x => x.Número == requisitionId).Count() > 0)
             {
                 item.GoAprove = true;
             }
@@ -1180,6 +1182,8 @@ namespace Hydra.Such.Portal.Controllers
                                             item.State = keepOpen ? RequisitionStates.Received : RequisitionStates.Archived;
                                             if (item.State == RequisitionStates.Received)
                                             {
+                                                item.ResponsibleReception = User.Identity.Name;
+                                                item.ReceivedDate = DateTime.Now.ToString();
                                                 item.UpdateUser = User.Identity.Name;
                                                 item.UpdateDate = DateTime.Now;
                                                 RequisitionViewModel updatedReq = DBRequest.Update(item.ParseToDB(), false, true).ParseToViewModel();

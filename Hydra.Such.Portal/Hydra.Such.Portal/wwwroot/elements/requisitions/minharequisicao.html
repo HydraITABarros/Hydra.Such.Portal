@@ -326,19 +326,12 @@
             <paper-button class="tablinks" on-tap="_goBack" id="btnGoBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
 
             <paper-button class="tablinks" id="btnPrint" on-tap="_printRequisition"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Imprimir</paper-button>
-
             <paper-button class="tablinks" id="btnStatOfPlay" on-tap="_redirectToStatOfPlay"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Ponto situação</paper-button>
-
             <paper-button class="tablinks" id="btnShowChangeLog" on-tap="_showChangeLog"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Workflow</paper-button>
+            <paper-button class="tablinks" id="btnGoApprove" on-tap="_Approve" hidden="{{ !_goAprove }}"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Aprovar</paper-button>
 
             <!--<paper-button class="tablinks" id="btnAprovadores" on-tap="_Aprovadores"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Aprovadores</paper-button>-->
             <button type="button" class="tablinks" id="btnAprovadores" on-click="_Aprovadores"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Aprovadores</button>
-
-            <paper-button class="tablinks" id="btnGoApprove" on-tap="_Approve" hidden="{{ !Requisition.goAprove }}"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Aprovar</paper-button>
-
-            <!--<paper-button type="button" class="tablinks" id="btnToApproved" on-tap="_ToApproved" style="display: {{Requisition.sentReqToAproveText}};"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Enviar para Aprovação</paper-button>-->
-            <button type="button" class="tablinks" id="btnToApproved" on-click="_ToApproved" style="display: {{Requisition.sentReqToAproveText}};"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Enviar para Aprovação</button>
-
         </div>
 
         <div class="row break_frm">
@@ -524,7 +517,6 @@
                                                 </div>
                                             </div>
                                         </div>
-
                                         <div class="col-sm-3">
                                             <vaadin-text-field id="txtResponsibleReception" name="txtResponsibleReception" label="Responsável de Recebimento" value="{{Requisition.responsibleReception}}" disabled></vaadin-text-field>
                                         </div>
@@ -542,11 +534,24 @@
                                     </div>
 
                                     <div class="row">
-                                        <div class="col-sm-3">
-                                            <vaadin-text-field id="txtMarketInquiryNo" name="txtMarketInquiryNo" label="Nº Consulta Mercado" value="{{Requisition.marketInquiryNo}}" disabled></vaadin-text-field>
+                                        <div class="col-sm-6">
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <vaadin-text-field id="txtMarketInquiryNo" name="txtMarketInquiryNo" label="Nº Consulta Mercado" value="{{Requisition.marketInquiryNo}}" disabled></vaadin-text-field>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <vaadin-text-field id="txtRequisiçãoNutrição" name="txtRequisiçãoNutrição" label="Requisição Nutrição" value="{{Requisition.requestNutrition}}" disabled></vaadin-text-field>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-12">
+                                                    <vaadin-text-field id="txtApprovers" name="txtApprovers" label="Aprovadores" value="{{Requisition.approvers}}" disabled></vaadin-text-field>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="col-sm-3">
-                                            <vaadin-text-field id="txtRequisiçãoNutrição" name="txtRequisiçãoNutrição" label="Requisição Nutrição" value="{{Requisition.requestNutrition}}" disabled></vaadin-text-field>
+
+                                        <div class="col-sm-6 ">
+                                            <such-textarea rows="5" value="{{Requisition.rejeicaoMotivo}}" id="txtRejeicaoMotivo" name="txtRejeicaoMotivo" label="Motivo de Rejeição" disabled> </such-textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -597,6 +602,8 @@
                                         </div>
                                     </div>
                                 </div>
+
+
                                 <!--Entrega (Fornecedor)-->
                                 <div>
                                     <div class="row break_clear">
@@ -636,8 +643,12 @@
                                 <div>
                                     <div class="row break_clear">
                                         <!--<template is="dom-if" if="{{ _permissions.update }}">-->
-                                        <vaadin-upload id="UploadRequest" target="/PreRequisicoes/FileUpload/{{_prerequesitionno}}/{{_lineno}}" method="POST" headers="{'Accept': 'application/json'}" hidden="{{ !_permissions.update }}" timeout=15000>
-
+                                        <vaadin-upload id="UploadRequest"
+                                                       target="/PreRequisicoes/FileUpload/{{_prerequesitionno}}/{{_lineno}}"
+                                                       accept="application/pdf, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.template, image/jpeg, image/png, image/gif" method="POST"
+                                                       headers="{'Accept': 'application/json'}"
+                                                       hidden="{{ !_permissions.update }}"
+                                                       timeout=15000>
                                         </vaadin-upload>
                                         <!--</template>-->
                                     </div>
@@ -1521,7 +1532,7 @@
 
                                 <template is="dom-if" if="{{ !isReadOnly() }}">
                                     <template is="dom-if" if="{{ _permissions.delete }}">
-                                        <vaadin-grid-column width="100px" resizable hidden="{{_isArchived}}">
+                                        <vaadin-grid-column width="100px" resizable hidden="{{_isValidated}}">
                                             <template class="header">
                                             </template>
                                             <template>
@@ -1683,6 +1694,18 @@
                         type: String,
                     },
                     _isArchived: {
+                        type: Boolean,
+                        value: false
+                    },
+                    _isValidated: {
+                        type: Boolean,
+                        value: false
+                    },
+                    _goAprove: {
+                        type: Boolean,
+                        value: false
+                    },
+                    _goAprovadores: {
                         type: Boolean,
                         value: false
                     },
@@ -2349,7 +2372,14 @@
                         }
                     }
 
+                    if (this.Requisition.state == 0 || this.Requisition.state == 3 || this.Requisition.state == 6 || this.Requisition.state == 7) {
+                        this._isValidated = true;
+                    }
+
+                    debugger;
+                    this._goAprove = this.Requisition.goAprove;
                 },
+
                 _deleteReqLineResponse: function (e) {
                     if (this.DelReqLineResponse.eReasonCode == "1") {
                         this._openToast(this.DelReqLineResponse.eMessage);

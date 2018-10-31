@@ -1,120 +1,206 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Report MustUnderstand="df" xmlns="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner" xmlns:df="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition/defaultfontfamily">
+<?xml version="1.0" encoding="utf-8"?>
+<Report MustUnderstand="df" xmlns="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner" xmlns:cl="http://schemas.microsoft.com/sqlserver/reporting/2010/01/componentdefinition" xmlns:df="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition/defaultfontfamily">
   <df:DefaultFontFamily>Segoe UI</df:DefaultFontFamily>
   <AutoRefresh>0</AutoRefresh>
   <DataSources>
     <DataSource Name="eSuchDS">
       <DataSourceReference>eSuchDS</DataSourceReference>
       <rd:SecurityType>None</rd:SecurityType>
-      <rd:DataSourceID>f5dbf267-58a6-42e7-b5c2-b574d7a02b02</rd:DataSourceID>
-    </DataSource>
-    <DataSource Name="eSuchSqlNavDev">
-      <ConnectionProperties>
-        <DataProvider>SQL</DataProvider>
-        <ConnectString>Data Source=10.101.1.10\sqlnav;Initial Catalog=eSuch_PROD</ConnectString>
-      </ConnectionProperties>
-      <rd:SecurityType>DataBase</rd:SecurityType>
-      <rd:DataSourceID>abc05c05-b364-4b4c-b1a2-afedc86606aa</rd:DataSourceID>
+      <rd:DataSourceID>0aef68a4-800a-43db-bb3a-ee1676948e5c</rd:DataSourceID>
     </DataSource>
   </DataSources>
   <DataSets>
-    <DataSet Name="dw_MovClientesIntegrado">
+    <DataSet Name="EncomendasDetails">
       <Query>
-        <DataSourceName>eSuchSqlNavDev</DataSourceName>
+        <DataSourceName>eSuchDS</DataSourceName>
         <QueryParameters>
-          <QueryParameter Name="@Cliente">
-            <Value>=Parameters!Cliente.Value</Value>
+          <QueryParameter Name="@DBName">
+            <Value>SUCH_NAV_PROD</Value>
           </QueryParameter>
-          <QueryParameter Name="@Data">
-            <Value>=Parameters!Data.Value</Value>
+          <QueryParameter Name="@CompanyName">
+            <Value>SUCH</Value>
           </QueryParameter>
-          <QueryParameter Name="@Movimentos">
-            <Value>=Parameters!Movimentos.Value</Value>
+          <QueryParameter Name="@No">
+            <Value>=Parameters!No.Value</Value>
+          </QueryParameter>
+          <QueryParameter Name="@NoLikeExpression">
+            <Value xml:space="preserve"> </Value>
           </QueryParameter>
         </QueryParameters>
         <CommandType>StoredProcedure</CommandType>
-        <CommandText>dw_MovClientesIntegrado</CommandText>
+        <CommandText>NAV2017EncomendasDetails</CommandText>
       </Query>
       <Fields>
-        <Field Name="Customer_No">
-          <DataField>Customer_No</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
+        <Field Name="No">
+          <DataField>No</DataField>
+          <rd:UserDefined>true</rd:UserDefined>
         </Field>
-        <Field Name="Date">
-          <DataField>Date</DataField>
-          <rd:TypeName>System.DateTime</rd:TypeName>
+        <Field Name="PayToVendorNo">
+          <DataField>PayToVendorNo</DataField>
+          <rd:UserDefined>true</rd:UserDefined>
         </Field>
-        <Field Name="Due_Date">
-          <DataField>Due_Date</DataField>
-          <rd:TypeName>System.DateTime</rd:TypeName>
+        <Field Name="PayToName">
+          <DataField>PayToName</DataField>
+          <rd:UserDefined>true</rd:UserDefined>
         </Field>
-        <Field Name="Document_Type">
-          <DataField>Document_Type</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
+        <Field Name="YourReference">
+          <DataField>YourReference</DataField>
+          <rd:UserDefined>true</rd:UserDefined>
         </Field>
-        <Field Name="Document_No">
-          <DataField>Document_No</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
+        <Field Name="OrderDate">
+          <DataField>OrderDate</DataField>
+          <rd:UserDefined>true</rd:UserDefined>
         </Field>
-        <Field Name="Dimension_Value">
-          <DataField>Dimension_Value</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
+        <Field Name="NConsulta">
+          <DataField>NConsulta</DataField>
+          <rd:UserDefined>true</rd:UserDefined>
         </Field>
-        <Field Name="Value">
-          <DataField>Value</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
+        <Field Name="ExpectedReceiptDate">
+          <DataField>ExpectedReceiptDate</DataField>
+          <rd:UserDefined>true</rd:UserDefined>
         </Field>
-        <Field Name="Factoring_Sem_Recurso">
-          <DataField>Factoring_Sem_Recurso</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-      </Fields>
-    </DataSet>
-    <DataSet Name="NavCustomer">
-      <Query>
-        <DataSourceName>eSuchSqlNavDev</DataSourceName>
-        <QueryParameters>
-          <QueryParameter Name="@Cliente">
-            <Value>=Parameters!Cliente.Value</Value>
-          </QueryParameter>
-        </QueryParameters>
-        <CommandText>SELECT        No_, { fn CONCAT(Name, [Name 2]) } AS Name, [VAT Registration No_] AS VATRegistrationNo, { fn CONCAT(Address, [Address 2]) } AS Address, [Currency Code] AS Currency, [Post Code] AS PostalCode, City, 
-                         [Country_Region Code] AS Country_RegionCode
-FROM            SUCH_NAV_PROD.dbo.[SUCH$Customer]
-WHERE        (No_ = @Cliente)</CommandText>
-      </Query>
-      <Fields>
-        <Field Name="No_">
-          <DataField>No_</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="Name">
-          <DataField>Name</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
+        <Field Name="RequisitionNo">
+          <DataField>RequisitionNo</DataField>
+          <rd:UserDefined>true</rd:UserDefined>
         </Field>
         <Field Name="VATRegistrationNo">
           <DataField>VATRegistrationNo</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
+          <rd:UserDefined>true</rd:UserDefined>
         </Field>
-        <Field Name="Address">
-          <DataField>Address</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
+        <Field Name="LocationCode">
+          <DataField>LocationCode</DataField>
+          <rd:UserDefined>true</rd:UserDefined>
         </Field>
-        <Field Name="Currency">
-          <DataField>Currency</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
+        <Field Name="NoConsulta">
+          <DataField>NoConsulta</DataField>
+          <rd:UserDefined>true</rd:UserDefined>
         </Field>
-        <Field Name="PostalCode">
-          <DataField>PostalCode</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
+        <Field Name="AllocationNo">
+          <DataField>AllocationNo</DataField>
+          <rd:UserDefined>true</rd:UserDefined>
         </Field>
-        <Field Name="City">
-          <DataField>City</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
+        <Field Name="BuyFromVendorNo">
+          <DataField>BuyFromVendorNo</DataField>
+          <rd:UserDefined>true</rd:UserDefined>
         </Field>
-        <Field Name="Country_RegionCode">
-          <DataField>Country_RegionCode</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
+        <Field Name="CommitmentNo">
+          <DataField>CommitmentNo</DataField>
+          <rd:UserDefined>true</rd:UserDefined>
+        </Field>
+        <Field Name="VPropNum">
+          <DataField>VPropNum</DataField>
+          <rd:UserDefined>true</rd:UserDefined>
+        </Field>
+        <Field Name="PaymentTermsCode">
+          <DataField>PaymentTermsCode</DataField>
+          <rd:UserDefined>true</rd:UserDefined>
+        </Field>
+        <Field Name="PayToAddress">
+          <DataField>PayToAddress</DataField>
+          <rd:UserDefined>true</rd:UserDefined>
+        </Field>
+        <Field Name="PayToAddress2">
+          <DataField>PayToAddress2</DataField>
+          <rd:UserDefined>true</rd:UserDefined>
+        </Field>
+        <Field Name="PayToPostCode">
+          <DataField>PayToPostCode</DataField>
+          <rd:UserDefined>true</rd:UserDefined>
+        </Field>
+        <Field Name="PayToCity">
+          <DataField>PayToCity</DataField>
+          <rd:UserDefined>true</rd:UserDefined>
+        </Field>
+        <Field Name="PayToCounty">
+          <DataField>PayToCounty</DataField>
+          <rd:UserDefined>true</rd:UserDefined>
+        </Field>
+        <Field Name="PayToCountryRegionCode">
+          <DataField>PayToCountryRegionCode</DataField>
+          <rd:UserDefined>true</rd:UserDefined>
+        </Field>
+      </Fields>
+    </DataSet>
+    <DataSet Name="EncomendasLinhasList">
+      <Query>
+        <DataSourceName>eSuchDS</DataSourceName>
+        <QueryParameters>
+          <QueryParameter Name="@DBName">
+            <Value>SUCH_NAV_PROD</Value>
+          </QueryParameter>
+          <QueryParameter Name="@CompanyName">
+            <Value>SUCH</Value>
+          </QueryParameter>
+          <QueryParameter Name="@No">
+            <Value>=Parameters!No.Value</Value>
+          </QueryParameter>
+          <QueryParameter Name="@NoLikeExpression">
+            <Value xml:space="preserve"> </Value>
+          </QueryParameter>
+        </QueryParameters>
+        <CommandType>StoredProcedure</CommandType>
+        <CommandText>NAV2017EncomendasLinhasList</CommandText>
+      </Query>
+      <Fields>
+        <Field Name="LineN">
+          <DataField>LineN</DataField>
+          <rd:UserDefined>true</rd:UserDefined>
+        </Field>
+        <Field Name="No">
+          <DataField>No</DataField>
+          <rd:UserDefined>true</rd:UserDefined>
+        </Field>
+        <Field Name="Description">
+          <DataField>Description</DataField>
+          <rd:UserDefined>true</rd:UserDefined>
+        </Field>
+        <Field Name="Description2">
+          <DataField>Description2</DataField>
+          <rd:UserDefined>true</rd:UserDefined>
+        </Field>
+        <Field Name="UnitOfMeasure">
+          <DataField>UnitOfMeasure</DataField>
+          <rd:UserDefined>true</rd:UserDefined>
+        </Field>
+        <Field Name="Quantity">
+          <DataField>Quantity</DataField>
+          <rd:UserDefined>true</rd:UserDefined>
+        </Field>
+        <Field Name="DirectUnitCost">
+          <DataField>DirectUnitCost</DataField>
+          <rd:UserDefined>true</rd:UserDefined>
+        </Field>
+        <Field Name="VAT">
+          <DataField>VAT</DataField>
+          <rd:UserDefined>true</rd:UserDefined>
+        </Field>
+        <Field Name="Amount">
+          <DataField>Amount</DataField>
+          <rd:UserDefined>true</rd:UserDefined>
+        </Field>
+        <Field Name="AmountIncludingVAT">
+          <DataField>AmountIncludingVAT</DataField>
+          <rd:UserDefined>true</rd:UserDefined>
+        </Field>
+        <Field Name="JobNo">
+          <DataField>JobNo</DataField>
+          <rd:UserDefined>true</rd:UserDefined>
+        </Field>
+        <Field Name="AllocationNo">
+          <DataField>AllocationNo</DataField>
+          <rd:UserDefined>true</rd:UserDefined>
+        </Field>
+        <Field Name="QuantityReceived">
+          <DataField>QuantityReceived</DataField>
+          <rd:UserDefined>true</rd:UserDefined>
+        </Field>
+        <Field Name="QuantityInvoiced">
+          <DataField>QuantityInvoiced</DataField>
+          <rd:UserDefined>true</rd:UserDefined>
+        </Field>
+        <Field Name="UnitOfMeasureCode">
+          <DataField>UnitOfMeasureCode</DataField>
+          <rd:UserDefined>true</rd:UserDefined>
         </Field>
       </Fields>
     </DataSet>
@@ -127,28 +213,28 @@ WHERE        (No_ = @Cliente)</CommandText>
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
-                  <Width>0.75523in</Width>
+                  <Width>0.66088in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>0.88023in</Width>
+                  <Width>2.66771in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>0.82294in</Width>
+                  <Width>0.29471in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>1.06773in</Width>
+                  <Width>0.56897in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>1.45835in</Width>
+                  <Width>0.5325in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>0.9844in</Width>
+                  <Width>0.54309in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>0.90871in</Width>
+                  <Width>0.51693in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>0.2357in</Width>
+                  <Width>0.72917in</Width>
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
@@ -165,7 +251,7 @@ WHERE        (No_ = @Cliente)</CommandText>
                               <TextRuns>
                                 <TextRun>
                                   <Value>
-Data</Value>
+Nº</Value>
                                   <Style>
                                     <FontFamily />
                                     <FontSize>8pt</FontSize>
@@ -205,8 +291,8 @@ Data</Value>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Data 
-Vencimento</Value>
+                                  <Value>
+Descrição</Value>
                                   <Style>
                                     <FontFamily />
                                     <FontSize>8pt</FontSize>
@@ -246,8 +332,8 @@ Vencimento</Value>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Tipo 
-Documento</Value>
+                                  <Value>
+Qtd.</Value>
                                   <Style>
                                     <FontFamily />
                                     <FontSize>8pt</FontSize>
@@ -256,7 +342,9 @@ Documento</Value>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
-                              <Style />
+                              <Style>
+                                <TextAlign>Left</TextAlign>
+                              </Style>
                             </Paragraph>
                           </Paragraphs>
                           <rd:DefaultName>textbox5</rd:DefaultName>
@@ -287,8 +375,8 @@ Documento</Value>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>
-Documento</Value>
+                                  <Value>Unidade
+Medida</Value>
                                   <Style>
                                     <FontFamily />
                                     <FontSize>8pt</FontSize>
@@ -297,7 +385,9 @@ Documento</Value>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
-                              <Style />
+                              <Style>
+                                <TextAlign>Left</TextAlign>
+                              </Style>
                             </Paragraph>
                           </Paragraphs>
                           <rd:DefaultName>textbox6</rd:DefaultName>
@@ -306,9 +396,7 @@ Documento</Value>
                               <Style>None</Style>
                             </Border>
                             <BottomBorder>
-                              <Color>Black</Color>
                               <Style>Solid</Style>
-                              <Width>1pt</Width>
                             </BottomBorder>
                             <FontFamily />
                             <PaddingLeft>2pt</PaddingLeft>
@@ -328,8 +416,7 @@ Documento</Value>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>
-Unidade Prestação</Value>
+                                  <Value>Custo</Value>
                                   <Style>
                                     <FontFamily />
                                     <FontSize>8pt</FontSize>
@@ -338,7 +425,25 @@ Unidade Prestação</Value>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
-                              <Style />
+                              <Style>
+                                <TextAlign>Right</TextAlign>
+                              </Style>
+                            </Paragraph>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Unitário</Value>
+                                  <Style>
+                                    <FontFamily />
+                                    <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>#666666</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Right</TextAlign>
+                              </Style>
                             </Paragraph>
                           </Paragraphs>
                           <rd:DefaultName>textbox7</rd:DefaultName>
@@ -370,7 +475,7 @@ Unidade Prestação</Value>
                               <TextRuns>
                                 <TextRun>
                                   <Value>
-Valor</Value>
+% Desc.</Value>
                                   <Style>
                                     <FontFamily />
                                     <FontSize>8pt</FontSize>
@@ -390,9 +495,7 @@ Valor</Value>
                               <Style>None</Style>
                             </Border>
                             <BottomBorder>
-                              <Color>Black</Color>
                               <Style>Solid</Style>
-                              <Width>1pt</Width>
                             </BottomBorder>
                             <FontFamily />
                             <PaddingLeft>2pt</PaddingLeft>
@@ -405,15 +508,85 @@ Valor</Value>
                     </TablixCell>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="Textbox17">
+                        <Textbox Name="Textbox34">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>
-Saldo</Value>
+                                  <Value />
+                                  <Style>
+                                    <FontFamily />
+                                    <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>#666666</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Right</TextAlign>
+                              </Style>
+                            </Paragraph>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>% IVA</Value>
+                                  <Style>
+                                    <FontFamily />
+                                    <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>#666666</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Right</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox34</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>None</Style>
+                            </Border>
+                            <BottomBorder>
+                              <Style>Solid</Style>
+                            </BottomBorder>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox19">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value />
+                                  <Style>
+                                    <FontFamily />
+                                    <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>#666666</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Right</TextAlign>
+                              </Style>
+                            </Paragraph>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Valor</Value>
                                   <Style>
                                     <FontFamily />
                                     <FontSize>8pt</FontSize>
@@ -445,60 +618,21 @@ Saldo</Value>
                         </Textbox>
                       </CellContents>
                     </TablixCell>
-                    <TablixCell>
-                      <CellContents>
-                        <Textbox Name="Textbox19">
-                          <CanGrow>true</CanGrow>
-                          <KeepTogether>true</KeepTogether>
-                          <Paragraphs>
-                            <Paragraph>
-                              <TextRuns>
-                                <TextRun>
-                                  <Value xml:space="preserve"> </Value>
-                                  <Style>
-                                    <FontFamily />
-                                    <FontSize>9pt</FontSize>
-                                    <FontWeight>Bold</FontWeight>
-                                    <Color>#666666</Color>
-                                  </Style>
-                                </TextRun>
-                              </TextRuns>
-                              <Style />
-                            </Paragraph>
-                          </Paragraphs>
-                          <rd:DefaultName>Textbox19</rd:DefaultName>
-                          <Style>
-                            <Border>
-                              <Style>None</Style>
-                            </Border>
-                            <BottomBorder>
-                              <Color>Black</Color>
-                              <Style>Solid</Style>
-                              <Width>1pt</Width>
-                            </BottomBorder>
-                            <PaddingLeft>2pt</PaddingLeft>
-                            <PaddingRight>2pt</PaddingRight>
-                            <PaddingTop>2pt</PaddingTop>
-                            <PaddingBottom>2pt</PaddingBottom>
-                          </Style>
-                        </Textbox>
-                      </CellContents>
-                    </TablixCell>
                   </TablixCells>
                 </TablixRow>
                 <TablixRow>
-                  <Height>0.21in</Height>
+                  <Height>0.37667in</Height>
                   <TablixCells>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="Date">
+                        <Textbox Name="No">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Day(Fields!Date.Value).ToString() + "-" + Month(Fields!Date.Value).ToString() + "-" + Year(Fields!Date.Value).ToString()</Value>
+                                  <Value>=Fields!No.Value</Value>
                                   <Style>
                                     <FontFamily />
                                     <FontSize>8pt</FontSize>
@@ -509,7 +643,7 @@ Saldo</Value>
                               <Style />
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>Date</rd:DefaultName>
+                          <rd:DefaultName>No</rd:DefaultName>
                           <Style>
                             <Border>
                               <Style>None</Style>
@@ -525,17 +659,18 @@ Saldo</Value>
                     </TablixCell>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="Due_Date">
+                        <Textbox Name="Description">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Day(Fields!Due_Date.Value).ToString() + "-" + Month(Fields!Due_Date.Value).ToString() + "-" + Year(Fields!Due_Date.Value).ToString()</Value>
+                                  <Value>=Fields!Description.Value &amp; Environment.NewLine &amp; Fields!Description2.Value</Value>
                                   <Style>
                                     <FontFamily />
                                     <FontSize>8pt</FontSize>
+                                    <Format>#,0.00 '€';(#,0.00 '€')</Format>
                                     <Color>#333333</Color>
                                   </Style>
                                 </TextRun>
@@ -543,7 +678,7 @@ Saldo</Value>
                               <Style />
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>Due_Date</rd:DefaultName>
+                          <rd:DefaultName>Description</rd:DefaultName>
                           <Style>
                             <Border>
                               <Style>None</Style>
@@ -559,14 +694,14 @@ Saldo</Value>
                     </TablixCell>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="Document_Type">
+                        <Textbox Name="Quantity">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!Document_Type.Value</Value>
+                                  <Value>=Round(Fields!Quantity.Value,0)</Value>
                                   <Style>
                                     <FontFamily />
                                     <FontSize>8pt</FontSize>
@@ -574,10 +709,12 @@ Saldo</Value>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
-                              <Style />
+                              <Style>
+                                <TextAlign>Left</TextAlign>
+                              </Style>
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>Document_Type</rd:DefaultName>
+                          <rd:DefaultName>Quantity</rd:DefaultName>
                           <Style>
                             <Border>
                               <Style>None</Style>
@@ -593,14 +730,14 @@ Saldo</Value>
                     </TablixCell>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="Document_No">
+                        <Textbox Name="UnitOfMeasureCode">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!Document_No.Value</Value>
+                                  <Value>=Fields!UnitOfMeasureCode.Value</Value>
                                   <Style>
                                     <FontFamily />
                                     <FontSize>8pt</FontSize>
@@ -608,10 +745,12 @@ Saldo</Value>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
-                              <Style />
+                              <Style>
+                                <TextAlign>Left</TextAlign>
+                              </Style>
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>Document_No</rd:DefaultName>
+                          <rd:DefaultName>UnitOfMeasureCode</rd:DefaultName>
                           <Style>
                             <Border>
                               <Style>None</Style>
@@ -627,14 +766,14 @@ Saldo</Value>
                     </TablixCell>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="Global_Dimension_2_Code">
+                        <Textbox Name="DirectUnitCost">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!Dimension_Value.Value</Value>
+                                  <Value>=Round(Fields!DirectUnitCost.Value,4)</Value>
                                   <Style>
                                     <FontFamily />
                                     <FontSize>8pt</FontSize>
@@ -642,10 +781,12 @@ Saldo</Value>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
-                              <Style />
+                              <Style>
+                                <TextAlign>Right</TextAlign>
+                              </Style>
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>Global_Dimension_2_Code</rd:DefaultName>
+                          <rd:DefaultName>DirectUnitCost</rd:DefaultName>
                           <Style>
                             <Border>
                               <Style>None</Style>
@@ -668,7 +809,7 @@ Saldo</Value>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Round(Fields!Value.Value, 2)</Value>
+                                  <Value />
                                   <Style>
                                     <FontFamily />
                                     <FontSize>8pt</FontSize>
@@ -699,14 +840,49 @@ Saldo</Value>
                     </TablixCell>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="Value">
+                        <Textbox Name="VAT">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Round(RunningValue(Fields!Value.Value, Sum, "dw_MovClientesIntegrado"), 2)</Value>
+                                  <Value>=Round(Fields!VAT.Value,0)</Value>
+                                  <Style>
+                                    <FontFamily />
+                                    <FontSize>8pt</FontSize>
+                                    <Color>#333333</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Right</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>VAT</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>None</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="AmountIncludingVAT">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!AmountIncludingVAT.Value</Value>
                                   <Style>
                                     <FontFamily />
                                     <FontSize>8pt</FontSize>
@@ -720,7 +896,7 @@ Saldo</Value>
                               </Style>
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>Value</rd:DefaultName>
+                          <rd:DefaultName>AmountIncludingVAT</rd:DefaultName>
                           <Style>
                             <Border>
                               <Style>None</Style>
@@ -730,39 +906,6 @@ Saldo</Value>
                             <PaddingTop>2pt</PaddingTop>
                             <PaddingBottom>2pt</PaddingBottom>
                             <rd:FormatSymbolCulture>pt-PT</rd:FormatSymbolCulture>
-                          </Style>
-                        </Textbox>
-                      </CellContents>
-                    </TablixCell>
-                    <TablixCell>
-                      <CellContents>
-                        <Textbox Name="Balance">
-                          <CanGrow>true</CanGrow>
-                          <KeepTogether>true</KeepTogether>
-                          <Paragraphs>
-                            <Paragraph>
-                              <TextRuns>
-                                <TextRun>
-                                  <Value>=Fields!Factoring_Sem_Recurso.Value</Value>
-                                  <Style>
-                                    <FontFamily />
-                                    <FontSize>9pt</FontSize>
-                                    <Color>#333333</Color>
-                                  </Style>
-                                </TextRun>
-                              </TextRuns>
-                              <Style />
-                            </Paragraph>
-                          </Paragraphs>
-                          <rd:DefaultName>Balance</rd:DefaultName>
-                          <Style>
-                            <Border>
-                              <Style>None</Style>
-                            </Border>
-                            <PaddingLeft>2pt</PaddingLeft>
-                            <PaddingRight>2pt</PaddingRight>
-                            <PaddingTop>2pt</PaddingTop>
-                            <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
                       </CellContents>
@@ -803,21 +946,24 @@ Saldo</Value>
                 </TablixMember>
               </TablixMembers>
             </TablixRowHierarchy>
-            <DataSetName>dw_MovClientesIntegrado</DataSetName>
-            <Top>0.25in</Top>
-            <Left>0.3175cm</Left>
-            <Height>0.60708in</Height>
-            <Width>7.11329in</Width>
+            <DataSetName>EncomendasLinhasList</DataSetName>
+            <Top>0.15in</Top>
+            <Left>0.37304cm</Left>
+            <Height>0.77375in</Height>
+            <Width>6.51395in</Width>
             <Style />
+            <cl:ComponentMetadata>
+              <cl:ComponentId>c9c8d7a9-ec34-49f8-9236-68de838a6660</cl:ComponentId>
+            </cl:ComponentMetadata>
           </Tablix>
         </ReportItems>
-        <Height>2.43303cm</Height>
+        <Height>1.03125in</Height>
         <Style />
       </Body>
-      <Width>18.7292cm</Width>
+      <Width>6.71958in</Width>
       <Page>
         <PageHeader>
-          <Height>5.05354cm</Height>
+          <Height>5.56251cm</Height>
           <PrintOnFirstPage>true</PrintOnFirstPage>
           <PrintOnLastPage>true</PrintOnLastPage>
           <ReportItems>
@@ -825,7 +971,8 @@ Saldo</Value>
               <Source>Embedded</Source>
               <Value>SUCH_logo</Value>
               <Sizing>FitProportional</Sizing>
-              <Left>0.3175cm</Left>
+              <Top>0.3175cm</Top>
+              <Left>0.34925cm</Left>
               <Height>1.79917cm</Height>
               <Width>5.23875cm</Width>
               <Style>
@@ -833,41 +980,68 @@ Saldo</Value>
                   <Style>None</Style>
                 </Border>
               </Style>
+              <cl:ComponentMetadata>
+                <cl:ComponentId>0a1ce64b-cbf7-4adf-a565-7728bf1abaab</cl:ComponentId>
+              </cl:ComponentMetadata>
             </Image>
-            <Textbox Name="No_">
+            <Textbox Name="Textbox12">
               <CanGrow>true</CanGrow>
               <KeepTogether>true</KeepTogether>
               <Paragraphs>
                 <Paragraph>
                   <TextRuns>
                     <TextRun>
-                      <Value>=First(Fields!No_.Value, "NavCustomer")</Value>
+                      <Value>N/Consulta</Value>
                       <Style>
                         <FontSize>8pt</FontSize>
+                        <FontWeight>Bold</FontWeight>
                       </Style>
                     </TextRun>
+                  </TextRuns>
+                  <Style />
+                </Paragraph>
+                <Paragraph>
+                  <TextRuns>
                     <TextRun>
-                      <Value xml:space="preserve">
-</Value>
+                      <Value />
                       <Style>
                         <FontSize>8pt</FontSize>
+                        <FontWeight>Bold</FontWeight>
                       </Style>
                     </TextRun>
+                  </TextRuns>
+                  <Style />
+                </Paragraph>
+                <Paragraph>
+                  <TextRuns>
                     <TextRun>
-                      <Value>=First(Fields!Country_RegionCode.Value, "NavCustomer") + " " + First(Fields!VATRegistrationNo.Value, "NavCustomer")</Value>
+                      <Value>Receção Esperada</Value>
                       <Style>
                         <FontSize>8pt</FontSize>
+                        <FontWeight>Bold</FontWeight>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style />
+                </Paragraph>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>Pedido Interno</Value>
+                      <Style>
+                        <FontSize>8pt</FontSize>
+                        <FontWeight>Bold</FontWeight>
                       </Style>
                     </TextRun>
                   </TextRuns>
                   <Style />
                 </Paragraph>
               </Paragraphs>
-              <rd:DefaultName>No_</rd:DefaultName>
-              <Top>1.09736in</Top>
-              <Left>1.21181in</Left>
-              <Height>0.33542in</Height>
-              <Width>1in</Width>
+              <rd:DefaultName>Textbox12</rd:DefaultName>
+              <Top>1.09965in</Top>
+              <Left>0.3175cm</Left>
+              <Height>1.06253in</Height>
+              <Width>1.07118in</Width>
               <ZIndex>1</ZIndex>
               <Style>
                 <Border>
@@ -879,125 +1053,15 @@ Saldo</Value>
                 <PaddingBottom>2pt</PaddingBottom>
               </Style>
             </Textbox>
-            <Textbox Name="Name">
+            <Textbox Name="Textbox13">
               <CanGrow>true</CanGrow>
               <KeepTogether>true</KeepTogether>
               <Paragraphs>
                 <Paragraph>
                   <TextRuns>
                     <TextRun>
-                      <Value>=First(Fields!Name.Value, "NavCustomer")</Value>
+                      <Value>=First(Fields!NoConsulta.Value, "EncomendasDetails")</Value>
                       <Style>
-                        <FontSize>8pt</FontSize>
-                      </Style>
-                    </TextRun>
-                  </TextRuns>
-                  <Style />
-                </Paragraph>
-              </Paragraphs>
-              <rd:DefaultName>Name</rd:DefaultName>
-              <Top>1.00847in</Top>
-              <Left>3.75in</Left>
-              <Height>0.21458in</Height>
-              <Width>2.06249in</Width>
-              <ZIndex>2</ZIndex>
-              <Style>
-                <Border>
-                  <Style>None</Style>
-                </Border>
-                <PaddingLeft>2pt</PaddingLeft>
-                <PaddingRight>2pt</PaddingRight>
-                <PaddingTop>2pt</PaddingTop>
-                <PaddingBottom>2pt</PaddingBottom>
-              </Style>
-            </Textbox>
-            <Textbox Name="Address">
-              <CanGrow>true</CanGrow>
-              <KeepTogether>true</KeepTogether>
-              <Paragraphs>
-                <Paragraph>
-                  <TextRuns>
-                    <TextRun>
-                      <Value>=First(Fields!Address.Value, "NavCustomer")</Value>
-                      <Style>
-                        <FontSize>8pt</FontSize>
-                      </Style>
-                    </TextRun>
-                    <TextRun>
-                      <Value xml:space="preserve">
-</Value>
-                      <Style>
-                        <FontSize>8pt</FontSize>
-                      </Style>
-                    </TextRun>
-                    <TextRun>
-                      <Value>=First(Fields!PostalCode.Value, "NavCustomer") + " " + First(Fields!City.Value, "NavCustomer")</Value>
-                      <Style>
-                        <FontSize>8pt</FontSize>
-                      </Style>
-                    </TextRun>
-                  </TextRuns>
-                  <Style />
-                </Paragraph>
-              </Paragraphs>
-              <rd:DefaultName>Address</rd:DefaultName>
-              <Top>1.20569in</Top>
-              <Left>3.75in</Left>
-              <Height>0.64778in</Height>
-              <Width>3.48828in</Width>
-              <ZIndex>3</ZIndex>
-              <Style>
-                <Border>
-                  <Style>None</Style>
-                </Border>
-                <PaddingLeft>2pt</PaddingLeft>
-                <PaddingRight>2pt</PaddingRight>
-                <PaddingTop>2pt</PaddingTop>
-                <PaddingBottom>2pt</PaddingBottom>
-              </Style>
-            </Textbox>
-            <Textbox Name="Now">
-              <CanGrow>true</CanGrow>
-              <KeepTogether>true</KeepTogether>
-              <Paragraphs>
-                <Paragraph>
-                  <TextRuns>
-                    <TextRun>
-                      <Value>=(Day(Now()).ToString() + ". " + MonthName(Month(Now()), false).ToString() + " " + Year(Now()).ToString())</Value>
-                      <Style>
-                        <FontSize>9pt</FontSize>
-                      </Style>
-                    </TextRun>
-                  </TextRuns>
-                  <Style />
-                </Paragraph>
-              </Paragraphs>
-              <rd:DefaultName>Now</rd:DefaultName>
-              <Top>1.41889in</Top>
-              <Left>0.3175cm</Left>
-              <Height>0.25in</Height>
-              <Width>2.08681in</Width>
-              <ZIndex>4</ZIndex>
-              <Style>
-                <Border>
-                  <Style>None</Style>
-                </Border>
-                <PaddingLeft>2pt</PaddingLeft>
-                <PaddingRight>2pt</PaddingRight>
-                <PaddingTop>2pt</PaddingTop>
-                <PaddingBottom>2pt</PaddingBottom>
-              </Style>
-            </Textbox>
-            <Textbox Name="Textbox10">
-              <CanGrow>true</CanGrow>
-              <KeepTogether>true</KeepTogether>
-              <Paragraphs>
-                <Paragraph>
-                  <TextRuns>
-                    <TextRun>
-                      <Value>SUCH - Serviço de Utilização Comum dos Hospitais</Value>
-                      <Style>
-                        <FontFamily>Arial</FontFamily>
                         <FontSize>8pt</FontSize>
                       </Style>
                     </TextRun>
@@ -1007,9 +1071,8 @@ Saldo</Value>
                 <Paragraph>
                   <TextRuns>
                     <TextRun>
-                      <Value>Av Brasil, 53 Parque de Saúde de Lisboa, Pavilhão 33A</Value>
+                      <Value />
                       <Style>
-                        <FontFamily>Arial</FontFamily>
                         <FontSize>8pt</FontSize>
                       </Style>
                     </TextRun>
@@ -1019,41 +1082,18 @@ Saldo</Value>
                 <Paragraph>
                   <TextRuns>
                     <TextRun>
-                      <Value>1749-003 LISBOA</Value>
+                      <Value>=IIf(Year(First(Fields!ExpectedReceiptDate.Value, "EncomendasDetails")) &gt; 2009 , FormatDateTime(First(Fields!ExpectedReceiptDate.Value, "EncomendasDetails"), DateFormat.ShortDate ).ToString() , "")</Value>
                       <Style>
-                        <FontFamily>Arial</FontFamily>
                         <FontSize>8pt</FontSize>
                       </Style>
                     </TextRun>
                   </TextRuns>
                   <Style />
                 </Paragraph>
-              </Paragraphs>
-              <rd:DefaultName>Textbox10</rd:DefaultName>
-              <Top>0.65083in</Top>
-              <Left>0.3175cm</Left>
-              <Height>0.56181in</Height>
-              <Width>3.07162in</Width>
-              <ZIndex>5</ZIndex>
-              <Style>
-                <Border>
-                  <Style>None</Style>
-                </Border>
-                <PaddingLeft>2pt</PaddingLeft>
-                <PaddingRight>2pt</PaddingRight>
-                <PaddingTop>2pt</PaddingTop>
-                <PaddingBottom>2pt</PaddingBottom>
-              </Style>
-            </Textbox>
-            <Textbox Name="Textbox12">
-              <CanGrow>true</CanGrow>
-              <KeepTogether>true</KeepTogether>
-              <Paragraphs>
                 <Paragraph>
                   <TextRuns>
                     <TextRun>
-                      <Value>Nº Cliente
-Contribuite Nº</Value>
+                      <Value>=First(Fields!RequisitionNo.Value, "EncomendasDetails")</Value>
                       <Style>
                         <FontSize>8pt</FontSize>
                       </Style>
@@ -1063,11 +1103,11 @@ Contribuite Nº</Value>
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox12</rd:DefaultName>
-              <Top>1.09736in</Top>
-              <Left>0.3175cm</Left>
-              <Height>0.33542in</Height>
-              <Width>1in</Width>
-              <ZIndex>6</ZIndex>
+              <Top>1.09965in</Top>
+              <Left>3.21469cm</Left>
+              <Height>1.06253in</Height>
+              <Width>1.931in</Width>
+              <ZIndex>2</ZIndex>
               <Style>
                 <Border>
                   <Style>None</Style>
@@ -1085,21 +1125,35 @@ Contribuite Nº</Value>
                 <Paragraph>
                   <TextRuns>
                     <TextRun>
-                      <Value>EXTRACTO DE CONTA CORRENTE</Value>
+                      <Value>RESUMO</Value>
                       <Style>
                         <FontSize>8pt</FontSize>
+                        <FontWeight>Bold</FontWeight>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style />
+                </Paragraph>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>ENCOMENDA Nº
+DATA</Value>
+                      <Style>
+                        <FontSize>8pt</FontSize>
+                        <FontWeight>Bold</FontWeight>
                       </Style>
                     </TextRun>
                   </TextRuns>
                   <Style />
                 </Paragraph>
               </Paragraphs>
-              <rd:DefaultName>Textbox14</rd:DefaultName>
-              <Top>1.62847in</Top>
-              <Left>0.3175cm</Left>
-              <Height>0.25in</Height>
-              <Width>2.375in</Width>
-              <ZIndex>7</ZIndex>
+              <rd:DefaultName>Textbox12</rd:DefaultName>
+              <Top>0.96424in</Top>
+              <Left>8.80257cm</Left>
+              <Height>0.48944in</Height>
+              <Width>1.07118in</Width>
+              <ZIndex>3</ZIndex>
               <Style>
                 <Border>
                   <Style>None</Style>
@@ -1110,6 +1164,109 @@ Contribuite Nº</Value>
                 <PaddingBottom>2pt</PaddingBottom>
               </Style>
             </Textbox>
+            <Textbox Name="Textbox15">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>=First(Fields!No.Value, "EncomendasDetails")</Value>
+                      <Style>
+                        <FontSize>8pt</FontSize>
+                      </Style>
+                    </TextRun>
+                    <TextRun>
+                      <Value xml:space="preserve">
+</Value>
+                      <Style>
+                        <FontSize>8pt</FontSize>
+                      </Style>
+                    </TextRun>
+                    <TextRun>
+                      <Value>=Day(First(Fields!OrderDate.Value, "EncomendasDetails")).ToString() + " " + MonthName(Month(First(Fields!OrderDate.Value, "EncomendasDetails"))) + " " + Year(First(Fields!OrderDate.Value, "EncomendasDetails")).ToString()</Value>
+                      <Style>
+                        <FontSize>8pt</FontSize>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style />
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>Textbox12</rd:DefaultName>
+              <Top>1.09983in</Top>
+              <Left>11.69975cm</Left>
+              <Height>0.35386in</Height>
+              <Width>1.931in</Width>
+              <ZIndex>4</ZIndex>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+            <Textbox Name="Textbox16">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>=First(Fields!BuyFromVendorNo.Value, "EncomendasDetails")</Value>
+                      <Style>
+                        <FontSize>8pt</FontSize>
+                      </Style>
+                    </TextRun>
+                    <TextRun>
+                      <Value xml:space="preserve">
+</Value>
+                      <Style>
+                        <FontSize>8pt</FontSize>
+                      </Style>
+                    </TextRun>
+                    <TextRun>
+                      <Value>=First(Fields!PayToName.Value, "EncomendasDetails")</Value>
+                      <Style>
+                        <FontSize>8pt</FontSize>
+                        <FontWeight>Bold</FontWeight>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style />
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>Textbox12</rd:DefaultName>
+              <Top>1.5375in</Top>
+              <Left>8.79903cm</Left>
+              <Height>0.48719in</Height>
+              <Width>3.07163in</Width>
+              <ZIndex>5</ZIndex>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+            <Line Name="Line1">
+              <Top>5.56251cm</Top>
+              <Left>0.34925cm</Left>
+              <Height>0cm</Height>
+              <Width>16.56922cm</Width>
+              <ZIndex>6</ZIndex>
+              <Style>
+                <Border>
+                  <Style>Solid</Style>
+                </Border>
+              </Style>
+            </Line>
           </ReportItems>
           <Style>
             <Border>
@@ -1118,7 +1275,7 @@ Contribuite Nº</Value>
           </Style>
         </PageHeader>
         <PageFooter>
-          <Height>1.41817cm</Height>
+          <Height>2.14312cm</Height>
           <PrintOnFirstPage>true</PrintOnFirstPage>
           <PrintOnLastPage>true</PrintOnLastPage>
           <ReportItems>
@@ -1142,10 +1299,10 @@ Contribuite Nº</Value>
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox48</rd:DefaultName>
-              <Top>0cm</Top>
-              <Left>12.97806cm</Left>
+              <Top>0.127cm</Top>
+              <Left>12.17485cm</Left>
               <Height>0.6cm</Height>
-              <Width>2.50037cm</Width>
+              <Width>2.78259cm</Width>
               <Style>
                 <Border>
                   <Style>None</Style>
@@ -1163,7 +1320,7 @@ Contribuite Nº</Value>
                 <Paragraph>
                   <TextRuns>
                     <TextRun>
-                      <Value>=System.Math.Round(Sum(Fields!Value.Value, "dw_MovClientesIntegrado"), 2)</Value>
+                      <Value>=System.Math.Round(Sum(Fields!AmountIncludingVAT.Value, "EncomendasLinhasList"), 2)</Value>
                       <Style>
                         <FontSize>8pt</FontSize>
                         <FontWeight>Bold</FontWeight>
@@ -1177,10 +1334,10 @@ Contribuite Nº</Value>
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox49</rd:DefaultName>
-              <Top>0cm</Top>
-              <Left>15.61955cm</Left>
+              <Top>0.127cm</Top>
+              <Left>15.13383cm</Left>
               <Height>0.6cm</Height>
-              <Width>2.16701cm</Width>
+              <Width>1.78464cm</Width>
               <ZIndex>1</ZIndex>
               <Style>
                 <Border>
@@ -1193,73 +1350,18 @@ Contribuite Nº</Value>
                 <rd:FormatSymbolCulture>pt-PT</rd:FormatSymbolCulture>
               </Style>
             </Textbox>
-            <Textbox Name="Textbox15">
-              <KeepTogether>true</KeepTogether>
-              <Paragraphs>
-                <Paragraph>
-                  <TextRuns>
-                    <TextRun>
-                      <Value />
-                      <Style />
-                    </TextRun>
-                  </TextRuns>
-                  <Style />
-                </Paragraph>
-              </Paragraphs>
-              <rd:DefaultName>Textbox13</rd:DefaultName>
-              <Top>0.81817cm</Top>
-              <Left>0.3175cm</Left>
-              <Height>0.6cm</Height>
-              <Width>7.17995cm</Width>
+            <Line Name="Line2">
+              <Top>0.10583cm</Top>
+              <Left>0.37304cm</Left>
+              <Height>0cm</Height>
+              <Width>16.54543cm</Width>
               <ZIndex>2</ZIndex>
               <Style>
                 <Border>
-                  <Style>None</Style>
+                  <Style>Solid</Style>
                 </Border>
-                <PaddingLeft>2pt</PaddingLeft>
-                <PaddingRight>2pt</PaddingRight>
-                <PaddingTop>2pt</PaddingTop>
-                <PaddingBottom>2pt</PaddingBottom>
               </Style>
-            </Textbox>
-            <Textbox Name="Textbox13">
-              <KeepTogether>true</KeepTogether>
-              <Paragraphs>
-                <Paragraph>
-                  <TextRuns>
-                    <TextRun>
-                      <Value>* </Value>
-                      <Style />
-                    </TextRun>
-                    <TextRun>
-                      <Value>Valores de Factoring sem Recurso.</Value>
-                      <Style>
-                        <FontSize>8pt</FontSize>
-                      </Style>
-                    </TextRun>
-                  </TextRuns>
-                  <Style />
-                </Paragraph>
-              </Paragraphs>
-              <rd:DefaultName>Textbox13</rd:DefaultName>
-              <Top>0.81817cm</Top>
-              <Left>0.3175cm</Left>
-              <Height>0.6cm</Height>
-              <Width>7.17995cm</Width>
-              <ZIndex>3</ZIndex>
-              <Visibility>
-                <Hidden>=Parameters!Movimentos.Value = 1</Hidden>
-              </Visibility>
-              <Style>
-                <Border>
-                  <Style>None</Style>
-                </Border>
-                <PaddingLeft>2pt</PaddingLeft>
-                <PaddingRight>2pt</PaddingRight>
-                <PaddingTop>2pt</PaddingTop>
-                <PaddingBottom>2pt</PaddingBottom>
-              </Style>
-            </Textbox>
+            </Line>
           </ReportItems>
           <Style>
             <Border>
@@ -1269,72 +1371,39 @@ Contribuite Nº</Value>
         </PageFooter>
         <PageHeight>27.94cm</PageHeight>
         <PageWidth>21.59cm</PageWidth>
-        <LeftMargin>1.3cm</LeftMargin>
-        <RightMargin>1.3cm</RightMargin>
-        <TopMargin>1.3cm</TopMargin>
-        <BottomMargin>1.3cm</BottomMargin>
-        <ColumnSpacing>1.27cm</ColumnSpacing>
+        <LeftMargin>1.5cm</LeftMargin>
+        <RightMargin>1.5cm</RightMargin>
+        <TopMargin>1.5cm</TopMargin>
+        <BottomMargin>1.5cm</BottomMargin>
+        <ColumnSpacing>0.13cm</ColumnSpacing>
         <Style />
       </Page>
     </ReportSection>
   </ReportSections>
   <ReportParameters>
-    <ReportParameter Name="Data">
-      <DataType>DateTime</DataType>
-      <Prompt>Data</Prompt>
-    </ReportParameter>
-    <ReportParameter Name="Movimentos">
-      <DataType>Integer</DataType>
-      <DefaultValue>
-        <Values>
-          <Value>0</Value>
-        </Values>
-      </DefaultValue>
-      <Prompt>Mostrar factoring</Prompt>
-      <Hidden>true</Hidden>
-      <ValidValues>
-        <ParameterValues>
-          <ParameterValue>
-            <Value>0</Value>
-            <Label>Sim</Label>
-          </ParameterValue>
-          <ParameterValue>
-            <Value>1</Value>
-            <Label>Não</Label>
-          </ParameterValue>
-        </ParameterValues>
-      </ValidValues>
-    </ReportParameter>
-    <ReportParameter Name="Cliente">
+    <ReportParameter Name="No">
       <DataType>String</DataType>
       <DefaultValue>
         <Values>
-          <Value>200004</Value>
+          <Value>C1800382</Value>
         </Values>
       </DefaultValue>
-      <Prompt>Cliente</Prompt>
+      <Prompt>No</Prompt>
       <Hidden>true</Hidden>
+      <cl:ComponentMetadata>
+        <cl:ComponentId>24a002a2-e6b2-422b-abec-f077ac397b7f</cl:ComponentId>
+      </cl:ComponentMetadata>
     </ReportParameter>
   </ReportParameters>
   <ReportParametersLayout>
     <GridLayoutDefinition>
-      <NumberOfColumns>2</NumberOfColumns>
+      <NumberOfColumns>1</NumberOfColumns>
       <NumberOfRows>2</NumberOfRows>
       <CellDefinitions>
         <CellDefinition>
           <ColumnIndex>0</ColumnIndex>
-          <RowIndex>1</RowIndex>
-          <ParameterName>Cliente</ParameterName>
-        </CellDefinition>
-        <CellDefinition>
-          <ColumnIndex>0</ColumnIndex>
           <RowIndex>0</RowIndex>
-          <ParameterName>Data</ParameterName>
-        </CellDefinition>
-        <CellDefinition>
-          <ColumnIndex>1</ColumnIndex>
-          <RowIndex>0</RowIndex>
-          <ParameterName>Movimentos</ParameterName>
+          <ParameterName>No</ParameterName>
         </CellDefinition>
       </CellDefinitions>
     </GridLayoutDefinition>
@@ -1371,8 +1440,6 @@ NvHDuYvQWxXr0ON5S9Ln2NOPwRSJal6+Z96hHdA0mHAro3zGs4g18XgzYfwtbwlq0DVciKhpz+HigHi3
 OGcNttm+IszYSDwzbyy51mM+ToEeeWSuYH6Y3lhT4edh4REDJjMLNBMtzJhT1QAeaD2RUE+Xgo7OcUl/tvGmRtJ9qKE6ddkGWgmmegrFkoRm8Vw7QHc7mTaljk8SxQEvSwGos9BGGA879h2AyhwFMyoaHl0NnfGzrQdGGCuanBIjdBfPqizMOk0ZEyJVQlUgKbmreayTprExfXnfOx/KlXpom/bXTEj8ew60Euy4TfQqNvoYjxiOac0AQAGi/fD6I/l+FiD2zKBMfo2dFNuq2zN9Z5w13EPTnv8V3Kb2wYJWrEHxGNqzjoOOh38/jUalT21/Y24guSi4YDM0iJbY/6HYp/XMPuw8NhrU1R2RTMaLM87uvbX/7l3cuXDHwYZK3Of19t+dETvGel/vmHvb8o65zdCw1/Oc2Oe3v9G/beBe2035Ei3E+djQihl3l3LsHOpMWI918jFQR5mOi93MUi14ew/v81s6Uno2jgZcq17XwdjMhmvCimaB7zWjyfNMzjiZvskcKybsM+t7D46sADOMgu9px9vkaipc5AhAUP5DaDvjAtGOY3LguQOgg9Om969U/OumMPyH0xlwAf8JsBNoCcGdNJFMpn+engaYVg/hJPvW2UTQgDolYRjgmXvJIKYgdPPsAUCgz+ISozMZzHgxkevAtYt91QR7nPegKHBQlux2ilSZtm0rw9L+uedgwAswCOajQEB1CVGfLnn7/sBz2w7clkogf+DpuPkzRW8f/YHnoRxmbgEeRmnSfuPfD38GaoWEjp8f9XiYgIKY51qvsF6AcMTx7se+FQI8nhv53p+52jZtf2zJf287zneWzpStGmy5/fp/Xy3170jgpVQAAAAASUVORK5CYII=</ImageData>
     </EmbeddedImage>
   </EmbeddedImages>
-  <Language>en-US</Language>
-  <ConsumeContainerWhitespace>true</ConsumeContainerWhitespace>
   <rd:ReportUnitType>Cm</rd:ReportUnitType>
-  <rd:ReportID>0bbd158a-430d-4002-a0fa-d03671550e92</rd:ReportID>
+  <rd:ReportID>bf2890d5-149e-4141-b13f-14b01aee68b5</rd:ReportID>
 </Report>
