@@ -1,9 +1,12 @@
 ﻿
 @{
-    ViewData["Title"] = "GuiaTransporteDetails";
+    ViewData["Title"] = "Detalhe Guia Transporte " + ViewBag.Historic + ViewBag.No; ;
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>GuiaTransporteDetails</h1>
 
-<h2>@ViewBag.No</h2>
+
+<link rel="import" href="~/elements/guiastransporte/DetalheGuiaTransporteNav.html" />
+
+<x-detailguiatransportenav _guiatransporteid="@ViewBag.No" _reportserverurl="@ViewBag.reportServerURL" _history="@ViewBag.ifHistoric"></x-detailguiatransportenav>
 

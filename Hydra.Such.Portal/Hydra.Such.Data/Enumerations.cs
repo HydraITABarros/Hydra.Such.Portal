@@ -143,6 +143,10 @@ namespace Hydra.Such.Data
             [Description("Requisições por Dimensões")]
             RequisicoesPorDimensoes = 55,
 
+            // zpgm. impressão guias transporte do NAV
+            [Description("Impressão Guias Transporte NAV")]
+            ImpressaoGuiaTransporteNAV = 56,
+
 
             [Description("Administração Geral")]
             AdminGeral = 100,
