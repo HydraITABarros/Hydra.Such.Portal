@@ -90,7 +90,6 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
-
         #region Home
         [HttpPost]
         public JsonResult GetListProjectsByArea([FromBody] JObject requestParams)
@@ -162,7 +161,6 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
         #endregion
-
 
         #region Details
 
@@ -1826,6 +1824,7 @@ namespace Hydra.Such.Portal.Controllers
 
             try
             {
+                #region HTTP Params
                 string projectNo = string.Empty;
                 JValue projectNoValue = requestParams["projectNo"] as JValue;
                 if (projectNoValue != null)
@@ -1879,6 +1878,8 @@ namespace Hydra.Such.Portal.Controllers
                 JArray projMovementsValue = requestParams["projMovements"] as JArray;
                 if (projMovementsValue != null)
                     projMovements = projMovementsValue.ToObject<List<ProjectMovementViewModel>>();
+                
+                #endregion
 
                 Projetos project = null;
                 Contratos contract = null;
@@ -2301,7 +2302,7 @@ namespace Hydra.Such.Portal.Controllers
             try
             {
                 List<SPInvoiceListViewModel> result = DBProjectMovements.GetAllAutorized();
-                List<NAVClientsViewModel> ClientList = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, null);
+                List<NAVClientsViewModel> ClientList = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, string.Empty);
 
                 if (result.Count > 0)
                 {
@@ -2424,7 +2425,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 if (authProjects.Count > 0)
                 {
-                    List<NAVClientsViewModel> allCustomers = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, null);
+                    List<NAVClientsViewModel> allCustomers = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, string.Empty);
                     if (allCustomers != null && allCustomers.Count() > 0)
                     {
                         var customerIds = authProjects.Select(x => x.CodCliente).Distinct();
@@ -2634,13 +2635,16 @@ namespace Hydra.Such.Portal.Controllers
                 if (userDimensionsViewModel.Where(x => x.Dimension == (int)Dimensions.ResponsabilityCenter).Count() > 0)
                     data.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.ResponsabilityCenterCode));
 
+                var customersIds = data.Select(x => x.InvoiceToClientNo).Distinct();
+                List<NAVClientsViewModel> customers = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, customersIds);
+
                 var groupedbyclient = data.GroupBy(x => new
-                    {
-                        x.InvoiceToClientNo,
-                        x.Date,
-                        x.CommitmentNumber,
-                        x.ClientRequest
-                    },
+                {
+                    x.InvoiceToClientNo,
+                    x.Date,
+                    x.CommitmentNumber,
+                    x.ClientRequest
+                },
                     x => x,
                     (key, items) => new AuthorizedCustomerBilling
                     {
@@ -2648,10 +2652,10 @@ namespace Hydra.Such.Portal.Controllers
                         Date = key.Date,
                         CommitmentNumber = key.CommitmentNumber,
                         ClientRequest = key.ClientRequest,
-                        ClientVATReg = DBNAV2017Clients.GetClientVATByNo(key.InvoiceToClientNo, _config.NAVDatabaseName, _config.NAVCompanyName),
+                        ClientVATReg = customers.FirstOrDefault(x => x.No_ == key.InvoiceToClientNo)?.VATRegistrationNo_,// DBNAV2017Clients.GetClientVATByNo(key.InvoiceToClientNo, _config.NAVDatabaseName, _config.NAVCompanyName),
                         ContractNo = projectsDetails.Select(x => x.NºContrato).FirstOrDefault(y => !string.IsNullOrEmpty(y)),
-                        Currency = items.FirstOrDefault(y => y.InvoiceToClientNo == key.InvoiceToClientNo) ?.Currency,
-                        LocationCode = items.FirstOrDefault(y => y.InvoiceToClientNo == key.InvoiceToClientNo) ?.LocationCode,
+                        Currency = items.FirstOrDefault(y => y.InvoiceToClientNo == key.InvoiceToClientNo)?.Currency,
+                        LocationCode = items.FirstOrDefault(y => y.InvoiceToClientNo == key.InvoiceToClientNo)?.LocationCode,
                         MovementType = Convert.ToInt32(OptionInvoice),
                         CreateUser = User.Identity.Name,
 
@@ -2673,6 +2677,11 @@ namespace Hydra.Such.Portal.Controllers
                                                  y.DataPrestacaoServico == key.Date &&
                                                  y.NumCompromisso == key.CommitmentNumber &&
                                                  y.PedidoCliente == key.ClientRequest)?.Observacoes,
+                        ServiceDate = authProjectMovements
+                            .FirstOrDefault(y => y.CodCliente == key.InvoiceToClientNo &&
+                                                 y.DataPrestacaoServico == key.Date &&
+                                                 y.NumCompromisso == key.CommitmentNumber &&
+                                                 y.PedidoCliente == key.ClientRequest)?.DataServPrestado,
                         RegionCode = authProjectMovements
                             .FirstOrDefault(y => y.CodCliente == key.InvoiceToClientNo &&
                                                  y.DataPrestacaoServico == key.Date &&
@@ -2688,13 +2697,21 @@ namespace Hydra.Such.Portal.Controllers
                                                  y.DataPrestacaoServico == key.Date &&
                                                  y.NumCompromisso == key.CommitmentNumber &&
                                                  y.PedidoCliente == key.ClientRequest)?.CodCentroResponsabilidade,
-                        ServiceDate = authProjectMovements
-                            .FirstOrDefault(y => y.CodCliente == key.InvoiceToClientNo &&
-                                                 y.DataPrestacaoServico == key.Date &&
-                                                 y.NumCompromisso == key.CommitmentNumber &&
-                                                 y.PedidoCliente == key.ClientRequest)?.DataServPrestado,
                     })
                 .ToList();
+                //Set project dimensions
+                groupedbyclient.ForEach(x =>
+                {
+                    var authProj = authProjectMovements
+                            .FirstOrDefault(y => y.CodCliente == x.InvoiceToClientNo &&
+                                                 y.DataPrestacaoServico == x.Date &&
+                                                 y.NumCompromisso == x.CommitmentNumber &&
+                                                 y.PedidoCliente == x.ClientRequest);
+                    var proj = projectsDetails.FirstOrDefault(y => y.NºProjeto == x.Items.FirstOrDefault()?.ProjectNo);
+                    string projectRegion = proj != null ? proj.CódigoRegião : string.Empty;
+                    var customer = customers.FirstOrDefault(y => y.No_ == x.InvoiceToClientNo);
+                    x.SetDimensionsFor(authProj, projectRegion, customer);
+                });
 
                 //Create Project if exists
                 foreach (string projectId in projectsIds)

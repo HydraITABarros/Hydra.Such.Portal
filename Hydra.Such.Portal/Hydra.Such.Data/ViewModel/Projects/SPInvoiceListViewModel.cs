@@ -99,6 +99,8 @@ namespace Hydra.Such.Data.ViewModel.Projects
         //public string CodMetodoPagamento { get; set; }
 
         public List<SPInvoiceListViewModel> Items { get; set; }
+
+        
     }
 
     public class AuthorizedCustomerBillingHeader
@@ -122,5 +124,25 @@ namespace Hydra.Such.Data.ViewModel.Projects
         public string CodMetodoPagamento { get; set; }
         public string CreateUser { get; set; }
         //public List<SPInvoiceListViewModel> Items { get; set; }
+
+        public void SetDimensionsFor(AuthorizedProjectViewModel authProj, string projectRegion, NAVClientsViewModel customer)
+        {
+            if (this == null)
+                return;
+
+            if (customer != null && customer.InternalClient)
+            {
+                this.RegionCode = customer.RegionCode;
+                this.FunctionalAreaCode = customer.FunctionalAreaCode;
+                this.ResponsabilityCenterCode = customer.ResponsabilityCenterCode;
+            }
+            else if (authProj != null)
+            {
+                this.RegionCode = authProj.CodRegiao;
+                this.FunctionalAreaCode = authProj.CodAreaFuncional;
+                if (authProj.CodRegiao == projectRegion)
+                    this.ResponsabilityCenterCode = authProj.CodCentroResponsabilidade;
+            }
+        }
     }
 }
