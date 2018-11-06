@@ -1,0 +1,2435 @@
+﻿
+<link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
+<link rel="import" href="/lib/datetime-picker-master/datetime-picker.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
+
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/such-textarea/such-textarea.html">
+
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html">
+
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload-file.html">
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload.html">
+
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html" />
+
+<link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
+<link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
+
+<!--ACORDEÃO-->
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
+
+
+<dom-module id="x-prerequisitions">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+
+        <style>
+            vaadin-combo-box {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-date-picker {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-text-field {
+                margin-top: 0px !important;
+                width: 100%;
+            }
+
+            paper-button {
+                margin-top: 10px;
+            }
+
+            .break_clear {
+                margin-top: 15px;
+                margin-right: 0px !important;
+                margin-left: 0px !important;
+            }
+
+            .break_frm {
+                margin-top: 15px;
+            }
+
+            .label_custom {
+                color: var(--valo-contrast-60pct) !important;
+                font-weight: 500 !important;
+                font-size: var(--valo-font-size-s) !important;
+                margin-left: calc(var(--valo-text-field-border-radius, var(--valo-border-radius)) / 4) !important;
+                margin-bottom: var(--valo-space-xs) !important;
+                transition: color 0.4s !important;
+                line-height: 1 !important;
+                font-family: var(--valo-font-family) !important;
+            }
+
+            datetime-picker {
+                border-radius: var(--valo-text-field-border-radius, var(--valo-border-radius));
+                background-color: var(--valo-contrast-5pct);
+                color: var(--valo-contrast-60pct) !important;
+                width: 100%;
+            }
+
+            .marginSpace {
+                margin: 0px !important;
+            }
+
+            textarea {
+                background-color: #f5f5f5;
+                border: none;
+                border-radius: 3px 4px;
+                align-self: baseline;
+                font-weight: 500;
+            }
+
+                textarea:hover {
+                    background-color: #eeeeee;
+                }
+
+                textarea:focus {
+                    background-color: white;
+                    border: none;
+                    outline: 1px solid #eeeeee;
+                    border-radius: 3px 4px;
+                }
+
+            datetime-picker {
+                --datetime-selected-background: #71BCC1 !important;
+                --datetime-background: #1f3133;
+                --datetime-color: #eeeeee;
+            }
+
+            paper-collapse-item {
+                --paper-item: {
+                    padding: 0 0;
+                };
+                --paper-collapse-item-header: {
+                    padding: 0 15px;
+                    color: #333;
+                    background-color: #f5f5f5;
+                    border-bottom: solid #ddd 1px;
+                    border-top-left-radius: 3px;
+                    border-top-right-radius: 3px;
+
+                };
+            }
+
+            .panel-body {
+                padding-top: 0px !important;
+            }
+        </style>
+
+        <!-- DROPDOWNS POPULATE -->
+        <iron-ajax url="/PopulateDropdowns/TipoRequisicoesLista" last-response="{{CBRequesitionType}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" id="page_GetFunctionalAreaCode_ajax" last-response="{{LProjectFunctionalAreaCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" id="page_GetResponsabilityCenterCode_ajax" last-response="{{LProjectResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetRegionCode" id="page_GetRegionCode_ajax" last-response="{{LProjectRegionCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetViaturas" last-response="{{CBVehicle}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProjectNavList" last-response="{{CBJobNo}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetNAVVendorComboGrid" last-response="{{CBVendor}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetPlaces" last-response="{{CBLocal}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProductsPreRequisition" last-response="{{Products}}" id="filteredProducts_ajax" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetLocations" last-response="{{CBLocations}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetUnitOfMeasureByCode" last-response="{{LCBMeasuresUnit}}" auto id="measuresunit_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/getOpenOrderLineByHeader" last-response="{{CBPurchaseLine}}" id="purchaselines_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/getOpenOrderLineByHeader" last-response="{{CBPurchaseLineGrid}}" id="purchaselinesgrid_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PreRequisicoes/GetPreReq"
+                   id="page_GetPreReq_ajax"
+                   last-response="{{data}}"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PreRequisicoes/CreateNewForThisUser"
+                   last-response="{{data}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_createnewForUser_ajax"
+                   content-type="application/json"
+                   on-response="_responseProcessor">
+        </iron-ajax>
+
+        <iron-ajax url="/PreRequisicoes/LoadAttachments"
+                   last-response="{{uploads}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_update_ajax"
+                   on-response="_loadAttachResponse"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PreRequisicoes/DeleteAttachments"
+                   last-response="{{deleted_files}}"
+                   method="post"
+                   handle-as="json"
+                   id="delete_files_ajax"
+                   on-response="_deletedAttachResponse"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PreRequisicoes/CleanPreRequesition"
+                   last-response="{{ClPreReq}}"
+                   method="post"
+                   handle-as="json"
+                   id="CleanPreRequesition_ajax"
+                   on-response="_CleanPreRequesitionResponse"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PreRequisicoes/GetPreRequesitionDetails"
+                   last-response="{{data}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_databound_ajax"
+                   on-response="_responseProcessor"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PreRequisicoes/GetPreRequesitionDetails"
+                   last-response="{{data}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_databoundNoMessage_ajax"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-request id="page_reqmodellines_ajax"></iron-request>
+
+        <iron-ajax url="/PreRequisicoes/ValidateNumeration"
+                   last-response="{{validateResponse}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_validator_ajax"
+                   on-response="_responseValidatorProcessor"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PreRequisicoes/CBVehicleFleetBool"
+                   last-response="{{BooleanVehicleFleet}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_cbReqType"
+                   on-response="_responseVehicleFleetBool"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PreRequisicoes/GetPlaceData"
+                   last-response="{{PlaceDataCollection}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_getPlaceData"
+                   on-response="_responsePlaceDataCollection"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PreRequisicoes/GetPlaceData"
+                   last-response="{{PlaceDataDelivery}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_getPlaceDataDelivery"
+                   on-response="_responsePlaceDataDelivery"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PreRequisicoes/DeletePreRequesition"
+                   last-response="{{deletedData}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_delete_prereq"
+                   on-response="_responseDeleteProcessor"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PreRequisicoes/DuplicarContractLines"
+                   last-response="{{duplicarLinhasResponse}}"
+                   method="post"
+                   handle-as="json"
+                   id="prereqLines_DuplicarLinha_ajax"
+                   on-response="_dlResponseProcessor"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PreRequisicoes/UpdateLinhaPreRequisicao"
+                   last-response="{{updateLinhaPreRequisicaoResponse}}"
+                   method="post"
+                   handle-as="json"
+                   id="prereqLines_UpdateLinhaPreRequisicao_ajax"
+                   on-response="_UpdateLinhaPreRequisicao_ResponseProcessor"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PreRequisicoes/UpdateLinhaPreRequisicaoProduto"
+                   last-response="{{updateLinhaPreRequisicaoProdutoResponse}}"
+                   method="post"
+                   handle-as="json"
+                   id="prereqLines_UpdateLinhaPreRequisicaoProduto_ajax"
+                   on-response="_UpdateLinhaPreRequisicaoProduto_ResponseProcessor"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PreRequisicoes/GetPreReqLines"
+                   last-response="{{dataLines}}"
+                   method="post"
+                   handle-as="json"
+                   id="prereqLines_databound_ajax"
+                   on-response="_clResponseProcessor"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PreRequisicoes/GetReqModelList"
+                   last-response="{{result}}"
+                   method="post"
+                   handle-as="json"
+                   id="grid_datareqmodel_ajax"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PreRequisicoes/CopyReqModelLines"
+                   last-response="{{CopyFromModelResult}}"
+                   method="post"
+                   handle-as="json"
+                   id="grid_copyreqmodel_ajax"
+                   on-response="_copyFromTemplateResponse"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PreRequisicoes/ValidateNumerationReq"
+                   last-response="{{validateReqResponse}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_validator_req_ajax"
+                   on-response="_responseReqValidatorProcessor"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PreRequisicoes/CreateRequesition"
+                   last-response="{{CreateReqResponse}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_create_requisition_ajax"
+                   on-response="_createRequesitionResponse"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PreRequisicoes/GetProjectDim"
+                   last-response="{{ProjectDims}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_getProject_ajax"
+                   on-response="_getProjectDimsResponse"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PreRequisicoes/GetProjectDim"
+                   last-response="{{ProjectDims2}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_getProject2_ajax"
+                   on-response="_getProjectDimsResponse2"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PreRequisicoes/GetProjetoNo"
+                   last-response="{{ProjetoNo}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_GetProjetoNoCabecalho_ajax"
+                   on-response="_GetProjetoNoCabecalhoResponse"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PreRequisicoes/GetProjetoNo"
+                   last-response="{{ProjetoNo}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_GetProjetoNoLinha_ajax"
+                   on-response="_GetProjetoNoLinhaResponse"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PreRequisicoes/GetUnitCostLinha"
+                   last-response="{{UnitCostLinha}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_GetUnitCostLinha_ajax"
+                   on-response="_GetUnitCostLinhaResponse"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PreRequisicoes/GetProductInfo"
+                   last-response="{{productInfo}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_GetProductLocation_ajax"
+                   on-response="_GetProductLocationResponse"
+                   content-type="application/json"></iron-ajax>
+
+        <!----------------------------------------------------------------->
+        <template is="dom-if" if="{{ !_isCreate }}">
+            <template is="dom-if" if="{{ _permissions.update }}">
+                <div class="subMenu">
+                    <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+
+                    <paper-button class="tablinks" on-tap="_reqmodel"><i class="fa fa-check-square" aria-hidden="true"></i> Copiar Requisição Modelo</paper-button>
+                    <paper-button class="tablinks" on-tap="_pendingreq"><i class="fa fa-check-square" aria-hidden="true"></i>  As minhas requisições</paper-button>
+                    <paper-button class="tablinks" on-tap="_createnewreq"><i class="fa fa-check-square" aria-hidden="true"></i> Criar Requisição</paper-button>
+
+
+                    <template is="dom-if" if="{{ _permissions.create }}">
+                        <template is="dom-if" if="{{ _isCreate }}">
+                            <paper-button id="btnCreate" class="btnSave tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                        </template>
+                        <template is="dom-if" if="{{ !_isCreate }}">
+                            <template is="dom-if" if="{{ _permissions.update }}">
+                                <paper-button id="btnUpdate" class="btnEdit tablinks" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                            </template>
+                            <template is="dom-if" if="{{ _permissions.delete }}">
+                                <paper-button id="btnDelete" class="btnRemove tablinks" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Limpar</paper-button>
+                            </template>
+                        </template>
+                    </template>
+                </div>
+            </template>
+        </template>
+
+        <div class="row break_frm">
+            <div class="col-md-12 col-md-12 col-lg-12">
+                <iron-form id="formPreRequisitions">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
+                                <paper-tab>Geral</paper-tab>
+                                <template is="dom-if" if="{{ !_isCreate }}">
+                                    <paper-tab>Anexos</paper-tab>
+                                </template>
+                            </paper-tabs>
+                            <iron-pages selected="{{selected}}">
+
+                                <!--Geral-->
+                                <div>
+                                    <div class="row break_clear">
+                                        <div class="col-md-3" hidden>
+                                            <vaadin-text-field id="PreRequesitionsNo" name="PreRequesitionsNo" label="Nº Pré-Requisição" value="{{data.preRequesitionsNo}}" disabled></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-3 ">
+                                            <such-selectbox id="requesitionType" name="requesitionType" label="Tipo Requisição" value="{{data.requesitionType}}"
+                                                            on-value-changed="_getRequesitionType"
+                                                            items="[[CBRequesitionType]]"
+                                                            text-path="value"
+                                                            value-path="id"
+                                                            fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Tipo Requisição"}]'>
+                                            </such-selectbox>
+                                        </div>
+
+                                        <div class="col-md-3 ">
+                                            <such-selectbox id="projectNo" value="{{data.projectNo}}" on-value-changed="_setProjectDim" label="Nº Ordem/Projecto"
+                                                            items="[[CBJobNo]]"
+                                                            text-path="no"
+                                                            value-path="no"
+                                                            fields='[{"field":"no", "name":"Nº Projecto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"regionCode", "name":"Cód. Região"}, {"field":"areaCode", "name":"Cód. Área"}, {"field":"centerResponsibilityCode", "name":"Cód. Cresp"}]'
+                                                            disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                                            </such-selectbox>
+                                        </div>
+
+                                        <div class="col-md-3" hidden>
+                                            <vaadin-text-field id="ClaimedRequesitionNo" name="ClaimedRequesitionNo" label="Nº Requisição Reclamada" value="{{data.claimedRequesitionNo}}"></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-3" id="VehicleDiv" hidden>
+                                            <such-selectbox id="Vehicle" name="Vehicle" label="Viatura" value="{{data.vehicle}}"
+                                                            on-value-changed="_GetNoProjetoCabecalho"
+                                                            items="[[CBVehicle]]"
+                                                            text-path="id"
+                                                            value-path="id"
+                                                            fields='[{"field":"id", "name":"Matrícula"}]'>
+                                            </such-selectbox>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <vaadin-date-picker label="Data Receção" id="dpReceptionDate" name="dpReceptionDate" value="{{data.receptionDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                        </div>
+                                    </div>
+
+                                    <div class="row break_clear">
+                                        <div class="col-md-3 ">
+                                            <such-selectbox id="RegionCode" name="RegionCode" value="{{data.regionCode}}" label="Cód. Região" disabled required error-message="Este campo é obrigatório"
+                                                            items="[[LProjectRegionCodes]]"
+                                                            text-path="value"
+                                                            value-path="id"
+                                                            fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                                            </such-selectbox>
+                                        </div>
+
+                                        <div class="col-md-3 ">
+                                            <such-selectbox id="FunctionalAreaCode" name="FunctionalAreaCode" value="{{data.functionalAreaCode}}" label="Cód. Área Funcional" disabled required error-message="Este campo é obrigatório" on-value-changed="_PopulatePurchaseLines" onchange="_PopulatePurchaseLines"
+                                                            items="[[LProjectFunctionalAreaCodes]]"
+                                                            text-path="value"
+                                                            value-path="id"
+                                                            fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                                            </such-selectbox>
+                                        </div>
+
+                                        <div class="col-md-3 ">
+                                            <such-selectbox id="ResponsabilityCenterCode" name="ResponsabilityCenterCode" value="{{data.responsabilityCenterCode}}" label="Cód. Centro Responsabilidade" disabled required error-message="Este campo é obrigatório"
+                                                            items="[[LProjectResponsabilityCenterCodes]]"
+                                                            text-path="id"
+                                                            value-path="id"
+                                                            fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                                            </such-selectbox>
+                                        </div>
+                                    </div>
+
+                                    <div class="row break_clear">
+                                        <div class="col-md-6">
+                                            <such-textarea rows="5" value="{{data.notes}}" id="Notes" name="Notes" label="Notas" disabled="{{ !_permissions.update }}"> </such-textarea>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                        </div>
+                                    </div>
+
+                                    <div class="row break_clear" hidden>
+                                        <div class="col-md-3 " hidden>
+                                            <vaadin-text-field id="_CBPurchaseHeader" name="_CBPurchaseHeader" label="" value="{{data.Nº Linha Encomenda }}" disabled></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="EmployeeNo" name="EmployeeNo" label="Nº Funcionário" value="{{data.employeeNo}}" hidden></vaadin-text-field>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--Anexos-->
+                                <div>
+                                    <div class="row break_clear">
+                                        <vaadin-upload id="UploadRequest"
+                                                       target="/PreRequisicoes/FileUpload/{{_prerequesitionno}}/{{_lineno}}"
+                                                       method="POST"
+                                                       accept="application/pdf, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.template, image/jpeg, image/png, image/gif"
+                                                       headers="{'Accept': 'application/json'}"
+                                                       hidden="{{ !_permissions.update }}"
+                                                       timeout=15000>
+                                        </vaadin-upload>
+                                    </div>
+
+                                    <div class="row break_clear">
+                                        <vaadin-grid aria-label="ReqUpdateGrid" items="[[uploads]]" class="grid" multi-sort="true">
+                                            <vaadin-grid-column width="70%" resizable>
+                                                <template class="header">
+                                                    <vaadin-grid-sorter path="url">Anexo</vaadin-grid-sorter>
+                                                    <vaadin-grid-filter path="url" />
+                                                </template>
+                                                <template>
+                                                    <a href="/PreRequisicoes/DownloadFile/{{item.url}}" target="_blank">{{item.url}}</a>
+                                                </template>
+                                            </vaadin-grid-column>
+
+                                            <vaadin-grid-column width="20%" resizable>
+                                                <template class="header">
+                                                    <vaadin-grid-sorter path="createDateTime">Anexado em</vaadin-grid-sorter>
+                                                    <vaadin-grid-filter path="createDateTime" />
+                                                </template>
+                                                <template>
+                                                    {{item.createDateTime}}
+                                                </template>
+                                            </vaadin-grid-column>
+
+                                            <vaadin-grid-column width="10%" resizable>
+                                                <template class="header">
+                                                </template>
+                                                <template>
+                                                    <center>
+                                                        <template is="dom-if" if="{{ _permissions.update }}">
+                                                            <center>
+                                                                <paper-button class="btnRemove tableBtn" raised on-tap="_deleteFiles" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                                            </center>
+                                                        </template>
+                                                    </center>
+                                                </template>
+                                            </vaadin-grid-column>
+                                        </vaadin-grid>
+                                    </div>
+                                </div>
+                            </iron-pages>
+                        </div>
+
+                        <paper-collapse-group>
+                            <paper-collapse-item class="panel-heading" header="Linhas" opened>
+                                <div class="row break_clear">
+                                    <div class="col-lg-2" hidden>
+                                        <vaadin-text-field value="{{_CBItemsCDirect}}" id="_CBItemsCDirect" name="_CBItemsCDirect" label="Compra Direta" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                    </div>
+
+                                    <div class="col-sm-2">
+                                        <such-selectbox id="_Products" value="{{_Products}}" label="Cód. Produto"
+                                                        items="[[Products]]"
+                                                        text-path="code"
+                                                        value-path="code"
+                                                        fields='[{"field":"code", "name":"Cód. Produto"}, {"field":"name", "name":"Descrição"}, {"field":"name2", "name":"Descrição 2"}, {"field":"measureUnit", "name":"Unidade de Medida"}, {"field":"itemCategoryCode", "name":"Cód. Categoria"}, {"field":"productGroupCode", "name":"Cód. Grupo"}]'
+                                                        disabled="{{ !_permissions.update }}"
+                                                        on-value-changed="_onProductChanged"
+                                                        on-click="_onProductClick">
+                                        </such-selectbox>
+                                        <vaadin-text-field value="[[_Products]]" id="txtProductCode" label="Código Produto" disabled hidden> </vaadin-text-field>
+                                    </div>
+
+                                    <div class="col-sm-2">
+                                        <such-selectbox id="_CBLocations" value="{{_LocalCode}}" label="Cód. Localização"
+                                                        items="[[CBLocations]]"
+                                                        text-path="id"
+                                                        value-path="id"
+                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Localização"}]'
+                                                        required error-message="Este campo é obrigatório" disabled="{{ !_permissions.update }}">
+                                        </such-selectbox>
+                                        <vaadin-text-field id="txtLocalCode" label="Cód. Localização" disabled hidden> </vaadin-text-field>
+                                    </div>
+
+                                    <div class="col-lg-2">
+                                        <vaadin-text-field value="{{_Description}}" id="_Description" name="_Description" label="Descrição" disabled> </vaadin-text-field>
+                                    </div>
+
+                                    <div class="col-lg-2">
+                                        <vaadin-text-field value="{{_Description2}}" id="_Description2" name="_Description2" label="Descrição 2" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                    </div>
+
+                                    <div class="col-lg-2">
+                                        <such-selectbox id="_UnitMeasureCode" value="{{_UnitMeasureCode}}" label="Código Unid. Medida"
+                                                        items="[[LCBMeasuresUnit]]"
+                                                        text-path="id"
+                                                        value-path="id"
+                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Unidade Medida"}]'
+                                                        disabled="{{ !_permissions.update }}">
+                                        </such-selectbox>
+                                    </div>
+                                </div>
+
+                                <div class="row break_clear">
+                                    <div class="col-lg-2">
+                                        <vaadin-text-field value="{{_QuantityToRequire}}" on-value-changed="_onChangeQuantity" id="_QuantityToRequire" name="_QuantityToRequire" label="Qt. a Requerer" required error-message="Este campo é obrigatório, tem que ser superior a 0 e só pode ter 4 casas decimais" disabled="{{ !_permissions.update }}" pattern="\d+(\.\d{1,4})?"> </vaadin-text-field>
+                                    </div>
+
+                                    <div class="col-lg-2">
+                                        <vaadin-text-field value="{{_UnitCost}}" id="_UnitCost" name="_UnitCost" label="Custo Unitário" disabled="{{ !_permissions.update }}" type="number" pattern="^[1-9]\d*(\.\d+)?$" on-value-changed="_ConvertDecimals">
+                                            <div slot="suffix">€</div>
+                                        </vaadin-text-field>
+                                    </div>
+
+                                    <div class="col-sm-2">
+                                        <such-selectbox id="_ProjectNo" value="[[data.projectNo]]" label="Nº Ordem/Projecto" on-value-changed="_setProjectDim2"
+                                                        items="[[CBJobNo]]"
+                                                        text-path="no"
+                                                        value-path="no"
+                                                        fields='[{"field":"no", "name":"Nº Projecto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"regionCode", "name":"Cód. Região"}, {"field":"areaCode", "name":"Cód. Área"}, {"field":"centerResponsibilityCode", "name":"Cód. Cresp"}]'
+                                                        disabled="{{ !_permissions.update }}">
+                                        </such-selectbox>
+                                    </div>
+
+                                    <div class="col-lg-2">
+                                        <such-selectbox id="_VehicleLines" on-value-changed="_GetNoProjetoLinha" label="Viatura"
+                                                        items="[[CBVehicle]]"
+                                                        text-path="id"
+                                                        value-path="id"
+                                                        fields='[{"field":"id", "name":"Matrícula"}]'
+                                                        disabled="{{ !_permissions.update }}">
+                                        </such-selectbox>
+                                    </div>
+
+                                    <div class="col-sm-2">
+                                        <such-selectbox id="_CBVendor" value="{{_CBVendor}}" label="Nº Fornecedor"
+                                                        items="[[CBVendor]]"
+                                                        text-path="name"
+                                                        value-path="no_"
+                                                        fields='[{"field":"no_", "name":"Nº Fornecedor"}, {"field":"name", "name":"Nome"}, {"field":"vatRegistrationNo", "name":"Nº VAT"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Código Postal"}]'
+                                                        disabled="{{ !_permissions.update }}">
+                                        </such-selectbox>
+                                    </div>
+                                </div>
+
+                                <div class="row break_clear">
+                                    <div class="col-lg-2">
+                                        <such-selectbox id="_CLRegion" value="[[data.regionCode]]" label="Cód. Região"
+                                                        items="[[LProjectRegionCodes]]"
+                                                        text-path="value"
+                                                        value-path="id"
+                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Região"}]'
+                                                        disabled>
+                                        </such-selectbox>
+                                    </div>
+
+                                    <div class="col-lg-2">
+                                        <such-selectbox id="_CLFunctionalAreaCode" value="[[data.functionalAreaCode]]" label="Cód. Área Funcional"
+                                                        items="[[LProjectFunctionalAreaCodes]]"
+                                                        text-path="value"
+                                                        value-path="id"
+                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Área Funcional"}]'
+                                                        disabled>
+                                        </such-selectbox>
+                                    </div>
+
+                                    <div class="col-lg-2">
+                                        <such-selectbox id="_CLResponsabilityCenterCode" value="[[data.responsabilityCenterCode]]" label="Cód. Centro Responsabilidade"
+                                                        items="[[LProjectResponsabilityCenterCodes]]"
+                                                        on-change="_RespChange"
+                                                        text-path="id"
+                                                        value-path="id"
+                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Centro Responsabilidade"}]'
+                                                        disabled>
+                                        </such-selectbox>
+                                    </div>
+
+                                    <div class="col-lg-2">
+                                        <template is="dom-if" if="{{ _permissions.create }}">
+                                            <paper-button raised id="btnPreReqLine" class="btnSave" on-tap="_createPreReqLine"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                        </template>
+                                    </div>
+                                </div>
+                            </paper-collapse-item>
+
+                            <div>
+                                <vaadin-grid aria-label="PreReqLines" id="grid_prereqlines" name="grid_prereqlines" items="[[dataLines.lines]]" class="grid" multi-sort="true" active-item="{{_SelectedLine}}">
+                                    <vaadin-grid-column width="3%" resizable>
+                                        <template class="header">
+                                        </template>
+                                        <template>
+                                            <template is="dom-if" if="{{ _permissions.update }}">
+                                                <center style="padding-bottom:10px">
+                                                    <paper-button class="btnSave tableBtn" raised on-tap="_duplicarContractLine" title="Duplicar Linha"><i class="fa fa-copy" aria-hidden="true"></i></paper-button>
+                                                </center>
+                                            </template>
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="150px" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="code">Cód. Produto</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="code"></vaadin-grid-filter>
+                                        </template>
+                                        <template>
+                                            <template is="dom-if" if="{{ item.selected }}">
+                                                <such-selectbox id="_CLGridSupplierProductCode" value="{{item.code}}"
+                                                                items="[[Products]]"
+                                                                on-change="_onProductInGridChanged"
+                                                                text-path="code"
+                                                                value-path="code"
+                                                                fields='[{"field":"code", "name":"Código"}, {"field":"name", "name":"Produto"}]'
+                                                                disabled="{{ _setDisabled(item) }}">
+                                                </such-selectbox>
+                                            </template>
+                                            <template is="dom-if" if="{{ !item.selected }}">
+                                                {{item.code}}
+                                            </template>
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="150px" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="localCode">Código Localização</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="localCode" />
+                                        </template>
+                                        <template>
+                                            <template is="dom-if" if="{{ item.selected }}">
+                                                <such-selectbox id="_CBLocalizations" value="{{item.localCode}}"
+                                                                items="[[CBLocations]]"
+                                                                on-change="_updateLinhaPreRequisicao"
+                                                                text-path="id"
+                                                                value-path="id"
+                                                                fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Localização"}]'
+                                                                required disabled="{{ _setDisabled(item) }}">
+                                                </such-selectbox>
+                                            </template>
+                                            <template is="dom-if" if="{{ !item.selected }}">
+                                                [[item.localCode]]
+                                            </template>
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="250px" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="description" />
+                                        </template>
+                                        <template>
+                                            <template is="dom-if" if="{{ item.selected }}">
+                                                <vaadin-text-field value="{{item.description}}" id="_CLGridDescription" name="_CLGridDescription" disabled> </vaadin-text-field>
+                                            </template>
+                                            <template is="dom-if" if="{{ !item.selected }}" disabled>
+                                                {{item.description}}
+                                            </template>
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="250px" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="description2">Descrição 2</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="description2" />
+                                        </template>
+                                        <template>
+                                            <template is="dom-if" if="{{ item.selected }}">
+                                                <vaadin-text-field value="{{item.description2}}" id="_CLGridDescription2" name="_CLGridDescription2" disabled="{{ !_permissions.update }}" on-blur="_updateLinhaPreRequisicao"> </vaadin-text-field>
+                                            </template>
+                                            <template is="dom-if" if="{{ !item.selected }}">
+                                                {{item.description2}}
+                                            </template>
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="150px" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="unitMeasureCode">Cód. Unid. Medida</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="unitMeasureCode" />
+                                        </template>
+                                        <template>
+                                            <template is="dom-if" if="{{ item.selected }}">
+                                                <such-selectbox id="_CLGridUnitMeasureCode" value="{{item.unitMeasureCode}}"
+                                                                items="[[LCBMeasuresUnit]]"
+                                                                on-change="_updateLinhaPreRequisicao"
+                                                                text-path="id"
+                                                                value-path="id"
+                                                                fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Unidade Medida"}]'
+                                                                disabled="{{ !_permissions.update }}">
+                                                </such-selectbox>
+                                            </template>
+                                            <template is="dom-if" if="{{ !item.selected }}">
+                                                {{item.unitMeasureCode}}
+                                            </template>
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="150px" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="quantityToRequire">Qt. a Requerer</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="quantityToRequire" />
+                                        </template>
+                                        <template>
+                                            <template is="dom-if" if="{{ item.selected }}">
+                                                <vaadin-text-field value="{{item.quantityToRequire}}" id="_CLGridQuantityToRequire" name="_CLGridQuantityToRequire" onchange="_CalculateTotalCostLine" disabled="{{ !_permissions.update }}" type="number" pattern="^[1-9]\d*(\.\d+)?$" on-blur="_updateLinhaPreRequisicao"> </vaadin-text-field>
+                                            </template>
+                                            <template is="dom-if" if="{{ !item.selected }}">
+                                                {{item.quantityToRequire}}
+                                            </template>
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="150px" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="unitCost">Custo Unitário</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="unitCost" />
+                                        </template>
+                                        <template>
+                                            <template is="dom-if" if="{{ item.selected }}">
+                                                <vaadin-text-field value="{{item.unitCost}}" id="_CLGridUnitCost" name="_CLGridUnitCost" disabled="{{ _setDisabled(item) }}" type="number" pattern="^[1-9]\d*(\.\d+)?$" onchange="_CalculateTotalCostLine" on-blur="_updateLinhaPreRequisicao">
+                                                    <div slot="suffix">€</div>
+                                                </vaadin-text-field>
+                                            </template>
+                                            <template is="dom-if" if="{{ !item.selected }}">
+                                                {{item.unitCost}} €
+                                            </template>
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="150px" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="totalCost">Custo Total</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="totalCost" />
+                                        </template>
+                                        <template>
+                                            <template is="dom-if" if="{{ item.selected }}">
+                                                <vaadin-text-field value="{{item.totalCost}}" id="_CLGridTotalCost" name="_CLGridTotalCost" disabled>
+                                                    <div slot="suffix">€</div>
+                                                </vaadin-text-field>
+                                            </template>
+                                            <template is="dom-if" if="{{ !item.selected }}">
+                                                {{item.totalCost}} €
+                                            </template>
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="150px" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="projectNo">Nº Ordem/Projeto</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="projectNo" />
+                                        </template>
+                                        <template>
+                                            <template is="dom-if" if="{{ item.selected }}">
+                                                <such-selectbox value="{{item.projectNo}}"
+                                                                on-change="_updateLinhaPreRequisicao"
+                                                                label=""
+                                                                items="[[CBJobNo]]"
+                                                                text-path="no"
+                                                                value-path="no"
+                                                                fields='[{"field":"no", "name":"Nº Projecto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"regionCode", "name":"Cód. Região"}, {"field":"areaCode", "name":"Cód. Área"}, {"field":"centerResponsibilityCode", "name":"Cód. Cresp"}]'
+                                                                disabled="{{ !_permissions.update }}">
+                                                </such-selectbox>
+                                            </template>
+                                            <template is="dom-if" if="{{ !item.selected }}">
+                                                {{item.projectNo}}
+                                            </template>
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="150px" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="vehicle">Viatura</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="vehicle" />
+                                        </template>
+                                        <template>
+                                            <template is="dom-if" if="{{ item.selected }}">
+                                                <such-selectbox id="_CLGridVehicle" value="{{item.vehicle}}"
+                                                                items="[[CBVehicle]]"
+                                                                on-change="_updateLinhaPreRequisicao"
+                                                                text-path="id"
+                                                                value-path="id"
+                                                                fields='[{"field":"id", "name":"Matrícula"}]'
+                                                                disabled="{{ !_permissions.update }}">
+                                                </such-selectbox>
+                                            </template>
+                                            <template is="dom-if" if="{{ !item.selected }}">
+                                                [[ _clFormatvehicle(item.vehicle) ]]
+                                            </template>
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="250px" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="supplierNo">Nº Fornecedor</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="supplierNo" />
+                                        </template>
+                                        <template>
+                                            <template is="dom-if" if="{{ item.selected }}">
+                                                <such-selectbox value="{{item.supplierNo}}"
+                                                                label=""
+                                                                items="[[CBVendor]]"
+                                                                text-path="name"
+                                                                value-path="no_"
+                                                                fields='[{"field":"no_", "name":"Nº Fornecedor"}, {"field":"name", "name":"Nome"}, {"field":"vatRegistrationNo", "name":"Nº VAT"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Código Postal"}]'
+                                                                disabled="{{ !_permissions.update }}"
+                                                                on-change="_updateLinhaPreRequisicao">
+                                                </such-selectbox>
+                                            </template>
+                                            <template is="dom-if" if="{{ !item.selected }}">
+                                                [[ _clFormatsupplierNo(item.supplierNo) ]]
+                                            </template>
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="150px" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="regionCode">Cód. Região</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="regionCode" />
+                                        </template>
+                                        <template>
+                                            <template is="dom-if" if="{{ item.selected }}">
+                                                <such-selectbox id="_CLGridRegion" value="{{item.regionCode}}"
+                                                                items="[[LProjectRegionCodes]]"
+                                                                on-change="_updateLinhaPreRequisicao"
+                                                                text-path="value"
+                                                                value-path="id"
+                                                                fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Região"}]'
+                                                                disabled>
+                                                </such-selectbox>
+                                            </template>
+                                            <template is="dom-if" if="{{ !item.selected }}">
+                                                [[ _clFormatRegion(item.regionCode) ]]
+                                            </template>
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="250px" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="functionalAreaCode">Cód. Área Funcional</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="functionalAreaCode" />
+                                        </template>
+                                        <template>
+                                            <template is="dom-if" if="{{ item.selected }}">
+                                                <such-selectbox id="_CLGridFunctionalArea" value="{{item.functionalAreaCode}}"
+                                                                items="[[LProjectFunctionalAreaCodes]]"
+                                                                on-change="_updateLinhaPreRequisicao"
+                                                                text-path="value"
+                                                                value-path="id"
+                                                                fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Área Funcional"}]'
+                                                                disabled>
+                                                </such-selectbox>
+                                            </template>
+                                            <template is="dom-if" if="{{ !item.selected }}">
+                                                [[ _clFormatFunctionalArea(item.functionalAreaCode) ]]
+                                            </template>
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="250px" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="centerResponsibilityCode">Cód. Centro Responsabilidade</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="centerResponsibilityCode" />
+                                        </template>
+                                        <template>
+                                            <template is="dom-if" if="{{ item.selected }}">
+                                                <such-selectbox id="_CLGridResponsabilityCenter" value="{{item.centerResponsibilityCode}}"
+                                                                items="[[LProjectResponsabilityCenterCodes]]"
+                                                                on-change="_updateLinhaPreRequisicao"
+                                                                text-path="id"
+                                                                value-path="id"
+                                                                fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Centro Responsabilidade"}]'
+                                                                disabled>
+                                                </such-selectbox>
+                                            </template>
+                                            <template is="dom-if" if="{{ !item.selected }}">
+                                                {{item.centerResponsibilityCode}}
+                                            </template>
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="50px">
+                                        <template class="header">
+                                        </template>
+                                        <template>
+                                            <center>
+                                                <template is="dom-if" if="{{ _permissions.update }}">
+                                                    <center>
+                                                        <paper-button class="btnRemove tableBtn" raised on-tap="_deleteContractLine" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                                    </center>
+                                                </template>
+                                            </center>
+                                        </template>
+                                    </vaadin-grid-column>
+                                </vaadin-grid>
+                            </div>
+
+                            <div class="marginSpace">
+                                <paper-button raised id="btnSumLines" class="btnSave" on-tap="_sumLines"><i class="fa fa-calculator" aria-hidden="true"></i>&nbsp; Total</paper-button>
+                            </div>
+                        </paper-collapse-group>
+                    </div>
+                </iron-form>
+            </div>
+        </div>
+
+        <!-- Paper Dialog Movimentos de Projeto-->
+        <paper-dialog id="dialog" class="dialgoBox">
+            <h2>Modelos Requisição</h2>
+            <vaadin-grid aria-label="ReqModelGrid" items="[[result]]" class="grid" multi-sort="true">
+                <vaadin-grid-column width="120px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="requisitionNo">Nº Requisição Modelo</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="requisitionNo" />
+                    </template>
+                    <template>
+                        {{item.requisitionNo}}
+                    </template>
+                </vaadin-grid-column>
+
+                <vaadin-grid-column width="110px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="requisitionDate">Data Requisição</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="requisitionDate" />
+                    </template>
+                    <template>
+                        {{item.requisitionDate}}
+                    </template>
+                </vaadin-grid-column>
+
+                <vaadin-grid-column width="110px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="comments">Comentários</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="comments" />
+                    </template>
+                    <template>
+                        {{item.comments}}
+                    </template>
+                </vaadin-grid-column>
+
+                <vaadin-grid-column width="110px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="regionCode">Cód. Região</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="regionCode" />
+                    </template>
+                    <template>
+                        [[ _clFormatRegion(item.regionCode) ]]
+                    </template>
+                </vaadin-grid-column>
+
+                <vaadin-grid-column width="160px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="functionalAreaCode">Cód. Área Funcional</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="functionalAreaCode" />
+                    </template>
+                    <template>
+                        [[ _clFormatFunctionalArea(item.functionalAreaCode) ]]
+                    </template>
+                </vaadin-grid-column>
+
+                <vaadin-grid-column width="150px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="responsabilityCenterCode">Cód. Centro Responsabilidade</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="responsabilityCenterCode" />
+                    </template>
+                    <template>
+                        {{item.centerResponsibilityCode}}
+                    </template>
+                </vaadin-grid-column>
+
+                <vaadin-grid-column width="110px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="createDate">Criado em</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="createDate" />
+                    </template>
+                    <template>
+                        {{item.createDate}}
+                    </template>
+                </vaadin-grid-column>
+
+                <vaadin-grid-column width="10%" resizable>
+                    <template class="header">
+                    </template>
+                    <template>
+                        <center>
+                            <paper-button class="btnSave" raised on-tap="_SaveLines" disabled="{{_permissionsCreate}}">Copiar Linhas</paper-button>
+                        </center>
+                    </template>
+                </vaadin-grid-column>
+            </vaadin-grid>
+            <div class="buttons">
+                <paper-button class="btnRemove" dialog-dismiss>Cancelar</paper-button>
+            </div>
+        </paper-dialog>
+
+        <!-- Paper Dialog Total Linhas-->
+        <paper-dialog id="dialogTotal" style="height:120px; width:300px">
+            <div>
+                <h2>Valor Total: <b>{{_TotalLine}} €</b></h2>
+            </div>
+            <div class="buttons">
+                <paper-button raised class="btnEdit" dialog-dismiss>Fechar</paper-button>
+            </div>
+        </paper-dialog>
+
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+    </template>
+
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-prerequisitions',
+                properties: {
+                    selected: {
+                        type: Number,
+                        value: 0
+                    },
+                    _permissions: {
+                        type: Array
+                    },
+                    _prerequesitionno: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    _isCreate: {
+                        type: Boolean,
+                        value: true
+                    },
+                    _SelectedLine: {
+                        observer: '_lineSelected'
+                    },
+                    _areaid: {
+                        type: Number,
+                        value: 0
+                    },
+
+                    _LocalCode: {
+                        type: String,
+                        notify: true,
+                        value: "",
+                    },
+                    _filledFromPurch: {
+                        type: Boolean,
+                        notify: true,
+                        value: false,
+                    },
+                    projectNo: {
+                        observer: '_setProjectDim'
+                    },
+                    _CLResponsabilityCenterCode: {
+                        type: String,
+                        notify: true,
+                        observer: '_set_CLResponsabilityCenterCode_PurchaseHeader'
+                    },
+
+                    _TotalLine: {
+                        type: Number,
+                        value: 0
+                    },
+
+                    _showPreReqLines: {
+                        type: String,
+                        notify: true,
+                        value: "none"
+                    },
+                    _showPreReqLinesForm: {
+                        type: String,
+                        notify: true,
+                        value: "none"
+                    },
+                    _lineno: {
+                        type: Number,
+                        value: 0
+                    },
+                    _uploadurl: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    }
+                },
+                observers: [
+                    '_onCacheLoaded(data, CBPurchaseLineGrid, CBRequesitionType, LProjectFunctionalAreaCodes, LProjectResponsabilityCenterCodes, LProjectRegionCodes, CBVehicle, CBJobNo, CBVendor, CBLocal, CBLocations, CBPurchaseHeader, CBPurchaseLine, Products)'
+                ],
+                ready: function () {
+                    this._isCreate = false;
+                    this.$.page_createnewForUser_ajax.body = JSON.stringify({ "areaid": this._areaid });
+                    this.$.page_createnewForUser_ajax.generateRequest();
+
+
+                    if (this._isCreate == false && this.$.UploadRequest != null) {
+                        this.$.UploadRequest.addEventListener('upload-response', function (e) {
+                            if (e.detail.xhr.status == 200) {
+                                e.detail.xhr.requestURL;
+                                var dd = document.querySelector("x-prerequisitions");
+                                dd.$.page_update_ajax.generateRequest();
+                            }
+                        });
+                    }
+
+                    if (this._isCreate == false) {
+                        this.$.page_update_ajax.body = JSON.stringify({ "id": this._prerequesitionno });
+                        this.$.page_update_ajax.generateRequest();
+                    }
+                },
+
+                _onCacheLoaded: function (data, CBPurchaseLineGrid, CBRequesitionType, LProjectFunctionalAreaCodes, LProjectResponsabilityCenterCodes, LProjectRegionCodes, CBVehicle, CBJobNo, CBVendor, CBLocal, CBLocations, CBPurchaseHeader, CBPurchaseLine, Products) {
+
+                    if (!this.Flag) {
+                        this.$.page_databound_ajax.body = JSON.stringify({ "PreRequesitionsNo": this._prerequesitionno });
+                        this.$.page_databound_ajax.generateRequest();
+                    }
+                    this.Flag = true;
+                },
+
+                _setDisabled: function (e) {
+                    if (!this._permissions.update)
+                        return false;
+                    else if (e != null) {
+                        if (e.openOrderLineNo !== null && e.openOrderLineNo !== "" && e.openOrderLineNo !== undefined)
+                            return true;
+                    }
+                    return false;
+                },
+                _getRequesitionType: function (e) {
+                    var _self = this;
+
+                    var requesitionType = e.detail.value;
+                    var locationId = _self.$._CBLocations.value;
+
+                    if (requesitionType == 'FROTA') {
+                        _self.$.projectNo.disabled = true;
+                        _self.$._ProjectNo.disabled = true;
+                        _self.$.grid_prereqlines.__data._columnTree[0][1].__data.frozen = true;
+                    }
+                    else {
+                        _self.$.projectNo.disabled = false;
+                        _self.$._ProjectNo.disabled = false;
+                    }
+
+                    this.$.filteredProducts_ajax.body = JSON.stringify({ "rootAreaId": this._areaid, "requisitionType": requesitionType });
+                    this.$.filteredProducts_ajax.generateRequest();
+                },
+
+                _getCDirect: function (e) {
+                    var requesitionType = this.$.requesitionType.value;
+                    var locationId = e.detail.value;
+
+                    this.$.filteredProducts_ajax.body = JSON.stringify({ "rootAreaId": this._areaid, "requisitionType": requesitionType });
+                    this.$.filteredProducts_ajax.generateRequest();
+                    if (this.CBLocations != null) {
+                        var whareHouse = this.CBLocations.find(x => x.id == locationId);
+                        if (whareHouse != null) {
+                            this._CBItemsCDirect = whareHouse.extra;
+                        }
+                    }
+                },
+
+                _setProjectDim: function (e) {
+                    var projectNo = this.$.projectNo.value;
+                    if (projectNo != "") {
+                        this.$.page_getProject_ajax.body = JSON.stringify(projectNo);
+                        this.$.page_getProject_ajax.generateRequest();
+                    }
+                    else {
+                        this.$._CLRegion.value = "";
+                        this.$._CLRegion.valueText = "";
+                        this.$.RegionCode.value = "";
+                        this.$.RegionCode.valueText = "";
+
+                        this.$._CLFunctionalAreaCode.value = "";
+                        this.$._CLFunctionalAreaCode.valueText = "";
+                        this.$.FunctionalAreaCode.value = "";
+                        this.$.FunctionalAreaCode.valueText = "";
+
+                        this.$._CLResponsabilityCenterCode.value = "";
+                        this.$._CLResponsabilityCenterCode.valueText = "";
+                        this.$.ResponsabilityCenterCode.value = "";
+                        this.$.ResponsabilityCenterCode.valueText = "";
+                    }
+                },
+
+                _setProjectDim2: function (e) {
+                    var projectNo = this.$._ProjectNo.value;
+                    this.$.page_getProject2_ajax.body = JSON.stringify(projectNo);
+                    this.$.page_getProject2_ajax.generateRequest();
+                },
+                _setNewLineFormControl(showAsPurchaseForm) {
+                    if (showAsPurchaseForm) {
+                        this.$.txtLocalCode.hidden = false;
+                        this.$._CBLocations.hidden = true;
+                        this.$.txtProductCode.hidden = false;
+                        this.$._Products.hidden = true;
+                        this._filledFromPurch = true;
+                    }
+                    else {
+                        this.$.txtLocalCode.value = "";
+                        this.$.txtProductCode.value = "";
+                        this.$.txtLocalCode.hidden = true;
+                        this.$._CBLocations.hidden = false;
+                        this.$.txtProductCode.hidden = true;
+                        this.$._Products.hidden = false;
+                        if (this.$._Products != null)
+                            this.$._Products._clearSelection();
+                        this._filledFromPurch = false;
+                    }
+
+                },
+                _setPurchaseLine: function (e) {
+                    if (e.detail.value !== "") {
+                        var composedKey = e.detail.value.split(" ", 2);
+                        var purchHeaderNo = composedKey[0];
+                        var purchLineNo = composedKey[1];
+
+                        var proj = this.CBPurchaseLine.find(x => x.line_No == purchLineNo && x.documentNO == purchHeaderNo);
+                        if (proj != null) {
+                            this._setNewLineFormControl(true);
+                            this.$.txtLocalCode.value = proj.locationCode;
+                            this._CBItemsCDirect = proj.directPurchLocation ? "1" : "0";
+                            this.$._Description.value = proj.description;
+                            this.$._UnitMeasureCode.value = proj.unitofMeasureCode;
+                            this.$._UnitCost.value = proj.unitCost;
+                            this._QuantityToOpen = proj.availableQuantity;
+                            this._CBVendor = proj.buyFromVendorNo;
+                            this.$._CBPurchaseHeader.value = proj.documentNO;
+                            this._Products = proj.numb;
+                            this._UnitCost = proj.unitCost;
+                        }
+                        else {
+                            this.openToastError("Não foi possivel obter os dados da encomenda.");
+                        }
+                    }
+                    else {
+                        this._setNewLineFormControl(false);
+                    }
+                    this.$._UnitCost.disabled = e.detail.value !== "";
+                },
+                _onChangeQuantity: function (e) {
+                    if (e != undefined) {
+
+                        var stringVal = "" + e.detail.value;
+                        e.detail.value = stringVal.replace(",", ".");
+                        this.$._QuantityToRequire.value = e.detail.value
+
+                        if (this._QuantityToOpen != "") {
+                            if (parseInt(this._QuantityToOpen) < parseInt(e.detail.value)) {
+                                this._QuantityToRequire = 0;
+                                this.$._QuantityToRequire.value = 0;
+                                this._openToastError("A quantidade a requerer é maior do que a disponivel!");
+                            }
+                        }
+                    }
+                },
+                _getProjectDimsResponse: function (e) {
+                    if (e.detail.status === 200) {
+                        this.$.page_GetRegionCode_ajax.generateRequest();
+                        this.$.page_GetResponsabilityCenterCode_ajax.generateRequest();
+                        this.$.page_GetFunctionalAreaCode_ajax.generateRequest();
+
+                        if (this.ProjectDims.regionCode != "") {
+                            this.$._CLRegion.value = this.ProjectDims.regionCode;
+
+                            this.$.RegionCode.value = this.ProjectDims.regionCode;
+                        }
+                        else {
+                            this.$._CLRegion.value = "";
+                            this.$._CLRegion.valueText = "";
+
+                            this.$.RegionCode.value = "";
+                            this.$.RegionCode.valueText = "";
+                        }
+
+                        if (this.ProjectDims.functionalAreaCode != "") {
+                            this.$._CLFunctionalAreaCode.value = this.ProjectDims.functionalAreaCode;
+
+                            this.$.FunctionalAreaCode.value = this.ProjectDims.functionalAreaCode;
+                            this._PopulatePurchaseLines();
+                        }
+                        else {
+                            this.$._CLFunctionalAreaCode.value = "";
+                            this.$._CLFunctionalAreaCode.valueText = "";
+
+                            this.$.FunctionalAreaCode.value = "";
+                            this.$.FunctionalAreaCode.valueText = "";
+                        }
+
+                        if (this.ProjectDims.responsabilityCenterCode != "") {
+                            this.$._CLResponsabilityCenterCode.value = this.ProjectDims.responsabilityCenterCode;
+
+                            this.$.ResponsabilityCenterCode.value = this.ProjectDims.responsabilityCenterCode;
+                        }
+                        else {
+                            this.$._CLResponsabilityCenterCode.value = "";
+                            this.$._CLResponsabilityCenterCode.valueText = "";
+
+                            this.$.ResponsabilityCenterCode.value = "";
+                            this.$.ResponsabilityCenterCode.valueText = "";
+                        }
+
+                        this.data.contractType = 3;
+                        this.$.page_databoundNoMessage_ajax.url = "/PreRequisicoes/UpdatePreRequesition";
+                        this.$.page_databoundNoMessage_ajax.body = JSON.stringify(this.data);
+                        this.$.page_databoundNoMessage_ajax.generateRequest();
+                    }
+                },
+
+                _getProjectDimsResponse2: function (e) {
+                    if (e.detail.status === 200) {
+                        if (this.ProjectDims2 != null || this.ProjectDims2 != undefined) {
+                            this.$.page_GetRegionCode_ajax.generateRequest();
+                            this.$.page_GetResponsabilityCenterCode_ajax.generateRequest();
+                            this.$.page_GetFunctionalAreaCode_ajax.generateRequest();
+
+                            if (this.ProjectDims2.regionCode != "") {
+                                this.$._CLRegion.value = this.ProjectDims2.regionCode;
+                            }
+
+                            if (this.ProjectDims2.functionalAreaCode != "") {
+                                this.$._CLFunctionalAreaCode.value = this.ProjectDims2.functionalAreaCode;
+                            }
+
+                            if (this.ProjectDims2.responsabilityCenterCode != "") {
+                                this.$._CLResponsabilityCenterCode.value = this.ProjectDims2.responsabilityCenterCode;
+                            }
+                        }
+                    }
+                },
+
+                _deleteFiles: function (e) {
+                    var index = this.dataLines.lines.indexOf(e.model.item);
+                    this.dataLines.lines.splice(index, 1);
+
+                    this.$.delete_files_ajax.body = JSON.stringify(e.model.item);
+                    this.$.delete_files_ajax.generateRequest();
+                },
+
+                _deletedAttachResponse: function (e) {
+                    if (this.deleted_files.eReasonCode === 1) {
+                        this._openToast("Anexo eliminado com sucesso.");
+
+                        this.$.page_update_ajax.body = JSON.stringify({ "id": this._prerequesitionno });
+                        this.$.page_update_ajax.generateRequest();
+
+                    } else if (this.deleted_files.eReasonCode === 2) {
+                        this._openToastError("Ocorreu um erro ao eliminar o anexo.");
+                    }
+                },
+
+                _loadAttachResponse: function (e) {
+                    this.$.page_databound_ajax.body = JSON.stringify({ "PreRequesitionsNo": this._prerequesitionno });
+                    this.$.page_databound_ajax.generateRequest();
+                },
+
+                _onSearchTermChanged: function (value) {
+                    var id = this.$.requesitionType.value;
+                    if (id != "" && id.length > 0) {
+                        this.$.ajax_cbReqType.body = JSON.stringify(id);
+                        this.$.ajax_cbReqType.generateRequest();
+
+                        this._loadProductsByAreaAndType(id);
+
+                    }
+                },
+                _responseVehicleFleetBool: function (data) {
+                    var self = this;
+                    if (data.detail.status === 200) {
+
+                        var BoolFleet = this.BooleanVehicleFleet;
+                        if (BoolFleet == true) {
+                            this.$.VehicleDiv.hidden = false;
+                        } else {
+                            this.$.VehicleDiv.hidden = true;
+                        }
+                    }
+                },
+
+                _onSearchLocalDataCollection: function (e) {
+                    var placeId = this.$.CollectionLocal.value;
+                    if (placeId != "" && placeId > 0) {
+                        this.$.ajax_getPlaceData.body = JSON.stringify(placeId);
+                        this.$.ajax_getPlaceData.generateRequest();
+                    }
+                },
+
+                _responsePlaceDataCollection: function (e) {
+                    if (e.detail.status === 200) {
+                        this.$.CollectionAddress.value = this.PlaceDataCollection.address;
+                        this.$.CollectionPostalCode.value = this.PlaceDataCollection.postalcode;
+                        this.$.CollectionLocality.value = this.PlaceDataCollection.locality;
+                        this.$.CollectionContact.value = this.PlaceDataCollection.contact;
+                        this.$.CollectionReceptionResponsible.value = this.PlaceDataCollection.responsiblerecept;
+
+                    }
+                },
+
+                _onSearchLocalDataDelivery: function (e) {
+                    var placeId = this.$.DeliveryLocal.value;
+                    if (placeId != "" && placeId > 0) {
+                        this.$.ajax_getPlaceDataDelivery.body = JSON.stringify(placeId);
+                        this.$.ajax_getPlaceDataDelivery.generateRequest();
+                    }
+                },
+
+                _responsePlaceDataDelivery: function (e) {
+                    if (e.detail.status === 200) {
+                        this.$.DeliveryAddress.value = this.PlaceDataDelivery.address;
+                        this.$.DeliveryPostalCode.value = this.PlaceDataDelivery.postalcode;
+                        this.$.DeliveryLocality.value = this.PlaceDataDelivery.locality;
+                        this.$.ReceptionReceptionResponsible.value = this.PlaceDataDelivery.responsiblerecept;
+                    }
+                },
+
+                _reqmodel: function (e) {
+                    if (this.$.projectNo.value != "" & this.$.projectNo.value != null) {
+                        if (e != null) {
+                            this.$.dialog.open();
+                            this.$.grid_datareqmodel_ajax.generateRequest();
+                        }
+                    }
+                    else {
+                        this._openToastError('O campo Nº Ordem/Projecto é de preenchimento obrigatório.');
+                    }
+                },
+
+                _createnewreq: function (e) {
+                    this.data.area = this._areaid;
+                    if (this.$.projectNo.value != "" & this.$.projectNo.value != null) {
+                        this.$.page_validator_req_ajax.body = JSON.stringify(this.data);
+                        this.$.page_validator_req_ajax.generateRequest();
+                    }
+                    else {
+                        this._openToastError('O campo Nº Ordem/Projecto é de preenchimento obrigatório.');
+                    }
+                },
+
+                _create: function () {
+                    this.data.area = this._areaid;
+                    this.$.page_validator_ajax.body = JSON.stringify(this.data);
+                    this.$.page_validator_ajax.generateRequest();
+                },
+
+                _update: function () {
+                    this.data.area = this._areaid;
+                    if (this.$.projectNo.value != "" & this.$.projectNo.value != null) {
+                        this._executeRequest("/PreRequisicoes/UpdatePreRequesition", this.data)
+                    }
+                    else {
+                        this._openToastError('O campo Nº Ordem/Projecto é de preenchimento obrigatório.');
+                    }
+                },
+
+                _delete: function () {
+                    var _dataPreReq = this.data;
+                    var ajax_request = this.$.ajax_delete_prereq;
+                    bootbox.confirm({
+                        message: "Tem a certeza que pretende limpar a pré-requisição?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            if (result) {
+                                ajax_request.body = JSON.stringify(_dataPreReq);
+                                ajax_request.generateRequest();
+                            }
+                        }
+                    });
+                },
+
+                _responseValidatorProcessor: function (data) {
+                    var self = this;
+                    if (data.detail.status === 200) {
+                        if (this.validateResponse == "") {
+                            if (this.$.projectNo.value != "" & this.$.projectNo.value != null) {
+                                this._executeRequest("/PreRequisicoes/CreatePreRequesition", this.data)
+                            }
+                            else {
+                                this._openToastError('O campo Nº Ordem/Projecto é de preenchimento obrigatório.');
+                            }
+                        } else {
+                            this._openToastError("Ocorreu um erro desconhecido.");
+                        }
+                    }
+                },
+
+                _responseReqValidatorProcessor: function (data) {
+                    var self = this;
+
+                    if (data.detail.status === 200) {
+                        if (self.validateReqResponse == "") {
+                            var ajax_request = self.$.page_create_requisition_ajax;
+                            ajax_request.body = JSON.stringify(self.data);
+
+                            var ok = 0;
+                            for (i = 0; i < self.dataLines.lines.length; i++) {
+                                if (self.dataLines.lines[i].quantityToRequire == null || self.dataLines.lines[i].quantityToRequire == "" || self.dataLines.lines[i].quantityToRequire <= 0) {
+                                    ok = 1
+                                }
+                            }
+
+                            if (ok == 0) {
+                                ajax_request.generateRequest();                            }
+                            else {
+                                bootbox.confirm({
+                                    message: "Existe(m) linha(s) sem Qt. a Requerer definida(s), deseja continuar (Sim/Não)?",
+                                    buttons: {
+                                        confirm: {
+                                            label: 'Sim',
+                                            className: 'btn-success'
+                                        },
+                                        cancel: {
+                                            label: 'Não',
+                                            className: 'btn-danger'
+                                        }
+                                    },
+                                    callback: function (result) {
+                                        if (result) {
+                                            ajax_request.generateRequest();
+                                        }
+                                    }
+                                });
+                            }
+                        } else {
+                            self._openToastError(self.validateReqResponse);
+                        }
+                    }
+                },
+                _loadProductsByAreaAndType: function (requisitionType) {
+                    if (this._areaid != null && requisitionType != null) {
+                        this.$.filteredProducts_ajax.body = JSON.stringify({ "rootAreaId": this._areaid, "requisitionType": requisitionType });
+                        this.$.filteredProducts_ajax.generateRequest();
+                    }
+                },
+                _responseProcessor: function (data) {
+                    if (data.detail.status === 200) {
+                        if (data.detail.url.indexOf("GetPreRequesitionDetails") !== -1) {
+                            var id = this.data.preRequesitionsNo;
+                            if (id != "") {
+                                this._showPreReqLines = "";
+
+                                if (this._permissions.update) {
+                                    this._showPreReqLinesForm = "";
+                                } else {
+                                    this._showPreReqLinesForm = "none";
+                                }
+
+                                this.$.grid_prereqlines.clearCache();
+
+                                this.$.ajax_cbReqType.body = JSON.stringify(id);
+                                this.$.ajax_cbReqType.generateRequest();
+                                this.$.prereqLines_databound_ajax.url = "/PreRequisicoes/GetPreReqLines";
+                                this.$.prereqLines_databound_ajax.body = JSON.stringify(this.data);
+                                this.$.prereqLines_databound_ajax.generateRequest();
+
+                                this._loadProductsByAreaAndType(this.data.requesitionType);
+                                this._PopulatePurchaseLines();
+                            }
+                        }
+                        if (data.detail.url.indexOf("CreatePreRequesition") !== -1) {
+                            this._createResponseProcessor();
+                        }
+                        else if (data.detail.url.indexOf("Update") !== -1) {
+                            if (this.data.eReasonCode == 1) {
+
+                                this._openToast("Pré-Requisição atualizada com sucesso.");
+                            } else {
+                                this._openToastError(this.data.eMessage);
+                            }
+                        }
+                    } else {
+                        this._openToastError("Ocorreu um erro desconhecido.")
+                    }
+
+                    if (this.$.requesitionType.value == 'FROTA') {
+                        this.$.projectNo.disabled = true;
+                        this.$._ProjectNo.disabled = true;
+                    }
+                    else {
+                        this.$.projectNo.disabled = false;
+                        this.$._ProjectNo.disabled = false;
+                    }
+
+                    this.data.contractType = 3;
+                    this.$.page_databoundNoMessage_ajax.url = "/PreRequisicoes/UpdatePreRequesition";
+                    this.$.page_databoundNoMessage_ajax.body = JSON.stringify(this.data);
+                    this.$.page_databoundNoMessage_ajax.generateRequest();
+                },
+
+                _copyFromTemplateResponse: function (data) {
+
+                    if (data.detail.status === 200) {
+                        if (data.detail.url.indexOf("CopyReqModelLines") !== -1) {
+                            if (this.CopyFromModelResult.eReasonCode == 1) {
+
+                                this._openToast("Linhas Pré-Requisição criadas com sucesso");
+                                this.$.dialog.close();
+                                this.$.grid_prereqlines.clearCache();
+                                this.data.eMessage = "";
+
+                                this.$.prereqLines_databound_ajax.url = "/PreRequisicoes/GetPreReqLines";
+                                this.$.prereqLines_databound_ajax.body = JSON.stringify({ "PreRequesitionsNo": this._prerequesitionno, });
+                                this.$.prereqLines_databound_ajax.generateRequest();
+                            }
+                            else {
+                                this._openToastError(this.CopyFromModelResult.eMessage);
+                            }
+                        }
+                    }
+                },
+                _createResponseProcessor: function () {
+
+                    if (this.data.eReasonCode == 1) {
+                        this._isCreate = false;
+                        this._openToast("Pré-Requisição criada com sucesso.");
+
+                        var PreRequesitionNo = this.data.preRequesitionsNo;
+                        setTimeout(
+                            function () {
+                                window.location.href = "../PreRequisicoesDetalhes/?PreRequesitionNo=" + PreRequesitionNo;
+                            }, 1000);
+
+                    } else {
+                        this._openToast(this.data.eMessage);
+                    }
+                },
+
+                _responseDeleteProcessor: function (data) {
+                    var self = this;
+                    if (data.detail.status === 200) {
+                        this._openToast(this.deletedData.eMessage);
+                        if (this.deletedData.eReasonCode == 1) {
+                            setTimeout(
+                                function () {
+                                    window.location.reload();
+                                }, 2500);
+                        } else if (this.deletedData.eReasonCode == 2) {
+                            this._openToastError(this.deletedData.eMessage);
+                        }
+                    }
+                },
+                _openToast: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+                _openToastError: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                },
+
+                _createNewPreReq: function (item) {
+
+                    if (item != null) {
+                        window.location.href = "../PreRequisicoesDetalhes/";
+                    }
+                },
+
+                _executeRequest: function (url, data) {
+                    this.data.contractType = 3;
+                    this.$.page_databound_ajax.url = url;
+                    this.$.page_databound_ajax.body = JSON.stringify(data);
+                    this.$.page_databound_ajax.generateRequest();
+                },
+
+                _cancel: function () {
+                    this.$.prereqLines_databound_ajax.body = JSON.stringify(this.data);
+                    this.$.prereqLines_databound_ajax.generateRequest();
+                    this.$.grid_prereqlines.clearCache();
+                },
+
+                _sumLines: function () {
+                    var count = 0;
+                    if (this.dataLines.lines != null) {
+                        for (var i = 0; i < this.dataLines.lines.length; i++) {
+                            count += this.dataLines.lines[i].totalCost;
+                            this._TotalLine = count;
+                            this.$.dialogTotal.open();
+                        }
+                    } else {
+                        this._openToast("Não tem Linhas inseridas.");
+                    }
+
+                },
+
+                _clFormatSupplierProductCode: function (param) {
+                    if (param != undefined && this.Products != undefined) {
+                        var sel = this.Products.find(x => x.code == param);
+                        if (sel != undefined) {
+                            return sel.code;
+                        }
+                    }
+                    return "";
+                },
+
+                _RespChange: function (e) {
+                    if (!(this.$._CLResponsabilityCenterCode.value == "" || this.$._CLResponsabilityCenterCode.value == null)) {
+                    }
+                },
+
+                _purchaseheaderresponse: function (e) {
+                    if (this.CBPurchaseHeader.length == 0) {
+                        if (this.$._CBPurchaseHeader != null)
+                            this.$._CBPurchaseHeader.value = "";
+                        if (this.$._CBPurchaseLine != null)
+                            this.$._CBPurchaseLine.value = "";
+                    }
+                },
+
+                _CalculateTotalCostLine: function (e) {
+                    var line = this.dataLines.lines.find(x => x == this._SelectedLine);
+                    line.totalCost = line.quantityToRequire * line.unitCost;
+                    this.$.grid_prereqlines.clearCache();
+                },
+
+                _GridItemChange: function (e, _selected) {
+                    if (this.dataLines != null && this.dataLines.lines != null) {
+                        var line = this.dataLines.lines.find(x => x == this._SelectedLine);
+                        var itemNo = e.model.item.code
+                        var object = this.Products.find(x => x.code == itemNo);
+                        line.description = object.name;
+
+                        this.$.grid_prereqlines.clearCache();
+                    }
+                },
+
+                _GridOrderChange: function (e, _selected) {
+                    if (this.dataLines != null && this.dataLines.lines != null) {
+                        var line = this.dataLines.lines.find(x => x == this._SelectedLine);
+                        var itemNo = e.model.item.projectNo;
+
+                        this.$.get_project_dims.body = JSON.stringify(itemNo);
+                        this.$.get_project_dims.generateRequest();
+                    }
+                },
+
+                _GridOpenLineChange: function (e) {
+                    var line = this.CBPurchaseLine.find(x => x.id == e.currentTarget.__data.selectedItem.id);
+                    if (line != null) {
+                        this._SelectedLine.openOrderNo = line.documentNO;
+                    }
+                },
+                _GridRespCenterChange: function (e) {
+                    if (this.dataLines != null && this.dataLines.lines != null) {
+                        var line = this.dataLines.lines.find(x => x == this._SelectedLine);
+                        var itemNo = e.model.item.centerResponsibilityCode;
+                        line.openOrderNo = "";
+                        this.CBPurchaseLineGrid = "";
+                        line.openOrderLineNo = "";
+                    }
+                },
+
+
+                _clFormatvehicle: function (param) {
+                    if (param != undefined && this.CBVehicle != undefined) {
+                        var sel = this.CBVehicle.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.id;
+                        }
+                    }
+                    return "";
+                },
+
+                _clFormatsupplierNo: function (param) {
+                    if (param != undefined && this.CBVendor != undefined) {
+                        var sel = this.CBVendor.find(x => x.no_ == param);
+                        if (sel != undefined) {
+                            return sel.name;
+                        }
+                    }
+                    return "";
+                },
+
+                _clFormatLocation: function (param) {
+                    if (param != undefined && this.CBLocations != undefined) {
+                        var sel = this.CBLocations.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+                _clFormatRegion: function (param) {
+                    if (param != undefined && this.LProjectRegionCodes != undefined) {
+                        var sel = this.LProjectRegionCodes.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+                _clFormatFunctionalArea: function (param) {
+                    if (param != undefined && this.LProjectFunctionalAreaCodes != undefined) {
+                        var sel = this.LProjectFunctionalAreaCodes.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+                _clFormatOpenOrderNo: function (param) {
+                    if (param != undefined && this.CBPurchaseHeader != undefined) {
+                        var sel = this.CBPurchaseHeader.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.id;
+                        }
+                    }
+                    return "";
+                },
+
+                _clFormatOpenOrderLineNo: function (param) {
+                    if (param != undefined && this.CBPurchaseLine != undefined) {
+                        var sel = this.CBPurchaseLine.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.line_No;
+                        }
+                    }
+                    return "";
+                },
+
+                _clFormatResponsabilityCenter: function (param) {
+                    if (param != undefined && this.LProjectResponsabilityCenterCodes != undefined) {
+                        var sel = this.LProjectResponsabilityCenterCodes.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+
+                _createPreReqLine: function () {
+                    var requesitionType = this.$.requesitionType.value;
+
+                    var localCode = "";
+                    var validLocalCode = false;
+                    if (this._filledFromPurch) {
+                        localCode = this.$.txtLocalCode.value;
+                        validLocalCode = (localCode !== null && localCode !== "");
+                    }
+                    else {
+                        localCode = this._LocalCode;
+                        validLocalCode = (localCode !== null && localCode !== "");
+                    }
+
+                    if (this.$._ProjectNo.value != "" & this.$._ProjectNo.value != null) {
+                        if (validLocalCode) {
+                            if (this._Products != undefined & this._Products != "") {
+                                if (this.$._QuantityToRequire.validate() && parseFloat(this.$._QuantityToRequire.value) > 0) {
+                                    var totalCost = this._QuantityToRequire * this._UnitCost;
+                                    if (isNaN(totalCost)) {
+                                        totalCost = 0;
+                                    }
+
+                                    var purchHeaderNo = "";
+                                    var purchLineNo = "";
+                                    if (this.$._CBPurchaseLine.value != undefined & this.$._CBPurchaseLine.value != "") {
+                                        var composedKey = this.$._CBPurchaseLine.value.split(" ", 2);
+                                        purchHeaderNo = composedKey[0];
+                                        purchLineNo = composedKey[1];
+                                    }
+
+                                    this.dataLines.lines.unshift({
+                                        preRequisitionLineNo: this.data.preRequesitionsNo,
+                                        type: 2, //PRODUTO
+                                        code: this._Products,
+                                        description: this._Description,
+                                        description2: this._Description2,
+                                        localCode: localCode,
+                                        unitMeasureCode: this._UnitMeasureCode,
+                                        quantityToRequire: this._QuantityToRequire,
+                                        regionCode: this.$._CLRegion.value,
+                                        functionalAreaCode: this.$._CLFunctionalAreaCode.value,
+                                        centerResponsibilityCode: this.$._CLResponsabilityCenterCode.value,
+                                        projectNo: this.$._ProjectNo.value,
+                                        //qtyByUnitOfMeasure
+                                        //quantityRequired
+                                        //quantityPending:
+                                        quantidadeInicial: this._QuantityToRequire,
+                                        unitCost: this._UnitCost,
+                                        //sellUnityPrice
+                                        //budgetValue
+                                        //expectedReceivingDate
+                                        //billable
+                                        maintenanceOrderLineNo: this._MaintenanceOrderLineNo,
+                                        //employeeNo
+                                        vehicle: this.data.vehicle,
+                                        supplierNo: this._CBVendor,
+                                        //supplierProductCode
+                                        armazemCDireta: this._CBItemsCDirect,
+                                        //unitNutritionProduction
+                                        //customerNo
+                                        openOrderNo: purchHeaderNo,
+                                        openOrderLineNo: purchLineNo,
+                                        totalCost: totalCost > 0 ? totalCost : "",
+                                    });
+
+                                    this.$.prereqLines_databound_ajax.url = "/PreRequisicoes/UpdateContractLines";
+                                    this.$.prereqLines_databound_ajax.body = JSON.stringify(this.dataLines);
+                                    this.$.prereqLines_databound_ajax.generateRequest();
+                                    this.$.grid_prereqlines.clearCache();
+                                }
+                                else {
+                                    this._openToastError('O valor do campo Qt. a Requerer tem que estar preenchido, ser superior a 0 e só pode ter 4 casas decimais.');
+                                }
+                            }
+                            else {
+                                this._openToastError('O valor do campo Cód. Produto tem que estar preenchido.');
+                            }
+                        }
+                        else {
+                            this._openToastError('O valor do campo Cód. Localização tem que estar preenchido.');
+                        }
+                    }
+                    else {
+                        this._openToastError('O valor do campo Nº Ordem/Projecto tem que estar preenchido.');
+                    }
+                },
+
+                _updateLinhaPreRequisicao: function (e) {
+                    var index = this.dataLines.lines.indexOf(e.model.item);
+
+                    if (e.model.item.projectNo != "" & e.model.item.projectNo != null) {
+                        this.$.prereqLines_UpdateLinhaPreRequisicao_ajax.body = JSON.stringify({
+                            preRequisitionLineNo: e.model.item.preRequisitionLineNo,
+                            lineNo: e.model.item.lineNo,
+                            type: e.model.item.type,
+                            code: e.model.item.code,
+                            description: e.model.item.description,
+                            description2: e.model.item.description2,
+                            localCode: e.model.item.localCode,
+                            unitMeasureCode: e.model.item.unitMeasureCode,
+                            quantityToRequire: e.model.item.quantityToRequire,
+                            quantidadeInicial: e.model.item.quantityToRequire,
+                            regionCode: e.model.item.regionCode,
+                            functionalAreaCode: e.model.item.functionalAreaCode,
+                            centerResponsibilityCode: e.model.item.centerResponsibilityCode,
+                            projectNo: e.model.item.projectNo,
+                            createDateTime: e.model.item.createDateTime,
+                            createUser: e.model.item.createUser,
+                            updateDateTime: e.model.item.updateDateTime,
+                            updateUser: e.model.item.updateUser,
+                            qtyByUnitOfMeasure: e.model.item.qtyByUnitOfMeasure,
+                            quantityRequired: e.model.item.quantityRequired,
+                            quantityPending: e.model.item.quantityPending,
+                            unitCost: e.model.item.unitCost,
+                            sellUnityPrice: e.model.item.sellUnityPrice,
+                            budgetValue: e.model.item.budgetValue,
+                            expectedReceivingDate: e.model.item.expectedReceivingDate,
+                            billable: e.model.item.billable,
+                            maintenanceOrderLineNo: e.model.item.maintenanceOrderLineNo,
+                            employeeNo: e.model.item.employeeNo,
+                            vehicle: e.model.item.vehicle,
+                            supplierNo: e.model.item.supplierNo,
+                            supplierProductCode: e.model.item.supplierProductCode,
+                            unitNutritionProduction: e.model.item.unitNutritionProduction,
+                            customerNo: e.model.item.customerNo,
+                            openOrderNo: e.model.item.openOrderNo,
+                            openOrderLineNo: e.model.item.openOrderLineNo,
+                            totalCost: e.model.item.totalCost,
+                            armazemCDireta: e.model.item.armazemCDireta,
+                            selected: e.model.item.selected,
+                        });
+                        this.$.prereqLines_UpdateLinhaPreRequisicao_ajax.generateRequest();
+                        this.$.grid_prereqlines.clearCache();
+                    }
+                    else {
+                        this._openToastError('Na linha o campo Nº Ordem/Projeto é de preenchimento obrigatório.');
+                    }
+                },
+                _UpdateLinhaPreRequisicao_ResponseProcessor: function (e) {
+                    if (this.updateLinhaPreRequisicaoResponse.eReasonCode == 1) {
+                        this._openToast(this.updateLinhaPreRequisicaoResponse.eMessage);
+                    }
+                    else {
+                        this._openToastError(this.updateLinhaPreRequisicaoResponse.eMessage);
+                    }
+                    this.$.page_databound_ajax.generateRequest();
+                },
+
+                _onProductInGridChanged: function (e) {
+                    var index = this.dataLines.lines.indexOf(e.model.item);
+
+                    this.$.prereqLines_UpdateLinhaPreRequisicaoProduto_ajax.body = JSON.stringify({
+                        preRequisitionLineNo: e.model.item.preRequisitionLineNo,
+                        lineNo: e.model.item.lineNo,
+                        type: e.model.item.type,
+                        code: e.model.item.code,
+                        description: e.model.item.description,
+                        description2: e.model.item.description2,
+                        localCode: e.model.item.localCode,
+                        unitMeasureCode: e.model.item.unitMeasureCode,
+                        quantityToRequire: e.model.item.quantityToRequire,
+                        regionCode: e.model.item.regionCode,
+                        functionalAreaCode: e.model.item.functionalAreaCode,
+                        centerResponsibilityCode: e.model.item.centerResponsibilityCode,
+                        projectNo: e.model.item.projectNo,
+                        createDateTime: e.model.item.createDateTime,
+                        createUser: e.model.item.createUser,
+                        updateDateTime: e.model.item.updateDateTime,
+                        updateUser: e.model.item.updateUser,
+                        qtyByUnitOfMeasure: e.model.item.qtyByUnitOfMeasure,
+                        quantityRequired: e.model.item.quantityRequired,
+                        quantityPending: e.model.item.quantityPending,
+                        unitCost: e.model.item.unitCost,
+                        sellUnityPrice: e.model.item.sellUnityPrice,
+                        budgetValue: e.model.item.budgetValue,
+                        expectedReceivingDate: e.model.item.expectedReceivingDate,
+                        billable: e.model.item.billable,
+                        maintenanceOrderLineNo: e.model.item.maintenanceOrderLineNo,
+                        employeeNo: e.model.item.employeeNo,
+                        vehicle: e.model.item.vehicle,
+                        supplierNo: e.model.item.supplierNo,
+                        supplierProductCode: e.model.item.supplierProductCode,
+                        unitNutritionProduction: e.model.item.unitNutritionProduction,
+                        customerNo: e.model.item.customerNo,
+                        openOrderNo: e.model.item.openOrderNo,
+                        openOrderLineNo: e.model.item.openOrderLineNo,
+                        totalCost: e.model.item.totalCost,
+                        armazemCDireta: e.model.item.armazemCDireta,
+                        selected: e.model.item.selected,
+                    });
+                    this.$.prereqLines_UpdateLinhaPreRequisicaoProduto_ajax.generateRequest();
+                    this.$.grid_prereqlines.clearCache();
+                },
+                _UpdateLinhaPreRequisicaoProduto_ResponseProcessor: function (e) {
+                    if (this.updateLinhaPreRequisicaoProdutoResponse.eReasonCode == 1) {
+                        this._openToast(this.updateLinhaPreRequisicaoProdutoResponse.eMessage);
+                    }
+                    else {
+                        this._openToastError(this.updateLinhaPreRequisicaoProdutoResponse.eMessage);
+                    }
+                    this.$.page_databound_ajax.generateRequest();
+                },
+
+                _updateContractLines: function () {
+                    this.$.prereqLines_databound_ajax.url = "/PreRequisicoes/UpdateContractLines";
+                    this.$.prereqLines_databound_ajax.body = JSON.stringify(this.dataLines);
+                    this.$.prereqLines_databound_ajax.generateRequest();
+                },
+                _deleteContractLine: function (e) {
+
+                    var index = this.dataLines.lines.indexOf(e.model.item);
+                    this.dataLines.lines.splice(index, 1);
+
+                    this.$.prereqLines_databound_ajax.url = "/PreRequisicoes/UpdateContractLines";
+                    this.$.prereqLines_databound_ajax.body = JSON.stringify(this.dataLines);
+                    this.$.prereqLines_databound_ajax.generateRequest();
+                },
+                _duplicarContractLine: function (e) {
+                    var index = this.dataLines.lines.indexOf(e.model.item);
+
+                    this.$.prereqLines_DuplicarLinha_ajax.body = JSON.stringify({
+                        preRequisitionLineNo: e.model.item.preRequisitionLineNo,
+                        lineNo: e.model.item.lineNo,
+                    });
+                    this.$.prereqLines_DuplicarLinha_ajax.generateRequest();
+                    this.$.grid_prereqlines.clearCache();
+                },
+                _dlResponseProcessor: function (e) {
+                    if (this.duplicarLinhasResponse.eReasonCode == 1) {
+                        this._openToast(this.duplicarLinhasResponse.eMessage);
+                        this.$.page_databound_ajax.generateRequest();
+                    }
+                    else {
+                        this._openToastError(this.duplicarLinhasResponse.eMessage);
+                    }
+                },
+                _onProductChanged: function (e) {
+                    if (this.$._Products.value != "") {
+                        this.$.page_GetProductLocation_ajax.body = JSON.stringify({ code: this.$._Products.value });
+                        this.$.page_GetProductLocation_ajax.params = { "area": this.$.FunctionalAreaCode.valueText };
+                        this.$.page_GetProductLocation_ajax.generateRequest()
+                    }
+                    else {
+                        this.$._Description.value = "";
+                        this.$._Description2.value = "";
+                        this.$._UnitMeasureCode.value = "";
+                        this.$._UnitCost.value = "";
+                        this.$._CBLocations.value = "";
+
+                        this.$._UnitCost.disabled = false;
+                    }
+                },
+                _onProductClick: function (e) {
+                    var requesitionType = this.$.requesitionType.value;
+
+                    if (requesitionType == null | requesitionType == "") {
+                        this._openToastError('É obrigatório preencher o campo Tipo Requesição.');
+                    }
+                },
+                _GetUnitCostLinhaResponse: function (e) {
+                    if (this.UnitCostLinha.locationCode != null) {
+                        if (this.UnitCostLinha.unitCost != null) {
+                            this.$._UnitCost.value = this.UnitCostLinha.unitCost;
+                            this.$._UnitCost.disabled = true;
+                        }
+                    }
+                    else {
+                        this.$._UnitCost.disabled = false;
+                        this.$._UnitCost.value = "";
+                    }
+
+                    this.$.page_GetProductLocation_ajax.body = JSON.stringify({ code: this.$._Products.value });
+                    this.$.page_GetProductLocation_ajax.params = { "area": this.$.FunctionalAreaCode.valueText };
+                    this.$.page_GetProductLocation_ajax.generateRequest()
+                },
+                _GetProductLocationResponse: function (e) {
+                    if (this.productInfo != null) {
+                        this.$._Description.value = this.productInfo.name;
+                        this.$._Description2.value = this.productInfo.name2;
+                        this.$._UnitMeasureCode.value = this.productInfo.measureUnit;
+                        this.$._UnitCost.value = this.productInfo.unitCost;
+
+                        if (this.productInfo.inventoryValueZero == 1) {
+                            this.$._UnitCost.disabled = false;
+                        }
+                        else {
+                            this.$._UnitCost.disabled = true;
+                        }
+
+                        if (this.productInfo.locationCode != null) {
+                            this.$._CBLocations.value = this.productInfo.locationCode;
+                        }
+                        else {
+                            this._openToastError("Este produto não têm Cód. Localização contate a área das compras.");
+                        }
+
+                        if (this.productInfo.openOrderLines == true) {
+                            setTimeout(
+                                function () {
+                                    bootbox.alert({
+                                        message: "O produto selecionado já existe em acordo de fornecedor.",
+                                    });
+                                }, 0);
+                        }
+                    }
+                    else {
+                        this.$._CBLocations.value = "";
+                    }
+                },
+
+                _ConvertDecimals: function (e) {
+                    var stringVal = "" + e.target.value;
+                    e.target.value = stringVal.replace(",", ".");
+
+                },
+                _lineSelected: function (item) {
+                    if (item != null) {
+                        var oSel = this.dataLines.lines.find(x => x.selected);
+                        if (oSel != undefined) {
+                            oSel.selected = false;
+                        }
+
+                        var sel = this.dataLines.lines.find(x => x == item);
+                        if (sel != undefined) {
+
+                            this.dataLines.lines.find(x => x == item).selected = true;
+
+                            var PurchaseNo = item.openOrderNo;
+                            this.$.purchaselinesgrid_ajax.body = JSON.stringify(PurchaseNo);
+                            this.$.purchaselinesgrid_ajax.generateRequest();
+                            if (this._areaid != null && this.$.requesitionType.value) {
+                                this.$.filteredProducts_ajax.body = JSON.stringify({ "rootAreaId": this._areaid, "requisitionType": this.$.requesitionType.value });
+                                this.$.filteredProducts_ajax.generateRequest();
+                            }
+
+                            this.$.grid_prereqlines.clearCache();
+                        }
+                    }
+                },
+                _GridLocationChange: function (e) {
+                    if (this._areaid != null && this.$.requesitionType.value) {
+                        this.$.filteredProducts_ajax.body = JSON.stringify({ "rootAreaId": this._areaid, "requisitionType": this.$.requesitionType.value });
+                        this.$.filteredProducts_ajax.generateRequest();
+                    }
+                },
+                _clResponseProcessor: function (data) {
+                    if (data.detail.status === 200) {
+                        if (!(data.detail.url.indexOf("GetPreReqLines") !== -1)) {
+                            if (this.dataLines.eReasonCode != 1) {
+                                this.$.grid_prereqlines.clearCache();
+                                this._openToastError(this.dataLines.eMessage);
+                            }
+                            else {
+                                this._openToast(this.dataLines.eMessage);
+                                this.$._CBLocations.value = "";
+                                this._CBItemsCDirect = "0";
+                                this.$._Description.value = "";
+                                this.$._Description2.value = "";
+                                this.$._UnitMeasureCode.value = "";
+                                this.$._QuantityToRequire.value = "";
+                                this.$._QuantityToOpen.value = "";
+                                this.$._UnitCost.value = "";
+                                this.$._MaintenanceOrderLineNo.value = "";
+                                if (this.$._CBPurchaseHeader != null)
+                                    this.$._CBPurchaseHeader.value = "";
+                                this.$._CBPurchaseLine.value = "";
+                                this.$._Products._clearSelection();
+                                this.$._ProjectNo.value = this.data.projectNo;
+                                this.$._ProjectNo.valueText = this.data.projectNo;
+                                this.$._CBVendor._clearSelection();
+                                if (this.$._CBPurchaseLine != null)
+                                    this.$._CBPurchaseLine._clearSelection();
+                                if (this.data != null) {
+                                    this.$._CLRegion.value = this.data.regionCode;
+                                    this.$._CLFunctionalAreaCode.value = this.data.functionalAreaCode;
+                                    this.$._CLResponsabilityCenterCode.value = this.data.responsabilityCenterCode;
+                                }
+                                this._setNewLineFormControl(false);
+                            }
+                        }
+                    }
+                },
+
+                _PopulatePurchaseLines: function (data) {
+                    var codArea = this.$.FunctionalAreaCode.value;
+                    if (codArea != "") {
+                        this.PurchaseLine = "";
+                        this.$.purchaselines_ajax.body = JSON.stringify(codArea);
+                        this.$.purchaselines_ajax.generateRequest();
+                    }
+                },
+
+                _responsePurchaseLinesProcessor: function (data) {
+
+                    if (this.CBPurchaseLineGrid != null) {
+                        var oSel = this.dataLines.lines.find(x => x.selected);
+                        if (oSel != undefined) {
+                            oSel.openOrderLineNo = this.CBPurchaseLineGrid;
+                        }
+                        this.$.grid_prereqlines.clearCache();
+                    }
+                },
+
+                _SaveLines: function (e) {
+                    var index = this.result.indexOf(e.model.item);
+                    this.result.splice(index, 1);
+                    e.model.item.preRequisitionNo = this.data.preRequesitionsNo;
+                    e.model.item.projectNo = this.data.projectNo;
+                    this.$.grid_copyreqmodel_ajax.body = JSON.stringify(e.model.item);
+                    this.$.grid_copyreqmodel_ajax.generateRequest();
+                },
+
+                _pendingreq: function (e) {
+                    window.location.href = "/PreRequisicoes/RequisicoesPendentes";
+                },
+                _CleanPreRequesitionResponse: function (e) {
+                    if (this.ClPreReq.eReasonCode != null) {
+                        this._openToastError(this.ClPreReq.eMessage);
+                    }
+                    if (e.detail.status === 200) {
+                        setTimeout(
+                            function () {
+                                location.reload();
+                            }, 2000);
+                    }
+                },
+                _createRequesitionResponse: function (e) {
+                    if (this.CreateReqResponse.eReasonCode == "1") {
+                        this._openToast(this.CreateReqResponse.eMessage);
+
+                        this.$.CleanPreRequesition_ajax.body = JSON.stringify({ "PreRequesitionsNo": this._prerequesitionno });
+                        var req = this.$.CleanPreRequesition_ajax;
+                        var errorsToDisplay = this.CreateReqResponse.eMessages.find(x => x.type == 0);
+                        if (errorsToDisplay != undefined) {
+                            if (Array.isArray(errors)) {
+                                var errors = errorsToDisplay[0].message;
+                                for (var i = 1; i < errorsToDisplay.length; i++) {
+                                    errors += errorsToDisplay[i].message + ";";
+                                }
+                            }
+                            else {
+                                var errors = errorsToDisplay.message;
+                            }
+
+                            var thisCtx = this;
+
+                            setTimeout(
+                                function () {
+                                    bootbox.alert({
+                                        message: errors,
+                                        callback: function () {
+                                            req.generateRequest();
+                                        }
+                                    });
+                                }, 4000);
+                        }
+                        else {
+                            req.generateRequest();
+                        }
+                    }
+                    else {
+                        this._openToastError(this.CreateReqResponse.eMessage);
+                    }
+                    this.$.prereqLines_databound_ajax.url = "/PreRequisicoes/GetPreReqLines";
+                    this.$.prereqLines_databound_ajax.body = JSON.stringify(this.data);
+                    this.$.prereqLines_databound_ajax.generateRequest();
+                },
+
+                _GetNoProjetoCabecalho: function (e) {
+                    var matricula = this.$.Vehicle.value;
+                    this.$.page_GetProjetoNoCabecalho_ajax.body = JSON.stringify(matricula);
+                    this.$.page_GetProjetoNoCabecalho_ajax.generateRequest();
+                },
+                _GetProjetoNoCabecalhoResponse: function (e) {
+                    this.$.projectNo.value = this.ProjetoNo;
+                    this.$.projectNo.valueText = this.ProjetoNo;
+                },
+
+                _GetNoProjetoLinha: function (e) {
+                    var matricula = this.$._VehicleLines.value;
+                    this.$.page_GetProjetoNoLinha_ajax.body = JSON.stringify(matricula);
+                    this.$.page_GetProjetoNoLinha_ajax.generateRequest();
+                },
+                _GetProjetoNoLinhaResponse: function (e) {
+                    if (this.ProjetoNo != "") {
+                        this.$._ProjectNo.value = this.ProjetoNo;
+                    }
+                    else {
+                        this.$._ProjectNo.value = this.ProjetoNo;
+                        this.$._ProjectNo.valueText = this.ProjetoNo;
+                    }
+                },
+
+                _goBack: function (e) {
+                    window.history.back();
+                },
+            });
+        });
+    </script>
+
+</dom-module>
+
+

@@ -142,6 +142,8 @@ namespace Hydra.Such.Data
             LinhasAcordosPrecos = 54,
             [Description("Requisições por Dimensões")]
             RequisicoesPorDimensoes = 55,
+            [Description("Pré-Requisições Compras a Dinheiro")]
+            PréRequisiçõesComprasDinheiro = 56,
 
 
             [Description("Administração Geral")]

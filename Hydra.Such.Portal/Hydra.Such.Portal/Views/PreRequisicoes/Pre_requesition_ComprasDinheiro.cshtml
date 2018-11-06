@@ -1,0 +1,8 @@
+﻿
+@{
+    ViewData["Title"] = "Pré-Requisição - Compras a Dinheiro";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="import" href="~/elements/prerequesitions/pre_requesition_ComprasDinheiro.html">
+
+<x-prerequisitions _areaid="1" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))' _uploadurl="@ViewBag.UploadURL" _prerequesitionno="@ViewBag.PreRequesitionNo"></x-prerequisitions>
