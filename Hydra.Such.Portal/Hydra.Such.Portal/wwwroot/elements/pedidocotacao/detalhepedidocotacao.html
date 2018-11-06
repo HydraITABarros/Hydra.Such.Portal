@@ -1431,6 +1431,7 @@
                                     <vaadin-upload id="uploadRequest"
                                                    target="/ConsultaMercado/FileUpload/{{_id}}"
                                                    method="POST"
+                                                   accept="application/pdf, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.template, image/jpeg, image/png, image/gif"
                                                    headers="{'Accept': 'application/json'}"
                                                    timeout=15000>
                                     </vaadin-upload>
@@ -2098,7 +2099,6 @@
                     if (this._id == "") {
                         this._isCreate = true;
                     }
-
 
                     this.$.page_update_ajax.body = JSON.stringify({ "id": this._id });
                     this.$.page_update_ajax.generateRequest();

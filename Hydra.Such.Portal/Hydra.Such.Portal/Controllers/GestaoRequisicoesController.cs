@@ -1927,7 +1927,6 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-
         public JsonResult SubmitForApproval([FromBody] Newtonsoft.Json.Linq.JObject requestParams)
         {
             string requisitionId = string.Empty;
@@ -1960,6 +1959,17 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        [HttpPost]
+        public JsonResult AprovarRequisicao([FromBody] Newtonsoft.Json.Linq.JObject requestParams)
+        {
+            string requisitionId = requestParams["requisitionNo"].ToString();
+
+            int NoMovimento = 0;
+            if (!string.IsNullOrEmpty(requisitionId))
+                NoMovimento = DBApprovalMovements.GetAll().Where(x => x.Número == requisitionId && x.Tipo == 1 && x.Estado == 1).LastOrDefault().NºMovimento;
+
+            return Json(NoMovimento);
+        }
 
         #region Pontos de Situação
 

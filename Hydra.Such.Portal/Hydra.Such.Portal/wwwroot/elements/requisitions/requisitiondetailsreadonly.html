@@ -290,7 +290,7 @@
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" id="btnGoBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
 
-            <!--<paper-button class="tablinks" id="btnLocalMarketValidation" disabled style="width: 200px !important;" on-tap="_validateLocalMarket"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Validação Mercado Local</paper-button>-->
+            <!--<paper-button class="tablinks" id="btnLocalMarketValidation" disabled style="width: 200px !important;" on-tap="_validateLocalMarket"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Enviar Mercado Local</paper-button>-->
             <!--<paper-button class="tablinks" id="btnValidate" disabled on-tap="_validateRequisition"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Validar</paper-button>-->
             <!--<paper-button class="tablinks" id="btnAnularAprovacao" disabled on-tap="_anularAprovacao"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Anular Aprovação</paper-button>-->
             <!--<paper-button class="tablinks" id="btnAprovar" disabled on-tap="_aprovarRequisicao" title="Aprovar"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Aprovar</paper-button>-->
@@ -634,37 +634,37 @@
                                                 </template>
                                             </vaadin-grid-column>
                                             <!--<vaadin-grid-column width="10%" resizable>
-                    <template class="header">
-                    </template>
-                    <template>
-                        <center>
-                            <template is="dom-if" if="{{ _permissions.update }}">
-                                <center>
-                                    <paper-button class="btnRemove tableBtn" raised on-tap="_deleteFiles" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
-                                </center>
-                            </template>
-                        </center>
-                    </template>
-                </vaadin-grid-column>-->
+                                            <template class="header">
+                                            </template>
+                                            <template>
+                                                <center>
+                                                    <template is="dom-if" if="{{ _permissions.update }}">
+                                                        <center>
+                                                            <paper-button class="btnRemove tableBtn" raised on-tap="_deleteFiles" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                                        </center>
+                                                    </template>
+                                                </center>
+                                            </template>
+                                        </vaadin-grid-column>-->
                                         </vaadin-grid>
                                     </div>
                                 </div>
                             </iron-pages>
                             <!--<div class="row break_clear marginSpace">
-                                <template is="dom-if" if="{{ _permissions.create }}">
-                                    <template is="dom-if" if="{{ _isCreate }}">
-                                        <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
-                                    </template>
+                            <template is="dom-if" if="{{ _permissions.create }}">
+                                <template is="dom-if" if="{{ _isCreate }}">
+                                    <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                 </template>
-                                <template is="dom-if" if="{{ !_isCreate }}">
-                                    <template is="dom-if" if="{{ _permissions.update }}">
-                                        <paper-button raised id="btnUpdate" class="btnEdit" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                                    </template>
+                            </template>
+                            <template is="dom-if" if="{{ !_isCreate }}">
+                                <template is="dom-if" if="{{ _permissions.update }}">
+                                    <paper-button raised id="btnUpdate" class="btnEdit" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
                                 </template>
-                                <template is="dom-if" if="{{ _permissions.delete }}">
-                                    <paper-button raised id="btnDelete" class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
-                                </template>
-                            </div>-->
+                            </template>
+                            <template is="dom-if" if="{{ _permissions.delete }}">
+                                <paper-button raised id="btnDelete" class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                            </template>
+                        </div>-->
                         </div>
 
                         <paper-collapse-group>
@@ -862,14 +862,14 @@
                                     </div>
                                 </div>
                                 <!--<div class="row break_clear" hidden="{{_isArchived}}">
-                                    <div class="marginSpace">
-                                        <template is="dom-if" if="{{ !isReadOnly() }}">
-                                            <template is="dom-if" if="{{ _permissions.create }}">
-                                                <paper-button raised id="btnCreate" class="btnSave" on-tap="_createRequisitionLine"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
-                                            </template>
+                                <div class="marginSpace">
+                                    <template is="dom-if" if="{{ !isReadOnly() }}">
+                                        <template is="dom-if" if="{{ _permissions.create }}">
+                                            <paper-button raised id="btnCreate" class="btnSave" on-tap="_createRequisitionLine"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                         </template>
-                                    </div>
-                                </div>-->
+                                    </template>
+                                </div>
+                            </div>-->
                             </paper-collapse-item>
                         </paper-collapse-group>
                         <div class="row break_clear">
@@ -1464,17 +1464,21 @@
                                 </vaadin-grid-column>
 
                                 <!--<template is="dom-if" if="{{ !isReadOnly() }}">
-                                    <template is="dom-if" if="{{ _permissions.delete }}">
-                                        <vaadin-grid-column width="100px" resizable hidden="{{_isArchived}}">
-                                            <template class="header">
-                                            </template>
-                                            <template>
-                                                <paper-button class="btnRemove tableBtn" on-tap="_deleteRequisitionLine" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
-                                            </template>
-                                        </vaadin-grid-column>
-                                    </template>
-                                </template>-->
+                                <template is="dom-if" if="{{ _permissions.delete }}">
+                                    <vaadin-grid-column width="100px" resizable hidden="{{_isArchived}}">
+                                        <template class="header">
+                                        </template>
+                                        <template>
+                                            <paper-button class="btnRemove tableBtn" on-tap="_deleteRequisitionLine" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                        </template>
+                                    </vaadin-grid-column>
+                                </template>
+                            </template>-->
                             </vaadin-grid>
+                        </div>
+
+                        <div class="marginSpace">
+                            <paper-button raised id="btnSumLines" class="btnSave" on-tap="_sumLines"><i class="fa fa-calculator" aria-hidden="true"></i>&nbsp; Total</paper-button>
                         </div>
                     </div>
                 </iron-form>
@@ -1497,6 +1501,16 @@
                 </div>
             </template>
         </paper-toast>
+
+        <!-- Paper Dialog Total Linhas-->
+        <paper-dialog id="dialogTotal" style="height:120px; width:300px">
+            <div>
+                <h2>Valor Total: <b>{{_TotalLine}} €</b></h2>
+            </div>
+            <div class="buttons">
+                <paper-button raised class="btnEdit" dialog-dismiss>Fechar</paper-button>
+            </div>
+        </paper-dialog>
 
         <paper-dialog id="rptDialog" class="dialgoBox" modal>
             <div class="buttons">
@@ -1552,7 +1566,7 @@
                     },
                     _functionsMenuItems: {
                         type: Array,
-                        value: [{ value: 1, description: "Criar Consulta Mercado" }, { value: 2, description: "Criar Encomenda de Compra" }, { value: 3, description: "Criar Guia Transporte" }, { value: 4, description: "Enviar Pré-Compra" }, { value: 5, description: "Validação Mercado Local" }],
+                        value: [{ value: 1, description: "Criar Consulta Mercado" }, { value: 2, description: "Criar Encomenda de Compra" }, { value: 3, description: "Criar Guia Transporte" }, { value: 4, description: "Enviar Pré-Compra" }, { value: 5, description: "Enviar Mercado Local" }],
                     },
                     _permissions: {
                         type: Array
@@ -1682,7 +1696,7 @@
                         case 4://"Enviar Pré- Encomenda"
                             this._sendPrePurchase();
                             break;
-                        case 5://"Validação Mercado Local"
+                        case 5://"Enviar Mercado Local"
                             this._validateLocalMarket();
                             break;
                     }
@@ -2569,6 +2583,19 @@
                     else {
                         this.$.CBLineProjects.value = this.ProjetoNo;
                         this.$.CBLineProjects.valueText = this.ProjetoNo;
+                    }
+                },
+
+                _sumLines: function () {
+                    var count = 0;
+                    if (this.Requisition.lines != null) {
+                        for (var i = 0; i < this.Requisition.lines.length; i++) {
+                            count += (this.Requisition.lines[i].quantityToRequire * this.Requisition.lines[i].unitCost);
+                            this._TotalLine = count;
+                            this.$.dialogTotal.open();
+                        }
+                    } else {
+                        this._openToast("Não tem Linhas inseridas.");
                     }
                 },
 

@@ -1579,7 +1579,7 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         string filename = Path.GetFileName(file.FileName);
                         //full_filename = id + "_" + filename;
-                        full_filename = filename;
+                        full_filename = "ConsultasMercado/" + id + "_" + filename;
                         var path = Path.Combine(_generalConfig.FileUploadFolder, full_filename);
                         using (FileStream dd = new FileStream(path, FileMode.CreateNew))
                         {

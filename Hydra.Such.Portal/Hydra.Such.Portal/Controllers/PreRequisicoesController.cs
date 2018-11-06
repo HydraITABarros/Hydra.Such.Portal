@@ -843,6 +843,18 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         DBPreRequesitionLines.Delete(linestodelete);
                     }
+
+                    //Delete Anexos
+                    List<Anexos> ListAnexos = DBAttachments.GetAll().Where(x => x.TipoOrigem == 1 && x.NºOrigem == data.PreRequesitionsNo).ToList();
+                    foreach (var Anexo in ListAnexos)
+                    {
+                        if (Anexo != null)
+                        {
+                            System.IO.File.Delete(_config.FileUploadFolder + Anexo.UrlAnexo);
+                            DBAttachments.Delete(Anexo);
+                        }
+                    }
+
                     // Delete Contract 
                     DBPreRequesition.DeleteByPreRequesitionNo(data.PreRequesitionsNo);
 
@@ -1851,8 +1863,9 @@ namespace Hydra.Such.Portal.Controllers
                             extension.ToLower() == ".jpg" || extension.ToLower() == ".png" || extension.ToLower() == ".pdf")
                         {
                             string filename = Path.GetFileName(file.FileName);
-                            full_filename = id + "_" + filename;
+                            full_filename = "Requisicoes/" + id + "_" + filename;
                             var path = Path.Combine(_config.FileUploadFolder, full_filename);
+                            
                             using (FileStream dd = new FileStream(path, FileMode.CreateNew))
                             {
                                 file.CopyTo(dd);

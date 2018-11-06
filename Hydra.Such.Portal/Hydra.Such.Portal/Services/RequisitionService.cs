@@ -497,6 +497,7 @@ namespace Hydra.Such.Portal.Services
                         NumConsultaMercado = consultaMercado.NumConsultaMercado,
                         CodProduto = requisitionLine.Code,
                         Descricao = requisitionLine.Description,
+                        Descricao2 = requisitionLine.Description2,
                         NumProjecto = requisitionLine.ProjectNo,
                         CodRegiao = requisitionLine.RegionCode,
                         CodAreaFuncional = requisitionLine.FunctionalAreaCode,
