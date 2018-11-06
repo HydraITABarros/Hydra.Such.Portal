@@ -1510,7 +1510,7 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             Problema += " Contrato Não Vigente!";
                         }
-                        if (item.CódigoRegião =="" || item.CódigoÁreaFuncional == "" || item.CódigoCentroResponsabilidade =="")
+                        if (item.CódigoRegião == "")// || item.CódigoÁreaFuncional == "" || item.CódigoCentroResponsabilidade =="")
                         {
                             Problema += " Dimensões Bloqueadas!";
                         }

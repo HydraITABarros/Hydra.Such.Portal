@@ -625,7 +625,7 @@
                                                                     <vaadin-text-field value="{{_CRPromiseNo}}" id="_CRPromiseNo" name="_CRPromiseNo" label="Nº Compromisso" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
                                                                 </div>
                                                                 <div class="col-lg-2">
-                                                                    <vaadin-combo-box items="[[CBInvoiceGroups]]" id="_CRInvoiceGroup" name="_CRInvoiceGroup" item-value-path="id" item-label-path="value" value="{{_CRInvoiceGroup}}" label="Grupo Fatura" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório">
+                                                                    <vaadin-combo-box items="[[CBInvoiceGroups]]" id="_CRInvoiceGroup" name="_CRInvoiceGroup" item-value-path="id" item-label-path="value" value="{{_CRInvoiceGroup}}" label="Grupo Fatura" disabled="{{ _lockFields }}">
                                                                         <template>
                                                                             <b>[[item.value]]</b>
                                                                         </template>
@@ -648,7 +648,6 @@
                                                                                     items="[[CBProjects]]"
                                                                                     text-path="value"
                                                                                     value-path="id"
-                                                                                    required error-message="Este campo é obrigatório"
                                                                                     fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
                                                                     </such-selectbox>
 
@@ -2135,7 +2134,7 @@
                     this.$._CLDateCount.value = today;
                     //GET CONTRACT DATA
                     var VersionNo = this._versionno == "" ? 0 : parseInt(this._versionno);
-                    this.$.page_databound_ajax.body = JSON.stringify({ "ContractNo": this._contractno, "VersionNo": VersionNo });
+                    this.$.page_databound_ajax.body = JSON.stringify({ "ContractNo": this._contractno, "VersionNo": VersionNo, "ContractType" : 3});
                     this.$.page_databound_ajax.generateRequest();
 
                     if (!this._permissions.update) {
@@ -2456,46 +2455,50 @@
                 //Client Requisition Functions
                 _createClientRequisition: function () {
 
-                    this.data.clientRequisitions.unshift({
-                        contractNo: this.data.contractNo,
-                        startDate: this._CRStartDate,
-                        endDate: this._CREndDate,
-                        clientRequisitionNo: this._CRRequisitionNo,
-                        requisitionDate: this._CRRequisitionDate,
-                        promiseNo: this._CRPromiseNo,
-                        invoiceGroup: this._CRInvoiceGroup,
-                        projectNo: this._CRProjectNo,
-                        lastInvoiceDate: this._CRLastInvoiceDate
-                    });
-
-                    this._CRStartDate = "";
-                    this._CREndDate = "";
-                    this._CRRequisitionNo = "";
-                    this._CRRequisitionDate = "";
-                    this._CRPromiseNo = "";
-                    this._CRInvoiceGroup = "";
-                    this._CRProjectNo = "";
-                    this._CRLastInvoiceDate = "";
-
-                    this.$.grid_ClientRequisitions.clearCache();
-
                     if (!this._isCreate) {
-                        //if (this._validateRequisitionData()) {
+                        if (this._validateRequisitionData()) {
+
+                            var invGroup = 0;
+                            if (this._CRInvoiceGroup != "")
+                                invGroup = this._CRInvoiceGroup;
+
+                            this.data.clientRequisitions.unshift({
+                                contractNo: this.data.contractNo,
+                                startDate: this._CRStartDate,
+                                endDate: this._CREndDate,
+                                clientRequisitionNo: this._CRRequisitionNo,
+                                requisitionDate: this._CRRequisitionDate,
+                                promiseNo: this._CRPromiseNo,
+                                invoiceGroup: invGroup,
+                                projectNo: this._CRProjectNo,
+                                lastInvoiceDate: this._CRLastInvoiceDate
+                            });
+                        
                             this._executeRequest("/Contratos/UpdateContract", this.data);
-                        //}
+
+                            this._CRStartDate = "";
+                            this._CREndDate = "";
+                            this._CRRequisitionNo = "";
+                            this._CRRequisitionDate = "";
+                            this._CRPromiseNo = "";
+                            this._CRInvoiceGroup = "";
+                            this._CRProjectNo = "";
+                            this._CRLastInvoiceDate = "";
+                            var projNoElem = Polymer.dom(this.root).querySelector('#_CRProjectNo');
+                            if (projNoElem)
+                                projNoElem._clearSelection();
+
+                            this.$.grid_ClientRequisitions.clearCache();
+                        }
                     }
                 },
                 _validateRequisitionData: function () {
                     var startDateElem = Polymer.dom(this.root).querySelector('#_CRStartDate');
                     var promisseNoElem = Polymer.dom(this.root).querySelector('#_CRPromiseNo');
-                    var invGoupElem = Polymer.dom(this.root).querySelector('#_CRInvoiceGroup');
-                    var projNoElem = Polymer.dom(this.root).querySelector('#_CRProjectNo');
-
+                    
                     if (startDateElem.validate() &
-                        promisseNoElem.validate() &
-                        invGoupElem.validate() &
-                        projNoElem.validate()) {
-
+                        promisseNoElem.validate()) {
+                        
                         return true;
                     }
                     this._openToastError("Verifique os dados inseridos.");

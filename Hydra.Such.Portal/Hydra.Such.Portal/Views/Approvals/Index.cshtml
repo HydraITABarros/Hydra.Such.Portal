@@ -77,6 +77,18 @@
         </div>
 
         <vaadin-grid aria-label="ApprovalsTable" id="grid" items="[[result]]" class="grid" multi-sort="true">
+            <vaadin-grid-column width="140px">
+                <template class="header">
+                </template>
+                <template>
+                    <center>
+                        <paper-button class="btnSave tableBtn" on-tap="_showDetails" title="Detalhes"><i class="fa fa-info" aria-hidden="true"></i></paper-button>
+                        <paper-button class="btnEdit tableBtn" on-tap="_Approve" title="Aprovar"><i class="fa fa-check" aria-hidden="true"></i></paper-button>
+                        <paper-button class="btnRemove tableBtn" on-tap="_Reject" title="Rejeitar"><i class="fa fa-times" aria-hidden="true"></i></paper-button>
+                    </center>
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column width="60px" resizable hidden$="{{ _columns.movementNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="movementNo">Nº</vaadin-grid-sorter>
@@ -279,18 +291,6 @@
                 </template>
                 <template>
                     {{item.responsabilityCenter}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="140px">
-                <template class="header">
-                </template>
-                <template>
-                    <center>
-                        <paper-button class="btnSave tableBtn" on-tap="_showDetails" title="Detalhes"><i class="fa fa-info" aria-hidden="true"></i></paper-button>
-                        <paper-button class="btnEdit tableBtn" on-tap="_Approve" title="Aprovar"><i class="fa fa-check" aria-hidden="true"></i></paper-button>
-                        <paper-button class="btnRemove tableBtn" on-tap="_Reject" title="Rejeitar"><i class="fa fa-times" aria-hidden="true"></i></paper-button>
-                    </center>
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
