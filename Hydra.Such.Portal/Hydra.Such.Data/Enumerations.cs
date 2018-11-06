@@ -145,6 +145,10 @@ namespace Hydra.Such.Data
             [Description("Pré-Requisições Compras a Dinheiro")]
             PréRequisiçõesComprasDinheiro = 56,
 
+            // zpgm. impressão guias transporte do NAV
+            [Description("Impressão Guias Transporte NAV")]
+            ImpressaoGuiaTransporteNAV = 56,
+
 
             [Description("Administração Geral")]
             AdminGeral = 100,

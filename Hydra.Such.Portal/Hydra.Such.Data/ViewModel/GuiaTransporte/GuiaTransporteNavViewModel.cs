@@ -11,6 +11,7 @@ namespace Hydra.Such.Data.ViewModel.GuiaTransporte
     {
         public string NoGuiaTransporte { get; set; }
         public int Tipo { get; set; }
+        public string TipoDescription { get; set; }
         public string NoCliente { get; set; }
         public string CodEnvio { get; set; }
         public string NomeCliente { get; set; }
@@ -22,7 +23,7 @@ namespace Hydra.Such.Data.ViewModel.GuiaTransporte
         public string NoRequisicao { get; set; }
         [JsonConverter(typeof(DateFormatConverter), "MM-dd-yyyy")]
         public DateTime DataGuia { get; set; }
-
+        [JsonConverter(typeof(DateFormatConverter), "MM-dd-yyyy")]
         public DateTime DataSaida { get; set; }
 
         public string ReportedBy { get; set; }
@@ -44,12 +45,14 @@ namespace Hydra.Such.Data.ViewModel.GuiaTransporte
         public string PostCode { get; set; }
 
         public TimeSpan HoraCarga { get; set; }
+        [JsonConverter(typeof(DateFormatConverter), "MM-dd-yyyy")]
         public DateTime DataCarga { get; set; }
         public string PaisCarga { get; set; }
         public string LocalDescarga { get; set; }
         public string LocalDescarga1 { get; set; }
         public string CodPostalDescarga { get; set; }
         public TimeSpan HoraDescarga { get; set; }
+        [JsonConverter(typeof(DateFormatConverter), "MM-dd-yyyy")]
         public DateTime DataDescarga { get; set; }
         public string Viatura { get; set; }
         public string PaisDescarga { get; set; }
@@ -59,7 +62,9 @@ namespace Hydra.Such.Data.ViewModel.GuiaTransporte
         public string NoGuiaOriginalInterface { get; set; }
         public int GuiaTransporteInterface { get; set; }
         public int DimensionSetId { get; set; }
+        [JsonConverter(typeof(DateFormatConverter), "MM-dd-yyyy")]
         public DateTime ShipmentStartDate { get; set; }
+        public TimeSpan ShipmentStartTime { get; set; }
         public bool Historico { get; set; }
         public string CodPais { get; set; }
         public string Telefone { get; set; }

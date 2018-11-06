@@ -83,14 +83,35 @@ namespace Hydra.Such.Data.Logic
                         new SqlParameter("@IsHistoric", isHistoric ? 1 : 0)
                 };
 
-                dynamic data = _contextExt.execStoredProcedure("exec NAV2017GuiaTransportDetails @DBName, @CompanyName, @No, @IsHistoric", parameters);
+                dynamic data = _contextExt.execStoredProcedure("exec NAV2017GuiaTransportDetails @DBName, @CompanyName, @No, @IsHistoric", parameters).FirstOrDefault();
 
                 if (data == null)
                     return null;
 
                 GuiaTransporteNavViewModel result = new GuiaTransporteNavViewModel() {
-                    NoGuiaTransporte = data.NoGuiaTransporte.Equals(DBNull.Value)?"":(string)data.NoGuiaTransporte
+                    NoGuiaTransporte = data.NoGuiaTransporte.Equals(DBNull.Value) ? "" : (string)data.NoGuiaTransporte
+
                 };
+
+                List<LinhaGuiaTransporteNavViewModel> linhasGt = new List<LinhaGuiaTransporteNavViewModel>();
+
+                dynamic gtlines = _contextExt.execStoredProcedure("exec NAV2017GuiaTransportLines @DBName, @CompanyName, @No, @IsHistoric", parameters);
+
+
+                foreach(dynamic ln in gtlines)
+                {
+                     if(ln != null)
+                    {
+                        LinhaGuiaTransporteNavViewModel line = new LinhaGuiaTransporteNavViewModel()
+                        {
+                            NoGuiaTransporte = (string)ln.NoDocumento,
+                            NoLinha = ln.NoLinha.Equals(DBNull.Value) ? 1 : (int)ln.NoLinha
+                        };
+
+                        linhasGt.Add(line);
+                    }
+                }
+                result.LinhasGuiaTransporte = linhasGt;
                 return result;
             }
             catch (Exception ex)

@@ -19,6 +19,7 @@ using System.IO;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using Newtonsoft.Json;
+using Hydra.Such.Data;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -47,21 +48,31 @@ namespace Hydra.Such.Portal.Controllers
         [HttpGet]
         public ActionResult GuiaTransporteDetails(string id, bool isHistoric = false)
         {
-            ViewBag.No = id ?? "";
-            ViewBag.reportServerURL = _config.ReportServerURL;
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.ImpressaoGuiaTransporteNAV);
 
-            if (isHistoric == true)
+            if(UPerm!=null && UPerm.Read.Value)
             {
-                ViewBag.Historic = "(Histórico) ";
-                ViewBag.ifHistoric = true;
+                ViewBag.No = id ?? "";
+                ViewBag.reportServerURL = _config.ReportServerURL;
+
+                if (isHistoric == true)
+                {
+                    ViewBag.Historic = "(Histórico) ";
+                    ViewBag.ifHistoric = true;
+                }
+                else
+                {
+                    ViewBag.Historic = "";
+                    ViewBag.ifHistoric = false;
+                }
+
+                return View();
             }
             else
             {
-                ViewBag.Historic = "";
-                ViewBag.ifHistoric = false;
+                return RedirectToAction("AccessDenied", "Error");
             }
-
-            return View();
+            
         }
 
         [HttpPost]
@@ -71,6 +82,27 @@ namespace Hydra.Such.Portal.Controllers
             List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
             List<GuiaTransporteNavViewModel> result = DBNAV2017GuiasTransporte.GetListByDim(_config.NAVDatabaseName, _config.NAVCompanyName, userDimensions, historic);
             return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetDetailsGuia([FromBody] JObject requestParams)
+        {
+            string noGuia = requestParams["No"] == null ? "" : requestParams["No"].ToString();
+            bool historic = requestParams["Historic"] == null ? false : bool.Parse(requestParams["Historic"].ToString());
+            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            if (noGuia != null)
+            {
+                GuiaTransporteNavViewModel guia = DBNAV2017GuiasTransporte.GetDetailsByNo(_config.NAVDatabaseName, _config.NAVCompanyName, userDimensions, noGuia, historic);
+
+                if(guia == null)
+                    return null;
+
+                return Json(guia);
+            }
+            else
+            {
+                return null;
+            }
         }
 
     }
