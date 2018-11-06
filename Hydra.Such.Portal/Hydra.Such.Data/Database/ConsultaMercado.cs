@@ -59,6 +59,7 @@ namespace Hydra.Such.Data.Database
         public bool? Amostra { get; set; }
         public bool? Urgente { get; set; }
         public bool? Historico { get; set; }
+        public string Obs { get; set; }
 
         public ICollection<CondicoesPropostasFornecedores> CondicoesPropostasFornecedores { get; set; }
         public ICollection<LinhasCondicoesPropostasFornecedores> LinhasCondicoesPropostasFornecedores { get; set; }

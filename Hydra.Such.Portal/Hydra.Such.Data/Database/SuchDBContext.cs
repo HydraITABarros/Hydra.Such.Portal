@@ -1580,6 +1580,8 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Num_Requisicao")
                     .HasMaxLength(20);
 
+                entity.Property(e => e.Obs).HasColumnType("text");
+
                 entity.Property(e => e.PedidoCotacaoCriadoEm)
                     .HasColumnName("Pedido_Cotacao_Criado_Em")
                     .HasColumnType("datetime");
