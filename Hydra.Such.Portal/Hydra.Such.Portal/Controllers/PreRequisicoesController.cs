@@ -381,7 +381,10 @@ namespace Hydra.Such.Portal.Controllers
                             CLine.Viatura = x.Vehicle;
                             CLine.NºFornecedor = x.SupplierNo;
                             CLine.CódigoProdutoFornecedor = x.SupplierProductCode;
-                            CLine.LocalCompraDireta = x.ArmazemCDireta;
+
+                            //CLine.LocalCompraDireta = x.ArmazemCDireta;
+                            CLine.LocalCompraDireta = x.LocalCode;
+
                             CLine.UnidadeProdutivaNutrição = x.UnitNutritionProduction;
                             CLine.NºCliente = x.CustomerNo;
                             CLine.NºEncomendaAberto = x.OpenOrderNo;
@@ -1926,6 +1929,8 @@ namespace Hydra.Such.Portal.Controllers
         [HttpGet]
         public FileStreamResult DownloadFile(string id)
         {
+            //string file = "wwwroot/Upload/Requisicoes/ARomao@such.pt_AMARO_PRE_ANEXO";
+            //return new FileStreamResult(new FileStream(file, FileMode.Open), "application/xlsx");
             return new FileStreamResult(new FileStream(_config.FileUploadFolder + id, FileMode.Open), "application/xlsx");
         }
 

@@ -239,7 +239,7 @@ namespace Hydra.Such.Data.Logic.ComprasML
                 NºCliente = x.CustomerNo,
                 NºEncomendaAberto = x.OpenOrderNo,
                 NºLinhaEncomendaAberto = x.OpenOrderLineNo,
-                LocalCompraDireta = x.ArmazemCDireta
+                LocalCompraDireta = x.LocalCode
             };
         }
     }
