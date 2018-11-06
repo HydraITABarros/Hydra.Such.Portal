@@ -301,7 +301,7 @@
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" id="btnGoBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
 
-            <paper-button class="tablinks" id="btnLocalMarketValidation" disabled="{{ !_permissions.update }}" style="width: 200px !important;" on-tap="_validateLocalMarket"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Validação Mercado Local</paper-button>
+            <paper-button class="tablinks" id="btnLocalMarketValidation" disabled="{{ !_permissions.update }}" style="width: 200px !important;" on-tap="_validateLocalMarket"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Enviar Mercado Local</paper-button>
             <paper-button class="tablinks" id="btnValidate" disabled="{{ !_permissions.update }}" on-tap="_validateRequisition"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Validar</paper-button>
             <paper-button class="tablinks" id="btnAnularAprovacao" disabled="{{ !_permissions.update }}" on-tap="_anularAprovacao"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Anular Aprovação</paper-button>
             <paper-button class="tablinks" id="btnAprovar" disabled="{{ !_permissions.update }}" on-tap="_aprovarRequisicao" title="Aprovar"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Aprovar</paper-button>
@@ -309,7 +309,7 @@
             <such-dropdown-menu id="menuFunctios" disabled="{{ !_permissions.update }}" on-value-changed="_functionsMenuItemSelected" title="Funções" items='[[ _functionsMenuItems ]]'></such-dropdown-menu>
 
             <!--<template is="dom-if" if="{{ _permissions.update }}">-->
-            <!--<paper-button class="tablinks" id="btnLocalMarketValidation" style="width: 200px !important;" on-tap="_validateLocalMarket"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Validação Mercado Local</paper-button>-->
+            <!--<paper-button class="tablinks" id="btnLocalMarketValidation" style="width: 200px !important;" on-tap="_validateLocalMarket"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Enviar Mercado Local</paper-button>-->
             <!--<paper-button class="tablinks" id="btnValidate" on-tap="_validateRequisition"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Validar</paper-button>-->
             <!--<such-dropdown-menu id="menuRegister" on-value-changed="_registerMenuItemSelected" title="Registar" items='[[ _registerMenuItems ]]'></such-dropdown-menu>-->
             <!--<such-dropdown-menu id="menuFunctios" on-value-changed="_functionsMenuItemSelected" title="Funções" items='[[ _functionsMenuItems ]]'></such-dropdown-menu>-->
@@ -1331,14 +1331,14 @@
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
                                             <!--<vaadin-combo-box items="[[Suppliers]]" id="_CLGridSupplierNo" name="_CLGridSupplierNo" item-value-path="no_" item-label-path="name" value="{{item.supplierNo}}" on-change="_onSupplierInGridChanged" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLines">
-                                                <template>
-                                                    <paper-icon-item>
-                                                        <paper-item-body two-line>
-                                                            <div>[[item.name]]</div>
-                                                        </paper-item-body>
-                                                    </paper-icon-item>
-                                                </template>
-                                            </vaadin-combo-box>-->
+                                            <template>
+                                                <paper-icon-item>
+                                                    <paper-item-body two-line>
+                                                        <div>[[item.name]]</div>
+                                                    </paper-item-body>
+                                                </paper-icon-item>
+                                            </template>
+                                        </vaadin-combo-box>-->
                                             <such-selectbox id="_CLGridSupplierNo"
                                                             items="[[Suppliers]]"
                                                             value="{{item.supplierNo}}"
@@ -1562,7 +1562,8 @@
 
                                 <template is="dom-if" if="{{ !isReadOnly() }}">
                                     <template is="dom-if" if="{{ _permissions.delete }}">
-                                        <vaadin-grid-column width="100px" resizable hidden="{{_isValidated}}"> <!--hidden="{{_isArchived}}"-->
+                                        <vaadin-grid-column width="100px" resizable hidden="{{_isValidated}}">
+                                            <!--hidden="{{_isArchived}}"-->
                                             <template class="header">
                                             </template>
                                             <template>
@@ -1573,6 +1574,11 @@
                                 </template>
                             </vaadin-grid>
                         </div>
+
+                        <div class="marginSpace">
+                            <paper-button raised id="btnSumLines" class="btnSave" on-tap="_sumLines"><i class="fa fa-calculator" aria-hidden="true"></i>&nbsp; Total</paper-button>
+                        </div>
+
                         <!--<div class="marginSpace">
                         <template is="dom-if" if="{{ _permissions.update }}">
                             <paper-button raised id="btnSaveLine" class="btnEdit" on-tap="_updateRequisitionLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
@@ -1599,6 +1605,16 @@
                 </div>
             </template>
         </paper-toast>
+
+        <!-- Paper Dialog Total Linhas-->
+        <paper-dialog id="dialogTotal" style="height:120px; width:300px">
+            <div>
+                <h2>Valor Total: <b>{{_TotalLine}} €</b></h2>
+            </div>
+            <div class="buttons">
+                <paper-button raised class="btnEdit" dialog-dismiss>Fechar</paper-button>
+            </div>
+        </paper-dialog>
 
         <paper-dialog id="rptDialog" class="dialgoBox" modal>
             <div class="buttons">
@@ -1654,7 +1670,7 @@
                     },
                     _functionsMenuItems: {
                         type: Array,
-                        value: [{ value: 1, description: "Criar Consulta Mercado" }, { value: 2, description: "Criar Encomenda de Compra" }, { value: 3, description: "Criar Guia Transporte" }, { value: 4, description: "Enviar Pré-Compra" }, { value: 5, description: "Validação Mercado Local" }],
+                        value: [{ value: 1, description: "Criar Consulta Mercado" }, { value: 2, description: "Criar Encomenda de Compra" }, { value: 3, description: "Criar Guia Transporte" }, { value: 4, description: "Enviar Pré-Compra" }, { value: 5, description: "Enviar Mercado Local" }],
                     },
                     _permissions: {
                         type: Array
@@ -1788,7 +1804,7 @@
                         case 4://"Enviar Pré-Encomenda"
                             this._sendPrePurchase();
                             break;
-                        case 5://"Validação Mercado Local"
+                        case 5://"Enviar Mercado Local"
                             this._validateLocalMarket();
                             break;
                     }
@@ -2713,6 +2729,19 @@
                         window.history.back();
                     } else {
                         this._openToastError(this.actionResult.eMessage);
+                    }
+                },
+
+                _sumLines: function () {
+                    var count = 0;
+                    if (this.Requisition.lines != null) {
+                        for (var i = 0; i < this.Requisition.lines.length; i++) {
+                            count += (this.Requisition.lines[i].quantityToRequire * this.Requisition.lines[i].unitCost);
+                            this._TotalLine = count;
+                            this.$.dialogTotal.open();
+                        }
+                    } else {
+                        this._openToast("Não tem Linhas inseridas.");
                     }
                 },
 

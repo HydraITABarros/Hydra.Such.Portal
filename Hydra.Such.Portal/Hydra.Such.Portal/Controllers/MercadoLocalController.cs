@@ -77,6 +77,8 @@ namespace Hydra.Such.Portal.Controllers
                         Compras.NoFornecedorTexto = Compras.NoFornecedor == null ? "" : Compras.NoFornecedor + " - " + DBNAV2017Supplier.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, Compras.NoFornecedor).FirstOrDefault().Name;
                         if (!string.IsNullOrEmpty(Compras.NoRequisicao) && Compras.NoLinhaRequisicao != null)
                             Compras.RecusadoComprasTexto = DBRequestLine.GetByRequisicaoNoAndLineNo(Compras.NoRequisicao, (int)Compras.NoLinhaRequisicao) == null ? "" : DBRequestLine.GetByRequisicaoNoAndLineNo(Compras.NoRequisicao, (int)Compras.NoLinhaRequisicao).RecusadoCompras == false ? "Não" : "Sim";
+                        if (!string.IsNullOrEmpty(Compras.NoProjetoTexto) && !string.IsNullOrEmpty(Compras.NoProjeto))
+                            Compras.NoProjetoTexto = DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, Compras.NoProjeto).FirstOrDefault().Description;
                     });
                 }
 

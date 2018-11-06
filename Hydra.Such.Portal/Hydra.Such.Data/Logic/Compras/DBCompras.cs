@@ -174,7 +174,6 @@ namespace Hydra.Such.Data.Logic.ComprasML
                         UrgenteTexto = Compras.Urgente == null ? "" : Compras.Urgente == false ? "Não" : "Sim",
                         RegiaoMercadoLocal = Compras.RegiaoMercadoLocal,
                         Estado = Compras.Estado,
-                        //EstadoTexto = Compras.Estado == null ? "" : EnumerablesFixed.ComprasEstado.Where(y => y.Id == Compras.Estado).FirstOrDefault().Value,
                         DataCriacao = Compras.DataCriacao,
                         DataCriacaoTexto = Compras.DataCriacao == null ? "" : Compras.DataCriacao.Value.ToString("yyyy-MM-dd"),
                         HoraCriacaoTexto = Compras.DataCriacao == null ? "" : Compras.DataCriacao.Value.ToString("HH:mm:ss"),
@@ -182,16 +181,15 @@ namespace Hydra.Such.Data.Logic.ComprasML
                         UtilizadorCriacaoTexto = Compras.UtilizadorCriacao == null ? "" : DBUserConfigurations.GetById(Compras.UtilizadorCriacao).Nome,
                         Responsaveis = Compras.Responsaveis,
                         NoProjeto = Compras.NoProjeto,
-                        NoProjetoTexto = Compras.NoProjeto == null ? "" : DBProjects.GetById(Compras.NoProjeto).Descrição,
+
+                        NoProjetoTexto = Compras.NoProjeto == null ? "" : DBProjects.GetById(Compras.NoProjeto) != null ? DBProjects.GetById(Compras.NoProjeto).Descrição : "",
+
                         NoFornecedor = Compras.NoFornecedor,
-                        //NoFornecedorTexto = Compras.NoFornecedor == null ? "" DBNAV2017Supplier.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, Compras.NoFornecedor).FirstOrDefault().Name,
                         NoEncomenda = Compras.NoEncomenda,
-                        //NoEncomendaTexto =
                         DataEncomenda = Compras.DataEncomenda,
                         DataEncomendaTexto = Compras.DataEncomenda == null ? "" : Compras.DataEncomenda.Value.ToString("yyyy-MM-dd"),
                         HoraEncomendaTexto = Compras.DataEncomenda == null ? "" : Compras.DataEncomenda.Value.ToString("HH:mm:ss"),
                         NoConsultaMercado = Compras.NoConsultaMercado,
-                        //NoConsultaMercadoTexto =
                         DataConsultaMercado = Compras.DataConsultaMercado,
                         DataConsultaMercadoTexto = Compras.DataConsultaMercado == null ? "" : Compras.DataConsultaMercado.Value.ToString("yyyy-MM-dd"),
                         HoraConsultaMercadoTexto = Compras.DataConsultaMercado == null ? "" : Compras.DataConsultaMercado.Value.ToString("HH:mm:ss"),
