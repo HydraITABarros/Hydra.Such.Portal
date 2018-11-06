@@ -109,6 +109,16 @@
                    on-response="_responseProcessor"
                    content-type="application/json"></iron-ajax>
 
+        <!-- CUSTOMER CRUDS -->
+        <iron-ajax url="/Clientes/GetInvoices"
+                   last-response="{{invoices}}"
+                   method="post"
+                   handle-as="json"
+                   id="invoices_data"
+                   on-response="_responseInvoicesProcessor"
+                   content-type="application/json"></iron-ajax>
+
+
         <iron-ajax url="/Clientes/Delete"
                    last-response="{{deletedData}}"
                    method="post"
@@ -277,6 +287,111 @@
                                     </paper-collapse-group>
                                 </div>
 
+                                <!------------ Faturas / Notas de Crédito ------------>
+                                <div class="panel panel-default">
+                                    <paper-collapse-group>
+                                        <paper-collapse-item header="Faturas / Notas de Crédito" opened>
+                                            <div class="panel-body">
+                                                <div class="row break_clear">
+
+
+                                                    <div class="break_clear col-xs-12">
+
+                                                        <vaadin-grid aria-label="Invoices" id="grid_invoices" name="grid_invoices" items="[[invoices]]" class="grid" multi-sort="true" active-item="{{_SelectedInvoice}}">
+                                                            <vaadin-grid-column width="100px" resizable>
+                                                                <template class="header">
+                                                                    <vaadin-grid-sorter path="tipo">Tipo</vaadin-grid-sorter>
+                                                                    <vaadin-grid-filter path="tipo" />
+                                                                </template>
+                                                                <template>
+                                                                    {{item.tipo}}
+                                                                </template>
+                                                            </vaadin-grid-column>
+
+                                                            <vaadin-grid-column width="100px" resizable>
+                                                                <template class="header">
+                                                                    <vaadin-grid-sorter path="no_">Nº</vaadin-grid-sorter>
+                                                                    <vaadin-grid-filter path="no_" />
+                                                                </template>
+                                                                <template>
+                                                                    {{item.no_}}
+                                                                </template>
+                                                            </vaadin-grid-column>
+
+                                                            <vaadin-grid-column width="100px" resizable>
+                                                                <template class="header">
+                                                                    <vaadin-grid-sorter path="dueDate">Data de Vencimento</vaadin-grid-sorter>
+                                                                    <vaadin-grid-filter path="dueDate" />
+                                                                </template>
+                                                                <template>
+                                                                    {{item.dueDate}}
+                                                                </template>
+                                                            </vaadin-grid-column>
+
+                                                            <vaadin-grid-column width="100px" resizable>
+                                                                <template class="header">
+                                                                    <vaadin-grid-sorter path="amountIncludingVAT">Valor com IVA</vaadin-grid-sorter>
+                                                                    <vaadin-grid-filter path="amountIncludingVAT" />
+                                                                </template>
+                                                                <template>
+                                                                    [[_formatCurrencyValue(item.amountIncludingVAT)]]
+                                                                </template>
+                                                            </vaadin-grid-column>
+
+                                                            <vaadin-grid-column width="100px" resizable>
+                                                                <template class="header">
+                                                                    <vaadin-grid-sorter path="valorPendente">Valor Pendente</vaadin-grid-sorter>
+                                                                    <vaadin-grid-filter path="valorPendente" />
+                                                                </template>
+                                                                <template>
+                                                                    [[_formatCurrencyValue(item.valorPendente)]]
+                                                                </template>
+                                                            </vaadin-grid-column>
+
+                                                            <vaadin-grid-column width="100px" resizable>
+                                                                <template class="header">
+                                                                    <vaadin-grid-sorter path="paid">Pago</vaadin-grid-sorter>
+                                                                    <vaadin-grid-filter path="paid" />
+                                                                </template>
+                                                                <template>
+                                                                    [[_formatBoolValue(item.paid)]]
+                                                                </template>
+                                                            </vaadin-grid-column>
+                                                            <vaadin-grid-column width="100px" resizable>
+                                                                <template class="header">
+                                                                    <vaadin-grid-sorter path="regionId">Cód. Região</vaadin-grid-sorter>
+                                                                    <vaadin-grid-filter path="regionId" />
+                                                                </template>
+                                                                <template>
+                                                                    {{item.regionId}}
+                                                                </template>
+                                                            </vaadin-grid-column>
+                                                            <vaadin-grid-column width="100px" resizable>
+                                                                <template class="header">
+                                                                    <vaadin-grid-sorter path="functionalAreaId">Cód. Área Funcional</vaadin-grid-sorter>
+                                                                    <vaadin-grid-filter path="functionalAreaId" />
+                                                                </template>
+                                                                <template>
+                                                                    {{item.functionalAreaId}}
+                                                                </template>
+                                                            </vaadin-grid-column>
+                                                            <vaadin-grid-column width="100px" resizable>
+                                                                <template class="header">
+                                                                    <vaadin-grid-sorter path="respCenterId">Cód. Centro de Responsabilidade</vaadin-grid-sorter>
+                                                                    <vaadin-grid-filter path="respCenterId" />
+                                                                </template>
+                                                                <template>
+                                                                    {{item.respCenterId}}
+                                                                </template>
+                                                            </vaadin-grid-column>
+                                                        </vaadin-grid>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </paper-collapse-item>
+                                    </paper-collapse-group>
+                                </div>
+
                                 <!------------ Especificação ------------>
                                 <div class="panel panel-default">
                                     <paper-collapse-group>
@@ -317,7 +432,8 @@
                                 </div>
 
                                 <div class="marginSpace">
-                                    <template is="dom-if" if="{{ _isCreate }}">
+                                    <template is="dom-if" if="{{ _isCreate
+                                                                    }}">
                                         <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                     </template>
                                     <template is="dom-if" if="{{ !_isCreate }}">
@@ -609,6 +725,12 @@
             <iframe id="rptContainer" src="" frameborder="0" style="width: 100%; height: 92%; margin: 0px; padding: 0px"></iframe>
         </paper-dialog>
 
+        <paper-dialog id="dlgInvoiceLines" class="dialgoBox" modal>
+            <div class="buttons">
+                <paper-button class="btnRemove" on-tap="_closeInvoiceLines"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
+            </div>
+        </paper-dialog>
+
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
@@ -661,6 +783,9 @@
                     },
                     _reportserverurl: {
                         type: String,
+                    },
+                    _SelectedInvoice: {
+                        observer: '_invoiceSelected'
                     }
                 },
                 ready: function () {
@@ -668,6 +793,9 @@
                     //GET Client DATA
                     this.$.page_databound_ajax.body = JSON.stringify({ "No": this._no });
                     this.$.page_databound_ajax.generateRequest();
+
+                    this.$.invoices_data.body = JSON.stringify({ "No": this._no });
+                    this.$.invoices_data.generateRequest();
 
                     this.$.shipping_list.body = JSON.stringify({ "No": this._no });
                     this.$.shipping_list.generateRequest();
@@ -828,6 +956,16 @@
                         this._openToastError("Ocorreu um erro.")
                     }
                 },
+                //Responses Processors
+                _responseInvoicesProcessor: function (data) {
+                    var self = this;
+
+                    if (data.detail.status === 200) {
+
+                    } else {
+                        this._openToastError("Ocorreu um erro.")
+                    }
+                },
                 _createResponseProcessor: function () {
                     if (this.data.eReasonCode == 1) {
                         this._isCreate = false;
@@ -962,6 +1100,27 @@
                 _closeRptDialog: function () {
                     this.$.rptContainer.src = "about:blank";
                     this.$.rptDialog.close();
+                },
+                _formatBoolValue: function (value) {
+                    return value ? "Sim" : "Não";
+                },
+                /* end - ColumnToggle */
+                _formatCurrencyValue: function (value) {
+                    if (value != null && value != 0) {
+                        return currency(Math.round(value, 2), { separator: '.', decimal: ',' }).format() + '€';
+                    }
+                },
+                _invoiceSelected: function (value) {
+                    
+                    if (value) {
+                        this._showInvoiceLines();
+                    }
+                },
+                _showInvoiceLines: function () {
+                    this.$.dlgInvoiceLines.open();
+                },
+                _closeInvoiceLines: function () {
+                    this.$.dlgInvoiceLines.close();
                 },
             });
         });
