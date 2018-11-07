@@ -16,6 +16,8 @@ namespace Hydra.Such.Data.ViewModel.GuiaTransporte
         public string CodEnvio { get; set; }
         public string NomeCliente { get; set; }
         public string NomeCliente2 { get; set; }
+        public string MoradaCliente { get; set; }
+        public string MoradaCliente2 { get; set; }
         public string Cidade { get; set; }
         public string CodPostal { get; set; }
         public string NifCliente { get; set; }
@@ -25,7 +27,7 @@ namespace Hydra.Such.Data.ViewModel.GuiaTransporte
         public DateTime DataGuia { get; set; }
         [JsonConverter(typeof(DateFormatConverter), "MM-dd-yyyy")]
         public DateTime DataSaida { get; set; }
-
+        public string Requisicao { get; set; } 
         public string ReportedBy { get; set; }
         public string NoProjecto { get; set; }
         public string OrdemTransferencia { get; set; }
@@ -43,7 +45,7 @@ namespace Hydra.Such.Data.ViewModel.GuiaTransporte
         public string Address { get; set; }
         public string City { get; set; }
         public string PostCode { get; set; }
-
+        
         public TimeSpan HoraCarga { get; set; }
         [JsonConverter(typeof(DateFormatConverter), "MM-dd-yyyy")]
         public DateTime DataCarga { get; set; }
