@@ -134,6 +134,7 @@ namespace Hydra.Such.Data.Logic
                         {
                             No = temp.No.Equals(DBNull.Value) ? "" : (string)temp.No,
                             AllocationNo = temp.AllocationNo.Equals(DBNull.Value) ? "" : (string)temp.AllocationNo,
+                            LocationCode = temp.LocationCode.Equals(DBNull.Value) ? "" : (string)temp.LocationCode,
                             Amount = (decimal?)temp.Amount,
                             AmountIncludingVAT = (decimal?)temp.AmountIncludingVAT,
                             Description = temp.Description.Equals(DBNull.Value) ? "" : (string)temp.Description,
