@@ -28,6 +28,10 @@
           <DataField>Descrição</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
+        <Field Name="Descrição2">
+          <DataField>Descrição2</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
         <Field Name="Quantidade_a_Requerer">
           <DataField>Quantidade_a_Requerer</DataField>
           <rd:TypeName>System.Decimal</rd:TypeName>
@@ -334,19 +338,19 @@
                   <Width>2.5cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>7.6cm</Width>
+                  <Width>7.38059cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>1cm</Width>
+                  <Width>1.69177cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>0.8017cm</Width>
+                  <Width>0.98305cm</Width>
                 </TablixColumn>
                 <TablixColumn>
                   <Width>2.81253cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>3.05066cm</Width>
+                  <Width>2.44212cm</Width>
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
@@ -611,7 +615,6 @@
                             <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
-                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                     <TablixCell>
@@ -623,7 +626,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!Descrição.Value</Value>
+                                  <Value>=RTrim(LTrim(Fields!Descrição.Value &amp; " " &amp; Fields!Descrição2.Value))</Value>
                                   <Style>
                                     <FontSize>8pt</FontSize>
                                   </Style>
@@ -826,7 +829,7 @@
             <Top>1.09361cm</Top>
             <Left>0.07056cm</Left>
             <Height>1.2cm</Height>
-            <Width>17.76489cm</Width>
+            <Width>17.81006cm</Width>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -834,7 +837,7 @@
             </Style>
           </Tablix>
         </ReportItems>
-        <Height>3.28125in</Height>
+        <Height>0.96875in</Height>
         <Style>
           <Border>
             <Style>None</Style>
@@ -844,7 +847,7 @@
           </TopBorder>
         </Style>
       </Body>
-      <Width>20.38063cm</Width>
+      <Width>17.99938cm</Width>
       <Page>
         <PageHeader>
           <Height>4.42736cm</Height>
@@ -1464,7 +1467,7 @@
           </Style>
         </PageHeader>
         <PageFooter>
-          <Height>2.16959cm</Height>
+          <Height>0.7673cm</Height>
           <PrintOnFirstPage>true</PrintOnFirstPage>
           <PrintOnLastPage>true</PrintOnLastPage>
           <ReportItems>
