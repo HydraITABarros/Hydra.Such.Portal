@@ -93,6 +93,14 @@
             .spacer60 {
                 height: 60px;
             }
+
+            .grid--modal__wrapper {
+                height: 86% !important;
+            }
+
+            .grid--modal {
+                height: 100% !important;
+            }
         </style>
 
 
@@ -118,6 +126,23 @@
                    on-response="_responseInvoicesProcessor"
                    content-type="application/json"></iron-ajax>
 
+
+        <iron-ajax url="/Clientes/GetInvoiceDetails"
+                   last-response="{{invoicesLines}}"
+                   method="post"
+                   handle-as="json"
+                   id="invoicesLines_data"
+                   on-response="_responseInvoicesLinesProcessor"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Clientes/InvoiceDetailsExportToExcel"
+                   last-response="{{export}}"
+                   id="ajax_InvoiceDetailsExport"
+                   method="post"
+                   handle-as="json"
+                   on-response="_invoiceDetailsExportEXCELResponse"
+                   content-type="application/json">
+        </iron-ajax>
 
         <iron-ajax url="/Clientes/Delete"
                    last-response="{{deletedData}}"
@@ -704,6 +729,7 @@
 
                                 <div class="spacer20"></div>
                                 <template is="dom-if" if="{{ _permissions.update }}">
+
                                     <div class="col-lg-2 break_clear">
                                         <paper-button raised id="btnUpdateLine" class="btnSave" on-tap="_updateShippingLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
                                     </div>
@@ -727,7 +753,103 @@
 
         <paper-dialog id="dlgInvoiceLines" class="dialgoBox" modal>
             <div class="buttons">
+                <paper-button class="btnSave" on-tap="_exportInvoiceLines"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
                 <paper-button class="btnRemove" on-tap="_closeInvoiceLines"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
+            </div>
+            <div class="break_clear"></div>
+            <div class="break_clear col-xs-12 grid--modal__wrapper">
+                <vaadin-grid aria-label="Invoices" id="grid_invoicesdetails" name="grid_invoicesdetails" items="[[invoicesLines]]" class="grid--modal" multi-sort="true" active-item="{{_SelectedInvoiceLine}}">
+                    <vaadin-grid-column width="100px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="documentNo">Nº de Documento</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="documentNo" />
+                        </template>
+                        <template>
+                            {{item.documentNo}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="100px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="tipo">Tipo</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="tipo" />
+                        </template>
+                        <template>
+                            {{item.tipo}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="100px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="no">Nº</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="no" />
+                        </template>
+                        <template>
+                            {{item.no}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="100px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="description" />
+                        </template>
+                        <template>
+                            {{item.description}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="100px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="description2">Descrição 2</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="description2" />
+                        </template>
+                        <template>
+                            {{item.description2}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="100px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="unitOfMeasure">Unidade de Medida</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="unitOfMeasure" />
+                        </template>
+                        <template>
+                            {{item.unitOfMeasure}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="100px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="quantity">Quantidade</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="quantity" />
+                        </template>
+                        <template>
+                            [[_roundValue(item.quantity, 0)]]
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="100px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="unitPrice">Preço Unitário</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="unitPrice" />
+                        </template>
+                        <template>
+                            [[_formatCurrencyValue(item.unitPrice)]]
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="100px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="vat">Iva</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="vat" />
+                        </template>
+                        <template>
+                            [[_formatPercentValue(item.vat)]]
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="100px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="amount">Custo</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="amount" />
+                        </template>
+                        <template>
+                            [[_formatCurrencyValue(item.amount)]]
+                        </template>
+                    </vaadin-grid-column>
+                </vaadin-grid>
             </div>
         </paper-dialog>
 
@@ -786,6 +908,12 @@
                     },
                     _SelectedInvoice: {
                         observer: '_invoiceSelected'
+                    },
+                    _invoiceLinesColumns: {
+                        type: Object,
+                        value: function () {
+                            return {};
+                        }
                     }
                 },
                 ready: function () {
@@ -799,6 +927,10 @@
 
                     this.$.shipping_list.body = JSON.stringify({ "No": this._no });
                     this.$.shipping_list.generateRequest();
+
+
+                    /*ColumnToggle*/
+                    this._startInvoiceLinesColumnToggle();
 
                     if (this._no == "") {
                         this._isCreate = true;
@@ -1106,13 +1238,22 @@
                 },
                 /* end - ColumnToggle */
                 _formatCurrencyValue: function (value) {
+                    value = value * 1;
                     if (value != null && value != 0) {
-                        return currency(Math.round(value, 2), { separator: '.', decimal: ',' }).format() + '€';
+                        return currency(Math.round(value * 100) / 100, { separator: '.', decimal: ',' }).format() + '€';
                     }
                 },
                 _invoiceSelected: function (value) {
                     
-                    if (value) {
+                    if (value) {                        
+                        this.$.invoicesLines_data.body = JSON.stringify({ "No_": value.no_, "tipo": value.tipo });
+                        this.$.invoicesLines_data.generateRequest();
+                    }
+                },
+                _responseInvoicesLinesProcessor: function (data) {
+                    var self = this;
+                    if (data.detail.status === 200) {
+
                         this._showInvoiceLines();
                     }
                 },
@@ -1122,8 +1263,49 @@
                 _closeInvoiceLines: function () {
                     this.$.dlgInvoiceLines.close();
                 },
+                _exportInvoiceLines: function () {
+                    var payload = { list: this.invoicesLines, columns: this._invoiceLinesColumns, noFatura: this._SelectedInvoice.no_, "tipo": this._SelectedInvoice.tipo };
+
+                    this.$.ajax_InvoiceDetailsExport.body = JSON.stringify(payload);
+                    this.$.ajax_InvoiceDetailsExport.generateRequest();
+                },
+                _invoiceDetailsExportEXCELResponse: function () {
+                    var FileName = this.export;
+                    location.href = '../InvoiceDetailsExportToExcel?fileName=' + FileName + "&tipo=" + this._SelectedInvoice.tipo ;
+                },
+                _startInvoiceLinesColumnToggle: function () {
+                    var columns = {
+                        "documentNo": { hidden: false, label: "documentNo" },
+                        "tipo": { hidden: false, label: "Tipo" },
+                        "no": { hidden: false, label: "Nº" },
+                        "description": { hidden: false, label: "Descrição" },
+                        "description2": { hidden: false, label: "Descrição 2" },
+                        "unitOfMeasure": { hidden: false, label: "Unidade de Medida" },
+                        "quantity": { hidden: false, label: "Quantidade" },
+                        "unitPrice": { hidden: false, label: "Preço Unitário" },
+                        "vat": { hidden: false, label: "Iva" },
+                        "amount": { hidden: false, label: "Custo" }
+                    };
+                    
+                    
+                    if (localStorage["clientesinvoicelist.ToggleColumn"]) {
+                        var keys = Object.keys(columns);
+                        var storedColumns = JSON.parse(localStorage["clientesinvoicelist.ToggleColumn"]);
+                        for (var i = 0; i < keys.length; i++) {
+                            columns[keys[i]] = storedColumns[keys[i]];
+                        }
+                    };
+                    this._invoiceLinesColumns = columns;
+                },
+                _formatPercentValue: function (value) {
+                    return this._roundValue(value, 0) + "%";
+                },
+                _roundValue: function (value, decimal) {
+                    return Math.round(value * 1, decimal);
+                }
             });
         });
+
 
         var forceNumericWithMaxLength = function (el, event, maxLength) {
             if ((!/^\d+$/.test(event.key) || (el.value && el.value.length >= maxLength)) && ['ArrowLeft', 'ArrowRight', 'Backspace', 'Delete'].indexOf(event.key) < 0) {
