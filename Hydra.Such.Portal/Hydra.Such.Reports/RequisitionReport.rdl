@@ -44,6 +44,10 @@
           <DataField>Código_Unidade_Medida</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
+        <Field Name="LineCodProduto">
+          <DataField>LineCodProduto</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
         <Field Name="Nº_Requisição">
           <DataField>Nº_Requisição</DataField>
           <rd:TypeName>System.String</rd:TypeName>
@@ -330,10 +334,10 @@
                   <Width>2.5cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>7.75828cm</Width>
+                  <Width>7.6cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>0.8869cm</Width>
+                  <Width>1cm</Width>
                 </TablixColumn>
                 <TablixColumn>
                   <Width>0.8017cm</Width>
@@ -576,25 +580,23 @@
                   <TablixCells>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="Nº_Linha">
+                        <Textbox Name="LineCodProduto">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!Nº_Linha.Value</Value>
+                                  <Value>=Fields!LineCodProduto.Value</Value>
                                   <Style>
                                     <FontSize>8pt</FontSize>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
-                              <Style>
-                                <TextAlign>Left</TextAlign>
-                              </Style>
+                              <Style />
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>Nº_Linha</rd:DefaultName>
+                          <rd:DefaultName>LineCodProduto</rd:DefaultName>
                           <Style>
                             <Border>
                               <Style>None</Style>
@@ -609,6 +611,7 @@
                             <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
+                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                     <TablixCell>
@@ -823,7 +826,7 @@
             <Top>1.09361cm</Top>
             <Left>0.07056cm</Left>
             <Height>1.2cm</Height>
-            <Width>17.81007cm</Width>
+            <Width>17.76489cm</Width>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -841,7 +844,7 @@
           </TopBorder>
         </Style>
       </Body>
-      <Width>17.88063cm</Width>
+      <Width>20.38063cm</Width>
       <Page>
         <PageHeader>
           <Height>4.42736cm</Height>
@@ -1466,6 +1469,7 @@
           <PrintOnLastPage>true</PrintOnLastPage>
           <ReportItems>
             <Line Name="Line6">
+              <Top>0cm</Top>
               <Left>0.07056cm</Left>
               <Height>0cm</Height>
               <Width>17.81006cm</Width>

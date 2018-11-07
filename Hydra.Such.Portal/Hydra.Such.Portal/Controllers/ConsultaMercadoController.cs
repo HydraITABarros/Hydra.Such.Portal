@@ -1610,8 +1610,10 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         string filename = Path.GetFileName(file.FileName);
                         //full_filename = id + "_" + filename;
-                        full_filename = "ConsultasMercado/" + id + "_" + filename;
-                        var path = Path.Combine(_generalConfig.FileUploadFolder, full_filename);
+                        full_filename = id + "_" + filename;
+                        //var path = Path.Combine(_generalConfig.FileUploadFolder, full_filename);
+                        var path = Path.Combine("E:\\Data\\eSUCH\\ConsultasMercado\\", full_filename);
+                        //var path = Path.Combine("N:\\", full_filename);
                         using (FileStream dd = new FileStream(path, FileMode.CreateNew))
                         {
                             file.CopyTo(dd);
@@ -1661,7 +1663,9 @@ namespace Hydra.Such.Portal.Controllers
         [HttpGet]
         public FileStreamResult DownloadFile(string id)
         {
-            return new FileStreamResult(new FileStream(_generalConfig.FileUploadFolder + id, FileMode.Open), "application/xlsx");
+            //return new FileStreamResult(new FileStream(_generalConfig.FileUploadFolder + id, FileMode.Open), "application/xlsx");
+            return new FileStreamResult(new FileStream("E:\\Data\\eSUCH\\ConsultasMercado\\" + id, FileMode.Open), "application/xlsx");
+            //return new FileStreamResult(new FileStream("N:\\" + id, FileMode.Open), "application/xlsx");
         }
 
         [HttpPost]
@@ -1669,7 +1673,9 @@ namespace Hydra.Such.Portal.Controllers
         {
             try
             {
-                System.IO.File.Delete(_generalConfig.FileUploadFolder + requestParams.Url);
+                //System.IO.File.Delete(_generalConfig.FileUploadFolder + requestParams.Url);
+                System.IO.File.Delete("E:\\Data\\eSUCH\\ConsultasMercado\\" + requestParams.Url);
+                //System.IO.File.Delete("N:\\" + requestParams.Url);
                 DBAttachments.Delete(DBAttachments.ParseToDB(requestParams));
                 requestParams.eReasonCode = 1;
 

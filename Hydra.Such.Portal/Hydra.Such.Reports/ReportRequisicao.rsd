@@ -7,12 +7,13 @@
       <DataSetParameters>
         <DataSetParameter Name="@NoRequisicao">
           <ReadOnly>false</ReadOnly>
-          <Nullable>true</Nullable>
+          <Nullable>false</Nullable>
           <OmitFromQuery>false</OmitFromQuery>
+          <rd:DbType>Object</rd:DbType>
         </DataSetParameter>
       </DataSetParameters>
       <CommandText>SELECT        [Linhas Requisição].[Nº Linha], [Linhas Requisição].Descrição, [Linhas Requisição].[Quantidade a Requerer], [Linhas Requisição].[Código Localização] AS LineLocalization, [Linhas Requisição].[Nº Projeto] AS LineProjNo, 
-                         [Linhas Requisição].[Código Unidade Medida], Requisição.[Nº Requisição], Requisição.Área, Requisição.Estado, Requisição.[Nº Projeto], Requisição.[Código Região], Requisição.[Código Área Funcional], 
+                         [Linhas Requisição].[Código Unidade Medida], [Linhas Requisição].Código AS LineCodProduto, Requisição.[Nº Requisição], Requisição.Área, Requisição.Estado, Requisição.[Nº Projeto], Requisição.[Código Região], Requisição.[Código Área Funcional], 
                          Requisição.[Código Centro Responsabilidade], Requisição.[Código Localização], Requisição.[Nº Funcionário], Requisição.Viatura, Requisição.[Data Receção], Requisição.Urgente, Requisição.Amostra, Requisição.Anexo, 
                          Requisição.Imobilizado, Requisição.[Compra a Dinheiro], Requisição.[Código Local Recolha], Requisição.[Código Local Entrega], Requisição.Observações, Requisição.[Modelo de Requisição], Requisição.[Data/Hora Criação], 
                          Requisição.[Utilizador Criação], Requisição.[Data/Hora Modificação], Requisição.[Utilizador Modificação], Requisição.[Cabimento Orçamental], Requisição.Exclusivo, Requisição.[Já Executado], Requisição.Equipamento, 
@@ -26,6 +27,7 @@
 FROM            Requisição INNER JOIN
                          [Linhas Requisição] ON Requisição.[Nº Requisição] = [Linhas Requisição].[Nº Requisição]
 WHERE        (Requisição.[Nº Requisição] = @NoRequisicao)</CommandText>
+      <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
     </Query>
     <Fields>
       <Field Name="Nº_Linha">
@@ -50,6 +52,10 @@ WHERE        (Requisição.[Nº Requisição] = @NoRequisicao)</CommandText>
       </Field>
       <Field Name="Código_Unidade_Medida">
         <DataField>Código Unidade Medida</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="LineCodProduto">
+        <DataField>LineCodProduto</DataField>
         <rd:TypeName>System.String</rd:TypeName>
       </Field>
       <Field Name="Nº_Requisição">
