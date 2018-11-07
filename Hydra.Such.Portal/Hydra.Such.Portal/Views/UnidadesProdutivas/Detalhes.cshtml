@@ -464,17 +464,17 @@
                                             <div class="panel-body">
                                                 <!-- VAADIN GRID  Projetos de Faturação -->
                                                 <vaadin-grid aria-label="BillingProjectsGrid" id="grid_ClientRequisitions" items="[[data.coffeeShops]]" class="grid" active-item="{{activeItem}}" multi-sort="true" disabled="{{ !_permissions.update }}">
-                                                    <vaadin-grid-column>
+                                                    <vaadin-grid-column width="150px" resizable>
                                                         <template class="header">
-                                                            <vaadin-grid-sorter path="type">Tipo</vaadin-grid-sorter>
-                                                            <vaadin-grid-filter path="type" />
+                                                            <vaadin-grid-sorter path="typeText">Tipo</vaadin-grid-sorter>
+                                                            <vaadin-grid-filter path="typeText" />
                                                         </template>
                                                         <template>
-                                                            {{item.type}}
+                                                            {{item.typeText}}
                                                         </template>
                                                     </vaadin-grid-column>
                                                     
-                                                    <vaadin-grid-column>
+                                                    @*<vaadin-grid-column>
                                                         <template class="header">
                                                             <vaadin-grid-sorter path="code">Código</vaadin-grid-sorter>
                                                             <vaadin-grid-filter path="code" />
@@ -482,9 +482,9 @@
                                                         <template>
                                                             {{item.code}}
                                                         </template>
-                                                    </vaadin-grid-column>
+                                                    </vaadin-grid-column>*@
                                                     
-                                                    <vaadin-grid-column>
+                                                    <vaadin-grid-column width="250px" resizable>
                                                         <template class="header">
                                                             <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
                                                             <vaadin-grid-filter path="description" />
@@ -494,7 +494,7 @@
                                                         </template>
                                                     </vaadin-grid-column>
                                                     
-                                                    <vaadin-grid-column>
+                                                    <vaadin-grid-column width="150px" resizable>
                                                         <template class="header">
                                                             <vaadin-grid-sorter path="projectNo">Projeto</vaadin-grid-sorter>
                                                             <vaadin-grid-filter path="projectNo" />
@@ -504,7 +504,7 @@
                                                         </template>
                                                     </vaadin-grid-column>
                                                     
-                                                    <vaadin-grid-column>
+                                                    <vaadin-grid-column width="150px" resizable>
                                                         <template class="header">
                                                             <vaadin-grid-sorter path="balance">Saldo</vaadin-grid-sorter>
                                                             <vaadin-grid-filter path="balance" />
@@ -514,7 +514,7 @@
                                                         </template>
                                                     </vaadin-grid-column>
                                                     
-                                                    <vaadin-grid-column>
+                                                    <vaadin-grid-column width="150px" resizable>
                                                         <template class="header">
                                                             <vaadin-grid-sorter path="totalCosts">Total Custos</vaadin-grid-sorter>
                                                             <vaadin-grid-filter path="totalCosts" />

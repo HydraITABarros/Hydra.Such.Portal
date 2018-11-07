@@ -8,19 +8,11 @@
       <rd:SecurityType>None</rd:SecurityType>
       <rd:DataSourceID>f5dbf267-58a6-42e7-b5c2-b574d7a02b02</rd:DataSourceID>
     </DataSource>
-    <DataSource Name="eSuchSqlNavDev">
-      <ConnectionProperties>
-        <DataProvider>SQL</DataProvider>
-        <ConnectString>Data Source=10.101.1.10\sqlnav;Initial Catalog=eSuch_PROD</ConnectString>
-      </ConnectionProperties>
-      <rd:SecurityType>DataBase</rd:SecurityType>
-      <rd:DataSourceID>abc05c05-b364-4b4c-b1a2-afedc86606aa</rd:DataSourceID>
-    </DataSource>
   </DataSources>
   <DataSets>
     <DataSet Name="dw_MovClientesIntegrado">
       <Query>
-        <DataSourceName>eSuchSqlNavDev</DataSourceName>
+        <DataSourceName>eSuchDS</DataSourceName>
         <QueryParameters>
           <QueryParameter Name="@Cliente">
             <Value>=Parameters!Cliente.Value</Value>
@@ -72,7 +64,7 @@
     </DataSet>
     <DataSet Name="NavCustomer">
       <Query>
-        <DataSourceName>eSuchSqlNavDev</DataSourceName>
+        <DataSourceName>eSuchDS</DataSourceName>
         <QueryParameters>
           <QueryParameter Name="@Cliente">
             <Value>=Parameters!Cliente.Value</Value>
@@ -976,7 +968,7 @@ Saldo</Value>
               <Top>1.41889in</Top>
               <Left>0.3175cm</Left>
               <Height>0.25in</Height>
-              <Width>1in</Width>
+              <Width>2.08681in</Width>
               <ZIndex>4</ZIndex>
               <Style>
                 <Border>
@@ -1267,10 +1259,10 @@ Contribuite Nº</Value>
         </PageFooter>
         <PageHeight>27.94cm</PageHeight>
         <PageWidth>21.59cm</PageWidth>
-        <LeftMargin>1.5cm</LeftMargin>
-        <RightMargin>1.5cm</RightMargin>
-        <TopMargin>1.5cm</TopMargin>
-        <BottomMargin>1.5cm</BottomMargin>
+        <LeftMargin>1.3cm</LeftMargin>
+        <RightMargin>1.3cm</RightMargin>
+        <TopMargin>1.3cm</TopMargin>
+        <BottomMargin>1.3cm</BottomMargin>
         <ColumnSpacing>1.27cm</ColumnSpacing>
         <Style />
       </Page>

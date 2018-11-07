@@ -59,6 +59,23 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
+        public IActionResult Pre_requesition_ComprasDinheiro()
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.PréRequisiçõesComprasDinheiro);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.UploadURL = _config.FileUploadFolder;
+                ViewBag.Area = 1;
+                ViewBag.PreRequesitionNo = User.Identity.Name;
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
         public IActionResult RequisicoesPendentes()
         {
             //UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Requisições);
@@ -364,7 +381,10 @@ namespace Hydra.Such.Portal.Controllers
                             CLine.Viatura = x.Vehicle;
                             CLine.NºFornecedor = x.SupplierNo;
                             CLine.CódigoProdutoFornecedor = x.SupplierProductCode;
-                            CLine.LocalCompraDireta = x.ArmazemCDireta;
+
+                            //CLine.LocalCompraDireta = x.ArmazemCDireta;
+                            CLine.LocalCompraDireta = x.LocalCode;
+
                             CLine.UnidadeProdutivaNutrição = x.UnitNutritionProduction;
                             CLine.NºCliente = x.CustomerNo;
                             CLine.NºEncomendaAberto = x.OpenOrderNo;
@@ -826,6 +846,18 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         DBPreRequesitionLines.Delete(linestodelete);
                     }
+
+                    //Delete Anexos
+                    List<Anexos> ListAnexos = DBAttachments.GetAll().Where(x => x.TipoOrigem == 1 && x.NºOrigem == data.PreRequesitionsNo).ToList();
+                    foreach (var Anexo in ListAnexos)
+                    {
+                        if (Anexo != null)
+                        {
+                            System.IO.File.Delete(_config.FileUploadFolder + Anexo.UrlAnexo);
+                            DBAttachments.Delete(Anexo);
+                        }
+                    }
+
                     // Delete Contract 
                     DBPreRequesition.DeleteByPreRequesitionNo(data.PreRequesitionsNo);
 
@@ -927,10 +959,22 @@ namespace Hydra.Such.Portal.Controllers
             List<Requisição> RequisitionModel = null;
             RequisitionModel = DBRequestTemplates.GetAll();
 
-
             List<RequisitionViewModel> result = new List<RequisitionViewModel>();
-
             RequisitionModel.ForEach(x => result.Add(DBRequest.ParseToViewModel(x)));
+
+
+            //Apply User Dimensions Validations
+            List<AcessosDimensões> CUserDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            //Regions
+            if (CUserDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
+                result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.RegionCode));
+            //FunctionalAreas
+            if (CUserDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.FunctionalAreaCode));
+            //ResponsabilityCenter
+            if (CUserDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CenterResponsibilityCode));
+
             return Json(result);
         }
 
@@ -994,14 +1038,19 @@ namespace Hydra.Such.Portal.Controllers
                             UnidadeProdutivaNutrição = x.UnitNutritionProduction,
                             NºCliente = x.CustomerNo,
                             NºEncomendaAberto = x.OpenOrderNo,
-                            NºLinhaEncomendaAberto = x.OpenOrderLineNo
+                            NºLinhaEncomendaAberto = x.OpenOrderLineNo,
+                            LocalCompraDireta = x.LocalCode
                         };
 
-                        if (project != null)
+                        if (string.IsNullOrEmpty(newline.NºProjeto))
                         {
-                            newline.CódigoRegião = project.CódigoRegião;
-                            newline.CódigoÁreaFuncional = project.CódigoÁreaFuncional;
-                            newline.CódigoCentroResponsabilidade = project.CódigoCentroResponsabilidade;
+                            if (project != null)
+                            {
+                                newline.NºProjeto = project.NºProjeto;
+                                newline.CódigoRegião = project.CódigoRegião;
+                                newline.CódigoÁreaFuncional = project.CódigoÁreaFuncional;
+                                newline.CódigoCentroResponsabilidade = project.CódigoCentroResponsabilidade;
+                            }
                         }
 
                         if (!string.IsNullOrEmpty(x.Code))
@@ -1013,9 +1062,8 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 if (product.InventoryValueZero == 1)
                                 {
-                                    newline.CódigoLocalização = DBConfigurations.GetById(1).ArmazemCompraDireta;
                                     newline.CustoUnitário = x.UnitCost;
-                                    newline.CódigoLocalização = x.LocalCode;
+                                    newline.CódigoLocalização = DBConfigurations.GetById(1).ArmazemCompraDireta;
                                     newline.LocalCompraDireta = "1";
                                 }
                                 else
@@ -1264,6 +1312,26 @@ namespace Hydra.Such.Portal.Controllers
                             }
                         }
 
+                        if (data.Sample == true)
+                        {
+                            if (data.CollectionLocal == null || String.IsNullOrEmpty(data.CollectionAddress) || String.IsNullOrEmpty(data.CollectionPostalCode) || String.IsNullOrEmpty(data.CollectionLocality) || String.IsNullOrEmpty(data.CollectionContact) || String.IsNullOrEmpty(data.CollectionReceptionResponsible))
+                            {
+                                data.eReasonCode = 4;
+                                data.eMessage = "Os campos de Recolha devem ser todos preenchidos.";
+                                return Json(data);
+                            }
+                        }
+
+                        if (data.AlreadyExecuted == true)
+                        {
+                            if (String.IsNullOrEmpty(data.InvoiceNo))
+                            {
+                                data.eReasonCode = 4;
+                                data.eMessage = "O campo Nº Fatura na Entrega (Fornecedor) deve estar preenchido.";
+                                return Json(data);
+                            }
+                        }
+
                         if (data.Equipment == true)
                         {
                             if (data.CollectionLocal == null || String.IsNullOrEmpty(data.CollectionAddress) || String.IsNullOrEmpty(data.CollectionPostalCode) || String.IsNullOrEmpty(data.CollectionLocality) || String.IsNullOrEmpty(data.CollectionContact) || String.IsNullOrEmpty(data.CollectionReceptionResponsible))
@@ -1286,7 +1354,7 @@ namespace Hydra.Such.Portal.Controllers
                         var vendors = DBNAV2017Vendor.GetVendor(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName);
 
                         List<PreRequisitionLineViewModel> GroupedListOpenOrderLine = new List<PreRequisitionLineViewModel>();
-                        PreRequesitionLines.Where(x => x.NºLinhaEncomendaAberto.HasValue).ToList().ForEach(x => GroupedListOpenOrderLine.Add(DBPreRequesitionLines.ParseToViewModel(x)));
+                        PreRequesitionLines.Where(x => x.NºLinhaEncomendaAberto.HasValue && x.QuantidadeARequerer > 0).ToList().ForEach(x => GroupedListOpenOrderLine.Add(DBPreRequesitionLines.ParseToViewModel(x)));
 
                         List<RequisitionViewModel> newlistOpenOrder = GroupedListOpenOrderLine.GroupBy(
                             x => x.OpenOrderNo,
@@ -1369,7 +1437,7 @@ namespace Hydra.Such.Portal.Controllers
                             data = CreateRequesition(newlistOpenOrder, data);
 
                         List<PreRequisitionLineViewModel> GroupedList = new List<PreRequisitionLineViewModel>();
-                        PreRequesitionLines.Where(x => x.NºLinhaEncomendaAberto == 0 || x.NºLinhaEncomendaAberto == null).ToList().ForEach(x => GroupedList.Add(DBPreRequesitionLines.ParseToViewModel(x)));
+                        PreRequesitionLines.Where(x => (x.NºLinhaEncomendaAberto == 0 || x.NºLinhaEncomendaAberto == null) && x.QuantidadeARequerer > 0).ToList().ForEach(x => GroupedList.Add(DBPreRequesitionLines.ParseToViewModel(x)));
 
                         List<RequisitionViewModel> newlist = GroupedList.GroupBy(
                             x => x.ArmazemCDireta,
@@ -1504,6 +1572,10 @@ namespace Hydra.Such.Portal.Controllers
                     DBNumerationConfigurations.Update(ConfigNumerations);
 
                     req.RequisitionNo = RequisitionNo;
+                    req.ResponsibleCreation = User.Identity.Name;
+                    req.RequisitionDate = DateTime.Now.ToString();
+                    req.CreateUser = User.Identity.Name;
+                    req.CreateDate = DateTime.Now.ToString();
                     Requisição createReq = DBRequest.ParseToDB(req);
 
                     createReq = DBRequest.Create(createReq);
@@ -1789,35 +1861,45 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     try
                     {
-                        string filename = Path.GetFileName(file.FileName);
-                        full_filename = id + "_" + filename;
-                        var path = Path.Combine(_config.FileUploadFolder, full_filename);
-                        using (FileStream dd = new FileStream(path, FileMode.CreateNew))
+                        string extension = Path.GetExtension(file.FileName);
+                        if (extension.ToLower() == ".pdf" || extension.ToLower() == ".xls" || extension.ToLower() == ".xlsx" ||
+                            extension.ToLower() == ".doc" || extension.ToLower() == ".docx" ||
+                            extension.ToLower() == ".jpg" || extension.ToLower() == ".png" || extension.ToLower() == ".pdf")
                         {
-                            file.CopyTo(dd);
-                            dd.Dispose();
+                            string filename = Path.GetFileName(file.FileName);
+                            //full_filename = "Requisicoes/" + id + "_" + filename;
+                            //var path = Path.Combine(_config.FileUploadFolder, full_filename);
 
-                            Anexos newfile = new Anexos();
-                            newfile.NºOrigem = id;
-                            newfile.UrlAnexo = full_filename;
-                            newfile.TipoOrigem = 1;
-                            newfile.DataHoraCriação = DateTime.Now;
-                            newfile.UtilizadorCriação = User.Identity.Name;
+                            full_filename = id + "_" + filename;
+                            var path = Path.Combine("E:\\Data\\eSUCH\\RequisicoesTeste\\", full_filename);
 
-                            DBAttachments.Create(newfile);
-                            if (newfile.NºLinha == 0)
+                            using (FileStream dd = new FileStream(path, FileMode.CreateNew))
                             {
-                                System.IO.File.Delete(path);
-                            }
+                                file.CopyTo(dd);
+                                dd.Dispose();
 
-                            if (DBAttachments.GetAll().Where(x => x.TipoOrigem == 1 && x.NºOrigem == id).Count() > 0)
-                            {
-                                PréRequisição preREQ = DBPreRequesition.GetByNo(id);
-                                if (preREQ != null)
+                                Anexos newfile = new Anexos();
+                                newfile.NºOrigem = id;
+                                newfile.UrlAnexo = full_filename;
+                                newfile.TipoOrigem = 1;
+                                newfile.DataHoraCriação = DateTime.Now;
+                                newfile.UtilizadorCriação = User.Identity.Name;
+
+                                DBAttachments.Create(newfile);
+                                if (newfile.NºLinha == 0)
                                 {
-                                    preREQ.CabimentoOrçamental = true;
-                                    preREQ.UtilizadorModificação = User.Identity.Name;
-                                    DBPreRequesition.Update(preREQ);
+                                    System.IO.File.Delete(path);
+                                }
+
+                                if (DBAttachments.GetAll().Where(x => x.TipoOrigem == 1 && x.NºOrigem == id).Count() > 0)
+                                {
+                                    PréRequisição preREQ = DBPreRequesition.GetByNo(id);
+                                    if (preREQ != null)
+                                    {
+                                        preREQ.CabimentoOrçamental = true;
+                                        preREQ.UtilizadorModificação = User.Identity.Name;
+                                        DBPreRequesition.Update(preREQ);
+                                    }
                                 }
                             }
                         }
@@ -1851,6 +1933,8 @@ namespace Hydra.Such.Portal.Controllers
         [HttpGet]
         public FileStreamResult DownloadFile(string id)
         {
+            //string file = "wwwroot/Upload/Requisicoes/ARomao@such.pt_AMARO_PRE_ANEXO";
+            //return new FileStreamResult(new FileStream(file, FileMode.Open), "application/xlsx");
             return new FileStreamResult(new FileStream(_config.FileUploadFolder + id, FileMode.Open), "application/xlsx");
         }
 

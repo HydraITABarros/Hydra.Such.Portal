@@ -140,6 +140,16 @@ namespace Hydra.Such.Data
             PedidoCotacao = 53,
             [Description("Linhas de Acordos de Preços")]
             LinhasAcordosPrecos = 54,
+            [Description("Requisições por Dimensões")]
+            RequisicoesPorDimensoes = 55,
+            [Description("Pré-Requisições Compras a Dinheiro")]
+            PréRequisiçõesComprasDinheiro = 56,
+
+            // zpgm. impressão guias transporte do NAV
+            [Description("Impressão Guias Transporte NAV")]
+            ImpressaoGuiaTransporteNAV = 56,
+
+
             [Description("Administração Geral")]
             AdminGeral = 100,
             [Description("Administração Aprovações")]

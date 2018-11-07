@@ -8,6 +8,7 @@ using Hydra.Such.Data;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using static Hydra.Such.Data.Enumerations;
+using Hydra.Such.Data.ViewModel;
 
 namespace Hydra.Such.Data.Logic.ComprasML
 {
@@ -71,6 +72,62 @@ namespace Hydra.Such.Data.Logic.ComprasML
                     userName = emailAddress.Substring(0, pos);
             }
             return userName;
+        }
+
+        public List<BillingReceptionModel> GetAllFor(UserConfigurationsViewModel userConfig)
+        {
+            List<BillingReceptionModel> billingReceptions = new List<BillingReceptionModel>();
+            if (userConfig != null)
+            {
+                try
+                {
+                    var items = ctx.RececaoFaturacao.AsQueryable();
+                    if (userConfig.RFPerfilVisualizacao.HasValue && userConfig.RFPerfilVisualizacao.Value == BillingReceptionUserProfiles.Tudo)
+                    {
+                        //Apply User Dimensions Validations
+                        List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(userConfig.IdUser);
+                        //Regions
+                        if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.Region).Count() > 0)
+                            items = items.Where(x => userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.CodRegiao));
+                        //ResponsabilityCenter
+                        if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                            items = items.Where(x => userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CodCentroResponsabilidade));
+                    }
+                    else if (userConfig.RFPerfilVisualizacao.HasValue && userConfig.RFPerfilVisualizacao.Value == BillingReceptionUserProfiles.Perfil)
+                    {
+                        if (userConfig.RFPerfil.HasValue && userConfig.RFPerfil.Value != BillingReceptionAreas.Contabilidade)
+                        {
+                            items = items.Where(x => x.Estado.HasValue && (x.Estado.Value == (int)BillingReceptionStates.Pendente || x.Estado.Value == (int)BillingReceptionStates.Rececao));
+                            List<string> areasFilter = string.IsNullOrEmpty(userConfig.RFFiltroArea) ? new List<string>() : userConfig.RFFiltroArea.Split('|').ToList();
+                            if (userConfig.RFPerfil.HasValue && userConfig.RFPerfil.Value == BillingReceptionAreas.Aprovisionamento)
+                            {
+                                items = items.Where(x => x.AreaPendente == "Aprovisionamento");
+                                if (!string.IsNullOrEmpty(userConfig.RFFiltroArea))
+                                    items = items.Where(x => areasFilter.Contains(x.AreaPendente2));
+                            }
+                            else
+                            {
+                                items = items.Where(x => x.AreaPendente != BillingReceptionAreas.Contabilidade.ToString() &&
+                                                         x.AreaPendente != BillingReceptionAreas.Aprovisionamento.ToString() &&
+                                                         x.AreaPendente != "Fornecedor");
+                                if (!string.IsNullOrEmpty(userConfig.RFFiltroArea))
+                                    items = items.Where(x => areasFilter.Contains(x.AreaPendente));
+                            }
+                        }
+                    }
+                    else if (userConfig.RFPerfilVisualizacao.HasValue && userConfig.RFPerfilVisualizacao.Value == BillingReceptionUserProfiles.Utilizador)
+                    {
+                        string userName = ExtractUserNameFromEmail(userConfig.IdUser);
+                        items = items.Where(x => x.Destinatario == userName);
+                    }
+                    billingReceptions = items.ToList().ParseToViewModel();
+                }
+                catch (Exception ex)
+                {
+                    return null;
+                }
+            }
+            return billingReceptions;
         }
 
         public List<BillingReceptionModel> GetPendingForUser(BillingReceptionAreas? userAreaProfile, string userName)
@@ -215,6 +272,7 @@ namespace Hydra.Such.Data.Logic.ComprasML
 
             item.DataCriacao = DateTime.Now;
             item.Destinatario = ExtractUserNameFromEmail(item.Destinatario);
+            item.Utilizador = ExtractUserNameFromEmail(item.Utilizador);
             var item1 = ctx.RececaoFaturacaoWorkflow.Add(item);
 
             return item;
@@ -227,6 +285,7 @@ namespace Hydra.Such.Data.Logic.ComprasML
 
             item.DataModificacao = DateTime.Now;
             item.Destinatario = ExtractUserNameFromEmail(item.Destinatario);
+            item.Utilizador = ExtractUserNameFromEmail(item.Utilizador);
             ctx.RececaoFaturacaoWorkflow.Update(item);
 
             return item;

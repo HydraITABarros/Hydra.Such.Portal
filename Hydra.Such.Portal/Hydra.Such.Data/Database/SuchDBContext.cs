@@ -654,11 +654,6 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Utilizador Modificação")
                     .HasMaxLength(50);
 
-                entity.HasOne(d => d.NºProjetoNavigation)
-                    .WithMany(p => p.CafetariasRefeitórios)
-                    .HasForeignKey(d => d.NºProjeto)
-                    .HasConstraintName("FK_Cafetarias/Refeitórios_Projetos");
-
                 entity.HasOne(d => d.NºUnidadeProdutivaNavigation)
                     .WithMany(p => p.CafetariasRefeitórios)
                     .HasForeignKey(d => d.NºUnidadeProdutiva)
@@ -1407,11 +1402,25 @@ namespace Hydra.Such.Data.Database
                     .HasMaxLength(20)
                     .IsUnicode(false);
 
+                entity.Property(e => e.NumSerieNotasCreditoCompra)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.NumSerieNotasDebito)
                     .HasMaxLength(20)
                     .IsUnicode(false);
 
                 entity.Property(e => e.NumSeriePreFaturasCompra)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.NumSeriePreFaturasCompraCf)
+                    .HasColumnName("NumSeriePreFaturasCompraCF")
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.NumSeriePreFaturasCompraCp)
+                    .HasColumnName("NumSeriePreFaturasCompraCP")
                     .HasMaxLength(20)
                     .IsUnicode(false);
 
@@ -1446,6 +1455,8 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.RfperfilVisualizacao).HasColumnName("RFPerfilVisualizacao");
 
                 entity.Property(e => e.RfrespostaContabilidade).HasColumnName("RFRespostaContabilidade");
+
+                entity.Property(e => e.SuperiorHierarquico).HasMaxLength(50);
 
                 entity.Property(e => e.UtilizadorCriação)
                     .HasColumnName("Utilizador Criação")
@@ -1568,6 +1579,8 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.NumRequisicao)
                     .HasColumnName("Num_Requisicao")
                     .HasMaxLength(20);
+
+                entity.Property(e => e.Obs).HasColumnType("text");
 
                 entity.Property(e => e.PedidoCotacaoCriadoEm)
                     .HasColumnName("Pedido_Cotacao_Criado_Em")
@@ -2910,7 +2923,6 @@ namespace Hydra.Such.Data.Database
             modelBuilder.Entity<FeaturesMenus>(entity =>
             {
                 entity.HasKey(e => new { e.IdFeature, e.IdMenu });
-                entity.HasOne<Menu>().WithMany(m => m.FeaturesMenus).HasForeignKey(mf => mf.IdMenu);
             });
 
             modelBuilder.Entity<FichaProduto>(entity =>
@@ -8261,7 +8273,7 @@ namespace Hydra.Such.Data.Database
                     .HasMaxLength(20)
                     .ValueGeneratedNever();
 
-                entity.Property(e => e.Aprovadores).HasMaxLength(100);
+                entity.Property(e => e.Aprovadores).HasMaxLength(500);
 
                 entity.Property(e => e.CabimentoOrçamental).HasColumnName("Cabimento Orçamental");
 
@@ -8401,6 +8413,8 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.Observações).HasColumnType("text");
 
+                entity.Property(e => e.RejeicaoMotivo).HasColumnType("text");
+
                 entity.Property(e => e.PrecoIvaincluido).HasColumnName("PrecoIVAIncluido");
 
                 entity.Property(e => e.RegiãoMercadoLocal)
@@ -8417,15 +8431,15 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.ResponsávelAprovação)
                     .HasColumnName("Responsável Aprovação")
-                    .HasMaxLength(20);
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.ResponsávelCriação)
                     .HasColumnName("Responsável Criação")
-                    .HasMaxLength(20);
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.ResponsávelReceção)
                     .HasColumnName("Responsável Receção")
-                    .HasMaxLength(20);
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.ResponsávelReceçãoReceção)
                     .HasColumnName("Responsável Receção Receção")
@@ -8437,7 +8451,7 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.ResponsávelValidação)
                     .HasColumnName("Responsável Validação")
-                    .HasMaxLength(20);
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.UnidadeProdutivaAlimentação)
                     .HasColumnName("Unidade Produtiva Alimentação")
@@ -8479,7 +8493,7 @@ namespace Hydra.Such.Data.Database
                     .HasMaxLength(20)
                     .ValueGeneratedNever();
 
-                entity.Property(e => e.Aprovadores).HasMaxLength(100);
+                entity.Property(e => e.Aprovadores).HasMaxLength(500);
 
                 entity.Property(e => e.CabimentoOrçamental).HasColumnName("Cabimento Orçamental");
 
@@ -8619,6 +8633,8 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.Observações).HasColumnType("text");
 
+                entity.Property(e => e.RejeicaoMotivo).HasColumnType("text");
+
                 entity.Property(e => e.PrecoIvaincluido).HasColumnName("PrecoIVAIncluido");
 
                 entity.Property(e => e.RegiãoMercadoLocal)
@@ -8635,15 +8651,15 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.ResponsávelAprovação)
                     .HasColumnName("Responsável Aprovação")
-                    .HasMaxLength(20);
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.ResponsávelCriação)
                     .HasColumnName("Responsável Criação")
-                    .HasMaxLength(20);
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.ResponsávelReceção)
                     .HasColumnName("Responsável Receção")
-                    .HasMaxLength(20);
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.ResponsávelReceçãoReceção)
                     .HasColumnName("Responsável Receção Receção")
@@ -8655,7 +8671,7 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.ResponsávelValidação)
                     .HasColumnName("Responsável Validação")
-                    .HasMaxLength(20);
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.UnidadeProdutivaAlimentação)
                     .HasColumnName("Unidade Produtiva Alimentação")

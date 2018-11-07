@@ -26,13 +26,17 @@ namespace Hydra.Such.Data.Logic.Contracts
             }
         }
 
-        public static Contratos GetByIdAndVersion(string ContractNo, int VersionNo)
+        public static Contratos GetByIdAndVersion(string ContractNo, int VersionNo, ContractType? type = null)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.Contratos.Where(x => x.NºDeContrato == ContractNo && x.NºVersão == VersionNo).FirstOrDefault();
+                    var query = ctx.Contratos.Where(x => x.NºDeContrato == ContractNo && x.NºVersão == VersionNo);
+                    if (type.HasValue)
+                        query = query.Where(x => x.TipoContrato == (int)type.Value);
+
+                    return query.FirstOrDefault();// ctx.Contratos.Where(x => x.NºDeContrato == ContractNo && x.NºVersão == VersionNo).FirstOrDefault();
                 }
             }
             catch (Exception ex)
@@ -42,13 +46,17 @@ namespace Hydra.Such.Data.Logic.Contracts
             }
         }
 
-        public static Contratos GetByIdLastVersion(string ContractNo)
+        public static Contratos GetByIdLastVersion(string ContractNo, ContractType? type = null)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.Contratos.Where(x => x.NºDeContrato == ContractNo).OrderByDescending(x => x.NºVersão).FirstOrDefault();
+                    var query = ctx.Contratos.Where(x => x.NºDeContrato == ContractNo);
+                    if (type.HasValue)
+                        query = query.Where(x => x.TipoContrato == (int)type.Value);
+
+                    return query.OrderByDescending(x => x.NºVersão).FirstOrDefault();// ctx.Contratos.Where(x => x.NºDeContrato == ContractNo).OrderByDescending(x => x.NºVersão).FirstOrDefault();
                 }
             }
             catch (Exception ex)

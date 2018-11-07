@@ -97,7 +97,8 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult GetBillingReceptions()
         {
-            var billingReceptions = billingRecService.GetAllForUser(User.Identity.Name);
+            UserConfigurationsViewModel userConfig = DBUserConfigurations.GetById(User.Identity.Name).ParseToViewModel();
+            var billingReceptions = billingRecService.GetAllForUser(userConfig);
             return Json(billingReceptions);
         }
 
@@ -252,7 +253,6 @@ namespace Hydra.Such.Portal.Controllers
                 string NovoDestinatario=items[0].Destinatario;
                 foreach (BillingReceptionModel item in items)
                 {
-
                     item.ModificadoPor = User.Identity.Name;
                     BillingRecWorkflowModel workflow = new BillingRecWorkflowModel();
                     item.WorkflowItems.Add(workflow);
@@ -271,13 +271,9 @@ namespace Hydra.Such.Portal.Controllers
                     updatedItem = billingRecService.CreateWorkFlowSend(item, workflow, User.Identity.Name);
                     if (updatedItem == null)
                     {
-
                         item.eReasonCode = 2;
                         updatedItem = item;
-
                     }
-
-
                 }
             }
             else
@@ -309,7 +305,6 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     updatedItem.eReasonCode = 1;
                     updatedItem.eMessage = "Registo atualizado com sucesso";
-                    
                 }
                 else
                 {
@@ -383,7 +378,20 @@ namespace Hydra.Such.Portal.Controllers
                 try
                 {
                     UserConfigurationsViewModel userConfig = DBUserConfigurations.GetById(User.Identity.Name).ParseToViewModel();
-                    postedDocument = billingRecService.PostDocument(item, User.Identity.Name, userConfig.NumSeriePreFaturasCompra, _config, _configws);
+                    string serialNumber = string.Empty;
+                    switch (item.TipoDocumento)
+                    {
+                        case BillingDocumentTypes.Fatura:
+                            if(item.Id.StartsWith("CF"))
+                                serialNumber = userConfig.NumSeriePreFaturasCompraCF;
+                            else if (item.Id.StartsWith("CP"))
+                                serialNumber = userConfig.NumSeriePreFaturasCompraCP;
+                            break;
+                        case BillingDocumentTypes.NotaCredito:
+                            serialNumber = userConfig.NumSerieNotasCreditoCompra;
+                            break;
+                    }
+                    postedDocument = billingRecService.PostDocument(item, User.Identity.Name, serialNumber, _config, _configws);
                     item = postedDocument;
                 }
                 catch (Exception ex)
@@ -487,7 +495,7 @@ namespace Hydra.Such.Portal.Controllers
             int userPendingProfile = (int)DBUserConfigurations.GetById(user).Rfperfil;
             return Json(userPendingProfile);
         }
-            
+
 
         [HttpPost]
         public JsonResult GetAnswers([FromBody] BillingReceptionModel data)
@@ -507,14 +515,14 @@ namespace Hydra.Such.Portal.Controllers
                     result = billingRecService.GetProblem(AnswerType).ToList();
                 } 
             }
-
-            if(data.AreaPendente == "UnidadesProdutivas" || data.AreaPendente == "UnidadesApoioESuporte")
+            else
+            //if(data.AreaPendente == "UnidadesProdutivas" || data.AreaPendente == "UnidadesApoioESuporte")
             {
-                if ((userPendingProfile == 2 || userPendingProfile == 3) && userDestinyProfile == 1)
-                {
+                //if ((userPendingProfile == 2 || userPendingProfile == 3))// && userDestinyProfile == 1)
+                //{
                     AnswerType = "RF5R";
                     result = billingRecService.GetProblem(AnswerType).ToList();
-                }
+                //}
             }
             
             //if(QuestionArea == "")
@@ -1060,12 +1068,17 @@ namespace Hydra.Such.Portal.Controllers
                 var files = Request.Form.Files;
                 foreach (var file in files)
                 {
-                    string filename = Path.GetFileName(file.FileName);
-                    result.eMessage = filename;
-                    var path = Path.Combine(_generalConfig.FileUploadFolder, filename);
+                    string extension = Path.GetExtension(file.FileName);
+                    string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file.FileName);
+                    string dateToken = DateTime.Now.ToString("yy") + DateTime.Now.Month.ToString() + DateTime.Now.Day.ToString() + DateTime.Now.Hour.ToString() + DateTime.Now.Minute.ToString() + DateTime.Now.Second.ToString();
+
+                    string fileName = string.Format("{0}_{1}{2}", fileNameWithoutExtension, dateToken, extension);
+
+                    var path = Path.Combine(_generalConfig.FileUploadFolder, fileName);
                     if (System.IO.File.Exists(path))
                     {
                         result.eReasonCode = 2;
+                        result.eMessage = "O ficheiro já existe";
                     }
                     else
                     {

@@ -863,6 +863,17 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        [HttpPost]
+        public JsonResult GetAllResponsabilityCenterCodeFilterByAreaCode([FromBody] string areaCode)
+        {
+            List<DDMessageString> result = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 3).Where(x => x.Code.Contains(areaCode)).Select(x => new DDMessageString()
+            {
+                id = x.Code,
+                value = x.Name
+            }).ToList();
+
+            return Json(result);
+        }
 
         [HttpPost]
         public JsonResult GetMeasureUnits()
@@ -2050,31 +2061,11 @@ namespace Hydra.Such.Portal.Controllers
             //string allowedProductsFilter = userDimensionValues.GenerateNAVProductFilter(rootAreaId, true);
 
             string allowedProductsFilter = rootAreaId.GenerateNAVProductFilter();
-            List<NAVProductsViewModel> productsReqParams = DBNAV2017Products.GetProductsForDimensions(_config.NAVDatabaseName, _config.NAVCompanyName, allowedProductsFilter, requisitionType, locationCode).ToList();
+            List<NAVProductsViewModel> productsReqParams = DBNAV2017Products.GetProductsForModelRequisitions(_config.NAVDatabaseName, _config.NAVCompanyName, allowedProductsFilter, requisitionType, locationCode).ToList();
             if (productsReqParams != null && productsReqParams.Count > 0)
             {
                 products = productsReqParams;
             }
-
-            //ADICIONA OS PRODUTOS DA FICHA DE PRODUTO
-            List<FichaProduto> FichaProdutos = DBFichaProduto.GetAll();
-
-            //REMOVE TODOS OS PRODUTOS CUJO O ID ESTEJA NA TABELA FICHA PRODUTO
-            products.RemoveAll(x => FichaProdutos.Any(y => y.Nº == x.Code));
-
-            FichaProdutos.ForEach(x =>
-            {
-                NAVProductsViewModel Product = new NAVProductsViewModel();
-
-                Product.Code = x.Nº;
-                Product.Name = x.Descrição;
-                Product.Name2 = x.Descrição2;
-                Product.MeasureUnit = x.UnidadeMedidaBase;
-                Product.UnitCost = x.CustoUnitário;
-                Product.LastCostDirect = x.PreçoUnitário;
-
-                products.Add(Product);
-            });
 
             return Json(products.OrderBy(x => x.Code));
         }

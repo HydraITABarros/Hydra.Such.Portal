@@ -124,7 +124,7 @@
                     {{item.yourReference}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="220px" resizable hidden$="{{ _columns.orderDate.hidden }}">
+            <vaadin-grid-column width="170px" resizable hidden$="{{ _columns.orderDate.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="orderDate">Data da Encomenda</vaadin-grid-sorter>
                     <vaadin-grid-filter path="orderDate" />
@@ -142,7 +142,7 @@
                     {{item.noConsulta}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="220px" resizable hidden$="{{ _columns.expectedReceiptDate.hidden }}">
+            <vaadin-grid-column width="170px" resizable hidden$="{{ _columns.expectedReceiptDate.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="expectedReceiptDate">Data Recepção Esperada</vaadin-grid-sorter>
                     <vaadin-grid-filter path="expectedReceiptDate" />
@@ -187,6 +187,18 @@
                     {{item.respCenterId}}
                 </template>
             </vaadin-grid-column>
+
+            <vaadin-grid-column width="130px" resizable hidden$="{{ _columns.hasAnAdvance.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="hasAnAdvance">Adiantamento</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="hasAnAdvance" />
+                </template>
+                <template>
+                    [[_formatBoolValue(item.hasAnAdvance)]]
+                </template>
+            </vaadin-grid-column>
+            
+            
         </vaadin-grid>
 
 
@@ -272,7 +284,8 @@
                         "requisitionNo": { hidden: false, label: "Pedido Interno" },
                         "regionId": { hidden: false, label: "Cód. Região" },
                         "functionalAreaId": { hidden: false, label: "Cód. Área Funcional" },
-                        "respCenterId": { hidden: false, label: "Cód. Centro de Responsabilidade" }
+                        "respCenterId": { hidden: false, label: "Cód. Centro de Responsabilidade" },
+                        "hasAnAdvance": { hidden: false, label: "Adiantamento" }
                     };
 
                     if (localStorage["encomendaslist.ToggleColumn"]) {
@@ -302,6 +315,9 @@
                             value: obj[key]
                         };
                     });
+                },
+                _formatBoolValue: function (value) {
+                    return value ? "Sim" : "Não";
                 }
                 /* end - ColumnToggle */
             });

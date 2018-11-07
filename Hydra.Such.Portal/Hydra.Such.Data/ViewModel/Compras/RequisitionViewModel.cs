@@ -21,6 +21,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string EmployeeNo { get; set; }
         public string Vehicle { get; set; }
         public string ReceivedDate { get; set; }
+        public string ReceivedDateHour { get; set; }
         public bool? Urgent { get; set; }
         public bool? Sample { get; set; }
         public bool? Attachment { get; set; }
@@ -29,6 +30,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public int? LocalCollectionCode { get; set; }
         public int? LocalDeliveryCode { get; set; }
         public string Comments { get; set; }
+        public string RejeicaoMotivo { get; set; }
         public bool? RequestModel { get; set; }
         public string CreateUser { get; set; }
         public string CreateDate { get; set; }
@@ -46,9 +48,14 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string ResponsibleValidation { get; set; }
         public string ResponsibleReception { get; set; }
         public DateTime? ApprovalDate { get; set; }
+        public string ApprovalDateText { get; set; }
+        public string ApprovalDateHour { get; set; }
         public DateTime? ValidationDate { get; set; }
+        public string ValidationDateText { get; set; }
+        public string ValidationDateHour { get; set; }
         public string UnitFoodProduction  { get; set; }
         public bool? RequestNutrition { get; set; }
+        public string RequestNutritionText { get; set; }
         public bool? RequestforDetergents { get; set; }
         public string ProcedureCcpNo { get; set; }
         public string Approvers { get; set; }
@@ -81,6 +88,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public bool? Budget { get; set; }
         public bool? SentReqToAprove { get; set; }
         public string SentReqToAproveText { get; set; }
+        public bool GoAprove { get; set; }
         public string PreRequisitionNo { get; set; }
         public bool? PricesIncludingVAT { get; set; }
         public bool? InAdvance { get; set; }

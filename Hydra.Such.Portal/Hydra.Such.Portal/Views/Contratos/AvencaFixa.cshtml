@@ -69,6 +69,7 @@
         </style>
         <iron-ajax url="/PopulateDropdowns/GetContractInvoicePeriods" last-response="{{CBInvoicePeriods}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Contratos/GetAllAvencaFixa" last-response="{{result}}" id="ajax_getall" method="post" handle-as="json" content-type="application/json" on-response="_gridListResponse"></iron-ajax>
+        <iron-ajax url="/Contratos/GetAllAvencaFixa" last-response="{{result}}" id="ajax_getall2" method="post" handle-as="json" content-type="application/json" on-response="_gridListResponse2"></iron-ajax>
         <iron-ajax url="/Contratos/GetPedingAvencaFixa" last-response="{{result}}" id="ajax_getpeding" method="post" handle-as="json" content-type="application/json" on-response="_gridListPedingResponse"></iron-ajax>
         <iron-ajax url="/Contratos/GenerateInvoice" last-response="{{invoiceGen}}" id="ajax_generate" method="post" handle-as="json" content-type="application/json" on-response="_invoiceGenResponse"></iron-ajax>
         <iron-ajax url="/Contratos/CountInvoice" last-response="{{invoiceCount}}" id="ajax_count" method="post" handle-as="json" content-type="application/json" on-response="_invoiceCountResponse"></iron-ajax>
@@ -426,7 +427,17 @@
                         this.openToastSuccess("Não existem linhas para faturar.");
                     }
                     else {
-                        this.openToastSuccess("Tabela de faturas atualizada com sucesso.");
+                        this.openToastSuccess("CAF's Activas!");
+                    }
+                },
+                _gridListResponse2: function () {
+                    this._locked = false;
+                    this.checked = true;
+                    if (this.result == null || this.result == undefined || this.result.length == 0) {
+                        this.openToastSuccess("Não existem linhas para faturar.");
+                    }
+                    else {
+                        this.openToastSuccess("Tabela de Faturas Atualizada com sucesso");
                     }
                 },
 
@@ -471,9 +482,11 @@
                 },
 
                 _invoiceGenResponse: function (e) {
+                    debugger;;
                     if (e.returnValue == true) {
-                        this.$.ajax_getall.generateRequest();
                         this.$.avencaFixaTable.clearCache();
+                        this.$.ajax_getall2.generateRequest();
+                       
 
                     }
                     else {
@@ -483,10 +496,10 @@
                 _gridListPedingResponse: function (e) {
                     this.checked = false;
                     if (this.result == null || this.result == undefined || this.result.length == 0) {
-                        this.openToastSuccess("Não existem linhas para faturar.");
+                        this.openToastSuccess("Não existem linhas Pendentes.");
                     }
                     else {
-                        this.openToastSuccess("Tabela de faturas atualizada com sucesso.");
+                        this.openToastSuccess("CAF's Pendentes.");
                     }
                 },
                 _count: function () {                  

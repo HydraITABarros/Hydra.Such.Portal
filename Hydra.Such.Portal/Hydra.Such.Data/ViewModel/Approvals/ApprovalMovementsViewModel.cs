@@ -21,6 +21,17 @@ namespace Hydra.Such.Data.ViewModel.Approvals
         public string Number { get; set; }
         public string NumberLink { get; set; }
         public bool? RequisicaoAcordosPrecos { get; set; }
+        public bool? RequisicaoUrgente { get; set; }
+        public bool? RequisicaoOrcamentoEmAnexo { get; set; }
+        public bool? RequisicaoImobilizado { get; set; }
+        public bool? RequisicaoExclusivo { get; set; }
+        public bool? RequisicaoJaExecutado { get; set; }
+        public bool? RequisicaoAmostra { get; set; }
+        public bool? RequisicaoEquipamento { get; set; }
+        public bool? RequisicaoReposicaoDeStock { get; set; }
+        public bool? RequisicaoPrecoIvaIncluido { get; set; }
+        public bool? RequisicaoAdiantamento { get; set; }
+        public bool? RequisicaoPedirOrcamento { get; set; }
         public string RequestUser { get; set; }
         public decimal? Value { get; set; }
         public DateTime? DateTimeApprove { get; set; }

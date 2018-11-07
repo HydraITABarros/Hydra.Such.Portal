@@ -145,6 +145,17 @@ namespace Hydra.Such.Portal.Controllers
             return Json(false);
         }
 
+        [HttpPost]
+        public JsonResult GetInvoices([FromBody] ClientDetailsViewModel data)
+        {
+            if (data != null && data.No != null)
+            {
+                var result = DBNAV2017Clients.GetInvoices(_config.NAVDatabaseName, _config.NAVCompanyName, data.No);
+                return Json(result);
+            }
+            return Json(false);
+        }
+
 
         //eReason = 1 -> Sucess
         //eReason = 2 -> Error creating Project on Databse 

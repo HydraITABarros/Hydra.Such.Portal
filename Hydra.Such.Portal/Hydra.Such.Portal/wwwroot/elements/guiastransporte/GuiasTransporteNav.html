@@ -1,0 +1,239 @@
+﻿ <link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html" />
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/paper-input/paper-input.html" />
+<link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/datetime-picker-master/date-picker.html" />
+
+<!--start ColumnToggle-->
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-icons/iron-icons.html" />
+<link rel="import" href="/lib/iron-behaviors/iron-button-state.html" />
+<link rel="import" href="/lib/paper-menu-button/paper-menu-button.html" />
+<!--end ColumnToggle-->
+
+<dom-module id="x-guiastransportenav">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+
+        <custom-style>
+            <style is="custom-style">
+                input[readonly] {
+                    border: 2px solid transparent;
+                }
+
+                input {
+                    font: inherit;
+                }
+
+                .grid {
+                    font-size: 13px;
+                }
+
+                    .grid input {
+                        border: none;
+                        padding-left: 5px;
+                    }
+
+                paper-input {
+                    max-width: 200px !important;
+                }
+            </style>
+        </custom-style>
+        <iron-ajax url="/GuiasTransporteNav/GetListGuiasTransporteNav"
+                   last-response="{{result}}"
+                   method="post"
+                   handle-as="json"
+                   id="grid_databound_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <div class="subMenu">
+            
+            <paper-button class="tablinks" id="showHistory" on-tap="_showHistory"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{_showHistoryMessage}}</paper-button>
+            <!--<paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>-->
+
+            
+        </div>
+        <vaadin-grid aria-label="GuiasGrid" id="guiasTransporteGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+            <vaadin-grid-column width="110px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="noGuiaTransporte">Nº</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="noGuiaTransporte" />
+                </template>
+                <template>
+                    {{item.noGuiaTransporte}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="110px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="dataGuia">Data Guia</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataGuia" />
+                </template>
+                <template>
+                    {{item.dataGuia}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="110px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="noProjecto">Nº Projecto</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="noProjecto" />
+                </template>
+                <template>
+                    {{item.noProjecto}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="110px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="utilizador">Utilizador</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="utilizador" />
+                </template>
+                <template>
+                    {{item.utilizador}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="110px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="noCliente">Nº Cliente</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="noCliente" />
+                </template>
+                <template>
+                    {{item.noCliente}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="110px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="nomeCliente">Nome Cliente</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="nomeCliente" />
+                </template>
+                <template>
+                    {{item.nomeCliente}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="110px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="noRequisicao">Nº Requisição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="noRequisicao" />
+                </template>
+                <template>
+                    {{item.noRequisicao}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="110px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="globalDimension1Code">Região</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="globalDimension1Code" />
+                </template>
+                <template>
+                    {{item.globalDimension1Code}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="110px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="globalDimension2Code">Fonte Financiamento</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="globalDimension2Code" />
+                </template>
+                <template>
+                    {{item.globalDimension2Code}}
+                </template>
+            </vaadin-grid-column>
+           
+        </vaadin-grid>
+    </template>
+    
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-guiastransportenav',
+                properties: {
+                    _permissions: {
+                        type: Array
+                    },
+                    activeItem: {
+                        observer: '_rowSelected'
+                    },
+                    _showHistoryMessage: {
+                        type: String,
+                        value: "Mostrar Histórico"
+                    },
+                    _historico: {
+                        type: Boolean,
+                        notify: true,
+                        value: false
+                    },
+                    _isHistoricTxt: {
+                        type: String,
+                        value: "false"
+                    },
+                    _columns: {
+                        type: Object,
+                        value: function () {
+                            return {};
+                        }
+                    }
+                },
+                ready: function () {
+                    this.$.grid_databound_ajax.body = JSON.stringify({ "Historic": this._historico });
+                    this.$.grid_databound_ajax.generateRequest();
+
+                    var _this = this;
+                    var gridToBottomTimeout;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.guiasTransporteGrid);
+                    var parentHeight = $(this).offsetParent().height();
+                    var windowHeight = $(window).height();
+                    var paddingTop = $(this).offsetParent().css('padding-top').replace("px", "");
+                    var offsetTop = $(this).offset().top;
+                    var height = windowHeight - offsetTop - paddingTop;
+                    $(this.$.grid).height(height);
+                },
+
+                _rowSelected: function (item) {
+                    if (item != null) {
+                        window.location.href = "/GuiasTransporteNav/GuiaTransporteDetails/" + item.noGuiaTransporte + "?isHistoric=" + item.historico;
+                    }
+                },
+
+                _showHistory: function (item) {
+                    if (item != null) {
+                        if (!this._historico) {
+                            this._historico = true;
+                            this._isHistoricTxt = "true";
+                        } else {
+                            this._historico = false;
+                            this._isHistoricTxt = "false";
+                        }
+
+                        this.$.grid_databound_ajax.body = JSON.stringify({ "Historic": this._historico });
+                        this.$.grid_databound_ajax.generateRequest(); 
+                        this._setButtonTexts();
+                    }
+                },
+                _setButtonTexts: function () {
+                    if (!this._historico) {
+                        this._showHistoryMessage = "Mostrar Histórico";
+                    }
+                    if (this._historico) {
+                        this._showHistoryMessage = "Mostrar Ativos";
+                    }
+                }
+
+            });
+        });
+    </script>
+</dom-module>

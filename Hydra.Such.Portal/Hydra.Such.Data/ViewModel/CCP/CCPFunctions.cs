@@ -952,6 +952,82 @@ namespace Hydra.Such.Data.ViewModel.CCP
                 UtilizadorModificacao = LinhaEnc.UtilizadorModificação
             });
         }
+
+        public static ConfiguracaoTemposCcpView CastConfigTemposToConfigTemposView(ConfiguraçãoTemposCcp config)
+        {
+            if(config != null)
+            {
+                return (new ConfiguracaoTemposCcpView()
+                {
+                    Tipo=config.Tipo,
+                    Estado0=config.Estado0,
+                    Estado1=config.Estado1,
+                    Estado2=config.Estado2,
+                    Estado3=config.Estado3,
+                    Estado4=config.Estado4,
+                    Estado5=config.Estado5,
+                    Estado6=config.Estado6,
+                    Estado7=config.Estado7,
+                    Estado8=config.Estado8,
+                    Estado9=config.Estado9,
+                    Estado10=config.Estado10,
+                    Estado11=config.Estado11,
+                    Estado12=config.Estado12,
+                    Estado13=config.Estado13,
+                    Estado14=config.Estado14,
+                    Estado15=config.Estado15,
+                    Estado16=config.Estado16,
+                    Estado17=config.Estado17,
+                    Estado18=config.Estado18,
+                    Estado19=config.Estado19,
+                    Estado20=config.Estado20,
+                    UtilizadorCriacao=config.UtilizadorCriação,
+                    UtilizadorModificacao=config.UtilizadorModificação,
+                    DataHoraCriacao=config.DataHoraCriação,
+                    DataHoraModificacao=config.DataHoraModificação
+                });
+            }
+
+            return null;
+        }
+
+        public static ConfiguraçãoTemposCcp CastConfigTemposViewToConfigTempos(ConfiguracaoTemposCcpView config)
+        {
+            if (config != null)
+            {
+                return (new ConfiguraçãoTemposCcp()
+                {
+                    Tipo = config.Tipo,
+                    Estado0 = config.Estado0,
+                    Estado1 = config.Estado1,
+                    Estado2 = config.Estado2,
+                    Estado3 = config.Estado3,
+                    Estado4 = config.Estado4,
+                    Estado5 = config.Estado5,
+                    Estado6 = config.Estado6,
+                    Estado7 = config.Estado7,
+                    Estado8 = config.Estado8,
+                    Estado9 = config.Estado9,
+                    Estado10 = config.Estado10,
+                    Estado11 = config.Estado11,
+                    Estado12 = config.Estado12,
+                    Estado13 = config.Estado13,
+                    Estado14 = config.Estado14,
+                    Estado15 = config.Estado15,
+                    Estado16 = config.Estado16,
+                    Estado17 = config.Estado17,
+                    Estado18 = config.Estado18,
+                    Estado19 = config.Estado19,
+                    Estado20 = config.Estado20,
+                    UtilizadorCriação = config.UtilizadorCriacao,
+                    UtilizadorModificação = config.UtilizadorModificacao,
+                    DataHoraCriação = config.DataHoraCriacao,
+                    DataHoraModificação = config.DataHoraModificacao
+                });
+            }
+
+            return null;
+        }
         #endregion
 
 

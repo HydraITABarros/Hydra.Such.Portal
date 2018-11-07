@@ -226,13 +226,17 @@ namespace Hydra.Such.Portal.Controllers
             if (data != null)
             {
                 Contratos cContract = null;
+                ContractType? contractType = null;
+                if (EnumHelper.ValidateRange(typeof(ContractType), data.ContractType))
+                    contractType = (ContractType)data.ContractType;
+;
                 if (data.VersionNo != 0)
                 {
-                    cContract = DBContracts.GetByIdAndVersion(data.ContractNo, data.VersionNo);
+                    cContract = DBContracts.GetByIdAndVersion(data.ContractNo, data.VersionNo, contractType);
                 }
                 else
                 {
-                    cContract = DBContracts.GetByIdLastVersion(data.ContractNo);
+                    cContract = DBContracts.GetByIdLastVersion(data.ContractNo, contractType);
                 }
 
                 ContractViewModel result = new ContractViewModel();
@@ -376,7 +380,6 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         //Contratos cContract = DBContracts.ParseToDB(data);
                         Contratos ContratoDB = DBContracts.GetByIdAndVersion(data.ContractNo, data.VersionNo);
-
 
                         if (ContratoDB != null)
                         {
@@ -1507,7 +1510,7 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             Problema += " Contrato Não Vigente!";
                         }
-                        if (item.CódigoRegião =="" || item.CódigoÁreaFuncional == "" || item.CódigoCentroResponsabilidade =="")
+                        if (item.CódigoRegião == "")// || item.CódigoÁreaFuncional == "" || item.CódigoCentroResponsabilidade =="")
                         {
                             Problema += " Dimensões Bloqueadas!";
                         }
