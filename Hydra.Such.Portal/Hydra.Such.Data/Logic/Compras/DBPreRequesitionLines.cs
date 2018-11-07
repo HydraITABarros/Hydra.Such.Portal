@@ -196,7 +196,6 @@ namespace Hydra.Such.Data.Logic.ComprasML
                 Selected = false,
                 TotalCost = x.CustoUnitário * x.QuantidadeARequerer,
                 ArmazemCDireta = x.LocalCompraDireta
-
             };
         }
 
