@@ -1604,7 +1604,8 @@ namespace Hydra.Such.Portal.Controllers
                                 string NewFileName = createReq.NºRequisição + FileName.Substring(FileName.IndexOf('_'));
                                 try
                                 {
-                                    System.IO.File.Copy(_config.FileUploadFolder + FileName, _config.FileUploadFolder + NewFileName);
+                                    //System.IO.File.Copy(_config.FileUploadFolder + FileName, _config.FileUploadFolder + NewFileName);
+                                    System.IO.File.Copy("E:\\Data\\eSUCH\\Requisicoes\\" + FileName, "E:\\Data\\eSUCH\\Requisicoes\\" + NewFileName);
                                 }
                                 catch (Exception ex)
                                 {
@@ -1619,7 +1620,8 @@ namespace Hydra.Such.Portal.Controllers
                                 Anexos newFile = DBAttachments.Create(DBAttachments.ParseToDB(CopyFile));
                                 if (newFile != null)
                                 {
-                                    System.IO.File.Delete(_config.FileUploadFolder + file.UrlAnexo);
+                                    //System.IO.File.Delete(_config.FileUploadFolder + file.UrlAnexo);
+                                    System.IO.File.Delete("E:\\Data\\eSUCH\\Requisicoes\\" + file.UrlAnexo);
                                     DBAttachments.Delete(file);
                                 }
 
