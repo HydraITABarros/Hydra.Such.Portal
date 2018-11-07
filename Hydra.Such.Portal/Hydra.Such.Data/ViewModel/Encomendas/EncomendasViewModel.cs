@@ -13,11 +13,11 @@ namespace Hydra.Such.Data.ViewModel.Encomendas
         public string PayToVendorNo { get; set; }
         public string PayToName { get; set; }
         public string YourReference { get; set; }
-        [JsonConverter(typeof(DateFormatConverter), "MM-dd-yyyy")]
+        [JsonConverter(typeof(DateFormatConverter), "dd-MM-yyyy")]
         public DateTime OrderDate { get; set; }
         public string NoConsulta { get; set; }
 
-        [JsonConverter(typeof(DateFormatConverter), "MM-dd-yyyy")]
+        [JsonConverter(typeof(DateFormatConverter), "dd-MM-yyyy")]
         public DateTime? ExpectedReceiptDate { get; set; }
 
         public string RequisitionNo { get; set; }

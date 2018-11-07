@@ -103,7 +103,8 @@ namespace Hydra.Such.Data.Logic
                 return "";
             }
         }
-            public static string GetClientVATByNo(string NoClient, string NAVDatabaseName, string NAVCompanyName)
+
+        public static string GetClientVATByNo(string NoClient, string NAVDatabaseName, string NAVCompanyName)
             {
                 try
                 {
@@ -131,7 +132,6 @@ namespace Hydra.Such.Data.Logic
                     return "";
                 }
             }
-
 
         public static string GetClientCurrencyByNo(string NoClient, string NAVDatabaseName, string NAVCompanyName)
         {
@@ -161,5 +161,51 @@ namespace Hydra.Such.Data.Logic
                 return "";
             }
         }
+
+        public static List<NAVClientesInvoicesViewModel> GetInvoices(string NAVDatabaseName, string NAVCompanyName, string NAVClientNo)
+        {
+            try
+            {
+                List<NAVClientesInvoicesViewModel> result = new List<NAVClientesInvoicesViewModel>();
+                using (var ctx = new SuchDBContextExtention())
+                {
+                    var parameters = new[]{
+                        new SqlParameter("@DBName", NAVDatabaseName),
+                        new SqlParameter("@CompanyName", NAVCompanyName),
+                        new SqlParameter("@CustomerNo", NAVClientNo ),
+                        //new SqlParameter("@Regions", "''"),
+                        //new SqlParameter("@FunctionalAreas", "''"),
+                        //new SqlParameter("@RespCenters", "''"),
+                    };
+
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017ClientesInvoices @DBName, @CompanyName, @CustomerNo", parameters);
+
+                    foreach (dynamic temp in data)
+                    {
+                        result.Add(new NAVClientesInvoicesViewModel()
+                        {
+                            No_ = temp.No_.Equals(DBNull.Value) ? "" : (string)temp.No_,
+                            AmountIncludingVAT = temp.AmountIncludingVAT.Equals(DBNull.Value) ? "" : (string)temp.AmountIncludingVAT.ToString(),
+                            BillToCustomerNo = temp.BillToCustomerNo.Equals(DBNull.Value) ? "" : (string)temp.BillToCustomerNo,
+                            CreationDate = (DateTime?)temp.CreationDate,
+                            DueDate = (DateTime?)temp.DueDate,
+                            FunctionalAreaId = temp.FunctionalAreaId.Equals(DBNull.Value) ? "" : (string)temp.FunctionalAreaId,
+                            Paid = (bool)temp.Paid,
+                            RegionId = temp.RegionId.Equals(DBNull.Value) ? "" : (string)temp.RegionId,
+                            RespCenterId = temp.RespCenterId.Equals(DBNull.Value) ? "" : (string)temp.RespCenterId,
+                            SellToCustomerNo = temp.SellToCustomerNo.Equals(DBNull.Value) ? "" : (string)temp.SellToCustomerNo,
+                            Tipo = temp.Tipo.Equals(DBNull.Value) ? "" : (string)temp.Tipo,
+                            ValorPendente = temp.ValorPendente.Equals(DBNull.Value) ? "" : (string)temp.ValorPendente.ToString()
+                        });
+                    }
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
     }
 }

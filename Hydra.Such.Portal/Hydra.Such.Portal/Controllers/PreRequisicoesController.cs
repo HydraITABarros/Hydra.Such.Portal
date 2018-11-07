@@ -59,6 +59,23 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
+        public IActionResult Pre_requesition_ComprasDinheiro()
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.PréRequisiçõesComprasDinheiro);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.UploadURL = _config.FileUploadFolder;
+                ViewBag.Area = 1;
+                ViewBag.PreRequesitionNo = User.Identity.Name;
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
         public IActionResult RequisicoesPendentes()
         {
             //UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Requisições);
@@ -364,7 +381,10 @@ namespace Hydra.Such.Portal.Controllers
                             CLine.Viatura = x.Vehicle;
                             CLine.NºFornecedor = x.SupplierNo;
                             CLine.CódigoProdutoFornecedor = x.SupplierProductCode;
-                            CLine.LocalCompraDireta = x.ArmazemCDireta;
+
+                            //CLine.LocalCompraDireta = x.ArmazemCDireta;
+                            CLine.LocalCompraDireta = x.LocalCode;
+
                             CLine.UnidadeProdutivaNutrição = x.UnitNutritionProduction;
                             CLine.NºCliente = x.CustomerNo;
                             CLine.NºEncomendaAberto = x.OpenOrderNo;
@@ -826,6 +846,18 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         DBPreRequesitionLines.Delete(linestodelete);
                     }
+
+                    //Delete Anexos
+                    List<Anexos> ListAnexos = DBAttachments.GetAll().Where(x => x.TipoOrigem == 1 && x.NºOrigem == data.PreRequesitionsNo).ToList();
+                    foreach (var Anexo in ListAnexos)
+                    {
+                        if (Anexo != null)
+                        {
+                            System.IO.File.Delete(_config.FileUploadFolder + Anexo.UrlAnexo);
+                            DBAttachments.Delete(Anexo);
+                        }
+                    }
+
                     // Delete Contract 
                     DBPreRequesition.DeleteByPreRequesitionNo(data.PreRequesitionsNo);
 
@@ -1006,7 +1038,8 @@ namespace Hydra.Such.Portal.Controllers
                             UnidadeProdutivaNutrição = x.UnitNutritionProduction,
                             NºCliente = x.CustomerNo,
                             NºEncomendaAberto = x.OpenOrderNo,
-                            NºLinhaEncomendaAberto = x.OpenOrderLineNo
+                            NºLinhaEncomendaAberto = x.OpenOrderLineNo,
+                            LocalCompraDireta = x.LocalCode
                         };
 
                         if (string.IsNullOrEmpty(newline.NºProjeto))
@@ -1834,8 +1867,12 @@ namespace Hydra.Such.Portal.Controllers
                             extension.ToLower() == ".jpg" || extension.ToLower() == ".png" || extension.ToLower() == ".pdf")
                         {
                             string filename = Path.GetFileName(file.FileName);
+                            //full_filename = "Requisicoes/" + id + "_" + filename;
+                            //var path = Path.Combine(_config.FileUploadFolder, full_filename);
+
                             full_filename = id + "_" + filename;
-                            var path = Path.Combine(_config.FileUploadFolder, full_filename);
+                            var path = Path.Combine("E:\\Data\\eSUCH\\RequisicoesTeste\\", full_filename);
+
                             using (FileStream dd = new FileStream(path, FileMode.CreateNew))
                             {
                                 file.CopyTo(dd);
@@ -1896,6 +1933,8 @@ namespace Hydra.Such.Portal.Controllers
         [HttpGet]
         public FileStreamResult DownloadFile(string id)
         {
+            //string file = "wwwroot/Upload/Requisicoes/ARomao@such.pt_AMARO_PRE_ANEXO";
+            //return new FileStreamResult(new FileStream(file, FileMode.Open), "application/xlsx");
             return new FileStreamResult(new FileStream(_config.FileUploadFolder + id, FileMode.Open), "application/xlsx");
         }
 

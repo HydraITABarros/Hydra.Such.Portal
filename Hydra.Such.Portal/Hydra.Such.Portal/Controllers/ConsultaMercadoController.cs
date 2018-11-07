@@ -8,6 +8,7 @@ using Hydra.Such.Data.Database;
 using Hydra.Such.Data.Logic;
 using Hydra.Such.Data.Logic.ComprasML;
 using Hydra.Such.Data.Logic.PedidoCotacao;
+using Hydra.Such.Data.Logic.Request;
 using Hydra.Such.Data.NAV;
 using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.ViewModel.Compras;
@@ -195,8 +196,23 @@ namespace Hydra.Such.Portal.Controllers
             ErrorHandler result = new ErrorHandler();
             if (data != null)
             {
+                var ctx = new SuchDBContext();
+
+                //ConsultaMercado consultaMercado = ctx.ConsultaMercado.Where(p => p.NumConsultaMercado == data.NumConsultaMercado).FirstOrDefault();
+
+                List<LinhasConsultaMercado> linhasConsultaMercados = ctx.LinhasConsultaMercado.Where(p => p.NumConsultaMercado == data.NumConsultaMercado).ToList();
+
                 if (DBConsultaMercado.Delete(data.NumConsultaMercado))
                 {
+                    foreach (LinhasConsultaMercado linhas in linhasConsultaMercados)
+                    {
+                        LinhasRequisição linhasRequisição = ctx.LinhasRequisição.Where(x => x.NºLinha == linhas.LinhaRequisicao).FirstOrDefault();
+                        linhasRequisição.NºDeConsultaMercadoCriada = string.Empty;
+                        linhasRequisição.CriarConsultaMercado = false;
+                        ctx.LinhasRequisição.Update(linhasRequisição);
+                        ctx.SaveChanges();
+                    }
+
                     result = new ErrorHandler()
                     {
                         eReasonCode = 0,
@@ -277,6 +293,7 @@ namespace Hydra.Such.Portal.Controllers
                 consultaMercado.Amostra = data.Amostra;
                 consultaMercado.Urgente = data.Urgente;
                 consultaMercado.Historico = data.Historico;
+                consultaMercado.Obs = data.Obs;
 
                 consultaMercado = DBConsultaMercado.Update(consultaMercado);
 
@@ -1331,8 +1348,22 @@ namespace Hydra.Such.Portal.Controllers
             bool result = false;
             try
             {
+                var ctx = new SuchDBContext();
+
+                int _Numero = data.NumLinha;
+                LinhasConsultaMercado linhasConsultaMercado = ctx.LinhasConsultaMercado.Where(p => p.NumLinha == _Numero).FirstOrDefault();
+                int? _NumeroLinhaRequisicao = linhasConsultaMercado.LinhaRequisicao;
+
                 if (DBConsultaMercado.Delete(data) != null)
+                {
+                    LinhasRequisição linhasRequisição = ctx.LinhasRequisição.Where(x => x.NºLinha == _NumeroLinhaRequisicao).FirstOrDefault();
+                    linhasRequisição.NºDeConsultaMercadoCriada = string.Empty;
+                    linhasRequisição.CriarConsultaMercado = false;
+                    ctx.LinhasRequisição.Update(linhasRequisição);
+                    ctx.SaveChanges();
+
                     result = true;
+                }
                 else
                     result = false;
                 
@@ -1579,7 +1610,7 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         string filename = Path.GetFileName(file.FileName);
                         //full_filename = id + "_" + filename;
-                        full_filename = filename;
+                        full_filename = "ConsultasMercado/" + id + "_" + filename;
                         var path = Path.Combine(_generalConfig.FileUploadFolder, full_filename);
                         using (FileStream dd = new FileStream(path, FileMode.CreateNew))
                         {
