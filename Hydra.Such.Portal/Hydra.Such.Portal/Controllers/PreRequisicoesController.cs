@@ -1038,7 +1038,8 @@ namespace Hydra.Such.Portal.Controllers
                             UnidadeProdutivaNutrição = x.UnitNutritionProduction,
                             NºCliente = x.CustomerNo,
                             NºEncomendaAberto = x.OpenOrderNo,
-                            NºLinhaEncomendaAberto = x.OpenOrderLineNo
+                            NºLinhaEncomendaAberto = x.OpenOrderLineNo,
+                            LocalCompraDireta = x.LocalCode
                         };
 
                         if (string.IsNullOrEmpty(newline.NºProjeto))
@@ -1866,9 +1867,12 @@ namespace Hydra.Such.Portal.Controllers
                             extension.ToLower() == ".jpg" || extension.ToLower() == ".png" || extension.ToLower() == ".pdf")
                         {
                             string filename = Path.GetFileName(file.FileName);
-                            full_filename = "Requisicoes/" + id + "_" + filename;
-                            var path = Path.Combine(_config.FileUploadFolder, full_filename);
-                            
+                            //full_filename = "Requisicoes/" + id + "_" + filename;
+                            //var path = Path.Combine(_config.FileUploadFolder, full_filename);
+
+                            full_filename = id + "_" + filename;
+                            var path = Path.Combine("E:\\Data\\eSUCH\\RequisicoesTeste\\", full_filename);
+
                             using (FileStream dd = new FileStream(path, FileMode.CreateNew))
                             {
                                 file.CopyTo(dd);
