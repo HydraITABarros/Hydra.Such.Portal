@@ -125,7 +125,7 @@ namespace Hydra.Such.Data.Logic
                     NoRequisicao = data.NoRequisicao.Equals(DBNull.Value) ? "" : (string)data.NoRequisicao,
                     DataGuia = data.DataGuia.Equals(DBNull.Value) ? DateTime.Parse("1900-01-01") : (DateTime)data.DataGuia,
                     DataSaida = data.DataSaida.Equals(DBNull.Value) ? DateTime.Parse("1900-01-01") : (DateTime)data.DataSaida,
-
+                    
                     ShipmentStartTime = data.ShipmentStartTime.Equals(DBNull.Value) ? DateTime.Parse("1900-01-01") : TimeSpan.Parse(data.ShipmentStartTime.ToShortTimeString()),
 
                     Requisicao = data.Requisicao.Equals(DBNull.Value) ? "" : (string)data.Requisicao,
@@ -163,6 +163,8 @@ namespace Hydra.Such.Data.Logic
                     Telefone = data.Telefone.Equals(DBNull.Value) ? "" : (string)data.Telefone,
                     MaintenanceOrderNo = data.MaintOrderNo.Equals(DBNull.Value) ? "" : (string)data.MaintOrderNo
                 };
+
+                result.FiscalCommunicationLog = new FiscalAuthorityCommunicationLog();
 
                 switch (result.Tipo)
                 {
@@ -239,7 +241,27 @@ namespace Hydra.Such.Data.Logic
                         linhasGt.Add(line);
                     }
                 }
+
                 result.LinhasGuiaTransporte = linhasGt;
+
+                if (isHistoric)
+                {
+                    dynamic flog = _contextExt.execStoredProcedure("exec NAV2017GuiaTransporteCommunicationLog @DBName, @CompanyName, @No", parameters).FirstOrDefault();
+
+                    if (flog != null)
+                    {
+                        result.FiscalCommunicationLog = new FiscalAuthorityCommunicationLog()
+                        {
+                            SourceNo = flog.SourceNo.Equals(DBNull.Value) ? "" : (string)flog.SourceNo,
+                            DocumentCodeId = flog.DocCodId.Equals(DBNull.Value) ? "" : (string)flog.DocCodId,
+                            CommunicationDateTime = flog.DateTimeCommunication.Equals(DBNull.Value) ? DateTime.Parse("1900-01-01") : (DateTime)flog.DateTimeCommunication,
+                            ReturnCode = flog.ReturnCode.Equals(DBNull.Value) ? "" : (string)flog.ReturnCode,
+                            ReturnMessage = flog.ReturnMessage.Equals(DBNull.Value) ? "" : (string)flog.ReturnMessage
+                        };
+                        
+                    }   
+                }
+                
                 return result;
             }
             catch (Exception ex)
