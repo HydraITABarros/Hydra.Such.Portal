@@ -12,7 +12,7 @@
           <rd:DbType>Object</rd:DbType>
         </DataSetParameter>
       </DataSetParameters>
-      <CommandText>SELECT        [Linhas Requisição].[Nº Linha], [Linhas Requisição].Descrição, [Linhas Requisição].[Quantidade a Requerer], [Linhas Requisição].[Código Localização] AS LineLocalization, [Linhas Requisição].[Nº Projeto] AS LineProjNo, 
+      <CommandText>SELECT        [Linhas Requisição].[Nº Linha], [Linhas Requisição].Descrição, [Linhas Requisição].[Descrição2], [Linhas Requisição].[Quantidade a Requerer], [Linhas Requisição].[Código Localização] AS LineLocalization, [Linhas Requisição].[Nº Projeto] AS LineProjNo, 
                          [Linhas Requisição].[Código Unidade Medida], [Linhas Requisição].Código AS LineCodProduto, Requisição.[Nº Requisição], Requisição.Área, Requisição.Estado, Requisição.[Nº Projeto], Requisição.[Código Região], Requisição.[Código Área Funcional], 
                          Requisição.[Código Centro Responsabilidade], Requisição.[Código Localização], Requisição.[Nº Funcionário], Requisição.Viatura, Requisição.[Data Receção], Requisição.Urgente, Requisição.Amostra, Requisição.Anexo, 
                          Requisição.Imobilizado, Requisição.[Compra a Dinheiro], Requisição.[Código Local Recolha], Requisição.[Código Local Entrega], Requisição.Observações, Requisição.[Modelo de Requisição], Requisição.[Data/Hora Criação], 
@@ -36,6 +36,10 @@ WHERE        (Requisição.[Nº Requisição] = @NoRequisicao)</CommandText>
       </Field>
       <Field Name="Descrição">
         <DataField>Descrição</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Descrição2">
+        <DataField>Descrição2</DataField>
         <rd:TypeName>System.String</rd:TypeName>
       </Field>
       <Field Name="Quantidade_a_Requerer">
