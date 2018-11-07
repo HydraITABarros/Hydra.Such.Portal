@@ -1363,6 +1363,7 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 RequestReclaimNo = data.ClaimedRequesitionNo,
                                 Urgent = data.Urgent,
+                                Attachment = data.Attachment,
                                 Area = data.Area,
                                 Immobilized = data.Immobilized,
                                 Exclusive = data.Exclusive,
@@ -1446,6 +1447,7 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 RequestReclaimNo = data.ClaimedRequesitionNo,
                                 Urgent = data.Urgent,
+                                Attachment = data.Attachment,
                                 Area = data.Area,
                                 Immobilized = data.Immobilized,
                                 Exclusive = data.Exclusive,
@@ -1871,7 +1873,8 @@ namespace Hydra.Such.Portal.Controllers
                             //var path = Path.Combine(_config.FileUploadFolder, full_filename);
 
                             full_filename = id + "_" + filename;
-                            var path = Path.Combine("E:\\Data\\eSUCH\\RequisicoesTeste\\", full_filename);
+                            var path = Path.Combine("E:\\Data\\eSUCH\\Requisicoes\\", full_filename);
+                            //var path = Path.Combine("M:\\", full_filename);
 
                             using (FileStream dd = new FileStream(path, FileMode.CreateNew))
                             {
@@ -1899,6 +1902,16 @@ namespace Hydra.Such.Portal.Controllers
                                         preREQ.CabimentoOrçamental = true;
                                         preREQ.UtilizadorModificação = User.Identity.Name;
                                         DBPreRequesition.Update(preREQ);
+                                    }
+                                    else
+                                    {
+                                        Requisição REQ = DBRequest.GetById(id);
+                                        if (REQ != null)
+                                        {
+                                            REQ.CabimentoOrçamental = true;
+                                            REQ.UtilizadorModificação = User.Identity.Name;
+                                            DBRequest.Update(REQ);
+                                        }
                                     }
                                 }
                             }
@@ -1933,9 +1946,9 @@ namespace Hydra.Such.Portal.Controllers
         [HttpGet]
         public FileStreamResult DownloadFile(string id)
         {
-            //string file = "wwwroot/Upload/Requisicoes/ARomao@such.pt_AMARO_PRE_ANEXO";
-            //return new FileStreamResult(new FileStream(file, FileMode.Open), "application/xlsx");
-            return new FileStreamResult(new FileStream(_config.FileUploadFolder + id, FileMode.Open), "application/xlsx");
+            //return new FileStreamResult(new FileStream(_config.FileUploadFolder + id, FileMode.Open), "application/xlsx");
+            return new FileStreamResult(new FileStream("E:\\Data\\eSUCH\\Requisicoes\\" + id, FileMode.Open), "application/xlsx");
+            //return new FileStreamResult(new FileStream("M:\\" + id, FileMode.Open), "application/xlsx");
         }
 
 
@@ -1944,7 +1957,10 @@ namespace Hydra.Such.Portal.Controllers
         {
             try
             {
-                System.IO.File.Delete(_config.FileUploadFolder + requestParams.Url);
+                //System.IO.File.Delete(_config.FileUploadFolder + requestParams.Url);
+                System.IO.File.Delete("E:\\Data\\eSUCH\\Requisicoes\\" + requestParams.Url);
+                //System.IO.File.Delete("M:\\" + requestParams.Url);
+
                 DBAttachments.Delete(DBAttachments.ParseToDB(requestParams));
                 requestParams.eReasonCode = 1;
 

@@ -4,7 +4,7 @@
   <AutoRefresh>0</AutoRefresh>
   <DataSources>
     <DataSource Name="DS">
-      <DataSourceReference>eSUCHTestes</DataSourceReference>
+      <DataSourceReference>eSuchDS</DataSourceReference>
       <rd:SecurityType>None</rd:SecurityType>
       <rd:DataSourceID>6e7c5036-e7bf-482f-a9a9-8234bb280e12</rd:DataSourceID>
     </DataSource>
@@ -74,6 +74,7 @@
         </QueryParameters>
         <CommandType>StoredProcedure</CommandType>
         <CommandText>rpt_ConsultaMercado_Dados</CommandText>
+        <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
       </Query>
       <Fields>
         <Field Name="Num_Consulta_Mercado">

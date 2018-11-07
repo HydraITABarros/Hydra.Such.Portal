@@ -28,6 +28,10 @@
           <DataField>Descrição</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
+        <Field Name="Descrição2">
+          <DataField>Descrição2</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
         <Field Name="Quantidade_a_Requerer">
           <DataField>Quantidade_a_Requerer</DataField>
           <rd:TypeName>System.Decimal</rd:TypeName>
@@ -42,6 +46,10 @@
         </Field>
         <Field Name="Código_Unidade_Medida">
           <DataField>Código_Unidade_Medida</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="LineCodProduto">
+          <DataField>LineCodProduto</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
         <Field Name="Nº_Requisição">
@@ -330,19 +338,19 @@
                   <Width>2.5cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>7.75828cm</Width>
+                  <Width>7.38059cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>0.8869cm</Width>
+                  <Width>1.69177cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>0.8017cm</Width>
+                  <Width>0.98305cm</Width>
                 </TablixColumn>
                 <TablixColumn>
                   <Width>2.81253cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>3.05066cm</Width>
+                  <Width>2.44212cm</Width>
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
@@ -576,25 +584,23 @@
                   <TablixCells>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="Nº_Linha">
+                        <Textbox Name="LineCodProduto">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!Nº_Linha.Value</Value>
+                                  <Value>=Fields!LineCodProduto.Value</Value>
                                   <Style>
                                     <FontSize>8pt</FontSize>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
-                              <Style>
-                                <TextAlign>Left</TextAlign>
-                              </Style>
+                              <Style />
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>Nº_Linha</rd:DefaultName>
+                          <rd:DefaultName>LineCodProduto</rd:DefaultName>
                           <Style>
                             <Border>
                               <Style>None</Style>
@@ -620,7 +626,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!Descrição.Value</Value>
+                                  <Value>=RTrim(LTrim(Fields!Descrição.Value &amp; " " &amp; Fields!Descrição2.Value))</Value>
                                   <Style>
                                     <FontSize>8pt</FontSize>
                                   </Style>
@@ -823,7 +829,7 @@
             <Top>1.09361cm</Top>
             <Left>0.07056cm</Left>
             <Height>1.2cm</Height>
-            <Width>17.81007cm</Width>
+            <Width>17.81006cm</Width>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -831,7 +837,7 @@
             </Style>
           </Tablix>
         </ReportItems>
-        <Height>3.28125in</Height>
+        <Height>0.96875in</Height>
         <Style>
           <Border>
             <Style>None</Style>
@@ -841,7 +847,7 @@
           </TopBorder>
         </Style>
       </Body>
-      <Width>17.88063cm</Width>
+      <Width>17.99938cm</Width>
       <Page>
         <PageHeader>
           <Height>4.42736cm</Height>
@@ -1461,11 +1467,12 @@
           </Style>
         </PageHeader>
         <PageFooter>
-          <Height>2.16959cm</Height>
+          <Height>0.7673cm</Height>
           <PrintOnFirstPage>true</PrintOnFirstPage>
           <PrintOnLastPage>true</PrintOnLastPage>
           <ReportItems>
             <Line Name="Line6">
+              <Top>0cm</Top>
               <Left>0.07056cm</Left>
               <Height>0cm</Height>
               <Width>17.81006cm</Width>
