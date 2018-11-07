@@ -20,6 +20,7 @@
         </QueryParameters>
         <CommandType>StoredProcedure</CommandType>
         <CommandText>rpt_ConsultaMercado_Linhas</CommandText>
+        <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
       </Query>
       <Fields>
         <Field Name="Num_Linha">
@@ -116,6 +117,10 @@
         </Field>
         <Field Name="Modificado_Por">
           <DataField>Modificado_Por</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Obs">
+          <DataField>Obs</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
       </Fields>
@@ -644,7 +649,7 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>Obs.</Value>
+                    <Value>="OBS.: " + First(Fields!Obs.Value, "Linhas")</Value>
                     <Style>
                       <FontSize>7pt</FontSize>
                     </Style>

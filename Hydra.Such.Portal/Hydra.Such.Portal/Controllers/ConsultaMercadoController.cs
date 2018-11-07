@@ -641,7 +641,8 @@ namespace Hydra.Such.Portal.Controllers
                                 RegionCode = data.CodRegiao,
                                 RequisitionId = data.NumRequisicao,
                                 SupplierId = registoDePropostas[0].Fornecedor1Code,
-                                Lines = purchOrderLineDTOs
+                                Lines = purchOrderLineDTOs,
+                                NAVPrePurchOrderId = data.NumConsultaMercado
                             };
 
                             purchOrders.Add(purchOrderDTO1);
@@ -697,7 +698,8 @@ namespace Hydra.Such.Portal.Controllers
                                 RegionCode = data.CodRegiao,
                                 RequisitionId = data.NumRequisicao,
                                 SupplierId = registoDePropostas[0].Fornecedor2Code,
-                                Lines = purchOrderLineDTOs
+                                Lines = purchOrderLineDTOs,
+                                NAVPrePurchOrderId = data.NumConsultaMercado
                             };
 
                             purchOrders.Add(purchOrderDTO2);
@@ -753,7 +755,8 @@ namespace Hydra.Such.Portal.Controllers
                                 RegionCode = data.CodRegiao,
                                 RequisitionId = data.NumRequisicao,
                                 SupplierId = registoDePropostas[0].Fornecedor3Code,
-                                Lines = purchOrderLineDTOs
+                                Lines = purchOrderLineDTOs,
+                                NAVPrePurchOrderId = data.NumConsultaMercado
                             };
 
                             purchOrders.Add(purchOrderDTO3);
@@ -810,7 +813,8 @@ namespace Hydra.Such.Portal.Controllers
                                 RegionCode = data.CodRegiao,
                                 RequisitionId = data.NumRequisicao,
                                 SupplierId = registoDePropostas[0].Fornecedor4Code,
-                                Lines = purchOrderLineDTOs
+                                Lines = purchOrderLineDTOs,
+                                NAVPrePurchOrderId = data.NumConsultaMercado
                             };
 
                             purchOrders.Add(purchOrderDTO4);
@@ -867,7 +871,8 @@ namespace Hydra.Such.Portal.Controllers
                                 RegionCode = data.CodRegiao,
                                 RequisitionId = data.NumRequisicao,
                                 SupplierId = registoDePropostas[0].Fornecedor5Code,
-                                Lines = purchOrderLineDTOs
+                                Lines = purchOrderLineDTOs,
+                                NAVPrePurchOrderId = data.NumConsultaMercado
                             };
 
                             purchOrders.Add(purchOrderDTO5);
@@ -923,7 +928,8 @@ namespace Hydra.Such.Portal.Controllers
                                 RegionCode = data.CodRegiao,
                                 RequisitionId = data.NumRequisicao,
                                 SupplierId = registoDePropostas[0].Fornecedor6Code,
-                                Lines = purchOrderLineDTOs
+                                Lines = purchOrderLineDTOs,
+                                NAVPrePurchOrderId = data.NumConsultaMercado
                             };
 
                             purchOrders.Add(purchOrderDTO6);
@@ -942,7 +948,7 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     try
                     {
-                        var result = CreateNAVPurchaseOrderFor(purchOrder);
+                        var result = CreateNAVPurchaseOrderFor(purchOrder, data.NumConsultaMercado);
                         if (result.CompletedSuccessfully)
                         {
                             data.eMessages.Add(new TraceInformation(TraceType.Success, "Criada encomenda para o fornecedor núm. " + purchOrder.SupplierId + "; "));
@@ -1206,11 +1212,11 @@ namespace Hydra.Such.Portal.Controllers
             return Body;
         }
 
-        private GenericResult CreateNAVPurchaseOrderFor(PurchOrderDTO purchOrder)
+        private GenericResult CreateNAVPurchaseOrderFor(PurchOrderDTO purchOrder, string CM)
         {
             GenericResult createPrePurchOrderResult = new GenericResult();
 
-            Task<WSPurchaseInvHeader.Create_Result> createPurchaseHeaderTask = NAVPurchaseHeaderIntermService.CreateAsync(purchOrder, configws);
+            Task<WSPurchaseInvHeader.Create_Result> createPurchaseHeaderTask = NAVPurchaseHeaderIntermService.CreateAsync_CM(purchOrder, configws, CM);
             createPurchaseHeaderTask.Wait();
             if (createPurchaseHeaderTask.IsCompletedSuccessfully)
             {
