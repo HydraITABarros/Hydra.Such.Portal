@@ -297,6 +297,13 @@
                    on-response="_actionResponseProcessor"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/GestaoRequisicoes/TodasLinhasNotaEncomenda"
+                   last-response="{{resultTodasLinhasNotaEncomenda}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_TodasLinhasNotaEncomenda"
+                   on-response="_TodasLinhasNotaEncomendaResponseProcessor"
+                   content-type="application/json"></iron-ajax>
 
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" id="btnGoBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
@@ -307,6 +314,8 @@
             <paper-button class="tablinks" id="btnAprovar" disabled="{{ !_permissions.update }}" on-tap="_aprovarRequisicao" title="Aprovar"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Aprovar</paper-button>
             <such-dropdown-menu id="menuRegister" disabled="{{ !_permissions.update }}" on-value-changed="_registerMenuItemSelected" title="Registar" items='[[ _registerMenuItems ]]'></such-dropdown-menu>
             <such-dropdown-menu id="menuFunctios" disabled="{{ !_permissions.update }}" on-value-changed="_functionsMenuItemSelected" title="Funções" items='[[ _functionsMenuItems ]]'></such-dropdown-menu>
+
+
 
             <!--<template is="dom-if" if="{{ _permissions.update }}">-->
             <!--<paper-button class="tablinks" id="btnLocalMarketValidation" style="width: 200px !important;" on-tap="_validateLocalMarket"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Enviar Mercado Local</paper-button>-->
@@ -694,6 +703,9 @@
                                 <template is="dom-if" if="{{ _permissions.delete }}">
                                     <paper-button raised id="btnDelete" class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
                                 </template>
+                                <template is="dom-if" if="{{ !isReadOnly() }}">
+                                    <paper-button raised id="btnCreate" class="btnSave" on-tap="_todasLinhasNotaEncomenda" title="Marcar todas as Linhas para Nota de Encomenda"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Linhas Enc.</paper-button>
+                                </template>
                             </div>
                         </div>
 
@@ -876,18 +888,25 @@
                                     <div class="col-lg-3">
                                         <vaadin-text-field id="txtQuantidadeInicial" on-value-changed="_ConvertDecimals" pattern="^-?[0-9]+([\.][0-9]+)?" name="txtQuantidadeInicial" label="Quantidade Inicial"></vaadin-text-field>
                                     </div>
+
+                                    <div class="col-lg-3">
+                                        <vaadin-text-field id="txtNoEncomendaCriada" name="txtNoEncomendaCriada" label="Nº Encomenda Criada"></vaadin-text-field>
+                                    </div>
                                 </div>
                                 <div class="row break_clear" hidden="{{_isArchived}}">
-                                    <div class="col-lg-3">
+                                    <div class="col-lg-2">
                                         <vaadin-checkbox id="chkLocalMarket">Mercado Local</vaadin-checkbox>
                                     </div>
-                                    <div class="col-lg-3">
+                                    <div class="col-lg-2">
                                         <vaadin-checkbox id="sendPrePurchaseId">Enviar Pré Compra</vaadin-checkbox>
                                     </div>
-                                    <div class="col-lg-3">
+                                    <div class="col-lg-2">
                                         <vaadin-checkbox id="createMarketSearchId">Criar Consulta Mercado</vaadin-checkbox>
                                     </div>
-                                    <div class="col-lg-3">
+                                    <div class="col-lg-2">
+                                        <vaadin-checkbox id="criarNotaEncomendaId">Criar Nota Encomenda</vaadin-checkbox>
+                                    </div>
+                                    <div class="col-lg-2">
                                         <vaadin-checkbox id="submitPrePurchaseId">Enviado Pré Compra</vaadin-checkbox>
                                     </div>
                                 </div>
@@ -897,6 +916,7 @@
                                             <template is="dom-if" if="{{ _permissions.create }}">
                                                 <paper-button raised id="btnCreate" class="btnSave" on-tap="_createRequisitionLine"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                             </template>
+                                            <paper-button raised id="btnCreate" class="btnSave" on-tap="_todasLinhasNotaEncomenda" title="Marcar todas as Linhas para Nota de Encomenda"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Linhas Enc.</paper-button>
                                         </template>
                                     </div>
                                 </div>
@@ -1189,6 +1209,22 @@
                                     </template>
                                 </vaadin-grid-column>
 
+                                0p
+
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <p class="alignCenter">Criar Nota Encomenda</p>
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-checkbox id="chkCriarNotaEncomenda" checked="{{item.criarNotaEncomenda}}" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLines"></vaadin-checkbox>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            <vaadin-checkbox checked="{{item.criarNotaEncomenda}}" disabled></vaadin-checkbox>
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+
                                 <vaadin-grid-column width="130px" resizable>
                                     <template class="header">
                                         <p class="alignCenter">Mercado Local</p>
@@ -1225,6 +1261,8 @@
                                     </template>
                                 </vaadin-grid-column>
 
+                                0p
+
                                 <vaadin-grid-column width="160px" resizable>
                                     <template class="header">
                                         <p class="alignCenter">Enviar Pré Compra</p>
@@ -1239,6 +1277,23 @@
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             <vaadin-checkbox checked="{{item.sendPrePurchase}}" disabled></vaadin-checkbox>
                                             <!--{{item.sendPrePurchaseStringValue}}-->
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+
+                                0p
+
+                                <vaadin-grid-column width="200px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="createdOrderNo">Nº Encomenda Criada</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="createdOrderNo" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-text-field value="{{item.createdOrderNo}}" id="_CLGridcreatedOrderNo" name="_CLGridcreatedOrderNo" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLines"> </vaadin-text-field>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            {{item.createdOrderNo}}
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
@@ -1521,6 +1576,7 @@
                                 <template is="dom-if" if="{{ !isReadOnly() }}">
                                     <template is="dom-if" if="{{ _permissions.delete }}">
                                         <vaadin-grid-column width="100px" resizable hidden="{{_isValidated}}">
+
                                             <!--hidden="{{_isArchived}}"-->
                                             <template class="header">
                                             </template>
@@ -1659,6 +1715,10 @@
                         value: true
                     },
                     _createMarketSearchFilterActive: {
+                        type: Boolean,
+                        value: true
+                    },
+                    _criarNotaEncomendaFilterActive: {
                         type: Boolean,
                         value: true
                     },
@@ -1925,6 +1985,7 @@
                     this.$.budgetValueId.value = "";
                     this.$.maintenanceOrderLineNoId.value = "";
                     this.$.createMarketSearchId.checked = false;
+                    this.$.criarNotaEncomendaId.checked = false;
                     this.$.submitPrePurchaseId.checked = false;
                     this.$.sendPrePurchaseId.checked = false;
                     this.$.CBSuppliers._clearSelection();
@@ -2172,6 +2233,7 @@
                             budgetValue: this.$.budgetValueId.value,
                             maintenanceOrderLineNo: this.$.maintenanceOrderLineNoId.value,
                             createMarketSearch: this.$.createMarketSearchId.__data.checked ? 1 : 0, //Criar Consulta Mercado
+                            criarNotaEncomenda: this.$.criarNotaEncomendaId.__data.checked ? 1 : 0, //Criar Nota Encomenda
                             submitPrePurchase: this.$.submitPrePurchaseId.__data.checked ? 1 : 0,   //Enviado Pré Compra
                             sendPrePurchase: this.$.sendPrePurchaseId.__data.checked ? 1 : 0,       //Enviar Pré Compra
                             supplierNo: this.$.CBSuppliers.value,
@@ -2182,7 +2244,8 @@
                             localMarket: this.$.chkLocalMarket.__data.checked ? 1 : 0,              //Mercado Local
                             vatBusinessPostingGroup: "",
                             vatProductPostingGroup: "",
-                            quantidadeInicial: this.$.txtQuantidadeInicial.value
+                            quantidadeInicial: this.$.txtQuantidadeInicial.value,
+                            createdOrderNo: this.$.txtNoEncomendaCriada.value,
                         };
                         //Set default VATPostingGroups
                         var supplier = this.Suppliers.find(x => x.no_ == newReqLine.supplierNo);
@@ -2210,6 +2273,26 @@
                         this._openToastError(this.AddReqLineResponse.eMessage);
                     }
                 },
+
+                _todasLinhasNotaEncomenda: function () {
+                    debugger;
+                    this.$.ajax_TodasLinhasNotaEncomenda.body = JSON.stringify({ "requisitionNo": this.$.requisitionNo.value });
+                    this.$.ajax_TodasLinhasNotaEncomenda.generateRequest();
+                },
+                _TodasLinhasNotaEncomendaResponseProcessor: function (e) {
+                    debugger;
+                    if (this.resultTodasLinhasNotaEncomenda.eReasonCode == "1") {
+                        this._openToast(this.resultTodasLinhasNotaEncomenda.eMessage);
+
+                        this.$.requisition_datasource.body = JSON.stringify({ "requisitionId": this._requisitionid, "status": this._requisitionstatus });
+                        this.$.requisition_datasource.generateRequest();
+                        this.$.grdRequisitionLines.clearCache();
+                    }
+                    else {
+                        this._openToastError(this.resultTodasLinhasNotaEncomenda.eMessage);
+                    }
+                },
+
                 _deleteRequisitionLine: function (e) {
                     var ajax_request = this.$.deleteReqLine_ajax;
 
