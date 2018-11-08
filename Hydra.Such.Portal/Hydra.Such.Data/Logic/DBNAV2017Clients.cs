@@ -207,5 +207,111 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
+        public static List<NAVClientesInvoicesDetailsViewModel> GetInvoiceDetails(string NAVDatabaseName, string NAVCompanyName, string No)
+        {
+            try
+            {
+                List<NAVClientesInvoicesDetailsViewModel> result = new List<NAVClientesInvoicesDetailsViewModel>();
+                using (var ctx = new SuchDBContextExtention())
+                {
+                    var parameters = new[]{
+                        new SqlParameter("@DBName", NAVDatabaseName),
+                        new SqlParameter("@CompanyName", NAVCompanyName),
+                        new SqlParameter("@No", No ),
+                        //new SqlParameter("@Regions", "''"),
+                        //new SqlParameter("@FunctionalAreas", "''"),
+                        //new SqlParameter("@RespCenters", "''"),
+                    };
+
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017ClientesInvoicesDetails @DBName, @CompanyName, @No", parameters);
+
+                    foreach (dynamic temp in data)
+                    {
+                        result.Add(new NAVClientesInvoicesDetailsViewModel()
+                        {
+                            No = temp.No.Equals(DBNull.Value) ? "" : (string)temp.No.ToString(),
+                            AmountIncludingVAT = temp.AmountIncludingVAT.Equals(DBNull.Value) ? "" : (string)temp.AmountIncludingVAT.ToString(),
+                            FunctionalAreaId = temp.FunctionalAreaId.Equals(DBNull.Value) ? "" : (string)temp.FunctionalAreaId.ToString(),
+                            RegionId = temp.RegionId.Equals(DBNull.Value) ? "" : (string)temp.RegionId.ToString(),
+                            RespCenterId = temp.RespCenterId.Equals(DBNull.Value) ? "" : (string)temp.RespCenterId.ToString(),
+                            SellToCustomerNo = temp.SellToCustomerNo.Equals(DBNull.Value) ? "" : (string)temp.SellToCustomerNo.ToString(),
+                            Tipo = temp.Tipo.Equals(DBNull.Value) ? "" : (string)temp.Tipo.ToString(),
+                            Amount = temp.Amount.Equals(DBNull.Value) ? "" : (string)temp.Amount.ToString(),
+                            Description = temp.Description.Equals(DBNull.Value) ? "" : (string)temp.Description.ToString(),
+                            Description2 = temp.Description2.Equals(DBNull.Value) ? "" : (string)temp.Description2.ToString(),
+                            DimensionSetID = temp.DimensionSetID.Equals(DBNull.Value) ? "" : (string)temp.DimensionSetID.ToString(),
+                            DocumentNo = temp.DocumentNo.Equals(DBNull.Value) ? "" : (string)temp.DocumentNo.ToString(),
+                            LineNo = temp.LineNo_.Equals(DBNull.Value) ? "" : (string)temp.LineNo_.ToString(),
+                            Quantity = temp.Quantity.Equals(DBNull.Value) ? "" : (string)temp.Quantity.ToString(),
+                            ServiceContractNo = temp.ServiceContractNo.Equals(DBNull.Value) ? "" : (string)temp.ServiceContractNo.ToString(),
+                            UnitOfMeasure = temp.UnitOfMeasure.Equals(DBNull.Value) ? "" : (string)temp.UnitOfMeasure.ToString(),
+                            UnitPrice = temp.UnitPrice.Equals(DBNull.Value) ? "" : (string)temp.UnitPrice.ToString(),
+                            VAT = temp.VAT.Equals(DBNull.Value) ? "" : (string)temp.VAT.ToString()
+
+                        });
+                    }
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+
+        
+        public static List<NAVClientesInvoicesDetailsViewModel> GetCrMemoDetails(string NAVDatabaseName, string NAVCompanyName, string No)
+        {
+            try
+            {
+                List<NAVClientesInvoicesDetailsViewModel> result = new List<NAVClientesInvoicesDetailsViewModel>();
+                using (var ctx = new SuchDBContextExtention())
+                {
+                    var parameters = new[]{
+                        new SqlParameter("@DBName", NAVDatabaseName),
+                        new SqlParameter("@CompanyName", NAVCompanyName),
+                        new SqlParameter("@No", No ),
+                        //new SqlParameter("@Regions", "''"),
+                        //new SqlParameter("@FunctionalAreas", "''"),
+                        //new SqlParameter("@RespCenters", "''"),
+                    };
+
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017ClientesCrMemoDetails @DBName, @CompanyName, @No", parameters);
+
+                    foreach (dynamic temp in data)
+                    {
+                        result.Add(new NAVClientesInvoicesDetailsViewModel()
+                        {
+                            No = temp.No.Equals(DBNull.Value) ? "" : (string)temp.No.ToString(),
+                            AmountIncludingVAT = temp.AmountIncludingVAT.Equals(DBNull.Value) ? "" : (string)temp.AmountIncludingVAT.ToString(),
+                            FunctionalAreaId = temp.FunctionalAreaId.Equals(DBNull.Value) ? "" : (string)temp.FunctionalAreaId.ToString(),
+                            RegionId = temp.RegionId.Equals(DBNull.Value) ? "" : (string)temp.RegionId.ToString(),
+                            RespCenterId = temp.RespCenterId.Equals(DBNull.Value) ? "" : (string)temp.RespCenterId.ToString(),
+                            SellToCustomerNo = temp.SellToCustomerNo.Equals(DBNull.Value) ? "" : (string)temp.SellToCustomerNo.ToString(),
+                            Tipo = temp.Tipo.Equals(DBNull.Value) ? "" : (string)temp.Tipo.ToString(),
+                            Amount = temp.Amount.Equals(DBNull.Value) ? "" : (string)temp.Amount.ToString(),
+                            Description = temp.Description.Equals(DBNull.Value) ? "" : (string)temp.Description.ToString(),
+                            Description2 = temp.Description2.Equals(DBNull.Value) ? "" : (string)temp.Description2.ToString(),
+                            DimensionSetID = temp.DimensionSetID.Equals(DBNull.Value) ? "" : (string)temp.DimensionSetID.ToString(),
+                            DocumentNo = temp.DocumentNo.Equals(DBNull.Value) ? "" : (string)temp.DocumentNo.ToString(),
+                            LineNo = temp.LineNo_.Equals(DBNull.Value) ? "" : (string)temp.LineNo_.ToString(),
+                            Quantity = temp.Quantity.Equals(DBNull.Value) ? "" : (string)temp.Quantity.ToString(),
+                            ServiceContractNo = temp.ServiceContractNo.Equals(DBNull.Value) ? "" : (string)temp.ServiceContractNo.ToString(),
+                            UnitOfMeasure = temp.UnitOfMeasure.Equals(DBNull.Value) ? "" : (string)temp.UnitOfMeasure.ToString(),
+                            UnitPrice = temp.UnitPrice.Equals(DBNull.Value) ? "" : (string)temp.UnitPrice.ToString(),
+                            VAT = temp.VAT.Equals(DBNull.Value) ? "" : (string)temp.VAT.ToString()
+
+                        });
+                    }
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
     }
 }

@@ -156,6 +156,190 @@ namespace Hydra.Such.Portal.Controllers
             return Json(false);
         }
 
+        [HttpPost]
+        public JsonResult GetInvoiceDetails([FromBody] NAVClientesInvoicesViewModel data)
+        {
+            if (data != null && data.No_ != null)
+            {
+                List<NAVClientesInvoicesDetailsViewModel> result = null;
+                if (data.Tipo == "Fatura")
+                {
+                    result = DBNAV2017Clients.GetInvoiceDetails(_config.NAVDatabaseName, _config.NAVCompanyName, data.No_);
+                }
+                else
+                {
+                    result = DBNAV2017Clients.GetCrMemoDetails(_config.NAVDatabaseName, _config.NAVCompanyName, data.No_);
+                }
+                return Json(result);
+            }
+            return Json(false);
+        }
+
+
+
+        [HttpPost]
+        public async Task<JsonResult> InvoiceDetailsExportToExcel([FromBody] dynamic form)
+        {
+            JObject dp = (JObject)form.GetValue("columns");
+
+            var list = (dynamic)form.GetValue("list");
+
+            var noFatura = (dynamic)form.GetValue("noFatura");
+
+            var tipo = (dynamic)form.GetValue("tipo");
+
+            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + "_ExportEXCEL.xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+
+                string excelSheetName = tipo == "Fatura" ? "Detalhe Fatura" : "Detalhe Nota de Crédito";
+
+                ISheet excelSheet = workbook.CreateSheet("Detalhe Fatura");
+                IRow row = excelSheet.CreateRow(0);
+                int Col = 0;
+
+                if (dp["documentNo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("documentNo");
+                    Col = Col + 1;
+                }
+                if (dp["tipo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Tipo");
+                    Col = Col + 1;
+                }
+                if (dp["no"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº");
+                    Col = Col + 1;
+                }
+                if (dp["description"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Descrição");
+                    Col = Col + 1;
+                }
+                if (dp["description2"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Descrição 2");
+                    Col = Col + 1;
+                }
+                if (dp["unitOfMeasure"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Unidade de Medida");
+                    Col = Col + 1;
+                }
+                if (dp["quantity"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Quantidade");
+                    Col = Col + 1;
+                }
+                if (dp["unitPrice"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Preço Unitário");
+                    Col = Col + 1;
+                }
+                if (dp["vat"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Iva");
+                    Col = Col + 1;
+                }
+                if (dp["amount"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Custo");
+                    Col = Col + 1;
+                }
+
+                if (dp != null)
+                {
+                    int count = 1;
+
+                    foreach (JObject item in list)
+                    {
+                        Col = 0;
+                        row = excelSheet.CreateRow(count);
+
+                        if (dp["documentNo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item["documentNo"].ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["tipo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item["tipo"].ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["no"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item["no"].ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["description"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item["description"].ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["description2"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item["description2"].ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["unitOfMeasure"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item["unitOfMeasure"].ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["quantity"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item["quantity"].ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["unitPrice"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item["unitPrice"].ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["vat"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item["vat"].ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["amount"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item["amount"].ToString());
+                            Col = Col + 1;
+                        }
+
+                        count++;
+                    }
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+        }
+
+        public IActionResult InvoiceDetailsExportToExcel(string fileName, string tipo)
+        {
+            fileName = @"/Upload/temp/" + fileName;
+
+            string fileExportName = tipo == "Fatura" ? "DetalheFatura" : "DetalheNotaCredito";
+
+            return File(fileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileExportName + ".xlsx");
+        }
 
         //eReason = 1 -> Sucess
         //eReason = 2 -> Error creating Project on Databse 
@@ -166,7 +350,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult Create([FromBody] ClientDetailsViewModel data)
         {
-            
+
             if (data != null)
             {
                 var createClientTask = WSCustomerService.CreateAsync(data, _configws);
@@ -202,7 +386,7 @@ namespace Hydra.Such.Portal.Controllers
             }
             return Json(data);
         }
-        
+
         [HttpPost]
         public JsonResult Update([FromBody] ClientDetailsViewModel data)
         {

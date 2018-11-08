@@ -23,9 +23,9 @@ namespace Hydra.Such.Data.ViewModel.GuiaTransporte
         public string NifCliente { get; set; }
         public string SourceCode { get; set; }
         public string NoRequisicao { get; set; }
-        [JsonConverter(typeof(DateFormatConverter), "MM-dd-yyyy")]
+        [JsonConverter(typeof(DateFormatConverter), "dd-MM-yyyy")]
         public DateTime DataGuia { get; set; }
-        [JsonConverter(typeof(DateFormatConverter), "MM-dd-yyyy")]
+        [JsonConverter(typeof(DateFormatConverter), "dd-MM-yyyy")]
         public DateTime DataSaida { get; set; }
         public string Requisicao { get; set; } 
         public string ReportedBy { get; set; }
@@ -47,14 +47,14 @@ namespace Hydra.Such.Data.ViewModel.GuiaTransporte
         public string PostCode { get; set; }
         
         public TimeSpan HoraCarga { get; set; }
-        [JsonConverter(typeof(DateFormatConverter), "MM-dd-yyyy")]
+        [JsonConverter(typeof(DateFormatConverter), "dd-MM-yyyy")]
         public DateTime DataCarga { get; set; }
         public string PaisCarga { get; set; }
         public string LocalDescarga { get; set; }
         public string LocalDescarga1 { get; set; }
         public string CodPostalDescarga { get; set; }
         public TimeSpan HoraDescarga { get; set; }
-        [JsonConverter(typeof(DateFormatConverter), "MM-dd-yyyy")]
+        [JsonConverter(typeof(DateFormatConverter), "dd-MM-yyyy")]
         public DateTime DataDescarga { get; set; }
         public string Viatura { get; set; }
         public string PaisDescarga { get; set; }
@@ -64,7 +64,7 @@ namespace Hydra.Such.Data.ViewModel.GuiaTransporte
         public string NoGuiaOriginalInterface { get; set; }
         public int GuiaTransporteInterface { get; set; }
         public int DimensionSetId { get; set; }
-        [JsonConverter(typeof(DateFormatConverter), "MM-dd-yyyy")]
+        [JsonConverter(typeof(DateFormatConverter), "dd-MM-yyyy")]
         public DateTime ShipmentStartDate { get; set; }
         public TimeSpan ShipmentStartTime { get; set; }
         public bool Historico { get; set; }
@@ -73,6 +73,7 @@ namespace Hydra.Such.Data.ViewModel.GuiaTransporte
         public string MaintenanceOrderNo { get; set; }
 
         public ICollection<LinhaGuiaTransporteNavViewModel> LinhasGuiaTransporte { get; set; }
+        public FiscalAuthorityCommunicationLog FiscalCommunicationLog { get; set; }
 
     }
 }

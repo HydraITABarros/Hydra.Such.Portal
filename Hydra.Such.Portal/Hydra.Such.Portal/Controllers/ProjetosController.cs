@@ -2097,6 +2097,27 @@ namespace Hydra.Such.Portal.Controllers
                     project = DBProjects.GetById(projectNo);
                     if (project != null)
                     {
+                        //if (!project.TipoGrupoContabProjeto.HasValue)
+                        //{
+                        //    result.eMessages.Add(new TraceInformation(TraceType.Error, "O projeto não tem o Tipo Grupo Contab. Projeto definido."));
+                        //}
+                        //else
+                        //{
+                        //    var contabGroupType = DBCountabGroupTypes.GetById(project.TipoGrupoContabProjeto.Value);
+                        //    if (contabGroupType != null)
+                        //    {
+                        //        if (contabGroupType.CódigoRegião != project.CódigoRegião ||
+                        //            contabGroupType.CódigoÁreaFuncional != project.CódigoÁreaFuncional ||
+                        //            contabGroupType.CódigoCentroResponsabilidade != project.CódigoCentroResponsabilidade)
+                        //        {
+                        //            result.eMessages.Add(new TraceInformation(TraceType.Error, "A Região, Área Funcional e/ou o Centro de Responsabilidade do projeto não estão autorizados."));//Deverão ser configurados nos Tipos de Grupos Contabilísticos
+                        //        }
+                        //    }
+                        //    else
+                        //    {
+                        //        result.eMessages.Add(new TraceInformation(TraceType.Error, "oO Tipo Grupo Contab. Projeto do projeto é inválido."));
+                        //    }
+                        //}
                         contract = DBContracts.GetByIdLastVersion(project.NºContrato);
                         customer = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, project.NºCliente);
                     }
