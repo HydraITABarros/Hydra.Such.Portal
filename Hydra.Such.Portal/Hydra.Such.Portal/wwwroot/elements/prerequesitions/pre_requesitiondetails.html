@@ -501,6 +501,10 @@
                                                             fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
                                             </such-selectbox>
                                         </div>
+
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="InvoiceNo" name="InvoiceNo" label="Nº Guia e/ou Nº Fatura" value="{{data.invoiceNo}}"></vaadin-text-field>
+                                        </div>
                                     </div>
 
                                     <div class="row break_clear">
@@ -643,9 +647,9 @@
                                         <div class="col-md-3 ">
                                             <vaadin-text-field id="ReceptionReceptionResponsible" name="ReceptionReceptionResponsible" label="Responsável Receção" value="{{data.receptionReceptionResponsible}}"></vaadin-text-field>
                                         </div>
-                                        <div class="col-md-3 ">
-                                            <vaadin-text-field id="InvoiceNo" name="InvoiceNo" label="Nº Fatura" value="{{data.invoiceNo}}"></vaadin-text-field>
-                                        </div>
+                                        <!--<div class="col-md-3 ">
+                                            <vaadin-text-field id="InvoiceNo" name="InvoiceNo" label="Nº Guia e/ou Nº Fatura" value="{{data.invoiceNo}}"></vaadin-text-field>
+                                        </div>-->
                                     </div>
                                 </div>
                                 <!--Anexos-->
