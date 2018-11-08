@@ -354,7 +354,7 @@
 
                             <div class="row break_clear">
                                 <div class="col-md-6">
-                                    <such-textarea rows="5" value="{{data.obs}}" id="Obs" name="Obs" label="Observações" disabled="{{ !_permissions.update }}"> </such-textarea>
+                                    <such-textarea rows="5" value="{{data.obs}}" id="obs" name="obs" label="Observações" disabled="{{ !_permissions.update }}"> </such-textarea>
                                 </div>
 
                                 <div class="col-md-6">
@@ -2191,6 +2191,8 @@
                         _self.$.amostra.disabled = true;
                         _self.$.urgente.disabled = true;
                         _self.$.emailEnviado.disabled = true;
+                        _self.$.obs.disabled = true;
+                        
                         _self.$.seleccaoentidade_codActividade.disabled = true;
                         _self.$._Suppliers.disabled = true;
                         _self.$._CodTermosPagamento.disabled = true;
