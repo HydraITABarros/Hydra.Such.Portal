@@ -39,6 +39,7 @@ namespace Hydra.Such.Data.Database
         public decimal? PreçoUnitárioVenda { get; set; }
         public decimal? ValorOrçamento { get; set; }
         public int? NºLinhaOrdemManutenção { get; set; }
+        public bool? CriarNotaEncomenda { get; set; }
         public bool? CriarConsultaMercado { get; set; }
         public bool? EnviarPréCompra { get; set; }
         public bool? EnviadoPréCompra { get; set; }

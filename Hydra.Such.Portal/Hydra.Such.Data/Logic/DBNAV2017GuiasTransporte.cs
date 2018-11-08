@@ -205,6 +205,7 @@ namespace Hydra.Such.Data.Logic
                             QuantidadeEnviar = ln.QuantidadeEnviar.Equals(DBNull.Value) ? 0 : (decimal)ln.QuantidadeEnviar,
                             RefDocOrigem = ln.RefDocOrigem.Equals(DBNull.Value) ? "" : (string)ln.RefDocOrigem,
                             UnitCost = ln.UnitCost.Equals(DBNull.Value) ? 0 : (decimal)ln.UnitCost,
+                            UnitPrice = ln.UnitPrice.Equals(DBNull.Value) ? 0 : (decimal)ln.UnitPrice,
                             ShortcutDimension1Code = ln.ShortcutDim1Code.Equals(DBNull.Value) ? "" : (string)ln.ShortcutDim1Code,
                             ShortcutDimension2Code = ln.ShortcutDim2Code.Equals(DBNull.Value) ? "" : (string)ln.ShortcutDim2Code,
                             FunctionalLocationNo = ln.FunctionalLocationNo.Equals(DBNull.Value) ? "" : (string)ln.FunctionalLocationNo,
@@ -238,6 +239,7 @@ namespace Hydra.Such.Data.Logic
                                 break;
                         }
 
+                        
                         linhasGt.Add(line);
                     }
                 }

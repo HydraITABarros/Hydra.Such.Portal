@@ -22,6 +22,7 @@ namespace Hydra.Such.Data.ViewModel.GuiaTransporte
         public decimal QuantidadeEnviar { get; set; }
         public string RefDocOrigem { get; set; }
         public decimal UnitCost { get; set; }
+        public decimal UnitPrice { get; set; }
         public string ShortcutDimension1Code { get; set; }
         public string ShortcutDimension2Code { get; set; }
         public string FunctionalLocationNo { get; set; }
