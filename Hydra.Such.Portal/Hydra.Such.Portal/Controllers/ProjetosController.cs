@@ -1242,6 +1242,9 @@ namespace Hydra.Such.Portal.Controllers
                         //Create Lines in NAV
                         Task<WSCreateProjectDiaryLine.CreateMultiple_Result> TCreateNavDiaryLine = WSProjectDiaryLine.CreateNavDiaryLines(dp, transactID, _configws);
                         TCreateNavDiaryLine.Wait();
+
+                        Task<WSGenericCodeUnit.FxPostJobJrnlLines_Result> TRegisterNavDiaryLine = WSProjectDiaryLine.RegsiterNavDiaryLines(transactID, _configws);
+                        TRegisterNavDiaryLine.Wait();
                     }
                     catch (Exception ex)
                     {
@@ -1253,8 +1256,8 @@ namespace Hydra.Such.Portal.Controllers
                     try
                     {
                         ////Register Lines in NAV
-                        Task<WSGenericCodeUnit.FxPostJobJrnlLines_Result> TRegisterNavDiaryLine = WSProjectDiaryLine.RegsiterNavDiaryLines(transactID, _configws);
-                        TRegisterNavDiaryLine.Wait();
+                        //Task<WSGenericCodeUnit.FxPostJobJrnlLines_Result> TRegisterNavDiaryLine = WSProjectDiaryLine.RegsiterNavDiaryLines(transactID, _configws);
+                        //TRegisterNavDiaryLine.Wait();
 
                         //if (TRegisterNavDiaryLine == null)
                         //{
@@ -2097,27 +2100,27 @@ namespace Hydra.Such.Portal.Controllers
                     project = DBProjects.GetById(projectNo);
                     if (project != null)
                     {
-                        //if (!project.TipoGrupoContabProjeto.HasValue)
-                        //{
-                        //    result.eMessages.Add(new TraceInformation(TraceType.Error, "O projeto não tem o Tipo Grupo Contab. Projeto definido."));
-                        //}
-                        //else
-                        //{
-                        //    var contabGroupType = DBCountabGroupTypes.GetById(project.TipoGrupoContabProjeto.Value);
-                        //    if (contabGroupType != null)
-                        //    {
-                        //        if (contabGroupType.CódigoRegião != project.CódigoRegião ||
-                        //            contabGroupType.CódigoÁreaFuncional != project.CódigoÁreaFuncional ||
-                        //            contabGroupType.CódigoCentroResponsabilidade != project.CódigoCentroResponsabilidade)
-                        //        {
-                        //            result.eMessages.Add(new TraceInformation(TraceType.Error, "A Região, Área Funcional e/ou o Centro de Responsabilidade do projeto não estão autorizados."));//Deverão ser configurados nos Tipos de Grupos Contabilísticos
-                        //        }
-                        //    }
-                        //    else
-                        //    {
-                        //        result.eMessages.Add(new TraceInformation(TraceType.Error, "oO Tipo Grupo Contab. Projeto do projeto é inválido."));
-                        //    }
-                        //}
+                        if (!string.IsNullOrEmpty(project.CódigoÁreaFuncional) && !project.TipoGrupoContabProjeto.HasValue)
+                        {
+                            result.eMessages.Add(new TraceInformation(TraceType.Error, "O projeto não tem o Tipo Grupo Contab. Projeto definido."));
+                        }
+                        else
+                        {
+                            var contabGroupType = DBCountabGroupTypes.GetById(project.TipoGrupoContabProjeto.Value);
+                            if (contabGroupType != null)
+                            {
+                                if (contabGroupType.CódigoRegião != project.CódigoRegião ||
+                                    contabGroupType.CódigoÁreaFuncional != project.CódigoÁreaFuncional ||
+                                    contabGroupType.CódigoCentroResponsabilidade != project.CódigoCentroResponsabilidade)
+                                {
+                                    result.eMessages.Add(new TraceInformation(TraceType.Error, "A Região, Área Funcional e/ou o Centro de Responsabilidade do projeto não estão autorizados."));//Deverão ser configurados nos Tipos de Grupos Contabilísticos
+                                }
+                            }
+                            else
+                            {
+                                result.eMessages.Add(new TraceInformation(TraceType.Error, "O Tipo Grupo Contab. Projeto do projeto é inválido."));
+                            }
+                        }
                         contract = DBContracts.GetByIdLastVersion(project.NºContrato);
                         customer = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, project.NºCliente);
                     }
@@ -2556,6 +2559,8 @@ namespace Hydra.Such.Portal.Controllers
             List<SPInvoiceListViewModel> data = null;
             using (SuchDBContext ctx = new SuchDBContext())
             {
+                projectsDetails = ctx.Projetos.Where(x => projectsIds.Contains(x.NºProjeto)).ToList();
+
                 data = ctx.MovimentosProjectoAutorizados
                     .Join(ctx.MovimentosDeProjeto,
                         mpa => mpa.NumMovimento,
@@ -2607,13 +2612,13 @@ namespace Hydra.Such.Portal.Controllers
                             //TotalPrice = mpa.PrecoTotal,
                             //DocumentNo = mpa.NumDocumento,
                             //ResourceType = mpa.TipoRecurso,                            
-
+                            
                             //##################################    Se necessário, obter de movimentos de projeto
                             UnitPrice = mp.PreçoUnitário,
                             UnitCost = mp.CustoUnitário,
                             LocationCode = mp.CódLocalização,
                             //CreateUser = mp.UtilizadorCriação,
-                            //ProjectContabGroup = mp.GrupoContabProjeto,
+                            ProjectContabGroup = mp.GrupoContabProjeto,
                             //AdjustedDocument = mp.DocumentoCorrigido,
                             //AdjustedDocumentData = mp.DataDocumentoCorrigido.HasValue ? mp.DataDocumentoCorrigido.Value.ToString("yyyy-MM-dd") : "",
                             //AdjustedPrice = mp.AcertoDePreços,
@@ -2641,9 +2646,6 @@ namespace Hydra.Such.Portal.Controllers
                         projectsIds.Contains(x.ProjectNo) &&
                         billingGroups.Contains(x.InvoiceGroup.Value))
                     .ToList();
-
-                if (data != null && data.Count > 0)
-                    projectsDetails = ctx.Projetos.Where(x => projectsIds.Contains(x.NºProjeto)).ToList();
             }
             if (data != null)
             {
@@ -2732,6 +2734,21 @@ namespace Hydra.Such.Portal.Controllers
                     string projectRegion = proj != null ? proj.CódigoRegião : string.Empty;
                     var customer = customers.FirstOrDefault(y => y.No_ == x.InvoiceToClientNo);
                     x.SetDimensionsFor(authProj, projectRegion, customer);
+
+                    TiposGrupoContabProjeto contabGroupType = new TiposGrupoContabProjeto();
+
+                    x.Items.ForEach(item =>
+                    {
+                        if (!string.IsNullOrEmpty(proj.CódigoÁreaFuncional) && proj.TipoGrupoContabProjeto.HasValue)
+                        {
+                            if(contabGroupType.Código != proj.TipoGrupoContabProjeto.Value)
+                                contabGroupType = DBCountabGroupTypes.GetById(proj.TipoGrupoContabProjeto.Value);
+                            if (contabGroupType != null)
+                            {
+                                item.ProjectContabGroup = contabGroupType.Descrição.Trim();
+                            }
+                        }
+                    });
                 });
 
                 //Create Project if exists
@@ -2800,7 +2817,7 @@ namespace Hydra.Such.Portal.Controllers
                                         x.ContractNo = projectsDetails
                                                             .Select(y => new { ProjectNo = y.NºProjeto, ContractNo = y.NºContrato })
                                                             .FirstOrDefault(y => y.ProjectNo == x.ProjectNo)?.ContractNo;
-
+                                        
                                         //Para Nota de crédito passar o valor para positivo
                                         if (header.MovementType == 4 && x.TotalPrice.HasValue && x.TotalPrice < 0)
                                             x.TotalPrice = Math.Abs(x.TotalPrice.Value);

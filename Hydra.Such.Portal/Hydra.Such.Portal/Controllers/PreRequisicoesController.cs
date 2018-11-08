@@ -1578,6 +1578,7 @@ namespace Hydra.Such.Portal.Controllers
                     ConfigNumerations.UtilizadorModificação = User.Identity.Name;
                     DBNumerationConfigurations.Update(ConfigNumerations);
 
+                    req.LocalCode = req.Lines.FirstOrDefault() != null ? req.Lines.FirstOrDefault().LocalCode : null;
                     req.RequisitionNo = RequisitionNo;
                     req.ResponsibleCreation = User.Identity.Name;
                     req.RequisitionDate = DateTime.Now.ToString();

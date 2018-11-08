@@ -202,6 +202,16 @@
                 </template>
             </vaadin-grid-column>
 
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.localCode.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="localCode">Código Localização</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="localCode" />
+                </template>
+                <template>
+                    {{item.localCode}}
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.comments.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="comments">Observações</vaadin-grid-sorter>
@@ -429,6 +439,7 @@
                         "regionCode": { hidden: false, label: "Código Região" },
                         "functionalAreaCode": { hidden: false, label: "Código Área Funcional" },
                         "centerResponsibilityCode": { hidden: false, label: "Código Centro Responsabilidade" },
+                        "localCode": { hidden: false, label: "Código Localização" },
                         "comments": { hidden: false, label: "Observações" },
                         "marketInquiryNo": { hidden: false, label: "Nº Consulta Mercado" },
                         "orderNo": { hidden: false, label: "Nº Encomenda" },
