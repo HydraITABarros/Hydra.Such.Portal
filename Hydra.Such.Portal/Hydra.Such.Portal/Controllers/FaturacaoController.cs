@@ -295,8 +295,25 @@ namespace Hydra.Such.Portal.Controllers
             {
 
                 BillingRecWorkflowModel workflow = item.WorkflowItems.LastOrDefault();
+
                 UploadFile(workflow);
                 item.WorkflowItems.RemoveAt(item.WorkflowItems.Count - 1);
+                BillingRecWorkflowModel lastRow = item.WorkflowItems.Where(x => x.AreaWorkflow != null).LastOrDefault();
+                if (lastRow != null && workflow.AreaWorkflow == null && lastRow.AreaWorkflow == "Aprovisionamento")
+                {
+                    workflow.AreaWorkflow = "Contabilidade";
+                    workflow.Destinatario = "";
+                }
+                else if(workflow.AreaWorkflow == null)
+                {
+                    BillingRecWorkflowModel lastAprov = item.WorkflowItems.Where(x => x.AreaWorkflow == "Aprovisionamento").LastOrDefault();
+                    if (lastAprov != null)
+                    {
+                        workflow.AreaWorkflow = lastAprov.AreaWorkflow;
+                        workflow.Destinatario = lastAprov.Destinatario;
+                        workflow.Area = lastAprov.Area;
+                    }
+                }
                 workflow.DataCriacao = DateTime.Now;
                 item.WorkflowItems.Add(workflow);
                 
