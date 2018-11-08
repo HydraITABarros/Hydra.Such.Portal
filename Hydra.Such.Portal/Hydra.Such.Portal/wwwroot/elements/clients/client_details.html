@@ -1238,6 +1238,7 @@
                 },
                 /* end - ColumnToggle */
                 _formatCurrencyValue: function (value) {
+                    value = value.replace(",", ".");
                     value = value * 1;
                     if (value != null && value != 0) {
                         return currency(Math.round(value * 100) / 100, { separator: '.', decimal: ',' }).format() + '€';
