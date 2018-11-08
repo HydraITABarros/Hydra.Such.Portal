@@ -18,6 +18,7 @@ namespace Hydra.Such.Data.ViewModel.Encomendas
         public decimal? AmountIncludingVAT { get; set; }
         public string JobNo { get; set; }
         public string AllocationNo { get; set; }
+        public string LocationCode { get; set; }
         public decimal? QuantityReceived { get; set; }
         public decimal? QuantityInvoiced { get; set; }
 

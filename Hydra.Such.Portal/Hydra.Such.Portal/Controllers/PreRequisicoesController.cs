@@ -819,14 +819,14 @@ namespace Hydra.Such.Portal.Controllers
                             PreRequisicaoDB = DBPreRequesition.Update(PreRequisicaoDB);
                         }
                         data.eReasonCode = 1;
-                        data.eMessage = "Contrato atualizado com sucesso.";
+                        data.eMessage = "Pré-Requisição atualizada com sucesso.";
                     }
                 }
             }
             catch (Exception ex)
             {
                 data.eReasonCode = 2;
-                data.eMessage = "Ocorreu um erro ao atualizar o contrato.";
+                data.eMessage = "Ocorreu um erro ao atualizar a Pré-Requisição.";
             }
             return Json(data);
 
@@ -1327,7 +1327,10 @@ namespace Hydra.Such.Portal.Controllers
                             if (String.IsNullOrEmpty(data.InvoiceNo))
                             {
                                 data.eReasonCode = 4;
-                                data.eMessage = "O campo Nº Fatura na Entrega (Fornecedor) deve estar preenchido.";
+                                //NR20181108
+                                //data.eMessage = "O campo Nº Fatura na Entrega (Fornecedor) deve estar preenchido.";
+                                data.eMessage = "O campo Nº Guia e / ou Nº Fatura no Geral deve estar preenchido.";
+
                                 return Json(data);
                             }
                         }
@@ -1340,7 +1343,9 @@ namespace Hydra.Such.Portal.Controllers
                                 data.eMessage = "Os campos de Recolha devem ser todos preenchidos.";
                                 return Json(data);
                             }
-                            else if (data.DeliveryLocal == null || String.IsNullOrEmpty(data.DeliveryAddress) || String.IsNullOrEmpty(data.DeliveryPostalCode) || String.IsNullOrEmpty(data.DeliveryLocality) || String.IsNullOrEmpty(data.CollectionReceptionResponsible) || String.IsNullOrEmpty(data.InvoiceNo))
+                            //NR20181108
+                            //else if (data.DeliveryLocal == null || String.IsNullOrEmpty(data.DeliveryAddress) || String.IsNullOrEmpty(data.DeliveryPostalCode) || String.IsNullOrEmpty(data.DeliveryLocality) || String.IsNullOrEmpty(data.CollectionReceptionResponsible) || String.IsNullOrEmpty(data.InvoiceNo))
+                            else if (data.DeliveryLocal == null || String.IsNullOrEmpty(data.DeliveryAddress) || String.IsNullOrEmpty(data.DeliveryPostalCode) || String.IsNullOrEmpty(data.DeliveryLocality) || String.IsNullOrEmpty(data.CollectionReceptionResponsible))
                             {
                                 data.eReasonCode = 4;
                                 data.eMessage = "Os campos de Entrega (Fornecedor) devem ser todos preenchidos.";
@@ -1363,6 +1368,7 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 RequestReclaimNo = data.ClaimedRequesitionNo,
                                 Urgent = data.Urgent,
+                                Attachment = data.Attachment,
                                 Area = data.Area,
                                 Immobilized = data.Immobilized,
                                 Exclusive = data.Exclusive,
@@ -1446,6 +1452,7 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 RequestReclaimNo = data.ClaimedRequesitionNo,
                                 Urgent = data.Urgent,
+                                Attachment = data.Attachment,
                                 Area = data.Area,
                                 Immobilized = data.Immobilized,
                                 Exclusive = data.Exclusive,
@@ -1602,7 +1609,8 @@ namespace Hydra.Such.Portal.Controllers
                                 string NewFileName = createReq.NºRequisição + FileName.Substring(FileName.IndexOf('_'));
                                 try
                                 {
-                                    System.IO.File.Copy(_config.FileUploadFolder + FileName, _config.FileUploadFolder + NewFileName);
+                                    //System.IO.File.Copy(_config.FileUploadFolder + FileName, _config.FileUploadFolder + NewFileName);
+                                    System.IO.File.Copy("E:\\Data\\eSUCH\\Requisicoes\\" + FileName, "E:\\Data\\eSUCH\\Requisicoes\\" + NewFileName);
                                 }
                                 catch (Exception ex)
                                 {
@@ -1617,7 +1625,8 @@ namespace Hydra.Such.Portal.Controllers
                                 Anexos newFile = DBAttachments.Create(DBAttachments.ParseToDB(CopyFile));
                                 if (newFile != null)
                                 {
-                                    System.IO.File.Delete(_config.FileUploadFolder + file.UrlAnexo);
+                                    //System.IO.File.Delete(_config.FileUploadFolder + file.UrlAnexo);
+                                    System.IO.File.Delete("E:\\Data\\eSUCH\\Requisicoes\\" + file.UrlAnexo);
                                     DBAttachments.Delete(file);
                                 }
 
@@ -1871,7 +1880,8 @@ namespace Hydra.Such.Portal.Controllers
                             //var path = Path.Combine(_config.FileUploadFolder, full_filename);
 
                             full_filename = id + "_" + filename;
-                            var path = Path.Combine("E:\\Data\\eSUCH\\RequisicoesTeste\\", full_filename);
+                            var path = Path.Combine("E:\\Data\\eSUCH\\Requisicoes\\", full_filename);
+                            //var path = Path.Combine("M:\\", full_filename);
 
                             using (FileStream dd = new FileStream(path, FileMode.CreateNew))
                             {
@@ -1899,6 +1909,16 @@ namespace Hydra.Such.Portal.Controllers
                                         preREQ.CabimentoOrçamental = true;
                                         preREQ.UtilizadorModificação = User.Identity.Name;
                                         DBPreRequesition.Update(preREQ);
+                                    }
+                                    else
+                                    {
+                                        Requisição REQ = DBRequest.GetById(id);
+                                        if (REQ != null)
+                                        {
+                                            REQ.CabimentoOrçamental = true;
+                                            REQ.UtilizadorModificação = User.Identity.Name;
+                                            DBRequest.Update(REQ);
+                                        }
                                     }
                                 }
                             }
@@ -1933,9 +1953,9 @@ namespace Hydra.Such.Portal.Controllers
         [HttpGet]
         public FileStreamResult DownloadFile(string id)
         {
-            //string file = "wwwroot/Upload/Requisicoes/ARomao@such.pt_AMARO_PRE_ANEXO";
-            //return new FileStreamResult(new FileStream(file, FileMode.Open), "application/xlsx");
-            return new FileStreamResult(new FileStream(_config.FileUploadFolder + id, FileMode.Open), "application/xlsx");
+            //return new FileStreamResult(new FileStream(_config.FileUploadFolder + id, FileMode.Open), "application/xlsx");
+            return new FileStreamResult(new FileStream("E:\\Data\\eSUCH\\Requisicoes\\" + id, FileMode.Open), "application/xlsx");
+            //return new FileStreamResult(new FileStream("M:\\" + id, FileMode.Open), "application/xlsx");
         }
 
 
@@ -1944,7 +1964,10 @@ namespace Hydra.Such.Portal.Controllers
         {
             try
             {
-                System.IO.File.Delete(_config.FileUploadFolder + requestParams.Url);
+                //System.IO.File.Delete(_config.FileUploadFolder + requestParams.Url);
+                System.IO.File.Delete("E:\\Data\\eSUCH\\Requisicoes\\" + requestParams.Url);
+                //System.IO.File.Delete("M:\\" + requestParams.Url);
+
                 DBAttachments.Delete(DBAttachments.ParseToDB(requestParams));
                 requestParams.eReasonCode = 1;
 

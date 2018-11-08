@@ -156,7 +156,7 @@ namespace Hydra.Such.Data.NAV
                 TiposRefeição refeicao = DBMealTypes.GetById(x.MealType??0);
 
                 WSCreatePreInvoiceLine.WsPreInvoiceLine line = new WSCreatePreInvoiceLine.WsPreInvoiceLine();
-
+                
                 line.Document_Type = OptionInvoice.Replace(" ", String.Empty) == "4" ? WSCreatePreInvoiceLine.Document_Type.Credit_Memo : WSCreatePreInvoiceLine.Document_Type.Invoice;
                 line.Document_TypeSpecified = true;
                 line.Document_No = HeaderNo;
@@ -180,7 +180,7 @@ namespace Hydra.Such.Data.NAV
                 line.Contract_No_Portal = x.ContractNo;
                 line.Contract_No = x.ContractNo;
                 line.Tipo_Refeicao = (refeicao!=null) ? refeicao.Código.ToString() : "";
-                line.Gen_Prod_Posting_Group = (refeicao != null) ? refeicao.GrupoContabProduto : "";
+                line.Gen_Prod_Posting_Group = (refeicao != null) ? refeicao.GrupoContabProduto : x.ProjectContabGroup;
                 line.Cod_Serv_Cliente = x.ServiceClientCode;
                 line.Consumption_Date = !string.IsNullOrEmpty(x.ConsumptionDate) ? DateTime.Parse(x.ConsumptionDate) : DateTime.MinValue;
                 line.Consumption_DateSpecified = !string.IsNullOrEmpty(x.ConsumptionDate);

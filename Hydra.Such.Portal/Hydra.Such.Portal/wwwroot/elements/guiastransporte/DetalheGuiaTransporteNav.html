@@ -145,71 +145,377 @@
                    content-type="application/json">
         </iron-ajax>
 
-        <div class="row break_frm">
+        <div class="subMenu">
+            <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
 
+            <paper-button id="btn_imprimirE" class="tablinks" on-tap="_printE"><i class="fa fa-print" aria-hidden="true"></i> Imprimir</paper-button>
+        </div>
+
+        <div class="row break_frm">
             <iron-form id="formContract">
                 <div class="panel panel-default">
                     <div class="panel-body">
-                        <paper-collapse-group>
-                            <paper-collapse-item header="Geral" opened>
-                                <div class="col-md-12 col-md-12 col-lg-12">
-                                    <div>
-                                        <div class="row break_clear">
-                                            <div class="col-md-3">
-                                                <vaadin-text-field id="noGuiaTransporte" name="noGuiaTransporte" label="Nº Guia" value="{{ data.noGuiaTransporte}}" disabled="disabled"></vaadin-text-field>
+                        <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
+                            <paper-tab>Geral</paper-tab>
+                            <paper-tab>Moradas</paper-tab>
+                            <paper-tab>Comunicação AT</paper-tab>
+                        </paper-tabs>
+                        <iron-pages selected="{{ selected }}">
+                            <!-- Tab Geral-->
+                            <paper-collapse-group>
+                                <div class="panel panel-default">
+                                    <div class="panel-body" style="padding:0">
+                                        <div class="col-md-12 col-md-12 col-lg-12">
+                                            <div class="row break_clear">
+                                                <div class="col-md-3">
+                                                    <vaadin-text-field id="noGuiaTransporte" name="noGuiaTransporte" label="Nº Guia" value="{{ data.noGuiaTransporte}}" disabled="disabled"></vaadin-text-field>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <vaadin-text-field id="shipmentStartTime" name="shipmentStartTime" label="Hora Inicio Transporte" value="{{ data.shipmentStartTime }}" disabled="disabled"></vaadin-text-field>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <vaadin-text-field id="dataGuia" name="dataGuia" label="Data Guia" value="{{ data.dataGuia }}" disabled="disabled"></vaadin-text-field>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <vaadin-text-field id="dataSaida" name="dataSaida" label="Data Saida" value="{{ data.dataSaida }}" disabled="disabled"></vaadin-text-field>
+                                                </div>
                                             </div>
-                                            <div class="col-md-3">
-                                                <vaadin-text-field id="shipmentStartTime" name="shipmentStartTime" label="Hora Inicio Transporte" value="{{ data.shipmentStartTime }}" disabled="disabled"></vaadin-text-field>
+                                            <div class="row break_clear">
+                                                <div class="col-md-3">
+                                                    <vaadin-text-field id="tipo" name="tipo" label="Tipo" value="{{ data.tipoDescription }}" disabled="disabled"></vaadin-text-field>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <vaadin-text-field id="noCliente" name="noCliente" label="Nº Terceiro" value="{{ data.noCliente }}" disabled="disabled"></vaadin-text-field>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <vaadin-text-field id="codEnvio" name="codEnvio" label="Cód. Envio" value="{{ data.codEnvio }}" disabled="disabled"></vaadin-text-field>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <vaadin-text-field id="noProjecto" name="noProjecto" label="Projecto" value="{{ data.noProjecto }}" disabled="disabled"></vaadin-text-field>
+                                                </div>
                                             </div>
-                                            <div class="col-md-3">
-                                                <vaadin-text-field id="dataGuia" name="dataGuia" label="Data Guia" value="{{ data.dataGuia }}" disabled="disabled"></vaadin-text-field>
+                                            <div class="row break_clear">
+                                                <div class="col-md-3">
+                                                    <vaadin-text-field id="nomeCliente" name="nomeCliente" label="Nome Cliente" value="{{ data.nomeCliente }}" disabled="disabled"></vaadin-text-field>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <vaadin-text-field id="nomeCliente2" name="nomeCliente2" label="Nome Cliente 2" value="{{ data.nomeCliente2 }}" disabled="disabled"></vaadin-text-field>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <vaadin-text-field id="moradaCliente" name="moradaCliente" label="Morada Clente" value="{{ data.moradaCliente }}" disabled="disabled"></vaadin-text-field>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <vaadin-text-field id="moradaCliente2" name="moradaCliente2" label="Morada Clente 2" value="{{ data.moradaCliente2 }}" disabled="disabled"></vaadin-text-field>
+                                                </div>
                                             </div>
-                                            <div class="col-md-3">
-                                                <vaadin-text-field id="dataSaida" name="dataSaida" label="Data Saida" value="{{ data.dataSaida }}" disabled="disabled"></vaadin-text-field>
+                                            <div class="row break_clear">
+                                                <div class="col-md-3">
+                                                    <vaadin-text-field id="codPostal" name="codPostal" label="Cód. Postal" value="{{ data.codPostal }}" disabled="disabled"></vaadin-text-field>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <vaadin-text-field id="cidade" name="cidade" label="Cidade" value="{{ data.cidade }}" disabled="disabled"></vaadin-text-field>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <vaadin-text-field id="nifCliente" name="nifCliente" label="No. Contribuinte" value="{{ data.nifCliente }}" disabled="disabled"></vaadin-text-field>
+                                                </div>
+
                                             </div>
-                                        </div>
-                                        <div class="row break_clear">
-                                            <div class="col-md-3">
-                                                <vaadin-text-field id="tipo" name="tipo" label="Tipo" value="{{ data.tipo }}" disabled="disabled"></vaadin-text-field>
+                                            <div class="row break_clear">
+                                                <div class="col-md-3">
+                                                    <vaadin-text-field id="sourceCode" name="sourceCode" label="Cód. Origem" value="{{ data.sourceCode }}" disabled="disabled"></vaadin-text-field>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <vaadin-text-field id="origem" name="origem" label="Origem" value="{{ data.origem }}" disabled="disabled"></vaadin-text-field>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <vaadin-text-field id="requisicao" name="requisicao" label="V/ Requisição" value="{{ data.requisicao }}" disabled="disabled"></vaadin-text-field>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <vaadin-text-field id="reportedBy" name="reportedBy" label="Reportado por" value="{{ data.reportedBy }}" disabled="disabled"></vaadin-text-field>
+                                                </div>
+                                            </div>
+                                            <div class="row break_clear">
+                                                <div class="col-md-3">
+                                                    <vaadin-text-field id="ordemTransferencia" name="ordemTransferencia" label="Ordem Transferência" value="{{ data.ordemTransferencia }}" disabled="disabled"></vaadin-text-field>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <vaadin-text-field id="noRequisicao" name="noRequisicao" label="No. Requisição" value="{{ data.noRequisicao }}" disabled="disabled"></vaadin-text-field>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <vaadin-text-field id="responsabilityCenter" name="responsabilityCenter" label="Centro Responsabilidade" value="{{ data.responsabilityCenter }}" disabled="disabled"></vaadin-text-field>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <vaadin-text-field id="utilizador" name="utilizador" label="Utilizador" value="{{ data.utilizador }}" disabled="disabled"></vaadin-text-field>
+                                                </div>
+                                            </div>
+                                            <div class="row break_clear">
+                                                <div class="col-md-3">
+                                                    <vaadin-text-field id="globalDimension1Code" name="globalDimension1Code" label="Área Funcional" value="{{ data.globalDimension1Code }}" disabled="disabled"></vaadin-text-field>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <vaadin-text-field id="globalDimension2Code" name="globalDimension2Code" label="Fonte Financiamento" value="{{ data.globalDimension2Code }}" disabled="disabled"></vaadin-text-field>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <vaadin-text-field id="globalDimension3Code" name="globalDimension3Code" label="CResp" value="{{ data.globalDimension3Code }}" disabled="disabled"></vaadin-text-field>
+                                                </div>
+                                            </div>
+                                            <div class="row break_clear">
+                                                <div class="col-md-3">
+                                                    <vaadin-text-field id="pesoTotal" name="pesoTotal" label="Peso Total" value="{{ data.pesoTotal }}" disabled="disabled"></vaadin-text-field>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <vaadin-text-field id="quantidadeTotal" name="quantidadeTotal" label="Quantidade Total" value="{{ data.quantidadeTotal }}" disabled="disabled"></vaadin-text-field>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <such-textarea id="observacoes" name="observacoes" label="Observações" rows="3" value="{{ data.observacoes }}" disabled="disabled"> </such-textarea>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </paper-collapse-item>
-                            <paper-collapse-item header="Morada">
+                            </paper-collapse-group>
+
+                            <!-- Tab Moradas-->
+                            <paper-collapse-group>
+                                <div class="panel panel-default">
+                                    <div class="panel-body" style="padding:0">
+                                        <div class="row break_clear">
+                                            <div class="col-xs-6">
+                                                <div class="panel panel-default">
+                                                    <div class="panel-heading" style="font-weight:bold">Carga</div>
+                                                    <div class="panel-body">
+                                                        <div class="row">
+                                                            <div class="col-xs-12">
+                                                                <vaadin-text-field id="name" name="name" label="Nome" value="{{ data.name }}" disabled="disabled"></vaadin-text-field>
+                                                            </div>
+                                                            <div class="col-xs-12">
+                                                                <vaadin-text-field id="address" name="address" label="Endereço" value="{{ data.address }}" disabled="disabled"></vaadin-text-field>
+                                                            </div>
+                                                            <div class="col-xs-12">
+                                                                <vaadin-text-field id="city" name="city" label="Cidade" value="{{ data.city }}" disabled="disabled"></vaadin-text-field>
+                                                            </div>
+                                                            <div class="col-xs-12">
+                                                                <vaadin-text-field id="postCode" name="postCode" label="Cód. Postal" value="{{ data.postCode }}" disabled="disabled"></vaadin-text-field>
+                                                            </div>
+                                                            <div class="col-xs-12">
+                                                                <vaadin-text-field id="horaCarga" name="horaCarga" label="Hora Carga" value="{{ data.horaCarga }}" disabled="disabled"></vaadin-text-field>
+                                                            </div>
+                                                            <div class="col-xs-12">
+                                                                <vaadin-text-field id="dataCarga" name="dataCarga" label="Data Carga" value="{{ data.dataCarga }}" disabled="disabled"></vaadin-text-field>
+                                                            </div>
+                                                            <div class="col-xs-12">
+                                                                <vaadin-text-field id="paisCarga" name="paisCarga" label="País Carga" value="{{ data.paisCarga }}" disabled="disabled"></vaadin-text-field>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-xs-6">
+                                                <div class="panel panel-default">
+                                                    <div class="panel-heading" style="font-weight:bold">Descarga</div>
+                                                    <div class="panel-body">
+                                                        <div class="row">
+                                                            <div class="col-xs-12">
+                                                                <vaadin-text-field id="localDescarga" name="localDescarga" label="Local Descarga" value="{{ data.localDescarga }}" disabled="disabled"></vaadin-text-field>
+                                                            </div>
+                                                            <div class="col-xs-12">
+                                                                <vaadin-text-field id="localDescarga1" name="localDescarga1" label="Local Descarga 1" value="{{ data.localDescarga1 }}" disabled="disabled"></vaadin-text-field>
+                                                            </div>
+                                                            <div class="col-xs-12">
+                                                                <vaadin-text-field id="codPostalDescarga" name="codPostalDescarga" label="Cód. Postal Descarga" value="{{ data.codPostalDescarga }}" disabled="disabled"></vaadin-text-field>
+                                                            </div>
+                                                            <div class="col-xs-12">
+                                                                <vaadin-text-field id="horaDescarga" name="horaDescarga" label="Hora Descarga" value="{{ data.horaDescarga }}" disabled="disabled"></vaadin-text-field>
+                                                            </div>
+                                                            <div class="col-xs-12">
+                                                                <vaadin-text-field id="dataDescarga" name="dataDescarga" label="Data Descarga" value="{{ data.dataDescarga }}" disabled="disabled"></vaadin-text-field>
+                                                            </div>
+                                                            <div class="col-xs-12">
+                                                                <vaadin-text-field id="viatura" name="viatura" label="Viatura" value="{{ data.viatura }}" disabled="disabled"></vaadin-text-field>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </paper-collapse-group>
+
+                            <!--Tab Comunicação AT-->
+                            <paper-collapse-group>
+                                <div class="panel panel-default">
+                                    <div class="panel-body" style="padding:0">
+                                        <div class="col-md-12 col-md-12 col-lg-12">
+                                            <div class="row break_clear">
+                                                <div class="col-md-3">
+                                                    <vaadin-text-field id="fiscalCodeIs" name="fiscalCodeId" label="Cod. Id Doc. AT" value="{{ data.fiscalCommunicationLog.documentCodeId }}" disabled="disabled"></vaadin-text-field>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <vaadin-text-field id="commDateTime" name="commDateTime" label="Data Hora" value="{{ data.fiscalCommunicationLog.communicationDateTime  }}" disabled="disabled"></vaadin-text-field>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <vaadin-text-field id="returnCode" name="returnCode" label="Cód. Resposta AT" value="{{ data.fiscalCommunicationLog.returnCode }}" disabled="disabled"></vaadin-text-field>
+                                                </div>
+                                                <div class="col-md-3" style="padding-bottom:50px">
+                                                    <vaadin-text-field id="returnMessage" name="returnMessage" label="Mensagem Resposta AT" value="{{ data.fiscalCommunicationLog.returnMessage }}" disabled="disabled"></vaadin-text-field>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </paper-collapse-group>
+                        </iron-pages>
+                        
+                        <paper-collapse-group>
+                            <paper-collapse-item header="Linhas" opened>
+                                <div class="marginSpace"></div>
                                 <div class="row break_clear">
-
-                                    <div class="col-xs-6">
-                                        <div class="panel-heading">Carga</div>
-
-                                        <div class="">
-
-                                            <h3>Detalhes carga</h3>
-
-                                        </div>
-
-                                    </div>
-
-
-                                    <div class="col-xs-6">
-                                        <div class="panel-heading">Descarga</div>
-
-                                        <div class="">
-
-                                            <h3>Detalhes descarga</h3>
-
-                                        </div>
-
-                                    </div>
-
+                                    <vaadin-grid aria-label="GuiaTransporteLines" id="gridLinhas" name="gridLinhas" items="[[ data.linhasGuiaTransporte ]]" class="grid" multi-sort="true" active-item="{{_SelectedLine}}">
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="tipoDescription">Tipo</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="tipoDescription" />
+                                            </template>
+                                            <template>
+                                                [[ item.tipoDescription ]]
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="no">No.</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="no" />
+                                            </template>
+                                            <template>
+                                                [[ item.no ]]
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="450px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="descricao">Descrição</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="descricao" />
+                                            </template>
+                                            <template>
+                                                [[ item.descricao ]]
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="codUnidadeMedida">Un. Medida</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="codUnidadeMedida" />
+                                            </template>
+                                            <template>
+                                                [[ item.codUnidadeMedida ]]
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="noProjecto">No. Projecto</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="noProjecto" />
+                                            </template>
+                                            <template>
+                                                [[ item.noProjecto ]]
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="quantidade">Quantidade</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="quantidade" />
+                                            </template>
+                                            <template>
+                                                [[ item.quantidade ]]
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="quantidadeEnviar">Quant. Enviar</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="quantidadeEnviar" />
+                                            </template>
+                                            <template>
+                                                [[ item.quantidadeEnviar ]]
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="refDocOrigem">Ref. Doc. Origem</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="refDocOrigem" />
+                                            </template>
+                                            <template>
+                                                [[ item.refDocOrigem ]]
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="unitCost">Preço Custo</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="unitCost" />
+                                            </template>
+                                            <template>
+                                                [[ item.unitCost ]]
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="unitPrice">Preço Venda</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="unitPrice" />
+                                            </template>
+                                            <template>
+                                                [[ item.unitPrice ]]
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="shortcutDimension1Code">Área Funcional</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="shortcutDimension1Code" />
+                                            </template>
+                                            <template>
+                                                [[ item.shortcutDimension1Code ]]
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="shortcutDimension2Code">Fonte Financiamento</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="shortcutDimension2Code" />
+                                            </template>
+                                            <template>
+                                                [[ item.shortcutDimension2Code ]]
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="estadoEquipamentoDesc">Estado Equipamento</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="estadoEquipamentoDesc" />
+                                            </template>
+                                            <template>
+                                                [[ item.estadoEquipamentoDescription ]]
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="inventoryNo">No. Série</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="inventoryNo" />
+                                            </template>
+                                            <template>
+                                                [[ item.inventoryNo ]]
+                                            </template>
+                                        </vaadin-grid-column>
+                                    </vaadin-grid>
                                 </div>
                             </paper-collapse-item>
                         </paper-collapse-group>
-                    </div>
-                    <div class="row break_clear"></div>
+                    </div> 
                 </div>
             </iron-form>
         </div>
+
+        <paper-dialog id="rptDialog" class="dialogBox" modal>
+            <div class="buttons">
+                <paper-button class="btnRemove" on-tap="_closeRptDialog"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
+            </div>
+        </paper-dialog>
+
+        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
     <script>
         document.addEventListener('WebComponentsReady', function () {
@@ -242,6 +548,10 @@
                 _openToastError: function (message) {
                     this.$.ToastError.text = message;
                     this.$.ToastError.open();
+                },
+
+                _goBack: function (e) {
+                    window.history.back();
                 },
 
                 ready: function () {
