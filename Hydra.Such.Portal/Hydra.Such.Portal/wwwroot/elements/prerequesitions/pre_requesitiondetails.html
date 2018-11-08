@@ -1791,7 +1791,7 @@
                     this.$.page_getProject2_ajax.generateRequest();
                 },
                 _setNewLineFormControl(showAsPurchaseForm) {
-                    if (showAsPurchaseForm) {
+                    if (showAsPurchaseForm == true) {
                         this.$.txtLocalCode.hidden = false;
                         this.$._CBLocations.hidden = true;
                         this.$.txtProductCode.hidden = false;
@@ -1799,46 +1799,53 @@
                         this._filledFromPurch = true;
                     }
                     else {
-                        this.$.txtLocalCode.value = "";
-                        this.$.txtProductCode.value = "";
-                        this.$.txtLocalCode.hidden = true;
-                        this.$._CBLocations.hidden = false;
-                        this.$.txtProductCode.hidden = true;
-                        this.$._Products.hidden = false;
-                        if (this.$._Products != null)
-                            this.$._Products._clearSelection();
-                        this._filledFromPurch = false;
+                        if (showAsPurchaseForm == false) {
+                            this.$.txtLocalCode.value = "";
+                            this.$.txtProductCode.value = "";
+                            this.$.txtLocalCode.hidden = true;
+                            this.$._CBLocations.hidden = false;
+                            this.$.txtProductCode.hidden = true;
+                            this.$._Products.hidden = false;
+                            if (this.$._Products != null && this.$._Products != undefined)
+                                this.$._Products._clearSelection();
+                            this._filledFromPurch = false;
+                        }
                     }
 
                 },
                 _setPurchaseLine: function (e) {
-                    if (e.detail.value !== "") {
-                        var composedKey = e.detail.value.split(" ", 2);
-                        var purchHeaderNo = composedKey[0];
-                        var purchLineNo = composedKey[1];
+                    debugger;
+                    if (e != null && e != undefined) {
+                        if (e.detail.value !== "" && e.detail.value != null && e.detail.value != undefined) {
+                            var composedKey = e.detail.value.split(" ", 2);
+                            var purchHeaderNo = composedKey[0];
+                            var purchLineNo = composedKey[1];
 
-                        var proj = this.CBPurchaseLine.find(x => x.line_No == purchLineNo && x.documentNO == purchHeaderNo);
-                        if (proj != null) {
-                            this._setNewLineFormControl(true);
-                            this.$.txtLocalCode.value = proj.locationCode;
-                            this._CBItemsCDirect = proj.directPurchLocation ? "1" : "0";
-                            this.$._Description.value = proj.description;
-                            this.$._UnitMeasureCode.value = proj.unitofMeasureCode;
-                            this.$._UnitCost.value = proj.unitCost;
-                            this._QuantityToOpen = proj.availableQuantity;
-                            this._CBVendor = proj.buyFromVendorNo;
-                            this.$._CBPurchaseHeader.value = proj.documentNO;
-                            this._Products = proj.numb;
-                            this._UnitCost = proj.unitCost;
+                            if (purchLineNo != null && purchLineNo != undefined && purchHeaderNo != null && purchHeaderNo != undefined) {
+                                var proj = this.CBPurchaseLine.find(x => x.line_No == purchLineNo && x.documentNO == purchHeaderNo);
+                                if (proj != null && proj != undefined) {
+                                    this._setNewLineFormControl(true);
+                                    this.$.txtLocalCode.value = proj.locationCode;
+                                    this._CBItemsCDirect = proj.directPurchLocation ? "1" : "0";
+                                    this.$._Description.value = proj.description;
+                                    this.$._UnitMeasureCode.value = proj.unitofMeasureCode;
+                                    this.$._UnitCost.value = proj.unitCost;
+                                    this._QuantityToOpen = proj.availableQuantity;
+                                    this._CBVendor = proj.buyFromVendorNo;
+                                    this.$._CBPurchaseHeader.value = proj.documentNO;
+                                    this._Products = proj.numb;
+                                    this._UnitCost = proj.unitCost;
+                                }
+                                else {
+                                    this.openToastError("Não foi possivel obter os dados da encomenda.");
+                                }
+                            }
                         }
                         else {
-                            this.openToastError("Não foi possivel obter os dados da encomenda.");
+                            this._setNewLineFormControl(false);
                         }
+                        this.$._UnitCost.disabled = e.detail.value !== "";
                     }
-                    else {
-                        this._setNewLineFormControl(false);
-                    }
-                    this.$._UnitCost.disabled = e.detail.value !== "";
                 },
                 _onChangeQuantity: function (e) {
                     if (e != undefined) {
