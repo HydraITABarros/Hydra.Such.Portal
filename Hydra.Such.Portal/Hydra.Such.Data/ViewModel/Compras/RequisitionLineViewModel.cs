@@ -51,6 +51,18 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public decimal? UnitCostsould  { get; set; }
         public decimal? BudgetValue { get; set; }
         public int? MaintenanceOrderLineNo { get; set; }
+        public bool? CriarNotaEncomenda { get; set; }
+        /// <summary>
+        /// For filter purposes
+        /// </summary>
+        public string CriarNotaEncomendaStringValue
+        {
+            get
+            {
+                bool b = this.CriarNotaEncomenda.HasValue ? this.CriarNotaEncomenda.Value : false;
+                return b ? "Sim" : "Não";
+            }
+        }
         public bool? CreateMarketSearch { get; set; }
         /// <summary>
         /// For filter purposes
