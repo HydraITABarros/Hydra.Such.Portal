@@ -188,16 +188,16 @@ namespace Hydra.Such.Data.NAV
             WS_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
             WS_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
 
-            try
-            {
+            //try
+            //{
                 WSGenericCodeUnit.FxPostJobJrnlLines_Result result = await WS_Client.FxPostJobJrnlLinesAsync(TransactID.ToString());
 
                 return result;
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    return null;
+            //}
         }
         
         private static WSCreateProjectDiaryLine.Entry_Type getMoveType(int moveType)

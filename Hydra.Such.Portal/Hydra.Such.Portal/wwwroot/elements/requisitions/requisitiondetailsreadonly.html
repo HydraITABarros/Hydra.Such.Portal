@@ -1158,6 +1158,20 @@
                                     </template>
                                 </vaadin-grid-column>
 
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <p class="alignCenter">Criar Nota Encomenda</p>
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-checkbox id="chkCriarNotaEncomenda" checked="{{item.criarNotaEncomenda}}" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLines"></vaadin-checkbox>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            <vaadin-checkbox checked="{{item.criarNotaEncomenda}}" disabled></vaadin-checkbox>
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+
                                 <vaadin-grid-column width="130px" resizable>
                                     <template class="header">
                                         <p class="alignCenter">Mercado Local</p>
@@ -1196,6 +1210,21 @@
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             <vaadin-checkbox checked="{{item.sendPrePurchase}}" disabled></vaadin-checkbox>
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column width="200px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="createdOrderNo">Nº Encomenda Criada</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="createdOrderNo" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-text-field value="{{item.createdOrderNo}}" id="_CLGridcreatedOrderNo" name="_CLGridcreatedOrderNo" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLines"> </vaadin-text-field>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            {{item.createdOrderNo}}
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
@@ -1467,16 +1496,16 @@
                                 </vaadin-grid-column>
 
                                 <!--<template is="dom-if" if="{{ !isReadOnly() }}">
-                                <template is="dom-if" if="{{ _permissions.delete }}">
-                                    <vaadin-grid-column width="100px" resizable hidden="{{_isArchived}}">
-                                        <template class="header">
-                                        </template>
-                                        <template>
-                                            <paper-button class="btnRemove tableBtn" on-tap="_deleteRequisitionLine" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
-                                        </template>
-                                    </vaadin-grid-column>
-                                </template>
-                            </template>-->
+        <template is="dom-if" if="{{ _permissions.delete }}">
+            <vaadin-grid-column width="100px" resizable hidden="{{_isArchived}}">
+                <template class="header">
+                </template>
+                <template>
+                    <paper-button class="btnRemove tableBtn" on-tap="_deleteRequisitionLine" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                </template>
+            </vaadin-grid-column>
+        </template>
+    </template>-->
                             </vaadin-grid>
                         </div>
 

@@ -593,7 +593,6 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-
         public JsonResult DeleteRequisition([FromBody] RequisitionViewModel item)
         {
             if (item != null)
@@ -615,6 +614,48 @@ namespace Hydra.Such.Portal.Controllers
                 item = new RequisitionViewModel();
                 item.eReasonCode = 2;
                 item.eMessage = "Ocorreu um erro: a requisição não pode ser nula.";
+            }
+            return Json(item);
+        }
+
+        [HttpPost]
+        public JsonResult TodasLinhasNotaEncomenda([FromBody] RequisitionViewModel item)
+        {
+            if (item != null)
+            {
+                if (!string.IsNullOrEmpty(item.RequisitionNo))
+                {
+                    List<LinhasRequisição> TodasLinhasNotaEncomenda = DBRequestLine.GetByRequisitionId(item.RequisitionNo).Where(x => x.CriarNotaEncomenda != true).ToList();
+                    if (TodasLinhasNotaEncomenda.Count() > 0)
+                    {
+                        foreach (LinhasRequisição Linha in TodasLinhasNotaEncomenda)
+                        {
+                            Linha.CriarNotaEncomenda = true;
+                            Linha.UtilizadorModificação = User.Identity.Name;
+                            if (DBRequestLine.Update(Linha) != null)
+                            {
+                                item.eReasonCode = 1;
+                                item.eMessage = "Todas as linhas foram alteradas com sucesso.";
+                            }
+                            else
+                            {
+                                item.eReasonCode = 2;
+                                item.eMessage = "Ocorreu um erro ao alterar as linhas o registo.";
+                                return Json(item);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        item.eReasonCode = 3;
+                        item.eMessage = "Não existem linhas para alterar.";
+                    }
+                }
+                else
+                {
+                    item.eReasonCode = 4;
+                    item.eMessage = "Falta o número da Requisição.";
+                }
             }
             return Json(item);
         }
@@ -2528,6 +2569,11 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Código Centro Responsabilidade");
                     Col = Col + 1;
                 }
+                if (dp["localCode"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Código Localização");
+                    Col = Col + 1;
+                }
                 if (dp["comments"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Observações");
@@ -2650,6 +2696,11 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["centerResponsibilityCode"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.CenterResponsibilityCode);
+                            Col = Col + 1;
+                        }
+                        if (dp["localCode"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.LocalCode);
                             Col = Col + 1;
                         }
                         if (dp["comments"]["hidden"].ToString() == "False")

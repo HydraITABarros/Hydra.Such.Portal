@@ -159,7 +159,6 @@
                             <paper-tab>Geral</paper-tab>
                             <paper-tab>Moradas</paper-tab>
                             <paper-tab>Comunicação AT</paper-tab>
-                            <paper-tab>Observações Adicionais</paper-tab>
                         </paper-tabs>
                         <iron-pages selected="{{ selected }}">
                             <!-- Tab Geral-->
@@ -368,17 +367,144 @@
                                 </div>
                             </paper-collapse-group>
                         </iron-pages>
+                        
                         <paper-collapse-group>
                             <paper-collapse-item header="Linhas" opened>
-
+                                <div class="marginSpace"></div>
+                                <div class="row break_clear">
+                                    <vaadin-grid aria-label="GuiaTransporteLines" id="gridLinhas" name="gridLinhas" items="[[ data.linhasGuiaTransporte ]]" class="grid" multi-sort="true" active-item="{{_SelectedLine}}">
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="tipoDescription">Tipo</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="tipoDescription" />
+                                            </template>
+                                            <template>
+                                                [[ item.tipoDescription ]]
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="no">No.</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="no" />
+                                            </template>
+                                            <template>
+                                                [[ item.no ]]
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="450px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="descricao">Descrição</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="descricao" />
+                                            </template>
+                                            <template>
+                                                [[ item.descricao ]]
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="codUnidadeMedida">Un. Medida</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="codUnidadeMedida" />
+                                            </template>
+                                            <template>
+                                                [[ item.codUnidadeMedida ]]
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="noProjecto">No. Projecto</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="noProjecto" />
+                                            </template>
+                                            <template>
+                                                [[ item.noProjecto ]]
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="quantidade">Quantidade</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="quantidade" />
+                                            </template>
+                                            <template>
+                                                [[ item.quantidade ]]
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="quantidadeEnviar">Quant. Enviar</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="quantidadeEnviar" />
+                                            </template>
+                                            <template>
+                                                [[ item.quantidadeEnviar ]]
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="refDocOrigem">Ref. Doc. Origem</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="refDocOrigem" />
+                                            </template>
+                                            <template>
+                                                [[ item.refDocOrigem ]]
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="unitCost">Preço Custo</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="unitCost" />
+                                            </template>
+                                            <template>
+                                                [[ item.unitCost ]]
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="unitPrice">Preço Venda</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="unitPrice" />
+                                            </template>
+                                            <template>
+                                                [[ item.unitPrice ]]
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="shortcutDimension1Code">Área Funcional</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="shortcutDimension1Code" />
+                                            </template>
+                                            <template>
+                                                [[ item.shortcutDimension1Code ]]
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="shortcutDimension2Code">Fonte Financiamento</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="shortcutDimension2Code" />
+                                            </template>
+                                            <template>
+                                                [[ item.shortcutDimension2Code ]]
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="estadoEquipamentoDesc">Estado Equipamento</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="estadoEquipamentoDesc" />
+                                            </template>
+                                            <template>
+                                                [[ item.estadoEquipamentoDescription ]]
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="inventoryNo">No. Série</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="inventoryNo" />
+                                            </template>
+                                            <template>
+                                                [[ item.inventoryNo ]]
+                                            </template>
+                                        </vaadin-grid-column>
+                                    </vaadin-grid>
+                                </div>
                             </paper-collapse-item>
-
                         </paper-collapse-group>
-                    </div>
-                    <div class="row break_clear"></div>
-                    
+                    </div> 
                 </div>
-                
             </iron-form>
         </div>
 
