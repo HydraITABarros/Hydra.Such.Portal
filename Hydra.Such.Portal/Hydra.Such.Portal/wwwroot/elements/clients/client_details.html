@@ -1301,9 +1301,15 @@
                     this._invoiceLinesColumns = columns;
                 },
                 _formatPercentValue: function (value) {
+                    if (value) {
+                        value = value.replace(",", ".");
+                    }
                     return this._roundValue(value, 0) + "%";
                 },
                 _roundValue: function (value, decimal) {
+                    if (value) {
+                        value = value.replace(",", ".");
+                    }
                     return Math.round(value * 1, decimal);
                 }
             });
