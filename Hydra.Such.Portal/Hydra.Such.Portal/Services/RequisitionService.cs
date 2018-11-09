@@ -165,7 +165,7 @@ namespace Hydra.Such.Portal.Services
                     {
                         try
                         {
-                            var result = CreateNAVPurchaseOrderFor(purchOrder);
+                            var result = CreateNAVPurchaseOrderFor(purchOrder, Convert.ToDateTime(requisition.ReceivedDate), requisition.Comments);
                             if (result.CompletedSuccessfully)
                             {
                                 //Update Requisition Lines
@@ -304,7 +304,7 @@ namespace Hydra.Such.Portal.Services
                                     .FirstOrDefault()
                                     ?.SupplierProductId
                             );
-                            var result = CreateNAVPurchaseOrderFor(purchOrder);
+                            var result = CreateNAVPurchaseOrderFor(purchOrder, Convert.ToDateTime(requisition.ReceivedDate), requisition.Comments);
                             if (result.CompletedSuccessfully)
                             {
                                 //Update req
@@ -637,7 +637,48 @@ namespace Hydra.Such.Portal.Services
             return response;
         }
 
-        private GenericResult CreateNAVPurchaseOrderFor(PurchOrderDTO purchOrder)
+        //private GenericResult CreateNAVPurchaseOrderFor(PurchOrderDTO purchOrder)
+        //{
+        //    GenericResult createPrePurchOrderResult = new GenericResult();
+
+        //    if (!string.IsNullOrEmpty(purchOrder.SupplierId) && !string.IsNullOrEmpty(purchOrder.CenterResponsibilityCode))
+        //    {
+        //        ConfiguraçãoEmailFornecedores ConfigEmailForne = DBConfigEmailFornecedores.GetById(purchOrder.SupplierId, purchOrder.CenterResponsibilityCode);
+
+        //        if (ConfigEmailForne != null && !string.IsNullOrEmpty(ConfigEmailForne.Email))
+        //            purchOrder.Vendor_Mail = ConfigEmailForne.Email;
+        //    }
+
+        //    Task<WSPurchaseInvHeader.Create_Result> createPurchaseHeaderTask = NAVPurchaseHeaderIntermService.CreateAsync(purchOrder, configws);
+        //    createPurchaseHeaderTask.Wait();
+        //    if (createPurchaseHeaderTask.IsCompletedSuccessfully)
+        //    {
+        //        createPrePurchOrderResult.ResultValue = createPurchaseHeaderTask.Result.WSPurchInvHeaderInterm.No;
+        //        purchOrder.NAVPrePurchOrderId = createPrePurchOrderResult.ResultValue;
+
+        //        bool createPurchaseLinesTask = NAVPurchaseLineService.CreateAndUpdateMultipleAsync(purchOrder, configws);
+        //        if (createPurchaseLinesTask)
+        //        {
+        //            try
+        //            {
+        //                /*
+        //                 *  Swallow errors at this stage as they will be managed in NAV
+        //                 */
+        //                //Task<WSGenericCodeUnit.FxCabimento_Result> createPurchOrderTask = WSGeneric.CreatePurchaseOrder(purchOrder.NAVPrePurchOrderId, configws);
+        //                //createPurchOrderTask.Start();
+        //                ////if (createPurchOrderTask.IsCompletedSuccessfully)
+        //                ////{
+        //                ////    createPrePurchOrderResult.CompletedSuccessfully = true;
+        //                ////}
+        //            }
+        //            catch (Exception ex) { }
+        //            createPrePurchOrderResult.CompletedSuccessfully = true;
+        //        }
+        //    }
+        //    return createPrePurchOrderResult;
+        //}
+
+        private GenericResult CreateNAVPurchaseOrderFor(PurchOrderDTO purchOrder, DateTime DataRececao, string Observacoes)
         {
             GenericResult createPrePurchOrderResult = new GenericResult();
 
@@ -649,7 +690,7 @@ namespace Hydra.Such.Portal.Services
                     purchOrder.Vendor_Mail = ConfigEmailForne.Email;
             }
 
-            Task<WSPurchaseInvHeader.Create_Result> createPurchaseHeaderTask = NAVPurchaseHeaderIntermService.CreateAsync(purchOrder, configws);
+            Task<WSPurchaseInvHeader.Create_Result> createPurchaseHeaderTask = NAVPurchaseHeaderIntermService.CreateAsync(purchOrder, configws, DataRececao, Observacoes);
             createPurchaseHeaderTask.Wait();
             if (createPurchaseHeaderTask.IsCompletedSuccessfully)
             {
