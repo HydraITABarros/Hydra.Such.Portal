@@ -819,14 +819,14 @@ namespace Hydra.Such.Portal.Controllers
                             PreRequisicaoDB = DBPreRequesition.Update(PreRequisicaoDB);
                         }
                         data.eReasonCode = 1;
-                        data.eMessage = "Contrato atualizado com sucesso.";
+                        data.eMessage = "Pré-Requisição atualizada com sucesso.";
                     }
                 }
             }
             catch (Exception ex)
             {
                 data.eReasonCode = 2;
-                data.eMessage = "Ocorreu um erro ao atualizar o contrato.";
+                data.eMessage = "Ocorreu um erro ao atualizar a Pré-Requisição.";
             }
             return Json(data);
 
@@ -1327,7 +1327,10 @@ namespace Hydra.Such.Portal.Controllers
                             if (String.IsNullOrEmpty(data.InvoiceNo))
                             {
                                 data.eReasonCode = 4;
-                                data.eMessage = "O campo Nº Fatura na Entrega (Fornecedor) deve estar preenchido.";
+                                //NR20181108
+                                //data.eMessage = "O campo Nº Fatura na Entrega (Fornecedor) deve estar preenchido.";
+                                data.eMessage = "O campo Nº Guia e / ou Nº Fatura no Geral deve estar preenchido.";
+
                                 return Json(data);
                             }
                         }
@@ -1340,7 +1343,9 @@ namespace Hydra.Such.Portal.Controllers
                                 data.eMessage = "Os campos de Recolha devem ser todos preenchidos.";
                                 return Json(data);
                             }
-                            else if (data.DeliveryLocal == null || String.IsNullOrEmpty(data.DeliveryAddress) || String.IsNullOrEmpty(data.DeliveryPostalCode) || String.IsNullOrEmpty(data.DeliveryLocality) || String.IsNullOrEmpty(data.CollectionReceptionResponsible) || String.IsNullOrEmpty(data.InvoiceNo))
+                            //NR20181108
+                            //else if (data.DeliveryLocal == null || String.IsNullOrEmpty(data.DeliveryAddress) || String.IsNullOrEmpty(data.DeliveryPostalCode) || String.IsNullOrEmpty(data.DeliveryLocality) || String.IsNullOrEmpty(data.CollectionReceptionResponsible) || String.IsNullOrEmpty(data.InvoiceNo))
+                            else if (data.DeliveryLocal == null || String.IsNullOrEmpty(data.DeliveryAddress) || String.IsNullOrEmpty(data.DeliveryPostalCode) || String.IsNullOrEmpty(data.DeliveryLocality) || String.IsNullOrEmpty(data.CollectionReceptionResponsible))
                             {
                                 data.eReasonCode = 4;
                                 data.eMessage = "Os campos de Entrega (Fornecedor) devem ser todos preenchidos.";
@@ -1573,6 +1578,7 @@ namespace Hydra.Such.Portal.Controllers
                     ConfigNumerations.UtilizadorModificação = User.Identity.Name;
                     DBNumerationConfigurations.Update(ConfigNumerations);
 
+                    req.LocalCode = req.Lines.FirstOrDefault() != null ? req.Lines.FirstOrDefault().LocalCode : null;
                     req.RequisitionNo = RequisitionNo;
                     req.ResponsibleCreation = User.Identity.Name;
                     req.RequisitionDate = DateTime.Now.ToString();

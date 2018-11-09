@@ -2569,6 +2569,11 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Código Centro Responsabilidade");
                     Col = Col + 1;
                 }
+                if (dp["localCode"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Código Localização");
+                    Col = Col + 1;
+                }
                 if (dp["comments"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Observações");
@@ -2691,6 +2696,11 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["centerResponsibilityCode"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.CenterResponsibilityCode);
+                            Col = Col + 1;
+                        }
+                        if (dp["localCode"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.LocalCode);
                             Col = Col + 1;
                         }
                         if (dp["comments"]["hidden"].ToString() == "False")
