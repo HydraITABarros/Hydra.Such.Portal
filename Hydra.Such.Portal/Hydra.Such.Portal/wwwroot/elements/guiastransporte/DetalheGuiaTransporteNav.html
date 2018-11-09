@@ -559,6 +559,7 @@
                     this.$.page_databound_ajax.body = JSON.stringify({ "No": this._guiatransporteid, "Historic": this._history });
                     this.$.page_databound_ajax.generateRequest();
                 },
+
                 _responseProcessor: function (data) {
                     debugger;;
 
@@ -570,6 +571,10 @@
                         this._openToastError("Ocorreu um erro desconhecido.")
                     }
                 },
+
+                _printE: function () {
+
+                }
             });
         })
     </script>
