@@ -1967,6 +1967,8 @@ namespace Hydra.Such.Portal.Controllers
                     ViewBag.Historic = "";
                 }
 
+                ViewBag.ID = hist == "true" ? 1 : 0;
+                ViewBag.Archived = hist == "true" ? true : false;
                 ViewBag.ContractNo = id ?? "";
                 ViewBag.VersionNo = version ?? "";
                 ViewBag.UPermissions = UPerm;
