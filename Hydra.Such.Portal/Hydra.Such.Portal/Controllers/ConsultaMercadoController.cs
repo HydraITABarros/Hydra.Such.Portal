@@ -948,7 +948,7 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     try
                     {
-                        var result = CreateNAVPurchaseOrderFor(purchOrder, data.NumConsultaMercado);
+                        var result = CreateNAVPurchaseOrderFor(purchOrder, data.NumConsultaMercado, data.Obs);
                         if (result.CompletedSuccessfully)
                         {
                             data.eMessages.Add(new TraceInformation(TraceType.Success, "Criada encomenda para o fornecedor núm. " + purchOrder.SupplierId + "; "));
@@ -1212,11 +1212,11 @@ namespace Hydra.Such.Portal.Controllers
             return Body;
         }
 
-        private GenericResult CreateNAVPurchaseOrderFor(PurchOrderDTO purchOrder, string CM)
+        private GenericResult CreateNAVPurchaseOrderFor(PurchOrderDTO purchOrder, string CM, string Obs)
         {
             GenericResult createPrePurchOrderResult = new GenericResult();
 
-            Task<WSPurchaseInvHeader.Create_Result> createPurchaseHeaderTask = NAVPurchaseHeaderIntermService.CreateAsync_CM(purchOrder, configws, CM);
+            Task<WSPurchaseInvHeader.Create_Result> createPurchaseHeaderTask = NAVPurchaseHeaderIntermService.CreateAsync_CM(purchOrder, configws, CM, Obs);
             createPurchaseHeaderTask.Wait();
             if (createPurchaseHeaderTask.IsCompletedSuccessfully)
             {

@@ -722,9 +722,12 @@
                                         <!--<paper-button raised id="btnArchive" class="btnSave" on-tap="_archive"><i class="fa fa-file-archive-o" aria-hidden="true"></i>&nbsp; Arquivar</paper-button>-->
                                     </template>
                                 </template>
+
                                 <template is="dom-if" if="{{ _permissions.delete }}">
                                     <paper-button raised id="btnDelete" class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
                                 </template>
+
+                                <paper-button raised id="btnDelete" class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
 
                                 <template is="dom-if" if="{{ !isReadOnly() }}">
                                     <paper-button raised id="btnCreate" class="btnSave" on-tap="_todasLinhasNotaEncomenda" title="Marcar todas as Linhas para Nota de Encomenda"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Linhas Enc.</paper-button>
@@ -2410,6 +2413,13 @@
                     }
                 },
                 _reqDataSourceResponse: function (data) {
+                    var _self = this;
+
+                    debugger
+                    if (this.Requisition.state != 0) {
+                        $(_self.$.btnDelete).addClass('hidden');
+                    }
+                    
                     if (data.detail.status === 200) {
                         if (data.detail.url.indexOf("Get") !== -1) {
                             if (this.Requisition != null) {
@@ -2486,8 +2496,7 @@
                     }
 
                     this._goAprove = this.Requisition.goAprove;
-
-                    debugger
+                    
                     this._estadoPendente = false;
                     if (this.Requisition.state == 0) {
                         this._estadoPendente = true;

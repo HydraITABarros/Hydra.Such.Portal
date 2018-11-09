@@ -2160,13 +2160,13 @@
 
                 _setFieldsEditability(data) {
                     var _self = this;
-
+                    
                     if (data.historico > 0) {
                         //grids
                         $(_self.$.tabSelecaoEntidades).addClass('disabled');
                         $(_self.$.tabRegistoDePropostas).addClass('disabled');
                         $(_self.$.tabLinhas).addClass('disabled');
-
+                        
                         //botões
                         $(_self.$.btnUpdate).addClass('hidden');
                         $(_self.$.btnDelete).addClass('hidden');

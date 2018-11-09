@@ -1472,7 +1472,6 @@
           <PrintOnLastPage>true</PrintOnLastPage>
           <ReportItems>
             <Line Name="Line6">
-              <Top>0cm</Top>
               <Left>0.07056cm</Left>
               <Height>0cm</Height>
               <Width>17.81006cm</Width>

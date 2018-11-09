@@ -91,7 +91,7 @@ namespace Hydra.Such.Data.NAV
             //}
         }
 
-        public static async Task<WSPurchaseInvHeader.Create_Result> CreateAsync_CM(PurchOrderDTO purchFromSupplier, NAVWSConfigurations WSConfigurations, string Consulta)
+        public static async Task<WSPurchaseInvHeader.Create_Result> CreateAsync_CM(PurchOrderDTO purchFromSupplier, NAVWSConfigurations WSConfigurations, string Consulta, string Observacoes)
         {
             if (purchFromSupplier == null)
                 throw new ArgumentNullException("purchFromSupplier");
@@ -140,7 +140,8 @@ namespace Hydra.Such.Data.NAV
                     Down_Payment = purchFromSupplier.InAdvance.HasValue ? purchFromSupplier.InAdvance.Value : false,
                     Down_PaymentSpecified = purchFromSupplier.InAdvance.HasValue,
                     Vendor_Mail = purchFromSupplier.Vendor_Mail,
-                    N_Consulta = Consulta
+                    N_Consulta = Consulta,
+                    Observacoes = Observacoes
                 }
             };
 
