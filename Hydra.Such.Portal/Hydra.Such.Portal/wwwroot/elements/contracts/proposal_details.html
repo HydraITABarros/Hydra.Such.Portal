@@ -438,7 +438,7 @@
                                             <vaadin-text-field value="{{data.internalNumeration}}" id="mInternalNumeration" name="mInternalNumeration" label="Numeração Interna" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field value="{{data.totalProposalValue}}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" error-message="Valor inválido" id="mTotalProposalValue" name="mTotalProposalValue" label="Valor Total" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.totalProposalValue}}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" error-message="Valor inválido" id="mTotalProposalValue" name="mTotalProposalValue" label="Valor Total" disabled="{{ !_permissions.update }}"><div slot="suffix">€</div></vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
                                             <!--<vaadin-combo-box items="[[CBRegions]]" id="mCodeRegion" item-value-path="id" item-label-path="value" value="{{data.codeRegion}}" label="Cód. Região" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
@@ -537,7 +537,7 @@
                                             <vaadin-text-field value="{{data.oportunityNo}}" id="mOportunity" name="mOportunity" label="Nº Oportunidade" disabled> </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field value="{{data.baseValueProcedure}}" id="mBaseValueProcedure" name="mBaseValueProcedure" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" label="Valor Base Procedimento" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.baseValueProcedure}}" id="mBaseValueProcedure" name="mBaseValueProcedure" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" label="Valor Base Procedimento" disabled="{{ !_permissions.update }}"><div slot="suffix">€</div></vaadin-text-field>
                                         </div>
 
                                         <div class="row break_clear">
@@ -1930,6 +1930,7 @@
                 },
                 //Responses Processors
                 _responseProcessor: function (data) {
+                    debugger
                     this._showArchiveReason();
                     var self = this;
 
@@ -2470,7 +2471,7 @@
                 },
 
                 _setFieldsEditability(data) {
-                    debugger;
+                    debugger
                     var _self = this;
 
                     if (_self._isCreate & data.status == 2) {
