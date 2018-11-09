@@ -2368,7 +2368,6 @@
                     }
                 },
                 _responseParseToContract: function (e) {
-                    debugger;
                     var self = this;
                     if (e.detail.status === 200) {
                         this._openToast("Contrato " + this.numeration + " criado com sucesso");
@@ -2484,7 +2483,6 @@
                         $(_self.$.btnUpdate).removeClass('hidden');
                     }
 
-                    debugger
                     if (_self._areaid == 1) {
                         //GERAL
                         _self.$.contractNo.disabled = true;
