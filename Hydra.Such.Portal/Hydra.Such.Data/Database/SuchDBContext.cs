@@ -6896,7 +6896,7 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.NºPréRequisição)
                     .HasColumnName("Nº Pré-Requisição")
-                    .HasMaxLength(20)
+                    .HasMaxLength(50)
                     .ValueGeneratedNever();
 
                 entity.Property(e => e.Aprovadores).HasMaxLength(100);
