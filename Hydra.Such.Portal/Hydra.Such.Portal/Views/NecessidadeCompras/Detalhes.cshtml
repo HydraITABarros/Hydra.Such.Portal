@@ -252,7 +252,7 @@
         </div>
         <div class="row" hidden="{{ !_permissionsVal.create }}">
             <div class="col-md-3">
-                <vaadin-text-field id="grupoRegistoIvaProduto" name="grupoRegistoIvaProduto" label="Grupo Registo IVA Produto" class="alignRight" value="{{grupoRegistoIvaProduto}}" type="number"></vaadin-text-field>
+                <vaadin-text-field id="grupoRegistoIvaProduto" name="grupoRegistoIvaProduto" label="Grupo Registo IVA Produto" class="alignRight" value="{{grupoRegistoIvaProduto}}" maxlength="10"></vaadin-text-field>
             </div>
 
             <div class="col-md-3" hidden="{{ !_permissionsVal.create }}">
@@ -502,7 +502,7 @@
                 </template>
                 <template>
                     <template is="dom-if" if="{{ item.selected }}">
-                        <vaadin-text-field value="{{item.grupoRegistoIvaProduto}}" disabled="{{ !_permissionsVal.update }}"></vaadin-text-field>
+                        <vaadin-text-field value="{{item.grupoRegistoIvaProduto}}" maxlength="10" disabled="{{ !_permissionsVal.update }}"></vaadin-text-field>
                     </template>
                     <template is="dom-if" if="{{ !item.selected }}">
                         {{item.grupoRegistoIvaProduto}}
