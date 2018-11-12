@@ -2458,6 +2458,8 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.Descrição).HasMaxLength(100);
 
+                entity.Property(e => e.GrupoRegistoIvaProduto).HasMaxLength(10);
+
                 entity.Property(e => e.DescriçãoProdutoFornecedor)
                     .HasColumnName("Descrição Produto Fornecedor")
                     .HasMaxLength(80);
@@ -3848,6 +3850,8 @@ namespace Hydra.Such.Data.Database
                 entity.HasKey(e => new { e.NoProcedimento, e.NoFornecedor, e.CodProduto, e.DtValidadeInicio, e.Cresp, e.Localizacao });
 
                 entity.Property(e => e.NoProcedimento).HasMaxLength(10);
+
+                entity.Property(e => e.GrupoRegistoIvaProduto).HasMaxLength(10);
 
                 entity.Property(e => e.NoFornecedor).HasMaxLength(20);
 
@@ -6896,7 +6900,7 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.NºPréRequisição)
                     .HasColumnName("Nº Pré-Requisição")
-                    .HasMaxLength(20)
+                    .HasMaxLength(50)
                     .ValueGeneratedNever();
 
                 entity.Property(e => e.Aprovadores).HasMaxLength(100);

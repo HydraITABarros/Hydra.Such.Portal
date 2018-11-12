@@ -184,15 +184,15 @@
                     {{item.description}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.statusDescription.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="status">Estado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="status" />
-                </template>
-                <template>
-                    {{item.statusDescription}}
-                </template>
-            </vaadin-grid-column>
+            <!--<vaadin-grid-column width="150px" resizable hidden$="{{ _columns.statusDescription.hidden }}">
+        <template class="header">
+            <vaadin-grid-sorter path="status">Estado</vaadin-grid-sorter>
+            <vaadin-grid-filter path="status" />
+        </template>
+        <template>
+            {{item.statusDescription}}
+        </template>
+    </vaadin-grid-column>-->
             <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.codeRegion.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codeRegion">Cód. Região</vaadin-grid-sorter>
@@ -227,6 +227,89 @@
                 </template>
                 <template>
                     {{item.versionNo}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="140px" resizable hidden$="{{ _columns.ordOrderSource.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="ordOrderSource">Origem do Pedido Descrição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="ordOrderSource" />
+                </template>
+                <template>
+                    {{item.ordOrderSource}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="140px" resizable hidden$="{{ _columns.relatedContract.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="relatedContract">Nº Contrato</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="relatedContract" />
+                </template>
+                <template>
+                    {{item.relatedContract}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="140px" resizable hidden$="{{ _columns.customerShipmentDate.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="customerShipmentDate">Data Envio</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="customerShipmentDate" />
+                </template>
+                <template>
+                    {{item.customerShipmentDate}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="140px" resizable hidden$="{{ _columns.proposalChangeDate.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="proposalChangeDate">Data Alteração</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="proposalChangeDate" />
+                </template>
+                <template>
+                    {{item.proposalChangeDate}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="140px" resizable hidden$="{{ _columns.internalNumeration.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="internalNumeration">Numeração Interna</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="internalNumeration" />
+                </template>
+                <template>
+                    {{item.internalNumeration}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="140px" resizable hidden$="{{ _columns.totalProposalValue.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="totalProposalValue">Valor Total</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="totalProposalValue" />
+                </template>
+                <template>
+                    <!--{{item.totalProposalValue}}-->
+                    [[_formatValue(item.totalProposalValue)]]
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="140px" resizable hidden$="{{ _columns.provisionUnit.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="provisionUnit">Unidade de Prestação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="provisionUnit" />
+                </template>
+                <template>
+                    {{item.provisionUnit}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="140px" resizable hidden$="{{ _columns.baseValueProcedure.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="baseValueProcedure">Valor Base Procedimento</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="baseValueProcedure" />
+                </template>
+                <template>
+                    <!--{{item.baseValueProcedure}}-->
+                    [[_formatValue(item.baseValueProcedure)]]
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="140px" resizable hidden$="{{ _columns.notes.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="notes">Notas</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="notes" />
+                </template>
+                <template>
+                    {{item.notes}}
                 </template>
             </vaadin-grid-column>
             <template is="dom-if" if="{{ _permissions.delete }}">
@@ -432,7 +515,6 @@
                 },
 
                 _exportEXCEL: function () {
-                    //debugger;
                     this.result[0].ColunasEXCEL = this._columns;
 
                     this.$.ajax_Export.body = JSON.stringify(this.result);
@@ -440,7 +522,6 @@
                 },
 
                 _exportEXCELResponse: function (e) {
-                    //debugger
                     var FileName = this.export;
                     location.href = '../Contratos/ExportToExcelDownload_Propostas?sFileName=' + FileName;
                 },
@@ -460,7 +541,17 @@
                         "codeRegion": { hidden: false, label: "Cód. Região" },
                         "codeFunctionalArea": { hidden: false, label: "Cód. Área Funcional" },
                         "codeResponsabilityCenter": { hidden: false, label: "Cód. Centro Responsabilidade" },
-                        "versionNo": { hidden: false, label: "Nº Versão" }
+                        "versionNo": { hidden: false, label: "Nº Versão" },
+
+                        "ordOrderSource": { hidden: false, label: "Origem do Pedido Descrição" },
+                        "relatedContract": { hidden: false, label: "Nº Contrato" },
+                        "customerShipmentDate": { hidden: false, label: "Data Envio" },
+                        "proposalChangeDate": { hidden: false, label: "Data Alteração" },
+                        "internalNumeration": { hidden: false, label: "Numeração Interna" },
+                        "totalProposalValue": { hidden: false, label: "Valor Total" },
+                        "provisionUnit": { hidden: false, label: "Unidade de Prestação" },
+                        "baseValueProcedure": { hidden: false, label: "Valor Base Procedimento" },
+                        "notes": { hidden: false, label: "Notas" }
                     };
 
                     if (localStorage["proposals.ToggleColumn"]) {
@@ -492,7 +583,11 @@
                     });
                 },
                 /* end - ColumnToggle */
-
+                _formatValue: function (value) {
+                    if (value != null && value != 0) {
+                        return currency(value, { separator: '.', decimal: ',' }).format() + ' €';
+                    }
+                }
             });
         });
     </script>

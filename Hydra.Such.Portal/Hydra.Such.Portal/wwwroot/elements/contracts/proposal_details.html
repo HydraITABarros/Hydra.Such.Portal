@@ -438,7 +438,7 @@
                                             <vaadin-text-field value="{{data.internalNumeration}}" id="mInternalNumeration" name="mInternalNumeration" label="Numeração Interna" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field value="{{data.totalProposalValue}}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" error-message="Valor inválido" id="mTotalProposalValue" name="mTotalProposalValue" label="Valor Total" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.totalProposalValue}}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" error-message="Valor inválido" id="mTotalProposalValue" name="mTotalProposalValue" label="Valor Total" disabled="{{ !_permissions.update }}"><div slot="suffix">€</div></vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
                                             <!--<vaadin-combo-box items="[[CBRegions]]" id="mCodeRegion" item-value-path="id" item-label-path="value" value="{{data.codeRegion}}" label="Cód. Região" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
@@ -537,7 +537,7 @@
                                             <vaadin-text-field value="{{data.oportunityNo}}" id="mOportunity" name="mOportunity" label="Nº Oportunidade" disabled> </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field value="{{data.baseValueProcedure}}" id="mBaseValueProcedure" name="mBaseValueProcedure" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" label="Valor Base Procedimento" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.baseValueProcedure}}" id="mBaseValueProcedure" name="mBaseValueProcedure" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" label="Valor Base Procedimento" disabled="{{ !_permissions.update }}"><div slot="suffix">€</div></vaadin-text-field>
                                         </div>
 
                                         <div class="row break_clear">
@@ -1391,6 +1391,10 @@
                         type: Boolean,
                         value: true
                     },
+                    _archived: {
+                        type: Boolean,
+                        value: true
+                    },
 
                     //FORM CLIENT REQUISITIONS
                     _CRStartDate: {
@@ -1930,6 +1934,7 @@
                 },
                 //Responses Processors
                 _responseProcessor: function (data) {
+                    
                     this._showArchiveReason();
                     var self = this;
 
@@ -2363,7 +2368,6 @@
                     }
                 },
                 _responseParseToContract: function (e) {
-                    debugger;
                     var self = this;
                     if (e.detail.status === 200) {
                         this._openToast("Contrato " + this.numeration + " criado com sucesso");
@@ -2470,7 +2474,6 @@
                 },
 
                 _setFieldsEditability(data) {
-                    debugger;
                     var _self = this;
 
                     if (_self._isCreate & data.status == 2) {
@@ -2478,6 +2481,97 @@
                     }
                     else {
                         $(_self.$.btnUpdate).removeClass('hidden');
+                    }
+
+                    if (_self._areaid == 1) {
+                        //GERAL
+                        _self.$.contractNo.disabled = true;
+                        _self.$.Description.disabled = true;
+                        _self.$.contactNo.disabled = true;
+                        _self.$.mClients.disabled = true;
+                        _self.$.mOrderOrigin.disabled = true;
+                        _self.$.mOrdOrderSource.disabled = true;
+                        _self.$.txtRelatedContractNo.disabled = true;
+                        _self.$.versionNo.disabled = true;
+                        _self.$.mStartData.disabled = true;
+                        _self.$.DueDate.disabled = true;
+                        _self.$.mStatus.disabled = true;
+                        _self.$.mCustomerShipmentDate.disabled = true;
+                        _self.$.mProposalChangeDate.disabled = true;
+                        _self.$.mInternalNumeration.disabled = true;
+                        _self.$.mTotalProposalValue.disabled = true;
+                        _self.$.mCodeRegion.disabled = true;
+                        _self.$.mFunctionalArea.disabled = true;
+                        _self.$.mResponsabilityCenter.disabled = true;
+                        _self.$.mFeeUnits.disabled = true;
+                        _self.$.mOportunity.disabled = true;
+                        _self.$.mBaseValueProcedure.disabled = true;
+                        _self.$.mNotes.disabled = true;
+
+                        //ENVIO
+                        _self.$.codeShippingAddress.disabled = true;
+                        _self.$.ShippingName.disabled = true;
+                        _self.$.ShippingAddress.disabled = true;
+                        _self.$.shippingZipCode.disabled = true;
+                        _self.$.ShippingLocality.disabled = true;
+                        _self.$.mClientRequisitionNo.disabled = true;
+
+                        //DETALHES FATURA
+                        _self.$.mBillingTypes.disabled = true;
+                        _self.$.mMaintenanceTypes.disabled = true;
+                        _self.$.mProvisioningFee.disabled = true;
+                        _self.$.mc.disabled = true;
+                        _self.$.mDisplacementFee.disabled = true;
+                        _self.$.mInvoicePeriods.disabled = true;
+                        _self.$.mNextInvoiceDate.disabled = true;
+                        _self.$.mNextBillingPeriod.disabled = true;
+                        _self.$.mbatchInvoices.disabled = true;
+                        _self.$.mcontractLinesInBilling.disabled = true;
+
+                        //$(_self.$.btnUpdate).addClass('hidden');
+                        $(_self.$.btnDelete).addClass('hidden');
+
+                        //DATAS LIMITE FASES DO PROCESSO
+                        _self.$.mLimitClarificationDate.disabled = true;
+                        _self.$.mLimitClarificationTime.disabled = true;
+                        _self.$.mErrorsOmissionsDate.disabled = true;
+                        _self.$.mErrorsOmissionsTime.disabled = true;
+                        _self.$.mProposalDelivery.disabled = true;
+                        _self.$.proposalDeliveryTime.disabled = true;
+                        _self.$.mFinalReportDate.disabled = true;
+                        _self.$.mFinalReportTime.disabled = true;
+                        _self.$.mDocumentationHabilitationDate.disabled = true;
+                        _self.$.mDocumentationHabilitationTime.disabled = true;
+                        _self.$.mPreviousHearing.disabled = true;
+                        _self.$.mPreviousHearingTime.disabled = true;
+
+                        //LINHAS
+                        _self.$._CLContractLineType.disabled = true;
+                        _self.$._CLCode.disabled = true;
+                        _self.$._CLDescription.disabled = true;
+                        _self.$._CLQuantity.disabled = true;
+                        _self.$._CLMeasureUnit.disabled = true;
+                        _self.$._CLUnitPrice.disabled = true;
+                        _self.$._CLDiscountLine.disabled = true;
+                        _self.$._CLBillable.disabled = true;
+                        _self.$._CLRegion.disabled = true;
+                        _self.$._CLFunctionalArea.disabled = true;
+                        _self.$._CLResponsabilityCenter.disabled = true;
+                        _self.$._CLFrequency.disabled = true;
+                        _self.$._CLInterventionHours.disabled = true;
+                        _self.$._CLTotalTechnicians.disabled = true;
+                        _self.$._CLVersionStartDate.disabled = true;
+                        _self.$._CLVersionEndDate.disabled = true;
+                        _self.$._CLResponsible.disabled = true;
+                        _self.$._CLServiceClient.disabled = true;
+                        _self.$._CLInvoiceGroup.disabled = true;
+                        _self.$._CLCreateContract.disabled = true;
+
+                        $(_self.$.btnCreateLine).addClass('hidden');
+
+                        $(_self.$.grid_contractlines).addClass('disabled');
+
+                        $(_self.$.btnSaveLine).addClass('hidden');
                     }
 
                     if (data.status == 2) { //ENVIADA

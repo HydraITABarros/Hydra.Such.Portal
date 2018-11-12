@@ -779,7 +779,7 @@
                                                         text-path="id"
                                                         value-path="id"
                                                         fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Localização"}]'
-                                                        required error-message="Este campo é obrigatório" disabled="{{ !_permissions.update }}">
+                                                        required error-message="Este campo é obrigatório" disabled>
                                         </such-selectbox>
                                         <vaadin-text-field id="txtLocalCode" label="Cód. Localização" disabled hidden> </vaadin-text-field>
                                     </div>
@@ -967,14 +967,15 @@
                                                         </table>
                                                     </template>
                                                 </vaadin-combo-box>-->
-                                                <such-selectbox id="_CBLocalizations" value="{{item.localCode}}"
+                                                <!--<such-selectbox id="_CBLocalizations" value="{{item.localCode}}"
                                                                 items="[[CBLocations]]"
                                                                 on-change="_updateLinhaPreRequisicao"
                                                                 text-path="id"
                                                                 value-path="id"
                                                                 fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Localização"}]'
                                                                 required disabled="{{ _setDisabled(item) }}">
-                                                </such-selectbox>
+                                                </such-selectbox>-->
+                                                [[item.localCode]]
                                             </template>
                                             <template is="dom-if" if="{{ !item.selected }}">
                                                 [[item.localCode]]
@@ -1814,7 +1815,6 @@
 
                 },
                 _setPurchaseLine: function (e) {
-                    debugger;
                     if (e != null && e != undefined) {
                         if (e.detail.value !== "" && e.detail.value != null && e.detail.value != undefined) {
                             var composedKey = e.detail.value.split(" ", 2);
