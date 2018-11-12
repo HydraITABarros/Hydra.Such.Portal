@@ -2554,6 +2554,8 @@ namespace Hydra.Such.Portal.Controllers
             List<Projetos> projectsDetails = new List<Projetos>();
             var projectsIds = authProjectMovements.Select(x => x.CodProjeto).Distinct();
             var billingGroups = authProjectMovements.Select(x => x.GrupoFactura).Distinct();
+            var customersIds = authProjectMovements.Select(x => x.CodCliente).Distinct();
+            List<PreçosServiçosCliente> customersServicesPrices = new List<PreçosServiçosCliente>();
 
             //get all movements from authProjects
             List<SPInvoiceListViewModel> data = null;
@@ -2646,6 +2648,11 @@ namespace Hydra.Such.Portal.Controllers
                         projectsIds.Contains(x.ProjectNo) &&
                         billingGroups.Contains(x.InvoiceGroup.Value))
                     .ToList();
+                
+                customersServicesPrices = ctx.PreçosServiçosCliente
+                    .Where(x => customersIds.Contains(x.Cliente))
+                    .ToList();
+
             }
             if (data != null)
             {
@@ -2658,7 +2665,6 @@ namespace Hydra.Such.Portal.Controllers
                 if (userDimensionsViewModel.Where(x => x.Dimension == (int)Dimensions.ResponsabilityCenter).Count() > 0)
                     data.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.ResponsabilityCenterCode));
 
-                var customersIds = data.Select(x => x.InvoiceToClientNo).Distinct();
                 List<NAVClientsViewModel> customers = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, customersIds);
 
                 var groupedbyclient = data.GroupBy(x => new
@@ -2722,9 +2728,12 @@ namespace Hydra.Such.Portal.Controllers
                                                  y.PedidoCliente == key.ClientRequest)?.CodCentroResponsabilidade,
                     })
                 .ToList();
-                //Set project dimensions
+
+                bool allMealTypesAreValid = true;
+
                 groupedbyclient.ForEach(x =>
                 {
+                    //Set dimensions
                     var authProj = authProjectMovements
                             .FirstOrDefault(y => y.CodCliente == x.InvoiceToClientNo &&
                                                  y.DataPrestacaoServico == x.Date &&
@@ -2736,9 +2745,9 @@ namespace Hydra.Such.Portal.Controllers
                     x.SetDimensionsFor(authProj, projectRegion, customer);
 
                     TiposGrupoContabProjeto contabGroupType = new TiposGrupoContabProjeto();
-
                     x.Items.ForEach(item =>
                     {
+                        //Set billing group
                         if (!string.IsNullOrEmpty(proj.CódigoÁreaFuncional) && proj.TipoGrupoContabProjeto.HasValue)
                         {
                             if(contabGroupType.Código != proj.TipoGrupoContabProjeto.Value)
@@ -2748,8 +2757,34 @@ namespace Hydra.Such.Portal.Controllers
                                 item.ProjectContabGroup = contabGroupType.Descrição.Trim();
                             }
                         }
+
+                        //Set Resources MealTypes
+                        if (item.FunctionalAreaCode.StartsWith('5') && item.Type == 2 && (!item.MealType.HasValue || item.MealType == 0))
+                        {
+                            bool itemHasValidMealType = false;
+                            var servicePrice = customersServicesPrices.FirstOrDefault(serv => serv.Cliente == item.InvoiceToClientNo && serv.CodServCliente == item.ServiceClientCode && serv.Recurso == item.Code);
+                            if (servicePrice != null)
+                            {
+                                int mealType;
+                                int.TryParse(servicePrice.TipoRefeição, out mealType);
+                                if (mealType > 0)
+                                {
+                                    item.MealType = mealType;
+                                    itemHasValidMealType = true;
+                                }
+                            }
+                            if (!itemHasValidMealType)
+                            {
+                                string invalidMealTypeMessage = string.Format("Tipo de Refeição não está configurado (Projeto: {0}; Grupo Fatura: {1}; Recurso: {2})", item.ProjectNo, item.InvoiceGroup, item.Code);
+                                result.eMessages.Add(new TraceInformation(TraceType.Exception, invalidMealTypeMessage));
+                                allMealTypesAreValid = false;
+                            }
+                        }
                     });
                 });
+                //Ensure all meal types are configured
+                if(!allMealTypesAreValid)
+                    return Json(result);
 
                 //Create Project if exists
                 foreach (string projectId in projectsIds)
