@@ -161,7 +161,11 @@ namespace Hydra.Such.Data.Logic
                     Historico = hist == 0 ? false : true,
                     CodPais = data.CodPais.Equals(DBNull.Value) ? "" : (string)data.CodPais,
                     Telefone = data.Telefone.Equals(DBNull.Value) ? "" : (string)data.Telefone,
-                    MaintenanceOrderNo = data.MaintOrderNo.Equals(DBNull.Value) ? "" : (string)data.MaintOrderNo
+                    MaintenanceOrderNo = data.MaintOrderNo.Equals(DBNull.Value) ? "" : (string)data.MaintOrderNo,
+                    ObservacoesAdicionais = data.ObservacoesAdicionais.Equals(DBNull.Value) ? "" : (string)data.ObservacoesAdicionais,
+                    UserObservacoesAdicionai = data.UserObservacoesAdicionais.Equals(DBNull.Value) ? "" : (string)data.UserObservacoesAdicionais,
+                    DataObservacoesAdicionais = data.DataObservacoesAdicionais.Equals(DBNull.Value) ? DateTime.Parse("1900-01-01") : (DateTime)data.DataObservacoesAdicionais,
+                    HoraObservacoesAdicionais = data.HoraObservacoesAdicionais.Equals(DBNull.Value) ? TimeSpan.Parse("00:00") : TimeSpan.Parse(data.HoraObservacoesAdicionais.ToShortTimeString())
                 };
 
                 result.FiscalCommunicationLog = new FiscalAuthorityCommunicationLog();
