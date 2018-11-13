@@ -180,6 +180,7 @@ namespace Hydra.Such.Data.Logic.ComprasML
                 QuantityRequired = x.QuantidadeRequerida,
                 QuantityPending = x.QuantidadePendente,
                 UnitCost = x.CustoUnitário,
+                UnitCostWithIVA = x.CustoUnitarioComIVA,
                 SellUnityPrice = x.PreçoUnitárioVenda,
                 BudgetValue = x.ValorOrçamento,
                 ExpectedReceivingDate = x.DataReceçãoEsperada.HasValue ? x.DataReceçãoEsperada.Value.ToString("yyyy-MM-dd") : "",
@@ -195,7 +196,8 @@ namespace Hydra.Such.Data.Logic.ComprasML
                 OpenOrderLineNo = x.NºLinhaEncomendaAberto,
                 Selected = false,
                 TotalCost = x.CustoUnitário * x.QuantidadeARequerer,
-                ArmazemCDireta = x.LocalCompraDireta
+                ArmazemCDireta = x.LocalCompraDireta,
+                GrupoRegistoIVAProduto = x.GrupoRegistoIVAProduto
             };
         }
 
@@ -225,6 +227,7 @@ namespace Hydra.Such.Data.Logic.ComprasML
                 QuantidadeRequerida = x.QuantityRequired,
                 QuantidadePendente = x.QuantityPending,
                 CustoUnitário = x.UnitCost,
+                CustoUnitarioComIVA = x.UnitCostWithIVA,
                 PreçoUnitárioVenda = x.SellUnityPrice,
                 ValorOrçamento = x.BudgetValue,
                 DataReceçãoEsperada = x.ExpectedReceivingDate != null && x.ExpectedReceivingDate != "" ? DateTime.Parse(x.ExpectedReceivingDate) : (DateTime?)null,
@@ -238,7 +241,8 @@ namespace Hydra.Such.Data.Logic.ComprasML
                 NºCliente = x.CustomerNo,
                 NºEncomendaAberto = x.OpenOrderNo,
                 NºLinhaEncomendaAberto = x.OpenOrderLineNo,
-                LocalCompraDireta = x.LocalCode
+                LocalCompraDireta = x.LocalCode,
+                GrupoRegistoIVAProduto = x.GrupoRegistoIVAProduto
             };
         }
     }

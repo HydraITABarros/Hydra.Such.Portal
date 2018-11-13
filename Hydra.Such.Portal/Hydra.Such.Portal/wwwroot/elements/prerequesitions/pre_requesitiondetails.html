@@ -1676,7 +1676,7 @@
                 ready: function () {
                     //GET CONTRACT DATA
                     this._isCreate = false;
-                    this.$.page_createnewForUser_ajax.body = JSON.stringify({ "areaid": this._areaid });
+                    this.$.page_createnewForUser_ajax.body = JSON.stringify({ "tipoPreReq": 0, "areaid": this._areaid });
                     this.$.page_createnewForUser_ajax.generateRequest();
 
 
