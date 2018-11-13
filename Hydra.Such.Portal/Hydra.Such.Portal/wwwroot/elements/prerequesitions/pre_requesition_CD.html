@@ -151,6 +151,7 @@
         <iron-ajax url="/PopulateDropdowns/GetUnitOfMeasureByCode" last-response="{{LCBMeasuresUnit}}" auto id="measuresunit_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/getOpenOrderLineByHeader" last-response="{{CBPurchaseLine}}" id="purchaselines_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/getOpenOrderLineByHeader" last-response="{{CBPurchaseLineGrid}}" id="purchaselinesgrid_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetVATProductsPostingGroups" last-response="{{VATProductsPostingGroups}}" auto method="get" handle-as="json" content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/PreRequisicoes/GetPreReq"
                    id="page_GetPreReq_ajax"
@@ -683,6 +684,16 @@
                                                         value-path="id"
                                                         fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Centro Responsabilidade"}]'
                                                         disabled>
+                                        </such-selectbox>
+                                    </div>
+
+                                    <div class="col-lg-2">
+                                        <such-selectbox id="_CLVATProductsPostingGroups" label="Gr. Registo IVA Produto"
+                                                        items="[[VATProductsPostingGroups]]"
+                                                        text-path="id"
+                                                        value-path="id"
+                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Gr. Registo IVA Produto"}]'
+                                                        disabled="{{ _permissionsCreate }}">
                                         </such-selectbox>
                                     </div>
 
