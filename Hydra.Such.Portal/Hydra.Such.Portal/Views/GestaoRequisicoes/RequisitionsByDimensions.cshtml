@@ -172,6 +172,15 @@
                 </template>
             </vaadin-grid-column>
 
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.projectNo.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="projectNo">Nº Projeto</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="projectNo" />
+                </template>
+                <template>
+                    {{item.projectNo}}
+                </template>
+            </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.regionCode.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="regionCode">Código Região</vaadin-grid-sorter>
@@ -436,6 +445,7 @@
                         "budget": { hidden: false, label: "Orçamento" },
                         "localMarketRegion": { hidden: false, label: "Região Mercado Local" },
                         "localMarketDate": { hidden: false, label: "Data Mercado Local" },
+                        "projectNo": { hidden: false, label: "Nº Projeto" },
                         "regionCode": { hidden: false, label: "Código Região" },
                         "functionalAreaCode": { hidden: false, label: "Código Área Funcional" },
                         "centerResponsibilityCode": { hidden: false, label: "Código Centro Responsabilidade" },

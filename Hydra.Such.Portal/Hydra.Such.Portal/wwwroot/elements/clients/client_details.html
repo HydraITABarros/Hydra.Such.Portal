@@ -230,7 +230,7 @@
 
                                 <div class="panel panel-default">
                                     <paper-collapse-group>
-                                        <paper-collapse-item header="Endereço & Contacto" opened>
+                                        <paper-collapse-item header="Endereço & Contacto">
                                             <div class="panel-body">
                                                 <div class="break_clear">
 
@@ -300,7 +300,7 @@
                                 <!------------ Faturação ------------>
                                 <div class="panel panel-default">
                                     <paper-collapse-group>
-                                        <paper-collapse-item header="Faturação" opened>
+                                        <paper-collapse-item header="Faturação">
                                             <div class="panel-body">
                                                 <div class="row break_clear">
                                                     <div class="col-lg-4">
@@ -315,7 +315,7 @@
                                 <!------------ Faturas / Notas de Crédito ------------>
                                 <div class="panel panel-default">
                                     <paper-collapse-group>
-                                        <paper-collapse-item header="Faturas / Notas de Crédito" opened>
+                                        <paper-collapse-item header="Faturas / Notas de Crédito">
                                             <div class="panel-body">
                                                 <div class="row break_clear">
 
@@ -345,7 +345,37 @@
 
                                                             <vaadin-grid-column width="100px" resizable>
                                                                 <template class="header">
-                                                                    <vaadin-grid-sorter path="dueDate">Data de Vencimento</vaadin-grid-sorter>
+                                                                    <vaadin-grid-sorter path="projectNo">Project Nº</vaadin-grid-sorter>
+                                                                    <vaadin-grid-filter path="projectNo" />
+                                                                </template>
+                                                                <template>
+                                                                    {{item.projectNo}}
+                                                                </template>
+                                                            </vaadin-grid-column>
+
+                                                            <vaadin-grid-column width="100px" resizable>
+                                                                <template class="header">
+                                                                    <vaadin-grid-sorter path="documentDate">Data Doc.</vaadin-grid-sorter>
+                                                                    <vaadin-grid-filter path="documentDate" />
+                                                                </template>
+                                                                <template>
+                                                                    {{item.documentDate}}
+                                                                </template>
+                                                            </vaadin-grid-column>
+
+                                                            <vaadin-grid-column width="100px" resizable>
+                                                                <template class="header">
+                                                                    <vaadin-grid-sorter path="dataServPrestado">Data Serv. Prestado</vaadin-grid-sorter>
+                                                                    <vaadin-grid-filter path="dataServPrestado" />
+                                                                </template>
+                                                                <template>
+                                                                    {{item.dataServPrestado}}
+                                                                </template>
+                                                            </vaadin-grid-column>
+
+                                                            <vaadin-grid-column width="100px" resizable>
+                                                                <template class="header">
+                                                                    <vaadin-grid-sorter path="dueDate">Data Venc.</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="dueDate" />
                                                                 </template>
                                                                 <template>
@@ -359,7 +389,9 @@
                                                                     <vaadin-grid-filter path="amountIncludingVAT" />
                                                                 </template>
                                                                 <template>
-                                                                    [[_formatCurrencyValue(item.amountIncludingVAT)]]
+                                                                    <div class="text-right">
+                                                                        [[_formatCurrencyValue(item.amountIncludingVAT)]]
+                                                                    </div>
                                                                 </template>
                                                             </vaadin-grid-column>
 
@@ -369,7 +401,9 @@
                                                                     <vaadin-grid-filter path="valorPendente" />
                                                                 </template>
                                                                 <template>
-                                                                    [[_formatCurrencyValue(item.valorPendente)]]
+                                                                    <div class="text-right">
+                                                                        [[_formatCurrencyValue(item.valorPendente)]]
+                                                                    </div>
                                                                 </template>
                                                             </vaadin-grid-column>
 
@@ -379,7 +413,9 @@
                                                                     <vaadin-grid-filter path="paid" />
                                                                 </template>
                                                                 <template>
+
                                                                     [[_formatBoolValue(item.paid)]]
+
                                                                 </template>
                                                             </vaadin-grid-column>
                                                             <vaadin-grid-column width="100px" resizable>
@@ -420,7 +456,7 @@
                                 <!------------ Especificação ------------>
                                 <div class="panel panel-default">
                                     <paper-collapse-group>
-                                        <paper-collapse-item header="Especificação" opened>
+                                        <paper-collapse-item header="Especificação">
                                             <div class="panel-body">
                                                 <div class="row break_clear">
                                                     <div class="col-lg-3 alignPoga">
@@ -761,7 +797,7 @@
                 <vaadin-grid aria-label="Invoices" id="grid_invoicesdetails" name="grid_invoicesdetails" items="[[invoicesLines]]" class="grid--modal" multi-sort="true" active-item="{{_SelectedInvoiceLine}}">
                     <vaadin-grid-column width="100px" resizable>
                         <template class="header">
-                            <vaadin-grid-sorter path="documentNo">Nº de Documento</vaadin-grid-sorter>
+                            <vaadin-grid-sorter path="documentNo">Nº Documento</vaadin-grid-sorter>
                             <vaadin-grid-filter path="documentNo" />
                         </template>
                         <template>
@@ -819,7 +855,9 @@
                             <vaadin-grid-filter path="quantity" />
                         </template>
                         <template>
-                            [[_roundValue(item.quantity, 0)]]
+                            <div class="text-right">
+                                [[_roundValue(item.quantity, 0)]]
+                            </div>
                         </template>
                     </vaadin-grid-column>
                     <vaadin-grid-column width="100px" resizable>
@@ -828,7 +866,9 @@
                             <vaadin-grid-filter path="unitPrice" />
                         </template>
                         <template>
-                            [[_formatCurrencyValue(item.unitPrice)]]
+                            <div class="text-right">
+                                [[_formatCurrencyValue(item.unitPrice)]]
+                            </div>
                         </template>
                     </vaadin-grid-column>
                     <vaadin-grid-column width="100px" resizable>
@@ -837,7 +877,9 @@
                             <vaadin-grid-filter path="vat" />
                         </template>
                         <template>
-                            [[_formatPercentValue(item.vat)]]
+                            <div class="text-right">
+                                [[_formatPercentValue(item.vat)]]
+                            </div>
                         </template>
                     </vaadin-grid-column>
                     <vaadin-grid-column width="100px" resizable>
@@ -846,7 +888,9 @@
                             <vaadin-grid-filter path="amount" />
                         </template>
                         <template>
-                            [[_formatCurrencyValue(item.amount)]]
+                            <div class="text-right">
+                                [[_formatCurrencyValue(item.amount)]]
+                            </div>
                         </template>
                     </vaadin-grid-column>
                 </vaadin-grid>
@@ -1247,8 +1291,8 @@
                     }
                 },
                 _invoiceSelected: function (value) {
-                    
-                    if (value) {                        
+
+                    if (value) {
                         this.$.invoicesLines_data.body = JSON.stringify({ "No_": value.no_, "tipo": value.tipo });
                         this.$.invoicesLines_data.generateRequest();
                     }
@@ -1274,7 +1318,7 @@
                 },
                 _invoiceDetailsExportEXCELResponse: function () {
                     var FileName = this.export;
-                    location.href = '../InvoiceDetailsExportToExcel?fileName=' + FileName + "&tipo=" + this._SelectedInvoice.tipo ;
+                    location.href = '../InvoiceDetailsExportToExcel?fileName=' + FileName + "&tipo=" + this._SelectedInvoice.tipo;
                 },
                 _startInvoiceLinesColumnToggle: function () {
                     var columns = {
@@ -1289,8 +1333,8 @@
                         "vat": { hidden: false, label: "Iva" },
                         "amount": { hidden: false, label: "Custo" }
                     };
-                    
-                    
+
+
                     if (localStorage["clientesinvoicelist.ToggleColumn"]) {
                         var keys = Object.keys(columns);
                         var storedColumns = JSON.parse(localStorage["clientesinvoicelist.ToggleColumn"]);

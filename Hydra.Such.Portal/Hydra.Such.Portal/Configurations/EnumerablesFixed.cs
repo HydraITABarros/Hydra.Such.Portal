@@ -903,6 +903,16 @@ namespace Hydra.Such.Portal.Configurations
             {
                 Id = 1,
                 Value = "MP"
+            },
+            new EnumData()
+            {
+                Id = 2,
+                Value = "MP+MC"
+            },
+            new EnumData()
+            {
+                Id = 2,
+                Value = "MP+(x)% MC"
             }
         };
 
