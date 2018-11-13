@@ -355,7 +355,17 @@
 
                                                             <vaadin-grid-column width="100px" resizable>
                                                                 <template class="header">
-                                                                    <vaadin-grid-sorter path="dataServPrestado">Data Serviço Prestado</vaadin-grid-sorter>
+                                                                    <vaadin-grid-sorter path="creationDate">Data Criação</vaadin-grid-sorter>
+                                                                    <vaadin-grid-filter path="creationDate" />
+                                                                </template>
+                                                                <template>
+                                                                    {{item.creationDate}}
+                                                                </template>
+                                                            </vaadin-grid-column>
+
+                                                            <vaadin-grid-column width="100px" resizable>
+                                                                <template class="header">
+                                                                    <vaadin-grid-sorter path="dataServPrestado">Data Serv. Prestado</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="dataServPrestado" />
                                                                 </template>
                                                                 <template>
@@ -365,7 +375,7 @@
 
                                                             <vaadin-grid-column width="100px" resizable>
                                                                 <template class="header">
-                                                                    <vaadin-grid-sorter path="dueDate">Data de Vencimento</vaadin-grid-sorter>
+                                                                    <vaadin-grid-sorter path="dueDate">Data Vencimento</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="dueDate" />
                                                                 </template>
                                                                 <template>
@@ -787,7 +797,7 @@
                 <vaadin-grid aria-label="Invoices" id="grid_invoicesdetails" name="grid_invoicesdetails" items="[[invoicesLines]]" class="grid--modal" multi-sort="true" active-item="{{_SelectedInvoiceLine}}">
                     <vaadin-grid-column width="100px" resizable>
                         <template class="header">
-                            <vaadin-grid-sorter path="documentNo">Nº de Documento</vaadin-grid-sorter>
+                            <vaadin-grid-sorter path="documentNo">Nº Documento</vaadin-grid-sorter>
                             <vaadin-grid-filter path="documentNo" />
                         </template>
                         <template>
