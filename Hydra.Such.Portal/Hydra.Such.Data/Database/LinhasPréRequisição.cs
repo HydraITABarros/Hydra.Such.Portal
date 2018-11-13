@@ -27,6 +27,7 @@ namespace Hydra.Such.Data.Database
         public decimal? QuantidadeRequerida { get; set; }
         public decimal? QuantidadePendente { get; set; }
         public decimal? CustoUnitário { get; set; }
+        public decimal? CustoUnitarioComIVA { get; set; }
         public decimal? PreçoUnitárioVenda { get; set; }
         public decimal? ValorOrçamento { get; set; }
         public DateTime? DataReceçãoEsperada { get; set; }
@@ -41,6 +42,7 @@ namespace Hydra.Such.Data.Database
         public string NºEncomendaAberto { get; set; }
         public int? NºLinhaEncomendaAberto { get; set; }
         public string LocalCompraDireta { get; set; }
+        public string GrupoRegistoIVAProduto { get; set; }
 
         public Projetos NºProjetoNavigation { get; set; }
         public PréRequisição NºPréRequisiçãoNavigation { get; set; }

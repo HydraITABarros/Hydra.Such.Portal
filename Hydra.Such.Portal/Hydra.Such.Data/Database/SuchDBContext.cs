@@ -4627,6 +4627,8 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.CustoUnitário).HasColumnName("Custo Unitário");
 
+                entity.Property(e => e.CustoUnitarioComIVA).HasColumnName("CustoUnitarioComIVA");
+
                 entity.Property(e => e.Código).HasMaxLength(20);
 
                 entity.Property(e => e.CódigoCentroResponsabilidade)

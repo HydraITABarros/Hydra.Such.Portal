@@ -47,7 +47,9 @@ namespace Hydra.Such.Portal.Controllers
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.PréRequisições);
             if (UPerm != null && UPerm.Read.Value)
             {
-                ViewBag.UploadURL = _config.FileUploadFolder;
+                //ViewBag.UploadURL = _config.FileUploadFolder;
+                //ViewBag.UploadURL = "E:\\Data\\eSUCH\\Requisicoes\\";
+                ViewBag.UploadURL = "C:\\Data\\eSUCH\\Requisicoes\\";
                 ViewBag.Area = 1;
                 ViewBag.PreRequesitionNo = User.Identity.Name;
                 ViewBag.UPermissions = UPerm;
@@ -59,12 +61,14 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
-        public IActionResult Pre_requesition_ComprasDinheiro()
+        public IActionResult PreRequesition_CD()
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.PréRequisiçõesComprasDinheiro);
             if (UPerm != null && UPerm.Read.Value)
             {
-                ViewBag.UploadURL = _config.FileUploadFolder;
+                //ViewBag.UploadURL = _config.FileUploadFolder;
+                //ViewBag.UploadURL = "E:\\Data\\eSUCH\\Requisicoes\\";
+                ViewBag.UploadURL = "C:\\Data\\eSUCH\\Requisicoes\\";
                 ViewBag.Area = 1;
                 ViewBag.PreRequesitionNo = User.Identity.Name;
                 ViewBag.UPermissions = UPerm;
@@ -638,8 +642,9 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult CreateNewForThisUser([FromBody] JObject requestParams)
 
         {
+            int TipoPreReq = int.Parse(requestParams["tipoPreReq"].ToString());
             int AreaNo = int.Parse(requestParams["areaid"].ToString());
-            string pPreRequisicao = DBPreRequesition.GetByNoAndArea(User.Identity.Name, AreaNo);
+            string pPreRequisicao = DBPreRequesition.GetByNoAndTipoPreReq(User.Identity.Name, TipoPreReq);
             ConfigUtilizadores CU = DBUserConfigurations.GetById(User.Identity.Name);
 
             if (pPreRequisicao != null)
@@ -654,27 +659,56 @@ namespace Hydra.Such.Portal.Controllers
             }
             else
             {
+                //Apagar as Linhas
+                if (DBPreRequesitionLines.GetAllByNo(User.Identity.Name).Count() > 0)
+                {
+                    List<LinhasPréRequisição> LinesToDelete = DBPreRequesitionLines.GetAllByNo(User.Identity.Name);
+                    foreach (var LineToDelete in LinesToDelete)
+                    {
+                        DBPreRequesitionLines.Delete(LineToDelete);
+                    }
+                }
+                //Apagar Anexos
+                if (DBAttachments.GetById(1, User.Identity.Name).Count() > 0)
+                {
+                    List<Anexos> ListAnexos = DBAttachments.GetAll().Where(x => x.TipoOrigem == 1 && x.NºOrigem == User.Identity.Name).ToList();
+                    foreach (var Anexo in ListAnexos)
+                    {
+                        //System.IO.File.Delete(_config.FileUploadFolder + Anexo.UrlAnexo);
+                        //System.IO.File.Delete("E:\\Data\\eSUCH\\Requisicoes\\" + Anexo.UrlAnexo);
+                        System.IO.File.Delete("C:\\Data\\eSUCH\\Requisicoes\\" + Anexo.UrlAnexo);
+                        DBAttachments.Delete(Anexo);
+                    }
+                }
+                //Apagar a Pré-Requisição
+                if (DBPreRequesition.GetByNo(User.Identity.Name) != null)
+                {
+                    DBPreRequesition.DeleteByPreRequesitionNo(User.Identity.Name);
+                }
 
-
-                PréRequisição createNew = new PréRequisição();
-                createNew.CódigoCentroResponsabilidade = CU.CentroRespPorDefeito;
-                createNew.CódigoRegião = CU.RegiãoPorDefeito;
-                createNew.CódigoÁreaFuncional = CU.AreaPorDefeito;
-                createNew.NºPréRequisição = User.Identity.Name;
-                createNew.Área = AreaNo;
-                createNew.UtilizadorCriação = User.Identity.Name;
-                createNew.DataHoraCriação = DateTime.Now;
+                //Cria a nova Pré-Requisição
+                PréRequisição createNew = new PréRequisição
+                {
+                    CódigoCentroResponsabilidade = CU.CentroRespPorDefeito,
+                    CódigoRegião = CU.RegiãoPorDefeito,
+                    CódigoÁreaFuncional = CU.AreaPorDefeito,
+                    NºPréRequisição = User.Identity.Name,
+                    TipoPreReq = TipoPreReq,
+                    Área = AreaNo,
+                    UtilizadorCriação = User.Identity.Name,
+                    DataHoraCriação = DateTime.Now
+                };
                 DBPreRequesition.Create(createNew);
 
-                PreRequesitionsViewModel reqID = new PreRequesitionsViewModel();
-                reqID.PreRequesitionsNo = createNew.NºPréRequisição;
-                reqID.RegionCode = createNew.CódigoRegião;
-                reqID.FunctionalAreaCode = createNew.CódigoÁreaFuncional;
-                reqID.ResponsabilityCenterCode = createNew.CódigoCentroResponsabilidade;
+                PreRequesitionsViewModel reqID = new PreRequesitionsViewModel
+                {
+                    PreRequesitionsNo = createNew.NºPréRequisição,
+                    RegionCode = createNew.CódigoRegião,
+                    FunctionalAreaCode = createNew.CódigoÁreaFuncional,
+                    ResponsabilityCenterCode = createNew.CódigoCentroResponsabilidade
+                };
                 return Json(reqID);
             }
-
-
         }
 
         [HttpPost]
@@ -853,7 +887,10 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         if (Anexo != null)
                         {
-                            System.IO.File.Delete(_config.FileUploadFolder + Anexo.UrlAnexo);
+                            //System.IO.File.Delete(_config.FileUploadFolder + Anexo.UrlAnexo);
+                            //System.IO.File.Delete("E:\\Data\\eSUCH\\Requisicoes\\" + Anexo.UrlAnexo);
+                            System.IO.File.Delete("C:\\Data\\eSUCH\\Requisicoes\\" + Anexo.UrlAnexo);
+                            
                             DBAttachments.Delete(Anexo);
                         }
                     }
@@ -1611,7 +1648,8 @@ namespace Hydra.Such.Portal.Controllers
                                 try
                                 {
                                     //System.IO.File.Copy(_config.FileUploadFolder + FileName, _config.FileUploadFolder + NewFileName);
-                                    System.IO.File.Copy("E:\\Data\\eSUCH\\Requisicoes\\" + FileName, "E:\\Data\\eSUCH\\Requisicoes\\" + NewFileName);
+                                    //System.IO.File.Copy("E:\\Data\\eSUCH\\Requisicoes\\" + FileName, "E:\\Data\\eSUCH\\Requisicoes\\" + NewFileName);
+                                    System.IO.File.Copy("C:\\Data\\eSUCH\\Requisicoes\\" + FileName, "E:\\Data\\eSUCH\\Requisicoes\\" + NewFileName);
                                 }
                                 catch (Exception ex)
                                 {
@@ -1627,7 +1665,8 @@ namespace Hydra.Such.Portal.Controllers
                                 if (newFile != null)
                                 {
                                     //System.IO.File.Delete(_config.FileUploadFolder + file.UrlAnexo);
-                                    System.IO.File.Delete("E:\\Data\\eSUCH\\Requisicoes\\" + file.UrlAnexo);
+                                    //System.IO.File.Delete("E:\\Data\\eSUCH\\Requisicoes\\" + file.UrlAnexo);
+                                    System.IO.File.Delete("C:\\Data\\eSUCH\\Requisicoes\\" + file.UrlAnexo);
                                     DBAttachments.Delete(file);
                                 }
 
@@ -1878,11 +1917,11 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             string filename = Path.GetFileName(file.FileName);
                             //full_filename = "Requisicoes/" + id + "_" + filename;
-                            //var path = Path.Combine(_config.FileUploadFolder, full_filename);
 
                             full_filename = id + "_" + filename;
-                            var path = Path.Combine("E:\\Data\\eSUCH\\Requisicoes\\", full_filename);
-                            //var path = Path.Combine("M:\\", full_filename);
+                            //var path = Path.Combine(_config.FileUploadFolder, full_filename);
+                            //var path = Path.Combine("E:\\Data\\eSUCH\\Requisicoes\\", full_filename);
+                            var path = Path.Combine("C:\\Data\\eSUCH\\Requisicoes\\", full_filename);
 
                             using (FileStream dd = new FileStream(path, FileMode.CreateNew))
                             {
@@ -1955,8 +1994,8 @@ namespace Hydra.Such.Portal.Controllers
         public FileStreamResult DownloadFile(string id)
         {
             //return new FileStreamResult(new FileStream(_config.FileUploadFolder + id, FileMode.Open), "application/xlsx");
-            return new FileStreamResult(new FileStream("E:\\Data\\eSUCH\\Requisicoes\\" + id, FileMode.Open), "application/xlsx");
-            //return new FileStreamResult(new FileStream("M:\\" + id, FileMode.Open), "application/xlsx");
+            //return new FileStreamResult(new FileStream("E:\\Data\\eSUCH\\Requisicoes\\" + id, FileMode.Open), "application/xlsx");
+            return new FileStreamResult(new FileStream("C:\\Data\\eSUCH\\Requisicoes\\" + id, FileMode.Open), "application/xlsx");
         }
 
 
@@ -1966,8 +2005,8 @@ namespace Hydra.Such.Portal.Controllers
             try
             {
                 //System.IO.File.Delete(_config.FileUploadFolder + requestParams.Url);
-                System.IO.File.Delete("E:\\Data\\eSUCH\\Requisicoes\\" + requestParams.Url);
-                //System.IO.File.Delete("M:\\" + requestParams.Url);
+                //System.IO.File.Delete("E:\\Data\\eSUCH\\Requisicoes\\" + requestParams.Url);
+                System.IO.File.Delete("C:\\Data\\eSUCH\\Requisicoes\\" + requestParams.Url);
 
                 DBAttachments.Delete(DBAttachments.ParseToDB(requestParams));
                 requestParams.eReasonCode = 1;

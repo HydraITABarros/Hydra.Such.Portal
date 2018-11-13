@@ -474,6 +474,12 @@
                                                             fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
                                             </such-selectbox>
                                         </div>
+
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field value="{{data.valorTotalDocComIVA}}" id="valorTotalDocComIVA" name="valorTotalDocComIVA" label="Valor Total Doc. com IVA" disabled="{{ !_permissions.update }}" type="number" pattern="^[1-9]\d*(\.\d+)?$" on-value-changed="_ConvertDecimals">
+                                                <div slot="suffix">€</div>
+                                            </vaadin-text-field>
+                                        </div>
                                     </div>
 
                                     <div class="row break_clear">
@@ -611,6 +617,12 @@
                                         </vaadin-text-field>
                                     </div>
 
+                                    <div class="col-lg-2">
+                                        <vaadin-text-field value="{{_UnitCostWithIVA}}" id="_UnitCostWithIVA" name="_UnitCostWithIVA" label="Custo Unitário com IVA" disabled="{{ !_permissions.update }}" type="number" pattern="^[1-9]\d*(\.\d+)?$" on-value-changed="_ConvertDecimals">
+                                            <div slot="suffix">€</div>
+                                        </vaadin-text-field>
+                                    </div>
+
                                     <div class="col-sm-2">
                                         <such-selectbox id="_ProjectNo" value="[[data.projectNo]]" label="Nº Ordem/Projecto" on-value-changed="_setProjectDim2"
                                                         items="[[CBJobNo]]"
@@ -672,6 +684,12 @@
                                                         fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Centro Responsabilidade"}]'
                                                         disabled>
                                         </such-selectbox>
+                                    </div>
+
+                                    <div class="col-lg-2">
+                                        <vaadin-text-field value="" id="_CustoTotalComIVA" name="_CustoTotalComIVA" label="Custo Total com IVA" disabled="{{ !_permissions.update }}" type="number" pattern="^[1-9]\d*(\.\d+)?$" on-value-changed="_ConvertDecimals">
+                                            <div slot="suffix">€</div>
+                                        </vaadin-text-field>
                                     </div>
 
                                     <div class="col-lg-2">
@@ -1181,7 +1199,7 @@
                 ],
                 ready: function () {
                     this._isCreate = false;
-                    this.$.page_createnewForUser_ajax.body = JSON.stringify({ "areaid": this._areaid });
+                    this.$.page_createnewForUser_ajax.body = JSON.stringify({ "tipoPreReq": 1, "areaid": this._areaid });
                     this.$.page_createnewForUser_ajax.generateRequest();
 
 

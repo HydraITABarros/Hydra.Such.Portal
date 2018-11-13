@@ -7,6 +7,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
     public class PreRequesitionsViewModel : ErrorHandler
     {
         public string PreRequesitionsNo { get; set; }
+        public int? TipoPreReq { get; set; }
         public int? Area { get; set; }
         public string RequesitionType { get; set; }
         public string ProjectNo { get; set; }
@@ -70,6 +71,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string InvoiceNo { get; set; }
         public string ArmazemCDireta { get; set; }
         public bool? PedirOrcamento { get; set; }
+        public decimal? ValorTotalDocComIVA { get; set; }
 
 
         //public int eReasonCode { get; set; }

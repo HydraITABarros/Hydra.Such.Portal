@@ -41,6 +41,22 @@ namespace Hydra.Such.Data.Logic.ComprasML
             }
         }
 
+        public static string GetByNoAndTipoPreReq(string PreRequesitionNo, int TipoPreReq)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.PréRequisição.Where(x => x.NºPréRequisição == PreRequesitionNo && x.TipoPreReq == TipoPreReq).FirstOrDefault().NºPréRequisição;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
         public static List<PréRequisição> GetAll(string User, int area)
         {
             try
@@ -120,7 +136,8 @@ namespace Hydra.Such.Data.Logic.ComprasML
         {
             PréRequisição result = new PréRequisição()
             {   
-                 NºPréRequisição = x.PreRequesitionsNo, 
+                 NºPréRequisição = x.PreRequesitionsNo,
+                 TipoPreReq = x.TipoPreReq,
                  Área = x.Area,
                  TipoRequisição = x.RequesitionType,
                  NºProjeto = x.ProjectNo,
@@ -182,7 +199,8 @@ namespace Hydra.Such.Data.Logic.ComprasML
                  ContatoEntrega = x.DeliveryContact,
                  ResponsávelReceçãoReceção = x.ReceptionReceptionResponsible,
                  NºFatura = x.InvoiceNo,
-                 PedirOrcamento = x.PedirOrcamento
+                 PedirOrcamento = x.PedirOrcamento,
+                 ValorTotalDocComIVA = x.ValorTotalDocComIVA
             };
             return result;
         }
@@ -191,6 +209,7 @@ namespace Hydra.Such.Data.Logic.ComprasML
             PreRequesitionsViewModel result = new PreRequesitionsViewModel()
             {
                 PreRequesitionsNo = x.NºPréRequisição,
+                TipoPreReq = x.TipoPreReq,
                 Area = x.Área,
                 RequesitionType = x.TipoRequisição,
                 ProjectNo = x.NºProjeto,
@@ -252,7 +271,8 @@ namespace Hydra.Such.Data.Logic.ComprasML
                 DeliveryContact = x.ContatoEntrega,
                 ReceptionReceptionResponsible = x.ResponsávelReceçãoReceção,
                 InvoiceNo = x.NºFatura,
-                PedirOrcamento = x.PedirOrcamento
+                PedirOrcamento = x.PedirOrcamento,
+                ValorTotalDocComIVA = x.ValorTotalDocComIVA
             };
 
             return result;
