@@ -185,6 +185,8 @@ namespace Hydra.Such.Data.Logic
                         result.Add(new NAVClientesInvoicesViewModel()
                         {
                             No_ = temp.No_.Equals(DBNull.Value) ? "" : (string)temp.No_,
+                            ProjectNo = temp.ProjectNo.Equals(DBNull.Value) ? "" : (string)temp.ProjectNo,
+                            DataServPrestado = temp.DataServPrestado.Equals(DBNull.Value) ? "" : (string)temp.DataServPrestado,
                             AmountIncludingVAT = temp.AmountIncludingVAT.Equals(DBNull.Value) ? "" : (string)temp.AmountIncludingVAT.ToString(),
                             BillToCustomerNo = temp.BillToCustomerNo.Equals(DBNull.Value) ? "" : (string)temp.BillToCustomerNo,
                             CreationDate = (DateTime?)temp.CreationDate,
