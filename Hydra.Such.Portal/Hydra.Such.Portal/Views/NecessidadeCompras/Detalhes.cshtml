@@ -209,7 +209,7 @@
                 </such-selectbox>
             </div>
             <div class="col-md-3">
-                <vaadin-text-field id="qtyID" name="qtyName" placeholder="0.0000" pattern="^[0-9]\d*(\.[0-9]{1,4})?$" label="Quantidade" class="alignRight" value="{{qty}}" on-value-changed="_calcTotals" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                <vaadin-text-field id="qtyID" name="qtyName" placeholder="0.0000" pattern="^[0-9]\d*(\.[0-9]{1,4})?$" label="Quantidade" class="alignRight" value="{{qty}}" on-value-changed="_calcTotals" on-blur="_verificaMultiplo" required error-message="Este campo é obrigatório"></vaadin-text-field>
             </div>
         </div>
         <div class="row" hidden="{{ !_permissionsVal.create }}">
@@ -1372,6 +1372,16 @@
                         this._openToastError("Occorreu um erro ao atualizar o Diário de requisição Unid. Produtiva.");
                     }
                 },
+                _verificaMultiplo: function (e) {
+                    //Verificar se Quantidade é multiplo da Quantidade por Unid. Medida
+                    if (this.$.QtyforMeasId.value != null && this.$.QtyforMeasId.value > 0) {
+                        if (this.qty % this.$.QtyforMeasId.value != 0) {
+                            //não é multiplo e limpa o campo
+                            this.qty = "";
+                        }
+                    }
+                },
+
                 //calculate the total value form the hader
                 _calcTotals: function (e) {
                     switch (e.target.id) {
