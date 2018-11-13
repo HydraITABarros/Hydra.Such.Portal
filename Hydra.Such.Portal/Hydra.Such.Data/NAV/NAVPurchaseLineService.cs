@@ -159,7 +159,9 @@ namespace Hydra.Such.Data.NAV
                 purchInvLine.ResponsabilityCenterCode20 = item.CenterResponsibilityCode;
                 purchInvLine.Type = WSPurchaseInvLine.Type.Item;
                 purchInvLine.TypeSpecified = true;
-                purchInvLine.Description100 = item.Description + " " + item.Description2;
+                //purchInvLine.Description100 = item.Description + " " + item.Description2;
+                purchInvLine.Description = item.Description;
+                purchInvLine.Description_2 = item.Description2;
                 purchInvLine.Line_Discount_Percent = item.DiscountPercentage.HasValue ? item.DiscountPercentage.Value : 0;
                 purchInvLine.Line_Discount_PercentSpecified = item.DiscountPercentage.HasValue;
                 purchInvLine.VAT_Bus_Posting_Group = item.VATBusinessPostingGroup;
