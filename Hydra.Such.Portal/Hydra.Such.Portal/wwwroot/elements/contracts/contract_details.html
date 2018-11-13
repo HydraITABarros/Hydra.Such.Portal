@@ -879,7 +879,7 @@
                                                     <div class="panel-body">
                                                         <div class="row">
                                                             <div class="col-md-3">
-                                                                <vaadin-text-field value="{{data.totalProposalValue}}" id="_TotalProposalValue" name="_TotalProposalValue" label="Valor Total Proposta" disabled> </vaadin-text-field>
+                                                                <vaadin-text-field value="{{data.totalProposalValue}}" id="_TotalProposalValue" name="_TotalProposalValue" label="Valor Total Proposta" disabled><div slot="suffix">€</div></vaadin-text-field>
                                                             </div>
                                                             <div class="col-md-3">
                                                                 <div class="input-group">
@@ -896,17 +896,17 @@
                                                         <div class="row">
                                                             <div class="col-md-3">
                                                                 <div class="input-group">
-                                                                    <vaadin-text-field value="{{dataNav.vBilled}}" id="_NBilled" name="_NBilled" label="Valor Faturado" disabled> </vaadin-text-field>
+                                                                    <vaadin-text-field value="{{dataNav.vBilled}}" id="_NBilled" name="_NBilled" label="Valor Faturado" disabled><div slot="suffix">€</div></vaadin-text-field>
                                                                     <span class="input-group-btn">
                                                                         <paper-button disabled="{{ _isCreate }}" class="btn btnSave tableBtn" raised on-tap="_openInvoiceLinesList" title="Ver Linhas Fatura"><i class="fa fa-file-archive-o" aria-hidden="true"></i></paper-button>
                                                                     </span>
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-3">
-                                                                <vaadin-text-field value="{{dataNav.vCreditNotes}}" id="_VCreditNotes" name="_VCreditNotes" label="Valor Notas de Crédito" disabled> </vaadin-text-field>
+                                                                <vaadin-text-field value="{{dataNav.vCreditNotes}}" id="_VCreditNotes" name="_VCreditNotes" label="Valor Notas de Crédito" disabled><div slot="suffix">€</div></vaadin-text-field>
                                                             </div>
                                                             <div class="col-md-3">
-                                                                <vaadin-text-field value="{{dataNav.vPeriod}}" id="_VPeriod" name="_VPeriod" label="Valor do Período" disabled> </vaadin-text-field>
+                                                                <vaadin-text-field value="{{dataNav.vPeriod}}" id="_VPeriod" name="_VPeriod" label="Valor do Período" disabled><div slot="suffix">€</div></vaadin-text-field>
                                                             </div>
 
                                                         </div>
@@ -1122,8 +1122,9 @@
                         <paper-collapse-group style="display: {{ _showContractLines }};">
                             <paper-collapse-item class="panel-heading" header="Linhas" closed>
                                 <div class="row break_clear" style="display: {{ _showContractLinesForm }};">
-                                    <div class="col-lg-2">
-                                        <vaadin-combo-box items="[[CBContractLineTypes]]" id="_CLContractLineType" name="_CLContractLineType" item-value-path="id" item-label-path="value" value="{{_CLContractLineType}}" label="Tipo" disabled="{{ _lockFields }}" on-value-changed="_clContractLineTypeChange" required error-message="Este campo é obrigatório">
+                                    <div class="col-lg-2" hidden>
+                                        <!--<vaadin-combo-box items="[[CBContractLineTypes]]" id="_CLContractLineType" name="_CLContractLineType" item-value-path="id" item-label-path="value" value="{{_CLContractLineType}}" label="Tipo" disabled="{{ _lockFields }}" on-value-changed="_clContractLineTypeChange" required error-message="Este campo é obrigatório">-->
+                                        <vaadin-combo-box items="[[CBContractLineTypes]]" id="_CLContractLineType" name="_CLContractLineType" item-value-path="id" item-label-path="value" value="2" label="Tipo" disabled="{{ _lockFields }}" on-value-changed="_clContractLineTypeChange" required error-message="Este campo é obrigatório">
                                             <template>
                                                 <paper-icon-item>
                                                     <paper-item-body two-line>
@@ -1159,12 +1160,12 @@
                                         </such-selectbox>
                                     </div>
                                     <div class="col-lg-2">
-                                        <vaadin-text-field value="{{_CLUnitPrice}}" id="_CLUnitPrice" name="_CLUnitPrice" label="Preço Unitário (€)" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" />
+                                        <vaadin-text-field value="{{_CLUnitPrice}}" id="_CLUnitPrice" name="_CLUnitPrice" label="Preço Unitário (€)" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?"><div slot="suffix">€</div></vaadin-text-field>
                                     </div>
                                 </div>
                                 <div class="row break_clear" style="display: {{ _showContractLinesForm }};">
                                     <div class="col-lg-2">
-                                        <vaadin-text-field value="{{_CLDiscountLine}}" id="_CLDiscountLine" name="_CLDiscountLine" label="Desconto Linha (€)" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?"> </vaadin-text-field>
+                                        <vaadin-text-field value="{{_CLDiscountLine}}" id="_CLDiscountLine" name="_CLDiscountLine" label="Desconto Linha (€)" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?"><div slot="suffix">€</div></vaadin-text-field>
                                     </div>
                                     <div class="col-lg-2 alignPoga">
                                         <vaadin-checkbox checked="{{_CLBillable}}" disabled="{{ _lockFields }}">Fáturavel</vaadin-checkbox>
@@ -1263,7 +1264,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-combo-box items="[[CBContractLineTypes]]" id="_CLGridContractLineType" name="_CLGridContractLineType" item-value-path="id" item-label-path="value" value="{{item.type}}" disabled="{{ _lockFields }}" on-value-changed="_clContractLineTypeGridChange">
+                                            <!--<vaadin-combo-box items="[[CBContractLineTypes]]" id="_CLGridContractLineType" name="_CLGridContractLineType" item-value-path="id" item-label-path="value" value="{{item.type}}" disabled="{{ _lockFields }}" on-value-changed="_clContractLineTypeGridChange">
                                                 <template>
                                                     <paper-icon-item>
                                                         <paper-item-body two-line>
@@ -1271,7 +1272,8 @@
                                                         </paper-item-body>
                                                     </paper-icon-item>
                                                 </template>
-                                            </vaadin-combo-box>
+                                            </vaadin-combo-box>-->
+                                            [[ _clFormatType(item.type) ]]
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             [[ _clFormatType(item.type) ]]
@@ -2583,14 +2585,15 @@
                 //        CONTRACT LINES
                 //#################################
                 _createContractLine: function () {
-
-                    if (this.$._CLInvoiceGroup.validate() && this.$._CLContractLineType.validate()) {
+                    //if (this.$._CLInvoiceGroup.validate() && this.$._CLContractLineType.validate()) {
+                    if (this.$._CLInvoiceGroup.validate()) {
                         this.dataLines.lines.unshift({
                             contractNo: this.data.contractNo,
                             versionNo: this.data.versionNo,
                             projectNo: this._CRProjectNo,
                             contractType: 3,
-                            type: this._CLContractLineType,
+                            //type: this._CLContractLineType,
+                            type: 2,
                             codeMeasureUnit: this._CLMeasureUnit,
                             codeRegion: this._CLRegion,
                             frequency: this._CLFrequency,

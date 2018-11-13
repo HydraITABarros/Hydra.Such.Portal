@@ -104,7 +104,24 @@ namespace Hydra.Such.Data.NAV
                     Buy_from_Vendor_No = purchFromSupplier.SupplierId,
                     Requisition_No = purchFromSupplier.RequisitionId,
                     Requisition_Line_No = purchLine.LineId.HasValue ? purchLine.LineId.Value : 0,
-                    Requisition_Line_NoSpecified = true,
+                    Requisition_Line_NoSpecified = true
+
+                    ////NR20181113 - Adicionei, mas julgo que é melhor retirar, pois os campos são atualizados na chamada do método UpdateMultipleAsync
+                    //,Direct_Unit_Cost = purchLine.UnitCost.HasValue ? purchLine.UnitCost.Value : 0,
+                    //Direct_Unit_CostSpecified = true,
+                    //Description = purchLine.Description,
+                    //Description_2 = purchLine.Description2,
+                    //FunctionAreaCode20 = purchLine.FunctionalAreaCode,
+                    //Job_No = purchLine.ProjectNo,
+                    //Line_Discount_Percent = purchLine.DiscountPercentage.HasValue ? purchLine.DiscountPercentage.Value : 0,
+                    //Line_Discount_PercentSpecified = true,
+                    //Quantity = purchLine.QuantityRequired.HasValue ? purchLine.QuantityRequired.Value : 0,
+                    //QuantitySpecified = true,
+                    //RegionCode20 = purchLine.RegionCode,
+                    //ResponsabilityCenterCode20 = purchLine.CenterResponsibilityCode,
+                    //Unit_of_Measure_Code = purchLine.UnitMeasureCode,
+                    //VAT_Bus_Posting_Group = purchLine.VATBusinessPostingGroup,
+                    //VAT_Prod_Posting_Group = purchLine.VATProductPostingGroup
                 })
                 .ToArray();
 

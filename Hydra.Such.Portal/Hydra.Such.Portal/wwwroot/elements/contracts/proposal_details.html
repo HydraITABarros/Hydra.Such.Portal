@@ -742,8 +742,9 @@
                         <paper-collapse-group style="display: {{ _showContractLines }};">
                             <paper-collapse-item class="panel-heading" header="Linhas" closed>
                                 <div class="row break_clear">
-                                    <div class="col-lg-2">
-                                        <vaadin-combo-box items="[[CBContractLineTypes]]" id="_CLContractLineType" name="_CLContractLineType" item-value-path="id" item-label-path="value" value="{{_CLContractLineType}}" label="Tipo" disabled="{{ !_permissions.update }}" on-value-changed="_clContractLineTypeChange">
+                                    <div class="col-lg-2" hidden>
+                                        <!--<vaadin-combo-box items="[[CBContractLineTypes]]" id="_CLContractLineType" name="_CLContractLineType" item-value-path="id" item-label-path="value" value="{{_CLContractLineType}}" label="Tipo" disabled="{{ !_permissions.update }}" on-value-changed="_clContractLineTypeChange">-->
+                                        <vaadin-combo-box items="[[CBContractLineTypes]]" id="_CLContractLineType" name="_CLContractLineType" item-value-path="id" item-label-path="value" value="2" label="Tipo" disabled on-value-changed="_clContractLineTypeChange">
                                             <template>
                                                 <paper-icon-item>
                                                     <paper-item-body two-line>
@@ -952,7 +953,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-combo-box items="[[CBContractLineTypes]]" id="_CLGridContractLineType" name="_CLGridContractLineType" item-value-path="id" item-label-path="value" value="{{item.type}}" disabled="{{ !_permissions.update }}" on-value-changed="_clContractLineTypeGridChange">
+                                            <!--<vaadin-combo-box items="[[CBContractLineTypes]]" id="_CLGridContractLineType" name="_CLGridContractLineType" item-value-path="id" item-label-path="value" value="{{item.type}}" disabled="{{ !_permissions.update }}" on-value-changed="_clContractLineTypeGridChange">
                                                 <template>
                                                     <paper-icon-item>
                                                         <paper-item-body two-line>
@@ -960,7 +961,8 @@
                                                         </paper-item-body>
                                                     </paper-icon-item>
                                                 </template>
-                                            </vaadin-combo-box>
+                                            </vaadin-combo-box>-->
+                                            [[ _clFormatType(item.type) ]]
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             [[ _clFormatType(item.type) ]]
@@ -2134,7 +2136,8 @@
                         contractNo: this.data.contractNo,
                         versionNo: this.data.versionNo,
                         contractType: 2,
-                        type: this._CLContractLineType,
+                        //type: this._CLContractLineType,
+                        type: 2,
                         codeMeasureUnit: this._CLMeasureUnit,
                         codeRegion: this._CLRegion,
                         frequency: this._CLFrequency,
