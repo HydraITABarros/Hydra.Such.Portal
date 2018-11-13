@@ -15,6 +15,8 @@ namespace Hydra.Such.Data.ViewModel
         [JsonConverter(typeof(DateFormatConverter), "dd-MM-yyyy")]
         public DateTime? CreationDate { get; set; }
         [JsonConverter(typeof(DateFormatConverter), "dd-MM-yyyy")]
+        public DateTime? DocumentDate { get; set; }
+        [JsonConverter(typeof(DateFormatConverter), "dd-MM-yyyy")]
         public DateTime? DueDate { get; set; }
         public string AmountIncludingVAT { get; set; }
         public string ValorPendente { get; set; }
