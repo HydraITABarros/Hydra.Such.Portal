@@ -190,6 +190,7 @@ namespace Hydra.Such.Data.Logic
                             AmountIncludingVAT = temp.AmountIncludingVAT.Equals(DBNull.Value) ? "" : (string)temp.AmountIncludingVAT.ToString(),
                             BillToCustomerNo = temp.BillToCustomerNo.Equals(DBNull.Value) ? "" : (string)temp.BillToCustomerNo,
                             CreationDate = (DateTime?)temp.CreationDate,
+                            DocumentDate = (DateTime?)temp.DocumentDate,
                             DueDate = (DateTime?)temp.DueDate,
                             FunctionalAreaId = temp.FunctionalAreaId.Equals(DBNull.Value) ? "" : (string)temp.FunctionalAreaId,
                             Paid = (bool)temp.Paid,
