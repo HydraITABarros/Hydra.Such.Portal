@@ -4671,7 +4671,7 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.Descrição2)
                     .HasColumnName("Descrição 2")
-                    .HasMaxLength(50);
+                    .HasMaxLength(100);
 
                 entity.Property(e => e.LocalCompraDireta)
                     .HasColumnName("Local Compra Direta")
