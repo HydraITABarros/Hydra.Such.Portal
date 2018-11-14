@@ -48,8 +48,8 @@ namespace Hydra.Such.Portal.Controllers
             if (UPerm != null && UPerm.Read.Value)
             {
                 //ViewBag.UploadURL = _config.FileUploadFolder;
-                //ViewBag.UploadURL = "E:\\Data\\eSUCH\\Requisicoes\\";
-                ViewBag.UploadURL = "C:\\Data\\eSUCH\\Requisicoes\\";
+                ViewBag.UploadURL = "E:\\Data\\eSUCH\\Requisicoes\\";
+                //ViewBag.UploadURL = "C:\\Data\\eSUCH\\Requisicoes\\";
                 ViewBag.Area = 1;
                 ViewBag.PreRequesitionNo = User.Identity.Name;
                 ViewBag.UPermissions = UPerm;
@@ -67,8 +67,8 @@ namespace Hydra.Such.Portal.Controllers
             if (UPerm != null && UPerm.Read.Value)
             {
                 //ViewBag.UploadURL = _config.FileUploadFolder;
-                //ViewBag.UploadURL = "E:\\Data\\eSUCH\\Requisicoes\\";
-                ViewBag.UploadURL = "C:\\Data\\eSUCH\\Requisicoes\\";
+                ViewBag.UploadURL = "E:\\Data\\eSUCH\\Requisicoes\\";
+                //ViewBag.UploadURL = "C:\\Data\\eSUCH\\Requisicoes\\";
                 ViewBag.Area = 1;
                 ViewBag.PreRequesitionNo = User.Identity.Name;
                 ViewBag.UPermissions = UPerm;
@@ -321,6 +321,107 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult CalculoAutomaticoCustos([FromBody] PreRequesitionLineHelperViewModel data)
+        {
+            try
+            {
+                if (data != null)
+                {
+                    List<LinhasPréRequisição> PreRequesitionLines = DBPreRequesitionLines.GetAllByNo(data.PreRequisitionNo);
+                    List<LinhasPréRequisição> CLToDelete = PreRequesitionLines.Where(y => !data.Lines.Any(x => x.PreRequisitionLineNo == y.NºPréRequisição && x.LineNo == y.NºLinha)).ToList();
+
+                    CLToDelete.ForEach(x => DBPreRequesitionLines.Delete(x));
+
+                    //data.Lines.ForEach(x =>
+                    for (int i = 0; i < data.Lines.Count; i++)
+                    {
+                        PreRequisitionLineViewModel x = data.Lines[i];
+                        LinhasPréRequisição CLine = PreRequesitionLines.Where(y => x.PreRequisitionLineNo == y.NºPréRequisição && x.LineNo == y.NºLinha).FirstOrDefault();
+
+                        NAVProjectsViewModel Project = DBNAV2017Projects.GetAll(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, x.ProjectNo).FirstOrDefault();
+                        if (Project != null)
+                        {
+                            x.RegionCode = Project.RegionCode ?? "";
+                            x.FunctionalAreaCode = Project.AreaCode ?? "";
+                            x.CenterResponsibilityCode = Project.CenterResponsibilityCode ?? "";
+                        }
+
+                        NAVProductsViewModel product = DBNAV2017Products.GetAllProducts(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, x.Code).FirstOrDefault();
+                        if (product.InventoryValueZero == 1)
+                            x.ArmazemCDireta = "1";
+                        else
+                            x.ArmazemCDireta = "0";
+
+                        if (CLine != null)
+                        {
+                            CLine.NºPréRequisição = x.PreRequisitionLineNo;
+                            CLine.NºLinha = x.LineNo;
+                            CLine.Tipo = x.Type;
+                            CLine.Código = x.Code;
+                            CLine.Descrição = x.Description;
+                            CLine.Descrição2 = x.Description2;
+                            CLine.CódigoLocalização = x.LocalCode;
+                            CLine.CódigoUnidadeMedida = x.UnitMeasureCode;
+                            CLine.QuantidadeARequerer = x.QuantityToRequire;
+                            CLine.CódigoRegião = x.RegionCode;
+                            CLine.CódigoÁreaFuncional = x.FunctionalAreaCode;
+                            CLine.CódigoCentroResponsabilidade = x.CenterResponsibilityCode;
+                            CLine.NºProjeto = x.ProjectNo;
+                            CLine.DataHoraCriação = x.CreateDateTime != null && x.CreateDateTime != "" ? DateTime.Parse(x.CreateDateTime) : (DateTime?)null;
+                            CLine.UtilizadorCriação = x.CreateUser;
+                            CLine.DataHoraModificação = DateTime.Now;
+                            CLine.UtilizadorModificação = User.Identity.Name;
+                            CLine.QtdPorUnidadeMedida = x.QtyByUnitOfMeasure;
+                            CLine.QuantidadeRequerida = x.QuantityRequired;
+                            CLine.QuantidadePendente = x.QuantityPending;
+                            CLine.QuantidadeInicial = x.QuantityToRequire;
+                            CLine.CustoUnitário = x.UnitCost;
+                            CLine.CustoUnitarioComIVA = x.UnitCostWithIVA;
+                            CLine.PreçoUnitárioVenda = x.SellUnityPrice;
+                            CLine.ValorOrçamento = x.BudgetValue;
+                            CLine.DataReceçãoEsperada = x.ExpectedReceivingDate != null && x.ExpectedReceivingDate != "" ? DateTime.Parse(x.ExpectedReceivingDate) : (DateTime?)null;
+                            CLine.Faturável = x.Billable;
+                            CLine.NºLinhaOrdemManutenção = x.MaintenanceOrderLineNo;
+                            CLine.NºFuncionário = x.EmployeeNo;
+                            CLine.Viatura = x.Vehicle;
+                            CLine.NºFornecedor = x.SupplierNo;
+                            CLine.CódigoProdutoFornecedor = x.SupplierProductCode;
+                            CLine.GrupoRegistoIVAProduto = x.GrupoRegistoIVAProduto;
+
+                            //CLine.LocalCompraDireta = x.ArmazemCDireta;
+                            CLine.LocalCompraDireta = x.LocalCode;
+
+                            CLine.UnidadeProdutivaNutrição = x.UnitNutritionProduction;
+                            CLine.NºCliente = x.CustomerNo;
+                            CLine.NºEncomendaAberto = x.OpenOrderNo;
+                            CLine.NºLinhaEncomendaAberto = x.OpenOrderLineNo;
+
+                            DBPreRequesitionLines.Update(CLine);
+                        }
+                        else
+                        {
+                            x.CreateUser = User.Identity.Name;
+                            data.Lines[i] = DBPreRequesitionLines.ParseToViewModel(DBPreRequesitionLines.Create(DBPreRequesitionLines.ParseToDB(x)));
+                        }
+                    }//);
+
+                    //data = DBPreRequesition.ParseToViewModel(DBPreRequesition.GetByNo(data.PreRequisitionNo));
+
+                    data.eReasonCode = 1;
+                    data.eMessage = "Linhas de Pré-Requisição atualizadas com sucesso.";
+                }
+            }
+            catch (Exception ex)
+            {
+                data.eReasonCode = 2;
+                data.eMessage = "Ocorreu um erro ao atualizar as linhas de Pré-Requisição.";
+                data.eMessages.Add(new TraceInformation(TraceType.Error, ex.ToString()));
+            }
+
+            return Json(data);
+        }
+
+        [HttpPost]
         public JsonResult UpdateContractLines([FromBody] PreRequesitionLineHelperViewModel data)
         {
             try
@@ -376,6 +477,7 @@ namespace Hydra.Such.Portal.Controllers
                             CLine.QuantidadePendente = x.QuantityPending;
                             CLine.QuantidadeInicial = x.QuantityToRequire;
                             CLine.CustoUnitário = x.UnitCost;
+                            CLine.CustoUnitarioComIVA = x.UnitCostWithIVA;
                             CLine.PreçoUnitárioVenda = x.SellUnityPrice;
                             CLine.ValorOrçamento = x.BudgetValue;
                             CLine.DataReceçãoEsperada = x.ExpectedReceivingDate != null && x.ExpectedReceivingDate != "" ? DateTime.Parse(x.ExpectedReceivingDate) : (DateTime?)null;
@@ -385,6 +487,7 @@ namespace Hydra.Such.Portal.Controllers
                             CLine.Viatura = x.Vehicle;
                             CLine.NºFornecedor = x.SupplierNo;
                             CLine.CódigoProdutoFornecedor = x.SupplierProductCode;
+                            CLine.GrupoRegistoIVAProduto = x.GrupoRegistoIVAProduto;
 
                             //CLine.LocalCompraDireta = x.ArmazemCDireta;
                             CLine.LocalCompraDireta = x.LocalCode;
@@ -675,8 +778,8 @@ namespace Hydra.Such.Portal.Controllers
                     foreach (var Anexo in ListAnexos)
                     {
                         //System.IO.File.Delete(_config.FileUploadFolder + Anexo.UrlAnexo);
-                        //System.IO.File.Delete("E:\\Data\\eSUCH\\Requisicoes\\" + Anexo.UrlAnexo);
-                        System.IO.File.Delete("C:\\Data\\eSUCH\\Requisicoes\\" + Anexo.UrlAnexo);
+                        System.IO.File.Delete("E:\\Data\\eSUCH\\Requisicoes\\" + Anexo.UrlAnexo);
+                        //System.IO.File.Delete("C:\\Data\\eSUCH\\Requisicoes\\" + Anexo.UrlAnexo);
                         DBAttachments.Delete(Anexo);
                     }
                 }
@@ -888,8 +991,8 @@ namespace Hydra.Such.Portal.Controllers
                         if (Anexo != null)
                         {
                             //System.IO.File.Delete(_config.FileUploadFolder + Anexo.UrlAnexo);
-                            //System.IO.File.Delete("E:\\Data\\eSUCH\\Requisicoes\\" + Anexo.UrlAnexo);
-                            System.IO.File.Delete("C:\\Data\\eSUCH\\Requisicoes\\" + Anexo.UrlAnexo);
+                            System.IO.File.Delete("E:\\Data\\eSUCH\\Requisicoes\\" + Anexo.UrlAnexo);
+                            //System.IO.File.Delete("C:\\Data\\eSUCH\\Requisicoes\\" + Anexo.UrlAnexo);
                             
                             DBAttachments.Delete(Anexo);
                         }
@@ -1648,8 +1751,8 @@ namespace Hydra.Such.Portal.Controllers
                                 try
                                 {
                                     //System.IO.File.Copy(_config.FileUploadFolder + FileName, _config.FileUploadFolder + NewFileName);
-                                    //System.IO.File.Copy("E:\\Data\\eSUCH\\Requisicoes\\" + FileName, "E:\\Data\\eSUCH\\Requisicoes\\" + NewFileName);
-                                    System.IO.File.Copy("C:\\Data\\eSUCH\\Requisicoes\\" + FileName, "E:\\Data\\eSUCH\\Requisicoes\\" + NewFileName);
+                                    System.IO.File.Copy("E:\\Data\\eSUCH\\Requisicoes\\" + FileName, "E:\\Data\\eSUCH\\Requisicoes\\" + NewFileName);
+                                    //System.IO.File.Copy("C:\\Data\\eSUCH\\Requisicoes\\" + FileName, "E:\\Data\\eSUCH\\Requisicoes\\" + NewFileName);
                                 }
                                 catch (Exception ex)
                                 {
@@ -1665,8 +1768,8 @@ namespace Hydra.Such.Portal.Controllers
                                 if (newFile != null)
                                 {
                                     //System.IO.File.Delete(_config.FileUploadFolder + file.UrlAnexo);
-                                    //System.IO.File.Delete("E:\\Data\\eSUCH\\Requisicoes\\" + file.UrlAnexo);
-                                    System.IO.File.Delete("C:\\Data\\eSUCH\\Requisicoes\\" + file.UrlAnexo);
+                                    System.IO.File.Delete("E:\\Data\\eSUCH\\Requisicoes\\" + file.UrlAnexo);
+                                    //System.IO.File.Delete("C:\\Data\\eSUCH\\Requisicoes\\" + file.UrlAnexo);
                                     DBAttachments.Delete(file);
                                 }
 
@@ -1920,8 +2023,8 @@ namespace Hydra.Such.Portal.Controllers
 
                             full_filename = id + "_" + filename;
                             //var path = Path.Combine(_config.FileUploadFolder, full_filename);
-                            //var path = Path.Combine("E:\\Data\\eSUCH\\Requisicoes\\", full_filename);
-                            var path = Path.Combine("C:\\Data\\eSUCH\\Requisicoes\\", full_filename);
+                            var path = Path.Combine("E:\\Data\\eSUCH\\Requisicoes\\", full_filename);
+                            //var path = Path.Combine("C:\\Data\\eSUCH\\Requisicoes\\", full_filename);
 
                             using (FileStream dd = new FileStream(path, FileMode.CreateNew))
                             {
@@ -1994,8 +2097,8 @@ namespace Hydra.Such.Portal.Controllers
         public FileStreamResult DownloadFile(string id)
         {
             //return new FileStreamResult(new FileStream(_config.FileUploadFolder + id, FileMode.Open), "application/xlsx");
-            //return new FileStreamResult(new FileStream("E:\\Data\\eSUCH\\Requisicoes\\" + id, FileMode.Open), "application/xlsx");
-            return new FileStreamResult(new FileStream("C:\\Data\\eSUCH\\Requisicoes\\" + id, FileMode.Open), "application/xlsx");
+            return new FileStreamResult(new FileStream("E:\\Data\\eSUCH\\Requisicoes\\" + id, FileMode.Open), "application/xlsx");
+            //return new FileStreamResult(new FileStream("C:\\Data\\eSUCH\\Requisicoes\\" + id, FileMode.Open), "application/xlsx");
         }
 
 
@@ -2005,8 +2108,8 @@ namespace Hydra.Such.Portal.Controllers
             try
             {
                 //System.IO.File.Delete(_config.FileUploadFolder + requestParams.Url);
-                //System.IO.File.Delete("E:\\Data\\eSUCH\\Requisicoes\\" + requestParams.Url);
-                System.IO.File.Delete("C:\\Data\\eSUCH\\Requisicoes\\" + requestParams.Url);
+                System.IO.File.Delete("E:\\Data\\eSUCH\\Requisicoes\\" + requestParams.Url);
+                //System.IO.File.Delete("C:\\Data\\eSUCH\\Requisicoes\\" + requestParams.Url);
 
                 DBAttachments.Delete(DBAttachments.ParseToDB(requestParams));
                 requestParams.eReasonCode = 1;
