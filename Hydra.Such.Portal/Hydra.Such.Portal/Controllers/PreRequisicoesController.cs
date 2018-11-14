@@ -321,104 +321,40 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult CalculoAutomaticoCustos([FromBody] PreRequesitionLineHelperViewModel data)
+        public JsonResult CalculoAutomaticoCustos([FromBody] PreRequisitionLineViewModel Linha)
         {
             try
             {
-                if (data != null)
+                if (Linha != null)
                 {
-                    List<LinhasPréRequisição> PreRequesitionLines = DBPreRequesitionLines.GetAllByNo(data.PreRequisitionNo);
-                    List<LinhasPréRequisição> CLToDelete = PreRequesitionLines.Where(y => !data.Lines.Any(x => x.PreRequisitionLineNo == y.NºPréRequisição && x.LineNo == y.NºLinha)).ToList();
-
-                    CLToDelete.ForEach(x => DBPreRequesitionLines.Delete(x));
-
-                    //data.Lines.ForEach(x =>
-                    for (int i = 0; i < data.Lines.Count; i++)
+                    if (Linha.SupplierNo != null && Linha.GrupoRegistoIVAProduto != null)
                     {
-                        PreRequisitionLineViewModel x = data.Lines[i];
-                        LinhasPréRequisição CLine = PreRequesitionLines.Where(y => x.PreRequisitionLineNo == y.NºPréRequisição && x.LineNo == y.NºLinha).FirstOrDefault();
+                        decimal IVA = new decimal();
+                        string GrupoFornecedor = DBNAV2017Supplier.GetAll(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, Linha.SupplierNo).FirstOrDefault().VATBusinessPostingGroup;
+                        string GrupoRegistoIVAProduto = Linha.GrupoRegistoIVAProduto;
 
-                        NAVProjectsViewModel Project = DBNAV2017Projects.GetAll(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, x.ProjectNo).FirstOrDefault();
-                        if (Project != null)
+                        if (!string.IsNullOrEmpty(GrupoFornecedor) && !string.IsNullOrEmpty(GrupoRegistoIVAProduto))
                         {
-                            x.RegionCode = Project.RegionCode ?? "";
-                            x.FunctionalAreaCode = Project.AreaCode ?? "";
-                            x.CenterResponsibilityCode = Project.CenterResponsibilityCode ?? "";
+                            IVA = DBNAV2017VATPostingSetup.GetIVA(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, GrupoFornecedor, GrupoRegistoIVAProduto);
+                            IVA = (IVA / 100) + 1;
                         }
 
-                        NAVProductsViewModel product = DBNAV2017Products.GetAllProducts(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, x.Code).FirstOrDefault();
-                        if (product.InventoryValueZero == 1)
-                            x.ArmazemCDireta = "1";
-                        else
-                            x.ArmazemCDireta = "0";
+                        decimal Quantidade = (decimal)Linha.QuantityToRequire;
+                        decimal CustoTotalComIVA = (decimal)Linha.TotalCostWithIVA;
 
-                        if (CLine != null)
-                        {
-                            CLine.NºPréRequisição = x.PreRequisitionLineNo;
-                            CLine.NºLinha = x.LineNo;
-                            CLine.Tipo = x.Type;
-                            CLine.Código = x.Code;
-                            CLine.Descrição = x.Description;
-                            CLine.Descrição2 = x.Description2;
-                            CLine.CódigoLocalização = x.LocalCode;
-                            CLine.CódigoUnidadeMedida = x.UnitMeasureCode;
-                            CLine.QuantidadeARequerer = x.QuantityToRequire;
-                            CLine.CódigoRegião = x.RegionCode;
-                            CLine.CódigoÁreaFuncional = x.FunctionalAreaCode;
-                            CLine.CódigoCentroResponsabilidade = x.CenterResponsibilityCode;
-                            CLine.NºProjeto = x.ProjectNo;
-                            CLine.DataHoraCriação = x.CreateDateTime != null && x.CreateDateTime != "" ? DateTime.Parse(x.CreateDateTime) : (DateTime?)null;
-                            CLine.UtilizadorCriação = x.CreateUser;
-                            CLine.DataHoraModificação = DateTime.Now;
-                            CLine.UtilizadorModificação = User.Identity.Name;
-                            CLine.QtdPorUnidadeMedida = x.QtyByUnitOfMeasure;
-                            CLine.QuantidadeRequerida = x.QuantityRequired;
-                            CLine.QuantidadePendente = x.QuantityPending;
-                            CLine.QuantidadeInicial = x.QuantityToRequire;
-                            CLine.CustoUnitário = x.UnitCost;
-                            CLine.CustoUnitarioComIVA = x.UnitCostWithIVA;
-                            CLine.PreçoUnitárioVenda = x.SellUnityPrice;
-                            CLine.ValorOrçamento = x.BudgetValue;
-                            CLine.DataReceçãoEsperada = x.ExpectedReceivingDate != null && x.ExpectedReceivingDate != "" ? DateTime.Parse(x.ExpectedReceivingDate) : (DateTime?)null;
-                            CLine.Faturável = x.Billable;
-                            CLine.NºLinhaOrdemManutenção = x.MaintenanceOrderLineNo;
-                            CLine.NºFuncionário = x.EmployeeNo;
-                            CLine.Viatura = x.Vehicle;
-                            CLine.NºFornecedor = x.SupplierNo;
-                            CLine.CódigoProdutoFornecedor = x.SupplierProductCode;
-                            CLine.GrupoRegistoIVAProduto = x.GrupoRegistoIVAProduto;
+                        decimal CustoUnitarioComIVA = (CustoTotalComIVA / IVA) / Quantidade;
 
-                            //CLine.LocalCompraDireta = x.ArmazemCDireta;
-                            CLine.LocalCompraDireta = x.LocalCode;
+                    }
 
-                            CLine.UnidadeProdutivaNutrição = x.UnitNutritionProduction;
-                            CLine.NºCliente = x.CustomerNo;
-                            CLine.NºEncomendaAberto = x.OpenOrderNo;
-                            CLine.NºLinhaEncomendaAberto = x.OpenOrderLineNo;
 
-                            DBPreRequesitionLines.Update(CLine);
-                        }
-                        else
-                        {
-                            x.CreateUser = User.Identity.Name;
-                            data.Lines[i] = DBPreRequesitionLines.ParseToViewModel(DBPreRequesitionLines.Create(DBPreRequesitionLines.ParseToDB(x)));
-                        }
-                    }//);
-
-                    //data = DBPreRequesition.ParseToViewModel(DBPreRequesition.GetByNo(data.PreRequisitionNo));
-
-                    data.eReasonCode = 1;
-                    data.eMessage = "Linhas de Pré-Requisição atualizadas com sucesso.";
                 }
             }
             catch (Exception ex)
             {
-                data.eReasonCode = 2;
-                data.eMessage = "Ocorreu um erro ao atualizar as linhas de Pré-Requisição.";
-                data.eMessages.Add(new TraceInformation(TraceType.Error, ex.ToString()));
+                return Json(null);
             }
 
-            return Json(data);
+            return Json(Linha);
         }
 
         [HttpPost]

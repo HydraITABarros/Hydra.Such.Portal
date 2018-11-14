@@ -94,7 +94,7 @@ namespace Hydra.Such.Data.NAV
             //}
         }
 
-        public static async Task<WSPurchaseInvHeader.Create_Result> CreateAsync(PurchOrderDTO purchFromSupplier, NAVWSConfigurations WSConfigurations, DateTime DataRececao, string Observacoes)
+        public static async Task<WSPurchaseInvHeader.Create_Result> CreateAsync(PurchOrderDTO purchFromSupplier, NAVWSConfigurations WSConfigurations, DateTime DataRececao)
         {
             if (purchFromSupplier == null)
                 throw new ArgumentNullException("purchFromSupplier");
@@ -145,8 +145,7 @@ namespace Hydra.Such.Data.NAV
                     Vendor_Mail = purchFromSupplier.Vendor_Mail,
                     N_Consulta = purchFromSupplier.NAVPrePurchOrderId,
                     Expected_Receipt_Date = DataRececao,
-                    Expected_Receipt_DateSpecified = true,
-                    Observacoes = Observacoes
+                    Expected_Receipt_DateSpecified = true
                 }
             };
 

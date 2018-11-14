@@ -698,8 +698,10 @@
                                     </div>
 
                                     <div class="col-lg-2">
-                                        <vaadin-text-field value="" id="_CustoTotalComIVA" name="_CustoTotalComIVA" label="Custo Total com IVA" disabled="{{ !_permissions.update }}" type="number" pattern="^[1-9]\d*(\.\d+)?$" on-value-changed="_ConvertDecimals" on-blur="_CalculoAutomaticoCusto">
+                                        <!--<vaadin-text-field value="" id="_CustoTotalComIVA" name="_CustoTotalComIVA" label="Custo Total com IVA" disabled="{{ !_permissions.update }}" type="number" pattern="^[1-9]\d*(\.\d+)?$" on-value-changed="_ConvertDecimals" on-blur="_CalculoAutomaticoCusto">
                                             <div slot="suffix">€</div>
+                                        </vaadin-text-field>-->
+                                        <vaadin-text-field value="" id="_CustoTotalComIVA" name="_CustoTotalComIVA" label="Custo Total com IVA" disabled="{{ !_permissions.update }}" on-blur="_CalculoAutomaticoCusto">
                                         </vaadin-text-field>
                                     </div>
 
@@ -2022,72 +2024,22 @@
                 },
 
                 _CalculoAutomaticoCusto: function () {
-                    var requesitionType = this.$.requesitionType.value;
-
-                    var localCode = "";
-                    var validLocalCode = false;
-                    if (this._filledFromPurch) {
-                        localCode = this.$.txtLocalCode.value;
-                        validLocalCode = (localCode !== null && localCode !== "");
-                    }
-                    else {
-                        localCode = this._LocalCode;
-                        validLocalCode = (localCode !== null && localCode !== "");
-                    }
-
                     var totalCost = this._QuantityToRequire * this._UnitCost;
                     if (isNaN(totalCost)) {
                         totalCost = 0;
                     }
 
-                    var purchHeaderNo = "";
-                    var purchLineNo = "";
-                    if (this.$._CBPurchaseLine.value != undefined & this.$._CBPurchaseLine.value != "") {
-                        var composedKey = this.$._CBPurchaseLine.value.split(" ", 2);
-                        purchHeaderNo = composedKey[0];
-                        purchLineNo = composedKey[1];
-                    }
-
-                    this.dataLines.lines.unshift({
-                        preRequisitionLineNo: this.data.preRequesitionsNo,
-                        type: 2, //PRODUTO
-                        code: this._Products,
-                        localCode: localCode,
-                        description: this._Description,
-                        description2: this._Description2,
-                        unitMeasureCode: this._UnitMeasureCode,
+                    debugger;
+                    this.$.prereqLines_databound_ajax.url = "/PreRequisicoes/CalculoAutomaticoCustos";
+                    this.$.prereqLines_databound_ajax.body = JSON.stringify({
                         quantityToRequire: this._QuantityToRequire,
                         unitCost: this._UnitCost,
                         unitCostWithIVA: this._UnitCostWithIVA,
-                        projectNo: this.$._ProjectNo.value,
-                        vehicle: this.data.vehicle,
                         supplierNo: this._CBVendor,
-                        regionCode: this.$._CLRegion.value,
-                        functionalAreaCode: this.$._CLFunctionalAreaCode.value,
-                        centerResponsibilityCode: this.$._CLResponsabilityCenterCode.value,
-                        //qtyByUnitOfMeasure
-                        //quantityRequired
-                        //quantityPending:
-                        quantidadeInicial: this._QuantityToRequire,
-                        //sellUnityPrice
-                        //budgetValue
-                        //expectedReceivingDate
-                        //billable
-                        maintenanceOrderLineNo: this._MaintenanceOrderLineNo,
-                        //employeeNo
-                        //supplierProductCode
-                        armazemCDireta: this._CBItemsCDirect,
-                        //unitNutritionProduction
-                        //customerNo
-                        openOrderNo: purchHeaderNo,
-                        openOrderLineNo: purchLineNo,
-                        totalCost: totalCost > 0 ? totalCost : "",
-                        totalCostWithIVA: totalCostWithIVA > 0 ? totalCostWithIVA : "",
                         grupoRegistoIVAProduto: this.$._CLVATProductsPostingGroups.value,
+                        totalCost: totalCost > 0 ? totalCost : "",
+                        totalCostWithIVA: this.$._CustoTotalComIVA.value
                     });
-
-                    this.$.prereqLines_databound_ajax.url = "/PreRequisicoes/CalculoAutomaticoCustos";
-                    this.$.prereqLines_databound_ajax.body = JSON.stringify(this.dataLines);
                     this.$.prereqLines_databound_ajax.generateRequest();
                 },
 
@@ -2156,7 +2108,7 @@
                                         openOrderNo: purchHeaderNo,
                                         openOrderLineNo: purchLineNo,
                                         totalCost: totalCost > 0 ? totalCost : "",
-                                        totalCostWithIVA: totalCostWithIVA > 0 ? totalCostWithIVA : "",
+                                        totalCostWithIVA: this.$._CustoTotalComIVA.value,
                                         grupoRegistoIVAProduto: this.$._CLVATProductsPostingGroups.value,
                                     });
 
