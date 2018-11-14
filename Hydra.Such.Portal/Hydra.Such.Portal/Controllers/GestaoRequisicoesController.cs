@@ -1798,7 +1798,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 try
                 {
-                    RequisitionService serv = new RequisitionService(configws, HttpContext.User.Identity.Name);
+                    RequisitionService serv = new RequisitionService(config, configws, HttpContext.User.Identity.Name);
                     item = serv.CreateMarketConsultFor(item);
                 }
                 catch (NotImplementedException ex)
