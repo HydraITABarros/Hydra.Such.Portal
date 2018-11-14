@@ -10,8 +10,12 @@ namespace Hydra.Such.Data.ViewModel
     {
         public string Tipo { get; set; }
         public string No_ { get; set; }
+        public string ProjectNo { get; set; }
+        public string DataServPrestado { get; set; }
         [JsonConverter(typeof(DateFormatConverter), "dd-MM-yyyy")]
         public DateTime? CreationDate { get; set; }
+        [JsonConverter(typeof(DateFormatConverter), "dd-MM-yyyy")]
+        public DateTime? DocumentDate { get; set; }
         [JsonConverter(typeof(DateFormatConverter), "dd-MM-yyyy")]
         public DateTime? DueDate { get; set; }
         public string AmountIncludingVAT { get; set; }
