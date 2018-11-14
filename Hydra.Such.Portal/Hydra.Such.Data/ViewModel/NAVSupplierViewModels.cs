@@ -9,6 +9,6 @@ namespace Hydra.Such.Data.ViewModel
         public string No_ { get; set; }
         public string Name { get; set; }
         public string Address { get; set; }
-
+        public string VATBusinessPostingGroup { get; set; }
     }
 }

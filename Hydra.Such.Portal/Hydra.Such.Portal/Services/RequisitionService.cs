@@ -165,7 +165,7 @@ namespace Hydra.Such.Portal.Services
                     {
                         try
                         {
-                            var result = CreateNAVPurchaseOrderFor(purchOrder, Convert.ToDateTime(requisition.ReceivedDate), requisition.Comments);
+                            var result = CreateNAVPurchaseOrderFor(purchOrder, Convert.ToDateTime(requisition.ReceivedDate));
                             if (result.CompletedSuccessfully)
                             {
                                 //Update Requisition Lines
@@ -236,11 +236,13 @@ namespace Hydra.Such.Portal.Services
                     throw new Exception("É obrigatório o preenchimento do fornecedor e do custo unitário nas linhas");
 
                 //AMARO TESTES DESCOMENTAR
-                //requisitionLines.RemoveAll(x => (x.CriarNotaEncomenda == null || x.CriarNotaEncomenda == false) && x.CreatedOrderNo != "");
+                //requisitionLines.RemoveAll(x => x.CriarNotaEncomenda == null || x.CriarNotaEncomenda == false);
+                //requisitionLines.RemoveAll(x => x.CreatedOrderNo != "");
                 //FIM
 
                 List<PurchOrderDTO> purchOrders = new List<PurchOrderDTO>();
                 List<DBNAV2017SupplierProductRef.SuppliersProductsRefs> supplierProductRef = new List<DBNAV2017SupplierProductRef.SuppliersProductsRefs>();
+
                 try
                 {
                     purchOrders = requisitionLines.GroupBy(x =>
@@ -257,6 +259,7 @@ namespace Hydra.Such.Portal.Services
                                     InAdvance = requisition.InAdvance.HasValue ? requisition.InAdvance.Value : false,
                                     PricesIncludingVAT = requisition.PricesIncludingVAT.HasValue ? requisition.PricesIncludingVAT.Value : false,
                                     LocationCode = requisition.LocalCode,
+                                    NAVPrePurchOrderId = requisition.NumeroMecanografico,
                                     
                                     Lines = items.Select(line => new PurchOrderLineDTO()
                                     {
@@ -304,7 +307,8 @@ namespace Hydra.Such.Portal.Services
                                     .FirstOrDefault()
                                     ?.SupplierProductId
                             );
-                            var result = CreateNAVPurchaseOrderFor(purchOrder, Convert.ToDateTime(requisition.ReceivedDate), requisition.Comments);
+                            //var result = CreateNAVPurchaseOrderFor(purchOrder, Convert.ToDateTime(requisition.ReceivedDate), requisition.Comments);
+                            var result = CreateNAVPurchaseOrderFor(purchOrder, Convert.ToDateTime(requisition.ReceivedDate));
                             if (result.CompletedSuccessfully)
                             {
                                 //Update req
@@ -357,7 +361,7 @@ namespace Hydra.Such.Portal.Services
                 else
                 {
                     requisition.eReasonCode = 3;
-                    requisition.eMessage = "Não existem linhas que cumpram os requisitos de validação do mercado local.";
+                    requisition.eMessage = "Não existem linhas que cumpram os requisitos de criação de encomenda.";
                 }
             }
             return requisition;
@@ -678,7 +682,7 @@ namespace Hydra.Such.Portal.Services
         //    return createPrePurchOrderResult;
         //}
 
-        private GenericResult CreateNAVPurchaseOrderFor(PurchOrderDTO purchOrder, DateTime DataRececao, string Observacoes)
+        private GenericResult CreateNAVPurchaseOrderFor(PurchOrderDTO purchOrder, DateTime DataRececao)
         {
             GenericResult createPrePurchOrderResult = new GenericResult();
 
@@ -690,7 +694,7 @@ namespace Hydra.Such.Portal.Services
                     purchOrder.Vendor_Mail = ConfigEmailForne.Email;
             }
 
-            Task<WSPurchaseInvHeader.Create_Result> createPurchaseHeaderTask = NAVPurchaseHeaderIntermService.CreateAsync(purchOrder, configws, DataRececao, Observacoes);
+            Task<WSPurchaseInvHeader.Create_Result> createPurchaseHeaderTask = NAVPurchaseHeaderIntermService.CreateAsync(purchOrder, configws, DataRececao);
             createPurchaseHeaderTask.Wait();
             if (createPurchaseHeaderTask.IsCompletedSuccessfully)
             {

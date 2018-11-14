@@ -48,8 +48,8 @@ namespace Hydra.Such.Portal.Controllers
             if (UPerm != null && UPerm.Read.Value)
             {
                 //ViewBag.UploadURL = _config.FileUploadFolder;
-                //ViewBag.UploadURL = "E:\\Data\\eSUCH\\Requisicoes\\";
-                ViewBag.UploadURL = "C:\\Data\\eSUCH\\Requisicoes\\";
+                ViewBag.UploadURL = "E:\\Data\\eSUCH\\Requisicoes\\";
+                //ViewBag.UploadURL = "C:\\Data\\eSUCH\\Requisicoes\\";
                 ViewBag.Area = 1;
                 ViewBag.PreRequesitionNo = User.Identity.Name;
                 ViewBag.UPermissions = UPerm;
@@ -67,8 +67,8 @@ namespace Hydra.Such.Portal.Controllers
             if (UPerm != null && UPerm.Read.Value)
             {
                 //ViewBag.UploadURL = _config.FileUploadFolder;
-                //ViewBag.UploadURL = "E:\\Data\\eSUCH\\Requisicoes\\";
-                ViewBag.UploadURL = "C:\\Data\\eSUCH\\Requisicoes\\";
+                ViewBag.UploadURL = "E:\\Data\\eSUCH\\Requisicoes\\";
+                //ViewBag.UploadURL = "C:\\Data\\eSUCH\\Requisicoes\\";
                 ViewBag.Area = 1;
                 ViewBag.PreRequesitionNo = User.Identity.Name;
                 ViewBag.UPermissions = UPerm;
@@ -321,6 +321,45 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult CalculoAutomaticoCustos([FromBody] PreRequisitionLineViewModel Linha)
+        {
+            try
+            {
+                if (Linha != null)
+                {
+                    if (!string.IsNullOrEmpty(Linha.SupplierNo) && !string.IsNullOrEmpty(Linha.GrupoRegistoIVAProduto))
+                    {
+                        decimal IVA = new decimal();
+                        string GrupoFornecedor = DBNAV2017Supplier.GetAll(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, Linha.SupplierNo).FirstOrDefault().VATBusinessPostingGroup;
+                        string GrupoRegistoIVAProduto = Linha.GrupoRegistoIVAProduto;
+
+                        if (!string.IsNullOrEmpty(GrupoFornecedor) && !string.IsNullOrEmpty(GrupoRegistoIVAProduto))
+                        {
+                            IVA = DBNAV2017VATPostingSetup.GetIVA(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, GrupoFornecedor, GrupoRegistoIVAProduto);
+                            IVA = (IVA / 100) + 1;
+                        }
+
+                        decimal Quantidade = Linha.QuantityToRequire != null ? (decimal)Linha.QuantityToRequire : 0;
+                        decimal CustoUnitario = Linha.UnitCost != null ? (decimal)Linha.UnitCost : 0;
+                        decimal CustoUnitarioComIVA = Linha.UnitCost != null ? (decimal)Linha.UnitCost : 0;
+                        decimal CustoTotalComIVA = Linha.TotalCostWithIVA != null ? (decimal)Linha.TotalCostWithIVA : 0;
+
+                        //decimal CustoUnitarioComIVA = (CustoTotalComIVA / IVA) / Quantidade;
+
+                    }
+
+
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(null);
+            }
+
+            return Json(Linha);
+        }
+
+        [HttpPost]
         public JsonResult UpdateContractLines([FromBody] PreRequesitionLineHelperViewModel data)
         {
             try
@@ -376,6 +415,7 @@ namespace Hydra.Such.Portal.Controllers
                             CLine.QuantidadePendente = x.QuantityPending;
                             CLine.QuantidadeInicial = x.QuantityToRequire;
                             CLine.CustoUnitário = x.UnitCost;
+                            CLine.CustoUnitarioComIVA = x.UnitCostWithIVA;
                             CLine.PreçoUnitárioVenda = x.SellUnityPrice;
                             CLine.ValorOrçamento = x.BudgetValue;
                             CLine.DataReceçãoEsperada = x.ExpectedReceivingDate != null && x.ExpectedReceivingDate != "" ? DateTime.Parse(x.ExpectedReceivingDate) : (DateTime?)null;
@@ -385,6 +425,7 @@ namespace Hydra.Such.Portal.Controllers
                             CLine.Viatura = x.Vehicle;
                             CLine.NºFornecedor = x.SupplierNo;
                             CLine.CódigoProdutoFornecedor = x.SupplierProductCode;
+                            CLine.GrupoRegistoIVAProduto = x.GrupoRegistoIVAProduto;
 
                             //CLine.LocalCompraDireta = x.ArmazemCDireta;
                             CLine.LocalCompraDireta = x.LocalCode;
@@ -675,8 +716,8 @@ namespace Hydra.Such.Portal.Controllers
                     foreach (var Anexo in ListAnexos)
                     {
                         //System.IO.File.Delete(_config.FileUploadFolder + Anexo.UrlAnexo);
-                        //System.IO.File.Delete("E:\\Data\\eSUCH\\Requisicoes\\" + Anexo.UrlAnexo);
-                        System.IO.File.Delete("C:\\Data\\eSUCH\\Requisicoes\\" + Anexo.UrlAnexo);
+                        System.IO.File.Delete("E:\\Data\\eSUCH\\Requisicoes\\" + Anexo.UrlAnexo);
+                        //System.IO.File.Delete("C:\\Data\\eSUCH\\Requisicoes\\" + Anexo.UrlAnexo);
                         DBAttachments.Delete(Anexo);
                     }
                 }
@@ -888,8 +929,8 @@ namespace Hydra.Such.Portal.Controllers
                         if (Anexo != null)
                         {
                             //System.IO.File.Delete(_config.FileUploadFolder + Anexo.UrlAnexo);
-                            //System.IO.File.Delete("E:\\Data\\eSUCH\\Requisicoes\\" + Anexo.UrlAnexo);
-                            System.IO.File.Delete("C:\\Data\\eSUCH\\Requisicoes\\" + Anexo.UrlAnexo);
+                            System.IO.File.Delete("E:\\Data\\eSUCH\\Requisicoes\\" + Anexo.UrlAnexo);
+                            //System.IO.File.Delete("C:\\Data\\eSUCH\\Requisicoes\\" + Anexo.UrlAnexo);
                             
                             DBAttachments.Delete(Anexo);
                         }
@@ -1648,8 +1689,8 @@ namespace Hydra.Such.Portal.Controllers
                                 try
                                 {
                                     //System.IO.File.Copy(_config.FileUploadFolder + FileName, _config.FileUploadFolder + NewFileName);
-                                    //System.IO.File.Copy("E:\\Data\\eSUCH\\Requisicoes\\" + FileName, "E:\\Data\\eSUCH\\Requisicoes\\" + NewFileName);
-                                    System.IO.File.Copy("C:\\Data\\eSUCH\\Requisicoes\\" + FileName, "E:\\Data\\eSUCH\\Requisicoes\\" + NewFileName);
+                                    System.IO.File.Copy("E:\\Data\\eSUCH\\Requisicoes\\" + FileName, "E:\\Data\\eSUCH\\Requisicoes\\" + NewFileName);
+                                    //System.IO.File.Copy("C:\\Data\\eSUCH\\Requisicoes\\" + FileName, "E:\\Data\\eSUCH\\Requisicoes\\" + NewFileName);
                                 }
                                 catch (Exception ex)
                                 {
@@ -1665,8 +1706,8 @@ namespace Hydra.Such.Portal.Controllers
                                 if (newFile != null)
                                 {
                                     //System.IO.File.Delete(_config.FileUploadFolder + file.UrlAnexo);
-                                    //System.IO.File.Delete("E:\\Data\\eSUCH\\Requisicoes\\" + file.UrlAnexo);
-                                    System.IO.File.Delete("C:\\Data\\eSUCH\\Requisicoes\\" + file.UrlAnexo);
+                                    System.IO.File.Delete("E:\\Data\\eSUCH\\Requisicoes\\" + file.UrlAnexo);
+                                    //System.IO.File.Delete("C:\\Data\\eSUCH\\Requisicoes\\" + file.UrlAnexo);
                                     DBAttachments.Delete(file);
                                 }
 
@@ -1920,8 +1961,8 @@ namespace Hydra.Such.Portal.Controllers
 
                             full_filename = id + "_" + filename;
                             //var path = Path.Combine(_config.FileUploadFolder, full_filename);
-                            //var path = Path.Combine("E:\\Data\\eSUCH\\Requisicoes\\", full_filename);
-                            var path = Path.Combine("C:\\Data\\eSUCH\\Requisicoes\\", full_filename);
+                            var path = Path.Combine("E:\\Data\\eSUCH\\Requisicoes\\", full_filename);
+                            //var path = Path.Combine("C:\\Data\\eSUCH\\Requisicoes\\", full_filename);
 
                             using (FileStream dd = new FileStream(path, FileMode.CreateNew))
                             {
@@ -1994,8 +2035,8 @@ namespace Hydra.Such.Portal.Controllers
         public FileStreamResult DownloadFile(string id)
         {
             //return new FileStreamResult(new FileStream(_config.FileUploadFolder + id, FileMode.Open), "application/xlsx");
-            //return new FileStreamResult(new FileStream("E:\\Data\\eSUCH\\Requisicoes\\" + id, FileMode.Open), "application/xlsx");
-            return new FileStreamResult(new FileStream("C:\\Data\\eSUCH\\Requisicoes\\" + id, FileMode.Open), "application/xlsx");
+            return new FileStreamResult(new FileStream("E:\\Data\\eSUCH\\Requisicoes\\" + id, FileMode.Open), "application/xlsx");
+            //return new FileStreamResult(new FileStream("C:\\Data\\eSUCH\\Requisicoes\\" + id, FileMode.Open), "application/xlsx");
         }
 
 
@@ -2005,8 +2046,8 @@ namespace Hydra.Such.Portal.Controllers
             try
             {
                 //System.IO.File.Delete(_config.FileUploadFolder + requestParams.Url);
-                //System.IO.File.Delete("E:\\Data\\eSUCH\\Requisicoes\\" + requestParams.Url);
-                System.IO.File.Delete("C:\\Data\\eSUCH\\Requisicoes\\" + requestParams.Url);
+                System.IO.File.Delete("E:\\Data\\eSUCH\\Requisicoes\\" + requestParams.Url);
+                //System.IO.File.Delete("C:\\Data\\eSUCH\\Requisicoes\\" + requestParams.Url);
 
                 DBAttachments.Delete(DBAttachments.ParseToDB(requestParams));
                 requestParams.eReasonCode = 1;

@@ -1798,7 +1798,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 try
                 {
-                    RequisitionService serv = new RequisitionService(configws, HttpContext.User.Identity.Name);
+                    RequisitionService serv = new RequisitionService(config, configws, HttpContext.User.Identity.Name);
                     item = serv.CreateMarketConsultFor(item);
                 }
                 catch (NotImplementedException ex)
@@ -1825,6 +1825,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 try
                 {
+                    item.NumeroMecanografico = !string.IsNullOrEmpty(DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo) ? DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo : "";
                     RequisitionService serv = new RequisitionService(config, configws, HttpContext.User.Identity.Name);
                     item = serv.CreatePurchaseOrderFor(item);
                 }
@@ -1861,17 +1862,20 @@ namespace Hydra.Such.Portal.Controllers
                     //UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Requisições);
                     //if (UPerm.Create == true)
                     //{
-                        Requisicoes.ForEach(Requisicao =>
-                        {
-                            if (result.eReasonCode == 1)
-                            {
-                                RequisitionService serv = new RequisitionService(config, configws, HttpContext.User.Identity.Name);
-                                Requisicao = serv.CreatePurchaseOrderFor(Requisicao);
 
-                                result.eReasonCode = Requisicao.eReasonCode;
-                                result.eMessage = Requisicao.eMessage;
-                            }
-                        });
+                        
+                    Requisicoes.ForEach(Requisicao =>
+                    {
+                        if (result.eReasonCode == 1)
+                        {
+                            Requisicao.NumeroMecanografico = !string.IsNullOrEmpty(DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo) ? DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo : "" ;
+                            RequisitionService serv = new RequisitionService(config, configws, HttpContext.User.Identity.Name);
+                            Requisicao = serv.CreatePurchaseOrderFor(Requisicao);
+
+                            result.eReasonCode = Requisicao.eReasonCode;
+                            result.eMessage = Requisicao.eMessage;
+                        }
+                    });
                     //}
                 }
                 else
@@ -2344,6 +2348,11 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Pedir Orçamento");
                     Col = Col + 1;
                 }
+                if (dp["projectNo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº Projeto");
+                    Col = Col + 1;
+                }
                 if (dp["regionCode"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Código Região");
@@ -2359,11 +2368,11 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Código Centro Responsabilidade");
                     Col = Col + 1;
                 }
-                //if (dp["localCode"]["hidden"].ToString() == "False")
-                //{
-                //    row.CreateCell(Col).SetCellValue("Código Localização");
-                //    Col = Col + 1;
-                //}
+                if (dp["localCode"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Código Localização");
+                    Col = Col + 1;
+                }
                 if (dp["comments"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Observações");
@@ -2423,6 +2432,11 @@ namespace Hydra.Such.Portal.Controllers
                             row.CreateCell(Col).SetCellValue(item.PedirOrcamento.ToString());
                             Col = Col + 1;
                         }
+                        if (dp["projectNo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ProjectNo);
+                            Col = Col + 1;
+                        }
                         if (dp["regionCode"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.RegionCode);
@@ -2438,11 +2452,11 @@ namespace Hydra.Such.Portal.Controllers
                             row.CreateCell(Col).SetCellValue(item.CenterResponsibilityCode);
                             Col = Col + 1;
                         }
-                        //if (dp["localCode"]["hidden"].ToString() == "False")
-                        //{
-                        //    row.CreateCell(Col).SetCellValue(item.LocalCode);
-                        //    Col = Col + 1;
-                        //}
+                        if (dp["localCode"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.LocalCode);
+                            Col = Col + 1;
+                        }
                         if (dp["comments"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.Comments);

@@ -43,6 +43,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string OpenOrderNo { get; set; }
         public int? OpenOrderLineNo { get; set; }
         public decimal? TotalCost { get; set; }
+        public decimal? TotalCostWithIVA { get; set; }
         public string ArmazemCDireta { get; set; }
         public string GrupoRegistoIVAProduto { get; set; }
 
