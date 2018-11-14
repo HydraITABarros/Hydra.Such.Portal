@@ -196,6 +196,7 @@ namespace Hydra.Such.Data.Logic.ComprasML
                 OpenOrderLineNo = x.NºLinhaEncomendaAberto,
                 Selected = false,
                 TotalCost = x.CustoUnitário * x.QuantidadeARequerer,
+                TotalCostWithIVA = x.CustoUnitarioComIVA * x.QuantidadeARequerer,
                 ArmazemCDireta = x.LocalCompraDireta,
                 GrupoRegistoIVAProduto = x.GrupoRegistoIVAProduto
             };

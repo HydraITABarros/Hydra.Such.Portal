@@ -599,13 +599,14 @@ namespace Hydra.Such.Portal.Controllers
                         if (registoDePropostas.Count() > 0)
                         {
                             //vamos criar a encomenda com as linhas
-                            PurchOrderLineDTO purchOrderLineDTO = new PurchOrderLineDTO();
                             List<PurchOrderLineDTO> purchOrderLineDTOs = new List<PurchOrderLineDTO>();
 
                             string VAT_Fornecedor = DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName).Where(x => x.No_ == registoDePropostas[0].Fornecedor1Code).FirstOrDefault().VATBusinessPostingGroup;
 
                             foreach (RegistoDePropostasView registoDePropostasView in registoDePropostas)
                             {
+                                PurchOrderLineDTO purchOrderLineDTO = new PurchOrderLineDTO();
+
                                 purchOrderLineDTO.CenterResponsibilityCode = registoDePropostasView.CodCentroResponsabilidade;
                                 purchOrderLineDTO.Code = registoDePropostasView.CodProduto;
                                 purchOrderLineDTO.Description = registoDePropostasView.Descricao;
@@ -656,13 +657,14 @@ namespace Hydra.Such.Portal.Controllers
                         if (registoDePropostas.Count() > 0)
                         {
                             //vamos criar a encomenda com as linhas
-                            PurchOrderLineDTO purchOrderLineDTO = new PurchOrderLineDTO();
                             List<PurchOrderLineDTO> purchOrderLineDTOs = new List<PurchOrderLineDTO>();
 
                             string VAT_Fornecedor = DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName).Where(x => x.No_ == registoDePropostas[0].Fornecedor2Code).FirstOrDefault().VATBusinessPostingGroup;
 
                             foreach (RegistoDePropostasView registoDePropostasView in registoDePropostas)
                             {
+                                PurchOrderLineDTO purchOrderLineDTO = new PurchOrderLineDTO();
+
                                 purchOrderLineDTO.CenterResponsibilityCode = registoDePropostasView.CodCentroResponsabilidade;
                                 purchOrderLineDTO.Code = registoDePropostasView.CodProduto;
                                 purchOrderLineDTO.Description = registoDePropostasView.Descricao;
@@ -713,13 +715,14 @@ namespace Hydra.Such.Portal.Controllers
                         if (registoDePropostas.Count() > 0)
                         {
                             //vamos criar a encomenda com as linhas
-                            PurchOrderLineDTO purchOrderLineDTO = new PurchOrderLineDTO();
                             List<PurchOrderLineDTO> purchOrderLineDTOs = new List<PurchOrderLineDTO>();
 
                             string VAT_Fornecedor = DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName).Where(x => x.No_ == registoDePropostas[0].Fornecedor3Code).FirstOrDefault().VATBusinessPostingGroup;
 
                             foreach (RegistoDePropostasView registoDePropostasView in registoDePropostas)
                             {
+                                PurchOrderLineDTO purchOrderLineDTO = new PurchOrderLineDTO();
+
                                 purchOrderLineDTO.CenterResponsibilityCode = registoDePropostasView.CodCentroResponsabilidade;
                                 purchOrderLineDTO.Code = registoDePropostasView.CodProduto;
                                 purchOrderLineDTO.Description = registoDePropostasView.Descricao;
@@ -770,13 +773,14 @@ namespace Hydra.Such.Portal.Controllers
                         if (registoDePropostas.Count() > 0)
                         {
                             //vamos criar a encomenda com as linhas
-                            PurchOrderLineDTO purchOrderLineDTO = new PurchOrderLineDTO();
                             List<PurchOrderLineDTO> purchOrderLineDTOs = new List<PurchOrderLineDTO>();
 
                             string VAT_Fornecedor = DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName).Where(x => x.No_ == registoDePropostas[0].Fornecedor4Code).FirstOrDefault().VATBusinessPostingGroup;
 
                             foreach (RegistoDePropostasView registoDePropostasView in registoDePropostas)
                             {
+                                PurchOrderLineDTO purchOrderLineDTO = new PurchOrderLineDTO();
+
                                 purchOrderLineDTO.CenterResponsibilityCode = registoDePropostasView.CodCentroResponsabilidade;
                                 purchOrderLineDTO.Code = registoDePropostasView.CodProduto;
                                 purchOrderLineDTO.Description = registoDePropostasView.Descricao;
@@ -828,13 +832,14 @@ namespace Hydra.Such.Portal.Controllers
                         if (registoDePropostas.Count() > 0)
                         {
                             //vamos criar a encomenda com as linhas
-                            PurchOrderLineDTO purchOrderLineDTO = new PurchOrderLineDTO();
                             List<PurchOrderLineDTO> purchOrderLineDTOs = new List<PurchOrderLineDTO>();
 
                             string VAT_Fornecedor = DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName).Where(x => x.No_ == registoDePropostas[0].Fornecedor5Code).FirstOrDefault().VATBusinessPostingGroup;
 
                             foreach (RegistoDePropostasView registoDePropostasView in registoDePropostas)
                             {
+                                PurchOrderLineDTO purchOrderLineDTO = new PurchOrderLineDTO();
+
                                 purchOrderLineDTO.CenterResponsibilityCode = registoDePropostasView.CodCentroResponsabilidade;
                                 purchOrderLineDTO.Code = registoDePropostasView.CodProduto;
                                 purchOrderLineDTO.Description = registoDePropostasView.Descricao;
@@ -886,13 +891,14 @@ namespace Hydra.Such.Portal.Controllers
                         if (registoDePropostas.Count() > 0)
                         {
                             //vamos criar a encomenda com as linhas
-                            PurchOrderLineDTO purchOrderLineDTO = new PurchOrderLineDTO();
                             List<PurchOrderLineDTO> purchOrderLineDTOs = new List<PurchOrderLineDTO>();
 
                             string VAT_Fornecedor = DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName).Where(x => x.No_ == registoDePropostas[0].Fornecedor6Code).FirstOrDefault().VATBusinessPostingGroup;
 
                             foreach (RegistoDePropostasView registoDePropostasView in registoDePropostas)
                             {
+                                PurchOrderLineDTO purchOrderLineDTO = new PurchOrderLineDTO();
+
                                 purchOrderLineDTO.CenterResponsibilityCode = registoDePropostasView.CodCentroResponsabilidade;
                                 purchOrderLineDTO.Code = registoDePropostasView.CodProduto;
                                 purchOrderLineDTO.Description = registoDePropostasView.Descricao;
