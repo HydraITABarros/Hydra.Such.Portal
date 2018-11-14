@@ -236,7 +236,8 @@ namespace Hydra.Such.Portal.Services
                     throw new Exception("É obrigatório o preenchimento do fornecedor e do custo unitário nas linhas");
 
                 //AMARO TESTES DESCOMENTAR
-                requisitionLines.RemoveAll(x => (x.CriarNotaEncomenda == null || x.CriarNotaEncomenda == false) && x.CreatedOrderNo != "");
+                requisitionLines.RemoveAll(x => x.CriarNotaEncomenda == null || x.CriarNotaEncomenda == false);
+                requisitionLines.RemoveAll(x => x.CreatedOrderNo != "");
                 //FIM
 
                 List<PurchOrderDTO> purchOrders = new List<PurchOrderDTO>();
