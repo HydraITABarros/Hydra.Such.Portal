@@ -1825,6 +1825,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 try
                 {
+                    item.NumeroMecanografico = !string.IsNullOrEmpty(DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo) ? DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo : "";
                     RequisitionService serv = new RequisitionService(config, configws, HttpContext.User.Identity.Name);
                     item = serv.CreatePurchaseOrderFor(item);
                 }
@@ -1861,17 +1862,20 @@ namespace Hydra.Such.Portal.Controllers
                     //UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Requisições);
                     //if (UPerm.Create == true)
                     //{
-                        Requisicoes.ForEach(Requisicao =>
-                        {
-                            if (result.eReasonCode == 1)
-                            {
-                                RequisitionService serv = new RequisitionService(config, configws, HttpContext.User.Identity.Name);
-                                Requisicao = serv.CreatePurchaseOrderFor(Requisicao);
 
-                                result.eReasonCode = Requisicao.eReasonCode;
-                                result.eMessage = Requisicao.eMessage;
-                            }
-                        });
+                        
+                    Requisicoes.ForEach(Requisicao =>
+                    {
+                        if (result.eReasonCode == 1)
+                        {
+                            Requisicao.NumeroMecanografico = !string.IsNullOrEmpty(DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo) ? DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo : "" ;
+                            RequisitionService serv = new RequisitionService(config, configws, HttpContext.User.Identity.Name);
+                            Requisicao = serv.CreatePurchaseOrderFor(Requisicao);
+
+                            result.eReasonCode = Requisicao.eReasonCode;
+                            result.eMessage = Requisicao.eMessage;
+                        }
+                    });
                     //}
                 }
                 else

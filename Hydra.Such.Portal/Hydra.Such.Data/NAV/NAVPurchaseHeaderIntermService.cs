@@ -73,8 +73,9 @@ namespace Hydra.Such.Data.NAV
                     Down_PaymentSpecified = purchFromSupplier.InAdvance.HasValue,
                     Vendor_Mail = purchFromSupplier.Vendor_Mail,
                     N_Consulta = purchFromSupplier.NAVPrePurchOrderId,
-                    
-                    
+                    Purchaser_Code = purchFromSupplier.NAVPrePurchOrderId
+
+
                 }
             };
             
@@ -145,7 +146,8 @@ namespace Hydra.Such.Data.NAV
                     Vendor_Mail = purchFromSupplier.Vendor_Mail,
                     N_Consulta = purchFromSupplier.NAVPrePurchOrderId,
                     Expected_Receipt_Date = DataRececao,
-                    Expected_Receipt_DateSpecified = true
+                    Expected_Receipt_DateSpecified = true,
+                    Purchaser_Code = purchFromSupplier.NAVPrePurchOrderId
                 }
             };
 
@@ -215,7 +217,8 @@ namespace Hydra.Such.Data.NAV
                     Down_PaymentSpecified = purchFromSupplier.InAdvance.HasValue,
                     Vendor_Mail = purchFromSupplier.Vendor_Mail,
                     N_Consulta = Consulta,
-                    Observacoes = Observacoes
+                    Observacoes = Observacoes,
+                    Purchaser_Code = purchFromSupplier.NAVPrePurchOrderId
                 }
             };
 

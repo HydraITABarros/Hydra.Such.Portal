@@ -327,7 +327,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 if (Linha != null)
                 {
-                    if (Linha.SupplierNo != null && Linha.GrupoRegistoIVAProduto != null)
+                    if (!string.IsNullOrEmpty(Linha.SupplierNo) && !string.IsNullOrEmpty(Linha.GrupoRegistoIVAProduto))
                     {
                         decimal IVA = new decimal();
                         string GrupoFornecedor = DBNAV2017Supplier.GetAll(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, Linha.SupplierNo).FirstOrDefault().VATBusinessPostingGroup;
@@ -339,10 +339,12 @@ namespace Hydra.Such.Portal.Controllers
                             IVA = (IVA / 100) + 1;
                         }
 
-                        decimal Quantidade = (decimal)Linha.QuantityToRequire;
-                        decimal CustoTotalComIVA = (decimal)Linha.TotalCostWithIVA;
+                        decimal Quantidade = Linha.QuantityToRequire != null ? (decimal)Linha.QuantityToRequire : 0;
+                        decimal CustoUnitario = Linha.UnitCost != null ? (decimal)Linha.UnitCost : 0;
+                        decimal CustoUnitarioComIVA = Linha.UnitCost != null ? (decimal)Linha.UnitCost : 0;
+                        decimal CustoTotalComIVA = Linha.TotalCostWithIVA != null ? (decimal)Linha.TotalCostWithIVA : 0;
 
-                        decimal CustoUnitarioComIVA = (CustoTotalComIVA / IVA) / Quantidade;
+                        //decimal CustoUnitarioComIVA = (CustoTotalComIVA / IVA) / Quantidade;
 
                     }
 
