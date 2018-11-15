@@ -699,7 +699,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult GetApprovedRequisitions()
         {
-            List<RequisitionViewModel> result = DBRequest.GetByState(RequisitionStates.Approved).ParseToViewModel();
+            List<RequisitionViewModel> result = DBRequest.GetByState(0, RequisitionStates.Approved).ParseToViewModel();
 
             //Apply User Dimensions Validations
             List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
@@ -726,7 +726,7 @@ namespace Hydra.Such.Portal.Controllers
                 RequisitionStates.Received,
                 RequisitionStates.Treated,
             };
-            List<RequisitionViewModel> result = DBRequest.GetByState(states).ParseToViewModel();
+            List<RequisitionViewModel> result = DBRequest.GetByState((int)RequisitionTypes.Normal, states).ParseToViewModel();
 
             //Apply User Dimensions Validations
             List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
@@ -774,7 +774,7 @@ namespace Hydra.Such.Portal.Controllers
                 };
             }
 
-            List<RequisitionViewModel> result = DBRequest.GetByState(states).ParseToViewModel();
+            List<RequisitionViewModel> result = DBRequest.GetByState((int)RequisitionTypes.Normal, states).ParseToViewModel();
 
             //Apply User Dimensions Validations
             List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
@@ -803,7 +803,7 @@ namespace Hydra.Such.Portal.Controllers
                 RequisitionStates.Received,
                 RequisitionStates.Treated,
             };
-            List<RequisitionViewModel> result = DBRequest.GetByState(states).ParseToViewModel();
+            List<RequisitionViewModel> result = DBRequest.GetByState((int)RequisitionTypes.Normal, states).ParseToViewModel();
 
             //Remove todas as requisições em que o campo Requisição Nutrição seja != de true
             result.RemoveAll(x => x.RequestNutrition != true);
@@ -827,7 +827,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetAllRequisitionshistoric()
         {
-            List<RequisitionViewModel> result = DBRequest.GetByState(RequisitionStates.Archived).ParseToViewModel();
+            List<RequisitionViewModel> result = DBRequest.GetByState((int)RequisitionTypes.Normal, RequisitionStates.Archived).ParseToViewModel();
 
             //Apply User Dimensions Validations
             List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
@@ -2271,7 +2271,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 RequisitionStates.Archived,
             };
-            requisition = DBRequest.GetReqByUserAreaStatus(User.Identity.Name, states);
+            requisition = DBRequest.GetReqByUserAreaStatus((int)RequisitionTypes.Normal, User.Identity.Name, states);
 
             List<RequisitionViewModel> result = new List<RequisitionViewModel>();
 

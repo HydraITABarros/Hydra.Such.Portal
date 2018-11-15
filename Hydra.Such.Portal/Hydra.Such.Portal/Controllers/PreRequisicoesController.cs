@@ -345,20 +345,16 @@ namespace Hydra.Such.Portal.Controllers
                         decimal CustoTotal = Linha.TotalCost != null ? (decimal)Linha.TotalCost : 0;
                         decimal CustoTotalComIVA = Linha.TotalCostWithIVA != null ? (decimal)Linha.TotalCostWithIVA : 0;
 
-                        CustoUnitarioComIVA = (CustoTotalComIVA / IVA) / Quantidade;
+                        CustoUnitarioComIVA = CustoTotalComIVA / Quantidade;
+
                         CustoTotal = CustoTotalComIVA / IVA;
                         CustoUnitario = CustoTotal / Quantidade;
 
-
-
-
-
-
-                        Linha.QuantityToRequire = Quantidade;
-                        Linha.UnitCost = CustoUnitario;
-                        Linha.UnitCostWithIVA = CustoUnitarioComIVA;
-                        Linha.TotalCost = CustoTotal;
-                        Linha.TotalCostWithIVA = CustoTotalComIVA;
+                        Linha.QuantityToRequire = Math.Round(Quantidade, 4);
+                        Linha.UnitCost = Math.Round(CustoUnitario, 4);
+                        Linha.UnitCostWithIVA = Math.Round(CustoUnitarioComIVA, 4);
+                        Linha.TotalCost = Math.Round(CustoTotal, 4);
+                        Linha.TotalCostWithIVA = Math.Round(CustoTotalComIVA, 4);
                     }
                 }
             }
@@ -1206,7 +1202,7 @@ namespace Hydra.Such.Portal.Controllers
             //    RequisitionStates.Rejected
             //};
             //requisition = DBRequest.GetReqByUserAreaStatus(User.Identity.Name, states);
-            requisition = DBRequest.GetReqByUser(User.Identity.Name);
+            requisition = DBRequest.GetReqByUser(0, User.Identity.Name);
             List<RequisitionViewModel> result = new List<RequisitionViewModel>();
             List<ApprovalMovementsViewModel> AproveList = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAll()); //.GetAllAssignedToUserFilteredByStatus(User.Identity.Name, 1));
             if (requisition != null)
@@ -1260,7 +1256,7 @@ namespace Hydra.Such.Portal.Controllers
             //    RequisitionStates.Rejected
             //};
             //requisition = DBRequest.GetReqByUserAreaStatus(User.Identity.Name, states);
-            requisition = DBRequest.GetReqByUserResponsibleForApproval(User.Identity.Name);
+            requisition = DBRequest.GetReqByUserResponsibleForApproval(0, User.Identity.Name);
             List<RequisitionViewModel> result = new List<RequisitionViewModel>();
             List<ApprovalMovementsViewModel> AproveList = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAll()); //.GetAllAssignedToUserFilteredByStatus(User.Identity.Name, 1));
             if (requisition != null)
@@ -1326,7 +1322,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 RequisitionStates.Archived,
             };
-            requisition = DBRequest.GetReqByUserAreaStatus(User.Identity.Name, states);
+            requisition = DBRequest.GetReqByUserAreaStatus(0, User.Identity.Name, states);
 
             List<RequisitionViewModel> result = new List<RequisitionViewModel>();
 

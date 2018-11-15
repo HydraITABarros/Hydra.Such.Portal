@@ -18,6 +18,7 @@ namespace Hydra.Such.Data.Database
         }
 
         public string NºRequisição { get; set; }
+        public int? TipoReq { get; set; }
         public int? Área { get; set; }
         public int? Estado { get; set; }
         public string NºProjeto { get; set; }

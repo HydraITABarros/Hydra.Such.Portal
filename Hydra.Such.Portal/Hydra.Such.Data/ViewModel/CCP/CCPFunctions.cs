@@ -501,7 +501,7 @@ namespace Hydra.Such.Data.ViewModel.CCP
             }
 
             //Lista de Requisições
-            List<Requisição> Lista_REQ = DBRequest.GetByProcedimento(Procedimento.Nº);
+            List<Requisição> Lista_REQ = DBRequest.GetByProcedimento(0, Procedimento.Nº);
 
             List<RequisitionViewModel> ListaRequisicoes = new List<RequisitionViewModel>();
 
