@@ -251,12 +251,16 @@ namespace Hydra.Such.Portal.Services
                     x.ContractNo = proposalId;
                     x.VersionNo = 1;
                     x.LineNo = 0;
-                   
-                      if (percentageToApllyInLines > (-100))
-                            {
-                                x.UnitPrice = x.UnitPrice + ((percentageToApllyInLines * x.UnitPrice) / 100);
-                                proposal.Entity.LinhasContratos.Add(DBContractLines.ParseToDB(x));
-                            }
+
+                    if (percentageToApllyInLines > (-100))
+                    {
+                        x.UnitPrice = x.UnitPrice + ((percentageToApllyInLines * x.UnitPrice) / 100);
+                        proposal.Entity.LinhasContratos.Add(DBContractLines.ParseToDB(x));
+                    }
+                    else
+                    {
+                        proposal.Entity.LinhasContratos.Add(DBContractLines.ParseToDB(x));
+                    }
                 });
                 ctx.SaveChanges();
 
