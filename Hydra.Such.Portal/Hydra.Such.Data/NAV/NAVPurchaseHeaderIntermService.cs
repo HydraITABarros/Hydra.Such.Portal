@@ -108,6 +108,7 @@ namespace Hydra.Such.Data.NAV
             {
                 WSPurchInvHeaderInterm = new WSPurchaseInvHeader.WSPurchInvHeaderInterm()
                 {
+                    
                     Buy_from_Vendor_No = purchFromSupplier.SupplierId,
                     Pay_to_Vendor_No = purchFromSupplier.SupplierId,
                     LocationCode = purchFromSupplier.LocationCode,
@@ -116,6 +117,7 @@ namespace Hydra.Such.Data.NAV
                     ResponsabilityCenterCode20 = purchFromSupplier.CenterResponsibilityCode,
                     //Your_Reference = purchFromSupplier
                     //Observacoes = purchFromSupplier;
+                    Purchaser_Code = purchFromSupplier.NAVPurchOrderCommitmentId,
                     //Purchaser_Code = purchFromSupplier;
                     //N_Consulta = purchFromSupplier;
                     //Expected_Receipt_Date = purchFromSupplier;
@@ -147,7 +149,6 @@ namespace Hydra.Such.Data.NAV
                     N_Consulta = purchFromSupplier.NAVPrePurchOrderId,
                     Expected_Receipt_Date = DataRececao,
                     Expected_Receipt_DateSpecified = true,
-                    Purchaser_Code = purchFromSupplier.NAVPurchOrderCommitmentId
                 }
             };
 

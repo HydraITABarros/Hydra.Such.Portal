@@ -21,7 +21,8 @@ namespace Hydra.Such.Data.NAV
             // Configure Basic Binding to have access to NAV
             navWSBinding = new BasicHttpBinding();
             navWSBinding.Security.Mode = BasicHttpSecurityMode.TransportCredentialOnly;
-            navWSBinding.Security.Transport.ClientCredentialType = HttpClientCredentialType.Windows; 
+            navWSBinding.Security.Transport.ClientCredentialType = HttpClientCredentialType.Windows;
+            navWSBinding.MaxReceivedMessageSize = 50000000;
         }
 
         public static async Task<WSPurchaseInvLine.CreateMultiple_Result> CreateMultipleAsync(PurchOrderDTO purchFromSupplier, NAVWSConfigurations WSConfigurations)
@@ -202,7 +203,7 @@ namespace Hydra.Such.Data.NAV
             WSPurchaseInvLine.WSPurchInvLineInterm_PortClient ws_Client = new WSPurchaseInvLine.WSPurchInvLineInterm_PortClient(navWSBinding, ws_URL);
             ws_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
             ws_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
-
+            
             //try
             //{
             return await ws_Client.UpdateMultipleAsync(navUpdate);
