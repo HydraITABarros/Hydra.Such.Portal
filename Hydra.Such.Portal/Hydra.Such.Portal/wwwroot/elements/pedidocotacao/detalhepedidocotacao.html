@@ -1018,7 +1018,7 @@
                                         <vaadin-grid-filter path="descricao2"></vaadin-grid-filter>
                                     </template>
                                     <template>
-                                        <vaadin-text-field name="tabRegistoDePropostasdescricao2" id="tabRegistoDePropostasdescricao2" value="{{item.descricao2}}" disabled="true"></vaadin-text-field>
+                                        <vaadin-text-field name="tabRegistoDePropostasdescricao2" id="tabRegistoDePropostasdescricao2" value="{{item.descricao2}}" disabled="true" maxlength="50"></vaadin-text-field>
                                     </template>
                                 </vaadin-grid-column>
 
@@ -1534,7 +1534,7 @@
                                     <vaadin-text-field type="text" id="_DescricaoProduto" required value="{{ item.descricao }}" label="Descrição" maxlength="100" disabled></vaadin-text-field>
                                 </div>
                                 <div class="col-sm-3">
-                                    <vaadin-text-field type="text" id="_Descricao2Produto" required value="{{ item.descricao2 }}" label="Descrição 2" maxlength="100"></vaadin-text-field>
+                                    <vaadin-text-field type="text" id="_Descricao2Produto" required value="{{ item.descricao2 }}" label="Descrição 2" maxlength="50"></vaadin-text-field>
                                 </div>
                             </div>
 
@@ -1714,7 +1714,7 @@
                             <vaadin-grid-filter path="descricao2"></vaadin-grid-filter>
                         </template>
                         <template>
-                            <vaadin-text-field name="tabLinhasdescricao2" id="tabLinhasdescricao2" value="{{item.descricao2}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                            <vaadin-text-field name="tabLinhasdescricao2" id="tabLinhasdescricao2" value="{{item.descricao2}}" on-blur="_updateLinha" disabled="{{ !_permissions.update }}" maxlength="50"></vaadin-text-field>
                         </template>
                     </vaadin-grid-column>
 
