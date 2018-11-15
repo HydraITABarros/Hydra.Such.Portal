@@ -1828,6 +1828,20 @@ namespace Hydra.Such.Portal.Controllers
                     item.NumeroMecanografico = !string.IsNullOrEmpty(DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo) ? DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo : "";
                     RequisitionService serv = new RequisitionService(config, configws, HttpContext.User.Identity.Name);
                     item = serv.CreatePurchaseOrderFor(item);
+
+                    if (item.eReasonCode == 1)
+                    {
+                        if (item.RequestNutrition == true)
+                        {
+                            item.State = RequisitionStates.Archived;
+                            item.UpdateUser = User.Identity.Name;
+                            if (DBRequest.Update(DBRequest.ParseToDB(item)) == null)
+                            {
+                                item.eReasonCode = 33;
+                                item.eMessage = "Ocorreu um erro na passagem da Requisição para Histórico.";
+                            }
+                        }
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -1874,6 +1888,20 @@ namespace Hydra.Such.Portal.Controllers
 
                             result.eReasonCode = Requisicao.eReasonCode;
                             result.eMessage = Requisicao.eMessage;
+
+                            if (result.eReasonCode == 1)
+                            {
+                                if (Requisicao.RequestNutrition == true)
+                                {
+                                    Requisicao.State = RequisitionStates.Archived;
+                                    Requisicao.UpdateUser = User.Identity.Name;
+                                    if (DBRequest.Update(DBRequest.ParseToDB(Requisicao)) == null)
+                                    {
+                                        result.eReasonCode = 33;
+                                        result.eMessage = "Ocorreu um erro na passagem da Requisição para Histórico.";
+                                    }
+                                }
+                            }
                         }
                     });
                     //}

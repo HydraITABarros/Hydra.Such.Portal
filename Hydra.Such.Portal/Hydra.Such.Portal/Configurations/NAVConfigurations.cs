@@ -17,5 +17,6 @@ namespace Hydra.Such.Portal.Configurations
     public class GeneralConfigurations
     {
         public string FileUploadFolder { get; set; }
+        public string Conn { get; set; }
     }
 }
