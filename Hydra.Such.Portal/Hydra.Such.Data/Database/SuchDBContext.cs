@@ -4040,7 +4040,7 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.Descricao).HasMaxLength(100);
 
-                entity.Property(e => e.Descricao2).HasMaxLength(100);
+                entity.Property(e => e.Descricao2).HasMaxLength(50);
 
                 entity.Property(e => e.LinhaRequisicao).HasColumnName("Linha_Requisicao");
 
@@ -4671,7 +4671,7 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.Descrição2)
                     .HasColumnName("Descrição 2")
-                    .HasMaxLength(100);
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.LocalCompraDireta)
                     .HasColumnName("Local Compra Direta")
@@ -4813,7 +4813,7 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.Descrição).HasMaxLength(100);
 
-                entity.Property(e => e.Descrição2).HasMaxLength(100);
+                entity.Property(e => e.Descrição2).HasMaxLength(50);
 
                 entity.Property(e => e.EnviadoParaCompras).HasColumnName("Enviado para Compras");
 
