@@ -341,14 +341,25 @@ namespace Hydra.Such.Portal.Controllers
 
                         decimal Quantidade = Linha.QuantityToRequire != null ? (decimal)Linha.QuantityToRequire : 0;
                         decimal CustoUnitario = Linha.UnitCost != null ? (decimal)Linha.UnitCost : 0;
-                        decimal CustoUnitarioComIVA = Linha.UnitCost != null ? (decimal)Linha.UnitCost : 0;
+                        decimal CustoUnitarioComIVA = Linha.UnitCostWithIVA != null ? (decimal)Linha.UnitCostWithIVA : 0;
+                        decimal CustoTotal = Linha.TotalCost != null ? (decimal)Linha.TotalCost : 0;
                         decimal CustoTotalComIVA = Linha.TotalCostWithIVA != null ? (decimal)Linha.TotalCostWithIVA : 0;
 
-                        //decimal CustoUnitarioComIVA = (CustoTotalComIVA / IVA) / Quantidade;
+                        CustoUnitarioComIVA = (CustoTotalComIVA / IVA) / Quantidade;
+                        CustoTotal = CustoTotalComIVA / IVA;
+                        CustoUnitario = CustoTotal / Quantidade;
 
+
+
+
+
+
+                        Linha.QuantityToRequire = Quantidade;
+                        Linha.UnitCost = CustoUnitario;
+                        Linha.UnitCostWithIVA = CustoUnitarioComIVA;
+                        Linha.TotalCost = CustoTotal;
+                        Linha.TotalCostWithIVA = CustoTotalComIVA;
                     }
-
-
                 }
             }
             catch (Exception ex)

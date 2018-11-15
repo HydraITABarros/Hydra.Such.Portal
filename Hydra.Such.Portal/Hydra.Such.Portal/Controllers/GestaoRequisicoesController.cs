@@ -788,7 +788,7 @@ namespace Hydra.Such.Portal.Controllers
             if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
                 result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CenterResponsibilityCode));
 
-            result.RemoveAll(x => x.RequestNutrition == true);
+            //result.RemoveAll(x => x.RequestNutrition == true);
 
             return Json(result.OrderByDescending(x => x.RequisitionNo));
         }

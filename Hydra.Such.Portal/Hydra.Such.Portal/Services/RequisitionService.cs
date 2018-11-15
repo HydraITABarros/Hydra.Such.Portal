@@ -259,7 +259,7 @@ namespace Hydra.Such.Portal.Services
                                     InAdvance = requisition.InAdvance.HasValue ? requisition.InAdvance.Value : false,
                                     PricesIncludingVAT = requisition.PricesIncludingVAT.HasValue ? requisition.PricesIncludingVAT.Value : false,
                                     LocationCode = requisition.LocalCode,
-                                    NAVPrePurchOrderId = requisition.NumeroMecanografico,
+                                    NAVPurchOrderCommitmentId = requisition.NumeroMecanografico,
                                     
                                     Lines = items.Select(line => new PurchOrderLineDTO()
                                     {

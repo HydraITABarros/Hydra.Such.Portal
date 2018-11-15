@@ -481,8 +481,11 @@
                     else {
                         if (this.Requisition.eMessages.length > 0)
                             this._toggleToastMultiple();
-                        else
+                        else {
+                            this.$.gridrequest.clearCache();
+                            this.$.ajax_getgrid.generateRequest();
                             this._showErrorMessage(this.Requisition.eMessage);
+                        }
                     }
                 },
 

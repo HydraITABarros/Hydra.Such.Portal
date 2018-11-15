@@ -630,7 +630,8 @@ namespace Hydra.Such.Portal.Controllers
                             req.Lines.ForEach(line =>
                             {
                                 line.VATBusinessPostingGroup = vendors.FirstOrDefault(x => x.No_ == line.SupplierNo)?.VATBusinessPostingGroup;
-                                line.VATProductPostingGroup = productsInRequisition.FirstOrDefault(x => x.Code == line.Code)?.VATProductPostingGroup;
+                                if (string.IsNullOrEmpty(line.VATProductPostingGroup))
+                                    line.VATProductPostingGroup = productsInRequisition.FirstOrDefault(x => x.Code == line.Code)?.VATProductPostingGroup;
                             });
                         }
                         catch { }

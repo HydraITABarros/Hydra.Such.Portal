@@ -1642,7 +1642,8 @@ namespace Hydra.Such.Portal.Controllers
         {
             List<DDMessageString> result = DBViatura.GetAllToList().Select(x => new DDMessageString()
             {
-                id = x.Matrícula
+                id = x.Matrícula ?? "",
+                value = x.Matrícula ?? ""
             }).ToList();
             return Json(result);
         }
