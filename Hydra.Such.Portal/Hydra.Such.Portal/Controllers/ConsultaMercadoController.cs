@@ -1044,7 +1044,7 @@ namespace Hydra.Such.Portal.Controllers
                 SendEmailsPedidoCotacao Email = new SendEmailsPedidoCotacao
                 {
                     DisplayName = User.Identity.Name,
-                    Subject = "Pedido de Cotação",
+                    Subject = "Pedido de Cotação - " + Consulta,
                     From = User.Identity.Name,
                     Anexo = Path.Combine(sWebRootFolder, sFileName)
                 };
@@ -1136,7 +1136,7 @@ namespace Hydra.Such.Portal.Controllers
             SendEmailsPedidoCotacao Email = new SendEmailsPedidoCotacao
             {
                 DisplayName = User.Identity.Name,
-                Subject = "Pedido de Cotação",
+                Subject = "Pedido de Cotação - " + Consulta,
                 From = User.Identity.Name,
                 Anexo = Path.Combine(sWebRootFolder, sFileName)
             };
