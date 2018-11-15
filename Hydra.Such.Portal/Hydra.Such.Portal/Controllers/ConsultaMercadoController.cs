@@ -39,6 +39,7 @@ namespace Hydra.Such.Portal.Controllers
             configws = NAVWSConfigs.Value;
             _generalConfig = appSettingsGeneral.Value;
             this._hostingEnvironment = _hostingEnvironment;
+            
         }
 
         public IActionResult ConsultaMercado()
@@ -1047,7 +1048,9 @@ namespace Hydra.Such.Portal.Controllers
                     Anexo = Path.Combine(sWebRootFolder, sFileName)
                 };
 
-                //Email.To.Add(data.SeleccaoEntidades.Where(x => x.CodFornecedor == Cod).First().EmailFornecedor);
+                if (_generalConfig.Conn == "eSUCH_Prod")
+                    Email.To.Add(data.SeleccaoEntidades.Where(x => x.CodFornecedor == Cod).First().EmailFornecedor);
+
                 Email.To.Add(User.Identity.Name);
 
                 Email.Body = MakeEmailBodyContent("Solicitamos Pedido de Cotação", User.Identity.Name);
@@ -1137,7 +1140,9 @@ namespace Hydra.Such.Portal.Controllers
                 Anexo = Path.Combine(sWebRootFolder, sFileName)
             };
 
-            //Email.To.Add(data.SeleccaoEntidades.Where(x => x.CodFornecedor == Cod).First().EmailFornecedor);
+            if (_generalConfig.Conn == "eSUCH_Prod")
+                Email.To.Add(data.SeleccaoEntidades.Where(x => x.CodFornecedor == Cod).First().EmailFornecedor);
+
             Email.To.Add(User.Identity.Name);
 
             Email.Body = MakeEmailBodyContent("Solicitamos Pedido de Cotação", User.Identity.Name);
