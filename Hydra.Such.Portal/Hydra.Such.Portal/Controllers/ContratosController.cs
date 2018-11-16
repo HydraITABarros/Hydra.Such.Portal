@@ -2820,11 +2820,11 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Nº Proposta");
                     Col = Col + 1;
                 }
-                if (dp["versionNo"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Nº Versão");
-                    Col = Col + 1;
-                }
+                //if (dp["versionNo"]["hidden"].ToString() == "False")
+                //{
+                //    row.CreateCell(Col).SetCellValue("Nº Versão");
+                //    Col = Col + 1;
+                //}
                 if (dp["startData"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Data Inicial Prevista");
@@ -2969,11 +2969,11 @@ namespace Hydra.Such.Portal.Controllers
                             row.CreateCell(Col).SetCellValue(item.ProposalNo);
                             Col = Col + 1;
                         }
-                        if (dp["versionNo"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.VersionNo);
-                            Col = Col + 1;
-                        }
+                        //if (dp["versionNo"]["hidden"].ToString() == "False")
+                        //{
+                        //    row.CreateCell(Col).SetCellValue(item.VersionNo);
+                        //    Col = Col + 1;
+                        //}
                         if (dp["startData"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.StartData);
