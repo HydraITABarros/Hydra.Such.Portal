@@ -7,6 +7,14 @@ namespace Hydra.Such.Data
 {
     public class Enumerations
     {
+        public enum RequisitionTypes
+        {
+            [Description("Normal")]
+            Normal,
+            [Description("Compras Dinheiro")]
+            ComprasDinheiro
+        }
+
         public enum RequisitionStates
         {
             [Description("Pendente")]

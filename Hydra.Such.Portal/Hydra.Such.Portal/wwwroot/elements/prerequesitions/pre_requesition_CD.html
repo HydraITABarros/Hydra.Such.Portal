@@ -361,6 +361,15 @@
                    on-response="_GetProductLocationResponse"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/PreRequisicoes/CalculoAutomaticoCustos"
+                   last-response="{{calculoAutomatico}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_CalculoAutomatico_ajax"
+                   on-response="_CalculoAutomaticoResponseProcessor"
+                   content-type="application/json"></iron-ajax>
+
+
         <!----------------------------------------------------------------->
         <template is="dom-if" if="{{ !_isCreate }}">
             <template is="dom-if" if="{{ _permissions.update }}">
@@ -699,8 +708,8 @@
 
                                     <div class="col-lg-2">
                                         <!--<vaadin-text-field value="" id="_CustoTotalComIVA" name="_CustoTotalComIVA" label="Custo Total com IVA" disabled="{{ !_permissions.update }}" type="number" pattern="^[1-9]\d*(\.\d+)?$" on-value-changed="_ConvertDecimals" on-blur="_CalculoAutomaticoCusto">
-                                            <div slot="suffix">€</div>
-                                        </vaadin-text-field>-->
+                                        <div slot="suffix">€</div>
+                                    </vaadin-text-field>-->
                                         <vaadin-text-field value="" id="_CustoTotalComIVA" name="_CustoTotalComIVA" label="Custo Total com IVA" disabled="{{ !_permissions.update }}" on-blur="_CalculoAutomaticoCusto">
                                         </vaadin-text-field>
                                     </div>
@@ -1177,9 +1186,10 @@
         </paper-dialog>
 
         <!-- Paper Dialog Total Linhas-->
-        <paper-dialog id="dialogTotal" style="height:120px; width:300px">
+        <paper-dialog id="dialogTotal" style="height:180px; width:300px">
             <div>
                 <h2>Valor Total: <b>{{_TotalLine}} €</b></h2>
+                <h2>Valor Total: <b>{{_TotalWithIVALine}} €</b></h2>
             </div>
             <div class="buttons">
                 <paper-button raised class="btnEdit" dialog-dismiss>Fechar</paper-button>
@@ -1239,6 +1249,10 @@
                     },
 
                     _TotalLine: {
+                        type: Number,
+                        value: 0
+                    },
+                    _TotalWithIVALine: {
                         type: Number,
                         value: 0
                     },
@@ -1859,10 +1873,14 @@
 
                 _sumLines: function () {
                     var count = 0;
+                    var countWithIVA = 0;
                     if (this.dataLines.lines != null) {
                         for (var i = 0; i < this.dataLines.lines.length; i++) {
                             count += this.dataLines.lines[i].totalCost;
+                            countWithIVA += this.dataLines.lines[i].totalCostWithIVA;
+
                             this._TotalLine = count;
+                            this._TotalWithIVALine = countWithIVA;
                             this.$.dialogTotal.open();
                         }
                     } else {
@@ -2029,9 +2047,7 @@
                         totalCost = 0;
                     }
 
-                    //debugger;
-                    this.$.prereqLines_databound_ajax.url = "/PreRequisicoes/CalculoAutomaticoCustos";
-                    this.$.prereqLines_databound_ajax.body = JSON.stringify({
+                    this.$.page_CalculoAutomatico_ajax.body = JSON.stringify({
                         quantityToRequire: this._QuantityToRequire,
                         unitCost: this._UnitCost,
                         unitCostWithIVA: this._UnitCostWithIVA,
@@ -2040,10 +2056,17 @@
                         totalCost: totalCost > 0 ? totalCost : "",
                         totalCostWithIVA: this.$._CustoTotalComIVA.value
                     });
-                    this.$.prereqLines_databound_ajax.generateRequest();
+                    this.$.page_CalculoAutomatico_ajax.generateRequest();
+                },
+                _CalculoAutomaticoResponseProcessor: function (e) {
+                    this.$._QuantityToRequire.value = this.calculoAutomatico.quantityToRequire;
+                    this.$._UnitCost.value = this.calculoAutomatico.unitCost;
+                    this.$._UnitCostWithIVA.value = this.calculoAutomatico.unitCostWithIVA;
                 },
 
+
                 _createPreReqLine: function () {
+                    debugger;
                     var requesitionType = this.$.requesitionType.value;
 
                     var localCode = "";
@@ -2066,13 +2089,13 @@
                                         totalCost = 0;
                                     }
 
-                                    var purchHeaderNo = "";
-                                    var purchLineNo = "";
-                                    if (this.$._CBPurchaseLine.value != undefined & this.$._CBPurchaseLine.value != "") {
-                                        var composedKey = this.$._CBPurchaseLine.value.split(" ", 2);
-                                        purchHeaderNo = composedKey[0];
-                                        purchLineNo = composedKey[1];
-                                    }
+                                    //var purchHeaderNo = "";
+                                    //var purchLineNo = "";
+                                    //if (this.$._CBPurchaseLine.value != undefined & this.$._CBPurchaseLine.value != "") {
+                                    //    var composedKey = this.$._CBPurchaseLine.value.split(" ", 2);
+                                    //    purchHeaderNo = composedKey[0];
+                                    //    purchLineNo = composedKey[1];
+                                    //}
 
                                     this.dataLines.lines.unshift({
                                         preRequisitionLineNo: this.data.preRequesitionsNo,
@@ -2105,8 +2128,8 @@
                                         armazemCDireta: this._CBItemsCDirect,
                                         //unitNutritionProduction
                                         //customerNo
-                                        openOrderNo: purchHeaderNo,
-                                        openOrderLineNo: purchLineNo,
+                                        //openOrderNo: purchHeaderNo,
+                                        //openOrderLineNo: purchLineNo,
                                         totalCost: totalCost > 0 ? totalCost : "",
                                         totalCostWithIVA: this.$._CustoTotalComIVA.value,
                                         grupoRegistoIVAProduto: this.$._CLVATProductsPostingGroups.value,

@@ -955,6 +955,7 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     try
                     {
+                        purchOrder.Purchaser_Code = User.Identity.Name;
                         var result = CreateNAVPurchaseOrderFor(purchOrder, data.NumConsultaMercado, data.Obs);
                         if (result.CompletedSuccessfully)
                         {
@@ -1226,6 +1227,8 @@ namespace Hydra.Such.Portal.Controllers
         private GenericResult CreateNAVPurchaseOrderFor(PurchOrderDTO purchOrder, string CM, string Obs)
         {
             GenericResult createPrePurchOrderResult = new GenericResult();
+
+            purchOrder.Purchaser_Code = User.Identity.Name;
 
             Task<WSPurchaseInvHeader.Create_Result> createPurchaseHeaderTask = NAVPurchaseHeaderIntermService.CreateAsync_CM(purchOrder, configws, CM, Obs);
             createPurchaseHeaderTask.Wait();

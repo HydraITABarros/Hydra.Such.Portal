@@ -130,6 +130,8 @@ namespace Hydra.Such.Portal.Services
                                 LocalMarketRegion = requisition.LocalMarketRegion,
                                 InAdvance = requisition.InAdvance.HasValue ? requisition.InAdvance.Value : false,
                                 PricesIncludingVAT = requisition.PricesIncludingVAT.HasValue ? requisition.PricesIncludingVAT.Value : false,
+                                Purchaser_Code = requisition.NumeroMecanografico,
+
                                 Lines = items.Select(line => new PurchOrderLineDTO()
                                 {
                                     LineId = line.LineNo.Value,
@@ -259,7 +261,7 @@ namespace Hydra.Such.Portal.Services
                                     InAdvance = requisition.InAdvance.HasValue ? requisition.InAdvance.Value : false,
                                     PricesIncludingVAT = requisition.PricesIncludingVAT.HasValue ? requisition.PricesIncludingVAT.Value : false,
                                     LocationCode = requisition.LocalCode,
-                                    NAVPurchOrderCommitmentId = requisition.NumeroMecanografico,
+                                    Purchaser_Code = requisition.NumeroMecanografico,
                                     
                                     Lines = items.Select(line => new PurchOrderLineDTO()
                                     {

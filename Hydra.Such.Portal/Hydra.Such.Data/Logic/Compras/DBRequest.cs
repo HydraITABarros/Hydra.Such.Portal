@@ -13,13 +13,13 @@ namespace Hydra.Such.Data.Logic.Request
     {
         #region CRUD
         
-        public static List<Requisição> GetAll()
+        public static List<Requisição> GetAll(int TipoReq)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.Requisição.ToList();
+                    return ctx.Requisição.Where(x => x.TipoReq == TipoReq).ToList();
                 }
             }
             catch (Exception ex)
@@ -27,12 +27,12 @@ namespace Hydra.Such.Data.Logic.Request
                 return null;
             }
         }
-        public static List<Requisição> GetByState(RequisitionStates state)
+        public static List<Requisição> GetByState(int TipoReq, RequisitionStates state)
         {
             try
             {
                 List<RequisitionStates> states = new List<RequisitionStates>() { state };
-                return GetByState(states);
+                return GetByState(TipoReq, states);
             }
             catch (Exception ex)
             {
@@ -40,7 +40,7 @@ namespace Hydra.Such.Data.Logic.Request
             }
         }
 
-        public static List<Requisição> GetByState(List<RequisitionStates> states)
+        public static List<Requisição> GetByState(int TipoReq, List<RequisitionStates> states)
         {
             try
             {
@@ -51,7 +51,7 @@ namespace Hydra.Such.Data.Logic.Request
                     return ctx.Requisição
                         .Include("LinhasRequisição")
                         .Include(x => x.RequisicoesRegAlteracoes)
-                        .Where(x => stateValues.Contains(x.Estado.Value))
+                        .Where(x => stateValues.Contains(x.Estado.Value) && x.TipoReq == TipoReq)
                         .ToList();
                 }
             }
@@ -161,13 +161,13 @@ namespace Hydra.Such.Data.Logic.Request
             }
         }
 
-        public static List<Requisição> GetByProcedimento(string procedimentoNo)
+        public static List<Requisição> GetByProcedimento(int TipoReq, string procedimentoNo)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.Requisição.Where(x => x.NºProcedimentoCcp == procedimentoNo).ToList();
+                    return ctx.Requisição.Where(x => x.NºProcedimentoCcp == procedimentoNo && x.TipoReq == TipoReq).ToList();
                 }
             }
             catch (Exception ex)
@@ -178,12 +178,12 @@ namespace Hydra.Such.Data.Logic.Request
 
         #endregion
 
-        public static List<Requisição> GetReqByUserAreaStatus(string userName, RequisitionStates status)
+        public static List<Requisição> GetReqByUserAreaStatus(int TipoReq, string userName, RequisitionStates status)
         {
-            return GetReqByUserAreaStatus(userName, new List<RequisitionStates> { status });
+            return GetReqByUserAreaStatus(TipoReq, userName, new List<RequisitionStates> { status });
         }
 
-        public static List<Requisição> GetReqByUserAreaStatus(string UserName, List<RequisitionStates> status)
+        public static List<Requisição> GetReqByUserAreaStatus(int TipoReq, string UserName, List<RequisitionStates> status)
         {
             try
             {
@@ -191,7 +191,7 @@ namespace Hydra.Such.Data.Logic.Request
                 {
                     var statusValues = status.Cast<int>().ToList();
                     
-                    return ctx.Requisição.Where(x => x.UtilizadorCriação == UserName && statusValues.Contains(x.Estado.Value) && !x.ModeloDeRequisição.HasValue || !x.ModeloDeRequisição.Value).ToList();
+                    return ctx.Requisição.Where(x => x.TipoReq == TipoReq && x.UtilizadorCriação == UserName && statusValues.Contains(x.Estado.Value) && !x.ModeloDeRequisição.HasValue || !x.ModeloDeRequisição.Value).ToList();
                 }
             }
             catch (Exception ex)
@@ -199,13 +199,13 @@ namespace Hydra.Such.Data.Logic.Request
                 return null;
             }
         }
-        public static List<Requisição> GetReqByUser(string UserName)
+        public static List<Requisição> GetReqByUser(int TipoReq, string UserName)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.Requisição.Where(x => x.UtilizadorCriação == UserName && !x.ModeloDeRequisição.HasValue || !x.ModeloDeRequisição.Value).ToList();
+                    return ctx.Requisição.Where(x => x.TipoReq == TipoReq && x.UtilizadorCriação == UserName && !x.ModeloDeRequisição.HasValue || !x.ModeloDeRequisição.Value).ToList();
                 }
             }
             catch (Exception ex)
@@ -214,13 +214,13 @@ namespace Hydra.Such.Data.Logic.Request
             }
         }
 
-        public static List<Requisição> GetReqByUserResponsibleForApproval(string UserName)
+        public static List<Requisição> GetReqByUserResponsibleForApproval(int TipoReq, string UserName)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.Requisição.Where(x => x.ResponsávelAprovação == UserName && !x.ModeloDeRequisição.HasValue || !x.ModeloDeRequisição.Value).ToList();
+                    return ctx.Requisição.Where(x => x.TipoReq == TipoReq && x.ResponsávelAprovação == UserName && !x.ModeloDeRequisição.HasValue || !x.ModeloDeRequisição.Value).ToList();
                 }
             }
             catch (Exception ex)
@@ -395,6 +395,7 @@ namespace Hydra.Such.Data.Logic.Request
                 return new RequisitionViewModel()
                 {
                     RequisitionNo = item.NºRequisição,
+                    TipoReq = item.TipoReq,
                     Area = item.Área,
                     State = item.Estado.HasValue && Enum.IsDefined(typeof(RequisitionStates), item.Estado.Value) ? (RequisitionStates)item.Estado.Value : (RequisitionStates?)null,
                     ProjectNo = item.NºProjeto,
@@ -497,6 +498,7 @@ namespace Hydra.Such.Data.Logic.Request
                 return new Requisição()
                 {
                     NºRequisição = item.RequisitionNo,
+                    TipoReq = item.TipoReq,
                     Área = item.Area,
                     Estado = item.State.HasValue ? (int)item.State.Value : (int?)null,
                     NºProjeto = item.ProjectNo,
