@@ -867,7 +867,7 @@
                     catch (err) { }
                 },
                 _productChanged: function (e) {
-                    debugger
+                    //debugger
                     if (e.detail.value != null && e.detail.value != "") {
                         var linhaAcordo = this.$.cmbProducts.activeItem;
                         if (linhaAcordo != null) {
@@ -1069,7 +1069,7 @@
                 },
 
                 _add() {
-                    debugger;
+                    //debugger;
                     if (this._NotSelectedprodUnit == true) {
                         if (this.$.dpExpectedReceiptId.value != null &&
                             this.$.dpVendedorPriceId.value != null &&
@@ -1188,7 +1188,7 @@
                     this.$.gridneedshopping.clearCache();
                 },
                 _delete: function (e) {
-                    debugger;
+                    //debugger;
                     var index = this.data.indexOf(e.model.item);
                     this.data.splice(index, 1);
                     // Save to DB
@@ -1338,7 +1338,7 @@
                     return "";
                 },
                 _confirm: function (selectedItem, selectedItems) {
-                    debugger;;
+                    //debugger;;
                     if (this.selectedItems != null && this.selectedItems != "") {
 
                         var selItms = this.selectedItems;
@@ -1441,7 +1441,7 @@
                 },
 
                 _requesitionResponse: function (e) {
-                    debugger;;
+                    //debugger;;
                     if (e.detail.status === 200) {
                         if (this.datarequesition.eReasonCode === 1) {
                             this._openToast(this.datarequesition.eMessage);

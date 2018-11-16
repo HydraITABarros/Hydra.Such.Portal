@@ -297,7 +297,7 @@
                    on-response="_copyFromTemplateResponse"
                    content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/PreRequisicoes/ValidateNumerationReq"
+        <iron-ajax url="/PreRequisicoes/ValidateNumerationReq_CD"
                    last-response="{{validateReqResponse}}"
                    method="post"
                    handle-as="json"
@@ -526,7 +526,7 @@
                                     </div>
 
                                     <div class="row break_clear">
-                                        <vaadin-grid aria-label="ReqUpdateGrid" items="[[uploads]]" class="grid" multi-sort="true">
+                                        <vaadin-grid id="gridAnexos" aria-label="ReqUpdateGrid" items="[[uploads]]" class="grid" multi-sort="true">
                                             <vaadin-grid-column width="70%" resizable>
                                                 <template class="header">
                                                     <vaadin-grid-sorter path="url">Anexo</vaadin-grid-sorter>
@@ -1621,13 +1621,24 @@
                 },
 
                 _createnewreq: function (e) {
+                    debugger;
                     this.data.area = this._areaid;
-                    if (this.$.projectNo.value != "" & this.$.projectNo.value != null) {
-                        this.$.page_validator_req_ajax.body = JSON.stringify(this.data);
-                        this.$.page_validator_req_ajax.generateRequest();
+                    if (this.$.gridAnexos.__data.items.length > 0) {
+                        if (this.$.valorTotalDocComIVA.value != "" & this.$.valorTotalDocComIVA.value != null) {
+                            if (this.$.projectNo.value != "" & this.$.projectNo.value != null) {
+                                this.$.page_validator_req_ajax.body = JSON.stringify(this.data);
+                                this.$.page_validator_req_ajax.generateRequest();
+                            }
+                            else {
+                                this._openToastError('O campo Nº Ordem/Projecto é de preenchimento obrigatório.');
+                            }
+                        }
+                        else {
+                            this._openToastError('O campo Valor Total Doc. com IVA é de preenchimento obrigatório.');
+                        }
                     }
                     else {
-                        this._openToastError('O campo Nº Ordem/Projecto é de preenchimento obrigatório.');
+                        this._openToastError('A tabela Anexos tem que ter pelo menos um Anexo.');
                     }
                 },
 
@@ -2066,7 +2077,6 @@
 
 
                 _createPreReqLine: function () {
-                    debugger;
                     var requesitionType = this.$.requesitionType.value;
 
                     var localCode = "";
