@@ -86,7 +86,6 @@
             }
         </style>
 
-
         <!-- DROPDOWNS POPULATE -->
         <iron-ajax url="/PopulateDropdowns/GetServices" last-response="{{Services}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProposalsFetchUnitDB" last-response="{{CBFeeUnits}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -271,7 +270,6 @@
                     <div class="panel panel-default">
                         <!--<div class="panel-heading">Cabeçalho</div>-->
                         <div class="panel-body">
-
                             <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
                                 <paper-tab>Geral</paper-tab>
                                 <paper-tab>Faturação</paper-tab>
@@ -301,17 +299,6 @@
                                             <vaadin-text-field value="{{data.description}}" maxlength="100" id="mDescription" name="mDescription" label="Âmbito dos Serviços" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <!--<vaadin-combo-box items="[[CBClients]]" id="mClients" item-value-path="id" item-label-path="value" value="{{data.clientNo}}" label="Nº Cliente" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório" on-value-changed="_clientChange">
-                                            <template>
-                                                <table width="350px">
-                                                    <tr>
-                                                        <td width="20%">[[item.id]]</td>
-                                                        <td width="80%"> <b>[[item.value]]</b></td>
-                                                    </tr>
-                                                </table>
-                                            </template>
-                                        </vaadin-combo-box>-->
-
                                             <such-selectbox id="mClients" value="{{data.clientNo}}" label="Nº Cliente"
                                                             items="[[CBClients]]"
                                                             text-path="name"
@@ -335,17 +322,6 @@
                                             </such-selectbox>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <!--<vaadin-combo-box items="[[CBRegions]]" id="mCodeRegion" item-value-path="id" item-label-path="value" value="{{data.codeRegion}}" label="Cód. Região" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório">
-                                            <template>
-                                                <table width="250px">
-                                                    <tr>
-                                                        <td width="20%">[[item.id]]</td>
-                                                        <td width="80%"> <b>[[item.value]]</b></td>
-                                                    </tr>
-                                                </table>
-                                            </template>
-                                        </vaadin-combo-box>-->
-
                                             <such-selectbox id="mCodeRegion" name="mCodeRegion" value="{{data.codeRegion}}" label="Cód. Região" disabled="{{ _lockFields }}"
                                                             items="[[CBRegions]]"
                                                             text-path="value"
@@ -355,17 +331,6 @@
                                             </such-selectbox>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <!--<vaadin-combo-box items="[[CBFunctionalAreas]]" id="mFunctionalArea" item-value-path="id" item-label-path="value" value="{{data.codeFunctionalArea}}" label="Cód. Àrea Funcional" disabled="{{ _lockFields }}">
-                                            <template>
-                                                <table width="500px">
-                                                    <tr>
-                                                        <td width="10%">[[item.id]]</td>
-                                                        <td width="90%"> <b>[[item.value]]</b></td>
-                                                    </tr>
-                                                </table>
-                                            </template>
-                                        </vaadin-combo-box>-->
-
                                             <such-selectbox id="mFunctionalArea" name="mFunctionalArea" value="{{data.codeFunctionalArea}}" label="Cód. Área Funcional" disabled="{{ _lockFields }}"
                                                             items="[[CBFunctionalAreas]]"
                                                             text-path="value"
@@ -375,17 +340,6 @@
                                         </div>
 
                                         <div class="col-md-3 ">
-                                            <!--<vaadin-combo-box items="[[CBResponsabilityCenterCodes]]" id="mResponsabilityCenter" item-value-path="id" item-label-path="value" value="{{data.codeResponsabilityCenter}}" label="Cód. Centro Responsabilidade" disabled="{{ _lockFields }}">
-                                         <template>
-                                             <table width="520px">
-                                                 <tr>
-                                                     <td width="10%">[[item.id]]</td>
-                                                     <td width="90%"> <b>[[item.value]]</b></td>
-                                                 </tr>
-                                             </table>
-                                         </template>
-                                        </vaadin-combo-box>-->
-
                                             <such-selectbox id="mResponsabilityCenter" name="mResponsabilityCenter" value="{{data.codeResponsabilityCenter}}" label="Cód. Centro Respon." disabled="{{ _lockFields }}"
                                                             items="[[CBResponsabilityCenterCodes]]"
                                                             text-path="value"
@@ -401,17 +355,6 @@
                                             <vaadin-text-field value="{{data.proposalNo}}" maxlength="20" id="mProposalNo" name="proposalNo" label="Nº Proposta" disabled="true"> </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <!--<vaadin-combo-box items="[[CBPaymentTerms]]" id="mPaymentTerms" item-value-path="id" item-label-path="value" value="{{data.codePaymentTerms}}" label="Cód. Termos Pagamento" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório">
-                                            <template>
-                                                <table width="250px">
-                                                    <tr>
-                                                        <td width="30%">[[item.id]]</td>
-                                                        <td width="70%"> <b>[[item.value]]</b></td>
-                                                    </tr>
-                                                </table>
-                                            </template>
-                                        </vaadin-combo-box>-->
-
                                             <such-selectbox id="mPaymentTerms" name="mPaymentTerms" value="{{data.codePaymentTerms}}" label="Cód. Termos Pagamento" disabled="{{ _lockFields }}"
                                                             items="[[CBPaymentTerms]]"
                                                             text-path="value"
@@ -429,11 +372,7 @@
                                     </div>
                                     <div class="row break_clear">
                                         <div class="col-md-6 ">
-                                            <!--<vaadin-text-field value="{{data.notes}}" id="mNotes" name="mNotes" label="Notas" disabled="{{ !_permissions.update }}"> </vaadin-text-field>-->
-
-
                                             <such-textarea rows="5" value="{{data.notes}}" id="mNotes" name="mNotes" label="Notas" disabled="{{ !_permissions.update }}"> </such-textarea>
-
                                         </div>
                                     </div>
 
@@ -513,8 +452,6 @@
                                                         </div>
                                                         <div class="row break_clear">
                                                             <div class="col-md-3 ">
-
-                                                                <!--<vaadin-text-field value="{{data.terminationTermNotice}}" id="terminationTermNotice" name="terminationTermNotice" label="Rescisão (Prazo de Aviso)" disabled="{{ !_permissions.update }}"> </vaadin-text-field>-->
                                                                 <vaadin-combo-box items="[[LTerminationDeadlineNotice]]" id="terminationTermNotice" item-value-path="id" item-label-path="value" value="{{data.terminationTermNotice}}" label="Rescisão (Prazo de Aviso)" disabled="{{ _lockFields }}">
                                                                     <template>
                                                                         <paper-icon-item>
@@ -572,10 +509,6 @@
                                                             </div>
                                                             <div class="col-md-6 ">
                                                                 <such-textarea rows="5" value="{{data.contractDurationDescription}}" id="contractDurationDescription" name="contractDurationDescription" label="Descrição Duração Contrato" disabled="{{ _lockFields }}"> </such-textarea>
-
-
-
-                                                                <!--<vaadin-text-field value="{{data.contractDurationDescription}}" id="contractDurationDescription" name="contractDurationDescription" label="Descrição Duração Contrato" disabled="{{ !_permissions.update }}"> </vaadin-text-field>-->
                                                             </div>
                                                         </div>
                                                     </div>
@@ -589,11 +522,6 @@
                                 <div>
                                     <div class="row break_clear">
                                         <div class="col-md-3 ">
-                                            <!--<vaadin-combo-box items="[[CBServiceObjects]]" id="mServiceObject" item-value-path="id" item-label-path="value" value="{{data.serviceObject}}" label="Objeto Serviço" disabled="{{ _lockFields }}">
-                                            <template>
-                                                <b>[[item.value]]</b>
-                                            </template>
-                                        </vaadin-combo-box>-->
                                             <such-selectbox id="mServiceObject" name="mServiceObject" value="{{data.serviceObject}}" label="Objeto Serviço" disabled="{{ _lockFields }}"
                                                             items="[[CBServiceObjects]]"
                                                             text-path="value"
@@ -634,16 +562,6 @@
                                                             </div>
                                                             <div class="row break_frm">
                                                                 <div class="col-lg-2">
-                                                                    <!--<vaadin-combo-box items="[[CBProjects]]" item-value-path="id" item-label-path="value" id="_CRProjectNo" name="_CRProjectNo" value="{{_CRProjectNo}}" label="Nº Projeto" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório">
-                                                                    <template>
-                                                                        <paper-icon-item>
-                                                                            <paper-item-body two-line>
-                                                                                <div>[[item.value]]</div>
-                                                                            </paper-item-body>
-                                                                        </paper-icon-item>
-                                                                    </template>
-                                                                </vaadin-combo-box>-->
-
                                                                     <such-selectbox id="_CRProjectNo" name="_CRProjectNo" value="{{_CRProjectNo}}" label="Nº Projeto" disabled="{{ _lockFields }}"
                                                                                     items="[[CBProjects]]"
                                                                                     text-path="value"
@@ -668,9 +586,6 @@
                                                                     <vaadin-grid-filter path="startDate" />
                                                                 </template>
                                                                 <template>
-                                                                    <!--<input type="date" id="_CRGridStartDate" name="_CRGridStartDate" value="{{item.startDate}}" disabled="{{ _lockFields }}">-->
-
-
                                                                     <vaadin-date-picker id="_CRGridStartDate" name="_CRGridStartDate" value="{{item.startDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
                                                                 </template>
                                                             </vaadin-grid-column>
@@ -680,9 +595,6 @@
                                                                     <vaadin-grid-filter path="endDate" />
                                                                 </template>
                                                                 <template>
-                                                                    <!--<input type="date" id="_CRGridStartDate" name="_CRGridStartDate" value="{{item.startDate}}" disabled="{{ _lockFields }}">-->
-
-
                                                                     <vaadin-date-picker id="_CRGridEndDate" name="_CRGridEndDate" value="{{item.endDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
                                                                 </template>
                                                             </vaadin-grid-column>
@@ -701,10 +613,6 @@
                                                                     <vaadin-grid-filter path="requisitionDate" />
                                                                 </template>
                                                                 <template>
-
-                                                                    <!--<input type="date" id="_CRGridRequisitionDate" name="_CRGridRequisitionDate" value="{{item.requisitionDate}}" disabled="{{ _lockFields }}">-->
-
-
                                                                     <vaadin-date-picker id="_CRGridRequisitionDate" name="_CRGridRequisitionDate" value="{{item.requisitionDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
                                                                 </template>
                                                             </vaadin-grid-column>
@@ -715,7 +623,6 @@
                                                                 </template>
                                                                 <template>
                                                                     <vaadin-text-field value="{{item.promiseNo}}" id="_CRGridPromiseNo" name="_CRGridPromiseNo" disabled="{{ _lockFields }}"> </vaadin-text-field>
-
                                                                 </template>
                                                             </vaadin-grid-column>
                                                             <vaadin-grid-column resizable>
@@ -759,10 +666,6 @@
                                                                     <vaadin-grid-filter path="lastInvoiceDate" />
                                                                 </template>
                                                                 <template>
-
-                                                                    <!--<input type="date" id="_CRGridLastInvoiceDate" name="_CRGridLastInvoiceDate" value="{{item.lastInvoiceDate}}" disabled="{{ _lockFields }}">-->
-
-
                                                                     <vaadin-date-picker id="_CRGridLastInvoiceDate" name="_CRGridLastInvoiceDate" value="{{item.lastInvoiceDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
                                                                 </template>
                                                             </vaadin-grid-column>
@@ -772,7 +675,6 @@
                                                                 <template>
                                                                     <center>
                                                                         <template is="dom-if" if="{{ !_lockFields }}">
-                                                                            <!--<paper-button class="btnRemove" raised on-tap="_deleteClientRequisition">Eliminar</paper-button>-->
                                                                             <center>
                                                                                 <paper-button class="btnRemove tableBtn" raised on-tap="_deleteClientRequisition" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
                                                                             </center>
@@ -856,7 +758,6 @@
                                         <div class="col-md-3  alignPoga">
                                             <vaadin-checkbox checked="{{data.fixedVowsAgreement}}" id="contractAvencaFixa" disabled="{{ _lockFields }}">Contrato Avença Fixa</vaadin-checkbox>
                                         </div>
-
                                     </div>
 
                                     <div class="row break_clear">
@@ -869,7 +770,6 @@
                                         <div class="col-md-3 ">
                                             <vaadin-checkbox checked="{{data.contractLinesInBilling}}" id="contractLinesBilling" disabled="{{ _lockFields }}">Linhas Contrato em Fact.</vaadin-checkbox>
                                         </div>
-
                                     </div>
 
                                     <div class="row break_clear">
@@ -879,7 +779,7 @@
                                                     <div class="panel-body">
                                                         <div class="row">
                                                             <div class="col-md-3">
-                                                                <vaadin-text-field value="{{data.totalProposalValue}}" id="_TotalProposalValue" name="_TotalProposalValue" label="Valor Total Proposta" disabled><div slot="suffix">€</div></vaadin-text-field>
+                                                                <vaadin-text-field value="{{data.totalProposalValue}}" placeholder="0.0000" pattern="^[0-9]\d*(\.[0-9]{1,4})?$" id="_TotalProposalValue" name="_TotalProposalValue" label="Valor Total Proposta" disabled><div slot="suffix">€</div></vaadin-text-field>
                                                             </div>
                                                             <div class="col-md-3">
                                                                 <div class="input-group">
@@ -896,26 +796,23 @@
                                                         <div class="row">
                                                             <div class="col-md-3">
                                                                 <div class="input-group">
-                                                                    <vaadin-text-field value="{{dataNav.vBilled}}" id="_NBilled" name="_NBilled" label="Valor Faturado" disabled><div slot="suffix">€</div></vaadin-text-field>
+                                                                    <vaadin-text-field value="{{dataNav.vBilled}}" id="_NBilled" name="_NBilled" label="Valor Faturado" disabled placeholder="0.0000" pattern="^[0-9]\d*(\.[0-9]{1,4})?$"><div slot="suffix">€</div></vaadin-text-field>
                                                                     <span class="input-group-btn">
                                                                         <paper-button disabled="{{ _isCreate }}" class="btn btnSave tableBtn" raised on-tap="_openInvoiceLinesList" title="Ver Linhas Fatura"><i class="fa fa-file-archive-o" aria-hidden="true"></i></paper-button>
                                                                     </span>
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-3">
-                                                                <vaadin-text-field value="{{dataNav.vCreditNotes}}" id="_VCreditNotes" name="_VCreditNotes" label="Valor Notas de Crédito" disabled><div slot="suffix">€</div></vaadin-text-field>
+                                                                <vaadin-text-field value="{{dataNav.vCreditNotes}}" id="_VCreditNotes" name="_VCreditNotes" label="Valor Notas de Crédito" disabled placeholder="0.0000" pattern="^[0-9]\d*(\.[0-9]{1,4})?$"><div slot="suffix">€</div></vaadin-text-field>
                                                             </div>
                                                             <div class="col-md-3">
-                                                                <vaadin-text-field value="{{dataNav.vPeriod}}" id="_VPeriod" name="_VPeriod" label="Valor do Período" disabled><div slot="suffix">€</div></vaadin-text-field>
+                                                                <vaadin-text-field value="{{dataNav.vPeriod}}" id="_VPeriod" name="_VPeriod" label="Valor do Período" disabled placeholder="0.0000" pattern="^[0-9]\d*(\.[0-9]{1,4})?$"><div slot="suffix">€</div></vaadin-text-field>
                                                             </div>
 
                                                         </div>
                                                         <div class="row">
                                                             <div class="col-md-6">
                                                                 <such-textarea rows="5" value="{{data.lastInvoiceDate}}" id="_LastInvoiceDate" name="_LastInvoiceDate" label="Texto Fatura" disabled> </such-textarea>
-
-
-                                                                <!--<vaadin-text-field value="{{data.lastInvoiceDate}}" id="_LastInvoiceDate" name="_LastInvoiceDate" label="Texto Fatura" disabled> </vaadin-text-field>-->
                                                             </div>
                                                         </div>
                                                     </div>
@@ -929,7 +826,6 @@
                                             <paper-collapse-group>
                                                 <paper-collapse-item header="Textos Fatura">
                                                     <div class="panel-body">
-
                                                         <template is="dom-if" if="{{ !_lockFields }}">
                                                             <div class="row">
                                                                 <div class="col-md-3 ">
@@ -944,16 +840,6 @@
                                                                     </vaadin-combo-box>
                                                                 </div>
                                                                 <div class="col-md-3 ">
-                                                                    <!--<vaadin-combo-box items="[[CBProjects]]" item-value-path="id" item-label-path="value" id="_IRProjectNo" name="_IRProjectNo" value="{{_IRProjectNo}}" label="Nº Projeto" disabled="{{ _lockFields }}">
-                                                                    <template>
-                                                                        <paper-icon-item>
-                                                                            <paper-item-body two-line>
-                                                                                <div>[[item.value]]</div>
-                                                                            </paper-item-body>
-                                                                        </paper-icon-item>
-                                                                    </template>
-                                                                </vaadin-combo-box>-->
-
                                                                     <such-selectbox id="_IRProjectNo" name="_IRProjectNo" value="{{_IRProjectNo}}" label="Nº Projeto" disabled="{{ _lockFields }}"
                                                                                     items="[[CBProjects]]"
                                                                                     text-path="value"
@@ -962,15 +848,10 @@
                                                                                     fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
                                                                     </such-selectbox>
                                                                 </div>
-
                                                             </div>
                                                             <div class="row">
                                                                 <div class="col-md-6 ">
                                                                     <such-textarea rows="5" value="{{_IRInvoiceText}}" id="_IRInvoiceText" name="_IRInvoiceText" label="Texto Fatura" disabled="{{ _lockFields }}">lo </</such-textarea>
-
-
-
-                                                                    <!--<vaadin-text-field value="{{_IRInvoiceText}}" id="_IRInvoiceText" name="_IRInvoiceText" label="Texto Fatura" disabled="{{ _lockFields }}"> </vaadin-text-field>-->
                                                                 </div>
                                                                 <div class="col-lg-1">
                                                                     <paper-button class="btnSave" raised on-tap="_createInvoiceText">Criar</paper-button>
@@ -995,7 +876,6 @@
                                                                             </paper-icon-item>
                                                                         </template>
                                                                     </vaadin-combo-box>
-
                                                                 </template>
                                                             </vaadin-grid-column>
                                                             <vaadin-grid-column resizable>
@@ -1030,7 +910,6 @@
                                                                 <template>
                                                                     <center>
                                                                         <template is="dom-if" if="{{ !_lockFields }}">
-                                                                            <!--<paper-button class="btnRemove" raised on-tap="_deleteInvoiceText">Eliminar</paper-button>-->
                                                                             <center>
                                                                                 <paper-button class="btnRemove tableBtn" raised on-tap="_deleteInvoiceText" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
                                                                             </center>
@@ -1060,7 +939,6 @@
                                     </div>
                                     <div class="row break_clear">
                                         <vaadin-grid aria-label="ReqUpdateGrid" items="[[uploads]]" class="grid" multi-sort="true">
-
                                             <vaadin-grid-column width="70%" resizable>
                                                 <template class="header">
                                                     <vaadin-grid-sorter path="url">Anexo</vaadin-grid-sorter>
@@ -1085,7 +963,6 @@
                                                 <template>
                                                     <center>
                                                         <template is="dom-if" if="{{ _permissions.update }}">
-                                                            <!--<paper-button class="btnRemove" raised on-tap="_deleteFiles">Eliminar</paper-button>-->
                                                             <center>
                                                                 <paper-button class="btnRemove tableBtn" raised on-tap="_deleteFiles" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
                                                             </center>
@@ -1096,25 +973,19 @@
                                         </vaadin-grid>
                                     </div>
                                 </div>
-
                             </iron-pages>
 
                             <template is="dom-if" if="{{ !_isHistoricDiv }}">
                                 <div class="marginSpace" style="display: {{ _showButtons }}">
-
                                     <template is="dom-if" if="{{ _isCreate }}">
                                         <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                     </template>
                                     <template is="dom-if" if="{{ !_isCreate }}">
-
                                         <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                                        <!--<paper-button raised id="btnArchive" class="btnSave" on-tap="_archive"><i class="fa fa-file-archive-o" aria-hidden="true"></i>&nbsp; Arquivar</paper-button>-->
-
                                     </template>
                                     <template is="dom-if" if="{{ _permissions.delete }}">
                                         <paper-button raised id="btnDelete" class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
                                     </template>
-
                                 </div>
                             </template>
                         </div>
@@ -1123,7 +994,6 @@
                             <paper-collapse-item class="panel-heading" header="Linhas" closed>
                                 <div class="row break_clear" style="display: {{ _showContractLinesForm }};">
                                     <div class="col-lg-2" hidden>
-                                        <!--<vaadin-combo-box items="[[CBContractLineTypes]]" id="_CLContractLineType" name="_CLContractLineType" item-value-path="id" item-label-path="value" value="{{_CLContractLineType}}" label="Tipo" disabled="{{ _lockFields }}" on-value-changed="_clContractLineTypeChange" required error-message="Este campo é obrigatório">-->
                                         <vaadin-combo-box items="[[CBContractLineTypes]]" id="_CLContractLineType" name="_CLContractLineType" item-value-path="id" item-label-path="value" value="2" label="Tipo" disabled on-value-changed="_clContractLineTypeChange">
                                             <template>
                                                 <paper-icon-item>
@@ -1160,12 +1030,12 @@
                                         </such-selectbox>
                                     </div>
                                     <div class="col-lg-2">
-                                        <vaadin-text-field value="{{_CLUnitPrice}}" id="_CLUnitPrice" name="_CLUnitPrice" label="Preço Unitário (€)" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?"><div slot="suffix">€</div></vaadin-text-field>
+                                        <vaadin-text-field value="{{_CLUnitPrice}}" id="_CLUnitPrice" name="_CLUnitPrice" label="Preço Unitário (€)" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals"  placeholder="0.0000" pattern="^[0-9]\d*(\.[0-9]{1,4})?$"><div slot="suffix">€</div></vaadin-text-field>
                                     </div>
                                 </div>
                                 <div class="row break_clear" style="display: {{ _showContractLinesForm }};">
                                     <div class="col-lg-2">
-                                        <vaadin-text-field value="{{_CLDiscountLine}}" id="_CLDiscountLine" name="_CLDiscountLine" label="Desconto Linha (€)" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?"><div slot="suffix">€</div></vaadin-text-field>
+                                        <vaadin-text-field value="{{_CLDiscountLine}}" id="_CLDiscountLine" name="_CLDiscountLine" label="Desconto Linha (€)" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals"  placeholder="0.0000" pattern="^[0-9]\d*(\.[0-9]{1,4})?$"><div slot="suffix">€</div></vaadin-text-field>
                                     </div>
                                     <div class="col-lg-2 alignPoga">
                                         <vaadin-checkbox checked="{{_CLBillable}}" disabled="{{ _lockFields }}">Fáturavel</vaadin-checkbox>
@@ -1259,15 +1129,6 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <!--<vaadin-combo-box items="[[CBContractLineTypes]]" id="_CLGridContractLineType" name="_CLGridContractLineType" item-value-path="id" item-label-path="value" value="{{item.type}}" disabled="{{ _lockFields }}" on-value-changed="_clContractLineTypeGridChange">
-                                                <template>
-                                                    <paper-icon-item>
-                                                        <paper-item-body two-line>
-                                                            <div>[[item.value]]</div>
-                                                        </paper-item-body>
-                                                    </paper-icon-item>
-                                                </template>
-                                            </vaadin-combo-box>-->
                                             [[ _clFormatType(item.type) ]]
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
@@ -1333,15 +1194,6 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <!--<vaadin-combo-box items="[[CBMeasureUnits]]" id="_CLGridMeasureUnit" name="_CLGridMeasureUnit" item-value-path="id" item-label-path="value" value="{{item.codeMeasureUnit}}" disabled="{{ _lockFields }}">
-                                                <template>
-                                                    <paper-icon-item>
-                                                        <paper-item-body two-line>
-                                                            <div>[[item.value]]</div>
-                                                        </paper-item-body>
-                                                    </paper-icon-item>
-                                                </template>
-                                            </vaadin-combo-box>-->
                                             [[ _clFormatMeasureUnit(item.codeMeasureUnit) ]]
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
@@ -1356,7 +1208,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.unitPrice}}" id="_CLGridUnitPrice" name="_CLGridUnitPrice" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?"> <div slot="suffix">€</div></vaadin-text-field>
+                                            <vaadin-text-field value="{{item.unitPrice}}" id="_CLGridUnitPrice" name="_CLGridUnitPrice" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals"  placeholder="0.0000" pattern="^[0-9]\d*(\.[0-9]{1,4})?$"> <div slot="suffix">€</div></vaadin-text-field>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.unitPrice}} €
@@ -1394,7 +1246,6 @@
                                         <vaadin-grid-filter path="codeRegion" />
                                     </template>
                                     <template>
-
                                         <template is="dom-if" if="{{ item.selected }}">
                                             <vaadin-combo-box items="[[CBRegions]]" id="_CLGridRegion" name="_CLGridRegion" item-value-path="id" item-label-path="value" value="{{item.codeRegion}}" disabled="{{ _lockFields }}">
                                                 <template>
@@ -1508,9 +1359,6 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <!--<input type="date" id="_CLGridVersionStartDate" name="_CLGridVersionStartDate" value="{{item.versionStartDate}}" disabled="{{ _lockFields }}">-->
-
-
                                             <vaadin-date-picker id="_CLGridVersionStartDate" name="_CLGridVersionStartDate" value="{{item.versionStartDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
@@ -1522,14 +1370,9 @@
                                     <template class="header">
                                         <vaadin-grid-sorter path="versionEndDate">Data Fim Versão</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="versionEndDate" />
-
-
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <!--<input type="date" id="_CLGridVersionEndDate" name="_CLGridVersionEndDate" value="{{item.versionEndDate}}" disabled="{{ _lockFields }}">-->
-
-
                                             <vaadin-date-picker id="_CLGridVersionEndDate" name="_CLGridVersionEndDate" value="{{item.versionEndDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
@@ -1555,7 +1398,6 @@
                                             </vaadin-combo-box>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
-
                                             [[ _clFormatResponsible(item.responsibleNo) ]]
                                         </template>
                                     </template>
@@ -1622,7 +1464,6 @@
                                         <template>
                                             <center>
                                                 <template is="dom-if" if="{{ !_lockFields }}">
-                                                    <!--<paper-button class="btnRemove" raised on-tap="_deleteContractLine">Eliminar</paper-button>-->
                                                     <center>
                                                         <paper-button class="btnRemove tableBtn" raised on-tap="_deleteContractLine" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
                                                     </center>
@@ -1721,7 +1562,6 @@
                     <paper-button class="btnRemove" dialog-dismiss><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
                 </div>
             </div>
-
         </paper-dialog>
 
         <paper-dialog id="dlgContratInvoiceLinesList" class="dialgoBox" modal>
@@ -1874,22 +1714,6 @@
         </paper-dialog>
     </template>
     <script>
-
-
-        //window.addEventListener('WebComponentsReady', function () {
-        //    var upload = document.querySelector('vaadin-upload#uploadRequest');
-
-        //    upload.addEventListener('upload-response', function (event) {
-        //        console.log('upload xhr after server response: ', event.detail.xhr);
-        //        event.detail.file.error = 'Custom server error message.';
-        //        this._showErrorMessage(event.detail.file.name + ' erro: ' + event.detail.error);
-        //    });
-
-        //    upload.addEventListener('file-reject', function (event) {
-        //        this._showErrorMessage(event.detail.file.name + ' erro: ' + event.detail.error);
-        //    });
-        //});
-
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
                 is: 'x-contractdetails',
