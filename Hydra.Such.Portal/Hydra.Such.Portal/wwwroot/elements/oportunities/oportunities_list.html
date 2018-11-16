@@ -101,15 +101,6 @@
         </div>
 
         <vaadin-grid aria-label="ContractsGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
-            <vaadin-grid-column width="150px" resizable hidden$="{{ !_isHistoricVisible }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="contractNo">Nº Proposta</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="contractNo" />
-                </template>
-                <template>
-                    {{item.proposalNo}}
-                </template>
-            </vaadin-grid-column>
 
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.contractNo.hidden }}">
                 <template class="header">
@@ -118,6 +109,16 @@
                 </template>
                 <template>
                     {{item.contractNo}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ !_isHistoricVisible }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="contractNo">Nº Proposta</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="contractNo" />
+                </template>
+                <template>
+                    {{item.proposalNo}}
                 </template>
             </vaadin-grid-column>
 
@@ -191,7 +192,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.versionNo.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden>
                 <template class="header">
                     <vaadin-grid-sorter path="versionNo">Nº Versão</vaadin-grid-sorter>
                     <vaadin-grid-filter path="versionNo" />
@@ -589,7 +590,7 @@
                         "orderOriginText": { hidden: false, label: "Origem do Pedido" },
                         "ordOrderSource": { hidden: false, label: "Origem do Pedido Descrição" },
                         "proposalNo": { hidden: false, label: "Nº Proposta" },
-                        "versionNo": { hidden: false, label: "Nº Versão" },
+                        //"versionNo": { hidden: false, label: "Nº Versão" },
                         "startData": { hidden: false, label: "Data Inicial Prevista" },
                         "dueDate": { hidden: false, label: "Data Expiração Prevista" },
                         "customerShipmentDate": { hidden: false, label: "Data Envio" },

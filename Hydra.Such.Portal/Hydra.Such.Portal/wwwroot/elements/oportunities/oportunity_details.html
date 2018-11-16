@@ -644,8 +644,9 @@
                         <paper-collapse-group style="display: {{ _showContractLines }};">
                             <paper-collapse-item class="panel-heading" header="Linhas" closed>
                                 <div class="row break_clear">
-                                    <div class="col-lg-2">
-                                        <vaadin-combo-box items="[[CBContractLineTypes]]" id="_CLContractLineType" name="_CLContractLineType" item-value-path="id" item-label-path="value" value="{{_CLContractLineType}}" label="Tipo" disabled="{{ !_permissions.update }}" on-value-changed="_clContractLineTypeChange">
+                                    <div class="col-lg-2" hidden>
+                                        <!--<vaadin-combo-box items="[[CBContractLineTypes]]" id="_CLContractLineType" name="_CLContractLineType" item-value-path="id" item-label-path="value" value="{{_CLContractLineType}}" label="Tipo" disabled="{{ !_permissions.update }}" on-value-changed="_clContractLineTypeChange">-->
+                                        <vaadin-combo-box items="[[CBContractLineTypes]]" id="_CLContractLineType" name="_CLContractLineType" item-value-path="id" item-label-path="value" value="2" label="Tipo" disabled on-value-changed="_clContractLineTypeChange">
                                             <template>
                                                 <paper-icon-item>
                                                     <paper-item-body two-line>
@@ -656,7 +657,6 @@
                                         </vaadin-combo-box>
                                     </div>
                                     <div class="col-lg-2">
-
                                         <such-selectbox id="_CLCode" value="{{_CLCode}}" label="Código"
                                                         items="[[CBContractLineCodes]]"
                                                         text-path="value"
@@ -689,7 +689,7 @@
                                         </template>
                                     </vaadin-combo-box>-->
 
-                                        <such-selectbox id="_CLMeasureUnit" name="_CLMeasureUnit" value="{{_CLMeasureUnit}}" label="Cód. Unidade Medida" disabled="{{ !_permissions.update }}"
+                                        <such-selectbox id="_CLMeasureUnit" name="_CLMeasureUnit" value="{{_CLMeasureUnit}}" label="Cód. Unidade Medida" disabled
                                                         items="[[CBMeasureUnits]]"
                                                         text-path="value"
                                                         value-path="id"
@@ -772,17 +772,17 @@
                                         </such-selectbox>
                                     </div>
 
-                                    <div class="col-lg-2">
-                                        <vaadin-text-field value="{{_CLFrequency}}" id="_CLFrequency" name="_CLFrequency" label="Periocidade" disabled="{{ !_permissions.update }}" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"> </vaadin-text-field>
+                                    <div class="col-lg-2" hidden>
+                                        <vaadin-text-field value="{{_CLFrequency}}" id="_CLFrequency" name="_CLFrequency" label="Periodicidade" disabled="{{ !_permissions.update }}" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"> </vaadin-text-field>
                                     </div>
 
                                 </div>
                                 <div class="row break_clear">
-                                    <div class="col-lg-2">
+                                    <div class="col-lg-2" hidden>
                                         <vaadin-text-field value="{{_CLInterventionHours}}" id="_CLInterventionHours" name="_CLInterventionHours" label="Nº Horas Intervenção" disabled="{{ !_permissions.update }}" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals" />
                                     </div>
 
-                                    <div class="col-lg-2">
+                                    <div class="col-lg-2" hidden>
                                         <vaadin-text-field value="{{_CLTotalTechnicians}}" id="_CLTotalTechnicians" name="_CLTotalTechnicians" label="Nº Técnicos" disabled="{{ !_permissions.update }}" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals" />
                                     </div>
 
@@ -794,18 +794,7 @@
                                         <vaadin-date-picker label="Data Fim Versão" id="_CLVersionEndDate" name="_CLVersionEndDate" value="{{_CLVersionEndDate}}" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
                                     </div>
 
-                                    <div class="col-lg-2">
-                                        <!--<vaadin-combo-box items="[[CBEmployees]]" id="_CLResponsible" name="_CLResponsible" item-value-path="id" item-label-path="value" value="{{_CLResponsible}}" label="Responsável" disabled="{{ !_permissions.update }}">
-                                        <template>
-                                            <paper-icon-item>
-                                                <paper-item-body two-line>
-                                                    <div>[[item.value]]</div>
-                                                </paper-item-body>
-                                            </paper-icon-item>
-                                        </template>
-                                    </vaadin-combo-box>-->
-                                        <Re
-
+                                    <div class="col-lg-2" hidden>
                                         <such-selectbox id="_CLResponsible" name="_CLResponsible" value="{{_CLResponsible}}" label="Responsável" disabled="{{ !_permissions.update }}"
                                                         items="[[CBEmployees]]"
                                                         text-path="value"
@@ -815,17 +804,6 @@
                                     </div>
 
                                     <div class="col-lg-2">
-                                        <!--<vaadin-combo-box items="[[CBServiceClients]]" id="_CLServiceClient" name="_CLServiceClient" item-value-path="id" item-label-path="value" value="{{_CLServiceClient}}" label="Cód. Serviço Cliente" disabled="{{ !_permissions.update }}">
-                                        <template>
-                                            <paper-icon-item>
-                                                <paper-item-body two-line>
-                                                    <div>[[item.value]]</div>
-                                                </paper-item-body>
-                                            </paper-icon-item>
-                                        </template>
-                                    </vaadin-combo-box>-->
-                                        <Se
-
                                         <such-selectbox id="_CLServiceClient" name="_CLServiceClient" value="{{_CLServiceClient}}" label="Cód. Serviço Cliente" disabled="{{ !_permissions.update }}"
                                                         items="[[CBServiceClients]]"
                                                         text-path="value"
@@ -833,20 +811,7 @@
                                                         fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
                                         </such-selectbox>
                                     </div>
-                                </div>
-                                <div class="row break_clear">
                                     <div class="col-lg-2">
-                                        <!--<vaadin-combo-box items="[[CBInvoiceGroups]]" id="_CLInvoiceGroup" name="_CLInvoiceGroup" item-value-path="id" item-label-path="value" value="{{_CLInvoiceGroup}}" label="Grupo Fatura" disabled="{{ !_permissions.update }}">
-                                        <template>
-                                            <paper-icon-item>
-                                                <paper-item-body two-line>
-                                                    <div>[[item.value]]</div>
-                                                </paper-item-body>
-                                            </paper-icon-item>
-                                        </template>
-                                    </vaadin-combo-box>-->
-                                        <In
-
                                         <such-selectbox id="_CLInvoiceGroup" name="_CLInvoiceGroup" value="{{_CLInvoiceGroup}}" label="Grupo Fatura" disabled="{{ !_permissions.update }}"
                                                         items="[[CBInvoiceGroups]]"
                                                         text-path="value"
@@ -869,14 +834,14 @@
                         </paper-collapse-group>
                         <div class="row break_clear" style="display: {{ _showContractLines }};">
                             <vaadin-grid aria-label="ContractLines" id="grid_contractlines" name="grid_contractlines" items="[[dataLines.lines]]" class="grid" multi-sort="true" active-item="{{_SelectedLine}}">
-                                <vaadin-grid-column width="130px" resizable>
+                                <vaadin-grid-column width="130px" resizable hidden>
                                     <template class="header">
                                         <vaadin-grid-sorter path="type">Tipo</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="type" />
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-combo-box items="[[CBContractLineTypes]]" id="_CLGridContractLineType" name="_CLGridContractLineType" item-value-path="id" item-label-path="value" value="{{item.type}}" disabled="{{ !_permissions.update }}" on-value-changed="_clContractLineTypeGridChange">
+                                            <!--<vaadin-combo-box items="[[CBContractLineTypes]]" id="_CLGridContractLineType" name="_CLGridContractLineType" item-value-path="id" item-label-path="value" value="{{item.type}}" disabled="{{ !_permissions.update }}" on-value-changed="_clContractLineTypeGridChange">
                                                 <template>
                                                     <paper-icon-item>
                                                         <paper-item-body two-line>
@@ -884,7 +849,8 @@
                                                         </paper-item-body>
                                                     </paper-icon-item>
                                                 </template>
-                                            </vaadin-combo-box>
+                                            </vaadin-combo-box>-->
+                                            [[ _clFormatType(item.type) ]]
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             [[ _clFormatType(item.type) ]]
@@ -950,7 +916,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-combo-box items="[[CBMeasureUnits]]" id="_CLGridMeasureUnit" name="_CLGridMeasureUnit" item-value-path="id" item-label-path="value" value="{{item.codeMeasureUnit}}" disabled="{{ !_permissions.update }}">
+                                            <!--<vaadin-combo-box items="[[CBMeasureUnits]]" id="_CLGridMeasureUnit" name="_CLGridMeasureUnit" item-value-path="id" item-label-path="value" value="{{item.codeMeasureUnit}}" disabled="{{ !_permissions.update }}">
                                                 <template>
                                                     <paper-icon-item>
                                                         <paper-item-body two-line>
@@ -958,7 +924,8 @@
                                                         </paper-item-body>
                                                     </paper-icon-item>
                                                 </template>
-                                            </vaadin-combo-box>
+                                            </vaadin-combo-box>-->
+                                            [[ _clFormatMeasureUnit(item.codeMeasureUnit) ]]
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             [[ _clFormatMeasureUnit(item.codeMeasureUnit) ]]
@@ -1078,9 +1045,9 @@
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
-                                <vaadin-grid-column width="100px" resizable>
+                                <vaadin-grid-column width="100px" resizable hidden>
                                     <template class="header">
-                                        <vaadin-grid-sorter path="frequency">Periocidade</vaadin-grid-sorter>
+                                        <vaadin-grid-sorter path="frequency">Periodicidade</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="frequency" />
                                     </template>
                                     <template>
@@ -1092,7 +1059,7 @@
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
-                                <vaadin-grid-column width="160px" resizable>
+                                <vaadin-grid-column width="160px" resizable hidden>
                                     <template class="header">
                                         <vaadin-grid-sorter path="interventionHours">Nº Horas Intervenção</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="interventionHours" />
@@ -1106,7 +1073,7 @@
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
-                                <vaadin-grid-column width="150px" resizable>
+                                <vaadin-grid-column width="150px" resizable hidden>
                                     <template class="header">
                                         <vaadin-grid-sorter path="totalTechinicians">Nº Técnicos</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="totalTechinicians" />
@@ -1150,7 +1117,7 @@
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
-                                <vaadin-grid-column width="200px" resizable>
+                                <vaadin-grid-column width="200px" resizable hidden>
                                     <template class="header">
                                         <vaadin-grid-sorter path="responsibleNo">Nº Responsável</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="responsibleNo" />
@@ -1703,6 +1670,7 @@
                 },
 
                 _setArquivado: function () {
+                    debugger
                     var message = this._btnArchiveMessage.toLowerCase();
                     var archiveReason = '';
                     var _dataContract = this.data;
