@@ -305,7 +305,7 @@
                    on-response="_responseReqValidatorProcessor"
                    content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/PreRequisicoes/CreateRequesition"
+        <iron-ajax url="/PreRequisicoes/CreateRequesition_CD"
                    last-response="{{CreateReqResponse}}"
                    method="post"
                    handle-as="json"
@@ -1189,7 +1189,7 @@
         <paper-dialog id="dialogTotal" style="height:180px; width:300px">
             <div>
                 <h2>Valor Total: <b>{{_TotalLine}} €</b></h2>
-                <h2>Valor Total: <b>{{_TotalWithIVALine}} €</b></h2>
+                <h2>Valor Total com IVA: <b>{{_TotalWithIVALine}} €</b></h2>
             </div>
             <div class="buttons">
                 <paper-button raised class="btnEdit" dialog-dismiss>Fechar</paper-button>
@@ -2483,7 +2483,7 @@
                 },
 
                 _pendingreq: function (e) {
-                    window.location.href = "/PreRequisicoes/RequisicoesPendentes";
+                    window.location.href = "/PreRequisicoes/RequisicoesPendentes_CD";
                 },
                 _CleanPreRequesitionResponse: function (e) {
                     if (this.ClPreReq.eReasonCode != null) {

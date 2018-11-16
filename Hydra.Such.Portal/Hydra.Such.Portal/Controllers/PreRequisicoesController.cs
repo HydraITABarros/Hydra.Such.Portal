@@ -108,6 +108,34 @@ namespace Hydra.Such.Portal.Controllers
             //}
         }
 
+        public IActionResult RequisicoesPendentes_CD()
+        {
+            //UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Requisições);
+            UserAccessesViewModel UPerm = new UserAccessesViewModel();
+            UPerm.Area = 1;
+            UPerm.Create = true;
+            UPerm.Delete = true;
+            UPerm.Feature = (int)Enumerations.Features.RequisiçõesComprasDinheiro;
+            UPerm.IdUser = User.Identity.Name;
+            UPerm.Read = true;
+            UPerm.Update = true;
+
+            ViewBag.Area = 1;
+            ViewBag.UPermissions = UPerm;
+            return View();
+
+            //if (UPerm != null && UPerm.Read.Value)
+            //{
+            //    ViewBag.Area = 1;
+            //    ViewBag.UPermissions = UPerm;
+            //    return View();
+            //}
+            //else
+            //{
+            //    return RedirectToAction("AccessDenied", "Error");
+            //}
+        }
+
         public JsonResult GetProjectDim([FromBody] string ProjectNo)
         {
 
@@ -1202,7 +1230,7 @@ namespace Hydra.Such.Portal.Controllers
             //    RequisitionStates.Rejected
             //};
             //requisition = DBRequest.GetReqByUserAreaStatus(User.Identity.Name, states);
-            requisition = DBRequest.GetReqByUser(0, User.Identity.Name);
+            requisition = DBRequest.GetReqByUser((int)RequisitionTypes.Normal, User.Identity.Name);
             List<RequisitionViewModel> result = new List<RequisitionViewModel>();
             List<ApprovalMovementsViewModel> AproveList = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAll()); //.GetAllAssignedToUserFilteredByStatus(User.Identity.Name, 1));
             if (requisition != null)
@@ -1247,6 +1275,60 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result.OrderByDescending(x => x.RequisitionNo));
         }
 
+        public JsonResult GetPendingReqCD()
+        {
+            List<Requisição> requisition = null;
+            //List<RequisitionStates> states = new List<RequisitionStates>()
+            //{
+            //    RequisitionStates.Pending,
+            //    RequisitionStates.Rejected
+            //};
+            //requisition = DBRequest.GetReqByUserAreaStatus(User.Identity.Name, states);
+            requisition = DBRequest.GetReqByUser((int)RequisitionTypes.ComprasDinheiro, User.Identity.Name);
+            List<RequisitionViewModel> result = new List<RequisitionViewModel>();
+            List<ApprovalMovementsViewModel> AproveList = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAll()); //.GetAllAssignedToUserFilteredByStatus(User.Identity.Name, 1));
+            if (requisition != null)
+            {
+                requisition.ForEach(x => result.Add(x.ParseToViewModel()));
+                if (result.Count > 0)
+                {
+                    foreach (RequisitionViewModel item in result)
+                    {
+                        if (item.State == RequisitionStates.Pending || item.State == RequisitionStates.Rejected)
+                        {
+                            item.SentReqToAprove = true;
+                        }
+                        else
+                        {
+                            item.SentReqToAprove = false;
+                        }
+
+                        if (item.ApprovalDate != null)
+                        {
+                            item.ApprovalDateString = item.ApprovalDate.Value.ToString("yyyy-MM-dd");
+                        }
+
+                        item.LocalCode = DBRequestLine.GetByRequisitionId(item.RequisitionNo).FirstOrDefault()?.CódigoLocalização;
+                    }
+                    if (AproveList != null && AproveList.Count > 0)
+                    {
+                        foreach (ApprovalMovementsViewModel apmov in AproveList)
+                        {
+                            foreach (RequisitionViewModel req in result)
+                            {
+                                if (apmov.Number == req.RequisitionNo && (apmov.Status == 1 || apmov.Status == 2))
+                                {
+                                    req.SentReqToAprove = false;
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
+            return Json(result.OrderByDescending(x => x.RequisitionNo));
+        }
+
         public JsonResult GetReqByUserResponsibleForApproval()
         {
             List<Requisição> requisition = null;
@@ -1256,7 +1338,61 @@ namespace Hydra.Such.Portal.Controllers
             //    RequisitionStates.Rejected
             //};
             //requisition = DBRequest.GetReqByUserAreaStatus(User.Identity.Name, states);
-            requisition = DBRequest.GetReqByUserResponsibleForApproval(0, User.Identity.Name);
+            requisition = DBRequest.GetReqByUserResponsibleForApproval((int)RequisitionTypes.Normal, User.Identity.Name);
+            List<RequisitionViewModel> result = new List<RequisitionViewModel>();
+            List<ApprovalMovementsViewModel> AproveList = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAll()); //.GetAllAssignedToUserFilteredByStatus(User.Identity.Name, 1));
+            if (requisition != null)
+            {
+                requisition.ForEach(x => result.Add(x.ParseToViewModel()));
+                if (result.Count > 0)
+                {
+                    foreach (RequisitionViewModel item in result)
+                    {
+                        if (item.State == RequisitionStates.Pending || item.State == RequisitionStates.Rejected)
+                        {
+                            item.SentReqToAprove = true;
+                        }
+                        else
+                        {
+                            item.SentReqToAprove = false;
+                        }
+
+                        if (item.ApprovalDate != null)
+                        {
+                            item.ApprovalDateString = item.ApprovalDate.Value.ToString("yyyy-MM-dd");
+                        }
+
+                        item.LocalCode = DBRequestLine.GetByRequisitionId(item.RequisitionNo).FirstOrDefault()?.CódigoLocalização;
+                    }
+                    if (AproveList != null && AproveList.Count > 0)
+                    {
+                        foreach (ApprovalMovementsViewModel apmov in AproveList)
+                        {
+                            foreach (RequisitionViewModel req in result)
+                            {
+                                if (apmov.Number == req.RequisitionNo && (apmov.Status == 1 || apmov.Status == 2))
+                                {
+                                    req.SentReqToAprove = false;
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
+            return Json(result.OrderByDescending(x => x.RequisitionNo));
+        }
+
+        public JsonResult GetReqByUserResponsibleForApproval_CD()
+        {
+            List<Requisição> requisition = null;
+            //List<RequisitionStates> states = new List<RequisitionStates>()
+            //{
+            //    RequisitionStates.Pending,
+            //    RequisitionStates.Rejected
+            //};
+            //requisition = DBRequest.GetReqByUserAreaStatus(User.Identity.Name, states);
+            requisition = DBRequest.GetReqByUserResponsibleForApproval((int)RequisitionTypes.ComprasDinheiro, User.Identity.Name);
             List<RequisitionViewModel> result = new List<RequisitionViewModel>();
             List<ApprovalMovementsViewModel> AproveList = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAll()); //.GetAllAssignedToUserFilteredByStatus(User.Identity.Name, 1));
             if (requisition != null)
@@ -1322,7 +1458,38 @@ namespace Hydra.Such.Portal.Controllers
             {
                 RequisitionStates.Archived,
             };
-            requisition = DBRequest.GetReqByUserAreaStatus(0, User.Identity.Name, states);
+            requisition = DBRequest.GetReqByUserAreaStatus((int)RequisitionTypes.Normal, User.Identity.Name, states);
+
+            List<RequisitionViewModel> result = new List<RequisitionViewModel>();
+
+            requisition.ForEach(x => result.Add(DBRequest.ParseToViewModel(x)));
+
+            return Json(result.OrderByDescending(x => x.RequisitionNo));
+
+            //CODIGO ORIGINAL
+            //List<RequisiçãoHist> requisition = null;
+            //List<RequisitionStates> states = new List<RequisitionStates>()
+            //{
+            //    RequisitionStates.Archived,
+            //};
+            //requisition = DBRequesitionHist.GetReqByUserAreaStatus(User.Identity.Name, states);
+
+            //List<RequisitionHistViewModel> result = new List<RequisitionHistViewModel>();
+
+            //requisition.ForEach(x => result.Add(DBRequesitionHist.ParseToViewModel(x)));
+
+            //return Json(result.OrderByDescending(x => x.RequisitionNo));
+            //FIM
+        }
+
+        public JsonResult GetHistoryReq_CD()
+        {
+            List<Requisição> requisition = null;
+            List<RequisitionStates> states = new List<RequisitionStates>()
+            {
+                RequisitionStates.Archived,
+            };
+            requisition = DBRequest.GetReqByUserAreaStatus((int)RequisitionTypes.ComprasDinheiro, User.Identity.Name, states);
 
             List<RequisitionViewModel> result = new List<RequisitionViewModel>();
 
@@ -1452,6 +1619,7 @@ namespace Hydra.Such.Portal.Controllers
                             (key, items) => new RequisitionViewModel
                             {
                                 RequestReclaimNo = data.ClaimedRequesitionNo,
+                                TipoReq = (int)RequisitionTypes.Normal,
                                 Urgent = data.Urgent,
                                 Attachment = data.Attachment,
                                 Area = data.Area,
@@ -1536,6 +1704,7 @@ namespace Hydra.Such.Portal.Controllers
                             (key, items) => new RequisitionViewModel
                             {
                                 RequestReclaimNo = data.ClaimedRequesitionNo,
+                                TipoReq = (int)RequisitionTypes.Normal,
                                 Urgent = data.Urgent,
                                 Attachment = data.Attachment,
                                 Area = data.Area,
@@ -1778,6 +1947,424 @@ namespace Hydra.Such.Portal.Controllers
             return data;
         }
 
+        [HttpPost]
+        public JsonResult CreateRequesition_CD([FromBody] PreRequesitionsViewModel data)
+        {
+            try
+            {
+                List<string> AllRequesitionIds = new List<string>();
+                if (data != null)
+                {
+                    List<LinhasPréRequisição> PreRequesitionLines = DBPreRequesitionLines.GetAllByNo(data.PreRequesitionsNo);
+                    data.eMessage = "";
+                    if (PreRequesitionLines.Count > 0)
+                    {
+
+                        if (data.Complaint == true && (data.ClaimedRequesitionNo == "" || data.ClaimedRequesitionNo == null))
+                        {
+                            data.eReasonCode = 2;
+                            data.eMessage = "O campo Nº Requisição Reclamada deve ser preenchido.";
+                            return Json(data);
+                        }
+
+                        if (data.MoneyBuy == true)
+                        {
+                            if (PreRequesitionLines != null)
+                            {
+                                foreach (var lines in PreRequesitionLines)
+                                {
+                                    if (lines.CustoUnitário == null || (lines.NºFornecedor == null || lines.NºFornecedor == ""))
+                                    {
+                                        data.eReasonCode = 3;
+                                        data.eMessage = "Os campos Custo Unitário e Nº Fornecedor das linhas devem ser todos preenchidos.";
+                                        return Json(data);
+                                    }
+                                }
+                            }
+                        }
+
+                        if (data.Sample == true)
+                        {
+                            if (data.CollectionLocal == null || String.IsNullOrEmpty(data.CollectionAddress) || String.IsNullOrEmpty(data.CollectionPostalCode) || String.IsNullOrEmpty(data.CollectionLocality) || String.IsNullOrEmpty(data.CollectionContact) || String.IsNullOrEmpty(data.CollectionReceptionResponsible))
+                            {
+                                data.eReasonCode = 4;
+                                data.eMessage = "Os campos de Recolha devem ser todos preenchidos.";
+                                return Json(data);
+                            }
+                        }
+
+                        if (data.AlreadyExecuted == true)
+                        {
+                            if (String.IsNullOrEmpty(data.InvoiceNo))
+                            {
+                                data.eReasonCode = 4;
+                                //NR20181108
+                                //data.eMessage = "O campo Nº Fatura na Entrega (Fornecedor) deve estar preenchido.";
+                                data.eMessage = "O campo Nº Guia e / ou Nº Fatura no Geral deve estar preenchido.";
+
+                                return Json(data);
+                            }
+                        }
+
+                        if (data.Equipment == true)
+                        {
+                            if (data.CollectionLocal == null || String.IsNullOrEmpty(data.CollectionAddress) || String.IsNullOrEmpty(data.CollectionPostalCode) || String.IsNullOrEmpty(data.CollectionLocality) || String.IsNullOrEmpty(data.CollectionContact) || String.IsNullOrEmpty(data.CollectionReceptionResponsible))
+                            {
+                                data.eReasonCode = 4;
+                                data.eMessage = "Os campos de Recolha devem ser todos preenchidos.";
+                                return Json(data);
+                            }
+                            //NR20181108
+                            //else if (data.DeliveryLocal == null || String.IsNullOrEmpty(data.DeliveryAddress) || String.IsNullOrEmpty(data.DeliveryPostalCode) || String.IsNullOrEmpty(data.DeliveryLocality) || String.IsNullOrEmpty(data.CollectionReceptionResponsible) || String.IsNullOrEmpty(data.InvoiceNo))
+                            else if (data.DeliveryLocal == null || String.IsNullOrEmpty(data.DeliveryAddress) || String.IsNullOrEmpty(data.DeliveryPostalCode) || String.IsNullOrEmpty(data.DeliveryLocality) || String.IsNullOrEmpty(data.CollectionReceptionResponsible))
+                            {
+                                data.eReasonCode = 4;
+                                data.eMessage = "Os campos de Entrega (Fornecedor) devem ser todos preenchidos.";
+                                return Json(data);
+                            }
+                        }
+
+                        //Get VATPostingGroup Info
+                        List<string> productsInRequisitionIds = PreRequesitionLines.Select(y => y.Código).Distinct().ToList();
+                        var productsInRequisition = DBNAV2017Products.GetProductsById(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, productsInRequisitionIds);
+                        var vendors = DBNAV2017Vendor.GetVendor(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName);
+
+                        List<PreRequisitionLineViewModel> GroupedListOpenOrderLine = new List<PreRequisitionLineViewModel>();
+                        PreRequesitionLines.Where(x => x.NºLinhaEncomendaAberto.HasValue && x.QuantidadeARequerer > 0).ToList().ForEach(x => GroupedListOpenOrderLine.Add(DBPreRequesitionLines.ParseToViewModel(x)));
+
+                        List<RequisitionViewModel> newlistOpenOrder = GroupedListOpenOrderLine.GroupBy(
+                            x => x.OpenOrderNo,
+                            x => x,
+                            (key, items) => new RequisitionViewModel
+                            {
+                                RequestReclaimNo = data.ClaimedRequesitionNo,
+                                TipoReq = (int)RequisitionTypes.ComprasDinheiro,
+                                Urgent = data.Urgent,
+                                Attachment = data.Attachment,
+                                Area = data.Area,
+                                Immobilized = data.Immobilized,
+                                Exclusive = data.Exclusive,
+                                AlreadyPerformed = data.AlreadyExecuted,
+                                Sample = data.Sample,
+                                Equipment = data.Equipment,
+                                BuyCash = data.MoneyBuy,
+                                StockReplacement = data.StockReplacement,
+                                Reclamation = data.Complaint,
+                                RegionCode = data.RegionCode,
+                                FunctionalAreaCode = data.FunctionalAreaCode,
+                                CenterResponsibilityCode = data.ResponsabilityCenterCode,
+                                Vehicle = data.Vehicle,
+                                ProjectNo = data.ProjectNo,
+                                ReceivedDate = data.ReceptionDate,
+                                Comments = data.Notes,
+                                RepairWithWarranty = data.WarrantyRepair,
+                                Emm = data.EMM,
+                                WarehouseDeliveryDate = data.DeliveryWarehouseDate,
+                                LocalCollection = data.CollectionLocal,
+                                CollectionAddress = data.CollectionAddress,
+                                CollectionPostalCode = data.CollectionPostalCode,
+                                CollectionLocality = data.CollectionLocality,
+                                CollectionContact = data.CollectionContact,
+                                CollectionResponsibleReception = data.CollectionReceptionResponsible,
+                                LocalDelivery = data.DeliveryLocal,
+                                DeliveryAddress = data.DeliveryAddress,
+                                DeliveryPostalCode = data.DeliveryPostalCode,
+                                LocalityDelivery = data.DeliveryLocality,
+                                ResponsibleReceptionReception = data.ReceptionReceptionResponsible,
+                                InvoiceNo = data.InvoiceNo,
+                                State = RequisitionStates.Pending,
+                                RequisitionDate = DateTime.Now.ToString("dd-MM-yyyy"),
+                                CreateUser = User.Identity.Name,
+
+                                Lines = items.Select(line => new RequisitionLineViewModel()
+                                {
+
+                                    LocalCode = line.LocalCode,
+                                    Code = line.Code,
+                                    Description = line.Description,
+                                    Description2 = line.Description2,
+                                    UnitMeasureCode = line.UnitMeasureCode,
+                                    QuantityToRequire = line.QuantityToRequire,
+                                    QuantidadeInicial = line.QuantidadeInicial,
+                                    UnitCost = line.UnitCost,
+                                    ProjectNo = line.ProjectNo,
+                                    MaintenanceOrderLineNo = line.MaintenanceOrderLineNo,
+                                    Vehicle = line.Vehicle,
+                                    SupplierNo = line.SupplierNo,
+                                    RegionCode = line.RegionCode,
+                                    FunctionalAreaCode = line.FunctionalAreaCode,
+                                    CenterResponsibilityCode = line.CenterResponsibilityCode,
+                                    OpenOrderNo = line.OpenOrderNo,
+                                    OpenOrderLineNo = line.OpenOrderLineNo,
+                                }).ToList()
+                            }).ToList();
+
+                        //Set VATPostingGroup Info
+                        newlistOpenOrder.ForEach(header =>
+                        {
+                            header.Lines.ForEach(line =>
+                            {
+                                line.VATBusinessPostingGroup = vendors.FirstOrDefault(x => x.No_ == line.SupplierNo)?.VATBusinessPostingGroup;
+                                line.VATProductPostingGroup = productsInRequisition.FirstOrDefault(x => x.Code == line.Code)?.VATProductPostingGroup;
+                            });
+
+                            header.LocalMarketRegion = header.Lines.FirstOrDefault().MarketLocalRegion;
+                        });
+
+                        if (newlistOpenOrder != null && newlistOpenOrder.Count > 0)
+                            data = CreateRequesition_CD(newlistOpenOrder, data);
+
+                        List<PreRequisitionLineViewModel> GroupedList = new List<PreRequisitionLineViewModel>();
+                        PreRequesitionLines.Where(x => (x.NºLinhaEncomendaAberto == 0 || x.NºLinhaEncomendaAberto == null) && x.QuantidadeARequerer > 0).ToList().ForEach(x => GroupedList.Add(DBPreRequesitionLines.ParseToViewModel(x)));
+
+                        List<RequisitionViewModel> newlist = GroupedList.GroupBy(
+                            x => x.ArmazemCDireta,
+                            x => x,
+                            (key, items) => new RequisitionViewModel
+                            {
+                                RequestReclaimNo = data.ClaimedRequesitionNo,
+                                TipoReq = (int)RequisitionTypes.ComprasDinheiro,
+                                Urgent = data.Urgent,
+                                Attachment = data.Attachment,
+                                Area = data.Area,
+                                Immobilized = data.Immobilized,
+                                Exclusive = data.Exclusive,
+                                AlreadyPerformed = data.AlreadyExecuted,
+                                Sample = data.Sample,
+                                Equipment = data.Equipment,
+                                BuyCash = data.MoneyBuy,
+                                StockReplacement = data.StockReplacement,
+                                Reclamation = data.Complaint,
+                                RegionCode = data.RegionCode,
+                                FunctionalAreaCode = data.FunctionalAreaCode,
+                                CenterResponsibilityCode = data.ResponsabilityCenterCode,
+                                Vehicle = data.Vehicle,
+                                ProjectNo = data.ProjectNo,
+                                ReceivedDate = data.ReceptionDate,
+                                Comments = data.Notes,
+                                RepairWithWarranty = data.WarrantyRepair,
+                                Emm = data.EMM,
+                                WarehouseDeliveryDate = data.DeliveryWarehouseDate,
+                                LocalCollection = data.CollectionLocal,
+                                CollectionAddress = data.CollectionAddress,
+                                CollectionPostalCode = data.CollectionPostalCode,
+                                CollectionLocality = data.CollectionLocality,
+                                CollectionContact = data.CollectionContact,
+                                CollectionResponsibleReception = data.CollectionReceptionResponsible,
+                                LocalDelivery = data.DeliveryLocal,
+                                DeliveryAddress = data.DeliveryAddress,
+                                DeliveryPostalCode = data.DeliveryPostalCode,
+                                LocalityDelivery = data.DeliveryLocality,
+                                ResponsibleReceptionReception = data.ReceptionReceptionResponsible,
+                                InvoiceNo = data.InvoiceNo,
+                                State = RequisitionStates.Pending,
+                                RequisitionDate = DateTime.Now.ToString("dd-MM-yyyy"),
+                                CreateUser = User.Identity.Name,
+
+                                Lines = items.Select(line => new RequisitionLineViewModel()
+                                {
+
+                                    LocalCode = line.LocalCode,
+                                    Code = line.Code,
+                                    Description = line.Description,
+                                    Description2 = line.Description2,
+                                    UnitMeasureCode = line.UnitMeasureCode,
+                                    QuantityToRequire = line.QuantityToRequire,
+                                    QuantidadeInicial = line.QuantidadeInicial,
+                                    UnitCost = line.UnitCost,
+                                    ProjectNo = line.ProjectNo,
+                                    MaintenanceOrderLineNo = line.MaintenanceOrderLineNo,
+                                    Vehicle = line.Vehicle,
+                                    SupplierNo = line.SupplierNo,
+                                    RegionCode = line.RegionCode,
+                                    FunctionalAreaCode = line.FunctionalAreaCode,
+                                    CenterResponsibilityCode = line.CenterResponsibilityCode,
+                                    OpenOrderNo = line.OpenOrderNo,
+                                    OpenOrderLineNo = line.OpenOrderLineNo,
+                                }).ToList()
+                            }).ToList();
+
+                        //Set VATPostingGroup Info
+                        newlist.ForEach(header =>
+                        {
+                            header.Lines.ForEach(line =>
+                            {
+                                line.VATBusinessPostingGroup = vendors.FirstOrDefault(x => x.No_ == line.SupplierNo)?.VATBusinessPostingGroup;
+                                line.VATProductPostingGroup = productsInRequisition.FirstOrDefault(x => x.Code == line.Code)?.VATProductPostingGroup;
+                            });
+
+                            header.LocalMarketRegion = header.Lines.FirstOrDefault().MarketLocalRegion;
+                        });
+                        if (newlist != null && newlist.Count > 0)
+                            data = CreateRequesition_CD(newlist, data);
+
+                        if (data.eReasonCode == 1 && newlist.Count > 0 || newlistOpenOrder.Count > 0)
+                        {
+                            //if all items have been created delete pre-requisition lines
+                            DBPreRequesitionLines.DeleteAllFromPreReqNo(data.PreRequesitionsNo);
+
+                            var successMessages = data.eMessages.Where(x => x.Type == TraceType.Success).Select(x => x.Message).ToArray();
+                            if (successMessages.Length > 0)
+                            {
+                                data.eMessage += " " + string.Join(";", successMessages);
+                            }
+                        }
+                        else
+                        {
+                            data.eReasonCode = 0;
+                            data.eMessage = "Ocorreu um erro ao criar a requisição.";
+                        }
+                    }
+                    else
+                    {
+                        data.eReasonCode = 0;
+                        data.eMessage = "Pré-Requisição não contém linhas.";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                data.eReasonCode = 0;
+                data.eMessage = "Ocorreu um erro ao criar a requisição.";
+            }
+            return Json(data);
+        }
+
+        public PreRequesitionsViewModel CreateRequesition_CD(List<RequisitionViewModel> newlist, PreRequesitionsViewModel data)
+        {
+            int totalItems = 0;
+            string createdReqIds = ": ";
+
+            foreach (var req in newlist)
+            {
+                //Get Contract Numeration
+                Configuração Configs = DBConfigurations.GetById(1);
+                int ProjectNumerationConfigurationId = 0;
+                ProjectNumerationConfigurationId = Configs.NumeracaoRequisicoesComprasDinheiro.Value;
+
+                string RequisitionNo = DBNumerationConfigurations.GetNextNumeration(ProjectNumerationConfigurationId, true, false);
+                if (!string.IsNullOrEmpty(RequisitionNo))
+                {
+                    //Update Last Numeration Used
+                    ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(ProjectNumerationConfigurationId);
+                    ConfigNumerations.ÚltimoNºUsado = RequisitionNo;
+                    ConfigNumerations.UtilizadorModificação = User.Identity.Name;
+                    DBNumerationConfigurations.Update(ConfigNumerations);
+
+                    req.LocalCode = req.Lines.FirstOrDefault() != null ? req.Lines.FirstOrDefault().LocalCode : null;
+                    req.RequisitionNo = RequisitionNo;
+                    req.ResponsibleCreation = User.Identity.Name;
+                    req.RequisitionDate = DateTime.Now.ToString();
+                    req.CreateUser = User.Identity.Name;
+                    req.CreateDate = DateTime.Now.ToString();
+                    Requisição createReq = DBRequest.ParseToDB(req);
+
+                    createReq = DBRequest.Create(createReq);
+                    if (createReq != null)
+                    {
+                        //Create Workflow
+                        var ctx = new SuchDBContext();
+                        var logEntry = new RequisicoesRegAlteracoes();
+                        logEntry.NºRequisição = createReq.NºRequisição;
+                        logEntry.Estado = (int)RequisitionStates.Pending; //PENDENTE = 0
+                        logEntry.ModificadoEm = DateTime.Now;
+                        logEntry.ModificadoPor = User.Identity.Name;
+                        ctx.RequisicoesRegAlteracoes.Add(logEntry);
+                        ctx.SaveChanges();
+
+                        //copy files
+                        var preReq = data.PreRequesitionsNo;
+                        List<Anexos> FilesLoaded = DBAttachments.GetById(preReq);
+                        foreach (var file in FilesLoaded)
+                        {
+                            try
+                            {
+                                string FileName = file.UrlAnexo;
+                                string NewFileName = createReq.NºRequisição + FileName.Substring(FileName.IndexOf('_'));
+                                try
+                                {
+                                    //System.IO.File.Copy(_config.FileUploadFolder + FileName, _config.FileUploadFolder + NewFileName);
+                                    System.IO.File.Copy("E:\\Data\\eSUCH\\Requisicoes\\" + FileName, "E:\\Data\\eSUCH\\Requisicoes\\" + NewFileName);
+                                    //System.IO.File.Copy("C:\\Data\\eSUCH\\Requisicoes\\" + FileName, "E:\\Data\\eSUCH\\Requisicoes\\" + NewFileName);
+                                }
+                                catch (Exception ex)
+                                {
+                                    data.eMessages.Add(new TraceInformation(TraceType.Exception, "Erro ao copiar anexo " + FileName + ": " + ex.Message));
+                                }
+
+                                AttachmentsViewModel CopyFile = new AttachmentsViewModel();
+                                CopyFile.DocNumber = createReq.NºRequisição;
+                                CopyFile.CreateUser = User.Identity.Name;
+                                CopyFile.DocType = 2;
+                                CopyFile.Url = NewFileName;
+                                Anexos newFile = DBAttachments.Create(DBAttachments.ParseToDB(CopyFile));
+                                if (newFile != null)
+                                {
+                                    //System.IO.File.Delete(_config.FileUploadFolder + file.UrlAnexo);
+                                    System.IO.File.Delete("E:\\Data\\eSUCH\\Requisicoes\\" + file.UrlAnexo);
+                                    //System.IO.File.Delete("C:\\Data\\eSUCH\\Requisicoes\\" + file.UrlAnexo);
+                                    DBAttachments.Delete(file);
+                                }
+
+                            }
+                            catch (Exception ex)
+                            {
+                                data.eReasonCode = 0;
+                                data.eMessage = "Ocorreu um erro ao copiar os anexos.";
+                                data.eMessages.Add(new TraceInformation(TraceType.Exception, "Erro ao guardar anexo: " + ex.Message));
+                                //throw;
+                            }
+
+                        }
+
+                        //count successful items for later validation
+                        totalItems++;
+                        //createdReqIds += RequisitionNo + "; ";
+                        var totalValue = req.GetTotalValue();
+                        //Start Approval
+                        ErrorHandler result = ApprovalMovementsManager.StartApprovalMovement(1, createReq.CódigoÁreaFuncional, createReq.CódigoCentroResponsabilidade, createReq.CódigoRegião, totalValue, createReq.NºRequisição, User.Identity.Name, "");
+                        if (result.eReasonCode != 100)
+                        {
+                            data.eMessages.Add(new TraceInformation(TraceType.Error, result.eMessage));
+                        }
+
+                        data.eReasonCode = 1;
+                        data.eMessage = "Requisições criadas com sucesso";
+                        data.eMessages.Add(new TraceInformation(TraceType.Success, RequisitionNo));
+                    }
+                    else
+                    {
+                        data.eReasonCode = 0;
+                        data.eMessage = "Ocorreu um erro ao criar a requisição.";
+                    }
+                }
+                else
+                {
+                    data.eReasonCode = 0;
+                    data.eMessage = "A numeração configurada não é compativel com a inserida.";
+                }
+
+            }
+            if (newlist.Count > 0 && totalItems == newlist.Count)
+            {
+                //if all items have been created delete pre-requisition lines
+
+
+                DBPreRequesitionLines.DeleteAllFromPreReqNo(data.PreRequesitionsNo);
+                //data.eMessage += createdReqIds;
+                //if (data.eMessages.Count > 0)
+                //{
+                //    data.eMessages.Insert(0, new TraceInformation(TraceType.Error, "Não foi possivel iniciar o processo de aprovação para as seguintes requisições: "));
+                //}
+            }
+            else
+            {
+                data.eReasonCode = 0;
+                data.eMessage = "Ocorreu um erro ao criar a requisição.";
+            }
+
+            return data;
+        }
 
         [HttpPost]
         public JsonResult SendReqForApproval([FromBody] JObject requestParams)

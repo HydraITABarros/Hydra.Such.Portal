@@ -580,6 +580,7 @@ namespace Hydra.Such.Portal.Controllers
                     if (productivityUnit != null)
                     {
                         RequisitionViewModel req = new RequisitionViewModel();
+                        req.TipoReq = (int)RequisitionTypes.Normal;
                         req.FunctionalAreaCode = productivityUnit.CódigoÁreaFuncional;
                         req.CenterResponsibilityCode = productivityUnit.CódigoCentroResponsabilidade;
                         req.RegionCode = productivityUnit.CódigoRegião;
@@ -942,7 +943,7 @@ namespace Hydra.Such.Portal.Controllers
                                 resultRq.NºRequisição = DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, true, false);
                                 if (resultRq.NºRequisição != null)
                                 {
-
+                                    resultRq.TipoReq = (int)RequisitionTypes.Normal;
                                     resultRq.CódigoÁreaFuncional = ProductivityUnitDB.CódigoÁreaFuncional;
                                     resultRq.CódigoCentroResponsabilidade = ProductivityUnitDB.CódigoCentroResponsabilidade;
                                     resultRq.CódigoRegião = ProductivityUnitDB.CódigoRegião;

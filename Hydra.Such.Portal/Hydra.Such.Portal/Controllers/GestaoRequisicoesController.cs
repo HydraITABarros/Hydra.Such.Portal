@@ -57,6 +57,21 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
+        public IActionResult Index_CD()
+        {
+            UserAccessesViewModel userPermissions =
+                DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.RequisiçõesComprasDinheiro);
+            if (userPermissions != null && userPermissions.Read.Value)
+            {
+                ViewBag.UPermissions = userPermissions;
+                return View();
+            }
+            else
+            {
+                return Redirect(Url.Content("~/Error/AccessDenied"));
+            }
+        }
+
         public IActionResult RequisicoesAcordosPrecos()
         {
             UserAccessesViewModel userPermissions =
@@ -268,6 +283,30 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         public IActionResult Arquivadas()
+        {
+            //UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.HistóricoRequisições);
+            UserAccessesViewModel UPerm = new UserAccessesViewModel();
+            UPerm.Area = 1;
+            UPerm.Create = true;
+            UPerm.Delete = true;
+            UPerm.Feature = (int)Enumerations.Features.HistóricoRequisições;
+            UPerm.IdUser = User.Identity.Name;
+            UPerm.Read = true;
+            UPerm.Update = true;
+
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.Area = 4;
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        public IActionResult Arquivadas_CD()
         {
             //UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.HistóricoRequisições);
             UserAccessesViewModel UPerm = new UserAccessesViewModel();
@@ -727,6 +766,35 @@ namespace Hydra.Such.Portal.Controllers
                 RequisitionStates.Treated,
             };
             List<RequisitionViewModel> result = DBRequest.GetByState((int)RequisitionTypes.Normal, states).ParseToViewModel();
+
+            //Apply User Dimensions Validations
+            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            //Regions
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.RegionCode));
+            //FunctionalAreas
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.FunctionalAreaCode));
+            //ResponsabilityCenter
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CenterResponsibilityCode));
+
+            result.RemoveAll(x => x.RequestNutrition == true);
+
+            return Json(result.OrderByDescending(x => x.RequisitionNo));
+        }
+
+        [HttpPost]
+        public JsonResult GetValidatedRequisitions_CD()
+        {
+            List<RequisitionStates> states = new List<RequisitionStates>()
+            {
+                RequisitionStates.Validated,
+                RequisitionStates.Available,
+                RequisitionStates.Received,
+                RequisitionStates.Treated,
+            };
+            List<RequisitionViewModel> result = DBRequest.GetByState((int)RequisitionTypes.ComprasDinheiro, states).ParseToViewModel();
 
             //Apply User Dimensions Validations
             List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
