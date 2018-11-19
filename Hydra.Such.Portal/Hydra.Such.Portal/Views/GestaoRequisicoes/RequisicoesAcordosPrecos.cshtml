@@ -472,23 +472,24 @@
                 },
 
                 _createPurchaseOrderResponse: function (e) {
-                    this.selectedItem = null;
                     this.selectedItems = null;
 
                     if (this.Requisition.eReasonCode == "1") {
                         this._showMessage(this.Requisition.eMessage);
-                        this.$.gridrequest.clearCache();
-                        this.$.ajax_getgrid.generateRequest();
+                        //this.$.gridrequest.clearCache();
+                        //this.$.ajax_getgrid.generateRequest();
                     }
                     else {
                         if (this.Requisition.eMessages.length > 0)
                             this._toggleToastMultiple();
                         else {
                             this._showErrorMessage(this.Requisition.eMessage);
-                            this.$.gridrequest.clearCache();
-                            this.$.ajax_getgrid.generateRequest();
+                            //this.$.gridrequest.clearCache();
+                            //this.$.ajax_getgrid.generateRequest();
                         }
                     }
+
+                    location.reload(true);
                 },
 
                 _exportEXCEL: function () {

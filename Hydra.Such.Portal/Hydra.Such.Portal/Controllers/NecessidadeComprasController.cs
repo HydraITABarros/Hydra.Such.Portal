@@ -598,24 +598,27 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             if (item.Quantity.HasValue && item.Quantity > 0)
                             {
-                                RequisitionLineViewModel line = new RequisitionLineViewModel();
-                                line.Type = 2;
-                                line.Code = item.ProductNo;
-                                line.Description = item.Description;
-                                line.UnitMeasureCode = item.UnitMeasureCode;
-                                line.QtyByUnitOfMeasure = item.QuantitybyUnitMeasure;
-                                line.QuantityToRequire = item.Quantity;
-                                line.UnitCost = item.DirectUnitCost;
-                                line.SupplierNo = item.SupplierNo;
-                                line.ExpectedReceivingDate = item.ExpectedReceptionDate;
-                                line.SupplierProductCode = item.SupplierProductCode;
-                                line.FunctionalAreaCode = req.FunctionalAreaCode;
-                                line.CenterResponsibilityCode = req.CenterResponsibilityCode;
-                                line.RegionCode = req.RegionCode;
-                                line.CreateUser = User.Identity.Name;
-                                line.ProjectNo = productivityUnit.ProjetoCozinha;
-                                line.LocalCode = productivityUnit.Armazém;
-                                
+                                RequisitionLineViewModel line = new RequisitionLineViewModel
+                                {
+                                    Type = 2,
+                                    Code = item.ProductNo,
+                                    Description = item.Description,
+                                    UnitMeasureCode = item.UnitMeasureCode,
+                                    QtyByUnitOfMeasure = item.QuantitybyUnitMeasure,
+                                    QuantityToRequire = item.Quantity,
+                                    UnitCost = item.DirectUnitCost,
+                                    SupplierNo = item.SupplierNo,
+                                    ExpectedReceivingDate = item.ExpectedReceptionDate,
+                                    SupplierProductCode = item.SupplierProductCode,
+                                    FunctionalAreaCode = req.FunctionalAreaCode,
+                                    CenterResponsibilityCode = req.CenterResponsibilityCode,
+                                    RegionCode = req.RegionCode,
+                                    CreateUser = User.Identity.Name,
+                                    ProjectNo = productivityUnit.ProjetoCozinha,
+                                    LocalCode = productivityUnit.Armazém,
+                                    VATProductPostingGroup = item.GrupoRegistoIvaProduto
+                            };
+
                                 req.Lines.Add(line);
                             }
                         });
@@ -632,10 +635,12 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 line.VATBusinessPostingGroup = vendors.FirstOrDefault(x => x.No_ == line.SupplierNo)?.VATBusinessPostingGroup;
 
-                                if (string.IsNullOrEmpty(line.Description2))
-                                    line.Description2 = productsInRequisition.FirstOrDefault(x => x.Code == line.Code)?.Name2;
                                 if (string.IsNullOrEmpty(line.VATProductPostingGroup))
                                     line.VATProductPostingGroup = productsInRequisition.FirstOrDefault(x => x.Code == line.Code)?.VATProductPostingGroup;
+
+                                if (string.IsNullOrEmpty(line.Description2))
+                                    line.Description2 = productsInRequisition.FirstOrDefault(x => x.Code == line.Code)?.Name2;
+
                             });
                         }
                         catch { }
