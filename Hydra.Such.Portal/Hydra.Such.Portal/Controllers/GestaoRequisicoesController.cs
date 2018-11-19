@@ -1893,7 +1893,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 try
                 {
-                    item.NumeroMecanografico = !string.IsNullOrEmpty(DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo) ? DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo : "";
+                    item.NumeroMecanografico = string.IsNullOrEmpty(DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo) ? "" : DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo;
                     RequisitionService serv = new RequisitionService(config, configws, HttpContext.User.Identity.Name);
                     item = serv.CreatePurchaseOrderFor(item);
 

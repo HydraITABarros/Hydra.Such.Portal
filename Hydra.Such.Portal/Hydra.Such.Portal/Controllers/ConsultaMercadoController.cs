@@ -955,7 +955,9 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     try
                     {
-                        purchOrder.Purchaser_Code = User.Identity.Name;
+                        //purchOrder.Purchaser_Code = User.Identity.Name;
+                        purchOrder.Purchaser_Code = string.IsNullOrEmpty(DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo) ? "" : DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo;
+
                         var result = CreateNAVPurchaseOrderFor(purchOrder, data.NumConsultaMercado, data.Obs);
                         if (result.CompletedSuccessfully)
                         {
