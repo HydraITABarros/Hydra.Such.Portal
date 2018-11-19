@@ -12,6 +12,7 @@ namespace Hydra.Such.Data.Database
         }
 
         public string NºPréRequisição { get; set; }
+        public int? TipoPreReq { get; set; }
         public int? Área { get; set; }
         public string TipoRequisição { get; set; }
         public string NºProjeto { get; set; }
@@ -74,6 +75,7 @@ namespace Hydra.Such.Data.Database
         public string ResponsávelReceçãoReceção { get; set; }
         public string NºFatura { get; set; }
         public bool? PedirOrcamento { get; set; }
+        public decimal? ValorTotalDocComIVA { get; set; }
 
         public Locais CódigoLocalEntregaNavigation { get; set; }
         public Locais CódigoLocalRecolhaNavigation { get; set; }

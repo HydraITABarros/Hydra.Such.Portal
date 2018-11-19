@@ -31,7 +31,8 @@ namespace Hydra.Such.Data.Logic
                         {
                             No_ = (string)temp.No_,
                             Name = (string)temp.Name,
-                            Address = (string)temp.Address
+                            Address = (string)temp.Address,
+                            VATBusinessPostingGroup = (string)temp.VATBusinessPostingGroup,
                         });
                     }
                 }

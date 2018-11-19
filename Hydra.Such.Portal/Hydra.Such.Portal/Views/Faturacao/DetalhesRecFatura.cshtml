@@ -1085,24 +1085,24 @@
                         this._nameButtonSend = "Enviar";
                         if (this.data.areaPendente == "Contabilidade") {
                             this._hiddeAnswerButton = true;
-                        } else if (this.data.areaPendente == "Aprovisionamento") {
-                            if (this._rfperfil == "Aprovisionamento") {
+                        } else if (this.data.areaPendente != "Contabilidade") {
+                            if (this._rfperfil != "Contabilidade") {
                                 this._hiddeAnswerButton = false;
                                 this._showHiddenProvisioning = true;
                             }
-                        } else {
+                        } /*else {
                             if (this._rfperfil != "Aprovisionamento" && this._rfperfil != "Contabilidade") {
 
                                 this._hiddeAnswerButton = false;
                             }
-                        }
+                        }*/
                     }
                     //QUESTÂO
                     if (this._rfperfil == "Contabilidade") {
                         this._showHiddenAccounting = false;
                         this._hiddeSendButton = true;
                     }
-                    if (this._rfperfil == "Aprovisionamento") {
+                    if (this._rfperfil != "Contabilidade") {
                         this._showHiddenProvisioning = false;
                         this._hiddeSendButton = false;
                     }

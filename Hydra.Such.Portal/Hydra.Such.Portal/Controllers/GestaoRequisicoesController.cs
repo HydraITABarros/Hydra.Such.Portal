@@ -57,6 +57,21 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
+        public IActionResult Index_CD()
+        {
+            UserAccessesViewModel userPermissions =
+                DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.RequisiçõesComprasDinheiro);
+            if (userPermissions != null && userPermissions.Read.Value)
+            {
+                ViewBag.UPermissions = userPermissions;
+                return View();
+            }
+            else
+            {
+                return Redirect(Url.Content("~/Error/AccessDenied"));
+            }
+        }
+
         public IActionResult RequisicoesAcordosPrecos()
         {
             UserAccessesViewModel userPermissions =
@@ -268,6 +283,30 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         public IActionResult Arquivadas()
+        {
+            //UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.HistóricoRequisições);
+            UserAccessesViewModel UPerm = new UserAccessesViewModel();
+            UPerm.Area = 1;
+            UPerm.Create = true;
+            UPerm.Delete = true;
+            UPerm.Feature = (int)Enumerations.Features.HistóricoRequisições;
+            UPerm.IdUser = User.Identity.Name;
+            UPerm.Read = true;
+            UPerm.Update = true;
+
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.Area = 4;
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        public IActionResult Arquivadas_CD()
         {
             //UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.HistóricoRequisições);
             UserAccessesViewModel UPerm = new UserAccessesViewModel();
@@ -699,7 +738,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult GetApprovedRequisitions()
         {
-            List<RequisitionViewModel> result = DBRequest.GetByState(RequisitionStates.Approved).ParseToViewModel();
+            List<RequisitionViewModel> result = DBRequest.GetByState(0, RequisitionStates.Approved).ParseToViewModel();
 
             //Apply User Dimensions Validations
             List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
@@ -726,7 +765,36 @@ namespace Hydra.Such.Portal.Controllers
                 RequisitionStates.Received,
                 RequisitionStates.Treated,
             };
-            List<RequisitionViewModel> result = DBRequest.GetByState(states).ParseToViewModel();
+            List<RequisitionViewModel> result = DBRequest.GetByState((int)RequisitionTypes.Normal, states).ParseToViewModel();
+
+            //Apply User Dimensions Validations
+            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            //Regions
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.RegionCode));
+            //FunctionalAreas
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.FunctionalAreaCode));
+            //ResponsabilityCenter
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CenterResponsibilityCode));
+
+            result.RemoveAll(x => x.RequestNutrition == true);
+
+            return Json(result.OrderByDescending(x => x.RequisitionNo));
+        }
+
+        [HttpPost]
+        public JsonResult GetValidatedRequisitions_CD()
+        {
+            List<RequisitionStates> states = new List<RequisitionStates>()
+            {
+                RequisitionStates.Validated,
+                RequisitionStates.Available,
+                RequisitionStates.Received,
+                RequisitionStates.Treated,
+            };
+            List<RequisitionViewModel> result = DBRequest.GetByState((int)RequisitionTypes.ComprasDinheiro, states).ParseToViewModel();
 
             //Apply User Dimensions Validations
             List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
@@ -774,7 +842,7 @@ namespace Hydra.Such.Portal.Controllers
                 };
             }
 
-            List<RequisitionViewModel> result = DBRequest.GetByState(states).ParseToViewModel();
+            List<RequisitionViewModel> result = DBRequest.GetByState((int)RequisitionTypes.Normal, states).ParseToViewModel();
 
             //Apply User Dimensions Validations
             List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
@@ -788,7 +856,7 @@ namespace Hydra.Such.Portal.Controllers
             if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
                 result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CenterResponsibilityCode));
 
-            result.RemoveAll(x => x.RequestNutrition == true);
+            //result.RemoveAll(x => x.RequestNutrition == true);
 
             return Json(result.OrderByDescending(x => x.RequisitionNo));
         }
@@ -803,7 +871,7 @@ namespace Hydra.Such.Portal.Controllers
                 RequisitionStates.Received,
                 RequisitionStates.Treated,
             };
-            List<RequisitionViewModel> result = DBRequest.GetByState(states).ParseToViewModel();
+            List<RequisitionViewModel> result = DBRequest.GetByState((int)RequisitionTypes.Normal, states).ParseToViewModel();
 
             //Remove todas as requisições em que o campo Requisição Nutrição seja != de true
             result.RemoveAll(x => x.RequestNutrition != true);
@@ -827,7 +895,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetAllRequisitionshistoric()
         {
-            List<RequisitionViewModel> result = DBRequest.GetByState(RequisitionStates.Archived).ParseToViewModel();
+            List<RequisitionViewModel> result = DBRequest.GetByState((int)RequisitionTypes.Normal, RequisitionStates.Archived).ParseToViewModel();
 
             //Apply User Dimensions Validations
             List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
@@ -1798,7 +1866,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 try
                 {
-                    RequisitionService serv = new RequisitionService(configws, HttpContext.User.Identity.Name);
+                    RequisitionService serv = new RequisitionService(config, configws, HttpContext.User.Identity.Name);
                     item = serv.CreateMarketConsultFor(item);
                 }
                 catch (NotImplementedException ex)
@@ -1825,8 +1893,23 @@ namespace Hydra.Such.Portal.Controllers
             {
                 try
                 {
+                    item.NumeroMecanografico = !string.IsNullOrEmpty(DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo) ? DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo : "";
                     RequisitionService serv = new RequisitionService(config, configws, HttpContext.User.Identity.Name);
                     item = serv.CreatePurchaseOrderFor(item);
+
+                    if (item.eReasonCode == 1)
+                    {
+                        if (item.RequestNutrition == true)
+                        {
+                            item.State = RequisitionStates.Archived;
+                            item.UpdateUser = User.Identity.Name;
+                            if (DBRequest.Update(DBRequest.ParseToDB(item)) == null)
+                            {
+                                item.eReasonCode = 33;
+                                item.eMessage = "Ocorreu um erro na passagem da Requisição para Histórico.";
+                            }
+                        }
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -1861,17 +1944,34 @@ namespace Hydra.Such.Portal.Controllers
                     //UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Requisições);
                     //if (UPerm.Create == true)
                     //{
-                        Requisicoes.ForEach(Requisicao =>
+
+                        
+                    Requisicoes.ForEach(Requisicao =>
+                    {
+                        if (result.eReasonCode == 1)
                         {
+                            Requisicao.NumeroMecanografico = !string.IsNullOrEmpty(DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo) ? DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo : "" ;
+                            RequisitionService serv = new RequisitionService(config, configws, HttpContext.User.Identity.Name);
+                            Requisicao = serv.CreatePurchaseOrderFor(Requisicao);
+
+                            result.eReasonCode = Requisicao.eReasonCode;
+                            result.eMessage = Requisicao.eMessage;
+
                             if (result.eReasonCode == 1)
                             {
-                                RequisitionService serv = new RequisitionService(config, configws, HttpContext.User.Identity.Name);
-                                Requisicao = serv.CreatePurchaseOrderFor(Requisicao);
-
-                                result.eReasonCode = Requisicao.eReasonCode;
-                                result.eMessage = Requisicao.eMessage;
+                                if (Requisicao.RequestNutrition == true)
+                                {
+                                    Requisicao.State = RequisitionStates.Archived;
+                                    Requisicao.UpdateUser = User.Identity.Name;
+                                    if (DBRequest.Update(DBRequest.ParseToDB(Requisicao)) == null)
+                                    {
+                                        result.eReasonCode = 33;
+                                        result.eMessage = "Ocorreu um erro na passagem da Requisição para Histórico.";
+                                    }
+                                }
                             }
-                        });
+                        }
+                    });
                     //}
                 }
                 else
@@ -2239,7 +2339,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 RequisitionStates.Archived,
             };
-            requisition = DBRequest.GetReqByUserAreaStatus(User.Identity.Name, states);
+            requisition = DBRequest.GetReqByUserAreaStatus((int)RequisitionTypes.Normal, User.Identity.Name, states);
 
             List<RequisitionViewModel> result = new List<RequisitionViewModel>();
 
@@ -2344,6 +2444,11 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Pedir Orçamento");
                     Col = Col + 1;
                 }
+                if (dp["projectNo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº Projeto");
+                    Col = Col + 1;
+                }
                 if (dp["regionCode"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Código Região");
@@ -2359,11 +2464,11 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Código Centro Responsabilidade");
                     Col = Col + 1;
                 }
-                //if (dp["localCode"]["hidden"].ToString() == "False")
-                //{
-                //    row.CreateCell(Col).SetCellValue("Código Localização");
-                //    Col = Col + 1;
-                //}
+                if (dp["localCode"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Código Localização");
+                    Col = Col + 1;
+                }
                 if (dp["comments"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Observações");
@@ -2423,6 +2528,11 @@ namespace Hydra.Such.Portal.Controllers
                             row.CreateCell(Col).SetCellValue(item.PedirOrcamento.ToString());
                             Col = Col + 1;
                         }
+                        if (dp["projectNo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ProjectNo);
+                            Col = Col + 1;
+                        }
                         if (dp["regionCode"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.RegionCode);
@@ -2438,11 +2548,11 @@ namespace Hydra.Such.Portal.Controllers
                             row.CreateCell(Col).SetCellValue(item.CenterResponsibilityCode);
                             Col = Col + 1;
                         }
-                        //if (dp["localCode"]["hidden"].ToString() == "False")
-                        //{
-                        //    row.CreateCell(Col).SetCellValue(item.LocalCode);
-                        //    Col = Col + 1;
-                        //}
+                        if (dp["localCode"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.LocalCode);
+                            Col = Col + 1;
+                        }
                         if (dp["comments"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.Comments);
@@ -2552,6 +2662,11 @@ namespace Hydra.Such.Portal.Controllers
                 if (dp["localMarketDate"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Data Mercado Local");
+                    Col = Col + 1;
+                }
+                if (dp["projectNo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº Projeto");
                     Col = Col + 1;
                 }
                 if (dp["regionCode"]["hidden"].ToString() == "False")
@@ -2681,6 +2796,11 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["localMarketDate"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.LocalMarketDate.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["projectNo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ProjectNo);
                             Col = Col + 1;
                         }
                         if (dp["regionCode"]["hidden"].ToString() == "False")

@@ -1,0 +1,597 @@
+﻿<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html">
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+
+<link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
+<link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
+
+<!--start ColumnToggle-->
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-icons/iron-icons.html" />
+<link rel="import" href="/lib/iron-behaviors/iron-button-state.html" />
+<link rel="import" href="/lib/paper-menu-button/paper-menu-button.html" />
+<!--end ColumnToggle-->
+
+<dom-module id="x-pendingreqcd">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+
+        <style>
+            vaadin-combo-box {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-date-picker {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-text-field {
+                margin-top: 0px !important;
+                width: 100%;
+            }
+
+            paper-button {
+                margin-top: 10px;
+            }
+
+            .break_clear {
+                margin-top: 15px;
+                margin-right: 0px !important;
+                margin-left: 0px !important;
+            }
+
+            .break_frm {
+                margin-top: 15px;
+            }
+
+            .label_custom {
+                color: var(--valo-contrast-60pct) !important;
+                font-weight: 500 !important;
+                font-size: var(--valo-font-size-s) !important;
+                margin-left: calc(var(--valo-text-field-border-radius, var(--valo-border-radius)) / 4) !important;
+                margin-bottom: var(--valo-space-xs) !important;
+                transition: color 0.4s !important;
+                line-height: 1 !important;
+                font-family: var(--valo-font-family) !important;
+            }
+
+            datetime-picker {
+                border-radius: var(--valo-text-field-border-radius, var(--valo-border-radius));
+                background-color: var(--valo-contrast-5pct);
+                color: var(--valo-contrast-60pct) !important;
+                width: 100%;
+            }
+
+            .marginSpace {
+                margin: 0px !important;
+            }
+
+            textarea {
+                background-color: #f5f5f5;
+                border: none;
+                border-radius: 3px 4px;
+                align-self: baseline;
+                font-weight: 500;
+            }
+
+                textarea:hover {
+                    background-color: #eeeeee;
+                }
+
+                textarea:focus {
+                    background-color: white;
+                    border: none;
+                    outline: 1px solid #eeeeee;
+                    border-radius: 3px 4px;
+                }
+
+            datetime-picker {
+                --datetime-selected-background: #71BCC1 !important;
+                --datetime-background: #1f3133;
+                --datetime-color: #eeeeee;
+            }
+
+            paper-collapse-item {
+                --paper-item: {
+                padding: 0 0;
+            };
+                --paper-collapse-item-header: {
+                padding: 0 15px;
+                color: #333;
+                background-color: #f5f5f5;
+                border-bottom: solid #ddd 1px;
+                border-top-left-radius: 3px;
+                border-top-right-radius: 3px;
+
+            };
+            }
+
+            .panel-body {
+                padding-top: 0px !important;
+            }
+        </style>
+
+
+        <iron-ajax url="/PopulateDropdowns/GetRequestStatus" last-response="{{CBStatus}}" on-response="_responsehead" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PreRequisicoes/GetPendingReqCD"
+                   last-response="{{result}}"
+                   method="post"
+                   handle-as="json"
+                   id="grid_databound_ajax"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PreRequisicoes/GetReqByUserResponsibleForApproval_CD"
+                   last-response="{{result}}"
+                   method="post"
+                   handle-as="json"
+                   id="grid_databoundApproval_ajax"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PreRequisicoes/GetPendingReqLines"
+                   last-response="{{resultlines}}"
+                   method="post"
+                   handle-as="json"
+                   id="grid_datareqlines_ajax"
+                   on-response="_responseLines"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PreRequisicoes/SendReqForApproval"
+                   last-response="{{actionResult}}"
+                   method="post"
+                   handle-as="json"
+                   on-response="_SendReqResponse"
+                   id="SendReq_databound"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/GestaoRequisicoes/RegistByType"
+                   last-response="{{CloseRequisition}}"
+                   id="closereq_ajax"
+                   on-response="_closeRequisitionResponse"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json"></iron-ajax>
+
+
+
+        <div class="subMenu">
+            <paper-button class="tablinks" on-tap="_goBack" id="btnGoBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+
+            <paper-button class="tablinks" on-tap="_goHistory"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Histórico</paper-button>
+            <paper-button class="tablinks" on-tap="_goApproval"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{ _showMenuMessage }}</paper-button>
+
+            <!--start ColumnToggle-->
+            <paper-menu-button class="column-toggle" no-animations id="gridOpcaoGeral">
+                <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
+                <div class="list-group" slot="dropdown-content">
+                    <template is="dom-repeat" items="[[ _toArray(_columns)]]" id="columnsList">
+                        <a href="javascript:void(0);" on-tap="_toggleColumn" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClass( item.key ) ]]">
+                            {{ item.value.label }}
+                        </a>
+                        <hr />
+                    </template>
+                </div>
+            </paper-menu-button>
+            <!--end ColumnToggle-->
+        </div>
+        <vaadin-grid id="grdPendingReqGrid" aria-label="PendingReqGrid" items="[[result]]" class="grid" multi-sort="true" active-item="{{activeItem}}">
+            <!--active-item="{{activeItem}}"-->
+
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.requisitionNo.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="requisitionNo">Nº Requisição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="requisitionNo" />
+                </template>
+                <template>
+                    {{item.requisitionNo}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.state.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="state">Estado</vaadin-grid-sorter>
+                    <!--<vaadin-grid-filter path="state" />-->
+                </template>
+                <template>
+                    [[ _clFormatState(item.state) ]]
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.createDate.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="createDate">Data Requisição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="createDate" />
+                </template>
+                <template>
+                    {{item.createDate}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.localCode.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="localCode">Código Localização</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="localCode" />
+                </template>
+                <template>
+                    {{item.localCode}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.responsibleApproval.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="responsibleApproval">Responsável Aprovação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="responsibleApproval" />
+                </template>
+                <template>
+                    {{item.responsibleApproval}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.approvalDateString.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="approvalDateString">Data/Hora Aprovação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="approvalDateString" />
+                </template>
+                <template>
+                    {{item.approvalDateString}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.comments.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="comments">Observações</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="comments" />
+                </template>
+                <template>
+                    {{item.comments}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.employeeNo.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="employeeNo">Nº Funcionário</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="employeeNo" />
+                </template>
+                <template>
+                    {{item.employeeNo}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="100px" resizable hidden$="{{ _columns.regionCode.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="regionCode">Cód. Região</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="regionCode" />
+                </template>
+                <template>
+                    {{item.regionCode}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.centerResponsibilityCode.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="centerResponsibilityCode">Cód. Cresp</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="centerResponsibilityCode" />
+                </template>
+                <template>
+                    {{item.centerResponsibilityCode}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="50px" resizable>
+                <template class="header">
+                </template>
+                <template>
+                    <center>
+                        <paper-button class="btnSave tableBtn" on-tap="_GoToReq" title="Ver Requisição" disabled="{{_permissionsCreate}}"><i class="fa fa-info" aria-hidden="true"></i></paper-button>
+                    </center>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="50px" resizable hidden="{{ !_permissions.update }}">
+                <template class="header">
+                </template>
+                <template>
+                    <center>
+                        <paper-button hidden="{{ !item.sentReqToAprove }}" class="btnEditPending tableBtn" on-tap="_ToApproved" disabled="{{_permissionsCreate}}" title="Enviar para Aprovação"><i class="fa fa-check" aria-hidden="true"></i></paper-button>
+                    </center>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="50px" resizable hidden="{{ !_permissions.update }}">
+                <template class="header">
+                </template>
+                <template>
+                    <center>
+                        <!--<paper-button class="btnRemove" on-tap="_closeRequisition" disabled="{{_permissionsCreate}}">Fechar</paper-button>-->
+                        <paper-button class="btnRemove tableBtn" on-tap="_closeRequisition" disabled="{{_permissionsCreate}}" title="Fechar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                    </center>
+                </template>
+            </vaadin-grid-column>
+        </vaadin-grid>
+
+        <paper-dialog id="dialog" class="dialgoBox">
+            <h2>Linhas Requisição</h2>
+            <vaadin-grid id="grdPendingReqLinesGrid" aria-label="PendingReqLinesGrid" items="[[resultlines]]" class="grid" multi-sort="true">
+                <vaadin-grid-column width="120px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="requestNo">Nº Requisição</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="requestNo" />
+                    </template>
+                    <template>
+                        {{item.requestNo}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="120px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="supplierProductCode">Cód. Produto</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="supplierProductCode" />
+                    </template>
+                    <template>
+                        {{item.supplierProductCode}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="110px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="description" />
+                    </template>
+                    <template>
+                        {{item.description}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="110px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="quantityRequired">Quantidade Requerida</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="quantityRequired" />
+                    </template>
+                    <template>
+                        {{item.quantityRequired}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="110px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="queryCreatedMarketNo">Nº Consulta Mercado</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="queryCreatedMarketNo" />
+                    </template>
+                    <template>
+                        {{item.queryCreatedMarketNo}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="160px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="createdOrderNo">Nº Encomenda</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="createdOrderNo" />
+                    </template>
+                    <template>
+                        {{item.createdOrderNo}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="150px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="projectNo">Nº Ordem/Projeto</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="projectNo" />
+                    </template>
+                    <template>
+                        {{item.projectNo}}
+                    </template>
+                </vaadin-grid-column>
+
+            </vaadin-grid>
+            <div class="buttons">
+                <paper-button dialog-dismiss>Cancelar</paper-button>
+            </div>
+        </paper-dialog>
+
+        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+    </template>
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-pendingreqcd',
+                properties: {
+                    _permissions: {
+                        type: Array
+                    },
+                    activeItem: {
+                        observer: '_rowSelected'
+                    },
+                    _areaid: {
+                        type: Number,
+                        notify: true,
+                        value: 0
+                    },
+                    _menuOpcao: {
+                        type: Number,
+                        notify: true,
+                        value: 0
+                    },
+                    _showMenuMessage: {
+                        type: String,
+                        value: "Minhas Aprovações"
+                    },
+                },
+
+                observers: [
+                    '_onCacheLoaded(CBStatus)'
+                ],
+
+                _onCacheLoaded: function (CBStatus) {
+                    debugger;
+                    if (!this.Flag) {
+                        this.$.grid_databound_ajax.generateRequest();
+                    }
+                    this.Flag = true;
+
+                    /*ColumnToggle*/
+                    this._startColumnToggle();
+
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.grdPendingReqGrid);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top;
+                    var height = parentHeight - offsetTop;
+                    grid_el.height(height);
+                },
+                _rowSelected: function (item) {
+                    if (item != null) {
+                        window.location.href = "/GestaoRequisicoes/MinhaRequisicao/" + item.requisitionNo;
+                    }
+
+                //    if (item != null) {
+                //        this.$.dialog.open();
+                //        this.$.grid_datareqlines_ajax.body = JSON.stringify({ "ReqNo": item.requisitionNo });
+                //        this.$.grid_datareqlines_ajax.generateRequest();
+                //    }
+                },
+                _clFormatState: function (param) {
+                    if (param != undefined) {
+                        var sel = this.CBStatus.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return param;
+                },
+
+                _GoToReq: function (e) {
+                    var index = this.result.indexOf(e.model.item);
+                    this.result.splice(index, 1);
+                    window.location.href = "/GestaoRequisicoes/MinhaRequisicao/" + e.model.item.requisitionNo;
+                },
+                _ToApproved: function (e) {
+                    if (e != null) {
+                        this.$.SendReq_databound.body = JSON.stringify({ requisitionNo: e.model.item.requisitionNo });
+                        this.$.SendReq_databound.generateRequest();
+                    }
+                },
+                _goHistory: function (e) {
+                    window.location.href = "/GestaoRequisicoes/Arquivadas_CD";
+                },
+                _closeRequisition: function (e) {
+                    if (e.model.item.state == 5 | e.model.item.state == 5) {
+                        this.$.closereq_ajax.body = JSON.stringify(e.model.item);
+                        this.$.closereq_ajax.params = { "registType": "Fechar Requisicao" };
+                        this.$.closereq_ajax.generateRequest();
+                    } else {
+                        this._openToastError("O estado da requisição não permite o fecho.");
+                    }
+                },
+                _closeRequisitionResponse: function (e) {
+                    if (e.detail.status === 200) {
+                        if (this.CloseRequisition.eReasonCode == "1") {
+                            this._openToast(this.CloseRequisition.eMessage);
+                            this.$.grid_databound_ajax.generateRequest();
+                            this.$.grdPendingReqGrid.clearCache();
+                        }
+                        else {
+                            this._openToastError(this.CloseRequisition.eMessage);
+                        }
+                    }
+                },
+                _openToast: function (message) {
+                    this.$.ToastMessage.text = message;
+                    this.$.ToastMessage.open();
+                },
+                _openToastError: function (message) {
+                    this.$.ToastError.text = message;
+                    this.$.ToastError.open();
+                },
+                _SendReqResponse: function (e) {
+                    if (e.detail.status === 200) {
+                        if (this.actionResult.eReasonCode === 1) {
+                            this._openToast(this.actionResult.eMessage);
+
+                            this.$.grid_databound_ajax.generateRequest();
+                            this.$.grdPendingReqGrid.clearCache();
+                        } else {
+                            this._openToastError(this.actionResult.eMessage);
+                        }
+                    } else {
+                        this._openToastError("Occorreu um erro ao atualizar.");
+                    }
+                },
+
+                _goBack: function (e) {
+                    window.history.back();
+                },
+
+                _goApproval: function (item) {
+                    if (this._menuOpcao == 0) {
+                        this._menuOpcao = 1;
+                        this._showMenuMessage = "Minhas Requisições";
+
+                        this.$.grid_databoundApproval_ajax.generateRequest();
+                        this.$.grdPendingReqGrid.clearCache();
+                    } else {
+                        this._menuOpcao = 0
+                        this._showMenuMessage = "Minhas Aprovações";
+
+                        this.$.grid_databound_ajax.generateRequest();
+                        this.$.grdPendingReqGrid.clearCache();
+                    }
+                },
+
+                /*start - ColumnToggle*/
+                _startColumnToggle: function () {
+                    var columns = {
+                        "requisitionNo": { hidden: false, label: "Nº Requisição" },
+                        "state": { hidden: false, label: "Estado" },
+                        "createDate": { hidden: false, label: "Data Requisição" },
+                        "localCode": { hidden: false, label: "Código Localização" },
+                        "responsibleApproval": { hidden: false, label: "Responsável Aprovação" },
+                        "approvalDateString": { hidden: false, label: "Data/Hora Aprovação" },
+                        "comments": { hidden: false, label: "Observações" },
+                        "employeeNo": { hidden: false, label: "Nº Funcionário" },
+                        "regionCode": { hidden: false, label: "Cód. Região" },
+                        "centerResponsibilityCode": { hidden: false, label: "Cód. Cresp" }
+                    };
+
+                    if (localStorage["minhasreqlist.ToggleColumn"]) {
+                        var keys = Object.keys(columns);
+                        var storedColumns = JSON.parse(localStorage["minhasreqlist.ToggleColumn"]);
+                        for (var i = 0; i < keys.length; i++) {
+                            columns[keys[i]] = storedColumns[keys[i]];
+                        }
+                    };
+                    this._columns = columns;
+                },
+                _toggleColumn: function (event) {
+                    var columnIndex = JSON.parse(event.target.dataset.item).key;
+                    event.path[0].classList.toggle("selected");
+                    this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
+                    if (typeof (Storage) !== "undefined") {
+                        localStorage["minhasreqlist.ToggleColumn"] = JSON.stringify(this._columns);
+                    }
+                },
+                _getColumnItemClass: function (columnIndex) {
+                    return !this._columns[columnIndex].hidden ? "selected" : "";
+                },
+                _toArray: function (obj) {
+                    return Object.keys(obj).map(function (key) {
+                        return {
+                            key: key,
+                            value: obj[key]
+                        };
+                    });
+                },
+                /* end - ColumnToggle */
+
+            });
+        });
+    </script>
+
+</dom-module>

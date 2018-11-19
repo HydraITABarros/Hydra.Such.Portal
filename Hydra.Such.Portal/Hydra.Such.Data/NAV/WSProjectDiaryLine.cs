@@ -137,7 +137,7 @@ namespace Hydra.Such.Data.NAV
                 WSCreateProjectDiaryLine.WSJobJournalLine line = new WSCreateProjectDiaryLine.WSJobJournalLine();
                 line.Line_No = lineNo += 1000;
                 line.Line_NoSpecified = true;
-                line.Document_No = "ES_" + item.ProjectNo;
+                line.Document_No = "ES_" + item.RequestNo;//.ProjectNo;
                 line.Job_No = item.ProjectNo;
                 line.Document_Date = item.CreateDateTime.HasValue ? item.CreateDateTime.Value : DateTime.Now;
                 line.Document_DateSpecified = true;

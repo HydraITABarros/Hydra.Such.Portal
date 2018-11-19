@@ -80,7 +80,7 @@ namespace Hydra.Such.Portal
 
             // ABARROS -> Activate Session Variables
             services.AddSession(s => s.IdleTimeout = TimeSpan.FromMinutes(30));
-
+            
             Data.Database.SuchDBContext.ConnectionString = Configuration.GetConnectionString("DefaultConnection");
         }
 

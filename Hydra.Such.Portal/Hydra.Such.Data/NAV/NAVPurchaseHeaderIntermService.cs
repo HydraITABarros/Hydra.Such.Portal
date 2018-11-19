@@ -73,8 +73,9 @@ namespace Hydra.Such.Data.NAV
                     Down_PaymentSpecified = purchFromSupplier.InAdvance.HasValue,
                     Vendor_Mail = purchFromSupplier.Vendor_Mail,
                     N_Consulta = purchFromSupplier.NAVPrePurchOrderId,
-                    
-                    
+                    Purchaser_Code = purchFromSupplier.Purchaser_Code
+
+
                 }
             };
             
@@ -94,7 +95,7 @@ namespace Hydra.Such.Data.NAV
             //}
         }
 
-        public static async Task<WSPurchaseInvHeader.Create_Result> CreateAsync(PurchOrderDTO purchFromSupplier, NAVWSConfigurations WSConfigurations, DateTime DataRececao, string Observacoes)
+        public static async Task<WSPurchaseInvHeader.Create_Result> CreateAsync(PurchOrderDTO purchFromSupplier, NAVWSConfigurations WSConfigurations, DateTime DataRececao)
         {
             if (purchFromSupplier == null)
                 throw new ArgumentNullException("purchFromSupplier");
@@ -107,6 +108,7 @@ namespace Hydra.Such.Data.NAV
             {
                 WSPurchInvHeaderInterm = new WSPurchaseInvHeader.WSPurchInvHeaderInterm()
                 {
+                    
                     Buy_from_Vendor_No = purchFromSupplier.SupplierId,
                     Pay_to_Vendor_No = purchFromSupplier.SupplierId,
                     LocationCode = purchFromSupplier.LocationCode,
@@ -115,6 +117,7 @@ namespace Hydra.Such.Data.NAV
                     ResponsabilityCenterCode20 = purchFromSupplier.CenterResponsibilityCode,
                     //Your_Reference = purchFromSupplier
                     //Observacoes = purchFromSupplier;
+                    Purchaser_Code = purchFromSupplier.Purchaser_Code,
                     //Purchaser_Code = purchFromSupplier;
                     //N_Consulta = purchFromSupplier;
                     //Expected_Receipt_Date = purchFromSupplier;
@@ -146,7 +149,6 @@ namespace Hydra.Such.Data.NAV
                     N_Consulta = purchFromSupplier.NAVPrePurchOrderId,
                     Expected_Receipt_Date = DataRececao,
                     Expected_Receipt_DateSpecified = true,
-                    Observacoes = Observacoes
                 }
             };
 
@@ -216,7 +218,8 @@ namespace Hydra.Such.Data.NAV
                     Down_PaymentSpecified = purchFromSupplier.InAdvance.HasValue,
                     Vendor_Mail = purchFromSupplier.Vendor_Mail,
                     N_Consulta = Consulta,
-                    Observacoes = Observacoes
+                    Observacoes = Observacoes,
+                    Purchaser_Code = purchFromSupplier.Purchaser_Code
                 }
             };
 

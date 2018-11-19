@@ -1,0 +1,8 @@
+﻿
+@{
+    ViewData["Title"] = "Requisições Pendentes - Compras Dinheiro";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="import" href="~/elements/prerequesitions/pending_requesitions_CD.html">
+
+<x-pendingreqcd _areaid="1" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-pendingreqcd>

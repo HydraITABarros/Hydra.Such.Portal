@@ -129,7 +129,8 @@
                     <vaadin-grid-filter path="regionCode" />
                 </template>
                 <template>
-                    [[ _parseregion(item.regionCode)]]
+                    @*[[ _parseregion(item.regionCode)]]*@
+                    {{ item.regionCode }}
                 </template>
             </vaadin-grid-column>
 
@@ -139,7 +140,8 @@
                     <vaadin-grid-filter path="functionalAreaCode" />
                 </template>
                 <template>
-                    [[ _parseArea(item.functionalAreaCode)]]
+                    @*[[ _parseArea(item.functionalAreaCode)]]*@
+                    {{ item.functionalAreaCode }}
                 </template>
             </vaadin-grid-column>
 
@@ -149,7 +151,8 @@
                     <vaadin-grid-filter path="centerResponsibilityCode" />
                 </template>
                 <template>
-                    [[ _parsecenterRespons(item.centerResponsibilityCode)]]
+                    @*[[ _parsecenterRespons(item.centerResponsibilityCode)]]*@
+                    {{ item.centerResponsibilityCode }}
                 </template>
             </vaadin-grid-column>
 

@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Requisições Acordos Preços";
+    ViewData["Title"] = "Gestão Requisições - Compras Dinheiro";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
@@ -7,7 +7,6 @@
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
-<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-selection-column.html" />
 <link rel="import" href="~/lib/vaadin-valo-theme/vaadin-checkbox.html">
 <link rel="import" href="~/lib/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="~/lib/vaadin-valo-theme/vaadin-text-field.html">
@@ -43,22 +42,13 @@
         <link rel="stylesheet" href="/css/main.css" />
         <paper-toast id="ToastError" style="background-color:red" duration="4000" horizontalAlign="right"></paper-toast>
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
-        <iron-ajax url="/GestaoRequisicoes/GetRequisitionsAcordosPrecos" id="ajax_getgrid" last-response="{{result}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/GestaoRequisicoes/GetValidatedRequisitions_CD" id="ajax_getgrid" last-response="{{result}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/GestaoRequisicoes/ExportToExcel_GestaoRequisicoes"
                    last-response="{{export}}"
                    id="ajax_Export"
                    method="post"
                    handle-as="json"
                    on-response="_exportEXCELResponse"
-                   content-type="application/json">
-        </iron-ajax>
-
-        <iron-ajax url="/GestaoRequisicoes/CreatePurchaseOrderList"
-                   last-response="{{Requisition}}"
-                   id="createPurchOrder_ajax"
-                   on-response="_createPurchaseOrderResponse"
-                   method="post"
-                   handle-as="json"
                    content-type="application/json">
         </iron-ajax>
 
@@ -84,14 +74,9 @@
                 </div>
             </paper-menu-button>
             <!--end ColumnToggle-->
-
-            <paper-button class="tablinks" id="btnCreatePurchaseOrder" on-tap="_createPurchaseOrder" disabled="{{ !_permissions.create }}"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Criar Encomenda de Compra</paper-button>
         </div>
 
-        <vaadin-grid id="gridrequest" aria-label="ProfileModelsTabel" items="[[result]]" class="grid" selected-items={{selectedItems}} active-item="{{_SelectedLine}}">
-            <vaadin-grid-selection-column auto-select id="grid_SelectAll">
-            </vaadin-grid-selection-column>
-
+        <vaadin-grid id="gridrequest" aria-label="ProfileModelsTabel" items="[[result]]" class="grid" active-item="{{_SelectedLine}}">
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.requisitionNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="requisitionNo">Nº Requisição </vaadin-grid-sorter>
@@ -122,14 +107,14 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.buyCash.hidden }}">
-                <template class="header">
-                    Compra a Dinheiro
-                </template>
-                <template>
-                    <vaadin-checkbox checked="{{item.buyCash}}" disabled></vaadin-checkbox>
-                </template>
-            </vaadin-grid-column>
+            @*<vaadin-grid-column width="160px" resizable hidden$="{{ _columns.buyCash.hidden }}">
+                    <template class="header">
+                        Compra a Dinheiro
+                    </template>
+                    <template>
+                        <vaadin-checkbox checked="{{item.buyCash}}" disabled></vaadin-checkbox>
+                    </template>
+                </vaadin-grid-column>*@
 
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.alreadyPerformed.hidden }}">
                 <template class="header">
@@ -149,6 +134,24 @@
                 </template>
             </vaadin-grid-column>
 
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.localMarket.hidden }}">
+                <template class="header">
+                    Mercado Local
+                </template>
+                <template>
+                    <vaadin-checkbox checked="{{item.localMarket}}" disabled></vaadin-checkbox>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.pedirOrcamento.hidden }}">
+                <template class="header">
+                    Pedir Orçamento
+                </template>
+                <template>
+                    <vaadin-checkbox checked="{{item.pedirOrcamento}}" disabled></vaadin-checkbox>
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.budget.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="budget">Orçamento</vaadin-grid-sorter>
@@ -156,15 +159,6 @@
                 </template>
                 <template>
                     {{item.budget}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.localMarket.hidden }}">
-                <template class="header">
-                    Mercado Local
-                </template>
-                <template>
-                    <vaadin-checkbox checked="{{item.localMarket}}" disabled></vaadin-checkbox>
                 </template>
             </vaadin-grid-column>
 
@@ -185,6 +179,16 @@
                 </template>
                 <template>
                     [[ _parseDateFormat(item.localMarketDate)]]
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.projectNo.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="projectNo">Nº Projeto</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="projectNo" />
+                </template>
+                <template>
+                    {{item.projectNo}}
                 </template>
             </vaadin-grid-column>
 
@@ -218,6 +222,16 @@
                 <template>
                     @*[[ _parsecenterRespons(item.centerResponsibilityCode)]]*@
                     {{item.centerResponsibilityCode}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.localCode.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="localCode">Código Localização</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="localCode" />
+                </template>
+                <template>
+                    {{item.localCode}}
                 </template>
             </vaadin-grid-column>
 
@@ -260,24 +274,24 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.reclamation.hidden }}">
-                <template class="header">
-                    Reclamação
-                </template>
-                <template>
-                    <vaadin-checkbox checked="{{item.reclamation}}" disabled></vaadin-checkbox>
-                </template>
-            </vaadin-grid-column>
+            @*<vaadin-grid-column width="160px" resizable hidden$="{{ _columns.reclamation.hidden }}">
+                    <template class="header">
+                        Reclamação
+                    </template>
+                    <template>
+                        <vaadin-checkbox checked="{{item.reclamation}}" disabled></vaadin-checkbox>
+                    </template>
+                </vaadin-grid-column>*@
 
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.requestReclaimNo.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="requestReclaimNo">Nº Requisição Reclamada</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="requestReclaimNo" />
-                </template>
-                <template>
-                    {{item.requestReclaimNo}}
-                </template>
-            </vaadin-grid-column>
+            @*<vaadin-grid-column width="160px" resizable hidden$="{{ _columns.requestReclaimNo.hidden }}">
+                    <template class="header">
+                        <vaadin-grid-sorter path="requestReclaimNo">Nº Requisição Reclamada</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="requestReclaimNo" />
+                    </template>
+                    <template>
+                        {{item.requestReclaimNo}}
+                    </template>
+                </vaadin-grid-column>*@
 
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.requisitionDate.hidden }}">
                 <template class="header">
@@ -309,9 +323,6 @@
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
-
-        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
-        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
     <script>
         document.addEventListener('WebComponentsReady', function () {
@@ -322,12 +333,6 @@
                         type: Boolean,
                         value: true
                     },
-                    selectedItems: {
-                        type: Array
-                    },
-                    selectedItem: {
-                        type: Array
-                    },
                     _SelectedLine: {
                         observer: '_rowSelected'
                     },
@@ -336,10 +341,6 @@
                         value: function () {
                             return {};
                         }
-                    },
-                    _hasErrors: {
-                        type: Boolean,
-                        value: false
                     },
                 },
                 observers: [
@@ -367,33 +368,6 @@
                     var height = parentHeight - offsetTop;
                     grid_el.height(height);
                 },
-                //Mostra Mensagens
-                _showMessage: function (message) {
-                    //debugger;
-                    this.$.ToastMessageSuccess.text = message;
-                    this.$.ToastMessageSuccess.open();
-                },
-
-                //Mostra Mensagens de Erro
-                _showErrorMessage: function (message) {
-                    //debugger;
-                    this.$.ToastMessageError.text = message;
-                    this.$.ToastMessageError.open();
-                },
-                _toggleToastMultiple: function () {
-                    this._checkForErrors();
-                    if (this._hasErrors)
-                        this.$.ToastMessageMultiple.duration = 0;
-                    else
-                        this.$.ToastMessageMultiple.duration = 8000;
-                    this.$.ToastMessageMultiple.toggle();
-                    this.Requisition.eMessages = [];
-                },
-                _checkForErrors: function () {
-                    var errors = this.Requisition.eMessages.find(x => x.type == 0);
-                    this._hasErrors = !(errors == undefined);
-                },
-
                 _parsestate: function (param1) {
                     if (param1 != undefined) {
                         if (this.resultstatus != null) {
@@ -459,39 +433,6 @@
                     return "";
                 },
 
-                _createPurchaseOrder: function (selectedItem, selectedItems) {
-                    if (this.selectedItems != null && this.selectedItems != "") {
-                        var selItms = this.selectedItems;
-
-                        this.$.createPurchOrder_ajax.body = JSON.stringify(selItms);
-                        this.$.createPurchOrder_ajax.generateRequest();
-                        this.$.gridrequest.clearCache();
-                    } else {
-                        this._showErrorMessage("Não foi selecionada nenhuma linha.");
-                    }
-                },
-
-                _createPurchaseOrderResponse: function (e) {
-                    this.selectedItems = null;
-
-                    if (this.Requisition.eReasonCode == "1") {
-                        this._showMessage(this.Requisition.eMessage);
-                        //this.$.gridrequest.clearCache();
-                        //this.$.ajax_getgrid.generateRequest();
-                    }
-                    else {
-                        if (this.Requisition.eMessages.length > 0)
-                            this._toggleToastMultiple();
-                        else {
-                            this._showErrorMessage(this.Requisition.eMessage);
-                            //this.$.gridrequest.clearCache();
-                            //this.$.ajax_getgrid.generateRequest();
-                        }
-                    }
-
-                    location.reload(true);
-                },
-
                 _exportEXCEL: function () {
                     //debugger;
                     this.result[0].ColunasEXCEL = this._columns;
@@ -512,22 +453,22 @@
                         "requisitionNo": { hidden: false, label: "Nº Requisição" },
                         "state": { hidden: false, label: "Estado" },
                         "urgent": { hidden: false, label: "Urgente" },
-                        "buyCash": { hidden: false, label: "Compra a Dinheiro" },
                         "alreadyPerformed": { hidden: false, label: "Trabalho já executado" },
                         "requestNutrition": { hidden: false, label: "Requisição Nutrição" },
-                        "budget": { hidden: false, label: "Orçamento" },
                         "localMarket": { hidden: false, label: "Mercado Local" },
+                        "pedirOrcamento": { hidden: false, label: "Pedir Orçamento" },
+                        "budget": { hidden: false, label: "Orçamento" },
                         "localMarketRegion": { hidden: false, label: "Região Mercado Local" },
                         "localMarketDate": { hidden: false, label: "Data Mercado Local" },
+                        "projectNo": { hidden: false, label: "Nº Projeto" },
                         "regionCode": { hidden: false, label: "Código Região" },
                         "functionalAreaCode": { hidden: false, label: "Código Área Funcional" },
                         "centerResponsibilityCode": { hidden: false, label: "Código Centro Responsabilidade" },
+                        "localCode": { hidden: false, label: "Código Localização" },
                         "comments": { hidden: false, label: "Observações" },
                         "marketInquiryNo": { hidden: false, label: "Nº Consulta Mercado" },
                         "orderNo": { hidden: false, label: "Nº Encomenda" },
                         "stockReplacement": { hidden: false, label: "Reposição Stock" },
-                        "reclamation": { hidden: false, label: "Reclamação" },
-                        "requestReclaimNo": { hidden: false, label: "Nº Requisição Reclamada" },
                         "requisitionDate": { hidden: false, label: "Data requisição" },
                         "createUser": { hidden: false, label: "Utilizador Criação" },
                         "estimatedValue": { hidden: false, label: "Valor Estimado" }
@@ -569,5 +510,3 @@
 
     </script>
 </dom-module>
-
-

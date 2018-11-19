@@ -33,7 +33,7 @@ namespace Hydra.Such.Data.Database
         public string DescriçãoUnidadeProduto { get; set; }
         public string NºDocumento { get; set; }
         public string Observações { get; set; }
-        public int? GrupoRegistoIvaProduto { get; set; }
+        public string GrupoRegistoIvaProduto { get; set; }
         public int? Tipo { get; set; }
 
         public UnidadesProdutivas NºUnidadeProdutivaNavigation { get; set; }

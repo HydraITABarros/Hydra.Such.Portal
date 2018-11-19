@@ -40,8 +40,19 @@ namespace Hydra.Such.Portal.Controllers
         // GET: GuiaTransporteNav
         public ActionResult Index()
         {
-            //TO DO: define permission to access GuiasTransporte
-            return View();
+           
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.ImpressaoGuiaTransporteNAV);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.ifHistoric = true;
+                ViewBag.Historic = "(Histórico) ";
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+
         }
 
         // GET: GuiaTransporteNav/Details/5

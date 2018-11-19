@@ -2458,6 +2458,8 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.Descrição).HasMaxLength(100);
 
+                entity.Property(e => e.GrupoRegistoIvaProduto).HasMaxLength(10);
+
                 entity.Property(e => e.DescriçãoProdutoFornecedor)
                     .HasColumnName("Descrição Produto Fornecedor")
                     .HasMaxLength(80);
@@ -3849,6 +3851,8 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.NoProcedimento).HasMaxLength(10);
 
+                entity.Property(e => e.GrupoRegistoIvaProduto).HasMaxLength(10);
+
                 entity.Property(e => e.NoFornecedor).HasMaxLength(20);
 
                 entity.Property(e => e.CodProduto).HasMaxLength(20);
@@ -4036,7 +4040,7 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.Descricao).HasMaxLength(100);
 
-                entity.Property(e => e.Descricao2).HasMaxLength(100);
+                entity.Property(e => e.Descricao2).HasMaxLength(50);
 
                 entity.Property(e => e.LinhaRequisicao).HasColumnName("Linha_Requisicao");
 
@@ -4623,6 +4627,8 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.CustoUnitário).HasColumnName("Custo Unitário");
 
+                entity.Property(e => e.CustoUnitarioComIVA).HasColumnName("CustoUnitarioComIVA");
+
                 entity.Property(e => e.Código).HasMaxLength(20);
 
                 entity.Property(e => e.CódigoCentroResponsabilidade)
@@ -4807,7 +4813,7 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.Descrição).HasMaxLength(100);
 
-                entity.Property(e => e.Descrição2).HasMaxLength(100);
+                entity.Property(e => e.Descrição2).HasMaxLength(50);
 
                 entity.Property(e => e.EnviadoParaCompras).HasColumnName("Enviado para Compras");
 
@@ -6896,7 +6902,7 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.NºPréRequisição)
                     .HasColumnName("Nº Pré-Requisição")
-                    .HasMaxLength(20)
+                    .HasMaxLength(50)
                     .ValueGeneratedNever();
 
                 entity.Property(e => e.Aprovadores).HasMaxLength(100);

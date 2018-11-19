@@ -2580,7 +2580,7 @@ namespace Hydra.Such.Portal.Controllers
                         row.CreateCell(16).SetCellValue(item.DescricaoProdFornecedor.ToString());
                         row.CreateCell(17).SetCellValue(item.FormaEntrega.HasValue ? item.FormaEntrega.ToString() : "");
                         row.CreateCell(18).SetCellValue(item.TipoPreco.HasValue ? item.TipoPreco.ToString() : "");
-                        row.CreateCell(19).SetCellValue(item.GrupoRegistoIvaProduto.HasValue ? item.GrupoRegistoIvaProduto.ToString() : "");
+                        row.CreateCell(19).SetCellValue(item.GrupoRegistoIvaProduto.ToString());
                         row.CreateCell(20).SetCellValue(item.CodCategoriaProduto == null ? string.Empty : item.CodCategoriaProduto.ToString());
                         row.CreateCell(21).SetCellValue(item.UserId.ToString());
                         row.CreateCell(22).SetCellValue(item.DataCriacao.HasValue ? item.DataCriacao.ToString() : "");
@@ -2723,7 +2723,7 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         if (!string.IsNullOrEmpty(item.GrupoRegistoIvaProdutoTexto))
                         {
-                            item.GrupoRegistoIvaProduto = Convert.ToInt32(item.GrupoRegistoIvaProdutoTexto);
+                            item.GrupoRegistoIvaProduto = item.GrupoRegistoIvaProdutoTexto;
                             item.GrupoRegistoIvaProdutoTexto = "";
                         }
                     }
@@ -4346,7 +4346,8 @@ namespace Hydra.Such.Portal.Controllers
         #region Config Email Fornecedores
         public IActionResult ConfigEmailFornecedores(string id)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminGeral);
+            //UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminGeral);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.LinhasAcordosPrecos);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.CreatePermissions = !UPerm.Create.Value;

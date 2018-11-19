@@ -101,16 +101,6 @@
         </div>
 
         <vaadin-grid aria-label="ContractsGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
-            <vaadin-grid-column width="150px" resizable hidden$="{{ !_isHistoricVisible }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="contractNo">Nº Proposta</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="contractNo" />
-                </template>
-                <template>
-                    {{item.proposalNo}}
-                </template>
-            </vaadin-grid-column>
-
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.contractNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="contractNo">Nº Oportunidade</vaadin-grid-sorter>
@@ -118,6 +108,16 @@
                 </template>
                 <template>
                     {{item.contractNo}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ !_isHistoricVisible }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="contractNo">Nº Proposta</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="contractNo" />
+                </template>
+                <template>
+                    {{item.proposalNo}}
                 </template>
             </vaadin-grid-column>
 
@@ -191,7 +191,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.versionNo.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden>
                 <template class="header">
                     <vaadin-grid-sorter path="versionNo">Nº Versão</vaadin-grid-sorter>
                     <vaadin-grid-filter path="versionNo" />
@@ -405,8 +405,6 @@
         </vaadin-grid>
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
-
-
     </template>
 
     <script>
@@ -499,7 +497,6 @@
                 _responseDeleteProcessor: function (data) {
                     var self = this;
                     var ajax_request = this.$.grid_databound_ajax;
-                    //debugger;
                     if (data.detail.status === 200) {
                         this._openToast("Oportunidade eliminada com sucesso");
                         if (this.deletedData.eReasonCode == 1) {
@@ -538,7 +535,6 @@
                 },
 
                 _deleteOprotunity: function (data) {
-                    //debugger;
                     data.preventDefault();
                     var ajax_request = this.$.ajax_delete_contract;
                     var object = data.model.item;
@@ -565,7 +561,6 @@
                 },
 
                 _exportEXCEL: function () {
-                    //debugger;
                     this.result[0].ColunasEXCEL = this._columns;
 
                     this.$.ajax_Export.body = JSON.stringify(this.result);
@@ -573,7 +568,6 @@
                 },
 
                 _exportEXCELResponse: function (e) {
-                    //debugger
                     var FileName = this.export;
                     location.href = '../Contratos/ExportToExcelDownload_Oportunidades?sFileName=' + FileName;
                 },
@@ -589,7 +583,7 @@
                         "orderOriginText": { hidden: false, label: "Origem do Pedido" },
                         "ordOrderSource": { hidden: false, label: "Origem do Pedido Descrição" },
                         "proposalNo": { hidden: false, label: "Nº Proposta" },
-                        "versionNo": { hidden: false, label: "Nº Versão" },
+                        //"versionNo": { hidden: false, label: "Nº Versão" },
                         "startData": { hidden: false, label: "Data Inicial Prevista" },
                         "dueDate": { hidden: false, label: "Data Expiração Prevista" },
                         "customerShipmentDate": { hidden: false, label: "Data Envio" },

@@ -528,6 +528,11 @@
                 },
                 /* end - ColumnToggle */
 
+                _formatValue: function (value) {
+                    if (value != null && value != 0) {
+                        return currency(value, { separator: '.', decimal: ',' }).format() + ' €';
+                    }
+                }
             });
         });
     </script>

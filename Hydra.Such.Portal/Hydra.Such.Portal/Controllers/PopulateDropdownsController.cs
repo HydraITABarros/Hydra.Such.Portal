@@ -1492,7 +1492,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetRequisitions()
         {
-            List<RequisitionViewModel> result = DBRequest.GetByState(RequisitionStates.Approved).ParseToViewModel();
+            List<RequisitionViewModel> result = DBRequest.GetByState((int)RequisitionTypes.Normal, RequisitionStates.Approved).ParseToViewModel();
 
             //Apply User Dimensions Validations
             List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
@@ -1642,7 +1642,8 @@ namespace Hydra.Such.Portal.Controllers
         {
             List<DDMessageString> result = DBViatura.GetAllToList().Select(x => new DDMessageString()
             {
-                id = x.Matrícula
+                id = x.Matrícula ?? "",
+                value = x.Matrícula ?? ""
             }).ToList();
             return Json(result);
         }

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Report MustUnderstand="df" xmlns="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner" xmlns:df="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition/defaultfontfamily">
+  <df:DefaultFontFamily>Segoe UI</df:DefaultFontFamily>
+  <AutoRefresh>0</AutoRefresh>
+  <ReportSections>
+    <ReportSection>
+      <Body>
+        <ReportItems>
+          <Subreport Name="ViaOriginal">
+            <ReportName>GuiaTransporteNav</ReportName>
+            <Parameters>
+              <Parameter Name="No">
+                <Value>=Parameters!No.Value</Value>
+              </Parameter>
+              <Parameter Name="IsHistoric">
+                <Value>=Parameters!IsHistoric.Value</Value>
+              </Parameter>
+              <Parameter Name="Via">
+                <Value>Original</Value>
+              </Parameter>
+            </Parameters>
+            <OmitBorderOnPageBreak>true</OmitBorderOnPageBreak>
+            <Top>5.23558cm</Top>
+            <Height>7.6cm</Height>
+            <Width>21.53708cm</Width>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+            </Style>
+          </Subreport>
+        </ReportItems>
+        <Height>29.7cm</Height>
+        <Style />
+      </Body>
+      <Width>22cm</Width>
+      <Page>
+        <PageHeight>29.7cm</PageHeight>
+        <PageWidth>21cm</PageWidth>
+        <LeftMargin>1cm</LeftMargin>
+        <RightMargin>1cm</RightMargin>
+        <TopMargin>1cm</TopMargin>
+        <BottomMargin>1cm</BottomMargin>
+        <ColumnSpacing>0.13cm</ColumnSpacing>
+        <Style />
+      </Page>
+    </ReportSection>
+  </ReportSections>
+  <ReportParameters>
+    <ReportParameter Name="No">
+      <DataType>String</DataType>
+      <Prompt>No</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="IsHistoric">
+      <DataType>String</DataType>
+      <Prompt>IsHistoric</Prompt>
+    </ReportParameter>
+  </ReportParameters>
+  <ReportParametersLayout>
+    <GridLayoutDefinition>
+      <NumberOfColumns>4</NumberOfColumns>
+      <NumberOfRows>2</NumberOfRows>
+      <CellDefinitions>
+        <CellDefinition>
+          <ColumnIndex>0</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>No</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>1</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>IsHistoric</ParameterName>
+        </CellDefinition>
+      </CellDefinitions>
+    </GridLayoutDefinition>
+  </ReportParametersLayout>
+  <rd:ReportUnitType>Cm</rd:ReportUnitType>
+  <rd:ReportID>6ad74345-922a-44da-8151-6207710435de</rd:ReportID>
+</Report>

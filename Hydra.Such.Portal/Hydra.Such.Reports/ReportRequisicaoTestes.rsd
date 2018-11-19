@@ -11,8 +11,8 @@
           <rd:DbType>Object</rd:DbType>
         </DataSetParameter>
       </DataSetParameters>
-      <CommandText>SELECT        [Linhas Requisição].[Nº Linha], [Linhas Requisição].Descrição, [Linhas Requisição].[Quantidade a Requerer], [Linhas Requisição].[Código Localização] AS LineLocalization, [Linhas Requisição].[Nº Projeto] AS LineProjNo, 
-                         [Linhas Requisição].[Código Unidade Medida], Requisição.[Nº Requisição], Requisição.Área, Requisição.Estado, Requisição.[Nº Projeto], Requisição.[Código Região], Requisição.[Código Área Funcional], 
+      <CommandText>SELECT        [Linhas Requisição].[Nº Linha], [Linhas Requisição].Descrição, [Linhas Requisição].[Descrição2], [Linhas Requisição].[Quantidade a Requerer], [Linhas Requisição].[Código Localização] AS LineLocalization, [Linhas Requisição].[Nº Projeto] AS LineProjNo, 
+                         [Linhas Requisição].[Código Unidade Medida], [Linhas Requisição].Código AS LineCodProduto, Requisição.[Nº Requisição], Requisição.Área, Requisição.Estado, Requisição.[Nº Projeto], Requisição.[Código Região], Requisição.[Código Área Funcional], 
                          Requisição.[Código Centro Responsabilidade], Requisição.[Código Localização], Requisição.[Nº Funcionário], Requisição.Viatura, Requisição.[Data Receção], Requisição.Urgente, Requisição.Amostra, Requisição.Anexo, 
                          Requisição.Imobilizado, Requisição.[Compra a Dinheiro], Requisição.[Código Local Recolha], Requisição.[Código Local Entrega], Requisição.Observações, Requisição.[Modelo de Requisição], Requisição.[Data/Hora Criação], 
                          Requisição.[Utilizador Criação], Requisição.[Data/Hora Modificação], Requisição.[Utilizador Modificação], Requisição.[Cabimento Orçamental], Requisição.Exclusivo, Requisição.[Já Executado], Requisição.Equipamento, 
@@ -22,9 +22,12 @@
                          Requisição.[Local de Recolha], Requisição.[Morada Recolha], Requisição.[Morada 2 Recolha], Requisição.[Código Postal Recolha], Requisição.[Localidade Recolha], Requisição.[Contato Recolha], 
                          Requisição.[Responsável Receção Recolha], Requisição.[Local Entrega], Requisição.[Morada Entrega], Requisição.[Morada 2 Entrega], Requisição.[Código Postal Entrega], Requisição.[Localidade Entrega], 
                          Requisição.[Contato Entrega], Requisição.[Responsável Receção Receção], Requisição.[Nº Fatura], Requisição.[Data Mercado Local], Requisição.[Data Requisição], Requisição.[Nº Consulta Mercado], 
-                         Requisição.[Nº Encomenda], Requisição.Orçamento, Requisição.[Valor Estimado]
-FROM            Requisição INNER JOIN
-                         [Linhas Requisição] ON Requisição.[Nº Requisição] = [Linhas Requisição].[Nº Requisição]
+                         Requisição.[Nº Encomenda], Requisição.Orçamento, Requisição.[Valor Estimado],Proj.[Bill-to Customer No_], Util.[EmployeeNo],Util.Nome, CLI.[Name] AS [NomeCliente]
+FROM            Requisição 
+INNER JOIN [Linhas Requisição] ON Requisição.[Nº Requisição] = [Linhas Requisição].[Nº Requisição]
+INNER JOIN [SUCH_NAV_QUAL].[dbo].[SUCH - Qualidade$Job] AS Proj ON Requisição.[Nº Projeto] COLLATE DATABASE_DEFAULT = Proj.[No_]
+INNER JOIN [Config. Utilizadores] AS UTIL ON Requisição.[Utilizador Criação] = UTIL.[Id Utilizador]
+LEFT OUTER JOIN [SUCH_NAV_QUAL].[dbo].[SUCH - Qualidade$Vendor] AS CLI ON Proj.[Bill-to Customer No_] = CLI.[No_]
 WHERE        (Requisição.[Nº Requisição] = @NoRequisicao)</CommandText>
     </Query>
     <Fields>
@@ -34,6 +37,10 @@ WHERE        (Requisição.[Nº Requisição] = @NoRequisicao)</CommandText>
       </Field>
       <Field Name="Descrição">
         <DataField>Descrição</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Descrição2">
+        <DataField>Descrição2</DataField>
         <rd:TypeName>System.String</rd:TypeName>
       </Field>
       <Field Name="Quantidade_a_Requerer">
@@ -59,6 +66,10 @@ WHERE        (Requisição.[Nº Requisição] = @NoRequisicao)</CommandText>
       <Field Name="Área">
         <DataField>Área</DataField>
         <rd:TypeName>System.Int32</rd:TypeName>
+      </Field>
+      <Field Name="LineCodProduto">
+        <DataField>LineCodProduto</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
       </Field>
       <Field Name="Estado">
         <DataField>Estado</DataField>
@@ -323,6 +334,22 @@ WHERE        (Requisição.[Nº Requisição] = @NoRequisicao)</CommandText>
       <Field Name="Valor_Estimado">
         <DataField>Valor Estimado</DataField>
         <rd:TypeName>System.Decimal</rd:TypeName>
+      </Field>
+      <Field Name="Bill_to_Customer_No_">
+        <DataField>Bill-to Customer No_</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="EmployeeNo">
+        <DataField>EmployeeNo</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Nome">
+        <DataField>Nome</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="NomeCliente">
+        <DataField>NomeCliente</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
       </Field>
     </Fields>
   </DataSet>

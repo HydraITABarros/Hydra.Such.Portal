@@ -779,7 +779,7 @@
                                                         text-path="id"
                                                         value-path="id"
                                                         fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Localização"}]'
-                                                        required error-message="Este campo é obrigatório" disabled="{{ !_permissions.update }}">
+                                                        required error-message="Este campo é obrigatório" disabled>
                                         </such-selectbox>
                                         <vaadin-text-field id="txtLocalCode" label="Cód. Localização" disabled hidden> </vaadin-text-field>
                                     </div>
@@ -789,7 +789,7 @@
                                     </div>
 
                                     <div class="col-lg-2">
-                                        <vaadin-text-field value="{{_Description2}}" id="_Description2" name="_Description2" label="Descrição 2" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                        <vaadin-text-field value="{{_Description2}}" id="_Description2" name="_Description2" label="Descrição 2" disabled="{{ !_permissions.update }}" maxlength="50"> </vaadin-text-field>
                                     </div>
 
                                     <div class="col-lg-2">
@@ -967,14 +967,15 @@
                                                         </table>
                                                     </template>
                                                 </vaadin-combo-box>-->
-                                                <such-selectbox id="_CBLocalizations" value="{{item.localCode}}"
+                                                <!--<such-selectbox id="_CBLocalizations" value="{{item.localCode}}"
                                                                 items="[[CBLocations]]"
                                                                 on-change="_updateLinhaPreRequisicao"
                                                                 text-path="id"
                                                                 value-path="id"
                                                                 fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Localização"}]'
                                                                 required disabled="{{ _setDisabled(item) }}">
-                                                </such-selectbox>
+                                                </such-selectbox>-->
+                                                [[item.localCode]]
                                             </template>
                                             <template is="dom-if" if="{{ !item.selected }}">
                                                 [[item.localCode]]
@@ -1054,7 +1055,7 @@
                                         </template>
                                         <template>
                                             <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-text-field value="{{item.description2}}" id="_CLGridDescription2" name="_CLGridDescription2" disabled="{{ !_permissions.update }}" on-blur="_updateLinhaPreRequisicao"> </vaadin-text-field>
+                                                <vaadin-text-field value="{{item.description2}}" id="_CLGridDescription2" name="_CLGridDescription2" disabled="{{ !_permissions.update }}" on-blur="_updateLinhaPreRequisicao" maxlength="50"> </vaadin-text-field>
                                             </template>
                                             <template is="dom-if" if="{{ !item.selected }}">
                                                 {{item.description2}}
@@ -1675,7 +1676,7 @@
                 ready: function () {
                     //GET CONTRACT DATA
                     this._isCreate = false;
-                    this.$.page_createnewForUser_ajax.body = JSON.stringify({ "areaid": this._areaid });
+                    this.$.page_createnewForUser_ajax.body = JSON.stringify({ "tipoPreReq": 0, "areaid": this._areaid });
                     this.$.page_createnewForUser_ajax.generateRequest();
 
 
@@ -1814,7 +1815,6 @@
 
                 },
                 _setPurchaseLine: function (e) {
-                    debugger;
                     if (e != null && e != undefined) {
                         if (e.detail.value !== "" && e.detail.value != null && e.detail.value != undefined) {
                             var composedKey = e.detail.value.split(" ", 2);

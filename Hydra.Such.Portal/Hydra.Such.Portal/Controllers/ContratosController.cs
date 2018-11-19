@@ -1967,6 +1967,8 @@ namespace Hydra.Such.Portal.Controllers
                     ViewBag.Historic = "";
                 }
 
+                ViewBag.ID = hist == "true" ? 1 : 0;
+                ViewBag.Archived = hist == "true" ? true : false;
                 ViewBag.ContractNo = id ?? "";
                 ViewBag.VersionNo = version ?? "";
                 ViewBag.UPermissions = UPerm;
@@ -2818,11 +2820,11 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Nº Proposta");
                     Col = Col + 1;
                 }
-                if (dp["versionNo"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Nº Versão");
-                    Col = Col + 1;
-                }
+                //if (dp["versionNo"]["hidden"].ToString() == "False")
+                //{
+                //    row.CreateCell(Col).SetCellValue("Nº Versão");
+                //    Col = Col + 1;
+                //}
                 if (dp["startData"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Data Inicial Prevista");
@@ -2967,11 +2969,11 @@ namespace Hydra.Such.Portal.Controllers
                             row.CreateCell(Col).SetCellValue(item.ProposalNo);
                             Col = Col + 1;
                         }
-                        if (dp["versionNo"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.VersionNo);
-                            Col = Col + 1;
-                        }
+                        //if (dp["versionNo"]["hidden"].ToString() == "False")
+                        //{
+                        //    row.CreateCell(Col).SetCellValue(item.VersionNo);
+                        //    Col = Col + 1;
+                        //}
                         if (dp["startData"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.StartData);
@@ -3173,6 +3175,15 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Nº Versão");
                     Col = Col + 1;
                 }
+                if (dp["ordOrderSource"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Origem do Pedido Descrição"); Col = Col + 1; }
+                if (dp["relatedContract"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Contrato"); Col = Col + 1; }
+                if (dp["customerShipmentDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Envio"); Col = Col + 1; }
+                if (dp["proposalChangeDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Alteração"); Col = Col + 1; }
+                if (dp["internalNumeration"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Numeração Interna"); Col = Col + 1; }
+                if (dp["totalProposalValue"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Valor Total"); Col = Col + 1; }
+                if (dp["provisionUnit"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Unidade de Prestação"); Col = Col + 1; }
+                if (dp["baseValueProcedure"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Valor Base Procedimento"); Col = Col + 1; }
+                if (dp["notes"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Notas"); Col = Col + 1; }
 
                 if (dp != null)
                 {
@@ -3247,6 +3258,17 @@ namespace Hydra.Such.Portal.Controllers
                             row.CreateCell(Col).SetCellValue(item.VersionNo);
                             Col = Col + 1;
                         }
+
+                        if (dp["ordOrderSource"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.OrdOrderSource); Col = Col + 1; }
+                        if (dp["relatedContract"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RelatedContract); Col = Col + 1; }
+                        if (dp["customerShipmentDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CustomerShipmentDate); Col = Col + 1; }
+                        if (dp["proposalChangeDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ProposalChangeDate); Col = Col + 1; }
+                        if (dp["internalNumeration"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.InternalNumeration); Col = Col + 1; }
+                        if (dp["totalProposalValue"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.TotalProposalValue.ToString()); Col = Col + 1; }
+                        if (dp["provisionUnit"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ProvisionUnitText); Col = Col + 1; }
+                        if (dp["baseValueProcedure"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.BaseValueProcedure.ToString()); Col = Col + 1; }
+                        if (dp["notes"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Notes); Col = Col + 1; }
+
                         count++;
                     }
                 }

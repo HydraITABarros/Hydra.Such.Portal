@@ -10,6 +10,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
     public class RequisitionViewModel : ErrorHandler
     {
         public string RequisitionNo { get; set; }
+        public int? TipoReq { get; set; }
         public int? Area { get; set; }
         //public int? State { get; set; }
         public RequisitionStates? State { get; set; }
@@ -94,6 +95,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public bool? InAdvance { get; set; }
         public string ApprovalDateString { get; set; }
         public bool? PedirOrcamento { get; set; }
+        public string NumeroMecanografico { get; set; }
 
         //EXPORTAR PARA EXCEL
         public Object ColunasEXCEL { get; set; }
