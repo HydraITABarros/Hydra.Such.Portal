@@ -690,6 +690,19 @@ namespace Hydra.Such.Portal.Configurations
                 Value = "Devolução"
             }
         };
+        public static readonly List<EnumData> ProjectPreMovements = new List<EnumData>()
+        {
+            new EnumData()
+            {
+                Id = 1,
+                Value = "Consumo"
+            },
+            new EnumData()
+            {
+                Id = 3,
+                Value = "Devolução"
+            }
+        };
 
         public static readonly List<EnumData> ProjectDiaryTypes = new List<EnumData>()
         {

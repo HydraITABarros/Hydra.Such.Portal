@@ -720,6 +720,13 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetProjectPreMovements()
+        {
+            List<EnumData> result = EnumerablesFixed.ProjectPreMovements;
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetProjectDiaryTypes()
         {
             List<EnumData> result = EnumerablesFixed.ProjectDiaryTypes;
