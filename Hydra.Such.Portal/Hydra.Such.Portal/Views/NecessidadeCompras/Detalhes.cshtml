@@ -199,7 +199,7 @@
                 <such-selectbox id="cmbProducts" label="Produto" on-value-changed="_productChanged"
                                 items="[[Products]]"
                                 text-path="descricaoProduto"
-                                value-path="codProduto"
+                                value-path="produtoFornecedor"
                                 fields='[{"field":"noProcedimento", "name":"Nº Acordo Preço"},
                                         {"field":"codProduto", "name":"Nº Produto"},
                                         {"field":"descricaoProduto", "name":"Descrição"},
@@ -867,7 +867,7 @@
                     catch (err) { }
                 },
                 _productChanged: function (e) {
-                      debugger
+                      //debugger
                     if (e.detail.value != null && e.detail.value != "") {
 
                         var linhaAcordo = this.$.cmbProducts.activeItem;
@@ -880,9 +880,9 @@
                             this.$.unitCostId.value = linhaAcordo.custoUnitario.toString();
                             this.$.supplierProdCodeId.value = linhaAcordo.codProdutoFornecedor.toString();
                             this.$.supplierProdDescriptionId.value = linhaAcordo.descricaoProdFornecedor.toString();
-                            this.$.QtyforMeasId.value = linhaAcordo.qtdPorUm.toString();
+                            this.$.QtyforMeasId.value = linhaAcordo.qtdPorUm != null ? linhaAcordo.qtdPorUm.toString() : linhaAcordo.qtdPorUm;
                             this.$.amountId.value = "0";
-                            this.$.grupoRegistoIvaProduto.value = linhaAcordo.grupoRegistoIvaProduto.toString();
+                            this.$.grupoRegistoIvaProduto.value = linhaAcordo.grupoRegistoIvaProduto != null ? linhaAcordo.grupoRegistoIvaProduto.toString() : linhaAcordo.grupoRegistoIvaProduto;
 
                             this.$.mOpenOrderLinesId.value = linhaAcordo.codProduto;
                             //this.$.txtProdDescription.value = linhaAcordo.descricaoProduto;
