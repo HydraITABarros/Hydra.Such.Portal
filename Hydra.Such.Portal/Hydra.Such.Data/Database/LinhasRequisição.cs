@@ -23,6 +23,7 @@ namespace Hydra.Such.Data.Database
         public decimal? QuantidadePendente { get; set; }
         public decimal? QuantidadeInicial { get; set; }
         public decimal? CustoUnitário { get; set; }
+        public decimal? CustoUnitarioComIVA { get; set; }
         public DateTime? DataReceçãoEsperada { get; set; }
         public bool? Faturável { get; set; }
         public string NºProjeto { get; set; }

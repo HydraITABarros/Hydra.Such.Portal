@@ -1846,6 +1846,18 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult TipoRequisicoesLista_CD()
+        {
+            List<DDMessageString> result = DBRequesitionType.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName).Where(x => x.FiltroReq == 1).Select(x => new DDMessageString()
+            {
+                id = x.Code,
+                value = x.Description
+            }).ToList();
+
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetNAVJobNo()
         {
             List<DDMessageString> result = DBNAV2017Job.GetJob(_config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageString()

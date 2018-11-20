@@ -118,7 +118,7 @@ namespace Hydra.Such.Portal.Controllers
             //UserConfigurationsViewModel userConfig = DBUserConfigurations.GetById(User.Identity.Name).ParseToViewModel();
             //BillingReceptionAreas perfil = userConfig.RFPerfil ?? BillingReceptionAreas.Contabilidade;
             //BillingReceptionUserProfiles perfilVisulalizacao = userConfig.RFPerfilVisualizacao ?? BillingReceptionUserProfiles.Tudo;
-
+            //
             //var billingReceptions = billingRecService.GetAllForUserPendingExcept(User.Identity.Name, perfil, perfilVisulalizacao);
             //return Json(billingReceptions);
         }

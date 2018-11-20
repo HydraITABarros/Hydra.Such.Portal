@@ -789,10 +789,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             List<RequisitionStates> states = new List<RequisitionStates>()
             {
-                RequisitionStates.Validated,
-                RequisitionStates.Available,
-                RequisitionStates.Received,
-                RequisitionStates.Treated,
+                RequisitionStates.Approved
             };
             List<RequisitionViewModel> result = DBRequest.GetByState((int)RequisitionTypes.ComprasDinheiro, states).ParseToViewModel();
 

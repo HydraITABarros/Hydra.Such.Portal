@@ -90,6 +90,7 @@ namespace Hydra.Such.Data.Database
         public bool? PrecoIvaincluido { get; set; }
         public bool? Adiantamento { get; set; }
         public bool? PedirOrcamento { get; set; }
+        public decimal? ValorTotalDocComIVA { get; set; }
 
         public Projetos NºProjetoNavigation { get; set; }
         public Viaturas ViaturaNavigation { get; set; }

@@ -8,5 +8,6 @@ namespace Hydra.Such.Data.ViewModel
     {
         public string Code { get; set; }
         public string Description { get; set; }
+        public int FiltroReq { get; set; }
     }
 }
