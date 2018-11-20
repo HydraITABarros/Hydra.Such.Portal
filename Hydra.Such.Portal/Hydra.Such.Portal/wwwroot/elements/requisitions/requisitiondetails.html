@@ -735,10 +735,10 @@
                                         </such-selectbox>
                                     </div>
                                     <div class="col-lg-3">
-                                        <vaadin-text-field id="txtProductDesciption" name="txtProductDesciption" label="Descrição" value="" disabled></vaadin-text-field>
+                                        <vaadin-text-field id="txtProductDesciption" name="txtProductDesciption" label="Descrição" value="" disabled maxlength="100"></vaadin-text-field>
                                     </div>
                                     <div class="col-lg-3">
-                                        <vaadin-text-field id="txtProductDesciption2" name="txtProductDesciption2" label="Descrição 2" value=""></vaadin-text-field>
+                                        <vaadin-text-field id="txtProductDesciption2" name="txtProductDesciption2" label="Descrição 2" value="" maxlength="50"></vaadin-text-field>
                                     </div>
                                 </div>
                                 <div class="row break_clear" hidden="{{_isArchived}}">
@@ -995,7 +995,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.description2}}" id="_CLGridDescription2" name="_CLGridDescription2" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLines"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{item.description2}}" id="_CLGridDescription2" name="_CLGridDescription2" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLines" maxlength="50"> </vaadin-text-field>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.description2}}
@@ -1811,11 +1811,9 @@
                             this._createMarketConsult();
                             break;
                         case 2://"Criar Encomenda de Compra"
-                            //AMARO TESTES COMENTAR
                             if (this.Requisition.orderNo)
                                 this._openToastError("Já foi criada uma encomenda para esta requisição.");
                             else
-                            //FIM
                                 this._createPurchaseOrder();
                             break;
                         case 3://"Criar Guia Transporte"

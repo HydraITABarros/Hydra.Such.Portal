@@ -209,7 +209,7 @@
                 </such-selectbox>
             </div>
             <div class="col-md-3">
-                <vaadin-text-field id="qtyID" name="qtyName" placeholder="0.0000" pattern="^[0-9]\d*(\.[0-9]{1,4})?$" label="Quantidade" class="alignRight" value="{{qty}}" on-value-changed="_calcTotals" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                <vaadin-text-field id="qtyID" name="qtyName" placeholder="0.0000" pattern="^[0-9]\d*(\.[0-9]{1,4})?$" label="Quantidade" class="alignRight" value="{{qty}}" on-value-changed="_calcTotals" on-blur="_verificaMultiplo" required error-message="Este campo é obrigatório"></vaadin-text-field>
             </div>
         </div>
         <div class="row" hidden="{{ !_permissionsVal.create }}">
@@ -867,9 +867,11 @@
                     catch (err) { }
                 },
                 _productChanged: function (e) {
-                    debugger
+                      debugger
                     if (e.detail.value != null && e.detail.value != "") {
+
                         var linhaAcordo = this.$.cmbProducts.activeItem;
+
                         if (linhaAcordo != null) {
                             this.$.qtyID.value = "0";
                             this.$.supplierNoId.value = linhaAcordo.noFornecedor;
@@ -1069,7 +1071,7 @@
                 },
 
                 _add() {
-                    debugger;
+                    //debugger;
                     if (this._NotSelectedprodUnit == true) {
                         if (this.$.dpExpectedReceiptId.value != null &&
                             this.$.dpVendedorPriceId.value != null &&
@@ -1188,7 +1190,7 @@
                     this.$.gridneedshopping.clearCache();
                 },
                 _delete: function (e) {
-                    debugger;
+                    //debugger;
                     var index = this.data.indexOf(e.model.item);
                     this.data.splice(index, 1);
                     // Save to DB
@@ -1338,7 +1340,7 @@
                     return "";
                 },
                 _confirm: function (selectedItem, selectedItems) {
-                    debugger;;
+                    //debugger;;
                     if (this.selectedItems != null && this.selectedItems != "") {
 
                         var selItms = this.selectedItems;
@@ -1372,6 +1374,16 @@
                         this._openToastError("Occorreu um erro ao atualizar o Diário de requisição Unid. Produtiva.");
                     }
                 },
+                _verificaMultiplo: function (e) {
+                    //Verificar se Quantidade é multiplo da Quantidade por Unid. Medida
+                    if (this.$.QtyforMeasId.value != null && this.$.QtyforMeasId.value > 0) {
+                        if (this.qty % this.$.QtyforMeasId.value != 0) {
+                            //não é multiplo e limpa o campo
+                            this.qty = "";
+                        }
+                    }
+                },
+
                 //calculate the total value form the hader
                 _calcTotals: function (e) {
                     switch (e.target.id) {
@@ -1431,7 +1443,7 @@
                 },
 
                 _requesitionResponse: function (e) {
-                    debugger;;
+                    //debugger;;
                     if (e.detail.status === 200) {
                         if (this.datarequesition.eReasonCode === 1) {
                             this._openToast(this.datarequesition.eMessage);

@@ -104,13 +104,13 @@
             </vaadin-grid-column>
 
             @*<vaadin-grid-column width="160px" resizable hidden$="{{ _columns.buyCash.hidden }}">
-                <template class="header">
-                    Compra a Dinheiro
-                </template>
-                <template>
-                    <vaadin-checkbox checked="{{item.buyCash}}" disabled></vaadin-checkbox>
-                </template>
-            </vaadin-grid-column>*@
+            <template class="header">
+                Compra a Dinheiro
+            </template>
+            <template>
+                <vaadin-checkbox checked="{{item.buyCash}}" disabled></vaadin-checkbox>
+            </template>
+        </vaadin-grid-column>*@
 
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.alreadyPerformed.hidden }}">
                 <template class="header">
@@ -136,6 +136,16 @@
                 </template>
                 <template>
                     <vaadin-checkbox checked="{{item.pedirOrcamento}}" disabled></vaadin-checkbox>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.projectNo.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="projectNo">Nº Projeto</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="projectNo" />
+                </template>
+                <template>
+                    {{item.projectNo}}
                 </template>
             </vaadin-grid-column>
 
@@ -171,7 +181,7 @@
                 </template>
             </vaadin-grid-column>
 
-            @*<vaadin-grid-column width="160px" resizable hidden$="{{ _columns.localCode.hidden }}">
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.localCode.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="localCode">Código Localização</vaadin-grid-sorter>
                     <vaadin-grid-filter path="localCode" />
@@ -179,7 +189,17 @@
                 <template>
                     {{item.localCode}}
                 </template>
-            </vaadin-grid-column>*@
+            </vaadin-grid-column>
+
+            @*<vaadin-grid-column width="160px" resizable hidden$="{{ _columns.localCode.hidden }}">
+            <template class="header">
+                <vaadin-grid-sorter path="localCode">Código Localização</vaadin-grid-sorter>
+                <vaadin-grid-filter path="localCode" />
+            </template>
+            <template>
+                {{item.localCode}}
+            </template>
+        </vaadin-grid-column>*@
 
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.comments.hidden }}">
                 <template class="header">
@@ -346,10 +366,11 @@
                         "alreadyPerformed": { hidden: false, label: "Trabalho já executado" },
                         "requestNutrition": { hidden: false, label: "Requisição Nutrição" },
                         "pedirOrcamento": { hidden: false, label: "Pedir Orçamento" },
+                        "projectNo": { hidden: false, label: "Nº Projeto" },
                         "regionCode": { hidden: false, label: "Código Região" },
                         "functionalAreaCode": { hidden: false, label: "Código Área Funcional" },
                         "centerResponsibilityCode": { hidden: false, label: "Código Centro Responsabilidade" },
-                        //"localCode": { hidden: false, label: "Código Localização" },
+                        "localCode": { hidden: false, label: "Código Localização" },
                         "comments": { hidden: false, label: "Observações" },
                         "requisitionDate": { hidden: false, label: "Data requisição" },
                         "estimatedValue": { hidden: false, label: "Valor Estimado" }

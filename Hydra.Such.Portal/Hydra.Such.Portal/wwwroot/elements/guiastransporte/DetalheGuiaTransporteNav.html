@@ -159,13 +159,14 @@
                             <paper-tab>Geral</paper-tab>
                             <paper-tab>Moradas</paper-tab>
                             <paper-tab>Comunicação AT</paper-tab>
+                            <paper-tab>Observações Adicionais</paper-tab>
                         </paper-tabs>
                         <iron-pages selected="{{ selected }}">
                             <!-- Tab Geral-->
                             <paper-collapse-group>
                                 <div class="panel panel-default">
                                     <div class="panel-body" style="padding:0">
-                                        <div class="col-md-12 col-md-12 col-lg-12">
+     1                                   <div class="col-md-12 col-md-12 col-lg-12">
                                             <div class="row break_clear">
                                                 <div class="col-md-3">
                                                     <vaadin-text-field id="noGuiaTransporte" name="noGuiaTransporte" label="Nº Guia" value="{{ data.noGuiaTransporte}}" disabled="disabled"></vaadin-text-field>
@@ -343,7 +344,7 @@
                                 </div>
                             </paper-collapse-group>
 
-                            <!--Tab Comunicação AT-->
+                            <!-- Tab Comunicação AT-->
                             <paper-collapse-group>
                                 <div class="panel panel-default">
                                     <div class="panel-body" style="padding:0">
@@ -360,6 +361,33 @@
                                                 </div>
                                                 <div class="col-md-3" style="padding-bottom:50px">
                                                     <vaadin-text-field id="returnMessage" name="returnMessage" label="Mensagem Resposta AT" value="{{ data.fiscalCommunicationLog.returnMessage }}" disabled="disabled"></vaadin-text-field>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </paper-collapse-group>
+
+                            <!-- Tab Observações Adicionais -->
+                            <paper-collapse-group>
+                                <div class="panel panel-default">
+                                    <div class="panel-body" style="padding:0">
+                                        <div class="col-md-12 col-md-12 col-lg-12">
+                                            <div class="row break_clear">
+                                                <div class="col-md-9">
+                                                    <such-textarea id="observacoesAdic" name="observacoesAdic" label="Observações Adicionais" rows="3" value="{{ data.observacoesAdicionais }}" disabled="disabled"> </such-textarea>
+                                                </div>
+
+                                            </div>
+                                            <div class="row break_clear">
+                                                <div class="col-md-3">
+                                                    <vaadin-text-field id="userObsAdic" name="userObsAdic" label="Utilizador Obs. Adicionais" value="{{ data.userObservacoesAdicionais  }}" disabled="disabled"></vaadin-text-field>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <vaadin-text-field id="dataObsAdic" name="dataObsAdic" label="Data Obs. Adicionais" value="{{ data.dataObservacoesAdicionais }}" disabled="disabled"></vaadin-text-field>
+                                                </div>
+                                                <div class="col-md-3" style="padding-bottom:50px">
+                                                    <vaadin-text-field id="horaObsAdic" name="horaObsAdic" label="Hora Obs. Adicionais" value="{{ data.horaObservacoesAdicionais }}" disabled="disabled"></vaadin-text-field>
                                                 </div>
                                             </div>
                                         </div>

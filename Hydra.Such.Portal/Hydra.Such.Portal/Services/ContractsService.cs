@@ -44,6 +44,14 @@ namespace Hydra.Such.Portal.Services
                         cContract.Arquivado = true;
                         DBContracts.Update(cContract);
 
+                        //NR20181116 - Só faz se não for Oportunidade
+                        if (cContract.TipoContrato == (int)ContractType.Oportunity)
+                        {
+                            contractToArchive.eReasonCode = 1;
+                            contractToArchive.eMessage = "Arquivado com sucesso.";
+                            return contractToArchive;
+                        }
+
                         cContract.NºVersão = lastVersionNumber;// cContract.NºVersão + 1;
                         cContract.UtilizadorCriação = changedByUserName;
                         cContract.UtilizadorModificação = "";

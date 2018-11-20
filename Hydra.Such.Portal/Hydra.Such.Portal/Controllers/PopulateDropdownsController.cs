@@ -720,6 +720,13 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetProjectPreMovements()
+        {
+            List<EnumData> result = EnumerablesFixed.ProjectPreMovements;
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetProjectDiaryTypes()
         {
             List<EnumData> result = EnumerablesFixed.ProjectDiaryTypes;
@@ -1492,7 +1499,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetRequisitions()
         {
-            List<RequisitionViewModel> result = DBRequest.GetByState(RequisitionStates.Approved).ParseToViewModel();
+            List<RequisitionViewModel> result = DBRequest.GetByState((int)RequisitionTypes.Normal, RequisitionStates.Approved).ParseToViewModel();
 
             //Apply User Dimensions Validations
             List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
@@ -1642,7 +1649,8 @@ namespace Hydra.Such.Portal.Controllers
         {
             List<DDMessageString> result = DBViatura.GetAllToList().Select(x => new DDMessageString()
             {
-                id = x.Matrícula
+                id = x.Matrícula ?? "",
+                value = x.Matrícula ?? ""
             }).ToList();
             return Json(result);
         }
@@ -1815,6 +1823,18 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult TipoRequisicoesLista()
         {
             List<DDMessageString> result = DBRequesitionType.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageString()
+            {
+                id = x.Code,
+                value = x.Description
+            }).ToList();
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult TipoRequisicoesLista_CD()
+        {
+            List<DDMessageString> result = DBRequesitionType.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName).Where(x => x.FiltroReq == 1).Select(x => new DDMessageString()
             {
                 id = x.Code,
                 value = x.Description

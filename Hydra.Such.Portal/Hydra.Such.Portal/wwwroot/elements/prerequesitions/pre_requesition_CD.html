@@ -135,10 +135,18 @@
             .panel-body {
                 padding-top: 0px !important;
             }
+
+            .grid--modal__wrapper {
+                height: 86% !important;
+            }
+
+            .grid--modal {
+                height: 100% !important;
+            }
         </style>
 
         <!-- DROPDOWNS POPULATE -->
-        <iron-ajax url="/PopulateDropdowns/TipoRequisicoesLista" last-response="{{CBRequesitionType}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/TipoRequisicoesLista_CD" last-response="{{CBRequesitionType}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" id="page_GetFunctionalAreaCode_ajax" last-response="{{LProjectFunctionalAreaCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" id="page_GetResponsabilityCenterCode_ajax" last-response="{{LProjectResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" id="page_GetRegionCode_ajax" last-response="{{LProjectRegionCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -151,6 +159,7 @@
         <iron-ajax url="/PopulateDropdowns/GetUnitOfMeasureByCode" last-response="{{LCBMeasuresUnit}}" auto id="measuresunit_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/getOpenOrderLineByHeader" last-response="{{CBPurchaseLine}}" id="purchaselines_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/getOpenOrderLineByHeader" last-response="{{CBPurchaseLineGrid}}" id="purchaselinesgrid_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetVATProductsPostingGroups" last-response="{{VATProductsPostingGroups}}" auto method="get" handle-as="json" content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/PreRequisicoes/GetPreReq"
                    id="page_GetPreReq_ajax"
@@ -296,7 +305,7 @@
                    on-response="_copyFromTemplateResponse"
                    content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/PreRequisicoes/ValidateNumerationReq"
+        <iron-ajax url="/PreRequisicoes/ValidateNumerationReq_CD"
                    last-response="{{validateReqResponse}}"
                    method="post"
                    handle-as="json"
@@ -304,7 +313,7 @@
                    on-response="_responseReqValidatorProcessor"
                    content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/PreRequisicoes/CreateRequesition"
+        <iron-ajax url="/PreRequisicoes/CreateRequesition_CD"
                    last-response="{{CreateReqResponse}}"
                    method="post"
                    handle-as="json"
@@ -326,6 +335,14 @@
                    handle-as="json"
                    id="page_getProject2_ajax"
                    on-response="_getProjectDimsResponse2"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PreRequisicoes/CalcularTaxaIVA"
+                   last-response="{{CalcularTaxaIVA}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_CalcularTaxaIVA_ajax"
+                   on-response="_CalcularTaxaIVAResponse"
                    content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/PreRequisicoes/GetProjetoNo"
@@ -359,6 +376,15 @@
                    id="page_GetProductLocation_ajax"
                    on-response="_GetProductLocationResponse"
                    content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PreRequisicoes/CalculoAutomaticoCustos"
+                   last-response="{{calculoAutomatico}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_CalculoAutomatico_ajax"
+                   on-response="_CalculoAutomaticoResponseProcessor"
+                   content-type="application/json"></iron-ajax>
+
 
         <!----------------------------------------------------------------->
         <template is="dom-if" if="{{ !_isCreate }}">
@@ -474,6 +500,12 @@
                                                             fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
                                             </such-selectbox>
                                         </div>
+
+                                        <div class="col-md-3 text-right">
+                                            <vaadin-text-field value="{{data.valorTotalDocComIVA}}" id="valorTotalDocComIVA" name="valorTotalDocComIVA" label="Valor Total Doc. com IVA" disabled="{{ !_permissions.update }}" type="number" pattern="^[1-9]\d*(\.\d+)?$" on-value-changed="_ConvertDecimals">
+                                                <div slot="suffix">€</div>
+                                            </vaadin-text-field>
+                                        </div>
                                     </div>
 
                                     <div class="row break_clear">
@@ -510,7 +542,7 @@
                                     </div>
 
                                     <div class="row break_clear">
-                                        <vaadin-grid aria-label="ReqUpdateGrid" items="[[uploads]]" class="grid" multi-sort="true">
+                                        <vaadin-grid id="gridAnexos" aria-label="ReqUpdateGrid" items="[[uploads]]" class="grid" multi-sort="true">
                                             <vaadin-grid-column width="70%" resizable>
                                                 <template class="header">
                                                     <vaadin-grid-sorter path="url">Anexo</vaadin-grid-sorter>
@@ -562,7 +594,7 @@
                                                         items="[[Products]]"
                                                         text-path="code"
                                                         value-path="code"
-                                                        fields='[{"field":"code", "name":"Cód. Produto"}, {"field":"name", "name":"Descrição"}, {"field":"name2", "name":"Descrição 2"}, {"field":"measureUnit", "name":"Unidade de Medida"}, {"field":"itemCategoryCode", "name":"Cód. Categoria"}, {"field":"productGroupCode", "name":"Cód. Grupo"}]'
+                                                        fields='[{"field":"code", "name":"Cód. Produto"}, {"field":"name", "name":"Descrição"}, {"field":"name2", "name":"Descrição 2"}, {"field":"measureUnit", "name":"Unidade de Medida"}, {"field":"itemCategoryCode", "name":"Cód. Categoria"}, {"field":"productGroupCode", "name":"Cód. Grupo"}, {"field":"vatProductPostingGroup", "name":"Gr. Registo IVA Produto"}]'
                                                         disabled="{{ !_permissions.update }}"
                                                         on-value-changed="_onProductChanged"
                                                         on-click="_onProductClick">
@@ -598,15 +630,37 @@
                                                         disabled="{{ !_permissions.update }}">
                                         </such-selectbox>
                                     </div>
+
+                                    <div class="col-sm-2">
+                                        <such-selectbox id="_CBVendor" value="{{_CBVendor}}" label="Nº Fornecedor" on-value-changed="_CalcularTaxaIVA"
+                                                        items="[[CBVendor]]"
+                                                        text-path="name"
+                                                        value-path="no_"
+                                                        fields='[{"field":"no_", "name":"Nº Fornecedor"}, {"field":"name", "name":"Nome"}, {"field":"vatRegistrationNo", "name":"Nº VAT"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Código Postal"}]'
+                                                        disabled="{{ !_permissions.update }}">
+                                        </such-selectbox>
+                                    </div>
                                 </div>
 
                                 <div class="row break_clear">
-                                    <div class="col-lg-2">
-                                        <vaadin-text-field value="{{_QuantityToRequire}}" on-value-changed="_onChangeQuantity" id="_QuantityToRequire" name="_QuantityToRequire" label="Qt. a Requerer" required error-message="Este campo é obrigatório, tem que ser superior a 0 e só pode ter 4 casas decimais" disabled="{{ !_permissions.update }}" pattern="\d+(\.\d{1,4})?"> </vaadin-text-field>
+                                    <div class="col-lg-2 text-right">
+                                        <vaadin-text-field value="{{_QuantityToRequire}}" id="_QuantityToRequire" name="_QuantityToRequire" label="Qt. a Requerer" on-blur="_CalculoAutomaticoValores" required error-message="Este campo é obrigatório, tem que ser superior a 0 e só pode ter 4 casas decimais" disabled="{{ !_permissions.update }}" pattern="\d+(\.\d{1,4})?"> </vaadin-text-field>
                                     </div>
 
-                                    <div class="col-lg-2">
-                                        <vaadin-text-field value="{{_UnitCost}}" id="_UnitCost" name="_UnitCost" label="Custo Unitário" disabled="{{ !_permissions.update }}" type="number" pattern="^[1-9]\d*(\.\d+)?$" on-value-changed="_ConvertDecimals">
+                                    <div class="col-lg-2 text-right">
+                                        <vaadin-text-field value="{{_UnitCost}}" id="_UnitCost" name="_UnitCost" label="Custo Unitário" on-blur="_CalculoAutomaticoValores" disabled="{{ !_permissions.update }}" type="number" pattern="^[1-9]\d*(\.\d+)?$">
+                                            <div slot="suffix">€</div>
+                                        </vaadin-text-field>
+                                    </div>
+
+                                    <div class="col-lg-2 text-right">
+                                        <vaadin-text-field value="{{_UnitCostWithIVA}}" id="_UnitCostWithIVA" name="_UnitCostWithIVA" label="Custo Unitário com IVA" on-blur="_CalculoAutomaticoValores" disabled="{{ !_permissions.update }}" type="number" pattern="^[1-9]\d*(\.\d+)?$">
+                                            <div slot="suffix">€</div>
+                                        </vaadin-text-field>
+                                    </div>
+
+                                    <div class="col-lg-2 text-right">
+                                        <vaadin-text-field value="" id="_CustoTotalComIVA" name="_CustoTotalComIVA" label="Custo Total com IVA" on-blur="_CalculoAutomaticoValores" disabled="{{ !_permissions.update }}">
                                             <div slot="suffix">€</div>
                                         </vaadin-text-field>
                                     </div>
@@ -627,16 +681,6 @@
                                                         text-path="id"
                                                         value-path="id"
                                                         fields='[{"field":"id", "name":"Matrícula"}]'
-                                                        disabled="{{ !_permissions.update }}">
-                                        </such-selectbox>
-                                    </div>
-
-                                    <div class="col-sm-2">
-                                        <such-selectbox id="_CBVendor" value="{{_CBVendor}}" label="Nº Fornecedor"
-                                                        items="[[CBVendor]]"
-                                                        text-path="name"
-                                                        value-path="no_"
-                                                        fields='[{"field":"no_", "name":"Nº Fornecedor"}, {"field":"name", "name":"Nome"}, {"field":"vatRegistrationNo", "name":"Nº VAT"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Código Postal"}]'
                                                         disabled="{{ !_permissions.update }}">
                                         </such-selectbox>
                                     </div>
@@ -672,6 +716,23 @@
                                                         fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Centro Responsabilidade"}]'
                                                         disabled>
                                         </such-selectbox>
+                                    </div>
+
+                                    <div class="col-lg-2">
+                                        <such-selectbox id="_CLVATProductsPostingGroups" label="Gr. Registo IVA Produto" on-value-changed="_CalcularTaxaIVA"
+                                                        items="[[VATProductsPostingGroups]]"
+                                                        text-path="id"
+                                                        value-path="id"
+                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Gr. Registo IVA Produto"}]'
+                                                        disabled="{{ _permissionsCreate }}">
+                                        </such-selectbox>
+                                    </div>
+
+
+                                    <div class="col-lg-2 text-right">
+                                        <vaadin-text-field id="_PercentagemIVA" name="_PercentagemIVA" label="Valor Tx IVA" on-blur="_CalculoAutomaticoValores" disabled="{{ !_permissions.update }}" type="number" pattern="^[1-9]\d*(\.\d+)?$">
+                                            <div slot="suffix">%</div>
+                                        </vaadin-text-field>
                                     </div>
 
                                     <div class="col-lg-2">
@@ -799,10 +860,14 @@
                                         </template>
                                         <template>
                                             <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-text-field value="{{item.quantityToRequire}}" id="_CLGridQuantityToRequire" name="_CLGridQuantityToRequire" onchange="_CalculateTotalCostLine" disabled="{{ !_permissions.update }}" type="number" pattern="^[1-9]\d*(\.\d+)?$" on-blur="_updateLinhaPreRequisicao"> </vaadin-text-field>
+                                                <div class="text-right">
+                                                    <vaadin-text-field value="{{item.quantityToRequire}}" id="_CLGridQuantityToRequire" name="_CLGridQuantityToRequire" onchange="_CalculateTotalCostLine" disabled="{{ !_permissions.update }}" type="number" pattern="^[1-9]\d*(\.\d+)?$" on-blur="_updateLinhaPreRequisicao"> </vaadin-text-field>
+                                                </div>
                                             </template>
                                             <template is="dom-if" if="{{ !item.selected }}">
-                                                {{item.quantityToRequire}}
+                                                <div class="text-right">
+                                                    {{item.quantityToRequire}}
+                                                </div>
                                             </template>
                                         </template>
                                     </vaadin-grid-column>
@@ -814,12 +879,16 @@
                                         </template>
                                         <template>
                                             <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-text-field value="{{item.unitCost}}" id="_CLGridUnitCost" name="_CLGridUnitCost" disabled="{{ _setDisabled(item) }}" type="number" pattern="^[1-9]\d*(\.\d+)?$" onchange="_CalculateTotalCostLine" on-blur="_updateLinhaPreRequisicao">
-                                                    <div slot="suffix">€</div>
-                                                </vaadin-text-field>
+                                                <div class="text-right">
+                                                    <vaadin-text-field value="{{item.unitCost}}" id="_CLGridUnitCost" name="_CLGridUnitCost" disabled="{{ _setDisabled(item) }}" type="number" pattern="^[1-9]\d*(\.\d+)?$" onchange="_CalculateTotalCostLine" on-blur="_updateLinhaPreRequisicao">
+                                                        <div slot="suffix">€</div>
+                                                    </vaadin-text-field>
+                                                </div>
                                             </template>
                                             <template is="dom-if" if="{{ !item.selected }}">
-                                                {{item.unitCost}} €
+                                                <div class="text-right">
+                                                    {{item.unitCost}} €
+                                                </div>
                                             </template>
                                         </template>
                                     </vaadin-grid-column>
@@ -831,12 +900,58 @@
                                         </template>
                                         <template>
                                             <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-text-field value="{{item.totalCost}}" id="_CLGridTotalCost" name="_CLGridTotalCost" disabled>
-                                                    <div slot="suffix">€</div>
-                                                </vaadin-text-field>
+                                                <div class="text-right">
+                                                    <vaadin-text-field value="{{item.totalCost}}" id="_CLGridTotalCost" name="_CLGridTotalCost" disabled>
+                                                        <div slot="suffix">€</div>
+                                                    </vaadin-text-field>
+                                                </div>
                                             </template>
                                             <template is="dom-if" if="{{ !item.selected }}">
-                                                {{item.totalCost}} €
+                                                <div class="text-right">
+                                                    {{item.totalCost}} €
+                                                </div>
+                                            </template>
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="150px" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="unitCostWithIVA">Custo Unitário com IVA</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="unitCostWithIVA" />
+                                        </template>
+                                        <template>
+                                            <template is="dom-if" if="{{ item.selected }}">
+                                                <div class="text-right">
+                                                    <vaadin-text-field value="{{item.unitCostWithIVA}}" id="_CLGridUnitCostWithIVA" name="_CLGridUnitCostWithIVA" disabled="{{ _setDisabled(item) }}" type="number" pattern="^[1-9]\d*(\.\d+)?$" onchange="_CalculateTotalCostWithIVALine" on-blur="_updateLinhaPreRequisicao">
+                                                        <div slot="suffix">€</div>
+                                                    </vaadin-text-field>
+                                                </div>
+                                            </template>
+                                            <template is="dom-if" if="{{ !item.selected }}">
+                                                <div class="text-right">
+                                                    {{item.unitCostWithIVA}} €
+                                                </div>
+                                            </template>
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="150px" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="totalCostWithIVA">Custo Total com IVA</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="totalCostWithIVA" />
+                                        </template>
+                                        <template>
+                                            <template is="dom-if" if="{{ item.selected }}">
+                                                <div class="text-right">
+                                                    <vaadin-text-field value="{{item.totalCostWithIVA}}" id="_CLGridTotalCostWithIVA" name="_CLGridTotalCostWithIVA" disabled>
+                                                        <div slot="suffix">€</div>
+                                                    </vaadin-text-field>
+                                                </div>
+                                            </template>
+                                            <template is="dom-if" if="{{ !item.selected }}">
+                                                <div class="text-right">
+                                                    {{item.totalCostWithIVA}} €
+                                                </div>
                                             </template>
                                         </template>
                                     </vaadin-grid-column>
@@ -975,6 +1090,28 @@
                                         </template>
                                     </vaadin-grid-column>
 
+                                    <vaadin-grid-column width="250px" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="grupoRegistoIVAProduto">Gr. Registo IVA Produto</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="grupoRegistoIVAProduto" />
+                                        </template>
+                                        <template>
+                                            <template is="dom-if" if="{{ item.selected }}">
+                                                <such-selectbox id="_CLGridVATProductsPostingGroups" value="{{item.grupoRegistoIVAProduto}}"
+                                                                items="[[VATProductsPostingGroups]]"
+                                                                on-change="_updateLinhaPreRequisicao"
+                                                                text-path="id"
+                                                                value-path="id"
+                                                                fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Gr. Registo IVA Produto"}]'
+                                                                disabled="{{ _permissionsCreate }}">
+                                                </such-selectbox>
+                                            </template>
+                                            <template is="dom-if" if="{{ !item.selected }}">
+                                                {{item.grupoRegistoIVAProduto}}
+                                            </template>
+                                        </template>
+                                    </vaadin-grid-column>
+
                                     <vaadin-grid-column width="50px">
                                         <template class="header">
                                         </template>
@@ -1090,9 +1227,10 @@
         </paper-dialog>
 
         <!-- Paper Dialog Total Linhas-->
-        <paper-dialog id="dialogTotal" style="height:120px; width:300px">
+        <paper-dialog id="dialogTotal" style="height:180px; width:300px">
             <div>
                 <h2>Valor Total: <b>{{_TotalLine}} €</b></h2>
+                <h2>Valor Total com IVA: <b>{{_TotalWithIVALine}} €</b></h2>
             </div>
             <div class="buttons">
                 <paper-button raised class="btnEdit" dialog-dismiss>Fechar</paper-button>
@@ -1155,6 +1293,10 @@
                         type: Number,
                         value: 0
                     },
+                    _TotalWithIVALine: {
+                        type: Number,
+                        value: 0
+                    },
 
                     _showPreReqLines: {
                         type: String,
@@ -1181,7 +1323,7 @@
                 ],
                 ready: function () {
                     this._isCreate = false;
-                    this.$.page_createnewForUser_ajax.body = JSON.stringify({ "areaid": this._areaid });
+                    this.$.page_createnewForUser_ajax.body = JSON.stringify({ "tipoPreReq": 1, "areaid": this._areaid });
                     this.$.page_createnewForUser_ajax.generateRequest();
 
 
@@ -1282,6 +1424,18 @@
                     this.$.page_getProject2_ajax.body = JSON.stringify(projectNo);
                     this.$.page_getProject2_ajax.generateRequest();
                 },
+
+                _CalcularTaxaIVA: function (e) {
+                    if (this.$._CBVendor.value != null && this.$._CBVendor.value != "") {
+                        if (this.$._CLVATProductsPostingGroups.value != null && this.$._CLVATProductsPostingGroups.value != "") {
+                            this.$.page_CalcularTaxaIVA_ajax.body = JSON.stringify({
+                                supplierNo: this.$._CBVendor.value,
+                                grupoRegistoIVAProduto: this.$._CLVATProductsPostingGroups.value });
+                            this.$.page_CalcularTaxaIVA_ajax.generateRequest();
+                        }
+                    }
+                },
+
                 _setNewLineFormControl(showAsPurchaseForm) {
                     if (showAsPurchaseForm) {
                         this.$.txtLocalCode.hidden = false;
@@ -1423,6 +1577,12 @@
                     }
                 },
 
+                _CalcularTaxaIVAResponse: function (e) {
+                    if (this.CalcularTaxaIVA != null && this.CalcularTaxaIVA != undefined) {
+                        this.$._PercentagemIVA.value = this.CalcularTaxaIVA;
+                    }
+                },
+
                 _deleteFiles: function (e) {
                     var index = this.dataLines.lines.indexOf(e.model.item);
                     this.dataLines.lines.splice(index, 1);
@@ -1521,12 +1681,39 @@
 
                 _createnewreq: function (e) {
                     this.data.area = this._areaid;
-                    if (this.$.projectNo.value != "" & this.$.projectNo.value != null) {
-                        this.$.page_validator_req_ajax.body = JSON.stringify(this.data);
-                        this.$.page_validator_req_ajax.generateRequest();
+                    var countWithIVA = 0;
+                    if (this.dataLines.lines != null) {
+                        for (var i = 0; i < this.dataLines.lines.length; i++) {
+                            countWithIVA += this.dataLines.lines[i].totalCostWithIVA;
+                        }
+                    }
+
+                    if (this.$.gridAnexos.__data.items.length > 0) {
+                        if (this.$.valorTotalDocComIVA.value != "" & this.$.valorTotalDocComIVA.value != null) {
+                            if (this.$.projectNo.value != "" & this.$.projectNo.value != null) {
+                                if (this.dataLines.lines != null) {
+                                    if (countWithIVA == this.$.valorTotalDocComIVA.value) {
+                                        this.$.page_validator_req_ajax.body = JSON.stringify(this.data);
+                                        this.$.page_validator_req_ajax.generateRequest();
+                                    }
+                                    else {
+                                        this._openToastError('O valor do campo Valor Total Doc. com IVA têm que ser igual ao sumatório do campo Custo Total com IVA das linhas.');
+                                    }
+                                }
+                                else {
+                                    this._openToastError('É necessário existir pelo menos uma linha para criar a Requisição.');
+                                }
+                            }
+                            else {
+                                this._openToastError('O campo Nº Ordem/Projecto é de preenchimento obrigatório.');
+                            }
+                        }
+                        else {
+                            this._openToastError('O campo Valor Total Doc. com IVA é de preenchimento obrigatório.');
+                        }
                     }
                     else {
-                        this._openToastError('O campo Nº Ordem/Projecto é de preenchimento obrigatório.');
+                        this._openToastError('A tabela Anexos tem que ter pelo menos um Anexo.');
                     }
                 },
 
@@ -1772,10 +1959,14 @@
 
                 _sumLines: function () {
                     var count = 0;
+                    var countWithIVA = 0;
                     if (this.dataLines.lines != null) {
                         for (var i = 0; i < this.dataLines.lines.length; i++) {
                             count += this.dataLines.lines[i].totalCost;
+                            countWithIVA += this.dataLines.lines[i].totalCostWithIVA;
+
                             this._TotalLine = count;
+                            this._TotalWithIVALine = countWithIVA;
                             this.$.dialogTotal.open();
                         }
                     } else {
@@ -1811,6 +2002,13 @@
                 _CalculateTotalCostLine: function (e) {
                     var line = this.dataLines.lines.find(x => x == this._SelectedLine);
                     line.totalCost = line.quantityToRequire * line.unitCost;
+                    line.totalCostWithIVA = line.quantityToRequire * line.unitCostWithIVA;
+                    this.$.grid_prereqlines.clearCache();
+                },
+
+                _CalculateTotalCostWithIVALine: function (e) {
+                    var line = this.dataLines.lines.find(x => x == this._SelectedLine);
+                    line.totalCostWithIVA = line.quantityToRequire * line.unitCostWithIVA;
                     this.$.grid_prereqlines.clearCache();
                 },
 
@@ -1929,6 +2127,35 @@
                     return "";
                 },
 
+                _CalculoAutomaticoCusto: function () {
+                    var totalCost = this._QuantityToRequire * this._UnitCost;
+                    if (isNaN(totalCost)) {
+                        totalCost = 0;
+                    }
+
+                    this.$.page_CalculoAutomatico_ajax.body = JSON.stringify({
+                        quantityToRequire: this._QuantityToRequire,
+                        unitCost: this._UnitCost,
+                        unitCostWithIVA: this._UnitCostWithIVA,
+                        supplierNo: this._CBVendor,
+                        grupoRegistoIVAProduto: this.$._CLVATProductsPostingGroups.value,
+                        totalCost: totalCost > 0 ? totalCost : "",
+                        totalCostWithIVA: this.$._CustoTotalComIVA.value
+                    });
+                    this.$.page_CalculoAutomatico_ajax.generateRequest();
+                },
+                _CalculoAutomaticoResponseProcessor: function (e) {
+                    if (this.calculoAutomatico != null) {
+                        if (this.calculoAutomatico.quantityToRequire != null)
+                            this.$._QuantityToRequire.value = this.calculoAutomatico.quantityToRequire;
+                        if (this.calculoAutomatico.unitCost != null)
+                            this.$._UnitCost.value = this.calculoAutomatico.unitCost;
+                        if (this.calculoAutomatico.unitCostWithIVA != null)
+                            this.$._UnitCostWithIVA.value = this.calculoAutomatico.unitCostWithIVA;
+                    }
+                },
+
+
                 _createPreReqLine: function () {
                     var requesitionType = this.$.requesitionType.value;
 
@@ -1952,47 +2179,50 @@
                                         totalCost = 0;
                                     }
 
-                                    var purchHeaderNo = "";
-                                    var purchLineNo = "";
-                                    if (this.$._CBPurchaseLine.value != undefined & this.$._CBPurchaseLine.value != "") {
-                                        var composedKey = this.$._CBPurchaseLine.value.split(" ", 2);
-                                        purchHeaderNo = composedKey[0];
-                                        purchLineNo = composedKey[1];
-                                    }
+                                    //var purchHeaderNo = "";
+                                    //var purchLineNo = "";
+                                    //if (this.$._CBPurchaseLine.value != undefined & this.$._CBPurchaseLine.value != "") {
+                                    //    var composedKey = this.$._CBPurchaseLine.value.split(" ", 2);
+                                    //    purchHeaderNo = composedKey[0];
+                                    //    purchLineNo = composedKey[1];
+                                    //}
 
                                     this.dataLines.lines.unshift({
                                         preRequisitionLineNo: this.data.preRequesitionsNo,
                                         type: 2, //PRODUTO
                                         code: this._Products,
+                                        localCode: localCode,
                                         description: this._Description,
                                         description2: this._Description2,
-                                        localCode: localCode,
                                         unitMeasureCode: this._UnitMeasureCode,
                                         quantityToRequire: this._QuantityToRequire,
+                                        unitCost: this._UnitCost,
+                                        unitCostWithIVA: this._UnitCostWithIVA,
+                                        projectNo: this.$._ProjectNo.value,
+                                        vehicle: this.data.vehicle,
+                                        supplierNo: this._CBVendor,
                                         regionCode: this.$._CLRegion.value,
                                         functionalAreaCode: this.$._CLFunctionalAreaCode.value,
                                         centerResponsibilityCode: this.$._CLResponsabilityCenterCode.value,
-                                        projectNo: this.$._ProjectNo.value,
                                         //qtyByUnitOfMeasure
                                         //quantityRequired
                                         //quantityPending:
                                         quantidadeInicial: this._QuantityToRequire,
-                                        unitCost: this._UnitCost,
                                         //sellUnityPrice
                                         //budgetValue
                                         //expectedReceivingDate
                                         //billable
                                         maintenanceOrderLineNo: this._MaintenanceOrderLineNo,
                                         //employeeNo
-                                        vehicle: this.data.vehicle,
-                                        supplierNo: this._CBVendor,
                                         //supplierProductCode
                                         armazemCDireta: this._CBItemsCDirect,
                                         //unitNutritionProduction
                                         //customerNo
-                                        openOrderNo: purchHeaderNo,
-                                        openOrderLineNo: purchLineNo,
+                                        //openOrderNo: purchHeaderNo,
+                                        //openOrderLineNo: purchLineNo,
                                         totalCost: totalCost > 0 ? totalCost : "",
+                                        totalCostWithIVA: this.$._CustoTotalComIVA.value,
+                                        grupoRegistoIVAProduto: this.$._CLVATProductsPostingGroups.value,
                                     });
 
                                     this.$.prereqLines_databound_ajax.url = "/PreRequisicoes/UpdateContractLines";
@@ -2025,17 +2255,26 @@
                             preRequisitionLineNo: e.model.item.preRequisitionLineNo,
                             lineNo: e.model.item.lineNo,
                             type: e.model.item.type,
+
                             code: e.model.item.code,
+                            localCode: e.model.item.localCode,
                             description: e.model.item.description,
                             description2: e.model.item.description2,
-                            localCode: e.model.item.localCode,
                             unitMeasureCode: e.model.item.unitMeasureCode,
                             quantityToRequire: e.model.item.quantityToRequire,
-                            quantidadeInicial: e.model.item.quantityToRequire,
+                            unitCost: e.model.item.unitCost,
+                            totalCost: e.model.item.totalCost,
+                            unitCostWithIVA: e.model.item.unitCostWithIVA,
+                            totalCostWithIVA: e.model.item.totalCostWithIVA,
+                            projectNo: e.model.item.projectNo,
+                            vehicle: e.model.item.vehicle,
+                            supplierNo: e.model.item.supplierNo,
                             regionCode: e.model.item.regionCode,
                             functionalAreaCode: e.model.item.functionalAreaCode,
                             centerResponsibilityCode: e.model.item.centerResponsibilityCode,
-                            projectNo: e.model.item.projectNo,
+                            grupoRegistoIVAProduto: e.model.item.grupoRegistoIVAProduto,
+                            
+                            quantidadeInicial: e.model.item.quantityToRequire,
                             createDateTime: e.model.item.createDateTime,
                             createUser: e.model.item.createUser,
                             updateDateTime: e.model.item.updateDateTime,
@@ -2043,21 +2282,17 @@
                             qtyByUnitOfMeasure: e.model.item.qtyByUnitOfMeasure,
                             quantityRequired: e.model.item.quantityRequired,
                             quantityPending: e.model.item.quantityPending,
-                            unitCost: e.model.item.unitCost,
                             sellUnityPrice: e.model.item.sellUnityPrice,
                             budgetValue: e.model.item.budgetValue,
                             expectedReceivingDate: e.model.item.expectedReceivingDate,
                             billable: e.model.item.billable,
                             maintenanceOrderLineNo: e.model.item.maintenanceOrderLineNo,
                             employeeNo: e.model.item.employeeNo,
-                            vehicle: e.model.item.vehicle,
-                            supplierNo: e.model.item.supplierNo,
                             supplierProductCode: e.model.item.supplierProductCode,
                             unitNutritionProduction: e.model.item.unitNutritionProduction,
                             customerNo: e.model.item.customerNo,
                             openOrderNo: e.model.item.openOrderNo,
                             openOrderLineNo: e.model.item.openOrderLineNo,
-                            totalCost: e.model.item.totalCost,
                             armazemCDireta: e.model.item.armazemCDireta,
                             selected: e.model.item.selected,
                         });
@@ -2178,6 +2413,7 @@
                         this.$._UnitMeasureCode.value = "";
                         this.$._UnitCost.value = "";
                         this.$._CBLocations.value = "";
+                        this.$._CLVATProductsPostingGroups.value = "";
 
                         this.$._UnitCost.disabled = false;
                     }
@@ -2211,6 +2447,7 @@
                         this.$._Description2.value = this.productInfo.name2;
                         this.$._UnitMeasureCode.value = this.productInfo.measureUnit;
                         this.$._UnitCost.value = this.productInfo.unitCost;
+                        this.$._CLVATProductsPostingGroups.value = this.productInfo.vatProductPostingGroup;
 
                         if (this.productInfo.inventoryValueZero == 1) {
                             this.$._UnitCost.disabled = false;
@@ -2245,6 +2482,37 @@
                     e.target.value = stringVal.replace(",", ".");
 
                 },
+
+                _CalculoAutomaticoValores: function (e) {
+                    debugger;
+                    var IVA;
+                    if (e.target.value != "") {
+                        var stringVal = "" + e.target.value;
+                        e.target.value = stringVal.replace(",", ".");
+                    }
+
+                    //this.$._QuantityToRequire.value
+                    //this.$._UnitCost.value
+                    //this.$._UnitCostWithIVA.value
+                    //this.$._CustoTotalComIVA.value
+                    //this.$._PercentagemIVA.value
+
+                    if (this.$._PercentagemIVA.value != "")
+                        IVA = (this.$._PercentagemIVA.value / 100) + 1;
+
+                    if (this.$._QuantityToRequire.value != "" && this.$._UnitCostWithIVA.value != "")
+                        this.$._CustoTotalComIVA.value = this.$._QuantityToRequire.value * this.$._UnitCostWithIVA.value;
+
+                    if (this.$._UnitCostWithIVA.value != "" && this.$._CustoTotalComIVA.value != "")
+                        this.$._QuantityToRequire.value = this.$._CustoTotalComIVA.value / this.$._UnitCostWithIVA.value;
+
+                    if (this.$._CustoTotalComIVA.value != "" && this.$._QuantityToRequire.value != "")
+                        this.$._UnitCostWithIVA.value = this.$._CustoTotalComIVA.value / this.$._QuantityToRequire.value;
+
+                    if (this.$._QuantityToRequire.value != "" && this.$._UnitCost.value != "" && this.$._PercentagemIVA.value != "")
+                        this.$._CustoTotalComIVA.value = (this.$._QuantityToRequire.value * this.$._UnitCost.value) * IVA;
+                },
+
                 _lineSelected: function (item) {
                     if (item != null) {
                         var oSel = this.dataLines.lines.find(x => x.selected);
@@ -2284,29 +2552,55 @@
                             }
                             else {
                                 this._openToast(this.dataLines.eMessage);
+
+                                this.$._Products.value = "";
+                                this.$._Products.valueText = "";
                                 this.$._CBLocations.value = "";
-                                this._CBItemsCDirect = "0";
+                                this.$._CBLocations.valueText = "";
                                 this.$._Description.value = "";
                                 this.$._Description2.value = "";
                                 this.$._UnitMeasureCode.value = "";
+                                this.$._UnitMeasureCode.valueText = "";
                                 this.$._QuantityToRequire.value = "";
-                                this.$._QuantityToOpen.value = "";
                                 this.$._UnitCost.value = "";
-                                this.$._MaintenanceOrderLineNo.value = "";
-                                if (this.$._CBPurchaseHeader != null)
-                                    this.$._CBPurchaseHeader.value = "";
-                                this.$._CBPurchaseLine.value = "";
-                                this.$._Products._clearSelection();
+                                this.$._UnitCostWithIVA.value = "";
+                                this.$._VehicleLines.value = "";
+                                this.$._VehicleLines.valueText = "";
+                                this.$._CBVendor.value = "";
+                                this.$._CBVendor.valueText = "";
+                                this.$._CLVATProductsPostingGroups.value = "";
+                                this.$._CLVATProductsPostingGroups.valueText = "";
+                                this.$._CustoTotalComIVA.value = "";
+
                                 this.$._ProjectNo.value = this.data.projectNo;
-                                this.$._ProjectNo.valueText = this.data.projectNo;
-                                this.$._CBVendor._clearSelection();
-                                if (this.$._CBPurchaseLine != null)
-                                    this.$._CBPurchaseLine._clearSelection();
-                                if (this.data != null) {
-                                    this.$._CLRegion.value = this.data.regionCode;
-                                    this.$._CLFunctionalAreaCode.value = this.data.functionalAreaCode;
-                                    this.$._CLResponsabilityCenterCode.value = this.data.responsabilityCenterCode;
-                                }
+                                this.$._CLRegion.value = this.data.regionCode;
+                                this.$._CLFunctionalAreaCode.value = this.data.functionalAreaCode;
+                                this.$._CLResponsabilityCenterCode.value = this.data.responsabilityCenterCode;
+
+
+                                //this.$._CBLocations.value = "";
+                                //this._CBItemsCDirect = "0";
+                                //this.$._Description.value = "";
+                                //this.$._Description2.value = "";
+                                //this.$._UnitMeasureCode.value = "";
+                                //this.$._QuantityToRequire.value = "";
+                                //this.$._QuantityToOpen.value = "";
+                                //this.$._UnitCost.value = "";
+                                //this.$._MaintenanceOrderLineNo.value = "";
+                                //if (this.$._CBPurchaseHeader != null)
+                                //    this.$._CBPurchaseHeader.value = "";
+                                //this.$._CBPurchaseLine.value = "";
+                                
+                                //this.$._ProjectNo.value = this.data.projectNo;
+                                //this.$._ProjectNo.valueText = this.data.projectNo;
+                                //this.$._CBVendor._clearSelection();
+                                //if (this.$._CBPurchaseLine != null)
+                                //    this.$._CBPurchaseLine._clearSelection();
+                                //if (this.data != null) {
+                                //    this.$._CLRegion.value = this.data.regionCode;
+                                //    this.$._CLFunctionalAreaCode.value = this.data.functionalAreaCode;
+                                //    this.$._CLResponsabilityCenterCode.value = this.data.responsabilityCenterCode;
+                                //}
                                 this._setNewLineFormControl(false);
                             }
                         }
@@ -2343,7 +2637,7 @@
                 },
 
                 _pendingreq: function (e) {
-                    window.location.href = "/PreRequisicoes/RequisicoesPendentes";
+                    window.location.href = "/PreRequisicoes/RequisicoesPendentes_CD";
                 },
                 _CleanPreRequesitionResponse: function (e) {
                     if (this.ClPreReq.eReasonCode != null) {

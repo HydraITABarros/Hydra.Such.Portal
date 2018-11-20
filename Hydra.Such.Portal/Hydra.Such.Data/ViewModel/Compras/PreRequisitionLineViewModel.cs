@@ -28,6 +28,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public decimal? QuantityRequired { get; set; }
         public decimal? QuantityPending { get; set; }
         public decimal? UnitCost { get; set; }
+        public decimal? UnitCostWithIVA { get; set; }
         public decimal? SellUnityPrice { get; set; }
         public decimal? BudgetValue { get; set; }
         public string ExpectedReceivingDate { get; set; }
@@ -42,7 +43,11 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string OpenOrderNo { get; set; }
         public int? OpenOrderLineNo { get; set; }
         public decimal? TotalCost { get; set; }
+        public decimal? TotalCostWithIVA { get; set; }
         public string ArmazemCDireta { get; set; }
+        public string GrupoRegistoIVAProduto { get; set; }
+
+
         //EXTRAS
         public bool Selected { get; set; }
     }

@@ -1,10 +1,10 @@
 ﻿
 @{
-    ViewData["Title"] = "Guias Transporte Nav";
+    ViewData["Title"] = "Guias Transporte Nav " + ViewBag.Historic + ViewBag.No; ;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 
 <link rel="import" href="~/elements/guiastransporte/GuiasTransporteNav.html" />
 
-<x-guiastransportenav _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-guiastransportenav>
+<x-guiastransportenav _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))' _historico="@ViewBag.ifHistoric"></x-guiastransportenav>

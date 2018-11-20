@@ -4346,7 +4346,8 @@ namespace Hydra.Such.Portal.Controllers
         #region Config Email Fornecedores
         public IActionResult ConfigEmailFornecedores(string id)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminGeral);
+            //UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminGeral);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.LinhasAcordosPrecos);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.CreatePermissions = !UPerm.Create.Value;

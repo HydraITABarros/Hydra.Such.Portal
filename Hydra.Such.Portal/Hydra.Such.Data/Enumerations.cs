@@ -7,6 +7,14 @@ namespace Hydra.Such.Data
 {
     public class Enumerations
     {
+        public enum RequisitionTypes
+        {
+            [Description("Normal")]
+            Normal = 0,
+            [Description("Compras Dinheiro")]
+            ComprasDinheiro = 1
+        }
+
         public enum RequisitionStates
         {
             [Description("Pendente")]
@@ -144,10 +152,12 @@ namespace Hydra.Such.Data
             RequisicoesPorDimensoes = 55,
             [Description("Pré-Requisições Compras a Dinheiro")]
             PréRequisiçõesComprasDinheiro = 56,
+            [Description("Requisições Compras a Dinheiro")]
+            RequisiçõesComprasDinheiro = 58,
 
             // zpgm. impressão guias transporte do NAV
             [Description("Impressão Guias Transporte NAV")]
-            ImpressaoGuiaTransporteNAV = 56,
+            ImpressaoGuiaTransporteNAV = 57,
 
 
             [Description("Administração Geral")]

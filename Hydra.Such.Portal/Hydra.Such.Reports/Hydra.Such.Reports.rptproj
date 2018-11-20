@@ -8,7 +8,7 @@
     <OverwriteDataSources>True</OverwriteDataSources>
     <TargetServerVersion>SSRS2016</TargetServerVersion>
     <Platform>Win32</Platform>
-    <TargetReportFolder>eSUCHTestes</TargetReportFolder>
+    <TargetReportFolder>eSUCH Testes</TargetReportFolder>
     <TargetDatasetFolder>Datasets</TargetDatasetFolder>
     <TargetDatasourceFolder>Data Sources</TargetDatasourceFolder>
     <TargetReportPartFolder>Report Parts</TargetReportPartFolder>
@@ -64,6 +64,7 @@
     <Report Include="FolhaCaixa.rdl" />
     <Report Include="FolhaHora.rdl" />
     <Report Include="GuiaTransporteNav.rdl" />
+    <Report Include="GuiaTransporteNavMain.rdl" />
     <Report Include="Procedimento.rdl" />
     <Report Include="RequisitionReport.rdl" />
     <Report Include="Requisições.rdl" />

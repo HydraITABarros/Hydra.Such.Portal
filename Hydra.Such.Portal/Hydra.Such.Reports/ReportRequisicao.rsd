@@ -23,9 +23,12 @@
                          Requisição.[Local de Recolha], Requisição.[Morada Recolha], Requisição.[Morada 2 Recolha], Requisição.[Código Postal Recolha], Requisição.[Localidade Recolha], Requisição.[Contato Recolha], 
                          Requisição.[Responsável Receção Recolha], Requisição.[Local Entrega], Requisição.[Morada Entrega], Requisição.[Morada 2 Entrega], Requisição.[Código Postal Entrega], Requisição.[Localidade Entrega], 
                          Requisição.[Contato Entrega], Requisição.[Responsável Receção Receção], Requisição.[Nº Fatura], Requisição.[Data Mercado Local], Requisição.[Data Requisição], Requisição.[Nº Consulta Mercado], 
-                         Requisição.[Nº Encomenda], Requisição.Orçamento, Requisição.[Valor Estimado]
-FROM            Requisição INNER JOIN
-                         [Linhas Requisição] ON Requisição.[Nº Requisição] = [Linhas Requisição].[Nº Requisição]
+                         Requisição.[Nº Encomenda], Requisição.Orçamento, Requisição.[Valor Estimado],Proj.[Bill-to Customer No_], Util.[EmployeeNo],Util.Nome, CLI.[Name] AS [NomeCliente]
+FROM            Requisição 
+INNER JOIN [Linhas Requisição] ON Requisição.[Nº Requisição] = [Linhas Requisição].[Nº Requisição]
+INNER JOIN [SUCH_NAV_PROD].[dbo].[SUCH$Job] AS Proj ON Requisição.[Nº Projeto] COLLATE DATABASE_DEFAULT = Proj.[No_]
+INNER JOIN [Config. Utilizadores] AS UTIL ON Requisição.[Utilizador Criação] = UTIL.[Id Utilizador]
+LEFT OUTER JOIN [SUCH_NAV_PROD].[dbo].[SUCH$Vendor] AS CLI ON Proj.[Bill-to Customer No_] = CLI.[No_]
 WHERE        (Requisição.[Nº Requisição] = @NoRequisicao)</CommandText>
       <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
     </Query>
@@ -333,6 +336,22 @@ WHERE        (Requisição.[Nº Requisição] = @NoRequisicao)</CommandText>
       <Field Name="Valor_Estimado">
         <DataField>Valor Estimado</DataField>
         <rd:TypeName>System.Decimal</rd:TypeName>
+      </Field>
+      <Field Name="Bill_to_Customer_No_">
+        <DataField>Bill-to Customer No_</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="EmployeeNo">
+        <DataField>EmployeeNo</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Nome">
+        <DataField>Nome</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="NomeCliente">
+        <DataField>NomeCliente</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
       </Field>
     </Fields>
   </DataSet>

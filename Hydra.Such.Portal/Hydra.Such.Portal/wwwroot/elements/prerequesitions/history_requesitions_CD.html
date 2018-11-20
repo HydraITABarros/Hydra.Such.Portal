@@ -1,0 +1,397 @@
+﻿<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html">
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+
+<link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
+<link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
+
+<!--start ColumnToggle-->
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-icons/iron-icons.html" />
+<link rel="import" href="/lib/iron-behaviors/iron-button-state.html" />
+<link rel="import" href="/lib/paper-menu-button/paper-menu-button.html" />
+<!--end ColumnToggle-->
+
+<dom-module id="x-historyreqcd">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+
+        <style>
+            vaadin-combo-box {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-date-picker {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-text-field {
+                margin-top: 0px !important;
+                width: 100%;
+            }
+
+            paper-button {
+                margin-top: 10px;
+            }
+
+            .break_clear {
+                margin-top: 15px;
+                margin-right: 0px !important;
+                margin-left: 0px !important;
+            }
+
+            .break_frm {
+                margin-top: 15px;
+            }
+
+            .label_custom {
+                color: var(--valo-contrast-60pct) !important;
+                font-weight: 500 !important;
+                font-size: var(--valo-font-size-s) !important;
+                margin-left: calc(var(--valo-text-field-border-radius, var(--valo-border-radius)) / 4) !important;
+                margin-bottom: var(--valo-space-xs) !important;
+                transition: color 0.4s !important;
+                line-height: 1 !important;
+                font-family: var(--valo-font-family) !important;
+            }
+
+            datetime-picker {
+                border-radius: var(--valo-text-field-border-radius, var(--valo-border-radius));
+                background-color: var(--valo-contrast-5pct);
+                color: var(--valo-contrast-60pct) !important;
+                width: 100%;
+            }
+
+            .marginSpace {
+                margin: 0px !important;
+            }
+
+            textarea {
+                background-color: #f5f5f5;
+                border: none;
+                border-radius: 3px 4px;
+                align-self: baseline;
+                font-weight: 500;
+            }
+
+                textarea:hover {
+                    background-color: #eeeeee;
+                }
+
+                textarea:focus {
+                    background-color: white;
+                    border: none;
+                    outline: 1px solid #eeeeee;
+                    border-radius: 3px 4px;
+                }
+
+            datetime-picker {
+                --datetime-selected-background: #71BCC1 !important;
+                --datetime-background: #1f3133;
+                --datetime-color: #eeeeee;
+            }
+
+            paper-collapse-item {
+                --paper-item: {
+                padding: 0 0;
+            };
+                --paper-collapse-item-header: {
+                padding: 0 15px;
+                color: #333;
+                background-color: #f5f5f5;
+                border-bottom: solid #ddd 1px;
+                border-top-left-radius: 3px;
+                border-top-right-radius: 3px;
+
+            };
+            }
+
+            .panel-body {
+                padding-top: 0px !important;
+            }
+        </style>
+
+
+
+
+        <iron-ajax url="/PreRequisicoes/GetHistoryReq_CD"
+                   last-response="{{result}}"
+                   method="post"
+                   handle-as="json"
+                   id="grid_databound_ajax"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PreRequisicoes/GetHistoryReqLines"
+                   last-response="{{resultlines}}"
+                   method="post"
+                   handle-as="json"
+                   id="grid_datareqlines_ajax"
+                   on-response="_responseLines"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PreRequisicoes/ExportToExcel_RequisicoesArquivadas"
+                   last-response="{{export}}"
+                   id="ajax_Export"
+                   method="post"
+                   handle-as="json"
+                   on-response="_exportEXCELResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/PopulateDropdowns/GetRequestStatus" last-response="{{CBStatus}}" on-response="_responsehead" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+        <!--<paper-button class="btn-default" raised on-tap="_pendingreq">Voltar</paper-button>-->
+
+        <div class="subMenu">
+            <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+
+            <!--start ColumnToggle-->
+            <paper-menu-button class="column-toggle" no-animations>
+                <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
+                <div class="list-group" slot="dropdown-content">
+                    <template is="dom-repeat" items="[[ _toArray(_columns)]]" id="columnsList">
+                        <a href="javascript:void(0);" on-tap="_toggleColumn" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClass( item.key ) ]]">
+                            {{ item.value.label }}
+                        </a>
+                        <hr />
+                    </template>
+                </div>
+            </paper-menu-button>
+            <!--end ColumnToggle-->
+        </div>
+
+        <vaadin-grid id="grdHistoryReqGrid" aria-label="HistoryReqGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.requisitionNo.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="requisitionNo">Nº Requisição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="requisitionNo" />
+                </template>
+                <template>
+                    {{item.requisitionNo}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.state.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="state">Estado</vaadin-grid-sorter>
+                    <!--<vaadin-grid-filter path="state" />-->
+                </template>
+                <template>
+                    [[ _clFormatState(item.state) ]]
+
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.requisitionDate.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="RequisitionDate">Data Requisição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="requisitionDate" />
+                </template>
+                <template>
+                    {{item.requisitionDate}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.localCode.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="localCode">Código Localização</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="localCode" />
+                </template>
+                <template>
+                    {{item.localCode}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.responsibleApproval.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="responsibleApproval">Responsável Aprovação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="responsibleApproval" />
+                </template>
+                <template>
+                    {{item.responsibleApproval}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.approvalDate.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="approvalDate">Data/Hora Aprovação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="approvalDate" />
+                </template>
+                <template>
+                    {{item.approvalDate}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.comments.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="comments">Observações</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="comments" />
+                </template>
+                <template>
+                    {{item.comments}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.employeeNo.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="employeeNo">Nº Funcionário</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="employeeNo" />
+                </template>
+                <template>
+                    {{item.employeeNo}}
+                </template>
+            </vaadin-grid-column>
+            <!-- <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                </template>
+                <template>
+                    <center>
+                        <paper-button class="btnSave" raised on-tap="_GoToReq" disabled="{{_permissionsCreate}}">Ver Requisição</paper-button>
+                    </center>
+                </template>
+            </vaadin-grid-column>-->
+        </vaadin-grid>
+
+        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+    </template>
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-historyreqcd',
+                properties: {
+                    _permissions: {
+                        type: Array
+                    },
+                    activeItem: {
+                        observer: '_rowSelected'
+                    },
+                    _areaid: {
+                        type: Number,
+                        notify: true,
+                        value: 0
+                    },
+                    _columns: {
+                        type: Object,
+                        value: function () {
+                            return {};
+                        }
+                    }
+                },
+                observers: [
+                    '_onCacheLoaded(CBStatus)'
+                ],
+                _onCacheLoaded: function (CBStatus) {
+                    if (!this.Flag) {
+                        this.$.grid_databound_ajax.generateRequest();
+                    }
+                    this.Flag = true;
+                },
+                _responsehead: function (data) {
+                    if (this.result != null)
+                        this._clFormatState(this.result.state);
+                },
+                _clFormatState: function (param) {
+                    if (param != undefined && this.CBStatus != null) {
+                        var sel = this.CBStatus.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return param;
+                },
+                _pendingreq: function (e) {
+                    window.location.href = "../RequisicoesPendentes/";
+                },
+                _rowSelected: function (item) {
+                    if (item != null) {
+                        //window.location.href = "/GestaoRequisicoes/DetalhesReqAprovada/" + item.requisitionNo;
+                        window.location.href = "/GestaoRequisicoes/DetalhesReqArquivo/" + item.requisitionNo;
+                    }
+                },
+                _openToast: function (message) {
+                    this.$.ToastMessage.text = message;
+                    this.$.ToastMessage.open();
+                },
+                _openToastError: function (message) {
+                    this.$.ToastError.text = message;
+                    this.$.ToastError.open();
+                },
+                ready: function () {
+                    /*ColumnToggle*/
+                    this._startColumnToggle();
+
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.grdHistoryReqGrid);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top;
+                    var height = parentHeight - offsetTop;
+                    grid_el.height(height);
+                },
+
+                _exportEXCEL: function () {
+                    this.result[0].ColunasEXCEL = this._columns;
+
+                    this.$.ajax_Export.body = JSON.stringify(this.result);
+                    this.$.ajax_Export.generateRequest();
+                },
+
+                _exportEXCELResponse: function (e) {
+                    var FileName = this.export;
+                    location.href = '../PreRequisicoes/ExportToExcelDownload_RequisicoesArquivadas?sFileName=' + FileName;
+                },
+
+                /*start - ColumnToggle*/
+                _startColumnToggle: function () {
+                    var columns = {
+                        "requisitionNo": { hidden: false, label: "Nº Requisição" },
+                        "state": { hidden: false, label: "Estado" },
+                        "requisitionDate": { hidden: false, label: "Data Requisição" },
+                        "localCode": { hidden: false, label: "Código Localização" },
+                        "responsibleApproval": { hidden: false, label: "Responsável Aprovação" },
+                        "approvalDate": { hidden: false, label: "Data/Hora Aprovação" },
+                        "comments": { hidden: false, label: "Observações" },
+                        "employeeNo": { hidden: false, label: "Nº Funcionário" }
+                    };
+
+                    if (localStorage["historyreq.ToggleColumn"]) {
+                        var keys = Object.keys(columns);
+                        var storedColumns = JSON.parse(localStorage["historyreq.ToggleColumn"]);
+                        for (var i = 0; i < keys.length; i++) {
+                            columns[keys[i]] = storedColumns[keys[i]];
+                        }
+                    };
+                    this._columns = columns;
+                },
+                _toggleColumn: function (event) {
+                    var columnIndex = JSON.parse(event.target.dataset.item).key;
+                    event.path[0].classList.toggle("selected");
+                    this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
+                    if (typeof (Storage) !== "undefined") {
+                        localStorage["historyreq.ToggleColumn"] = JSON.stringify(this._columns);
+                    }
+                },
+                _getColumnItemClass: function (columnIndex) {
+                    return !this._columns[columnIndex].hidden ? "selected" : "";
+                },
+                _toArray: function (obj) {
+                    return Object.keys(obj).map(function (key) {
+                        return {
+                            key: key,
+                            value: obj[key]
+                        };
+                    });
+                }
+                /* end - ColumnToggle */
+
+            });
+        });
+    </script>
+
+</dom-module>

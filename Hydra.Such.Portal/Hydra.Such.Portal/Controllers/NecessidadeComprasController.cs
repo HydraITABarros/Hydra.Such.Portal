@@ -580,6 +580,7 @@ namespace Hydra.Such.Portal.Controllers
                     if (productivityUnit != null)
                     {
                         RequisitionViewModel req = new RequisitionViewModel();
+                        req.TipoReq = (int)RequisitionTypes.Normal;
                         req.FunctionalAreaCode = productivityUnit.CódigoÁreaFuncional;
                         req.CenterResponsibilityCode = productivityUnit.CódigoCentroResponsabilidade;
                         req.RegionCode = productivityUnit.CódigoRegião;
@@ -597,24 +598,29 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             if (item.Quantity.HasValue && item.Quantity > 0)
                             {
-                                RequisitionLineViewModel line = new RequisitionLineViewModel();
-                                line.Type = 2;
-                                line.Code = item.ProductNo;
-                                line.Description = item.Description;
-                                line.UnitMeasureCode = item.UnitMeasureCode;
-                                line.QtyByUnitOfMeasure = item.QuantitybyUnitMeasure;
-                                line.QuantityToRequire = item.Quantity;
-                                line.UnitCost = item.DirectUnitCost;
-                                line.SupplierNo = item.SupplierNo;
-                                line.ExpectedReceivingDate = item.ExpectedReceptionDate;
-                                line.SupplierProductCode = item.SupplierProductCode;
-                                line.FunctionalAreaCode = req.FunctionalAreaCode;
-                                line.CenterResponsibilityCode = req.CenterResponsibilityCode;
-                                line.RegionCode = req.RegionCode;
-                                line.CreateUser = User.Identity.Name;
-                                line.ProjectNo = productivityUnit.ProjetoCozinha;
-                                line.LocalCode = productivityUnit.Armazém;
-                                
+                                var productsInReq = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, item.ProductNo);
+
+                                RequisitionLineViewModel line = new RequisitionLineViewModel
+                                {
+                                    Type = 2,
+                                    Code = item.ProductNo,
+                                    Description = item.Description,
+                                    UnitMeasureCode = item.UnitMeasureCode,
+                                    QtyByUnitOfMeasure = item.QuantitybyUnitMeasure,
+                                    QuantityToRequire = item.Quantity,
+                                    UnitCost = item.DirectUnitCost,
+                                    SupplierNo = item.SupplierNo,
+                                    ExpectedReceivingDate = item.ExpectedReceptionDate,
+                                    SupplierProductCode = item.SupplierProductCode,
+                                    FunctionalAreaCode = req.FunctionalAreaCode,
+                                    CenterResponsibilityCode = req.CenterResponsibilityCode,
+                                    RegionCode = req.RegionCode,
+                                    CreateUser = User.Identity.Name,
+                                    ProjectNo = productivityUnit.ProjetoCozinha,
+                                    LocalCode = productivityUnit.Armazém,
+                                    VATProductPostingGroup = string.IsNullOrEmpty(item.GrupoRegistoIvaProduto) ? productsInReq.Where(x => x.Code == item.ProductNo).FirstOrDefault().VATProductPostingGroup : item.GrupoRegistoIvaProduto
+                                };
+
                                 req.Lines.Add(line);
                             }
                         });
@@ -630,7 +636,13 @@ namespace Hydra.Such.Portal.Controllers
                             req.Lines.ForEach(line =>
                             {
                                 line.VATBusinessPostingGroup = vendors.FirstOrDefault(x => x.No_ == line.SupplierNo)?.VATBusinessPostingGroup;
-                                line.VATProductPostingGroup = productsInRequisition.FirstOrDefault(x => x.Code == line.Code)?.VATProductPostingGroup;
+
+                                if (string.IsNullOrEmpty(line.VATProductPostingGroup))
+                                    line.VATProductPostingGroup = productsInRequisition.Where(x => x.Code == line.Code).FirstOrDefault().VATProductPostingGroup;
+
+                                if (string.IsNullOrEmpty(line.Description2))
+                                    line.Description2 = productsInRequisition.Where(x => x.Code == line.Code).FirstOrDefault().Name2;
+
                             });
                         }
                         catch { }
@@ -938,7 +950,7 @@ namespace Hydra.Such.Portal.Controllers
                                 resultRq.NºRequisição = DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, true, false);
                                 if (resultRq.NºRequisição != null)
                                 {
-
+                                    resultRq.TipoReq = (int)RequisitionTypes.Normal;
                                     resultRq.CódigoÁreaFuncional = ProductivityUnitDB.CódigoÁreaFuncional;
                                     resultRq.CódigoCentroResponsabilidade = ProductivityUnitDB.CódigoCentroResponsabilidade;
                                     resultRq.CódigoRegião = ProductivityUnitDB.CódigoRegião;

@@ -72,6 +72,12 @@ namespace Hydra.Such.Data.ViewModel.GuiaTransporte
         public string Telefone { get; set; }
         public string MaintenanceOrderNo { get; set; }
 
+        public string ObservacoesAdicionais { get; set; }
+        public string UserObservacoesAdicionai { get; set; }
+        [JsonConverter(typeof(DateFormatConverter), "dd-MM-yyyy")]
+        public DateTime DataObservacoesAdicionais { get; set; }
+        public TimeSpan HoraObservacoesAdicionais { get; set; }
+
         public ICollection<LinhaGuiaTransporteNavViewModel> LinhasGuiaTransporte { get; set; }
         public FiscalAuthorityCommunicationLog FiscalCommunicationLog { get; set; }
 
