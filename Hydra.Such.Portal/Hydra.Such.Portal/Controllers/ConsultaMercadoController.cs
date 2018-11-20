@@ -1230,7 +1230,8 @@ namespace Hydra.Such.Portal.Controllers
         {
             GenericResult createPrePurchOrderResult = new GenericResult();
 
-            purchOrder.Purchaser_Code = User.Identity.Name;
+            //purchOrder.Purchaser_Code = User.Identity.Name;
+            purchOrder.Purchaser_Code = string.IsNullOrEmpty(DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo) ? "" : DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo;
 
             Task<WSPurchaseInvHeader.Create_Result> createPurchaseHeaderTask = NAVPurchaseHeaderIntermService.CreateAsync_CM(purchOrder, configws, CM, Obs);
             createPurchaseHeaderTask.Wait();

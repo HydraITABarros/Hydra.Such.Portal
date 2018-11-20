@@ -578,7 +578,7 @@
                                                         items="[[Products]]"
                                                         text-path="code"
                                                         value-path="code"
-                                                        fields='[{"field":"code", "name":"Cód. Produto"}, {"field":"name", "name":"Descrição"}, {"field":"name2", "name":"Descrição 2"}, {"field":"measureUnit", "name":"Unidade de Medida"}, {"field":"itemCategoryCode", "name":"Cód. Categoria"}, {"field":"productGroupCode", "name":"Cód. Grupo"}]'
+                                                        fields='[{"field":"code", "name":"Cód. Produto"}, {"field":"name", "name":"Descrição"}, {"field":"name2", "name":"Descrição 2"}, {"field":"measureUnit", "name":"Unidade de Medida"}, {"field":"itemCategoryCode", "name":"Cód. Categoria"}, {"field":"productGroupCode", "name":"Cód. Grupo"}, {"field":"vatProductPostingGroup", "name":"Gr. Registo IVA Produto"}]'
                                                         disabled="{{ !_permissions.update }}"
                                                         on-value-changed="_onProductChanged"
                                                         on-click="_onProductClick">
@@ -2328,6 +2328,7 @@
                         this.$._UnitMeasureCode.value = "";
                         this.$._UnitCost.value = "";
                         this.$._CBLocations.value = "";
+                        this.$._CLVATProductsPostingGroups.value = "";
 
                         this.$._UnitCost.disabled = false;
                     }
@@ -2361,6 +2362,7 @@
                         this.$._Description2.value = this.productInfo.name2;
                         this.$._UnitMeasureCode.value = this.productInfo.measureUnit;
                         this.$._UnitCost.value = this.productInfo.unitCost;
+                        this.$._CLVATProductsPostingGroups.value = this.productInfo.vatProductPostingGroup;
 
                         if (this.productInfo.inventoryValueZero == 1) {
                             this.$._UnitCost.disabled = false;
@@ -2433,30 +2435,51 @@
                                 this._openToastError(this.dataLines.eMessage);
                             }
                             else {
+                                debugger;
                                 this._openToast(this.dataLines.eMessage);
+
+                                this.$._Products.value = "";
                                 this.$._CBLocations.value = "";
-                                this._CBItemsCDirect = "0";
                                 this.$._Description.value = "";
                                 this.$._Description2.value = "";
                                 this.$._UnitMeasureCode.value = "";
                                 this.$._QuantityToRequire.value = "";
-                                this.$._QuantityToOpen.value = "";
                                 this.$._UnitCost.value = "";
-                                this.$._MaintenanceOrderLineNo.value = "";
-                                if (this.$._CBPurchaseHeader != null)
-                                    this.$._CBPurchaseHeader.value = "";
-                                this.$._CBPurchaseLine.value = "";
-                                this.$._Products._clearSelection();
+                                this.$._UnitCostWithIVA.value = "";
                                 this.$._ProjectNo.value = this.data.projectNo;
-                                this.$._ProjectNo.valueText = this.data.projectNo;
-                                this.$._CBVendor._clearSelection();
-                                if (this.$._CBPurchaseLine != null)
-                                    this.$._CBPurchaseLine._clearSelection();
-                                if (this.data != null) {
-                                    this.$._CLRegion.value = this.data.regionCode;
-                                    this.$._CLFunctionalAreaCode.value = this.data.functionalAreaCode;
-                                    this.$._CLResponsabilityCenterCode.value = this.data.responsabilityCenterCode;
-                                }
+                                this.$._VehicleLines.value = "";
+                                this.$._CBVendor.value = "";
+                                this.$._CLRegion.value = this.data.regionCode;
+                                this.$._CLFunctionalAreaCode.value = this.data.functionalAreaCode;
+                                this.$._CLResponsabilityCenterCode.value = this.data.responsabilityCenterCode;
+                                this.$._CLVATProductsPostingGroups.value = "";
+                                this.$._CustoTotalComIVA.value = "";
+
+
+
+                                //this.$._CBLocations.value = "";
+                                //this._CBItemsCDirect = "0";
+                                //this.$._Description.value = "";
+                                //this.$._Description2.value = "";
+                                //this.$._UnitMeasureCode.value = "";
+                                //this.$._QuantityToRequire.value = "";
+                                //this.$._QuantityToOpen.value = "";
+                                //this.$._UnitCost.value = "";
+                                //this.$._MaintenanceOrderLineNo.value = "";
+                                //if (this.$._CBPurchaseHeader != null)
+                                //    this.$._CBPurchaseHeader.value = "";
+                                //this.$._CBPurchaseLine.value = "";
+                                
+                                //this.$._ProjectNo.value = this.data.projectNo;
+                                //this.$._ProjectNo.valueText = this.data.projectNo;
+                                //this.$._CBVendor._clearSelection();
+                                //if (this.$._CBPurchaseLine != null)
+                                //    this.$._CBPurchaseLine._clearSelection();
+                                //if (this.data != null) {
+                                //    this.$._CLRegion.value = this.data.regionCode;
+                                //    this.$._CLFunctionalAreaCode.value = this.data.functionalAreaCode;
+                                //    this.$._CLResponsabilityCenterCode.value = this.data.responsabilityCenterCode;
+                                //}
                                 this._setNewLineFormControl(false);
                             }
                         }

@@ -598,6 +598,8 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             if (item.Quantity.HasValue && item.Quantity > 0)
                             {
+                                var productsInReq = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, item.ProductNo);
+
                                 RequisitionLineViewModel line = new RequisitionLineViewModel
                                 {
                                     Type = 2,
@@ -616,8 +618,8 @@ namespace Hydra.Such.Portal.Controllers
                                     CreateUser = User.Identity.Name,
                                     ProjectNo = productivityUnit.ProjetoCozinha,
                                     LocalCode = productivityUnit.Armazém,
-                                    VATProductPostingGroup = item.GrupoRegistoIvaProduto
-                            };
+                                    VATProductPostingGroup = string.IsNullOrEmpty(item.GrupoRegistoIvaProduto) ? productsInReq.Where(x => x.Code == item.ProductNo).FirstOrDefault().VATProductPostingGroup : item.GrupoRegistoIvaProduto
+                                };
 
                                 req.Lines.Add(line);
                             }
@@ -636,10 +638,10 @@ namespace Hydra.Such.Portal.Controllers
                                 line.VATBusinessPostingGroup = vendors.FirstOrDefault(x => x.No_ == line.SupplierNo)?.VATBusinessPostingGroup;
 
                                 if (string.IsNullOrEmpty(line.VATProductPostingGroup))
-                                    line.VATProductPostingGroup = productsInRequisition.FirstOrDefault(x => x.Code == line.Code)?.VATProductPostingGroup;
+                                    line.VATProductPostingGroup = productsInRequisition.Where(x => x.Code == line.Code).FirstOrDefault().VATProductPostingGroup;
 
                                 if (string.IsNullOrEmpty(line.Description2))
-                                    line.Description2 = productsInRequisition.FirstOrDefault(x => x.Code == line.Code)?.Name2;
+                                    line.Description2 = productsInRequisition.Where(x => x.Code == line.Code).FirstOrDefault().Name2;
 
                             });
                         }

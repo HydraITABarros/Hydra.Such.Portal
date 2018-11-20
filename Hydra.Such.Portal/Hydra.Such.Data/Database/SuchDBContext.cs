@@ -4759,7 +4759,7 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.CustoUnitário)
                     .HasColumnName("Custo Unitário")
-                    .HasColumnType("decimal(18, 4)");
+                    .HasColumnType("decimal(18, 5)");
 
                 entity.Property(e => e.Código).HasMaxLength(20);
 
