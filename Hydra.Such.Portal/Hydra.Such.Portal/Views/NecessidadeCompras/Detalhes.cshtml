@@ -867,9 +867,11 @@
                     catch (err) { }
                 },
                 _productChanged: function (e) {
-                    //debugger
+                      debugger
                     if (e.detail.value != null && e.detail.value != "") {
+
                         var linhaAcordo = this.$.cmbProducts.activeItem;
+
                         if (linhaAcordo != null) {
                             this.$.qtyID.value = "0";
                             this.$.supplierNoId.value = linhaAcordo.noFornecedor;
