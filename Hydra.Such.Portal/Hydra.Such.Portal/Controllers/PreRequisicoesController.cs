@@ -160,6 +160,20 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        public JsonResult CalcularTaxaIVA([FromBody] PreRequisitionLineViewModel data)
+        {
+            string Fornecedor = data.SupplierNo;
+            string GrupoIVA = data.GrupoRegistoIVAProduto;
+            decimal IVA = new decimal();
+
+            if (!string.IsNullOrEmpty(Fornecedor) && !string.IsNullOrEmpty(GrupoIVA))
+            {
+                IVA = DBNAV2017VATPostingSetup.GetIVA(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, Fornecedor, GrupoIVA);
+            }
+
+            return Json(IVA);
+        }
+
         public JsonResult GetProjetoNo([FromBody] string Matricula)
         {
             Viaturas viatura = new Viaturas();
@@ -255,6 +269,7 @@ namespace Hydra.Such.Portal.Controllers
                     PR.ContatoEntrega = null;
                     PR.ResponsávelReceçãoReceção = null;
                     PR.NºFatura = null;
+                    PR.ValorTotalDocComIVA = null;
                     DBPreRequesition.Update(PR);
 
 
@@ -925,6 +940,7 @@ namespace Hydra.Such.Portal.Controllers
                             PreRequisicaoDB.ResponsávelReceçãoReceção = data.ReceptionReceptionResponsible;
                             PreRequisicaoDB.NºFatura = data.InvoiceNo;
                             PreRequisicaoDB.PedirOrcamento = data.PedirOrcamento;
+                            PreRequisicaoDB.ValorTotalDocComIVA = data.ValorTotalDocComIVA;
 
                             PreRequisicaoDB = DBPreRequesition.Update(PreRequisicaoDB);
                         }
@@ -2015,7 +2031,8 @@ namespace Hydra.Such.Portal.Controllers
                                         State = RequisitionStates.Pending,
                                         RequisitionDate = DateTime.Now.ToString("dd-MM-yyyy"),
                                         CreateUser = User.Identity.Name,
-
+                                        ValorTotalDocComIVA = data.ValorTotalDocComIVA,
+                                        
                                         Lines = items.Select(line => new RequisitionLineViewModel()
                                         {
                                             LocalCode = line.LocalCode,
@@ -2026,6 +2043,7 @@ namespace Hydra.Such.Portal.Controllers
                                             QuantityToRequire = line.QuantityToRequire,
                                             QuantidadeInicial = line.QuantidadeInicial,
                                             UnitCost = line.UnitCost,
+                                            UnitCostWithIVA = line.UnitCostWithIVA,
                                             ProjectNo = line.ProjectNo,
                                             MaintenanceOrderLineNo = line.MaintenanceOrderLineNo,
                                             Vehicle = line.Vehicle,
@@ -2099,6 +2117,7 @@ namespace Hydra.Such.Portal.Controllers
                                         State = RequisitionStates.Pending,
                                         RequisitionDate = DateTime.Now.ToString("dd-MM-yyyy"),
                                         CreateUser = User.Identity.Name,
+                                        ValorTotalDocComIVA = data.ValorTotalDocComIVA,
 
                                         Lines = items.Select(line => new RequisitionLineViewModel()
                                         {
@@ -2110,6 +2129,7 @@ namespace Hydra.Such.Portal.Controllers
                                             QuantityToRequire = line.QuantityToRequire,
                                             QuantidadeInicial = line.QuantidadeInicial,
                                             UnitCost = line.UnitCost,
+                                            UnitCostWithIVA = line.UnitCostWithIVA,
                                             ProjectNo = line.ProjectNo,
                                             MaintenanceOrderLineNo = line.MaintenanceOrderLineNo,
                                             Vehicle = line.Vehicle,

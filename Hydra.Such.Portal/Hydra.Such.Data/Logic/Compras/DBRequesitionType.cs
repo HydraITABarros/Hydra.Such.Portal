@@ -32,6 +32,7 @@ namespace Hydra.Such.Data.Logic.ComprasML
                         {
                             Code = (string)temp.Tipo,
                             Description = (string)temp.Description,
+                            FiltroReq = (int)temp.FiltroReq
                         });
                     }
                 }

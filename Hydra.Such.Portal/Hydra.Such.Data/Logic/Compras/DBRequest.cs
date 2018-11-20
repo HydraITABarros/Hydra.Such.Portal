@@ -307,7 +307,7 @@ namespace Hydra.Such.Data.Logic.Request
                     ValorEstimado = item.EstimatedValue,
                     PrecoIvaincluido = item.PricesIncludingVAT,
                     Adiantamento = item.InAdvance,
-                    PedirOrcamento = item.PedirOrcamento
+                    PedirOrcamento = item.PedirOrcamento,
                 };
             }
             return null;
@@ -473,6 +473,7 @@ namespace Hydra.Such.Data.Logic.Request
                     PricesIncludingVAT = item.PrecoIvaincluido.HasValue ? item.PrecoIvaincluido.Value : false,
                     InAdvance = item.Adiantamento.HasValue ? item.Adiantamento.Value : false,
                     PedirOrcamento = item.PedirOrcamento,
+                    ValorTotalDocComIVA = item.ValorTotalDocComIVA,
 
                     Lines = item.LinhasRequisição.ToList().ParseToViewModel(),
                     //AROMAO 01/10/2018
@@ -570,6 +571,7 @@ namespace Hydra.Such.Data.Logic.Request
                     PrecoIvaincluido = item.PricesIncludingVAT,
                     Adiantamento = item.InAdvance,
                     PedirOrcamento = item.PedirOrcamento,
+                    ValorTotalDocComIVA = item.ValorTotalDocComIVA,
 
                     LinhasRequisição = item.Lines.ParseToDB(),
                     //AROMAO 01/10/2018
