@@ -319,8 +319,11 @@ namespace Hydra.Such.Portal.Services
                                 //Update Requisition Lines
                                 requisition.Lines.ForEach(line =>
                                 {
-                                    line.CreatedOrderNo = result.ResultValue;
-                                    line.UpdateUser = this.changedByUserName;
+                                    if (line.SupplierNo ==purchOrder.SupplierId)
+                                    {
+                                        line.CreatedOrderNo = result.ResultValue;
+                                        line.UpdateUser = this.changedByUserName;
+                                    }
                                 });
                                 //Commit to DB
                                 var updatedReq = DBRequest.Update(requisition.ParseToDB(), true);
