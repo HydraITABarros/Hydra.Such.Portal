@@ -12,7 +12,7 @@
   <DataSets>
     <DataSet Name="ReportRequisicao">
       <SharedDataSet>
-        <SharedDataSetReference>ReportRequisicaoTestes</SharedDataSetReference>
+        <SharedDataSetReference>ReportRequisicao</SharedDataSetReference>
         <QueryParameters>
           <QueryParameter Name="@NoRequisicao">
             <Value>=Parameters!NoRequisicao.Value</Value>
@@ -1647,6 +1647,7 @@
     <ReportParameter Name="NoRequisicao">
       <DataType>String</DataType>
       <Prompt>NoRequisicao</Prompt>
+      <Hidden>true</Hidden>
     </ReportParameter>
   </ReportParameters>
   <ReportParametersLayout>
