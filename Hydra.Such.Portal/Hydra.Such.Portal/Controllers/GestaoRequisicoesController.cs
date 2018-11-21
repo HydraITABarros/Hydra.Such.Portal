@@ -607,6 +607,10 @@ namespace Hydra.Such.Portal.Controllers
         {
             if (item != null)
             {
+                item.Attachment = false;
+                if (DBAttachments.GetById(item.RequisitionNo).Count() > 0)
+                    item.Attachment = true;
+
                 item.UpdateUser = User.Identity.Name;
                 var updatedItem = DBRequest.Update(item.ParseToDB());
                 if (updatedItem != null)
@@ -954,6 +958,10 @@ namespace Hydra.Such.Portal.Controllers
             {
                 item.GoAprove = true;
             }
+
+            item.Attachment = false;
+            if (DBAttachments.GetById(requisitionId).Count() > 0)
+                item.Attachment = true;
 
             return Json(item);
         }

@@ -4,7 +4,7 @@
   <AutoRefresh>0</AutoRefresh>
   <DataSources>
     <DataSource Name="SuchDate">
-      <DataSourceReference>eSUCHTestes</DataSourceReference>
+      <DataSourceReference>eSuchDS</DataSourceReference>
       <rd:SecurityType>DataBase</rd:SecurityType>
       <rd:DataSourceID>a4c31830-fd7f-4dff-8e5b-9a49bc2321a0</rd:DataSourceID>
     </DataSource>
@@ -1647,7 +1647,6 @@
     <ReportParameter Name="NoRequisicao">
       <DataType>String</DataType>
       <Prompt>NoRequisicao</Prompt>
-      <Hidden>true</Hidden>
     </ReportParameter>
   </ReportParameters>
   <ReportParametersLayout>
