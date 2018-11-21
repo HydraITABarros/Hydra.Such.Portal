@@ -28,6 +28,10 @@ using Hydra.Such.Data.Logic.Request;
 using Hydra.Such.Data.ViewModel.Projects;
 using Hydra.Such.Data.Logic.Telemoveis;
 using Hydra.Such.Data.ViewModel.PedidoCotacao;
+using System.Dynamic;
+using Hydra.Such.Portal.Extensions;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -398,10 +402,11 @@ namespace Hydra.Such.Portal.Controllers
             try
             {
                 List<LinhasAcordoPrecos> result = new List<LinhasAcordoPrecos>();
+                List<dynamic> retval = new List<dynamic>();
                 if (type == 1) //Matéria Prima
                 {
                     var prodUnit = DBProductivityUnits.GetById(produtivityUnitId);
-                    result = DBLinhasAcordoPrecos.GetMateriaPrima(date, prodUnit.Armazém);
+                    result = DBLinhasAcordoPrecos.GetMateriaPrima(date, prodUnit.Armazém);                    
                 }
                 else //Matéria Subsidiária
                 {
@@ -409,7 +414,16 @@ namespace Hydra.Such.Portal.Controllers
                     var config = DBConfigurations.GetById(1);
                     result = DBLinhasAcordoPrecos.GetMateriaSubsidiaria(date, config.ArmazemCompraDireta, prodUnit.CódigoCentroResponsabilidade);
                 }
-                return Json(result);
+
+                result.ForEach(r => {
+                    var serializerSettings = new JsonSerializerSettings();
+                    serializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                    dynamic _item = JsonConvert.DeserializeObject<dynamic>(JsonConvert.SerializeObject(r, serializerSettings));                   
+                    _item.produtoFornecedor = r.CodProduto.ToString() + r.NoFornecedor.ToString();
+                    retval.Add(_item);
+                });
+
+                return Json(retval);
             }
             catch (Exception e)
             {

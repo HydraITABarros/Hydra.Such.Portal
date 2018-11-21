@@ -724,7 +724,15 @@ namespace Hydra.Such.Portal.Controllers
             PreRequesitionsViewModel result = new PreRequesitionsViewModel();
 
             if (!string.IsNullOrEmpty(preReqID))
+            {
                 result = DBPreRequesition.ParseToViewModel(DBPreRequesition.GetByNo(preReqID));
+
+                bool Anexos = false;
+                if (DBAttachments.GetById(User.Identity.Name).Count() > 0)
+                    Anexos = true;
+
+                result.Attachment = Anexos;
+            }
 
             return Json(result);
         }
@@ -871,6 +879,10 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     if (data.PreRequesitionsNo != null)
                     {
+                        bool Anexos = false;
+                        if (DBAttachments.GetById(User.Identity.Name).Count() > 0)
+                            Anexos = true;
+
                         //Contratos cContract = DBContracts.ParseToDB(data);
                         PréRequisição PreRequisicaoDB = DBPreRequesition.GetByNo(data.PreRequesitionsNo);
 
@@ -886,7 +898,7 @@ namespace Hydra.Such.Portal.Controllers
                             PreRequisicaoDB.CódigoCentroResponsabilidade = data.ResponsabilityCenterCode;
                             PreRequisicaoDB.Urgente = data.Urgent;
                             PreRequisicaoDB.Amostra = data.Sample;
-                            PreRequisicaoDB.Anexo = data.Attachment;
+                            PreRequisicaoDB.Anexo = Anexos;
                             PreRequisicaoDB.Imobilizado = data.Immobilized;
                             PreRequisicaoDB.CompraADinheiro = data.MoneyBuy;
                             PreRequisicaoDB.CódigoLocalRecolha = data.LocalCollectionCode;
@@ -1552,6 +1564,10 @@ namespace Hydra.Such.Portal.Controllers
                 List<string> AllRequesitionIds = new List<string>();
                 if (data != null)
                 {
+                    bool Anexos = false;
+                    if (DBAttachments.GetById(User.Identity.Name).Count() > 0)
+                        Anexos = true;
+
                     List<LinhasPréRequisição> PreRequesitionLines = DBPreRequesitionLines.GetAllByNo(data.PreRequesitionsNo);
                     data.eMessage = "";
                     if (PreRequesitionLines.Count > 0)
@@ -1637,7 +1653,7 @@ namespace Hydra.Such.Portal.Controllers
                                 RequestReclaimNo = data.ClaimedRequesitionNo,
                                 TipoReq = (int)RequisitionTypes.Normal,
                                 Urgent = data.Urgent,
-                                Attachment = data.Attachment,
+                                Attachment = Anexos,
                                 Area = data.Area,
                                 Immobilized = data.Immobilized,
                                 Exclusive = data.Exclusive,
@@ -1721,7 +1737,7 @@ namespace Hydra.Such.Portal.Controllers
                                 RequestReclaimNo = data.ClaimedRequesitionNo,
                                 TipoReq = (int)RequisitionTypes.Normal,
                                 Urgent = data.Urgent,
-                                Attachment = data.Attachment,
+                                Attachment = Anexos,
                                 Area = data.Area,
                                 Immobilized = data.Immobilized,
                                 Exclusive = data.Exclusive,
@@ -1759,7 +1775,6 @@ namespace Hydra.Such.Portal.Controllers
 
                                 Lines = items.Select(line => new RequisitionLineViewModel()
                                 {
-
                                     LocalCode = line.LocalCode,
                                     Code = line.Code,
                                     Description = line.Description,
@@ -1881,7 +1896,7 @@ namespace Hydra.Such.Portal.Controllers
                                 {
                                     //System.IO.File.Copy(_config.FileUploadFolder + FileName, _config.FileUploadFolder + NewFileName);
                                     System.IO.File.Copy("E:\\Data\\eSUCH\\Requisicoes\\" + FileName, "E:\\Data\\eSUCH\\Requisicoes\\" + NewFileName);
-                                    //System.IO.File.Copy("C:\\Data\\eSUCH\\Requisicoes\\" + FileName, "E:\\Data\\eSUCH\\Requisicoes\\" + NewFileName);
+                                    //System.IO.File.Copy("C:\\Data\\eSUCH\\Requisicoes\\" + FileName, "C:\\Data\\eSUCH\\Requisicoes\\" + NewFileName);
                                 }
                                 catch (Exception ex)
                                 {
@@ -2255,7 +2270,7 @@ namespace Hydra.Such.Portal.Controllers
                                 {
                                     //System.IO.File.Copy(_config.FileUploadFolder + FileName, _config.FileUploadFolder + NewFileName);
                                     System.IO.File.Copy("E:\\Data\\eSUCH\\Requisicoes\\" + FileName, "E:\\Data\\eSUCH\\Requisicoes\\" + NewFileName);
-                                    //System.IO.File.Copy("C:\\Data\\eSUCH\\Requisicoes\\" + FileName, "E:\\Data\\eSUCH\\Requisicoes\\" + NewFileName);
+                                    //System.IO.File.Copy("C:\\Data\\eSUCH\\Requisicoes\\" + FileName, "C:\\Data\\eSUCH\\Requisicoes\\" + NewFileName);
                                 }
                                 catch (Exception ex)
                                 {
