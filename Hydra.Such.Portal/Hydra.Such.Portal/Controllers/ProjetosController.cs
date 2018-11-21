@@ -1242,9 +1242,16 @@ namespace Hydra.Such.Portal.Controllers
                         //Create Lines in NAV
                         Task<WSCreateProjectDiaryLine.CreateMultiple_Result> TCreateNavDiaryLine = WSProjectDiaryLine.CreateNavDiaryLines(dp, transactID, _configws);
                         TCreateNavDiaryLine.Wait();
-
-                        Task<WSGenericCodeUnit.FxPostJobJrnlLines_Result> TRegisterNavDiaryLine = WSProjectDiaryLine.RegsiterNavDiaryLines(transactID, _configws);
-                        TRegisterNavDiaryLine.Wait();
+                        //try
+                        //{
+                            Task<WSGenericCodeUnit.FxPostJobJrnlLines_Result> TRegisterNavDiaryLine = WSProjectDiaryLine.RegsiterNavDiaryLines(transactID, _configws);
+                            TRegisterNavDiaryLine.Wait();
+                        //}
+                        //catch (Exception e)
+                        //{
+                        //    Task<WSCreateProjectDiaryLine.Delete_Result> TDeleteNavDiaryLine = WSProjectDiaryLine.DeleteNavDiaryLines(transactID, _configws);
+                        //    TDeleteNavDiaryLine.Wait();
+                        //}
                     }
                     catch (Exception ex)
                     {

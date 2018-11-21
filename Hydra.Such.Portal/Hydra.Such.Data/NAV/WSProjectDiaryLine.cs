@@ -22,6 +22,26 @@ namespace Hydra.Such.Data.NAV
 
         }
 
+        public static async Task<WSCreateProjectDiaryLine.Delete_Result> DeleteNavDiaryLines(Guid TransactID, NAVWSConfigurations WSConfigurations)
+        {
+            //Configure NAV Client
+            EndpointAddress WS_URL = new EndpointAddress(WSConfigurations.WS_Generic_URL.Replace("Company", WSConfigurations.WS_User_Company));
+            WSCreateProjectDiaryLine.WSJobJournalLine_PortClient WS_Client = new WSCreateProjectDiaryLine.WSJobJournalLine_PortClient(navWSBinding, WS_URL);
+            WS_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
+            WS_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
+
+            //try
+            //{
+            WSCreateProjectDiaryLine.Delete_Result result = await WS_Client.DeleteAsync(TransactID.ToString());
+
+            return result;
+            //}
+            //catch (Exception ex)
+            //{
+            //    return null;
+            //}
+        }
+
         public static async Task<WSCreateProjectDiaryLine.CreateMultiple_Result> CreateNavDiaryLines(List<ProjectDiaryViewModel> DiaryLines, Guid TransactID, NAVWSConfigurations WSConfigurations)
         {
           
