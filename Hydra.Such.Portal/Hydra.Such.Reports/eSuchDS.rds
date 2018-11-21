@@ -2,7 +2,7 @@
 <RptDataSource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="eSuchDS">
   <ConnectionProperties>
     <Extension>SQL</Extension>
-    <ConnectString>Data Source=10.101.1.10\sqlnav;Initial Catalog=eSUCH_Prod</ConnectString>
+    <ConnectString>Data Source=SUCH-NAVSQL\SQLNAV;Initial Catalog=eSUCH_Prod</ConnectString>
   </ConnectionProperties>
   <DataSourceID>396a941f-2596-4348-b257-a87125446397</DataSourceID>
 </RptDataSource>
