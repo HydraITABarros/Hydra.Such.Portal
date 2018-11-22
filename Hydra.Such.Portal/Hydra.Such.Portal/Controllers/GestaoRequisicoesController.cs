@@ -1026,6 +1026,33 @@ namespace Hydra.Such.Portal.Controllers
 
         [HttpPost]
 
+        public JsonResult UpdateRequisitionLinesQtRequerer([FromBody] RequisitionViewModel item)
+        {
+            try
+            {
+                if (item != null && item.Lines != null)
+                {
+                    if (DBRequestLine.Update(item.Lines.ParseToDB()))
+                    {
+                        item.Lines.ForEach(x => x.Selected = false);
+                        item.eReasonCode = 1;
+                        item.eMessage = "Linhas atualizadas com sucesso.";
+                        return Json(item);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                //item.eReasonCode = 2;
+                //item.eMessage = "Ocorreu um erro ao atualizar as linhas.";
+            }
+            item.eReasonCode = 2;
+            item.eMessage = "Ocorreu um erro ao atualizar as linhas.";
+            return Json(item);
+        }
+
+        [HttpPost]
+
         public JsonResult DeleteRequisitionLine([FromBody] RequisitionLineViewModel item)
         {
             if (item != null)

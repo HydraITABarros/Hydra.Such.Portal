@@ -2147,11 +2147,13 @@
                 _CalculoAutomaticoResponseProcessor: function (e) {
                     if (this.calculoAutomatico != null) {
                         if (this.calculoAutomatico.quantityToRequire != null)
-                            this.$._QuantityToRequire.value = this.calculoAutomatico.quantityToRequire;
+                            this.$._QuantityToRequire.value = Math.round(this.calculoAutomatico.quantityToRequire, 4);
+
                         if (this.calculoAutomatico.unitCost != null)
-                            this.$._UnitCost.value = this.calculoAutomatico.unitCost;
+                            this.$._UnitCost.value = Math.round(this.calculoAutomatico.unitCost, 4);
+
                         if (this.calculoAutomatico.unitCostWithIVA != null)
-                            this.$._UnitCostWithIVA.value = this.calculoAutomatico.unitCostWithIVA;
+                            this.$._UnitCostWithIVA.value = Math.round(this.calculoAutomatico.unitCostWithIVA, 4);
                     }
                 },
 
@@ -2500,17 +2502,25 @@
                     if (this.$._PercentagemIVA.value != "")
                         IVA = (this.$._PercentagemIVA.value / 100) + 1;
 
-                    if (this.$._QuantityToRequire.value != "" && this.$._UnitCostWithIVA.value != "")
+                    if (this.$._QuantityToRequire.value != "" && this.$._UnitCostWithIVA.value != "") {
                         this.$._CustoTotalComIVA.value = this.$._QuantityToRequire.value * this.$._UnitCostWithIVA.value;
+                    }
 
-                    if (this.$._UnitCostWithIVA.value != "" && this.$._CustoTotalComIVA.value != "")
+                    if (this.$._UnitCostWithIVA.value != "" && this.$._CustoTotalComIVA.value != "") {
                         this.$._QuantityToRequire.value = this.$._CustoTotalComIVA.value / this.$._UnitCostWithIVA.value;
+                    }
 
-                    if (this.$._CustoTotalComIVA.value != "" && this.$._QuantityToRequire.value != "")
-                        this.$._UnitCostWithIVA.value = this.$._CustoTotalComIVA.value / this.$._QuantityToRequire.value;
+                    if (this.$._CustoTotalComIVA.value != "" && this.$._QuantityToRequire.value != "") {
+                        this.$._UnitCostWithIVA.value = this.$._CustoTtalComIVA.value / this.$._QuantityToRequire.value;
+                    }
 
-                    if (this.$._QuantityToRequire.value != "" && this.$._UnitCost.value != "" && this.$._PercentagemIVA.value != "")
+                    if (this.$._QuantityToRequire.value != "" && this.$._UnitCost.value != "" && this.$._PercentagemIVA.value != "") {
                         this.$._CustoTotalComIVA.value = (this.$._QuantityToRequire.value * this.$._UnitCost.value) * IVA;
+                    }
+
+                    if (this.$._CustoTotalComIVA.value != "" && this.$._PercentagemIVA.value != "" && this.$._QuantityToRequire.value != "") {
+                        this.$._UnitCost.value = (this.$._CustoTotalComIVA.value / IVA) / this.$._QuantityToRequire.value;
+                    }
                 },
 
                 _lineSelected: function (item) {
@@ -2554,22 +2564,22 @@
                                 this._openToast(this.dataLines.eMessage);
 
                                 this.$._Products.value = "";
-                                this.$._Products.valueText = "";
+                                //this.$._Products.valueText = "";
                                 this.$._CBLocations.value = "";
-                                this.$._CBLocations.valueText = "";
+                                //this.$._CBLocations.valueText = "";
                                 this.$._Description.value = "";
                                 this.$._Description2.value = "";
                                 this.$._UnitMeasureCode.value = "";
-                                this.$._UnitMeasureCode.valueText = "";
+                                //this.$._UnitMeasureCode.valueText = "";
                                 this.$._QuantityToRequire.value = "";
                                 this.$._UnitCost.value = "";
                                 this.$._UnitCostWithIVA.value = "";
                                 this.$._VehicleLines.value = "";
-                                this.$._VehicleLines.valueText = "";
+                                //this.$._VehicleLines.valueText = "";
                                 this.$._CBVendor.value = "";
-                                this.$._CBVendor.valueText = "";
+                                //this.$._CBVendor.valueText = "";
                                 this.$._CLVATProductsPostingGroups.value = "";
-                                this.$._CLVATProductsPostingGroups.valueText = "";
+                                //this.$._CLVATProductsPostingGroups.valueText = "";
                                 this.$._CustoTotalComIVA.value = "";
 
                                 this.$._ProjectNo.value = this.data.projectNo;

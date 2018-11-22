@@ -2100,6 +2100,8 @@ namespace Hydra.Such.Portal.Controllers
                     project = DBProjects.GetById(projectNo);
                     if (project != null)
                     {
+                        //21-11-2018
+                        //CORRIGIR COM O MARCO MARCELO AS REGRAS DE AUTORIZAÇÃO
                         if (!string.IsNullOrEmpty(project.CódigoÁreaFuncional) && !project.TipoGrupoContabProjeto.HasValue)
                         {
                             result.eMessages.Add(new TraceInformation(TraceType.Error, "O projeto não tem o Tipo Grupo Contab. Projeto definido."));

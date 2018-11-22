@@ -168,7 +168,9 @@ namespace Hydra.Such.Portal.Controllers
 
             if (!string.IsNullOrEmpty(Fornecedor) && !string.IsNullOrEmpty(GrupoIVA))
             {
-                IVA = DBNAV2017VATPostingSetup.GetIVA(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, Fornecedor, GrupoIVA);
+                string GrupoFornecedor = DBNAV2017Supplier.GetAll(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, Fornecedor).FirstOrDefault().VATBusinessPostingGroup;
+
+                IVA = DBNAV2017VATPostingSetup.GetIVA(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, GrupoFornecedor, GrupoIVA);
             }
 
             return Json(IVA);
@@ -788,24 +790,37 @@ namespace Hydra.Such.Portal.Controllers
                 //Cria a nova Pré-Requisição
                 PréRequisição createNew = new PréRequisição
                 {
-                    CódigoCentroResponsabilidade = CU.CentroRespPorDefeito,
-                    CódigoRegião = CU.RegiãoPorDefeito,
-                    CódigoÁreaFuncional = CU.AreaPorDefeito,
                     NºPréRequisição = User.Identity.Name,
                     TipoPreReq = TipoPreReq,
                     Área = AreaNo,
+                    CódigoRegião = CU.RegiãoPorDefeito,
+                    CódigoÁreaFuncional = CU.AreaPorDefeito,
+                    CódigoCentroResponsabilidade = CU.CentroRespPorDefeito,
+                    Urgente = false,
+                    Amostra = false,
+                    Anexo = false,
+                    Imobilizado = false,
+                    CompraADinheiro = false,
+                    ModeloDePréRequisição = false,
+                    DataHoraCriação = DateTime.Now,
                     UtilizadorCriação = User.Identity.Name,
-                    DataHoraCriação = DateTime.Now
+                    Exclusivo = false,
+                    JáExecutado = false,
+                    Equipamento = false,
+                    ReposiçãoDeStock = false,
+                    Reclamação = false,
+                    CabimentoOrçamental = false,
+                    RequisiçãoNutrição = false,
+                    RequisiçãoDetergentes = false,
+                    MercadoLocal = false,
+                    ReparaçãoComGarantia = false,
+                    Emm = false,
+                    PedirOrcamento = false
                 };
                 DBPreRequesition.Create(createNew);
 
-                PreRequesitionsViewModel reqID = new PreRequesitionsViewModel
-                {
-                    PreRequesitionsNo = createNew.NºPréRequisição,
-                    RegionCode = createNew.CódigoRegião,
-                    FunctionalAreaCode = createNew.CódigoÁreaFuncional,
-                    ResponsabilityCenterCode = createNew.CódigoCentroResponsabilidade
-                };
+                PreRequesitionsViewModel reqID = DBPreRequesition.ParseToViewModel(createNew);
+
                 return Json(reqID);
             }
         }
@@ -908,7 +923,7 @@ namespace Hydra.Such.Portal.Controllers
                             PreRequisicaoDB.DataHoraCriação = data.CreateDateTime;
                             PreRequisicaoDB.UtilizadorCriação = data.CreateUser;
                             PreRequisicaoDB.DataHoraModificação = data.UpdateDateTime;
-                            PreRequisicaoDB.UtilizadorModificação = data.UpdateUser;
+                            PreRequisicaoDB.UtilizadorModificação = User.Identity.Name;
                             PreRequisicaoDB.Exclusivo = data.Exclusive;
                             PreRequisicaoDB.JáExecutado = data.AlreadyExecuted;
                             PreRequisicaoDB.Equipamento = data.Equipment;
