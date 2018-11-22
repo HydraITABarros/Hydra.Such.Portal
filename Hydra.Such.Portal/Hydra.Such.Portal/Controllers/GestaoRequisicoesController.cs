@@ -148,6 +148,21 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
+        public IActionResult ComprasDinheiroByDimensions()
+        {
+            UserAccessesViewModel userPermissions =
+                DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.RequisiçõesComprasDinheiro);
+            if (userPermissions != null && userPermissions.Read.Value)
+            {
+                ViewBag.UPermissions = userPermissions;
+                return View();
+            }
+            else
+            {
+                return Redirect(Url.Content("~/Error/AccessDenied"));
+            }
+        }
+
         public IActionResult DetalhesReqAprovada(string id)
         {
             UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Requisições);
@@ -207,9 +222,50 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
+        public IActionResult LinhasRequisicao_CD(string id)
+        {
+            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.PréRequisiçõesComprasDinheiro);
+
+
+            if (userPermissions != null && userPermissions.Read.Value)
+            {
+                ViewBag.UPermissions = userPermissions;
+                ViewBag.RequisitionId = id;
+                ViewBag.ValidatedRequisitionEnumValue = (int)RequisitionStates.Validated;
+                ViewBag.RequisitionStatesEnumString = EnumHelper.GetItemsAsDictionary(typeof(RequisitionStates));
+                ViewBag.ReportServerURL = config.ReportServerURL;
+
+                return View();
+            }
+            else
+            {
+                return Redirect(Url.Content("~/Error/AccessDenied"));
+            }
+        }
+
         public IActionResult LinhasRequisicaoReadOnly(string id)
         {
             UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.RequisicoesPorDimensoes);
+
+            if (userPermissions != null && userPermissions.Read.Value)
+            {
+                ViewBag.UPermissions = userPermissions;
+                ViewBag.RequisitionId = id;
+                ViewBag.ValidatedRequisitionEnumValue = (int)RequisitionStates.Validated;
+                ViewBag.RequisitionStatesEnumString = EnumHelper.GetItemsAsDictionary(typeof(RequisitionStates));
+                ViewBag.ReportServerURL = config.ReportServerURL;
+
+                return View();
+            }
+            else
+            {
+                return Redirect(Url.Content("~/Error/AccessDenied"));
+            }
+        }
+
+        public IActionResult LinhasRequisicaoReadOnly_CD(string id)
+        {
+            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.RequisiçõesComprasDinheiro);
 
             if (userPermissions != null && userPermissions.Read.Value)
             {
@@ -280,6 +336,45 @@ namespace Hydra.Such.Portal.Controllers
             //{
             //    return Redirect(Url.Content("~/Error/AccessDenied"));
             //}
+        }
+
+        public IActionResult MinhaRequisicao_CD(string id)
+        {
+            UserAccessesViewModel userPermissions = new UserAccessesViewModel();
+            userPermissions.Area = 1;
+            userPermissions.Create = true;
+            userPermissions.Delete = true;
+            userPermissions.Feature = (int)Enumerations.Features.PréRequisiçõesComprasDinheiro;
+            userPermissions.IdUser = User.Identity.Name;
+            userPermissions.Read = true;
+            userPermissions.Update = true;
+
+            int SentReqToAprove = 0;
+            RequisitionViewModel REQ = DBRequest.GetById(id).ParseToViewModel();
+            List<ApprovalMovementsViewModel> AproveList = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAll());
+            if (REQ.State == RequisitionStates.Pending || REQ.State == RequisitionStates.Rejected)
+                SentReqToAprove = 1;
+            else
+                SentReqToAprove = 0;
+            if (AproveList != null && AproveList.Count > 0)
+            {
+                foreach (ApprovalMovementsViewModel apmov in AproveList)
+                {
+                    if (apmov.Number == REQ.RequisitionNo)
+                    {
+                        SentReqToAprove = 0;
+                    }
+                }
+            }
+
+            ViewBag.UPermissions = userPermissions;
+            ViewBag.RequisitionId = id;
+            ViewBag.ValidatedRequisitionEnumValue = (int)RequisitionStates.Validated;// REQ.State;
+            ViewBag.RequisitionStatesEnumString = EnumHelper.GetItemsAsDictionary(typeof(RequisitionStates));
+            ViewBag.ReportServerURL = config.ReportServerURL;
+            ViewBag.SentReqToAprove = (int)SentReqToAprove;
+
+            return View();
         }
 
         public IActionResult Arquivadas()
@@ -863,6 +958,54 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetComprasDinheiroByDimensions([FromBody] JObject requestParams)
+        {
+            int Historic = 0;
+            if (requestParams["Historic"] != null)
+                Historic = int.Parse(requestParams["Historic"].ToString());
+            List<RequisitionStates> states = new List<RequisitionStates>();
+
+            if (Historic == 0)
+            {
+                states = new List<RequisitionStates>()
+                {
+                    RequisitionStates.Pending,
+                    RequisitionStates.Received,
+                    RequisitionStates.Treated,
+                    RequisitionStates.Validated,
+                    RequisitionStates.Approved,
+                    RequisitionStates.Rejected,
+                    RequisitionStates.Available,
+                };
+            }
+            else
+            {
+                states = new List<RequisitionStates>()
+                {
+                    RequisitionStates.Archived
+                };
+            }
+
+            List<RequisitionViewModel> result = DBRequest.GetByState((int)RequisitionTypes.ComprasDinheiro, states).Where(x => x.TipoReq == 1).ToList().ParseToViewModel();
+
+            //Apply User Dimensions Validations
+            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            //Regions
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.RegionCode));
+            //FunctionalAreas
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.FunctionalAreaCode));
+            //ResponsabilityCenter
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CenterResponsibilityCode));
+
+            //result.RemoveAll(x => x.RequestNutrition == true);
+
+            return Json(result.OrderByDescending(x => x.RequisitionNo));
+        }
+
+        [HttpPost]
         public JsonResult GetRequisitionsAcordosPrecos()
         {
             List<RequisitionStates> states = new List<RequisitionStates>()
@@ -1005,6 +1148,13 @@ namespace Hydra.Such.Portal.Controllers
             {
                 if (item != null && item.Lines != null)
                 {
+                    //Não é para colocar ainda em ativo
+                    //foreach (RequisitionLineViewModel line in item.Lines))
+                    //{
+                    //    line.QuantityRequired = line.QuantityToRequire;
+                    //    line.QuantityToProvide = line.QuantityToRequire;
+                    //};
+
                     if (DBRequestLine.Update(item.Lines.ParseToDB()))
                     {
                         item.Lines.ForEach(x => x.Selected = false);
@@ -1032,6 +1182,12 @@ namespace Hydra.Such.Portal.Controllers
             {
                 if (item != null && item.Lines != null)
                 {
+                    //foreach (RequisitionLineViewModel line in item.Lines)// item.Lines)
+                    //{
+                    //    line.QuantityRequired = line.QuantityToRequire;
+                    //    line.QuantityToProvide = line.QuantityToRequire;
+                    //};
+
                     if (DBRequestLine.Update(item.Lines.ParseToDB()))
                     {
                         item.Lines.ForEach(x => x.Selected = false);
@@ -1935,6 +2091,19 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             item.State = RequisitionStates.Archived;
                             item.UpdateUser = User.Identity.Name;
+                            item.UpdateDate = DateTime.Now;
+                            if (DBRequest.Update(DBRequest.ParseToDB(item)) == null)
+                            {
+                                item.eReasonCode = 33;
+                                item.eMessage = "Ocorreu um erro na passagem da Requisição para Histórico.";
+                            }
+                        }
+
+                        if (item.TipoReq == 1) //Compras a dinheiro
+                        {
+                            item.State = RequisitionStates.Archived;
+                            item.UpdateUser = User.Identity.Name;
+                            item.UpdateDate = DateTime.Now;
                             if (DBRequest.Update(DBRequest.ParseToDB(item)) == null)
                             {
                                 item.eReasonCode = 33;
@@ -2917,6 +3086,216 @@ namespace Hydra.Such.Portal.Controllers
         {
             sFileName = @"/Upload/temp/" + sFileName;
             return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Gestão Requisições.xlsx");
+        }
+
+        //1
+        [HttpPost]
+        public async Task<JsonResult> ExportToExcel_GestaoRequisicoes_CD([FromBody] List<RequisitionViewModel> Lista)
+        {
+            JObject dp = (JObject)Lista[0].ColunasEXCEL;
+
+            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + "_ExportEXCEL.xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Gestão Requisições");
+                IRow row = excelSheet.CreateRow(0);
+                int Col = 0;
+
+                if (dp["requisitionNo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº Requisição");
+                    Col = Col + 1;
+                }
+                if (dp["state"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Estado");
+                    Col = Col + 1;
+                }
+                if (dp["budget"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Orçamento");
+                    Col = Col + 1;
+                }
+                if (dp["localMarketRegion"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Região Mercado Local");
+                    Col = Col + 1;
+                }
+                if (dp["localMarketDate"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Data Mercado Local");
+                    Col = Col + 1;
+                }
+                if (dp["projectNo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº Projeto");
+                    Col = Col + 1;
+                }
+                if (dp["regionCode"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Código Região");
+                    Col = Col + 1;
+                }
+                if (dp["functionalAreaCode"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Código Área Funcional");
+                    Col = Col + 1;
+                }
+                if (dp["centerResponsibilityCode"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Código Centro Responsabilidade");
+                    Col = Col + 1;
+                }
+                if (dp["localCode"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Código Localização");
+                    Col = Col + 1;
+                }
+                if (dp["comments"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Observações");
+                    Col = Col + 1;
+                }
+                if (dp["marketInquiryNo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº Consulta Mercado");
+                    Col = Col + 1;
+                }
+                if (dp["orderNo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº Encomenda");
+                    Col = Col + 1;
+                }
+                if (dp["requisitionDate"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Data requisição");
+                    Col = Col + 1;
+                }
+                if (dp["createUser"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Utilizador Criação");
+                    Col = Col + 1;
+                }
+                if (dp["estimatedValue"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Valor Estimado");
+                    Col = Col + 1;
+                }
+
+                if (dp != null)
+                {
+                    int count = 1;
+                    foreach (RequisitionViewModel item in Lista)
+                    {
+                        Col = 0;
+                        row = excelSheet.CreateRow(count);
+
+                        if (dp["requisitionNo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.RequisitionNo);
+                            Col = Col + 1;
+                        }
+                        if (dp["state"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.State.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["budget"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Budget.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["localMarketRegion"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.LocalMarketRegion);
+                            Col = Col + 1;
+                        }
+                        if (dp["localMarketDate"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.LocalMarketDate.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["projectNo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ProjectNo);
+                            Col = Col + 1;
+                        }
+                        if (dp["regionCode"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.RegionCode);
+                            Col = Col + 1;
+                        }
+                        if (dp["functionalAreaCode"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.FunctionalAreaCode);
+                            Col = Col + 1;
+                        }
+                        if (dp["centerResponsibilityCode"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.CenterResponsibilityCode);
+                            Col = Col + 1;
+                        }
+                        if (dp["localCode"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.LocalCode);
+                            Col = Col + 1;
+                        }
+                        if (dp["comments"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Comments);
+                            Col = Col + 1;
+                        }
+                        if (dp["marketInquiryNo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.MarketInquiryNo);
+                            Col = Col + 1;
+                        }
+                        if (dp["orderNo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.OrderNo);
+                            Col = Col + 1;
+                        }
+                        if (dp["requisitionDate"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.RequisitionDate);
+                            Col = Col + 1;
+                        }
+                        if (dp["createUser"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.CreateUser);
+                            Col = Col + 1;
+                        }
+                        if (dp["estimatedValue"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.EstimatedValue.ToString());
+                            Col = Col + 1;
+                        }
+                        count++;
+                    }
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+        }
+        //2
+        public IActionResult ExportToExcelDownload_GestaoRequisicoes_CD(string sFileName)
+        {
+            sFileName = @"/Upload/temp/" + sFileName;
+            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Lista Compras Dinheiro.xlsx");
         }
 
         //1

@@ -644,17 +644,17 @@
 
                                 <div class="row break_clear">
                                     <div class="col-lg-2 text-right">
-                                        <vaadin-text-field value="{{_QuantityToRequire}}" id="_QuantityToRequire" name="_QuantityToRequire" label="Qt. a Requerer" on-blur="_CalculoAutomaticoValores" required error-message="Este campo é obrigatório, tem que ser superior a 0 e só pode ter 4 casas decimais" disabled="{{ !_permissions.update }}" pattern="\d+(\.\d{1,4})?"> </vaadin-text-field>
+                                        <vaadin-text-field value="{{_QuantityToRequire}}" id="_QuantityToRequire" name="_QuantityToRequire" label="Qt. a Requerer" on-blur="_CalculoAutomaticoValores" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório, tem que ser superior a 0 e só pode ter 4 casas decimais"></vaadin-text-field>
                                     </div>
 
                                     <div class="col-lg-2 text-right">
-                                        <vaadin-text-field value="{{_UnitCost}}" id="_UnitCost" name="_UnitCost" label="Custo Unitário" on-blur="_CalculoAutomaticoValores" disabled="{{ !_permissions.update }}" type="number" pattern="^[1-9]\d*(\.\d+)?$">
+                                        <vaadin-text-field value="{{_UnitCost}}" id="_UnitCost" name="_UnitCost" label="Custo Unitário" on-blur="_CalculoAutomaticoValores" disabled="{{ !_permissions.update }}"  required error-message="Este campo é obrigatório, tem que ser superior a 0 e só pode ter 5 casas decimais">
                                             <div slot="suffix">€</div>
                                         </vaadin-text-field>
                                     </div>
 
                                     <div class="col-lg-2 text-right">
-                                        <vaadin-text-field value="{{_UnitCostWithIVA}}" id="_UnitCostWithIVA" name="_UnitCostWithIVA" label="Custo Unitário com IVA" on-blur="_CalculoAutomaticoValores" disabled="{{ !_permissions.update }}" type="number" pattern="^[1-9]\d*(\.\d+)?$">
+                                        <vaadin-text-field value="{{_UnitCostWithIVA}}" id="_UnitCostWithIVA" name="_UnitCostWithIVA" label="Custo Unitário com IVA" on-blur="_CalculoAutomaticoValores" disabled="{{ !_permissions.update }}"  required error-message="Este campo é obrigatório, tem que ser superior a 0 e só pode ter 4 casas decimais">
                                             <div slot="suffix">€</div>
                                         </vaadin-text-field>
                                     </div>
@@ -730,7 +730,7 @@
 
 
                                     <div class="col-lg-2 text-right">
-                                        <vaadin-text-field id="_PercentagemIVA" name="_PercentagemIVA" label="Valor Tx IVA" on-blur="_CalculoAutomaticoValores" disabled="{{ !_permissions.update }}" type="number" pattern="^[1-9]\d*(\.\d+)?$">
+                                        <vaadin-text-field id="_PercentagemIVA" name="_PercentagemIVA" label="Valor Tx IVA" on-blur="_CalculoAutomaticoValores" disabled="{{ !_permissions.update }}">
                                             <div slot="suffix">%</div>
                                         </vaadin-text-field>
                                     </div>
@@ -1019,7 +1019,7 @@
                                                 </such-selectbox>
                                             </template>
                                             <template is="dom-if" if="{{ !item.selected }}">
-                                                [[ _clFormatsupplierNo(item.supplierNo) ]]
+                                                {{ item.supplierNo }}
                                             </template>
                                         </template>
                                     </vaadin-grid-column>
@@ -1965,8 +1965,8 @@
                             count += this.dataLines.lines[i].totalCost;
                             countWithIVA += this.dataLines.lines[i].totalCostWithIVA;
 
-                            this._TotalLine = count;
-                            this._TotalWithIVALine = countWithIVA;
+                            this._TotalLine = count.toFixed(4);
+                            this._TotalWithIVALine = countWithIVA.toFixed(4);
                             this.$.dialogTotal.open();
                         }
                     } else {
@@ -2159,6 +2159,7 @@
 
 
                 _createPreReqLine: function () {
+                    debugger;
                     var requesitionType = this.$.requesitionType.value;
 
                     var localCode = "";
@@ -2172,65 +2173,75 @@
                         validLocalCode = (localCode !== null && localCode !== "");
                     }
 
-                    if (this.$._ProjectNo.value != "" & this.$._ProjectNo.value != null) {
-                        if (validLocalCode) {
-                            if (this._Products != undefined & this._Products != "") {
+                    if (this.$._ProjectNo.value != "" && this.$._ProjectNo.value != null) {
+                        if (this._Products != undefined && this._Products != "") {
+                            if (validLocalCode) {
                                 if (this.$._QuantityToRequire.validate() && parseFloat(this.$._QuantityToRequire.value) > 0) {
-                                    var totalCost = this._QuantityToRequire * this._UnitCost;
-                                    if (isNaN(totalCost)) {
-                                        totalCost = 0;
+                                    if (this.$._UnitCost.validate() && parseFloat(this.$._UnitCost.value) > 0) {
+                                        if (this.$._UnitCostWithIVA.validate() && parseFloat(this.$._UnitCostWithIVA.value) > 0) {
+                                            var totalCost = this._QuantityToRequire * this._UnitCost;
+                                            if (isNaN(totalCost)) {
+                                                totalCost = 0;
+                                            }
+
+                                            //var purchHeaderNo = "";
+                                            //var purchLineNo = "";
+                                            //if (this.$._CBPurchaseLine.value != undefined & this.$._CBPurchaseLine.value != "") {
+                                            //    var composedKey = this.$._CBPurchaseLine.value.split(" ", 2);
+                                            //    purchHeaderNo = composedKey[0];
+                                            //    purchLineNo = composedKey[1];
+                                            //}
+
+                                            this.dataLines.lines.unshift({
+                                                preRequisitionLineNo: this.data.preRequesitionsNo,
+                                                type: 2, //PRODUTO
+                                                code: this._Products,
+                                                localCode: localCode,
+                                                description: this._Description,
+                                                description2: this._Description2,
+                                                unitMeasureCode: this._UnitMeasureCode,
+                                                quantityToRequire: this._QuantityToRequire,
+                                                unitCost: this._UnitCost,
+                                                unitCostWithIVA: this._UnitCostWithIVA,
+                                                projectNo: this.$._ProjectNo.value,
+                                                vehicle: this.data.vehicle,
+                                                supplierNo: this._CBVendor,
+                                                regionCode: this.$._CLRegion.value,
+                                                functionalAreaCode: this.$._CLFunctionalAreaCode.value,
+                                                centerResponsibilityCode: this.$._CLResponsabilityCenterCode.value,
+                                                //qtyByUnitOfMeasure
+                                                //quantityRequired
+                                                //quantityPending:
+                                                quantidadeInicial: this._QuantityToRequire,
+                                                //sellUnityPrice
+                                                //budgetValue
+                                                //expectedReceivingDate
+                                                //billable
+                                                maintenanceOrderLineNo: this._MaintenanceOrderLineNo,
+                                                //employeeNo
+                                                //supplierProductCode
+                                                armazemCDireta: this._CBItemsCDirect,
+                                                //unitNutritionProduction
+                                                //customerNo
+                                                //openOrderNo: purchHeaderNo,
+                                                //openOrderLineNo: purchLineNo,
+                                                totalCost: totalCost > 0 ? totalCost : "",
+                                                totalCostWithIVA: this.$._CustoTotalComIVA.value,
+                                                grupoRegistoIVAProduto: this.$._CLVATProductsPostingGroups.value,
+                                            });
+
+                                            this.$.prereqLines_databound_ajax.url = "/PreRequisicoes/UpdateContractLines";
+                                            this.$.prereqLines_databound_ajax.body = JSON.stringify(this.dataLines);
+                                            this.$.prereqLines_databound_ajax.generateRequest();
+                                            this.$.grid_prereqlines.clearCache();
+                                        }
+                                        else {
+                                            this._openToastError('O valor do campo Custo Unitário com IVA tem que estar preenchido, ser superior a 0 e só pode ter 4 casas decimais.');
+                                        }
                                     }
-
-                                    //var purchHeaderNo = "";
-                                    //var purchLineNo = "";
-                                    //if (this.$._CBPurchaseLine.value != undefined & this.$._CBPurchaseLine.value != "") {
-                                    //    var composedKey = this.$._CBPurchaseLine.value.split(" ", 2);
-                                    //    purchHeaderNo = composedKey[0];
-                                    //    purchLineNo = composedKey[1];
-                                    //}
-
-                                    this.dataLines.lines.unshift({
-                                        preRequisitionLineNo: this.data.preRequesitionsNo,
-                                        type: 2, //PRODUTO
-                                        code: this._Products,
-                                        localCode: localCode,
-                                        description: this._Description,
-                                        description2: this._Description2,
-                                        unitMeasureCode: this._UnitMeasureCode,
-                                        quantityToRequire: this._QuantityToRequire,
-                                        unitCost: this._UnitCost,
-                                        unitCostWithIVA: this._UnitCostWithIVA,
-                                        projectNo: this.$._ProjectNo.value,
-                                        vehicle: this.data.vehicle,
-                                        supplierNo: this._CBVendor,
-                                        regionCode: this.$._CLRegion.value,
-                                        functionalAreaCode: this.$._CLFunctionalAreaCode.value,
-                                        centerResponsibilityCode: this.$._CLResponsabilityCenterCode.value,
-                                        //qtyByUnitOfMeasure
-                                        //quantityRequired
-                                        //quantityPending:
-                                        quantidadeInicial: this._QuantityToRequire,
-                                        //sellUnityPrice
-                                        //budgetValue
-                                        //expectedReceivingDate
-                                        //billable
-                                        maintenanceOrderLineNo: this._MaintenanceOrderLineNo,
-                                        //employeeNo
-                                        //supplierProductCode
-                                        armazemCDireta: this._CBItemsCDirect,
-                                        //unitNutritionProduction
-                                        //customerNo
-                                        //openOrderNo: purchHeaderNo,
-                                        //openOrderLineNo: purchLineNo,
-                                        totalCost: totalCost > 0 ? totalCost : "",
-                                        totalCostWithIVA: this.$._CustoTotalComIVA.value,
-                                        grupoRegistoIVAProduto: this.$._CLVATProductsPostingGroups.value,
-                                    });
-
-                                    this.$.prereqLines_databound_ajax.url = "/PreRequisicoes/UpdateContractLines";
-                                    this.$.prereqLines_databound_ajax.body = JSON.stringify(this.dataLines);
-                                    this.$.prereqLines_databound_ajax.generateRequest();
-                                    this.$.grid_prereqlines.clearCache();
+                                    else {
+                                        this._openToastError('O valor do campo Custo Unitário tem que estar preenchido, ser superior a 0 e só pode ter 5 casas decimais.');
+                                    }
                                 }
                                 else {
                                     this._openToastError('O valor do campo Qt. a Requerer tem que estar preenchido, ser superior a 0 e só pode ter 4 casas decimais.');
@@ -2241,11 +2252,11 @@
                             }
                         }
                         else {
-                            this._openToastError('O valor do campo Cód. Localização tem que estar preenchido.');
+                            this._openToastError('O valor do campo Nº Ordem/Projecto tem que estar preenchido.');
                         }
                     }
                     else {
-                        this._openToastError('O valor do campo Nº Ordem/Projecto tem que estar preenchido.');
+                        this._openToastError('O valor do campo Cód. Localização tem que estar preenchido.');
                     }
                 },
 
@@ -2486,40 +2497,54 @@
                 },
 
                 _CalculoAutomaticoValores: function (e) {
-                    debugger;
-                    var IVA;
                     if (e.target.value != "") {
                         var stringVal = "" + e.target.value;
                         e.target.value = stringVal.replace(",", ".");
-                    }
 
-                    //this.$._QuantityToRequire.value
-                    //this.$._UnitCost.value
-                    //this.$._UnitCostWithIVA.value
-                    //this.$._CustoTotalComIVA.value
-                    //this.$._PercentagemIVA.value
+                        var IVA = parseFloat(0);
+                        var _QuantityToRequire = parseFloat(0);
+                        var _UnitCost = parseFloat(0);
+                        var _UnitCostWithIVA = parseFloat(0);
+                        var _CustoTotalComIVA = parseFloat(0);
+                        var _PercentagemIVA = parseFloat(0);
 
-                    if (this.$._PercentagemIVA.value != "")
-                        IVA = (this.$._PercentagemIVA.value / 100) + 1;
+                        if (this.$._QuantityToRequire.value != "")
+                            _QuantityToRequire = parseFloat(this.$._QuantityToRequire.value);
+                        if (this.$._UnitCost.value != "")
+                            _UnitCost = parseFloat(this.$._UnitCost.value);
+                        if (this.$._UnitCostWithIVA.value != "")
+                            _UnitCostWithIVA = parseFloat(this.$._UnitCostWithIVA.value);
+                        if (this.$._CustoTotalComIVA.value != "")
+                            _CustoTotalComIVA = parseFloat(this.$._CustoTotalComIVA.value);
+                        if (this.$._PercentagemIVA.value != "")
+                            _PercentagemIVA = parseFloat(this.$._PercentagemIVA.value);
 
-                    if (this.$._QuantityToRequire.value != "" && this.$._UnitCostWithIVA.value != "") {
-                        this.$._CustoTotalComIVA.value = this.$._QuantityToRequire.value * this.$._UnitCostWithIVA.value;
-                    }
+                        if (_PercentagemIVA != 0)
+                            IVA = (_PercentagemIVA / 100) + 1;
 
-                    if (this.$._UnitCostWithIVA.value != "" && this.$._CustoTotalComIVA.value != "") {
-                        this.$._QuantityToRequire.value = this.$._CustoTotalComIVA.value / this.$._UnitCostWithIVA.value;
-                    }
+                        if (_UnitCostWithIVA != 0 && _CustoTotalComIVA != 0) {
+                            this.$._QuantityToRequire.value = (_CustoTotalComIVA / _UnitCostWithIVA).toFixed(4).replace(",", ".");
+                        }
 
-                    if (this.$._CustoTotalComIVA.value != "" && this.$._QuantityToRequire.value != "") {
-                        this.$._UnitCostWithIVA.value = this.$._CustoTtalComIVA.value / this.$._QuantityToRequire.value;
-                    }
+                        if (_CustoTotalComIVA != 0 && _PercentagemIVA != 0 && _QuantityToRequire != 0) {
+                            this.$._UnitCost.value = ((_CustoTotalComIVA / IVA) / _QuantityToRequire).toFixed(5).replace(",", ".");
+                        }
 
-                    if (this.$._QuantityToRequire.value != "" && this.$._UnitCost.value != "" && this.$._PercentagemIVA.value != "") {
-                        this.$._CustoTotalComIVA.value = (this.$._QuantityToRequire.value * this.$._UnitCost.value) * IVA;
-                    }
+                        if (_CustoTotalComIVA != 0 && _QuantityToRequire != 0) {
+                            this.$._UnitCostWithIVA.value = (_CustoTotalComIVA / _QuantityToRequire).toFixed(4).replace(",", ".");
+                        }
 
-                    if (this.$._CustoTotalComIVA.value != "" && this.$._PercentagemIVA.value != "" && this.$._QuantityToRequire.value != "") {
-                        this.$._UnitCost.value = (this.$._CustoTotalComIVA.value / IVA) / this.$._QuantityToRequire.value;
+                        if (_QuantityToRequire != 0 && _UnitCostWithIVA != 0) {
+                            this.$._CustoTotalComIVA.value = (_QuantityToRequire * _UnitCostWithIVA).toFixed(4).replace(",", ".");
+                        }
+
+                        if (_CustoTotalComIVA != 0 && _QuantityToRequire != 0 && _UnitCost != 0) {
+                            this.$._PercentagemIVA.value = (((_CustoTotalComIVA * 100) / (_QuantityToRequire * _UnitCost)) - 100).toFixed(4).replace(",", ".")
+                        }
+
+                        //if (_QuantityToRequire != 0 && _UnitCost != 0 && _PercentagemIVA != 0) {
+                        //    this.$._CustoTotalComIVA.value = ((_QuantityToRequire * _UnitCost) * IVA).toFixed(4);
+                        //}
                     }
                 },
 
@@ -2563,23 +2588,24 @@
                             else {
                                 this._openToast(this.dataLines.eMessage);
 
-                                this.$._Products.value = "";
-                                //this.$._Products.valueText = "";
-                                this.$._CBLocations.value = "";
-                                //this.$._CBLocations.valueText = "";
+                                if (this.$._Products != null)
+                                    this.$._Products._clearSelection();
+                                if (this.$._CBLocations != null)
+                                    this.$._CBLocations._clearSelection();
+                                if (this.$._UnitMeasureCode != null)
+                                    this.$._UnitMeasureCode._clearSelection();
+                                if (this.$._VehicleLines != null)
+                                    this.$._VehicleLines._clearSelection();
+                                if (this.$._CBVendor != null)
+                                    this.$._CBVendor._clearSelection();
+                                if (this.$._CLVATProductsPostingGroups != null)
+                                    this.$._CLVATProductsPostingGroups._clearSelection();
+
                                 this.$._Description.value = "";
                                 this.$._Description2.value = "";
-                                this.$._UnitMeasureCode.value = "";
-                                //this.$._UnitMeasureCode.valueText = "";
                                 this.$._QuantityToRequire.value = "";
                                 this.$._UnitCost.value = "";
                                 this.$._UnitCostWithIVA.value = "";
-                                this.$._VehicleLines.value = "";
-                                //this.$._VehicleLines.valueText = "";
-                                this.$._CBVendor.value = "";
-                                //this.$._CBVendor.valueText = "";
-                                this.$._CLVATProductsPostingGroups.value = "";
-                                //this.$._CLVATProductsPostingGroups.valueText = "";
                                 this.$._CustoTotalComIVA.value = "";
 
                                 this.$._ProjectNo.value = this.data.projectNo;
