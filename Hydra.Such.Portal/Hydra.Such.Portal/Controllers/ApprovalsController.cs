@@ -109,6 +109,16 @@ namespace Hydra.Such.Portal.Controllers
 
                     if (REQ != null)
                     {
+                        switch(REQ.TipoReq)
+                        {
+                            case 0:
+                                x.NumberLink = "/GestaoRequisicoes/MinhaRequisicao/" + x.Number; //"/GestaoRequisicoes/DetalhesReqAprovada/"
+                                break;
+                            case 1:
+                                x.NumberLink = "/GestaoRequisicoes/MinhaRequisicao_CD/" + x.Number; //"/GestaoRequisicoes/DetalhesReqAprovada/"
+                                break;
+                        }
+
                         x.RequisicaoAcordosPrecos = REQ.RequisiçãoNutrição;
                         x.RequisicaoUrgente = REQ.Urgente;
                         x.RequisicaoOrcamentoEmAnexo = REQ.Orçamento;
@@ -237,7 +247,28 @@ namespace Hydra.Such.Portal.Controllers
                                 if ((!requisition.Lines.Any(x => x.ProjectNo == null || x.ProjectNo == "") && (requisition.RequestNutrition.HasValue && requisition.RequestNutrition.Value)) || !requisition.RequestNutrition.HasValue || !requisition.RequestNutrition.Value)
                                 {
                                     //Approve Movement
-                                    ErrorHandler approvalResult = ApprovalMovementsManager.ApproveMovement(approvalMovement.MovementNo, User.Identity.Name);
+                                    ErrorHandler approvalResult = new ErrorHandler();
+
+                                    if (requisition.TipoReq == 0) //Requisição Normal
+                                        approvalResult = ApprovalMovementsManager.ApproveMovement(approvalMovement.MovementNo, User.Identity.Name);
+
+                                    if (requisition.TipoReq == 1) //Requisição Compras Dinheiro
+                                    {
+                                        //Update Old Movement
+                                        ApprovalMovementsViewModel ApprovalMovement = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetById(movementNo));
+                                        ApprovalMovement.Status = 2;
+                                        ApprovalMovement.DateTimeApprove = DateTime.Now;
+                                        ApprovalMovement.DateTimeUpdate = DateTime.Now;
+                                        ApprovalMovement.UserUpdate = User.Identity.Name;
+                                        ApprovalMovement = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.Update(DBApprovalMovements.ParseToDatabase(ApprovalMovement)));
+
+                                        //Delete All User Approval Movements
+                                        DBUserApprovalMovements.DeleteFromMovementExcept(ApprovalMovement.MovementNo, User.Identity.Name);
+
+                                        approvalResult.eReasonCode = 103;
+                                        approvalResult.eMessage = "A tarefa foi aprovada pelo ultimo nivel.";
+
+                                    }
 
                                     //Check Approve Status
                                     if (approvalResult.eReasonCode == 103)

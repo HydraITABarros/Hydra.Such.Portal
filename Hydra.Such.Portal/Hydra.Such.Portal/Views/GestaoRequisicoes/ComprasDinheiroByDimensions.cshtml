@@ -1,7 +1,8 @@
 ﻿@{
-    ViewData["Title"] = "Gestão Compras Dinheiro";
+    ViewData["Title"] = "Lista Compras Dinheiro";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
@@ -40,9 +41,14 @@
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
-        <paper-toast id="ToastError" style="background-color:red" duration="4000" horizontalAlign="right"></paper-toast>
-        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
-        <iron-ajax url="/GestaoRequisicoes/GetValidatedRequisitions_CD" id="ajax_getgrid" last-response="{{result}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/GestaoRequisicoes/GetComprasDinheiroByDimensions" id="ajax_getgrid" last-response="{{result}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetRequestStatus" id="ajax_getstatus" auto last-response="{{resultstatus}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{RegionData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{ResponsabilityCenterData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{FunctionalAreaCodeData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetLocalMarketRegions" last-response="{{LocalMarketRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/GestaoRequisicoes/ExportToExcel_GestaoRequisicoes_CD"
                    last-response="{{export}}"
                    id="ajax_Export"
@@ -52,14 +58,9 @@
                    content-type="application/json">
         </iron-ajax>
 
-        <iron-ajax url="/PopulateDropdowns/GetRequestStatus" id="ajax_getstatus" auto last-response="{{resultstatus}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{RegionData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{ResponsabilityCenterData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{FunctionalAreaCodeData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetLocalMarketRegions" last-response="{{LocalMarketRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-
         <div class="subMenu">
             <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+            <paper-button id="showHistory" class="tablinks" on-tap="_showHistory"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{_showHistoryMessage}}</paper-button>
 
             <!--start ColumnToggle-->
             <paper-menu-button class="column-toggle" no-animations id="gridOpcaoGeral">
@@ -85,13 +86,11 @@
                 <template>
                     {{item.requisitionNo}}
                 </template>
-
             </vaadin-grid-column>
 
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.state.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="state">Estado</vaadin-grid-sorter>
-                    @*<vaadin-grid-filter path="state" />*@
                 </template>
                 <template>
                     [[ _parsestate(item.state)]]
@@ -137,14 +136,12 @@
                     {{item.projectNo}}
                 </template>
             </vaadin-grid-column>
-
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.regionCode.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="regionCode">Código Região</vaadin-grid-sorter>
                     <vaadin-grid-filter path="regionCode" />
                 </template>
                 <template>
-                    @*[[ _parseregion(item.regionCode)]]*@
                     {{item.regionCode}}
                 </template>
             </vaadin-grid-column>
@@ -155,7 +152,6 @@
                     <vaadin-grid-filter path="functionalAreaCode" />
                 </template>
                 <template>
-                    @*[[ _parseArea(item.functionalAreaCode)]]*@
                     {{item.functionalAreaCode}}
                 </template>
             </vaadin-grid-column>
@@ -166,7 +162,6 @@
                     <vaadin-grid-filter path="centerResponsibilityCode" />
                 </template>
                 <template>
-                    @*[[ _parsecenterRespons(item.centerResponsibilityCode)]]*@
                     {{item.centerResponsibilityCode}}
                 </template>
             </vaadin-grid-column>
@@ -241,16 +236,15 @@
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
+
+        <paper-toast id="ToastError" style="background-color:red" duration="4000" horizontalAlign="right"></paper-toast>
+        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
     </template>
     <script>
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
                 is: 'x-request',
                 properties: {
-                    _filterActive: {
-                        type: Boolean,
-                        value: true
-                    },
                     _SelectedLine: {
                         observer: '_rowSelected'
                     },
@@ -260,12 +254,28 @@
                             return {};
                         }
                     },
+                    _historico: {
+                        type: Number,
+                        notify: true,
+                        value: 0
+                    },
+                    _isHistoric: {
+                        type: String,
+                        value: "false"
+                    },
+                    _showHistoryMessage: {
+                        type: String,
+                        value: "Mostrar Histórico"
+                    },
                 },
+
                 observers: [
-                    '_onCacheLoaded(resultstatus,RegionData,FunctionalAreaCodeData,ResponsabilityCenterData,LocalMarketRegions)'
+                    '_onCacheLoaded(resultstatus, RegionData, FunctionalAreaCodeData, ResponsabilityCenterData, LocalMarketRegions)'
                 ],
+
                 _onCacheLoaded: function (resultstatus, RegionData, FunctionalAreaCodeData, ResponsabilityCenterData, LocalMarketRegions) {
                     if (!this.Flag) {
+                        this.$.ajax_getgrid.body = JSON.stringify({ "Historic": this._historico });
                         this.$.ajax_getgrid.generateRequest();
                     }
                     this.Flag = true;
@@ -279,6 +289,7 @@
                     });
                     $(window).trigger('resize');
                 },
+
                 fixGridToBottom: function () {
                     var grid_el = $(this.$.gridrequest);
                     var parentHeight = $(this).offsetParent().height();
@@ -286,6 +297,13 @@
                     var height = parentHeight - offsetTop;
                     grid_el.height(height);
                 },
+
+                _rowSelected: function (item) {
+                    if (item != null) {
+                        window.location.href = "/GestaoRequisicoes/LinhasRequisicaoReadOnly_CD/" + item.requisitionNo;
+                    }
+                },
+
                 _parsestate: function (param1) {
                     if (param1 != undefined) {
                         if (this.resultstatus != null) {
@@ -296,13 +314,8 @@
                         }
                     }
                     return "";
+                },
 
-                },
-                _rowSelected: function (item) {
-                    if (item != null) {
-                        window.location.href = "/GestaoRequisicoes/LinhasRequisicao_CD/" + item.requisitionNo;
-                    }
-                },
                 _parseregion: function (param) {
                     if (param != undefined && this.RegionData != undefined) {
                         var sel = this.RegionData.find(x => x.id == param);
@@ -311,8 +324,8 @@
                         }
                     }
                     return "";
-
                 },
+
                 _parseArea: function (param) {
                     if (param != undefined && this.FunctionalAreaCodeData != undefined) {
                         var sel = this.FunctionalAreaCodeData.find(x => x.id == param);
@@ -321,17 +334,8 @@
                         }
                     }
                     return "";
+                },
 
-                },
-                _parseDateFormat: function (date) {
-                    if (date != null && date != "") {
-                        var Date = date.split("T");
-                        if (Date != "" && Date != undefined) {
-                            var x = Date[0].split("-");
-                            return x[2] + "-" + x[1] + "-" + x[0];
-                        }
-                    }
-                },
                 _parsecenterRespons: function (param) {
                     if (param != undefined && this.ResponsabilityCenterData != undefined) {
                         var sel = this.ResponsabilityCenterData.find(x => x.id == param);
@@ -341,6 +345,7 @@
                     }
                     return "";
                 },
+
                 _getLocalMarketRegionDescription: function (param) {
                     if (param != undefined && this.LocalMarketRegions != undefined) {
                         var sel = this.LocalMarketRegions.find(x => x.id == param);
@@ -351,8 +356,17 @@
                     return "";
                 },
 
+                _parseDateFormat: function (date) {
+                    if (date != null && date != "") {
+                        var Date = date.split("T");
+                        if (Date != "" && Date != undefined) {
+                            var x = Date[0].split("-");
+                            return x[2] + "-" + x[1] + "-" + x[0];
+                        }
+                    }
+                },
+
                 _exportEXCEL: function () {
-                    //debugger;
                     this.result[0].ColunasEXCEL = this._columns;
 
                     this.$.ajax_Export.body = JSON.stringify(this.result);
@@ -360,7 +374,6 @@
                 },
 
                 _exportEXCELResponse: function (e) {
-                    //debugger
                     var FileName = this.export;
                     location.href = '../GestaoRequisicoes/ExportToExcelDownload_GestaoRequisicoes_CD?sFileName=' + FileName;
                 },
@@ -396,6 +409,7 @@
                     };
                     this._columns = columns;
                 },
+
                 _toggleColumn: function (event) {
                     var columnIndex = JSON.parse(event.target.dataset.item).key;
                     event.path[0].classList.toggle("selected");
@@ -404,9 +418,11 @@
                         localStorage["request.ToggleColumn"] = JSON.stringify(this._columns);
                     }
                 },
+
                 _getColumnItemClass: function (columnIndex) {
                     return !this._columns[columnIndex].hidden ? "selected" : "";
                 },
+
                 _toArray: function (obj) {
                     return Object.keys(obj).map(function (key) {
                         return {
@@ -417,8 +433,32 @@
                 },
                 /* end - ColumnToggle */
 
+                _showHistory: function (item) {
+                    if (item != null) {
+                        if (this._historico == 0) {
+                            this._historico = 1;
+                            this._isHistoric = "true";
+                        } else {
+                            this._historico = 0;
+                            this._isHistoric = "false";
+                        }
+                        this.$.ajax_getgrid.body = JSON.stringify({ "Historic": this._historico });
+                        this.$.ajax_getgrid.generateRequest();
+                        this._setButtonTexts();
+                    }
+                },
+
+                _setButtonTexts: function () {
+                    if (this._historico == 0) {
+                        this._showHistoryMessage = "Mostrar Histórico";
+                    }
+                    if (this._historico == 1) {
+                        this._showHistoryMessage = "Mostrar Ativos";
+                    }
+                },
+
+
             });
         });
-
     </script>
 </dom-module>

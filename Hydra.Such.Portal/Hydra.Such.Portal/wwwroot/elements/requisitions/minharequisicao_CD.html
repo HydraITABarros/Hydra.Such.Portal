@@ -23,7 +23,7 @@
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
 <link rel="import" href="/lib/such-selectbox/such-selectbox.html">
 
-<dom-module id="x-requisitiondetails">
+<dom-module id="x-minharequisitiondetails">
     <template>
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
@@ -167,6 +167,8 @@
         <iron-ajax url="/PopulateDropdowns/GetVATProductsPostingGroups" last-response="{{VATProductsPostingGroups}}" auto method="get" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetVATBusinessPostingGroups" last-response="{{VATBusinessPostingGroups}}" auto method="get" handle-as="json" content-type="application/json"></iron-ajax>
 
+        <!--<iron-ajax url="/GestaoRequisicoes/VerificarParaAprovacao" last-response="{{ParaAprovar}}" auto method="get" handle-as="json" on-response="_ParaAprovar" content-type="application/json"></iron-ajax>-->
+
         <iron-ajax url="/GestaoRequisicoes/GetRequisition"
                    id="requisition_datasource"
                    last-response="{{Requisition}}"
@@ -289,12 +291,43 @@
                    on-response="_GetProjetoNoLinhaResponse"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/PreRequisicoes/SendReqForApproval"
+                   last-response="{{actionResult}}"
+                   method="post"
+                   handle-as="json"
+                   on-response="_SendReqResponse"
+                   id="SendReq_databound"
+                   content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/Approvals/UpdateMovementStatus"
                    last-response="{{actionResult}}"
                    method="post"
                    handle-as="json"
                    id="action_databound"
                    on-response="_actionResponseProcessor"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/GestaoRequisicoes/AprovarRequisicao"
+                   last-response="{{aprovarReqMov}}"
+                   method="post"
+                   handle-as="json"
+                   id="aprovarRequisicao_databound"
+                   on-response="_aprovarRequisicaoResponseProcessor"
+                   content-type="application/json"></iron-ajax>
+
+        <!--<iron-ajax url="/GestaoRequisicoes/VerificarUserAprovacao"
+           last-response="{{verificarUserAprovacao}}"
+           method="post"
+           handle-as="json"
+           id="action_databound"
+           on-response="_verificarUserAprovacaoResponseProcessor"
+           content-type="application/json"></iron-ajax>-->
+
+        <iron-ajax url="/GestaoRequisicoes/GetReqAprovadores"
+                   id="dlg_GetAprovadores_ajax"
+                   last-response="{{Aprovadores}}"
+                   method="post"
+                   handle-as="json"
                    content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/GestaoRequisicoes/TodasLinhasNotaEncomenda"
@@ -308,24 +341,13 @@
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" id="btnGoBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
 
-            <paper-button class="tablinks" id="btnLocalMarketValidation" disabled="{{ !_permissions.update }}" style="width: 200px !important;" on-tap="_validateLocalMarket"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Enviar Mercado Local</paper-button>
-            <paper-button class="tablinks" id="btnValidate" disabled="{{ !_permissions.update }}" on-tap="_validateRequisition"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Validar</paper-button>
-            <paper-button class="tablinks" id="btnAnularAprovacao" disabled="{{ !_permissions.update }}" on-tap="_anularAprovacao"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Anular Aprovação</paper-button>
-            <paper-button class="tablinks" id="btnAprovar" disabled="{{ !_permissions.update }}" on-tap="_aprovarRequisicao" title="Aprovar"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Aprovar</paper-button>
-            <such-dropdown-menu id="menuRegister" disabled="{{ !_permissions.update }}" on-value-changed="_registerMenuItemSelected" title="Registar" items='[[ _registerMenuItems ]]'></such-dropdown-menu>
-            <such-dropdown-menu id="menuFunctios" disabled="{{ !_permissions.update }}" on-value-changed="_functionsMenuItemSelected" title="Funções" items='[[ _functionsMenuItems ]]'></such-dropdown-menu>
-
-
-
-            <!--<template is="dom-if" if="{{ _permissions.update }}">-->
-            <!--<paper-button class="tablinks" id="btnLocalMarketValidation" style="width: 200px !important;" on-tap="_validateLocalMarket"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Enviar Mercado Local</paper-button>-->
-            <!--<paper-button class="tablinks" id="btnValidate" on-tap="_validateRequisition"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Validar</paper-button>-->
-            <!--<such-dropdown-menu id="menuRegister" on-value-changed="_registerMenuItemSelected" title="Registar" items='[[ _registerMenuItems ]]'></such-dropdown-menu>-->
-            <!--<such-dropdown-menu id="menuFunctios" on-value-changed="_functionsMenuItemSelected" title="Funções" items='[[ _functionsMenuItems ]]'></such-dropdown-menu>-->
-            <!--</template>-->
             <paper-button class="tablinks" id="btnPrint" on-tap="_printRequisition"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Imprimir</paper-button>
-            <paper-button class="tablinks" id="btnStatOfPlay" on-tap="_redirectToStatOfPlay"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Ponto situação</paper-button>
+            <paper-button class="tablinks" id="btnStatOfPlay" on-tap="_redirectToStatOfPlay" hidden="{{_estadoPendente}}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Ponto situação</paper-button>
             <paper-button class="tablinks" id="btnShowChangeLog" on-tap="_showChangeLog"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Workflow</paper-button>
+            <paper-button class="tablinks" id="btnGoApprove" on-tap="_Approve" hidden="{{ !_goAprove }}"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Aprovar</paper-button>
+
+            <!--<paper-button class="tablinks" id="btnAprovadores" on-tap="_Aprovadores"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Aprovadores</paper-button>-->
+            <button type="button" class="tablinks" id="btnAprovadores" on-click="_Aprovadores"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Aprovadores</button>
         </div>
 
         <div class="row break_frm">
@@ -336,10 +358,6 @@
                         <div class="panel-body">
                             <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
                                 <paper-tab>Geral</paper-tab>
-                                <paper-tab>Detalhe</paper-tab>
-                                <paper-tab>Reparação</paper-tab>
-                                <paper-tab>Recolha</paper-tab>
-                                <paper-tab>Entrega (Fornecedor)</paper-tab>
                                 <template is="dom-if" if="{{ !_isCreate }}">
                                     <paper-tab>Anexos</paper-tab>
                                 </template>
@@ -416,44 +434,16 @@
                                     </div>
 
                                     <div class="row break_clear">
-                                        <div class="col-sm-2 ">
-                                            <vaadin-checkbox id="chkUrgent" checked="{{Requisition.urgent}}" disabled="{{ !_permissions.update }}">Urgente</vaadin-checkbox>
+                                        <div class="col-sm-3 ">
+                                            <vaadin-date-picker label="Data Receção" id="dpReceptionDate" name="dpReceptionDate" value="{{Requisition.receivedDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
                                         </div>
-                                        <div class="col-sm-2 ">
-                                            <vaadin-checkbox id="chkAttachment" checked="{{Requisition.attachment}}" disabled>Anexo(s)</vaadin-checkbox>
+
+                                        <div class="col-sm-3">
+                                            <vaadin-text-field id="txtValorTotalDocComIVA" name="txtValorTotalDocComIVA" label="Valor Total Doc. com IVA" value="{{Requisition.valorTotalDocComIVA}}" disabled></vaadin-text-field>
                                         </div>
-                                        <div class="col-sm-2 ">
-                                            <vaadin-checkbox id="chkImmobilized" checked="{{Requisition.immobilized}}" disabled="{{ !_permissions.update }}">Imobilizado</vaadin-checkbox>
-                                        </div>
-                                        <div class="col-sm-2 ">
-                                            <vaadin-checkbox id="chkexclusive" checked="{{Requisition.exclusive}}" disabled="{{ !_permissions.update }}">Exclusivo</vaadin-checkbox>
-                                        </div>
-                                        <div class="col-sm-2 ">
-                                            <vaadin-checkbox id="chkalreadyPerformed" checked="{{Requisition.alreadyPerformed}}" disabled="{{ !_permissions.update }}">Já Executado</vaadin-checkbox>
-                                        </div>
-                                        <div class="col-sm-2 ">
-                                            <vaadin-checkbox id="chksample" checked="{{Requisition.sample}}" disabled="{{ !_permissions.update }}">Amostra</vaadin-checkbox>
-                                        </div>
-                                        <div class="col-sm-2 ">
-                                            <vaadin-checkbox id="chkequipment" checked="{{Requisition.equipment}}" disabled="{{ !_permissions.update }}">Equipamento</vaadin-checkbox>
-                                        </div>
-                                        <div class="col-sm-2 " hidden>
-                                            <vaadin-checkbox id="chkbuyCash" checked="{{Requisition.buyCash}}" disabled="{{ !_permissions.update }}">Compras a Dinheiro</vaadin-checkbox>
-                                        </div>
-                                        <div class="col-sm-2 ">
-                                            <vaadin-checkbox id="chkstockReplacement" checked="{{Requisition.stockReplacement}}" disabled="{{ !_permissions.update }}">Reposição de Stock</vaadin-checkbox>
-                                        </div>
-                                        <div class="col-sm-2" hidden>
-                                            <vaadin-checkbox id="chkreclamation" checked="{{Requisition.reclamation}}" disabled="{{ !_permissions.update }}">Reclamação</vaadin-checkbox>
-                                        </div>
-                                        <div class="col-sm-2 ">
-                                            <vaadin-checkbox id="chkPricesIncludingVAT" checked="{{Requisition.pricesIncludingVAT}}" disabled="{{ !_permissions.update }}">Preço IVA Incluído</vaadin-checkbox>
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <vaadin-checkbox id="chkInAdvance" checked="{{Requisition.inAdvance}}" disabled="{{ !_permissions.update }}">Adiantamento</vaadin-checkbox>
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <vaadin-checkbox id="chkPedirOrcamento" checked="{{Requisition.pedirOrcamento}}" disabled="{{ !_permissions.update }}">Pedir Orçamento</vaadin-checkbox>
+
+                                        <div class="col-sm-3">
+                                            <vaadin-text-field id="txtStatus" name="txtStatus" label="Estado" value="[[stateDescription]]" disabled></vaadin-text-field>
                                         </div>
                                     </div>
 
@@ -461,177 +451,13 @@
                                         <div class="col-sm-6 ">
                                             <such-textarea rows="5" value="{{Requisition.comments}}" id="Notes" name="Notes" label="Observações" disabled="{{ !_permissions.update }}"> </such-textarea>
                                         </div>
-                                        <div class="col-sm-3 ">
-                                            <vaadin-date-picker label="Data Receção" id="dpReceptionDate" name="dpReceptionDate" value="{{Requisition.receivedDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+
+                                        <div class="col-sm-2 ">
+                                            <vaadin-checkbox id="chkAttachment" checked="{{Requisition.attachment}}" disabled>Anexo(s)</vaadin-checkbox>
                                         </div>
-                                        <div class="col-sm-3">
-                                            <vaadin-text-field id="txtStatus" name="txtStatus" label="Estado" value="[[stateDescription]]" disabled></vaadin-text-field>
-                                        </div>
+
                                         <div class="col-sm-3 ">
                                             <vaadin-text-field id="EmployeeNo" name="EmployeeNo" label="Nº Funcionário" value="{{Requisition.employeeNo}}" hidden disabled></vaadin-text-field>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!--Detalhe-->
-                                <div>
-                                    <div class="row">
-                                        <div class="col-sm-3">
-                                            <vaadin-text-field id="txtResponsibleCreation" name="txtResponsibleCreation" label="Responsável Criação" value="{{Requisition.responsibleCreation}}" disabled></vaadin-text-field>
-                                        </div>
-                                        <div class="col-sm-3">
-                                            <vaadin-text-field id="txtRequisitionDate" name="txtRequisitionDate" label="Data Requisição" value="{{Requisition.requisitionDate}}" disabled></vaadin-text-field>
-                                        </div>
-
-                                        <div class="col-sm-3">
-                                            <vaadin-text-field id="txtResponsibleApproval" name="txtResponsibleApproval" label="Responsável Aprovação" value="{{Requisition.responsibleApproval}}" disabled></vaadin-text-field>
-                                        </div>
-                                        <div class="col-sm-3">
-                                            <label class="label_custom">Data/Hora Aprovação</label>
-                                            <div class="row">
-                                                <div class="col-sm-8" style="padding-right: 5px;">
-                                                    <vaadin-text-field id="txtapprovalDateText" name="txtapprovalDateText" value="{{Requisition.approvalDateText}}" disabled></vaadin-text-field>
-                                                </div>
-                                                <div class="col-sm-4" style="padding-left: 0px">
-                                                    <vaadin-text-field id="txtapprovalDateHour" name="txtapprovalDateHour" value="{{Requisition.approvalDateHour}}" disabled></vaadin-text-field>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-sm-3">
-                                            <vaadin-text-field id="txtResponsibleValidation" name="txtResponsibleValidation" label="Responsável Validação" value="{{Requisition.responsibleValidation}}" disabled></vaadin-text-field>
-                                        </div>
-                                        <div class="col-sm-3">
-                                            <label class="label_custom">Data/Hora Validação</label>
-                                            <div class="row">
-                                                <div class="col-sm-8" style="padding-right: 5px;">
-                                                    <vaadin-text-field id="txtvalidationDateText" name="txtvalidationDateText" value="{{Requisition.validationDateText}}" disabled></vaadin-text-field>
-                                                </div>
-                                                <div class="col-sm-4" style="padding-left: 0px">
-                                                    <vaadin-text-field id="txtvalidationDateHour" name="txtvalidationDateHour" value="{{Requisition.validationDateHour}}" disabled></vaadin-text-field>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-3">
-                                            <vaadin-text-field id="txtResponsibleReception" name="txtResponsibleReception" label="Responsável de Recebimento" value="{{Requisition.responsibleReception}}" disabled></vaadin-text-field>
-                                        </div>
-                                        <div class="col-sm-3">
-                                            <label class="label_custom">Data/Hora de Recebimento</label>
-                                            <div class="row">
-                                                <div class="col-sm-8" style="padding-right: 5px;">
-                                                    <vaadin-text-field id="txtreceivedDate" name="txtreceivedDate" value="{{Requisition.receivedDate}}" disabled></vaadin-text-field>
-                                                </div>
-                                                <div class="col-sm-4" style="padding-left: 0px">
-                                                    <vaadin-text-field id="txtreceivedDateHour" name="txtreceivedDateHour" value="{{Requisition.receivedDateHour}}" disabled></vaadin-text-field>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <div class="row">
-                                                <div class="col-sm-6">
-                                                    <vaadin-text-field id="txtMarketInquiryNo" name="txtMarketInquiryNo" label="Nº Consulta Mercado" value="{{Requisition.marketInquiryNo}}" disabled></vaadin-text-field>
-                                                </div>
-                                                <div class="col-sm-6">
-                                                    <vaadin-text-field id="txtRequisiçãoNutrição" name="txtRequisiçãoNutrição" label="Requisição Nutrição" value="{{Requisition.requestNutrition}}" disabled></vaadin-text-field>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-sm-12">
-                                                    <vaadin-text-field id="txtApprovers" name="txtApprovers" label="Aprovadores" value="{{Requisition.approvers}}" disabled></vaadin-text-field>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-sm-6 ">
-                                            <such-textarea rows="5" value="{{Requisition.rejeicaoMotivo}}" id="txtRejeicaoMotivo" name="txtRejeicaoMotivo" label="Motivo de Rejeição" disabled> </such-textarea>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!--Reparação-->
-                                <div>
-                                    <div class="col-lg-3 alignPoga">
-                                        <vaadin-checkbox id="chkrepairWithWarranty" checked="{{Requisition.repairWithWarranty}}" disabled="{{ !_permissions.update }}">Reparação com Garantia</vaadin-checkbox>
-                                    </div>
-                                    <div class="col-lg-3 alignPoga">
-                                        <vaadin-checkbox id="chkemm" checked="{{Requisition.emm}}" disabled="{{ !_permissions.update }}">EMM</vaadin-checkbox>
-                                    </div>
-                                    <div class="col-md-3 ">
-                                        <vaadin-date-picker label="Data Entrega Armazém" id="DeliveryWarehouseDate" name="DeliveryWarehouseDate" value="{{Requisition.warehouseDeliveryDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
-                                    </div>
-                                </div>
-
-                                <!--Recolha-->
-                                <div>
-                                    <div class="row break_clear">
-                                        <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[CBLocal]]" on-change="_onLocalCollectionChange" id="CollectionLocal" item-value-path="id" item-label-path="value" value="{{Requisition.localCollection}}" label="Local de Recolha" disabled="{{ !_permissions.update }}">
-                                                <template>
-                                                    <table width="180px">
-                                                        <tr>
-                                                            <td width="40%">[[item.id]]</td>
-                                                            <td width="60%"> <b>[[item.value]]</b></td>
-                                                        </tr>
-                                                    </table>
-                                                </template>
-                                            </vaadin-combo-box>
-                                        </div>
-                                        <div class="col-md-3 ">
-                                            <vaadin-text-field id="CollectionAddress" name="CollectionAddress" label="Morada" value="{{Requisition.collectionAddress}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
-                                        </div>
-                                        <div class="col-md-3 ">
-                                            <vaadin-text-field id="CollectionPostalCode" name="CollectionPostalCode" label="Código-Postal" value="{{Requisition.collectionPostalCode}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
-                                        </div>
-                                        <div class="col-md-3 ">
-                                            <vaadin-text-field id="CollectionLocality" name="CollectionLocality" label="Localidade" value="{{Requisition.collectionLocality}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
-                                        </div>
-                                    </div>
-                                    <div class="row break_clear">
-                                        <div class="col-md-3 ">
-                                            <vaadin-text-field id="CollectionContact" name="CollectionContact" label="Contato" value="{{Requisition.collectionContact}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
-                                        </div>
-                                        <div class="col-md-3 ">
-                                            <vaadin-text-field id="CollectionReceptionResponsible" name="CollectionReceptionResponsible" label="Responsável Receção" value="{{Requisition.responsibleReception}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!--Entrega (Fornecedor)-->
-                                <div>
-                                    <div class="row break_clear">
-                                        <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[CBLocal]]" on-change="_onLocalDeliveryChange" id="DeliveryLocal" item-value-path="id" item-label-path="value" value="{{Requisition.localDelivery}}" label="Local de Entrega" disabled="{{ !_permissions.update }}">
-                                                <template>
-                                                    <table width="180px">
-                                                        <tr>
-                                                            <td width="40%">[[item.id]]</td>
-                                                            <td width="60%"> <b>[[item.value]]</b></td>
-                                                        </tr>
-                                                    </table>
-                                                </template>
-                                            </vaadin-combo-box>
-                                        </div>
-                                        <div class="col-md-3 ">
-                                            <vaadin-text-field id="DeliveryAddress" name="DeliveryAddress" label="Morada" value="{{Requisition.deliveryAddress}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
-                                        </div>
-                                        <div class="col-md-3 ">
-                                            <vaadin-text-field id="DeliveryPostalCode" name="DeliveryPostalCode" label="Código-Postal" value="{{Requisition.deliveryPostalCode}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
-                                        </div>
-                                        <div class="col-md-3 ">
-                                            <vaadin-text-field id="DeliveryLocality" name="DeliveryLocality" label="Localidade" value="{{Requisition.localityDelivery}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
-                                        </div>
-                                    </div>
-                                    <div class="row break_clear">
-                                        <div class="col-md-3 ">
-                                            <vaadin-text-field id="ReceptionReceptionResponsible" name="ReceptionReceptionResponsible" label="Responsável Receção" value="{{Requisition.responsibleReceptionReception}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
-                                        </div>
-                                        <div class="col-md-3 ">
-                                            <vaadin-text-field id="InvoiceNo" name="InvoiceNo" label="Nº Fatura" value="{{Requisition.invoiceNo}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                                         </div>
                                     </div>
                                 </div>
@@ -642,8 +468,7 @@
                                         <!--<template is="dom-if" if="{{ _permissions.update }}">-->
                                         <vaadin-upload id="UploadRequest"
                                                        target="/PreRequisicoes/FileUpload/{{_prerequesitionno}}/{{_lineno}}"
-                                                       accept="application/pdf, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.template, image/jpeg, image/png, image/gif"
-                                                       method="POST"
+                                                       accept="application/pdf, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.template, image/jpeg, image/png, image/gif" method="POST"
                                                        headers="{'Accept': 'application/json'}"
                                                        hidden="{{ !_permissions.update }}"
                                                        timeout=15000>
@@ -677,6 +502,7 @@
                                                 <template>
                                                     <center>
                                                         <template is="dom-if" if="{{ _permissions.update }}">
+                                                            <!--<paper-button class="btnRemove" raised on-tap="_deleteFiles">Eliminar</paper-button>-->
                                                             <center>
                                                                 <paper-button class="btnRemove tableBtn" raised on-tap="_deleteFiles" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
                                                             </center>
@@ -700,9 +526,13 @@
                                         <!--<paper-button raised id="btnArchive" class="btnSave" on-tap="_archive"><i class="fa fa-file-archive-o" aria-hidden="true"></i>&nbsp; Arquivar</paper-button>-->
                                     </template>
                                 </template>
+
                                 <template is="dom-if" if="{{ _permissions.delete }}">
                                     <paper-button raised id="btnDelete" class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
                                 </template>
+
+                                <paper-button raised id="btnDelete" class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+
                                 <template is="dom-if" if="{{ !isReadOnly() }}">
                                     <paper-button raised id="btnCreate" class="btnSave" on-tap="_todasLinhasNotaEncomenda" title="Marcar todas as Linhas para Nota de Encomenda"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Linhas Enc.</paper-button>
                                 </template>
@@ -730,15 +560,15 @@
                                                         text-path="code"
                                                         value-path="code"
                                                         fields='[{"field":"code", "name":"Cód. Produto"}, {"field":"name", "name":"Descrição"}, {"field":"name2", "name":"Descrição 2"}, {"field":"measureUnit", "name":"Unidade de Medida"}, {"field":"itemCategoryCode", "name":"Cód. Categoria"}, {"field":"productGroupCode", "name":"Cód. Grupo"}]'
-                                                        disabled="{{ !_permissions.update }}"
-                                                        on-value-changed="_onProductChanged">
+                                                        disabled="{{ !_permissions.update }}">
+                                            <!--on-value-changed="_onProductChanged">-->
                                         </such-selectbox>
                                     </div>
                                     <div class="col-lg-3">
-                                        <vaadin-text-field id="txtProductDesciption" name="txtProductDesciption" label="Descrição" value="" disabled maxlength="100"></vaadin-text-field>
+                                        <vaadin-text-field id="txtProductDesciption" name="txtProductDesciption" label="Descrição" value="" disabled></vaadin-text-field>
                                     </div>
                                     <div class="col-lg-3">
-                                        <vaadin-text-field id="txtProductDesciption2" name="txtProductDesciption2" label="Descrição 2" value="" maxlength="50"></vaadin-text-field>
+                                        <vaadin-text-field id="txtProductDesciption2" name="txtProductDesciption2" label="Descrição 2" value=""></vaadin-text-field>
                                     </div>
                                 </div>
                                 <div class="row break_clear" hidden="{{_isArchived}}">
@@ -956,7 +786,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-combo-box items="[[Products]]" id="_CLGridSupplierProductCode" name="_CLGridSupplierProductCode" on-change="_onProductInGridChanged" item-value-path="code" item-label-path="code" value="{{item.code}}" disabled="{{ !_permissions.update }}">
+                                            <vaadin-combo-box items="[[Products]]" id="_CLGridSupplierProductCode" name="_CLGridSupplierProductCode" on-change="_onProductInGridChanged" item-value-path="code" item-label-path="code" value="{{item.code}}" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLines">
                                                 <template>
                                                     <table width="180px">
                                                         <tr>
@@ -995,7 +825,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.description2}}" id="_CLGridDescription2" name="_CLGridDescription2" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLines" maxlength="50"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{item.description2}}" id="_CLGridDescription2" name="_CLGridDescription2" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLines"> </vaadin-text-field>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.description2}}
@@ -1038,6 +868,21 @@
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.unitCost}}
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="unitCostWithIVA">Custo Unitário com IVA</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="unitCostWithIVA"></vaadin-grid-filter>
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-text-field value="{{item.unitCostWithIVA}}" id="_CLGridUnitCostWithIVA" name="_CLGridUnitCostWithIVA" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals" on-blur="_updateRequisitionLines"> </vaadin-text-field>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            {{item.unitCostWithIVA}}
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
@@ -1200,7 +1045,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-checkbox id="chkCreateMarketSearch" checked="{{item.createMarketSearch}}" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLines"></vaadin-checkbox>
+                                            <vaadin-checkbox id="chkCreateMarketSearch" checked="{{item.createMarketSearch}}" disabled="{{ !_permissions.update }} on-blur=" _updateRequisitionLines""></vaadin-checkbox>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             <vaadin-checkbox checked="{{item.createMarketSearch}}" disabled></vaadin-checkbox>
@@ -1570,12 +1415,10 @@
                                 <template is="dom-if" if="{{ !isReadOnly() }}">
                                     <template is="dom-if" if="{{ _permissions.delete }}">
                                         <vaadin-grid-column width="100px" resizable hidden="{{_isValidated}}">
-
-                                            <!--hidden="{{_isArchived}}"-->
                                             <template class="header">
                                             </template>
                                             <template>
-                                                <paper-button id="btnEliminarLinha" class="btnRemove tableBtn" on-tap="_deleteRequisitionLine" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                                <paper-button class="btnRemove tableBtn" on-tap="_deleteRequisitionLine" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
                                             </template>
                                         </vaadin-grid-column>
                                     </template>
@@ -1584,7 +1427,8 @@
                         </div>
 
                         <div class="marginSpace">
-                            <paper-button raised id="btnSumLines" class="btnSave" on-tap="_sumLines"><i class="fa fa-calculator" aria-hidden="true"></i>&nbsp; Total</paper-button>
+                            <!--<paper-button raised id="btnSumLines" class="btnSave" on-tap="_sumLines"><i class="fa fa-calculator" aria-hidden="true"></i>&nbsp; Total</paper-button>-->
+                            <button type="button" raised id="btnSumLines" class="btnSave" on-click="_sumLines"><i class="fa fa-calculator" aria-hidden="true"></i>&nbsp; Total</button>
                         </div>
 
                         <!--<div class="marginSpace">
@@ -1615,9 +1459,10 @@
         </paper-toast>
 
         <!-- Paper Dialog Total Linhas-->
-        <paper-dialog id="dialogTotal" style="height:120px; width:300px">
+        <paper-dialog id="dialogTotal" style="height:180px; width:300px">
             <div>
                 <h2>Valor Total: <b>{{_TotalLine}} €</b></h2>
+                <h2>Valor Total com IVA: <b>{{_TotalWithIVALine}} €</b></h2>
             </div>
             <div class="buttons">
                 <paper-button raised class="btnEdit" dialog-dismiss>Fechar</paper-button>
@@ -1662,11 +1507,30 @@
                 <paper-button class="btnRemove" id="btnCloseChangeLogDlg" on-tap="_closeChangeLogDlg"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
             </div>
         </paper-dialog>
+
+        <paper-dialog id="dlgAprovadores" class="dialgoBox" modal>
+            <vaadin-grid id="grdChangeLog" aria-label="ChangeLog" items="[[Aprovadores]]" class="grid">
+                <vaadin-grid-column width="100px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="utilizador">Aprovadores</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="utilizador" />
+                    </template>
+                    <template>
+                        {{item.utilizador}}
+                    </template>
+                </vaadin-grid-column>
+            </vaadin-grid>
+            <div class="buttons">
+                <!--<paper-button class="btnRemove" id="btnCloseAprovadores" on-tap="_closeAprovadoresdlg"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>-->
+                <button type="button" class="btnRemove" id="btnCloseAprovadores" on-click="_closeAprovadoresdlg"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</button>
+            </div>
+        </paper-dialog>
+
     </template>
     <script>
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
-                is: 'x-requisitiondetails',
+                is: 'x-minharequisitiondetails',
                 properties: {
                     selected: {
                         type: Number,
@@ -1689,6 +1553,11 @@
                         value: ""
                     },
                     _requisitionstatus: {
+                        type: Number,
+                        notify: true,
+                        value: 0
+                    },
+                    _sentReqToAprove: {
                         type: Number,
                         notify: true,
                         value: 0
@@ -1732,6 +1601,18 @@
                         value: false
                     },
                     _isValidated: {
+                        type: Boolean,
+                        value: false
+                    },
+                    _goAprove: {
+                        type: Boolean,
+                        value: false
+                    },
+                    _estadoPendente: {
+                        type: Boolean,
+                        value: false
+                    },
+                    _goAprovadores: {
                         type: Boolean,
                         value: false
                     },
@@ -1791,7 +1672,7 @@
                             });
                             break;
                         case 5: //"Fechar Requisição"
-                            this._RegistCloseRequest();
+                            //this._RegistCloseRequest();
                             break;
                     }
 
@@ -1813,7 +1694,7 @@
                         case 3://"Criar Guia Transporte"
                             this._createTransferShipment();
                             break;
-                        case 4://"Enviar Pré-Encomenda"
+                        case 4://"Enviar Pré- Encomenda"
                             this._sendPrePurchase();
                             break;
                         case 5://"Enviar Mercado Local"
@@ -1823,29 +1704,27 @@
                 },
                 ready: function () {
                     var _self = this;
-                    if (this._requisitionstatus === 0) { //Pendente
-                        $(_self.$.btnAprovar).removeClass('hidden');
-                    } else {
-                        $(_self.$.btnAprovar).addClass('hidden');
-                    }
-                    if (this._requisitionstatus === 3) { //Validado - GESTÃO REQUISIÇÕES
-                        $(_self.$.btnLocalMarketValidation).addClass('hidden');
-                        $(_self.$.btnValidate).addClass('hidden');
-                        $(_self.$.btnAnularAprovacao).addClass('hidden');
-                        $(_self.$.menuRegister).removeClass('hidden');
-                        $(_self.$.menuFunctios).removeClass('hidden');
 
-                        //$(_self.$.divLocalMarketRegions).removeClass('hidden');
-                    }
-                    if (this._requisitionstatus === 4) { //Aprovado - VALIDAÇÃO REQUISIÇÕES
+                    //if (this._sentReqToAprove === 0) { //Não Aprovação
+                    //    $(_self.$.btnToApproved).addClass('hidden');
+                    //} else {
+                    //    $(_self.$.btnToApproved).removeClass('hidden');
+                    //}
+
+                    //if (this._requisitionstatus === 3) { //Validado - GESTÃO REQUISIÇÕES
                         //$(_self.$.btnLocalMarketValidation).addClass('hidden');
-                        $(_self.$.btnValidate).removeClass('hidden');
-                        $(_self.$.btnAnularAprovacao).removeClass('hidden');
-                        $(_self.$.menuRegister).addClass('hidden');
-                        $(_self.$.menuFunctios).addClass('hidden');
+                        //$(_self.$.btnValidate).addClass('hidden');
+                        //$(_self.$.btnAnularAprovacao).addClass('hidden');
+                        //$(_self.$.menuRegister).removeClass('hidden');
+                        //$(_self.$.menuFunctios).removeClass('hidden');
+                    //}
 
-                        //$(_self.$.divLocalMarketRegions).addClass('hidden');
-                    }
+                    //if (this._requisitionstatus === 4) { //Aprovado - VALIDAÇÃO REQUISIÇÕES
+                        //$(_self.$.btnValidate).removeClass('hidden');
+                        //$(_self.$.btnAnularAprovacao).removeClass('hidden');
+                        //$(_self.$.menuRegister).addClass('hidden');
+                        //$(_self.$.menuFunctios).addClass('hidden');
+                    //}
 
                     if (this._isCreate == false && this.$.UploadRequest != null) {
                         this.$.UploadRequest.addEventListener('upload-response', function (e) {
@@ -2013,10 +1892,6 @@
                 _updateRequisitionLines: function () {
                     this._sendReqRequest("/GestaoRequisicoes/UpdateRequisitionLines", this.Requisition);
                 },
-                _updateRequisitionLinesQtRequerer: function () {
-                    this._sendReqRequest("/GestaoRequisicoes/UpdateRequisitionLinesQtRequerer", this.Requisition);
-                },
-
                 _validateReqHeaderInput: function () {
                     if (true) {
                         return true;
@@ -2203,8 +2078,6 @@
                             this.$.grdRequisitionLines.clearCache();
                         }
                     }
-
-                    this._sendReqRequest("/GestaoRequisicoes/UpdateRequisitionLines", this.Requisition);
                 },
                 _createRequisitionLine: function () {
                     if (this._validateUserInputForLine()) {
@@ -2317,6 +2190,7 @@
                     //Approved; Archived; Available; Pending; Received; Rejected; Treated; Validated
                     if (state == this._requisitionstatesenum.Pending | state == this._requisitionstatesenum.Archived) {
                         this.$.requesitionType.disabled = true;
+                        this.$.CBHeaderProjects.disabled = true;
 
                         var elementsToIgnore = ["btnGoBack", "btnShowChangeLog", "btnCloseChangeLogDlg", "btnCloseMultipleToastMessageDlg", "btnClose", "btnPrint", "btnStatOfPlay"];
 
@@ -2358,6 +2232,13 @@
                     }
                 },
                 _reqDataSourceResponse: function (data) {
+                    var _self = this;
+
+                    debugger
+                    if (this.Requisition.state != 0) {
+                        $(_self.$.btnDelete).addClass('hidden');
+                    }
+
                     if (data.detail.status === 200) {
                         if (data.detail.url.indexOf("Get") !== -1) {
                             if (this.Requisition != null) {
@@ -2418,20 +2299,29 @@
                         this._openToastError("Ocorreu um erro desconhecido.")
                     }
 
-                    if (this.$.Vehicle.value != "") {
-                        this.$.CBHeaderProjects.disabled = true;
-                        //this.$.CBLineProjects.disabled = true;
-                    }
-                    else {
-                        this.$.CBHeaderProjects.disabled = false;
-                        //this.$.CBLineProjects.disabled = false;
+                    if (this.$.txtStatus.value != "") {
+                        if (this.$.Vehicle.value == "" & this.$.txtStatus.value != "Pendente") {
+                            this.$.CBHeaderProjects.disabled = false;
+                            //this.$.CBLineProjects.disabled = false;
+                        }
+                        else {
+                            this.$.CBHeaderProjects.disabled = true;
+                            //this.$.CBLineProjects.disabled = true;
+                        }
                     }
 
                     if (this.Requisition.state == 0 || this.Requisition.state == 3 || this.Requisition.state == 6 || this.Requisition.state == 7) {
                         this._isValidated = true;
                     }
 
+                    this._goAprove = this.Requisition.goAprove;
+
+                    this._estadoPendente = false;
+                    if (this.Requisition.state == 0) {
+                        this._estadoPendente = true;
+                    }
                 },
+
                 _deleteReqLineResponse: function (e) {
                     if (this.DelReqLineResponse.eReasonCode == "1") {
                         this._openToast(this.DelReqLineResponse.eMessage);
@@ -2576,18 +2466,21 @@
                     }
                 },
                 _onProductChanged: function (e) {
-                    var item = this.Products.find(x => x.code == e.detail.value);
-                    if (item != null) {
-                        this.$.txtProductDesciption.value = item.name;
-                        this.$.txtProductDesciption2.value = item.name2;
-                        this.$.CBUnitsOfMmeasure.value = item.measureUnit;
-                        this.$.unitCostId.value = item.unitCost;
-                    }
-                    else {
-                        this.$.txtProductDesciption.value = "";
-                        this.$.txtProductDesciption2.value = "";
-                        this.$.CBUnitsOfMmeasure.value = "";
-                        this.$.unitCostId.value = "";
+                    if (e != "") {
+                        var item = this.Products.find(x => x.code == e.detail.value);
+                        //var item = this.Products.find(x => x.code == e);
+                        if (item != null) {
+                            this.$.txtProductDesciption.value = item.name;
+                            this.$.txtProductDesciption2.value = item.name2;
+                            this.$.CBUnitsOfMmeasure.value = item.measureUnit;
+                            this.$.unitCostId.value = item.unitCost;
+                        }
+                        else {
+                            this.$.txtProductDesciption.value = "";
+                            this.$.txtProductDesciption2.value = "";
+                            this.$.CBUnitsOfMmeasure.value = "";
+                            this.$.unitCostId.value = "";
+                        }
                     }
                 },
                 _RespChange: function (e) {
@@ -2655,7 +2548,7 @@
                     window.history.back();
                 },
                 _showChangeLog: function () {
-                    this.$.dlgChangeLog.open();;
+                    this.$.dlgChangeLog.open();
                 },
                 _closeChangeLogDlg: function () {
                     this.$.dlgChangeLog.close();
@@ -2709,24 +2602,25 @@
                 _GetNoProjetoCabecalho: function (e) {
                     var matricula = this.$.Vehicle.value;
 
-                    if (matricula != "") {
-                        this.$.CBHeaderProjects.disabled = true;
+                    if (this.$.txtStatus.value != "") {
+                        if (matricula == "" & this.$.txtStatus.value != "Pendente") {
+                            this.$.CBHeaderProjects.disabled = false;
+                        }
+                        else {
+                            this.$.CBHeaderProjects.disabled = true;
 
-                        this.$.page_GetProjetoNoCabecalho_ajax.body = JSON.stringify(matricula);
-                        this.$.page_GetProjetoNoCabecalho_ajax.generateRequest();
+                            this.$.page_GetProjetoNoCabecalho_ajax.body = JSON.stringify(matricula);
+                            this.$.page_GetProjetoNoCabecalho_ajax.generateRequest();
+                        }
                     }
-                    else {
-                        this.$.CBHeaderProjects.disabled = false;
-                    }
-
                 },
                 _GetProjetoNoCabecalhoResponse: function (e) {
-                    if (this.ProjetoNo != "") {
+                    if (this.ProjetoNo == "") {
                         this.$.CBHeaderProjects.value = this.ProjetoNo;
+                        this.$.CBHeaderProjects.valueText = this.ProjetoNo;
                     }
                     else {
                         this.$.CBHeaderProjects.value = this.ProjetoNo;
-                        this.$.CBHeaderProjects.valueText = this.ProjetoNo;
                     }
                 },
 
@@ -2753,13 +2647,38 @@
                     }
                 },
 
+                _ToApproved: function () {
+                    this.$.SendReq_databound.body = JSON.stringify({ requisitionNo: this.$.requisitionNo.value });
+                    this.$.SendReq_databound.generateRequest();
+                },
+                _SendReqResponse: function (e) {
+                    if (e.detail.status === 200) {
+                        if (this.actionResult.eReasonCode === 1) {
+                            this._openToast(this.actionResult.eMessage);
+                        } else {
+                            this._openToastError(this.actionResult.eMessage);
+                        }
+                    } else {
+                        this._openToastError("Occorreu um erro ao atualizar.");
+                    }
+                },
+
                 _Approve: function (e) {
+                    debugger;
                     if (e != null) {
-                        this.$.action_databound.body = JSON.stringify({ movementNo: e.model.item.movementNo, status: 1, rejectReason: "" });
+                        this.$.aprovarRequisicao_databound.body = JSON.stringify({ requisitionNo: this.$.requisitionNo.value });
+                        this.$.aprovarRequisicao_databound.generateRequest();
+                    }
+                },
+                _aprovarRequisicaoResponseProcessor: function () {
+                    debugger;
+                    if (this.aprovarReqMov > 0) {
+                        this.$.action_databound.body = JSON.stringify({ movementNo: this.aprovarReqMov, status: 1, rejectReason: "" });
                         this.$.action_databound.generateRequest();
                     }
                 },
                 _actionResponseProcessor: function (e) {
+                    debugger;
                     var self = this;
                     if (this.actionResult.eReasonCode == 100) {
                         this._openToast(this.actionResult.eMessage);
@@ -2770,12 +2689,26 @@
                     }
                 },
 
+                _Aprovadores: function () {
+                    this.$.dlg_GetAprovadores_ajax.body = JSON.stringify(this._requisitionid);
+                    this.$.dlg_GetAprovadores_ajax.generateRequest();
+
+                    this.$.dlgAprovadores.open();
+                },
+                _closeAprovadoresdlg: function () {
+                    this.$.dlgAprovadores.close();
+                },
+
                 _sumLines: function () {
                     var count = 0;
+                    var countWithIVA = 0;
                     if (this.Requisition.lines != null) {
                         for (var i = 0; i < this.Requisition.lines.length; i++) {
                             count += (this.Requisition.lines[i].quantityToRequire * this.Requisition.lines[i].unitCost);
-                            this._TotalLine = count;
+                            countWithIVA += (this.Requisition.lines[i].quantityToRequire * this.Requisition.lines[i].unitCostWithIVA);
+
+                            this._TotalLine = count.toFixed(4);
+                            this._TotalWithIVALine = countWithIVA.toFixed(4);
                             this.$.dialogTotal.open();
                         }
                     } else {

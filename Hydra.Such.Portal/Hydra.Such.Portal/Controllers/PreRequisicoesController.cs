@@ -168,7 +168,9 @@ namespace Hydra.Such.Portal.Controllers
 
             if (!string.IsNullOrEmpty(Fornecedor) && !string.IsNullOrEmpty(GrupoIVA))
             {
-                IVA = DBNAV2017VATPostingSetup.GetIVA(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, Fornecedor, GrupoIVA);
+                string GrupoFornecedor = DBNAV2017Supplier.GetAll(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, Fornecedor).FirstOrDefault().VATBusinessPostingGroup;
+
+                IVA = DBNAV2017VATPostingSetup.GetIVA(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, GrupoFornecedor, GrupoIVA);
             }
 
             return Json(IVA);
@@ -522,43 +524,46 @@ namespace Hydra.Such.Portal.Controllers
                 if (linha != null && !string.IsNullOrEmpty(linha.PreRequisitionLineNo) && linha.LineNo > 0)
                 {
                     LinhasPréRequisição LinhaOriginal = DBPreRequesitionLines.GetById(linha.PreRequisitionLineNo, linha.LineNo);
-                    LinhasPréRequisição LinhaDuplicada = new LinhasPréRequisição();
-
-                    LinhaDuplicada.NºPréRequisição = LinhaOriginal.NºPréRequisição;
-                    LinhaDuplicada.Tipo = LinhaOriginal.Tipo;
-                    LinhaDuplicada.Código = LinhaOriginal.Código;
-                    LinhaDuplicada.Descrição = LinhaOriginal.Descrição;
-                    LinhaDuplicada.CódigoLocalização = LinhaOriginal.CódigoLocalização;
-                    LinhaDuplicada.CódigoUnidadeMedida = LinhaOriginal.CódigoUnidadeMedida;
-                    LinhaDuplicada.QuantidadeARequerer = LinhaOriginal.QuantidadeARequerer;
-                    LinhaDuplicada.QuantidadeInicial = LinhaOriginal.QuantidadeInicial;
-                    LinhaDuplicada.CódigoRegião = LinhaOriginal.CódigoRegião;
-                    LinhaDuplicada.CódigoÁreaFuncional = LinhaOriginal.CódigoÁreaFuncional;
-                    LinhaDuplicada.CódigoCentroResponsabilidade = LinhaOriginal.CódigoCentroResponsabilidade;
-                    LinhaDuplicada.NºProjeto = LinhaOriginal.NºProjeto;
-                    LinhaDuplicada.DataHoraCriação = DateTime.Now;
-                    LinhaDuplicada.UtilizadorCriação = User.Identity.Name;
-                    LinhaDuplicada.DataHoraModificação = (DateTime?)null;
-                    LinhaDuplicada.UtilizadorModificação = "";
-                    LinhaDuplicada.Descrição2 = LinhaOriginal.Descrição2;
-                    LinhaDuplicada.QtdPorUnidadeMedida = LinhaOriginal.QtdPorUnidadeMedida;
-                    LinhaDuplicada.QuantidadeRequerida = LinhaOriginal.QuantidadeRequerida;
-                    LinhaDuplicada.QuantidadePendente = LinhaOriginal.QuantidadePendente;
-                    LinhaDuplicada.CustoUnitário = LinhaOriginal.CustoUnitário;
-                    LinhaDuplicada.PreçoUnitárioVenda = LinhaOriginal.PreçoUnitárioVenda;
-                    LinhaDuplicada.ValorOrçamento = LinhaOriginal.ValorOrçamento;
-                    LinhaDuplicada.DataReceçãoEsperada = LinhaOriginal.DataReceçãoEsperada;
-                    LinhaDuplicada.Faturável = LinhaOriginal.Faturável;
-                    LinhaDuplicada.NºLinhaOrdemManutenção = LinhaOriginal.NºLinhaOrdemManutenção;
-                    LinhaDuplicada.NºFuncionário = LinhaOriginal.NºFuncionário;
-                    LinhaDuplicada.Viatura = LinhaOriginal.Viatura;
-                    LinhaDuplicada.NºFornecedor = LinhaOriginal.NºFornecedor;
-                    LinhaDuplicada.CódigoProdutoFornecedor = LinhaOriginal.CódigoProdutoFornecedor;
-                    LinhaDuplicada.UnidadeProdutivaNutrição = LinhaOriginal.UnidadeProdutivaNutrição;
-                    LinhaDuplicada.NºCliente = LinhaOriginal.NºCliente;
-                    LinhaDuplicada.NºEncomendaAberto = LinhaOriginal.NºEncomendaAberto;
-                    LinhaDuplicada.NºLinhaEncomendaAberto = LinhaOriginal.NºLinhaEncomendaAberto;
-                    LinhaDuplicada.LocalCompraDireta = LinhaOriginal.LocalCompraDireta;
+                    LinhasPréRequisição LinhaDuplicada = new LinhasPréRequisição
+                    {
+                        NºPréRequisição = LinhaOriginal.NºPréRequisição,
+                        Tipo = LinhaOriginal.Tipo,
+                        Código = LinhaOriginal.Código,
+                        Descrição = LinhaOriginal.Descrição,
+                        CódigoLocalização = LinhaOriginal.CódigoLocalização,
+                        CódigoUnidadeMedida = LinhaOriginal.CódigoUnidadeMedida,
+                        QuantidadeARequerer = LinhaOriginal.QuantidadeARequerer,
+                        QuantidadeInicial = LinhaOriginal.QuantidadeInicial,
+                        CódigoRegião = LinhaOriginal.CódigoRegião,
+                        CódigoÁreaFuncional = LinhaOriginal.CódigoÁreaFuncional,
+                        CódigoCentroResponsabilidade = LinhaOriginal.CódigoCentroResponsabilidade,
+                        NºProjeto = LinhaOriginal.NºProjeto,
+                        DataHoraCriação = DateTime.Now,
+                        UtilizadorCriação = User.Identity.Name,
+                        DataHoraModificação = (DateTime?)null,
+                        UtilizadorModificação = "",
+                        Descrição2 = LinhaOriginal.Descrição2,
+                        QtdPorUnidadeMedida = LinhaOriginal.QtdPorUnidadeMedida,
+                        QuantidadeRequerida = LinhaOriginal.QuantidadeRequerida,
+                        QuantidadePendente = LinhaOriginal.QuantidadePendente,
+                        CustoUnitário = LinhaOriginal.CustoUnitário,
+                        PreçoUnitárioVenda = LinhaOriginal.PreçoUnitárioVenda,
+                        ValorOrçamento = LinhaOriginal.ValorOrçamento,
+                        DataReceçãoEsperada = LinhaOriginal.DataReceçãoEsperada,
+                        Faturável = LinhaOriginal.Faturável,
+                        NºLinhaOrdemManutenção = LinhaOriginal.NºLinhaOrdemManutenção,
+                        NºFuncionário = LinhaOriginal.NºFuncionário,
+                        Viatura = LinhaOriginal.Viatura,
+                        NºFornecedor = LinhaOriginal.NºFornecedor,
+                        CódigoProdutoFornecedor = LinhaOriginal.CódigoProdutoFornecedor,
+                        UnidadeProdutivaNutrição = LinhaOriginal.UnidadeProdutivaNutrição,
+                        NºCliente = LinhaOriginal.NºCliente,
+                        NºEncomendaAberto = LinhaOriginal.NºEncomendaAberto,
+                        NºLinhaEncomendaAberto = LinhaOriginal.NºLinhaEncomendaAberto,
+                        LocalCompraDireta = LinhaOriginal.LocalCompraDireta,
+                        CustoUnitarioComIVA = LinhaOriginal.CustoUnitarioComIVA,
+                        GrupoRegistoIVAProduto = LinhaOriginal.GrupoRegistoIVAProduto
+                    };
 
                     if (DBPreRequesitionLines.Create(LinhaDuplicada) != null)
                     {
@@ -788,24 +793,37 @@ namespace Hydra.Such.Portal.Controllers
                 //Cria a nova Pré-Requisição
                 PréRequisição createNew = new PréRequisição
                 {
-                    CódigoCentroResponsabilidade = CU.CentroRespPorDefeito,
-                    CódigoRegião = CU.RegiãoPorDefeito,
-                    CódigoÁreaFuncional = CU.AreaPorDefeito,
                     NºPréRequisição = User.Identity.Name,
                     TipoPreReq = TipoPreReq,
                     Área = AreaNo,
+                    CódigoRegião = CU.RegiãoPorDefeito,
+                    CódigoÁreaFuncional = CU.AreaPorDefeito,
+                    CódigoCentroResponsabilidade = CU.CentroRespPorDefeito,
+                    Urgente = false,
+                    Amostra = false,
+                    Anexo = false,
+                    Imobilizado = false,
+                    CompraADinheiro = false,
+                    ModeloDePréRequisição = false,
+                    DataHoraCriação = DateTime.Now,
                     UtilizadorCriação = User.Identity.Name,
-                    DataHoraCriação = DateTime.Now
+                    Exclusivo = false,
+                    JáExecutado = false,
+                    Equipamento = false,
+                    ReposiçãoDeStock = false,
+                    Reclamação = false,
+                    CabimentoOrçamental = false,
+                    RequisiçãoNutrição = false,
+                    RequisiçãoDetergentes = false,
+                    MercadoLocal = false,
+                    ReparaçãoComGarantia = false,
+                    Emm = false,
+                    PedirOrcamento = false
                 };
                 DBPreRequesition.Create(createNew);
 
-                PreRequesitionsViewModel reqID = new PreRequesitionsViewModel
-                {
-                    PreRequesitionsNo = createNew.NºPréRequisição,
-                    RegionCode = createNew.CódigoRegião,
-                    FunctionalAreaCode = createNew.CódigoÁreaFuncional,
-                    ResponsabilityCenterCode = createNew.CódigoCentroResponsabilidade
-                };
+                PreRequesitionsViewModel reqID = DBPreRequesition.ParseToViewModel(createNew);
+
                 return Json(reqID);
             }
         }
@@ -908,7 +926,7 @@ namespace Hydra.Such.Portal.Controllers
                             PreRequisicaoDB.DataHoraCriação = data.CreateDateTime;
                             PreRequisicaoDB.UtilizadorCriação = data.CreateUser;
                             PreRequisicaoDB.DataHoraModificação = data.UpdateDateTime;
-                            PreRequisicaoDB.UtilizadorModificação = data.UpdateUser;
+                            PreRequisicaoDB.UtilizadorModificação = User.Identity.Name;
                             PreRequisicaoDB.Exclusivo = data.Exclusive;
                             PreRequisicaoDB.JáExecutado = data.AlreadyExecuted;
                             PreRequisicaoDB.Equipamento = data.Equipment;
