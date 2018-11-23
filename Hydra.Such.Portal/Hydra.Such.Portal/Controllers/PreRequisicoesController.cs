@@ -48,8 +48,10 @@ namespace Hydra.Such.Portal.Controllers
             if (UPerm != null && UPerm.Read.Value)
             {
                 //ViewBag.UploadURL = _config.FileUploadFolder;
-                ViewBag.UploadURL = "E:\\Data\\eSUCH\\Requisicoes\\";
-                //ViewBag.UploadURL = "C:\\Data\\eSUCH\\Requisicoes\\";
+                if (_config.Conn == "eSUCH_Prod" || _config.Conn == "PlataformaOperacionalSUCH_TST")
+                    ViewBag.UploadURL = "E:\\Data\\eSUCH\\Requisicoes\\";
+                else
+                    ViewBag.UploadURL = "C:\\Data\\eSUCH\\Requisicoes\\";
                 ViewBag.Area = 1;
                 ViewBag.PreRequesitionNo = User.Identity.Name;
                 ViewBag.UPermissions = UPerm;
@@ -67,8 +69,10 @@ namespace Hydra.Such.Portal.Controllers
             if (UPerm != null && UPerm.Read.Value)
             {
                 //ViewBag.UploadURL = _config.FileUploadFolder;
-                ViewBag.UploadURL = "E:\\Data\\eSUCH\\Requisicoes\\";
-                //ViewBag.UploadURL = "C:\\Data\\eSUCH\\Requisicoes\\";
+                if (_config.Conn == "eSUCH_Prod" || _config.Conn == "PlataformaOperacionalSUCH_TST")
+                    ViewBag.UploadURL = "E:\\Data\\eSUCH\\Requisicoes\\";
+                else
+                    ViewBag.UploadURL = "C:\\Data\\eSUCH\\Requisicoes\\";
                 ViewBag.Area = 1;
                 ViewBag.PreRequesitionNo = User.Identity.Name;
                 ViewBag.UPermissions = UPerm;
@@ -316,11 +320,12 @@ namespace Hydra.Such.Portal.Controllers
                 if (data.PreRequesitionsNo != "")
                 {
                     PréRequisição PreRequisition = DBPreRequesition.GetByNo(data.PreRequesitionsNo);
-                    result = DBPreRequesition.ParseToViewModel(PreRequisition);
-
+                    if (PreRequisition.NºProjeto != "")
+                    {
+                        result = DBPreRequesition.ParseToViewModel(PreRequisition);
+                        return Json(result);
+                    }
                 }
-                return Json(result);
-
             }
             return Json(false);
         }
@@ -779,8 +784,10 @@ namespace Hydra.Such.Portal.Controllers
                     foreach (var Anexo in ListAnexos)
                     {
                         //System.IO.File.Delete(_config.FileUploadFolder + Anexo.UrlAnexo);
-                        System.IO.File.Delete("E:\\Data\\eSUCH\\Requisicoes\\" + Anexo.UrlAnexo);
-                        //System.IO.File.Delete("C:\\Data\\eSUCH\\Requisicoes\\" + Anexo.UrlAnexo);
+                        if (_config.Conn == "eSUCH_Prod" || _config.Conn == "PlataformaOperacionalSUCH_TST")
+                            System.IO.File.Delete("E:\\Data\\eSUCH\\Requisicoes\\" + Anexo.UrlAnexo);
+                        else
+                            System.IO.File.Delete("C:\\Data\\eSUCH\\Requisicoes\\" + Anexo.UrlAnexo);
                         DBAttachments.Delete(Anexo);
                     }
                 }
@@ -895,7 +902,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 if (data != null)
                 {
-                    if (data.PreRequesitionsNo != null)
+                    if (data.PreRequesitionsNo != null && data.ProjectNo != null)
                     {
                         bool Anexos = false;
                         if (DBAttachments.GetById(User.Identity.Name).Count() > 0)
@@ -1010,8 +1017,10 @@ namespace Hydra.Such.Portal.Controllers
                         if (Anexo != null)
                         {
                             //System.IO.File.Delete(_config.FileUploadFolder + Anexo.UrlAnexo);
-                            System.IO.File.Delete("E:\\Data\\eSUCH\\Requisicoes\\" + Anexo.UrlAnexo);
-                            //System.IO.File.Delete("C:\\Data\\eSUCH\\Requisicoes\\" + Anexo.UrlAnexo);
+                            if (_config.Conn == "eSUCH_Prod" || _config.Conn == "PlataformaOperacionalSUCH_TST")
+                                System.IO.File.Delete("E:\\Data\\eSUCH\\Requisicoes\\" + Anexo.UrlAnexo);
+                            else
+                                System.IO.File.Delete("C:\\Data\\eSUCH\\Requisicoes\\" + Anexo.UrlAnexo);
                             
                             DBAttachments.Delete(Anexo);
                         }
@@ -1913,8 +1922,10 @@ namespace Hydra.Such.Portal.Controllers
                                 try
                                 {
                                     //System.IO.File.Copy(_config.FileUploadFolder + FileName, _config.FileUploadFolder + NewFileName);
-                                    System.IO.File.Copy("E:\\Data\\eSUCH\\Requisicoes\\" + FileName, "E:\\Data\\eSUCH\\Requisicoes\\" + NewFileName);
-                                    //System.IO.File.Copy("C:\\Data\\eSUCH\\Requisicoes\\" + FileName, "C:\\Data\\eSUCH\\Requisicoes\\" + NewFileName);
+                                    if (_config.Conn == "eSUCH_Prod" || _config.Conn == "PlataformaOperacionalSUCH_TST")
+                                        System.IO.File.Copy("E:\\Data\\eSUCH\\Requisicoes\\" + FileName, "E:\\Data\\eSUCH\\Requisicoes\\" + NewFileName);
+                                    else
+                                        System.IO.File.Copy("C:\\Data\\eSUCH\\Requisicoes\\" + FileName, "C:\\Data\\eSUCH\\Requisicoes\\" + NewFileName);
                                 }
                                 catch (Exception ex)
                                 {
@@ -1930,8 +1941,10 @@ namespace Hydra.Such.Portal.Controllers
                                 if (newFile != null)
                                 {
                                     //System.IO.File.Delete(_config.FileUploadFolder + file.UrlAnexo);
-                                    System.IO.File.Delete("E:\\Data\\eSUCH\\Requisicoes\\" + file.UrlAnexo);
-                                    //System.IO.File.Delete("C:\\Data\\eSUCH\\Requisicoes\\" + file.UrlAnexo);
+                                    if (_config.Conn == "eSUCH_Prod" || _config.Conn == "PlataformaOperacionalSUCH_TST")
+                                        System.IO.File.Delete("E:\\Data\\eSUCH\\Requisicoes\\" + file.UrlAnexo);
+                                    else
+                                        System.IO.File.Delete("C:\\Data\\eSUCH\\Requisicoes\\" + file.UrlAnexo);
                                     DBAttachments.Delete(file);
                                 }
 
@@ -2004,7 +2017,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (data != null)
                 {
                     List<LinhasPréRequisição> PreRequesitionLines = DBPreRequesitionLines.GetAllByNo(data.PreRequesitionsNo);
-                    List<Anexos> FilesLoaded = DBAttachments.GetById(data.PreRequesitionsNo);
+                    List<Anexos> FilesLoaded = DBAttachments.GetById(1, data.PreRequesitionsNo);
                     data.eMessage = "";
 
                     if (FilesLoaded.Count() > 0)
@@ -2287,8 +2300,10 @@ namespace Hydra.Such.Portal.Controllers
                                 try
                                 {
                                     //System.IO.File.Copy(_config.FileUploadFolder + FileName, _config.FileUploadFolder + NewFileName);
-                                    System.IO.File.Copy("E:\\Data\\eSUCH\\Requisicoes\\" + FileName, "E:\\Data\\eSUCH\\Requisicoes\\" + NewFileName);
-                                    //System.IO.File.Copy("C:\\Data\\eSUCH\\Requisicoes\\" + FileName, "C:\\Data\\eSUCH\\Requisicoes\\" + NewFileName);
+                                    if (_config.Conn == "eSUCH_Prod" || _config.Conn == "PlataformaOperacionalSUCH_TST")
+                                        System.IO.File.Copy("E:\\Data\\eSUCH\\Requisicoes\\" + FileName, "E:\\Data\\eSUCH\\Requisicoes\\" + NewFileName);
+                                    else
+                                        System.IO.File.Copy("C:\\Data\\eSUCH\\Requisicoes\\" + FileName, "C:\\Data\\eSUCH\\Requisicoes\\" + NewFileName);
                                 }
                                 catch (Exception ex)
                                 {
@@ -2304,8 +2319,10 @@ namespace Hydra.Such.Portal.Controllers
                                 if (newFile != null)
                                 {
                                     //System.IO.File.Delete(_config.FileUploadFolder + file.UrlAnexo);
-                                    System.IO.File.Delete("E:\\Data\\eSUCH\\Requisicoes\\" + file.UrlAnexo);
-                                    //System.IO.File.Delete("C:\\Data\\eSUCH\\Requisicoes\\" + file.UrlAnexo);
+                                    if (_config.Conn == "eSUCH_Prod" || _config.Conn == "PlataformaOperacionalSUCH_TST")
+                                        System.IO.File.Delete("E:\\Data\\eSUCH\\Requisicoes\\" + file.UrlAnexo);
+                                    else
+                                        System.IO.File.Delete("C:\\Data\\eSUCH\\Requisicoes\\" + file.UrlAnexo);
                                     DBAttachments.Delete(file);
                                 }
 
@@ -2325,7 +2342,7 @@ namespace Hydra.Such.Portal.Controllers
                         //createdReqIds += RequisitionNo + "; ";
                         var totalValue = req.GetTotalValue();
                         //Start Approval
-                        ErrorHandler result = ApprovalMovementsManager.StartApprovalMovement(1, createReq.CódigoÁreaFuncional, createReq.CódigoCentroResponsabilidade, createReq.CódigoRegião, totalValue, createReq.NºRequisição, User.Identity.Name, "");
+                        ErrorHandler result = ApprovalMovementsManager.StartApprovalMovement(4, createReq.CódigoÁreaFuncional, createReq.CódigoCentroResponsabilidade, createReq.CódigoRegião, totalValue, createReq.NºRequisição, User.Identity.Name, "");
                         if (result.eReasonCode != 100)
                         {
                             data.eMessages.Add(new TraceInformation(TraceType.Error, result.eMessage));
@@ -2576,8 +2593,11 @@ namespace Hydra.Such.Portal.Controllers
 
                             full_filename = id + "_" + filename;
                             //var path = Path.Combine(_config.FileUploadFolder, full_filename);
-                            var path = Path.Combine("E:\\Data\\eSUCH\\Requisicoes\\", full_filename);
-                            //var path = Path.Combine("C:\\Data\\eSUCH\\Requisicoes\\", full_filename);
+                            var path = "";
+                            if (_config.Conn == "eSUCH_Prod" || _config.Conn == "PlataformaOperacionalSUCH_TST")
+                                path = Path.Combine("E:\\Data\\eSUCH\\Requisicoes\\", full_filename);
+                            else
+                                path = Path.Combine("C:\\Data\\eSUCH\\Requisicoes\\", full_filename);
 
                             using (FileStream dd = new FileStream(path, FileMode.CreateNew))
                             {
@@ -2597,26 +2617,26 @@ namespace Hydra.Such.Portal.Controllers
                                     System.IO.File.Delete(path);
                                 }
 
-                                if (DBAttachments.GetAll().Where(x => x.TipoOrigem == 1 && x.NºOrigem == id).Count() > 0)
-                                {
-                                    PréRequisição preREQ = DBPreRequesition.GetByNo(id);
-                                    if (preREQ != null)
-                                    {
-                                        preREQ.CabimentoOrçamental = true;
-                                        preREQ.UtilizadorModificação = User.Identity.Name;
-                                        DBPreRequesition.Update(preREQ);
-                                    }
-                                    else
-                                    {
-                                        Requisição REQ = DBRequest.GetById(id);
-                                        if (REQ != null)
-                                        {
-                                            REQ.CabimentoOrçamental = true;
-                                            REQ.UtilizadorModificação = User.Identity.Name;
-                                            DBRequest.Update(REQ);
-                                        }
-                                    }
-                                }
+                                //if (DBAttachments.GetAll().Where(x => x.TipoOrigem == 1 && x.NºOrigem == id).Count() > 0)
+                                //{
+                                //    PréRequisição preREQ = DBPreRequesition.GetByNo(id);
+                                //    if (preREQ != null)
+                                //    {
+                                //        preREQ.CabimentoOrçamental = true;
+                                //        preREQ.UtilizadorModificação = User.Identity.Name;
+                                //        DBPreRequesition.Update(preREQ);
+                                //    }
+                                //    else
+                                //    {
+                                //        Requisição REQ = DBRequest.GetById(id);
+                                //        if (REQ != null)
+                                //        {
+                                //            REQ.CabimentoOrçamental = true;
+                                //            REQ.UtilizadorModificação = User.Identity.Name;
+                                //            DBRequest.Update(REQ);
+                                //        }
+                                //    }
+                                //}
                             }
                         }
                     }
@@ -2650,8 +2670,10 @@ namespace Hydra.Such.Portal.Controllers
         public FileStreamResult DownloadFile(string id)
         {
             //return new FileStreamResult(new FileStream(_config.FileUploadFolder + id, FileMode.Open), "application/xlsx");
-            return new FileStreamResult(new FileStream("E:\\Data\\eSUCH\\Requisicoes\\" + id, FileMode.Open), "application/xlsx");
-            //return new FileStreamResult(new FileStream("C:\\Data\\eSUCH\\Requisicoes\\" + id, FileMode.Open), "application/xlsx");
+            if (_config.Conn == "eSUCH_Prod" || _config.Conn == "PlataformaOperacionalSUCH_TST")
+                return new FileStreamResult(new FileStream("E:\\Data\\eSUCH\\Requisicoes\\" + id, FileMode.Open), "application/xlsx");
+            else
+                return new FileStreamResult(new FileStream("C:\\Data\\eSUCH\\Requisicoes\\" + id, FileMode.Open), "application/xlsx");
         }
 
 
@@ -2661,32 +2683,34 @@ namespace Hydra.Such.Portal.Controllers
             try
             {
                 //System.IO.File.Delete(_config.FileUploadFolder + requestParams.Url);
-                System.IO.File.Delete("E:\\Data\\eSUCH\\Requisicoes\\" + requestParams.Url);
-                //System.IO.File.Delete("C:\\Data\\eSUCH\\Requisicoes\\" + requestParams.Url);
+                if (_config.Conn == "eSUCH_Prod" || _config.Conn == "PlataformaOperacionalSUCH_TST")
+                    System.IO.File.Delete("E:\\Data\\eSUCH\\Requisicoes\\" + requestParams.Url);
+                else
+                    System.IO.File.Delete("C:\\Data\\eSUCH\\Requisicoes\\" + requestParams.Url);
 
                 DBAttachments.Delete(DBAttachments.ParseToDB(requestParams));
                 requestParams.eReasonCode = 1;
 
-                if (DBAttachments.GetAll().Where(x => x.TipoOrigem == 1 && x.NºOrigem == requestParams.DocNumber).Count() > 0)
-                {
-                    PréRequisição preREQ = DBPreRequesition.GetByNo(requestParams.DocNumber);
-                    if (preREQ != null)
-                    {
-                        preREQ.CabimentoOrçamental = true;
-                        preREQ.UtilizadorModificação = User.Identity.Name;
-                        DBPreRequesition.Update(preREQ);
-                    }
-                }
-                else
-                {
-                    PréRequisição preREQ = DBPreRequesition.GetByNo(requestParams.DocNumber);
-                    if (preREQ != null)
-                    {
-                        preREQ.CabimentoOrçamental = false;
-                        preREQ.UtilizadorModificação = User.Identity.Name;
-                        DBPreRequesition.Update(preREQ);
-                    }
-                }
+                //if (DBAttachments.GetAll().Where(x => x.TipoOrigem == 1 && x.NºOrigem == requestParams.DocNumber).Count() > 0)
+                //{
+                //    PréRequisição preREQ = DBPreRequesition.GetByNo(requestParams.DocNumber);
+                //    if (preREQ != null)
+                //    {
+                //        preREQ.CabimentoOrçamental = true;
+                //        preREQ.UtilizadorModificação = User.Identity.Name;
+                //        DBPreRequesition.Update(preREQ);
+                //    }
+                //}
+                //else
+                //{
+                //    PréRequisição preREQ = DBPreRequesition.GetByNo(requestParams.DocNumber);
+                //    if (preREQ != null)
+                //    {
+                //        preREQ.CabimentoOrçamental = false;
+                //        preREQ.UtilizadorModificação = User.Identity.Name;
+                //        DBPreRequesition.Update(preREQ);
+                //    }
+                //}
 
             }
             catch (Exception ex)

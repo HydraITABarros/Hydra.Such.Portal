@@ -249,26 +249,7 @@ namespace Hydra.Such.Portal.Controllers
                                     //Approve Movement
                                     ErrorHandler approvalResult = new ErrorHandler();
 
-                                    if (requisition.TipoReq == 0) //Requisição Normal
-                                        approvalResult = ApprovalMovementsManager.ApproveMovement(approvalMovement.MovementNo, User.Identity.Name);
-
-                                    if (requisition.TipoReq == 1) //Requisição Compras Dinheiro
-                                    {
-                                        //Update Old Movement
-                                        ApprovalMovementsViewModel ApprovalMovement = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetById(movementNo));
-                                        ApprovalMovement.Status = 2;
-                                        ApprovalMovement.DateTimeApprove = DateTime.Now;
-                                        ApprovalMovement.DateTimeUpdate = DateTime.Now;
-                                        ApprovalMovement.UserUpdate = User.Identity.Name;
-                                        ApprovalMovement = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.Update(DBApprovalMovements.ParseToDatabase(ApprovalMovement)));
-
-                                        //Delete All User Approval Movements
-                                        DBUserApprovalMovements.DeleteFromMovementExcept(ApprovalMovement.MovementNo, User.Identity.Name);
-
-                                        approvalResult.eReasonCode = 103;
-                                        approvalResult.eMessage = "A tarefa foi aprovada pelo ultimo nivel.";
-
-                                    }
+                                    approvalResult = ApprovalMovementsManager.ApproveMovement(approvalMovement.MovementNo, User.Identity.Name);
 
                                     //Check Approve Status
                                     if (approvalResult.eReasonCode == 103)

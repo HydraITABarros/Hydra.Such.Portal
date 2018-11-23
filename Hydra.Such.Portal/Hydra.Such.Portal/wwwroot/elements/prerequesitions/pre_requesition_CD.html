@@ -513,8 +513,9 @@
                                             <such-textarea rows="5" value="{{data.notes}}" id="Notes" name="Notes" label="Notas" disabled="{{ !_permissions.update }}"> </such-textarea>
                                         </div>
 
-                                        <div class="col-md-3">
-                                        </div>
+                                        <!--<div class="col-md-3">
+                                            <vaadin-checkbox id="Attachment" checked="{{data.attachment}}" disabled>Anexo(s)</vaadin-checkbox>                                        
+                                        </div>-->
                                     </div>
 
                                     <div class="row break_clear" hidden>
@@ -594,7 +595,7 @@
                                                         items="[[Products]]"
                                                         text-path="code"
                                                         value-path="code"
-                                                        fields='[{"field":"code", "name":"Cód. Produto"}, {"field":"name", "name":"Descrição"}, {"field":"name2", "name":"Descrição 2"}, {"field":"measureUnit", "name":"Unidade de Medida"}, {"field":"itemCategoryCode", "name":"Cód. Categoria"}, {"field":"productGroupCode", "name":"Cód. Grupo"}, {"field":"vatProductPostingGroup", "name":"Gr. Registo IVA Produto"}]'
+                                                        fields='[{"field":"unitCost", "name":"Custo Unitário"}, {"field":"code", "name":"Cód. Produto"}, {"field":"name", "name":"Descrição"}, {"field":"name2", "name":"Descrição 2"}, {"field":"measureUnit", "name":"Unidade de Medida"}, {"field":"itemCategoryCode", "name":"Cód. Categoria"}, {"field":"productGroupCode", "name":"Cód. Grupo"}, {"field":"vatProductPostingGroup", "name":"Gr. Registo IVA Produto"}]'
                                                         disabled="{{ !_permissions.update }}"
                                                         on-value-changed="_onProductChanged"
                                                         on-click="_onProductClick">
@@ -724,6 +725,7 @@
                                                         text-path="id"
                                                         value-path="id"
                                                         fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Gr. Registo IVA Produto"}]'
+                                                        on-blur="_CalculoAutomaticoValores"
                                                         disabled="{{ _permissionsCreate }}">
                                         </such-selectbox>
                                     </div>
@@ -1337,6 +1339,13 @@
                         });
                     }
 
+                    //if (this._isCreate == false && this.$.UploadRequest != null) {
+                    //    this.$.UploadRequest.addEventListener('upload-response', function (e) {
+                    //        this.$.page_update_ajax.body = JSON.stringify({ "id": this._prerequesitionno });
+                    //        this.$.page_update_ajax.generateRequest();
+                    //    });
+                    //}
+
                     if (this._isCreate == false) {
                         this.$.page_update_ajax.body = JSON.stringify({ "id": this._prerequesitionno });
                         this.$.page_update_ajax.generateRequest();
@@ -1344,7 +1353,6 @@
                 },
 
                 _onCacheLoaded: function (data, CBPurchaseLineGrid, CBRequesitionType, LProjectFunctionalAreaCodes, LProjectResponsabilityCenterCodes, LProjectRegionCodes, CBVehicle, CBJobNo, CBVendor, CBLocal, CBLocations, CBPurchaseHeader, CBPurchaseLine, Products) {
-
                     if (!this.Flag) {
                         this.$.page_databound_ajax.body = JSON.stringify({ "PreRequesitionsNo": this._prerequesitionno });
                         this.$.page_databound_ajax.generateRequest();
@@ -1549,9 +1557,11 @@
                         }
 
                         this.data.contractType = 3;
-                        this.$.page_databoundNoMessage_ajax.url = "/PreRequisicoes/UpdatePreRequesition";
-                        this.$.page_databoundNoMessage_ajax.body = JSON.stringify(this.data);
-                        this.$.page_databoundNoMessage_ajax.generateRequest();
+                        if (this.$.projectNo.value != "" && this.$.projectNo.value != null) {
+                            this.$.page_databoundNoMessage_ajax.url = "/PreRequisicoes/UpdatePreRequesition";
+                            this.$.page_databoundNoMessage_ajax.body = JSON.stringify(this.data);
+                            this.$.page_databoundNoMessage_ajax.generateRequest();
+                        }
                     }
                 },
 
@@ -1604,8 +1614,11 @@
                 },
 
                 _loadAttachResponse: function (e) {
-                    this.$.page_databound_ajax.body = JSON.stringify({ "PreRequesitionsNo": this._prerequesitionno });
-                    this.$.page_databound_ajax.generateRequest();
+                    //AMARO VER ISTO
+                    this.$.page_update_ajax.body = JSON.stringify({ "id": this._prerequesitionno });
+                    this.$.page_update_ajax.generateRequest();
+                    //this.$.page_databound_ajax.body = JSON.stringify({ "PreRequesitionsNo": this._prerequesitionno });
+                    //this.$.page_databound_ajax.generateRequest();
                 },
 
                 _onSearchTermChanged: function (value) {
@@ -1725,7 +1738,7 @@
 
                 _update: function () {
                     this.data.area = this._areaid;
-                    if (this.$.projectNo.value != "" & this.$.projectNo.value != null) {
+                    if (this.$.projectNo.value != "" && this.$.projectNo.value != null) {
                         this._executeRequest("/PreRequisicoes/UpdatePreRequesition", this.data)
                     }
                     else {
@@ -1851,7 +1864,6 @@
                         }
                         else if (data.detail.url.indexOf("Update") !== -1) {
                             if (this.data.eReasonCode == 1) {
-
                                 this._openToast("Pré-Requisição atualizada com sucesso.");
                             } else {
                                 this._openToastError(this.data.eMessage);
@@ -1871,9 +1883,11 @@
                     }
 
                     this.data.contractType = 3;
-                    this.$.page_databoundNoMessage_ajax.url = "/PreRequisicoes/UpdatePreRequesition";
-                    this.$.page_databoundNoMessage_ajax.body = JSON.stringify(this.data);
-                    this.$.page_databoundNoMessage_ajax.generateRequest();
+                    if (this.$.projectNo.value != "" && this.$.projectNo.value != null) {
+                        this.$.page_databoundNoMessage_ajax.url = "/PreRequisicoes/UpdatePreRequesition";
+                        this.$.page_databoundNoMessage_ajax.body = JSON.stringify(this.data);
+                        this.$.page_databoundNoMessage_ajax.generateRequest();
+                    }
                 },
 
                 _copyFromTemplateResponse: function (data) {
@@ -1929,12 +1943,16 @@
                     }
                 },
                 _openToast: function (message) {
-                    this.$.ToastMessageSuccess.text = message;
-                    this.$.ToastMessageSuccess.open();
+                    if (message != null && message != "") {
+                        this.$.ToastMessageSuccess.text = message;
+                        this.$.ToastMessageSuccess.open();
+                    }
                 },
                 _openToastError: function (message) {
-                    this.$.ToastMessageError.text = message;
-                    this.$.ToastMessageError.open();
+                    if (message != null && message != "") {
+                        this.$.ToastMessageError.text = message;
+                        this.$.ToastMessageError.open();
+                    }
                 },
 
                 _createNewPreReq: function (item) {
@@ -2159,7 +2177,6 @@
 
 
                 _createPreReqLine: function () {
-                    debugger;
                     var requesitionType = this.$.requesitionType.value;
 
                     var localCode = "";
@@ -2173,67 +2190,72 @@
                         validLocalCode = (localCode !== null && localCode !== "");
                     }
 
-                    if (this.$._ProjectNo.value != "" && this.$._ProjectNo.value != null) {
-                        if (this._Products != undefined && this._Products != "") {
-                            if (validLocalCode) {
+                    if (this._Products != undefined && this._Products != "") {
+                        if (validLocalCode) {
+                            if (this._CBVendor != undefined && this._CBVendor != "") {
                                 if (this.$._QuantityToRequire.validate() && parseFloat(this.$._QuantityToRequire.value) > 0) {
                                     if (this.$._UnitCost.validate() && parseFloat(this.$._UnitCost.value) > 0) {
                                         if (this.$._UnitCostWithIVA.validate() && parseFloat(this.$._UnitCostWithIVA.value) > 0) {
-                                            var totalCost = this._QuantityToRequire * this._UnitCost;
-                                            if (isNaN(totalCost)) {
-                                                totalCost = 0;
+                                            if (this.$._ProjectNo.value != "" && this.$._ProjectNo.value != null) {
+                                                var totalCost = this._QuantityToRequire * this._UnitCost;
+                                                if (isNaN(totalCost)) {
+                                                    totalCost = 0;
+                                                }
+
+                                                //var purchHeaderNo = "";
+                                                //var purchLineNo = "";
+                                                //if (this.$._CBPurchaseLine.value != undefined & this.$._CBPurchaseLine.value != "") {
+                                                //    var composedKey = this.$._CBPurchaseLine.value.split(" ", 2);
+                                                //    purchHeaderNo = composedKey[0];
+                                                //    purchLineNo = composedKey[1];
+                                                //}
+
+                                                this.dataLines.lines.unshift({
+                                                    preRequisitionLineNo: this.data.preRequesitionsNo,
+                                                    type: 2, //PRODUTO
+                                                    code: this._Products,
+                                                    localCode: localCode,
+                                                    description: this._Description,
+                                                    description2: this._Description2,
+                                                    unitMeasureCode: this._UnitMeasureCode,
+                                                    quantityToRequire: this._QuantityToRequire,
+                                                    unitCost: this._UnitCost,
+                                                    unitCostWithIVA: this._UnitCostWithIVA,
+                                                    projectNo: this.$._ProjectNo.value,
+                                                    vehicle: this.data.vehicle,
+                                                    supplierNo: this._CBVendor,
+                                                    regionCode: this.$._CLRegion.value,
+                                                    functionalAreaCode: this.$._CLFunctionalAreaCode.value,
+                                                    centerResponsibilityCode: this.$._CLResponsabilityCenterCode.value,
+                                                    //qtyByUnitOfMeasure
+                                                    //quantityRequired
+                                                    //quantityPending:
+                                                    quantidadeInicial: this._QuantityToRequire,
+                                                    //sellUnityPrice
+                                                    //budgetValue
+                                                    //expectedReceivingDate
+                                                    //billable
+                                                    maintenanceOrderLineNo: this._MaintenanceOrderLineNo,
+                                                    //employeeNo
+                                                    //supplierProductCode
+                                                    armazemCDireta: this._CBItemsCDirect,
+                                                    //unitNutritionProduction
+                                                    //customerNo
+                                                    //openOrderNo: purchHeaderNo,
+                                                    //openOrderLineNo: purchLineNo,
+                                                    totalCost: totalCost > 0 ? totalCost : "",
+                                                    totalCostWithIVA: this.$._CustoTotalComIVA.value,
+                                                    grupoRegistoIVAProduto: this.$._CLVATProductsPostingGroups.value,
+                                                });
+
+                                                this.$.prereqLines_databound_ajax.url = "/PreRequisicoes/UpdateContractLines";
+                                                this.$.prereqLines_databound_ajax.body = JSON.stringify(this.dataLines);
+                                                this.$.prereqLines_databound_ajax.generateRequest();
+                                                this.$.grid_prereqlines.clearCache();
                                             }
-
-                                            //var purchHeaderNo = "";
-                                            //var purchLineNo = "";
-                                            //if (this.$._CBPurchaseLine.value != undefined & this.$._CBPurchaseLine.value != "") {
-                                            //    var composedKey = this.$._CBPurchaseLine.value.split(" ", 2);
-                                            //    purchHeaderNo = composedKey[0];
-                                            //    purchLineNo = composedKey[1];
-                                            //}
-
-                                            this.dataLines.lines.unshift({
-                                                preRequisitionLineNo: this.data.preRequesitionsNo,
-                                                type: 2, //PRODUTO
-                                                code: this._Products,
-                                                localCode: localCode,
-                                                description: this._Description,
-                                                description2: this._Description2,
-                                                unitMeasureCode: this._UnitMeasureCode,
-                                                quantityToRequire: this._QuantityToRequire,
-                                                unitCost: this._UnitCost,
-                                                unitCostWithIVA: this._UnitCostWithIVA,
-                                                projectNo: this.$._ProjectNo.value,
-                                                vehicle: this.data.vehicle,
-                                                supplierNo: this._CBVendor,
-                                                regionCode: this.$._CLRegion.value,
-                                                functionalAreaCode: this.$._CLFunctionalAreaCode.value,
-                                                centerResponsibilityCode: this.$._CLResponsabilityCenterCode.value,
-                                                //qtyByUnitOfMeasure
-                                                //quantityRequired
-                                                //quantityPending:
-                                                quantidadeInicial: this._QuantityToRequire,
-                                                //sellUnityPrice
-                                                //budgetValue
-                                                //expectedReceivingDate
-                                                //billable
-                                                maintenanceOrderLineNo: this._MaintenanceOrderLineNo,
-                                                //employeeNo
-                                                //supplierProductCode
-                                                armazemCDireta: this._CBItemsCDirect,
-                                                //unitNutritionProduction
-                                                //customerNo
-                                                //openOrderNo: purchHeaderNo,
-                                                //openOrderLineNo: purchLineNo,
-                                                totalCost: totalCost > 0 ? totalCost : "",
-                                                totalCostWithIVA: this.$._CustoTotalComIVA.value,
-                                                grupoRegistoIVAProduto: this.$._CLVATProductsPostingGroups.value,
-                                            });
-
-                                            this.$.prereqLines_databound_ajax.url = "/PreRequisicoes/UpdateContractLines";
-                                            this.$.prereqLines_databound_ajax.body = JSON.stringify(this.dataLines);
-                                            this.$.prereqLines_databound_ajax.generateRequest();
-                                            this.$.grid_prereqlines.clearCache();
+                                            else {
+                                                this._openToastError('O valor do campo Nº Ordem/Projeto tem que estar preenchido.');
+                                            }
                                         }
                                         else {
                                             this._openToastError('O valor do campo Custo Unitário com IVA tem que estar preenchido, ser superior a 0 e só pode ter 4 casas decimais.');
@@ -2248,15 +2270,15 @@
                                 }
                             }
                             else {
-                                this._openToastError('O valor do campo Cód. Produto tem que estar preenchido.');
+                                this._openToastError('O valor do campo Nº Fornecedor tem que estar preenchido.');
                             }
                         }
                         else {
-                            this._openToastError('O valor do campo Nº Ordem/Projecto tem que estar preenchido.');
+                            this._openToastError('O valor do campo Cód. Localização tem que estar preenchido.');
                         }
                     }
                     else {
-                        this._openToastError('O valor do campo Cód. Localização tem que estar preenchido.');
+                        this._openToastError('O valor do campo Cód. Produto tem que estar preenchido.');
                     }
                 },
 
@@ -2459,7 +2481,8 @@
                         this.$._Description.value = this.productInfo.name;
                         this.$._Description2.value = this.productInfo.name2;
                         this.$._UnitMeasureCode.value = this.productInfo.measureUnit;
-                        this.$._UnitCost.value = this.productInfo.unitCost;
+                        if (this.productInfo.unitCost != 0)
+                            this.$._UnitCost.value = this.productInfo.unitCost;
                         this.$._CLVATProductsPostingGroups.value = this.productInfo.vatProductPostingGroup;
 
                         if (this.productInfo.inventoryValueZero == 1) {
