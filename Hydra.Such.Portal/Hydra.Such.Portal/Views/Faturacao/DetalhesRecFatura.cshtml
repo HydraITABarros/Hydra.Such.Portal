@@ -1567,9 +1567,12 @@
                     if (type == 0) //interno
                         this._isInternalDestination = true;
                     else {//externo
+                      
                         this._isInternalDestination = false;
-                        var vendor = this.Vendors.find(x => x.no_ = this.data.codFornecedor);
+                        var vendor = this.Vendors.find(x => x.no_ == this.data.codFornecedor);
+
                         this.$.txtFornecedor.value = vendor != null ? this.data.codFornecedor + " - " + vendor.name : this.data.codFornecedor;
+                        //this.$.txtdestinatarioArea.value = type;
                     }
                 },
                 _sendPending: function () {
@@ -1903,7 +1906,6 @@
                     }
                 },
                 _dlgUpdateDesti: function (selectedItem, selectedItems) {
-                    debugger;
                     if (this.$.cmbDestinatarios.value != null && this.$.cmbDestinatarios.value != "") {
                         if (this.selectedItems != null && this.selectedItems != "") {
                             var selItms = this.selectedItems;
