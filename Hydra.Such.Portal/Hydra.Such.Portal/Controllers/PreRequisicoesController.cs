@@ -323,6 +323,23 @@ namespace Hydra.Such.Portal.Controllers
                     if (PreRequisition.NºProjeto != "")
                     {
                         result = DBPreRequesition.ParseToViewModel(PreRequisition);
+
+                        ConfigUtilizadores CU = DBUserConfigurations.GetById(User.Identity.Name);
+                        if (CU.RequisicaoStock == true)
+                        {
+                            result.ShowStockReplacement = true;
+                        }
+                        else
+                        {
+                            result.ShowStockReplacement = false;
+                            result.StockReplacement = false;
+                        }
+
+                        bool Anexos = false;
+                        if (DBAttachments.GetById(User.Identity.Name).Count() > 0)
+                            Anexos = true;
+                        result.Attachment = Anexos;
+
                         return Json(result);
                     }
                 }
@@ -736,6 +753,17 @@ namespace Hydra.Such.Portal.Controllers
             if (!string.IsNullOrEmpty(preReqID))
             {
                 result = DBPreRequesition.ParseToViewModel(DBPreRequesition.GetByNo(preReqID));
+
+                ConfigUtilizadores CU = DBUserConfigurations.GetById(User.Identity.Name);
+                if (CU.RequisicaoStock == true)
+                {
+                    result.ShowStockReplacement = true;
+                }
+                else
+                {
+                    result.ShowStockReplacement = false;
+                    result.StockReplacement = false;
+                }
 
                 bool Anexos = false;
                 if (DBAttachments.GetById(User.Identity.Name).Count() > 0)

@@ -124,20 +124,23 @@
             </div>
         }
 
-        <div class="row">
-            <div class="col-lg-3">
-                <vaadin-text-field id="idUser" name="idUser" label="Id Utilizador" value="{{data.idUser}}"></vaadin-text-field>
+            <div class="row">
+                <div class="col-lg-3">
+                    <vaadin-text-field id="idUser" name="idUser" label="Id Utilizador" value="{{data.idUser}}"></vaadin-text-field>
+                </div>
+                <div class="col-lg-3">
+                    <vaadin-text-field id="UserName" name="UserName" label="Nome Utilizador" value="{{data.name}}"></vaadin-text-field>
+                </div>
+                <div class="col-lg-2 alignPoga">
+                    <vaadin-checkbox checked="{{data.administrator}}"> Administrador</vaadin-checkbox>
+                </div>
+                <div class="col-lg-2 alignPoga">
+                    <vaadin-checkbox checked="{{data.active}}"> Ativo</vaadin-checkbox>
+                </div>
+                <div class="col-lg-2 alignPoga">
+                    <vaadin-checkbox checked="{{data.requisicaoStock}}"> Requisição Stock</vaadin-checkbox>
+                </div>
             </div>
-            <div class="col-lg-3">
-                <vaadin-text-field id="UserName" name="UserName" label="Nome Utilizador" value="{{data.name}}"></vaadin-text-field>
-            </div>
-            <div class="col-lg-3 alignPoga">
-                <vaadin-checkbox checked="{{data.administrator}}"> Administrador</vaadin-checkbox>
-            </div>
-            <div class="col-lg-3 alignPoga">
-                <vaadin-checkbox checked="{{data.active}}"> Ativo</vaadin-checkbox>
-            </div>
-        </div>
         <div class="row break_clear">
             <div class="col-sm-3">
                 <vaadin-combo-box items="[[LRegionCodes]]" id="codigoRegiao" item-value-path="id" item-label-path="value" value="{{data.regiao}}" label="Dim. Região">

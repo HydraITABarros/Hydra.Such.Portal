@@ -43,6 +43,7 @@ namespace Hydra.Such.Data.Database
         public string NumSeriePreFaturasCompraCp { get; set; }
         public string CentroDeResponsabilidade { get; set; }
         public string SuperiorHierarquico { get; set; }
+        public bool? RequisicaoStock { get; set; }
 
         public ICollection<AcessosDimensões> AcessosDimensões { get; set; }
         public ICollection<PerfisUtilizador> PerfisUtilizador { get; set; }

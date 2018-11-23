@@ -72,6 +72,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string ArmazemCDireta { get; set; }
         public bool? PedirOrcamento { get; set; }
         public decimal? ValorTotalDocComIVA { get; set; }
+        public bool? ShowStockReplacement { get; set; }
 
 
         //public int eReasonCode { get; set; }

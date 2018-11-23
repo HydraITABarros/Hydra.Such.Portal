@@ -1614,11 +1614,8 @@
                 },
 
                 _loadAttachResponse: function (e) {
-                    //AMARO VER ISTO
                     this.$.page_update_ajax.body = JSON.stringify({ "id": this._prerequesitionno });
                     this.$.page_update_ajax.generateRequest();
-                    //this.$.page_databound_ajax.body = JSON.stringify({ "PreRequesitionsNo": this._prerequesitionno });
-                    //this.$.page_databound_ajax.generateRequest();
                 },
 
                 _onSearchTermChanged: function (value) {

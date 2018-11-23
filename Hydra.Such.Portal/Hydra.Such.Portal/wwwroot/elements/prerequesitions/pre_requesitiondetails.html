@@ -188,6 +188,7 @@
                    id="delete_files_ajax"
                    on-response="_deletedAttachResponse"
                    content-type="application/json"></iron-ajax>
+        
         <iron-ajax url="/PreRequisicoes/CleanPreRequesition"
                    last-response="{{ClPreReq}}"
                    method="post"
@@ -195,6 +196,7 @@
                    id="CleanPreRequesition_ajax"
                    on-response="_CleanPreRequesitionResponse"
                    content-type="application/json"></iron-ajax>
+        
         <iron-ajax url="/PreRequisicoes/GetPreRequesitionDetails"
                    last-response="{{data}}"
                    method="post"
@@ -202,6 +204,7 @@
                    id="page_databound_ajax"
                    on-response="_responseProcessor"
                    content-type="application/json"></iron-ajax>
+        
         <iron-ajax url="/PreRequisicoes/GetPreRequesitionDetails"
                    last-response="{{data}}"
                    method="post"
@@ -532,8 +535,8 @@
                                         <div class="col-sm-2" hidden>
                                             <vaadin-checkbox id="MoneyBuyId" checked="{{data.moneyBuy}}">Compras a Dinheiro</vaadin-checkbox>
                                         </div>
-                                        <div class="col-sm-2">
-                                            <vaadin-checkbox id="StockReplacementId" checked="{{data.stockReplacement}}">Reposição de Stock</vaadin-checkbox>
+                                        <div class="col-sm-2" hidden="{{ !data.showStockReplacement }}">
+                                            <vaadin-checkbox id="StockReplacementId" checked="{{chkReposicaoStock}}" on-click="_validacaoReposicaoStock">Reposição de Stock</vaadin-checkbox>
                                         </div>
                                         <div class="col-sm-2" hidden>
                                             <vaadin-checkbox id="ComplaintId" checked="{{data.complaint}}">Reclamação</vaadin-checkbox>
@@ -1668,7 +1671,12 @@
                         type: String,
                         notify: true,
                         value: ""
-                    }
+                    },
+                    chkReposicaoStock: {
+                        type: Boolean,
+                        notify: true,
+                        value: false
+                    },
                 },
                 observers: [
                     '_onCacheLoaded(data, CBPurchaseLineGrid, CBRequesitionType, LProjectFunctionalAreaCodes, LProjectResponsabilityCenterCodes, LProjectRegionCodes, CBVehicle, CBJobNo, CBVendor, CBLocal, CBLocations, CBPurchaseHeader, CBPurchaseLine, Products)'
@@ -2174,6 +2182,8 @@
                                 } else {
                                     this._showPreReqLinesForm = "none";
                                 }
+
+                                this.chkReposicaoStock = this.data.StockReplacement;
 
                                 this.$.grid_prereqlines.clearCache();
 
@@ -2936,7 +2946,6 @@
                                 }
                                 this._setNewLineFormControl(false);
 
-                                //AMARO
                                 //location.reload();
                                 //this.$.grid_prereqlines.clearCache();
                                 //this.$.page_GetPreReq_ajax.body = JSON.stringify({ "preReqID": this._prerequesitionno });
@@ -3069,6 +3078,78 @@
                 _goBack: function (e) {
                     window.history.back();
                 },
+
+                _validacaoReposicaoStock: function () {
+                    this.chkReposicaoStock = !this.chkReposicaoStock;
+
+                    if (this.chkReposicaoStock == true) {
+                        var RegiaoValue = "";
+                        var AreaValue = "";
+                        var CrespValue = "";
+                        var RegiaoValueText = "";
+                        var AreaValueText = "";
+                        var CrespValueText = "";
+
+                        var Regiao2Value = "";
+                        var Area2Value = "";
+                        var Cresp2Value = "";
+                        var Regiao2ValueText = "";
+                        var Area2ValueText = "";
+                        var Cresp2ValueText = "";
+
+                        RegiaoValue = this.$.RegionCode.value;
+                        AreaValue = this.$.FunctionalAreaCode.value;
+                        CrespValue = this.$.ResponsabilityCenterCode.value;
+                        RegiaoValueText = this.$.RegionCode.valueText;
+                        AreaValueText = this.$.FunctionalAreaCode.valueText;
+                        CrespValueText = this.$.ResponsabilityCenterCode.valueText;
+
+                        Regiao2Value = this.$._CLRegion.value;
+                        Area2Value = this.$._CLFunctionalAreaCode.value;
+                        Cresp2Value = this.$._CLResponsabilityCenterCode.value;
+                        Regiao2ValueText = this.$._CLRegion.valueText;
+                        Area2ValueText = this.$._CLFunctionalAreaCode.valueText;
+                        Cresp2ValueText = this.$._CLResponsabilityCenterCode.valueText;
+
+                        this.$.projectNo._clearSelection();
+                        this.$.projectNo.disabled = true;
+                        this.$.RegionCode.disabled = false;
+                        this.$.FunctionalAreaCode.disabled = false;
+                        this.$.ResponsabilityCenterCode.disabled = false;
+
+                        this.$._ProjectNo._clearSelection();
+                        this.$._ProjectNo.disabled = true;
+                        this.$._CLRegion.disabled = false;
+                        this.$._CLFunctionalAreaCode.disabled = false;
+                        this.$._CLResponsabilityCenterCode.disabled = false;
+
+                        this.$.RegionCode.value = RegiaoValue;
+                        this.$.FunctionalAreaCode.value = AreaValue;
+                        this.$.ResponsabilityCenterCode.value = CrespValue;
+                        this.$.RegionCode.valueText = RegiaoValueText;
+                        this.$.FunctionalAreaCode.valueText = AreaValueText;
+                        this.$.ResponsabilityCenterCode.valueText = CrespValueText;
+
+                        this.$._CLRegion.value = Regiao2Value;
+                        this.$._CLFunctionalAreaCode.value = Area2Value;
+                        this.$._CLResponsabilityCenterCode.value = Cresp2Value;
+                        this.$._CLRegion.valueText = Regiao2ValueText;
+                        this.$._CLFunctionalAreaCode.valueText = Area2ValueText;
+                        this.$._CLResponsabilityCenterCode.valueText = Cresp2ValueText;
+                    }
+                    else {
+                        this.$.projectNo.disabled = false;
+                        this.$.RegionCode.disabled = true;
+                        this.$.FunctionalAreaCode.disabled = true;
+                        this.$.ResponsabilityCenterCode.disabled = true;
+
+                        this.$._ProjectNo.disabled = false;
+                        this.$._CLRegion.disabled = true;
+                        this.$._CLFunctionalAreaCode.disabled = true;
+                        this.$._CLResponsabilityCenterCode.disabled = true;
+
+                    }
+                }
             });
         });
     </script>
