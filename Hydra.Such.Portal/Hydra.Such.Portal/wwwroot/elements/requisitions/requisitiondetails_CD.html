@@ -2318,6 +2318,7 @@
                 _createPurchaseOrderResponse: function (e) {
                     if (this.Requisition.eReasonCode == "1") {
                         this._openToast(this.Requisition.eMessage);
+                        window.location.href = "/GestaoRequisicoes/LinhasRequisicaoReadOnly_CD/" + this.$.requisitionNo.value;
                     }
                     else {
                         if (this.Requisition.eMessages.length > 0)
