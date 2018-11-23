@@ -12,6 +12,7 @@ namespace Hydra.Such.Portal.Configurations
         public string NAV2009DatabaseName { get; set; }
         public string NAV2009CompanyName { get; set; }
         public string ReportServerURL { get; set; }
+        public string ReportServerURL_PDF { get; set; }
     }
 
     public class GeneralConfigurations
