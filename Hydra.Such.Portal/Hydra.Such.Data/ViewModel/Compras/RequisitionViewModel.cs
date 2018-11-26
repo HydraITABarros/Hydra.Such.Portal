@@ -97,6 +97,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public bool? PedirOrcamento { get; set; }
         public string NumeroMecanografico { get; set; }
         public decimal? ValorTotalDocComIVA { get; set; }
+        public bool? ShowPontoSituacao { get; set; }
 
         //EXPORTAR PARA EXCEL
         public Object ColunasEXCEL { get; set; }
