@@ -1106,6 +1106,10 @@ namespace Hydra.Such.Portal.Controllers
             if (DBAttachments.GetById(requisitionId).Count() > 0)
                 item.Attachment = true;
 
+            item.ShowPontoSituacao = false;
+            if (item.State != RequisitionStates.Archived)
+                item.ShowPontoSituacao = true;
+
             return Json(item);
         }
 

@@ -201,7 +201,7 @@
                    on-response="_CleanPreRequesitionResponse"
                    content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/PreRequisicoes/GetPreRequesitionDetails"
+        <iron-ajax url="/PreRequisicoes/GetPreRequesitionDetails_CD"
                    last-response="{{data}}"
                    method="post"
                    handle-as="json"
@@ -209,7 +209,7 @@
                    on-response="_responseProcessor"
                    content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/PreRequisicoes/GetPreRequesitionDetails"
+        <iron-ajax url="/PreRequisicoes/GetPreRequesitionDetails_CD"
                    last-response="{{data}}"
                    method="post"
                    handle-as="json"
@@ -1558,7 +1558,7 @@
 
                         this.data.contractType = 3;
                         if (this.$.projectNo.value != "" && this.$.projectNo.value != null) {
-                            this.$.page_databoundNoMessage_ajax.url = "/PreRequisicoes/UpdatePreRequesition";
+                            this.$.page_databoundNoMessage_ajax.url = "/PreRequisicoes/UpdatePreRequesition_CD";
                             this.$.page_databoundNoMessage_ajax.body = JSON.stringify(this.data);
                             this.$.page_databoundNoMessage_ajax.generateRequest();
                         }
@@ -1736,7 +1736,7 @@
                 _update: function () {
                     this.data.area = this._areaid;
                     if (this.$.projectNo.value != "" && this.$.projectNo.value != null) {
-                        this._executeRequest("/PreRequisicoes/UpdatePreRequesition", this.data)
+                        this._executeRequest("/PreRequisicoes/UpdatePreRequesition_CD", this.data)
                     }
                     else {
                         this._openToastError('O campo Nº Ordem/Projecto é de preenchimento obrigatório.');
@@ -1833,7 +1833,7 @@
                 },
                 _responseProcessor: function (data) {
                     if (data.detail.status === 200) {
-                        if (data.detail.url.indexOf("GetPreRequesitionDetails") !== -1) {
+                        if (data.detail.url.indexOf("GetPreRequesitionDetails_CD") !== -1) {
                             var id = this.data.preRequesitionsNo;
                             if (id != "") {
                                 this._showPreReqLines = "";
@@ -1881,7 +1881,7 @@
 
                     this.data.contractType = 3;
                     if (this.$.projectNo.value != "" && this.$.projectNo.value != null) {
-                        this.$.page_databoundNoMessage_ajax.url = "/PreRequisicoes/UpdatePreRequesition";
+                        this.$.page_databoundNoMessage_ajax.url = "/PreRequisicoes/UpdatePreRequesition_CD";
                         this.$.page_databoundNoMessage_ajax.body = JSON.stringify(this.data);
                         this.$.page_databoundNoMessage_ajax.generateRequest();
                     }
