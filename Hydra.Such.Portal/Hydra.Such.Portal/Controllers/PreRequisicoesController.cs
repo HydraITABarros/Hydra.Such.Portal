@@ -320,6 +320,38 @@ namespace Hydra.Such.Portal.Controllers
                 if (data.PreRequesitionsNo != "")
                 {
                     PréRequisição PreRequisition = DBPreRequesition.GetByNo(data.PreRequesitionsNo);
+                    result = DBPreRequesition.ParseToViewModel(PreRequisition);
+
+                    ConfigUtilizadores CU = DBUserConfigurations.GetById(User.Identity.Name);
+                    if (CU.RequisicaoStock == true)
+                    {
+                        result.ShowStockReplacement = true;
+                    }
+                    else
+                    {
+                        result.ShowStockReplacement = false;
+                        result.StockReplacement = false;
+                    }
+
+                    bool Anexos = false;
+                    if (DBAttachments.GetById(User.Identity.Name).Count() > 0)
+                        Anexos = true;
+                    result.Attachment = Anexos;
+
+                    return Json(result);
+                }
+            }
+            return Json(false);
+        }
+
+        public JsonResult GetPreRequesitionDetails_CD([FromBody] PreRequesitionsViewModel data)
+        {
+            if (data != null)
+            {
+                PreRequesitionsViewModel result = new PreRequesitionsViewModel();
+                if (data.PreRequesitionsNo != "")
+                {
+                    PréRequisição PreRequisition = DBPreRequesition.GetByNo(data.PreRequesitionsNo);
                     if (PreRequisition.NºProjeto != "")
                     {
                         result = DBPreRequesition.ParseToViewModel(PreRequisition);
@@ -781,12 +813,13 @@ namespace Hydra.Such.Portal.Controllers
         {
             int TipoPreReq = int.Parse(requestParams["tipoPreReq"].ToString());
             int AreaNo = int.Parse(requestParams["areaid"].ToString());
+
             string pPreRequisicao = DBPreRequesition.GetByNoAndTipoPreReq(User.Identity.Name, TipoPreReq);
             ConfigUtilizadores CU = DBUserConfigurations.GetById(User.Identity.Name);
 
             if (pPreRequisicao != null)
             {
-                PreRequesitionsViewModel reqID = new PreRequesitionsViewModel();
+                PreRequesitionsViewModel reqID = DBPreRequesition.ParseToViewModel(DBPreRequesition.GetByNo(User.Identity.Name));// new PreRequesitionsViewModel();
                 reqID.PreRequesitionsNo = pPreRequisicao;
                 reqID.RegionCode = CU.RegiãoPorDefeito;
                 reqID.FunctionalAreaCode = CU.AreaPorDefeito;
@@ -925,6 +958,101 @@ namespace Hydra.Such.Portal.Controllers
 
         [HttpPost]
         public JsonResult UpdatePreRequesition([FromBody] PreRequesitionsViewModel data)
+        {
+            try
+            {
+                if (data != null)
+                {
+                    bool Anexos = false;
+                    if (DBAttachments.GetById(User.Identity.Name).Count() > 0)
+                        Anexos = true;
+
+                    PréRequisição PreRequisicaoDB = DBPreRequesition.GetByNo(data.PreRequesitionsNo);
+
+                    if (PreRequisicaoDB != null)
+                    {
+                        PreRequisicaoDB.NºPréRequisição = data.PreRequesitionsNo;
+                        PreRequisicaoDB.Área = data.Area;
+                        PreRequisicaoDB.TipoRequisição = data.RequesitionType;
+                        PreRequisicaoDB.NºProjeto = data.ProjectNo;
+                        PreRequisicaoDB.CódigoRegião = data.RegionCode;
+                        PreRequisicaoDB.CódigoÁreaFuncional = data.FunctionalAreaCode;
+                        PreRequisicaoDB.CódigoCentroResponsabilidade = data.ResponsabilityCenterCode;
+                        PreRequisicaoDB.Urgente = data.Urgent;
+                        PreRequisicaoDB.Amostra = data.Sample;
+                        PreRequisicaoDB.Anexo = Anexos;
+                        PreRequisicaoDB.Imobilizado = data.Immobilized;
+                        PreRequisicaoDB.CompraADinheiro = data.MoneyBuy;
+                        PreRequisicaoDB.CódigoLocalRecolha = data.LocalCollectionCode;
+                        PreRequisicaoDB.CódigoLocalEntrega = data.LocalDeliveryCode;
+                        PreRequisicaoDB.Observações = data.Notes;
+                        PreRequisicaoDB.ModeloDePréRequisição = data.PreRequesitionModel;
+                        PreRequisicaoDB.DataHoraCriação = data.CreateDateTime;
+                        PreRequisicaoDB.UtilizadorCriação = data.CreateUser;
+                        PreRequisicaoDB.DataHoraModificação = data.UpdateDateTime;
+                        PreRequisicaoDB.UtilizadorModificação = User.Identity.Name;
+                        PreRequisicaoDB.Exclusivo = data.Exclusive;
+                        PreRequisicaoDB.JáExecutado = data.AlreadyExecuted;
+                        PreRequisicaoDB.Equipamento = data.Equipment;
+                        PreRequisicaoDB.ReposiçãoDeStock = data.StockReplacement;
+                        PreRequisicaoDB.Reclamação = data.Complaint;
+                        PreRequisicaoDB.CódigoLocalização = data.LocationCode;
+                        PreRequisicaoDB.CabimentoOrçamental = data.FittingBudget;
+                        PreRequisicaoDB.NºFuncionário = data.EmployeeNo;
+                        PreRequisicaoDB.Viatura = data.Vehicle;
+                        PreRequisicaoDB.NºRequesiçãoReclamada = data.ClaimedRequesitionNo;
+                        PreRequisicaoDB.ResponsávelCriação = data.CreateResponsible;
+                        PreRequisicaoDB.ResponsávelAprovação = data.ApprovalResponsible;
+                        PreRequisicaoDB.ResponsávelValidação = data.ValidationResponsible;
+                        PreRequisicaoDB.ResponsávelReceção = data.ReceptionResponsible;
+                        PreRequisicaoDB.DataAprovação = data.ApprovalDate;
+                        PreRequisicaoDB.DataValidação = data.ValidationDate;
+                        PreRequisicaoDB.DataReceção = data.ReceptionDate != "" && data.ReceptionDate != null ? DateTime.Parse(data.ReceptionDate) : (DateTime?)null;
+                        PreRequisicaoDB.UnidadeProdutivaAlimentação = data.FoodProductionUnit;
+                        PreRequisicaoDB.RequisiçãoNutrição = data.NutritionRequesition;
+                        PreRequisicaoDB.RequisiçãoDetergentes = data.DetergentsRequisition;
+                        PreRequisicaoDB.NºProcedimentoCcp = data.CCPProcedureNo;
+                        PreRequisicaoDB.Aprovadores = data.Approvers;
+                        PreRequisicaoDB.MercadoLocal = data.LocalMarket;
+                        PreRequisicaoDB.RegiãoMercadoLocal = data.LocalMarketRegion;
+                        PreRequisicaoDB.ReparaçãoComGarantia = data.WarrantyRepair;
+                        PreRequisicaoDB.Emm = data.EMM;
+                        PreRequisicaoDB.DataEntregaArmazém = data.DeliveryWarehouseDate != "" && data.DeliveryWarehouseDate != null ? DateTime.Parse(data.DeliveryWarehouseDate) : (DateTime?)null;
+                        PreRequisicaoDB.LocalDeRecolha = data.CollectionLocal;
+                        PreRequisicaoDB.MoradaRecolha = data.CollectionAddress;
+                        PreRequisicaoDB.Morada2Recolha = data.CollectionAddress2;
+                        PreRequisicaoDB.CodigoPostalRecolha = data.CollectionPostalCode;
+                        PreRequisicaoDB.LocalidadeRecolha = data.CollectionLocality;
+                        PreRequisicaoDB.ContatoRecolha = data.CollectionContact;
+                        PreRequisicaoDB.ResponsávelReceçãoRecolha = data.CollectionReceptionResponsible;
+                        PreRequisicaoDB.LocalEntrega = data.DeliveryLocal;
+                        PreRequisicaoDB.MoradaEntrega = data.DeliveryAddress;
+                        PreRequisicaoDB.Morada2Entrega = data.DeliveryAddress2;
+                        PreRequisicaoDB.CódigoPostalEntrega = data.DeliveryPostalCode;
+                        PreRequisicaoDB.LocalidadeEntrega = data.DeliveryLocality;
+                        PreRequisicaoDB.ContatoEntrega = data.DeliveryContact;
+                        PreRequisicaoDB.ResponsávelReceçãoReceção = data.ReceptionReceptionResponsible;
+                        PreRequisicaoDB.NºFatura = data.InvoiceNo;
+                        PreRequisicaoDB.PedirOrcamento = data.PedirOrcamento;
+                        PreRequisicaoDB.ValorTotalDocComIVA = data.ValorTotalDocComIVA;
+
+                        PreRequisicaoDB = DBPreRequesition.Update(PreRequisicaoDB);
+                    }
+                    data.eReasonCode = 1;
+                    data.eMessage = "Pré-Requisição atualizada com sucesso.";
+                }
+            }
+            catch (Exception ex)
+            {
+                data.eReasonCode = 2;
+                data.eMessage = "Ocorreu um erro ao atualizar a Pré-Requisição.";
+            }
+            return Json(data);
+
+        }
+
+        [HttpPost]
+        public JsonResult UpdatePreRequesition_CD([FromBody] PreRequesitionsViewModel data)
         {
             try
             {
@@ -1658,6 +1786,29 @@ namespace Hydra.Such.Portal.Controllers
                                 data.eReasonCode = 4;
                                 data.eMessage = "Os campos de Recolha devem ser todos preenchidos.";
                                 return Json(data);
+                            }
+                        }
+
+                        if (data.StockReplacement == false)
+                        {
+                            if (data.ProjectNo == null || data.ProjectNo == "")
+                            {
+                                data.eReasonCode = 7;
+                                data.eMessage = "O campo Nº Ordem/Projecto no Geral deve estar preenchido.";
+                                return Json(data);
+                            }
+
+                            if (PreRequesitionLines != null)
+                            {
+                                foreach (var lines in PreRequesitionLines)
+                                {
+                                    if (lines.NºProjeto == null || lines.NºProjeto == "")
+                                    {
+                                        data.eReasonCode = 8;
+                                        data.eMessage = "O campo Nº Ordem/Projecto nas linhas deve estar preenchido.";
+                                        return Json(data);
+                                    }
+                                }
                             }
                         }
 

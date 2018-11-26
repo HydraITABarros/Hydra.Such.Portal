@@ -1918,6 +1918,7 @@
                         }
 
                         this.data.contractType = 3;
+                        debugger;
                         this.$.page_databoundNoMessage_ajax.url = "/PreRequisicoes/UpdatePreRequesition";
                         this.$.page_databoundNoMessage_ajax.body = JSON.stringify(this.data);
                         this.$.page_databoundNoMessage_ajax.generateRequest();
@@ -2043,25 +2044,46 @@
                 },
 
                 _reqmodel: function (e) {
-                    if (this.$.projectNo.value != "" & this.$.projectNo.value != null) {
+                    var chkRS = this.chkReposicaoStock == true ? true : false;
+                    this.data.stockReplacement = chkRS;
+
+                    if (chkRS == false) {
+                        if (this.$.projectNo.value != "" & this.$.projectNo.value != null) {
+                            if (e != null) {
+                                this.$.dialog.open();
+                                this.$.grid_datareqmodel_ajax.generateRequest();
+                            }
+                        }
+                        else {
+                            this._openToastError('O campo Nº Ordem/Projecto é de preenchimento obrigatório.');
+                        }
+                    }
+                    else {
                         if (e != null) {
                             this.$.dialog.open();
                             this.$.grid_datareqmodel_ajax.generateRequest();
                         }
                     }
-                    else {
-                        this._openToastError('O campo Nº Ordem/Projecto é de preenchimento obrigatório.');
-                    }
+
                 },
 
                 _createnewreq: function (e) {
                     this.data.area = this._areaid;
-                    if (this.$.projectNo.value != "" & this.$.projectNo.value != null) {
+                    var chkRS = this.chkReposicaoStock == true ? true : false;
+                    this.data.stockReplacement = chkRS;
+
+                    if (chkRS == true) {
                         this.$.page_validator_req_ajax.body = JSON.stringify(this.data);
                         this.$.page_validator_req_ajax.generateRequest();
                     }
                     else {
-                        this._openToastError('O campo Nº Ordem/Projecto é de preenchimento obrigatório.');
+                        if (this.$.projectNo.value != "" & this.$.projectNo.value != null) {
+                            this.$.page_validator_req_ajax.body = JSON.stringify(this.data);
+                            this.$.page_validator_req_ajax.generateRequest();
+                        }
+                        else {
+                            this._openToastError('O campo Nº Ordem/Projecto é de preenchimento obrigatório.');
+                        }
                     }
                 },
 
@@ -2074,11 +2096,22 @@
 
                 _update: function () {
                     this.data.area = this._areaid;
-                    if (this.$.projectNo.value != "" & this.$.projectNo.value != null) {
-                        this._executeRequest("/PreRequisicoes/UpdatePreRequesition", this.data)
+                    if (this.chkReposicaoStock == false || this.chkReposicaoStock == undefined) {
+                        if (this.$.projectNo.value != "" & this.$.projectNo.value != null) {
+                            this.data.stockReplacement = this.chkReposicaoStock == true ? true : false;
+
+                            debugger;
+                            this._executeRequest("/PreRequisicoes/UpdatePreRequesition", this.data)
+                        }
+                        else {
+                            this._openToastError('O campo Nº Ordem/Projecto é de preenchimento obrigatório.');
+                        }
                     }
                     else {
-                        this._openToastError('O campo Nº Ordem/Projecto é de preenchimento obrigatório.');
+                        this.data.stockReplacement = this.chkReposicaoStock == true ? true : false;
+
+                        debugger;
+                        this._executeRequest("/PreRequisicoes/UpdatePreRequesition", this.data)
                     }
                 },
 
@@ -2183,7 +2216,7 @@
                                     this._showPreReqLinesForm = "none";
                                 }
 
-                                this.chkReposicaoStock = this.data.StockReplacement;
+                                this.chkReposicaoStock = this.data.stockReplacement;
 
                                 this.$.grid_prereqlines.clearCache();
 
@@ -2208,23 +2241,6 @@
                                 this._openToastError(this.data.eMessage);
                             }
                         }
-                        //if (data.detail.url.indexOf("CreateRequesition") !== -1) {
-                        //    if (this.data.eReasonCode == 1) {
-                        //        this._openToast(this.data.eMessage);
-                        //        this.$.prereqLines_databound_ajax.body = JSON.stringify(this.data);
-                        //        this.$.prereqLines_databound_ajax.generateRequest();
-
-                        //    } else {
-                        //        this._openToastError(this.data.eMessage);
-                        //    }
-                        //}
-
-                        //Não existe purchaseheader_ajax
-                        //if (!(this.$._CLResponsabilityCenterCode.value == "" || this.$._CLResponsabilityCenterCode.value == null)) {
-                        //    var itemNo = this.$._CLResponsabilityCenterCode.value;
-                        //    this.$.purchaseheader_ajax.body = JSON.stringify(itemNo);
-                        //    this.$.purchaseheader_ajax.generateRequest();
-                        //}
                     } else {
                         this._openToastError("Ocorreu um erro desconhecido.")
                     }
@@ -2239,9 +2255,9 @@
                     }
 
                     this.data.contractType = 3;
-                    this.$.page_databoundNoMessage_ajax.url = "/PreRequisicoes/UpdatePreRequesition";
-                    this.$.page_databoundNoMessage_ajax.body = JSON.stringify(this.data);
-                    this.$.page_databoundNoMessage_ajax.generateRequest();
+                    //this.$.page_databoundNoMessage_ajax.url = "/PreRequisicoes/UpdatePreRequesition";
+                    //this.$.page_databoundNoMessage_ajax.body = JSON.stringify(this.data);
+                    //this.$.page_databoundNoMessage_ajax.generateRequest();
                 },
 
                 _copyFromTemplateResponse: function (data) {
@@ -2521,6 +2537,9 @@
 
                 //Pre Requesition Lines
                 _createPreReqLine: function () {
+                    var chkRS = this.chkReposicaoStock == true ? true : false;
+                    this.data.stockReplacement = chkRS;
+
                     var requesitionType = this.$.requesitionType.value;
 
                     var localCode = "";
@@ -2534,7 +2553,81 @@
                         validLocalCode = (localCode !== null && localCode !== "");
                     }
 
-                    if (this.$._ProjectNo.value != "" & this.$._ProjectNo.value != null) {
+                    if (chkRS == false) {
+                        if (this.$._ProjectNo.value != "" & this.$._ProjectNo.value != null) {
+                            if (validLocalCode) {
+                                if (this._Products != undefined & this._Products != "") {
+                                    if (this.$._QuantityToRequire.validate() && parseFloat(this.$._QuantityToRequire.value) > 0) {
+                                        var totalCost = this._QuantityToRequire * this._UnitCost;
+                                        if (isNaN(totalCost)) {
+                                            totalCost = 0;
+                                        }
+
+                                        var purchHeaderNo = "";
+                                        var purchLineNo = "";
+                                        if (this.$._CBPurchaseLine.value != undefined & this.$._CBPurchaseLine.value != "") {
+                                            var composedKey = this.$._CBPurchaseLine.value.split(" ", 2);
+                                            purchHeaderNo = composedKey[0];
+                                            purchLineNo = composedKey[1];
+                                        }
+
+                                        this.dataLines.lines.unshift({
+                                            preRequisitionLineNo: this.data.preRequesitionsNo,
+                                            type: 2, //PRODUTO
+                                            code: this._Products,
+                                            description: this._Description,
+                                            description2: this._Description2,
+                                            localCode: localCode,
+                                            unitMeasureCode: this._UnitMeasureCode,
+                                            quantityToRequire: this._QuantityToRequire,
+                                            regionCode: this.$._CLRegion.value,
+                                            functionalAreaCode: this.$._CLFunctionalAreaCode.value,
+                                            centerResponsibilityCode: this.$._CLResponsabilityCenterCode.value,
+                                            projectNo: this.$._ProjectNo.value,
+                                            //qtyByUnitOfMeasure
+                                            //quantityRequired
+                                            //quantityPending:
+                                            quantidadeInicial: this._QuantityToRequire,
+                                            unitCost: this._UnitCost,
+                                            //sellUnityPrice
+                                            //budgetValue
+                                            //expectedReceivingDate
+                                            //billable
+                                            maintenanceOrderLineNo: this._MaintenanceOrderLineNo,
+                                            //employeeNo
+                                            vehicle: this.data.vehicle,
+                                            supplierNo: this._CBVendor,
+                                            //supplierProductCode
+                                            armazemCDireta: this._CBItemsCDirect,
+                                            //unitNutritionProduction
+                                            //customerNo
+                                            openOrderNo: purchHeaderNo,
+                                            openOrderLineNo: purchLineNo,
+                                            totalCost: totalCost > 0 ? totalCost : "",
+                                        });
+
+                                        this.$.prereqLines_databound_ajax.url = "/PreRequisicoes/UpdateContractLines";
+                                        this.$.prereqLines_databound_ajax.body = JSON.stringify(this.dataLines);
+                                        this.$.prereqLines_databound_ajax.generateRequest();
+                                        this.$.grid_prereqlines.clearCache();
+                                    }
+                                    else {
+                                        this._openToastError('O valor do campo Qt. a Requerer tem que estar preenchido, ser superior a 0 e só pode ter 4 casas decimais.');
+                                    }
+                                }
+                                else {
+                                    this._openToastError('O valor do campo Cód. Produto tem que estar preenchido.');
+                                }
+                            }
+                            else {
+                                this._openToastError('O valor do campo Cód. Localização tem que estar preenchido.');
+                            }
+                        }
+                        else {
+                            this._openToastError('O valor do campo Nº Ordem/Projecto tem que estar preenchido.');
+                        }
+                    }
+                    else {
                         if (validLocalCode) {
                             if (this._Products != undefined & this._Products != "") {
                                 if (this.$._QuantityToRequire.validate() && parseFloat(this.$._QuantityToRequire.value) > 0) {
@@ -2602,9 +2695,6 @@
                         else {
                             this._openToastError('O valor do campo Cód. Localização tem que estar preenchido.');
                         }
-                    }
-                    else {
-                        this._openToastError('O valor do campo Nº Ordem/Projecto tem que estar preenchido.');
                     }
                 },
 
