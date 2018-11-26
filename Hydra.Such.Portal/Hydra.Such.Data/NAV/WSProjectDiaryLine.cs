@@ -33,7 +33,7 @@ namespace Hydra.Such.Data.NAV
             var filter = new WSCreateProjectDiaryLine.WSJobJournalLine_Filter { Field = WSCreateProjectDiaryLine.WSJobJournalLine_Fields.Portal_Transaction_No, Criteria = TransactID.ToString() };
             var filterArray = new WSCreateProjectDiaryLine.WSJobJournalLine_Filter[] { filter };
 
-            var result =  WS_Client.ReadMultipleAsync(filterArray, null, 100);
+            var result =  WS_Client.ReadMultipleAsync(filterArray, null, 2000);
             
             if (result != null && result.Result != null)
             {
