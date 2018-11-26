@@ -34,6 +34,7 @@ namespace Hydra.Such.Data.ViewModel
         public string NumSeriePreFaturasCompraCP { get; set; }
         public string NumSerieNotasCreditoCompra { get; set; }
         public string SuperiorHierarquico { get; set; }
+        public bool? RequisicaoStock { get; set; }
 
         public List<UserAccessesViewModel> UserAccesses { get; set; }
         public List<ProfileModelsViewModel> UserProfiles { get; set; }

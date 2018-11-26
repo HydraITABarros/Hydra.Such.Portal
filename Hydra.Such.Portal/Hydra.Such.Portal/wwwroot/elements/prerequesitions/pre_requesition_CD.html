@@ -201,7 +201,7 @@
                    on-response="_CleanPreRequesitionResponse"
                    content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/PreRequisicoes/GetPreRequesitionDetails"
+        <iron-ajax url="/PreRequisicoes/GetPreRequesitionDetails_CD"
                    last-response="{{data}}"
                    method="post"
                    handle-as="json"
@@ -209,7 +209,7 @@
                    on-response="_responseProcessor"
                    content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/PreRequisicoes/GetPreRequesitionDetails"
+        <iron-ajax url="/PreRequisicoes/GetPreRequesitionDetails_CD"
                    last-response="{{data}}"
                    method="post"
                    handle-as="json"
@@ -513,8 +513,9 @@
                                             <such-textarea rows="5" value="{{data.notes}}" id="Notes" name="Notes" label="Notas" disabled="{{ !_permissions.update }}"> </such-textarea>
                                         </div>
 
-                                        <div class="col-md-3">
-                                        </div>
+                                        <!--<div class="col-md-3">
+                                            <vaadin-checkbox id="Attachment" checked="{{data.attachment}}" disabled>Anexo(s)</vaadin-checkbox>                                        
+                                        </div>-->
                                     </div>
 
                                     <div class="row break_clear" hidden>
@@ -594,7 +595,7 @@
                                                         items="[[Products]]"
                                                         text-path="code"
                                                         value-path="code"
-                                                        fields='[{"field":"code", "name":"Cód. Produto"}, {"field":"name", "name":"Descrição"}, {"field":"name2", "name":"Descrição 2"}, {"field":"measureUnit", "name":"Unidade de Medida"}, {"field":"itemCategoryCode", "name":"Cód. Categoria"}, {"field":"productGroupCode", "name":"Cód. Grupo"}, {"field":"vatProductPostingGroup", "name":"Gr. Registo IVA Produto"}]'
+                                                        fields='[{"field":"unitCost", "name":"Custo Unitário"}, {"field":"code", "name":"Cód. Produto"}, {"field":"name", "name":"Descrição"}, {"field":"name2", "name":"Descrição 2"}, {"field":"measureUnit", "name":"Unidade de Medida"}, {"field":"itemCategoryCode", "name":"Cód. Categoria"}, {"field":"productGroupCode", "name":"Cód. Grupo"}, {"field":"vatProductPostingGroup", "name":"Gr. Registo IVA Produto"}]'
                                                         disabled="{{ !_permissions.update }}"
                                                         on-value-changed="_onProductChanged"
                                                         on-click="_onProductClick">
@@ -644,17 +645,17 @@
 
                                 <div class="row break_clear">
                                     <div class="col-lg-2 text-right">
-                                        <vaadin-text-field value="{{_QuantityToRequire}}" id="_QuantityToRequire" name="_QuantityToRequire" label="Qt. a Requerer" on-blur="_CalculoAutomaticoValores" required error-message="Este campo é obrigatório, tem que ser superior a 0 e só pode ter 4 casas decimais" disabled="{{ !_permissions.update }}" pattern="\d+(\.\d{1,4})?"> </vaadin-text-field>
+                                        <vaadin-text-field value="{{_QuantityToRequire}}" id="_QuantityToRequire" name="_QuantityToRequire" label="Qt. a Requerer" on-blur="_CalculoAutomaticoValores" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório, tem que ser superior a 0 e só pode ter 4 casas decimais"></vaadin-text-field>
                                     </div>
 
                                     <div class="col-lg-2 text-right">
-                                        <vaadin-text-field value="{{_UnitCost}}" id="_UnitCost" name="_UnitCost" label="Custo Unitário" on-blur="_CalculoAutomaticoValores" disabled="{{ !_permissions.update }}" type="number" pattern="^[1-9]\d*(\.\d+)?$">
+                                        <vaadin-text-field value="{{_UnitCost}}" id="_UnitCost" name="_UnitCost" label="Custo Unitário" on-blur="_CalculoAutomaticoValores" disabled="{{ !_permissions.update }}"  required error-message="Este campo é obrigatório, tem que ser superior a 0 e só pode ter 5 casas decimais">
                                             <div slot="suffix">€</div>
                                         </vaadin-text-field>
                                     </div>
 
                                     <div class="col-lg-2 text-right">
-                                        <vaadin-text-field value="{{_UnitCostWithIVA}}" id="_UnitCostWithIVA" name="_UnitCostWithIVA" label="Custo Unitário com IVA" on-blur="_CalculoAutomaticoValores" disabled="{{ !_permissions.update }}" type="number" pattern="^[1-9]\d*(\.\d+)?$">
+                                        <vaadin-text-field value="{{_UnitCostWithIVA}}" id="_UnitCostWithIVA" name="_UnitCostWithIVA" label="Custo Unitário com IVA" on-blur="_CalculoAutomaticoValores" disabled="{{ !_permissions.update }}"  required error-message="Este campo é obrigatório, tem que ser superior a 0 e só pode ter 4 casas decimais">
                                             <div slot="suffix">€</div>
                                         </vaadin-text-field>
                                     </div>
@@ -724,13 +725,14 @@
                                                         text-path="id"
                                                         value-path="id"
                                                         fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Gr. Registo IVA Produto"}]'
+                                                        on-blur="_CalculoAutomaticoValores"
                                                         disabled="{{ _permissionsCreate }}">
                                         </such-selectbox>
                                     </div>
 
 
                                     <div class="col-lg-2 text-right">
-                                        <vaadin-text-field id="_PercentagemIVA" name="_PercentagemIVA" label="Valor Tx IVA" on-blur="_CalculoAutomaticoValores" disabled="{{ !_permissions.update }}" type="number" pattern="^[1-9]\d*(\.\d+)?$">
+                                        <vaadin-text-field id="_PercentagemIVA" name="_PercentagemIVA" label="Valor Tx IVA" on-blur="_CalculoAutomaticoValores" disabled="{{ !_permissions.update }}">
                                             <div slot="suffix">%</div>
                                         </vaadin-text-field>
                                     </div>
@@ -1019,7 +1021,7 @@
                                                 </such-selectbox>
                                             </template>
                                             <template is="dom-if" if="{{ !item.selected }}">
-                                                [[ _clFormatsupplierNo(item.supplierNo) ]]
+                                                {{ item.supplierNo }}
                                             </template>
                                         </template>
                                     </vaadin-grid-column>
@@ -1337,6 +1339,13 @@
                         });
                     }
 
+                    //if (this._isCreate == false && this.$.UploadRequest != null) {
+                    //    this.$.UploadRequest.addEventListener('upload-response', function (e) {
+                    //        this.$.page_update_ajax.body = JSON.stringify({ "id": this._prerequesitionno });
+                    //        this.$.page_update_ajax.generateRequest();
+                    //    });
+                    //}
+
                     if (this._isCreate == false) {
                         this.$.page_update_ajax.body = JSON.stringify({ "id": this._prerequesitionno });
                         this.$.page_update_ajax.generateRequest();
@@ -1344,7 +1353,6 @@
                 },
 
                 _onCacheLoaded: function (data, CBPurchaseLineGrid, CBRequesitionType, LProjectFunctionalAreaCodes, LProjectResponsabilityCenterCodes, LProjectRegionCodes, CBVehicle, CBJobNo, CBVendor, CBLocal, CBLocations, CBPurchaseHeader, CBPurchaseLine, Products) {
-
                     if (!this.Flag) {
                         this.$.page_databound_ajax.body = JSON.stringify({ "PreRequesitionsNo": this._prerequesitionno });
                         this.$.page_databound_ajax.generateRequest();
@@ -1549,9 +1557,11 @@
                         }
 
                         this.data.contractType = 3;
-                        this.$.page_databoundNoMessage_ajax.url = "/PreRequisicoes/UpdatePreRequesition";
-                        this.$.page_databoundNoMessage_ajax.body = JSON.stringify(this.data);
-                        this.$.page_databoundNoMessage_ajax.generateRequest();
+                        if (this.$.projectNo.value != "" && this.$.projectNo.value != null) {
+                            this.$.page_databoundNoMessage_ajax.url = "/PreRequisicoes/UpdatePreRequesition_CD";
+                            this.$.page_databoundNoMessage_ajax.body = JSON.stringify(this.data);
+                            this.$.page_databoundNoMessage_ajax.generateRequest();
+                        }
                     }
                 },
 
@@ -1604,8 +1614,8 @@
                 },
 
                 _loadAttachResponse: function (e) {
-                    this.$.page_databound_ajax.body = JSON.stringify({ "PreRequesitionsNo": this._prerequesitionno });
-                    this.$.page_databound_ajax.generateRequest();
+                    this.$.page_update_ajax.body = JSON.stringify({ "id": this._prerequesitionno });
+                    this.$.page_update_ajax.generateRequest();
                 },
 
                 _onSearchTermChanged: function (value) {
@@ -1725,8 +1735,8 @@
 
                 _update: function () {
                     this.data.area = this._areaid;
-                    if (this.$.projectNo.value != "" & this.$.projectNo.value != null) {
-                        this._executeRequest("/PreRequisicoes/UpdatePreRequesition", this.data)
+                    if (this.$.projectNo.value != "" && this.$.projectNo.value != null) {
+                        this._executeRequest("/PreRequisicoes/UpdatePreRequesition_CD", this.data)
                     }
                     else {
                         this._openToastError('O campo Nº Ordem/Projecto é de preenchimento obrigatório.');
@@ -1823,7 +1833,7 @@
                 },
                 _responseProcessor: function (data) {
                     if (data.detail.status === 200) {
-                        if (data.detail.url.indexOf("GetPreRequesitionDetails") !== -1) {
+                        if (data.detail.url.indexOf("GetPreRequesitionDetails_CD") !== -1) {
                             var id = this.data.preRequesitionsNo;
                             if (id != "") {
                                 this._showPreReqLines = "";
@@ -1851,7 +1861,6 @@
                         }
                         else if (data.detail.url.indexOf("Update") !== -1) {
                             if (this.data.eReasonCode == 1) {
-
                                 this._openToast("Pré-Requisição atualizada com sucesso.");
                             } else {
                                 this._openToastError(this.data.eMessage);
@@ -1871,9 +1880,11 @@
                     }
 
                     this.data.contractType = 3;
-                    this.$.page_databoundNoMessage_ajax.url = "/PreRequisicoes/UpdatePreRequesition";
-                    this.$.page_databoundNoMessage_ajax.body = JSON.stringify(this.data);
-                    this.$.page_databoundNoMessage_ajax.generateRequest();
+                    if (this.$.projectNo.value != "" && this.$.projectNo.value != null) {
+                        this.$.page_databoundNoMessage_ajax.url = "/PreRequisicoes/UpdatePreRequesition_CD";
+                        this.$.page_databoundNoMessage_ajax.body = JSON.stringify(this.data);
+                        this.$.page_databoundNoMessage_ajax.generateRequest();
+                    }
                 },
 
                 _copyFromTemplateResponse: function (data) {
@@ -1929,12 +1940,16 @@
                     }
                 },
                 _openToast: function (message) {
-                    this.$.ToastMessageSuccess.text = message;
-                    this.$.ToastMessageSuccess.open();
+                    if (message != null && message != "") {
+                        this.$.ToastMessageSuccess.text = message;
+                        this.$.ToastMessageSuccess.open();
+                    }
                 },
                 _openToastError: function (message) {
-                    this.$.ToastMessageError.text = message;
-                    this.$.ToastMessageError.open();
+                    if (message != null && message != "") {
+                        this.$.ToastMessageError.text = message;
+                        this.$.ToastMessageError.open();
+                    }
                 },
 
                 _createNewPreReq: function (item) {
@@ -1965,8 +1980,8 @@
                             count += this.dataLines.lines[i].totalCost;
                             countWithIVA += this.dataLines.lines[i].totalCostWithIVA;
 
-                            this._TotalLine = count;
-                            this._TotalWithIVALine = countWithIVA;
+                            this._TotalLine = count.toFixed(4);
+                            this._TotalWithIVALine = countWithIVA.toFixed(4);
                             this.$.dialogTotal.open();
                         }
                     } else {
@@ -2147,11 +2162,13 @@
                 _CalculoAutomaticoResponseProcessor: function (e) {
                     if (this.calculoAutomatico != null) {
                         if (this.calculoAutomatico.quantityToRequire != null)
-                            this.$._QuantityToRequire.value = this.calculoAutomatico.quantityToRequire;
+                            this.$._QuantityToRequire.value = Math.round(this.calculoAutomatico.quantityToRequire, 4);
+
                         if (this.calculoAutomatico.unitCost != null)
-                            this.$._UnitCost.value = this.calculoAutomatico.unitCost;
+                            this.$._UnitCost.value = Math.round(this.calculoAutomatico.unitCost, 4);
+
                         if (this.calculoAutomatico.unitCostWithIVA != null)
-                            this.$._UnitCostWithIVA.value = this.calculoAutomatico.unitCostWithIVA;
+                            this.$._UnitCostWithIVA.value = Math.round(this.calculoAutomatico.unitCostWithIVA, 4);
                     }
                 },
 
@@ -2170,72 +2187,87 @@
                         validLocalCode = (localCode !== null && localCode !== "");
                     }
 
-                    if (this.$._ProjectNo.value != "" & this.$._ProjectNo.value != null) {
+                    if (this._Products != undefined && this._Products != "") {
                         if (validLocalCode) {
-                            if (this._Products != undefined & this._Products != "") {
+                            if (this._CBVendor != undefined && this._CBVendor != "") {
                                 if (this.$._QuantityToRequire.validate() && parseFloat(this.$._QuantityToRequire.value) > 0) {
-                                    var totalCost = this._QuantityToRequire * this._UnitCost;
-                                    if (isNaN(totalCost)) {
-                                        totalCost = 0;
+                                    if (this.$._UnitCost.validate() && parseFloat(this.$._UnitCost.value) > 0) {
+                                        if (this.$._UnitCostWithIVA.validate() && parseFloat(this.$._UnitCostWithIVA.value) > 0) {
+                                            if (this.$._ProjectNo.value != "" && this.$._ProjectNo.value != null) {
+                                                var totalCost = this._QuantityToRequire * this._UnitCost;
+                                                if (isNaN(totalCost)) {
+                                                    totalCost = 0;
+                                                }
+
+                                                //var purchHeaderNo = "";
+                                                //var purchLineNo = "";
+                                                //if (this.$._CBPurchaseLine.value != undefined & this.$._CBPurchaseLine.value != "") {
+                                                //    var composedKey = this.$._CBPurchaseLine.value.split(" ", 2);
+                                                //    purchHeaderNo = composedKey[0];
+                                                //    purchLineNo = composedKey[1];
+                                                //}
+
+                                                this.dataLines.lines.unshift({
+                                                    preRequisitionLineNo: this.data.preRequesitionsNo,
+                                                    type: 2, //PRODUTO
+                                                    code: this._Products,
+                                                    localCode: localCode,
+                                                    description: this._Description,
+                                                    description2: this._Description2,
+                                                    unitMeasureCode: this._UnitMeasureCode,
+                                                    quantityToRequire: this._QuantityToRequire,
+                                                    unitCost: this._UnitCost,
+                                                    unitCostWithIVA: this._UnitCostWithIVA,
+                                                    projectNo: this.$._ProjectNo.value,
+                                                    vehicle: this.data.vehicle,
+                                                    supplierNo: this._CBVendor,
+                                                    regionCode: this.$._CLRegion.value,
+                                                    functionalAreaCode: this.$._CLFunctionalAreaCode.value,
+                                                    centerResponsibilityCode: this.$._CLResponsabilityCenterCode.value,
+                                                    //qtyByUnitOfMeasure
+                                                    //quantityRequired
+                                                    //quantityPending:
+                                                    quantidadeInicial: this._QuantityToRequire,
+                                                    //sellUnityPrice
+                                                    //budgetValue
+                                                    //expectedReceivingDate
+                                                    //billable
+                                                    maintenanceOrderLineNo: this._MaintenanceOrderLineNo,
+                                                    //employeeNo
+                                                    //supplierProductCode
+                                                    armazemCDireta: this._CBItemsCDirect,
+                                                    //unitNutritionProduction
+                                                    //customerNo
+                                                    //openOrderNo: purchHeaderNo,
+                                                    //openOrderLineNo: purchLineNo,
+                                                    totalCost: totalCost > 0 ? totalCost : "",
+                                                    totalCostWithIVA: this.$._CustoTotalComIVA.value,
+                                                    grupoRegistoIVAProduto: this.$._CLVATProductsPostingGroups.value,
+                                                });
+
+                                                this.$.prereqLines_databound_ajax.url = "/PreRequisicoes/UpdateContractLines";
+                                                this.$.prereqLines_databound_ajax.body = JSON.stringify(this.dataLines);
+                                                this.$.prereqLines_databound_ajax.generateRequest();
+                                                this.$.grid_prereqlines.clearCache();
+                                            }
+                                            else {
+                                                this._openToastError('O valor do campo Nº Ordem/Projeto tem que estar preenchido.');
+                                            }
+                                        }
+                                        else {
+                                            this._openToastError('O valor do campo Custo Unitário com IVA tem que estar preenchido, ser superior a 0 e só pode ter 4 casas decimais.');
+                                        }
                                     }
-
-                                    //var purchHeaderNo = "";
-                                    //var purchLineNo = "";
-                                    //if (this.$._CBPurchaseLine.value != undefined & this.$._CBPurchaseLine.value != "") {
-                                    //    var composedKey = this.$._CBPurchaseLine.value.split(" ", 2);
-                                    //    purchHeaderNo = composedKey[0];
-                                    //    purchLineNo = composedKey[1];
-                                    //}
-
-                                    this.dataLines.lines.unshift({
-                                        preRequisitionLineNo: this.data.preRequesitionsNo,
-                                        type: 2, //PRODUTO
-                                        code: this._Products,
-                                        localCode: localCode,
-                                        description: this._Description,
-                                        description2: this._Description2,
-                                        unitMeasureCode: this._UnitMeasureCode,
-                                        quantityToRequire: this._QuantityToRequire,
-                                        unitCost: this._UnitCost,
-                                        unitCostWithIVA: this._UnitCostWithIVA,
-                                        projectNo: this.$._ProjectNo.value,
-                                        vehicle: this.data.vehicle,
-                                        supplierNo: this._CBVendor,
-                                        regionCode: this.$._CLRegion.value,
-                                        functionalAreaCode: this.$._CLFunctionalAreaCode.value,
-                                        centerResponsibilityCode: this.$._CLResponsabilityCenterCode.value,
-                                        //qtyByUnitOfMeasure
-                                        //quantityRequired
-                                        //quantityPending:
-                                        quantidadeInicial: this._QuantityToRequire,
-                                        //sellUnityPrice
-                                        //budgetValue
-                                        //expectedReceivingDate
-                                        //billable
-                                        maintenanceOrderLineNo: this._MaintenanceOrderLineNo,
-                                        //employeeNo
-                                        //supplierProductCode
-                                        armazemCDireta: this._CBItemsCDirect,
-                                        //unitNutritionProduction
-                                        //customerNo
-                                        //openOrderNo: purchHeaderNo,
-                                        //openOrderLineNo: purchLineNo,
-                                        totalCost: totalCost > 0 ? totalCost : "",
-                                        totalCostWithIVA: this.$._CustoTotalComIVA.value,
-                                        grupoRegistoIVAProduto: this.$._CLVATProductsPostingGroups.value,
-                                    });
-
-                                    this.$.prereqLines_databound_ajax.url = "/PreRequisicoes/UpdateContractLines";
-                                    this.$.prereqLines_databound_ajax.body = JSON.stringify(this.dataLines);
-                                    this.$.prereqLines_databound_ajax.generateRequest();
-                                    this.$.grid_prereqlines.clearCache();
+                                    else {
+                                        this._openToastError('O valor do campo Custo Unitário tem que estar preenchido, ser superior a 0 e só pode ter 5 casas decimais.');
+                                    }
                                 }
                                 else {
                                     this._openToastError('O valor do campo Qt. a Requerer tem que estar preenchido, ser superior a 0 e só pode ter 4 casas decimais.');
                                 }
                             }
                             else {
-                                this._openToastError('O valor do campo Cód. Produto tem que estar preenchido.');
+                                this._openToastError('O valor do campo Nº Fornecedor tem que estar preenchido.');
                             }
                         }
                         else {
@@ -2243,7 +2275,7 @@
                         }
                     }
                     else {
-                        this._openToastError('O valor do campo Nº Ordem/Projecto tem que estar preenchido.');
+                        this._openToastError('O valor do campo Cód. Produto tem que estar preenchido.');
                     }
                 },
 
@@ -2446,7 +2478,8 @@
                         this.$._Description.value = this.productInfo.name;
                         this.$._Description2.value = this.productInfo.name2;
                         this.$._UnitMeasureCode.value = this.productInfo.measureUnit;
-                        this.$._UnitCost.value = this.productInfo.unitCost;
+                        if (this.productInfo.unitCost != 0)
+                            this.$._UnitCost.value = this.productInfo.unitCost;
                         this.$._CLVATProductsPostingGroups.value = this.productInfo.vatProductPostingGroup;
 
                         if (this.productInfo.inventoryValueZero == 1) {
@@ -2484,33 +2517,55 @@
                 },
 
                 _CalculoAutomaticoValores: function (e) {
-                    debugger;
-                    var IVA;
                     if (e.target.value != "") {
                         var stringVal = "" + e.target.value;
                         e.target.value = stringVal.replace(",", ".");
+
+                        var IVA = parseFloat(0);
+                        var _QuantityToRequire = parseFloat(0);
+                        var _UnitCost = parseFloat(0);
+                        var _UnitCostWithIVA = parseFloat(0);
+                        var _CustoTotalComIVA = parseFloat(0);
+                        var _PercentagemIVA = parseFloat(0);
+
+                        if (this.$._QuantityToRequire.value != "")
+                            _QuantityToRequire = parseFloat(this.$._QuantityToRequire.value);
+                        if (this.$._UnitCost.value != "")
+                            _UnitCost = parseFloat(this.$._UnitCost.value);
+                        if (this.$._UnitCostWithIVA.value != "")
+                            _UnitCostWithIVA = parseFloat(this.$._UnitCostWithIVA.value);
+                        if (this.$._CustoTotalComIVA.value != "")
+                            _CustoTotalComIVA = parseFloat(this.$._CustoTotalComIVA.value);
+                        if (this.$._PercentagemIVA.value != "")
+                            _PercentagemIVA = parseFloat(this.$._PercentagemIVA.value);
+
+                        if (_PercentagemIVA != 0)
+                            IVA = (_PercentagemIVA / 100) + 1;
+
+                        if (_UnitCostWithIVA != 0 && _CustoTotalComIVA != 0) {
+                            this.$._QuantityToRequire.value = (_CustoTotalComIVA / _UnitCostWithIVA).toFixed(4).replace(",", ".");
+                        }
+
+                        if (_CustoTotalComIVA != 0 && _PercentagemIVA != 0 && _QuantityToRequire != 0) {
+                            this.$._UnitCost.value = ((_CustoTotalComIVA / IVA) / _QuantityToRequire).toFixed(5).replace(",", ".");
+                        }
+
+                        if (_CustoTotalComIVA != 0 && _QuantityToRequire != 0) {
+                            this.$._UnitCostWithIVA.value = (_CustoTotalComIVA / _QuantityToRequire).toFixed(4).replace(",", ".");
+                        }
+
+                        if (_QuantityToRequire != 0 && _UnitCostWithIVA != 0) {
+                            this.$._CustoTotalComIVA.value = (_QuantityToRequire * _UnitCostWithIVA).toFixed(4).replace(",", ".");
+                        }
+
+                        if (_CustoTotalComIVA != 0 && _QuantityToRequire != 0 && _UnitCost != 0) {
+                            this.$._PercentagemIVA.value = (((_CustoTotalComIVA * 100) / (_QuantityToRequire * _UnitCost)) - 100).toFixed(4).replace(",", ".")
+                        }
+
+                        //if (_QuantityToRequire != 0 && _UnitCost != 0 && _PercentagemIVA != 0) {
+                        //    this.$._CustoTotalComIVA.value = ((_QuantityToRequire * _UnitCost) * IVA).toFixed(4);
+                        //}
                     }
-
-                    //this.$._QuantityToRequire.value
-                    //this.$._UnitCost.value
-                    //this.$._UnitCostWithIVA.value
-                    //this.$._CustoTotalComIVA.value
-                    //this.$._PercentagemIVA.value
-
-                    if (this.$._PercentagemIVA.value != "")
-                        IVA = (this.$._PercentagemIVA.value / 100) + 1;
-
-                    if (this.$._QuantityToRequire.value != "" && this.$._UnitCostWithIVA.value != "")
-                        this.$._CustoTotalComIVA.value = this.$._QuantityToRequire.value * this.$._UnitCostWithIVA.value;
-
-                    if (this.$._UnitCostWithIVA.value != "" && this.$._CustoTotalComIVA.value != "")
-                        this.$._QuantityToRequire.value = this.$._CustoTotalComIVA.value / this.$._UnitCostWithIVA.value;
-
-                    if (this.$._CustoTotalComIVA.value != "" && this.$._QuantityToRequire.value != "")
-                        this.$._UnitCostWithIVA.value = this.$._CustoTotalComIVA.value / this.$._QuantityToRequire.value;
-
-                    if (this.$._QuantityToRequire.value != "" && this.$._UnitCost.value != "" && this.$._PercentagemIVA.value != "")
-                        this.$._CustoTotalComIVA.value = (this.$._QuantityToRequire.value * this.$._UnitCost.value) * IVA;
                 },
 
                 _lineSelected: function (item) {
@@ -2553,23 +2608,24 @@
                             else {
                                 this._openToast(this.dataLines.eMessage);
 
-                                this.$._Products.value = "";
-                                this.$._Products.valueText = "";
-                                this.$._CBLocations.value = "";
-                                this.$._CBLocations.valueText = "";
+                                if (this.$._Products != null)
+                                    this.$._Products._clearSelection();
+                                if (this.$._CBLocations != null)
+                                    this.$._CBLocations._clearSelection();
+                                if (this.$._UnitMeasureCode != null)
+                                    this.$._UnitMeasureCode._clearSelection();
+                                if (this.$._VehicleLines != null)
+                                    this.$._VehicleLines._clearSelection();
+                                if (this.$._CBVendor != null)
+                                    this.$._CBVendor._clearSelection();
+                                if (this.$._CLVATProductsPostingGroups != null)
+                                    this.$._CLVATProductsPostingGroups._clearSelection();
+
                                 this.$._Description.value = "";
                                 this.$._Description2.value = "";
-                                this.$._UnitMeasureCode.value = "";
-                                this.$._UnitMeasureCode.valueText = "";
                                 this.$._QuantityToRequire.value = "";
                                 this.$._UnitCost.value = "";
                                 this.$._UnitCostWithIVA.value = "";
-                                this.$._VehicleLines.value = "";
-                                this.$._VehicleLines.valueText = "";
-                                this.$._CBVendor.value = "";
-                                this.$._CBVendor.valueText = "";
-                                this.$._CLVATProductsPostingGroups.value = "";
-                                this.$._CLVATProductsPostingGroups.valueText = "";
                                 this.$._CustoTotalComIVA.value = "";
 
                                 this.$._ProjectNo.value = this.data.projectNo;

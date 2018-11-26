@@ -164,6 +164,7 @@ namespace Hydra.Such.Portal.Controllers
                 result.NumSerieNotasDebito = userConfig.NumSerieNotasDebito;
                 result.Centroresp = userConfig.CentroDeResponsabilidade;
                 result.SuperiorHierarquico = userConfig.SuperiorHierarquico;
+                result.RequisicaoStock = userConfig.RequisicaoStock.HasValue ? userConfig.RequisicaoStock : false;
 
                 result.UserAccesses = DBUserAccesses.GetByUserId(data.IdUser).Select(x => new UserAccessesViewModel()
                 {
@@ -222,7 +223,8 @@ namespace Hydra.Such.Portal.Controllers
                 NumSerieNotasCredito = data.NumSerieNotasCredito,
                 NumSerieNotasDebito = data.NumSerieNotasDebito,
                 CentroDeResponsabilidade=data.Centroresp,
-                SuperiorHierarquico = data.SuperiorHierarquico
+                SuperiorHierarquico = data.SuperiorHierarquico,
+                RequisicaoStock = data.RequisicaoStock.HasValue ? data.RequisicaoStock.Value : false
         });
 
             data.IdUser = ObjectCreated.IdUtilizador;
@@ -298,6 +300,7 @@ namespace Hydra.Such.Portal.Controllers
                 userConfig.NumSerieNotasDebito = data.NumSerieNotasDebito;
                 userConfig.CentroDeResponsabilidade = data.Centroresp;
                 userConfig.SuperiorHierarquico = data.SuperiorHierarquico;
+                userConfig.RequisicaoStock = data.RequisicaoStock.HasValue ? data.RequisicaoStock : false;
 
                 DBUserConfigurations.Update(userConfig);
 
@@ -5164,10 +5167,6 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetAcordoPrecosConfigData([FromBody] AcordoPrecosModelView data)
         {
-            //AMARO TEMP
-            //data.NoProcedimento = "1";
-            //FIM
-
             AcordoPrecos AP = DBAcordoPrecos.GetById(data.NoProcedimento);
 
             AcordoPrecosModelView result = new AcordoPrecosModelView();

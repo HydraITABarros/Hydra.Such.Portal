@@ -48,8 +48,10 @@ namespace Hydra.Such.Portal.Controllers
             if (UPerm != null && UPerm.Read.Value)
             {
                 //ViewBag.UploadURL = _config.FileUploadFolder;
-                ViewBag.UploadURL = "E:\\Data\\eSUCH\\Requisicoes\\";
-                //ViewBag.UploadURL = "C:\\Data\\eSUCH\\Requisicoes\\";
+                if (_config.Conn == "eSUCH_Prod" || _config.Conn == "PlataformaOperacionalSUCH_TST")
+                    ViewBag.UploadURL = "E:\\Data\\eSUCH\\Requisicoes\\";
+                else
+                    ViewBag.UploadURL = "C:\\Data\\eSUCH\\Requisicoes\\";
                 ViewBag.Area = 1;
                 ViewBag.PreRequesitionNo = User.Identity.Name;
                 ViewBag.UPermissions = UPerm;
@@ -67,8 +69,10 @@ namespace Hydra.Such.Portal.Controllers
             if (UPerm != null && UPerm.Read.Value)
             {
                 //ViewBag.UploadURL = _config.FileUploadFolder;
-                ViewBag.UploadURL = "E:\\Data\\eSUCH\\Requisicoes\\";
-                //ViewBag.UploadURL = "C:\\Data\\eSUCH\\Requisicoes\\";
+                if (_config.Conn == "eSUCH_Prod" || _config.Conn == "PlataformaOperacionalSUCH_TST")
+                    ViewBag.UploadURL = "E:\\Data\\eSUCH\\Requisicoes\\";
+                else
+                    ViewBag.UploadURL = "C:\\Data\\eSUCH\\Requisicoes\\";
                 ViewBag.Area = 1;
                 ViewBag.PreRequesitionNo = User.Identity.Name;
                 ViewBag.UPermissions = UPerm;
@@ -168,7 +172,9 @@ namespace Hydra.Such.Portal.Controllers
 
             if (!string.IsNullOrEmpty(Fornecedor) && !string.IsNullOrEmpty(GrupoIVA))
             {
-                IVA = DBNAV2017VATPostingSetup.GetIVA(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, Fornecedor, GrupoIVA);
+                string GrupoFornecedor = DBNAV2017Supplier.GetAll(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, Fornecedor).FirstOrDefault().VATBusinessPostingGroup;
+
+                IVA = DBNAV2017VATPostingSetup.GetIVA(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, GrupoFornecedor, GrupoIVA);
             }
 
             return Json(IVA);
@@ -316,9 +322,59 @@ namespace Hydra.Such.Portal.Controllers
                     PréRequisição PreRequisition = DBPreRequesition.GetByNo(data.PreRequesitionsNo);
                     result = DBPreRequesition.ParseToViewModel(PreRequisition);
 
-                }
-                return Json(result);
+                    ConfigUtilizadores CU = DBUserConfigurations.GetById(User.Identity.Name);
+                    if (CU.RequisicaoStock == true)
+                    {
+                        result.ShowStockReplacement = true;
+                    }
+                    else
+                    {
+                        result.ShowStockReplacement = false;
+                        result.StockReplacement = false;
+                    }
 
+                    bool Anexos = false;
+                    if (DBAttachments.GetById(User.Identity.Name).Count() > 0)
+                        Anexos = true;
+                    result.Attachment = Anexos;
+
+                    return Json(result);
+                }
+            }
+            return Json(false);
+        }
+
+        public JsonResult GetPreRequesitionDetails_CD([FromBody] PreRequesitionsViewModel data)
+        {
+            if (data != null)
+            {
+                PreRequesitionsViewModel result = new PreRequesitionsViewModel();
+                if (data.PreRequesitionsNo != "")
+                {
+                    PréRequisição PreRequisition = DBPreRequesition.GetByNo(data.PreRequesitionsNo);
+                    if (PreRequisition.NºProjeto != "")
+                    {
+                        result = DBPreRequesition.ParseToViewModel(PreRequisition);
+
+                        ConfigUtilizadores CU = DBUserConfigurations.GetById(User.Identity.Name);
+                        if (CU.RequisicaoStock == true)
+                        {
+                            result.ShowStockReplacement = true;
+                        }
+                        else
+                        {
+                            result.ShowStockReplacement = false;
+                            result.StockReplacement = false;
+                        }
+
+                        bool Anexos = false;
+                        if (DBAttachments.GetById(User.Identity.Name).Count() > 0)
+                            Anexos = true;
+                        result.Attachment = Anexos;
+
+                        return Json(result);
+                    }
+                }
             }
             return Json(false);
         }
@@ -522,43 +578,46 @@ namespace Hydra.Such.Portal.Controllers
                 if (linha != null && !string.IsNullOrEmpty(linha.PreRequisitionLineNo) && linha.LineNo > 0)
                 {
                     LinhasPréRequisição LinhaOriginal = DBPreRequesitionLines.GetById(linha.PreRequisitionLineNo, linha.LineNo);
-                    LinhasPréRequisição LinhaDuplicada = new LinhasPréRequisição();
-
-                    LinhaDuplicada.NºPréRequisição = LinhaOriginal.NºPréRequisição;
-                    LinhaDuplicada.Tipo = LinhaOriginal.Tipo;
-                    LinhaDuplicada.Código = LinhaOriginal.Código;
-                    LinhaDuplicada.Descrição = LinhaOriginal.Descrição;
-                    LinhaDuplicada.CódigoLocalização = LinhaOriginal.CódigoLocalização;
-                    LinhaDuplicada.CódigoUnidadeMedida = LinhaOriginal.CódigoUnidadeMedida;
-                    LinhaDuplicada.QuantidadeARequerer = LinhaOriginal.QuantidadeARequerer;
-                    LinhaDuplicada.QuantidadeInicial = LinhaOriginal.QuantidadeInicial;
-                    LinhaDuplicada.CódigoRegião = LinhaOriginal.CódigoRegião;
-                    LinhaDuplicada.CódigoÁreaFuncional = LinhaOriginal.CódigoÁreaFuncional;
-                    LinhaDuplicada.CódigoCentroResponsabilidade = LinhaOriginal.CódigoCentroResponsabilidade;
-                    LinhaDuplicada.NºProjeto = LinhaOriginal.NºProjeto;
-                    LinhaDuplicada.DataHoraCriação = DateTime.Now;
-                    LinhaDuplicada.UtilizadorCriação = User.Identity.Name;
-                    LinhaDuplicada.DataHoraModificação = (DateTime?)null;
-                    LinhaDuplicada.UtilizadorModificação = "";
-                    LinhaDuplicada.Descrição2 = LinhaOriginal.Descrição2;
-                    LinhaDuplicada.QtdPorUnidadeMedida = LinhaOriginal.QtdPorUnidadeMedida;
-                    LinhaDuplicada.QuantidadeRequerida = LinhaOriginal.QuantidadeRequerida;
-                    LinhaDuplicada.QuantidadePendente = LinhaOriginal.QuantidadePendente;
-                    LinhaDuplicada.CustoUnitário = LinhaOriginal.CustoUnitário;
-                    LinhaDuplicada.PreçoUnitárioVenda = LinhaOriginal.PreçoUnitárioVenda;
-                    LinhaDuplicada.ValorOrçamento = LinhaOriginal.ValorOrçamento;
-                    LinhaDuplicada.DataReceçãoEsperada = LinhaOriginal.DataReceçãoEsperada;
-                    LinhaDuplicada.Faturável = LinhaOriginal.Faturável;
-                    LinhaDuplicada.NºLinhaOrdemManutenção = LinhaOriginal.NºLinhaOrdemManutenção;
-                    LinhaDuplicada.NºFuncionário = LinhaOriginal.NºFuncionário;
-                    LinhaDuplicada.Viatura = LinhaOriginal.Viatura;
-                    LinhaDuplicada.NºFornecedor = LinhaOriginal.NºFornecedor;
-                    LinhaDuplicada.CódigoProdutoFornecedor = LinhaOriginal.CódigoProdutoFornecedor;
-                    LinhaDuplicada.UnidadeProdutivaNutrição = LinhaOriginal.UnidadeProdutivaNutrição;
-                    LinhaDuplicada.NºCliente = LinhaOriginal.NºCliente;
-                    LinhaDuplicada.NºEncomendaAberto = LinhaOriginal.NºEncomendaAberto;
-                    LinhaDuplicada.NºLinhaEncomendaAberto = LinhaOriginal.NºLinhaEncomendaAberto;
-                    LinhaDuplicada.LocalCompraDireta = LinhaOriginal.LocalCompraDireta;
+                    LinhasPréRequisição LinhaDuplicada = new LinhasPréRequisição
+                    {
+                        NºPréRequisição = LinhaOriginal.NºPréRequisição,
+                        Tipo = LinhaOriginal.Tipo,
+                        Código = LinhaOriginal.Código,
+                        Descrição = LinhaOriginal.Descrição,
+                        CódigoLocalização = LinhaOriginal.CódigoLocalização,
+                        CódigoUnidadeMedida = LinhaOriginal.CódigoUnidadeMedida,
+                        QuantidadeARequerer = LinhaOriginal.QuantidadeARequerer,
+                        QuantidadeInicial = LinhaOriginal.QuantidadeInicial,
+                        CódigoRegião = LinhaOriginal.CódigoRegião,
+                        CódigoÁreaFuncional = LinhaOriginal.CódigoÁreaFuncional,
+                        CódigoCentroResponsabilidade = LinhaOriginal.CódigoCentroResponsabilidade,
+                        NºProjeto = LinhaOriginal.NºProjeto,
+                        DataHoraCriação = DateTime.Now,
+                        UtilizadorCriação = User.Identity.Name,
+                        DataHoraModificação = (DateTime?)null,
+                        UtilizadorModificação = "",
+                        Descrição2 = LinhaOriginal.Descrição2,
+                        QtdPorUnidadeMedida = LinhaOriginal.QtdPorUnidadeMedida,
+                        QuantidadeRequerida = LinhaOriginal.QuantidadeRequerida,
+                        QuantidadePendente = LinhaOriginal.QuantidadePendente,
+                        CustoUnitário = LinhaOriginal.CustoUnitário,
+                        PreçoUnitárioVenda = LinhaOriginal.PreçoUnitárioVenda,
+                        ValorOrçamento = LinhaOriginal.ValorOrçamento,
+                        DataReceçãoEsperada = LinhaOriginal.DataReceçãoEsperada,
+                        Faturável = LinhaOriginal.Faturável,
+                        NºLinhaOrdemManutenção = LinhaOriginal.NºLinhaOrdemManutenção,
+                        NºFuncionário = LinhaOriginal.NºFuncionário,
+                        Viatura = LinhaOriginal.Viatura,
+                        NºFornecedor = LinhaOriginal.NºFornecedor,
+                        CódigoProdutoFornecedor = LinhaOriginal.CódigoProdutoFornecedor,
+                        UnidadeProdutivaNutrição = LinhaOriginal.UnidadeProdutivaNutrição,
+                        NºCliente = LinhaOriginal.NºCliente,
+                        NºEncomendaAberto = LinhaOriginal.NºEncomendaAberto,
+                        NºLinhaEncomendaAberto = LinhaOriginal.NºLinhaEncomendaAberto,
+                        LocalCompraDireta = LinhaOriginal.LocalCompraDireta,
+                        CustoUnitarioComIVA = LinhaOriginal.CustoUnitarioComIVA,
+                        GrupoRegistoIVAProduto = LinhaOriginal.GrupoRegistoIVAProduto
+                    };
 
                     if (DBPreRequesitionLines.Create(LinhaDuplicada) != null)
                     {
@@ -727,6 +786,17 @@ namespace Hydra.Such.Portal.Controllers
             {
                 result = DBPreRequesition.ParseToViewModel(DBPreRequesition.GetByNo(preReqID));
 
+                ConfigUtilizadores CU = DBUserConfigurations.GetById(User.Identity.Name);
+                if (CU.RequisicaoStock == true)
+                {
+                    result.ShowStockReplacement = true;
+                }
+                else
+                {
+                    result.ShowStockReplacement = false;
+                    result.StockReplacement = false;
+                }
+
                 bool Anexos = false;
                 if (DBAttachments.GetById(User.Identity.Name).Count() > 0)
                     Anexos = true;
@@ -743,12 +813,13 @@ namespace Hydra.Such.Portal.Controllers
         {
             int TipoPreReq = int.Parse(requestParams["tipoPreReq"].ToString());
             int AreaNo = int.Parse(requestParams["areaid"].ToString());
+
             string pPreRequisicao = DBPreRequesition.GetByNoAndTipoPreReq(User.Identity.Name, TipoPreReq);
             ConfigUtilizadores CU = DBUserConfigurations.GetById(User.Identity.Name);
 
             if (pPreRequisicao != null)
             {
-                PreRequesitionsViewModel reqID = new PreRequesitionsViewModel();
+                PreRequesitionsViewModel reqID = DBPreRequesition.ParseToViewModel(DBPreRequesition.GetByNo(User.Identity.Name));// new PreRequesitionsViewModel();
                 reqID.PreRequesitionsNo = pPreRequisicao;
                 reqID.RegionCode = CU.RegiãoPorDefeito;
                 reqID.FunctionalAreaCode = CU.AreaPorDefeito;
@@ -774,8 +845,10 @@ namespace Hydra.Such.Portal.Controllers
                     foreach (var Anexo in ListAnexos)
                     {
                         //System.IO.File.Delete(_config.FileUploadFolder + Anexo.UrlAnexo);
-                        System.IO.File.Delete("E:\\Data\\eSUCH\\Requisicoes\\" + Anexo.UrlAnexo);
-                        //System.IO.File.Delete("C:\\Data\\eSUCH\\Requisicoes\\" + Anexo.UrlAnexo);
+                        if (_config.Conn == "eSUCH_Prod" || _config.Conn == "PlataformaOperacionalSUCH_TST")
+                            System.IO.File.Delete("E:\\Data\\eSUCH\\Requisicoes\\" + Anexo.UrlAnexo);
+                        else
+                            System.IO.File.Delete("C:\\Data\\eSUCH\\Requisicoes\\" + Anexo.UrlAnexo);
                         DBAttachments.Delete(Anexo);
                     }
                 }
@@ -788,24 +861,37 @@ namespace Hydra.Such.Portal.Controllers
                 //Cria a nova Pré-Requisição
                 PréRequisição createNew = new PréRequisição
                 {
-                    CódigoCentroResponsabilidade = CU.CentroRespPorDefeito,
-                    CódigoRegião = CU.RegiãoPorDefeito,
-                    CódigoÁreaFuncional = CU.AreaPorDefeito,
                     NºPréRequisição = User.Identity.Name,
                     TipoPreReq = TipoPreReq,
                     Área = AreaNo,
+                    CódigoRegião = CU.RegiãoPorDefeito,
+                    CódigoÁreaFuncional = CU.AreaPorDefeito,
+                    CódigoCentroResponsabilidade = CU.CentroRespPorDefeito,
+                    Urgente = false,
+                    Amostra = false,
+                    Anexo = false,
+                    Imobilizado = false,
+                    CompraADinheiro = false,
+                    ModeloDePréRequisição = false,
+                    DataHoraCriação = DateTime.Now,
                     UtilizadorCriação = User.Identity.Name,
-                    DataHoraCriação = DateTime.Now
+                    Exclusivo = false,
+                    JáExecutado = false,
+                    Equipamento = false,
+                    ReposiçãoDeStock = false,
+                    Reclamação = false,
+                    CabimentoOrçamental = false,
+                    RequisiçãoNutrição = false,
+                    RequisiçãoDetergentes = false,
+                    MercadoLocal = false,
+                    ReparaçãoComGarantia = false,
+                    Emm = false,
+                    PedirOrcamento = false
                 };
                 DBPreRequesition.Create(createNew);
 
-                PreRequesitionsViewModel reqID = new PreRequesitionsViewModel
-                {
-                    PreRequesitionsNo = createNew.NºPréRequisição,
-                    RegionCode = createNew.CódigoRegião,
-                    FunctionalAreaCode = createNew.CódigoÁreaFuncional,
-                    ResponsabilityCenterCode = createNew.CódigoCentroResponsabilidade
-                };
+                PreRequesitionsViewModel reqID = DBPreRequesition.ParseToViewModel(createNew);
+
                 return Json(reqID);
             }
         }
@@ -877,7 +963,102 @@ namespace Hydra.Such.Portal.Controllers
             {
                 if (data != null)
                 {
-                    if (data.PreRequesitionsNo != null)
+                    bool Anexos = false;
+                    if (DBAttachments.GetById(User.Identity.Name).Count() > 0)
+                        Anexos = true;
+
+                    PréRequisição PreRequisicaoDB = DBPreRequesition.GetByNo(data.PreRequesitionsNo);
+
+                    if (PreRequisicaoDB != null)
+                    {
+                        PreRequisicaoDB.NºPréRequisição = data.PreRequesitionsNo;
+                        PreRequisicaoDB.Área = data.Area;
+                        PreRequisicaoDB.TipoRequisição = data.RequesitionType;
+                        PreRequisicaoDB.NºProjeto = data.ProjectNo;
+                        PreRequisicaoDB.CódigoRegião = data.RegionCode;
+                        PreRequisicaoDB.CódigoÁreaFuncional = data.FunctionalAreaCode;
+                        PreRequisicaoDB.CódigoCentroResponsabilidade = data.ResponsabilityCenterCode;
+                        PreRequisicaoDB.Urgente = data.Urgent;
+                        PreRequisicaoDB.Amostra = data.Sample;
+                        PreRequisicaoDB.Anexo = Anexos;
+                        PreRequisicaoDB.Imobilizado = data.Immobilized;
+                        PreRequisicaoDB.CompraADinheiro = data.MoneyBuy;
+                        PreRequisicaoDB.CódigoLocalRecolha = data.LocalCollectionCode;
+                        PreRequisicaoDB.CódigoLocalEntrega = data.LocalDeliveryCode;
+                        PreRequisicaoDB.Observações = data.Notes;
+                        PreRequisicaoDB.ModeloDePréRequisição = data.PreRequesitionModel;
+                        PreRequisicaoDB.DataHoraCriação = data.CreateDateTime;
+                        PreRequisicaoDB.UtilizadorCriação = data.CreateUser;
+                        PreRequisicaoDB.DataHoraModificação = data.UpdateDateTime;
+                        PreRequisicaoDB.UtilizadorModificação = User.Identity.Name;
+                        PreRequisicaoDB.Exclusivo = data.Exclusive;
+                        PreRequisicaoDB.JáExecutado = data.AlreadyExecuted;
+                        PreRequisicaoDB.Equipamento = data.Equipment;
+                        PreRequisicaoDB.ReposiçãoDeStock = data.StockReplacement;
+                        PreRequisicaoDB.Reclamação = data.Complaint;
+                        PreRequisicaoDB.CódigoLocalização = data.LocationCode;
+                        PreRequisicaoDB.CabimentoOrçamental = data.FittingBudget;
+                        PreRequisicaoDB.NºFuncionário = data.EmployeeNo;
+                        PreRequisicaoDB.Viatura = data.Vehicle;
+                        PreRequisicaoDB.NºRequesiçãoReclamada = data.ClaimedRequesitionNo;
+                        PreRequisicaoDB.ResponsávelCriação = data.CreateResponsible;
+                        PreRequisicaoDB.ResponsávelAprovação = data.ApprovalResponsible;
+                        PreRequisicaoDB.ResponsávelValidação = data.ValidationResponsible;
+                        PreRequisicaoDB.ResponsávelReceção = data.ReceptionResponsible;
+                        PreRequisicaoDB.DataAprovação = data.ApprovalDate;
+                        PreRequisicaoDB.DataValidação = data.ValidationDate;
+                        PreRequisicaoDB.DataReceção = data.ReceptionDate != "" && data.ReceptionDate != null ? DateTime.Parse(data.ReceptionDate) : (DateTime?)null;
+                        PreRequisicaoDB.UnidadeProdutivaAlimentação = data.FoodProductionUnit;
+                        PreRequisicaoDB.RequisiçãoNutrição = data.NutritionRequesition;
+                        PreRequisicaoDB.RequisiçãoDetergentes = data.DetergentsRequisition;
+                        PreRequisicaoDB.NºProcedimentoCcp = data.CCPProcedureNo;
+                        PreRequisicaoDB.Aprovadores = data.Approvers;
+                        PreRequisicaoDB.MercadoLocal = data.LocalMarket;
+                        PreRequisicaoDB.RegiãoMercadoLocal = data.LocalMarketRegion;
+                        PreRequisicaoDB.ReparaçãoComGarantia = data.WarrantyRepair;
+                        PreRequisicaoDB.Emm = data.EMM;
+                        PreRequisicaoDB.DataEntregaArmazém = data.DeliveryWarehouseDate != "" && data.DeliveryWarehouseDate != null ? DateTime.Parse(data.DeliveryWarehouseDate) : (DateTime?)null;
+                        PreRequisicaoDB.LocalDeRecolha = data.CollectionLocal;
+                        PreRequisicaoDB.MoradaRecolha = data.CollectionAddress;
+                        PreRequisicaoDB.Morada2Recolha = data.CollectionAddress2;
+                        PreRequisicaoDB.CodigoPostalRecolha = data.CollectionPostalCode;
+                        PreRequisicaoDB.LocalidadeRecolha = data.CollectionLocality;
+                        PreRequisicaoDB.ContatoRecolha = data.CollectionContact;
+                        PreRequisicaoDB.ResponsávelReceçãoRecolha = data.CollectionReceptionResponsible;
+                        PreRequisicaoDB.LocalEntrega = data.DeliveryLocal;
+                        PreRequisicaoDB.MoradaEntrega = data.DeliveryAddress;
+                        PreRequisicaoDB.Morada2Entrega = data.DeliveryAddress2;
+                        PreRequisicaoDB.CódigoPostalEntrega = data.DeliveryPostalCode;
+                        PreRequisicaoDB.LocalidadeEntrega = data.DeliveryLocality;
+                        PreRequisicaoDB.ContatoEntrega = data.DeliveryContact;
+                        PreRequisicaoDB.ResponsávelReceçãoReceção = data.ReceptionReceptionResponsible;
+                        PreRequisicaoDB.NºFatura = data.InvoiceNo;
+                        PreRequisicaoDB.PedirOrcamento = data.PedirOrcamento;
+                        PreRequisicaoDB.ValorTotalDocComIVA = data.ValorTotalDocComIVA;
+
+                        PreRequisicaoDB = DBPreRequesition.Update(PreRequisicaoDB);
+                    }
+                    data.eReasonCode = 1;
+                    data.eMessage = "Pré-Requisição atualizada com sucesso.";
+                }
+            }
+            catch (Exception ex)
+            {
+                data.eReasonCode = 2;
+                data.eMessage = "Ocorreu um erro ao atualizar a Pré-Requisição.";
+            }
+            return Json(data);
+
+        }
+
+        [HttpPost]
+        public JsonResult UpdatePreRequesition_CD([FromBody] PreRequesitionsViewModel data)
+        {
+            try
+            {
+                if (data != null)
+                {
+                    if (data.PreRequesitionsNo != null && data.ProjectNo != null)
                     {
                         bool Anexos = false;
                         if (DBAttachments.GetById(User.Identity.Name).Count() > 0)
@@ -908,7 +1089,7 @@ namespace Hydra.Such.Portal.Controllers
                             PreRequisicaoDB.DataHoraCriação = data.CreateDateTime;
                             PreRequisicaoDB.UtilizadorCriação = data.CreateUser;
                             PreRequisicaoDB.DataHoraModificação = data.UpdateDateTime;
-                            PreRequisicaoDB.UtilizadorModificação = data.UpdateUser;
+                            PreRequisicaoDB.UtilizadorModificação = User.Identity.Name;
                             PreRequisicaoDB.Exclusivo = data.Exclusive;
                             PreRequisicaoDB.JáExecutado = data.AlreadyExecuted;
                             PreRequisicaoDB.Equipamento = data.Equipment;
@@ -992,8 +1173,10 @@ namespace Hydra.Such.Portal.Controllers
                         if (Anexo != null)
                         {
                             //System.IO.File.Delete(_config.FileUploadFolder + Anexo.UrlAnexo);
-                            System.IO.File.Delete("E:\\Data\\eSUCH\\Requisicoes\\" + Anexo.UrlAnexo);
-                            //System.IO.File.Delete("C:\\Data\\eSUCH\\Requisicoes\\" + Anexo.UrlAnexo);
+                            if (_config.Conn == "eSUCH_Prod" || _config.Conn == "PlataformaOperacionalSUCH_TST")
+                                System.IO.File.Delete("E:\\Data\\eSUCH\\Requisicoes\\" + Anexo.UrlAnexo);
+                            else
+                                System.IO.File.Delete("C:\\Data\\eSUCH\\Requisicoes\\" + Anexo.UrlAnexo);
                             
                             DBAttachments.Delete(Anexo);
                         }
@@ -1606,6 +1789,29 @@ namespace Hydra.Such.Portal.Controllers
                             }
                         }
 
+                        if (data.StockReplacement == false)
+                        {
+                            if (data.ProjectNo == null || data.ProjectNo == "")
+                            {
+                                data.eReasonCode = 7;
+                                data.eMessage = "O campo Nº Ordem/Projecto no Geral deve estar preenchido.";
+                                return Json(data);
+                            }
+
+                            if (PreRequesitionLines != null)
+                            {
+                                foreach (var lines in PreRequesitionLines)
+                                {
+                                    if (lines.NºProjeto == null || lines.NºProjeto == "")
+                                    {
+                                        data.eReasonCode = 8;
+                                        data.eMessage = "O campo Nº Ordem/Projecto nas linhas deve estar preenchido.";
+                                        return Json(data);
+                                    }
+                                }
+                            }
+                        }
+
                         if (data.AlreadyExecuted == true)
                         {
                             if (String.IsNullOrEmpty(data.InvoiceNo))
@@ -1895,8 +2101,10 @@ namespace Hydra.Such.Portal.Controllers
                                 try
                                 {
                                     //System.IO.File.Copy(_config.FileUploadFolder + FileName, _config.FileUploadFolder + NewFileName);
-                                    System.IO.File.Copy("E:\\Data\\eSUCH\\Requisicoes\\" + FileName, "E:\\Data\\eSUCH\\Requisicoes\\" + NewFileName);
-                                    //System.IO.File.Copy("C:\\Data\\eSUCH\\Requisicoes\\" + FileName, "C:\\Data\\eSUCH\\Requisicoes\\" + NewFileName);
+                                    if (_config.Conn == "eSUCH_Prod" || _config.Conn == "PlataformaOperacionalSUCH_TST")
+                                        System.IO.File.Copy("E:\\Data\\eSUCH\\Requisicoes\\" + FileName, "E:\\Data\\eSUCH\\Requisicoes\\" + NewFileName);
+                                    else
+                                        System.IO.File.Copy("C:\\Data\\eSUCH\\Requisicoes\\" + FileName, "C:\\Data\\eSUCH\\Requisicoes\\" + NewFileName);
                                 }
                                 catch (Exception ex)
                                 {
@@ -1912,8 +2120,10 @@ namespace Hydra.Such.Portal.Controllers
                                 if (newFile != null)
                                 {
                                     //System.IO.File.Delete(_config.FileUploadFolder + file.UrlAnexo);
-                                    System.IO.File.Delete("E:\\Data\\eSUCH\\Requisicoes\\" + file.UrlAnexo);
-                                    //System.IO.File.Delete("C:\\Data\\eSUCH\\Requisicoes\\" + file.UrlAnexo);
+                                    if (_config.Conn == "eSUCH_Prod" || _config.Conn == "PlataformaOperacionalSUCH_TST")
+                                        System.IO.File.Delete("E:\\Data\\eSUCH\\Requisicoes\\" + file.UrlAnexo);
+                                    else
+                                        System.IO.File.Delete("C:\\Data\\eSUCH\\Requisicoes\\" + file.UrlAnexo);
                                     DBAttachments.Delete(file);
                                 }
 
@@ -1986,7 +2196,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (data != null)
                 {
                     List<LinhasPréRequisição> PreRequesitionLines = DBPreRequesitionLines.GetAllByNo(data.PreRequesitionsNo);
-                    List<Anexos> FilesLoaded = DBAttachments.GetById(data.PreRequesitionsNo);
+                    List<Anexos> FilesLoaded = DBAttachments.GetById(1, data.PreRequesitionsNo);
                     data.eMessage = "";
 
                     if (FilesLoaded.Count() > 0)
@@ -2269,8 +2479,10 @@ namespace Hydra.Such.Portal.Controllers
                                 try
                                 {
                                     //System.IO.File.Copy(_config.FileUploadFolder + FileName, _config.FileUploadFolder + NewFileName);
-                                    System.IO.File.Copy("E:\\Data\\eSUCH\\Requisicoes\\" + FileName, "E:\\Data\\eSUCH\\Requisicoes\\" + NewFileName);
-                                    //System.IO.File.Copy("C:\\Data\\eSUCH\\Requisicoes\\" + FileName, "C:\\Data\\eSUCH\\Requisicoes\\" + NewFileName);
+                                    if (_config.Conn == "eSUCH_Prod" || _config.Conn == "PlataformaOperacionalSUCH_TST")
+                                        System.IO.File.Copy("E:\\Data\\eSUCH\\Requisicoes\\" + FileName, "E:\\Data\\eSUCH\\Requisicoes\\" + NewFileName);
+                                    else
+                                        System.IO.File.Copy("C:\\Data\\eSUCH\\Requisicoes\\" + FileName, "C:\\Data\\eSUCH\\Requisicoes\\" + NewFileName);
                                 }
                                 catch (Exception ex)
                                 {
@@ -2286,8 +2498,10 @@ namespace Hydra.Such.Portal.Controllers
                                 if (newFile != null)
                                 {
                                     //System.IO.File.Delete(_config.FileUploadFolder + file.UrlAnexo);
-                                    System.IO.File.Delete("E:\\Data\\eSUCH\\Requisicoes\\" + file.UrlAnexo);
-                                    //System.IO.File.Delete("C:\\Data\\eSUCH\\Requisicoes\\" + file.UrlAnexo);
+                                    if (_config.Conn == "eSUCH_Prod" || _config.Conn == "PlataformaOperacionalSUCH_TST")
+                                        System.IO.File.Delete("E:\\Data\\eSUCH\\Requisicoes\\" + file.UrlAnexo);
+                                    else
+                                        System.IO.File.Delete("C:\\Data\\eSUCH\\Requisicoes\\" + file.UrlAnexo);
                                     DBAttachments.Delete(file);
                                 }
 
@@ -2307,7 +2521,7 @@ namespace Hydra.Such.Portal.Controllers
                         //createdReqIds += RequisitionNo + "; ";
                         var totalValue = req.GetTotalValue();
                         //Start Approval
-                        ErrorHandler result = ApprovalMovementsManager.StartApprovalMovement(1, createReq.CódigoÁreaFuncional, createReq.CódigoCentroResponsabilidade, createReq.CódigoRegião, totalValue, createReq.NºRequisição, User.Identity.Name, "");
+                        ErrorHandler result = ApprovalMovementsManager.StartApprovalMovement(4, createReq.CódigoÁreaFuncional, createReq.CódigoCentroResponsabilidade, createReq.CódigoRegião, totalValue, createReq.NºRequisição, User.Identity.Name, "");
                         if (result.eReasonCode != 100)
                         {
                             data.eMessages.Add(new TraceInformation(TraceType.Error, result.eMessage));
@@ -2376,6 +2590,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (String.IsNullOrEmpty(Error))
                 {
                     ApprovalMovResult = ApprovalMovementsManager.StartApprovalMovement(1, createReq.CódigoÁreaFuncional, createReq.CódigoCentroResponsabilidade, createReq.CódigoRegião, 0, createReq.NºRequisição, User.Identity.Name, "");
+
                     if (ApprovalMovResult.eReasonCode != 100)
                     {
                         ApprovalMovResult.eReasonCode = 2;
@@ -2416,6 +2631,71 @@ namespace Hydra.Such.Portal.Controllers
             return Json(ApprovalMovResult);
         }
 
+        [HttpPost]
+        public JsonResult SendReqForApproval_CD([FromBody] JObject requestParams)
+        {
+            string ReqNo = requestParams["requisitionNo"].ToString();
+            Requisição createReq = DBRequest.GetById(ReqNo);
+            ErrorHandler ApprovalMovResult = new ErrorHandler();
+            string Error = "";
+
+            List<ConfiguraçãoAprovações> approv = DBApprovalConfigurations.GetAll();
+
+            List<ApprovalMovementsViewModel> result = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAll());// .GetAllAssignedToUserFilteredByStatus(User.Identity.Name, 1));
+
+            if (result != null && result.Count > 0)
+            {
+                foreach (ApprovalMovementsViewModel req in result)
+                {
+                    if (req.Number == ReqNo && (req.Status == 1 || req.Status == 2))
+                    {
+                        Error = "Esta Compras Dinheiro já está à espera de Aprovação.";
+                    }
+                }
+
+                if (String.IsNullOrEmpty(Error))
+                {
+                    ApprovalMovResult = ApprovalMovementsManager.StartApprovalMovement(4, createReq.CódigoÁreaFuncional, createReq.CódigoCentroResponsabilidade, createReq.CódigoRegião, 0, createReq.NºRequisição, User.Identity.Name, "");
+
+                    if (ApprovalMovResult.eReasonCode != 100)
+                    {
+                        ApprovalMovResult.eReasonCode = 2;
+                        //ApprovalMovResult.eMessage = "Não foi possivel iniciar o processo de aprovação para esta requisição: " + ReqNo;
+                    }
+                }
+                else
+                {
+                    ApprovalMovResult.eReasonCode = 3;
+                    ApprovalMovResult.eMessage = Error;
+                }
+            }
+            else
+            {
+                ApprovalMovResult = ApprovalMovementsManager.StartApprovalMovement(4, createReq.CódigoÁreaFuncional, createReq.CódigoCentroResponsabilidade, createReq.CódigoRegião, 0, createReq.NºRequisição, User.Identity.Name, "");
+                if (ApprovalMovResult.eReasonCode != 100)
+                {
+                    ApprovalMovResult.eReasonCode = 2;
+                    //ApprovalMovResult.eMessage = "Não foi possivel iniciar o processo de aprovação para esta requisição: " + ReqNo;
+                }
+            }
+
+            if (ApprovalMovResult.eReasonCode != 3 && ApprovalMovResult.eReasonCode != 2)
+            {
+                createReq.Estado = (int)RequisitionStates.Pending;
+                createReq.UtilizadorModificação = User.Identity.Name;
+                if (DBRequest.Update(createReq) != null)
+                {
+                    ApprovalMovResult.eReasonCode = 1;
+                    ApprovalMovResult.eMessage = "Foi iniciado o processo de aprovação para esta Compras Dinheiro";
+                }
+                else
+                {
+                    ApprovalMovResult.eReasonCode = 4;
+                    ApprovalMovResult.eMessage = "Ocorreu um erro ao atualizar o estado da Compras Dinheiro.";
+                }
+            }
+            return Json(ApprovalMovResult);
+        }
 
         [HttpPost]
         public JsonResult GetProductInfo([FromBody] PreRequisitionLineViewModel linha, string area)
@@ -2558,8 +2838,11 @@ namespace Hydra.Such.Portal.Controllers
 
                             full_filename = id + "_" + filename;
                             //var path = Path.Combine(_config.FileUploadFolder, full_filename);
-                            var path = Path.Combine("E:\\Data\\eSUCH\\Requisicoes\\", full_filename);
-                            //var path = Path.Combine("C:\\Data\\eSUCH\\Requisicoes\\", full_filename);
+                            var path = "";
+                            if (_config.Conn == "eSUCH_Prod" || _config.Conn == "PlataformaOperacionalSUCH_TST")
+                                path = Path.Combine("E:\\Data\\eSUCH\\Requisicoes\\", full_filename);
+                            else
+                                path = Path.Combine("C:\\Data\\eSUCH\\Requisicoes\\", full_filename);
 
                             using (FileStream dd = new FileStream(path, FileMode.CreateNew))
                             {
@@ -2579,26 +2862,26 @@ namespace Hydra.Such.Portal.Controllers
                                     System.IO.File.Delete(path);
                                 }
 
-                                if (DBAttachments.GetAll().Where(x => x.TipoOrigem == 1 && x.NºOrigem == id).Count() > 0)
-                                {
-                                    PréRequisição preREQ = DBPreRequesition.GetByNo(id);
-                                    if (preREQ != null)
-                                    {
-                                        preREQ.CabimentoOrçamental = true;
-                                        preREQ.UtilizadorModificação = User.Identity.Name;
-                                        DBPreRequesition.Update(preREQ);
-                                    }
-                                    else
-                                    {
-                                        Requisição REQ = DBRequest.GetById(id);
-                                        if (REQ != null)
-                                        {
-                                            REQ.CabimentoOrçamental = true;
-                                            REQ.UtilizadorModificação = User.Identity.Name;
-                                            DBRequest.Update(REQ);
-                                        }
-                                    }
-                                }
+                                //if (DBAttachments.GetAll().Where(x => x.TipoOrigem == 1 && x.NºOrigem == id).Count() > 0)
+                                //{
+                                //    PréRequisição preREQ = DBPreRequesition.GetByNo(id);
+                                //    if (preREQ != null)
+                                //    {
+                                //        preREQ.CabimentoOrçamental = true;
+                                //        preREQ.UtilizadorModificação = User.Identity.Name;
+                                //        DBPreRequesition.Update(preREQ);
+                                //    }
+                                //    else
+                                //    {
+                                //        Requisição REQ = DBRequest.GetById(id);
+                                //        if (REQ != null)
+                                //        {
+                                //            REQ.CabimentoOrçamental = true;
+                                //            REQ.UtilizadorModificação = User.Identity.Name;
+                                //            DBRequest.Update(REQ);
+                                //        }
+                                //    }
+                                //}
                             }
                         }
                     }
@@ -2632,8 +2915,10 @@ namespace Hydra.Such.Portal.Controllers
         public FileStreamResult DownloadFile(string id)
         {
             //return new FileStreamResult(new FileStream(_config.FileUploadFolder + id, FileMode.Open), "application/xlsx");
-            return new FileStreamResult(new FileStream("E:\\Data\\eSUCH\\Requisicoes\\" + id, FileMode.Open), "application/xlsx");
-            //return new FileStreamResult(new FileStream("C:\\Data\\eSUCH\\Requisicoes\\" + id, FileMode.Open), "application/xlsx");
+            if (_config.Conn == "eSUCH_Prod" || _config.Conn == "PlataformaOperacionalSUCH_TST")
+                return new FileStreamResult(new FileStream("E:\\Data\\eSUCH\\Requisicoes\\" + id, FileMode.Open), "application/xlsx");
+            else
+                return new FileStreamResult(new FileStream("C:\\Data\\eSUCH\\Requisicoes\\" + id, FileMode.Open), "application/xlsx");
         }
 
 
@@ -2643,32 +2928,34 @@ namespace Hydra.Such.Portal.Controllers
             try
             {
                 //System.IO.File.Delete(_config.FileUploadFolder + requestParams.Url);
-                System.IO.File.Delete("E:\\Data\\eSUCH\\Requisicoes\\" + requestParams.Url);
-                //System.IO.File.Delete("C:\\Data\\eSUCH\\Requisicoes\\" + requestParams.Url);
+                if (_config.Conn == "eSUCH_Prod" || _config.Conn == "PlataformaOperacionalSUCH_TST")
+                    System.IO.File.Delete("E:\\Data\\eSUCH\\Requisicoes\\" + requestParams.Url);
+                else
+                    System.IO.File.Delete("C:\\Data\\eSUCH\\Requisicoes\\" + requestParams.Url);
 
                 DBAttachments.Delete(DBAttachments.ParseToDB(requestParams));
                 requestParams.eReasonCode = 1;
 
-                if (DBAttachments.GetAll().Where(x => x.TipoOrigem == 1 && x.NºOrigem == requestParams.DocNumber).Count() > 0)
-                {
-                    PréRequisição preREQ = DBPreRequesition.GetByNo(requestParams.DocNumber);
-                    if (preREQ != null)
-                    {
-                        preREQ.CabimentoOrçamental = true;
-                        preREQ.UtilizadorModificação = User.Identity.Name;
-                        DBPreRequesition.Update(preREQ);
-                    }
-                }
-                else
-                {
-                    PréRequisição preREQ = DBPreRequesition.GetByNo(requestParams.DocNumber);
-                    if (preREQ != null)
-                    {
-                        preREQ.CabimentoOrçamental = false;
-                        preREQ.UtilizadorModificação = User.Identity.Name;
-                        DBPreRequesition.Update(preREQ);
-                    }
-                }
+                //if (DBAttachments.GetAll().Where(x => x.TipoOrigem == 1 && x.NºOrigem == requestParams.DocNumber).Count() > 0)
+                //{
+                //    PréRequisição preREQ = DBPreRequesition.GetByNo(requestParams.DocNumber);
+                //    if (preREQ != null)
+                //    {
+                //        preREQ.CabimentoOrçamental = true;
+                //        preREQ.UtilizadorModificação = User.Identity.Name;
+                //        DBPreRequesition.Update(preREQ);
+                //    }
+                //}
+                //else
+                //{
+                //    PréRequisição preREQ = DBPreRequesition.GetByNo(requestParams.DocNumber);
+                //    if (preREQ != null)
+                //    {
+                //        preREQ.CabimentoOrçamental = false;
+                //        preREQ.UtilizadorModificação = User.Identity.Name;
+                //        DBPreRequesition.Update(preREQ);
+                //    }
+                //}
 
             }
             catch (Exception ex)

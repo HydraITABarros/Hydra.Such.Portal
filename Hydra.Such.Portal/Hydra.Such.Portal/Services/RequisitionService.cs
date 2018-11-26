@@ -230,17 +230,18 @@ namespace Hydra.Such.Portal.Services
                 var requisitionLines = requisition.Lines;
 
                 //AMARO TESTES COMENTAR
-                if (!string.IsNullOrEmpty(requisition.OrderNo))
-                    throw new Exception("A Encomenda de Compra já foi criada para esta Requisição com o Nº " + requisition.OrderNo);
+                //if (!string.IsNullOrEmpty(requisition.OrderNo))
+                //    throw new Exception("A Encomenda de Compra já foi criada para esta Requisição com o Nº " + requisition.OrderNo);
+                //FIM
+
+                //AMARO TESTES DESCOMENTAR
+                requisitionLines.RemoveAll(x => x.CriarNotaEncomenda == null || x.CriarNotaEncomenda == false);
+                requisitionLines.RemoveAll(x => x.CreatedOrderNo != "" && x.CreatedOrderNo != null);
                 //FIM
 
                 if (requisitionLines.Any(x => string.IsNullOrEmpty(x.SupplierNo) || !x.UnitCost.HasValue || x.UnitCost.Value == 0))
                     throw new Exception("É obrigatório o preenchimento do fornecedor e do custo unitário nas linhas");
 
-                //AMARO TESTES DESCOMENTAR
-                //requisitionLines.RemoveAll(x => x.CriarNotaEncomenda == null || x.CriarNotaEncomenda == false);
-                //requisitionLines.RemoveAll(x => x.CreatedOrderNo != "");
-                //FIM
 
                 List<PurchOrderDTO> purchOrders = new List<PurchOrderDTO>();
                 List<DBNAV2017SupplierProductRef.SuppliersProductsRefs> supplierProductRef = new List<DBNAV2017SupplierProductRef.SuppliersProductsRefs>();

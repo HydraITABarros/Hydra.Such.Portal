@@ -116,7 +116,7 @@ namespace Hydra.Such.Portal.Extensions
                     }
                     //});
 
-                    if (type == 1)
+                    if (type == 1 || type == 4)
                     {
                         Requisição REQ = DBRequest.GetById(number);
                         REQ.Aprovadores = Aprovadores;
@@ -124,8 +124,10 @@ namespace Hydra.Such.Portal.Extensions
                     }
 
                     string itemToApproveInfo = string.Empty;
-                    if (type == 1 && !string.IsNullOrEmpty(number))
+                    if ((type == 1) && !string.IsNullOrEmpty(number))
                         itemToApproveInfo += " - Requisição " + number;
+                    if ((type == 4) && !string.IsNullOrEmpty(number))
+                        itemToApproveInfo += " - Compras Dinheiro " + number;
 
                     UsersToNotify = UsersToNotify.Distinct().ToList();
                     //Notify Users
@@ -142,9 +144,12 @@ namespace Hydra.Such.Portal.Extensions
                             EmailApproval.DataHoraEmail = DateTime.Now;
                             if(reason != "" && reason != null)
                             {
-                                EmailApproval.TextoEmail = "Uma requisição aprovada (" + number + ") foi movida novamente para aprovação." + "<br />" + "<b>Motivo:</b> " + reason;
-                            }
-                            else
+                                if (type == 1)
+                                    EmailApproval.TextoEmail = "Uma requisição aprovada (" + number + ") foi movida novamente para aprovação." + "<br />" + "<b>Motivo:</b> " + reason;
+                                if (type == 4)
+                                    EmailApproval.TextoEmail = "Uma Compras Dinheiro aprovada (" + number + ") foi movida novamente para aprovação." + "<br />" + "<b>Motivo:</b> " + reason;
+                        }
+                        else
                             {
                                 EmailApproval.TextoEmail = "Existe uma nova tarefa pendente da sua aprovação no eSUCH!";
 
@@ -220,6 +225,8 @@ namespace Hydra.Such.Portal.Extensions
                 {
                     if (ApprovalMovement.Type.Value == 1 && !string.IsNullOrEmpty(ApprovalMovement.Number))
                         itemToApproveInfo += " - Requisição " + ApprovalMovement.Number;
+                    if (ApprovalMovement.Type.Value == 4 && !string.IsNullOrEmpty(ApprovalMovement.Number))
+                        itemToApproveInfo += " - Compras Dinheiro " + ApprovalMovement.Number;
                 }
                 if (ApprovalConfigurations.Count > 0)
                 {
@@ -934,6 +941,8 @@ namespace Hydra.Such.Portal.Extensions
                 string itemToApproveInfo = string.Empty;
                 if (ApprovalMovement.Type.Value == 1 && !string.IsNullOrEmpty(ApprovalMovement.Number))
                     itemToApproveInfo += " - Requisição " + ApprovalMovement.Number;
+                if (ApprovalMovement.Type.Value == 4 && !string.IsNullOrEmpty(ApprovalMovement.Number))
+                    itemToApproveInfo += " - Compras Dinheiro " + ApprovalMovement.Number;
 
                 EmailsAprovações EmailApproval = new EmailsAprovações()
                 {
