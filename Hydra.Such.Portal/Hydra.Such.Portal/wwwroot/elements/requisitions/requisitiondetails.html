@@ -555,14 +555,18 @@
 
                                 <!--Reparação-->
                                 <div>
-                                    <div class="col-lg-3 alignPoga">
-                                        <vaadin-checkbox id="chkrepairWithWarranty" checked="{{Requisition.repairWithWarranty}}" disabled="{{ !_permissions.update }}">Reparação com Garantia</vaadin-checkbox>
-                                    </div>
-                                    <div class="col-lg-3 alignPoga">
-                                        <vaadin-checkbox id="chkemm" checked="{{Requisition.emm}}" disabled="{{ !_permissions.update }}">EMM</vaadin-checkbox>
-                                    </div>
-                                    <div class="col-md-3 ">
-                                        <vaadin-date-picker label="Data Entrega Armazém" id="DeliveryWarehouseDate" name="DeliveryWarehouseDate" value="{{Requisition.warehouseDeliveryDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                    <div class="row break_clear">
+                                        <div class="col-lg-3 alignPoga">
+                                            <vaadin-checkbox id="chkrepairWithWarranty" checked="{{Requisition.repairWithWarranty}}" disabled="{{ !_permissions.update }}">Reparação com Garantia</vaadin-checkbox>
+                                        </div>
+
+                                        <div class="col-lg-3 alignPoga">
+                                            <vaadin-checkbox id="chkemm" checked="{{Requisition.emm}}" disabled="{{ !_permissions.update }}">EMM</vaadin-checkbox>
+                                        </div>
+
+                                        <div class="col-md-3 ">
+                                            <vaadin-date-picker label="Data Entrega Armazém" id="DeliveryWarehouseDate" name="DeliveryWarehouseDate" value="{{Requisition.warehouseDeliveryDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                        </div>
                                     </div>
                                 </div>
 

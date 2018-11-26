@@ -143,7 +143,7 @@
                    on-response="_responseLines"
                    content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/PreRequisicoes/SendReqForApproval"
+        <iron-ajax url="/PreRequisicoes/SendReqForApproval_CD"
                    last-response="{{actionResult}}"
                    method="post"
                    handle-as="json"
@@ -447,9 +447,9 @@
                     grid_el.height(height);
                 },
                 _rowSelected: function (item) {
-                    if (item != null) {
-                        window.location.href = "/GestaoRequisicoes/MinhaRequisicao/" + item.requisitionNo;
-                    }
+                    //if (item != null) {
+                    //    window.location.href = "/GestaoRequisicoes/MinhaRequisicao_CD/" + item.requisitionNo;
+                    //}
 
                 //    if (item != null) {
                 //        this.$.dialog.open();

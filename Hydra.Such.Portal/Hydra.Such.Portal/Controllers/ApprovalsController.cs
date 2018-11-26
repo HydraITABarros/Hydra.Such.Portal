@@ -85,6 +85,9 @@ namespace Hydra.Such.Portal.Controllers
                     case 3:
                         x.NumberLink = "/FolhasDeHoras/Detalhes/?FHNo=" + x.Number;
                         break;
+                    case 4:
+                        x.NumberLink = "/GestaoRequisicoes/MinhaRequisicao_CD/" + x.Number;
+                        break;
                 }
 
                 if (x.Type == 3)
@@ -132,8 +135,6 @@ namespace Hydra.Such.Portal.Controllers
                         x.RequisicaoAdiantamento = REQ.Adiantamento;
                         x.RequisicaoPedirOrcamento = REQ.PedirOrcamento;
                     }
-
-
                 }
             });
 
@@ -377,6 +378,127 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         result.eReasonCode = 200;
                         result.eMessage = "A requisição já não existe.";
+                    }
+                }
+                else if (approvalMovement.Type == 4)
+                {
+                    //Get Requistion and verify if exists
+                    RequisitionViewModel requisition = DBRequest.ParseToViewModel(DBRequest.GetById(approvalMovement.Number));
+                    if (requisition != null)
+                    {
+                        //Check if is to approve or reject
+                        if (movementStatus == 1)
+                        {
+                            //Get Requistion Lines
+                            if (requisition.Lines.Count > 0)
+                            {
+                                //Check if requisition have Request Nutrition a false and all lines have ProjectNo
+                                if ((!requisition.Lines.Any(x => x.ProjectNo == null || x.ProjectNo == "") && (requisition.RequestNutrition.HasValue && requisition.RequestNutrition.Value)) || !requisition.RequestNutrition.HasValue || !requisition.RequestNutrition.Value)
+                                {
+                                    //Approve Movement
+                                    ErrorHandler approvalResult = new ErrorHandler();
+
+                                    approvalResult = ApprovalMovementsManager.ApproveMovement(approvalMovement.MovementNo, User.Identity.Name);
+
+                                    //Check Approve Status
+                                    if (approvalResult.eReasonCode == 103)
+                                    {
+                                        //Update Requisiton Data
+                                        requisition.State = RequisitionStates.Approved;
+                                        requisition.ResponsibleApproval = User.Identity.Name;
+                                        requisition.ApprovalDate = DateTime.Now;
+                                        requisition.UpdateDate = DateTime.Now;
+                                        requisition.UpdateUser = User.Identity.Name;
+                                        DBRequest.Update(requisition.ParseToDB());
+
+                                        //Create Workflow
+                                        var ctx = new SuchDBContext();
+                                        var logEntry = new RequisicoesRegAlteracoes();
+                                        logEntry.NºRequisição = requisition.RequisitionNo;
+                                        logEntry.Estado = (int)RequisitionStates.Approved; //APROVADO = 4
+                                        logEntry.ModificadoEm = DateTime.Now;
+                                        logEntry.ModificadoPor = User.Identity.Name;
+                                        ctx.RequisicoesRegAlteracoes.Add(logEntry);
+                                        ctx.SaveChanges();
+
+                                        //Update Requisition Lines Data
+                                        requisition.Lines.ForEach(line =>
+                                        {
+                                            if (line.QuantityToRequire.HasValue && line.QuantityToRequire.Value > 0)
+                                            {
+                                                line.QuantityRequired = line.QuantityToRequire;
+                                                DBRequestLine.Update(line.ParseToDB());
+                                            }
+                                        });
+
+                                        result.eReasonCode = 100;
+                                        result.eMessage = "A Compras Dinheiro foi aprovada com sucesso.";
+                                    }
+                                    else if (approvalResult.eReasonCode == 100)
+                                    {
+                                        result.eReasonCode = 100;
+                                        result.eMessage = "Compras Dinheiro aprovada com sucesso, encontra-se a aguardar aprovação do nivel seguinte.";
+                                    }
+                                    else
+                                    {
+                                        result.eReasonCode = 199;
+                                        result.eMessage = "Ocorreu um erro desconhecido ao aprovar a Compras Dinheiro.";
+                                    }
+                                }
+                                else
+                                {
+                                    result.eReasonCode = 202;
+                                    result.eMessage = "Todas as linhas necessitam de possuir NºOrdem/Projeto.";
+                                }
+                            }
+                            else
+                            {
+                                result.eReasonCode = 201;
+                                result.eMessage = "A Compras Dinheiro não possui linhas.";
+                            }
+                        }
+                        else if (movementStatus == 2)
+                        {
+                            //Reject Movement
+                            ErrorHandler approveResult = ApprovalMovementsManager.RejectMovement(approvalMovement.MovementNo, User.Identity.Name, rejectionComments);
+
+                            //Check Approve Status
+                            if (approveResult.eReasonCode == 100)
+                            {
+                                //Update Requisiton Data
+                                requisition.State = RequisitionStates.Rejected;
+                                requisition.ResponsibleApproval = User.Identity.Name;
+                                requisition.ApprovalDate = DateTime.Now;
+                                requisition.UpdateDate = DateTime.Now;
+                                requisition.UpdateUser = User.Identity.Name;
+                                //requisition.Comments += rejectionComments;
+                                requisition.RejeicaoMotivo = rejectionComments;
+                                DBRequest.Update(requisition.ParseToDB());
+
+                                //Create Workflow
+                                var ctx = new SuchDBContext();
+                                var logEntry = new RequisicoesRegAlteracoes();
+                                logEntry.NºRequisição = requisition.RequisitionNo;
+                                logEntry.Estado = (int)RequisitionStates.Rejected; //REJEITADO = 5
+                                logEntry.ModificadoEm = DateTime.Now;
+                                logEntry.ModificadoPor = User.Identity.Name;
+                                ctx.RequisicoesRegAlteracoes.Add(logEntry);
+                                ctx.SaveChanges();
+
+                                result.eReasonCode = 100;
+                                result.eMessage = "A Compras Dinheiro foi rejeitada com sucesso.";
+                            }
+                            else
+                            {
+                                result.eReasonCode = 199;
+                                result.eMessage = "Ocorreu um erro desconhecido ao rejeitar a Compras Dinheiro.";
+                            }
+                        }
+                    }
+                    else
+                    {
+                        result.eReasonCode = 200;
+                        result.eMessage = "A Compras Dinheiro já não existe.";
                     }
                 }
                 //Folhas de Horas - Validar

@@ -2439,6 +2439,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (String.IsNullOrEmpty(Error))
                 {
                     ApprovalMovResult = ApprovalMovementsManager.StartApprovalMovement(1, createReq.CódigoÁreaFuncional, createReq.CódigoCentroResponsabilidade, createReq.CódigoRegião, 0, createReq.NºRequisição, User.Identity.Name, "");
+
                     if (ApprovalMovResult.eReasonCode != 100)
                     {
                         ApprovalMovResult.eReasonCode = 2;
@@ -2479,6 +2480,71 @@ namespace Hydra.Such.Portal.Controllers
             return Json(ApprovalMovResult);
         }
 
+        [HttpPost]
+        public JsonResult SendReqForApproval_CD([FromBody] JObject requestParams)
+        {
+            string ReqNo = requestParams["requisitionNo"].ToString();
+            Requisição createReq = DBRequest.GetById(ReqNo);
+            ErrorHandler ApprovalMovResult = new ErrorHandler();
+            string Error = "";
+
+            List<ConfiguraçãoAprovações> approv = DBApprovalConfigurations.GetAll();
+
+            List<ApprovalMovementsViewModel> result = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAll());// .GetAllAssignedToUserFilteredByStatus(User.Identity.Name, 1));
+
+            if (result != null && result.Count > 0)
+            {
+                foreach (ApprovalMovementsViewModel req in result)
+                {
+                    if (req.Number == ReqNo && (req.Status == 1 || req.Status == 2))
+                    {
+                        Error = "Esta Compras Dinheiro já está à espera de Aprovação.";
+                    }
+                }
+
+                if (String.IsNullOrEmpty(Error))
+                {
+                    ApprovalMovResult = ApprovalMovementsManager.StartApprovalMovement(4, createReq.CódigoÁreaFuncional, createReq.CódigoCentroResponsabilidade, createReq.CódigoRegião, 0, createReq.NºRequisição, User.Identity.Name, "");
+
+                    if (ApprovalMovResult.eReasonCode != 100)
+                    {
+                        ApprovalMovResult.eReasonCode = 2;
+                        //ApprovalMovResult.eMessage = "Não foi possivel iniciar o processo de aprovação para esta requisição: " + ReqNo;
+                    }
+                }
+                else
+                {
+                    ApprovalMovResult.eReasonCode = 3;
+                    ApprovalMovResult.eMessage = Error;
+                }
+            }
+            else
+            {
+                ApprovalMovResult = ApprovalMovementsManager.StartApprovalMovement(4, createReq.CódigoÁreaFuncional, createReq.CódigoCentroResponsabilidade, createReq.CódigoRegião, 0, createReq.NºRequisição, User.Identity.Name, "");
+                if (ApprovalMovResult.eReasonCode != 100)
+                {
+                    ApprovalMovResult.eReasonCode = 2;
+                    //ApprovalMovResult.eMessage = "Não foi possivel iniciar o processo de aprovação para esta requisição: " + ReqNo;
+                }
+            }
+
+            if (ApprovalMovResult.eReasonCode != 3 && ApprovalMovResult.eReasonCode != 2)
+            {
+                createReq.Estado = (int)RequisitionStates.Pending;
+                createReq.UtilizadorModificação = User.Identity.Name;
+                if (DBRequest.Update(createReq) != null)
+                {
+                    ApprovalMovResult.eReasonCode = 1;
+                    ApprovalMovResult.eMessage = "Foi iniciado o processo de aprovação para esta Compras Dinheiro";
+                }
+                else
+                {
+                    ApprovalMovResult.eReasonCode = 4;
+                    ApprovalMovResult.eMessage = "Ocorreu um erro ao atualizar o estado da Compras Dinheiro.";
+                }
+            }
+            return Json(ApprovalMovResult);
+        }
 
         [HttpPost]
         public JsonResult GetProductInfo([FromBody] PreRequisitionLineViewModel linha, string area)
