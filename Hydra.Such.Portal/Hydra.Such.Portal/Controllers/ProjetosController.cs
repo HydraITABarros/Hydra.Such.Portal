@@ -1242,16 +1242,18 @@ namespace Hydra.Such.Portal.Controllers
                         //Create Lines in NAV
                         Task<WSCreateProjectDiaryLine.CreateMultiple_Result> TCreateNavDiaryLine = WSProjectDiaryLine.CreateNavDiaryLines(dp, transactID, _configws);
                         TCreateNavDiaryLine.Wait();
-                        //try
-                        //{
+                        try
+                        {  
                             Task<WSGenericCodeUnit.FxPostJobJrnlLines_Result> TRegisterNavDiaryLine = WSProjectDiaryLine.RegsiterNavDiaryLines(transactID, _configws);
                             TRegisterNavDiaryLine.Wait();
-                        //}
-                        //catch (Exception e)
-                        //{
-                        //    Task<WSCreateProjectDiaryLine.Delete_Result> TDeleteNavDiaryLine = WSProjectDiaryLine.DeleteNavDiaryLines(transactID, _configws);
-                        //    TDeleteNavDiaryLine.Wait();
-                        //}
+                        }
+                        catch (Exception e)
+                        {
+                            WSProjectDiaryLine.DeleteNavDiaryLines(transactID, _configws);
+                            result.eReasonCode = 2;
+                            result.eMessage = "Não foi possivel registar: " + e.Message;
+                            return Json(result);
+                        }
                     }
                     catch (Exception ex)
                     {
