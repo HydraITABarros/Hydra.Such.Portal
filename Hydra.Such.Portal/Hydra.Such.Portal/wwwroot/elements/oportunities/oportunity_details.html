@@ -285,10 +285,12 @@
                                     <div class="col-md-3 ">
                                         <vaadin-text-field value="{{data.proposalNo}}" id="mProposalNo" name="proposalNo" label="Nº Proposta" disabled="true" hidden="{{_hiddeproposalNo}}"> </vaadin-text-field>
                                     </div>
-                                    <div class="col-md-3 ">
-                                        <vaadin-text-field value="{{data.versionNo}}" id="versionNo" name="versionNo" label="Nº Versão" disabled="true"> </vaadin-text-field>
-                                    </div>
                                 </div>
+
+                                <div class="hidden">
+                                    <vaadin-text-field value="{{data.versionNo}}" id="versionNo" name="versionNo" label="Nº Versão" disabled="true"> </vaadin-text-field>
+                                </div>
+
                                 <div class="row break_clear">
                                     <div class="col-md-3 ">
                                         <vaadin-date-picker label="Data Inicial Prevista" id="mStartData" name="startData" value="{{data.startData}}" disabled="{{ !_permissions.update }}" on-value-changed="_startEndDate"></vaadin-date-picker>
@@ -299,16 +301,16 @@
                                     <div class="col-md-3 ">
                                         <vaadin-date-picker label="Data Envio" id="mCustomerShipmentDate" name="CustomerShipmentDate" value="{{data.customerShipmentDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
                                     </div>
-                                </div>
-                                <div class="row break_clear">
                                     <div class="col-md-3 ">
                                         <vaadin-date-picker label="Data Alteração" id="mProposalChangeDate" name="ProposalChangeDate" value="{{data.proposalChangeDate}}" disabled></vaadin-date-picker>
                                     </div>
+                                </div>
+                                <div class="row break_clear">
                                     <div class="col-md-3 ">
                                         <vaadin-text-field value="{{data.internalNumeration}}" id="mInternalNumeration" name="mInternalNumeration" label="Numeração Interna" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                     </div>
                                     <div class="col-md-3 ">
-                                        <vaadin-text-field value="{{data.totalProposalValue}}" auto-validate  placeholder="0.0000" pattern="^[0-9]\d*(\.[0-9]{1,4})?$" on-value-changed="_ConvertDecimals" error-message="Valor inválido" id="mTotalProposalValue" name="mTotalProposalValue" label="Valor Total" disabled="{{ !_permissions.update }}">
+                                        <vaadin-text-field value="{{data.totalProposalValue}}" auto-validate placeholder="0.0000" pattern="^[0-9]\d*(\.[0-9]{1,4})?$" on-value-changed="_ConvertDecimals" error-message="Valor inválido" id="mTotalProposalValue" name="mTotalProposalValue" label="Valor Total" disabled="{{ !_permissions.update }}">
                                             <div slot="suffix">€</div>
                                         </vaadin-text-field>
                                     </div>
@@ -322,8 +324,6 @@
 
                                         </such-selectbox>
                                     </div>
-                                </div>
-                                <div class="row break_clear">
                                     <div class="col-md-3 ">
                                         <such-selectbox id="mFunctionalArea" name="mFunctionalArea" value="{{data.codeFunctionalArea}}" label="Cód. Área Funcional" disabled="{{ !_permissions.update }}"
                                                         items="[[CBFunctionalAreas]]"
@@ -332,6 +332,8 @@
                                                         fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
                                         </such-selectbox>
                                     </div>
+                                </div>
+                                <div class="row break_clear">
                                     <div class="col-md-3 ">
                                         <such-selectbox id="mResponsabilityCenter" name="mResponsabilityCenter" value="{{data.codeResponsabilityCenter}}" label="Cód. Centro Respon." disabled="{{ !_permissions.update }}"
                                                         items="[[CBResponsabilityCenterCodes]]"
