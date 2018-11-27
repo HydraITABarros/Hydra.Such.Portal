@@ -27,6 +27,7 @@ namespace Hydra.Such.Data.ViewModel
         public string MobilePhoneContact { get; set; }
         public string EmailContact { get; set; }
         public string Notes { get; set; }
+        public string ClientNo { get; set; }
 
         //EXPORTAR PARA EXCEL
         public Object ColunasEXCEL { get; set; }
@@ -54,6 +55,7 @@ namespace Hydra.Such.Data.ViewModel
             this.MobilePhoneContact = string.Empty;
             this.EmailContact = string.Empty;
             this.Notes = string.Empty;
+            this.ClientNo = string.Empty;
         }
     }
 }

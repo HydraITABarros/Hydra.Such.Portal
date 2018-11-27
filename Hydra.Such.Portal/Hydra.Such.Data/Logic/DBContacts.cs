@@ -39,7 +39,8 @@ namespace Hydra.Such.Data.Logic
                 return null;
             }
         }
-
+        
+        
         public static Contactos Create(Contactos item)
         {
             try
@@ -167,7 +168,8 @@ namespace Hydra.Such.Data.Logic
                     PersonContact = item.PessoaContato,
                     Phone = item.Telefone,
                     PhoneContact = item.TelefoneContato,
-                    MobilePhoneContact = item.TelemovelContato
+                    MobilePhoneContact = item.TelemovelContato,
+                    ClientNo = item.ClientNo
                 };
             }
             return null;
@@ -206,7 +208,8 @@ namespace Hydra.Such.Data.Logic
                     PessoaContato = item.PersonContact,
                     Telefone = item.Phone,
                     TelefoneContato = item.PhoneContact,
-                    TelemovelContato = item.MobilePhoneContact
+                    TelemovelContato = item.MobilePhoneContact,
+                    ClientNo = item.ClientNo                 
                 };
             }
             return null;

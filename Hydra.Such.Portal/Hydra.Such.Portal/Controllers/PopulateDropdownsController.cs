@@ -564,10 +564,10 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetContactsByType([FromBody] int type)
         {
-            List<DDMessageString> result = DBNAV2017Contacts.GetContactsByType(_config.NAVDatabaseName, _config.NAVCompanyName, "", type).Select(x => new DDMessageString()
+            List<DDMessageString> result = DBContacts.GetAll().Select(x => new DDMessageString()
             {
-                id = x.No_,
-                value = x.Name
+                id = x.Nº,
+                value = x.Nome
             }).ToList();
             return Json(result);
         }

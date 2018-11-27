@@ -84,6 +84,16 @@
                 </template>
             </vaadin-grid-column>
 
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.clientNo.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="name">Nº Cliente</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="name" />
+                </template>
+                <template>
+                    {{item.clientNo}}
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.address.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="address">Endereço</vaadin-grid-sorter>
@@ -163,7 +173,7 @@
                     {{item.personContact}}
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.phoneContact.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="phoneContact">Telefone Contato</vaadin-grid-sorter>
@@ -173,7 +183,7 @@
                     {{item.phoneContact}}
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.contactFunction.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="contactFunction">Função Contato</vaadin-grid-sorter>
@@ -183,7 +193,7 @@
                     {{item.contactFunction}}
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.mobilePhoneContact.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="mobilePhoneContact">Telemovel Contato</vaadin-grid-sorter>
@@ -193,7 +203,7 @@
                     {{item.mobilePhoneContact}}
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.emailContact.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="emailContact">Email Contato</vaadin-grid-sorter>
@@ -203,7 +213,7 @@
                     {{item.emailContact}}
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.notes.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="notes">Notas</vaadin-grid-sorter>
@@ -344,6 +354,7 @@
                     var columns = {
                         "id": { hidden: false, label: "Nº" },
                         "name": { hidden: false, label: "Nome" },
+                        "clientNo": { hidden: false, label: "Nº Cliente" },
                         "address": { hidden: false, label: "Endereço" },
                         "zipCode": { hidden: false, label: "Código Postal" },
                         "city": { hidden: false, label: "Cidade" },
