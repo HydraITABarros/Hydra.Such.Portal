@@ -507,6 +507,23 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetUnitOfMeasureByProduct(string produto)
+        {
+            List<DDMessageString> result = new List<DDMessageString>();
+
+            if (!string.IsNullOrEmpty(produto))
+            {
+                result = DBNAV2017UnitOfMeasure.GetAllByProduct(_config.NAVDatabaseName, _config.NAVCompanyName).Where(y => y.code == produto).Select(x => new DDMessageString()
+                {
+                    id = x.description,
+                    value = x.description
+                }).ToList();
+            }
+
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetUnitOfMeasureByCodeeSUCH()
         {
             List<DDMessageString> result = DBUnidadeMedida.GetAll().Select(x => new DDMessageString()

@@ -1254,7 +1254,7 @@ namespace Hydra.Such.Portal.Controllers
                 switch (registType)
                 {
                     case "Disponibilizar":
-                        if (item.State == RequisitionStates.Validated)
+                        if (item.State == RequisitionStates.Validated || item.State == RequisitionStates.Received)
                         {
                             //Garantir que produtos existem e não estão bloqueados
                             ErrorHandler result = new ErrorHandler();
@@ -1366,14 +1366,15 @@ namespace Hydra.Such.Portal.Controllers
                                 {
                                     item = updatedRequisition;
                                     item.eReasonCode = 1;
-                                    item.eMessage = "A Requisição está disponivel";
+                                    if (string.IsNullOrEmpty(item.eMessage))
+                                        item.eMessage = "A Requisição está disponivel";
                                 }
                             }
                         }
                         else
                         {
                             item.eReasonCode = 3;
-                            item.eMessage = "Esta requisição não está validada.";
+                            item.eMessage = "Esta requisição não está validada nem recebida.";
                         }
                         break;
 

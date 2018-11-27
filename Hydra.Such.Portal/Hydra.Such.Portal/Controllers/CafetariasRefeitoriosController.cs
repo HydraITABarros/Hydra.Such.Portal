@@ -439,6 +439,65 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                 return Json(false);
             }
         }
+
+        public JsonResult CoffeeShopsDiaryLineRegister([FromBody] List<CoffeeShopDiaryViewModel> data)
+        {
+            try
+            {
+                if (data != null)
+                {
+                    int? id = data.Find(x => x.User == User.Identity.Name).CoffeShopCode;
+                    CafetariasRefeitórios CoffeeShop = DBCoffeeShops.GetByCode((int)id);
+
+                    foreach (var linesToRegist in data)
+                    {
+                        MovimentosCafetariaRefeitório MovementsToCreate = new MovimentosCafetariaRefeitório();
+                        MovementsToCreate.CódigoCafetariaRefeitório = linesToRegist.CoffeShopCode;
+                        MovementsToCreate.NºUnidadeProdutiva = linesToRegist.ProdutiveUnityNo;
+                        MovementsToCreate.DataRegisto = linesToRegist.RegistryDate != "" ? DateTime.Parse(linesToRegist.RegistryDate) : (DateTime?)null;
+                        MovementsToCreate.NºRecurso = linesToRegist.ResourceNo;
+                        MovementsToCreate.Descrição = linesToRegist.Description;
+                        MovementsToCreate.Tipo = CoffeeShop.Tipo;
+                        if (linesToRegist.MovementType == 2 || linesToRegist.MovementType == 3)
+                        {
+                            MovementsToCreate.Valor = linesToRegist.Value * (-1);
+                        }
+                        else
+                        {
+                            MovementsToCreate.Valor = linesToRegist.Value;
+                        }
+
+                        MovementsToCreate.TipoMovimento = linesToRegist.MovementType;
+                        MovementsToCreate.CódigoRegião = CoffeeShop.CódigoRegião ?? "";
+                        MovementsToCreate.CódigoÁreaFuncional = CoffeeShop.CódigoÁreaFuncional ?? "";
+                        MovementsToCreate.CódigoCentroResponsabilidade = CoffeeShop.CódigoCentroResponsabilidade ?? "";
+                        MovementsToCreate.Utilizador = User.Identity.Name;
+                        MovementsToCreate.DataHoraSistemaRegisto = DateTime.Now;
+                        MovementsToCreate.DataHoraCriação = DateTime.Now;
+                        MovementsToCreate.UtilizadorCriação = User.Identity.Name;
+
+                        DBCoffeeShopMovements.Create(MovementsToCreate);
+                        if (MovementsToCreate.NºMovimento > 0)
+                        {
+                            DiárioCafetariaRefeitório lineToRemove = new DiárioCafetariaRefeitório();
+                            lineToRemove = DBCoffeeShopsDiary.GetById(linesToRegist.LineNo);
+                            DBCoffeeShopsDiary.Delete(lineToRemove);
+                        }
+                    }
+
+                    return Json(true);
+                }
+                else
+                {
+                    return Json(false);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return Json(false);
+            }
+        }
         #endregion
     }
 }
