@@ -2375,6 +2375,10 @@
                         else
                             this._openToastError(this.Requisition.eMessage);
                     }
+                    this.$.grdRequisitionLines.clearCache();
+                    this.$.requisition_datasource.url = "/GestaoRequisicoes/GetRequisition"
+                    this.$.requisition_datasource.body = JSON.stringify({ "requisitionId": this._requisitionid, "status": this._requisitionstatus });
+                    this.$.requisition_datasource.generateRequest();
                 },
                 _printRequisition: function () {
                     if (this._reportserverurl != undefined) {

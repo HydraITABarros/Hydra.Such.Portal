@@ -307,7 +307,7 @@
                    on-response="_actionResponseProcessor"
                    content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/GestaoRequisicoes/AprovarRequisicao"
+        <iron-ajax url="/GestaoRequisicoes/AprovarRequisicao_CD"
                    last-response="{{aprovarReqMov}}"
                    method="post"
                    handle-as="json"
@@ -2395,6 +2395,10 @@
                         else
                             this._openToastError(this.Requisition.eMessage);
                     }
+                    this.$.grdRequisitionLines.clearCache();
+                    this.$.requisition_datasource.url = "/GestaoRequisicoes/GetRequisition"
+                    this.$.requisition_datasource.body = JSON.stringify({ "requisitionId": this._requisitionid, "status": this._requisitionstatus });
+                    this.$.requisition_datasource.generateRequest();
                 },
                 _printRequisition: function () {
                     if (this._reportserverurl != undefined) {
