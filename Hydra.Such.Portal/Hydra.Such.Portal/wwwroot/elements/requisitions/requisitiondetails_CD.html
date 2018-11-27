@@ -195,7 +195,7 @@
                    method="post"
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
-        <iron-ajax url="/GestaoRequisicoes/AprovarRequisition"
+        <iron-ajax url="/GestaoRequisicoes/AprovarRequisition_CD"
                    last-response="{{Requisition}}"
                    id="aprovarRequisition_datasource"
                    on-response="_aprovarRequisitionResponse"
@@ -2326,6 +2326,10 @@
                         else
                             this._openToastError(this.Requisition.eMessage);
                     }
+                    this.$.grdRequisitionLines.clearCache();
+                    this.$.requisition_datasource.url = "/GestaoRequisicoes/GetRequisition"
+                    this.$.requisition_datasource.body = JSON.stringify({ "requisitionId": this._requisitionid, "status": this._requisitionstatus });
+                    this.$.requisition_datasource.generateRequest();
                 },
                 _printRequisition: function () {
                     if (this._reportserverurl != undefined) {

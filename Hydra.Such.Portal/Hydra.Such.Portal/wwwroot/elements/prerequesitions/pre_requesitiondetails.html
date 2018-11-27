@@ -449,7 +449,7 @@
                                                             text-path="no"
                                                             value-path="no"
                                                             fields='[{"field":"no", "name":"Nº Projecto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"regionCode", "name":"Cód. Região"}, {"field":"areaCode", "name":"Cód. Área"}, {"field":"centerResponsibilityCode", "name":"Cód. Cresp"}]'
-                                                            disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                                                            disabled="{{ !_permissions.update }}">
                                             </such-selectbox>
                                         </div>
 
@@ -2848,11 +2848,12 @@
                 _dlResponseProcessor: function (e) {
                     if (this.duplicarLinhasResponse.eReasonCode == 1) {
                         this._openToast(this.duplicarLinhasResponse.eMessage);
-                        this.$.page_databound_ajax.generateRequest();
                     }
                     else {
                         this._openToastError(this.duplicarLinhasResponse.eMessage);
                     }
+                    this.$.grid_prereqlines.clearCache();
+                    this.$.page_databound_ajax.generateRequest();
                 },
                 _onProductChanged: function (e) {
                     //var item = this.Products.find(x => x.code == e.detail.value);
