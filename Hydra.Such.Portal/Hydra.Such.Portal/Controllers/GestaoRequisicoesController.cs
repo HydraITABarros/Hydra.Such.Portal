@@ -1486,9 +1486,18 @@ namespace Hydra.Such.Portal.Controllers
                                     createNavDiaryLines.Wait();
                                     if (createNavDiaryLines.IsCompletedSuccessfully)
                                     {
-                                        ////Register Lines in NAV
-                                        Task<WSGenericCodeUnit.FxPostJobJrnlLines_Result> registerNavDiaryLines = WSProjectDiaryLine.RegsiterNavDiaryLines(transactionId, configws);
-                                        registerNavDiaryLines.Wait();
+                                        Task<WSGenericCodeUnit.FxPostJobJrnlLines_Result> registerNavDiaryLines;
+                                        try
+                                        {
+                                            ////Register Lines in NAV
+                                            registerNavDiaryLines = WSProjectDiaryLine.RegsiterNavDiaryLines(transactionId, configws);
+                                            registerNavDiaryLines.Wait();
+                                        }
+                                        catch (Exception e)
+                                        {
+                                            WSProjectDiaryLine.DeleteNavDiaryLines(transactionId, configws);
+                                            throw e;
+                                        }
 
                                         if (registerNavDiaryLines != null && registerNavDiaryLines.IsCompletedSuccessfully)
                                         {
