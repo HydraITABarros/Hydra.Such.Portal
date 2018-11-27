@@ -252,7 +252,15 @@ namespace Hydra.Such.Data.Logic
             ErrorHandler result = new ErrorHandler(1, "Os produtos não estão bloqueados.");
             if (products != null)
             {
-                if (products.Count < productsIds.Count)
+                if (products.Count == 0)
+                {
+                    var existingIds = products.Select(x => x.Code).Distinct();
+                    var blockedOrUnexisting = requisition.Lines.Where(x => !existingIds.Contains(x.Code)).ToList();
+
+                    result.eReasonCode = 22;
+                    result.eMessage = "Os seguintes produtos não existem ou estão bloqueados: " + string.Join(", ", blockedOrUnexisting.Select(x => x.Code + " - " + x.Description).ToArray());
+                }
+                else if (products.Count < productsIds.Count)
                 {
                     var existingIds = products.Select(x => x.Code).Distinct();
                     var blockedOrUnexisting = requisition.Lines.Where(x => !existingIds.Contains(x.Code)).ToList();

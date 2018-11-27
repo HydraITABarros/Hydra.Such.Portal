@@ -172,11 +172,13 @@
                    last-response="{{Requisition}}"
                    method="post" handle-as="json" content-type="application/json"
                    on-response="_reqDataSourceResponse"></iron-ajax>
+
         <iron-ajax url="/GestaoRequisicoes/DeleteRequisitionLine"
                    id="deleteReqLine_ajax"
                    last-response="{{DelReqLineResponse}}"
                    on-response="_deleteReqLineResponse"
                    method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/GestaoRequisicoes/CreateRequisitionLine"
                    id="createReqLine_ajax"
                    last-response="{{AddReqLineResponse}}"
@@ -2509,6 +2511,10 @@
                         else
                             this._openToastError(this.Requisition.eMessage);
                     }
+                    this.$.grdRequisitionLines.clearCache();
+                    this.$.requisition_datasource.url = "/GestaoRequisicoes/GetRequisition"
+                    this.$.requisition_datasource.body = JSON.stringify({ "requisitionId": this._requisitionid, "status": this._requisitionstatus });
+                    this.$.requisition_datasource.generateRequest();
                 },
                 _printRequisition: function () {
                     if (this._reportserverurl != undefined) {

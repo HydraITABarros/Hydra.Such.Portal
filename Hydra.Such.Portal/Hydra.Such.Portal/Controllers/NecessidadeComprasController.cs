@@ -618,7 +618,8 @@ namespace Hydra.Such.Portal.Controllers
                                     CreateUser = User.Identity.Name,
                                     ProjectNo = productivityUnit.ProjetoCozinha,
                                     LocalCode = productivityUnit.Armazém,
-                                    VATProductPostingGroup = string.IsNullOrEmpty(item.GrupoRegistoIvaProduto) ? productsInReq.Where(x => x.Code == item.ProductNo).FirstOrDefault().VATProductPostingGroup : item.GrupoRegistoIvaProduto
+                                    VATProductPostingGroup = string.IsNullOrEmpty(item.GrupoRegistoIvaProduto) ? productsInReq.Where(x => x.Code == item.ProductNo).FirstOrDefault().VATProductPostingGroup : item.GrupoRegistoIvaProduto,
+                                    CriarNotaEncomenda = true
                                 };
 
                                 req.Lines.Add(line);

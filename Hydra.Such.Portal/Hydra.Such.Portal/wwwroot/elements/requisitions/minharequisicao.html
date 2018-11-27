@@ -2419,7 +2419,7 @@
                     if (this.Requisition.state != 0) {
                         $(_self.$.btnDelete).addClass('hidden');
                     }
-                    
+
                     if (data.detail.status === 200) {
                         if (data.detail.url.indexOf("Get") !== -1) {
                             if (this.Requisition != null) {
@@ -2496,7 +2496,7 @@
                     }
 
                     this._goAprove = this.Requisition.goAprove;
-                    
+
                     this._estadoPendente = false;
                     if (this.Requisition.state == 0) {
                         this._estadoPendente = true;
@@ -2576,6 +2576,10 @@
                         else
                             this._openToastError(this.Requisition.eMessage);
                     }
+                    this.$.grdRequisitionLines.clearCache();
+                    this.$.requisition_datasource.url = "/GestaoRequisicoes/GetRequisition"
+                    this.$.requisition_datasource.body = JSON.stringify({ "requisitionId": this._requisitionid, "status": this._requisitionstatus });
+                    this.$.requisition_datasource.generateRequest();
                 },
                 _printRequisition: function () {
                     if (this._reportserverurl != undefined) {
@@ -2869,7 +2873,7 @@
                         this._openToastError(this.actionResult.eMessage);
                     }
                 },
-                
+
                 _Aprovadores: function () {
                     this.$.dlg_GetAprovadores_ajax.body = JSON.stringify(this._requisitionid);
                     this.$.dlg_GetAprovadores_ajax.generateRequest();

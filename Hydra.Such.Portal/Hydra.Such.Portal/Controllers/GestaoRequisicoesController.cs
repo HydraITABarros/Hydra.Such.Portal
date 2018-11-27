@@ -1270,9 +1270,21 @@ namespace Hydra.Such.Portal.Controllers
 
                             if (result.eReasonCode != 1)
                             {
-                                item.eReasonCode = result.eReasonCode;
-                                item.eMessage = result.eMessage;
-                                return Json(item);
+                                //Existe pelo menos um produto que não existe
+                                if (result.eReasonCode == 2)
+                                {
+                                    item.eReasonCode = result.eReasonCode;
+                                    item.eMessage = result.eMessage;
+                                    //CÓDIGO ORIGINAL COMENTADO
+                                    //return Json(item);
+                                }
+                                //Não existe nenhum produto e sai da função.
+                                else if (result.eReasonCode == 22)
+                                {
+                                    item.eReasonCode = result.eReasonCode;
+                                    item.eMessage = result.eMessage;
+                                    return Json(item);
+                                }
                             }
 
                             //Apenas produtos em armazens de stock
@@ -1282,7 +1294,8 @@ namespace Hydra.Such.Portal.Controllers
                             var stockWarehouse = allLocations.Where(x => productsLocations.Contains(x.Code) && x.ArmazemCDireta == 0).Select(x => x.Code).ToList();
                             var productsInStock = item.Lines.Where(x => stockWarehouse.Contains(x.LocalCode)).ToList();
 
-                            foreach (RequisitionLineViewModel line in productsInStock)// item.Lines)
+                            bool UmRegistoOK = false;
+                            foreach (RequisitionLineViewModel line in productsInStock)
                             {
                                 if (!line.QuantityToProvide.HasValue || line.QuantityToProvide.Value <= 0)
                                     continue;
@@ -1294,6 +1307,7 @@ namespace Hydra.Such.Portal.Controllers
                                 }
                                 else
                                 {
+                                    UmRegistoOK = true;
                                     decimal quantityInStock = 0;
                                     Task<WSGenericCodeUnit.FxGetStock_ItemLocation_Result> quantityinStockTask = WSGeneric.GetNAVProductQuantityInStockFor(stockkeepingUnit.ItemNo_, stockkeepingUnit.LocationCode, configws);
                                     quantityinStockTask.Wait();
@@ -1332,7 +1346,9 @@ namespace Hydra.Such.Portal.Controllers
                                 item.eReasonCode = 8;
                                 item.eMessage = " Os seguintes produtos têm quantidades a disponibilizar superiores ao stock: " + prodQuantityOverStock + ".";
                             }
-                            else
+                            //Codigo Original comentado
+                            //else
+                            if (UmRegistoOK == true)
                             {
                                 var reqToUpdate = item;
                                 reqToUpdate.Lines = productsInStock;
@@ -1378,9 +1394,21 @@ namespace Hydra.Such.Portal.Controllers
 
                             if (result.eReasonCode != 1)
                             {
-                                item.eReasonCode = result.eReasonCode;
-                                item.eMessage = result.eMessage;
-                                return Json(item);
+                                //Existe pelo menos um produto que não existe
+                                if (result.eReasonCode == 2)
+                                {
+                                    item.eReasonCode = result.eReasonCode;
+                                    item.eMessage = result.eMessage;
+                                    //CÓDIGO ORIGINAL COMENTADO
+                                    //return Json(item);
+                                }
+                                //Não existe nenhum produto e sai da função.
+                                else if (result.eReasonCode == 22)
+                                {
+                                    item.eReasonCode = result.eReasonCode;
+                                    item.eMessage = result.eMessage;
+                                    return Json(item);
+                                }
                             }
 
                             //Apenas produtos em armazens de stock
@@ -1472,9 +1500,16 @@ namespace Hydra.Such.Portal.Controllers
 
                                         if (registerNavDiaryLines != null && registerNavDiaryLines.IsCompletedSuccessfully)
                                         {
+                                            bool keepOpen = false;
+                                            if (item.Lines.Count() != productsToHandle.Count())
+                                            {
+                                                keepOpen = true;
+                                            }
+
                                             item.Lines = productsToHandle;
 
-                                            bool keepOpen = productsToHandle.Where(x => x.QuantityRequired.HasValue && x.QuantityReceived.HasValue).Any(x => (x.QuantityRequired.Value - x.QuantityReceived.Value) != 0);
+                                            if (keepOpen != true)
+                                                keepOpen = productsToHandle.Where(x => x.QuantityRequired.HasValue && x.QuantityReceived.HasValue).Any(x => (x.QuantityRequired.Value - x.QuantityReceived.Value) != 0);
 
                                             if (keepOpen == false)
                                             {
@@ -2060,6 +2095,90 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult AprovarRequisition_CD([FromBody] RequisitionViewModel requisition)
+        {
+            if (requisition != null)
+            {
+                //Get Requistion Lines
+                if (requisition.Lines.Count > 0)
+                {
+                    //Check if requisition have Request Nutrition a false and all lines have ProjectNo
+                    if ((!requisition.Lines.Any(x => x.ProjectNo == null || x.ProjectNo == "") && (requisition.RequestNutrition.HasValue && requisition.RequestNutrition.Value)) || !requisition.RequestNutrition.HasValue || !requisition.RequestNutrition.Value)
+                    {
+                        ErrorHandler approvalResult = new ErrorHandler();
+
+                        //Approve Movement
+                        MovimentosDeAprovação approvalMovement = DBApprovalMovements.GetAll().Where(x => x.Tipo == 4 && x.CódigoÁreaFuncional == requisition.FunctionalAreaCode &&
+                            x.CódigoRegião == requisition.RegionCode && x.CódigoCentroResponsabilidade == requisition.CenterResponsibilityCode && x.Número == requisition.RequisitionNo &&
+                            x.Estado == 1).FirstOrDefault();
+
+                        if (approvalMovement != null)
+                            approvalResult = ApprovalMovementsManager.ApproveMovement(approvalMovement.NºMovimento, User.Identity.Name);
+                        else
+                        {
+                            requisition.eReasonCode = 175;
+                            requisition.eMessage = "Não existe movimento de Aprovação.";
+                        }
+
+                        //Check Approve Status
+                        if (approvalResult.eReasonCode == 103)
+                        {
+                            //Update Requisiton Data
+                            requisition.State = RequisitionStates.Approved;
+                            requisition.ResponsibleApproval = User.Identity.Name;
+                            requisition.ApprovalDate = DateTime.Now;
+                            requisition.UpdateDate = DateTime.Now;
+                            requisition.UpdateUser = User.Identity.Name;
+                            DBRequest.Update(requisition.ParseToDB());
+
+                            //Update Requisition Lines Data
+                            requisition.Lines.ForEach(line =>
+                            {
+                                if (line.QuantityToRequire.HasValue && line.QuantityToRequire.Value > 0)
+                                {
+                                    line.QuantityRequired = line.QuantityToRequire;
+                                    DBRequestLine.Update(line.ParseToDB());
+                                }
+                            });
+
+                            requisition.eReasonCode = 100;
+                            requisition.eMessage = "A requisição foi aprovada com sucesso.";
+                        }
+                        else if (approvalResult.eReasonCode == 100)
+                        {
+                            requisition.eReasonCode = 100;
+                            requisition.eMessage = "Requisição aprovada com sucesso, encontra-se a aguardar aprovação do nivel seguinte.";
+                        }
+                        else
+                        {
+                            requisition.eReasonCode = 199;
+                            requisition.eMessage = "Ocorreu um erro desconhecido ao aprovar a requisição.";
+                        }
+                    }
+                    else
+                    {
+                        requisition.eReasonCode = 202;
+                        requisition.eMessage = "Todas as linhas necessitam de possuir NºOrdem/Projeto.";
+                    }
+                }
+                else
+                {
+                    requisition.eReasonCode = 201;
+                    requisition.eMessage = "A requisição não possui linhas.";
+                }
+            }
+            else
+            {
+                requisition = new RequisitionViewModel()
+                {
+                    eReasonCode = 3,
+                    eMessage = "Não é possivel validar. A requisição não pode ser nula."
+                };
+            }
+            return Json(requisition);
+        }
+
+        [HttpPost]
 
         public JsonResult CreateMarketConsult([FromBody] RequisitionViewModel item)
         {
@@ -2340,6 +2459,18 @@ namespace Hydra.Such.Portal.Controllers
             int NoMovimento = 0;
             if (!string.IsNullOrEmpty(requisitionId))
                 NoMovimento = DBApprovalMovements.GetAll().Where(x => x.Número == requisitionId && x.Tipo == 1 && x.Estado == 1).LastOrDefault().NºMovimento;
+
+            return Json(NoMovimento);
+        }
+
+        [HttpPost]
+        public JsonResult AprovarRequisicao_CD([FromBody] Newtonsoft.Json.Linq.JObject requestParams)
+        {
+            string requisitionId = requestParams["requisitionNo"].ToString();
+
+            int NoMovimento = 0;
+            if (!string.IsNullOrEmpty(requisitionId))
+                NoMovimento = DBApprovalMovements.GetAll().Where(x => x.Número == requisitionId && x.Tipo == 4 && x.Estado == 1).LastOrDefault().NºMovimento;
 
             return Json(NoMovimento);
         }
