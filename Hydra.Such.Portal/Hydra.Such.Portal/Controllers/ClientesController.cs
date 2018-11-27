@@ -175,6 +175,40 @@ namespace Hydra.Such.Portal.Controllers
             return Json(false);
         }
 
+        [HttpPost]
+        public JsonResult GetBalances([FromBody] ClientDetailsViewModel data)
+        {
+            if (data != null && data.No != null)
+            {
+                var result = DBNAV2017Clients.GetBalances(_config.NAVDatabaseName, _config.NAVCompanyName, data.No);
+                return Json(result);
+            }
+            return Json(false);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateBalances([FromBody] List<NAVClientesBalanceControlViewModel> listData, string CustomerNo)
+        {
+            var updateResult = 0;
+            if (CustomerNo != null)
+            {
+                if (listData != null && listData.Count() > 0)
+                {
+                    listData.ForEach(line =>
+                    {
+                        var updated = DBNAV2017Clients.UpdateBalance(_config.NAVDatabaseName, _config.NAVCompanyName, CustomerNo, line.EntryNo.ToString(), line.SinalizacaoRec.ToString(), line.Obs);
+                        if (updated != null)
+                        {
+                            updateResult += (int)updated;
+                        };
+
+                    });
+                }
+                var result = DBNAV2017Clients.GetBalances(_config.NAVDatabaseName, _config.NAVCompanyName, CustomerNo);
+                return Json(result);
+            }
+            return Json(false);
+        }
 
 
         [HttpPost]
@@ -337,6 +371,216 @@ namespace Hydra.Such.Portal.Controllers
             fileName = @"/Upload/temp/" + fileName;
 
             string fileExportName = tipo == "Fatura" ? "DetalheFatura" : "DetalheNotaCredito";
+
+            return File(fileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileExportName + ".xlsx");
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> BalancesExportToExcel([FromBody] dynamic form)
+        {
+            JObject dp = (JObject)form.GetValue("columns");
+
+            var list = (dynamic)form.GetValue("list");
+
+            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + "_ExportEXCEL.xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+
+                string excelSheetName = "Controlo Conciliação de Saldos";
+
+                ISheet excelSheet = workbook.CreateSheet("Controlo Conciliação de Saldos");
+                IRow row = excelSheet.CreateRow(0);
+                int Col = 0;
+
+                if (dp["customerNo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº Cliente");
+                    Col = Col + 1;
+                }
+                if (dp["postingDate"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Data Registo");
+                    Col = Col + 1;
+                }
+                if (dp["documentType"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Tipo Documento");
+                    Col = Col + 1;
+                }
+                if (dp["documentNo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº Documento");
+                    Col = Col + 1;
+                }
+                if (dp["documentDate"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Data Documento");
+                    Col = Col + 1;
+                }
+                if (dp["dueDate"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Data Venc.");
+                    Col = Col + 1;
+                }
+                if (dp["description"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Descrição");
+                    Col = Col + 1;
+                }
+                if (dp["amount"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Valor");
+                    Col = Col + 1;
+                }
+                if (dp["remainingAmount"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Valor Pendente");
+                    Col = Col + 1;
+                }
+                if (dp["sinalizacaoRec"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Sinalização Reconciliação");
+                    Col = Col + 1;
+                }
+                if (dp["dataConcil"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Data Conciliação");
+                    Col = Col + 1;
+                }
+                if (dp["obs"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Observações");
+                    Col = Col + 1;
+                }
+                if (dp["regionId"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Cód. Região");
+                    Col = Col + 1;
+                }
+                if (dp["functionalAreaId"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Cód. Área Funcional");
+                    Col = Col + 1;
+                }
+                if (dp["respCenterId"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Cód. Centro de Responsabilidade");
+                    Col = Col + 1;
+                }
+
+                if (dp != null)
+                {
+                    int count = 1;
+            
+                    foreach (JObject item in list)
+                    {
+                        Col = 0;
+                        row = excelSheet.CreateRow(count);
+
+                        if (dp["customerNo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item["customerNo"].ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["postingDate"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item["postingDate"].ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["documentType"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item["documentType"].ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["documentNo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item["documentNo"].ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["documentDate"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item["documentDate"].ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["dueDate"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item["dueDate"].ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["description"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item["description"].ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["amount"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item["amount"].ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["remainingAmount"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item["remainingAmount"].ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["sinalizacaoRec"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item["sinalizacaoRec"].ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["dataConcil"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item["dataConcil"].ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["obs"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item["obs"].ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["regionId"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item["regionId"].ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["functionalAreaId"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item["functionalAreaId"].ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["respCenterId"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item["respCenterId"].ToString());
+                            Col = Col + 1;
+                        }
+
+                        count++;
+                    }
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+        }
+
+        public IActionResult BalancesExportToExcel(string fileName, string tipo)
+        {
+            fileName = @"/Upload/temp/" + fileName;
+
+            string fileExportName = "ControloConciliacaoSaldos";
 
             return File(fileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileExportName + ".xlsx");
         }

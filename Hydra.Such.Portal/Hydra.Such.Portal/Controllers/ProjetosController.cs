@@ -1242,16 +1242,18 @@ namespace Hydra.Such.Portal.Controllers
                         //Create Lines in NAV
                         Task<WSCreateProjectDiaryLine.CreateMultiple_Result> TCreateNavDiaryLine = WSProjectDiaryLine.CreateNavDiaryLines(dp, transactID, _configws);
                         TCreateNavDiaryLine.Wait();
-                        //try
-                        //{
+                        try
+                        {  
                             Task<WSGenericCodeUnit.FxPostJobJrnlLines_Result> TRegisterNavDiaryLine = WSProjectDiaryLine.RegsiterNavDiaryLines(transactID, _configws);
                             TRegisterNavDiaryLine.Wait();
-                        //}
-                        //catch (Exception e)
-                        //{
-                        //    Task<WSCreateProjectDiaryLine.Delete_Result> TDeleteNavDiaryLine = WSProjectDiaryLine.DeleteNavDiaryLines(transactID, _configws);
-                        //    TDeleteNavDiaryLine.Wait();
-                        //}
+                        }
+                        catch (Exception e)
+                        {
+                            WSProjectDiaryLine.DeleteNavDiaryLines(transactID, _configws);
+                            result.eReasonCode = 2;
+                            result.eMessage = "Não foi possivel registar: " + e.Message;
+                            return Json(result);
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -2109,20 +2111,14 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         //21-11-2018
                         //CORRIGIR COM O MARCO MARCELO AS REGRAS DE AUTORIZAÇÃO
-                        if (!string.IsNullOrEmpty(project.CódigoÁreaFuncional) && !project.TipoGrupoContabProjeto.HasValue)
-                        {
-                            result.eMessages.Add(new TraceInformation(TraceType.Error, "O projeto não tem o Tipo Grupo Contab. Projeto definido."));
-                        }
-                        else
+                        if (project.TipoGrupoContabProjeto.HasValue)
                         {
                             var contabGroupType = DBCountabGroupTypes.GetById(project.TipoGrupoContabProjeto.Value);
                             if (contabGroupType != null)
                             {
-                                if (contabGroupType.CódigoRegião != project.CódigoRegião ||
-                                    contabGroupType.CódigoÁreaFuncional != project.CódigoÁreaFuncional ||
-                                    contabGroupType.CódigoCentroResponsabilidade != project.CódigoCentroResponsabilidade)
+                                if (!string.IsNullOrEmpty(contabGroupType.CódigoÁreaFuncional) && contabGroupType.CódigoÁreaFuncional != project.CódigoÁreaFuncional)
                                 {
-                                    result.eMessages.Add(new TraceInformation(TraceType.Error, "A Região, Área Funcional e/ou o Centro de Responsabilidade do projeto não estão autorizados."));//Deverão ser configurados nos Tipos de Grupos Contabilísticos
+                                    result.eMessages.Add(new TraceInformation(TraceType.Error, "Verifique a configuração da Área! (Tipos Grupo Contab Projeto"));
                                 }
                             }
                             else

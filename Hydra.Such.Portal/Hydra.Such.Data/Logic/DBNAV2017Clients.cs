@@ -179,7 +179,7 @@ namespace Hydra.Such.Data.Logic
                     };
 
                     IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017ClientesInvoices @DBName, @CompanyName, @CustomerNo", parameters);
-
+                    var minDate = new DateTime(2008, 1, 1);
                     foreach (dynamic temp in data)
                     {
                         result.Add(new NAVClientesInvoicesViewModel()
@@ -202,6 +202,83 @@ namespace Hydra.Such.Data.Logic
                         });
                     }
                     return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public static List<NAVClientesBalanceControlViewModel> GetBalances(string NAVDatabaseName, string NAVCompanyName, string NAVClientNo)
+        {
+            try
+            {
+                var result = new List<NAVClientesBalanceControlViewModel>();
+                using (var ctx = new SuchDBContextExtention())
+                {
+                    var parameters = new[]{
+                        new SqlParameter("@DBName", NAVDatabaseName),
+                        new SqlParameter("@CompanyName", NAVCompanyName),
+                        new SqlParameter("@CustomerNo", NAVClientNo ),
+                        //new SqlParameter("@Regions", "''"),
+                        //new SqlParameter("@FunctionalAreas", "''"),
+                        //new SqlParameter("@RespCenters", "''"),
+                    };
+
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017ClientesBalances @DBName, @CompanyName, @CustomerNo", parameters);
+                    var minDate = new DateTime(2008, 1, 1);
+                    foreach (dynamic temp in data)
+                    {
+                        result.Add(new NAVClientesBalanceControlViewModel()
+                        {
+                            EntryNo = (int)temp.EntryNo,
+                            Amount = (decimal?)temp.Amount,
+                            CustomerNo = temp.CustomerNo.Equals(DBNull.Value) ? "" : (string)temp.CustomerNo,
+                            DataConcil = (DateTime?)temp.DataConcil != null && (DateTime?)temp.DataConcil > minDate ? (DateTime?)temp.DataConcil : null,
+                            Description = temp.Description.Equals(DBNull.Value) ? "" : (string)temp.Description,
+                            DocumentNo = temp.DocumentNo.Equals(DBNull.Value) ? "" : (string)temp.DocumentNo,
+                            DocumentType = temp.DocumentType.Equals(DBNull.Value) ? "" : (string)temp.DocumentType.ToString(),
+                            Obs = temp.Obs.Equals(DBNull.Value) ? "" : (string)temp.Obs,
+                            PostingDate = (DateTime?)temp.PostingDate,
+                            RemainingAmount = (decimal?)temp.RemainingAmount,
+                            SinalizacaoRec = (int?)temp.SinalizacaoRec == 0 || (int?)temp.SinalizacaoRec == null ? false : true ,
+                            DocumentDate = (DateTime?)temp.DocumentDate,
+                            DueDate = (DateTime?)temp.DueDate,
+                            FunctionalAreaId = temp.FunctionalAreaId.Equals(DBNull.Value) ? "" : (string)temp.FunctionalAreaId,
+                            RegionId = temp.RegionId.Equals(DBNull.Value) ? "" : (string)temp.RegionId,
+                            RespCenterId = temp.RespCenterId.Equals(DBNull.Value) ? "" : (string)temp.RespCenterId
+                        });
+                    }
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public static int? UpdateBalance(string NAVDatabaseName, string NAVCompanyName, string NAVClientNo, string EntryNo, string SinalizacaoRec, string Obs)
+        {
+            try
+            {
+                var result = new List<NAVClientesBalanceControlViewModel>();
+                using (var ctx = new SuchDBContextExtention())
+                {
+                    var _parameters = new[]{
+                        new SqlParameter("@DBName", NAVDatabaseName),
+                        new SqlParameter("@CompanyName", NAVCompanyName),
+                        new SqlParameter("@CustomerNo", NAVClientNo ),
+                        new SqlParameter("@Obs", Obs ),
+                        new SqlParameter("@SinalizacaoRec", SinalizacaoRec ),
+                        new SqlParameter("@EntryNo", EntryNo )
+                    };
+
+                    var data = ctx.execStoredProcedureNQ("exec NAV2017ClientesBalancesUpdate @DBName, @CompanyName, @CustomerNo, @Obs, @SinalizacaoRec, @EntryNo", _parameters);
+
+                    return data;
+
                 }
             }
             catch (Exception ex)
@@ -261,8 +338,6 @@ namespace Hydra.Such.Data.Logic
                 return null;
             }
         }
-
-
         
         public static List<NAVClientesInvoicesDetailsViewModel> GetCrMemoDetails(string NAVDatabaseName, string NAVCompanyName, string No)
         {
