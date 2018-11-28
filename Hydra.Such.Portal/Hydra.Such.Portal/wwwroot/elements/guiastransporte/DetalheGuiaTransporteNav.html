@@ -166,7 +166,7 @@
                             <paper-collapse-group>
                                 <div class="panel panel-default">
                                     <div class="panel-body" style="padding:0">
-     1                                   <div class="col-md-12 col-md-12 col-lg-12">
+                                        <div class="col-md-12 col-md-12 col-lg-12">
                                             <div class="row break_clear">
                                                 <div class="col-md-3">
                                                     <vaadin-text-field id="noGuiaTransporte" name="noGuiaTransporte" label="Nº Guia" value="{{ data.noGuiaTransporte}}" disabled="disabled"></vaadin-text-field>
@@ -536,10 +536,11 @@
             </iron-form>
         </div>
 
-        <paper-dialog id="rptDialog" class="dialogBox" modal>
+        <paper-dialog id="rptDialog" class="dialgoBox" modal>
             <div class="buttons">
                 <paper-button class="btnRemove" on-tap="_closeRptDialog"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
             </div>
+            <iframe id="rptContainer" src="" frameborder="0" style="width: 100%; height: 92%; margin: 0px; padding: 0px"></iframe>
         </paper-dialog>
 
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
@@ -601,8 +602,24 @@
                 },
 
                 _printE: function () {
+                    if (this._reportserverurl != undefined) {
+                        debugger;;
+                        var historyAux = 1;
 
-                }
+                        if (!this._history)
+                            historyAux = 0;
+
+                        this.$.rptContainer.src = this._reportserverurl + "GuiaTransporteNav&No=" + this.data.noGuiaTransporte + "&IsHistoric=" + historyAux;
+                        this.$.rptDialog.open();
+                    }
+                    else {
+                        this._showErrorMessage("Não é possivel imprimir. Não foi definido o servidor de relatórios.");
+                    }
+                },
+                _closeRptDialog: function () {
+                    this.$.rptContainer.src = "about:blank";
+                    this.$.rptDialog.close();
+                },
             });
         })
     </script>
