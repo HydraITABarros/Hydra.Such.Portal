@@ -59,6 +59,8 @@ namespace Hydra.Such.Data.Logic
                             RegionCode = temp.RegionCode.Equals(DBNull.Value) ? "" : (string)temp.RegionCode,
                             FunctionalAreaCode = temp.FunctionalAreaCode.Equals(DBNull.Value) ? "" : (string)temp.FunctionalAreaCode,
                             ResponsabilityCenterCode = temp.ResponsabilityCenterCode.Equals(DBNull.Value) ? "" : (string)temp.ResponsabilityCenterCode,
+                            RegiaoCliente = temp.RegiaoCliente.Equals(DBNull.Value) ? null : (Regiao_Cliente?)temp.RegiaoCliente
+
                         });
                     }
                     return result;

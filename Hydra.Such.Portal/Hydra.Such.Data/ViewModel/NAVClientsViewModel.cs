@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 
 namespace Hydra.Such.Data.ViewModel
@@ -21,5 +22,19 @@ namespace Hydra.Such.Data.ViewModel
         public string RegionCode { get; set; }
         public string FunctionalAreaCode { get; set; }
         public string ResponsabilityCenterCode { get; set; }
+        public Regiao_Cliente? RegiaoCliente { get; set; }
+        
+    }
+
+    public enum Regiao_Cliente
+    {
+        [Description(" ")]
+        NotSet = 0,
+        [Description("Norte")]
+        Norte = 1,
+        [Description("Centro")]
+        Centro = 2,
+        [Description("Sul")]
+        Sul = 3
     }
 }

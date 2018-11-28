@@ -302,7 +302,7 @@
 
                                                     <div class="row break_clear">
                                                         <div class="col-lg-3">
-                                                            <vaadin-combo-box items='[{"id":"0","value":""},{"id":23,"value":"Lisboa"},{"id":33,"value":"Porto"},{"id":43,"value":"Coimbra"}]' id="Regiao_Cliente" disabled="{{ !_permissions.update }}" item-value-path="value" item-label-path="value" value="{{data.Regiao_Cliente}}" label="Região">
+                                                            <vaadin-combo-box items='[{"id":"0","value":""},{"id":1,"value":"Norte"},{"id":2,"value":"Centro"},{"id":3,"value":"Sul"}]' id="Regiao_Cliente" disabled="{{ !_permissions.update }}" item-value-path="id" item-label-path="value" value="{{data.Regiao_Cliente}}" label="Região">
                                                                 <template>
                                                                     &nbsp;[[item.value]]&nbsp;
                                                                 </template>

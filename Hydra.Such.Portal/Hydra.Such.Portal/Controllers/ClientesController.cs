@@ -87,16 +87,18 @@ namespace Hydra.Such.Portal.Controllers
                     customerNo = (string)customerNoValue;
             }
             List<ClientDetailsViewModel> result = new List<ClientDetailsViewModel>();
-            result = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, customerNo).Select(c => new ClientDetailsViewModel()
-            {
-                No = c.No_,
-                Name = c.Name,
-                Address = c.Address,
-                Post_Code = c.PostCode,
-                City = c.City,
-                Regiao_Cliente = c.Country_RegionCode
+            result = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, customerNo).Select(c =>
+                 new ClientDetailsViewModel()
+                {
+                    No = c.No_,
+                    Name = c.Name,
+                    Address = c.Address,
+                    Post_Code = c.PostCode,
+                    City = c.City,
+                    Regiao_Cliente = c.RegiaoCliente
 
-            }).ToList();
+                }
+            ).ToList();
             /*
             //Apply User Dimensions Validations
             List<AcessosDimensões> CUserDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
@@ -790,7 +792,7 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         if (dp["regiao_Cliente"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.Regiao_Cliente);
+                            row.CreateCell(Col).SetCellValue(item.Regiao_Cliente.ToString());
                             Col = Col + 1;
                         }
                         count++;

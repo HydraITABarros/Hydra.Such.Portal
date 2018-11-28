@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -27,7 +29,8 @@ namespace Hydra.Such.Data.ViewModel.Clients
         public WSCustomerNAV.Tipo_Cliente? Tipo_Cliente { get; set; }
         public WSCustomerNAV.Natureza_Cliente? Natureza_Cliente { get; set; }
         public string No_Series { get; set; }
-        public string Regiao_Cliente { get; set; }
+        [JsonConverter(typeof(StringEnumConverter))]
+        public Regiao_Cliente? Regiao_Cliente { get; set; }
         public string Country_RegionCode { get; set; }
         // Endereços de envio ???
         

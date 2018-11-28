@@ -143,7 +143,7 @@
                     <vaadin-grid-filter path="regiao_Cliente" />
                 </template>
                 <template>
-                    {{item.regiao_Cliente}}
+                    [[ formatRegiaoCliente(item.regiao_Cliente)]]
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
@@ -265,6 +265,11 @@
                             value: obj[key]
                         };
                     });
+                },
+                formatRegiaoCliente: function (value) {
+                    if (!value || value == "NotSet")
+                        return "";
+                    return value;
                 }
                 /* end - ColumnToggle */
             });
