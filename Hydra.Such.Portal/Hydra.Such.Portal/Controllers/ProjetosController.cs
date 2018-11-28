@@ -4016,9 +4016,10 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult RegisterPreMovements([FromBody]  List<ProjectDiaryViewModel> dp, string StartDate, string EndDate)
         {
-            ErrorHandler erro = new ErrorHandler();
-            erro.eReasonCode = 1;
-            erro.eMessage = "Movimentos registados com Sucesso";
+            ErrorHandler response = new ErrorHandler();
+            response.eReasonCode = 1;
+            response.eMessage = "Movimentos registados com Sucesso";
+
             List<ProjectDiaryViewModel> premov = new List<ProjectDiaryViewModel>();
 
             if (dp != null && dp.Count>0 && !string.IsNullOrEmpty(StartDate)  && !string.IsNullOrEmpty(EndDate))
@@ -4041,10 +4042,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 if (premov != null && premov.Count>0)
                 {
-
-                   
-
-                    var PreRegistGrouped = premov.GroupBy(x => new { x.ProjectNo, x.Code, x.ServiceGroupCode, x.ServiceClientCode },
+                    var groupedPreRecords = premov.GroupBy(x => new { x.ProjectNo, x.Code, x.ServiceGroupCode, x.ServiceClientCode },
                      x => x,
                      (Key, items) => new {
                          ProjectNo = Key.ProjectNo,
@@ -4054,131 +4052,145 @@ namespace Hydra.Such.Portal.Controllers
                          Items = items,
                      }).ToList();
 
-                    foreach (var item in PreRegistGrouped)
+                    //load project diary data
+                    List<ProjectDiaryViewModel> projectDiaryItems = new List<ProjectDiaryViewModel>();
+                    foreach (var item in groupedPreRecords)
                     {
-                        List<ProjectDiaryViewModel> nwl = new List<ProjectDiaryViewModel>();
                         MovimentosDeProjeto ProjectMovement = new MovimentosDeProjeto();
                         if (item.Items.ToList().Count > 0)
                         {
-                            nwl = item.Items.ToList();
-                            Guid transactID = Guid.NewGuid();
-                            try
-                            {
-                                //Create Lines in NAV
-                                try
-                                {
-                                    Task<WSCreateProjectDiaryLine.CreateMultiple_Result> TCreateNavDiaryLine = WSProjectDiaryLine.CreateNavDiaryLines(nwl, transactID, _configws);
-                                    TCreateNavDiaryLine.Wait();
-                                }
-                                catch (Exception ex)
-                                {
-                                    erro.eReasonCode = 3;
-                                    erro.eMessage = ex.Message;
-                                    //Response.StatusCode = (int)HttpStatusCode.NoContent;
-                                    return Json(erro);
-                                }
+                            ProjectDiaryViewModel line = item.Items.First();
+                            line.Date = EndDate;
+                            line.Quantity = item.Items.Sum(x => x.Quantity);
+                            line.TotalCost = line.UnitCost * line.Quantity;
+                            line.TotalPrice = line.UnitPrice * line.Quantity;
+                            projectDiaryItems.Add(line);
+                        }
+                    }
+                    //load project movement data
+                    List<MovimentosDeProjeto> projectMovements = new List<MovimentosDeProjeto>();
+                    MovimentosDeProjeto projectMovement;
+                    foreach (var item in projectDiaryItems)
+                    {
+                        projectMovement = new MovimentosDeProjeto();
+                        projectMovement.NºProjeto = item.ProjectNo;
+                        projectMovement.Data = Convert.ToDateTime(EndDate);
+                        projectMovement.TipoMovimento = item.MovementType;
+                        projectMovement.Tipo = item.Type;
+                        projectMovement.Código = item.Code;
+                        projectMovement.Descrição = item.Description;
+                        projectMovement.CódUnidadeMedida = item.MeasurementUnitCode;
+                        projectMovement.CódLocalização = item.LocationCode;
+                        projectMovement.GrupoContabProjeto = item.ProjectContabGroup;
+                        projectMovement.CódigoRegião = item.RegionCode;
+                        projectMovement.CódigoÁreaFuncional = item.FunctionalAreaCode;
+                        projectMovement.CódigoCentroResponsabilidade = item.ResponsabilityCenterCode;
+                        projectMovement.Utilizador = User.Identity.Name;
+                        projectMovement.Faturável = item.Billable;
+                        projectMovement.Registado = true;
+                        projectMovement.Faturada = false;
+                        projectMovement.FaturaANºCliente = item.InvoiceToClientNo;
+                        projectMovement.Moeda = item.Coin;
+                        projectMovement.ValorUnitárioAFaturar = item.UnitValueToInvoice;
+                        projectMovement.TipoRefeição = item.MealType;
+                        projectMovement.CódGrupoServiço = item.ServiceGroupCode;
+                        projectMovement.NºGuiaResíduos = item.ResidueGuideNo;
+                        projectMovement.NºGuiaExterna = item.ExternalGuideNo;
+                        projectMovement.DataConsumo = item.ConsumptionDate != "" && item.ConsumptionDate != null ? DateTime.Parse(item.ConsumptionDate) : (DateTime?)null;
+                        projectMovement.CódServiçoCliente = item.ServiceClientCode;
+                        projectMovement.UtilizadorCriação = User.Identity.Name;
+                        projectMovement.DataHoraCriação = DateTime.Now;
+                        projectMovement.FaturaçãoAutorizada = false;
+                        projectMovement.CustoUnitário = item.UnitCost;
+                        projectMovement.PreçoUnitário = item.UnitPrice;
+                        projectMovement.Quantidade = item.Quantity;
+                        projectMovement.CustoTotal = item.TotalCost;
+                        projectMovement.PreçoTotal = item.TotalPrice;
+                        projectMovements.Add(projectMovement);
+                    }
 
-                                //Register Lines in NAV
-                                Task<WSGenericCodeUnit.FxPostJobJrnlLines_Result> TRegisterNavDiaryLine = WSProjectDiaryLine.RegsiterNavDiaryLines(transactID, _configws);
-                                TRegisterNavDiaryLine.Wait();
+                    //Create project diary in NAV
+                    Guid transactionId = Guid.NewGuid();
+                    try
+                    {
+                        //Create Lines in NAV
+                        try
+                        {
+                            Task<WSCreateProjectDiaryLine.CreateMultiple_Result> createNavDiaryTask = WSProjectDiaryLine.CreateNavDiaryLines(projectDiaryItems, transactionId, _configws);
+                            createNavDiaryTask.Wait();
+                        }
+                        catch (Exception ex)
+                        {
+                            response.eReasonCode = 3;
+                            response.eMessage = ex.Message;
+                            return Json(response);
+                        }
 
-                                if (TRegisterNavDiaryLine == null)
-                                {
-                                    erro.eReasonCode = 3;
-                                    erro.eMessage = "Não foi possivel criar as linhas no nav";
-                                    Response.StatusCode = (int)HttpStatusCode.NoContent;
-                                    return Json(premov);
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                erro.eReasonCode = 3;
-                                erro.eMessage = "Não foi possivel criar as linhas no nav";
-                                //Response.StatusCode = (int)HttpStatusCode.NoContent;
-                                return Json(erro);
-                            }
-                        }
-                        List<int> premovId = new List<int>();
-                        foreach (ProjectDiaryViewModel preReg in nwl)
+                        //Register Lines in NAV
+                        Task<WSGenericCodeUnit.FxPostJobJrnlLines_Result> registerNavDiaryTask = WSProjectDiaryLine.RegsiterNavDiaryLines(transactionId, _configws);
+                        registerNavDiaryTask.Wait();
+
+                        if (!registerNavDiaryTask.IsCompletedSuccessfully)
                         {
-                            ProjectMovement.NºProjeto = item.ProjectNo;
-                            ProjectMovement.Data = Convert.ToDateTime(EndDate);
-                            if (ProjectMovement.Quantidade == null)
-                            {
-                                ProjectMovement.Quantidade = 0;
-                            }
-                            if (preReg.Quantity == null)
-                            {
-                                preReg.Quantity = 0;
-                            }
-                            if (ProjectMovement.Quantidade == 0)
-                            {
-                                ProjectMovement.Quantidade = (decimal)preReg.Quantity;
-                            }
-                            else
-                            {
-                                ProjectMovement.Quantidade = ProjectMovement.Quantidade + (decimal)preReg.Quantity;
-                            }
-                            ProjectMovement.TipoMovimento = preReg.MovementType;
-                            ProjectMovement.Tipo = preReg.Type;
-                            ProjectMovement.Código = item.Code;
-                            ProjectMovement.Descrição = preReg.Description;
-                            ProjectMovement.CódUnidadeMedida = preReg.MeasurementUnitCode;
-                            ProjectMovement.CódLocalização = preReg.LocationCode;
-                            ProjectMovement.GrupoContabProjeto = preReg.ProjectContabGroup;
-                            ProjectMovement.CódigoRegião = preReg.RegionCode;
-                            ProjectMovement.CódigoÁreaFuncional = preReg.FunctionalAreaCode;
-                            ProjectMovement.CódigoCentroResponsabilidade = preReg.ResponsabilityCenterCode;
-                            ProjectMovement.Utilizador = User.Identity.Name;
-                            ProjectMovement.CustoUnitário = preReg.UnitCost;
-                            ProjectMovement.CustoTotal = ProjectMovement.Quantidade * preReg.UnitCost;
-                            ProjectMovement.PreçoUnitário = preReg.UnitPrice;
-                            ProjectMovement.PreçoTotal = ProjectMovement.Quantidade * preReg.UnitPrice;
-                            ProjectMovement.Faturável = preReg.Billable;
-                            ProjectMovement.Registado = true;
-                            ProjectMovement.Faturada = false;
-                            ProjectMovement.FaturaANºCliente = preReg.InvoiceToClientNo;
-                            ProjectMovement.Moeda = preReg.Coin;
-                            ProjectMovement.ValorUnitárioAFaturar = preReg.UnitValueToInvoice;
-                            ProjectMovement.TipoRefeição = preReg.MealType;
-                            ProjectMovement.CódGrupoServiço = item.ServiceGroupCode;
-                            ProjectMovement.NºGuiaResíduos = preReg.ResidueGuideNo;
-                            ProjectMovement.NºGuiaExterna = preReg.ExternalGuideNo;
-                            ProjectMovement.DataConsumo = preReg.ConsumptionDate != "" && preReg.ConsumptionDate != null ? DateTime.Parse(preReg.ConsumptionDate) : (DateTime?)null;
-                            ProjectMovement.CódServiçoCliente = item.ServiceClientCode;
-                            ProjectMovement.UtilizadorCriação = User.Identity.Name;
-                            ProjectMovement.DataHoraCriação = DateTime.Now;
-                            ProjectMovement.FaturaçãoAutorizada = false;
-                            premovId.Add(preReg.LineNo);
+                            response.eReasonCode = 3;
+                            response.eMessage = "Não foi possivel criar as linhas no nav";
+                            Response.StatusCode = (int)HttpStatusCode.NoContent;
+                            return Json(premov);
                         }
-                         MovimentosDeProjeto CreatedMovProj = DBProjectMovements.Create(ProjectMovement);
-                        if (CreatedMovProj.NºLinha > 0 && premovId.Count > 0)
+                        else
                         {
-                            foreach (int pmid in premovId)
+                            //Create project movement in e-SUCH and update pré-movements. Ensure atomicity
+                            using (var ctx = new SuchDBContext())
                             {
-                                PréMovimentosProjeto preMovLine = DBPreProjectMovements.GetByLine(pmid);
-                                if (preMovLine != null)
+                                projectMovements.ForEach(x => x.DataHoraCriação = DateTime.Now);
+                                ctx.MovimentosDeProjeto.AddRange(projectMovements);
+
+                                foreach (var item in projectDiaryItems)
                                 {
-                                     preMovLine.Registado = true;
-                                     preMovLine.UtilizadorCriação = User.Identity.Name;
-                                     DBPreProjectMovements.Update(preMovLine);
+                                    var preMovementIds = groupedPreRecords.SelectMany(x => x.Items).Where(x => x.ProjectNo == item.ProjectNo &&
+                                                                                     x.Code == item.Code &&
+                                                                                     x.ServiceGroupCode == item.ServiceGroupCode &&
+                                                                                     x.ServiceClientCode == item.ServiceClientCode)
+                                                                         .Select(x => x.LineNo)
+                                                                         .ToList();
+
+                                    var preMovements = DBPreProjectMovements.GetUnregisteredById(preMovementIds);
+                                    if (preMovements != null && preMovements.Count > 0)
+                                    {
+                                        preMovements.ForEach(x =>
+                                        {
+                                            x.Registado = true;
+                                            x.UtilizadorCriação = User.Identity.Name;
+                                            x.DataHoraModificação = DateTime.Now;
+                                        });
+                                        ctx.PréMovimentosProjeto.UpdateRange(preMovements);
+                                    }
                                 }
+                                ctx.SaveChanges();
                             }
                         }
+                    }
+                    catch (Exception ex)
+                    {
+                        WSProjectDiaryLine.DeleteNavDiaryLines(transactionId, _configws);
+                        response.eReasonCode = 3;
+                        response.eMessage = "Não foi possivel criar as linhas no nav (" + ex.Message + ")";
+                        //Response.StatusCode = (int)HttpStatusCode.NoContent;
+                        return Json(response);
                     }
                 }
                 else if (dp != null)
                 {
-                     erro.eReasonCode = 2;
-                     erro.eMessage = "Não existe Pré-Movimentos por registar no intervalo de tempo selecionado";
+                     response.eReasonCode = 2;
+                     response.eMessage = "Não existe Pré-Movimentos por registar no intervalo de tempo selecionado";
                 }
             }
             else
             {
-                erro.eReasonCode = 2;
-                erro.eMessage = "A tabela Pré-Movimentos está vazia";
+                response.eReasonCode = 2;
+                response.eMessage = "A tabela Pré-Movimentos está vazia";
             }
-            return Json(erro);
+            return Json(response);
         }
 
         [HttpPost]
