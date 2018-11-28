@@ -502,7 +502,7 @@
                                         </div>
 
                                         <div class="col-md-3 text-right">
-                                            <vaadin-text-field value="{{data.valorTotalDocComIVA}}" id="valorTotalDocComIVA" name="valorTotalDocComIVA" label="Valor Total Doc. com IVA" disabled="{{ !_permissions.update }}" type="number" pattern="^[1-9]\d*(\.\d+)?$" on-value-changed="_ConvertDecimals">
+                                            <vaadin-text-field value="{{data.valorTotalDocComIVA}}" id="valorTotalDocComIVA" name="valorTotalDocComIVA" label="Valor Total Doc. com IVA" disabled="{{ !_permissions.update }}" type="number" on-blur="_ConvertDecimals">
                                                 <div slot="suffix">€</div>
                                             </vaadin-text-field>
                                         </div>

@@ -3232,6 +3232,9 @@
                         this.$._CLRegion.valueText = Regiao2ValueText;
                         this.$._CLFunctionalAreaCode.valueText = Area2ValueText;
                         this.$._CLResponsabilityCenterCode.valueText = Cresp2ValueText;
+
+                        this.$._CBLocations.disabled = false;
+                        this.$.txtLocalCode.disabled = false;
                     }
                     else {
                         this.$.projectNo.disabled = false;
@@ -3244,6 +3247,8 @@
                         this.$._CLFunctionalAreaCode.disabled = true;
                         this.$._CLResponsabilityCenterCode.disabled = true;
 
+                        this.$._CBLocations.disabled = true;
+                        this.$.txtLocalCode.disabled = true;
                     }
                 }
             });
