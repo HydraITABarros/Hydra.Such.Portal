@@ -25,6 +25,7 @@ using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using Hydra.Such.Data.ViewModel.Approvals;
 using Hydra.Such.Data.Logic.Approvals;
+using Hydra.Such.Data.ViewModel.Encomendas;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -796,6 +797,23 @@ namespace Hydra.Such.Portal.Controllers
                 }
             }
             return Json(item);
+        }
+
+        [HttpPost]
+        public JsonResult TodasEncomendasPorRequisicao([FromBody] RequisitionViewModel item)
+        {
+            List<EncomendasViewModel> result = new List<EncomendasViewModel>();
+
+            if (item != null)
+            {
+                if (!string.IsNullOrEmpty(item.RequisitionNo))
+                {
+                    string teste = "RQ1767670";
+                    result = DBNAV2017Encomendas.EncomendasPorRequisicao(config.NAVDatabaseName, config.NAVCompanyName, teste);
+                    //result = DBNAV2017Encomendas.EncomendasPorRequisicao(config.NAVDatabaseName, config.NAVCompanyName, item.RequisitionNo);
+                }
+            }
+            return Json(result);
         }
 
         public JsonResult GetPlaces([FromBody] int placeId)
