@@ -22,6 +22,8 @@
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
 <link rel="import" href="/lib/such-selectbox/such-selectbox.html">
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload-file.html">
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload.html">
 
 <dom-module id="x-minharequisitiondetails">
     <template>
@@ -168,7 +170,6 @@
         <iron-ajax url="/PopulateDropdowns/GetVATBusinessPostingGroups" last-response="{{VATBusinessPostingGroups}}" auto method="get" handle-as="json" content-type="application/json"></iron-ajax>
 
         <!--<iron-ajax url="/GestaoRequisicoes/VerificarParaAprovacao" last-response="{{ParaAprovar}}" auto method="get" handle-as="json" on-response="_ParaAprovar" content-type="application/json"></iron-ajax>-->
-
         <iron-ajax url="/GestaoRequisicoes/GetRequisition"
                    id="requisition_datasource"
                    last-response="{{Requisition}}"
@@ -498,221 +499,222 @@
                                     </div>
                                 </div>
 
-                                    <!--Detalhe-->
-                                    <div>
-                                        <div class="row">
-                                            <div class="col-sm-3">
-                                                <vaadin-text-field id="txtResponsibleCreation" name="txtResponsibleCreation" label="Responsável Criação" value="{{Requisition.responsibleCreation}}" disabled></vaadin-text-field>
-                                            </div>
-                                            <div class="col-sm-3">
-                                                <vaadin-text-field id="txtRequisitionDate" name="txtRequisitionDate" label="Data Requisição" value="{{Requisition.requisitionDate}}" disabled></vaadin-text-field>
-                                            </div>
-
-                                            <div class="col-sm-3">
-                                                <vaadin-text-field id="txtResponsibleApproval" name="txtResponsibleApproval" label="Responsável Aprovação" value="{{Requisition.responsibleApproval}}" disabled></vaadin-text-field>
-                                            </div>
-                                            <div class="col-sm-3">
-                                                <label class="label_custom">Data/Hora Aprovação</label>
-                                                <div class="row">
-                                                    <div class="col-sm-8" style="padding-right: 5px;">
-                                                        <vaadin-text-field id="txtapprovalDateText" name="txtapprovalDateText" value="{{Requisition.approvalDateText}}" disabled></vaadin-text-field>
-                                                    </div>
-                                                    <div class="col-sm-4" style="padding-left: 0px">
-                                                        <vaadin-text-field id="txtapprovalDateHour" name="txtapprovalDateHour" value="{{Requisition.approvalDateHour}}" disabled></vaadin-text-field>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                <!--Detalhe-->
+                                <div>
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <vaadin-text-field id="txtResponsibleCreation" name="txtResponsibleCreation" label="Responsável Criação" value="{{Requisition.responsibleCreation}}" disabled></vaadin-text-field>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <vaadin-text-field id="txtRequisitionDate" name="txtRequisitionDate" label="Data Requisição" value="{{Requisition.requisitionDate}}" disabled></vaadin-text-field>
                                         </div>
 
-                                        <div class="row">
-                                            <div class="col-sm-3">
-                                                <vaadin-text-field id="txtResponsibleValidation" name="txtResponsibleValidation" label="Responsável Validação" value="{{Requisition.responsibleValidation}}" disabled></vaadin-text-field>
-                                            </div>
-                                            <div class="col-sm-3">
-                                                <label class="label_custom">Data/Hora Validação</label>
-                                                <div class="row">
-                                                    <div class="col-sm-8" style="padding-right: 5px;">
-                                                        <vaadin-text-field id="txtvalidationDateText" name="txtvalidationDateText" value="{{Requisition.validationDateText}}" disabled></vaadin-text-field>
-                                                    </div>
-                                                    <div class="col-sm-4" style="padding-left: 0px">
-                                                        <vaadin-text-field id="txtvalidationDateHour" name="txtvalidationDateHour" value="{{Requisition.validationDateHour}}" disabled></vaadin-text-field>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-3">
-                                                <vaadin-text-field id="txtResponsibleReception" name="txtResponsibleReception" label="Responsável de Recebimento" value="{{Requisition.responsibleReception}}" disabled></vaadin-text-field>
-                                            </div>
-                                            <div class="col-sm-3">
-                                                <label class="label_custom">Data/Hora de Recebimento</label>
-                                                <div class="row">
-                                                    <div class="col-sm-8" style="padding-right: 5px;">
-                                                        <vaadin-text-field id="txtreceivedDate" name="txtreceivedDate" value="{{Requisition.receivedDate}}" disabled></vaadin-text-field>
-                                                    </div>
-                                                    <div class="col-sm-4" style="padding-left: 0px">
-                                                        <vaadin-text-field id="txtreceivedDateHour" name="txtreceivedDateHour" value="{{Requisition.receivedDateHour}}" disabled></vaadin-text-field>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                        <div class="col-sm-3">
+                                            <vaadin-text-field id="txtResponsibleApproval" name="txtResponsibleApproval" label="Responsável Aprovação" value="{{Requisition.responsibleApproval}}" disabled></vaadin-text-field>
                                         </div>
-
-                                        <div class="row">
-                                            <div class="col-sm-6">
-                                                <div class="row">
-                                                    <div class="col-sm-6">
-                                                        <vaadin-text-field id="txtMarketInquiryNo" name="txtMarketInquiryNo" label="Nº Consulta Mercado" value="{{Requisition.marketInquiryNo}}" disabled></vaadin-text-field>
-                                                    </div>
-                                                    <div class="col-sm-6">
-                                                        <vaadin-text-field id="txtRequisiçãoNutrição" name="txtRequisiçãoNutrição" label="Requisição Nutrição" value="{{Requisition.requestNutrition}}" disabled></vaadin-text-field>
-                                                    </div>
+                                        <div class="col-sm-3">
+                                            <label class="label_custom">Data/Hora Aprovação</label>
+                                            <div class="row">
+                                                <div class="col-sm-8" style="padding-right: 5px;">
+                                                    <vaadin-text-field id="txtapprovalDateText" name="txtapprovalDateText" value="{{Requisition.approvalDateText}}" disabled></vaadin-text-field>
                                                 </div>
-                                                <div class="row">
-                                                    <div class="col-sm-12">
-                                                        <vaadin-text-field id="txtApprovers" name="txtApprovers" label="Aprovadores" value="{{Requisition.approvers}}" disabled></vaadin-text-field>
-                                                    </div>
+                                                <div class="col-sm-4" style="padding-left: 0px">
+                                                    <vaadin-text-field id="txtapprovalDateHour" name="txtapprovalDateHour" value="{{Requisition.approvalDateHour}}" disabled></vaadin-text-field>
                                                 </div>
-                                            </div>
-
-                                            <div class="col-sm-6 ">
-                                                <such-textarea rows="5" value="{{Requisition.rejeicaoMotivo}}" id="txtRejeicaoMotivo" name="txtRejeicaoMotivo" label="Motivo de Rejeição" disabled> </such-textarea>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <!--Reparação-->
-                                    <div>
-                                        <div class="col-lg-3 alignPoga">
-                                            <vaadin-checkbox id="chkrepairWithWarranty" checked="{{Requisition.repairWithWarranty}}" disabled="{{ !_permissions.update }}">Reparação com Garantia</vaadin-checkbox>
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <vaadin-text-field id="txtResponsibleValidation" name="txtResponsibleValidation" label="Responsável Validação" value="{{Requisition.responsibleValidation}}" disabled></vaadin-text-field>
                                         </div>
-                                        <div class="col-lg-3 alignPoga">
-                                            <vaadin-checkbox id="chkemm" checked="{{Requisition.emm}}" disabled="{{ !_permissions.update }}">EMM</vaadin-checkbox>
+                                        <div class="col-sm-3">
+                                            <label class="label_custom">Data/Hora Validação</label>
+                                            <div class="row">
+                                                <div class="col-sm-8" style="padding-right: 5px;">
+                                                    <vaadin-text-field id="txtvalidationDateText" name="txtvalidationDateText" value="{{Requisition.validationDateText}}" disabled></vaadin-text-field>
+                                                </div>
+                                                <div class="col-sm-4" style="padding-left: 0px">
+                                                    <vaadin-text-field id="txtvalidationDateHour" name="txtvalidationDateHour" value="{{Requisition.validationDateHour}}" disabled></vaadin-text-field>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <vaadin-text-field id="txtResponsibleReception" name="txtResponsibleReception" label="Responsável de Recebimento" value="{{Requisition.responsibleReception}}" disabled></vaadin-text-field>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <label class="label_custom">Data/Hora de Recebimento</label>
+                                            <div class="row">
+                                                <div class="col-sm-8" style="padding-right: 5px;">
+                                                    <vaadin-text-field id="txtreceivedDate" name="txtreceivedDate" value="{{Requisition.receivedDate}}" disabled></vaadin-text-field>
+                                                </div>
+                                                <div class="col-sm-4" style="padding-left: 0px">
+                                                    <vaadin-text-field id="txtreceivedDateHour" name="txtreceivedDateHour" value="{{Requisition.receivedDateHour}}" disabled></vaadin-text-field>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <vaadin-text-field id="txtMarketInquiryNo" name="txtMarketInquiryNo" label="Nº Consulta Mercado" value="{{Requisition.marketInquiryNo}}" disabled></vaadin-text-field>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <vaadin-text-field id="txtRequisiçãoNutrição" name="txtRequisiçãoNutrição" label="Requisição Nutrição" value="{{Requisition.requestNutrition}}" disabled></vaadin-text-field>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-12">
+                                                    <vaadin-text-field id="txtApprovers" name="txtApprovers" label="Aprovadores" value="{{Requisition.approvers}}" disabled></vaadin-text-field>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-6 ">
+                                            <such-textarea rows="5" value="{{Requisition.rejeicaoMotivo}}" id="txtRejeicaoMotivo" name="txtRejeicaoMotivo" label="Motivo de Rejeição" disabled> </such-textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--Reparação-->
+                                <div>
+                                    <div class="col-lg-3 alignPoga">
+                                        <vaadin-checkbox id="chkrepairWithWarranty" checked="{{Requisition.repairWithWarranty}}" disabled="{{ !_permissions.update }}">Reparação com Garantia</vaadin-checkbox>
+                                    </div>
+                                    <div class="col-lg-3 alignPoga">
+                                        <vaadin-checkbox id="chkemm" checked="{{Requisition.emm}}" disabled="{{ !_permissions.update }}">EMM</vaadin-checkbox>
+                                    </div>
+                                    <div class="col-md-3 ">
+                                        <vaadin-date-picker label="Data Entrega Armazém" id="DeliveryWarehouseDate" name="DeliveryWarehouseDate" value="{{Requisition.warehouseDeliveryDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                    </div>
+                                </div>
+                                <!--Recolha-->
+                                <div>
+                                    <div class="row break_clear">
+                                        <div class="col-md-3 ">
+                                            <vaadin-combo-box items="[[CBLocal]]" on-change="_onLocalCollectionChange" id="CollectionLocal" item-value-path="id" item-label-path="value" value="{{Requisition.localCollection}}" label="Local de Recolha" disabled="{{ !_permissions.update }}">
+                                                <template>
+                                                    <table width="180px">
+                                                        <tr>
+                                                            <td width="40%">[[item.id]]</td>
+                                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                                        </tr>
+                                                    </table>
+                                                </template>
+                                            </vaadin-combo-box>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-date-picker label="Data Entrega Armazém" id="DeliveryWarehouseDate" name="DeliveryWarehouseDate" value="{{Requisition.warehouseDeliveryDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                            <vaadin-text-field id="CollectionAddress" name="CollectionAddress" label="Morada" value="{{Requisition.collectionAddress}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                        </div>
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="CollectionPostalCode" name="CollectionPostalCode" label="Código-Postal" value="{{Requisition.collectionPostalCode}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                        </div>
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="CollectionLocality" name="CollectionLocality" label="Localidade" value="{{Requisition.collectionLocality}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                                         </div>
                                     </div>
-                                    <!--Recolha-->
-                                    <div>
-                                        <div class="row break_clear">
-                                            <div class="col-md-3 ">
-                                                <vaadin-combo-box items="[[CBLocal]]" on-change="_onLocalCollectionChange" id="CollectionLocal" item-value-path="id" item-label-path="value" value="{{Requisition.localCollection}}" label="Local de Recolha" disabled="{{ !_permissions.update }}">
-                                                    <template>
-                                                        <table width="180px">
-                                                            <tr>
-                                                                <td width="40%">[[item.id]]</td>
-                                                                <td width="60%"> <b>[[item.value]]</b></td>
-                                                            </tr>
-                                                        </table>
-                                                    </template>
-                                                </vaadin-combo-box>
-                                            </div>
-                                            <div class="col-md-3 ">
-                                                <vaadin-text-field id="CollectionAddress" name="CollectionAddress" label="Morada" value="{{Requisition.collectionAddress}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
-                                            </div>
-                                            <div class="col-md-3 ">
-                                                <vaadin-text-field id="CollectionPostalCode" name="CollectionPostalCode" label="Código-Postal" value="{{Requisition.collectionPostalCode}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
-                                            </div>
-                                            <div class="col-md-3 ">
-                                                <vaadin-text-field id="CollectionLocality" name="CollectionLocality" label="Localidade" value="{{Requisition.collectionLocality}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
-                                            </div>
+                                    <div class="row break_clear">
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="CollectionContact" name="CollectionContact" label="Contato" value="{{Requisition.collectionContact}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                                         </div>
-                                        <div class="row break_clear">
-                                            <div class="col-md-3 ">
-                                                <vaadin-text-field id="CollectionContact" name="CollectionContact" label="Contato" value="{{Requisition.collectionContact}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
-                                            </div>
-                                            <div class="col-md-3 ">
-                                                <vaadin-text-field id="CollectionReceptionResponsible" name="CollectionReceptionResponsible" label="Responsável Receção" value="{{Requisition.responsibleReception}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
-                                            </div>
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="CollectionReceptionResponsible" name="CollectionReceptionResponsible" label="Responsável Receção" value="{{Requisition.responsibleReception}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                                         </div>
                                     </div>
+                                </div>
 
 
-                                    <!--Entrega (Fornecedor)-->
-                                    <div>
-                                        <div class="row break_clear">
-                                            <div class="col-md-3 ">
-                                                <vaadin-combo-box items="[[CBLocal]]" on-change="_onLocalDeliveryChange" id="DeliveryLocal" item-value-path="id" item-label-path="value" value="{{Requisition.localDelivery}}" label="Local de Entrega" disabled="{{ !_permissions.update }}">
-                                                    <template>
-                                                        <table width="180px">
-                                                            <tr>
-                                                                <td width="40%">[[item.id]]</td>
-                                                                <td width="60%"> <b>[[item.value]]</b></td>
-                                                            </tr>
-                                                        </table>
-                                                    </template>
-                                                </vaadin-combo-box>
-                                            </div>
-                                            <div class="col-md-3 ">
-                                                <vaadin-text-field id="DeliveryAddress" name="DeliveryAddress" label="Morada" value="{{Requisition.deliveryAddress}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
-                                            </div>
-                                            <div class="col-md-3 ">
-                                                <vaadin-text-field id="DeliveryPostalCode" name="DeliveryPostalCode" label="Código-Postal" value="{{Requisition.deliveryPostalCode}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
-                                            </div>
-                                            <div class="col-md-3 ">
-                                                <vaadin-text-field id="DeliveryLocality" name="DeliveryLocality" label="Localidade" value="{{Requisition.localityDelivery}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
-                                            </div>
+                                <!--Entrega (Fornecedor)-->
+                                <div>
+                                    <div class="row break_clear">
+                                        <div class="col-md-3 ">
+                                            <vaadin-combo-box items="[[CBLocal]]" on-change="_onLocalDeliveryChange" id="DeliveryLocal" item-value-path="id" item-label-path="value" value="{{Requisition.localDelivery}}" label="Local de Entrega" disabled="{{ !_permissions.update }}">
+                                                <template>
+                                                    <table width="180px">
+                                                        <tr>
+                                                            <td width="40%">[[item.id]]</td>
+                                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                                        </tr>
+                                                    </table>
+                                                </template>
+                                            </vaadin-combo-box>
                                         </div>
-                                        <div class="row break_clear">
-                                            <div class="col-md-3 ">
-                                                <vaadin-text-field id="ReceptionReceptionResponsible" name="ReceptionReceptionResponsible" label="Responsável Receção" value="{{Requisition.responsibleReceptionReception}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
-                                            </div>
-                                            <div class="col-md-3 ">
-                                                <vaadin-text-field id="InvoiceNo" name="InvoiceNo" label="Nº Fatura" value="{{Requisition.invoiceNo}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
-                                            </div>
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="DeliveryAddress" name="DeliveryAddress" label="Morada" value="{{Requisition.deliveryAddress}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                        </div>
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="DeliveryPostalCode" name="DeliveryPostalCode" label="Código-Postal" value="{{Requisition.deliveryPostalCode}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                        </div>
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="DeliveryLocality" name="DeliveryLocality" label="Localidade" value="{{Requisition.localityDelivery}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                                         </div>
                                     </div>
-
-                                    <!--Anexos-->
-                                    <div>
-                                        <div class="row break_clear">
-                                            <!--<template is="dom-if" if="{{ _permissions.update }}">-->
-                                            <vaadin-upload id="UploadRequest"
-                                                           target="/PreRequisicoes/FileUpload/{{_prerequesitionno}}/{{_lineno}}"
-                                                           accept="application/pdf, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.template, image/jpeg, image/png, image/gif" method="POST"
-                                                           headers="{'Accept': 'application/json'}"
-                                                           hidden="{{ !_permissions.update }}"
-                                                           timeout=15000>
-                                            </vaadin-upload>
-                                            <!--</template>-->
+                                    <div class="row break_clear">
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="ReceptionReceptionResponsible" name="ReceptionReceptionResponsible" label="Responsável Receção" value="{{Requisition.responsibleReceptionReception}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                                         </div>
-                                        <div class="row break_clear">
-                                            <vaadin-grid aria-label="ReqUpdateGrid" items="[[uploads]]" class="grid" multi-sort="true">
-
-                                                <vaadin-grid-column width="70%" resizable>
-                                                    <template class="header">
-                                                        <vaadin-grid-sorter path="url">Anexo</vaadin-grid-sorter>
-                                                        <vaadin-grid-filter path="url" />
-                                                    </template>
-                                                    <template>
-                                                        <a href="/PreRequisicoes/DownloadFile/{{item.url}}" target="_blank">{{item.url}}</a>
-                                                    </template>
-                                                </vaadin-grid-column>
-                                                <vaadin-grid-column width="20%" resizable>
-                                                    <template class="header">
-                                                        <vaadin-grid-sorter path="createDateTime">Anexado em</vaadin-grid-sorter>
-                                                        <vaadin-grid-filter path="createDateTime" />
-                                                    </template>
-                                                    <template>
-                                                        {{item.createDateTime}}
-                                                    </template>
-                                                </vaadin-grid-column>
-                                                <vaadin-grid-column width="10%" resizable>
-                                                    <template class="header">
-                                                    </template>
-                                                    <template>
-                                                        <center>
-                                                            <template is="dom-if" if="{{ _permissions.update }}">
-                                                                <!--<paper-button class="btnRemove" raised on-tap="_deleteFiles">Eliminar</paper-button>-->
-                                                                <center>
-                                                                    <paper-button class="btnRemove tableBtn" raised on-tap="_deleteFiles" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
-                                                                </center>
-                                                            </template>
-                                                        </center>
-                                                    </template>
-                                                </vaadin-grid-column>
-                                            </vaadin-grid>
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="InvoiceNo" name="InvoiceNo" label="Nº Fatura" value="{{Requisition.invoiceNo}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                                         </div>
                                     </div>
-</iron-pages>
+                                </div>
+
+                                <!--Anexos-->
+                                <div>
+                                    <div class="row break_clear">
+                                        <!--<template is="dom-if" if="{{ _permissions.update }}">-->
+                                        <vaadin-upload id="UploadRequest"
+                                                       target="/PreRequisicoes/FileUpload/{{_prerequesitionno}}/{{_lineno}}"
+                                                       accept="application/pdf, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.template, image/jpeg, image/png, image/gif"
+                                                       method="POST"
+                                                       headers="{'Accept': 'application/json'}"
+                                                       hidden="{{ !_permissions.update }}"
+                                                       timeout=15000>
+                                        </vaadin-upload>
+                                        <!--</template>-->
+                                    </div>
+                                    <div class="row break_clear">
+                                        <vaadin-grid aria-label="ReqUpdateGrid" items="[[uploads]]" class="grid" multi-sort="true">
+
+                                            <vaadin-grid-column width="70%" resizable>
+                                                <template class="header">
+                                                    <vaadin-grid-sorter path="url">Anexo</vaadin-grid-sorter>
+                                                    <vaadin-grid-filter path="url" />
+                                                </template>
+                                                <template>
+                                                    <a href="/PreRequisicoes/DownloadFile/{{item.url}}" target="_blank">{{item.url}}</a>
+                                                </template>
+                                            </vaadin-grid-column>
+                                            <vaadin-grid-column width="20%" resizable>
+                                                <template class="header">
+                                                    <vaadin-grid-sorter path="createDateTime">Anexado em</vaadin-grid-sorter>
+                                                    <vaadin-grid-filter path="createDateTime" />
+                                                </template>
+                                                <template>
+                                                    {{item.createDateTime}}
+                                                </template>
+                                            </vaadin-grid-column>
+                                            <vaadin-grid-column width="10%" resizable>
+                                                <template class="header">
+                                                </template>
+                                                <template>
+                                                    <center>
+                                                        <template is="dom-if" if="{{ _permissions.update }}">
+                                                            <!--<paper-button class="btnRemove" raised on-tap="_deleteFiles">Eliminar</paper-button>-->
+                                                            <center>
+                                                                <paper-button class="btnRemove tableBtn" raised on-tap="_deleteFiles" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                                            </center>
+                                                        </template>
+                                                    </center>
+                                                </template>
+                                            </vaadin-grid-column>
+                                        </vaadin-grid>
+                                    </div>
+                                </div>
+                            </iron-pages>
                             <div class="row break_clear marginSpace">
                                 <template is="dom-if" if="{{ _permissions.create }}">
                                     <template is="dom-if" if="{{ _isCreate }}">
@@ -985,7 +987,15 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-combo-box items="[[Products]]" id="_CLGridSupplierProductCode" name="_CLGridSupplierProductCode" on-change="_onProductInGridChanged" item-value-path="code" item-label-path="code" value="{{item.code}}" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLines">
+                                            <such-selectbox id="_CLGridSupplierProductCode" value="{{item.code}}"
+                                                            items="[[Products]]"
+                                                            text-path="code"
+                                                            value-path="code"
+                                                            fields='[{"field":"code", "name":"Cód. Produto"}, {"field":"name", "name":"Descrição"}, {"field":"name2", "name":"Descrição 2"}, {"field":"measureUnit", "name":"Unidade de Medida"}, {"field":"itemCategoryCode", "name":"Cód. Categoria"}, {"field":"productGroupCode", "name":"Cód. Grupo"}]'
+                                                            disabled="{{ !_permissions.update }}"
+                                                            on-change="_onProductInGridChanged">
+                                            </such-selectbox>
+                                            <!--<vaadin-combo-box items="[[Products]]" id="_CLGridSupplierProductCode" name="_CLGridSupplierProductCode" on-change="_onProductInGridChanged" item-value-path="code" item-label-path="code" value="{{item.code}}" disabled="{{ !_permissions.update }}">
                                                 <template>
                                                     <table width="180px">
                                                         <tr>
@@ -994,7 +1004,7 @@
                                                         </tr>
                                                     </table>
                                                 </template>
-                                            </vaadin-combo-box>
+                                            </vaadin-combo-box>-->
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.code}}
@@ -1024,7 +1034,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.description2}}" id="_CLGridDescription2" name="_CLGridDescription2" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLines"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{item.description2}}" id="_CLGridDescription2" name="_CLGridDescription2" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLines" maxlength="50"> </vaadin-text-field>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.description2}}
@@ -1225,11 +1235,11 @@
                                     <template class="header">
                                         <p class="alignCenter">Criar Consulta Mercado</p>
                                         <!--<vaadin-grid-filter path="createMarketSearchStringValue">
-                                    </vaadin-grid-filter>-->
+            </vaadin-grid-filter>-->
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-checkbox id="chkCreateMarketSearch" checked="{{item.createMarketSearch}}" disabled="{{ !_permissions.update }} on-blur=" _updateRequisitionLines""></vaadin-checkbox>
+                                            <vaadin-checkbox id="chkCreateMarketSearch" checked="{{item.createMarketSearch}}" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLines"></vaadin-checkbox>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             <vaadin-checkbox checked="{{item.createMarketSearch}}" disabled></vaadin-checkbox>
@@ -1367,14 +1377,14 @@
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
                                             <!--<vaadin-combo-box items="[[Suppliers]]" id="_CLGridSupplierNo" name="_CLGridSupplierNo" item-value-path="no_" item-label-path="name" value="{{item.supplierNo}}" on-change="_onSupplierInGridChanged" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLines">
-                                            <template>
-                                                <paper-icon-item>
-                                                    <paper-item-body two-line>
-                                                        <div>[[item.name]]</div>
-                                                    </paper-item-body>
-                                                </paper-icon-item>
-                                            </template>
-                                        </vaadin-combo-box>-->
+                    <template>
+                        <paper-icon-item>
+                            <paper-item-body two-line>
+                                <div>[[item.name]]</div>
+                            </paper-item-body>
+                        </paper-icon-item>
+                    </template>
+                </vaadin-combo-box>-->
                                             <such-selectbox id="_CLGridSupplierNo"
                                                             items="[[Suppliers]]"
                                                             value="{{item.supplierNo}}"
@@ -1398,7 +1408,15 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-combo-box items="[[Projects]]" id="_CLGridProjectNo" name="_CLGridProjectNo" item-value-path="no" item-label-path="no" value="{{item.projectNo}}" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLines">
+                                            <such-selectbox id="_CLGridProjectNo" value="{{item.projectNo}}"
+                                                            items="[[Projects]]"
+                                                            text-path="no"
+                                                            value-path="no"
+                                                            fields='[{"field":"no", "name":"Nº Projecto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"regionCode", "name":"Cód. Região"}, {"field":"areaCode", "name":"Cód. Área"}, {"field":"centerResponsibilityCode", "name":"Cód. Cresp"}]'
+                                                            on-change="_updateRequisitionLines"
+                                                            disabled="{{ !_permissions.update }}">
+                                            </such-selectbox>
+                                            <!--<vaadin-combo-box items="[[Projects]]" id="_CLGridProjectNo" name="_CLGridProjectNo" item-value-path="no" item-label-path="no" value="{{item.projectNo}}" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLines">
                                                 <template>
                                                     <paper-icon-item>
                                                         <paper-item-body two-line>
@@ -1406,7 +1424,7 @@
                                                         </paper-item-body>
                                                     </paper-icon-item>
                                                 </template>
-                                            </vaadin-combo-box>
+                                            </vaadin-combo-box>-->
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.projectNo}}
@@ -1599,10 +1617,12 @@
                                 <template is="dom-if" if="{{ !isReadOnly() }}">
                                     <template is="dom-if" if="{{ _permissions.delete }}">
                                         <vaadin-grid-column width="100px" resizable hidden="{{_isValidated}}">
+
+                                            <!--hidden="{{_isArchived}}"-->
                                             <template class="header">
                                             </template>
                                             <template>
-                                                <paper-button class="btnRemove tableBtn" on-tap="_deleteRequisitionLine" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                                <paper-button id="btnEliminarLinha" class="btnRemove tableBtn" on-tap="_deleteRequisitionLine" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
                                             </template>
                                         </vaadin-grid-column>
                                     </template>
@@ -1616,10 +1636,10 @@
                         </div>
 
                         <!--<div class="marginSpace">
-                        <template is="dom-if" if="{{ _permissions.update }}">
-                            <paper-button raised id="btnSaveLine" class="btnEdit" on-tap="_updateRequisitionLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                        </template>
-                    </div>-->
+                            <template is="dom-if" if="{{ _permissions.update }}">
+                                <paper-button raised id="btnSaveLine" class="btnEdit" on-tap="_updateRequisitionLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                            </template>
+                        </div>-->
                     </div>
                 </iron-form>
             </div>
@@ -1873,7 +1893,7 @@
                             //if (this.Requisition.orderNo)
                             //    this._openToastError("Já foi criada uma encomenda para esta requisição.");
                             //else
-                                this._createPurchaseOrder();
+                            this._createPurchaseOrder();
                             break;
                         case 3://"Criar Guia Transporte"
                             this._createTransferShipment();
@@ -1896,18 +1916,18 @@
                     //}
 
                     //if (this._requisitionstatus === 3) { //Validado - GESTÃO REQUISIÇÕES
-                        //$(_self.$.btnLocalMarketValidation).addClass('hidden');
-                        //$(_self.$.btnValidate).addClass('hidden');
-                        //$(_self.$.btnAnularAprovacao).addClass('hidden');
-                        //$(_self.$.menuRegister).removeClass('hidden');
-                        //$(_self.$.menuFunctios).removeClass('hidden');
+                    //$(_self.$.btnLocalMarketValidation).addClass('hidden');
+                    //$(_self.$.btnValidate).addClass('hidden');
+                    //$(_self.$.btnAnularAprovacao).addClass('hidden');
+                    //$(_self.$.menuRegister).removeClass('hidden');
+                    //$(_self.$.menuFunctios).removeClass('hidden');
                     //}
 
                     //if (this._requisitionstatus === 4) { //Aprovado - VALIDAÇÃO REQUISIÇÕES
-                        //$(_self.$.btnValidate).removeClass('hidden');
-                        //$(_self.$.btnAnularAprovacao).removeClass('hidden');
-                        //$(_self.$.menuRegister).addClass('hidden');
-                        //$(_self.$.menuFunctios).addClass('hidden');
+                    //$(_self.$.btnValidate).removeClass('hidden');
+                    //$(_self.$.btnAnularAprovacao).removeClass('hidden');
+                    //$(_self.$.menuRegister).addClass('hidden');
+                    //$(_self.$.menuFunctios).addClass('hidden');
                     //}
 
                     if (this._isCreate == false && this.$.UploadRequest != null) {
@@ -2215,8 +2235,8 @@
                     e.target.value = e.target.value.replace(",", ".");
                 },
                 _lineSelected: function (item) {
-                    if (this.isReadOnly())
-                        return;
+                    //if (this.isReadOnly())
+                    //    return;
                     if (item != null) {
                         var oSel = this.Requisition.lines.find(x => x.selected);
                         if (oSel != undefined) {
@@ -2329,12 +2349,10 @@
                 },
 
                 _todasLinhasNotaEncomenda: function () {
-                    debugger;
                     this.$.ajax_TodasLinhasNotaEncomenda.body = JSON.stringify({ "requisitionNo": this.$.requisitionNo.value });
                     this.$.ajax_TodasLinhasNotaEncomenda.generateRequest();
                 },
                 _TodasLinhasNotaEncomendaResponseProcessor: function (e) {
-                    debugger;
                     if (this.resultTodasLinhasNotaEncomenda.eReasonCode == "1") {
                         this._openToast(this.resultTodasLinhasNotaEncomenda.eMessage);
 
@@ -2418,7 +2436,6 @@
                 _reqDataSourceResponse: function (data) {
                     var _self = this;
 
-                    debugger
                     if (this.Requisition.state != 0) {
                         $(_self.$.btnDelete).addClass('hidden');
                     }
@@ -2852,21 +2869,18 @@
                 },
 
                 _Approve: function (e) {
-                    debugger;
                     if (e != null) {
                         this.$.aprovarRequisicao_databound.body = JSON.stringify({ requisitionNo: this.$.requisitionNo.value });
                         this.$.aprovarRequisicao_databound.generateRequest();
                     }
                 },
                 _aprovarRequisicaoResponseProcessor: function () {
-                    debugger;
                     if (this.aprovarReqMov > 0) {
                         this.$.action_databound.body = JSON.stringify({ movementNo: this.aprovarReqMov, status: 1, rejectReason: "" });
                         this.$.action_databound.generateRequest();
                     }
                 },
                 _actionResponseProcessor: function (e) {
-                    debugger;
                     var self = this;
                     if (this.actionResult.eReasonCode == 100) {
                         this._openToast(this.actionResult.eMessage);

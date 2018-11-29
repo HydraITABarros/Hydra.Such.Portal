@@ -1876,7 +1876,9 @@
                             //if (this.Requisition.orderNo)
                             //    this._openToastError("Já foi criada uma encomenda para esta requisição.");
                             //else
-                                this._createPurchaseOrder();
+                                //this._createPurchaseOrder();
+
+                            this._createPurchaseOrder();
                             break;
                         case 3://"Criar Guia Transporte"
                             this._createTransferShipment();
@@ -2340,12 +2342,10 @@
                 },
 
                 _todasLinhasNotaEncomenda: function () {
-                    debugger;
                     this.$.ajax_TodasLinhasNotaEncomenda.body = JSON.stringify({ "requisitionNo": this.$.requisitionNo.value });
                     this.$.ajax_TodasLinhasNotaEncomenda.generateRequest();
                 },
                 _TodasLinhasNotaEncomendaResponseProcessor: function (e) {
-                    debugger;
                     if (this.resultTodasLinhasNotaEncomenda.eReasonCode == "1") {
                         this._openToast(this.resultTodasLinhasNotaEncomenda.eMessage);
 

@@ -226,6 +226,13 @@ namespace Hydra.Such.Portal.Services
         {
             if (requisition != null && requisition.Lines != null && requisition.Lines.Count > 0)
             {
+                if (string.IsNullOrEmpty(requisition.ReceivedDate))
+                {
+                    requisition.eReasonCode = 4;
+                    requisition.eMessage = "É obrigatório o preenchimento do campo Data Receção no Geral.";
+                    return requisition;
+                }
+
                 //use for database update later
                 var requisitionLines = requisition.Lines;
 

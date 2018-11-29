@@ -1447,6 +1447,7 @@ namespace Hydra.Such.Portal.Controllers
             if (requisition != null)
             {
                 requisition.ForEach(x => result.Add(x.ParseToViewModel()));
+                result.RemoveAll(x => x.State == RequisitionStates.Archived);
                 if (result.Count > 0)
                 {
                     foreach (RequisitionViewModel item in result)
