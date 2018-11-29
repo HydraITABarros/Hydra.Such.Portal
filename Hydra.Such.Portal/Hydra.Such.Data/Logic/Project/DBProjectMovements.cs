@@ -174,6 +174,28 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
             }
         }
 
+        public static bool Create(List<MovimentosDeProjeto> items)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    if (items != null)
+                    {
+                        items.ForEach(x => x.DataHoraCriação = DateTime.Now);
+                    }
+                    ctx.MovimentosDeProjeto.AddRange(items);
+                    ctx.SaveChanges();
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
         public static MovimentosDeProjeto Update(MovimentosDeProjeto ObjectToUpdate)
         {
             try
