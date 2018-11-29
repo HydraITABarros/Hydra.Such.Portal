@@ -110,6 +110,26 @@ namespace Hydra.Such.Data.Logic.Project
                 return null;
             }
         }
+
+        public static bool Delete(PréMovimentosProjeto ObjectToDelete)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    ctx.PréMovimentosProjeto.Remove(ObjectToDelete);
+                    ctx.SaveChanges();
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+
+                return false;
+            }
+        }
+
     }
-      
+
 }

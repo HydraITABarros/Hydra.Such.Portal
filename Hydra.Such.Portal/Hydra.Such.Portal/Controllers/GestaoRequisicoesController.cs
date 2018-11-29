@@ -808,9 +808,9 @@ namespace Hydra.Such.Portal.Controllers
             {
                 if (!string.IsNullOrEmpty(item.RequisitionNo))
                 {
-                    string teste = "RQ1767670";
-                    result = DBNAV2017Encomendas.EncomendasPorRequisicao(config.NAVDatabaseName, config.NAVCompanyName, teste);
-                    //result = DBNAV2017Encomendas.EncomendasPorRequisicao(config.NAVDatabaseName, config.NAVCompanyName, item.RequisitionNo);
+                    //string teste = "RQ1767670";
+                    //result = DBNAV2017Encomendas.EncomendasPorRequisicao(config.NAVDatabaseName, config.NAVCompanyName, teste);
+                    result = DBNAV2017Encomendas.EncomendasPorRequisicao(config.NAVDatabaseName, config.NAVCompanyName, item.RequisitionNo);
                 }
             }
             return Json(result);
@@ -1339,8 +1339,12 @@ namespace Hydra.Such.Portal.Controllers
                                     }
                                     else
                                     {
-                                        line.QuantityAvailable = (line.QuantityAvailable.HasValue ? line.QuantityAvailable.Value : 0) + line.QuantityToProvide;
-                                        line.QuantityReceivable = line.QuantityToProvide;
+                                        line.QuantityAvailable = (line.QuantityAvailable ?? 0) + line.QuantityToProvide;
+
+                                        //teste
+                                        //line.QuantityReceivable = line.QuantityToProvide;
+                                        line.QuantityReceivable = (line.QuantityAvailable ?? 0) - (line.QuantityReceived ?? 0);
+
                                         line.QuantityToProvide -= line.QuantityToProvide;
                                         line.UpdateUser = User.Identity.Name;
                                         line.UpdateDateTime = DateTime.Now;
@@ -1519,16 +1523,18 @@ namespace Hydra.Such.Portal.Controllers
 
                                         if (registerNavDiaryLines != null && registerNavDiaryLines.IsCompletedSuccessfully)
                                         {
-                                            bool keepOpen = false;
-                                            if (item.Lines.Count() != productsToHandle.Count())
-                                            {
-                                                keepOpen = true;
-                                            }
-
+                                            bool keepOpen = true;
                                             item.Lines = productsToHandle;
 
-                                            if (keepOpen != true)
-                                                keepOpen = productsToHandle.Where(x => x.QuantityRequired.HasValue && x.QuantityReceived.HasValue).Any(x => (x.QuantityRequired.Value - x.QuantityReceived.Value) != 0);
+                                            keepOpen = item.Lines.Any(x => x.QuantityReceived != x.QuantityRequired);
+                                            //item.Lines.ForEach(Linha =>
+                                            //{
+                                            //    if (Linha.QuantityReceived != Linha.QuantityRequired)
+                                            //        keepOpen = false;
+                                            //});
+
+                                            //if (keepOpen != true)
+                                            //    keepOpen = productsToHandle.Where(x => x.QuantityRequired.HasValue && x.QuantityReceived.HasValue).Any(x => (x.QuantityRequired.Value - x.QuantityReceived.Value) != 0);
 
                                             if (keepOpen == false)
                                             {

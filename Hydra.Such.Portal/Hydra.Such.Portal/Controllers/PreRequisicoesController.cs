@@ -2744,6 +2744,61 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetLocationInfo(string produto, string localizacao)
+        {
+            ErrorHandler result = new ErrorHandler();
+            NAVProductsViewModel product = new NAVProductsViewModel();
+
+            try
+            {
+                result.eReasonCode = 1;
+                result.eMessage = "";
+
+                if (!string.IsNullOrEmpty(localizacao))
+                {
+                    if (!string.IsNullOrEmpty(produto))
+                    {
+                        product = DBNAV2017Products.GetAllProducts(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, produto).FirstOrDefault();
+
+                        if (product != null)
+                        {
+                            if (product.InventoryValueZero == 1)
+                            {
+                                if (localizacao != "DIR")
+                                {
+                                    //ERRO!!!!!
+                                    result.eReasonCode = 2;
+                                    result.eMessage = "A Localização escolhida tem que ser de compra directa.";
+                                }
+                            }
+                            else
+                            {
+                                if (localizacao == "DIR")
+                                {
+                                    //ERRO!!!!!
+                                    result.eReasonCode = 3;
+                                    result.eMessage = "A Localização escolhida não pose ser de compra direta.";
+                                }
+                            }
+                        }
+                        else
+                        {
+                            //ERRO!!!!!
+                            result.eReasonCode = 4;
+                            result.eMessage = "Não foi encontrado o produto.";
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(null);
+            }
+
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetProductLocation([FromBody] PreRequisitionLineViewModel linha)
         {
             NAVProductsViewModel product = new NAVProductsViewModel();

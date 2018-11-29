@@ -445,31 +445,17 @@
                                             <such-textarea rows="5" value="{{Requisition.comments}}" id="Notes" name="Notes" label="Observações" disabled> </such-textarea>
                                         </div>
 
-                                        <div class="col-sm-6">
-                                            <div class="col-sm-6">
-                                                <vaadin-date-picker label="Data Receção" id="dpReceptionDate" name="dpReceptionDate" value="{{Requisition.receivedDate}}" disabled></vaadin-date-picker>
-                                            </div>
+                                        <div class="col-sm-3">
+                                            <vaadin-date-picker label="Data Receção" id="dpReceptionDate" name="dpReceptionDate" value="{{Requisition.receivedDate}}" disabled></vaadin-date-picker>
+                                        </div>
 
-                                            <div class="col-sm-6">
-                                                <vaadin-text-field id="txtStatus" name="txtStatus" label="Estado" value="[[stateDescription]]" disabled></vaadin-text-field>
-                                            </div>
+                                        <div class="col-sm-3">
+                                            <vaadin-text-field id="txtStatus" name="txtStatus" label="Estado" value="[[stateDescription]]" disabled></vaadin-text-field>
+                                        </div>
 
-                                            <div class="col-sm-6">
-                                                <vaadin-combo-box items="[[Locations]]" id="CBLocations" item-value-path="id" item-label-path="value" value="{{Requisition.localCode}}" label="Localização" disabled>
-                                                    <template>
-                                                        <table width="350px">
-                                                            <tr>
-                                                                <td width="30%">[[item.id]]</td>
-                                                                <td width="70%"><b>[[item.value]]</b></td>
-                                                            </tr>
-                                                        </table>
-                                                    </template>
-                                                </vaadin-combo-box>
-                                            </div>
 
-                                            <div class="col-sm-6">
-                                                <vaadin-text-field id="EmployeeNo" name="EmployeeNo" label="Nº Funcionário" value="{{Requisition.employeeNo}}" hidden disabled></vaadin-text-field>
-                                            </div>
+                                        <div class="col-sm-3">
+                                            <vaadin-text-field id="EmployeeNo" name="EmployeeNo" label="Nº Funcionário" value="{{Requisition.employeeNo}}" hidden disabled></vaadin-text-field>
                                         </div>
                                     </div>
                                 </div>
