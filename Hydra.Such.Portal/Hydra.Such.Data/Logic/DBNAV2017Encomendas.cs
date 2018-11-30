@@ -162,7 +162,7 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
-        public static List<EncomendasViewModel> EncomendasPorRequisicao(string NAVDatabaseName, string NAVCompanyName, string Requisicao)
+        public static List<EncomendasViewModel> EncomendasPorRequisicao(string NAVDatabaseName, string NAVCompanyName, string Requisicao, int Tipo)
         {
             try
             {
@@ -173,9 +173,10 @@ namespace Hydra.Such.Data.Logic
                         new SqlParameter("@DBName", NAVDatabaseName),
                         new SqlParameter("@CompanyName", NAVCompanyName),
                         new SqlParameter("@OrderId", Requisicao ),
+                        new SqlParameter("@Type", Tipo ),
                     };
 
-                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017EncomendasPorRequisicao @DBName, @CompanyName, @OrderId", parameters);
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017EncomendasPorRequisicao @DBName, @CompanyName, @OrderId, @Type", parameters);
 
                     foreach (dynamic temp in data)
                     {

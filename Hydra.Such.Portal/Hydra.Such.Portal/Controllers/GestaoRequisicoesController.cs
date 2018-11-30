@@ -808,9 +808,8 @@ namespace Hydra.Such.Portal.Controllers
             {
                 if (!string.IsNullOrEmpty(item.RequisitionNo))
                 {
-                    //string teste = "RQ1767670";
-                    //result = DBNAV2017Encomendas.EncomendasPorRequisicao(config.NAVDatabaseName, config.NAVCompanyName, teste);
-                    result = DBNAV2017Encomendas.EncomendasPorRequisicao(config.NAVDatabaseName, config.NAVCompanyName, item.RequisitionNo);
+                    result = DBNAV2017Encomendas.EncomendasPorRequisicao(config.NAVDatabaseName, config.NAVCompanyName, item.RequisitionNo, 1);
+
                 }
             }
             return Json(result);
@@ -1339,13 +1338,13 @@ namespace Hydra.Such.Portal.Controllers
                                     }
                                     else
                                     {
-                                        line.QuantityAvailable = (line.QuantityAvailable ?? 0) + line.QuantityToProvide;
-
-                                        //teste
-                                        //line.QuantityReceivable = line.QuantityToProvide;
+                                        line.QuantityAvailable = (line.QuantityAvailable ?? 0) + (line.QuantityToProvide ?? 0);
                                         line.QuantityReceivable = (line.QuantityAvailable ?? 0) - (line.QuantityReceived ?? 0);
+                                        
+                                        //TESTE
+                                        //line.QuantityToProvide -= line.QuantityToProvide;
+                                        line.QuantityToProvide = (line.QuantityRequired ?? 0) - (line.QuantityAvailable ?? 0);
 
-                                        line.QuantityToProvide -= line.QuantityToProvide;
                                         line.UpdateUser = User.Identity.Name;
                                         line.UpdateDateTime = DateTime.Now;
                                     }

@@ -783,9 +783,28 @@
                     debugger;
                     var index = this.result.indexOf(e.model.item);
                     this.result.splice(index, 1);
+                    var ajax_request = this.$.delete_PreMovimento_ajax;
+                    ajax_request.body = JSON.stringify(e.model.item);
 
-                    this.$.delete_PreMovimento_ajax.body = JSON.stringify(e.model.item);
-                    this.$.delete_PreMovimento_ajax.generateRequest();
+                    bootbox.confirm({
+                        message: "Tem a certeza que pretende remover o Pré-Movimento de Projeto?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (deletePreMovimento) {
+                            if (deletePreMovimento) {
+                                ajax_request.generateRequest();
+                            }
+                        }
+                    });
+
                 },
                 _deletedPreMovimentoResponse: function (e) {
                     debugger;

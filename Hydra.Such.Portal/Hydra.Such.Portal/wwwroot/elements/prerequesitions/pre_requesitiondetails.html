@@ -147,7 +147,11 @@
         <iron-ajax url="/PopulateDropdowns/GetProjectNavList" last-response="{{CBJobNo}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetNAVVendorComboGrid" last-response="{{CBVendor}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetPlaces" last-response="{{CBLocal}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetProductsPreRequisition" last-response="{{Products}}" id="filteredProducts_ajax" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+        <!--<iron-ajax url="/PopulateDropdowns/GetProductsPreRequisition" last-response="{{Products}}" id="filteredProducts_ajax" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
+        <iron-ajax url="/PreRequisicoes/GetProductsPreRequisition" last-response="{{Products}}" id="filteredProducts_ajax" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+
         <!--<iron-ajax url="/PopulateDropdowns/GetAllProductsComprasPortal" last-response="{{Products}}" id="filteredProducts_ajax" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
         <!--<iron-ajax url="/PopulateDropdowns/GetProductsForCurrentUser" last-response="{{CBItems}}" id="filteredProducts_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
         <iron-ajax url="/PopulateDropdowns/GetLocations" last-response="{{CBLocations}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -384,7 +388,6 @@
                     <!--<paper-button class="tablinks" on-tap="_pendingreq"><i class="fa fa-check-square" aria-hidden="true"></i> Requisições Pendentes</paper-button>-->
                     <paper-button class="tablinks" on-tap="_pendingreq"><i class="fa fa-check-square" aria-hidden="true"></i>  As minhas requisições</paper-button>
                     <paper-button class="tablinks" on-tap="_createnewreq"><i class="fa fa-check-square" aria-hidden="true"></i> Criar Requisição</paper-button>
-
 
                     <template is="dom-if" if="{{ _permissions.create }}">
                         <template is="dom-if" if="{{ _isCreate }}">
@@ -2969,9 +2972,14 @@
 
                 _LocationChangedResponse: function (e) {
                     if (this.locationInfo != null) {
-                        if (this.locationInfo.eReasonCode != 1) {
-                            this._openToastError(this.locationInfo.eMessage);
+                        if (this.locationInfo.eReasonCode == 2) {
                             this.$._CBLocations._clearSelection();
+                            this.$._CBLocations.value = this.locationInfo.eMessage;
+                        }
+                        else {
+                            if (this.locationInfo.eReasonCode == 3) {
+                                this.$._CBLocations._clearSelection();
+                            }
                         }
                     }
                 },

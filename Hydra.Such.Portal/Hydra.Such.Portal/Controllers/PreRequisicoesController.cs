@@ -1756,7 +1756,6 @@ namespace Hydra.Such.Portal.Controllers
                     data.eMessage = "";
                     if (PreRequesitionLines.Count > 0)
                     {
-
                         if (data.Complaint == true && (data.ClaimedRequesitionNo == "" || data.ClaimedRequesitionNo == null))
                         {
                             data.eReasonCode = 2;
@@ -2755,6 +2754,30 @@ namespace Hydra.Such.Portal.Controllers
                 result.eReasonCode = 1;
                 result.eMessage = "";
 
+                //OBTER AS LOCALIZAÇÕES DO UTILIZADOR
+                List<AcessosLocalizacoes> userLocations = DBAcessosLocalizacoes.GetByUserId(User.Identity.Name);
+                List<DDMessageRelated> result_all = new List<DDMessageRelated>();
+                var allLocations = DBNAV2017Locations.GetAllLocations(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName);
+                if (userLocations == null || userLocations.Count == 0)
+                {
+                    result_all = allLocations.Select(x => new DDMessageRelated()
+                    {
+                        id = x.Code,
+                        value = x.Name,
+                        extra = Convert.ToString(x.ArmazemCDireta)
+                    }).ToList();
+                }
+                else
+                {
+                    var userLocationsIds = userLocations.Select(x => x.Localizacao).Distinct().ToList();
+                    result_all = allLocations.Where(x => userLocationsIds.Contains(x.Code)).Select(x => new DDMessageRelated()
+                    {
+                        id = x.Code,
+                        value = x.Name,
+                        extra = Convert.ToString(x.ArmazemCDireta)
+                    }).ToList();
+                }
+
                 if (!string.IsNullOrEmpty(localizacao))
                 {
                     if (!string.IsNullOrEmpty(produto))
@@ -2767,26 +2790,38 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 if (localizacao != "DIR")
                                 {
-                                    //ERRO!!!!!
-                                    result.eReasonCode = 2;
-                                    result.eMessage = "A Localização escolhida tem que ser de compra directa.";
+                                    if (result_all.Any(x => x.id == "DIR"))
+                                    {
+                                        result.eReasonCode = 2;
+                                        result.eMessage = "DIR";
+                                    }
+                                    else
+                                    {
+                                        result.eReasonCode = 3;
+                                        result.eMessage = "";
+                                    }
                                 }
                             }
                             else
                             {
                                 if (localizacao == "DIR")
                                 {
-                                    //ERRO!!!!!
-                                    result.eReasonCode = 3;
-                                    result.eMessage = "A Localização escolhida não pose ser de compra direta.";
+                                    result_all.RemoveAll(x => x.id == "DIR");
+                                    if (result_all.Count() > 0)
+                                    {
+                                        NAVStockKeepingUnitViewModel local = DBNAV2017StockKeepingUnit.GetByProductsNo(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, produto).FirstOrDefault();
+                                        product.LocationCode = local.LocationCode;
+
+                                        result.eReasonCode = 2;
+                                        result.eMessage = local.LocationCode;
+                                    }
+                                    else
+                                    {
+                                        result.eReasonCode = 3;
+                                        result.eMessage = "";
+                                    }
                                 }
                             }
-                        }
-                        else
-                        {
-                            //ERRO!!!!!
-                            result.eReasonCode = 4;
-                            result.eMessage = "Não foi encontrado o produto.";
                         }
                     }
                 }
@@ -2797,6 +2832,64 @@ namespace Hydra.Such.Portal.Controllers
             }
 
             return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetProductsPreRequisition([FromBody] JObject requestParams)
+        {
+            try
+            {
+                string requisitionType = string.Empty;
+                List<NAVProductsViewModel> ListaProdutos = new List<NAVProductsViewModel>();
+                if (requestParams != null)
+                {
+                    requisitionType = requestParams["requisitionType"].ToString();
+                    if (requisitionType != "")
+                    {
+                        //ListaProdutos = DBNAV2017Products.GetAllProducts(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, string.Empty);
+                        ListaProdutos = DBNAV2017Products.GetProductsForPreRequisitions(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, "", requisitionType);
+                        ListaProdutos.RemoveAll(x => string.IsNullOrEmpty(x.AreaFiltro));
+
+                        List<AcessosDimensões> UserAcessos = DBUserDimensions.GetByUserId(User.Identity.Name);
+                        //List<AcessosDimensões> UserAcessos = DBUserDimensions.GetByUserId("abeldoo@such.pt");
+                        UserAcessos.RemoveAll(x => x.Dimensão != 2);
+
+                        if (UserAcessos.Count() > 0)
+                        {
+                            UserAcessos.ForEach(x =>
+                            {
+                                if (x.ValorDimensão.StartsWith("0"))
+                                    x.ValorDimensão = "-0-";
+                                else
+                                if (x.ValorDimensão.StartsWith("3"))
+                                    x.ValorDimensão = "-3-";
+                                else
+                                if (x.ValorDimensão.StartsWith("5"))
+                                    x.ValorDimensão = "-5-";
+                                else
+                                    x.ValorDimensão = "-" + x.ValorDimensão + "-";
+                            });
+                            UserAcessos = UserAcessos.Distinct().ToList();
+
+                            ListaProdutos.ForEach(x =>
+                            {
+                                x.ToRemove = true;
+                                UserAcessos.ForEach(y =>
+                                {
+                                    if (x.AreaFiltro.Contains(y.ValorDimensão))
+                                        x.ToRemove = false;
+                                });
+                            });
+                            ListaProdutos.RemoveAll(x => x.ToRemove == true);
+                        }
+                    }
+                }
+                return Json(ListaProdutos);
+            }
+            catch (Exception ex)
+            {
+                return Json(null);
+            }
         }
 
         [HttpPost]
