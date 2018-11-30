@@ -90,7 +90,7 @@
             <!--end ColumnToggle-->
 
         </div>
-
+        
         <vaadin-grid aria-label="CustomersGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.no.hidden }}">
                 <template class="header">
@@ -101,7 +101,7 @@
                     {{item.no}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="220px" resizable hidden$="{{ _columns.name.hidden }}">
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.name.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="name">Nome</vaadin-grid-sorter>
                     <vaadin-grid-filter path="name" />
@@ -110,7 +110,7 @@
                     {{item.name}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="220px" resizable hidden$="{{ _columns.address.hidden }}">
+            <vaadin-grid-column width="280px" resizable hidden$="{{ _columns.address.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="address">Morada</vaadin-grid-sorter>
                     <vaadin-grid-filter path="address" />
@@ -119,7 +119,7 @@
                     {{item.address}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="90px" resizable hidden$="{{ _columns.post_Code.hidden }}">
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.post_Code.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="post_Code">Cód. Postal</vaadin-grid-sorter>
                     <vaadin-grid-filter path="post_Code" />
@@ -128,7 +128,7 @@
                     {{item.post_Code}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="90px" resizable hidden$="{{ _columns.city.hidden }}">
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.city.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="city">Cidade</vaadin-grid-sorter>
                     <vaadin-grid-filter path="city" />
@@ -137,13 +137,194 @@
                     {{item.city}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="90px" resizable hidden$="{{ _columns.regiao_Cliente.hidden }}">
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.phone_No.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="regiao_Cliente">Região</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="regiao_Cliente" />
+                    <vaadin-grid-sorter path="phone_No">Telefone</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="phone_No" />
                 </template>
                 <template>
-                    [[ formatRegiaoCliente(item.regiao_Cliente)]]
+                    {{item.phone_No}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.e_Mail.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="e_Mail">Email</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="e_Mail" />
+                </template>
+                <template>
+                    {{item.e_Mail}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="90px" resizable hidden$="{{ _columns.fax_No.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="fax_No">Nº Fax</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="fax_No" />
+                </template>
+                <template>
+                    {{item.fax_No}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="290px" resizable hidden$="{{ _columns.home_Page.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="home_Page">Home Page</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="home_Page" />
+                </template>
+                <template>
+                    {{item.home_Page}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="180px" resizable hidden$="{{ _columns.vaT_Registration_No.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="vaT_Registration_No">Nº Contribuinte</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="vaT_Registration_No" />
+                </template>
+                <template>
+                    {{item.vaT_Registration_No}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.taxa_Aprovisionamento.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="taxa_Aprovisionamento">Taxa Aprovisionamento</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="taxa_Aprovisionamento" />
+                </template>
+                <template>
+                    {{item.taxa_Aprovisionamento}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.abrigo_Lei_Compromisso.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="abrigo_Lei_Compromisso">Abrigo Lei dos Compromissos</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="abrigo_Lei_Compromisso" />
+                </template>
+                <template>
+                    [[ formatBool(item.abrigo_Lei_Compromisso) ]]
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="180px" resizable hidden$="{{ _columns.payment_Terms_Code.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="payment_Terms_Code">Termos de Pagamento</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="payment_Terms_Code" />
+                </template>
+                <template>
+                    {{item.payment_Terms_Code}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="190px" resizable hidden$="{{ _columns.payment_Method_Code.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="payment_Method_Code">Forma Pagamento</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="payment_Method_Code" />
+                </template>
+                <template>
+                    {{item.payment_Method_Code}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.blocked_Text.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="blocked_Text">Bloqueado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="blocked_Text" />
+                </template>
+                <template>
+                    {{item.blocked_Text}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="190px" resizable hidden$="{{ _columns.country_Region_Code.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="country_Region_Code">Código Pais/Região</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="country_Region_Code" />
+                </template>
+                <template>
+                    {{item.country_Region_Code}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.regiao_Cliente_Text.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="regiao_Cliente_Text">Região</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="regiao_Cliente_Text" />
+                </template>
+                <template>
+                    [[ formatRegiaoCliente(item.regiao_Cliente_Text)]]
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.global_Dimension_1_Code.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="global_Dimension_1_Code">Area</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="global_Dimension_1_Code" />
+                </template>
+                <template>
+                    {{item.global_Dimension_1_Code}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="240px" resizable hidden$="{{ _columns.centro_Resp_Dimensao.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="centro_Resp_Dimensao">Centro de Responsabilidade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="centro_Resp_Dimensao" />
+                </template>
+                <template>
+                    {{item.centro_Resp_Dimensao}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="190px" resizable hidden$="{{ _columns.cliente_Associado.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="cliente_Associado">Cliente Associado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="cliente_Associado" />
+                </template>
+                <template>
+                    [[ formatBool(item.cliente_Associado)]]
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.associado_A_N.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="associado_A_N">Associado (A/N)</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="associado_A_N" />
+                </template>
+                <template>
+                    {{item.associado_A_N}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.tipo_Cliente_Text.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="tipo_Cliente_Text">Tipo de Cliente</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="tipo_Cliente_Text" />
+                </template>
+                <template>
+                    {{item.tipo_Cliente_Text}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.natureza_Cliente_Text.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="natureza_Cliente_Text">Natureza do Cliente</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="natureza_Cliente_Text" />
+                </template>
+                <template>
+                    {{item.natureza_Cliente_Text}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.cliente_Nacional.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="cliente_Nacional">Cliente Nacional</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="cliente_Nacional" />
+                </template>
+                <template>
+                    [[ formatBool(item.cliente_Nacional) ]]
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.cliente_Interno.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="cliente_Interno">Cliente Interno</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="cliente_Interno" />
+                </template>
+                <template>
+                    [[ formatBool(item.cliente_Interno ) ]]
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.no_Fornecedor_Assoc.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="no_Fornecedor_Assoc">Nº Fornecedor Associado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="no_Fornecedor_Assoc" />
+                </template>
+                <template>
+                    {{item.no_Fornecedor_Assoc}}
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
@@ -229,13 +410,38 @@
                 },
                 /*start - ColumnToggle*/
                 _startColumnToggle: function () {
+                    
                     var columns = {
                         "no": { hidden: false, label: "Nº" },
                         "name": { hidden: false, label: "Nome" },
                         "address": { hidden: false, label: "Morada" },
                         "post_Code": { hidden: false, label: "Cód. Postal" },
                         "city": { hidden: false, label: "Cidade" },
-                        "regiao_Cliente": { hidden: false, label: "Região" }
+
+                        "county": { hidden: false, label: "Distrito" },
+                        "phone_No": { hidden: false, label: "Telefone" },
+                        "e_Mail": { hidden: false, label: "Email" },
+                        "fax_No": { hidden: false, label: "Nº Fax" },
+                        "home_Page": { hidden: false, label: "Home Page" },
+                        "vaT_Registration_No": { hidden: false, label: "Nº Contribuinte" },
+                        "taxa_Aprovisionamento": { hidden: false, label: "Taxa Aprovisionamento" },
+                        "abrigo_Lei_Compromisso": { hidden: false, label: "Abrigo Lei dos Compromissos" },
+                        "payment_Terms_Code": { hidden: false, label: "Termos de Pagamento" },
+                        "payment_Method_Code": { hidden: false, label: "Forma Pagamento" },
+                        "blocked_Text": { hidden: false, label: "Bloqueado" },
+                        "country_Region_Code": { hidden: false, label: "Código Pais/Região" },
+
+                        "regiao_Cliente_Text": { hidden: false, label: "Região" },
+
+                        "global_Dimension_1_Code": { hidden: false, label: "Area" },
+                        "centro_Resp_Dimensao": { hidden: false, label: "Centro de Responsabilidade" },
+                        "cliente_Associado": { hidden: false, label: "Cliente Associado" },
+                        "associado_A_N": { hidden: false, label: "Associado (A/N)" },
+                        "tipo_Cliente_Text": { hidden: false, label: "Tipo de Cliente" },
+                        "natureza_Cliente_Text": { hidden: false, label: "Natureza do Cliente" },
+                        "cliente_Nacional": { hidden: false, label: "Cliente Nacional" },
+                        "cliente_Interno": { hidden: false, label: "Cliente Interno" },
+                        "no_Fornecedor_Assoc": { hidden: false, label: "Nº Fornecedor Associado" }
                     };
 
                     if (localStorage["clientList.ToggleColumn"]) {
@@ -267,9 +473,12 @@
                     });
                 },
                 formatRegiaoCliente: function (value) {
-                    if (!value || value == "NotSet")
+                    if (!value || value == "_blank_")
                         return "";
                     return value;
+                },
+                formatBool: function (value) {
+                    return value ? "Sim" : "Não";
                 }
                 /* end - ColumnToggle */
             });

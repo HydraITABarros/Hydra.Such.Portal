@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.ViewModel.Clients;
 using System;
 using System.Collections.Generic;
@@ -84,6 +85,8 @@ namespace Hydra.Such.Data.NAV
             if (client == null)
                 throw new ArgumentNullException("client");
 
+
+            client.Cliente_Interno = false;
             WSCustomerNAV.Create navCreate = new WSCustomerNAV.Create()
             {
                 WSCustomer = MapCustomerModelToCustomerNAV(client)
@@ -142,6 +145,8 @@ namespace Hydra.Such.Data.NAV
             if (client == null)
                 throw new ArgumentNullException("client");
 
+
+            client.Cliente_Interno = false;
             WSCustomerNAV.Update navUpdate = new WSCustomerNAV.Update()
             {
                 WSCustomer = MapCustomerModelToCustomerNAV(client)
@@ -158,6 +163,7 @@ namespace Hydra.Such.Data.NAV
 
             try
             {
+                
                 WSCustomerNAV.Update_Result result = await ws_Client.UpdateAsync(navUpdate);
                 return result;
             }
@@ -197,8 +203,10 @@ namespace Hydra.Such.Data.NAV
         public static ClientDetailsViewModel MapCustomerNAVToCustomerModel(WSCustomerNAV.WSCustomer CustomerNAV)
         {
             var mapper = new MapperConfiguration(cfg =>
-                cfg.CreateMap<WSCustomerNAV.WSCustomer, ClientDetailsViewModel>()
-            ).CreateMapper();
+            {
+                cfg.CreateMap<WSCustomerNAV.WSCustomer, ClientDetailsViewModel>();
+                /*.ForMember(dest => dest.Regiao_Cliente, opts => opts.MapFrom(src => src.Regiao_Cliente != null ? Enum.Parse(typeof(Regiao_Cliente?), src.Regiao_Cliente) : null));*/
+            }).CreateMapper();
 
             var CustomerModel = mapper.Map<WSCustomerNAV.WSCustomer, ClientDetailsViewModel>(CustomerNAV);
 

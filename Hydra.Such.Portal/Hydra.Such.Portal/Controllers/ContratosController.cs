@@ -1556,7 +1556,7 @@ namespace Hydra.Such.Portal.Controllers
                             postNAV.Wait();
                             if (postNAV.IsCompletedSuccessfully == true && postNAV.Result != null)
                             {
-                                if (postNAV.Result.Blocked == WSClientNAV.Blocked.Invoice || postNAV.Result.Blocked == WSClientNAV.Blocked.All)
+                                if (postNAV.Result.Blocked == Blocked.Invoice || postNAV.Result.Blocked == Blocked.All)
                                 {
                                     Problema += " Cliente Bloqueado";
                                 }

@@ -106,6 +106,11 @@
         <!-- DROPDOWNS POPULATE -->
         <iron-ajax url="/PopulateDropdowns/GetCustomerTypes" last-response="{{LCustomerTypes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetCustomerNatures" last-response="{{LCustomerNatures}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetPaymentTerms" last-response="{{LPaymentTerms}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetPaymentForms" last-response="{{LPaymentMethodCode}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetNAVVendor" last-response="{{LFornecedorAssoc}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+
 
         <!-- CUSTOMER CRUDS -->
         <iron-ajax url="/Clientes/GetDetails"
@@ -141,6 +146,8 @@
                    id="invoicesLines_data"
                    on-response="_responseInvoicesLinesProcessor"
                    content-type="application/json"></iron-ajax>
+
+
 
         <iron-ajax url="/Clientes/InvoiceDetailsExportToExcel"
                    last-response="{{export}}"
@@ -201,8 +208,6 @@
                     <paper-button class="tablinks" id="btnContractAdd" on-tap="_createNew"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
                 </template>
             </template>
-
-
 
             <!--<template is="dom-if" if="{{ !_isCreate }}">-->
             <!--<paper-button id="btn_imprimirE" class="tablinks" on-tap="_printE" disabled="{{ !_permissions.create }}"><i class="fa fa-print" aria-hidden="true"></i> Imprimir Extracto</paper-button>-->
@@ -271,6 +276,9 @@
                                                         </div>
 
                                                         <div class="col-lg-3">
+                                                            <vaadin-text-field value="{{data.county}}" maxlength="255" id="county" name="county" label="Distrito" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
+                                                        </div>
+                                                        <div class="col-lg-3">
                                                             <vaadin-combo-box items='[{"value":"PT"}]' id="country_Region_Code" label="Código Pais/Região" disabled="{{ !_permissions.update }}" item-value-path="value" item-label-path="value" value="{{item.country_Region_Code}}">
                                                                 <template>
                                                                     &nbsp;[[item.value]]&nbsp;
@@ -278,37 +286,25 @@
                                                             </vaadin-combo-box>
                                                         </div>
 
-                                                        <div class="col-lg-3">
-                                                            <vaadin-text-field pattern="[0-9]{9}" value="{{data.phone_No}}" onKeyDown="forceNumericWithMaxLength(this,event,9)" disabled="{{ !_permissions.update }}" id="phone_No" name="phone_No" label="Telefone" required></vaadin-text-field>
-                                                        </div>
 
                                                     </div>
 
                                                     <div class="row break_clear">
 
+                                                        <div class="col-lg-3">
+                                                            <vaadin-text-field pattern="^(?:\s*\d){9}$" value="{{data.phone_No}}" onKeyDown="forceNumericWithMaxLength(this,event,9, true)" onblur="trimPhone(this,event)" disabled="{{ !_permissions.update }}" id="phone_No" name="phone_No" label="Telefone" required></vaadin-text-field>
+                                                        </div>
                                                         <div class="col-lg-3">
                                                             <vaadin-text-field value="{{data.e_Mail}}" pattern='[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$' maxlength="255" id="e_Mail" name="e_Mail" label="Email" disabled="{{ !_permissions.update }}" required> </vaadin-text-field>
                                                         </div>
                                                         <div class="col-lg-3">
-                                                            <vaadin-text-field value="{{data.fax_No}}" pattern="[0-9]{9}" onKeyDown="forceNumericWithMaxLength(this,event,9)" disabled="{{ !_permissions.update }}" id="fax_No" name="fax_No" label="Nº Fax" required> </vaadin-text-field>
+                                                            <vaadin-text-field value="{{data.fax_No}}" pattern="^(?:\s*\d){9}$" onKeyDown="forceNumericWithMaxLength(this,event,9, true)" onblur="trimPhone(this,event)" disabled="{{ !_permissions.update }}" id="fax_No" name="fax_No" label="Nº Fax" required> </vaadin-text-field>
                                                         </div>
                                                         <div class="col-lg-3">
-                                                            <vaadin-text-field value="{{data.home_Page}}" maxlength="255" id="home_Page" name="home_Page" label="Home Page" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
-                                                        </div>
-                                                        <div class="col-lg-3">
-                                                            <vaadin-text-field value="{{data.county}}" maxlength="255" id="county" name="county" label="Distrito" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
+                                                            <vaadin-text-field value="{{data.home_Page}}" maxlength="255" id="home_Page" name="home_Page" label="Home Page" disabled="{{ !_permissions.update }}" > </vaadin-text-field>
                                                         </div>
                                                     </div>
 
-                                                    <div class="row break_clear">
-                                                        <div class="col-lg-3">
-                                                            <vaadin-combo-box items='[{"id":"0","value":""},{"id":1,"value":"Norte"},{"id":2,"value":"Centro"},{"id":3,"value":"Sul"}]' id="Regiao_Cliente" disabled="{{ !_permissions.update }}" item-value-path="id" item-label-path="value" value="{{data.Regiao_Cliente}}" label="Região">
-                                                                <template>
-                                                                    &nbsp;[[item.value]]&nbsp;
-                                                                </template>
-                                                            </vaadin-combo-box>
-                                                        </div>
-                                                    </div>
                                                 </div>
                                             </div>
                                         </paper-collapse-item>
@@ -321,10 +317,133 @@
                                         <paper-collapse-item header="Faturação">
                                             <div class="panel-body">
                                                 <div class="row break_clear">
+
                                                     <div class="col-lg-4">
                                                         <vaadin-text-field value="{{data.vaT_Registration_No}}" pattern="[0-9]{9}" onKeyDown="forceNumericWithMaxLength(this,event,9)" disabled="{{ !_permissions.update }}" id="vaT_Registration_No" name="vaT_Registration_No" label="Nº Contribuinte" required> </vaadin-text-field>
                                                     </div>
+
+                                                    <div class="col-lg-4">
+                                                        <vaadin-text-field value="{{data.taxa_Aprovisionamento}}" disabled="{{ !_permissions.update }}" id="taxa_Aprovisionamento" name="taxa_Aprovisionamento" label="Taxa Aprovisionamento"> </vaadin-text-field>
+                                                    </div>
+
+                                                    <div class="col-lg-4 alignPoga">
+                                                        <vaadin-checkbox checked="{{data.abrigo_Lei_Compromisso}}" id="abrigo_Lei_Compromisso" name="abrigo_Lei_Compromisso" disabled="{{ !_permissions.update }}">Abrigo Lei dos Compromissos</vaadin-checkbox>
+                                                    </div>
                                                 </div>
+                                                <div class="row break_clear">
+                                                    <div class="col-lg-4">
+
+                                                        <vaadin-combo-box items='[[ LPaymentTerms ]]' id="payment_Terms_Code" disabled="{{ !_permissions.update }}" item-value-path="id" item-label-path="value" value="{{data.payment_Terms_Code}}" label="Termos de Pagamento">
+                                                            <template>
+                                                                &nbsp;[[item.value]]&nbsp;
+                                                            </template>
+                                                        </vaadin-combo-box>
+
+                                                    </div>
+
+                                                    <div class="col-lg-4">
+
+                                                        <vaadin-combo-box items='[[ LPaymentMethodCode ]]' id="payment_Method_Code" disabled="{{ !_permissions.update }}" item-value-path="id" item-label-path="value" value="{{data.payment_Method_Code}}" label="Forma Pagamento">
+                                                            <template>
+                                                                &nbsp;[[item.value]]&nbsp;
+                                                            </template>
+                                                        </vaadin-combo-box>
+
+                                                    </div>
+
+                                                    <div class="col-lg-4">
+
+                                                        <vaadin-combo-box items='[{"id":0,"value":""},{"id":1,"value":"Envio"},{"id":2,"value":"Fatura"},{"id":3,"value":"Todos"}]' id="blocked" disabled="{{ !_permissions.update }}" item-value-path="id" item-label-path="value" value="{{data.blocked}}" label="Bloqueado">
+                                                            <template>
+                                                                &nbsp;[[item.value]]&nbsp;
+                                                            </template>
+                                                        </vaadin-combo-box>
+
+                                                    </div>
+
+                                                </div>
+                                                <div class="row break_clear">
+                                                    <div class="col-lg-4">                                   
+                                                        <vaadin-combo-box items='[{"id":0,"value":""},{"id":1,"value":"Norte"},{"id":2,"value":"Centro"},{"id":3,"value":"Sul"}]' id="regiao_Cliente" disabled="{{ !_permissions.update }}" item-value-path="id" item-label-path="value" value="{{data.regiao_Cliente}}" label="Região">
+                                                            <template>
+                                                                &nbsp;[[item.value]]&nbsp;
+                                                            </template>
+                                                        </vaadin-combo-box>
+                                                    </div>
+
+                                                    <div class="col-lg-4">
+                                                        <vaadin-text-field value="{{data.global_Dimension_1_Code}}" disabled id="global_Dimension_1_Code" name="global_Dimension_1_Code" label="Area"> </vaadin-text-field>
+                                                    </div>
+
+                                                    <div class="col-lg-4">
+                                                        <vaadin-text-field value="{{data.centro_Resp_Dimensao}}" disabled id="centro_Resp_Dimensao" name="centro_Resp_Dimensao" label="Centro de Responsabilidade"> </vaadin-text-field>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </paper-collapse-item>
+                                    </paper-collapse-group>
+                                </div>
+
+                                <!------------ Especificação ------------>
+                                <div class="panel panel-default">
+                                    <paper-collapse-group>
+                                        <paper-collapse-item header="Especificação">
+                                            <div class="panel-body">
+
+                                                <div class="row break_clear">
+                                                    <div class="col-lg-3 alignPoga">
+                                                        <vaadin-checkbox checked="{{data.cliente_Associado}}" id="cliente_Associado" name="cliente_Associado" disabled="{{ !_permissions.update }}">Cliente Associado</vaadin-checkbox>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <vaadin-combo-box items='[{"value":"A"},{"value":"M"}]' id="associado_A_N" disabled="{{ !_permissions.update }}" item-value-path="value" item-label-path="value" value="{{data.associado_A_N}}" label="Associado (A/N)">
+                                                            <template>
+                                                                &nbsp;[[item.value]]&nbsp;
+                                                            </template>
+                                                        </vaadin-combo-box>
+                                                    </div>
+
+                                                    <div class="col-lg-3">
+                                                        <vaadin-combo-box items='[[LCustomerTypes]]' id="tipo_Cliente" item-value-path="id" disabled="{{ !_permissions.update }}" item-label-path="value" value="{{data.tipo_Cliente}}" label="Tipo de Cliente">
+                                                            <template>
+                                                                &nbsp;[[item.value]]&nbsp;
+                                                            </template>
+                                                        </vaadin-combo-box>
+                                                    </div>
+
+                                                    <div class="col-lg-3">
+                                                        <vaadin-combo-box items='[[LCustomerNatures]]' id="natureza_Cliente" item-value-path="id" disabled="{{ !_permissions.update }}" item-label-path="value" value="{{data.natureza_Cliente}}" label="Natureza do Cliente">
+                                                            <template>
+                                                                &nbsp;[[item.value]]&nbsp;
+                                                            </template>
+                                                        </vaadin-combo-box>
+                                                    </div>
+
+                                                </div>
+
+                                                <div class="row break_clear">
+
+                                                    <div class="col-lg-3 alignPoga">
+                                                        <vaadin-checkbox checked="{{data.cliente_Nacional}}" id="cliente_Nacional" name="cliente_Nacional" disabled="{{ !_permissions.update }}">Cliente Nacional</vaadin-checkbox>
+                                                    </div>
+
+                                                    <div class="col-lg-3 alignPoga">
+                                                        <vaadin-checkbox checked="{{data.cliente_Interno}}" id="cliente_Interno" name="cliente_Interno" disabled>Cliente Interno</vaadin-checkbox>
+
+                                                    </div>
+
+                                                    <div class="col-lg-3">
+                                                        <!--<vaadin-text-field value="{{data.no_Fornecedor_Assoc}}" disabled="{{ !_permissions.update }}" id="no_Fornecedor_Assoc" name="no_Fornecedor_Assoc" label="Nº Fornecedor Associado"> </vaadin-text-field>-->
+
+                                                        <vaadin-combo-box items='[[LFornecedorAssoc]]' id="no_Fornecedor_Assoc" item-value-path="id" disabled="{{ !_permissions.update }}" item-label-path="value" value="{{data.no_Fornecedor_Assoc}}" label="Nº Fornecedor Associado">
+                                                            <template>
+                                                                &nbsp;[[item.value]]&nbsp;
+                                                            </template>
+                                                        </vaadin-combo-box>
+
+                                                    </div>
+                                                </div>
+
                                             </div>
                                         </paper-collapse-item>
                                     </paper-collapse-group>
@@ -472,23 +591,7 @@
                                 </div>
 
                                 <!------------ Controlo Conciliação de Saldos ------------>
-                                <!--
-                                CustomerNo
-                                PostingDate
-                                DocumentType
-                                DocumentNo
-                                DocumentDate
-                                DueDate
-                                Description
-                                Amount
-                                RemainingAmount
-                                SinalizacaoRec
-                                DataConcil
-                                Obs
-                                RegionId
-                                FunctionalAreaId
-                                RespCenterId
-                            -->
+
                                 <div class="panel panel-default">
                                     <paper-collapse-group>
                                         <paper-collapse-item header="Controlo Conciliação de Saldos">
@@ -506,14 +609,14 @@
                                                         <vaadin-grid aria-label="Balances" id="grid_balances" name="grid_balances" items="[[balances]]" class="grid break_clear" multi-sort="true" active-item="{{_SelectedBalance}}">
 
                                                             <!--<vaadin-grid-column width="100px" resizable>
-                                                            <template class="header">
-                                                                <vaadin-grid-sorter path="entryNo">entryNo</vaadin-grid-sorter>
-                                                                <vaadin-grid-filter path="entryNo" />
-                                                            </template>
-                                                            <template>
-                                                                {{item.entryNo}}
-                                                            </template>
-                                                        </vaadin-grid-column>-->
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="entryNo">entryNo</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="entryNo" />
+                                    </template>
+                                    <template>
+                                        {{item.entryNo}}
+                                    </template>
+                                </vaadin-grid-column>-->
 
                                                             <vaadin-grid-column width="100px" resizable>
                                                                 <template class="header">
@@ -700,44 +803,6 @@
                                     </paper-collapse-group>
                                 </div>
 
-                                <!------------ Especificação ------------>
-                                <div class="panel panel-default">
-                                    <paper-collapse-group>
-                                        <paper-collapse-item header="Especificação">
-                                            <div class="panel-body">
-                                                <div class="row break_clear">
-                                                    <div class="col-lg-3 alignPoga">
-                                                        <vaadin-checkbox checked="{{data.cliente_Associado}}" id="cliente_Associado" name="cliente_Associado" disabled="{{ !_permissions.update }}">Cliente Associado</vaadin-checkbox>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <vaadin-combo-box items='[{"value":"A"},{"value":"M"}]' id="associado_A_N" disabled="{{ !_permissions.update }}" item-value-path="value" item-label-path="value" value="{{data.associado_A_N}}" label="Associado (A/N)">
-                                                            <template>
-                                                                &nbsp;[[item.value]]&nbsp;
-                                                            </template>
-                                                        </vaadin-combo-box>
-                                                    </div>
-
-                                                    <div class="col-lg-3">
-                                                        <vaadin-combo-box items='[[LCustomerTypes]]' id="tipo_Cliente" item-value-path="id" disabled="{{ !_permissions.update }}" item-label-path="value" value="{{data.tipo_Cliente}}" label="Tipo de Cliente">
-                                                            <template>
-                                                                &nbsp;[[item.value]]&nbsp;
-                                                            </template>
-                                                        </vaadin-combo-box>
-                                                    </div>
-
-                                                    <div class="col-lg-3">
-                                                        <vaadin-combo-box items='[[LCustomerNatures]]' id="natureza_Cliente" item-value-path="id" disabled="{{ !_permissions.update }}" item-label-path="value" value="{{data.natureza_Cliente}}" label="Natureza do Cliente">
-                                                            <template>
-                                                                &nbsp;[[item.value]]&nbsp;
-                                                            </template>
-                                                        </vaadin-combo-box>
-                                                    </div>
-
-                                                </div>
-                                            </div>
-                                        </paper-collapse-item>
-                                    </paper-collapse-group>
-                                </div>
 
                                 <div class="marginSpace">
                                     <template is="dom-if" if="{{ _isCreate }}">
@@ -794,7 +859,7 @@
                                             </div>
 
                                             <div class="col-lg-3">
-                                                <vaadin-text-field pattern="[0-9]{9}" value="{{shippingData.phone_No}}" onKeyDown="forceNumericWithMaxLength(this,event,9)" disabled="{{ !_permissions.update }}" id="shippingData.phone_No" name="shippingData.phone_No" label="Telefone" required></vaadin-text-field>
+                                                <vaadin-text-field pattern="^(?:\s*\d){9}$" value="{{shippingData.phone_No}}" onKeyDown="forceNumericWithMaxLength(this,event,9, true)" onblur="trimPhone(this,event)" disabled="{{ !_permissions.update }}" id="shippingData.phone_No" name="shippingData.phone_No" label="Telefone" required></vaadin-text-field>
                                             </div>
                                         </div>
                                         <div class="row break_clear">
@@ -803,7 +868,7 @@
                                                 <vaadin-text-field value="{{shippingData.contact}}" disabled="{{ !_permissions.update }}" id="shippingData.contact" name="shippingData.contact" label="Contacto"></vaadin-text-field>
                                             </div>
                                             <div class="col-lg-3">
-                                                <vaadin-text-field pattern="[0-9]{9}" value="{{shippingData.fax_No}}" onKeyDown="forceNumericWithMaxLength(this,event,9)" disabled="{{ !_permissions.update }}" id="shippingData.fax_No" name="shippingData.fax_No" label="Nº Fax" required></vaadin-text-field>
+                                                <vaadin-text-field pattern="^(?:\s*\d){9}$" value="{{shippingData.fax_No}}" onKeyDown="forceNumericWithMaxLength(this,event,9, true)" onblur="trimPhone(this,event)" disabled="{{ !_permissions.update }}" id="shippingData.fax_No" name="shippingData.fax_No" label="Nº Fax" required></vaadin-text-field>
                                             </div>
                                             <div class="col-lg-3">
                                                 <vaadin-text-field value="{{shippingData.e_Mail}}" pattern='[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$' maxlength="255" id="shippingData.e_Mail" name="shippingData.e_Mail" label="Email" disabled="{{ !_permissions.update }}" required> </vaadin-text-field>
@@ -822,7 +887,7 @@
                                 <div class="break_clear col-xs-12">
                                     <div class="spacer20"></div>
                                     <vaadin-grid aria-label="ShippingLines" id="grid_shippinglines" name="grid_shippinglines" items="[[shippingList]]" class="grid" multi-sort="true" active-item="{{_SelectedLine}}">
-                                       
+
                                         <vaadin-grid-column width="100px">
                                             <template class="header">
                                                 <vaadin-grid-sorter path="code">Código</vaadin-grid-sorter>
@@ -939,7 +1004,7 @@
                                             </template>
                                             <template>
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field pattern="[0-9]{9}" value="{{item.phone_No}}" onKeyDown="forceNumericWithMaxLength(this,event,9)" disabled="{{ !_permissions.update }}" id="shippingList.phone_No" name="shippingList.phone_No" required></vaadin-text-field>
+                                                    <vaadin-text-field pattern="^(?:\s*\d){9}$" value="{{item.phone_No}}" onKeyDown="forceNumericWithMaxLength(this,event,9, true)" onblur="trimPhone(this,event)" disabled="{{ !_permissions.update }}" id="shippingList.phone_No" name="shippingList.phone_No" required></vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
                                                     {{item.phone_No}}
@@ -969,7 +1034,7 @@
                                             </template>
                                             <template>
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field pattern="[0-9]{9}" value="{{item.fax_No}}" onKeyDown="forceNumericWithMaxLength(this,event,9)" disabled="{{ !_permissions.update }}" id="shippingList.fax_No" name="shippingList.fax_No"></vaadin-text-field>
+                                                    <vaadin-text-field pattern="^(?:\s*\d){9}$" value="{{item.fax_No}}" onKeyDown="forceNumericWithMaxLength(this,event,9, true)" onblur="trimPhone(this,event)" disabled="{{ !_permissions.update }}" id="shippingList.fax_No" name="shippingList.fax_No"></vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
                                                     {{item.fax_No}}
@@ -1679,7 +1744,7 @@
                     this._invoiceLinesColumns = columns;
                 },
                 _startBalancesColumnToggle: function () {
-                    
+
 
                     var columns = {
                         "customerNo": { hidden: false, label: "Nº Cliente" },
@@ -1725,12 +1790,24 @@
         });
 
 
-        var forceNumericWithMaxLength = function (el, event, maxLength) {
-            if ((!/^\d+$/.test(event.key) || (el.value && el.value.length >= maxLength)) && ['ArrowLeft', 'ArrowRight', 'Backspace', 'Delete'].indexOf(event.key) < 0) {
+        var forceNumericWithMaxLength = function (el, event, maxLength, allowSpaces) {
+
+            var allowedKeys = ['ArrowLeft', 'ArrowRight', 'Backspace', 'Delete'];
+            if (allowSpaces) {
+                allowedKeys.push(' ');
+            }
+
+            if ((!/^\d+$/.test(event.key) || (el.value && el.value.length >= maxLength)) && allowedKeys.indexOf(event.key) < 0) {
                 event.preventDefault();
                 return false;
             }
         };
+        
+        
+        var trimPhone = function (el, event) {
+            el.value = el.value.replace(/  +/g, ' ').trim();
+        };
+
     </script>
 
 </dom-module>

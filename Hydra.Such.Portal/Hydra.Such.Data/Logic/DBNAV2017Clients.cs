@@ -5,6 +5,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Text;
+using WSCustomerNAV;
 
 namespace Hydra.Such.Data.Logic
 {
@@ -48,9 +49,9 @@ namespace Hydra.Such.Data.Logic
                             Name = temp.Name.Equals(DBNull.Value) ? "" : (string)temp.Name,
                             VATRegistrationNo_ = temp.VATRegistrationNo.Equals(DBNull.Value) ? "" : (string)temp.VATRegistrationNo,
                             Address = temp.Address.Equals(DBNull.Value) ? "" : (string)temp.Address,
-                            PostCode = temp.PostalCode.Equals(DBNull.Value) ? "" : (string)temp.PostalCode,
-                            City = temp.PostalCode.Equals(DBNull.Value) ? "" : (string)temp.City,
-                            Country_RegionCode = temp.Country_RegionCode.Equals(DBNull.Value) ? "" : (string)temp.Country_RegionCode,
+                            PostCode = temp.PostCode.Equals(DBNull.Value) ? "" : (string)temp.PostCode,
+                            City = temp.City.Equals(DBNull.Value) ? "" : (string)temp.City,
+                            CountryRegionCode = temp.CountryRegionCode.Equals(DBNull.Value) ? "" : (string)temp.CountryRegionCode,
                             UnderCompromiseLaw = temp.UnderCompromiseLaw.Equals(DBNull.Value) ? false : ((int)temp.UnderCompromiseLaw) == 0 ? false : true,
                             InternalClient = temp.InternalClient.Equals(DBNull.Value) ? false : ((int)temp.InternalClient) == 0 ? false : true,
                             National = temp.NationalCustomer.Equals(DBNull.Value) ? false : ((int)temp.NationalCustomer) == 0 ? false : true,
@@ -59,8 +60,23 @@ namespace Hydra.Such.Data.Logic
                             RegionCode = temp.RegionCode.Equals(DBNull.Value) ? "" : (string)temp.RegionCode,
                             FunctionalAreaCode = temp.FunctionalAreaCode.Equals(DBNull.Value) ? "" : (string)temp.FunctionalAreaCode,
                             ResponsabilityCenterCode = temp.ResponsabilityCenterCode.Equals(DBNull.Value) ? "" : (string)temp.ResponsabilityCenterCode,
-                            RegiaoCliente = temp.RegiaoCliente.Equals(DBNull.Value) ? null : (Regiao_Cliente?)temp.RegiaoCliente
-
+                            RegiaoCliente = (Regiao_Cliente)temp.RegiaoCliente,
+                            AbrigoLeiCompromisso = ((int)temp.AbrigoLeiCompromisso > 0 ? true : false),
+                            AssociadoAN = temp.AssociadoAN.Equals(DBNull.Value) ? "" : (string)temp.AssociadoAN,
+                            Blocked = (Blocked)temp.Blocked,
+                            ClienteAssociado = ((int)temp.ClienteAssociado > 0 ? true : false),
+                            ClienteInterno = ((int)temp.ClienteInterno > 0 ? true : false),
+                            ClienteNacional = ((int)temp.ClienteNacional > 0 ? true : false),
+                            County = temp.County.Equals(DBNull.Value) ? "" : (string)temp.County,
+                            EMail = temp.EMail.Equals(DBNull.Value) ? "" : (string)temp.EMail,
+                            FaxNo = temp.FaxNo.Equals(DBNull.Value) ? "" : (string)temp.FaxNo,
+                            HomePage = temp.HomePage.Equals(DBNull.Value) ? "" : (string)temp.HomePage,
+                            NaturezaCliente = (Natureza_Cliente)temp.NaturezaCliente,
+                            NoFornecedorAssoc = temp.ResponsabilityCenterCode.Equals(DBNull.Value) ? "" : (string)temp.ResponsabilityCenterCode,
+                            NoSeries = temp.NoSeries.Equals(DBNull.Value) ? "" : (string)temp.NoSeries,
+                            PhoneNo = temp.PhoneNo.Equals(DBNull.Value) ? "" : (string)temp.PhoneNo,
+                            TaxaAprovisionamento = (decimal)temp.TaxaAprovisionamento,
+                            TipoCliente = (Tipo_Cliente)temp.TipoCliente
                         });
                     }
                     return result;
