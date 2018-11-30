@@ -502,7 +502,7 @@
                                         </div>
 
                                         <div class="col-md-3 text-right">
-                                            <vaadin-text-field value="{{data.valorTotalDocComIVA}}" id="valorTotalDocComIVA" name="valorTotalDocComIVA" label="Valor Total Doc. com IVA" disabled="{{ !_permissions.update }}" type="number" pattern="^[1-9]\d*(\.\d+)?$" on-value-changed="_ConvertDecimals">
+                                            <vaadin-text-field value="{{data.valorTotalDocComIVA}}" id="valorTotalDocComIVA" name="valorTotalDocComIVA" label="Valor Total Doc. com IVA" disabled="{{ !_permissions.update }}" type="number" on-blur="_ConvertDecimals">
                                                 <div slot="suffix">€</div>
                                             </vaadin-text-field>
                                         </div>
@@ -645,23 +645,23 @@
 
                                 <div class="row break_clear">
                                     <div class="col-lg-2 text-right">
-                                        <vaadin-text-field value="{{_QuantityToRequire}}" id="_QuantityToRequire" name="_QuantityToRequire" label="Qt. a Requerer" on-blur="_CalculoAutomaticoValores" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório, tem que ser superior a 0 e só pode ter 4 casas decimais"></vaadin-text-field>
+                                        <vaadin-text-field value="{{_QuantityToRequire}}" id="_QuantityToRequire" name="_QuantityToRequire" label="Qt. a Requerer" on-blur="_CalculoAutomaticoValoresQuantidadeRequerer" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório, tem que ser superior a 0 e só pode ter 4 casas decimais"></vaadin-text-field>
                                     </div>
 
                                     <div class="col-lg-2 text-right">
-                                        <vaadin-text-field value="{{_UnitCost}}" id="_UnitCost" name="_UnitCost" label="Custo Unitário" on-blur="_CalculoAutomaticoValores" disabled="{{ !_permissions.update }}"  required error-message="Este campo é obrigatório, tem que ser superior a 0 e só pode ter 5 casas decimais">
+                                        <vaadin-text-field value="{{_UnitCost}}" id="_UnitCost" name="_UnitCost" label="Custo Unitário" on-blur="_CalculoAutomaticoValoresCustoUnitario" disabled="{{ !_permissions.update }}"  required error-message="Este campo é obrigatório, tem que ser superior a 0 e só pode ter 5 casas decimais">
                                             <div slot="suffix">€</div>
                                         </vaadin-text-field>
                                     </div>
 
                                     <div class="col-lg-2 text-right">
-                                        <vaadin-text-field value="{{_UnitCostWithIVA}}" id="_UnitCostWithIVA" name="_UnitCostWithIVA" label="Custo Unitário com IVA" on-blur="_CalculoAutomaticoValores" disabled="{{ !_permissions.update }}"  required error-message="Este campo é obrigatório, tem que ser superior a 0 e só pode ter 4 casas decimais">
+                                        <vaadin-text-field value="{{_UnitCostWithIVA}}" id="_UnitCostWithIVA" name="_UnitCostWithIVA" label="Custo Unitário com IVA" on-blur="_CalculoAutomaticoValoresCustoUnitarioComIVA" disabled="{{ !_permissions.update }}"  required error-message="Este campo é obrigatório, tem que ser superior a 0 e só pode ter 4 casas decimais">
                                             <div slot="suffix">€</div>
                                         </vaadin-text-field>
                                     </div>
 
                                     <div class="col-lg-2 text-right">
-                                        <vaadin-text-field value="" id="_CustoTotalComIVA" name="_CustoTotalComIVA" label="Custo Total com IVA" on-blur="_CalculoAutomaticoValores" disabled="{{ !_permissions.update }}">
+                                        <vaadin-text-field value="" id="_CustoTotalComIVA" name="_CustoTotalComIVA" label="Custo Total com IVA" on-blur="_CalculoAutomaticoValoresCustoTotalComIVA" disabled="{{ !_permissions.update }}">
                                             <div slot="suffix">€</div>
                                         </vaadin-text-field>
                                     </div>
@@ -732,7 +732,7 @@
 
 
                                     <div class="col-lg-2 text-right">
-                                        <vaadin-text-field id="_PercentagemIVA" name="_PercentagemIVA" label="Valor Tx IVA" on-blur="_CalculoAutomaticoValores" disabled="{{ !_permissions.update }}">
+                                        <vaadin-text-field id="_PercentagemIVA" name="_PercentagemIVA" label="Valor Tx IVA" on-value-changed="_CalculoAutomaticoValores" disabled="{{ !_permissions.update }}">
                                             <div slot="suffix">%</div>
                                         </vaadin-text-field>
                                     </div>
@@ -2517,6 +2517,7 @@
                 },
 
                 _CalculoAutomaticoValores: function (e) {
+                    debugger;
                     if (e.target.value != "") {
                         var stringVal = "" + e.target.value;
                         e.target.value = stringVal.replace(",", ".");
@@ -2542,29 +2543,336 @@
                         if (_PercentagemIVA != 0)
                             IVA = (_PercentagemIVA / 100) + 1;
 
+                        //Quantidade a Requerer
                         if (_UnitCostWithIVA != 0 && _CustoTotalComIVA != 0) {
                             this.$._QuantityToRequire.value = (_CustoTotalComIVA / _UnitCostWithIVA).toFixed(4).replace(",", ".");
+                            _QuantityToRequire = this.$._QuantityToRequire.value;
                         }
 
+                        //Custo Unitário
                         if (_CustoTotalComIVA != 0 && _PercentagemIVA != 0 && _QuantityToRequire != 0) {
                             this.$._UnitCost.value = ((_CustoTotalComIVA / IVA) / _QuantityToRequire).toFixed(5).replace(",", ".");
+                            _UnitCost = this.$._UnitCost.value;
+                        }
+                        if (_CustoTotalComIVA != 0 && IVA != 0 && _QuantityToRequire != 0) {
+                            this.$._UnitCost.value = ((_CustoTotalComIVA / IVA) / _QuantityToRequire).toFixed(5).replace(",", ".");
+                            _UnitCost = this.$._UnitCost.value;
                         }
 
+                        //Custo Unitário com IVA
                         if (_CustoTotalComIVA != 0 && _QuantityToRequire != 0) {
                             this.$._UnitCostWithIVA.value = (_CustoTotalComIVA / _QuantityToRequire).toFixed(4).replace(",", ".");
+                            _UnitCostWithIVA = this.$._UnitCostWithIVA.value;
+                        }
+                        if (_UnitCost != 0 && IVA != 0) {
+                            this.$._UnitCostWithIVA.value = (_UnitCost * IVA).toFixed(4).replace(",", ".");
+                            _UnitCostWithIVA = this.$._UnitCostWithIVA.value;
                         }
 
+                        //Custo Total com IVA
                         if (_QuantityToRequire != 0 && _UnitCostWithIVA != 0) {
                             this.$._CustoTotalComIVA.value = (_QuantityToRequire * _UnitCostWithIVA).toFixed(4).replace(",", ".");
+                            _CustoTotalComIVA = this.$._CustoTotalComIVA.value;
+                        }
+                        if (_QuantityToRequire != 0 && _UnitCost != 0 && IVA != 0) {
+                            this.$._CustoTotalComIVA.value = ((_QuantityToRequire * _UnitCost) * IVA).toFixed(4).replace(",", ".");
+                            _CustoTotalComIVA = this.$._CustoTotalComIVA.value;
                         }
 
-                        if (_CustoTotalComIVA != 0 && _QuantityToRequire != 0 && _UnitCost != 0) {
-                            this.$._PercentagemIVA.value = (((_CustoTotalComIVA * 100) / (_QuantityToRequire * _UnitCost)) - 100).toFixed(4).replace(",", ".")
+                        //Valor Taxa IVA
+                        if (this.$._PercentagemIVA.value == "") {
+                            if (_CustoTotalComIVA != 0 && _QuantityToRequire != 0 && _UnitCost != 0) {
+                                this.$._PercentagemIVA.value = (((_CustoTotalComIVA * 100) / (_QuantityToRequire * _UnitCost)) - 100).toFixed(4).replace(",", ".")
+                            }
                         }
+                    }
+                },
 
-                        //if (_QuantityToRequire != 0 && _UnitCost != 0 && _PercentagemIVA != 0) {
-                        //    this.$._CustoTotalComIVA.value = ((_QuantityToRequire * _UnitCost) * IVA).toFixed(4);
+                _CalculoAutomaticoValoresQuantidadeRequerer: function (e) {
+                    debugger;
+                    if (e.target.value != "") {
+                        var stringVal = "" + e.target.value;
+                        e.target.value = stringVal.replace(",", ".");
+
+                        var IVA = parseFloat(0);
+                        var _QuantityToRequire = parseFloat(0);
+                        var _UnitCost = parseFloat(0);
+                        var _UnitCostWithIVA = parseFloat(0);
+                        var _CustoTotalComIVA = parseFloat(0);
+                        var _PercentagemIVA = parseFloat(0);
+
+                        if (this.$._QuantityToRequire.value != "")
+                            _QuantityToRequire = parseFloat(this.$._QuantityToRequire.value);
+                        if (this.$._UnitCost.value != "")
+                            _UnitCost = parseFloat(this.$._UnitCost.value);
+                        if (this.$._UnitCostWithIVA.value != "")
+                            _UnitCostWithIVA = parseFloat(this.$._UnitCostWithIVA.value);
+                        if (this.$._CustoTotalComIVA.value != "")
+                            _CustoTotalComIVA = parseFloat(this.$._CustoTotalComIVA.value);
+                        if (this.$._PercentagemIVA.value != "")
+                            _PercentagemIVA = parseFloat(this.$._PercentagemIVA.value);
+
+                        if (_PercentagemIVA != 0)
+                            IVA = (_PercentagemIVA / 100) + 1;
+
+                        //Quantidade a Requerer
+                        //if (_UnitCostWithIVA != 0 && _CustoTotalComIVA != 0) {
+                        //    this.$._QuantityToRequire.value = (_CustoTotalComIVA / _UnitCostWithIVA).toFixed(4).replace(",", ".");
+                        //    _QuantityToRequire = this.$._QuantityToRequire.value;
                         //}
+
+                        //Custo Unitário
+                        if (_CustoTotalComIVA != 0 && _PercentagemIVA != 0 && _QuantityToRequire != 0) {
+                            this.$._UnitCost.value = ((_CustoTotalComIVA / IVA) / _QuantityToRequire).toFixed(5).replace(",", ".");
+                            _UnitCost = this.$._UnitCost.value;
+                        }
+                        if (_CustoTotalComIVA != 0 && IVA != 0 && _QuantityToRequire != 0) {
+                            this.$._UnitCost.value = ((_CustoTotalComIVA / IVA) / _QuantityToRequire).toFixed(5).replace(",", ".");
+                            _UnitCost = this.$._UnitCost.value;
+                        }
+
+                        //Custo Unitário com IVA
+                        if (_CustoTotalComIVA != 0 && _QuantityToRequire != 0) {
+                            this.$._UnitCostWithIVA.value = (_CustoTotalComIVA / _QuantityToRequire).toFixed(4).replace(",", ".");
+                            _UnitCostWithIVA = this.$._UnitCostWithIVA.value;
+                        }
+                        if (_UnitCost != 0 && IVA != 0) {
+                            this.$._UnitCostWithIVA.value = (_UnitCost * IVA).toFixed(4).replace(",", ".");
+                            _UnitCostWithIVA = this.$._UnitCostWithIVA.value;
+                        }
+
+                        //Custo Total com IVA
+                        if (_QuantityToRequire != 0 && _UnitCostWithIVA != 0) {
+                            this.$._CustoTotalComIVA.value = (_QuantityToRequire * _UnitCostWithIVA).toFixed(4).replace(",", ".");
+                            _CustoTotalComIVA = this.$._CustoTotalComIVA.value;
+                        }
+                        if (_QuantityToRequire != 0 && _UnitCost != 0 && IVA != 0) {
+                            this.$._CustoTotalComIVA.value = ((_QuantityToRequire * _UnitCost) * IVA).toFixed(4).replace(",", ".");
+                            _CustoTotalComIVA = this.$._CustoTotalComIVA.value;
+                        }
+
+                        //Valor Taxa IVA
+                        if (this.$._PercentagemIVA.value == "") {
+                            if (_CustoTotalComIVA != 0 && _QuantityToRequire != 0 && _UnitCost != 0) {
+                                this.$._PercentagemIVA.value = (((_CustoTotalComIVA * 100) / (_QuantityToRequire * _UnitCost)) - 100).toFixed(4).replace(",", ".")
+                            }
+                        }
+                    }
+                },
+
+                _CalculoAutomaticoValoresCustoUnitario: function (e) {
+                    debugger;
+                    if (e.target.value != "") {
+                        var stringVal = "" + e.target.value;
+                        e.target.value = stringVal.replace(",", ".");
+
+                        var IVA = parseFloat(0);
+                        var _QuantityToRequire = parseFloat(0);
+                        var _UnitCost = parseFloat(0);
+                        var _UnitCostWithIVA = parseFloat(0);
+                        var _CustoTotalComIVA = parseFloat(0);
+                        var _PercentagemIVA = parseFloat(0);
+
+                        if (this.$._QuantityToRequire.value != "")
+                            _QuantityToRequire = parseFloat(this.$._QuantityToRequire.value);
+                        if (this.$._UnitCost.value != "")
+                            _UnitCost = parseFloat(this.$._UnitCost.value);
+                        if (this.$._UnitCostWithIVA.value != "")
+                            _UnitCostWithIVA = parseFloat(this.$._UnitCostWithIVA.value);
+                        if (this.$._CustoTotalComIVA.value != "")
+                            _CustoTotalComIVA = parseFloat(this.$._CustoTotalComIVA.value);
+                        if (this.$._PercentagemIVA.value != "")
+                            _PercentagemIVA = parseFloat(this.$._PercentagemIVA.value);
+
+                        if (_PercentagemIVA != 0)
+                            IVA = (_PercentagemIVA / 100) + 1;
+
+                        //Quantidade a Requerer
+                        if (_UnitCostWithIVA != 0 && _CustoTotalComIVA != 0) {
+                            this.$._QuantityToRequire.value = (_CustoTotalComIVA / _UnitCostWithIVA).toFixed(4).replace(",", ".");
+                            _QuantityToRequire = this.$._QuantityToRequire.value;
+                        }
+
+                        //Custo Unitário
+                        //if (_CustoTotalComIVA != 0 && _PercentagemIVA != 0 && _QuantityToRequire != 0) {
+                        //    this.$._UnitCost.value = ((_CustoTotalComIVA / IVA) / _QuantityToRequire).toFixed(5).replace(",", ".");
+                        //    _UnitCost = this.$._UnitCost.value;
+                        //}
+                        //if (_CustoTotalComIVA != 0 && IVA != 0 && _QuantityToRequire != 0) {
+                        //    this.$._UnitCost.value = ((_CustoTotalComIVA / IVA) / _QuantityToRequire).toFixed(5).replace(",", ".");
+                        //    _UnitCost = this.$._UnitCost.value;
+                        //}
+
+                        //Custo Unitário com IVA
+                        if (_CustoTotalComIVA != 0 && _QuantityToRequire != 0) {
+                            this.$._UnitCostWithIVA.value = (_CustoTotalComIVA / _QuantityToRequire).toFixed(4).replace(",", ".");
+                            _UnitCostWithIVA = this.$._UnitCostWithIVA.value;
+                        }
+                        if (_UnitCost != 0 && IVA != 0) {
+                            this.$._UnitCostWithIVA.value = (_UnitCost * IVA).toFixed(4).replace(",", ".");
+                            _UnitCostWithIVA = this.$._UnitCostWithIVA.value;
+                        }
+
+                        //Custo Total com IVA
+                        if (_QuantityToRequire != 0 && _UnitCostWithIVA != 0) {
+                            this.$._CustoTotalComIVA.value = (_QuantityToRequire * _UnitCostWithIVA).toFixed(4).replace(",", ".");
+                            _CustoTotalComIVA = this.$._CustoTotalComIVA.value;
+                        }
+                        if (_QuantityToRequire != 0 && _UnitCost != 0 && IVA != 0) {
+                            this.$._CustoTotalComIVA.value = ((_QuantityToRequire * _UnitCost) * IVA).toFixed(4).replace(",", ".");
+                            _CustoTotalComIVA = this.$._CustoTotalComIVA.value;
+                        }
+
+                        //Valor Taxa IVA
+                        if (this.$._PercentagemIVA.value == "") {
+                            if (_CustoTotalComIVA != 0 && _QuantityToRequire != 0 && _UnitCost != 0) {
+                                this.$._PercentagemIVA.value = (((_CustoTotalComIVA * 100) / (_QuantityToRequire * _UnitCost)) - 100).toFixed(4).replace(",", ".")
+                            }
+                        }
+                    }
+                },
+
+                _CalculoAutomaticoValoresCustoUnitarioComIVA: function (e) {
+                    debugger;
+                    if (e.target.value != "") {
+                        var stringVal = "" + e.target.value;
+                        e.target.value = stringVal.replace(",", ".");
+
+                        var IVA = parseFloat(0);
+                        var _QuantityToRequire = parseFloat(0);
+                        var _UnitCost = parseFloat(0);
+                        var _UnitCostWithIVA = parseFloat(0);
+                        var _CustoTotalComIVA = parseFloat(0);
+                        var _PercentagemIVA = parseFloat(0);
+
+                        if (this.$._QuantityToRequire.value != "")
+                            _QuantityToRequire = parseFloat(this.$._QuantityToRequire.value);
+                        if (this.$._UnitCost.value != "")
+                            _UnitCost = parseFloat(this.$._UnitCost.value);
+                        if (this.$._UnitCostWithIVA.value != "")
+                            _UnitCostWithIVA = parseFloat(this.$._UnitCostWithIVA.value);
+                        if (this.$._CustoTotalComIVA.value != "")
+                            _CustoTotalComIVA = parseFloat(this.$._CustoTotalComIVA.value);
+                        if (this.$._PercentagemIVA.value != "")
+                            _PercentagemIVA = parseFloat(this.$._PercentagemIVA.value);
+
+                        if (_PercentagemIVA != 0)
+                            IVA = (_PercentagemIVA / 100) + 1;
+
+                        //Quantidade a Requerer
+                        if (_UnitCostWithIVA != 0 && _CustoTotalComIVA != 0) {
+                            this.$._QuantityToRequire.value = (_CustoTotalComIVA / _UnitCostWithIVA).toFixed(4).replace(",", ".");
+                            _QuantityToRequire = this.$._QuantityToRequire.value;
+                        }
+
+                        //Custo Unitário
+                        if (_CustoTotalComIVA != 0 && _PercentagemIVA != 0 && _QuantityToRequire != 0) {
+                            this.$._UnitCost.value = ((_CustoTotalComIVA / IVA) / _QuantityToRequire).toFixed(5).replace(",", ".");
+                            _UnitCost = this.$._UnitCost.value;
+                        }
+                        if (_CustoTotalComIVA != 0 && IVA != 0 && _QuantityToRequire != 0) {
+                            this.$._UnitCost.value = ((_CustoTotalComIVA / IVA) / _QuantityToRequire).toFixed(5).replace(",", ".");
+                            _UnitCost = this.$._UnitCost.value;
+                        }
+
+                        //Custo Unitário com IVA
+                        //if (_CustoTotalComIVA != 0 && _QuantityToRequire != 0) {
+                        //    this.$._UnitCostWithIVA.value = (_CustoTotalComIVA / _QuantityToRequire).toFixed(4).replace(",", ".");
+                        //    _UnitCostWithIVA = this.$._UnitCostWithIVA.value;
+                        //}
+                        //if (_UnitCost != 0 && IVA != 0) {
+                        //    this.$._UnitCostWithIVA.value = (_UnitCost * IVA).toFixed(4).replace(",", ".");
+                        //    _UnitCostWithIVA = this.$._UnitCostWithIVA.value;
+                        //}
+
+                        //Custo Total com IVA
+                        if (_QuantityToRequire != 0 && _UnitCostWithIVA != 0) {
+                            this.$._CustoTotalComIVA.value = (_QuantityToRequire * _UnitCostWithIVA).toFixed(4).replace(",", ".");
+                            _CustoTotalComIVA = this.$._CustoTotalComIVA.value;
+                        }
+                        if (_QuantityToRequire != 0 && _UnitCost != 0 && IVA != 0) {
+                            this.$._CustoTotalComIVA.value = ((_QuantityToRequire * _UnitCost) * IVA).toFixed(4).replace(",", ".");
+                            _CustoTotalComIVA = this.$._CustoTotalComIVA.value;
+                        }
+
+                        //Valor Taxa IVA
+                        if (this.$._PercentagemIVA.value == "") {
+                            if (_CustoTotalComIVA != 0 && _QuantityToRequire != 0 && _UnitCost != 0) {
+                                this.$._PercentagemIVA.value = (((_CustoTotalComIVA * 100) / (_QuantityToRequire * _UnitCost)) - 100).toFixed(4).replace(",", ".")
+                            }
+                        }
+                    }
+                },
+
+                _CalculoAutomaticoValoresCustoTotalComIVA: function (e) {
+                    debugger;
+                    if (e.target.value != "") {
+                        var stringVal = "" + e.target.value;
+                        e.target.value = stringVal.replace(",", ".");
+
+                        var IVA = parseFloat(0);
+                        var _QuantityToRequire = parseFloat(0);
+                        var _UnitCost = parseFloat(0);
+                        var _UnitCostWithIVA = parseFloat(0);
+                        var _CustoTotalComIVA = parseFloat(0);
+                        var _PercentagemIVA = parseFloat(0);
+
+                        if (this.$._QuantityToRequire.value != "")
+                            _QuantityToRequire = parseFloat(this.$._QuantityToRequire.value);
+                        if (this.$._UnitCost.value != "")
+                            _UnitCost = parseFloat(this.$._UnitCost.value);
+                        if (this.$._UnitCostWithIVA.value != "")
+                            _UnitCostWithIVA = parseFloat(this.$._UnitCostWithIVA.value);
+                        if (this.$._CustoTotalComIVA.value != "")
+                            _CustoTotalComIVA = parseFloat(this.$._CustoTotalComIVA.value);
+                        if (this.$._PercentagemIVA.value != "")
+                            _PercentagemIVA = parseFloat(this.$._PercentagemIVA.value);
+
+                        if (_PercentagemIVA != 0)
+                            IVA = (_PercentagemIVA / 100) + 1;
+
+                        //Quantidade a Requerer
+                        if (_UnitCostWithIVA != 0 && _CustoTotalComIVA != 0) {
+                            this.$._QuantityToRequire.value = (_CustoTotalComIVA / _UnitCostWithIVA).toFixed(4).replace(",", ".");
+                            _QuantityToRequire = this.$._QuantityToRequire.value;
+                        }
+
+                        //Custo Unitário
+                        if (_CustoTotalComIVA != 0 && _PercentagemIVA != 0 && _QuantityToRequire != 0) {
+                            this.$._UnitCost.value = ((_CustoTotalComIVA / IVA) / _QuantityToRequire).toFixed(5).replace(",", ".");
+                            _UnitCost = this.$._UnitCost.value;
+                        }
+                        if (_CustoTotalComIVA != 0 && IVA != 0 && _QuantityToRequire != 0) {
+                            this.$._UnitCost.value = ((_CustoTotalComIVA / IVA) / _QuantityToRequire).toFixed(5).replace(",", ".");
+                            _UnitCost = this.$._UnitCost.value;
+                        }
+
+                        //Custo Unitário com IVA
+                        if (_CustoTotalComIVA != 0 && _QuantityToRequire != 0) {
+                            this.$._UnitCostWithIVA.value = (_CustoTotalComIVA / _QuantityToRequire).toFixed(4).replace(",", ".");
+                            _UnitCostWithIVA = this.$._UnitCostWithIVA.value;
+                        }
+                        if (_UnitCost != 0 && IVA != 0) {
+                            this.$._UnitCostWithIVA.value = (_UnitCost * IVA).toFixed(4).replace(",", ".");
+                            _UnitCostWithIVA = this.$._UnitCostWithIVA.value;
+                        }
+
+                        //Custo Total com IVA
+                        //if (_QuantityToRequire != 0 && _UnitCostWithIVA != 0) {
+                        //    this.$._CustoTotalComIVA.value = (_QuantityToRequire * _UnitCostWithIVA).toFixed(4).replace(",", ".");
+                        //    _CustoTotalComIVA = this.$._CustoTotalComIVA.value;
+                        //}
+                        //if (_QuantityToRequire != 0 && _UnitCost != 0 && IVA != 0) {
+                        //    this.$._CustoTotalComIVA.value = ((_QuantityToRequire * _UnitCost) * IVA).toFixed(4).replace(",", ".");
+                        //    _CustoTotalComIVA = this.$._CustoTotalComIVA.value;
+                        //}
+
+                        //Valor Taxa IVA
+                        if (this.$._PercentagemIVA.value == "") {
+                            if (_CustoTotalComIVA != 0 && _QuantityToRequire != 0 && _UnitCost != 0) {
+                                this.$._PercentagemIVA.value = (((_CustoTotalComIVA * 100) / (_QuantityToRequire * _UnitCost)) - 100).toFixed(4).replace(",", ".")
+                            }
+                        }
                     }
                 },
 

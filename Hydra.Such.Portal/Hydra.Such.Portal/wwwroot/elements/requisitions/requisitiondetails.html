@@ -307,6 +307,13 @@
                    on-response="_TodasLinhasNotaEncomendaResponseProcessor"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/GestaoRequisicoes/TodasEncomendasPorRequisicao"
+                   last-response="{{Encomendas}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_TodasEncomendasPorProduto"
+                   content-type="application/json"></iron-ajax>
+
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" id="btnGoBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
 
@@ -328,6 +335,8 @@
             <paper-button class="tablinks" id="btnPrint" on-tap="_printRequisition"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Imprimir</paper-button>
             <paper-button class="tablinks" id="btnStatOfPlay" on-tap="_redirectToStatOfPlay" hidden="{{ !Requisition.showPontoSituacao }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Ponto situação</paper-button>
             <paper-button class="tablinks" id="btnShowChangeLog" on-tap="_showChangeLog"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Workflow</paper-button>
+            <paper-button class="tablinks" id="btnShowEncomendas" on-tap="_showEncomendas"><i class="fa fa-first-order" aria-hidden="true"></i>&nbsp; Encomendas</paper-button>
+
         </div>
 
         <div class="row break_frm">
@@ -460,17 +469,35 @@
                                     </div>
 
                                     <div class="row break_clear">
-                                        <div class="col-sm-6 ">
+                                        <div class="col-sm-6">
                                             <such-textarea rows="5" value="{{Requisition.comments}}" id="Notes" name="Notes" label="Observações" disabled="{{ !_permissions.update }}"> </such-textarea>
                                         </div>
-                                        <div class="col-sm-3 ">
-                                            <vaadin-date-picker label="Data Receção" id="dpReceptionDate" name="dpReceptionDate" value="{{Requisition.receivedDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
-                                        </div>
-                                        <div class="col-sm-3">
-                                            <vaadin-text-field id="txtStatus" name="txtStatus" label="Estado" value="[[stateDescription]]" disabled></vaadin-text-field>
-                                        </div>
-                                        <div class="col-sm-3 ">
-                                            <vaadin-text-field id="EmployeeNo" name="EmployeeNo" label="Nº Funcionário" value="{{Requisition.employeeNo}}" hidden disabled></vaadin-text-field>
+
+                                        <div class="col-sm-6">
+                                            <div class="col-sm-6">
+                                                <vaadin-date-picker label="Data Receção" id="dpReceptionDate" name="dpReceptionDate" value="{{Requisition.receivedDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                            </div>
+
+                                            <div class="col-sm-6">
+                                                <vaadin-text-field id="txtStatus" name="txtStatus" label="Estado" value="[[stateDescription]]" disabled></vaadin-text-field>
+                                            </div>
+
+                                            <div class="col-sm-6">
+                                                <vaadin-combo-box items="[[Locations]]" id="CBLocations" item-value-path="id" item-label-path="value" value="{{Requisition.localCode}}" label="Localização">
+                                                    <template>
+                                                        <table width="350px">
+                                                            <tr>
+                                                                <td width="30%">[[item.id]]</td>
+                                                                <td width="70%"><b>[[item.value]]</b></td>
+                                                            </tr>
+                                                        </table>
+                                                    </template>
+                                                </vaadin-combo-box>
+                                            </div>
+
+                                            <div class="col-sm-6">
+                                                <vaadin-text-field id="EmployeeNo" name="EmployeeNo" label="Nº Funcionário" value="{{Requisition.employeeNo}}" hidden disabled></vaadin-text-field>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -1668,6 +1695,41 @@
                 <paper-button class="btnRemove" id="btnCloseChangeLogDlg" on-tap="_closeChangeLogDlg"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
             </div>
         </paper-dialog>
+
+        <paper-dialog id="dlgEncomendas" class="dialgoBox" modal>
+            <vaadin-grid id="grdChangeLog" aria-label="ChangeLog" items="[[Encomendas]]" class="grid">
+                <vaadin-grid-column width="160px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="no">Nº Encomenda</vaadin-grid-sorter>
+                    </template>
+                    <template>
+                        {{item.no}}
+                    </template>
+                </vaadin-grid-column>
+
+                <vaadin-grid-column width="160px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="payToVendorNo">Fornecedor</vaadin-grid-sorter>
+                    </template>
+                    <template>
+                        {{item.payToVendorNo}}
+                    </template>
+                </vaadin-grid-column>
+
+                <vaadin-grid-column width="160px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="orderDate">Data Encomenda</vaadin-grid-sorter>
+                    </template>
+                    <template>
+                        {{item.orderDate}}
+                    </template>
+                </vaadin-grid-column>
+            </vaadin-grid>
+
+            <div class="buttons">
+                <paper-button class="btnRemove" id="btnEncomendasDlg" on-tap="_closeEncomendasDlg"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
+            </div>
+        </paper-dialog>
     </template>
     <script>
         document.addEventListener('WebComponentsReady', function () {
@@ -1814,7 +1876,9 @@
                             //if (this.Requisition.orderNo)
                             //    this._openToastError("Já foi criada uma encomenda para esta requisição.");
                             //else
-                                this._createPurchaseOrder();
+                                //this._createPurchaseOrder();
+
+                            this._createPurchaseOrder();
                             break;
                         case 3://"Criar Guia Transporte"
                             this._createTransferShipment();
@@ -2278,12 +2342,10 @@
                 },
 
                 _todasLinhasNotaEncomenda: function () {
-                    debugger;
                     this.$.ajax_TodasLinhasNotaEncomenda.body = JSON.stringify({ "requisitionNo": this.$.requisitionNo.value });
                     this.$.ajax_TodasLinhasNotaEncomenda.generateRequest();
                 },
                 _TodasLinhasNotaEncomendaResponseProcessor: function (e) {
-                    debugger;
                     if (this.resultTodasLinhasNotaEncomenda.eReasonCode == "1") {
                         this._openToast(this.resultTodasLinhasNotaEncomenda.eMessage);
 
@@ -2437,6 +2499,9 @@
                         this._isValidated = true;
                     }
 
+                    //Preencher o POP-UP das Encomendas
+                    this.$.ajax_TodasEncomendasPorProduto.body = JSON.stringify({ "requisitionNo": this.Requisition.requisitionNo });
+                    this.$.ajax_TodasEncomendasPorProduto.generateRequest();
                 },
                 _deleteReqLineResponse: function (e) {
                     if (this.DelReqLineResponse.eReasonCode == "1") {
@@ -2517,9 +2582,16 @@
                     this.$.requisition_datasource.generateRequest();
                 },
                 _printRequisition: function () {
+                    debugger;
                     if (this._reportserverurl != undefined) {
                         //window.open(this._reportserverurl + "Requisi%C3%A7%C3%B5es&CodRequisicao=" + this.Requisition.requisitionNo, "_blank");
-                        this.$.rptContainer.src = this._reportserverurl + "RequisitionReport&NoRequisicao=" + this.Requisition.requisitionNo;
+                        //this.$.rptContainer.src = this._reportserverurl + "RequisitionReport&NoRequisicao=" + this.Requisition.requisitionNo;
+                        if (this.$.CBHeaderProjects.value != "") {
+                            this.$.rptContainer.src = this._reportserverurl + "RequisitionReport&NoRequisicao=" + this.Requisition.requisitionNo;
+                        }
+                        else {
+                            this.$.rptContainer.src = this._reportserverurl + "RequisitionStockReport&NoRequisicao=" + this.Requisition.requisitionNo;
+                        }
                         this.$.rptDialog.open();
                     }
                     else {
@@ -2669,6 +2741,13 @@
                 },
                 _closeChangeLogDlg: function () {
                     this.$.dlgChangeLog.close();
+                },
+
+                _showEncomendas: function () {
+                    this.$.dlgEncomendas.open();;
+                },
+                _closeEncomendasDlg: function () {
+                    this.$.dlgEncomendas.close();
                 },
 
                 _anularAprovacao: function (e) {

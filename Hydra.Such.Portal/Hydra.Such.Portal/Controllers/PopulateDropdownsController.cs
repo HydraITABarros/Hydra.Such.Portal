@@ -2016,21 +2016,17 @@ namespace Hydra.Such.Portal.Controllers
             string allowedProductsFilter = string.Empty;
             string rootAreaId = string.Empty;
             string requisitionType = string.Empty;
-            //string locationCode = string.Empty;
             List<NAVProductsViewModel> products = new List<NAVProductsViewModel>();
-            //products = null;
 
             if (requestParams != null)
             {
                 allowedProductsFilter = "";
                 rootAreaId = "";
                 requisitionType = requestParams["requisitionType"].ToString();
-                //locationCode = requestParams["locationCode"].ToString();
 
                 if (requisitionType != "")// && locationCode != "")
                 {
                     List<NAVProductsViewModel> productsReqParams = DBNAV2017Products.GetProductsForPreRequisitions(_config.NAVDatabaseName, _config.NAVCompanyName, allowedProductsFilter, requisitionType).ToList();
-                    //List<NAVProductsViewModel> productsReqParams = DBNAV2017Products.GetProductsForPreRequisitions(_config.NAVDatabaseName, _config.NAVCompanyName, allowedProductsFilter, requisitionType, locationCode).ToList();
 
                     if (productsReqParams != null && productsReqParams.Count > 0)
                     {

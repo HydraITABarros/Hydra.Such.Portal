@@ -25,6 +25,7 @@ using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using Hydra.Such.Data.ViewModel.Approvals;
 using Hydra.Such.Data.Logic.Approvals;
+using Hydra.Such.Data.ViewModel.Encomendas;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -32,12 +33,14 @@ namespace Hydra.Such.Portal.Controllers
     {
         private readonly NAVConfigurations config;
         private readonly NAVWSConfigurations configws;
+        private readonly GeneralConfigurations _config;
         private readonly IHostingEnvironment _hostingEnvironment;
 
-        public GestaoRequisicoesController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs, IHostingEnvironment _hostingEnvironment)
+        public GestaoRequisicoesController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs, IHostingEnvironment _hostingEnvironment, IOptions<GeneralConfigurations> appSettingsGC)
         {
             config = appSettings.Value;
             configws = NAVWSConfigs.Value;
+            _config = appSettingsGC.Value;
             this._hostingEnvironment = _hostingEnvironment;
         }
 
@@ -798,6 +801,22 @@ namespace Hydra.Such.Portal.Controllers
             return Json(item);
         }
 
+        [HttpPost]
+        public JsonResult TodasEncomendasPorRequisicao([FromBody] RequisitionViewModel item)
+        {
+            List<EncomendasViewModel> result = new List<EncomendasViewModel>();
+
+            if (item != null)
+            {
+                if (!string.IsNullOrEmpty(item.RequisitionNo))
+                {
+                    result = DBNAV2017Encomendas.EncomendasPorRequisicao(config.NAVDatabaseName, config.NAVCompanyName, item.RequisitionNo, 1);
+
+                }
+            }
+            return Json(result);
+        }
+
         public JsonResult GetPlaces([FromBody] int placeId)
         {
             PlacesViewModel PlacesData = DBPlaces.ParseToViewModel(DBPlaces.GetById(placeId));
@@ -1321,9 +1340,13 @@ namespace Hydra.Such.Portal.Controllers
                                     }
                                     else
                                     {
-                                        line.QuantityAvailable = (line.QuantityAvailable.HasValue ? line.QuantityAvailable.Value : 0) + line.QuantityToProvide;
-                                        line.QuantityReceivable = line.QuantityToProvide;
-                                        line.QuantityToProvide -= line.QuantityToProvide;
+                                        line.QuantityAvailable = (line.QuantityAvailable ?? 0) + (line.QuantityToProvide ?? 0);
+                                        line.QuantityReceivable = (line.QuantityAvailable ?? 0) - (line.QuantityReceived ?? 0);
+                                        
+                                        //TESTE
+                                        //line.QuantityToProvide -= line.QuantityToProvide;
+                                        line.QuantityToProvide = (line.QuantityRequired ?? 0) - (line.QuantityAvailable ?? 0);
+
                                         line.UpdateUser = User.Identity.Name;
                                         line.UpdateDateTime = DateTime.Now;
                                     }
@@ -1501,16 +1524,18 @@ namespace Hydra.Such.Portal.Controllers
 
                                         if (registerNavDiaryLines != null && registerNavDiaryLines.IsCompletedSuccessfully)
                                         {
-                                            bool keepOpen = false;
-                                            if (item.Lines.Count() != productsToHandle.Count())
-                                            {
-                                                keepOpen = true;
-                                            }
-
+                                            bool keepOpen = true;
                                             item.Lines = productsToHandle;
 
-                                            if (keepOpen != true)
-                                                keepOpen = productsToHandle.Where(x => x.QuantityRequired.HasValue && x.QuantityReceived.HasValue).Any(x => (x.QuantityRequired.Value - x.QuantityReceived.Value) != 0);
+                                            keepOpen = item.Lines.Any(x => x.QuantityReceived != x.QuantityRequired);
+                                            //item.Lines.ForEach(Linha =>
+                                            //{
+                                            //    if (Linha.QuantityReceived != Linha.QuantityRequired)
+                                            //        keepOpen = false;
+                                            //});
+
+                                            //if (keepOpen != true)
+                                            //    keepOpen = productsToHandle.Where(x => x.QuantityRequired.HasValue && x.QuantityReceived.HasValue).Any(x => (x.QuantityRequired.Value - x.QuantityReceived.Value) != 0);
 
                                             if (keepOpen == false)
                                             {
@@ -3601,6 +3626,90 @@ namespace Hydra.Such.Portal.Controllers
         {
             sFileName = @"/Upload/temp/" + sFileName;
             return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Pontos Situação de Requisições.xlsx");
+        }
+
+        [HttpPost]
+        [Route("GestaoRequisicoes/FileUpload")]
+        [Route("GestaoRequisicoes/FileUpload/{id}")]
+        public JsonResult FileUpload(string id, int linha)
+        {
+            try
+            {
+                var files = Request.Form.Files;
+                string full_filename;
+                foreach (var file in files)
+                {
+                    try
+                    {
+                        string extension = Path.GetExtension(file.FileName);
+                        if (extension.ToLower() == ".pdf" || extension.ToLower() == ".xls" || extension.ToLower() == ".xlsx" ||
+                            extension.ToLower() == ".doc" || extension.ToLower() == ".docx" ||
+                            extension.ToLower() == ".jpg" || extension.ToLower() == ".png" || extension.ToLower() == ".pdf")
+                        {
+                            string filename = Path.GetFileName(file.FileName);
+                            //full_filename = "Requisicoes/" + id + "_" + filename;
+
+                            full_filename = id + "_" + filename;
+                            //var path = Path.Combine(_config.FileUploadFolder, full_filename);
+                            var path = "";
+                            if (_config.Conn == "eSUCH_Prod" || _config.Conn == "PlataformaOperacionalSUCH_TST")
+                                path = Path.Combine("E:\\Data\\eSUCH\\Requisicoes\\", full_filename);
+                            else
+                                path = Path.Combine("C:\\Data\\eSUCH\\Requisicoes\\", full_filename);
+
+                            using (FileStream dd = new FileStream(path, FileMode.CreateNew))
+                            {
+                                file.CopyTo(dd);
+                                dd.Dispose();
+
+                                Anexos newfile = new Anexos();
+                                newfile.NºOrigem = id;
+                                newfile.UrlAnexo = full_filename;
+                                newfile.TipoOrigem = 1;
+                                newfile.DataHoraCriação = DateTime.Now;
+                                newfile.UtilizadorCriação = User.Identity.Name;
+
+                                DBAttachments.Create(newfile);
+                                if (newfile.NºLinha == 0)
+                                {
+                                    System.IO.File.Delete(path);
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        throw;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return Json("");
+        }
+
+        [HttpPost]
+        public JsonResult DeleteAttachments([FromBody] AttachmentsViewModel requestParams)
+        {
+            try
+            {
+                //System.IO.File.Delete(_config.FileUploadFolder + requestParams.Url);
+                if (_config.Conn == "eSUCH_Prod" || _config.Conn == "PlataformaOperacionalSUCH_TST")
+                    System.IO.File.Delete("E:\\Data\\eSUCH\\Requisicoes\\" + requestParams.Url);
+                else
+                    System.IO.File.Delete("C:\\Data\\eSUCH\\Requisicoes\\" + requestParams.Url);
+
+                DBAttachments.Delete(DBAttachments.ParseToDB(requestParams));
+                requestParams.eReasonCode = 1;
+            }
+            catch (Exception ex)
+            {
+                requestParams.eReasonCode = 2;
+                return Json(requestParams);
+            }
+            return Json(requestParams);
         }
     }
 }

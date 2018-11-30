@@ -20,5 +20,7 @@ namespace Hydra.Such.Data.ViewModel
         public string VATProductPostingGroup { get; set; }
         public byte? InventoryValueZero { get; set; }
         public bool? OpenOrderLines { get; set; }
+        public string AreaFiltro { get; set; }
+        public bool ToRemove { get; set; }
     }
 }

@@ -124,6 +124,14 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/Projetos/DeletePreMovimento"
+                   last-response="{{deletedPreMovimento}}"
+                   method="post"
+                   handle-as="json"
+                   id="delete_PreMovimento_ajax"
+                   on-response="_deletedPreMovimentoResponse"
+                   content-type="application/json"></iron-ajax>
+
         <style>
             vaadin-combo-box {
                 margin-top: 0px !important;
@@ -546,6 +554,20 @@
                     {{item.mealTypeDescription}}
                 </template>
             </vaadin-grid-column>
+
+            <vaadin-grid-column width="10%" resizable>
+                <template class="header">
+                </template>
+                <template>
+                    <center>
+                        <template is="dom-if" if="{{ _permissions.delete }}">
+                            <center>
+                                <paper-button class="btnRemove tableBtn" raised on-tap="_ElimnarPreMovimento" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                            </center>
+                        </template>
+                    </center>
+                </template>
+            </vaadin-grid-column>
         </vaadin-grid>
         <paper-dialog id="dlg_registerPreMov" modal style="height:180px; width:400px">
             <div class="row break_clear">
@@ -594,7 +616,10 @@
                         value: function () {
                             return {};
                         }
-                    }
+                    },
+                    _permissions: {
+                        type: Array
+                    },
                 },
                 ready: function () {
                     if (this.paramprojno != "") {
@@ -751,8 +776,48 @@
                             value: obj[key]
                         };
                     });
-                }
+                },
                 /* end - ColumnToggle */
+
+                _ElimnarPreMovimento: function (e) {
+                    debugger;
+                    var index = this.result.indexOf(e.model.item);
+                    this.result.splice(index, 1);
+                    var ajax_request = this.$.delete_PreMovimento_ajax;
+                    ajax_request.body = JSON.stringify(e.model.item);
+
+                    bootbox.confirm({
+                        message: "Tem a certeza que pretende remover o Pré-Movimento de Projeto?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (deletePreMovimento) {
+                            if (deletePreMovimento) {
+                                ajax_request.generateRequest();
+                            }
+                        }
+                    });
+
+                },
+                _deletedPreMovimentoResponse: function (e) {
+                    debugger;
+                    if (this.deletedPreMovimento.eReasonCode == 1) {
+                        this.openToastSuccess(this.deletedPreMovimento.eMessage);
+
+                        this.$.grid_databound_ajax.body = JSON.stringify(this.paramprojno);
+                        this.$.grid_databound_ajax.generateRequest();
+                        this.$.projectMovementTable.clearCache();
+                    } else {
+                        this.openToastError(this.deletedPreMovimento.eMessage);
+                    }
+                },
 
             });
         });
