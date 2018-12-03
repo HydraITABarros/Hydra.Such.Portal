@@ -331,43 +331,13 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.limitClarificationDate.hidden }}">
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.limitClarificationDate.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="limitClarificationDate">Data - Limite Esclarecimentos</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="limitClarificationDate">Data/Hora - Limite Esclarecimentos, Erros e Omissões</vaadin-grid-sorter>
                     <vaadin-grid-filter path="limitClarificationDate" />
                 </template>
                 <template>
-                    {{item.limitClarificationDate}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.limitClarificationTime.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="limitClarificationTime">Hora - Limite Esclarecimentos</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="limitClarificationTime" />
-                </template>
-                <template>
-                    {{item.limitClarificationTime}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.errorsOmissionsDate.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="errorsOmissionsDate">Data - Erros e Omissões</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="errorsOmissionsDate" />
-                </template>
-                <template>
-                    {{item.errorsOmissionsDate}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.errorsOmissionsTime.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="errorsOmissionsTime">Hora - Erros e Omissões</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="errorsOmissionsTime" />
-                </template>
-                <template>
-                    {{item.errorsOmissionsTime}}
+                    {{item.limitClarificationDate}} {{item.limitClarificationTime}}
                 </template>
             </vaadin-grid-column>
 
