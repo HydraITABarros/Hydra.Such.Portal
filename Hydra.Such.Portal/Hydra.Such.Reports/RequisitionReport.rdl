@@ -106,7 +106,7 @@
         </Field>
         <Field Name="Anexo">
           <DataField>Anexo</DataField>
-          <rd:TypeName>System.Boolean</rd:TypeName>
+          <rd:TypeName>System.String</rd:TypeName>
         </Field>
         <Field Name="Imobilizado">
           <DataField>Imobilizado</DataField>
@@ -323,6 +323,10 @@
         <Field Name="Valor_Estimado">
           <DataField>Valor_Estimado</DataField>
           <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="PedirOrcamento">
+          <DataField>PedirOrcamento</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
         </Field>
         <Field Name="Bill_to_Customer_No_">
           <DataField>Bill_to_Customer_No_</DataField>
@@ -1232,7 +1236,7 @@
               <rd:DefaultName>Textbox27</rd:DefaultName>
               <Top>3.46683cm</Top>
               <Left>2.64112cm</Left>
-              <Height>0.45888cm</Height>
+              <Height>0.96053cm</Height>
               <Width>15.2395cm</Width>
               <ZIndex>9</ZIndex>
               <Style>
@@ -1331,7 +1335,7 @@
               <Top>1.98438cm</Top>
               <Left>10.27263cm</Left>
               <Height>0.45888cm</Height>
-              <Width>7.60799cm</Width>
+              <Width>4.69149cm</Width>
               <ZIndex>12</ZIndex>
               <Style>
                 <Border>
@@ -1430,7 +1434,7 @@
               <Top>2.47852cm</Top>
               <Left>10.27263cm</Left>
               <Height>0.45888cm</Height>
-              <Width>7.60799cm</Width>
+              <Width>4.66657cm</Width>
               <ZIndex>15</ZIndex>
               <Style>
                 <Border>
@@ -1475,6 +1479,142 @@
                 <PaddingBottom>2pt</PaddingBottom>
               </Style>
             </Textbox>
+            <Textbox Name="Textbox17">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>Orçamento</Value>
+                      <Style>
+                        <FontSize>8pt</FontSize>
+                        <FontWeight>Bold</FontWeight>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style>
+                    <TextAlign>Left</TextAlign>
+                  </Style>
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>Textbox2</rd:DefaultName>
+              <Top>1.98438cm</Top>
+              <Left>14.96412cm</Left>
+              <Height>0.45888cm</Height>
+              <Width>2.01317cm</Width>
+              <ZIndex>17</ZIndex>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+            <Textbox Name="Textbox21">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>=First(Fields!PedirOrcamento.Value, "ReportRequisicao")</Value>
+                      <Style>
+                        <FontSize>8pt</FontSize>
+                        <FontWeight>Bold</FontWeight>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style>
+                    <TextAlign>Left</TextAlign>
+                  </Style>
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>Textbox2</rd:DefaultName>
+              <Top>1.98438cm</Top>
+              <Left>16.97729cm</Left>
+              <Height>0.45888cm</Height>
+              <Width>0.90333cm</Width>
+              <ZIndex>18</ZIndex>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+            <Textbox Name="Textbox22">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>Anexo</Value>
+                      <Style>
+                        <FontSize>8pt</FontSize>
+                        <FontWeight>Bold</FontWeight>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style />
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>Textbox2</rd:DefaultName>
+              <Top>2.47852cm</Top>
+              <Left>14.9392cm</Left>
+              <Height>0.45888cm</Height>
+              <Width>2.03809cm</Width>
+              <ZIndex>19</ZIndex>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+            <Textbox Name="Textbox27">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>=First(Fields!Anexo.Value, "ReportRequisicao")</Value>
+                      <Style>
+                        <FontSize>8pt</FontSize>
+                        <FontWeight>Bold</FontWeight>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style />
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>Textbox2</rd:DefaultName>
+              <Top>2.47852cm</Top>
+              <Left>16.97729cm</Left>
+              <Height>0.45888cm</Height>
+              <Width>0.90333cm</Width>
+              <ZIndex>20</ZIndex>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
           </ReportItems>
           <Style>
             <Border>
@@ -1488,6 +1628,7 @@
           <PrintOnLastPage>true</PrintOnLastPage>
           <ReportItems>
             <Line Name="Line6">
+              <Top>0cm</Top>
               <Left>0.07056cm</Left>
               <Height>0cm</Height>
               <Width>17.81006cm</Width>

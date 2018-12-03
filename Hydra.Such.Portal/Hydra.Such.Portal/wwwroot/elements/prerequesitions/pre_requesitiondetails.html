@@ -2864,6 +2864,7 @@
                     this.$.page_databound_ajax.generateRequest();
                 },
                 _onProductChanged: function (e) {
+                    //debugger;
                     //var item = this.Products.find(x => x.code == e.detail.value);
                     //if (item != null) {
                     //    this.$._Description.value = item.name;
@@ -2912,7 +2913,7 @@
                 },
 
                 _onLocationChanged: function (e) {
-                    debugger;
+                    //debugger;
                     if (this.$._Products.value != "" && this.$._CBLocations.value != "") {
                         this.$.page_LocationChanged_ajax.params = { "produto": this.$._Products.value, "localizacao": this.$._CBLocations.value };
                         this.$.page_LocationChanged_ajax.generateRequest()

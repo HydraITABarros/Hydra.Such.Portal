@@ -2322,18 +2322,18 @@ namespace Hydra.Such.Portal.Controllers
         #region Invoice
         public IActionResult Faturacao()
         {
-            //UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.FaturacaoDeProjetos);
-            //if (UPerm != null && UPerm.Read.Value)
-            //{
-            //    ViewBag.UPermissions = UPerm;
-            //    return View();
-            //}
-            //else
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.FaturacaoDeProjetos);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
 
-            //{
-            //    return RedirectToAction("AccessDenied", "Error");
-            //}
-            return View();
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+            //return View();
         }
 
         [HttpPost]

@@ -738,23 +738,59 @@ namespace Hydra.Such.Portal.Controllers
         {
             if (item != null)
             {
-                if (DBRequest.Delete(item.ParseToDB()))
+                if (!string.IsNullOrEmpty(item.RequisitionNo))
                 {
-                    item.eReasonCode = 1;
-                    item.eMessage = "Registo eliminado com sucesso.";
+                    if (item.State == RequisitionStates.Pending)
+                    {
+                        if (DBRequest.Delete(item.ParseToDB()))
+                        {
+                            List<MovimentosDeAprovação> MovimentosAprovacao = DBApprovalMovements.GetAll().Where(x => x.Número == item.RequisitionNo).ToList();
+                            if (MovimentosAprovacao.Count() > 0)
+                            {
+                                foreach (MovimentosDeAprovação movimento in MovimentosAprovacao)
+                                {
+                                    List<UtilizadoresMovimentosDeAprovação> UserMovimentos = DBUserApprovalMovements.GetAll().Where(x => x.NºMovimento == movimento.NºMovimento).ToList();
+                                    if (UserMovimentos.Count() > 0)
+                                    {
+                                        foreach (UtilizadoresMovimentosDeAprovação usermovimento in UserMovimentos)
+                                        {
+                                            DBUserApprovalMovements.Delete(usermovimento);
+                                        }
+                                    }
+
+                                    DBApprovalMovements.Delete(movimento);
+                                };
+                            }
+
+                            item.eReasonCode = 1;
+                            item.eMessage = "Requisição eliminada com sucesso.";
+                        }
+                        else
+                        {
+                            item = new RequisitionViewModel();
+                            item.eReasonCode = 2;
+                            item.eMessage = "Ocorreu um erro ao eliminar a Requisição.";
+                        }
+                    }
+                    else
+                    {
+                        item = new RequisitionViewModel();
+                        item.eReasonCode = 3;
+                        item.eMessage = "A Requisição não pode ser Eliminada pois não está no estado Pendente.";
+                    }
                 }
                 else
                 {
                     item = new RequisitionViewModel();
-                    item.eReasonCode = 2;
-                    item.eMessage = "Ocorreu um erro ao eliminar o registo.";
+                    item.eReasonCode = 4;
+                    item.eMessage = "A campo Nº de Requisição não pode ser nulo.";
                 }
             }
             else
             {
                 item = new RequisitionViewModel();
-                item.eReasonCode = 2;
-                item.eMessage = "Ocorreu um erro: a requisição não pode ser nula.";
+                item.eReasonCode = 5;
+                item.eMessage = "Ocorreu um erro: a Requisição não pode ser nula.";
             }
             return Json(item);
         }
@@ -1236,22 +1272,49 @@ namespace Hydra.Such.Portal.Controllers
         {
             if (item != null)
             {
-                if (DBRequestLine.Delete(item.ParseToDB()))
+                if (item.LineNo != null)
                 {
-                    item.eReasonCode = 1;
-                    item.eMessage = "Registo eliminado com sucesso.";
+                    Requisição REQ = DBRequest.GetById(item.RequestNo);
+                    if (REQ.Estado == (int)RequisitionStates.Pending)
+                    {
+                        if (item.QuantityReceived > 0)
+                        {
+                            item.eReasonCode = 2;
+                            item.eMessage = "A Linha não pode ser eliminada pois a Qt. Recebida é superior a zero.";
+                        }
+                        else
+                        {
+                            if (DBRequestLine.Delete(item.ParseToDB()))
+                            {
+                                item.eReasonCode = 1;
+                                item.eMessage = "Linha eliminada com sucesso.";
+                            }
+                            else
+                            {
+                                item = new RequisitionLineViewModel();
+                                item.eReasonCode = 2;
+                                item.eMessage = "Ocorreu um erro ao eliminar a Linha.";
+                            }
+                        }
+                    }
+                    else
+                    {
+                        item = new RequisitionLineViewModel();
+                        item.eReasonCode = 3;
+                        item.eMessage = "A Linha não pode ser Eliminada pois a Requisição não está no estado Pendente.";
+                    }
                 }
                 else
                 {
                     item = new RequisitionLineViewModel();
-                    item.eReasonCode = 2;
-                    item.eMessage = "Ocorreu um erro ao eliminar o registo.";
+                    item.eReasonCode = 4;
+                    item.eMessage = "O campo Nº da Linha não pode ser nulo.";
                 }
             }
             else
             {
                 item = new RequisitionLineViewModel();
-                item.eReasonCode = 2;
+                item.eReasonCode = 5;
                 item.eMessage = "Ocorreu um erro: a linha não pode ser nula.";
             }
             return Json(item);
@@ -1273,7 +1336,7 @@ namespace Hydra.Such.Portal.Controllers
                 switch (registType)
                 {
                     case "Disponibilizar":
-                        if (item.State == RequisitionStates.Validated || item.State == RequisitionStates.Received)
+                        if (item.State == RequisitionStates.Validated || item.State == RequisitionStates.Received || item.State == RequisitionStates.Available)
                         {
                             //Garantir que produtos existem e não estão bloqueados
                             ErrorHandler result = new ErrorHandler();
@@ -1379,6 +1442,8 @@ namespace Hydra.Such.Portal.Controllers
                                 reqToUpdate.State = RequisitionStates.Available;
                                 reqToUpdate.UpdateUser = User.Identity.Name;
                                 reqToUpdate.UpdateDate = DateTime.Now;
+                                int eReasonCode = item.eReasonCode;
+                                string eMessage = item.eMessage;
                                 RequisitionViewModel updatedRequisition = DBRequest.Update(reqToUpdate.ParseToDB(), false, true).ParseToViewModel();
                                 if (updatedRequisition == null)
                                 {
@@ -1388,16 +1453,23 @@ namespace Hydra.Such.Portal.Controllers
                                 else
                                 {
                                     item = updatedRequisition;
-                                    item.eReasonCode = 1;
-                                    if (string.IsNullOrEmpty(item.eMessage))
+                                    if (string.IsNullOrEmpty(eMessage))
+                                    {
+                                        item.eReasonCode = 1;
                                         item.eMessage = "A Requisição está disponivel";
+                                    }
+                                    else
+                                    {
+                                        item.eReasonCode = eReasonCode;
+                                        item.eMessage = eMessage;
+                                    }
                                 }
                             }
                         }
                         else
                         {
                             item.eReasonCode = 3;
-                            item.eMessage = "Esta requisição não está validada nem recebida.";
+                            item.eMessage = "Esta requisição não está validada, recebida ou disponibilizada.";
                         }
                         break;
 
@@ -1576,10 +1648,13 @@ namespace Hydra.Such.Portal.Controllers
                                                     item.eReasonCode = 14;
                                                     item.eMessage = "Ocorreu um erro ao fechar no Receber.";
                                                 }
-                                                if (item.eReasonCode == 1)
-                                                {
-                                                    item.eMessage = "Requisição foi fechada no Receber.";
-                                                }
+                                                //if (string.IsNullOrEmpty(item.eMessage))
+                                                //{
+                                                //    if (item.eReasonCode == 1)
+                                                //    {
+                                                //        item.eMessage = "Requisição foi fechada no Receber.";
+                                                //    }
+                                                //}
 
                                                 //bool okReceber = true;
                                                 //RequisiçãoHist REQHistReceber = DBRequest.TransferToRequisitionHist(item);
@@ -1673,9 +1748,12 @@ namespace Hydra.Such.Portal.Controllers
                             item.eReasonCode = 11;
                             item.eMessage = "A requisição não está disponível.";
                         }
-                        if (item.eReasonCode == 1)
+                        if (string.IsNullOrEmpty(item.eMessage))
                         {
-                            item.eMessage = "A Requisição foi recebida.";
+                            if (item.eReasonCode == 1)
+                            {
+                                item.eMessage = "A Requisição foi recebida.";
+                            }
                         }
                         break;
 
