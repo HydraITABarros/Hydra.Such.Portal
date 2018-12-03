@@ -390,14 +390,14 @@
                                         <div class="col-md-3 ">
                                             <vaadin-text-field value="{{data.relatedContract}}" id="txtRelatedContractNo" name="txtRelatedContractNo" label="Nº Contrato" disabled="true"> </vaadin-text-field>
                                         </div>
-                                        <div class="col-md-3 ">
+                                        <div class="col-md-3 hide">
                                             <vaadin-text-field value="{{data.versionNo}}" id="versionNo" name="versionNo" label="Nº Versão" disabled="true"> </vaadin-text-field>
                                         </div>
-                                    </div>
-                                    <div class="row break_clear">
                                         <div class="col-md-3 ">
                                             <vaadin-date-picker label="Data Inicial Prevista" id="mStartData" name="startData" value="{{data.startData}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
                                         </div>
+                                    </div>
+                                    <div class="row break_clear">
                                         <div class="col-md-3">
                                             <vaadin-date-picker label="Data Expiração Prevista" id="DueDate" name="DueDate" value="{{data.dueDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
                                         </div>
@@ -415,11 +415,11 @@
                                         <div class="col-md-3 ">
                                             <vaadin-date-picker label="Data Envio" id="mCustomerShipmentDate" name="CustomerShipmentDate" value="{{data.customerShipmentDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
                                         </div>
-                                    </div>
-                                    <div class="row break_clear">
                                         <div class="col-md-3 ">
                                             <vaadin-date-picker label="Data Alteração" id="mProposalChangeDate" name="ProposalChangeDate" value="{{data.proposalChangeDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
                                         </div>
+                                    </div>
+                                    <div class="row break_clear">
                                         <div class="col-md-3 ">
                                             <vaadin-text-field value="{{data.internalNumeration}}" id="mInternalNumeration" name="mInternalNumeration" label="Numeração Interna" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                         </div>
@@ -436,8 +436,6 @@
 
                                             </such-selectbox>
                                         </div>
-                                    </div>
-                                    <div class="row break_clear">
                                         <div class="col-md-3 ">
                                             <such-selectbox id="mFunctionalArea" name="mFunctionalArea" value="{{data.codeFunctionalArea}}" label="Cód. Área Funcional" disabled="{{ !_permissions.update }}"
                                                             items="[[CBFunctionalAreas]]"
@@ -446,6 +444,8 @@
                                                             fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
                                             </such-selectbox>
                                         </div>
+                                    </div>
+                                    <div class="row break_clear">
                                         <div class="col-md-3 ">
                                             <such-selectbox id="mResponsabilityCenter" name="mResponsabilityCenter" value="{{data.codeResponsabilityCenter}}" label="Cód. Centro Respon." disabled="{{ !_permissions.update }}"
                                                             items="[[CBResponsabilityCenterCodes]]"
@@ -465,23 +465,20 @@
                                                             disabled="{{ !_permissions.update }}">
                                             </such-selectbox>
                                         </div>
-                                    </div>
-
-                                    <div class="row break_clear">
                                         <div class="col-md-3 ">
                                             <vaadin-text-field value="{{data.oportunityNo}}" id="mOportunity" name="mOportunity" label="Nº Oportunidade" disabled> </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
                                             <vaadin-text-field value="{{data.baseValueProcedure}}" id="mBaseValueProcedure" name="mBaseValueProcedure" on-value-changed="_ConvertDecimals" placeholder="0.0000" pattern="^[0-9]\d*(\.[0-9]{1,4})?$" label="Valor Base Procedimento" disabled="{{ !_permissions.update }}"><div slot="suffix">€</div></vaadin-text-field>
                                         </div>
+                                    </div>
 
-                                        <div class="row break_clear">
-                                            <div class="col-md-6 ">
-                                                <such-textarea rows="5" value="{{data.notes}}" id="mNotes" name="mNotes" label="Notas" disabled="{{ !_permissions.update }}"> </such-textarea>
-                                            </div>
-                                            <div class="col-md-6 ">
-                                                <such-textarea rows="5" value="{{data.archiveReason}}" label="Razão Arquivo" id="txtArchiveReason" disabled hidden> </such-textarea>
-                                            </div>
+                                    <div class="row break_clear">
+                                        <div class="col-md-6 ">
+                                            <such-textarea rows="5" value="{{data.notes}}" id="mNotes" name="mNotes" label="Notas" disabled="{{ !_permissions.update }}"> </such-textarea>
+                                        </div>
+                                        <div class="col-md-6 ">
+                                            <such-textarea rows="5" value="{{data.archiveReason}}" label="Razão Arquivo" id="txtArchiveReason" disabled hidden> </such-textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -1795,7 +1792,7 @@
                 },
                 //Responses Processors
                 _responseProcessor: function (data) {
-                    
+
                     this._showArchiveReason();
                     var self = this;
 
