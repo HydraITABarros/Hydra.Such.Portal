@@ -1575,27 +1575,13 @@
                 },
                 _validateData: function () {
                     if (this.$.Description.validate() &
-                        //this.$.mClients.validate() &
-                        //this.$.contactNo.validate() &
                         this.$.contractNo.validate() &
-                        //this.$.mFeeUnits.validate() &
-                        //this.$.mCodeRegion.validate() &
-                        //this.$.mFunctionalArea.validate() &
-                        //this.$.mResponsabilityCenter.validate() &
                         this.$.mNotes.validate() &
                         this.$.txtRelatedContractNo.validate() &
-                        //this.$.mPaymentTerms.validate() &
-                        //this.$.mStartDateFirstContract.validate() &
-                        //this.$.mFirstContractReference.validate() &
                         this.$.mClientRequisitionNo.validate() &
-                        //this.$.mPromiseNo.validate() &
                         this.$.mStartData.validate() &
                         this.$.mStatus.validate() &
-                        //this.$.mReceiptDateRequisition.validate() &
                         this.$.versionNo.validate() &
-                        //this.$.dueDate.validate() &
-                        //this.$.mChangeStatus.validate() &
-                        //this.$.mServiceObject.validate() &
                         this.$.ShippingAddress.validate() &
                         this.$.ShippingLocality.validate() &
                         this.$.ShippingName.validate() &
@@ -1618,10 +1604,12 @@
                             this._openToastError("É obrigatória seleção de um cliente ou de um contato.");
                             return false;
                         }
+                        /*
                         if (this.$.mOrderOrigin.value == "" || this.$.mOrderOrigin.value == undefined || this.$.mOrderOrigin.value == null) {
                             this._openToastError("É obrigatória seleção de Origem de Pedido.");
                             return false;
                         }
+                        */
                         if (this.$.mCodeRegion.value == "" || this.$.mCodeRegion.value == undefined || this.$.mCodeRegion.value == null) {
                             this._openToastError("É obrigatória seleção de Cód. Região.");
                             return false;
@@ -1637,6 +1625,33 @@
 
                         return true;
                     }
+
+                    if ((this.$.mClients.value == "" && this.$.mClients.value == undefined || this.$.mClients.value == null) &&
+                        (this.$.contactNo.value == "" && this.$.contactNo.value == undefined || this.$.contactNo.value == null)) {
+                        this._openToastError("É obrigatória seleção de um cliente ou de um contato.");
+                        return false;
+                    }
+
+                    if (this.$.mCodeRegion.value == "" || this.$.mCodeRegion.value == undefined || this.$.mCodeRegion.value == null) {
+                        this._openToastError("É obrigatória seleção de Cód. Região.");
+                        return false;
+                    }
+
+                    if (this.$.mFeeUnits.value == "" || this.$.mFeeUnits.value == undefined || this.$.mFeeUnits.value == null) {
+                        this._openToastError("É obrigatória seleção de uma unidade de prestação.");
+                        return false;
+                    }
+
+                    if (this.$.mBillingTypes.value == "" || this.$.mBillingTypes.value == undefined || this.$.mBillingTypes.value == null) {
+                        this._openToastError("É obrigatória seleção de um Tipo Faturação em Detalhes Fatura.");
+                        return false;
+                    }
+
+                    if (this.$.mInvoicePeriods.value == "" || this.$.mInvoicePeriods.value == undefined || this.$.mInvoicePeriods.value == null) {
+                        this._openToastError("É obrigatória seleção de um Período de Fatura em Detalhes Fatura.");
+                        return false;
+                    }
+
                     this._openToastError("Verifique os dados inseridos.");
                     return false;
                 },
