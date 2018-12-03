@@ -623,7 +623,6 @@ namespace Hydra.Such.Portal.Controllers
                                 purchOrderLineDTO.RegionCode = registoDePropostasView.CodRegiao;
                                 purchOrderLineDTO.UnitCost = registoDePropostasView.Fornecedor1Preco;
                                 purchOrderLineDTO.UnitMeasureCode = data.LinhasConsultaMercado.Where(x => x.NumLinha == registoDePropostasView.NumLinhaConsultaMercado).FirstOrDefault().CodUnidadeMedida;
-
                                 //purchOrderLineDTO.VATBusinessPostingGroup = VAT_Fornecedor;
                                 //purchOrderLineDTO.VATProductPostingGroup = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, registoDePropostasView.CodProduto).FirstOrDefault().VATProductPostingGroup;
 

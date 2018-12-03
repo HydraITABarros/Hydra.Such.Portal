@@ -184,6 +184,37 @@
         <vaadin-grid id="grdPendingReqGrid" aria-label="PendingReqGrid" items="[[result]]" class="grid" multi-sort="true" active-item="{{activeItem}}">
             <!--active-item="{{activeItem}}"-->
 
+            <vaadin-grid-column width="50px" resizable>
+                <template class="header">
+                </template>
+                <template>
+                    <center>
+                        <paper-button class="btnSave tableBtn" on-tap="_GoToReq" title="Ver Requisição" disabled="{{_permissionsCreate}}"><i class="fa fa-info" aria-hidden="true"></i></paper-button>
+                    </center>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="50px" resizable hidden="{{ !_permissions.update }}">
+                <template class="header">
+                </template>
+                <template>
+                    <center>
+                        <paper-button hidden="{{ !item.sentReqToAprove }}" class="btnEditPending tableBtn" on-tap="_ToApproved" disabled="{{_permissionsCreate}}" title="Enviar para Aprovação"><i class="fa fa-check" aria-hidden="true"></i></paper-button>
+                    </center>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="50px" resizable hidden="{{ !_permissions.update }}">
+                <template class="header">
+                </template>
+                <template>
+                    <center>
+                        <!--<paper-button class="btnRemove" on-tap="_closeRequisition" disabled="{{_permissionsCreate}}">Fechar</paper-button>-->
+                        <paper-button class="btnRemove tableBtn" on-tap="_closeRequisition" disabled="{{_permissionsCreate}}" title="Fechar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                    </center>
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.requisitionNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="requisitionNo">Nº Requisição</vaadin-grid-sorter>
@@ -281,37 +312,6 @@
                 </template>
                 <template>
                     {{item.centerResponsibilityCode}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="50px" resizable>
-                <template class="header">
-                </template>
-                <template>
-                    <center>
-                        <paper-button class="btnSave tableBtn" on-tap="_GoToReq" title="Ver Requisição" disabled="{{_permissionsCreate}}"><i class="fa fa-info" aria-hidden="true"></i></paper-button>
-                    </center>
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="50px" resizable hidden="{{ !_permissions.update }}">
-                <template class="header">
-                </template>
-                <template>
-                    <center>
-                        <paper-button hidden="{{ !item.sentReqToAprove }}" class="btnEditPending tableBtn" on-tap="_ToApproved" disabled="{{_permissionsCreate}}" title="Enviar para Aprovação"><i class="fa fa-check" aria-hidden="true"></i></paper-button>
-                    </center>
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="50px" resizable hidden="{{ !_permissions.update }}">
-                <template class="header">
-                </template>
-                <template>
-                    <center>
-                        <!--<paper-button class="btnRemove" on-tap="_closeRequisition" disabled="{{_permissionsCreate}}">Fechar</paper-button>-->
-                        <paper-button class="btnRemove tableBtn" on-tap="_closeRequisition" disabled="{{_permissionsCreate}}" title="Fechar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
-                    </center>
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>

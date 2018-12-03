@@ -1800,14 +1800,18 @@ namespace Hydra.Such.Portal.Controllers
 
                             if (PreRequesitionLines != null)
                             {
-                                foreach (var lines in PreRequesitionLines)
+                                if (PreRequesitionLines.Any(x => string.IsNullOrEmpty(x.NºProjeto)))
                                 {
-                                    if (lines.NºProjeto == null || lines.NºProjeto == "")
-                                    {
-                                        data.eReasonCode = 8;
-                                        data.eMessage = "O campo Nº Ordem/Projecto nas linhas deve estar preenchido.";
-                                        return Json(data);
-                                    }
+                                    data.eReasonCode = 8;
+                                    data.eMessage = "O campo Nº Ordem/Projecto em todas as linhas deve estar preenchido.";
+                                    return Json(data);
+                                }
+
+                                if (PreRequesitionLines.Any(x => string.IsNullOrEmpty(x.CódigoLocalização)))
+                                {
+                                    data.eReasonCode = 8;
+                                    data.eMessage = "O campo Código Localização em todas as linhas deve estar preenchido.";
+                                    return Json(data);
                                 }
                             }
                         }

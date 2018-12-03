@@ -34,7 +34,7 @@
 	Requisição.[Data Receção],
 	Requisição.Urgente,
 	Requisição.Amostra,
-	Requisição.Anexo,
+	CASE [Anexo] WHEN 1 THEN 'Sim' ELSE 'Não' END AS [Anexo],
 	Requisição.Imobilizado,
 	Requisição.[Compra a Dinheiro],
 	Requisição.[Código Local Recolha],
@@ -89,6 +89,7 @@
 	Requisição.[Nº Encomenda],
 	Requisição.Orçamento,
 	Requisição.[Valor Estimado],
+                CASE [PedirOrcamento] WHEN 1 THEN 'Sim' ELSE 'Não' END AS [PedirOrcamento],
 	Util.[EmployeeNo],
 	Util.Nome
 FROM Requisição 
@@ -184,7 +185,7 @@ WHERE (Requisição.[Nº Requisição] = @NoRequisicao)</CommandText>
       </Field>
       <Field Name="Anexo">
         <DataField>Anexo</DataField>
-        <rd:TypeName>System.Boolean</rd:TypeName>
+        <rd:TypeName>System.String</rd:TypeName>
       </Field>
       <Field Name="Imobilizado">
         <DataField>Imobilizado</DataField>
@@ -401,6 +402,10 @@ WHERE (Requisição.[Nº Requisição] = @NoRequisicao)</CommandText>
       <Field Name="Valor_Estimado">
         <DataField>Valor Estimado</DataField>
         <rd:TypeName>System.Decimal</rd:TypeName>
+      </Field>
+      <Field Name="PedirOrcamento">
+        <DataField>PedirOrcamento</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
       </Field>
       <Field Name="EmployeeNo">
         <DataField>EmployeeNo</DataField>

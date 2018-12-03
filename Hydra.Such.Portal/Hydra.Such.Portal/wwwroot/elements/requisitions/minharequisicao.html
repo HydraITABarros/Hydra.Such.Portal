@@ -367,7 +367,7 @@
                                         <div class="col-md-3 ">
                                             <vaadin-text-field id="requisitionNo" name="requisitionNo" label="Nº Requisição" value="{{Requisition.requisitionNo}}" disabled="{{ !_isCreate }}"></vaadin-text-field>
                                         </div>
-                                        <div class="col-md-3" id="divLocalMarketRegions">
+                                        <!--<div class="col-md-3" id="divLocalMarketRegions">
                                             <vaadin-combo-box items="[[CBLocalMarketRegions]]" id="requesitionType" item-value-path="id" item-label-path="value" value="{{Requisition.localMarketRegion}}" label="Região Mercado Local" disabled$="{{ !_permissions.update }}">
                                                 <template>
                                                     <table width="180px">
@@ -378,7 +378,7 @@
                                                     </table>
                                                 </template>
                                             </vaadin-combo-box>
-                                        </div>
+                                        </div>-->
                                         <div class="col-md-3 " hidden>
                                             <vaadin-text-field id="ClaimedRequesitionNo" name="ClaimedRequesitionNo" label="Nº Requisição Reclamada" value="{{Requisition.requestReclaimNo}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                                         </div>
@@ -725,11 +725,11 @@
                                     <paper-button raised id="btnDelete" class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
                                 </template>
 
-                                <paper-button raised id="btnDelete" class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                                <!--<paper-button raised id="btnDelete" class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>-->
 
-                                <template is="dom-if" if="{{ !isReadOnly() }}">
+                                <!--<template is="dom-if" if="{{ !isReadOnly() }}">
                                     <paper-button raised id="btnCreate" class="btnSave" on-tap="_todasLinhasNotaEncomenda" title="Marcar todas as Linhas para Nota de Encomenda"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Linhas Enc.</paper-button>
-                                </template>
+                                </template>-->
                             </div>
                         </div>
 
@@ -2084,7 +2084,29 @@
                     }
                 },
                 _delete: function () {
-                    this._sendReqRequest("/GestaoRequisicoes/DeleteRequisition", this.Requisition);
+                    //this._sendReqRequest("/GestaoRequisicoes/DeleteRequisition", this.Requisition);
+                    var ajax_request = this.$.requisition_datasource;
+                    ajax_request.url = "/GestaoRequisicoes/DeleteRequisition";
+                    ajax_request.body = JSON.stringify(this.Requisition);
+
+                    bootbox.confirm({
+                        message: "Tem a certeza que pretende remover a Requisição?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            if (result) {
+                                ajax_request.generateRequest();
+                            }
+                        }
+                    });
                 },
                 _updateRequisitionLines: function () {
                     this._sendReqRequest("/GestaoRequisicoes/UpdateRequisitionLines", this.Requisition);
@@ -2362,7 +2384,7 @@
                     var ajax_request = this.$.deleteReqLine_ajax;
 
                     bootbox.confirm({
-                        message: "Tem a certeza que pretende remover o registo?",
+                        message: "Tem a certeza que pretende remover a Linha?",
                         buttons: {
                             confirm: {
                                 label: 'Sim',
