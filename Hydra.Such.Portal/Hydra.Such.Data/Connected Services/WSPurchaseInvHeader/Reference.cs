@@ -11,7 +11,7 @@ namespace WSPurchaseInvHeader
 {
     
     
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ServiceModel.ServiceContractAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspurchinvheaderinterm", ConfigurationName="WSPurchaseInvHeader.WSPurchInvHeaderInterm_Port")]
     public interface WSPurchInvHeaderInterm_Port
     {
@@ -62,7 +62,7 @@ namespace WSPurchaseInvHeader
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspurchinvheaderinterm")]
     public partial class WSPurchInvHeaderInterm
@@ -143,9 +143,11 @@ namespace WSPurchaseInvHeader
         private bool down_PaymentFieldSpecified;
         
         private string buy_from_Vendor_NoField;
-
-        private string vendor_Mail;
-
+        
+        private string vendor_MailField;
+        
+        private string no_Consulta_MercadoField;
+        
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=0)]
         public string Key
@@ -677,24 +679,38 @@ namespace WSPurchaseInvHeader
                 this.buy_from_Vendor_NoField = value;
             }
         }
-
+        
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order = 33)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=33)]
         public string Vendor_Mail
         {
             get
             {
-                return this.vendor_Mail;
+                return this.vendor_MailField;
             }
             set
             {
-                this.vendor_Mail = value;
+                this.vendor_MailField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=34)]
+        public string No_Consulta_Mercado
+        {
+            get
+            {
+                return this.no_Consulta_MercadoField;
+            }
+            set
+            {
+                this.no_Consulta_MercadoField = value;
             }
         }
     }
-
+    
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspurchinvheaderinterm")]
     public enum Mercado_Local_Regiao
     {
@@ -713,7 +729,7 @@ namespace WSPurchaseInvHeader
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspurchinvheaderinterm")]
     public enum Motivo_Anulacao_Encomenda
     {
@@ -744,7 +760,7 @@ namespace WSPurchaseInvHeader
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspurchinvheaderinterm")]
     public partial class WSPurchInvHeaderInterm_Filter
@@ -784,7 +800,7 @@ namespace WSPurchaseInvHeader
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspurchinvheaderinterm")]
     public enum WSPurchInvHeaderInterm_Fields
     {
@@ -884,10 +900,16 @@ namespace WSPurchaseInvHeader
         
         /// <remarks/>
         Buy_from_Vendor_No,
+        
+        /// <remarks/>
+        Vendor_Mail,
+        
+        /// <remarks/>
+        No_Consulta_Mercado,
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Read", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspurchinvheaderinterm", IsWrapped=true)]
     public partial class Read
@@ -907,7 +929,7 @@ namespace WSPurchaseInvHeader
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Read_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspurchinvheaderinterm", IsWrapped=true)]
     public partial class Read_Result
@@ -927,7 +949,7 @@ namespace WSPurchaseInvHeader
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="ReadByRecId", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspurchinvheaderinterm", IsWrapped=true)]
     public partial class ReadByRecId
@@ -947,7 +969,7 @@ namespace WSPurchaseInvHeader
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="ReadByRecId_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspurchinvheaderinterm", IsWrapped=true)]
     public partial class ReadByRecId_Result
@@ -967,7 +989,7 @@ namespace WSPurchaseInvHeader
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="ReadMultiple", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspurchinvheaderinterm", IsWrapped=true)]
     public partial class ReadMultiple
@@ -996,7 +1018,7 @@ namespace WSPurchaseInvHeader
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="ReadMultiple_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspurchinvheaderinterm", IsWrapped=true)]
     public partial class ReadMultiple_Result
@@ -1017,7 +1039,7 @@ namespace WSPurchaseInvHeader
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="IsUpdated", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspurchinvheaderinterm", IsWrapped=true)]
     public partial class IsUpdated
@@ -1037,7 +1059,7 @@ namespace WSPurchaseInvHeader
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="IsUpdated_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspurchinvheaderinterm", IsWrapped=true)]
     public partial class IsUpdated_Result
@@ -1057,7 +1079,7 @@ namespace WSPurchaseInvHeader
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetRecIdFromKey", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspurchinvheaderinterm", IsWrapped=true)]
     public partial class GetRecIdFromKey
@@ -1077,7 +1099,7 @@ namespace WSPurchaseInvHeader
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetRecIdFromKey_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspurchinvheaderinterm", IsWrapped=true)]
     public partial class GetRecIdFromKey_Result
@@ -1097,7 +1119,7 @@ namespace WSPurchaseInvHeader
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Create", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspurchinvheaderinterm", IsWrapped=true)]
     public partial class Create
     {
@@ -1116,7 +1138,7 @@ namespace WSPurchaseInvHeader
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Create_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspurchinvheaderinterm", IsWrapped=true)]
     public partial class Create_Result
     {
@@ -1135,7 +1157,7 @@ namespace WSPurchaseInvHeader
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="CreateMultiple", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspurchinvheaderinterm", IsWrapped=true)]
     public partial class CreateMultiple
     {
@@ -1155,7 +1177,7 @@ namespace WSPurchaseInvHeader
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="CreateMultiple_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspurchinvheaderinterm", IsWrapped=true)]
     public partial class CreateMultiple_Result
     {
@@ -1175,7 +1197,7 @@ namespace WSPurchaseInvHeader
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Update", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspurchinvheaderinterm", IsWrapped=true)]
     public partial class Update
     {
@@ -1194,7 +1216,7 @@ namespace WSPurchaseInvHeader
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Update_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspurchinvheaderinterm", IsWrapped=true)]
     public partial class Update_Result
     {
@@ -1213,7 +1235,7 @@ namespace WSPurchaseInvHeader
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="UpdateMultiple", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspurchinvheaderinterm", IsWrapped=true)]
     public partial class UpdateMultiple
     {
@@ -1233,7 +1255,7 @@ namespace WSPurchaseInvHeader
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="UpdateMultiple_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspurchinvheaderinterm", IsWrapped=true)]
     public partial class UpdateMultiple_Result
     {
@@ -1253,7 +1275,7 @@ namespace WSPurchaseInvHeader
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Delete", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspurchinvheaderinterm", IsWrapped=true)]
     public partial class Delete
@@ -1273,7 +1295,7 @@ namespace WSPurchaseInvHeader
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Delete_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspurchinvheaderinterm", IsWrapped=true)]
     public partial class Delete_Result
@@ -1292,13 +1314,13 @@ namespace WSPurchaseInvHeader
         }
     }
     
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     public interface WSPurchInvHeaderInterm_PortChannel : WSPurchaseInvHeader.WSPurchInvHeaderInterm_Port, System.ServiceModel.IClientChannel
     {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     public partial class WSPurchInvHeaderInterm_PortClient : System.ServiceModel.ClientBase<WSPurchaseInvHeader.WSPurchInvHeaderInterm_Port>, WSPurchaseInvHeader.WSPurchInvHeaderInterm_Port
     {
         
@@ -1470,8 +1492,8 @@ namespace WSPurchaseInvHeader
         {
             if ((endpointConfiguration == EndpointConfiguration.WSPurchInvHeaderInterm_Port))
             {
-                return new System.ServiceModel.EndpointAddress("http://such-navdev.such.local:8047/DynamicsNAV100_QUAL/WS/SUCH - QUALIDADE/Page/W" +
-                        "SPurchInvHeaderInterm");
+                return new System.ServiceModel.EndpointAddress("http://such-navsrv.such.local:7047/DynamicsNAV100/WS/SUCH/Page/WSPurchInvHeaderIn" +
+                        "term");
             }
             throw new System.InvalidOperationException(string.Format("Could not find endpoint with name \'{0}\'.", endpointConfiguration));
         }
