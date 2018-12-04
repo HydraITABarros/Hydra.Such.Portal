@@ -235,16 +235,7 @@
                         {{item.dueDate}}
                     </template>
                 </vaadin-grid-column>
-                <vaadin-grid-column width="200px">
-                    <template class="header">
-                        <vaadin-grid-sorter path="contactNo">Nº Contacto</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="contactNo" />
-                    </template>
-                    <template>
-                        {{item.contactNo}}
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="200px">
+                <vaadin-grid-column width="110px">
                     <template class="header">
                         <vaadin-grid-sorter path="clientNo">Nº Cliente</vaadin-grid-sorter>
                         <vaadin-grid-filter path="clientNo" />
@@ -262,8 +253,17 @@
                         {{item.clientName}}
                     </template>
                 </vaadin-grid-column>
-                <vaadin-grid-column width="160px">
+                <vaadin-grid-column width="200px">
                     <template class="header">
+                        <vaadin-grid-sorter path="contactNoText">Nome Contacto</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="contactNoText" />
+                    </template>
+                    <template>
+                        {{item.contactNoText}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="160px">
+                    <template class="header">   
                         <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
                         <vaadin-grid-filter path="description" />
                     </template>
@@ -353,7 +353,7 @@
                                             <vaadin-text-field value="{{data.description}}" id="Description" name="Description" label="Âmbito do Serviço" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <such-selectbox id="contactNo" value="{{data.contactNo}}" label="Nº Contato"
+                                            <such-selectbox id="contactNo" value="{{data.contactNo}}" label="Nome Contacto"
                                                             items="[[CBContacts]]"
                                                             text-path="value"
                                                             value-path="id"
@@ -364,7 +364,7 @@
 
                                         </div>
                                         <div class="col-md-3 ">
-                                            <such-selectbox id="mClients" value="{{data.clientNo}}" label="Nº Cliente"
+                                            <such-selectbox id="mClients" value="{{data.clientNo}}" label="Nome Cliente"
                                                             items="[[CBClients]]"
                                                             text-path="name"
                                                             value-path="no_"
