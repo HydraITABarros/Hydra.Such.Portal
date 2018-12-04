@@ -128,6 +128,7 @@
             }
         </style>
 
+        <iron-ajax url="/PopulateDropdowns/GetRequestStatus" last-response="{{CBStatus}}" on-response="_responsehead" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Viaturas/GetList" id="grid_databound_ajax" last-response="{{vehicleresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetLocations" id="grid_Locations_ajax" last-response="{{Locations}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetUnitOfMeasureByCode" id="grid_unitofmeasure_ajax" last-response="{{UnitsOfMmeasure}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -258,6 +259,7 @@
                    method="post"
                    handle-as="json"
                    id="page_update_ajax"
+                   on-response="_loadAttachResponse"
                    content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/PreRequisicoes/GetProjetoNo"
@@ -482,7 +484,7 @@
                                         </div>
 
                                         <div class="col-sm-3">
-                                            <vaadin-text-field id="txtStatus" name="txtStatus" label="Estado" value="[[stateDescription]]" disabled></vaadin-text-field>
+                                            <vaadin-text-field id="txtStatus" name="txtStatus" label="Estado" value="[[ _clFormatState(Requisition.state) ]]" disabled></vaadin-text-field>
                                         </div>
 
                                         <div class="col-sm-3">
@@ -2451,6 +2453,8 @@
                 _reqDataSourceResponse: function (data) {
                     var _self = this;
 
+                    this._goAprove = this.Requisition.goAprove;
+
                     if (this.Requisition.state != 0) {
                         $(_self.$.btnDelete).addClass('hidden');
                     }
@@ -2529,8 +2533,6 @@
                     if (this.Requisition.state == 0 || this.Requisition.state == 3 || this.Requisition.state == 6 || this.Requisition.state == 7) {
                         this._isValidated = true;
                     }
-
-                    this._goAprove = this.Requisition.goAprove;
 
                     this._estadoPendente = false;
                     if (this.Requisition.state == 0) {
@@ -2617,7 +2619,6 @@
                     this.$.requisition_datasource.generateRequest();
                 },
                 _printRequisition: function () {
-                    debugger;
                     if (this._reportserverurl != undefined) {
                         //window.open(this._reportserverurl + "Requisi%C3%A7%C3%B5es&CodRequisicao=" + this.Requisition.requisitionNo, "_blank");
                         //this.$.rptContainer.src = this._reportserverurl + "RequisitionReport&NoRequisicao=" + this.Requisition.requisitionNo;
@@ -2972,6 +2973,20 @@
                     } else if (this.deleted_files.eReasonCode === 2) {
                         this._openToastError("Ocorreu um erro ao eliminar o anexo.");
                     }
+                },
+                _loadAttachResponse: function (e) {
+                    this.$.requisition_datasource.body = JSON.stringify({ "requisitionId": this._requisitionid, "status": this._requisitionstatus });
+                    this.$.requisition_datasource.generateRequest();
+                },
+
+                _clFormatState: function (param) {
+                    if (param != undefined) {
+                        var sel = this.CBStatus.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return param;
                 },
             });
         });

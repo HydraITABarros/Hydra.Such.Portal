@@ -825,6 +825,8 @@ namespace Hydra.Such.Portal.Controllers
                 reqID.FunctionalAreaCode = CU.AreaPorDefeito;
                 reqID.ResponsabilityCenterCode = CU.CentroRespPorDefeito;
 
+
+
                 return Json(reqID);
             }
             else
@@ -1898,6 +1900,7 @@ namespace Hydra.Such.Portal.Controllers
                                 State = RequisitionStates.Pending,
                                 RequisitionDate = DateTime.Now.ToString("dd-MM-yyyy"),
                                 CreateUser = User.Identity.Name,
+                                PedirOrcamento = data.PedirOrcamento,
 
                                 Lines = items.Select(line => new RequisitionLineViewModel()
                                 {
@@ -1982,6 +1985,7 @@ namespace Hydra.Such.Portal.Controllers
                                 State = RequisitionStates.Pending,
                                 RequisitionDate = DateTime.Now.ToString("dd-MM-yyyy"),
                                 CreateUser = User.Identity.Name,
+                                PedirOrcamento = data.PedirOrcamento,
 
                                 Lines = items.Select(line => new RequisitionLineViewModel()
                                 {
@@ -2261,6 +2265,7 @@ namespace Hydra.Such.Portal.Controllers
                                         RequisitionDate = DateTime.Now.ToString("dd-MM-yyyy"),
                                         CreateUser = User.Identity.Name,
                                         ValorTotalDocComIVA = data.ValorTotalDocComIVA,
+                                        PedirOrcamento = data.PedirOrcamento,
                                         
                                         Lines = items.Select(line => new RequisitionLineViewModel()
                                         {
@@ -2347,6 +2352,7 @@ namespace Hydra.Such.Portal.Controllers
                                         RequisitionDate = DateTime.Now.ToString("dd-MM-yyyy"),
                                         CreateUser = User.Identity.Name,
                                         ValorTotalDocComIVA = data.ValorTotalDocComIVA,
+                                        PedirOrcamento = data.PedirOrcamento,
 
                                         Lines = items.Select(line => new RequisitionLineViewModel()
                                         {

@@ -16,7 +16,7 @@ namespace Hydra.Such.Data.Logic
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.Anexos.Where(x => x.NºOrigem == id).ToList();
+                    return ctx.Anexos.Where(x => x.NºOrigem.ToLower() == id.ToLower()).ToList();
                 }
             }
             catch (Exception ex)
@@ -34,7 +34,7 @@ namespace Hydra.Such.Data.Logic
                 {
                     return ctx.Anexos.Where(
                         x => x.TipoOrigem == type).Where(
-                        x => x.NºOrigem == id).ToList();
+                        x => x.NºOrigem.ToLower() == id.ToLower()).ToList();
                 }
             }
             catch (Exception ex)

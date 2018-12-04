@@ -744,7 +744,7 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         if (DBRequest.Delete(item.ParseToDB()))
                         {
-                            List<MovimentosDeAprovação> MovimentosAprovacao = DBApprovalMovements.GetAll().Where(x => x.Número == item.RequisitionNo).ToList();
+                            List<MovimentosDeAprovação> MovimentosAprovacao = DBApprovalMovements.GetAll().Where(x => x.Número == item.RequisitionNo && x.Estado == 1).ToList();
                             if (MovimentosAprovacao.Count() > 0)
                             {
                                 foreach (MovimentosDeAprovação movimento in MovimentosAprovacao)
@@ -1134,7 +1134,7 @@ namespace Hydra.Such.Portal.Controllers
             else
                 item = new RequisitionViewModel();
 
-            
+
             //List<ApprovalMovementsViewModel> AproveList = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAll());
             //if (item.State == RequisitionStates.Pending || item.State == RequisitionStates.Rejected)
             //    item.SentReqToAproveText = "normal";
@@ -1152,9 +1152,12 @@ namespace Hydra.Such.Portal.Controllers
             //}
 
             item.GoAprove = false;
-            if (DBApprovalMovements.GetAllREQAssignedToUserFilteredByStatus(User.Identity.Name, 1).Where(x => x.Número == requisitionId).Count() > 0)
+            MovimentosDeAprovação MOV = DBApprovalMovements.GetAll().Where(x => x.Número == requisitionId && x.Estado == 1).FirstOrDefault();
+            if (MOV != null)
             {
-                item.GoAprove = true;
+                UtilizadoresMovimentosDeAprovação UserMov = DBUserApprovalMovements.GetAll().Where(x => x.NºMovimento == MOV.NºMovimento && x.Utilizador.ToLower() == User.Identity.Name.ToLower()).FirstOrDefault();
+                if (UserMov != null)
+                    item.GoAprove = true;
             }
 
             item.Attachment = false;
@@ -1868,6 +1871,24 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         if (item.eReasonCode == 1)
                         {
+                            List<MovimentosDeAprovação> MovimentosAprovacao = DBApprovalMovements.GetAll().Where(x => x.Número == item.RequisitionNo && x.Estado == 1).ToList();
+                            if (MovimentosAprovacao.Count() > 0)
+                            {
+                                foreach (MovimentosDeAprovação movimento in MovimentosAprovacao)
+                                {
+                                    List<UtilizadoresMovimentosDeAprovação> UserMovimentos = DBUserApprovalMovements.GetAll().Where(x => x.NºMovimento == movimento.NºMovimento).ToList();
+                                    if (UserMovimentos.Count() > 0)
+                                    {
+                                        foreach (UtilizadoresMovimentosDeAprovação usermovimento in UserMovimentos)
+                                        {
+                                            DBUserApprovalMovements.Delete(usermovimento);
+                                        }
+                                    }
+
+                                    DBApprovalMovements.Delete(movimento);
+                                };
+                            }
+
                             item.eMessage = "Requisição foi fechada";
                         }
                         //FIM
@@ -3788,6 +3809,19 @@ namespace Hydra.Such.Portal.Controllers
                 return Json(requestParams);
             }
             return Json(requestParams);
+        }
+
+        [HttpPost]
+        public JsonResult LoadAttachments([FromBody] JObject requestParams)
+        {
+            string id = requestParams["id"].ToString();
+            //string line = requestParams["linha"].ToString();
+            //int lineNo = Int32.Parse(line);
+
+            List<Anexos> list = DBAttachments.GetById(id);
+            List<AttachmentsViewModel> attach = new List<AttachmentsViewModel>();
+            list.ForEach(x => attach.Add(DBAttachments.ParseToViewModel(x)));
+            return Json(attach);
         }
     }
 }

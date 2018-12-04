@@ -482,10 +482,33 @@
                     window.location.href = "/GestaoRequisicoes/Arquivadas";
                 },
                 _closeRequisition: function (e) {
+                    debugger;
+                    //var index = this.result.indexOf(e.model.item);
+                    //this.result.splice(index, 1);
+
                     if (e.model.item.state == 5 | e.model.item.state == 5) {
-                        this.$.closereq_ajax.body = JSON.stringify(e.model.item);
-                        this.$.closereq_ajax.params = { "registType": "Fechar Requisicao" };
-                        this.$.closereq_ajax.generateRequest();
+                        var ajax_request = this.$.closereq_ajax;
+                        ajax_request.body = JSON.stringify(e.model.item);
+                        ajax_request.params = { "registType": "Fechar Requisicao" };
+
+                        bootbox.confirm({
+                            message: "Tem a certeza que pretende Fechar a Requisição?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (result) {
+                                if (result) {
+                                    ajax_request.generateRequest();
+                                }
+                            }
+                        });
                     } else {
                         this._openToastError("O estado da requisição não permite o fecho.");
                     }

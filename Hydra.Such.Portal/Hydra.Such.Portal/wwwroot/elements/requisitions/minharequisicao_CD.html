@@ -2256,7 +2256,8 @@
                 _reqDataSourceResponse: function (data) {
                     var _self = this;
 
-                    debugger
+                    this._goAprove = this.Requisition.goAprove;
+
                     if (this.Requisition.state != 0) {
                         $(_self.$.btnDelete).addClass('hidden');
                     }
@@ -2335,8 +2336,6 @@
                     if (this.Requisition.state == 0 || this.Requisition.state == 3 || this.Requisition.state == 6 || this.Requisition.state == 7) {
                         this._isValidated = true;
                     }
-
-                    this._goAprove = this.Requisition.goAprove;
 
                     this._estadoPendente = false;
                     if (this.Requisition.state == 0) {
