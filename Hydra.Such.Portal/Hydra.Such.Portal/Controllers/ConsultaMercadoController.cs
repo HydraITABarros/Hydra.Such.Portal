@@ -58,6 +58,22 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
+        public IActionResult ConsultasPorFornecedor()
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Features.PedidoCotacao);
+
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.UploadURL = _generalConfig.FileUploadFolder;
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
         [HttpPost]
         public JsonResult GetAllConsultaMercado()
         {
