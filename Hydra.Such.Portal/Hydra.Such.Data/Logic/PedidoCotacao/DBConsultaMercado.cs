@@ -1338,6 +1338,21 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
         #region Seleccao_Entidades
 
 
+        public static List<SeleccaoEntidades> GetAllSeleccaoEntidades()
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.SeleccaoEntidades.ToList();
+                }
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
         public static SeleccaoEntidades GetSeleccaoEntidadesID(int _ID)
         {
             try
@@ -1513,7 +1528,11 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                 DataRespostaEsclarecimento_Show = ObjectToTransform.DataRespostaEsclarecimento == null ? "" : ObjectToTransform.DataRespostaEsclarecimento.Value.ToString("yyyy-MM-dd"),
                 DataRespostaDoFornecedor_Show = ObjectToTransform.DataRespostaDoFornecedor == null ? "" : ObjectToTransform.DataRespostaDoFornecedor.Value.ToString("yyyy-MM-dd"),
                 DataEnvioPropostaArea_Show = ObjectToTransform.DataEnvioPropostaArea == null ? "" : ObjectToTransform.DataEnvioPropostaArea.Value.ToString("yyyy-MM-dd"),
-                DataRespostaArea_Show = ObjectToTransform.DataRespostaArea == null ? "" : ObjectToTransform.DataRespostaArea.Value.ToString("yyyy-MM-dd")
+                DataRespostaArea_Show = ObjectToTransform.DataRespostaArea == null ? "" : ObjectToTransform.DataRespostaArea.Value.ToString("yyyy-MM-dd"),
+
+                Selecionado_Show = ObjectToTransform.Selecionado.HasValue ? ObjectToTransform.Selecionado == true ? "Sim" : "Não" : "Não",
+                Preferencial_Show = ObjectToTransform.Preferencial.HasValue ? ObjectToTransform.Preferencial == true ? "Sim" : "Não" : "Não",
+                NaoRespostaDoFornecedor_Show = ObjectToTransform.NaoRespostaDoFornecedor.HasValue ? ObjectToTransform.NaoRespostaDoFornecedor == true ? "Sim" : "Não" : "Não",
             };
 
             return view;

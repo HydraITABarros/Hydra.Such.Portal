@@ -109,6 +109,19 @@ namespace Hydra.Such.Portal.Controllers
             return Json(list.OrderByDescending(x => x.NumConsultaMercado));
         }
 
+        [HttpPost]
+        public JsonResult GetAllConsultasPorFornecedor()
+        {
+            List<SeleccaoEntidadesView> result = new List<SeleccaoEntidadesView>();
+            List<SeleccaoEntidades> list = DBConsultaMercado.GetAllSeleccaoEntidades();
+
+            foreach (SeleccaoEntidades selecao in list)
+            {
+                result.Add(DBConsultaMercado.CastSeleccaoEntidadesToView(selecao));
+            }
+
+            return Json(result.OrderByDescending(x => x.NumConsultaMercado));
+        }
 
         public IActionResult DetalheConsultaMercado(string id, bool isHistoric = false)
         {
@@ -1873,6 +1886,87 @@ namespace Hydra.Such.Portal.Controllers
             return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Pedidos de Cotação.xlsx");
         }
 
+        //1
+        [HttpPost]
+        public async Task<JsonResult> ExportToExcel_ConsultasPorFornecedor([FromBody] List<SeleccaoEntidadesView> Lista)
+        {
+            JObject dp = (JObject)Lista[0].ColunasEXCEL;
+
+            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + "_ExportEXCEL.xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Consultas por Fornecedor");
+                IRow row = excelSheet.CreateRow(0);
+                int Col = 0;
+
+                if (dp["numConsultaMercado"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Consulta Mercado"); Col = Col + 1; }
+                if (dp["codFornecedor"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Código Fornecedor"); Col = Col + 1; }
+                if (dp["nomeFornecedor"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nome Fornecedor"); Col = Col + 1; }
+                if (dp["selecionado_Show"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Selecionado"); Col = Col + 1; }
+                if (dp["preferencial_Show"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Preferencial"); Col = Col + 1; }
+                if (dp["emailFornecedor"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Email Fornecedor"); Col = Col + 1; }
+                if (dp["dataEnvioAoFornecedor_Show"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Envio ao Fornecedor"); Col = Col + 1; }
+                if (dp["dataRecepcaoProposta_Show"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Recepção Proposta"); Col = Col + 1; }
+                if (dp["utilizadorEnvio"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Utilizador Envio"); Col = Col + 1; }
+                if (dp["utilizadorRecepcaoProposta"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Utilizador Recepção Proposta"); Col = Col + 1; }
+                if (dp["prazoResposta"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Prazo Resposta"); Col = Col + 1; }
+                if (dp["dataRespostaEsperada_Show"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Resposta Esperada"); Col = Col + 1; }
+                if (dp["dataPedidoEsclarecimento_Show"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Pedido Esclarecimento"); Col = Col + 1; }
+                if (dp["dataRespostaEsclarecimento_Show"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Resposta Esclarecimento"); Col = Col + 1; }
+                if (dp["dataRespostaDoFornecedor_Show"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Resposta do Fornecedor"); Col = Col + 1; }
+                if (dp["naoRespostaDoFornecedor_Show"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Não Resposta do Fornecedor"); Col = Col + 1; }
+
+                if (dp != null)
+                {
+                    int count = 1;
+                    foreach (SeleccaoEntidadesView item in Lista)
+                    {
+                        Col = 0;
+                        row = excelSheet.CreateRow(count);
+
+                        if (dp["numConsultaMercado"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.NumConsultaMercado); Col = Col + 1; }
+                        if (dp["codFornecedor"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodFornecedor); Col = Col + 1; }
+                        if (dp["nomeFornecedor"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.NomeFornecedor); Col = Col + 1; }
+                        if (dp["selecionado_Show"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Selecionado_Show); Col = Col + 1; }
+                        if (dp["preferencial_Show"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Preferencial_Show); Col = Col + 1; }
+                        if (dp["emailFornecedor"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.EmailFornecedor); Col = Col + 1; }
+                        if (dp["dataEnvioAoFornecedor_Show"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DataEnvioAoFornecedor_Show); Col = Col + 1; }
+                        if (dp["dataRecepcaoProposta_Show"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DataRecepcaoProposta_Show); Col = Col + 1; }
+                        if (dp["utilizadorEnvio"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.UtilizadorEnvio); Col = Col + 1; }
+                        if (dp["utilizadorRecepcaoProposta"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.UtilizadorRecepcaoProposta); Col = Col + 1; }
+                        if (dp["prazoResposta"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.PrazoResposta.ToString()); Col = Col + 1; }
+                        if (dp["dataRespostaEsperada_Show"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DataRespostaEsperada_Show); Col = Col + 1; }
+                        if (dp["dataPedidoEsclarecimento_Show"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DataPedidoEsclarecimento_Show); Col = Col + 1; }
+                        if (dp["dataRespostaEsclarecimento_Show"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DataRespostaEsclarecimento_Show); Col = Col + 1; }
+                        if (dp["dataRespostaDoFornecedor_Show"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DataRespostaDoFornecedor_Show); Col = Col + 1; }
+                        if (dp["naoRespostaDoFornecedor_Show"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.NaoRespostaDoFornecedor_Show); Col = Col + 1; }
+                        count++;
+                    }
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+        }
+        //2
+        public IActionResult ExportToExcelDownload_ConsultasPorFornecedor(string sFileName)
+        {
+            sFileName = @"/Upload/temp/" + sFileName;
+            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Consultas por Fornecedor.xlsx");
+        }
         #endregion
 
     }
