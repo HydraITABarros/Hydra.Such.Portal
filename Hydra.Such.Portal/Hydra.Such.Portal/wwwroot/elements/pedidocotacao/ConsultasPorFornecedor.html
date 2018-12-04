@@ -77,7 +77,7 @@
             <!--end ColumnToggle-->
         </div>
 
-        <vaadin-grid aria-label="SelecaoEntidadesGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+        <vaadin-grid aria-label="SelecaoEntidadesGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}">
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.numConsultaMercado.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="numConsultaMercado">Nº Consulta Mercado</vaadin-grid-sorter>
@@ -315,12 +315,12 @@
                     this.$.ajax_Export.body = JSON.stringify(this.result);
                     this.$.ajax_Export.generateRequest();
                 },
-
                 _exportEXCELResponse: function (e) {
                     //debugger
                     var FileName = this.export;
                     location.href = '../ConsultaMercado/ExportToExcelDownload_ConsultasPorFornecedor?sFileName=' + FileName;
                 },
+
                 /*start - ColumnToggle*/
                 _startColumnToggle: function () {
                     var columns = {
@@ -371,11 +371,6 @@
                     });
                 },
                 /* end - ColumnToggle */
-                _formatValue: function (value) {
-                    if (value != null && value != 0) {
-                        return currency(value, { separator: '.', decimal: ',' }).format();
-                    }
-                },
 
                 _goBack: function (e) {
                     window.history.back();
