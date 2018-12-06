@@ -185,6 +185,18 @@
 
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+
+                <template is="dom-if" if="{{ _permissions.update }}">
+                    <paper-button id="btnSaveLine" class="tablinks btnEdit" on-tap="_updateDiaryLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Gravar</paper-button>
+                </template>
+
+                <paper-button id="btnCancel" class="tablinks btnRemove" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+
+                <template is="dom-if" if="{{ _permissions.create }}">
+                    <paper-button id="btnRegisterLine" class="tablinks btnSave" on-tap="_registerDiaryLines"><i class="fa fa-list-ol" aria-hidden="true"></i>&nbsp; Registar</paper-button>
+                </template>
+
+
         </div>
         <paper-collapse-group>
             <paper-collapse-item class="panel-heading" header="Novo Registo" closed>
@@ -199,7 +211,7 @@
                     <div class="col-lg-2">
                         <vaadin-date-picker label="Data Registo" max="{{diary.dateToday}}" value="{{diary.registryDate}}" id="registryDate" name="registryDate"></vaadin-date-picker>
                     </div>
-                    <div class="col-lg-2">
+                    <div class="col-lg-2" hidden>
                         <vaadin-combo-box items="[[CBMovementType]]" id="cbmovementType" item-value-path="id" item-label-path="value" value="{{diary.movementType}}" label="Tipo de Movimento">
                             <template>
                                 <paper-icon-item>
@@ -219,7 +231,7 @@
                         </such-selectbox>
                     </div>
 
-                    <div class="col-lg-2">
+                    <div class="col-lg-4">
                         <vaadin-text-field id="description" name="description" value="{{diary.description}}" label="Descrição"></vaadin-text-field>
                     </div>
                 </div>
@@ -233,16 +245,15 @@
                     <div class="col-lg-2">
                         <such-selectbox id="_mealType" value="{{_mealType}}" label="Tipo Refeição"
                                         items="[[CBMealType]]"
-                                        text-path="id"
+                                        text-path="value"
                                         value-path="id"
                                         fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
                         </such-selectbox>
                     </div>
-                    <div class="col-lg-2">
+                    <div class="col-lg-2" hidden>
                         <vaadin-text-field id="descriptionTypeMeal" name="descriptionTypeMeal" value="{{descriptionTypeMeal}}" label="Descrição Tipo Refeição" disabled></vaadin-text-field>
                     </div>
-                </div>
-                <div class="row">
+
                     <div class="col-lg-1">
                         <template is="dom-if" if="{{ _permissions.create }}">
                             <paper-button class="btnSave" raised on-tap="_createMealRegistry"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar</paper-button>
@@ -283,7 +294,7 @@
                     <vaadin-date-picker id="registryDateGrid" name="registryDateGrid" max="{{diary.dateToday}}" value="{{item.registryDate}}"></vaadin-date-picker>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="200px">
+            <vaadin-grid-column width="200px" hidden>
                 <template class="header">
                     <vaadin-grid-sorter path="movementType">Tipo Movimento</vaadin-grid-sorter>
                     <vaadin-grid-filter path="movementType" />
@@ -351,7 +362,7 @@
                     <vaadin-grid-filter path="movementType" />
                 </template>
                 <template>
-                    <vaadin-combo-box items="[[CBMealType]]" id="cbresourceNoGrid" item-value-path="id" item-label-path="id" value="{{item.mealType}}">
+                    <vaadin-combo-box items="[[CBMealType]]" id="cbresourceNoGrid" item-value-path="id" item-label-path="value" value="{{item.mealType}}">
                         <template>
                             <paper-icon-item>
                                 <paper-item-body two-line>
@@ -363,7 +374,7 @@
                     </vaadin-combo-box>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="200px">
+            <vaadin-grid-column width="200px" hidden>
                 <template class="header">
                     <vaadin-grid-sorter path="descriptionTypeMeal">Descrição Tipo Refeição</vaadin-grid-sorter>
                     <vaadin-grid-filter path="descriptionTypeMeal" />
@@ -387,7 +398,7 @@
             </template>
         </vaadin-grid>
 
-        <div class="marginSpace">
+        @*<div class="marginSpace">
             <template is="dom-if" if="{{ _permissions.update }}">
                 <paper-button raised id="btnSaveLine" class="btnEdit" on-tap="_updateDiaryLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Atualizar</paper-button>
             </template>
@@ -396,7 +407,7 @@
             <template is="dom-if" if="{{ _permissions.create }}">
                 <paper-button raised id="btnRegisterLine" class="btnSave" on-tap="_registerDiaryLines"><i class="fa fa-list-ol" aria-hidden="true"></i>&nbsp; Registar</paper-button>
             </template>
-        </div>
+        </div>*@
 
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
@@ -407,20 +418,31 @@
             Polymer({
                 is: 'x-registrymealno',
                 properties: {
-                    _resourceNo: {
-                        observer: '_setResourceData'
-                    },
+                    //_resourceNo: {
+                    //    observer: '_setResourceData'
+                    //},
 
-                    _mealType: {
-                        observer: '_setTypeMealData'
+                    //_mealType: {
+                    //    observer: '_setTypeMealData'
+                    //},
+
+                    //_permissions: {
+                    //    type: Array
+                    //},
+                    movementType: {
+                        type: Number,
+                        notify: true,
+                        value: ""
                     },
 
                     _permissions: {
                         type: Array
-                    }
+                    },
+
                 },
 
                 ready: function () {
+                    debugger;
                     //GET CONTRACT DATA
                     this.$.diary_databound.body = JSON.stringify({ "CoffeShopCode": @ViewBag.CoffeeShopNo, "ProdutiveUnityNo": @ViewBag.ProdutiveUnityNo  });
                     this.$.diary_databound.generateRequest();
@@ -441,10 +463,10 @@
                     var height = parentHeight - offsetTop;
                     grid_el.height(height);
                 },
+
                 _cancel: function (e) {
                     this.$.grid_databound_ajax.body = JSON.stringify({ "CoffeShopCode": @ViewBag.CoffeeShopNo, "ProdutiveUnityNo": @ViewBag.ProdutiveUnityNo  });
                     this.$.grid_databound_ajax.generateRequest();
-
                 },
 
                 _ConvertDecimals: function (e) {
@@ -547,6 +569,7 @@
                 },
 
                 _setResourceData: function (e) {
+                    debugger;
                     var item = this.CBResourceNo.find(x => x.id == e);
                     if (item != null) {
                         this.$.description.value = item.value;
@@ -554,6 +577,7 @@
                 },
 
                 _setTypeMealData: function (e) {
+                    debugger;
                     var item = this.CBMealType.find(x => x.id == e);
                     if (item != null) {
                         this.$.descriptionTypeMeal.value = item.value;

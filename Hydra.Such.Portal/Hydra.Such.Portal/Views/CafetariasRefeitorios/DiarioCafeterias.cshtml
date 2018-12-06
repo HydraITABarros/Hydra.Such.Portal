@@ -114,6 +114,8 @@
                 <paper-button id="btnSaveLine" class="tablinks" on-tap="_updateDiaryLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
             </template>
 
+            <paper-button id="btnCancel" class="tablinks btnRemove" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+
             <template is="dom-if" if="{{ _permissions.create }}">
                 <paper-button id="btnRegisterLine" class="tablinks" on-tap="_registerDiaryLines"><i class="fa fa-list-ol" aria-hidden="true"></i>&nbsp; Registar</paper-button>
             </template>
@@ -261,10 +263,11 @@
         is: 'x-coffeeshopdiary',
         properties: {
             movementType: {
-            type: Number,
-            notify: true,
-            value: ""
+                type: Number,
+                notify: true,
+                value: ""
             },
+
             _permissions: {
                 type: Array
             },
@@ -290,6 +293,11 @@
             var offsetTop = $(this).offset().top;
             var height = parentHeight - offsetTop;
             grid_el.height(height);
+        },
+
+        _cancel: function (e) {
+            this.$.grid_databound_ajax.body = JSON.stringify({ "CoffeShopCode": @ViewBag.CoffeeShopNo, "ProdutiveUnityNo": @ViewBag.ProdutiveUnityNo  });
+            this.$.grid_databound_ajax.generateRequest();
         },
 
         _createCoffeeShopDiary: function () {
@@ -339,7 +347,7 @@
         },
 
         _responseUpdate: function (updated) {
-            var self = this;     
+            var self = this;
             if (updated.detail.status === 200) {
                 if (this.updated == true) {
                     this.$.grid_databound_ajax.body = JSON.stringify({ "CoffeShopCode": @ViewBag.CoffeeShopNo, "ProdutiveUnityNo": @ViewBag.ProdutiveUnityNo  });

@@ -1826,25 +1826,81 @@ namespace Hydra.Such.Portal.Controllers
                         break;
 
                     case "Anular Aprovacao":
-                        ErrorHandler ApprovalMovResult = new ErrorHandler();
-
                         if (item.State == RequisitionStates.Approved)
                         {
-                            ApprovalMovResult = ApprovalMovementsManager.StartApprovalMovement(1, item.FunctionalAreaCode, item.CenterResponsibilityCode, item.RegionCode, 0, item.RequisitionNo, User.Identity.Name, reason);
-                            if (ApprovalMovResult.eReasonCode != 100)
+                            item.eReasonCode = 1;
+
+                            //Pedido Carlos Rodrigues 06/12/2018
+                            //Não despultar o movimento de aprovação
+                            //ApprovalMovResult = ApprovalMovementsManager.StartApprovalMovement(1, item.FunctionalAreaCode, item.CenterResponsibilityCode, item.RegionCode, 0, item.RequisitionNo, User.Identity.Name, reason);
+                            //if (ApprovalMovResult.eReasonCode != 100)
+                            //{
+                            //    item.eReasonCode = 4;
+                            //    item.eMessage = ApprovalMovResult.eMessage;
+                            //    //ApprovalMovResult.eMessage = "Não foi possivel iniciar o processo de aprovação para esta requisição: " + ReqNo;
+                            //}
+                            //else
+                            //{
+
+                            //Anular o movimento de aprovação atual
+                            int NoMovApro = 0;
+                            MovimentosDeAprovação MovApro = DBApprovalMovements.GetAll().Where(x => x.Número == item.RequisitionNo && x.Estado == 2).LastOrDefault();
+                            if (MovApro != null)
                             {
-                                item.eReasonCode = 4;
-                                item.eMessage = ApprovalMovResult.eMessage;
-                                //ApprovalMovResult.eMessage = "Não foi possivel iniciar o processo de aprovação para esta requisição: " + ReqNo;
+                                NoMovApro = MovApro.NºMovimento;
+                                List<UtilizadoresMovimentosDeAprovação> UserMovs = DBUserApprovalMovements.GetAll().Where(x => x.NºMovimento == MovApro.NºMovimento).ToList();
+
+                                if (UserMovs.Count() > 0)
+                                {
+                                    foreach (UtilizadoresMovimentosDeAprovação UserMov in UserMovs)
+                                    {
+                                        if (UserMov != null)
+                                            DBUserApprovalMovements.Delete(UserMov);
+                                    }
+                                }
+                                if (DBApprovalMovements.Delete(MovApro) != true)
+                                {
+                                    item.eReasonCode = 7;
+                                    item.eMessage = "Não foi possível anular o Movimento de aprovação.";
+                                }
+                            }
+
+                            //Enviar Email para o criador da RQ com o motivo da anulação
+                            if (item.eReasonCode == 1 && !string.IsNullOrEmpty(item.CreateUser) && !string.IsNullOrEmpty(item.RequisitionNo))
+                            {
+                                EmailsAprovações EmailApproval = new EmailsAprovações();
+                                EmailApproval.NºMovimento = NoMovApro;
+                                EmailApproval.EmailDestinatário = item.CreateUser;
+                                EmailApproval.NomeDestinatário = item.CreateUser;
+                                EmailApproval.Assunto = "eSUCH - Anulação da Aprovação - Requisição Nº " + item.RequisitionNo;
+                                EmailApproval.DataHoraEmail = DateTime.Now;
+                                EmailApproval.TextoEmail = "A aprovação Nº " + NoMovApro + ", da Requisição Nº " + item.RequisitionNo + ", foi anulada pelo utilizador " + User.Identity.Name + "." + "<br />" + "<b>Motivo:</b> " + reason;
+                                EmailApproval.Enviado = false;
+                                SendEmailApprovals Email = new SendEmailApprovals
+                                {
+                                    Subject = "eSUCH - Anulação da Aprovação - Requisição Nº " + item.RequisitionNo,
+                                    From = User.Identity.Name
+                                };
+                                Email.To.Add(item.CreateUser);
+                                Email.Body = ApprovalMovementsManager.MakeEmailBodyContent(EmailApproval.TextoEmail);
+                                Email.IsBodyHtml = true;
+                                Email.EmailApproval = EmailApproval;
+                                Email.SendEmail();
                             }
                             else
+                            {
+                                item.eReasonCode = 6;
+                                item.eMessage = "Não foi possível enviar o email.";
+                            }
+
+                            if (item.eReasonCode == 1)
                             {
                                 item.State = RequisitionStates.Pending;
                                 item.ResponsibleApproval = "";
                                 item.ApprovalDate = null;
                                 item.UpdateUser = User.Identity.Name;
                                 item.UpdateDate = DateTime.Now;
-                                item.Comments += reason;
+                                item.RejeicaoMotivo += reason;
                                 RequisitionViewModel reqPend = DBRequest.Update(item.ParseToDB(), false, true).ParseToViewModel();
                                 if (reqPend != null)
                                 {
@@ -1875,9 +1931,10 @@ namespace Hydra.Such.Portal.Controllers
                             item.eReasonCode = 2;
                             item.eMessage = "A requisição não está aprovada";
                         }
+
                         if (item.eReasonCode == 1)
                         {
-                            item.eMessage = "A Aprovação foi anulada." + ApprovalMovResult.eMessage;
+                            item.eMessage = "A Aprovação foi anulada.";
                         }
                         break;
 
@@ -2145,18 +2202,17 @@ namespace Hydra.Such.Portal.Controllers
                                     result.eMessage = "Ocorreu um erro ao criar a Compra.";
                                 }
                             });
-
                         }
                         else
                         {
                             result.eReasonCode = 5;
-                            result.eMessage = "Não foram encontradas linhas para Validar.";
+                            result.eMessage = "Primeiro tem que selecionar a(s) linha(s) a enviar para o Mercado Local.";
                         }
                     }
                     else
                     {
                         result.eReasonCode = 4;
-                        result.eMessage = "Preencha o campo Região Mercado Local no Cabeçalho.";
+                        result.eMessage = "Preencha o campo Região Mercado Local no Geral.";
                     }
                 }
                 catch (Exception ex)
@@ -2382,7 +2438,7 @@ namespace Hydra.Such.Portal.Controllers
                 catch (NotImplementedException ex)
                 {
                     item.eReasonCode = 2;
-                    item.eMessage = "Ocorreu um erro ao criar a Consulta ao Mercado";
+                    item.eMessage = "Ocorreu um erro ao criar a Consulta ao Mercado (" + ex.Message + ")";
                 }
             }
             else

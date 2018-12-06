@@ -2672,7 +2672,10 @@
                         this._openToast(this.Requisition.eMessage);
                     }
                     else {
-                        this._openToastError(this.Requisition.eMessage);
+                        if (this.Requisition.eMessages.length > 0)
+                            this._toggleToastMultiple();
+                        else
+                            this._openToastError(this.Requisition.eMessage);
                     }
                 },
                 _createPurchaseOrder: function () {
@@ -2868,11 +2871,11 @@
                     var TMessageError = this.$.ToastMessageError;
 
                     bootbox.prompt({
-                        title: "Introduza o motivo de rejeição!",
+                        title: "Introduza o motivo da Anulação!",
                         inputType: 'textarea',
                         buttons: {
                             confirm: {
-                                label: 'Rejeitar',
+                                label: 'Anular',
                                 className: 'btn-success'
                             },
                             cancel: {
