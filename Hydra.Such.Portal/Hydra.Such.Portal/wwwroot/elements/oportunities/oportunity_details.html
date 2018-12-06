@@ -293,13 +293,13 @@
 
                                 <div class="row break_clear">
                                     <div class="col-md-3 ">
-                                        <vaadin-date-picker label="Data Inicial Prevista" id="mStartData" name="startData" value="{{data.startData}}" disabled="{{ !_permissions.update }}" on-value-changed="_startEndDate"></vaadin-date-picker>
+                                        <vaadin-date-picker label="Data Inicial Prevista da Prestação" id="mStartData" name="startData" value="{{data.startData}}" disabled="{{ !_permissions.update }}" on-value-changed="_startEndDate"></vaadin-date-picker>
                                     </div>
                                     <div class="col-md-3">
-                                        <vaadin-date-picker label="Data Expiração Prevista" id="DueDate" name="DueDate" value="{{data.dueDate}}" disabled="{{ !_permissions.update }}" on-value-changed="_startEndDate"></vaadin-date-picker>
+                                        <vaadin-date-picker label="Data Expiração Prevista da Prestação" id="DueDate" name="DueDate" value="{{data.dueDate}}" disabled="{{ !_permissions.update }}" on-value-changed="_startEndDate"></vaadin-date-picker>
                                     </div>
                                     <div class="col-md-3 ">
-                                        <vaadin-date-picker label="Data Envio" id="mCustomerShipmentDate" name="CustomerShipmentDate" value="{{data.customerShipmentDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                        <vaadin-date-picker label="Data Prevista para a Ajudicação" id="mCustomerShipmentDate" name="CustomerShipmentDate" value="{{data.customerShipmentDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
                                     </div>
                                     <div class="col-md-3 ">
                                         <vaadin-date-picker label="Data Alteração" id="mProposalChangeDate" name="ProposalChangeDate" value="{{data.proposalChangeDate}}" disabled></vaadin-date-picker>

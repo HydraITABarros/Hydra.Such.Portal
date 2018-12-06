@@ -246,19 +246,32 @@
                    on-response="_onDeleteReqResponse"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/Contratos/RemoveFromHistoric"
+                   last-response="{{removedHistoric}}"
+                   method="post"
+                   handle-as="json"
+                   id="removeFromHistoric_ajax"
+                   on-response="_clResponseProcessor"
+                   content-type="application/json"></iron-ajax>
+
         <template is="dom-if" if="{{ !_isCreate }}">
             <div class="subMenu">
                 <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
 
                 <template is="dom-if" if="{{ _permissions.update }}">
                     <paper-button class="tablinks" id="btnContractAdd" on-tap="_createNewContract"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
-                    <paper-button class="tablinks" on-tap="_archive" id="_archive"><i class="fa fa-archive" aria-hidden="true"></i> Arquivar</paper-button>
+                    <!--<paper-button class="tablinks" on-tap="_archive" id="_archive"><i class="fa fa-archive" aria-hidden="true"></i> Arquivar</paper-button>-->
                     <paper-button class="tablinks" on-tap="_openNewproposalDialog" id="_btnCreateProposal"><i class="fa fa-archive" aria-hidden="true"></i> Criar Proposta</paper-button>
                     <paper-button class="tablinks" on-tap="_openNewinvoiceDialog" id="_btnCreateInvoice"><i class="fa fa-archive" aria-hidden="true"></i> Criar Fatura</paper-button>
                     <paper-button class="tablinks" on-tap="_openUpdatePricesDlg" id="_btnUpdatePrices"><i class="fa fa-archive" aria-hidden="true"></i> Atualizar Preços</paper-button>
                     <paper-button class="tablinks" on-tap="_createProject" id="_btnCreateProject"><i class="fa fa-archive" aria-hidden="true"></i> Criar Projeto</paper-button>
                     <paper-button class="tablinks" on-tap="_sendToHistory" id="_btnsendToHistory"><i class="fa fa-archive" aria-hidden="true"></i> Enviar para Histórico</paper-button>
                 </template>
+                
+                <template is="dom-if" if="{{ _isHistoricDiv }}">
+                    <paper-button class="tablinks" on-tap="_removeFromHistoric" id="_btnremoveFromHistoric"><i class="fa fa-archive" aria-hidden="true"></i> Reativar</paper-button>
+                </template>
+
                 <such-dropdown-menu style="display: {{ _showContractLines }};" on-value-changed="_viewMenuItemSelected" title="Consultar" items='[[ _viewMenuItems ]]'></such-dropdown-menu>
             </div>
         </template>
@@ -1030,12 +1043,12 @@
                                         </such-selectbox>
                                     </div>
                                     <div class="col-lg-2">
-                                        <vaadin-text-field value="{{_CLUnitPrice}}" id="_CLUnitPrice" name="_CLUnitPrice" label="Preço Unitário (€)" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals"  placeholder="0.0000" pattern="^[0-9]\d*(\.[0-9]{1,4})?$"><div slot="suffix">€</div></vaadin-text-field>
+                                        <vaadin-text-field value="{{_CLUnitPrice}}" id="_CLUnitPrice" name="_CLUnitPrice" label="Preço Unitário (€)" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals" placeholder="0.0000" pattern="^[0-9]\d*(\.[0-9]{1,4})?$"><div slot="suffix">€</div></vaadin-text-field>
                                     </div>
                                 </div>
                                 <div class="row break_clear" style="display: {{ _showContractLinesForm }};">
                                     <div class="col-lg-2">
-                                        <vaadin-text-field value="{{_CLDiscountLine}}" id="_CLDiscountLine" name="_CLDiscountLine" label="Desconto Linha (€)" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals"  placeholder="0.0000" pattern="^[0-9]\d*(\.[0-9]{1,4})?$"><div slot="suffix">€</div></vaadin-text-field>
+                                        <vaadin-text-field value="{{_CLDiscountLine}}" id="_CLDiscountLine" name="_CLDiscountLine" label="Desconto Linha (€)" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals" placeholder="0.0000" pattern="^[0-9]\d*(\.[0-9]{1,4})?$"><div slot="suffix">€</div></vaadin-text-field>
                                     </div>
                                     <div class="col-lg-2 alignPoga">
                                         <vaadin-checkbox checked="{{_CLBillable}}" disabled="{{ _lockFields }}">Fáturavel</vaadin-checkbox>
@@ -1208,7 +1221,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.unitPrice}}" id="_CLGridUnitPrice" name="_CLGridUnitPrice" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals"  placeholder="0.0000" pattern="^[0-9]\d*(\.[0-9]{1,4})?$"> <div slot="suffix">€</div></vaadin-text-field>
+                                            <vaadin-text-field value="{{item.unitPrice}}" id="_CLGridUnitPrice" name="_CLGridUnitPrice" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals" placeholder="0.0000" pattern="^[0-9]\d*(\.[0-9]{1,4})?$"> <div slot="suffix">€</div></vaadin-text-field>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.unitPrice}} €
@@ -1945,6 +1958,7 @@
                     },
                 },
                 ready: function () {
+                    window.cenas = this;
                     var date = new Date();
                     var day = date.getDate();
                     var month = date.getMonth() + 1;
@@ -3050,7 +3064,42 @@
                         }
                     });
                 },
+                _removeFromHistoric: function () {
+                    var Project = this.data;
+                    var ajax_request = this.$.removeFromHistoric_ajax;
+                    bootbox.confirm({
+                        message: "Tem a certeza que pretende reativar contrato?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            if (result) {
+                                ajax_request.body = JSON.stringify(Project);
+                                ajax_request.generateRequest();
+                            }
+                        }
+                    });
+                },
+                _clResponseProcessor: function (e) {
+                    var response = this.removedHistoric;
 
+                    if (response.eReasonCode == 1) {
+                        this._openToast("Contrato Reativado com sucesso.");
+                        this._ishistoric = "false";
+                        this._ishistoricDiv = false;
+                        window.location.href = "/Contratos/DetalhesContrato/" + this._contractno + "?version=" + this._versionno + "&" + "isHistoric=" + false;
+
+                    } else {
+                        this._openToastError("Erro ao reativar contrato.");
+                    }
+                },
             });
         });
     </script>

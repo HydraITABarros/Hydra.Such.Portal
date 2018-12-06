@@ -171,6 +171,15 @@
                     {{item.contractNo}}
                 </template>
             </vaadin-grid-column>
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.oportunityNo.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="oportunityNo">Nº Oportunidade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="oportunityNo" />
+                </template>
+                <template>
+                    {{item.oportunityNo}}
+                </template>
+            </vaadin-grid-column>
             <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.type.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="type">Tipo</vaadin-grid-sorter>
@@ -182,8 +191,8 @@
             </vaadin-grid-column>
             <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.startData.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="startDate">Data Inicio</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="startDate" />
+                    <vaadin-grid-sorter path="startData">Data Inicio</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="startData" />
                 </template>
                 <template>
                     {{item.startData}}
@@ -191,8 +200,8 @@
             </vaadin-grid-column>
             <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.dueDate.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="endDate">Data Fim</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="endDate" />
+                    <vaadin-grid-sorter path="dueDate">Data Fim</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dueDate" />
                 </template>
                 <template>
                     {{item.dueDate}}
@@ -476,6 +485,7 @@
                 _startColumnToggle: function () {
                     var columns = {
                         "contractNo": { hidden: false, label: "Nº Contrato" },
+                        "oportunityNo": { hidden: false, label: "Nº Oportunidade" },
                         "type": { hidden: false, label: "Tipo" },
                         "startData": { hidden: false, label: "Data Inicio" },
                         "dueDate": { hidden: false, label: "Data Fim" },
