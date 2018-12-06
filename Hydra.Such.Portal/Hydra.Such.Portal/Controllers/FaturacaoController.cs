@@ -955,9 +955,11 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult Existlink([FromBody] string sFileName)
         {
-            string name = sFileName.Remove(0, 5);
-            name=name.Replace('/', '\\');
-            string link = Directory.GetCurrentDirectory()+"\\wwwroot" + name;
+            //ARomao Comentado em 05/12/218
+            //string name = sFileName.Remove(0, 5);
+            //name=name.Replace('/', '\\');
+            //string link = Directory.GetCurrentDirectory()+"\\wwwroot" + name;
+            string link = sFileName;
             if (System.IO.File.Exists(link))
             {
                 return Json("1");

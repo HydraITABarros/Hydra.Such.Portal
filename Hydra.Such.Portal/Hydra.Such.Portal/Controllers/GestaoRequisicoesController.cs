@@ -1237,6 +1237,71 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult UpdateLinhaRequisicao([FromBody] RequisitionLineViewModel linha)
+        {
+            ErrorHandler result = new ErrorHandler();
+            result.eReasonCode = 0;
+            result.eMessage = "Ocorreu um erro ao atualizar a linha.";
+
+            try
+            {
+                if (!string.IsNullOrEmpty(linha.ProjectNo))
+                {
+                    if (!string.IsNullOrEmpty(linha.Code))
+                    {
+                        if (!string.IsNullOrEmpty(linha.LocalCode))
+                        {
+                            if (linha.QuantityToRequire > 0)
+                            {
+                                linha.UpdateUser = User.Identity.Name;
+                                if (DBRequestLine.Update(DBRequestLine.ParseToDB(linha)) != null)
+                                {
+                                    result.eReasonCode = 1;
+                                    result.eMessage = "Linha Atualizada com Sucesso.";
+
+                                }
+                                else
+                                {
+                                    result.eReasonCode = 2;
+                                    result.eMessage = "Ocorreu um erro ao atualizar a linha.";
+                                }
+                            }
+                            else
+                            {
+                                result.eReasonCode = 3;
+                                result.eMessage = "Na linha o campo Qt. a Requerer tem que ser superior a zero.";
+                            }
+                        }
+                        else
+                        {
+                            result.eReasonCode = 4;
+                            result.eMessage = "Na linha o campo Código Localização é de preenchimento obrigatório.";
+                        }
+                    }
+                    else
+                    {
+                        result.eReasonCode = 5;
+                        result.eMessage = "Na linha o campo Nº Ordem/projecto é de preenchimento obrigatório.";
+                    }
+                }
+                else
+                {
+                    result.eReasonCode = 6;
+                    result.eMessage = "Na linha o campo Cód. Produto é de preenchimento obrigatório.";
+                }
+            }
+            catch (Exception ex)
+            {
+                result.eReasonCode = 99;
+                result.eMessage = "Ocorreu um erro.";
+
+                return Json(result);
+            }
+
+            return Json(result);
+        }
+
+        [HttpPost]
 
         public JsonResult UpdateRequisitionLinesQtRequerer([FromBody] RequisitionViewModel item)
         {
