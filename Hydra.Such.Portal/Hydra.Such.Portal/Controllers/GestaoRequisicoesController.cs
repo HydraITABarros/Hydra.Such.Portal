@@ -1895,12 +1895,14 @@ namespace Hydra.Such.Portal.Controllers
 
                             if (item.eReasonCode == 1)
                             {
+                                //Passa a Requisição para o estado Pendente
                                 item.State = RequisitionStates.Pending;
                                 item.ResponsibleApproval = "";
                                 item.ApprovalDate = null;
                                 item.UpdateUser = User.Identity.Name;
                                 item.UpdateDate = DateTime.Now;
                                 item.RejeicaoMotivo += reason;
+
                                 RequisitionViewModel reqPend = DBRequest.Update(item.ParseToDB(), false, true).ParseToViewModel();
                                 if (reqPend != null)
                                 {
