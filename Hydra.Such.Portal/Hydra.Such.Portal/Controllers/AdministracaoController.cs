@@ -1623,7 +1623,8 @@ namespace Hydra.Such.Portal.Controllers
                 ServiceCode = x.CódServiço,
                 ServiceDescription = DBServices.GetById(x.CódServiço) != null ? DBServices.GetById(x.CódServiço).Descrição : "",
                 //ServiceDescription = x.CódServiçoNavigation != null ? x.CódServiçoNavigation.Descrição : "",
-                ServiceGroup = x.GrupoServiços
+                ServiceGroup = x.GrupoServiços,
+                ServiceGroup_Show = x.GrupoServiços.HasValue ? x.GrupoServiços == true ? "Sim" : "Não" : "Não"
             }).ToList();
 
             return Json(result);

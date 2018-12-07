@@ -170,7 +170,14 @@
                         </vaadin-combo-box>
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-combo-box items="[[LProjectEmployees]]" id="ProjectLeader" item-value-path="id" item-label-path="value" value="{{data.projectLeader}}" label="Chefe Projeto" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                        <such-selectbox id="ProjectLeader" value="{{data.projectLeader}}" label="Chefe Projeto" disabled="{{ !_permissions.update }}"
+                                        required error-message="Este campo é obrigatório"
+                                        items="[[LProjectEmployees]]"
+                                        text-path="value"
+                                        value-path="id"
+                                        fields='[{"field":"id", "name":"Nº Mecanográfico"}, {"field":"value", "name":"Nome"}]'>
+                        </such-selectbox>
+                        <!--<vaadin-combo-box items="[[LProjectEmployees]]" id="ProjectLeader" item-value-path="id" item-label-path="value" value="{{data.projectLeader}}" label="Chefe Projeto" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                             <template>
                                 <table width="200px">
                                     <tr>
@@ -179,10 +186,17 @@
                                     </tr>
                                 </table>
                             </template>
-                        </vaadin-combo-box>
+                        </vaadin-combo-box>-->
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-combo-box items="[[LProjectEmployees]]" id="ProjectResponsible" item-value-path="id" item-label-path="value" value="{{data.projectResponsible}}" label="Responsável Projeto" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                        <such-selectbox id="ProjectResponsible" value="{{data.projectResponsible}}" label="Responsável Projeto" disabled="{{ !_permissions.update }}"
+                                        required error-message="Este campo é obrigatório"
+                                        items="[[LProjectEmployees]]"
+                                        text-path="value"
+                                        value-path="id"
+                                        fields='[{"field":"id", "name":"Nº Mecanográfico"}, {"field":"value", "name":"Nome"}]'>
+                        </such-selectbox>
+                        <!--<vaadin-combo-box items="[[LProjectEmployees]]" id="ProjectResponsible" item-value-path="id" item-label-path="value" value="{{data.projectResponsible}}" label="Responsável Projeto" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                             <template>
                                 <table width="200px">
                                     <tr>
@@ -191,7 +205,7 @@
                                     </tr>
                                 </table>
                             </template>
-                        </vaadin-combo-box>
+                        </vaadin-combo-box>-->
                     </div>
                     <div class="col-lg-3">
                         <such-selectbox id="ObjectService" value="{{data.serviceObjectCode}}" label="Cód. Objeto Serviço"
@@ -230,7 +244,14 @@
             <div>
                 <div class="row break_clear">
                     <div class="col-lg-3">
-                        <vaadin-combo-box items="[[LProjectRegionCodes]]" id="RegionCode" item-value-path="id" item-label-path="value" value="{{data.regionCode}}" label="Cód. Região" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                        <such-selectbox id="RegionCode" value="{{data.regionCode}}" label="Cód. Região" disabled="{{ !_permissions.update }}"
+                                        required error-message="Este campo é obrigatório"
+                                        items="[[LProjectRegionCodes]]"
+                                        text-path="value"
+                                        value-path="id"
+                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Região"}]'>
+                        </such-selectbox>
+                        <!--<vaadin-combo-box items="[[LProjectRegionCodes]]" id="RegionCode" item-value-path="id" item-label-path="value" value="{{data.regionCode}}" label="Cód. Região" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                             <template>
                                 <table width="180px">
                                     <tr>
@@ -239,10 +260,17 @@
                                     </tr>
                                 </table>
                             </template>
-                        </vaadin-combo-box>
+                        </vaadin-combo-box>-->
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-combo-box items="[[LProjectFunctionalAreaCodes]]" id="FunctionalAreaCode" item-value-path="id" item-label-path="value" value="{{data.functionalAreaCode}}" label="Cód. Área Funcional" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                        <such-selectbox id="FunctionalAreaCode" value="{{data.functionalAreaCode}}" label="Cód. Área Funcional" disabled="{{ !_permissions.update }}"
+                                        required error-message="Este campo é obrigatório"
+                                        items="[[LProjectFunctionalAreaCodes]]"
+                                        text-path="value"
+                                        value-path="id"
+                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Área Funcional"}]'>
+                        </such-selectbox>
+                        <!--<vaadin-combo-box items="[[LProjectFunctionalAreaCodes]]" id="FunctionalAreaCode" item-value-path="id" item-label-path="value" value="{{data.functionalAreaCode}}" label="Cód. Área Funcional" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                             <template>
                                 <table width="500px">
                                     <tr>
@@ -251,10 +279,17 @@
                                     </tr>
                                 </table>
                             </template>
-                        </vaadin-combo-box>
+                        </vaadin-combo-box>-->
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-combo-box items="[[LProjectResponsabilityCenterCodes]]" id="ResponsabilityCenterCode" item-value-path="id" item-label-path="value" value="{{data.responsabilityCenterCode}}" label="Cód. Centro Responsabilidade" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                        <such-selectbox id="ResponsabilityCenterCode" value="{{data.responsabilityCenterCode}}" label="Cód. Centro Responsabilidade" disabled="{{ !_permissions.update }}"
+                                        required error-message="Este campo é obrigatório"
+                                        items="[[LProjectResponsabilityCenterCodes]]"
+                                        text-path="value"
+                                        value-path="id"
+                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Centro Responsabilidade"}]'>
+                        </such-selectbox>
+                        <!--<vaadin-combo-box items="[[LProjectResponsabilityCenterCodes]]" id="ResponsabilityCenterCode" item-value-path="id" item-label-path="value" value="{{data.responsabilityCenterCode}}" label="Cód. Centro Responsabilidade" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                             <template>
                                 <table width="550px">
                                     <tr>
@@ -263,7 +298,7 @@
                                     </tr>
                                 </table>
                             </template>
-                        </vaadin-combo-box>
+                        </vaadin-combo-box>-->
                     </div>
                     <!--<div class="col-lg-3">
                             <vaadin-combo-box items="[[LProjectGroupContab]]" item-value-path="id" item-label-path="value" value="{{data.accountWorkGroup}}" label="Grupo Contab. Obra" disabled="{{ !_permissions.update }}">
@@ -383,7 +418,13 @@
                         </vaadin-combo-box>
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-combo-box items="[[LProjectContracts]]" item-value-path="id" item-label-path="value" value="{{data.budgetContractNo}}" label="Nº Contrato Orçamento" disabled="{{ !_permissions.update }}">
+                        <such-selectbox id="ResponsabilityCenterCode" value="{{data.budgetContractNo}}" label="Nº Contrato Orçamento" disabled="{{ !_permissions.update }}"
+                                        items="[[LProjectContracts]]"
+                                        text-path="value"
+                                        value-path="id"
+                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Contrato Orçamento"}]'>
+                        </such-selectbox>
+                        <!--<vaadin-combo-box items="[[LProjectContracts]]" item-value-path="id" item-label-path="value" value="{{data.budgetContractNo}}" label="Nº Contrato Orçamento" disabled="{{ !_permissions.update }}">
                             <template>
                                 <table width="350px">
                                     <tr>
@@ -392,7 +433,7 @@
                                     </tr>
                                 </table>
                             </template>
-                        </vaadin-combo-box>
+                        </vaadin-combo-box>-->
                     </div>
                     <div class="col-lg-3 alignPoga">
                         <vaadin-checkbox checked="{{data.internalProject}}" disabled="{{ !_permissions.update }}">Projeto Interno</vaadin-checkbox>

@@ -31,8 +31,6 @@
 <link rel="import" href="/lib/such-selectbox/such-selectbox.html">
 <link rel="import" href="/lib/vaadin-upload/vaadin-upload-file.html">
 <link rel="import" href="/lib/vaadin-upload/vaadin-upload.html">
-<link rel="import" href="/lib/vaadin-upload/vaadin-upload-file.html">
-<link rel="import" href="/lib/vaadin-upload/vaadin-upload.html">
 
 
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html" />
@@ -44,6 +42,7 @@
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" />
         <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
+        
         <iron-ajax url="/PopulateDropdowns/GetMeasureUnits" last-response="{{CBMeasureUnits}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetAllClientsComboGrid" last-response="{{LProjectClients}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetServices" last-response="{{ServiceClient}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -52,6 +51,7 @@
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{RegionData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{FunctionalAreaCodeData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{ResponsabilityCenterData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        
         <iron-ajax url="/Projetos/UpdatePriceServiceClient" last-response="{{result}}" id="ajax_update" method="post" on-response="_updateResponse" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Projetos/GetAllPriceServiceClient" last-response="{{Griddate}}" id="ajax_gridList" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Projetos/ExportToExcel" last-response="{{export}}" id="ajax_Export" method="post" handle-as="json" on-response="_ExportResponse" content-type="application/json"></iron-ajax>
@@ -303,6 +303,7 @@
                     </template>
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="completeName">Nome Cliente</vaadin-grid-sorter>
@@ -317,6 +318,7 @@
                     </template>
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="codServClient">Cód. Serviço Cliente</vaadin-grid-sorter>
@@ -340,6 +342,7 @@
                     </template>
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="serviceDescription">Descrição Serviço</vaadin-grid-sorter>
@@ -354,6 +357,7 @@
                     </template>
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="salePrice">Preço Venda</vaadin-grid-sorter>
@@ -368,6 +372,7 @@
                     </template>
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="priceCost">Preço de Custo</vaadin-grid-sorter>
@@ -382,6 +387,7 @@
                     </template>
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="date">Data</vaadin-grid-sorter>
@@ -396,6 +402,7 @@
                     </template>
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="resource">Código Recurso</vaadin-grid-sorter>
@@ -419,6 +426,7 @@
                     </template>
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="resourceDescription">Descrição do Recurso</vaadin-grid-sorter>
@@ -433,6 +441,7 @@
                     </template>
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="unitMeasure">Cód. Unidade Medida</vaadin-grid-sorter>
@@ -456,6 +465,7 @@
                     </template>
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="typeMeal">Tipo Refeição</vaadin-grid-sorter>
@@ -479,6 +489,7 @@
                     </template>
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="typeMealDescription">Descrição Tipo Refeição</vaadin-grid-sorter>
@@ -493,6 +504,7 @@
                     </template>
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="regionCode">Cód. Região</vaadin-grid-sorter>
@@ -516,6 +528,7 @@
                     </template>
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="functionalAreaCode">Cód. Área Funcional</vaadin-grid-sorter>
@@ -539,6 +552,7 @@
                     </template>
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="responsabilityCenterCode">Cód. Centro Respon.</vaadin-grid-sorter>
@@ -562,6 +576,7 @@
                     </template>
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="100px" resizable>
                 <template class="header">
                 </template>
@@ -584,15 +599,17 @@
         window.addEventListener('WebComponentsReady', function () {
             var upload = document.querySelector('vaadin-upload#UploadRequest');
 
-            upload.addEventListener('upload-response', function (event) {
-                console.log('upload xhr after server response: ', event.detail.xhr);
-                event.detail.file.error = 'Custom server error message.';
-                this.openToastError(event.detail.file.name + ' erro: ' + event.detail.error);
-            });
+            if (upload != null) {
+                upload.addEventListener('upload-response', function (event) {
+                    console.log('upload xhr after server response: ', event.detail.xhr);
+                    event.detail.file.error = 'Custom server error message.';
+                    this.openToastError(event.detail.file.name + ' erro: ' + event.detail.error);
+                });
 
-            upload.addEventListener('file-reject', function (event) {
-                this.openToastError(event.detail.file.name + ' erro: ' + event.detail.error);
-            });
+                    upload.addEventListener('file-reject', function (event) {
+                        this.openToastError(event.detail.file.name + ' erro: ' + event.detail.error);
+                    });
+            }
         });
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
@@ -685,7 +702,22 @@
                     if (!this.Flag) {
                         this.$.ajax_gridList.generateRequest();
                         this.Flag = true;
+
+                        var _this = this;
+                        $(window).resize(function () {
+                            _this.fixGridToBottom();
+                        });
+                        $(window).trigger('resize');
+
                     }
+                },
+
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.priceServiceClientGrid);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top;
+                    var height = parentHeight - offsetTop;
+                    grid_el.height(height);
                 },
                 _clientChanged: function (e) {
                     if (e.detail.value != "" && this.LProjectClients != null && this.LProjectClients != "") {

@@ -11,5 +11,6 @@ namespace Hydra.Such.Data.ViewModel.ProjectDiary
         public string ServiceCode { get; set; }
         public string ServiceDescription { get; set; }
         public bool? ServiceGroup { get; set; }
+        public string ServiceGroup_Show { get; set; }
     }
 }
