@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using static Hydra.Such.Data.Enumerations;
 
 namespace Hydra.Such.Data.Database
 {
@@ -30,7 +31,7 @@ namespace Hydra.Such.Data.Database
         public string Descrição { get; set; }
         public string NºCliente { get; set; }
         public DateTime? Data { get; set; }
-        public int? Estado { get; set; }
+        public EstadoProjecto? Estado { get; set; }
         public string CódigoRegião { get; set; }
         public string CódigoÁreaFuncional { get; set; }
         public string CódigoCentroResponsabilidade { get; set; }

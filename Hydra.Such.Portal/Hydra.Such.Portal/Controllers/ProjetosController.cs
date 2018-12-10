@@ -30,6 +30,7 @@ using Hydra.Such.Data.Logic.ProjectDiary;
 using Hydra.Such.Data.Logic.ProjectMovements;
 using System.Globalization;
 using Hydra.Such.Data.ViewModel.Clients;
+using Hydra.Such.Portal.Extensions;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -101,14 +102,14 @@ namespace Hydra.Such.Portal.Controllers
 
             if (!Ended)
             {
-                result.RemoveAll(x => x.Status == 5);
+                result.RemoveAll(x => x.Status == EstadoProjecto.Terminado);
             }
 
             result.ForEach(x =>
             {
                 if (x.Status.HasValue)
                 {
-                    x.StatusDescription = EnumerablesFixed.ProjectStatus.Where(y => y.Id == x.Status).FirstOrDefault().Value;
+                    x.StatusDescription = x.Status.Value.GetDescription() ;
                 }
                 x.ClientName = DBNAV2017Clients.GetClientNameByNo(x.ClientNo, _config.NAVDatabaseName, _config.NAVCompanyName);
             });
@@ -140,7 +141,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 if (x.Status.HasValue)
                 {
-                    x.StatusDescription = EnumerablesFixed.ProjectStatus.Where(y => y.Id == x.Status).FirstOrDefault().Value;
+                    x.StatusDescription = x.Status.Value.GetDescription();
                 }
                 x.ClientName = DBNAV2017Clients.GetClientNameByNo(x.ClientNo, _config.NAVDatabaseName, _config.NAVCompanyName);
             });
@@ -218,7 +219,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 ProjectDetailsViewModel finalr = new ProjectDetailsViewModel()
                 {
-                    Status = 1
+                    Status = (EstadoProjecto)1
                 };
                 return Json(finalr);
             }
@@ -1715,7 +1716,8 @@ namespace Hydra.Such.Portal.Controllers
 
                     List<ProjectMovementViewModel> projectMovements = GetProjectMovements(projectNo, project.NºCliente, billable);
 
-                    if (project.Estado.HasValue && (project.Estado == 3 || project.Estado == 4))
+                    if (project.Estado.HasValue && (project.Estado == EstadoProjecto.Encomenda || 
+                        project.Estado == EstadoProjecto.Terminado))
                     {
                         result.eReasonCode = 1;
                     }

@@ -609,7 +609,7 @@ namespace Hydra.Such.Portal.Configurations
             },
         };
 
-
+        /*
         public static readonly List<EnumData> ProjectStatus = new List<EnumData>(){
             new EnumData()
             {
@@ -635,8 +635,9 @@ namespace Hydra.Such.Portal.Configurations
             {
                 Id = 5,
                 Value = "Terminado"
-            } };
-
+            } 
+        };
+        */
 
         public static readonly List<EnumData> ContractType = new List<EnumData>(){
             new EnumData()

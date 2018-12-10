@@ -9,6 +9,7 @@ using System.ServiceModel.Description;
 using System.ServiceModel.Security;
 using System.Text;
 using System.Threading.Tasks;
+using static Hydra.Such.Data.Enumerations;
 
 namespace Hydra.Such.Data.NAV
 {
@@ -28,7 +29,8 @@ namespace Hydra.Such.Data.NAV
         {
             //Mapping WSJob Object
             WSCreateNAVProject.Status StatusValue;
-            switch (ProjectToCreate.Status)
+            //ToDo andre.bastos@geratriz.pt
+            switch ((int)ProjectToCreate.Status)
             {
                 case 1:
                     StatusValue = WSCreateNAVProject.Status.Planning;
@@ -86,7 +88,8 @@ namespace Hydra.Such.Data.NAV
         {
             //Mapping WSJob Object
             WSCreateNAVProject.Status StatusValue;
-            switch (ProjectToUpdate.Status)
+            //ToDo andre.bastos@geratriz.pt
+            switch ((int)ProjectToUpdate.Status)
             {
                 case 1:
                     StatusValue = WSCreateNAVProject.Status.Planning;

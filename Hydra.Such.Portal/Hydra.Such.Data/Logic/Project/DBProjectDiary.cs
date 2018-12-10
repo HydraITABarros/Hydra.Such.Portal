@@ -4,6 +4,7 @@ using System.Text;
 using System.Linq;
 using Hydra.Such.Data.Database;
 using Hydra.Such.Data.ViewModel;
+using static Hydra.Such.Data.Enumerations;
 
 namespace Hydra.Such.Data.Logic.Project
 {
@@ -46,7 +47,7 @@ namespace Hydra.Such.Data.Logic.Project
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.DiárioDeProjeto.Where(x => x.Utilizador == user && x.Registado != true && x.NºProjetoNavigation.Estado != 4 && x.NºProjetoNavigation.Estado != 5 && x.PréRegisto == false).ToList();
+                    return ctx.DiárioDeProjeto.Where(x => x.Utilizador == user && x.Registado != true && x.NºProjetoNavigation.Estado != EstadoProjecto.Terminado && x.PréRegisto == false).ToList();
                 }
             }
             catch (Exception ex)
@@ -60,7 +61,7 @@ namespace Hydra.Such.Data.Logic.Project
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.DiárioDeProjeto.Where(x => x.Utilizador == user && x.Registado != true && x.NºProjetoNavigation.Estado != 4 && x.NºProjetoNavigation.Estado != 5 && x.PréRegisto == true).ToList();
+                    return ctx.DiárioDeProjeto.Where(x => x.Utilizador == user && x.Registado != true && x.NºProjetoNavigation.Estado != EstadoProjecto.Terminado && x.PréRegisto == true).ToList();
                 }
             }
             catch (Exception ex)

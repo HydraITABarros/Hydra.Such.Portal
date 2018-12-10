@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using static Hydra.Such.Data.Enumerations;
 
 namespace Hydra.Such.Data.ViewModel.Projects
 {
@@ -9,7 +10,7 @@ namespace Hydra.Such.Data.ViewModel.Projects
         public string ProjectNo { get; set; }
         public DateTime? Date { get; set; }
         public String DateText { get; set; }
-        public int? Status { get; set; }
+        public EstadoProjecto? Status { get; set; }
         public string StatusDescription { get; set; }
         public string Description { get; set; }
         public string ClientNo { get; set; }
