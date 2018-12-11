@@ -28,5 +28,9 @@ namespace Hydra.Such.Data.Database
         public string UtilizadorModificação { get; set; }
         public string Situação { get; set; }
         public bool? NãoFaturar { get; set; }
+        public string NoRequisicaoDoCliente { get; set; }
+        public DateTime? DataRececaoRequisicao { get; set; }
+        public string NoCompromisso { get; set; }
+        public string TextoFatura { get; set; }
     }
 }

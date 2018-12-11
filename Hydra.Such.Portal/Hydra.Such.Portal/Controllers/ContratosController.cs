@@ -1637,7 +1637,7 @@ namespace Hydra.Such.Portal.Controllers
                         Tipo = contractLine.Tipo.ToString(),
                         Código = contractLine.Código,
                         Descrição = contractLine.Descrição,
-                        //Descricao2 = contractLine.Descricao2,
+                        Descricao2 = contractLine.Descricao2,
                         Quantidade = lineQuantity,
                         CódUnidadeMedida = contractLine.CódUnidadeMedida,
                         PreçoUnitário = contractLine.PreçoUnitário,
@@ -1856,7 +1856,9 @@ namespace Hydra.Such.Portal.Controllers
                     //actualiar data ultima fatura para o fim do mes
                     contractLine.ÚltimaDataFatura = Lastdate;
                     //Estado Pendente
-                    contractLine.Estado = 3;
+                    //11-12-2018 ARomao@such.pt
+                    //A pedido do Marco Marcelo o contrato nunca pode mudar de estado
+                    //contractLine.Estado = 3;
                     DBContracts.Update(contractLine);
                     
                 }
@@ -1886,7 +1888,9 @@ namespace Hydra.Such.Portal.Controllers
                     if (InvoiceHeader.IsCompletedSuccessfully && InvoiceHeader != null && InvoiceHeader.Result != null)
                     {
                         //Estado Pendente
-                        item.Estado = 3;
+                        //11-12-2018 ARomao@such.pt
+                        //A pedido do Marco Marcelo o contrato nunca pode mudar de estado
+                        //item.Estado = 3;
                       
                         String InvoiceHeaderNo = InvoiceHeader.Result.WSPreInvoice.No;
                         List<LinhasFaturaçãoContrato> itemList = lineList.Where(x => x.NºContrato == item.NºContrato && x.GrupoFatura == item.GrupoFatura).ToList();
@@ -2333,6 +2337,7 @@ namespace Hydra.Such.Portal.Controllers
                                         PreInvoiceLinesToCreate.Tipo = line.Type.Value.ToString();
                                         PreInvoiceLinesToCreate.Código = line.Code;
                                         PreInvoiceLinesToCreate.Descrição = line.Description;
+                                        PreInvoiceLinesToCreate.Descricao2 = line.Description2;
                                         PreInvoiceLinesToCreate.CódUnidadeMedida = line.CodeMeasureUnit;
                                         PreInvoiceLinesToCreate.CódigoÁreaFuncional = line.CodeFunctionalArea;
                                         PreInvoiceLinesToCreate.CódigoRegião = line.CodeRegion;
@@ -2414,6 +2419,7 @@ namespace Hydra.Such.Portal.Controllers
                                         PreInvoiceLinesToCreate.Tipo = line.Type.Value.ToString();
                                         PreInvoiceLinesToCreate.Código = line.Code;
                                         PreInvoiceLinesToCreate.Descrição = line.Description;
+                                        PreInvoiceLinesToCreate.Descricao2 = line.Description2;
                                         PreInvoiceLinesToCreate.CódUnidadeMedida = line.CodeMeasureUnit;
                                         PreInvoiceLinesToCreate.CódigoÁreaFuncional = line.CodeFunctionalArea;
                                         PreInvoiceLinesToCreate.CódigoRegião = line.CodeRegion;
@@ -2679,6 +2685,7 @@ namespace Hydra.Such.Portal.Controllers
             newline.DataInícioVersão = contractlinestocreate.DataInícioVersão;
             newline.DescontoLinha = contractlinestocreate.DescontoLinha;
             newline.Descrição = contractlinestocreate.Descrição;
+            newline.Descricao2 = contractlinestocreate.Descricao2;
             newline.Faturável = contractlinestocreate.Faturável;
             newline.GrupoFatura = contractlinestocreate.GrupoFatura;
             newline.NºHorasIntervenção = contractlinestocreate.NºHorasIntervenção;

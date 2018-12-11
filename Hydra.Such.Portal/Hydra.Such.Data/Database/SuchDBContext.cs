@@ -561,6 +561,22 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.ValorFaturado).HasColumnName("Valor Faturado");
 
                 entity.Property(e => e.ValorPorFaturar).HasColumnName("Valor por Faturar");
+
+                entity.Property(e => e.NoRequisicaoDoCliente)
+                    .HasColumnName("NoRequisicaoDoCliente")
+                    .HasMaxLength(30);
+
+                entity.Property(e => e.DataRececaoRequisicao)
+                    .HasColumnName("DataRececaoRequisicao")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.NoCompromisso)
+                    .HasColumnName("NoCompromisso")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.TextoFatura)
+                    .HasColumnName("TextoFatura")
+                    .HasMaxLength(250);
             });
 
             modelBuilder.Entity<BarramentosDeVoz>(entity =>
@@ -2042,6 +2058,11 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.ÚltimaDataFatura)
                     .HasColumnName("Última Data Fatura")
                     .HasColumnType("date");
+
+                entity.Property(e => e.TextoFatura)
+                    .HasColumnName("TextoFatura")
+                    .HasMaxLength(250);
+
 
                 entity.HasOne(d => d.ObjetoServiçoNavigation)
                     .WithMany(p => p.Contratos)
@@ -4210,6 +4231,14 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.Código)
                     .IsRequired()
                     .HasMaxLength(20);
+
+                entity.Property(e => e.Descrição)
+                    .HasColumnName("Descrição")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Descricao2)
+                    .HasColumnName("Descricao2")
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.CódigoCentroResponsabilidade)
                     .HasColumnName("Código Centro Responsabilidade")
