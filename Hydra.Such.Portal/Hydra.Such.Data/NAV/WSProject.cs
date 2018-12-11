@@ -9,6 +9,7 @@ using System.ServiceModel.Description;
 using System.ServiceModel.Security;
 using System.Text;
 using System.Threading.Tasks;
+using WSCreateNAVProject;
 using static Hydra.Such.Data.Enumerations;
 
 namespace Hydra.Such.Data.NAV
@@ -27,25 +28,6 @@ namespace Hydra.Such.Data.NAV
 
         public static async Task<WSCreateNAVProject.Create_Result> CreateNavProject(ProjectDetailsViewModel ProjectToCreate, NAVWSConfigurations WSConfigurations)
         {
-            //Mapping WSJob Object
-            WSCreateNAVProject.Status StatusValue;
-            //ToDo andre.bastos@geratriz.pt
-            switch ((int)ProjectToCreate.Status)
-            {
-                case 1:
-                    StatusValue = WSCreateNAVProject.Status.Planning;
-                    break;
-                case 2:
-                    StatusValue = WSCreateNAVProject.Status.Quote;
-                    break;
-                case 3:
-                    StatusValue = WSCreateNAVProject.Status.Open;
-                    break;
-                default:
-                    StatusValue = WSCreateNAVProject.Status.Completed;
-                    break;
-
-            }
             
             WSCreateNAVProject.Create NAVCreate = new WSCreateNAVProject.Create()
             {
@@ -54,11 +36,13 @@ namespace Hydra.Such.Data.NAV
                     No = ProjectToCreate.ProjectNo,
                     Description100 = ProjectToCreate.Description,
                     Bill_to_Customer_No = ProjectToCreate.ClientNo,
-                    Status = StatusValue,
+                    Estado_eSUCH = (Estado_eSUCH)((int)ProjectToCreate.Status),
                     RegionCode20 = ProjectToCreate.RegionCode,
                     FunctionAreaCode20 = ProjectToCreate.FunctionalAreaCode,
                     ResponsabilityCenterCode20 = ProjectToCreate.ResponsabilityCenterCode,
                     Job_Posting_Group = "",
+                    Visivel = ProjectToCreate.Visivel == null ? true : (bool)ProjectToCreate.Visivel,                
+                    Status = Status.Open
                     //Project_Manager = ProjectToCreate.ProjectLeader,
                     //Person_Responsible = ProjectToCreate.ProjectResponsible
                 }
@@ -83,29 +67,8 @@ namespace Hydra.Such.Data.NAV
 
         }
 
-
         public static async Task<WSCreateNAVProject.Update_Result> UpdateNavProject(string Key, ProjectDetailsViewModel ProjectToUpdate, NAVWSConfigurations WSConfigurations)
-        {
-            //Mapping WSJob Object
-            WSCreateNAVProject.Status StatusValue;
-            //ToDo andre.bastos@geratriz.pt
-            switch ((int)ProjectToUpdate.Status)
-            {
-                case 1:
-                    StatusValue = WSCreateNAVProject.Status.Planning;
-                    break;
-                case 2:
-                    StatusValue = WSCreateNAVProject.Status.Quote;
-                    break;
-                case 3:
-                    StatusValue = WSCreateNAVProject.Status.Open;
-                    break;
-                default:
-                    StatusValue = WSCreateNAVProject.Status.Completed;
-                    break;
-
-            }
-
+        {   
             WSCreateNAVProject.Update NAVUpdate = new WSCreateNAVProject.Update()
             {
                 WSJob = new WSCreateNAVProject.WSJob()
@@ -114,11 +77,11 @@ namespace Hydra.Such.Data.NAV
                     No = ProjectToUpdate.ProjectNo,
                     Description100 = ProjectToUpdate.Description,
                     Bill_to_Customer_No = ProjectToUpdate.ClientNo,
-                    Status = StatusValue,
+                    Estado_eSUCH = (Estado_eSUCH)((int)ProjectToUpdate.Status),
                     RegionCode20 = ProjectToUpdate.RegionCode,
                     FunctionAreaCode20 = ProjectToUpdate.FunctionalAreaCode,
                     ResponsabilityCenterCode20 = ProjectToUpdate.ResponsabilityCenterCode,
-                    Job_Posting_Group = "",
+                    Job_Posting_Group = ""                    
                     //Project_Manager = ProjectToUpdate.ProjectLeader,
                     //Person_Responsible = ProjectToUpdate.ProjectResponsible
                 }
