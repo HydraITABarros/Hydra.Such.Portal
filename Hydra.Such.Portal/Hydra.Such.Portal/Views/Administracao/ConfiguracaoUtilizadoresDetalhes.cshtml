@@ -274,6 +274,28 @@
                     </template>
                 </vaadin-combo-box>
             </div>
+
+            <div class="col-sm-3">
+                <such-selectbox id="ddAprovadorPedidoPag1" value="{{data.aprovadorPedidoPag1}}" label="Aprovador Pedido Pag. 1"
+                                items="[[superiorHierarquicoList]]"
+                                text-path="value"
+                                value-path="id"
+                                fields='[{"field":"id", "name":"ID"}, {"field":"value", "name":"Nome"}]'>
+                </such-selectbox>
+            </div>
+
+            <div class="col-sm-3">
+                <such-selectbox id="ddAprovadorPedidoPag2" value="{{data.aprovadorPedidoPag2}}" label="Aprovador Pedido Pag. 2"
+                                items="[[superiorHierarquicoList]]"
+                                text-path="value"
+                                value-path="id"
+                                fields='[{"field":"id", "name":"ID"}, {"field":"value", "name":"Nome"}]'>
+                </such-selectbox>
+            </div>
+
+            <div class="col-lg-3 alignPoga">
+                <vaadin-checkbox checked="{{data.anulacaoPedidoPagamento}}"> Anulação Pedido Pagamento</vaadin-checkbox>
+            </div>
         </div>
         <paper-collapse-group>
             <paper-collapse-item class="panel-heading" header="Procedimentos" closed>

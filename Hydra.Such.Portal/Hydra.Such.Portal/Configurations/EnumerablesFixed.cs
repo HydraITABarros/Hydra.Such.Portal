@@ -2582,6 +2582,46 @@ namespace Hydra.Such.Portal.Configurations
             }
         };
 
+        public static readonly List<EnumData> TipoPedidoPagamento = new List<EnumData>(){
+            new EnumData()
+            {
+                Id = 1,
+                Value = "Transferência Bancária"
+            },
+            new EnumData()
+            {
+                Id = 2,
+                Value = "Cheque"
+            }
+        };
+
+        public static readonly List<EnumData> EstadoPedidoPagamento = new List<EnumData>(){
+            new EnumData()
+            {
+                Id = 1,
+                Value = "Inicial"
+            },
+            new EnumData()
+            {
+                Id = 2,
+                Value = "Em Aprovação"
+            },
+            new EnumData()
+            {
+                Id = 3,
+                Value = "Aprovado"
+            },
+            new EnumData()
+            {
+                Id = 4,
+                Value = "Validado"
+            },
+            new EnumData()
+            {
+                Id = 5,
+                Value = "Anulado"
+            }
+        };
     }
 
     public class EnumDataString

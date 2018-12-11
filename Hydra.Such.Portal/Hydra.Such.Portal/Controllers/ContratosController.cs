@@ -761,6 +761,7 @@ namespace Hydra.Such.Portal.Controllers
                             CLine.Tipo = x.Type;
                             CLine.Código = x.Code;
                             CLine.Descrição = x.Description;
+                            CLine.Descricao2 = x.Description2;
                             CLine.Quantidade = x.Quantity;
                             CLine.CódUnidadeMedida = x.CodeMeasureUnit;
                             CLine.PreçoUnitário = x.UnitPrice;
@@ -1636,6 +1637,7 @@ namespace Hydra.Such.Portal.Controllers
                         Tipo = contractLine.Tipo.ToString(),
                         Código = contractLine.Código,
                         Descrição = contractLine.Descrição,
+                        //Descricao2 = contractLine.Descricao2,
                         Quantidade = lineQuantity,
                         CódUnidadeMedida = contractLine.CódUnidadeMedida,
                         PreçoUnitário = contractLine.PreçoUnitário,

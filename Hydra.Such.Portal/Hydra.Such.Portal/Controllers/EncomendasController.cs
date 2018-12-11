@@ -21,6 +21,7 @@ using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using Hydra.Such.Data.ViewModel.Encomendas;
 using Newtonsoft.Json;
+using Hydra.Such.Data.Logic.Encomendas;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -263,6 +264,56 @@ namespace Hydra.Such.Portal.Controllers
             fileName = @"/Upload/temp/" + fileName;
             return File(fileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Encomendas.xlsx");
         }
+
+        #region PedidoPagamento
+
+        [HttpGet]
+        public IActionResult PedidoPagamento_Details(string id)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Encomendas);
+
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.No = id ?? "";
+                ViewBag.UPermissions = UPerm;
+
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        [HttpPost]
+        public JsonResult GetPedidoPagamento([FromBody] EncomendasViewModel Encomenda)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Encomendas);
+
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                var details = DBNAV2017Encomendas.GetDetailsByNo(_config.NAVDatabaseName, _config.NAVCompanyName, Encomenda.No, "C%");
+                var lines = DBNAV2017Encomendas.ListLinesByNo(_config.NAVDatabaseName, _config.NAVCompanyName, Encomenda.No, "C%");
+                var pedidos = DBPedidoPagamento.GetAllPedidosPagamentoByEncomenda(Encomenda.No);
+
+                PedidosPagamentoViewModel Pedido = new PedidosPagamentoViewModel();
+
+                Pedido.NoEncomenda = Encomenda.No;
+                Pedido.CodigoFornecedor = details.PayToVendorNo;
+                Pedido.Valor = lines.Sum(x => x.Amount);
+                Pedido.ValorJaPedido = pedidos.Sum(x => x.Valor);
+                Pedido.DataText = DateTime.Now.ToShortDateString();
+                Pedido.Tipo = 1; //"Transferência Bancária"
+                Pedido.Estado = 1; //"Inicial"
+
+                return Json(Pedido);
+            }
+            else
+            {
+                return Json(null);
+            }
+        }
+        #endregion
 
     }
 }

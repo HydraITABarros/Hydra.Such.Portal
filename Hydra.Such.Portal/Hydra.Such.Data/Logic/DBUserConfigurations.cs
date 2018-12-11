@@ -138,6 +138,9 @@ namespace Hydra.Such.Data.Logic
                     NumSerieNotasCreditoCompra = item.NumSerieNotasCreditoCompra,
                     SuperiorHierarquico = item.SuperiorHierarquico,
                     RequisicaoStock = item.RequisicaoStock,
+                    AprovadorPedidoPag1 = item.AprovadorPedidoPag1,
+                    AprovadorPedidoPag2 = item.AprovadorPedidoPag2,
+                    AnulacaoPedidoPagamento = item.AnulacaoPedidoPagamento
                 };
             }
             return null;
@@ -186,6 +189,9 @@ namespace Hydra.Such.Data.Logic
                     NumSerieNotasCreditoCompra = item.NumSerieNotasCreditoCompra,
                     SuperiorHierarquico = item.SuperiorHierarquico,
                     RequisicaoStock = item.RequisicaoStock,
+                    AprovadorPedidoPag1 = item.AprovadorPedidoPag1,
+                    AprovadorPedidoPag2 = item.AprovadorPedidoPag2,
+                    AnulacaoPedidoPagamento = item.AnulacaoPedidoPagamento
                 };
             }
             return null;

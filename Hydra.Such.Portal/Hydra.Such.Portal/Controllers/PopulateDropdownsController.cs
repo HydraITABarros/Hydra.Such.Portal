@@ -2484,7 +2484,19 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        [HttpPost]
+        public JsonResult GetTipoPedidoPagamento()
+        {
+            List<EnumData> result = EnumerablesFixed.TipoPedidoPagamento;
+            return Json(result);
+        }
 
+        [HttpPost]
+        public JsonResult GetEstadoPedidoPagamento()
+        {
+            List<EnumData> result = EnumerablesFixed.EstadoPedidoPagamento;
+            return Json(result);
+        }
     }
 
 
