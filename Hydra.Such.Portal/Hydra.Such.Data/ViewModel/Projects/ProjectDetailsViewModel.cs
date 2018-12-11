@@ -39,6 +39,7 @@ namespace Hydra.Such.Data.ViewModel.Projects
         public int? ProjectCategory { get; set; }
         public string BudgetContractNo { get; set; }
         public bool? InternalProject { get; set; }
+        public bool? Visivel { get; set; }
         public string ProjectLeader { get; set; }
         public string ProjectResponsible { get; set; }
         public string CreateUser { get; set; }
