@@ -333,6 +333,7 @@ namespace Hydra.Such.Portal.Controllers
                         else
                         {
                             //Create Project on NAV
+                            data.Visivel = true;
                             Task<WSCreateNAVProject.Create_Result> TCreateNavProj = WSProject.CreateNavProject(data, _configws);
                             try
                             {
@@ -2822,7 +2823,8 @@ namespace Hydra.Such.Portal.Controllers
                             proj.RegionCode = projectDetails.CódigoRegião;
                             proj.ResponsabilityCenterCode = projectDetails.CódigoCentroResponsabilidade;
                             proj.FunctionalAreaCode = projectDetails.CódigoÁreaFuncional;
-
+                            proj.Status = EstadoProjecto.Encomenda;
+                            proj.Visivel = false;
                             Task<WSCreateNAVProject.Create_Result> createProject = WSProject.CreateNavProject(proj, _configws);
                             createProject.Wait();
                         }
@@ -3154,6 +3156,8 @@ namespace Hydra.Such.Portal.Controllers
                         proj.RegionCode = data[0].RegionCode;
                         proj.ResponsabilityCenterCode = data[0].ResponsabilityCenterCode;
                         proj.FunctionalAreaCode = data[0].FunctionalAreaCode;
+                        proj.Status = EstadoProjecto.Encomenda;
+                        proj.Visivel = false;
                         Task<WSCreateNAVProject.Create_Result> createProject = WSProject.CreateNavProject(proj, _configws);
                         createProject.Wait();
                     }
