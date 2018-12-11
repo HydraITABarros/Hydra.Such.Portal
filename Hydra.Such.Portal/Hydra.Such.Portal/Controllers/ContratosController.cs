@@ -1869,11 +1869,13 @@ namespace Hydra.Such.Portal.Controllers
                         ProjectDetailsViewModel proj = new ProjectDetailsViewModel();
                         proj.ProjectNo = item.NºContrato;
                         proj.ClientNo = item.NºCliente;
-                        proj.Status = item.Estado;
+                        proj.Status = EstadoProjecto.Encomenda;
                         proj.RegionCode = item.CódigoRegião;
                         proj.ResponsabilityCenterCode = item.CódigoCentroResponsabilidade;
                         proj.FunctionalAreaCode = item.CódigoÁreaFuncional;
                         proj.Description = item.Descrição;
+                        proj.Visivel = false;
+
                         Task<WSCreateNAVProject.Create_Result> createProject = WSProject.CreateNavProject(proj, _configws);
                         createProject.Wait();
                     }
@@ -2227,12 +2229,13 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         ProjectDetailsViewModel proj = new ProjectDetailsViewModel();
                         proj.ProjectNo = Contract.ContractNo;
-                        proj.ClientNo = Contract.ClientNo;
-                        proj.Status = Contract.Status;
+                        proj.ClientNo = Contract.ClientNo;                                               
+                        proj.Status = EstadoProjecto.Encomenda;
                         proj.RegionCode = Contract.CodeRegion;
                         proj.ResponsabilityCenterCode = Contract.CodeResponsabilityCenter;
                         proj.FunctionalAreaCode = Contract.CodeFunctionalArea;
                         proj.Description = Contract.Description;
+                        proj.Visivel = false;
                         try
                         {
                             Task<WSCreateNAVProject.Create_Result> createProject = WSProject.CreateNavProject(proj, _configws);
@@ -2691,6 +2694,7 @@ namespace Hydra.Such.Portal.Controllers
 
             return newline;
         }
+
         private static int GetNumeration(int type)
         {
             //Get Contract Numeration
