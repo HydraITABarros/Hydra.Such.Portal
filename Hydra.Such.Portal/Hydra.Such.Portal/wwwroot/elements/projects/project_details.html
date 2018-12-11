@@ -418,7 +418,7 @@
                         </vaadin-combo-box>
                     </div>
                     <div class="col-lg-3">
-                        <such-selectbox id="ResponsabilityCenterCode" value="{{data.budgetContractNo}}" label="Nº Contrato Orçamento" disabled="{{ !_permissions.update }}"
+                        <such-selectbox id="BudgetContractNo" value="{{data.budgetContractNo}}" label="Nº Contrato Orçamento" disabled="{{ !_permissions.update }}"
                                         items="[[LProjectContracts]]"
                                         text-path="value"
                                         value-path="id"
@@ -563,17 +563,41 @@
                 _validateData: function () {
                     this.$.ProjectClient.validate();
                     this.$.ProjectType.validate();
+                    this.$.ProjectLeader.validate();
+                    this.$.ProjectResponsible.validate();
+                    this.$.RegionCode.validate();
+                    this.$.FunctionalAreaCode.validate();
+                    this.$.ResponsabilityCenterCode.validate();
                     if (this.$.Description.validate() &
-                        this.$.ProjectLeader.validate() &
-                        this.$.ProjectResponsible.validate() &
-                        this.$.ContractNo.validate() &
-                        this.$.RegionCode.validate() &
-                        this.$.FunctionalAreaCode.validate() &
-                        this.$.ResponsabilityCenterCode.validate()) {
+                        this.$.ContractNo.validate()) {
 
                         //if (this.$.ProjectClient.value != "" && this.$.ProjectClient.value != undefined) {
                         //    return true;
                         //}
+                        console.log(this.$.ProjectResponsible.value);
+                        if (this.$.ProjectLeader.value == "" || this.$.ProjectLeader.value == undefined) {
+                            this._openToastError("É obrigatória seleção de um Chefe de Projeto.");
+                            return false;
+                        }
+                        if (this.$.ProjectResponsible.value == "" || this.$.ProjectResponsible.value == undefined) {
+                            this._openToastError("É obrigatória seleção de um Responsável de Projeto.");
+                            return false;
+                        }
+
+                        if (this.$.RegionCode.value == "" || this.$.RegionCode.value == undefined) {
+                            this._openToastError("É obrigatória seleção de um Cód. Região.");
+                            return false;
+                        }
+
+                        if (this.$.FunctionalAreaCode.value == "" || this.$.FunctionalAreaCode.value == undefined) {
+                            this._openToastError("É obrigatória seleção de um Cód. Área Funcional.");
+                            return false;
+                        }
+
+                        if (this.$.ResponsabilityCenterCode.value == "" || this.$.ResponsabilityCenterCode.value == undefined) {
+                            this._openToastError("É obrigatória seleção de um Cód. Centro Responsabilidade.");
+                            return false;
+                        }
                         if (this.$.ProjectClient.value == "" || this.$.ProjectClient.value == undefined) {
                             this._openToastError("É obrigatória seleção de um Nº Cliente.");
                             return false;
@@ -584,6 +608,7 @@
                         }
                         return true;
                     }
+
                     this._openToastError("Verifique os dados inseridos.");
                     return false;
                 },
