@@ -163,7 +163,17 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetProjectStatus()
         {
-            List<EnumData> result = EnumerablesFixed.ProjectStatus;
+            var result = new List<EnumData>();
+            foreach (EstadoProjecto item in Enum.GetValues(typeof(EstadoProjecto)))
+            {
+                result.Add(new EnumData()
+                {
+                    Id = (int)item,
+                    Value = item.GetDescription(),
+                });
+
+            }
+
             return Json(result);
         }
         [HttpPost]
@@ -1334,7 +1344,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetProjectListDiary()
         {
-            List<DDMessageString> result = DBProjects.GetAll().Where(x => x.Estado != 5 && x.Estado != 4).Select(x => new DDMessageString()
+            List<DDMessageString> result = DBProjects.GetAll().Where(x => x.Estado != EstadoProjecto.Terminado).Select(x => new DDMessageString()
             {
                 id = x.NºProjeto,
                 value = x.Descrição

@@ -310,5 +310,15 @@ namespace Hydra.Such.Data
             Ferramenta,
             Invoicing
         }
+
+        public enum EstadoProjecto
+        {
+            [Description("Pendente")]
+            Pendente = 0,
+            [Description("Encomenda")]
+            Encomenda = 1,
+            [Description("Terminado")]
+            Terminado = 2  
+        }
     }
 }
