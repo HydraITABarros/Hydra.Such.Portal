@@ -32,6 +32,7 @@ using System.Dynamic;
 using Hydra.Such.Portal.Extensions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Hydra.Such.Data.ViewModel.Encomendas;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -392,6 +393,21 @@ namespace Hydra.Such.Portal.Controllers
             }
             else
                 result = new List<DDMessageString>();
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetAllPurchase([FromBody] string respcenter)
+        {
+            List<DDMessageString> result = null;
+
+            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            result = DBNAV2017Encomendas.ListByDimListAndNoFilter(_config.NAVDatabaseName, _config.NAVCompanyName, userDimensions, "C%").Select(x => new DDMessageString()
+            {
+                id = x.No,
+                value = x.PayToName
+            }).ToList();
 
             return Json(result);
         }

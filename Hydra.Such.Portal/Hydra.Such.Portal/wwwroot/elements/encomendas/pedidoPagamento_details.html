@@ -144,6 +144,7 @@
         <iron-ajax url="/PopulateDropdowns/GetTipoPedidoPagamento" id="grid_Tipo_ajax" last-response="{{LCBTipo}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetEstadoPedidoPagamento" id="grid_Estado_ajax" last-response="{{LCBEstado}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetNAVVendorComboGrid" id="grid_Fornecedor_ajax" last-response="{{LCBFornecedor}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetAllPurchase" id="grid_Encomenda_ajax" last-response="{{LCBEncomenda}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/Encomendas/GetPedidoPagamento"
                    last-response="{{data}}"
@@ -171,7 +172,7 @@
                 <div class="panel-body">
                     <div class="row break_clear">
                         <div class="col-sm-3">
-                            <vaadin-text-field id="ddNoPedido" label="Nº Pedido" value="{{data.noPedido}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                            <vaadin-text-field id="ddNoPedido" label="Nº Pedido" value="{{data.noPedido}}" disabled></vaadin-text-field>
                         </div>
 
                         <div class="col-sm-3">
@@ -191,7 +192,16 @@
                         </div>
 
                         <div class="col-sm-3">
-                            <vaadin-text-field id="ddNoEncomenda" label="Nº Encomenda" value="{{data.noEncomenda}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                            <!--<vaadin-text-field id="ddNoEncomenda" label="Nº Encomenda" value="{{data.noEncomenda}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>-->
+                            <such-selectbox id="ddNoEncomenda"
+                                            label="Nº Encomenda"
+                                            value="{{data.noEncomenda}}"
+                                            items="[[LCBEncomenda]]"
+                                            text-path="value"
+                                            value-path="id"
+                                            fields='[{"field":"id", "name":"Nº Encomenda"}, {"field":"value", "name":"Fornecedor"}]'
+                                            disabled="{{ !_permissions.update }}">
+                            </such-selectbox>
                         </div>
                     </div>
 
@@ -217,8 +227,8 @@
                                             label="Fornecedor"
                                             value="{{data.codigoFornecedor}}"
                                             items="[[LCBFornecedor]]"
-                                            text-path="value"
-                                            value-path="id"
+                                            text-path="name"
+                                            value-path="no_"
                                             fields='[{"field":"no_", "name":"Nº Fornecedor"}, {"field":"name", "name":"Nome"}, {"field":"vatRegistrationNo", "name":"Nº VAT"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Código Postal"}]'
                                             disabled="{{ !_permissions.update }}">
                             </such-selectbox>

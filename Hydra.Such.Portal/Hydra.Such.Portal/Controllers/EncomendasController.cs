@@ -302,7 +302,7 @@ namespace Hydra.Such.Portal.Controllers
                 Pedido.CodigoFornecedor = details.PayToVendorNo;
                 Pedido.Valor = lines.Sum(x => x.Amount);
                 Pedido.ValorJaPedido = pedidos.Sum(x => x.Valor);
-                Pedido.DataText = DateTime.Now.ToShortDateString();
+                Pedido.DataText = DateTime.Now.ToString("yyyy-MM-dd");
                 Pedido.Tipo = 1; //"Transferência Bancária"
                 Pedido.Estado = 1; //"Inicial"
 

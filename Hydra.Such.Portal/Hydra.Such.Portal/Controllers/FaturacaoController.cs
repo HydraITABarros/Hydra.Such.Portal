@@ -98,7 +98,13 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetBillingReceptions()
         {
             UserConfigurationsViewModel userConfig = DBUserConfigurations.GetById(User.Identity.Name).ParseToViewModel();
-            var billingReceptions = billingRecService.GetAllForUser(userConfig);
+            List<BillingReceptionModel> billingReceptions = billingRecService.GetAllForUser(userConfig);
+            billingReceptions.ForEach(item =>
+            {
+                if (!string.IsNullOrEmpty(item.CodFornecedor))
+                    item.NomeFornecedor = DBNAV2017Supplier.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, item.CodFornecedor).FirstOrDefault().Name;
+            });
+
             return Json(billingReceptions);
         }
 
@@ -387,7 +393,7 @@ namespace Hydra.Such.Portal.Controllers
         }
         //CF ou CP ou CC opc
         [HttpPost]
-        public JsonResult PostDocument([FromBody] BillingReceptionModel item)
+        public JsonResult PostDocument([FromBody] BillingReceptionModel item, string tipo)
         {
             BillingReceptionModel postedDocument;
             if (item != null)
@@ -399,9 +405,9 @@ namespace Hydra.Such.Portal.Controllers
                     switch (item.TipoDocumento)
                     {
                         case BillingDocumentTypes.Fatura:
-                            if(item.Id.StartsWith("CF"))
+                            if(tipo == "CF")
                                 serialNumber = userConfig.NumSeriePreFaturasCompraCF;
-                            else if (item.Id.StartsWith("CP"))
+                            else if (tipo == "CP")
                                 serialNumber = userConfig.NumSeriePreFaturasCompraCP;
                             break;
                         case BillingDocumentTypes.NotaCredito:
@@ -700,7 +706,7 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Nº");
                     Col = Col + 1;
                 }
-                if (dp["tipoDocumento"]["hidden"].ToString() == "False")
+                if (dp["tipoDocumentoDescricao"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Tipo de Documento");
                     Col = Col + 1;
@@ -710,9 +716,29 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Estado");
                     Col = Col + 1;
                 }
-                if (dp["dataRececao"]["hidden"].ToString() == "False")
+                if (dp["tipoProblema"]["hidden"].ToString() == "False")
                 {
-                    row.CreateCell(Col).SetCellValue("Data de Receção");
+                    row.CreateCell(Col).SetCellValue("Problema");
+                    Col = Col + 1;
+                }
+                if (dp["descricaoProblema"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Problema Descrição");
+                    Col = Col + 1;
+                }
+                if (dp["destinatario"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Destinatario");
+                    Col = Col + 1;
+                }
+                if (dp["areaPendente"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Àrea Pendente");
+                    Col = Col + 1;
+                }
+                if (dp["areaPendente2"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Àrea Pendente 2");
                     Col = Col + 1;
                 }
                 if (dp["codFornecedor"]["hidden"].ToString() == "False")
@@ -720,49 +746,9 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Fornecedor");
                     Col = Col + 1;
                 }
-                if (dp["numDocFornecedor"]["hidden"].ToString() == "False")
+                if (dp["nomeFornecedor"]["hidden"].ToString() == "False")
                 {
-                    row.CreateCell(Col).SetCellValue("Núm. Doc. Fornecedor");
-                    Col = Col + 1;
-                }
-                if (dp["dataDocFornecedor"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Data Doc. Fornecedor");
-                    Col = Col + 1;
-                }
-                if (dp["numEncomenda"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Núm. Encomenda");
-                    Col = Col + 1;
-                }
-                if (dp["numEncomendaManual"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Núm. Encomenda Manual");
-                    Col = Col + 1;
-                }
-                if (dp["valorEncomendaOriginal"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Valor Encomenda Original");
-                    Col = Col + 1;
-                }
-                if (dp["quantidadeEncomenda"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Quantidade Encomenda");
-                    Col = Col + 1;
-                }
-                if (dp["quantidadeRecebida"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Quantidade Recebida");
-                    Col = Col + 1;
-                }
-                if (dp["valorRecebidoNaoContabilizado"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Valor Recebido não Contabilizado");
-                    Col = Col + 1;
-                }
-                if (dp["valor"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Valor");
+                    row.CreateCell(Col).SetCellValue("Fornecedor Nome");
                     Col = Col + 1;
                 }
                 if (dp["codRegiao"]["hidden"].ToString() == "False")
@@ -790,19 +776,59 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Local");
                     Col = Col + 1;
                 }
+                if (dp["numDocFornecedor"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Núm. Doc. Fornecedor");
+                    Col = Col + 1;
+                }
+                if (dp["dataRececao"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Data de Receção");
+                    Col = Col + 1;
+                }
+                if (dp["dataDocFornecedor"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Data Doc. Fornecedor");
+                    Col = Col + 1;
+                }
+                if (dp["numEncomenda"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Núm. Encomenda");
+                    Col = Col + 1;
+                }
+                if (dp["valor"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Valor");
+                    Col = Col + 1;
+                }
                 if (dp["numAcordoFornecedor"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Núm. Acordo Fornecedor");
                     Col = Col + 1;
                 }
-                if (dp["destinatario"]["hidden"].ToString() == "False")
+                if (dp["numEncomendaManual"]["hidden"].ToString() == "False")
                 {
-                    row.CreateCell(Col).SetCellValue("Destinatario");
+                    row.CreateCell(Col).SetCellValue("Núm. Encomenda Manual");
                     Col = Col + 1;
                 }
-                if (dp["areaPendente"]["hidden"].ToString() == "False")
+                if (dp["valorEncomendaOriginal"]["hidden"].ToString() == "False")
                 {
-                    row.CreateCell(Col).SetCellValue("Àrea Pendente");
+                    row.CreateCell(Col).SetCellValue("Valor Encomenda Original");
+                    Col = Col + 1;
+                }
+                if (dp["quantidadeEncomenda"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Quantidade Encomenda");
+                    Col = Col + 1;
+                }
+                if (dp["quantidadeRecebida"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Quantidade Recebida");
+                    Col = Col + 1;
+                }
+                if (dp["valorRecebidoNaoContabilizado"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Valor Recebido não Contabilizado");
                     Col = Col + 1;
                 }
                 if (dp["dataUltimaInteracao"]["hidden"].ToString() == "False")
@@ -824,7 +850,7 @@ namespace Hydra.Such.Portal.Controllers
                             row.CreateCell(Col).SetCellValue(item.Id);
                             Col = Col + 1;
                         }
-                        if (dp["tipoDocumento"]["hidden"].ToString() == "False")
+                        if (dp["tipoDocumentoDescricao"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.TipoDocumento.ToString());
                             Col = Col + 1;
@@ -834,9 +860,29 @@ namespace Hydra.Such.Portal.Controllers
                             row.CreateCell(Col).SetCellValue(item.Estado.ToString());
                             Col = Col + 1;
                         }
-                        if (dp["dataRececao"]["hidden"].ToString() == "False")
+                        if (dp["tipoProblema"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.DataRececao);
+                            row.CreateCell(Col).SetCellValue(item.TipoProblema);
+                            Col = Col + 1;
+                        }
+                        if (dp["descricaoProblema"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.DescricaoProblema);
+                            Col = Col + 1;
+                        }
+                        if (dp["destinatario"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Destinatario);
+                            Col = Col + 1;
+                        }
+                        if (dp["areaPendente"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.AreaPendente);
+                            Col = Col + 1;
+                        }
+                        if (dp["areaPendente2"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.AreaPendente2);
                             Col = Col + 1;
                         }
                         if (dp["codFornecedor"]["hidden"].ToString() == "False")
@@ -844,49 +890,9 @@ namespace Hydra.Such.Portal.Controllers
                             row.CreateCell(Col).SetCellValue(item.CodFornecedor);
                             Col = Col + 1;
                         }
-                        if (dp["numDocFornecedor"]["hidden"].ToString() == "False")
+                        if (dp["nomeFornecedor"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.NumDocFornecedor);
-                            Col = Col + 1;
-                        }
-                        if (dp["dataDocFornecedor"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.DataDocFornecedor);
-                            Col = Col + 1;
-                        }
-                        if (dp["numEncomenda"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.NumEncomenda);
-                            Col = Col + 1;
-                        }
-                        if (dp["numEncomendaManual"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.NumEncomendaManual);
-                            Col = Col + 1;
-                        }
-                        if (dp["valorEncomendaOriginal"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.ValorEncomendaOriginal.ToString());
-                            Col = Col + 1;
-                        }
-                        if (dp["quantidadeEncomenda"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.QuantidadeEncomenda.ToString());
-                            Col = Col + 1;
-                        }
-                        if (dp["quantidadeRecebida"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.QuantidadeRecebida.ToString());
-                            Col = Col + 1;
-                        }
-                        if (dp["valorRecebidoNaoContabilizado"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.ValorRecebidoNaoContabilizado.ToString());
-                            Col = Col + 1;
-                        }
-                        if (dp["valor"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.Valor.ToString());
+                            row.CreateCell(Col).SetCellValue(item.NomeFornecedor);
                             Col = Col + 1;
                         }
                         if (dp["codRegiao"]["hidden"].ToString() == "False")
@@ -914,19 +920,59 @@ namespace Hydra.Such.Portal.Controllers
                             row.CreateCell(Col).SetCellValue(item.Local);
                             Col = Col + 1;
                         }
+                        if (dp["numDocFornecedor"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.NumDocFornecedor);
+                            Col = Col + 1;
+                        }
+                        if (dp["dataRececao"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.DataRececao);
+                            Col = Col + 1;
+                        }
+                        if (dp["dataDocFornecedor"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.DataDocFornecedor);
+                            Col = Col + 1;
+                        }
+                        if (dp["numEncomenda"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.NumEncomenda);
+                            Col = Col + 1;
+                        }
+                        if (dp["valor"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Valor.ToString());
+                            Col = Col + 1;
+                        }
                         if (dp["numAcordoFornecedor"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.NumAcordoFornecedor);
                             Col = Col + 1;
                         }
-                        if (dp["destinatario"]["hidden"].ToString() == "False")
+                        if (dp["numEncomendaManual"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.Destinatario);
+                            row.CreateCell(Col).SetCellValue(item.NumEncomendaManual);
                             Col = Col + 1;
                         }
-                        if (dp["areaPendente"]["hidden"].ToString() == "False")
+                        if (dp["valorEncomendaOriginal"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.AreaPendente);
+                            row.CreateCell(Col).SetCellValue(item.ValorEncomendaOriginal.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["quantidadeEncomenda"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.QuantidadeEncomenda.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["quantidadeRecebida"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.QuantidadeRecebida.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["valorRecebidoNaoContabilizado"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ValorRecebidoNaoContabilizado.ToString());
                             Col = Col + 1;
                         }
                         if (dp["dataUltimaInteracao"]["hidden"].ToString() == "False")
@@ -956,10 +1002,11 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult Existlink([FromBody] string sFileName)
         {
             //ARomao Comentado em 05/12/218
-            //string name = sFileName.Remove(0, 5);
-            //name=name.Replace('/', '\\');
+            string name = sFileName.Remove(0, 5);
+            name=name.Replace('/', '\\');
             //string link = Directory.GetCurrentDirectory()+"\\wwwroot" + name;
-            string link = sFileName;
+            string link = "E:\\Data\\eSUCH" + name;
+            //string link = sFileName;
             if (System.IO.File.Exists(link))
             {
                 return Json("1");

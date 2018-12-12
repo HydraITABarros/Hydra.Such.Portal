@@ -193,6 +193,7 @@
                     {{item.id}}
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column resizable hidden$="{{ _columns.tipoDocumentoDescricao.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="tipoDocumentoDescricao">Tipo de Documento</vaadin-grid-sorter>
@@ -202,6 +203,7 @@
                     {{item.tipoDocumentoDescricao}}
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column resizable hidden$="{{ _columns.estado.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="estadoDescricao">Estado</vaadin-grid-sorter>
@@ -211,159 +213,27 @@
                     {{ item.estadoDescricao }}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column resizable hidden$="{{ _columns.dataRececao.hidden }}">
+
+            <vaadin-grid-column resizable hidden$="{{ _columns.tipoProblema.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="dataRececao">Data de Receção</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataRececao" />
+                    <vaadin-grid-sorter path="tipoProblema">Problema</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="tipoProblema" />
                 </template>
                 <template>
-                    {{item.dataRececao}}
+                    {{ item.tipoProblema }}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column resizable hidden$="{{ _columns.codFornecedor.hidden }}">
+
+            <vaadin-grid-column resizable hidden$="{{ _columns.descricaoProblema.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="codFornecedor">Fornecedor</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codFornecedor" />
+                    <vaadin-grid-sorter path="descricaoProblema">Problema Descrição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="descricaoProblema" />
                 </template>
                 <template>
-                    {{item.codFornecedor}}
+                    {{ item.descricaoProblema }}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column resizable hidden$="{{ _columns.numDocFornecedor.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="numDocFornecedor">Núm. Doc. Fornecedor</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="numDocFornecedor" />
-                </template>
-                <template>
-                    {{item.numDocFornecedor}}
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column resizable hidden$="{{ _columns.dataDocFornecedor.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="dataDocFornecedor">Data Doc. Fornecedor</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataDocFornecedor" />
-                </template>
-                <template>
-                    {{item.dataDocFornecedor}}
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column resizable hidden$="{{ _columns.numEncomenda.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="numEncomenda">Núm. Encomenda</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="numEncomenda" />
-                </template>
-                <template>
-                    {{item.numEncomenda}}
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column resizable hidden$="{{ _columns.numEncomendaManual.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="numEncomendaManual">Núm. Encomenda Manual</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="numEncomendaManual" />
-                </template>
-                <template>
-                    {{item.numEncomendaManual}}
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column resizable hidden$="{{ _columns.valorEncomendaOriginal.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="valorEncomendaOriginal">Valor Encomenda Original</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="valorEncomendaOriginal" />
-                </template>
-                <template>
-                    {{item.valorEncomendaOriginal}}
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column resizable hidden$="{{ _columns.quantidadeEncomenda.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="quantidadeEncomenda">Quantidade Encomenda</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="quantidadeEncomenda" />
-                </template>
-                <template>
-                    {{item.quantidadeEncomenda}}
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column resizable hidden$="{{ _columns.quantidadeRecebida.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="quantidadeRecebida">Quantidade Recebida</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="quantidadeRecebida" />
-                </template>
-                <template>
-                    {{item.quantidadeRecebida}}
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column resizable hidden$="{{ _columns.valorRecebidoNaoContabilizado.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="valorRecebidoNaoContabilizado">Valor Recebido não Contabilizado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="valorRecebidoNaoContabilizado" />
-                </template>
-                <template>
-                    {{item.valorRecebidoNaoContabilizado}}
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column resizable hidden$="{{ _columns.valor.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="valor">Valor</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="valor" />
-                </template>
-                <template>
-                    {{item.valor}}
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column resizable hidden$="{{ _columns.codRegiao.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="codRegiao">Cód. Região</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codRegiao" />
-                </template>
-                <template>
-                    {{item.codRegiao}}
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column resizable hidden$="{{ _columns.codAreaFuncional.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="codAreaFuncional">Cód. Área Funcional</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codAreaFuncional" />
-                </template>
-                <template>
-                    {{item.codAreaFuncional}}
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column resizable hidden$="{{ _columns.codCentroResponsabilidade.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="codCentroResponsabilidade">Cód. Centro Responsabilidade</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codCentroResponsabilidade" />
-                </template>
-                <template>
-                    {{item.codCentroResponsabilidade}}
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column resizable hidden$="{{ _columns.codLocalizacao.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="codLocalizacao">Cód. Localização</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codLocalizacao" />
-                </template>
-                <template>
-                    {{item.codLocalizacao}}
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column resizable hidden$="{{ _columns.local.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="local">Local</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="local" />
-                </template>
-                <template>
-                    {{ item.local }}
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column resizable hidden$="{{ _columns.numAcordoFornecedor.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="numAcordoFornecedor">Núm. Acordo Fornecedor</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="numAcordoFornecedor" />
-                </template>
-                <template>
-                    {{ item.numAcordoFornecedor }}
-                </template>
-            </vaadin-grid-column>
+
             <vaadin-grid-column resizable hidden$="{{ _columns.destinatario.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="destinatario">Destinatario</vaadin-grid-sorter>
@@ -373,6 +243,7 @@
                     {{ item.destinatario }}
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column resizable hidden$="{{ _columns.areaPendente.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="areaPendente">Àrea Pendente</vaadin-grid-sorter>
@@ -382,6 +253,197 @@
                     {{ item.areaPendente }}
                 </template>
             </vaadin-grid-column>
+
+            <vaadin-grid-column resizable hidden$="{{ _columns.areaPendente2.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="areaPendente2">Àrea Pendente 2</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="areaPendente2" />
+                </template>
+                <template>
+                    {{ item.areaPendente2 }}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable hidden$="{{ _columns.codFornecedor.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="codFornecedor">Fornecedor</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codFornecedor" />
+                </template>
+                <template>
+                    {{item.codFornecedor}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable hidden$="{{ _columns.nomeFornecedor.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="nomeFornecedor">Fornecedor Nome</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="nomeFornecedor" />
+                </template>
+                <template>
+                    {{item.nomeFornecedor}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable hidden$="{{ _columns.codRegiao.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="codRegiao">Cód. Região</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codRegiao" />
+                </template>
+                <template>
+                    {{item.codRegiao}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable hidden$="{{ _columns.codAreaFuncional.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="codAreaFuncional">Cód. Área Funcional</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codAreaFuncional" />
+                </template>
+                <template>
+                    {{item.codAreaFuncional}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable hidden$="{{ _columns.codCentroResponsabilidade.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="codCentroResponsabilidade">Cód. Centro Responsabilidade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codCentroResponsabilidade" />
+                </template>
+                <template>
+                    {{item.codCentroResponsabilidade}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable hidden$="{{ _columns.codLocalizacao.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="codLocalizacao">Cód. Localização</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codLocalizacao" />
+                </template>
+                <template>
+                    {{item.codLocalizacao}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable hidden$="{{ _columns.local.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="local">Local</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="local" />
+                </template>
+                <template>
+                    {{ item.local }}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable hidden$="{{ _columns.numDocFornecedor.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="numDocFornecedor">Núm. Doc. Fornecedor</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="numDocFornecedor" />
+                </template>
+                <template>
+                    {{item.numDocFornecedor}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable hidden$="{{ _columns.dataRececao.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="dataRececao">Data de Receção</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataRececao" />
+                </template>
+                <template>
+                    {{item.dataRececao}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable hidden$="{{ _columns.dataDocFornecedor.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="dataDocFornecedor">Data Doc. Fornecedor</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataDocFornecedor" />
+                </template>
+                <template>
+                    {{item.dataDocFornecedor}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable hidden$="{{ _columns.numEncomenda.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="numEncomenda">Núm. Encomenda</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="numEncomenda" />
+                </template>
+                <template>
+                    {{item.numEncomenda}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable hidden$="{{ _columns.valor.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="valor">Valor</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="valor" />
+                </template>
+                <template>
+                    {{item.valor}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable hidden$="{{ _columns.numAcordoFornecedor.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="numAcordoFornecedor">Núm. Acordo Fornecedor</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="numAcordoFornecedor" />
+                </template>
+                <template>
+                    {{ item.numAcordoFornecedor }}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable hidden$="{{ _columns.numEncomendaManual.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="numEncomendaManual">Núm. Encomenda Manual</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="numEncomendaManual" />
+                </template>
+                <template>
+                    {{item.numEncomendaManual}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable hidden$="{{ _columns.valorEncomendaOriginal.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="valorEncomendaOriginal">Valor Encomenda Original</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="valorEncomendaOriginal" />
+                </template>
+                <template>
+                    {{item.valorEncomendaOriginal}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable hidden$="{{ _columns.quantidadeEncomenda.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="quantidadeEncomenda">Quantidade Encomenda</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="quantidadeEncomenda" />
+                </template>
+                <template>
+                    {{item.quantidadeEncomenda}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable hidden$="{{ _columns.quantidadeRecebida.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="quantidadeRecebida">Quantidade Recebida</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="quantidadeRecebida" />
+                </template>
+                <template>
+                    {{item.quantidadeRecebida}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable hidden$="{{ _columns.valorRecebidoNaoContabilizado.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="valorRecebidoNaoContabilizado">Valor Recebido não Contabilizado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="valorRecebidoNaoContabilizado" />
+                </template>
+                <template>
+                    {{item.valorRecebidoNaoContabilizado}}
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column resizable hidden$="{{ _columns.dataUltimaInteracao.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="dataUltimaInteracao">Data Última Interação</vaadin-grid-sorter>
@@ -392,6 +454,7 @@
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
+
         <paper-dialog id="dialogViewHist_Pending" class="dialgoBox" modal>
             <div class="row break_clear">
                 <div class="col-sm-3">
@@ -787,27 +850,31 @@
                 _startColumnToggle: function () {
                     var columns = {
                         "id": { hidden: false, label: "Nº" },
-                        "tipoDocumento": { hidden: false, label: "Tipo de Documento" },
+                        "tipoDocumentoDescricao": { hidden: false, label: "Tipo de Documento" },
                         "estado": { hidden: false, label: "Estado" },
-                        "dataRececao": { hidden: false, label: "Data de Receção" },
+                        "tipoProblema": { hidden: false, label: "Problema" },
+                        "descricaoProblema": { hidden: false, label: "Problema Descrição" },
+                        "destinatario": { hidden: false, label: "Destinatario" },
+                        "areaPendente": { hidden: false, label: "Àrea Pendente" },
+                        "areaPendente2": { hidden: false, label: "Àrea Pendente 2" },
                         "codFornecedor": { hidden: false, label: "Fornecedor" },
-                        "numDocFornecedor": { hidden: false, label: "Núm. Doc. Fornecedor" },
-                        "dataDocFornecedor": { hidden: false, label: "Data Doc. Fornecedor" },
-                        "numEncomenda": { hidden: false, label: "Núm. Encomenda" },
-                        "numEncomendaManual": { hidden: false, label: "Núm. Encomenda Manual" },
-                        "valorEncomendaOriginal": { hidden: false, label: "Valor Encomenda Original" },
-                        "quantidadeEncomenda": { hidden: false, label: "Quantidade Encomenda" },
-                        "quantidadeRecebida": { hidden: false, label: "Quantidade Recebida" },
-                        "valorRecebidoNaoContabilizado": { hidden: false, label: "Valor Recebido não Contabilizado" },
-                        "valor": { hidden: false, label: "Valor" },
+                        "nomeFornecedor": { hidden: false, label: "Fornecedor Nome" },
                         "codRegiao": { hidden: false, label: "Cód. Região" },
                         "codAreaFuncional": { hidden: false, label: "Cód. Área Funcional" },
                         "codCentroResponsabilidade": { hidden: false, label: "Cód. Centro Responsabilidade" },
                         "codLocalizacao": { hidden: false, label: "Cód. Localização" },
                         "local": { hidden: false, label: "Local" },
+                        "numDocFornecedor": { hidden: false, label: "Núm. Doc. Fornecedor" },
+                        "dataRececao": { hidden: false, label: "Data de Receção" },
+                        "dataDocFornecedor": { hidden: false, label: "Data Doc. Fornecedor" },
+                        "numEncomenda": { hidden: false, label: "Núm. Encomenda" },
+                        "valor": { hidden: false, label: "Valor" },
                         "numAcordoFornecedor": { hidden: false, label: "Núm. Acordo Fornecedor" },
-                        "destinatario": { hidden: false, label: "Destinatario" },
-                        "areaPendente": { hidden: false, label: "Àrea Pendente" },
+                        "numEncomendaManual": { hidden: false, label: "Núm. Encomenda Manual" },
+                        "valorEncomendaOriginal": { hidden: false, label: "Valor Encomenda Original" },
+                        "quantidadeEncomenda": { hidden: false, label: "Quantidade Encomenda" },
+                        "quantidadeRecebida": { hidden: false, label: "Quantidade Recebida" },
+                        "valorRecebidoNaoContabilizado": { hidden: false, label: "Valor Recebido não Contabilizado" },
                         "dataUltimaInteracao": { hidden: false, label: "Data Última Interação" }
                     };
 
