@@ -267,7 +267,7 @@
                     <paper-button class="tablinks" on-tap="_createProject" id="_btnCreateProject"><i class="fa fa-archive" aria-hidden="true"></i> Criar Projeto</paper-button>
                     <paper-button class="tablinks" on-tap="_sendToHistory" id="_btnsendToHistory"><i class="fa fa-archive" aria-hidden="true"></i> Enviar para Histórico</paper-button>
                 </template>
-                
+
                 <template is="dom-if" if="{{ _isHistoricDiv }}">
                     <paper-button class="tablinks" on-tap="_removeFromHistoric" id="_btnremoveFromHistoric"><i class="fa fa-archive" aria-hidden="true"></i> Reativar</paper-button>
                 </template>
@@ -823,21 +823,38 @@
                                                             </div>
 
                                                         </div>
-                                                        <div class="row">
-                                                            <div class="col-md-6">
-                                                                <such-textarea rows="5" value="{{data.textoFatura}}" id="_LastInvoiceDate" name="_LastInvoiceDate" label="Texto Fatura" disabled="{{ _lockFields }}"> </such-textarea>
-                                                            </div>
-                                                        </div>
+
                                                     </div>
                                                 </paper-collapse-item>
                                             </paper-collapse-group>
                                         </div>
                                     </div>
 
+
                                     <div class="row break_clear">
                                         <div class="panel panel-default">
                                             <paper-collapse-group>
-                                                <paper-collapse-item header="Textos Fatura">
+                                                <paper-collapse-item header="Textos Fatura Simples">
+                                                    <div class="panel-body">
+
+                                                        <div class="">
+                                                            <div class="col-md-6">
+                                                                <such-textarea rows="5" value="{{data.textoFatura}}" id="_LastInvoiceDate" name="_LastInvoiceDate" label="Texto Fatura" disabled="{{ _lockFields }}"> </such-textarea>
+                                                            </div>
+                                                        </div>
+
+
+                                                    </div>
+                                                </paper-collapse-item>
+                                            </paper-collapse-group>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="row break_clear">
+                                        <div class="panel panel-default">
+                                            <paper-collapse-group>
+                                                <paper-collapse-item header="Textos Fatura Grupo">
                                                     <div class="panel-body">
                                                         <template is="dom-if" if="{{ !_lockFields }}">
                                                             <div class="row">
@@ -1029,7 +1046,7 @@
                                         </such-selectbox>
                                     </div>
                                     <div class="col-lg-2">
-                                        <vaadin-text-field value="{{_CLDescription}}" id="_CLDescription" name="_CLDescription" label="Descrição"  maxlength="50" disabled="{{ _lockFields }}"> </vaadin-text-field>
+                                        <vaadin-text-field value="{{_CLDescription}}" id="_CLDescription" name="_CLDescription" label="Descrição" maxlength="50" disabled="{{ _lockFields }}"> </vaadin-text-field>
                                     </div>
                                     <div class="col-lg-2">
                                         <vaadin-text-field value="{{_CLDescription2}}" id="_CLDescription2" name="_CLDescription2" label="Descrição 2" maxlength="50" disabled="{{ _lockFields }}"> </vaadin-text-field>
@@ -1991,7 +2008,7 @@
                     this.$._CLDateCount.value = today;
                     //GET CONTRACT DATA
                     var VersionNo = this._versionno == "" ? 0 : parseInt(this._versionno);
-                    this.$.page_databound_ajax.body = JSON.stringify({ "ContractNo": this._contractno, "VersionNo": VersionNo, "ContractType" : 3});
+                    this.$.page_databound_ajax.body = JSON.stringify({ "ContractNo": this._contractno, "VersionNo": VersionNo, "ContractType": 3 });
                     this.$.page_databound_ajax.generateRequest();
 
                     if (!this._permissions.update) {
@@ -2085,7 +2102,7 @@
                         if (this.$.mCodeRegion.value == "" || this.$.mCodeRegion.value == undefined) {
                             this.$.mCodeRegion.validate();
                             this._openToastError("É obrigatória seleção de Cód. Região.");
-                            return false;                         
+                            return false;
                         }
                         return true;
                     }
@@ -2096,16 +2113,19 @@
                     window.location.href = "../DetalhesContrato";
                 },
                 _clientChange: function (e) {
-                    var client = this.CBClients.find(x => x.no_ == e.detail.value);
-                    if (client != null) {
-                        this.$.codeShippingAddress.value = "";
-                        this.$.ShippingName.value = client.name;
-                        this.$.ShippingAddress.value = client.address;
-                        this.$.shippingZipCode.value = client.postCode;
-                        this.$.ShippingLocality.value = client.city;
+                    if (typeof this.CBClients != 'undefined') {
+                        var client = this.CBClients.find(x => x.no_ == e.detail.value);
+                        if (client != null) {
+                            this.$.codeShippingAddress.value = "";
+                            this.$.ShippingName.value = client.name;
+                            this.$.ShippingAddress.value = client.address;
+                            this.$.shippingZipCode.value = client.postCode;
+                            this.$.ShippingLocality.value = client.city;
+                        }
                     }
                     this.$.shippingAddresses_ajax.body = JSON.stringify(e.detail.value);
                     this.$.shippingAddresses_ajax.generateRequest();
+
                 },
                 //CRUDS
                 _create: function () {
@@ -2330,7 +2350,7 @@
                                 projectNo: this._CRProjectNo,
                                 lastInvoiceDate: this._CRLastInvoiceDate
                             });
-                        
+
                             this._executeRequest("/Contratos/UpdateContract", this.data);
 
                             this._CRStartDate = "";
@@ -2352,17 +2372,17 @@
                 _validateRequisitionData: function () {
                     var startDateElem = Polymer.dom(this.root).querySelector('#_CRStartDate');
                     var promisseNoElem = Polymer.dom(this.root).querySelector('#_CRPromiseNo');
-                    
+
                     if (startDateElem.validate() &
                         promisseNoElem.validate()) {
-                        
+
                         return true;
                     }
                     this._openToastError("Verifique os dados inseridos.");
                     return false;
                 },
                 _toggleToastMultiple: function () {
-                        //close
+                    //close
                     this.$.ToastMessageMultiple.toggle();
                     this.CreateInvoiceResponse.eMessages = [];
                     window.location.href = "/Contratos/DetalhesContrato/" + this.data.contractNo + "?version=" + this.data.versionNo + "&" + "isHistoric=" + false;
@@ -2554,7 +2574,7 @@
                     else {
                         this._openToastError("Erro ao criar a fatura!");
                     }
-                   
+
                 },
                 _createInvoiceResponseProcessor: function (data) {
                     var verifica = false;
@@ -2672,7 +2692,7 @@
                     this.dataLines.lines.find(x => x == this._SelectedLine).type = e.detail.value;
                     this.$.grid_contractlines.clearCache();
                 },
-                _clContractLineCodeGridChange: function (e) {             
+                _clContractLineCodeGridChange: function (e) {
                     if (e.detail.value != null && e.detail.value != "") {
                         var code = e.detail.value;
                         var index = this.CBContractLineCodesGrid.findIndex(i => i.id == code);
@@ -2811,7 +2831,7 @@
                     }
                 },
                 _createNewInvoice: function (param) {
-                    if (this.$._CLDateCount.validate()){
+                    if (this.$._CLDateCount.validate()) {
                         this.$.dlgCreateInvoice.close();
                         var contract = this.$.contractNo.value;
                         this.$.ExitSalesHeader_ajax.body = JSON.stringify({ "Contrato": contract });
@@ -2917,7 +2937,7 @@
                     this._openToastError("Verifique os dados inseridos.");
                     return false;
                 },
-                _ValidateInvoice: function () { 
+                _ValidateInvoice: function () {
                     var messageErro = "";
                     if (this.$.mStatus.value != 4 && this.$.mStatus.value != 7) {
                         messageErro = "O estado do contrato tem que ser: Assinado ou Em Vigor \n";
@@ -2939,7 +2959,7 @@
                     }
                     if (this.$.dueDate.value < this.$.contractStartDate.value && this.$.dueDate.value != null)
                         messageErro += "Data da expiração não pode ser menor que o inicio da faturação \n";
-                   
+
                     if (this.$.dueDate.value < this.$.contractEndDate.value && this.$.dueDate.value != null)
                         messageErro += "Data da fim de periodo não pode ser maior que a data de expiração \n";
 
@@ -2977,7 +2997,7 @@
                         this.$.updatePrices_ajax.generateRequest();
                     }
                 },
-                _responseFillInSend: function() {
+                _responseFillInSend: function () {
 
                 },
                 _updatePricesResponseProcessor: function () {
@@ -3112,15 +3132,16 @@
                 },
                 _clResponseProcessor: function (e) {
                     var response = this.removedHistoric;
+                    if (typeof response != 'undefined') {
+                        if (response.eReasonCode == 1) {
+                            this._openToast("Contrato Reativado com sucesso.");
+                            this._ishistoric = "false";
+                            this._ishistoricDiv = false;
+                            window.location.href = "/Contratos/DetalhesContrato/" + this._contractno + "?version=" + this._versionno + "&" + "isHistoric=" + false;
 
-                    if (response.eReasonCode == 1) {
-                        this._openToast("Contrato Reativado com sucesso.");
-                        this._ishistoric = "false";
-                        this._ishistoricDiv = false;
-                        window.location.href = "/Contratos/DetalhesContrato/" + this._contractno + "?version=" + this._versionno + "&" + "isHistoric=" + false;
-
-                    } else {
-                        this._openToastError("Erro ao reativar contrato.");
+                        } else {
+                            this._openToastError("Erro ao reativar contrato.");
+                        }
                     }
                 },
             });
