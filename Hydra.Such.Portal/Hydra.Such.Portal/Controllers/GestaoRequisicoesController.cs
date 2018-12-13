@@ -3887,7 +3887,7 @@ namespace Hydra.Such.Portal.Controllers
                                 Anexos newfile = new Anexos();
                                 newfile.NºOrigem = id;
                                 newfile.UrlAnexo = full_filename;
-                                newfile.TipoOrigem = 1;
+                                newfile.TipoOrigem = TipoOrigemAnexos.PreRequisicao;
                                 newfile.DataHoraCriação = DateTime.Now;
                                 newfile.UtilizadorCriação = User.Identity.Name;
 

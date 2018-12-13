@@ -6980,7 +6980,7 @@ namespace Hydra.Such.Portal.Controllers
                             newfile.UrlAnexo = full_filename;
 
                             //TipoOrigem: 1-PréRequisição; 2-Requisição; 3-Contratos; 4-Procedimentos;5-ConsultaMercado 
-                            newfile.TipoOrigem = 4;
+                            newfile.TipoOrigem = TipoOrigemAnexos.Procedimentos;
 
                             newfile.DataHoraCriação = DateTime.Now;
                             newfile.UtilizadorCriação = User.Identity.Name;
@@ -7010,7 +7010,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             string id = requestParams["id"].ToString();
 
-            List<Anexos> list = DBAttachments.GetById(4, id);
+            List<Anexos> list = DBAttachments.GetById(TipoOrigemAnexos.Procedimentos, id);
             List<AttachmentsViewModel> attach = new List<AttachmentsViewModel>();
             list.ForEach(x => attach.Add(DBAttachments.ParseToViewModel(x)));
             return Json(attach);

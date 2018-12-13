@@ -3725,6 +3725,7 @@ namespace Hydra.Such.Portal.Controllers
 
         [HttpPost]
         [Route("Contratos/FileUpload")]
+        [Route("Contratos/FileUpload/{id}")]
         [Route("Contratos/FileUpload/{id}/{linha}")]
         public JsonResult FileUpload(string id, int linha)
         {
@@ -3750,7 +3751,7 @@ namespace Hydra.Such.Portal.Controllers
                             newfile.UrlAnexo = full_filename;
 
                             //TipoOrigem: 1-PréRequisição; 2-Requisição; 3-Contratos; 4-Procedimentos;5-ConsultaMercado 
-                            newfile.TipoOrigem = 3;
+                            newfile.TipoOrigem = TipoOrigemAnexos.Contratos;
 
                             newfile.DataHoraCriação = DateTime.Now;
                             newfile.UtilizadorCriação = User.Identity.Name;
@@ -3768,7 +3769,7 @@ namespace Hydra.Such.Portal.Controllers
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception e )
             {
                 throw;
             }
