@@ -121,6 +121,7 @@
                     {{item.yourReference}}
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="170px" resizable hidden$="{{ _columns.orderDate.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="orderDate">Data da Encomenda</vaadin-grid-sorter>
@@ -139,6 +140,19 @@
                     {{item.noConsulta}}
                 </template>
             </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.total.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="total">Total</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="total" />
+                </template>
+                <template>
+                    <div class="text-right">
+                        [[ _formatCurrencyValue(item.total) ]]
+                    </div>
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column width="170px" resizable hidden$="{{ _columns.expectedReceiptDate.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="expectedReceiptDate">Data Recepção Esperada</vaadin-grid-sorter>
@@ -194,8 +208,8 @@
                     [[_formatBoolValue(item.hasAnAdvance)]]
                 </template>
             </vaadin-grid-column>
-            
-            
+
+
         </vaadin-grid>
 
 
@@ -277,6 +291,7 @@
                         "payToName": { hidden: false, label: "Nome Fornecedor" },
                         "yourReference": { hidden: false, label: "Sua Referência" },
                         "noConsulta": { hidden: false, label: "Nº Consulta Mercado" },
+                        "total": { hidden: false, label: "Total" },
                         "expectedReceiptDate": { hidden: false, label: "Data da Encomenda" },
                         "requisitionNo": { hidden: false, label: "Pedido Interno" },
                         "regionId": { hidden: false, label: "Cód. Região" },
@@ -315,7 +330,19 @@
                 },
                 _formatBoolValue: function (value) {
                     return value ? "Sim" : "Não";
-                }
+                },
+                /* end - ColumnToggle */
+                _formatCurrencyValue: function (value) {
+
+                    if (value) {
+                        value = value + "";
+                        value = value.replace(",", ".");
+                    }
+                    value = value * 1;
+                    if (value != null && value != 0) {
+                        return currency(Math.round(value * 100) / 100, { separator: '.', decimal: ',' }).format() + ' €';
+                    }
+                },
                 /* end - ColumnToggle */
             });
         });
