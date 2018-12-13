@@ -268,9 +268,25 @@ namespace Hydra.Such.Portal.Controllers
         #region PedidoPagamento
 
         [HttpGet]
+        public IActionResult PedidoPagamento_List()
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.PedidosPagamento);
+
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        [HttpGet]
         public IActionResult PedidoPagamento_Details(string id)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Encomendas);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.PedidosPagamento);
 
             if (UPerm != null && UPerm.Read.Value)
             {
@@ -286,33 +302,121 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetPedidoPagamento([FromBody] EncomendasViewModel Encomenda)
+        public JsonResult GetPedidoPagamento(string id)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Encomendas);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.PedidosPagamento);
 
             if (UPerm != null && UPerm.Read.Value)
             {
-                var details = DBNAV2017Encomendas.GetDetailsByNo(_config.NAVDatabaseName, _config.NAVCompanyName, Encomenda.No, "C%");
-                var lines = DBNAV2017Encomendas.ListLinesByNo(_config.NAVDatabaseName, _config.NAVCompanyName, Encomenda.No, "C%");
-                var pedidos = DBPedidoPagamento.GetAllPedidosPagamentoByEncomenda(Encomenda.No);
+                if (id.StartsWith("C"))
+                {
+                    var details = DBNAV2017Encomendas.GetDetailsByNo(_config.NAVDatabaseName, _config.NAVCompanyName, id, "C%");
+                    var lines = DBNAV2017Encomendas.ListLinesByNo(_config.NAVDatabaseName, _config.NAVCompanyName, id, "C%");
+                    var vendor = DBNAV2017VendorBankAccount.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName, details.PayToVendorNo);
+                    var pedidos = DBPedidoPagamento.GetAllPedidosPagamentoByEncomenda(id);
 
-                PedidosPagamentoViewModel Pedido = new PedidosPagamentoViewModel();
+                    PedidosPagamentoViewModel Pedido = new PedidosPagamentoViewModel();
 
-                Pedido.NoEncomenda = Encomenda.No;
-                Pedido.CodigoFornecedor = details.PayToVendorNo;
-                Pedido.Valor = lines.Sum(x => x.Amount);
-                Pedido.ValorJaPedido = pedidos.Sum(x => x.Valor);
-                Pedido.DataText = DateTime.Now.ToString("yyyy-MM-dd");
-                Pedido.Tipo = 1; //"Transferência Bancária"
-                Pedido.Estado = 1; //"Inicial"
+                    Pedido.Data = DateTime.Now;
+                    Pedido.Tipo = 1; //"Transferência Bancária"
+                    Pedido.Estado = 1; //"Inicial"
+                    Pedido.Aprovado = false;
+                    Pedido.ValorEncomenda = lines.Sum(x => x.AmountIncludingVAT);
+                    Pedido.NoEncomenda = id;
+                    Pedido.CodigoFornecedor = details.PayToVendorNo;
+                    Pedido.Fornecedor = details.PayToName;
+                    Pedido.NIB = vendor.NIB;
+                    Pedido.IBAN = vendor.IBAN;
+                    Pedido.DataPedido = DateTime.Now;
+                    Pedido.UserPedido = User.Identity.Name;
+                    Pedido.BloqueadoFaltaPagamento = false;
+                    Pedido.Arquivado = false;
+                    Pedido.Resolvido = false;
+                    Pedido.Prioritario = false;
 
-                return Json(Pedido);
+                    Pedido.ValorJaPedido = pedidos.Sum(x => x.Valor);
+                    Pedido.DataText = DateTime.Now.ToString("yyyy-MM-dd");
+                    Pedido.DataPedidoText = DateTime.Now.ToString("yyyy-MM-dd");
+
+                    return Json(Pedido);
+                }
+                else
+                {
+                    int idPedido = Convert.ToInt32(id);
+                    PedidosPagamentoViewModel Pedido = DBPedidoPagamento.ParseToViewModel(DBPedidoPagamento.GetIDPedidosPagamento(idPedido));
+
+                    var pedidos = DBPedidoPagamento.GetAllPedidosPagamentoByEncomenda(id);
+                    Pedido.ValorJaPedido = pedidos.Sum(x => x.Valor);
+
+                    return Json(Pedido);
+                }
             }
             else
             {
                 return Json(null);
             }
         }
+
+        [HttpPost]
+        public JsonResult CriarPedidoPagamento([FromBody] PedidosPagamentoViewModel data)
+        {
+            try
+            {
+                if (data != null)
+                {
+                    data.Data = DateTime.Now;
+                    data.DataPedido = DateTime.Now;
+                    data.UserPedido = User.Identity.Name;
+                    if (data.Prioritario == true)
+                        data.DataPrioridade = DateTime.Now;
+                    data.UtilizadorCriacao = User.Identity.Name;
+                    data.DataCriacao = DateTime.Now;
+
+                    if (DBPedidoPagamento.Create(DBPedidoPagamento.ParseToDB(data)) != null)
+                    {
+                        data.eReasonCode = 1;
+                        data.eMessage = "Foi criado com sucesso o Pedido de Pagemento.";
+                    }
+                    else
+                    {
+                        data.eReasonCode = 2;
+                        data.eMessage = "Ocorreu um erro na criação do Pedido de Pagemento.";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                data.eReasonCode = 99;
+                data.eMessage = "Ocorreu um erro ao criar o Pedido de Pagemento.";
+            }
+            return Json(data);
+        }
+
+        [HttpPost]
+        public JsonResult GetListPedidosPagamento()
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.PedidosPagamento);
+
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                List<PedidosPagamentoViewModel> result = DBPedidoPagamento.ParseToViewModel(DBPedidoPagamento.GetAllPedidosPagamento());
+
+                if (result != null)
+                {
+                    result.ForEach(PEDIDO =>
+                    {
+                        PEDIDO.TipoText = PEDIDO.Tipo != null ? EnumerablesFixed.TipoPedidoPagamento.Where(y => y.Id == PEDIDO.Tipo).FirstOrDefault().Value : "";
+                        PEDIDO.EstadoText = PEDIDO.Estado != null ? EnumerablesFixed.EstadoPedidoPagamento.Where(y => y.Id == PEDIDO.Estado).FirstOrDefault().Value : "";
+                    });
+                }
+                return Json(result);
+            }
+            else
+            {
+                return Json(null);
+            }
+        }
+
         #endregion
 
     }

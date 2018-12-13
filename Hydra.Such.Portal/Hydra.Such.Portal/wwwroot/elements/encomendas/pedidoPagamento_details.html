@@ -155,6 +155,15 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/Encomendas/CriarPedidoPagamento"
+                   last-response="{{resultCriarPedidoPagamento}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_CriarPedidoPagamento_ajax"
+                   on-response="_responseCriarPedidoPagamento"
+                   content-type="application/json">
+        </iron-ajax>
+
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
             <paper-button class="tablinks" on-tap="_createNewPedidoPagamento"><i class="fa fa-check-square" aria-hidden="true"></i> Criar Pedido</paper-button>
@@ -171,7 +180,7 @@
             <div class="panel panel-default">
                 <div class="panel-body">
                     <div class="row break_clear">
-                        <div class="col-sm-3">
+                        <div class="col-sm-3" hidden>
                             <vaadin-text-field id="ddNoPedido" label="Nº Pedido" value="{{data.noPedido}}" disabled></vaadin-text-field>
                         </div>
 
@@ -179,35 +188,38 @@
                             <vaadin-date-picker id="ddData" label="Data" value="{{data.dataText}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
                         </div>
 
+
                         <div class="col-sm-3">
-                            <such-selectbox id="ddTipo"
-                                            label="Tipo"
-                                            value="{{data.tipo}}"
-                                            items="[[LCBTipo]]"
-                                            text-path="value"
-                                            value-path="id"
-                                            fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Tipo"}]'
-                                            disabled>
-                            </such-selectbox>
+                            <vaadin-text-field id="ddNoEncomenda" label="Nº Encomenda" value="{{data.noEncomenda}}" disabled></vaadin-text-field>
                         </div>
 
                         <div class="col-sm-3">
-                            <!--<vaadin-text-field id="ddNoEncomenda" label="Nº Encomenda" value="{{data.noEncomenda}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>-->
-                            <such-selectbox id="ddNoEncomenda"
-                                            label="Nº Encomenda"
-                                            value="{{data.noEncomenda}}"
-                                            items="[[LCBEncomenda]]"
-                                            text-path="value"
-                                            value-path="id"
-                                            fields='[{"field":"id", "name":"Nº Encomenda"}, {"field":"value", "name":"Fornecedor"}]'
-                                            disabled="{{ !_permissions.update }}">
-                            </such-selectbox>
+                            <vaadin-text-field id="ddFornecedor" label="Fornecedor" value="{{data.fornecedor}}" disabled></vaadin-text-field>
+                        </div>
+
+                        <div class="col-sm-3" style="text-align:right">
+                            <vaadin-text-field id="ddValorEncomenda" label="Valor da Encomenda" value="{{data.valorEncomenda}}" disabled><div slot="suffix">€</div></vaadin-text-field>
                         </div>
                     </div>
 
                     <div class="row break_clear">
+
+                        <div class="col-sm-3" style="text-align:right">
+                            <vaadin-text-field id="ddValorJaPedido" label="Valor já Pedido" value="{{data.valorJaPedido}}" disabled><div slot="suffix">€</div></vaadin-text-field>
+                        </div>
+
+                        <div class="col-sm-3" style="text-align:right">
+                            <vaadin-text-field id="ddValorpedidoComIVA" label="Valor do Pedido c/ IVA" value="{{data.valor}}" disabled="{{ !_permissions.update }}" type="number" pattern="^[1-9]\d*(\.\d+)?$" on-value-changed="_ConvertDecimals" on-blur="_validarValorDoPedido"><div slot="suffix">€</div></vaadin-text-field>
+                        </div>
+
                         <div class="col-sm-3">
-                            <vaadin-text-field id="ddValor" label="Valor" value="{{data.valor}}" disabled="{{ !_permissions.update }}" type="number" pattern="^[1-9]\d*(\.\d+)?$" on-value-changed="_ConvertDecimals"><div slot="suffix">€</div></vaadin-text-field>
+                            <vaadin-checkbox id="ddPrioritario" checked="{{data.prioritario}}" disabled="{{ !_permissions.update }}">Prioritário</vaadin-checkbox>
+                        </div>
+                    </div>
+
+                    <div class="row break_clear">
+                        <div class="col-sm-6">
+                            <such-textarea id="ddDescricao" label="Descrição" value="{{data.descricao}}" rows="5" maxlength="250" disabled="{{ !_permissions.update }}"></such-textarea>
                         </div>
 
                         <div class="col-sm-3">
@@ -223,33 +235,15 @@
                         </div>
 
                         <div class="col-sm-3">
-                            <such-selectbox id="ddCodigoFornecedor"
-                                            label="Fornecedor"
-                                            value="{{data.codigoFornecedor}}"
-                                            items="[[LCBFornecedor]]"
-                                            text-path="name"
-                                            value-path="no_"
-                                            fields='[{"field":"no_", "name":"Nº Fornecedor"}, {"field":"name", "name":"Nome"}, {"field":"vatRegistrationNo", "name":"Nº VAT"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Código Postal"}]'
-                                            disabled="{{ !_permissions.update }}">
+                            <such-selectbox id="ddTipo"
+                                            label="Tipo"
+                                            value="{{data.tipo}}"
+                                            items="[[LCBTipo]]"
+                                            text-path="value"
+                                            value-path="id"
+                                            fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Tipo"}]'
+                                            disabled>
                             </such-selectbox>
-                        </div>
-
-                        <div class="col-sm-3">
-                            <vaadin-checkbox id="ddPrioritario" checked="{{data.prioritario}}" disabled="{{ !_permissions.update }}">Prioritário</vaadin-checkbox>
-                        </div>
-                    </div>
-
-                    <div class="row break_clear">
-                        <div class="col-sm-6">
-                            <such-textarea id="ddDescricao" label="Descrição" value="{{data.descricao}}" rows="5" disabled="{{ !_permissions.update }}"></such-textarea>
-                        </div>
-
-                        <div class="col-sm-3">
-                            <vaadin-text-field id="ddValorJaPedido" label="Valor já Pedido" value="{{data.valorJaPedido}}" disabled="{{ !_permissions.update }}" type="number" pattern="^[1-9]\d*(\.\d+)?$" on-value-changed="_ConvertDecimals"><div slot="suffix">€</div></vaadin-text-field>
-                        </div>
-
-                        <div class="col-sm-3">
-                            <vaadin-text-field id="ddValorpedidoComIVA" label="Valor do Pedido c/ IVA" value="{{data.valorpedidoComIVA}}" disabled="{{ !_permissions.update }}" type="number" pattern="^[1-9]\d*(\.\d+)?$" on-value-changed="_ConvertDecimals"><div slot="suffix">€</div></vaadin-text-field>
                         </div>
                     </div>
                 </div>
@@ -264,7 +258,7 @@
                         </div>
 
                         <div class="col-sm-3">
-                            <vaadin-date-picker id="ddDataPedido" label="Data Pedido" value="{{data.dataPedido}}" disabled></vaadin-date-picker>
+                            <vaadin-date-picker id="ddDataPedido" label="Data Pedido" value="{{data.dataPedidoText}}" disabled></vaadin-date-picker>
                         </div>
 
                         <div class="col-sm-3">
@@ -336,10 +330,9 @@
                 },
 
                 ready: function () {
-                    debugger;
                     var _self = this;
                     //GET DATA
-                    this.$.page_databound_ajax.body = JSON.stringify({ "No": this._no, });
+                    this.$.page_databound_ajax.params = { "id": this._no };
                     this.$.page_databound_ajax.generateRequest();
                 },
 
@@ -358,11 +351,49 @@
                     }
                 },
 
+                _validarValorDoPedido: function (e) {
+                    var ValorEncomenda = this.$.ddValorEncomenda.value != "" ? parseFloat(this.$.ddValorEncomenda.value) : 0;
+                    var ValorJaPedido = this.$.ddValorJaPedido.value != "" ? parseFloat(this.$.ddValorJaPedido.value) : 0;
+                    var ValorPedidoComIVA = this.$.ddValorpedidoComIVA.value != "" ? parseFloat(this.$.ddValorpedidoComIVA.value) : 0;
+
+                    if (ValorPedidoComIVA > (ValorEncomenda - ValorJaPedido)) {
+                        this._openToastError('O valor do campo Valor do Pedido c/ IVA não pode ser superior á diferença entre os campos Valor da Encomenda e Valor Já Pedido.');
+                    }
+                },
+
                 _goBack: function (e) {
                     window.history.back();
                 },
 
                 _createNewPedidoPagamento: function (e) {
+                    debugger;
+                    var ValorEncomenda = this.$.ddValorEncomenda.value != "" ? parseFloat(this.$.ddValorEncomenda.value) : 0;
+                    var ValorJaPedido = this.$.ddValorJaPedido.value != "" ? parseFloat(this.$.ddValorJaPedido.value) : 0;
+                    var ValorPedidoComIVA = this.$.ddValorpedidoComIVA.value != "" ? parseFloat(this.$.ddValorpedidoComIVA.value) : 0;
+
+                    if (ValorPedidoComIVA > 0) {
+                        if (ValorPedidoComIVA <= (ValorEncomenda - ValorJaPedido)) {
+                            this.$.page_CriarPedidoPagamento_ajax.body = JSON.stringify(this.data);
+                            this.$.page_CriarPedidoPagamento_ajax.generateRequest();
+                        }
+                        else {
+                            this._openToastError('O valor do campo Valor do Pedido c/ IVA não pode ser superior á diferença entre os campos Valor da Encomenda e Valor Já Pedido.');
+                        }
+                    }
+                    else {
+                        this._openToastError('O valor do campo Valor do Pedido c/ IVA têm que ser superior a zero.');
+                    }
+                },
+                _responseCriarPedidoPagamento: function (e) {
+                    debugger;
+                    if (this.resultCriarPedidoPagamento.eReasonCode == "1") {
+                        this._openToast(this.resultCriarPedidoPagamento.eMessage);
+                    }
+                    else {
+                        this._openToastError(this.resultCriarPedidoPagamento.eMessage);
+                    }
+                    this.$.page_databound_ajax.body = JSON.stringify({ "No": this.data.noPedido });
+                    this.$.page_databound_ajax.generateRequest();
                 },
 
                 _functionsMenuItemSelected: function (e) {

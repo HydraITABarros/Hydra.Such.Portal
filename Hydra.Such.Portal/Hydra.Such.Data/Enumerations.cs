@@ -159,6 +159,8 @@ namespace Hydra.Such.Data
             RequisiçõesComprasDinheiro = 58,
             [Description("Faturação de Projetos")]
             FaturacaoDeProjetos = 59,
+            [Description("Pedidos de Pagamento")]
+            PedidosPagamento = 60,
 
 
             [Description("Administração Geral")]
