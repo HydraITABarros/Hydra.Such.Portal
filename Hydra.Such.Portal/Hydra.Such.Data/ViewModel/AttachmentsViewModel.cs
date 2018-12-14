@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Hydra.Such.Data.Database;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -6,7 +7,7 @@ namespace Hydra.Such.Data.ViewModel
 {
     public class AttachmentsViewModel : ErrorHandler
     {
-        public int DocType { get; set; }
+        public TipoOrigemAnexos DocType { get; set; }
         public string DocNumber { get; set; }
         public int DocLineNo { get; set; }
         public string Url{ get; set; }

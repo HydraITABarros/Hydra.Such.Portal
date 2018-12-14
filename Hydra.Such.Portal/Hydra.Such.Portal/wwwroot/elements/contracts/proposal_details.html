@@ -28,6 +28,9 @@
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
 
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload-file.html">
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload.html">
+
 <dom-module id="x-proposalsdetails">
     <template>
         <!-- STYLES -->
@@ -139,6 +142,13 @@
                    handle-as="json"
                    id="page_databound_ajax"
                    on-response="_responseProcessor"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Contratos/LoadAttachments"
+                   last-response="{{uploads}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_update_ajax"
                    content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/Contratos/DeleteContract"
@@ -263,7 +273,7 @@
                     </template>
                 </vaadin-grid-column>
                 <vaadin-grid-column width="160px">
-                    <template class="header">   
+                    <template class="header">
                         <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
                         <vaadin-grid-filter path="description" />
                     </template>
@@ -341,6 +351,7 @@
                                 <paper-tab>Geral</paper-tab>
                                 <paper-tab>Envio</paper-tab>
                                 <paper-tab>Detalhes Fatura</paper-tab>
+                                <paper-tab>Anexos</paper-tab>
                             </paper-tabs>
                             <iron-pages selected="{{selected}}">
                                 <!--Geral-->
@@ -482,6 +493,7 @@
                                         </div>
                                     </div>
                                 </div>
+
                                 <!--Envio-->
                                 <div>
                                     <div class="row break_clear">
@@ -516,6 +528,7 @@
                                         </div>
                                     </div>
                                 </div>
+
                                 <!--Detalhes Fatura-->
                                 <div>
                                     <div class="row break_clear">
@@ -565,6 +578,55 @@
                                         <div class="col-md-3">
                                             <vaadin-checkbox id="mcontractLinesInBilling" checked="{{data.contractLinesInBilling}}" disabled="{{ !_permissions.update }}">Linhas Contrato em Fact.</vaadin-checkbox>
                                         </div>
+                                    </div>
+                                </div>
+
+                                <!--Anexos-->
+                                <div>
+                                    <div class="row break_clear">
+                                        <template is="dom-if" if="{{ _permissions.update}}">
+                                            <vaadin-upload id="uploadRequest"
+                                                           target="/Contratos/FileUpload/{{_contractno}}"
+                                                           method="POST"
+                                                           headers="{'Accept': 'application/json'}"
+                                                           timeout=15000>
+                                            </vaadin-upload>
+                                        </template>
+                                    </div>
+                                    <div class="row break_clear">
+                                        <vaadin-grid aria-label="ReqUpdateGrid" items="[[uploads]]" class="grid" multi-sort="true">
+                                            <vaadin-grid-column width="70%" resizable>
+                                                <template class="header">
+                                                    <vaadin-grid-sorter path="url">Anexo</vaadin-grid-sorter>
+                                                    <vaadin-grid-filter path="url" />
+                                                </template>
+                                                <template>
+                                                    <a href="/PreRequisicoes/DownloadFile/{{item.url}}" target="_blank">{{item.url}}</a>
+                                                </template>
+                                            </vaadin-grid-column>
+                                            <vaadin-grid-column width="20%" resizable>
+                                                <template class="header">
+                                                    <vaadin-grid-sorter path="createDateTime">Anexado em</vaadin-grid-sorter>
+                                                    <vaadin-grid-filter path="createDateTime" />
+                                                </template>
+                                                <template>
+                                                    {{item.createDateTime}}
+                                                </template>
+                                            </vaadin-grid-column>
+                                            <vaadin-grid-column width="10%" resizable>
+                                                <template class="header">
+                                                </template>
+                                                <template>
+                                                    <center>
+                                                        <template is="dom-if" if="{{ _permissions.update }}">
+                                                            <center>
+                                                                <paper-button class="btnRemove tableBtn" raised on-tap="_deleteFiles" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                                            </center>
+                                                        </template>
+                                                    </center>
+                                                </template>
+                                            </vaadin-grid-column>
+                                        </vaadin-grid>
                                     </div>
                                 </div>
                             </iron-pages>
@@ -1580,18 +1642,40 @@
                     if (this._contractno == "") {
                         this._isCreate = true;
                     }
+
+                    var upload = document.querySelector('vaadin-upload#uploadRequest');
+
+                    if (this._isCreate == false && this.$.uploadRequest != null) {
+                        this.$.uploadRequest.addEventListener('upload-response', function (e) {
+                            if (e.detail.xhr.status == 200) {
+                                e.detail.xhr.requestURL;
+                                var dd = document.querySelector("x-oportunitydetails");
+                                dd.$.page_update_ajax.generateRequest();
+                            }
+                        });
+                    }//if (this._isCreate == false) {
+                    //    this.$.page_update_ajax.body = JSON.stringify({ "id": this._contractno });
+                    //    this.$.page_update_ajax.generateRequest();
+                    //}
+
+                    this.$.page_update_ajax.body = JSON.stringify({ "id": this._contractno });
+                    this.$.page_update_ajax.generateRequest();
                 },
+
                 _ConvertDecimals: function (e) {
                     e.target.value = e.target.value.replace(",", ".");
                 },
+
                 _openToast: function (message) {
                     this.$.ToastMessage.text = message;
                     this.$.ToastMessage.open();
                 },
+
                 _openToastError: function (message) {
                     this.$.ToastError.text = message;
                     this.$.ToastError.open();
                 },
+
                 _validateData: function () {
                     if (this.$.Description.validate() &
                         this.$.contractNo.validate() &

@@ -841,9 +841,9 @@ namespace Hydra.Such.Portal.Controllers
                     }
                 }
                 //Apagar Anexos
-                if (DBAttachments.GetById(1, User.Identity.Name).Count() > 0)
+                if (DBAttachments.GetById(TipoOrigemAnexos.PreRequisicao, User.Identity.Name).Count() > 0)
                 {
-                    List<Anexos> ListAnexos = DBAttachments.GetAll().Where(x => x.TipoOrigem == 1 && x.NºOrigem == User.Identity.Name).ToList();
+                    List<Anexos> ListAnexos = DBAttachments.GetAll().Where(x => x.TipoOrigem == TipoOrigemAnexos.PreRequisicao && x.NºOrigem == User.Identity.Name).ToList();
                     foreach (var Anexo in ListAnexos)
                     {
                         //System.IO.File.Delete(_config.FileUploadFolder + Anexo.UrlAnexo);
@@ -1169,7 +1169,7 @@ namespace Hydra.Such.Portal.Controllers
                     }
 
                     //Delete Anexos
-                    List<Anexos> ListAnexos = DBAttachments.GetAll().Where(x => x.TipoOrigem == 1 && x.NºOrigem == data.PreRequesitionsNo).ToList();
+                    List<Anexos> ListAnexos = DBAttachments.GetAll().Where(x => x.TipoOrigem == TipoOrigemAnexos.PreRequisicao && x.NºOrigem == data.PreRequesitionsNo).ToList();
                     foreach (var Anexo in ListAnexos)
                     {
                         if (Anexo != null)
@@ -2122,7 +2122,7 @@ namespace Hydra.Such.Portal.Controllers
                                 AttachmentsViewModel CopyFile = new AttachmentsViewModel();
                                 CopyFile.DocNumber = createReq.NºRequisição;
                                 CopyFile.CreateUser = User.Identity.Name;
-                                CopyFile.DocType = 2;
+                                CopyFile.DocType = TipoOrigemAnexos.Requisicao;
                                 CopyFile.Url = NewFileName;
                                 Anexos newFile = DBAttachments.Create(DBAttachments.ParseToDB(CopyFile));
                                 if (newFile != null)
@@ -2204,7 +2204,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (data != null)
                 {
                     List<LinhasPréRequisição> PreRequesitionLines = DBPreRequesitionLines.GetAllByNo(data.PreRequesitionsNo);
-                    List<Anexos> FilesLoaded = DBAttachments.GetById(1, data.PreRequesitionsNo);
+                    List<Anexos> FilesLoaded = DBAttachments.GetById(TipoOrigemAnexos.PreRequisicao, data.PreRequesitionsNo);
                     data.eMessage = "";
 
                     if (FilesLoaded.Count() > 0)
@@ -2502,7 +2502,7 @@ namespace Hydra.Such.Portal.Controllers
                                 AttachmentsViewModel CopyFile = new AttachmentsViewModel();
                                 CopyFile.DocNumber = createReq.NºRequisição;
                                 CopyFile.CreateUser = User.Identity.Name;
-                                CopyFile.DocType = 2;
+                                CopyFile.DocType = TipoOrigemAnexos.Requisicao;
                                 CopyFile.Url = NewFileName;
                                 Anexos newFile = DBAttachments.Create(DBAttachments.ParseToDB(CopyFile));
                                 if (newFile != null)
@@ -3011,7 +3011,7 @@ namespace Hydra.Such.Portal.Controllers
                                 Anexos newfile = new Anexos();
                                 newfile.NºOrigem = id;
                                 newfile.UrlAnexo = full_filename;
-                                newfile.TipoOrigem = 1;
+                                newfile.TipoOrigem = TipoOrigemAnexos.PreRequisicao;
                                 newfile.DataHoraCriação = DateTime.Now;
                                 newfile.UtilizadorCriação = User.Identity.Name;
 

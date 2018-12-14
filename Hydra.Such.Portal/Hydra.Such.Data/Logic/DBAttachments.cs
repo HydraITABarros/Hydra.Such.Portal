@@ -26,7 +26,7 @@ namespace Hydra.Such.Data.Logic
         }
 
         //zpgm-Este método deve receber o tipo visto a chave da tabela ser constituída pelos campos “Tipo Origem”, “Nº Origem”, “Nº Linha”
-        public static List<Anexos> GetById(int type, string id)
+        public static List<Anexos> GetById(TipoOrigemAnexos type, string id)
         {
             try
             {
