@@ -47,6 +47,7 @@ namespace Hydra.Such.Data.Database
         public string AprovadorPedidoPag1 { get; set; }
         public string AprovadorPedidoPag2 { get; set; }
         public bool? AnulacaoPedidoPagamento { get; set; }
+        public bool? ValidarPedidoPagamento { get; set; }
 
         public ICollection<AcessosDimensões> AcessosDimensões { get; set; }
         public ICollection<PerfisUtilizador> PerfisUtilizador { get; set; }

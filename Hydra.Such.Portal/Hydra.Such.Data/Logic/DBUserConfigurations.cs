@@ -140,7 +140,8 @@ namespace Hydra.Such.Data.Logic
                     RequisicaoStock = item.RequisicaoStock,
                     AprovadorPedidoPag1 = item.AprovadorPedidoPag1,
                     AprovadorPedidoPag2 = item.AprovadorPedidoPag2,
-                    AnulacaoPedidoPagamento = item.AnulacaoPedidoPagamento
+                    AnulacaoPedidoPagamento = item.AnulacaoPedidoPagamento,
+                    ValidarPedidoPagamento = item.ValidarPedidoPagamento
                 };
             }
             return null;
@@ -191,7 +192,8 @@ namespace Hydra.Such.Data.Logic
                     RequisicaoStock = item.RequisicaoStock,
                     AprovadorPedidoPag1 = item.AprovadorPedidoPag1,
                     AprovadorPedidoPag2 = item.AprovadorPedidoPag2,
-                    AnulacaoPedidoPagamento = item.AnulacaoPedidoPagamento
+                    AnulacaoPedidoPagamento = item.AnulacaoPedidoPagamento,
+                    ValidarPedidoPagamento = item.ValidarPedidoPagamento
                 };
             }
             return null;

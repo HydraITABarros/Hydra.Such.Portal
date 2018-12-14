@@ -269,19 +269,19 @@
                 },
 
                 _exportEXCEL: function () {
-                    //debugger;
-                    var payload = { list: this.result, columns: this._columns };
-                    console.log(payload);
+                    debugger;
+                    this.result[0].ColunasEXCEL = this._columns;
 
-                    this.$.ajax_Export.body = JSON.stringify(payload);
+                    this.$.ajax_Export.body = JSON.stringify(this.result);
                     this.$.ajax_Export.generateRequest();
                 },
 
                 _exportEXCELResponse: function (e) {
-                    //debugger
+                    debugger;
                     var FileName = this.export;
-                    location.href = '../Encomendas/ExportToExcel?fileName=' + FileName;
+                    location.href = '../Encomendas/ExportToExcelDownload_Encomendas?sFileName=' + FileName;
                 },
+
                 /*start - ColumnToggle*/
 
                 _startColumnToggle: function () {
@@ -290,10 +290,11 @@
                         "payToVendorNo": { hidden: false, label: "Código Fornecedor" },
                         "payToName": { hidden: false, label: "Nome Fornecedor" },
                         "yourReference": { hidden: false, label: "Sua Referência" },
+                        "orderDate": { hidden: false, label: "Data da Encomenda" },
                         "noConsulta": { hidden: false, label: "Nº Consulta Mercado" },
                         "total": { hidden: false, label: "Total" },
-                        "expectedReceiptDate": { hidden: false, label: "Data da Encomenda" },
-                        "requisitionNo": { hidden: false, label: "Pedido Interno" },
+                        "expectedReceiptDate": { hidden: false, label: "Data Recepção Esperada" },
+                        "requisitionNo": { hidden: false, label: "Nº Requisição" },
                         "regionId": { hidden: false, label: "Cód. Região" },
                         "functionalAreaId": { hidden: false, label: "Cód. Área Funcional" },
                         "respCenterId": { hidden: false, label: "Cód. Centro de Responsabilidade" },

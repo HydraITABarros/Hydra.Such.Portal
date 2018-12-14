@@ -164,6 +164,42 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/Encomendas/EnviarAprovacaoPedidoPagamento"
+                   last-response="{{resultEnviarAprovacao}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_EnviarAprovacao_ajax"
+                   on-response="_EnviarAprovacaoResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Encomendas/AprovarPedidoPagamento"
+                   last-response="{{resultAprovar}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_Aprovar_ajax"
+                   on-response="_AprovarResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Encomendas/ValidarPedidoPagamento"
+                   last-response="{{resultValidar}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_Validar_ajax"
+                   on-response="_ValidarResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Encomendas/AnularPedidoPagamento"
+                   last-response="{{resultAnular}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_Anular_ajax"
+                   on-response="_AnularResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
             <paper-button class="tablinks" on-tap="_createNewPedidoPagamento"><i class="fa fa-check-square" aria-hidden="true"></i> Criar Pedido</paper-button>
@@ -266,7 +302,7 @@
                         </div>
 
                         <div class="col-sm-3">
-                            <vaadin-date-picker id="ddDataAprovacao" label="Data Aprovação" value="{{data.dataAprovacao}}" disabled></vaadin-date-picker>
+                            <vaadin-date-picker id="ddDataAprovacao" label="Data Aprovação" value="{{data.dataAprovacaoText}}" disabled></vaadin-date-picker>
                         </div>
                     </div>
 
@@ -276,7 +312,7 @@
                         </div>
 
                         <div class="col-sm-3">
-                            <vaadin-date-picker id="ddDataValidacao" label="Data Validação" value="{{data.dataValidacao}}" disabled></vaadin-date-picker>
+                            <vaadin-date-picker id="ddDataValidacao" label="Data Validação" value="{{data.dataValidacaoText}}" disabled></vaadin-date-picker>
                         </div>
 
                         <div class="col-sm-3">
@@ -284,7 +320,7 @@
                         </div>
 
                         <div class="col-sm-3">
-                            <vaadin-date-picker id="ddDataDisponibilizacao" label="Data Disponibilização" value="{{data.dataDisponibilizacao}}" disabled></vaadin-date-picker>
+                            <vaadin-date-picker id="ddDataDisponibilizacao" label="Data Disponibilização" value="{{data.dataDisponibilizacaoText}}" disabled></vaadin-date-picker>
                         </div>
                     </div>
 
@@ -402,15 +438,183 @@
                         return;
                     switch (item.value) {
                         case 1: //"Enviar p/ Aprovação"
+                            this._EnviarAprovacao();
                             break;
                         case 2: //"Aprovar"
+                            this._Aprovar();
                             break;
                         case 3: //"Validar"
+                            this._Validar();
                             break;
                         case 4: //"Anular Pedido"
+                            this._AnularPedido();
                             break;
                     }
                 },
+
+                _EnviarAprovacao: function () {
+                    debugger;
+                    var ajax_request = this.$.page_EnviarAprovacao_ajax;
+                    ajax_request.body = JSON.stringify(this.data);
+
+                    bootbox.confirm({
+                        message: "Tem a certeza que pretende Enviar para Aprovação o Pedido de Pagamento?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            if (result) {
+                                ajax_request.generateRequest();
+                            }
+                        }
+                    });
+                },
+                _EnviarAprovacaoResponse: function (e) {
+                    debugger;
+                    if (this.resultEnviarAprovacao.eReasonCode == "1") {
+                        this._openToast(this.resultEnviarAprovacao.eMessage);
+                    }
+                    else {
+                        this._openToastError(this.resultEnviarAprovacao.eMessage);
+                    }
+
+                    this.$.page_databound_ajax.params = { "id": this._no };
+                    this.$.page_databound_ajax.generateRequest();
+                },
+
+                _Aprovar: function () {
+                    debugger;
+                    var ajax_request = this.$.page_Aprovar_ajax;
+                    ajax_request.body = JSON.stringify(this.data);
+
+                    bootbox.confirm({
+                        message: "Tem a certeza que pretende Aprovar o Pedido de Pagamento?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            if (result) {
+                                ajax_request.generateRequest();
+                            }
+                        }
+                    });
+                },
+                _AprovarResponse: function (e) {
+                    debugger;
+                    if (this.resultAprovar.eReasonCode == "1") {
+                        this._openToast(this.resultAprovar.eMessage);
+                    }
+                    else {
+                        this._openToastError(this.resultAprovar.eMessage);
+                    }
+
+                    this.$.page_databound_ajax.params = { "id": this._no };
+                    this.$.page_databound_ajax.generateRequest();
+                },
+
+                _Validar: function () {
+                    debugger;
+                    var ajax_request = this.$.page_Validar_ajax;
+                    ajax_request.body = JSON.stringify(this.data);
+
+                    bootbox.confirm({
+                        message: "Tem a certeza que pretende Validar o Pedido de Pagamento?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            if (result) {
+                                ajax_request.generateRequest();
+                            }
+                        }
+                    });
+                },
+                _ValidarResponse: function (e) {
+                    debugger;
+                    if (this.resultValidar.eReasonCode == "1") {
+                        this._openToast(this.resultValidar.eMessage);
+                    }
+                    else {
+                        this._openToastError(this.resultValidar.eMessage);
+                    }
+
+                    this.$.page_databound_ajax.params = { "id": this._no };
+                    this.$.page_databound_ajax.generateRequest();
+                },
+
+                _Anular: function () {
+                    debugger;
+                    var ajax_request = this.$.page_Validar_ajax;
+                    ajax_request.body = JSON.stringify(this.data);
+
+                    bootbox.confirm({
+                        message: "Tem a certeza que pretende Anular o Pedido de Pagamento?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            if (result) {
+                                ajax_request.generateRequest();
+                            }
+                        }
+                    });
+                },
+                _AnularResponse: function (e) {
+                    debugger;
+                    if (this.resultAnular.eReasonCode == "1") {
+                        this._openToast(this.resultAnular.eMessage);
+                    }
+                    else {
+                        this._openToastError(this.resultAnular.eMessage);
+                    }
+
+                    this.$.page_databound_ajax.params = { "id": this._no };
+                    this.$.page_databound_ajax.generateRequest();
+                },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             });
         });
     </script>

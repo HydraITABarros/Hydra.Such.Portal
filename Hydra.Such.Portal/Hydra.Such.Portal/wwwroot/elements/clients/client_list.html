@@ -396,7 +396,7 @@
                 },
 
                 _exportEXCEL: function () {
-                    //debugger;
+                    debugger;
                     this.result[0].ColunasEXCEL = this._columns;
 
                     this.$.ajax_Export.body = JSON.stringify(this.result);
@@ -404,7 +404,7 @@
                 },
 
                 _exportEXCELResponse: function (e) {
-                    //debugger
+                    debugger
                     var FileName = this.export;
                     location.href = '../Clientes/ExportToExcelDownload_Clientes?sFileName=' + FileName;
                 },
@@ -417,8 +417,7 @@
                         "address": { hidden: false, label: "Morada" },
                         "post_Code": { hidden: false, label: "Cód. Postal" },
                         "city": { hidden: false, label: "Cidade" },
-
-                        "county": { hidden: false, label: "Distrito" },
+                        //"county": { hidden: false, label: "Distrito" },
                         "phone_No": { hidden: false, label: "Telefone" },
                         "e_Mail": { hidden: false, label: "Email" },
                         "fax_No": { hidden: false, label: "Nº Fax" },
@@ -430,9 +429,7 @@
                         "payment_Method_Code": { hidden: false, label: "Forma Pagamento" },
                         "blocked_Text": { hidden: false, label: "Bloqueado" },
                         "country_Region_Code": { hidden: false, label: "Código Pais/Região" },
-
                         "regiao_Cliente_Text": { hidden: false, label: "Região" },
-
                         "global_Dimension_1_Code": { hidden: false, label: "Area" },
                         "centro_Resp_Dimensao": { hidden: false, label: "Centro de Responsabilidade" },
                         "cliente_Associado": { hidden: false, label: "Cliente Associado" },

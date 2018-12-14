@@ -113,11 +113,9 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> ExportToExcel([FromBody] dynamic form)
+        public async Task<JsonResult> ExportToExcel([FromBody] List<EncomendasViewModel> Lista)
        {
-            JObject dp = (JObject)form.GetValue("columns");
-
-            var list = (dynamic)form.GetValue("list");
+            JObject dp = (JObject)Lista[0].ColunasEXCEL;
 
             string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
             string user = User.Identity.Name;
@@ -135,116 +133,42 @@ namespace Hydra.Such.Portal.Controllers
                 IRow row = excelSheet.CreateRow(0);
                 int Col = 0;
 
-                if (dp["no"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Nº");
-                    Col = Col + 1;
-                }
-                if (dp["payToVendorNo"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Código Fornecedor");
-                    Col = Col + 1;
-                }
-                if (dp["payToName"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Nome Fornecedor");
-                    Col = Col + 1;
-                }
-                if (dp["yourReference"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Sua Referência");
-                    Col = Col + 1;
-                }
-                if (dp["noConsulta"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Nº Consulta Mercado");
-                    Col = Col + 1;
-                }
-                if (dp["expectedReceiptDate"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Data da Encomenda");
-                    Col = Col + 1;
-                }
-                if (dp["requisitionNo"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Pedido Interno");
-                    Col = Col + 1;
-                }
-                if (dp["regionId"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Cód. Região");
-                    Col = Col + 1;
-                }
-                if (dp["functionalAreaId"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Cód. Área Funcional");
-                    Col = Col + 1;
-                }
-                if (dp["respCenterId"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Cód. Centro de Responsabilidade");
-                    Col = Col + 1;
-                }
+                if (dp["no"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº"); Col = Col + 1; }
+                if (dp["payToVendorNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Código Fornecedor"); Col = Col + 1; }
+                if (dp["payToName"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nome Fornecedor"); Col = Col + 1; }
+                if (dp["yourReference"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Sua Referência"); Col = Col + 1; }
+                if (dp["orderDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data da Encomenda"); Col = Col + 1; }
+                if (dp["noConsulta"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Consulta Mercado"); Col = Col + 1; }
+                if (dp["total"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Total"); Col = Col + 1; }
+                if (dp["expectedReceiptDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Recepção Esperada"); Col = Col + 1; }
+                if (dp["requisitionNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Requisição"); Col = Col + 1; }
+                if (dp["regionId"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Região"); Col = Col + 1; }
+                if (dp["functionalAreaId"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Área Funcional"); Col = Col + 1; }
+                if (dp["respCenterId"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Centro de Responsabilidade"); Col = Col + 1; }
+                if (dp["hasAnAdvance"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Adiantamento"); Col = Col + 1; }
 
                 if (dp != null)
                 {
                     int count = 1;
 
-                    foreach (JObject item in list)
+                    foreach (EncomendasViewModel item in Lista)
                     {
                         Col = 0;
                         row = excelSheet.CreateRow(count);
 
-                        if (dp["no"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item["no"].ToString());
-                            Col = Col + 1;
-                        }
-                        if (dp["payToVendorNo"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item["payToVendorNo"].ToString());
-                            Col = Col + 1;
-                        }
-                        if (dp["payToName"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item["payToName"].ToString());
-                            Col = Col + 1;
-                        }
-                        if (dp["yourReference"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item["yourReference"].ToString());
-                            Col = Col + 1;
-                        }
-                        if (dp["noConsulta"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item["noConsulta"].ToString());
-                            Col = Col + 1;
-                        }
-                        if (dp["expectedReceiptDate"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item["expectedReceiptDate"].ToString());
-                            Col = Col + 1;
-                        }
-                        if (dp["requisitionNo"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item["requisitionNo"].ToString());
-                            Col = Col + 1;
-                        }
-                        if (dp["regionId"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item["regionId"].ToString());
-                            Col = Col + 1;
-                        }
-                        if (dp["functionalAreaId"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item["functionalAreaId"].ToString());
-                            Col = Col + 1;
-                        }
-                        if (dp["respCenterId"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item["respCenterId"].ToString());
-                            Col = Col + 1;
-                        }
+                        if (dp["no"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(!string.IsNullOrEmpty(item.No) ? item.No : ""); Col = Col + 1; }
+                        if (dp["payToVendorNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(!string.IsNullOrEmpty(item.PayToVendorNo) ? item.PayToVendorNo : ""); Col = Col + 1; }
+                        if (dp["payToName"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(!string.IsNullOrEmpty(item.PayToName) ? item.PayToName : ""); Col = Col + 1; }
+                        if (dp["yourReference"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(!string.IsNullOrEmpty(item.YourReference) ? item.YourReference : ""); Col = Col + 1; }
+                        if (dp["orderDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.OrderDate); Col = Col + 1; }
+                        if (dp["noConsulta"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(!string.IsNullOrEmpty(item.NoConsulta) ? item.NoConsulta : ""); Col = Col + 1; }
+                        if (dp["total"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Total.ToString()); Col = Col + 1; }
+                        if (dp["expectedReceiptDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ExpectedReceiptDate.ToString()); Col = Col + 1; }
+                        if (dp["requisitionNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RequisitionNo); Col = Col + 1; }
+                        if (dp["regionId"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RegionId); Col = Col + 1; }
+                        if (dp["functionalAreaId"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.FunctionalAreaId); Col = Col + 1; }
+                        if (dp["respCenterId"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RespCenterId); Col = Col + 1; }
+                        if (dp["hasAnAdvance"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.HasAnAdvance); Col = Col + 1; }
 
                         count++;
                     }
@@ -259,10 +183,10 @@ namespace Hydra.Such.Portal.Controllers
             return Json(sFileName);
         }
 
-        public IActionResult ExportToExcel(string fileName)        
-        {            
-            fileName = @"/Upload/temp/" + fileName;
-            return File(fileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Encomendas.xlsx");
+        public IActionResult ExportToExcelDownload_Encomendas(string sFileName)
+        {
+            sFileName = @"/Upload/temp/" + sFileName;
+            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Gestão Requisições.xlsx");
         }
 
         #region PedidoPagamento
@@ -358,6 +282,31 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetListPedidosPagamento()
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.PedidosPagamento);
+
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                List<PedidosPagamentoViewModel> result = DBPedidoPagamento.ParseToViewModel(DBPedidoPagamento.GetAllPedidosPagamento());
+
+                if (result != null)
+                {
+                    result.ForEach(PEDIDO =>
+                    {
+                        PEDIDO.TipoText = PEDIDO.Tipo != null ? EnumerablesFixed.TipoPedidoPagamento.Where(y => y.Id == PEDIDO.Tipo).FirstOrDefault().Value : "";
+                        PEDIDO.EstadoText = PEDIDO.Estado != null ? EnumerablesFixed.EstadoPedidoPagamento.Where(y => y.Id == PEDIDO.Estado).FirstOrDefault().Value : "";
+                    });
+                }
+                return Json(result);
+            }
+            else
+            {
+                return Json(null);
+            }
+        }
+
+        [HttpPost]
         public JsonResult CriarPedidoPagamento([FromBody] PedidosPagamentoViewModel data)
         {
             try
@@ -393,28 +342,304 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetListPedidosPagamento()
+        public JsonResult EnviarAprovacaoPedidoPagamento([FromBody] PedidosPagamentoViewModel data)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.PedidosPagamento);
-
-            if (UPerm != null && UPerm.Read.Value)
+            try
             {
-                List<PedidosPagamentoViewModel> result = DBPedidoPagamento.ParseToViewModel(DBPedidoPagamento.GetAllPedidosPagamento());
-
-                if (result != null)
+                if (data != null)
                 {
-                    result.ForEach(PEDIDO =>
+                    if (data.Estado != 1)
                     {
-                        PEDIDO.TipoText = PEDIDO.Tipo != null ? EnumerablesFixed.TipoPedidoPagamento.Where(y => y.Id == PEDIDO.Tipo).FirstOrDefault().Value : "";
-                        PEDIDO.EstadoText = PEDIDO.Estado != null ? EnumerablesFixed.EstadoPedidoPagamento.Where(y => y.Id == PEDIDO.Estado).FirstOrDefault().Value : "";
-                    });
+                        data.eReasonCode = 2;
+                        data.eMessage = "O Pedido de Pagamento tem que estar no estado no Inicial.";
+                        return Json(data);
+                    }
+                    if (string.IsNullOrEmpty(data.NIB))
+                    {
+                        data.eReasonCode = 3;
+                        data.eMessage = "O campo NIB é de preenchimento obrigatório.";
+                        return Json(data);
+                    }
+                    if (string.IsNullOrEmpty(data.IBAN))
+                    {
+                        data.eReasonCode = 4;
+                        data.eMessage = "O campo IBAN é de preenchimento obrigatório.";
+                        return Json(data);
+                    }
+                    if (data.Valor <= 0)
+                    {
+                        data.eReasonCode = 5;
+                        data.eMessage = "O valor do campo Valor do Pedido c/ IVA tem que ser superior a zero.";
+                        return Json(data);
+                    }
+
+                    ConfigUtilizadores Utilizador = DBUserConfigurations.GetById(User.Identity.Name);
+                    string Aprovador1 = Utilizador.AprovadorPedidoPag1;
+                    string Aprovador2 = Utilizador.AprovadorPedidoPag2;
+
+                    if (string.IsNullOrEmpty(Aprovador1) && string.IsNullOrEmpty(Aprovador2))
+                    {
+                        data.eReasonCode = 6;
+                        data.eMessage = "Não está definido nenhum Aprovador para o seu Pedido de Pagamento.";
+                        return Json(data);
+                    }
+
+                    data.Aprovadores = "-" + Aprovador1 + "-" + Aprovador1 + "-";
+                    data.DataEnvioAprovacao = DateTime.Now;
+                    data.Estado = 2; //"Em Aprovação"
+                    data.UtilizadorModificacao = User.Identity.Name;
+                    data.DataModificacao = DateTime.Now;
+
+                    if (DBPedidoPagamento.Update(DBPedidoPagamento.ParseToDB(data)) == null)
+                    {
+                        data.eReasonCode = 7;
+                        data.eMessage = "Ocorreu um erro ao actualizar o Pedido de Pagamento.";
+                        return Json(data);
+                    }
+
+                    //FALTA O ENVIO DE EMAIL
+
+                    data.eReasonCode = 1;
+                    data.eMessage = "O Pedido de Pagamento foi Enviado para Aprovação com sucesso.";
+                    return Json(data);
                 }
-                return Json(result);
             }
-            else
+            catch (Exception ex)
             {
-                return Json(null);
+                data.eReasonCode = 99;
+                data.eMessage = "Ocorreu um erro.";
             }
+            return Json(data);
+        }
+
+        [HttpPost]
+        public JsonResult AprovarPedidoPagamento([FromBody] PedidosPagamentoViewModel data)
+        {
+            try
+            {
+                if (data != null)
+                {
+                    if (!data.Aprovadores.ToLower().Contains(User.Identity.Name.ToLower()))
+                    {
+                        data.eReasonCode = 2;
+                        data.eMessage = "Não pode aprovar este Pedido de Pagamento pois não é um aprovador.";
+                        return Json(data);
+                    }
+                    if (data.Estado != 2)
+                    {
+                        data.eReasonCode = 3;
+                        data.eMessage = "O Pedido de Pagamento tem que estar no estado Em Aprovação.";
+                        return Json(data);
+                    }
+
+                    data.UserAprovacao = User.Identity.Name;
+                    data.DataAprovacao = DateTime.Now;
+                    data.Estado = 3; //"Aprovado"
+                    data.Aprovado = true;
+                    data.UtilizadorModificacao = User.Identity.Name;
+                    data.DataModificacao = DateTime.Now;
+
+                    if (DBPedidoPagamento.Update(DBPedidoPagamento.ParseToDB(data)) == null)
+                    {
+                        data.eReasonCode = 7;
+                        data.eMessage = "Ocorreu um erro ao actualizar o Pedido de Pagamento.";
+                        return Json(data);
+                    }
+
+                    data.eReasonCode = 1;
+                    data.eMessage = "O Pedido de Pagamento foi Aprovado com sucesso.";
+                    return Json(data);
+                }
+            }
+            catch (Exception ex)
+            {
+                data.eReasonCode = 99;
+                data.eMessage = "Ocorreu um erro.";
+            }
+            return Json(data);
+        }
+
+        [HttpPost]
+        public JsonResult ValidarPedidoPagamento([FromBody] PedidosPagamentoViewModel data)
+        {
+            try
+            {
+                if (data != null)
+                {
+                    ConfigUtilizadores Utilizador = DBUserConfigurations.GetById(User.Identity.Name);
+                    bool ValidarPedido = Utilizador.ValidarPedidoPagamento.HasValue ? (bool)Utilizador.ValidarPedidoPagamento : false;
+
+                    if (ValidarPedido == false)
+                    {
+                        data.eReasonCode = 2;
+                        data.eMessage = "Não têm permissões para Validar o Pedido de Pagamento.";
+                        return Json(data);
+                    }
+                    if (data.Estado != 3)
+                    {
+                        data.eReasonCode = 3;
+                        data.eMessage = "O Pedido de Pagamento tem que estar no estado Aprovado.";
+                        return Json(data);
+                    }
+
+                    data.UserValidacao = User.Identity.Name;
+                    data.DataValidacao = DateTime.Now;
+                    data.Estado = 4; //"Validado"
+                    data.UtilizadorModificacao = User.Identity.Name;
+                    data.DataModificacao = DateTime.Now;
+
+                    if (DBPedidoPagamento.Update(DBPedidoPagamento.ParseToDB(data)) == null)
+                    {
+                        data.eReasonCode = 7;
+                        data.eMessage = "Ocorreu um erro ao actualizar o Pedido de Pagamento.";
+                        return Json(data);
+                    }
+
+                    data.eReasonCode = 1;
+                    data.eMessage = "O Pedido de Pagamento foi Validado com sucesso.";
+                    return Json(data);
+                }
+            }
+            catch (Exception ex)
+            {
+                data.eReasonCode = 99;
+                data.eMessage = "Ocorreu um erro.";
+            }
+            return Json(data);
+        }
+
+        [HttpPost]
+        public JsonResult AnularPedidoPagamento([FromBody] PedidosPagamentoViewModel data)
+        {
+            try
+            {
+                if (data != null)
+                {
+                    ConfigUtilizadores Utilizador = DBUserConfigurations.GetById(User.Identity.Name);
+                    bool AnularPedido = Utilizador.AnulacaoPedidoPagamento.HasValue ? (bool)Utilizador.AnulacaoPedidoPagamento : false;
+
+                    if (data.Estado != 2 && data.Estado != 3 && data.Estado != 4)
+                    {
+                        data.eReasonCode = 2;
+                        data.eMessage = "O Pedido de Pagamento só pode ser Anulado se estiver nos seguintes estados: Em Aprovação, Aprovado ou Validado.";
+                        return Json(data);
+                    }
+
+                    if (AnularPedido == true)
+                    {
+                        data.Estado = 5; //"Anulado"
+                        data.Arquivado = true;
+                        data.UserArquivo = User.Identity.Name;
+                        data.DataArquivo = DateTime.Now;
+                        data.UtilizadorModificacao = User.Identity.Name;
+                        data.DataModificacao = DateTime.Now;
+
+                        if (DBPedidoPagamento.Update(DBPedidoPagamento.ParseToDB(data)) == null)
+                        {
+                            data.eReasonCode = 3;
+                            data.eMessage = "Ocorreu um erro ao actualizar o Pedido de Pagamento.";
+                            return Json(data);
+                        }
+
+                        data.eReasonCode = 1;
+                        data.eMessage = "O Pedido de Pagamento foi Anulado com sucesso.";
+                        return Json(data);
+                    }
+
+                    if (data.Estado == 2) //"Em Aprovação"
+                    {
+                        if (data.UserPedido.ToLower() != User.Identity.Name.ToLower())
+                        {
+                            data.eReasonCode = 4;
+                            data.eMessage = "Não pode Anular este Pedido de Pagamento.";
+                            return Json(data);
+                        }
+
+                        data.Estado = 5; //"Anulado"
+                        data.Arquivado = true;
+                        data.UserArquivo = User.Identity.Name;
+                        data.DataArquivo = DateTime.Now;
+                        data.UtilizadorModificacao = User.Identity.Name;
+                        data.DataModificacao = DateTime.Now;
+
+                        if (DBPedidoPagamento.Update(DBPedidoPagamento.ParseToDB(data)) == null)
+                        {
+                            data.eReasonCode = 5;
+                            data.eMessage = "Ocorreu um erro ao actualizar o Pedido de Pagamento.";
+                            return Json(data);
+                        }
+
+                        data.eReasonCode = 1;
+                        data.eMessage = "O Pedido de Pagamento foi Anulado com sucesso.";
+                        return Json(data);
+                    }
+
+                    if (data.Estado == 3) //"Aprovado"
+                    {
+                        if (data.UserAprovacao.ToLower() == User.Identity.Name.ToLower() || AnularPedido == true)
+                        {
+                            data.Estado = 5; //"Anulado"
+                            data.Arquivado = true;
+                            data.UserArquivo = User.Identity.Name;
+                            data.DataArquivo = DateTime.Now;
+                            data.UtilizadorModificacao = User.Identity.Name;
+                            data.DataModificacao = DateTime.Now;
+
+                            if (DBPedidoPagamento.Update(DBPedidoPagamento.ParseToDB(data)) == null)
+                            {
+                                data.eReasonCode = 6;
+                                data.eMessage = "Ocorreu um erro ao actualizar o Pedido de Pagamento.";
+                                return Json(data);
+                            }
+
+                            data.eReasonCode = 1;
+                            data.eMessage = "O Pedido de Pagamento foi Anulado com sucesso.";
+                            return Json(data);
+                        }
+                        else
+                        {
+                            data.eReasonCode = 7;
+                            data.eMessage = "Não pode Anular este Pedido de Pagamento.";
+                            return Json(data);
+
+                        }
+                    }
+
+                    if (data.Estado == 4) //"Validado"
+                    {
+                        if (data.UserValidacao.ToLower() != User.Identity.Name.ToLower())
+                        {
+                            data.eReasonCode = 8;
+                            data.eMessage = "Não pode Anular este Pedido de Pagamento.";
+                            return Json(data);
+                        }
+
+                        data.Estado = 5; //"Anulado"
+                        data.Arquivado = true;
+                        data.UserArquivo = User.Identity.Name;
+                        data.DataArquivo = DateTime.Now;
+                        data.UtilizadorModificacao = User.Identity.Name;
+                        data.DataModificacao = DateTime.Now;
+
+                        if (DBPedidoPagamento.Update(DBPedidoPagamento.ParseToDB(data)) == null)
+                        {
+                            data.eReasonCode = 5;
+                            data.eMessage = "Ocorreu um erro ao actualizar o Pedido de Pagamento.";
+                            return Json(data);
+                        }
+
+                        data.eReasonCode = 1;
+                        data.eMessage = "O Pedido de Pagamento foi Anulado com sucesso.";
+                        return Json(data);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                data.eReasonCode = 99;
+                data.eMessage = "Ocorreu um erro.";
+            }
+            return Json(data);
         }
 
         #endregion
