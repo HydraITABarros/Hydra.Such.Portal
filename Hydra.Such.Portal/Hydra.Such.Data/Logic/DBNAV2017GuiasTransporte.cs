@@ -8,6 +8,7 @@ using System.Text;
 using System.Data.SqlClient;
 using System.Linq;
 using static Hydra.Such.Data.Enumerations;
+using Hydra.Such.Data.Extensions;
 
 namespace Hydra.Such.Data.Logic
 {
@@ -199,6 +200,7 @@ namespace Hydra.Such.Data.Logic
                     {
                         LinhaGuiaTransporteNavViewModel line = new LinhaGuiaTransporteNavViewModel()
                         {
+                            ParentNo = result,
                             NoGuiaTransporte = (string)ln.NoDocumento,
                             NoLinha = ln.NoLinha.Equals(DBNull.Value) ? 1 : (int)ln.NoLinha,
                             Tipo = ln.Tipo.Equals(DBNull.Value) ? 0 : (int)ln.Tipo,
@@ -216,6 +218,7 @@ namespace Hydra.Such.Data.Logic
                             EstadoEquipamento = ln.EstadoEquipamento.Equals(DBNull.Value) ? 0 : (int)ln.EstadoEquipamento,
                             InventoryNo = ln.InventoryNo.Equals(DBNull.Value) ? "" : (string)ln.InventoryNo
                         };
+
 
                         switch (line.Tipo)
                         {
@@ -243,7 +246,6 @@ namespace Hydra.Such.Data.Logic
                                 break;
                         }
 
-                        
                         linhasGt.Add(line);
                     }
                 }
@@ -275,6 +277,202 @@ namespace Hydra.Such.Data.Logic
 
                 return null;
             }
+        }
+
+        public static bool UpdateGuiaTransporte(GuiaTransporteNavViewModel guia)
+        {
+            if(guia == null)
+            {
+                return false;
+
+            }
+
+            SuchDBContextExtention _contextExt = new SuchDBContextExtention();
+
+            List<CabecalhoGuiaTransporteSqlModel> _cabecalhos = new List<CabecalhoGuiaTransporteSqlModel>
+            {
+                CastToCabecalhoType(guia)
+            };
+
+
+            if (!_contextExt.ExecuteTableValueProcedure<CabecalhoGuiaTransporteSqlModel>(_cabecalhos, "NAV2017CabGuiaTransporte_Update", "@CabecalhoGuia", "CabGuiaTransporteType"))
+            {
+                return false;
+            }
+
+            if(guia.LinhasGuiaTransporte != null)
+            {
+                if (!UpdateLinhasGuiaTransporte(guia.LinhasGuiaTransporte))
+                {
+                    return false;
+                }
+            }
+            
+            return true;
+        }
+
+        public static bool UpdateLinhasGuiaTransporte(List<LinhaGuiaTransporteNavViewModel> linhas)
+        {
+            if(linhas == null)
+            {
+                return false;
+            }
+
+            List<LinhaGuiaTransporteSqlModel> _linhasType = new List<LinhaGuiaTransporteSqlModel>();
+
+            foreach(var l in linhas)
+            {
+                if(l != null)
+                {
+                    _linhasType.Add(CastToLinhaType(l));
+                }
+            }
+
+            SuchDBContextExtention _contextExt = new SuchDBContextExtention();
+
+            return _contextExt.ExecuteTableValueProcedure(_linhasType, "NAV2017LinGuiaTransporte_Update", "@LinhasGuia", "LinGuiaTransporteType");
+        }
+
+        public static bool UpdateLinhaGuiaTransporte(LinhaGuiaTransporteNavViewModel linha)
+        {
+            if (linha == null)
+            {
+                return false;
+            }
+
+            SuchDBContextExtention _contextExt = new SuchDBContextExtention();
+
+            List<LinhaGuiaTransporteSqlModel> _linhas = new List<LinhaGuiaTransporteSqlModel>
+            {
+                CastToLinhaType(linha)
+            };
+
+            return _contextExt.ExecuteTableValueProcedure(_linhas, "NAV2017LinGuiaTransporte_Update", "@LinhasGuia", "LinGuiaTransporteType");
+        }
+
+        public static CabecalhoGuiaTransporteSqlModel CastToCabecalhoType(GuiaTransporteNavViewModel guia)
+        {
+            DateTime emptyDateTime = DateTime.Parse("0001-01-01 00:00:00.000");
+            string dateTimeFormatString = "yyyy-MM-dd HH:mm:ss.fff";
+
+
+            if (guia != null)
+            {
+                CabecalhoGuiaTransporteSqlModel cabecalho = new CabecalhoGuiaTransporteSqlModel()
+                {
+                    NoGuiaTransporte = guia.NoGuiaTransporte,
+                    Address = guia.Address,
+                    Cidade = guia.Cidade,
+                    City = guia.City,
+                    CodEnvio = guia.CodEnvio,
+                    CodPais = guia.CodPais,
+                    CodPostal = guia.CodPostal,
+                    CodPostalDescarga = guia.CodPostalDescarga,
+                    DataCarga = guia.DataCarga.CompareTo(emptyDateTime) != 0 ? guia.DataCarga.ToString(dateTimeFormatString) : null,
+                    DataDescarga = guia.DataDescarga.CompareTo(emptyDateTime) != 0 ? guia.DataDescarga.ToString(dateTimeFormatString) : null,
+                    DataGuia = guia.DataGuia.CompareTo(emptyDateTime) != 0 ? guia.DataGuia.ToString(dateTimeFormatString) : null,
+                    DataObservacoesAdicionais = guia.DataObservacoesAdicionais.CompareTo(emptyDateTime) != 0 ? guia.DataObservacoesAdicionais.ToString(dateTimeFormatString) : null,
+                    DataSaida = guia.DataSaida.CompareTo(emptyDateTime) != 0 ? guia.DataSaida.ToString(dateTimeFormatString) : null,
+                    DimensionSetId = guia.DimensionSetId,
+                    GlobalDimension1Code = guia.GlobalDimension1Code,
+                    GlobalDimension2Code = guia.GlobalDimension2Code,
+                    GlobalDimension3Code = guia.GlobalDimension3Code,
+                    GuiaTransporteInterface = guia.GuiaTransporteInterface,
+                    Historico = guia.Historico,
+                    HoraCarga = guia.HoraCarga.ToString(),
+                    HoraDescarga = guia.HoraDescarga.ToString(),
+                    HoraObservacoesAdicionais = guia.HoraObservacoesAdicionais.ToString(),
+                    LocalDescarga = guia.LocalDescarga,
+                    LocalDescarga1 = guia.LocalDescarga1,
+                    MaintenanceOrderNo = guia.MaintenanceOrderNo,
+                    MoradaCliente = guia.MoradaCliente,
+                    MoradaCliente2 = guia.MoradaCliente2,
+                    Name = guia.Name,
+                    NifCliente = guia.NifCliente,
+                    NoCliente = guia.NoCliente,
+                    NoGuiaOriginalInterface = guia.NoGuiaOriginalInterface,
+                    NomeCliente = guia.NomeCliente,
+                    NomeCliente2 = guia.NomeCliente2,
+                    NoProjecto = guia.NoProjecto,
+                    NoRequisicao = guia.NoRequisicao,
+                    NoSolicitacao = guia.NoSolicitacao,
+                    Observacoes = guia.Observacoes,
+                    ObservacoesAdicionais = guia.ObservacoesAdicionais,
+                    OrdemTransferencia = guia.OrdemTransferencia,
+                    Origem = guia.Origem,
+                    PaisCarga = guia.PaisCarga,
+                    PaisDescarga = guia.PaisDescarga,
+                    PesoTotal = guia.PesoTotal,
+                    PostCode = guia.PostCode,
+                    QuantidadeTotal = guia.QuantidadeTotal,
+                    ReportedBy = guia.ReportedBy,
+                    Requisicao = guia.Requisicao,
+                    ResponsabilityCenter = guia.ResponsabilityCenter,
+                    ShipmentStartDate = guia.ShipmentStartDate.CompareTo(emptyDateTime) != 0 ? guia.ShipmentStartDate.ToString(dateTimeFormatString) : null,
+                    ShipmentStartTime = guia.ShipmentStartTime.ToString(),
+                    SourceCode = guia.SourceCode,
+                    Telefone = guia.Telefone,
+                    Tipo = guia.Tipo,
+                    TipoDescription = guia.TipoDescription,
+                    UserObservacoesAdicionai = guia.UserObservacoesAdicionai,
+                    Utilizador = guia.Utilizador,
+                    VATRegistrationNo = guia.VATRegistrationNo,
+                    Viatura = guia.Viatura
+                };
+
+                return cabecalho;
+            }
+
+            return null;
+        }
+
+        public static LinhaGuiaTransporteSqlModel CastToLinhaType(LinhaGuiaTransporteNavViewModel linha)
+        {
+            DateTime emptyDateTime = DateTime.Parse("0001-01-01 00:00:00.000");
+            string dateTimeFormatString = "yyyy-MM-dd HH:mm:ss.fff";
+
+            if (linha != null)
+            {
+                LinhaGuiaTransporteSqlModel linhaType = new LinhaGuiaTransporteSqlModel()
+                {
+                    NoGuiaTransporte = linha.NoGuiaTransporte,
+                    NoLinha = linha.NoLinha,
+                    Acessories = linha.Acessories,
+                    CodUnidadeMedida = linha.CodUnidadeMedida,
+                    Correction = linha.Correction,
+                    DataEntrega = linha.DataEntrega.CompareTo(emptyDateTime) != 0 ? linha.DataEntrega.ToString(dateTimeFormatString) : null,
+                    DataGuia = linha.DataGuia.CompareTo(emptyDateTime) != 0 ? linha.DataGuia.ToString(dateTimeFormatString) : null,
+                    Descricao = linha.Descricao,
+                    DimensionSetID = linha.DimensionSetID,
+                    EstadoEquipamento = linha.EstadoEquipamento,
+                    EstadoEquipamentoDescription = linha.EstadoEquipamentoDescription,
+                    FLDescription = linha.FlDescription,
+                    FunctionalLocationNo = linha.FunctionalLocationNo,
+                    InventoryNo = linha.InventoryNo,
+                    MaintOrderNo = linha.MaintOrderNo,
+                    NoCliente = linha.NoCliente,
+                    No = linha.No,
+                    NoMovimentoJobLedgerEntry = linha.NoMovimentoJobLedgerEntry,
+                    NoProjecto = linha.NoProjecto,
+                    Quantidade = linha.Quantidade,
+                    QuantidadeEnviar = linha.QuantidadeEnviar,
+                    RefDocOrigem = linha.RefDocOrigem,
+                    ShortcutDimension1Code = linha.ShortcutDimension1Code,
+                    ShortcutDimension2Code = linha.ShortcutDimension2Code,
+                    ShortcutDimension3Code = linha.ShortcutDimension3Code,
+                    Tipo = linha.Tipo,
+                    TipoDescription = linha.TipoDescription,
+                    TipoTerceiro = linha.TipoTerceiro,
+                    TotalCost = linha.TotalCost,
+                    TotalPrice = linha.TotalPrice,
+                    UnitCost = linha.UnitCost,
+                    UnitPrice = linha.UnitPrice
+                };
+
+                return linhaType;
+            }
+
+            return null;
         }
     }
 }
