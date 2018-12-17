@@ -202,7 +202,7 @@
 
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
-            <paper-button class="tablinks" on-tap="_createNewPedidoPagamento"><i class="fa fa-check-square" aria-hidden="true"></i> Criar Pedido</paper-button>
+            <paper-button id="btnCreateNewPedidoPagamento" class="tablinks" on-tap="_createNewPedidoPagamento"><i class="fa fa-check-square" aria-hidden="true"></i> Criar Pedido</paper-button>
             <such-dropdown-menu id="menuFunctios" title="Funções" items='[[ _functionsMenuItems ]]' disabled="{{ !_permissions.update }}" on-value-changed="_functionsMenuItemSelected"></such-dropdown-menu>
         </div>
 
@@ -281,6 +281,14 @@
                                             disabled>
                             </such-selectbox>
                         </div>
+
+                        <div class="col-sm-3">
+                            <vaadin-text-field id="ddNIB" label="NIB" value="{{data.nib}}" disabled></vaadin-text-field>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <vaadin-text-field id="ddIBAN" label="IBAN" value="{{data.iban}}" disabled></vaadin-text-field>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -290,47 +298,51 @@
                 <div class="panel-body">
                     <div class="row break_clear">
                         <div class="col-sm-3">
-                            <vaadin-text-field id="ddUserPedido" label="User Pedido" value="{{data.userPedido}}" disabled></vaadin-text-field>
+                            <vaadin-text-field id="ddUserPedido" label="Utilizador do Pedido" value="{{data.userPedido}}" disabled></vaadin-text-field>
                         </div>
 
                         <div class="col-sm-3">
-                            <vaadin-date-picker id="ddDataPedido" label="Data Pedido" value="{{data.dataPedidoText}}" disabled></vaadin-date-picker>
+                            <vaadin-date-picker id="ddDataPedido" label="Data do Pedido" value="{{data.dataPedidoText}}" disabled></vaadin-date-picker>
                         </div>
 
                         <div class="col-sm-3">
-                            <vaadin-text-field id="ddUserAprovacao" label="User Aprovação" value="{{data.userAprovacao}}" disabled></vaadin-text-field>
+                            <vaadin-text-field id="ddUserAprovacao" label="Utilizador da Aprovação" value="{{data.userAprovacao}}" disabled></vaadin-text-field>
                         </div>
 
                         <div class="col-sm-3">
-                            <vaadin-date-picker id="ddDataAprovacao" label="Data Aprovação" value="{{data.dataAprovacaoText}}" disabled></vaadin-date-picker>
-                        </div>
-                    </div>
-
-                    <div class="row break_clear">
-                        <div class="col-sm-3">
-                            <vaadin-text-field id="ddUserValidacao" label="User Validação" value="{{data.userValidacao}}" disabled></vaadin-text-field>
-                        </div>
-
-                        <div class="col-sm-3">
-                            <vaadin-date-picker id="ddDataValidacao" label="Data Validação" value="{{data.dataValidacaoText}}" disabled></vaadin-date-picker>
-                        </div>
-
-                        <div class="col-sm-3">
-                            <vaadin-text-field id="ddUserDisponibilizacao" label="User Disponibilização" value="{{data.userDisponibilizacao}}" disabled></vaadin-text-field>
-                        </div>
-
-                        <div class="col-sm-3">
-                            <vaadin-date-picker id="ddDataDisponibilizacao" label="Data Disponibilização" value="{{data.dataDisponibilizacaoText}}" disabled></vaadin-date-picker>
+                            <vaadin-date-picker id="ddDataAprovacao" label="Data da Aprovação" value="{{data.dataAprovacaoText}}" disabled></vaadin-date-picker>
                         </div>
                     </div>
 
                     <div class="row break_clear">
                         <div class="col-sm-3">
-                            <vaadin-text-field id="ddNIB" label="NIB" value="{{data.nib}}" disabled></vaadin-text-field>
+                            <vaadin-text-field id="ddUserValidacao" label="Utilizador da Validação" value="{{data.userValidacao}}" disabled></vaadin-text-field>
                         </div>
 
                         <div class="col-sm-3">
-                            <vaadin-text-field id="ddIBAN" label="IBAN" value="{{data.iban}}" disabled></vaadin-text-field>
+                            <vaadin-date-picker id="ddDataValidacao" label="Data da Validação" value="{{data.dataValidacaoText}}" disabled></vaadin-date-picker>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <vaadin-text-field id="ddUserDisponibilizacao" label="Utilizador da Disponibilização" value="{{data.userDisponibilizacao}}" disabled></vaadin-text-field>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <vaadin-date-picker id="ddDataDisponibilizacao" label="Data da Disponibilização" value="{{data.dataDisponibilizacaoText}}" disabled></vaadin-date-picker>
+                        </div>
+                    </div>
+
+                    <div class="row break_clear">
+                        <div class="col-sm-3">
+                            <vaadin-text-field id="ddUserArquivo" label="Utilizador da Anulação" value="{{data.userArquivo}}" disabled></vaadin-text-field>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <vaadin-date-picker id="ddDataArquivo" label="Data da Anulação" value="{{data.dataArquivoText}}" disabled></vaadin-date-picker>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <such-textarea id="ddMotivoAnulacao" label="Motivo da Anulação" value="{{data.motivoAnulacao}}" rows="5" maxlength="100" disabled></such-textarea>
                         </div>
                     </div>
                 </div>
@@ -371,6 +383,9 @@
                     this.$.page_databound_ajax.params = { "id": this._no };
                     this.$.page_databound_ajax.generateRequest();
                 },
+                _responseProcessor: function (data) {
+                    this._setFieldsEditability();
+                },
 
                 _openToast: function (message) {
                     this.$.ToastMessage.text = message;
@@ -397,12 +412,31 @@
                     }
                 },
 
+                _functionsMenuItemSelected: function (e) {
+                    var item = e.detail.value;
+                    if (item == null)
+                        return;
+                    switch (item.value) {
+                        case 1: //"Enviar p/ Aprovação"
+                            this._EnviarAprovacao();
+                            break;
+                        case 2: //"Aprovar"
+                            this._Aprovar();
+                            break;
+                        case 3: //"Validar"
+                            this._Validar();
+                            break;
+                        case 4: //"Anular Pedido"
+                            this._Anular();
+                            break;
+                    }
+                },
+
                 _goBack: function (e) {
                     window.history.back();
                 },
 
                 _createNewPedidoPagamento: function (e) {
-                    debugger;
                     var ValorEncomenda = this.$.ddValorEncomenda.value != "" ? parseFloat(this.$.ddValorEncomenda.value) : 0;
                     var ValorJaPedido = this.$.ddValorJaPedido.value != "" ? parseFloat(this.$.ddValorJaPedido.value) : 0;
                     var ValorPedidoComIVA = this.$.ddValorpedidoComIVA.value != "" ? parseFloat(this.$.ddValorpedidoComIVA.value) : 0;
@@ -421,39 +455,18 @@
                     }
                 },
                 _responseCriarPedidoPagamento: function (e) {
-                    debugger;
                     if (this.resultCriarPedidoPagamento.eReasonCode == "1") {
                         this._openToast(this.resultCriarPedidoPagamento.eMessage);
                     }
                     else {
                         this._openToastError(this.resultCriarPedidoPagamento.eMessage);
                     }
-                    this.$.page_databound_ajax.body = JSON.stringify({ "No": this.data.noPedido });
-                    this.$.page_databound_ajax.generateRequest();
-                },
-
-                _functionsMenuItemSelected: function (e) {
-                    var item = e.detail.value;
-                    if (item == null)
-                        return;
-                    switch (item.value) {
-                        case 1: //"Enviar p/ Aprovação"
-                            this._EnviarAprovacao();
-                            break;
-                        case 2: //"Aprovar"
-                            this._Aprovar();
-                            break;
-                        case 3: //"Validar"
-                            this._Validar();
-                            break;
-                        case 4: //"Anular Pedido"
-                            this._AnularPedido();
-                            break;
-                    }
+                    window.location.href = "/Encomendas/PedidoPagamento_List";
+                    //this.$.page_databound_ajax.body = JSON.stringify({ "No": this.data.noPedido });
+                    //this.$.page_databound_ajax.generateRequest();
                 },
 
                 _EnviarAprovacao: function () {
-                    debugger;
                     var ajax_request = this.$.page_EnviarAprovacao_ajax;
                     ajax_request.body = JSON.stringify(this.data);
 
@@ -477,7 +490,6 @@
                     });
                 },
                 _EnviarAprovacaoResponse: function (e) {
-                    debugger;
                     if (this.resultEnviarAprovacao.eReasonCode == "1") {
                         this._openToast(this.resultEnviarAprovacao.eMessage);
                     }
@@ -485,12 +497,12 @@
                         this._openToastError(this.resultEnviarAprovacao.eMessage);
                     }
 
-                    this.$.page_databound_ajax.params = { "id": this._no };
-                    this.$.page_databound_ajax.generateRequest();
+                    window.location.href = "/Encomendas/PedidoPagamento_List";
+                    //this.$.page_databound_ajax.params = { "id": this._no };
+                    //this.$.page_databound_ajax.generateRequest();
                 },
 
                 _Aprovar: function () {
-                    debugger;
                     var ajax_request = this.$.page_Aprovar_ajax;
                     ajax_request.body = JSON.stringify(this.data);
 
@@ -514,7 +526,6 @@
                     });
                 },
                 _AprovarResponse: function (e) {
-                    debugger;
                     if (this.resultAprovar.eReasonCode == "1") {
                         this._openToast(this.resultAprovar.eMessage);
                     }
@@ -522,12 +533,12 @@
                         this._openToastError(this.resultAprovar.eMessage);
                     }
 
-                    this.$.page_databound_ajax.params = { "id": this._no };
-                    this.$.page_databound_ajax.generateRequest();
+                    window.location.href = "/Encomendas/PedidoPagamento_List";
+                    //this.$.page_databound_ajax.params = { "id": this._no };
+                    //this.$.page_databound_ajax.generateRequest();
                 },
 
                 _Validar: function () {
-                    debugger;
                     var ajax_request = this.$.page_Validar_ajax;
                     ajax_request.body = JSON.stringify(this.data);
 
@@ -551,7 +562,6 @@
                     });
                 },
                 _ValidarResponse: function (e) {
-                    debugger;
                     if (this.resultValidar.eReasonCode == "1") {
                         this._openToast(this.resultValidar.eMessage);
                     }
@@ -559,36 +569,44 @@
                         this._openToastError(this.resultValidar.eMessage);
                     }
 
-                    this.$.page_databound_ajax.params = { "id": this._no };
-                    this.$.page_databound_ajax.generateRequest();
+                    window.location.href = "/Encomendas/PedidoPagamento_List";
+                    //this.$.page_databound_ajax.params = { "id": this._no };
+                    //this.$.page_databound_ajax.generateRequest();
                 },
 
                 _Anular: function () {
-                    debugger;
-                    var ajax_request = this.$.page_Validar_ajax;
-                    ajax_request.body = JSON.stringify(this.data);
+                    var self = this;
+                    var TMessageError = self._openToastError;
+                    var ajax_request = this.$.page_Anular_ajax;
 
-                    bootbox.confirm({
-                        message: "Tem a certeza que pretende Anular o Pedido de Pagamento?",
+                    bootbox.prompt({
+                        title: "Tem a certeza que pretende Anular o Pedido de Pagamento? Se Sim introduza o motivo da rejeição.",
+                        inputType: 'textarea',
                         buttons: {
                             confirm: {
-                                label: 'Sim',
+                                label: 'Rejeitar',
                                 className: 'btn-success'
                             },
                             cancel: {
-                                label: 'Não',
+                                label: 'Cancelar',
                                 className: 'btn-danger'
                             }
                         },
                         callback: function (result) {
-                            if (result) {
-                                ajax_request.generateRequest();
+                            if (result != null) {
+                                if (result == "") {
+                                    TMessageError("É necessário preencher o motivo de rejeição.");
+                                    return false;
+                                } else {
+                                    self.data.motivoAnulacao = result;
+                                    ajax_request.body = JSON.stringify(self.data);
+                                    ajax_request.generateRequest();
+                                }
                             }
                         }
                     });
                 },
                 _AnularResponse: function (e) {
-                    debugger;
                     if (this.resultAnular.eReasonCode == "1") {
                         this._openToast(this.resultAnular.eMessage);
                     }
@@ -596,25 +614,29 @@
                         this._openToastError(this.resultAnular.eMessage);
                     }
 
-                    this.$.page_databound_ajax.params = { "id": this._no };
-                    this.$.page_databound_ajax.generateRequest();
+                    window.location.href = "/Encomendas/PedidoPagamento_List";
+                    //this.$.page_databound_ajax.params = { "id": this._no };
+                    //this.$.page_databound_ajax.generateRequest();
                 },
 
+                _setFieldsEditability() {
+                    var self = this;
 
+                    if (self.data.estado != 1)
+                    {
+                        $(self.$.btnCreateNewPedidoPagamento).addClass('hidden');
 
+                        self.$.ddData.disabled = true;
+                        self.$.ddValorpedidoComIVA.disabled = true;
+                        self.$.ddPrioritario.disabled = true;
+                        self.$.ddDescricao.disabled = true;
+                    }
 
-
-
-
-
-
-
-
-
-
-
-
-
+                    if (self.data.estado == 1 || self.data.estado == 5) {
+                        $(self.$.menuFunctios).addClass('hidden');
+                    }
+                },
+               
             });
         });
     </script>

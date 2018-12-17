@@ -2621,6 +2621,16 @@ namespace Hydra.Such.Portal.Configurations
             {
                 Id = 5,
                 Value = "Anulado"
+            },
+            new EnumData()
+            {
+                Id = 6,
+                Value = "Disponível"
+            },
+            new EnumData()
+            {
+                Id = 7,
+                Value = "Arquivado"
             }
         };
     }
