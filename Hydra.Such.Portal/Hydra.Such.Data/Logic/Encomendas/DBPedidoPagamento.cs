@@ -41,6 +41,36 @@ namespace Hydra.Such.Data.Logic.Encomendas
             }
         }
 
+        public static List<PedidosPagamento> GetAllPedidosPagamentoByEstado(int Estado)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.PedidosPagamento.Where(x => x.Estado == Estado).ToList();
+                }
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+        public static List<PedidosPagamento> GetAllPedidosPagamentoByArquivo(bool Arquivado)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.PedidosPagamento.Where(x => x.Arquivado == Arquivado).ToList();
+                }
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
         public static PedidosPagamento GetIDPedidosPagamento(int NoPedido)
         {
             try

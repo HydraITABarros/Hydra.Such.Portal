@@ -269,7 +269,7 @@ namespace Hydra.Such.Portal.Controllers
                     int idPedido = Convert.ToInt32(id);
                     PedidosPagamentoViewModel Pedido = DBPedidoPagamento.ParseToViewModel(DBPedidoPagamento.GetIDPedidosPagamento(idPedido));
 
-                    var pedidos = DBPedidoPagamento.GetAllPedidosPagamentoByEncomenda(id);
+                    var pedidos = DBPedidoPagamento.GetAllPedidosPagamentoByEncomenda(Pedido.NoEncomenda);
                     Pedido.ValorJaPedido = pedidos.Sum(x => x.Valor);
 
                     return Json(Pedido);
@@ -282,13 +282,22 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetListPedidosPagamento()
+        public JsonResult GetListPedidosPagamento(int estado)
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.PedidosPagamento);
+            List<PedidosPagamentoViewModel> result = new List<PedidosPagamentoViewModel>();
 
             if (UPerm != null && UPerm.Read.Value)
             {
-                List<PedidosPagamentoViewModel> result = DBPedidoPagamento.ParseToViewModel(DBPedidoPagamento.GetAllPedidosPagamento());
+                if (estado == 99)
+                    result = DBPedidoPagamento.ParseToViewModel(DBPedidoPagamento.GetAllPedidosPagamento());
+                else
+                {
+                    if (estado == 7)
+                        result = DBPedidoPagamento.ParseToViewModel(DBPedidoPagamento.GetAllPedidosPagamentoByArquivo(true));
+                    else
+                        result = DBPedidoPagamento.ParseToViewModel(DBPedidoPagamento.GetAllPedidosPagamentoByEstado(estado));
+                }
 
                 if (result != null)
                 {
@@ -531,6 +540,7 @@ namespace Hydra.Such.Portal.Controllers
                         data.Arquivado = true;
                         data.UserArquivo = User.Identity.Name;
                         data.DataArquivo = DateTime.Now;
+                        data.MotivoAnulacao = data.MotivoAnulacao;
                         data.UtilizadorModificacao = User.Identity.Name;
                         data.DataModificacao = DateTime.Now;
 
@@ -551,7 +561,7 @@ namespace Hydra.Such.Portal.Controllers
                         if (data.UserPedido.ToLower() != User.Identity.Name.ToLower())
                         {
                             data.eReasonCode = 4;
-                            data.eMessage = "Não pode Anular este Pedido de Pagamento.";
+                            data.eMessage = "Não pode Anular este Pedido de Pagamento, pois não é o utilizador do Pedido de Pagamento.";
                             return Json(data);
                         }
 
@@ -559,6 +569,7 @@ namespace Hydra.Such.Portal.Controllers
                         data.Arquivado = true;
                         data.UserArquivo = User.Identity.Name;
                         data.DataArquivo = DateTime.Now;
+                        data.MotivoAnulacao = data.MotivoAnulacao;
                         data.UtilizadorModificacao = User.Identity.Name;
                         data.DataModificacao = DateTime.Now;
 
@@ -582,6 +593,7 @@ namespace Hydra.Such.Portal.Controllers
                             data.Arquivado = true;
                             data.UserArquivo = User.Identity.Name;
                             data.DataArquivo = DateTime.Now;
+                            data.MotivoAnulacao = data.MotivoAnulacao;
                             data.UtilizadorModificacao = User.Identity.Name;
                             data.DataModificacao = DateTime.Now;
 
@@ -599,7 +611,7 @@ namespace Hydra.Such.Portal.Controllers
                         else
                         {
                             data.eReasonCode = 7;
-                            data.eMessage = "Não pode Anular este Pedido de Pagamento.";
+                            data.eMessage = "Não pode Anular este Pedido de Pagamento, pois não é o utilizador da Aprovação do Pedido de Pagamento.";
                             return Json(data);
 
                         }
@@ -610,7 +622,7 @@ namespace Hydra.Such.Portal.Controllers
                         if (data.UserValidacao.ToLower() != User.Identity.Name.ToLower())
                         {
                             data.eReasonCode = 8;
-                            data.eMessage = "Não pode Anular este Pedido de Pagamento.";
+                            data.eMessage = "Não pode Anular este Pedido de Pagamento, pois não é o utilizador da Validação do Pedido de Pagamento.";
                             return Json(data);
                         }
 
@@ -618,6 +630,7 @@ namespace Hydra.Such.Portal.Controllers
                         data.Arquivado = true;
                         data.UserArquivo = User.Identity.Name;
                         data.DataArquivo = DateTime.Now;
+                        data.MotivoAnulacao = data.MotivoAnulacao;
                         data.UtilizadorModificacao = User.Identity.Name;
                         data.DataModificacao = DateTime.Now;
 
@@ -640,6 +653,59 @@ namespace Hydra.Such.Portal.Controllers
                 data.eMessage = "Ocorreu um erro.";
             }
             return Json(data);
+        }
+
+        public JsonResult CriarTransferenciaPedidoPagamento([FromBody] List<PedidosPagamentoViewModel> data)
+        {
+            ErrorHandler result = new ErrorHandler();
+
+            return Json(result);
+        }
+
+        public JsonResult ArquivarPedidoPagamento([FromBody] List<PedidosPagamentoViewModel> PEDIDOS)
+        {
+            ErrorHandler result = new ErrorHandler();
+            try
+            {
+                if (PEDIDOS != null)
+                {
+                    ConfigUtilizadores Utilizador = DBUserConfigurations.GetById(User.Identity.Name);
+                    bool AnularPedido = Utilizador.AnulacaoPedidoPagamento.HasValue ? (bool)Utilizador.AnulacaoPedidoPagamento : false;
+                    bool ValidarPedido = Utilizador.ValidarPedidoPagamento.HasValue ? (bool)Utilizador.ValidarPedidoPagamento : false;
+
+                    PEDIDOS.ForEach(pedido =>
+                    {
+                        if (pedido.UserPedido.ToLower() == User.Identity.Name.ToLower() || AnularPedido || ValidarPedido)
+                        {
+                            pedido.Estado = 7; //"Arquivado"
+                            pedido.Arquivado = true;
+                            pedido.UserArquivo = User.Identity.Name;
+                            pedido.DataArquivo = DateTime.Now;
+                            pedido.UtilizadorModificacao = User.Identity.Name;
+                            pedido.DataModificacao = DateTime.Now;
+
+                            if (DBPedidoPagamento.Update(DBPedidoPagamento.ParseToDB(pedido)) == null)
+                            {
+                                result.eMessages.Add(new TraceInformation(TraceType.Error, "Erro ao Arquivar o Pedido de Pagamento Nº " + pedido.NoPedido));
+                            }
+                            else
+                            {
+                                result.eReasonCode = 1;
+                                result.eMessage = "O(s) Pedido(s) de Pagamento Arquivado(s) com sucesso.";
+                            }
+                        }
+                        else
+                        {
+                            result.eMessages.Add(new TraceInformation(TraceType.Error, "Não tem permissões para Arquivar o Pedido de Pagamento Nº " + pedido.NoPedido));
+                        }
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                result.eMessages.Add(new TraceInformation(TraceType.Error, "Ocorreu um erro."));
+            }
+            return Json(result);
         }
 
         #endregion
