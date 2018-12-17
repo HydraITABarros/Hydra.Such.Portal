@@ -1099,6 +1099,8 @@
             <iframe id="rptContainer" src="" frameborder="0" style="width: 100%; height: 92%; margin: 0px; padding: 0px"></iframe>
         </paper-dialog>
 
+
+
         <paper-dialog id="dlgInvoiceLines" class="dialgoBox" modal>
             <div class="buttons">
                 <paper-button class="btnSave" on-tap="_exportInvoiceLines"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
@@ -1194,6 +1196,7 @@
                             </div>
                         </template>
                     </vaadin-grid-column>
+
                     <vaadin-grid-column width="100px" resizable>
                         <template class="header">
                             <vaadin-grid-sorter path="amount">Custo</vaadin-grid-sorter>
@@ -1202,6 +1205,102 @@
                         <template>
                             <div class="text-right">
                                 [[_formatCurrencyValue(item.amount)]]
+                            </div>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="100px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="tipoRefeicao">Tp Refeição</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="tipoRefeicao" />
+                        </template>
+                        <template>
+                            <div class="text-right">
+                                [[ tipoRefeicao ]]
+                            </div>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="100px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="mealTypeDescription">Descrição Tp Refeição</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="mealTypeDescription" />
+                        </template>
+                        <template>
+                            <div class="text-right">
+                                [[ mealTypeDescription ]]
+                            </div>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="100px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="grupoServico">Gr Serviço</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="grupoServico" />
+                        </template>
+                        <template>
+                            <div class="text-right">
+                                [[ grupoServico ]]
+                            </div>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="100px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="serviceGroupDescription">Descrição Gr Serviço</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="serviceGroupDescription" />
+                        </template>
+                        <template>
+                            <div class="text-right">
+                                [[ serviceGroupDescription ]]
+                            </div>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="100px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="codServCliente">Cod Serv Cliente</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="codServCliente" />
+                        </template>
+                        <template>
+                            <div class="text-right">
+                                [[ codServCliente ]]
+                            </div>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="100px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="desServCliente">Descrição Serv Cliente</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="desServCliente" />
+                        </template>
+                        <template>
+                            <div class="text-right">
+                                [[ desServCliente ]]
+                            </div>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="100px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="nGuiaResiduosGAR">Nº Guia Resíduos (GAR)</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="nGuiaResiduosGAR" />
+                        </template>
+                        <template>
+                            <div class="text-right">
+                                [[ nGuiaResiduosGAR ]]
+                            </div>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="100px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="nGuiaExterna">Nº Guia Externa</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="nGuiaExterna" />
+                        </template>
+                        <template>
+                            <div class="text-right">
+                                [[ nGuiaExterna ]]
                             </div>
                         </template>
                     </vaadin-grid-column>
@@ -1730,7 +1829,17 @@
                         "quantity": { hidden: false, label: "Quantidade" },
                         "unitPrice": { hidden: false, label: "Preço Unitário" },
                         "vat": { hidden: false, label: "Iva" },
-                        "amount": { hidden: false, label: "Custo" }
+                        "amount": { hidden: false, label: "Custo" },
+
+                        "tipoRefeicao": { hidden: false, label: "Tp Refeição" },
+                        "mealTypeDescription": { hidden: false, label: "Descrição Tp Refeição" },
+                        "grupoServico": { hidden: false, label: "Gr Serviço" },
+                        "serviceGroupDescription": { hidden: false, label: "Descrição Gr Serviço" },
+                        "codServCliente": { hidden: false, label: "Cod Serv Cliente" },
+                        "desServCliente": { hidden: false, label: "Descrição Serv Cliente" },
+                        "nGuiaResiduosGAR": { hidden: false, label: "Nº Guia Resíduos (GAR)" },
+                        "nGuiaExterna": { hidden: false, label: "Nº Guia Externa" },
+
                     };
 
 
