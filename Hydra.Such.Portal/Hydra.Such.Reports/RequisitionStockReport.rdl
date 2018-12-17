@@ -838,7 +838,7 @@
             </TablixRowHierarchy>
             <KeepTogether>true</KeepTogether>
             <DataSetName>ReportRequisicao</DataSetName>
-            <Top>1.09361cm</Top>
+            <Top>0.14111cm</Top>
             <Left>0.07056cm</Left>
             <Height>1.2cm</Height>
             <Width>17.81006cm</Width>
@@ -849,7 +849,7 @@
             </Style>
           </Tablix>
         </ReportItems>
-        <Height>0.96875in</Height>
+        <Height>0.59375in</Height>
         <Style>
           <Border>
             <Style>None</Style>
@@ -862,7 +862,7 @@
       <Width>17.97292cm</Width>
       <Page>
         <PageHeader>
-          <Height>4.42736cm</Height>
+          <Height>7.05203cm</Height>
           <PrintOnFirstPage>true</PrintOnFirstPage>
           <PrintOnLastPage>true</PrintOnLastPage>
           <ReportItems>
@@ -1229,7 +1229,7 @@
               <rd:DefaultName>Textbox27</rd:DefaultName>
               <Top>3.46683cm</Top>
               <Left>2.64112cm</Left>
-              <Height>0.96053cm</Height>
+              <Height>3.5852cm</Height>
               <Width>15.2395cm</Width>
               <ZIndex>9</ZIndex>
               <Style>

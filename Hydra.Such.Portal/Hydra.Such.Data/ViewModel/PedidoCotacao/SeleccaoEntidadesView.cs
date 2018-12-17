@@ -32,6 +32,9 @@ namespace Hydra.Such.Data.ViewModel.PedidoCotacao
         public DateTime? DataEnvioPropostaArea { get; set; }
         public DateTime? DataRespostaArea { get; set; }
 
+        //EXPORTAR PARA EXCEL
+        public Object ColunasEXCEL { get; set; }
+
         //Campos tratados
         public string DataEnvioAoFornecedor_Show { get; set; }
         public string DataRecepcaoProposta_Show { get; set; }
@@ -41,5 +44,9 @@ namespace Hydra.Such.Data.ViewModel.PedidoCotacao
         public string DataRespostaDoFornecedor_Show { get; set; }
         public string DataEnvioPropostaArea_Show { get; set; }
         public string DataRespostaArea_Show { get; set; }
+
+        public string Selecionado_Show { get; set; }
+        public string Preferencial_Show { get; set; }
+        public string NaoRespostaDoFornecedor_Show { get; set; }
     }
 }

@@ -1004,6 +1004,9 @@ namespace Hydra.Such.Portal.Controllers
                 if (!string.IsNullOrEmpty(data.ProjetoNo))
                     data.ProjetoDescricao = DBProjects.GetById(data.ProjetoNo) != null ? DBProjects.GetById(data.ProjetoNo).Descrição : DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, data.ProjetoNo).FirstOrDefault().Description;
 
+                if (!string.IsNullOrEmpty(data.EmpregadoNo))
+                    data.EmpregadoNome = DBNAV2009Employees.GetAll(data.EmpregadoNo, _config.NAV2009DatabaseName, _config.NAV2009CompanyName).FirstOrDefault().Name;
+
                 FolhasDeHoras FH = DBFolhasDeHoras.ParseToFolhaHoras(data);
 
                 if (DBFolhasDeHoras.Update(FH) == null)

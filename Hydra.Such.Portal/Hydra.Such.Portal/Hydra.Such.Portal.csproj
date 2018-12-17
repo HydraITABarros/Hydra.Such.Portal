@@ -6,21 +6,25 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\FacturasFornecedor\**" />
     <Compile Remove="wwwroot\lib\paper-dialog-scrollable\**" />
     <Compile Remove="wwwroot\lib\paper-input-money-master\**" />
     <Compile Remove="wwwroot\lib\paper-multi-select\paper-checkbox\**" />
     <Compile Remove="wwwroot\lib\vaadin-time-picker-master\bower_components\**" />
     <Compile Remove="__Notes\**" />
+    <Content Remove="wwwroot\FacturasFornecedor\**" />
     <Content Remove="wwwroot\lib\paper-dialog-scrollable\**" />
     <Content Remove="wwwroot\lib\paper-input-money-master\**" />
     <Content Remove="wwwroot\lib\paper-multi-select\paper-checkbox\**" />
     <Content Remove="wwwroot\lib\vaadin-time-picker-master\bower_components\**" />
     <Content Remove="__Notes\**" />
+    <EmbeddedResource Remove="wwwroot\FacturasFornecedor\**" />
     <EmbeddedResource Remove="wwwroot\lib\paper-dialog-scrollable\**" />
     <EmbeddedResource Remove="wwwroot\lib\paper-input-money-master\**" />
     <EmbeddedResource Remove="wwwroot\lib\paper-multi-select\paper-checkbox\**" />
     <EmbeddedResource Remove="wwwroot\lib\vaadin-time-picker-master\bower_components\**" />
     <EmbeddedResource Remove="__Notes\**" />
+    <None Remove="wwwroot\FacturasFornecedor\**" />
     <None Remove="wwwroot\lib\paper-dialog-scrollable\**" />
     <None Remove="wwwroot\lib\paper-input-money-master\**" />
     <None Remove="wwwroot\lib\paper-multi-select\paper-checkbox\**" />
@@ -59,7 +63,6 @@
     <Folder Include="Areas\Compras\Models\" />
     <Folder Include="Areas\Nutricao\Data\" />
     <Folder Include="Areas\Nutricao\Models\" />
-    <Folder Include="wwwroot\FacturasFornecedor\2017\" />
     <Folder Include="wwwroot\images\" />
     <Folder Include="wwwroot\Infinity\" />
     <Folder Include="wwwroot\lib\paper-menu-master\.github\" />

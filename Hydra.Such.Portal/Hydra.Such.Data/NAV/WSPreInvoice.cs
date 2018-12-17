@@ -216,8 +216,7 @@ namespace Hydra.Such.Data.NAV
                     Periodo_de_Fact_Contrato = ContractInvoicePeriod,
                     Data_Serv_Prestado = InvoiceBorrowed,
                     Responsibility_Center= CUsers.CentroDeResponsabilidade,
-                    Posting_No_Series = CUsers.NumSerieFaturas,
-
+                    Posting_No_Series = CUsers.NumSerieFaturas
                 }
             };
 

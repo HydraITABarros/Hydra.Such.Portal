@@ -55,15 +55,11 @@
             </style>
         </custom-style>
 
-        <iron-ajax url="/ConsultaMercado/GetAllConsultaMercado_Historico" last-response="{{result}}" method="post" handle-as="json" id="grid_databound_ajax" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/ConsultaMercado/CreateConsultaMercado" last-response="{{NewConsultaMercado}}" method="post" handle-as="json" id="ajax_createconsulta" on-response="_newConsultaMercadoResponse" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/ConsultaMercado/ExportToExcel_ConsultaMercado" last-response="{{export}}" id="ajax_Export" method="post" handle-as="json" on-response="_exportEXCELResponse" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/ConsultaMercado/GetAllConsultasPorFornecedor" last-response="{{result}}" method="post" handle-as="json" id="grid_databound_ajax" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/ConsultaMercado/ExportToExcel_ConsultasPorFornecedor" last-response="{{export}}" id="ajax_Export" method="post" handle-as="json" on-response="_exportEXCELResponse" content-type="application/json"></iron-ajax>
 
         <div class="subMenu">
-            <template is="dom-if" if="{{ _permissions.create }}">
-                <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar Nova</paper-button>
-                <paper-button class="tablinks" id="showHistory" on-tap="_showHistory"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{_showHistoryMessage}}</paper-button>
-            </template>
+            <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
             <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
 
             <!--start ColumnToggle-->
@@ -81,7 +77,7 @@
             <!--end ColumnToggle-->
         </div>
 
-        <vaadin-grid aria-label="ConsultaMercadoGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+        <vaadin-grid aria-label="SelecaoEntidadesGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}">
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.numConsultaMercado.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="numConsultaMercado">Nº Consulta Mercado</vaadin-grid-sorter>
@@ -91,407 +87,166 @@
                     {{item.numConsultaMercado}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.codProjecto.hidden }}">
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codFornecedor.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="codProjecto">Nº Projecto</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codProjecto" />
+                    <vaadin-grid-sorter path="codFornecedor">Código Fornecedor</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codFornecedor" />
                 </template>
                 <template>
-                    {{item.codProjecto}}
+                    {{item.codFornecedor}}
                 </template>
             </vaadin-grid-column>
-            <!--<vaadin-grid-column width="160px" resizable hidden$="{{ _columns.descricao.hidden }}">
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.nomeFornecedor.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="descricao">Descrição</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="descricao" />
+                    <vaadin-grid-sorter path="nomeFornecedor">Nome Fornecedor</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="nomeFornecedor" />
                 </template>
                 <template>
-                    {{item.descricao}}
-                </template>
-            </vaadin-grid-column>-->
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.codRegiao.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="codRegiao">Cód. Região</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codRegiao" />
-                </template>
-                <template>
-                    {{item.codRegiao}}
+                    {{item.nomeFornecedor}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.codAreaFuncional.hidden }}">
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.selecionado_Show.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="codAreaFuncional">Cód. Área Funcional</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codAreaFuncional" />
+                    <vaadin-grid-sorter path="selecionado_Show">Selecionado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="selecionado_Show" />
                 </template>
                 <template>
-                    {{item.codAreaFuncional}}
+                    {{item.selecionado_Show}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.codCentroResponsabilidade.hidden }}">
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.preferencial_Show.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="codCentroResponsabilidade">Cód. Centro Responsabilidade</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codCentroResponsabilidade" />
+                    <vaadin-grid-sorter path="preferencial_Show">Preferencial</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="preferencial_Show" />
                 </template>
                 <template>
-                    {{item.codCentroResponsabilidade}}
+                    {{item.preferencial_Show}}
                 </template>
             </vaadin-grid-column>
-            <!--<vaadin-grid-column width="160px" resizable hidden$="{{ _columns.codActividade.hidden }}">
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.emailFornecedor.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="codActividade">Cód. Actividade</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codActividade" />
+                    <vaadin-grid-sorter path="emailFornecedor">Email Fornecedor</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="emailFornecedor" />
                 </template>
                 <template>
-                    {{item.codActividade}}
-                </template>
-            </vaadin-grid-column>-->
-            <!--<vaadin-grid-column width="160px" resizable hidden$="{{ _columns.dataPedidoCotacao.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="dataPedidoCotacao_Show">Data Pedido Cotação</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataPedidoCotacao_Show" />
-                </template>
-                <template>
-                    {{item.dataPedidoCotacao_Show}}
-                </template>
-            </vaadin-grid-column>-->
-            <!--<vaadin-grid-column width="160px" resizable hidden$="{{ _columns.fornecedorSelecionado.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="fornecedorSelecionado">Fornecedor Selecionado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="fornecedorSelecionado" />
-                </template>
-                <template>
-                    {{item.fornecedorSelecionado}}
-                </template>
-            </vaadin-grid-column>-->
-            <!--<vaadin-grid-column width="160px" resizable hidden$="{{ _columns.numDocumentoCompra.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="numDocumentoCompra">Nº Doc. Compra</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="numDocumentoCompra" />
-                </template>
-                <template>
-                    {{item.numDocumentoCompra}}
-                </template>
-            </vaadin-grid-column>-->
-            <!--<vaadin-grid-column width="160px" resizable hidden$="{{ _columns.codLocalizacao.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="codLocalizacao">Cód. Localização</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codLocalizacao" />
-                </template>
-                <template>
-                    {{item.codLocalizacao}}
-                </template>
-            </vaadin-grid-column>-->
-            <!--<vaadin-grid-column width="160px" resizable hidden$="{{ _columns.filtroActividade.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="filtroActividade">Filtro Actividade</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="filtroActividade" />
-                </template>
-                <template>
-                    {{item.filtroActividade}}
-                </template>
-            </vaadin-grid-column>-->
-            <!--<vaadin-grid-column width="160px" resizable hidden$="{{ _columns.valorPedidoCotacao.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="valorPedidoCotacao">Valor Pedido Cotação</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="valorPedidoCotacao" />
-                </template>
-                <template>
-                    [[_formatValue(item.valorPedidoCotacao)]]
-                </template>
-            </vaadin-grid-column>-->
-            <!--<vaadin-grid-column width="160px" resizable hidden$="{{ _columns.destino.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="destino_Show">Destino</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="destino_Show" />
-                </template>
-                <template>
-                    {{item.destino_Show}}
-                </template>
-            </vaadin-grid-column>-->
-            <!--<vaadin-grid-column width="160px" resizable hidden$="{{ _columns.estado.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="estado_Show">Estado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="estado_Show" />
-                </template>
-                <template>
-                    {{item.estado_Show}}
-                </template>
-            </vaadin-grid-column>-->
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.utilizadorRequisicao.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="utilizadorRequisicao">Utilizador Requisição</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="utilizadorRequisicao" />
-                </template>
-                <template>
-                    {{item.utilizadorRequisicao}}
+                    {{item.emailFornecedor}}
                 </template>
             </vaadin-grid-column>
-            <!--<vaadin-grid-column width="160px" resizable hidden$="{{ _columns.dataLimite.hidden }}">
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dataEnvioAoFornecedor_Show.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="dataLimite_Show">Data Limite</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataLimite_Show" />
+                    <vaadin-grid-sorter path="dataEnvioAoFornecedor_Show">Data Envio ao Fornecedor</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataEnvioAoFornecedor_Show" />
                 </template>
                 <template>
-                    {{item.dataLimite_Show}}
-                </template>
-            </vaadin-grid-column>-->
-            <!--<vaadin-grid-column width="160px" resizable hidden$="{{ _columns.especificacaoTecnica.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="especificacaoTecnica">Especificação Técnica</vaadin-grid-sorter>
-                </template>
-                <template>
-                    <center>
-                        <vaadin-checkbox checked="{{item.especificacaoTecnica}}" disabled></vaadin-checkbox>
-                    </center>
-                </template>
-            </vaadin-grid-column>-->
-            <!--<vaadin-grid-column width="160px" resizable hidden$="{{ _columns.fase.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="fase_Show">Fase</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="fase_Show" />
-                </template>
-                <template>
-                    {{item.fase_Show}}
-                </template>
-            </vaadin-grid-column>-->
-            <!--<vaadin-grid-column width="160px" resizable hidden$="{{ _columns.modalidade.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="modalidade_Show">Modalidade</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="modalidade_Show" />
-                </template>
-                <template>
-                    {{item.modalidade_Show}}
-                </template>
-            </vaadin-grid-column>-->
-            <!--<vaadin-grid-column width="160px" resizable hidden$="{{ _columns.pedidoCotacaoCriadoEm.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="pedidoCotacaoCriadoEm_Show">Pedido Cotação Criado Em</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="pedidoCotacaoCriadoEm_Show" />
-                </template>
-                <template>
-                    {{item.pedidoCotacaoCriadoEm_Show}}
-                </template>
-            </vaadin-grid-column>-->
-            <!--<vaadin-grid-column width="160px" resizable hidden$="{{ _columns.pedidoCotacaoCriadoPor.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="pedidoCotacaoCriadoPor">Pedido Cotação Criado Por</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="pedidoCotacaoCriadoPor" />
-                </template>
-                <template>
-                    {{item.pedidoCotacaoCriadoPor}}
-                </template>
-            </vaadin-grid-column>-->
-            <!--<vaadin-grid-column width="160px" resizable hidden$="{{ _columns.consultaEm.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="consultaEm_Show">Consulta Em</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="consultaEm_Show" />
-                </template>
-                <template>
-                    {{item.consultaEm_Show}}
-                </template>
-            </vaadin-grid-column>-->
-            <!--<vaadin-grid-column width="160px" resizable hidden$="{{ _columns.consultaPor.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="consultaPor">Consulta Por</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="consultaPor" />
-                </template>
-                <template>
-                    {{item.consultaPor}}
-                </template>
-            </vaadin-grid-column>-->
-            <!--<vaadin-grid-column width="160px" resizable hidden$="{{ _columns.negociacaoContratacaoEm.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="negociacaoContratacaoEm_Show">Negociação Contratação Em</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="negociacaoContratacaoEm_Show" />
-                </template>
-                <template>
-                    {{item.negociacaoContratacaoEm_Show}}
-                </template>
-            </vaadin-grid-column>-->
-            <!--<vaadin-grid-column width="160px" resizable hidden$="{{ _columns.negociacaoContratacaoPor.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="negociacaoContratacaoPor">Negociação Contratação Por</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="negociacaoContratacaoPor" />
-                </template>
-                <template>
-                    {{item.negociacaoContratacaoPor}}
-                </template>
-            </vaadin-grid-column>-->
-            <!--<vaadin-grid-column width="160px" resizable hidden$="{{ _columns.adjudicacaoEm.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="adjudicacaoEm_Show">Adjudicação Em</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="adjudicacaoEm_Show" />
-                </template>
-                <template>
-                    {{item.adjudicacaoEm_Show}}
-                </template>
-            </vaadin-grid-column>-->
-            <!--<vaadin-grid-column width="160px" resizable hidden$="{{ _columns.adjudicacaoPor.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="adjudicacaoPor">Adjudicação Por</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="adjudicacaoPor" />
-                </template>
-                <template>
-                    {{item.adjudicacaoPor}}
-                </template>
-            </vaadin-grid-column>-->
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.numRequisicao.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="numRequisicao">Nº Requisição</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="numRequisicao" />
-                </template>
-                <template>
-                    {{item.numRequisicao}}
+                    <div style="text-align:right">
+                        {{item.dataEnvioAoFornecedor_Show}}
+                    </div>
                 </template>
             </vaadin-grid-column>
-            <!--<vaadin-grid-column width="160px" resizable hidden$="{{ _columns.pedidoCotacaoOrigem.hidden }}">
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dataRecepcaoProposta_Show.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="pedidoCotacaoOrigem">Pedido Cotação Origem</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="pedidoCotacaoOrigem" />
+                    <vaadin-grid-sorter path="dataRecepcaoProposta_Show">Data Recepção Proposta</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataRecepcaoProposta_Show" />
                 </template>
                 <template>
-                    {{item.pedidoCotacaoOrigem}}
-                </template>
-            </vaadin-grid-column>-->
-            <!--<vaadin-grid-column width="160px" resizable hidden$="{{ _columns.valorAdjudicado.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="valorAdjudicado">Valor Adjudicado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="valorAdjudicado" />
-                </template>
-                <template>
-                    {{item.valorAdjudicado}}
-                </template>
-            </vaadin-grid-column>-->
-            <!--<vaadin-grid-column width="160px" resizable hidden$="{{ _columns.codFormaPagamento.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="codFormaPagamento">Cód. Forma Pagamento</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codFormaPagamento" />
-                </template>
-                <template>
-                    {{item.codFormaPagamento}}
-                </template>
-            </vaadin-grid-column>-->
-            <!--<vaadin-grid-column width="160px" resizable hidden$="{{ _columns.seleccaoEfectuada.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="seleccaoEfectuada">Selecção Efectuada</vaadin-grid-sorter>
-                </template>
-                <template>
-                    <center>
-                        <vaadin-checkbox checked="{{item.seleccaoEfectuada}}" disabled></vaadin-checkbox>
-                    </center>
-                </template>
-            </vaadin-grid-column>-->
-            <!--<vaadin-grid-column width="160px" resizable hidden$="{{ _columns.numEncomenda.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="numEncomenda">Nº Encomenda</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="numEncomenda" />
-                </template>
-                <template>
-                    {{item.numEncomenda}}
-                </template>
-            </vaadin-grid-column>-->
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.emailEnviado.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="emailEnviado">Email(s) Enviado(s)</vaadin-grid-sorter>
-                </template>
-                <template>
-                    <center>
-                        <vaadin-checkbox checked="{{item.emailEnviado}}" disabled></vaadin-checkbox>
-                    </center>
+                    <div style="text-align:right">
+                        {{item.dataRecepcaoProposta_Show}}
+                    </div>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.regiaoMercadoLocal.hidden }}">
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.utilizadorEnvio.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="regiaoMercadoLocal">Região Mercado Local</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="regiaoMercadoLocal" />
+                    <vaadin-grid-sorter path="utilizadorEnvio">Utilizador Envio</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="utilizadorEnvio" />
                 </template>
                 <template>
-                    {{item.regiaoMercadoLocal}}
+                    {{item.utilizadorEnvio}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.dataEntregaFornecedor_Show.hidden }}">
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.utilizadorRecepcaoProposta.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="dataEntregaFornecedor_Show">Data Entrega Fornecedor</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataEntregaFornecedor_Show" />
+                    <vaadin-grid-sorter path="utilizadorRecepcaoProposta">Utilizador Recepção Proposta</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="utilizadorRecepcaoProposta" />
                 </template>
                 <template>
-                    {{item.dataEntregaFornecedor_Show}}
+                    {{item.utilizadorRecepcaoProposta}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.dataRecolha_Show.hidden }}">
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.prazoResposta.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="dataRecolha_Show">Data Recolha</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataRecolha_Show" />
+                    <vaadin-grid-sorter path="prazoResposta">Prazo Resposta</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="prazoResposta" />
                 </template>
                 <template>
-                    {{item.dataRecolha_Show}}
+                    {{item.prazoResposta}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.dataEntregaArmazem_Show.hidden }}">
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dataRespostaEsperada_Show.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="dataEntregaArmazem_Show">Data Entrega no Armazém</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataEntregaArmazem_Show" />
+                    <vaadin-grid-sorter path="dataRespostaEsperada_Show">Data Resposta Esperada</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataRespostaEsperada_Show" />
                 </template>
                 <template>
-                    {{item.dataEntregaArmazem_Show}}
+                    <div style="text-align:right">
+                        {{item.dataRespostaEsperada_Show}}
+                    </div>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.codComprador.hidden }}">
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dataPedidoEsclarecimento_Show.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="codComprador">Cód. Comprador</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codComprador" />
+                    <vaadin-grid-sorter path="dataPedidoEsclarecimento_Show">Data Pedido Esclarecimento</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataPedidoEsclarecimento_Show" />
                 </template>
                 <template>
-                    {{item.codComprador}}
+                    <div style="text-align:right">
+                        {{item.dataPedidoEsclarecimento_Show}}
+                    </div>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.localEntrega.hidden }}">
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dataRespostaEsclarecimento_Show.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="localEntrega_Show">Local Entrega</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="localEntrega_Show" />
+                    <vaadin-grid-sorter path="dataRespostaEsclarecimento_Show">Data Resposta Esclarecimento</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataRespostaEsclarecimento_Show" />
                 </template>
                 <template>
-                    {{item.localEntrega_Show}}
+                    <div style="text-align:right">
+                        {{item.dataRespostaEsclarecimento_Show}}
+                    </div>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.equipamento.hidden }}">
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dataRespostaDoFornecedor_Show.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="equipamento">Equipamento</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="dataRespostaDoFornecedor_Show">Data Resposta do Fornecedor</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataRespostaDoFornecedor_Show" />
                 </template>
                 <template>
-                    <center>
-                        <vaadin-checkbox checked="{{item.equipamento}}" disabled></vaadin-checkbox>
-                    </center>
+                    <div style="text-align:right">
+                        {{item.dataRespostaDoFornecedor_Show}}
+                    </div>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.amostra.hidden }}">
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.naoRespostaDoFornecedor_Show.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="amostra">Amostra</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="naoRespostaDoFornecedor_Show">Não Resposta do Fornecedor</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="naoRespostaDoFornecedor_Show" />
                 </template>
                 <template>
-                    <center>
-                        <vaadin-checkbox checked="{{item.amostra}}" disabled></vaadin-checkbox>
-                    </center>
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.urgente.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="urgente">Urgente</vaadin-grid-sorter>
-                </template>
-                <template>
-                    <center>
-                        <vaadin-checkbox checked="{{item.urgente}}" disabled></vaadin-checkbox>
-                    </center>
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.historico.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="historico">Histórico</vaadin-grid-sorter>
-                </template>
-                <template>
-                    <center>
-                        <vaadin-checkbox checked="{{item.historico}}" disabled></vaadin-checkbox>
-                    </center>
+                    {{item.naoRespostaDoFornecedor_Show}}
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
@@ -512,19 +267,6 @@
                     _permissions: {
                         type: Array
                     },
-                    _showHistoryMessage: {
-                        type: String,
-                        value: "Mostrar Histórico"
-                    },
-                    _historico: {
-                        type: Number,
-                        notify: true,
-                        value: 0
-                    },
-                    _isHistoric: {
-                        type: String,
-                        value: "false"
-                    },
                     _columns: {
                         type: Object,
                         value: function () {
@@ -534,12 +276,8 @@
                 },
                 _rowSelected: function (item) {
                     if (item != null) {
-                        window.location.href ="/ConsultaMercado/DetalheConsultaMercado/" + item.numConsultaMercado + "?isHistoric=" + this._isHistoric;
+                        window.location.href ="/ConsultaMercado/DetalheConsultaMercado/" + item.numConsultaMercado;
                     }
-                },
-                _openToast: function (message) {
-                    this.$.ToastMessage.text = message;
-                    this.$.ToastMessage.open();
                 },
                 _showMessage: function (message) {
                     this.$.ToastMessageSuccess.text = message;
@@ -549,43 +287,8 @@
                     this.$.ToastMessageError.text = message;
                     this.$.ToastMessageError.open();
                 },
-                _create: function (item) {
-                    this.$.ajax_createconsulta.body = JSON.stringify();
-                    this.$.ajax_createconsulta.generateRequest();
 
-                },
-                _newConsultaMercadoResponse: function (e) {
-                    if (this.NewConsultaMercado == "") {
-                        this._openToast("Não é possível criar uma Nova Consulta");
-                    } else {
-                        window.location.href = "/ConsultaMercado/DetalheConsultaMercado/" + this.NewConsultaMercado;
-                    };
-                },
-                _showHistory: function (item) {
-                    if (item != null) {
-                        if (this._historico == 0) {
-                            this._historico = 1;
-                            this._isHistoric = "true";
-                        } else {
-                            this._historico = 0;
-                            this._isHistoric = "false";
-                        }
-                        this.$.grid_databound_ajax.body = JSON.stringify({ "Historic": this._historico });
-                        this.$.grid_databound_ajax.generateRequest();
-                        this._setButtonTexts();
-                    }
-                },
-
-                _setButtonTexts: function () {
-                    if (this._historico == 0) {
-                        this._showHistoryMessage = "Mostrar Histórico";
-                    }
-                    if (this._historico == 1) {
-                        this._showHistoryMessage = "Mostrar Ativos";
-                    }
-                },
                 ready: function () {
-                    this.$.grid_databound_ajax.body = JSON.stringify({ "Historic": this._historico });
                     this.$.grid_databound_ajax.generateRequest();
 
                     /*ColumnToggle*/
@@ -612,60 +315,31 @@
                     this.$.ajax_Export.body = JSON.stringify(this.result);
                     this.$.ajax_Export.generateRequest();
                 },
-
                 _exportEXCELResponse: function (e) {
                     //debugger
                     var FileName = this.export;
-                    location.href = '../ConsultaMercado/ExportToExcelDownload_ConsultaMercado?sFileName=' + FileName;
+                    location.href = '../ConsultaMercado/ExportToExcelDownload_ConsultasPorFornecedor?sFileName=' + FileName;
                 },
+
                 /*start - ColumnToggle*/
                 _startColumnToggle: function () {
                     var columns = {
                         "numConsultaMercado": { hidden: false, label: "Nº Consulta Mercado" },
-                        "codProjecto": { hidden: false, label: "Nº Projecto" },
-                        //"descricao": { hidden: false, label: "Descrição" },
-                        "codRegiao": { hidden: false, label: "Cód. Região" },
-                        "codAreaFuncional": { hidden: false, label: "Cód. Área Funcional" },
-                        "codCentroResponsabilidade": { hidden: false, label: "Cód. Centro Responsabilidade" },
-                        //"codActividade": { hidden: false, label: "Cód. Actividade" },
-                        //"dataPedidoCotacao": { hidden: false, label: "Data Pedido Cotação" },
-                        //"fornecedorSelecionado": { hidden: false, label: "Fornecedor Selecionado" },
-                        //"numDocumentoCompra": { hidden: false, label: "Nº Doc. Compra" },
-                        //"codLocalizacao": { hidden: false, label: "Cód. Localização" },
-                        //"filtroActividade": { hidden: false, label: "Filtro Actividade" },
-                        //"valorPedidoCotacao": { hidden: false, label: "Valor Pedido Cotação" },
-                        //"destino": { hidden: false, label: "Destino" },
-                        //"estado": { hidden: false, label: "Estado" },
-                        "utilizadorRequisicao": { hidden: false, label: "Utilizador Requisição" },
-                        //"dataLimite": { hidden: false, label: "Data Limite" },
-                        //"especificacaoTecnica": { hidden: false, label: "Especificação Técnica" },
-                        //"fase": { hidden: false, label: "Fase" },
-                        //"modalidade": { hidden: false, label: "Modalidade" },
-                        //"pedidoCotacaoCriadoEm": { hidden: false, label: "Pedido Cotação Criado Em" },
-                        //"pedidoCotacaoCriadoPor": { hidden: false, label: "Pedido Cotação Criado Por" },
-                        //"consultaEm": { hidden: false, label: "Consulta Em" },
-                        //"consultaPor": { hidden: false, label: "Consulta Por" },
-                        //"negociacaoContratacaoEm": { hidden: false, label: "Negociação Contratação Em" },
-                        //"negociacaoContratacaoPor": { hidden: false, label: "Negociação Contratação Por" },
-                        //"adjudicacaoEm": { hidden: false, label: "Adjudicação Em" },
-                        //"adjudicacaoPor": { hidden: false, label: "Adjudicação Por" },
-                        "numRequisicao": { hidden: false, label: "Nº Requisição" },
-                        //"pedidoCotacaoOrigem": { hidden: false, label: "Pedido Cotação Origem" },
-                        //"valorAdjudicado": { hidden: false, label: "Valor Adjudicado" },
-                        //"codFormaPagamento": { hidden: false, label: "Cod. Forma Pagamento" },
-                        //"seleccaoEfectuada": { hidden: false, label: "Selecção Efectuada" },
-                        //"numEncomenda": { hidden: false, label: "Nº Encomenda" },
-                        "emailEnviado": { hidden: false, label: "Email(s) Enviado(s)" },
-                        "regiaoMercadoLocal": { hidden: false, label: "Região Mercado Local" },
-                        "dataEntregaFornecedor_Show": { hidden: false, label: "Data Entrega Fornecedor" },
-                        "dataRecolha_Show": { hidden: false, label: "Data Recolha" },
-                        "dataEntregaArmazem_Show": { hidden: false, label: "Data Entrega no Armazém" },
-                        "codComprador": { hidden: false, label: "Cód. Comprador" },
-                        "localEntrega": { hidden: false, label: "Local Entrega" },
-                        "equipamento": { hidden: false, label: "Equipamento" },
-                        "amostra": { hidden: false, label: "Amostra" },
-                        "urgente": { hidden: false, label: "Urgente" },
-                        "historico": { hidden: false, label: "Histórico" }
+                        "codFornecedor": { hidden: false, label: "Código Fornecedor" },
+                        "nomeFornecedor": { hidden: false, label: "Nome Fornecedor" },
+                        "selecionado_Show": { hidden: false, label: "Selecionado" },
+                        "preferencial_Show": { hidden: false, label: "Preferencial" },
+                        "emailFornecedor": { hidden: false, label: "Email Fornecedor" },
+                        "dataEnvioAoFornecedor_Show": { hidden: false, label: "Data Envio ao Fornecedor" },
+                        "dataRecepcaoProposta_Show": { hidden: false, label: "Data Recepção Proposta" },
+                        "utilizadorEnvio": { hidden: false, label: "Utilizador Envio" },
+                        "utilizadorRecepcaoProposta": { hidden: false, label: "Utilizador Recepção Proposta" },
+                        "prazoResposta": { hidden: false, label: "Prazo Resposta" },
+                        "dataRespostaEsperada_Show": { hidden: false, label: "Data Resposta Esperada" },
+                        "dataPedidoEsclarecimento_Show": { hidden: false, label: "Data Pedido Esclarecimento" },
+                        "dataRespostaEsclarecimento_Show": { hidden: false, label: "Data Resposta Esclarecimento" },
+                        "dataRespostaDoFornecedor_Show": { hidden: false, label: "Data Resposta do Fornecedor" },
+                        "naoRespostaDoFornecedor_Show": { hidden: false, label: "Não Resposta do Fornecedor" }
                     };
 
                     if (localStorage["consultaporfornecedorlist.ToggleColumn"]) {
@@ -697,11 +371,11 @@
                     });
                 },
                 /* end - ColumnToggle */
-                _formatValue: function (value) {
-                    if (value != null && value != 0) {
-                        return currency(value, { separator: '.', decimal: ',' }).format();
-                    }
-                }
+
+                _goBack: function (e) {
+                    window.history.back();
+                },
+
             });
         });
     </script>

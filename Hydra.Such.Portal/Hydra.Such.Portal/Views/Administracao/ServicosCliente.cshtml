@@ -36,6 +36,8 @@
 <link rel="import" href="~/lib/paper-tabs-master/paper-tabs.html" />
 <link rel="import" href="~/lib/paper-collapse-item/paper-collapse-group.html">
 <link rel="import" href="~/lib/paper-collapse-item/paper-collapse-item.html">
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
+
 <x-client-services></x-client-services>
 
 <dom-module id="x-client-services">
@@ -139,7 +141,13 @@
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-lg-2">
-                            <vaadin-combo-box id="cboClients" items="[[Clients]]" item-value-path="id" item-label-path="value" value="{{ddClients}}" label="Cliente" disabled="{{ _permissionsCreate }}">
+                            <such-selectbox id="cboClients" value="{{ddClients}}" label="Cliente" disabled="{{ _permissionsCreate }}"
+                                            items="[[Clients]]"
+                                            text-path="value"
+                                            value-path="id"
+                                            fields='[{"field":"id", "name":"Nº Cliente"}, {"field":"value", "name":"Nome Cliente"}]'>
+                            </such-selectbox>
+                            @*<vaadin-combo-box id="cboClients" items="[[Clients]]" item-value-path="id" item-label-path="value" value="{{ddClients}}" label="Cliente" disabled="{{ _permissionsCreate }}">
                                 <template>
                                     <table width="280px">
                                         <tr>
@@ -148,11 +156,17 @@
                                         </tr>
                                     </table>
                                 </template>
-                            </vaadin-combo-box>
+                            </vaadin-combo-box>*@
                         </div>
 
                         <div class="col-lg-2 ">
-                            <vaadin-combo-box id="cboServices" items="[[Services]]" item-value-path="id" item-label-path="value" value="{{ddServices}}" label="Serviço" disabled="{{ _permissionsCreate }}">
+                            <such-selectbox id="cboServices" value="{{ddServices}}" label="Serviço" disabled="{{ _permissionsCreate }}"
+                                            items="[[Services]]"
+                                            text-path="value"
+                                            value-path="id"
+                                            fields='[{"field":"id", "name":"Nº Serviço"}, {"field":"value", "name":"Nome Serviço"}]'>
+                            </such-selectbox>
+                            @*<vaadin-combo-box id="cboServices" items="[[Services]]" item-value-path="id" item-label-path="value" value="{{ddServices}}" label="Serviço" disabled="{{ _permissionsCreate }}">
                                 <template>
                                     <table width="160px">
                                         <tr>
@@ -161,7 +175,7 @@
                                         </tr>
                                     </table>
                                 </template>
-                            </vaadin-combo-box>
+                            </vaadin-combo-box>*@
                         </div>
 
                         <div class="col-lg-2 alignPoga">
@@ -184,7 +198,8 @@
                     <vaadin-grid-filter path="clientNumber" />
                 </template>
                 <template>
-                    <vaadin-text-field id="lineClientNumber" value="{{item.clientNumber}}" disabled></vaadin-text-field>
+                    @*<vaadin-text-field id="lineClientNumber" value="{{item.clientNumber}}" disabled></vaadin-text-field>*@
+                    {{item.clientNumber}}
                 </template>
             </vaadin-grid-column>
 
@@ -194,27 +209,28 @@
                     <vaadin-grid-filter path="clientName" />
                 </template>
                 <template>
-                    <vaadin-text-field id="lineClientName" value="{{item.clientName}}" disabled=></vaadin-text-field>
+                    @*<vaadin-text-field id="lineClientName" value="{{item.clientName}}" disabled=></vaadin-text-field>*@
+                    {{item.clientName}}
                 </template>
             </vaadin-grid-column>
 
             @*<vaadin-grid-column resizable width="150px">
-            <template class="header">
-                <vaadin-grid-sorter path="clientNumber">Cliente</vaadin-grid-sorter>
-                <vaadin-grid-filter path="clientNumber" />
-            </template>
-            <template>
-                <vaadin-combo-box items="[[Clients]]" item-value-path="id" item-label-path="value" value="{{item.clientNumber}}" disabled>
-                    <template>
-                        <paper-icon-item>
-                            <paper-item-body two-line>
-                                <div>[[item.name]]</div>
-                            </paper-item-body>
-                        </paper-icon-item>
+                    <template class="header">
+                        <vaadin-grid-sorter path="clientNumber">Cliente</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="clientNumber" />
                     </template>
-                </vaadin-combo-box>
-            </template>
-        </vaadin-grid-column>*@
+                    <template>
+                        <vaadin-combo-box items="[[Clients]]" item-value-path="id" item-label-path="value" value="{{item.clientNumber}}" disabled>
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.name]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </template>
+                </vaadin-grid-column>*@
 
             <vaadin-grid-column resizable width="150px">
                 <template class="header">
@@ -222,7 +238,8 @@
                     <vaadin-grid-filter path="serviceCode" />
                 </template>
                 <template>
-                    <vaadin-text-field id="lineServiceCode" value="{{item.serviceCode}}" disabled=></vaadin-text-field>
+                    @*<vaadin-text-field id="lineServiceCode" value="{{item.serviceCode}}" disabled=></vaadin-text-field>*@
+                    {{item.serviceCode}}
                 </template>
             </vaadin-grid-column>
 
@@ -232,39 +249,41 @@
                     <vaadin-grid-filter path="serviceDescription" />
                 </template>
                 <template>
-                    <vaadin-text-field id="lineServiceDescription" value="{{item.serviceDescription}}" disabled=></vaadin-text-field>
+                    @*<vaadin-text-field id="lineServiceDescription" value="{{item.serviceDescription}}" disabled=></vaadin-text-field>*@
+                    {{item.serviceDescription}}
                 </template>
             </vaadin-grid-column>
 
             @*<vaadin-grid-column resizable width="150px">
-            <template class="header">
-                <vaadin-grid-sorter path="serviceCode">Serviço</vaadin-grid-sorter>
-                <vaadin-grid-filter path="serviceCode" />
-            </template>
-            <template>
-                <vaadin-combo-box items="[[Services]]" item-value-path="id" item-label-path="value" value="{{item.serviceCode}}" disabled>
-                    <template>
-                        <paper-icon-item>
-                            <paper-item-body two-line>
-                                <div>[[item.value]]</div>
-                            </paper-item-body>
-                        </paper-icon-item>
+                    <template class="header">
+                        <vaadin-grid-sorter path="serviceCode">Serviço</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="serviceCode" />
                     </template>
-                </vaadin-combo-box>
-            </template>
-        </vaadin-grid-column>*@
+                    <template>
+                        <vaadin-combo-box items="[[Services]]" item-value-path="id" item-label-path="value" value="{{item.serviceCode}}" disabled>
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </template>
+                </vaadin-grid-column>*@
 
             <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <p>
                         @*<vaadin-grid-filter path="serviceGroup" value="[[_filterActive]]">
-                        <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
-                    </vaadin-grid-filter>*@
+                                <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
+                            </vaadin-grid-filter>*@
                         Grupo Serviços
                     </p>
                 </template>
                 <template>
-                    <vaadin-checkbox checked="{{item.serviceGroup}}" disabled="{{ _permissionsUpdate }}"></vaadin-checkbox>
+                    @*<vaadin-checkbox checked="{{item.serviceGroup}}" disabled="{{ _permissionsUpdate }}"></vaadin-checkbox>*@
+                    {{item.serviceGroup_Show}}
                 </template>
             </vaadin-grid-column>
 

@@ -159,6 +159,8 @@ namespace Hydra.Such.Data
             RequisiçõesComprasDinheiro = 58,
             [Description("Faturação de Projetos")]
             FaturacaoDeProjetos = 59,
+            [Description("Pedidos de Pagamento")]
+            PedidosPagamento = 60,
 
 
             [Description("Administração Geral")]
@@ -309,6 +311,16 @@ namespace Hydra.Such.Data
             ServicoExterno,
             Ferramenta,
             Invoicing
+        }
+
+        public enum EstadoProjecto
+        {
+            [Description("Pendente")]
+            Pendente = 0,
+            [Description("Encomenda")]
+            Encomenda = 1,
+            [Description("Terminado")]
+            Terminado = 2  
         }
     }
 }

@@ -1237,6 +1237,71 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult UpdateLinhaRequisicao([FromBody] RequisitionLineViewModel linha)
+        {
+            ErrorHandler result = new ErrorHandler();
+            result.eReasonCode = 0;
+            result.eMessage = "Ocorreu um erro ao atualizar a linha.";
+
+            try
+            {
+                if (!string.IsNullOrEmpty(linha.ProjectNo))
+                {
+                    if (!string.IsNullOrEmpty(linha.Code))
+                    {
+                        if (!string.IsNullOrEmpty(linha.LocalCode))
+                        {
+                            if (linha.QuantityToRequire > 0)
+                            {
+                                linha.UpdateUser = User.Identity.Name;
+                                if (DBRequestLine.Update(DBRequestLine.ParseToDB(linha)) != null)
+                                {
+                                    result.eReasonCode = 1;
+                                    result.eMessage = "Linha Atualizada com Sucesso.";
+
+                                }
+                                else
+                                {
+                                    result.eReasonCode = 2;
+                                    result.eMessage = "Ocorreu um erro ao atualizar a linha.";
+                                }
+                            }
+                            else
+                            {
+                                result.eReasonCode = 3;
+                                result.eMessage = "Na linha o campo Qt. a Requerer tem que ser superior a zero.";
+                            }
+                        }
+                        else
+                        {
+                            result.eReasonCode = 4;
+                            result.eMessage = "Na linha o campo Código Localização é de preenchimento obrigatório.";
+                        }
+                    }
+                    else
+                    {
+                        result.eReasonCode = 5;
+                        result.eMessage = "Na linha o campo Nº Ordem/projecto é de preenchimento obrigatório.";
+                    }
+                }
+                else
+                {
+                    result.eReasonCode = 6;
+                    result.eMessage = "Na linha o campo Cód. Produto é de preenchimento obrigatório.";
+                }
+            }
+            catch (Exception ex)
+            {
+                result.eReasonCode = 99;
+                result.eMessage = "Ocorreu um erro.";
+
+                return Json(result);
+            }
+
+            return Json(result);
+        }
+
+        [HttpPost]
 
         public JsonResult UpdateRequisitionLinesQtRequerer([FromBody] RequisitionViewModel item)
         {
@@ -1384,15 +1449,16 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 if (!line.QuantityToProvide.HasValue || line.QuantityToProvide.Value <= 0)
                                     continue;
+
                                 List<NAVStockKeepingUnitViewModel> stockkeepingUnits = DBNAV2017StockKeepingUnit.GetByProductsNo(config.NAVDatabaseName, config.NAVCompanyName, line.Code);
                                 var stockkeepingUnit = stockkeepingUnits.Where(x => x.LocationCode == line.LocalCode).FirstOrDefault();
+
                                 if (stockkeepingUnit == null)
                                 {
                                     prodNotStockkeepUnit += line.Description + ";";
                                 }
                                 else
                                 {
-                                    UmRegistoOK = true;
                                     decimal quantityInStock = 0;
                                     Task<WSGenericCodeUnit.FxGetStock_ItemLocation_Result> quantityinStockTask = WSGeneric.GetNAVProductQuantityInStockFor(stockkeepingUnit.ItemNo_, stockkeepingUnit.LocationCode, configws);
                                     quantityinStockTask.Wait();
@@ -1400,17 +1466,17 @@ namespace Hydra.Such.Portal.Controllers
                                     {
                                         quantityInStock = quantityinStockTask.Result.return_value;
                                     }
+
                                     if (quantityInStock < line.QuantityToProvide)
                                     {
                                         prodQuantityOverStock += line.Description + ";";
                                     }
                                     else
                                     {
+                                        UmRegistoOK = true;
+
                                         line.QuantityAvailable = (line.QuantityAvailable ?? 0) + (line.QuantityToProvide ?? 0);
                                         line.QuantityReceivable = (line.QuantityAvailable ?? 0) - (line.QuantityReceived ?? 0);
-                                        
-                                        //TESTE
-                                        //line.QuantityToProvide -= line.QuantityToProvide;
                                         line.QuantityToProvide = (line.QuantityRequired ?? 0) - (line.QuantityAvailable ?? 0);
 
                                         line.UpdateUser = User.Identity.Name;
@@ -1425,16 +1491,17 @@ namespace Hydra.Such.Portal.Controllers
                                 item.eMessage = " Os seguintes produtos não  existem nas unidades de armazenamento do NAV: " + prodNotStockkeepUnit +
                                 ". Os seguintes têm quantidades a disponibilizar superiores ao stock: " + prodQuantityOverStock + ".";
                             }
-                            else if (prodNotStockkeepUnit != "" && prodQuantityOverStock == "")
+                            if (prodNotStockkeepUnit != "" && prodQuantityOverStock == "")
                             {
                                 item.eReasonCode = 7;
                                 item.eMessage = " Os seguintes produtos não existem nas unidades de armazenamento do NAV: " + prodNotStockkeepUnit + ".";
                             }
-                            else if (prodNotStockkeepUnit == "" && prodQuantityOverStock != "")
+                            if (prodNotStockkeepUnit == "" && prodQuantityOverStock != "")
                             {
                                 item.eReasonCode = 8;
                                 item.eMessage = " Os seguintes produtos têm quantidades a disponibilizar superiores ao stock: " + prodQuantityOverStock + ".";
                             }
+                            
                             //Codigo Original comentado
                             //else
                             if (UmRegistoOK == true)
@@ -1600,7 +1667,7 @@ namespace Hydra.Such.Portal.Controllers
                                         if (registerNavDiaryLines != null && registerNavDiaryLines.IsCompletedSuccessfully)
                                         {
                                             bool keepOpen = true;
-                                            item.Lines = productsToHandle;
+                                            //item.Lines = productsToHandle;
 
                                             keepOpen = item.Lines.Any(x => x.QuantityReceived != x.QuantityRequired);
                                             //item.Lines.ForEach(Linha =>
@@ -1761,25 +1828,83 @@ namespace Hydra.Such.Portal.Controllers
                         break;
 
                     case "Anular Aprovacao":
-                        ErrorHandler ApprovalMovResult = new ErrorHandler();
-
                         if (item.State == RequisitionStates.Approved)
                         {
-                            ApprovalMovResult = ApprovalMovementsManager.StartApprovalMovement(1, item.FunctionalAreaCode, item.CenterResponsibilityCode, item.RegionCode, 0, item.RequisitionNo, User.Identity.Name, reason);
-                            if (ApprovalMovResult.eReasonCode != 100)
+                            item.eReasonCode = 1;
+
+                            //Pedido Carlos Rodrigues 06/12/2018
+                            //Não despultar o movimento de aprovação
+                            //ApprovalMovResult = ApprovalMovementsManager.StartApprovalMovement(1, item.FunctionalAreaCode, item.CenterResponsibilityCode, item.RegionCode, 0, item.RequisitionNo, User.Identity.Name, reason);
+                            //if (ApprovalMovResult.eReasonCode != 100)
+                            //{
+                            //    item.eReasonCode = 4;
+                            //    item.eMessage = ApprovalMovResult.eMessage;
+                            //    //ApprovalMovResult.eMessage = "Não foi possivel iniciar o processo de aprovação para esta requisição: " + ReqNo;
+                            //}
+                            //else
+                            //{
+
+                            //Anular o movimento de aprovação atual
+                            int NoMovApro = 0;
+                            MovimentosDeAprovação MovApro = DBApprovalMovements.GetAll().Where(x => x.Número == item.RequisitionNo && x.Estado == 2).LastOrDefault();
+                            if (MovApro != null)
                             {
-                                item.eReasonCode = 4;
-                                item.eMessage = ApprovalMovResult.eMessage;
-                                //ApprovalMovResult.eMessage = "Não foi possivel iniciar o processo de aprovação para esta requisição: " + ReqNo;
+                                NoMovApro = MovApro.NºMovimento;
+                                List<UtilizadoresMovimentosDeAprovação> UserMovs = DBUserApprovalMovements.GetAll().Where(x => x.NºMovimento == MovApro.NºMovimento).ToList();
+
+                                if (UserMovs.Count() > 0)
+                                {
+                                    foreach (UtilizadoresMovimentosDeAprovação UserMov in UserMovs)
+                                    {
+                                        if (UserMov != null)
+                                            DBUserApprovalMovements.Delete(UserMov);
+                                    }
+                                }
+                                if (DBApprovalMovements.Delete(MovApro) != true)
+                                {
+                                    item.eReasonCode = 7;
+                                    item.eMessage = "Não foi possível anular o Movimento de aprovação.";
+                                }
+                            }
+
+                            //Enviar Email para o criador da RQ com o motivo da anulação
+                            if (item.eReasonCode == 1 && !string.IsNullOrEmpty(item.CreateUser) && !string.IsNullOrEmpty(item.RequisitionNo))
+                            {
+                                EmailsAprovações EmailApproval = new EmailsAprovações();
+                                EmailApproval.NºMovimento = NoMovApro;
+                                EmailApproval.EmailDestinatário = item.CreateUser;
+                                EmailApproval.NomeDestinatário = item.CreateUser;
+                                EmailApproval.Assunto = "eSUCH - Anulação da Aprovação - Requisição Nº " + item.RequisitionNo;
+                                EmailApproval.DataHoraEmail = DateTime.Now;
+                                EmailApproval.TextoEmail = "A aprovação Nº " + NoMovApro + ", da Requisição Nº " + item.RequisitionNo + ", foi anulada pelo utilizador " + User.Identity.Name + "." + "<br />" + "<b>Motivo:</b> " + reason;
+                                EmailApproval.Enviado = false;
+                                SendEmailApprovals Email = new SendEmailApprovals
+                                {
+                                    Subject = "eSUCH - Anulação da Aprovação - Requisição Nº " + item.RequisitionNo,
+                                    From = User.Identity.Name
+                                };
+                                Email.To.Add(item.CreateUser);
+                                Email.Body = ApprovalMovementsManager.MakeEmailBodyContent(EmailApproval.TextoEmail);
+                                Email.IsBodyHtml = true;
+                                Email.EmailApproval = EmailApproval;
+                                Email.SendEmail();
                             }
                             else
                             {
+                                item.eReasonCode = 6;
+                                item.eMessage = "Não foi possível enviar o email.";
+                            }
+
+                            if (item.eReasonCode == 1)
+                            {
+                                //Passa a Requisição para o estado Pendente
                                 item.State = RequisitionStates.Pending;
                                 item.ResponsibleApproval = "";
                                 item.ApprovalDate = null;
                                 item.UpdateUser = User.Identity.Name;
                                 item.UpdateDate = DateTime.Now;
-                                item.Comments += reason;
+                                item.RejeicaoMotivo += reason;
+
                                 RequisitionViewModel reqPend = DBRequest.Update(item.ParseToDB(), false, true).ParseToViewModel();
                                 if (reqPend != null)
                                 {
@@ -1810,9 +1935,10 @@ namespace Hydra.Such.Portal.Controllers
                             item.eReasonCode = 2;
                             item.eMessage = "A requisição não está aprovada";
                         }
+
                         if (item.eReasonCode == 1)
                         {
-                            item.eMessage = "A Aprovação foi anulada." + ApprovalMovResult.eMessage;
+                            item.eMessage = "A Aprovação foi anulada.";
                         }
                         break;
 
@@ -2080,18 +2206,17 @@ namespace Hydra.Such.Portal.Controllers
                                     result.eMessage = "Ocorreu um erro ao criar a Compra.";
                                 }
                             });
-
                         }
                         else
                         {
                             result.eReasonCode = 5;
-                            result.eMessage = "Não foram encontradas linhas para Validar.";
+                            result.eMessage = "Primeiro tem que selecionar a(s) linha(s) a enviar para o Mercado Local.";
                         }
                     }
                     else
                     {
                         result.eReasonCode = 4;
-                        result.eMessage = "Preencha o campo Região Mercado Local no Cabeçalho.";
+                        result.eMessage = "Preencha o campo Região Mercado Local no Geral.";
                     }
                 }
                 catch (Exception ex)
@@ -2317,7 +2442,7 @@ namespace Hydra.Such.Portal.Controllers
                 catch (NotImplementedException ex)
                 {
                     item.eReasonCode = 2;
-                    item.eMessage = "Ocorreu um erro ao criar a Consulta ao Mercado";
+                    item.eMessage = "Ocorreu um erro ao criar a Consulta ao Mercado (" + ex.Message + ")";
                 }
             }
             else
@@ -3079,131 +3204,28 @@ namespace Hydra.Such.Portal.Controllers
                 IRow row = excelSheet.CreateRow(0);
                 int Col = 0;
 
-                if (dp["requisitionNo"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Nº Requisição");
-                    Col = Col + 1;
-                }
-                if (dp["state"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Estado");
-                    Col = Col + 1;
-                }
-                if (dp["urgent"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Urgente");
-                    Col = Col + 1;
-                }
-                //if (dp["buyCash"]["hidden"].ToString() == "False")
-                //{
-                //    row.CreateCell(Col).SetCellValue("Compra a Dinheiro");
-                //    Col = Col + 1;
-                //}
-                if (dp["alreadyPerformed"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Trabalho já executado");
-                    Col = Col + 1;
-                }
-                if (dp["requestNutrition"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Requisição Nutrição");
-                    Col = Col + 1;
-                }
-                if (dp["localMarket"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Mercado Local");
-                    Col = Col + 1;
-                }
-                if (dp["pedirOrcamento"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Pedir Orçamento");
-                    Col = Col + 1;
-                }
-                if (dp["budget"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Orçamento");
-                    Col = Col + 1;
-                }
-                if (dp["localMarketRegion"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Região Mercado Local");
-                    Col = Col + 1;
-                }
-                if (dp["localMarketDate"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Data Mercado Local");
-                    Col = Col + 1;
-                }
-                if (dp["projectNo"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Nº Projeto");
-                    Col = Col + 1;
-                }
-                if (dp["regionCode"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Código Região");
-                    Col = Col + 1;
-                }
-                if (dp["functionalAreaCode"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Código Área Funcional");
-                    Col = Col + 1;
-                }
-                if (dp["centerResponsibilityCode"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Código Centro Responsabilidade");
-                    Col = Col + 1;
-                }
-                if (dp["localCode"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Código Localização");
-                    Col = Col + 1;
-                }
-                if (dp["comments"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Observações");
-                    Col = Col + 1;
-                }
-                if (dp["marketInquiryNo"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Nº Consulta Mercado");
-                    Col = Col + 1;
-                }
-                if (dp["orderNo"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Nº Encomenda");
-                    Col = Col + 1;
-                }
-                if (dp["stockReplacement"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Reposição Stock");
-                    Col = Col + 1;
-                }
-                //if (dp["reclamation"]["hidden"].ToString() == "False")
-                //{
-                //    row.CreateCell(Col).SetCellValue("Reclamação");
-                //    Col = Col + 1;
-                //}
-                //if (dp["requestReclaimNo"]["hidden"].ToString() == "False")
-                //{
-                //    row.CreateCell(Col).SetCellValue("Nº Requisição Reclamada");
-                //    Col = Col + 1;
-                //}
-                if (dp["requisitionDate"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Data requisição");
-                    Col = Col + 1;
-                }
-                if (dp["createUser"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Utilizador Criação");
-                    Col = Col + 1;
-                }
-                if (dp["estimatedValue"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Valor Estimado");
-                    Col = Col + 1;
-                }
+                if (dp["requisitionNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Requisição"); Col = Col + 1; }
+                if (dp["state"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Estado"); Col = Col + 1; }
+                if (dp["urgent"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Urgente"); Col = Col + 1; }
+                if (dp["buyCash"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Compra a Dinheiro"); Col = Col + 1; }
+                if (dp["alreadyPerformed"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Trabalho já executado"); Col = Col + 1; }
+                if (dp["requestNutrition"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Requisição Nutrição"); Col = Col + 1; }
+                if (dp["budget"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Orçamento"); Col = Col + 1; }
+                if (dp["localMarket"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Mercado Local"); Col = Col + 1; }
+                if (dp["localMarketRegion"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Região Mercado Local"); Col = Col + 1; }
+                if (dp["localMarketDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Mercado Local"); Col = Col + 1; }
+                if (dp["regionCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Código Região"); Col = Col + 1; }
+                if (dp["functionalAreaCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Código Área Funcional"); Col = Col + 1; }
+                if (dp["centerResponsibilityCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Código Centro Responsabilidade"); Col = Col + 1; }
+                if (dp["comments"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Observações"); Col = Col + 1; }
+                if (dp["marketInquiryNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Consulta Mercado"); Col = Col + 1; }
+                if (dp["orderNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Encomenda"); Col = Col + 1; }
+                if (dp["stockReplacement"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Reposição Stock"); Col = Col + 1; }
+                if (dp["reclamation"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Reclamação"); Col = Col + 1; }
+                if (dp["requestReclaimNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Requisição Reclamada"); Col = Col + 1; }
+                if (dp["requisitionDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data requisição"); Col = Col + 1; }
+                if (dp["createUser"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Utilizador Criação"); Col = Col + 1; }
+                if (dp["estimatedValue"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Valor Estimado"); Col = Col + 1; }
 
                 if (dp != null)
                 {
@@ -3213,131 +3235,29 @@ namespace Hydra.Such.Portal.Controllers
                         Col = 0;
                         row = excelSheet.CreateRow(count);
 
-                        if (dp["requisitionNo"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.RequisitionNo);
-                            Col = Col + 1;
-                        }
-                        if (dp["state"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.State.ToString());
-                            Col = Col + 1;
-                        }
-                        if (dp["urgent"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.Urgent.ToString());
-                            Col = Col + 1;
-                        }
-                        //if (dp["buyCash"]["hidden"].ToString() == "False")
-                        //{
-                        //    row.CreateCell(Col).SetCellValue(item.BuyCash.ToString());
-                        //    Col = Col + 1;
-                        //}
-                        if (dp["alreadyPerformed"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.AlreadyPerformed.ToString());
-                            Col = Col + 1;
-                        }
-                        if (dp["requestNutrition"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.RequestNutrition.ToString());
-                            Col = Col + 1;
-                        }
-                        if (dp["localMarket"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.LocalMarket.ToString());
-                            Col = Col + 1;
-                        }
-                        if (dp["pedirOrcamento"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.PedirOrcamento.ToString());
-                            Col = Col + 1;
-                        }
-                        if (dp["budget"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.Budget.ToString());
-                            Col = Col + 1;
-                        }
-                        if (dp["localMarketRegion"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.LocalMarketRegion);
-                            Col = Col + 1;
-                        }
-                        if (dp["localMarketDate"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.LocalMarketDate.ToString());
-                            Col = Col + 1;
-                        }
-                        if (dp["projectNo"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.ProjectNo);
-                            Col = Col + 1;
-                        }
-                        if (dp["regionCode"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.RegionCode);
-                            Col = Col + 1;
-                        }
-                        if (dp["functionalAreaCode"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.FunctionalAreaCode);
-                            Col = Col + 1;
-                        }
-                        if (dp["centerResponsibilityCode"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.CenterResponsibilityCode);
-                            Col = Col + 1;
-                        }
-                        if (dp["localCode"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.LocalCode);
-                            Col = Col + 1;
-                        }
-                        if (dp["comments"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.Comments);
-                            Col = Col + 1;
-                        }
-                        if (dp["marketInquiryNo"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.MarketInquiryNo);
-                            Col = Col + 1;
-                        }
-                        if (dp["orderNo"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.OrderNo);
-                            Col = Col + 1;
-                        }
-                        if (dp["stockReplacement"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.StockReplacement.ToString());
-                            Col = Col + 1;
-                        }
-                        //if (dp["reclamation"]["hidden"].ToString() == "False")
-                        //{
-                        //    row.CreateCell(Col).SetCellValue(item.Reclamation.ToString());
-                        //    Col = Col + 1;
-                        //}
-                        //if (dp["requestReclaimNo"]["hidden"].ToString() == "False")
-                        //{
-                        //    row.CreateCell(Col).SetCellValue(item.RequestReclaimNo);
-                        //    Col = Col + 1;
-                        //}
-                        if (dp["requisitionDate"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.RequisitionDate);
-                            Col = Col + 1;
-                        }
-                        if (dp["createUser"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.CreateUser);
-                            Col = Col + 1;
-                        }
-                        if (dp["estimatedValue"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.EstimatedValue.ToString());
-                            Col = Col + 1;
-                        }
+                        if (dp["requisitionNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RequisitionNo); Col = Col + 1; }
+                        if (dp["state"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.State.ToString()); Col = Col + 1; }
+                        if (dp["urgent"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Urgent.ToString()); Col = Col + 1; }
+                        if (dp["buyCash"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.BuyCash.ToString()); Col = Col + 1; }
+                        if (dp["alreadyPerformed"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.AlreadyPerformed.ToString()); Col = Col + 1; }
+                        if (dp["requestNutrition"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RequestNutrition.ToString()); Col = Col + 1; }
+                        if (dp["budget"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Budget.ToString()); Col = Col + 1; }
+                        if (dp["localMarket"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.LocalMarket.ToString()); Col = Col + 1; }
+                        if (dp["localMarketRegion"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.LocalMarketRegion); Col = Col + 1; }
+                        if (dp["localMarketDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.LocalMarketDate.ToString()); Col = Col + 1; }
+                        if (dp["regionCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RegionCode); Col = Col + 1; }
+                        if (dp["functionalAreaCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.FunctionalAreaCode); Col = Col + 1; }
+                        if (dp["centerResponsibilityCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CenterResponsibilityCode); Col = Col + 1; }
+                        if (dp["comments"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Comments); Col = Col + 1; }
+                        if (dp["marketInquiryNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.MarketInquiryNo); Col = Col + 1; }
+                        if (dp["orderNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.OrderNo); Col = Col + 1; }
+                        if (dp["stockReplacement"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.StockReplacement.ToString()); Col = Col + 1; }
+                        if (dp["reclamation"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Reclamation.ToString()); Col = Col + 1; }
+                        if (dp["requestReclaimNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RequestReclaimNo); Col = Col + 1; }
+                        if (dp["requisitionDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RequisitionDate); Col = Col + 1; }
+                        if (dp["createUser"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CreateUser); Col = Col + 1; }
+                        if (dp["estimatedValue"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.EstimatedValue.ToString()); Col = Col + 1; }
+
                         count++;
                     }
                 }
@@ -3764,7 +3684,7 @@ namespace Hydra.Such.Portal.Controllers
                                 Anexos newfile = new Anexos();
                                 newfile.NºOrigem = id;
                                 newfile.UrlAnexo = full_filename;
-                                newfile.TipoOrigem = 1;
+                                newfile.TipoOrigem = TipoOrigemAnexos.PreRequisicao;
                                 newfile.DataHoraCriação = DateTime.Now;
                                 newfile.UtilizadorCriação = User.Identity.Name;
 

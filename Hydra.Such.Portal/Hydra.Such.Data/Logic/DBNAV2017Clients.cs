@@ -344,8 +344,15 @@ namespace Hydra.Such.Data.Logic
                             ServiceContractNo = temp.ServiceContractNo.Equals(DBNull.Value) ? "" : (string)temp.ServiceContractNo.ToString(),
                             UnitOfMeasure = temp.UnitOfMeasure.Equals(DBNull.Value) ? "" : (string)temp.UnitOfMeasure.ToString(),
                             UnitPrice = temp.UnitPrice.Equals(DBNull.Value) ? "" : (string)temp.UnitPrice.ToString(),
-                            VAT = temp.VAT.Equals(DBNull.Value) ? "" : (string)temp.VAT.ToString()
-
+                            VAT = temp.VAT.Equals(DBNull.Value) ? "" : (string)temp.VAT.ToString(),
+                            TipoRefeicao = temp.TipoRefeicao.Equals(DBNull.Value) ? "" : (string)temp.TipoRefeicao.ToString(),
+                            MealTypeDescription = temp.MealTypeDescription.Equals(DBNull.Value) ? "" : (string)temp.MealTypeDescription.ToString(),
+                            GrupoServico = temp.GrupoServico.Equals(DBNull.Value) ? "" : (string)temp.GrupoServico.ToString(),
+                            ServiceGroupDescription = temp.ServiceGroupDescription.Equals(DBNull.Value) ? "" : (string)temp.ServiceGroupDescription.ToString(),
+                            CodServCliente = temp.CodServCliente.Equals(DBNull.Value) ? "" : (string)temp.CodServCliente.ToString(),
+                            DesServCliente = temp.DesServCliente.Equals(DBNull.Value) ? "" : (string)temp.DesServCliente.ToString(),
+                            NGuiaResiduosGAR = temp.NGuiaResiduosGAR.Equals(DBNull.Value) ? "" : (string)temp.NGuiaResiduosGAR.ToString(),
+                            NGuiaExterna = temp.NGuiaExterna.Equals(DBNull.Value) ? "" : (string)temp.NGuiaExterna.ToString(),
                         });
                     }
                     return result;
@@ -396,8 +403,15 @@ namespace Hydra.Such.Data.Logic
                             ServiceContractNo = temp.ServiceContractNo.Equals(DBNull.Value) ? "" : (string)temp.ServiceContractNo.ToString(),
                             UnitOfMeasure = temp.UnitOfMeasure.Equals(DBNull.Value) ? "" : (string)temp.UnitOfMeasure.ToString(),
                             UnitPrice = temp.UnitPrice.Equals(DBNull.Value) ? "" : (string)temp.UnitPrice.ToString(),
-                            VAT = temp.VAT.Equals(DBNull.Value) ? "" : (string)temp.VAT.ToString()
-
+                            VAT = temp.VAT.Equals(DBNull.Value) ? "" : (string)temp.VAT.ToString(),
+                            TipoRefeicao = temp.TipoRefeicao.Equals(DBNull.Value) ? "" : (string)temp.TipoRefeicao.ToString(),
+                            MealTypeDescription = temp.MealTypeDescription.Equals(DBNull.Value) ? "" : (string)temp.MealTypeDescription.ToString(),
+                            GrupoServico = temp.GrupoServico.Equals(DBNull.Value) ? "" : (string)temp.GrupoServico.ToString(),
+                            ServiceGroupDescription = temp.ServiceGroupDescription.Equals(DBNull.Value) ? "" : (string)temp.ServiceGroupDescription.ToString(),
+                            CodServCliente = temp.CodServCliente.Equals(DBNull.Value) ? "" : (string)temp.CodServCliente.ToString(),
+                            DesServCliente = temp.DesServCliente.Equals(DBNull.Value) ? "" : (string)temp.DesServCliente.ToString(),
+                            NGuiaResiduosGAR = temp.NGuiaResiduosGAR.Equals(DBNull.Value) ? "" : (string)temp.NGuiaResiduosGAR.ToString(),
+                            NGuiaExterna = temp.NGuiaExterna.Equals(DBNull.Value) ? "" : (string)temp.NGuiaExterna.ToString(),
                         });
                     }
                     return result;

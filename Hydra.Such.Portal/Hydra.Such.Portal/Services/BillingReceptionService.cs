@@ -362,7 +362,7 @@ namespace Hydra.Such.Portal.Services
                     createPurchHeaderTask.Wait();
                     if (createPurchHeaderTask.IsCompletedSuccessfully)
                     {
-                        item.Id = item.Id.Remove(0, 2);
+                        //item.Id = item.Id.Remove(0, 2);
                         repo.Update(item);
 
                         try
@@ -379,10 +379,10 @@ namespace Hydra.Such.Portal.Services
                             item.eMessage = "Documento rececionado mas não foi possivel atualizar os dados da receção.";
                         }
                     }
-                    else
-                    {
-                        item.Id = item.Id.Remove(0, 2);
-                    }
+                    //else
+                    //{
+                    //    item.Id = item.Id.Remove(0, 2);
+                    //}
                 }
                 else
                 {

@@ -609,7 +609,7 @@ namespace Hydra.Such.Portal.Configurations
             },
         };
 
-
+        /*
         public static readonly List<EnumData> ProjectStatus = new List<EnumData>(){
             new EnumData()
             {
@@ -635,8 +635,9 @@ namespace Hydra.Such.Portal.Configurations
             {
                 Id = 5,
                 Value = "Terminado"
-            } };
-
+            } 
+        };
+        */
 
         public static readonly List<EnumData> ContractType = new List<EnumData>(){
             new EnumData()
@@ -2582,6 +2583,56 @@ namespace Hydra.Such.Portal.Configurations
             }
         };
 
+        public static readonly List<EnumData> TipoPedidoPagamento = new List<EnumData>(){
+            new EnumData()
+            {
+                Id = 1,
+                Value = "Transferência Bancária"
+            },
+            new EnumData()
+            {
+                Id = 2,
+                Value = "Cheque"
+            }
+        };
+
+        public static readonly List<EnumData> EstadoPedidoPagamento = new List<EnumData>(){
+            new EnumData()
+            {
+                Id = 1,
+                Value = "Inicial"
+            },
+            new EnumData()
+            {
+                Id = 2,
+                Value = "Em Aprovação"
+            },
+            new EnumData()
+            {
+                Id = 3,
+                Value = "Aprovado"
+            },
+            new EnumData()
+            {
+                Id = 4,
+                Value = "Validado"
+            },
+            new EnumData()
+            {
+                Id = 5,
+                Value = "Anulado"
+            },
+            new EnumData()
+            {
+                Id = 6,
+                Value = "Disponível"
+            },
+            new EnumData()
+            {
+                Id = 7,
+                Value = "Arquivado"
+            }
+        };
     }
 
     public class EnumDataString

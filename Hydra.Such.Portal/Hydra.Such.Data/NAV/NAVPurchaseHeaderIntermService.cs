@@ -221,7 +221,7 @@ namespace Hydra.Such.Data.NAV
                     N_Consulta = Consulta,
                     Observacoes = Observacoes,
                     Purchaser_Code = purchFromSupplier.Purchaser_Code,
-                    
+                    No_Consulta_Mercado = Consulta,
                 }
             };
 

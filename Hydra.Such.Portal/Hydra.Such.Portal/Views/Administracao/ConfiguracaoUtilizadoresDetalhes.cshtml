@@ -291,6 +291,7 @@
                     </div>
                 </div>
             </paper-collapse-item>
+
             <paper-collapse-item class="panel-heading" header="Receção Faturas" closed>
                 <div class="panel-body">
                     <div class="row break_clear">
@@ -326,6 +327,35 @@
                     </div>
                 </div>
             </paper-collapse-item>
+
+            <paper-collapse-item class="panel-heading" header="Pedidos de Pagamento" closed>
+                <div class="panel-body">
+                    <div class="row break_clear">
+                        <div class="col-sm-3">
+                            <such-selectbox id="ddAprovadorPedidoPag1" value="{{data.aprovadorPedidoPag1}}" label="Aprovador Pedido Pag. 1"
+                                            items="[[superiorHierarquicoList]]"
+                                            text-path="value"
+                                            value-path="id"
+                                            fields='[{"field":"id", "name":"ID"}, {"field":"value", "name":"Nome"}]'>
+                            </such-selectbox>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <such-selectbox id="ddAprovadorPedidoPag2" value="{{data.aprovadorPedidoPag2}}" label="Aprovador Pedido Pag. 2"
+                                            items="[[superiorHierarquicoList]]"
+                                            text-path="value"
+                                            value-path="id"
+                                            fields='[{"field":"id", "name":"ID"}, {"field":"value", "name":"Nome"}]'>
+                            </such-selectbox>
+                        </div>
+
+                        <div class="col-lg-3 alignPoga">
+                            <vaadin-checkbox checked="{{data.anulacaoPedidoPagamento}}"> Anulação Pedido Pagamento</vaadin-checkbox>
+                        </div>
+                    </div>
+                </div>
+            </paper-collapse-item>
+
         </paper-collapse-group>
 
         <iron-ajax url="/Administracao/CreateUserConfig" id="ajax_create" last-response="{{data}}" method="post" handle-as="json" on-response="_responseProcessor" content-type="application/json; charset=utf-8"></iron-ajax>

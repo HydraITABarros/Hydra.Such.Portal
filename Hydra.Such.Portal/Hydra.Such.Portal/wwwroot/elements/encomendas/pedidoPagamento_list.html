@@ -1,0 +1,917 @@
+﻿
+<link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-selection-column.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-selection-behavior.html" />
+<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html" />
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/paper-input/paper-input.html" />
+<link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/datetime-picker-master/date-picker.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+
+<!--start ColumnToggle-->
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-icons/iron-icons.html" />
+<link rel="import" href="/lib/iron-behaviors/iron-button-state.html" />
+<link rel="import" href="/lib/paper-menu-button/paper-menu-button.html" />
+<!--end ColumnToggle-->
+
+<dom-module id="x-pedidospagamentolist">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+        <custom-style>
+            <style is="custom-style">
+                input[readonly] {
+                    border: 2px solid transparent;
+                }
+
+                input {
+                    font: inherit;
+                }
+
+                .grid {
+                    font-size: 13px;
+                }
+
+                    .grid input {
+                        border: none;
+                        padding-left: 5px;
+                    }
+
+                paper-input {
+                    max-width: 200px !important;
+                }
+            </style>
+        </custom-style>
+
+        <iron-ajax url="/Encomendas/GetListPedidosPagamento"
+                   last-response="{{result}}"
+                   method="post"
+                   handle-as="json"
+                   id="grid_databound_ajax"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Encomendas/CriarTransferenciaPedidoPagamento"
+                   last-response="{{resultCriarTransferencia}}"
+                   id="page_CriarTransferencia_ajax"
+                   method="post"
+                   handle-as="json"
+                   on-response="_CriarTransferenciaResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Encomendas/ArquivarPedidoPagamento"
+                   last-response="{{resultArquivar}}"
+                   id="page_Arquivar_ajax"
+                   method="post"
+                   handle-as="json"
+                   on-response="_ArquivarResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Encomendas/ExportToExcel_PedidosPagamento"
+                   last-response="{{export}}"
+                   id="ajax_Export"
+                   method="post"
+                   handle-as="json"
+                   on-response="_exportEXCELResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <div class="subMenu">
+            <paper-button class="tablinks" id="btn_showAprovados" on-tap="_showAprovados"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{ _showAprovadosMessage }}</paper-button>
+            <paper-button class="tablinks" id="btn_showValidados" on-tap="_showValidados"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{ _showValidadosMessage }}</paper-button>
+            <paper-button class="tablinks" id="btn_showDisponiveis" on-tap="_showDisponiveis"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{ _showDisponiveisMessage }}</paper-button>
+            <paper-button class="tablinks" id="btn_showTodos" on-tap="_showTodos"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{ _showTodosMessage }}</paper-button>
+            <paper-button class="tablinks" id="btn_showArquivados" on-tap="_showArquivados"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{ _showArquivadosMessage }}</paper-button>
+
+            <paper-button class="tablinks" id="btn_CriarTransferencia" on-tap="_CriarTransferencia"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Transferência</paper-button>
+            <paper-button class="tablinks" id="btn_Arquivar" on-tap="_Arquivar"><i class="fa fa-archive" aria-hidden="true"></i>&nbsp; Arquivar</paper-button>
+
+            <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+
+            <!--start ColumnToggle-->
+            <paper-menu-button class="column-toggle" no-animations>
+                <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
+                <div class="list-group" slot="dropdown-content">
+                    <template is="dom-repeat" items="[[ _toArray(_columns)]]" id="columnsList">
+                        <a href="javascript:void(0);" on-tap="_toggleColumn" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClass( item.key ) ]]">
+                            {{ item.value.label }}
+                        </a>
+                        <hr />
+                    </template>
+                </div>
+            </paper-menu-button>
+            <!--end ColumnToggle-->
+        </div>
+
+        <vaadin-grid aria-label="CustomersGrid" id="grid" items="[[result]]" class="grid" selected-items={{selectedItems}} active-item="{{activeItem}}" multi-sort="true">
+            <vaadin-grid-selection-column id="selectColumn" resizable>
+            </vaadin-grid-selection-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.noPedido.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="noPedido">Nº Pedido</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="noPedido" />
+                </template>
+                <template>
+                    <div style="text-align:right">
+                        {{item.noPedido}}
+                    </div>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dataText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="dataText">Data</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataText" />
+                </template>
+                <template>
+                    <div style="text-align:right">
+                        {{item.dataText}}
+                    </div>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.estadoText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="estadoText">Estado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="estadoText" />
+                </template>
+                <template>
+                    {{item.estadoText}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.noEncomenda.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="noEncomenda">Nº Encomenda</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="noEncomenda" />
+                </template>
+                <template>
+                    {{item.noEncomenda}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codigoFornecedor.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="codigoFornecedor">Cód. Fornecedor</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codigoFornecedor" />
+                </template>
+                <template>
+                    {{item.codigoFornecedor}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.fornecedor.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="fornecedor">Fornecedor</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="fornecedor" />
+                </template>
+                <template>
+                    {{item.fornecedor}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.tipoText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="tipoText">Tipo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="tipoText" />
+                </template>
+                <template>
+                    {{item.tipoText}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.nib.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="nib">NIB</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="nib" />
+                </template>
+                <template>
+                    {{item.nib}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.iban.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="iban">IBAN</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="iban" />
+                </template>
+                <template>
+                    {{item.iban}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.descricao.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="descricao">Descrição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="descricao" />
+                </template>
+                <template>
+                    {{item.descricao}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.valorEncomenda.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="valorEncomenda">Valor da Encomenda</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="valorEncomenda" />
+                </template>
+                <template>
+                    <div style="text-align:right">
+                        {{item.valorEncomenda}} €
+                    </div>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.valor.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="valor">Valor do Pedido</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="valor" />
+                </template>
+                <template>
+                    <div style="text-align:right">
+                        {{item.valor}} €
+                    </div>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.prioritarioText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="prioritarioText">Prioritário</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="prioritarioText" />
+                </template>
+                <template>
+                    {{item.prioritarioText}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.aprovadores.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="aprovadores">Aprovadores</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="aprovadores" />
+                </template>
+                <template>
+                    {{item.aprovadores}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.numeroTransferencia.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="numeroTransferencia">Nº Transferência</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="numeroTransferencia" />
+                </template>
+                <template>
+                    {{item.numeroTransferencia}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dataEnvioAprovacaoText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="dataEnvioAprovacaoText">Data de Envio para Aprovação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataEnvioAprovacaoText" />
+                </template>
+                <template>
+                    <div style="text-align:right">
+                        {{item.dataEnvioAprovacaoText}}
+                    </div>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dataPrioridadeText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="dataPrioridadeText">Data da Prioridade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataPrioridadeText" />
+                </template>
+                <template>
+                    <div style="text-align:right">
+                        {{item.dataPrioridadeText}}
+                    </div>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.motivoAnulacao.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="motivoAnulacao">Motivo da Anulação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="motivoAnulacao" />
+                </template>
+                <template>
+                    {{item.motivoAnulacao}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.aprovadoText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="aprovadoText">Aprovado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="aprovadoText" />
+                </template>
+                <template>
+                    {{item.aprovadoText}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.bloqueadoFaltaPagamentoText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="bloqueadoFaltaPagamentoText">Bloqueado por Falta de Pagamento</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="bloqueadoFaltaPagamentoText" />
+                </template>
+                <template>
+                    {{item.bloqueadoFaltaPagamentoText}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.resolvidoText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="resolvidoText">Resolvido</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="resolvidoText" />
+                </template>
+                <template>
+                    {{item.resolvidoText}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.arquivadoText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="arquivadoText">Arquivado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="arquivadoText" />
+                </template>
+                <template>
+                    {{item.arquivadoText}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.userPedido.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="userPedido">Utilizador do Pedido</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="userPedido" />
+                </template>
+                <template>
+                    {{item.userPedido}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dataPedidoText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="dataPedidoText">Data do Pedido</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataPedidoText" />
+                </template>
+                <template>
+                    <div style="text-align:right">
+                        {{item.dataPedidoText}}
+                    </div>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.userAprovacao.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="userAprovacao">Utilizador da Aprovação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="userAprovacao" />
+                </template>
+                <template>
+                    {{item.userAprovacao}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dataAprovacaoText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="dataAprovacaoText">Data da Aprovação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataAprovacaoText" />
+                </template>
+                <template>
+                    {{item.dataAprovacaoText}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.userFinanceiros.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="userFinanceiros">Utilizador da Disponibilização</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="userFinanceiros" />
+                </template>
+                <template>
+                    {{item.userFinanceiros}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dataDisponibilizacaoText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="dataDisponibilizacaoText">Data da Disponibilização</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataDisponibilizacaoText" />
+                </template>
+                <template>
+                    <div style="text-align:right">
+                        {{item.dataDisponibilizacaoText}}
+                    </div>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.userValidacao.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="userValidacao">Utilizador da Validação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="userValidacao" />
+                </template>
+                <template>
+                    {{item.userValidacao}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dataValidacaoText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="dataValidacaoText">Data de Validação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataValidacaoText" />
+                </template>
+                <template>
+                    <div style="text-align:right">
+                        {{item.dataValidacaoText}}
+                    </div>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.userArquivo.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="userArquivo">Utilizador do Arquivo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="userArquivo" />
+                </template>
+                <template>
+                    {{item.userArquivo}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dataArquivoText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="dataArquivoText">Data do Arquivo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataArquivoText" />
+                </template>
+                <template>
+                    <div style="text-align:right">
+                        {{item.dataArquivoText}}
+                    </div>
+                </template>
+            </vaadin-grid-column>
+        </vaadin-grid>
+
+        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageMultiple" duration="8000" horizontalAlign="right" class="toastMultiple">
+    </template>
+
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-pedidospagamentolist',
+                properties: {
+                    _permissions: {
+                        type: Array
+                    },
+                    activeItem: {
+                        observer: '_rowSelected'
+                    },
+                    _areaid: {
+                        type: Number,
+                        notify: true,
+                        value: 0
+                    },
+                    _Aprovados: {
+                        type: Number,
+                        notify: true,
+                        value: 0
+                    },
+                    _Validados: {
+                        type: Number,
+                        notify: true,
+                        value: 0
+                    },
+                    _Disponiveis: {
+                        type: Number,
+                        notify: true,
+                        value: 0
+                    },
+                    _Todos: {
+                        type: Number,
+                        notify: true,
+                        value: 0
+                    },
+                    _Arquivados: {
+                        type: Number,
+                        notify: true,
+                        value: 0
+                    },
+                    _showAprovadosMessage: {
+                        type: String,
+                        value: "Aprovados"
+                    },
+                    _showValidadosMessage: {
+                        type: String,
+                        value: "Validados"
+                    },
+                    _showDisponiveisMessage: {
+                        type: String,
+                        value: "Disponíveis"
+                    },
+                    _showTodosMessage: {
+                        type: String,
+                        value: "Todos"
+                    },
+                    _showArquivadosMessage: {
+                        type: String,
+                        value: "Arquivados"
+                    },
+                    selectedItems: {
+                        type: Array,
+                    },
+                    _hasErrors: {
+                        type: Boolean,
+                        value: false
+                    },
+                    _columns: {
+                        type: Object,
+                        value: function () {
+                            return {};
+                        }
+                    }
+                },
+
+                _rowSelected: function (item) {
+                    if (item != null) {
+                        window.location.href = "/Encomendas/PedidoPagamento_Details/" + item.noPedido;
+                    }
+                },
+
+                ready: function () {
+                    this.$.grid_databound_ajax.params = { "estado": 2 };
+                    this.$.grid_databound_ajax.generateRequest();
+
+                    /*ColumnToggle*/
+                    this._startColumnToggle();
+
+                    var _this = this;
+                    var gridToBottomTimeout;
+                    $(window).resize(function () {
+                        clearTimeout(gridToBottomTimeout);
+                        gridToBottomTimeout = setTimeout(function () { _this.fixGridToBottom(); }, 200);
+                    });
+                    $(window).trigger('resize');
+
+                    this._setButtonTexts();
+                },
+
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.grid);
+                    var parentHeight = $(this).offsetParent().height();
+                    var windowHeight = $(window).height();
+                    var paddingTop = $(this).offsetParent().css('padding-top').replace("px", "");
+                    var offsetTop = $(this).offset().top;
+                    var height = windowHeight - offsetTop - paddingTop;
+                    $(this.$.grid).height(height);
+                },
+
+                _checkForErrors: function () {
+                    var errors = this.resultArquivar.eMessages.find(x => x.type == 0);
+                    this._hasErrors = !(errors == undefined);
+                },
+
+
+                _openToast: function (message) {
+                    this.$.ToastMessage.text = message;
+                    this.$.ToastMessage.open();
+                },
+                _openToastError: function (message) {
+                    this.$.ToastError.text = message;
+                    this.$.ToastError.open();
+                },
+                _toggleToastMultiple: function () {
+                    this._checkForErrors();
+                    if (this._hasErrors)
+                        this.$.ToastMessageMultiple.duration = 0;
+                    else
+                        this.$.ToastMessageMultiple.duration = 8000;
+                    this.$.ToastMessageMultiple.toggle();
+                    this.resultArquivar.eMessages = [];
+                },
+
+                _showAprovados: function () {
+                    if (this._Aprovados == 0) {
+                        this._Aprovados = 1;
+                        this._Validados = 0;
+                        this._Disponiveis = 0;
+                        this._Todos = 0;
+                        this._Arquivados = 0;
+
+                        this.$.grid_databound_ajax.params = { "estado": 3 };
+                        this.$.grid_databound_ajax.generateRequest();
+
+                    } else {
+                        this._Aprovados = 0;
+                        this._Validados = 0;
+                        this._Disponiveis = 0;
+                        this._Todos = 0;
+                        this._Arquivados = 0;
+
+                        this.$.grid_databound_ajax.params = { "estado": 2 };
+                        this.$.grid_databound_ajax.generateRequest();
+                    }
+
+                    this._setButtonTexts();
+                },
+
+                _showValidados: function () {
+                    var self = this;
+                    if (this._Validados == 0) {
+                        this._Aprovados = 0;
+                        this._Validados = 1;
+                        this._Disponiveis = 0;
+                        this._Todos = 0;
+                        this._Arquivados = 0;
+
+                        this.$.grid_databound_ajax.params = { "estado": 4 };
+                        this.$.grid_databound_ajax.generateRequest();
+                    } else {
+                        this._Aprovados = 0;
+                        this._Validados = 0;
+                        this._Disponiveis = 0;
+                        this._Todos = 0;
+                        this._Arquivados = 0;
+
+                        this.$.grid_databound_ajax.params = { "estado": 2 };
+                        this.$.grid_databound_ajax.generateRequest();
+                    }
+
+                    this._setButtonTexts();
+                },
+
+                _showDisponiveis: function () {
+                    if (this._Disponiveis == 0) {
+                        this._Aprovados = 0;
+                        this._Validados = 0;
+                        this._Disponiveis = 1;
+                        this._Todos = 0;
+                        this._Arquivados = 0;
+
+                        this.$.grid_databound_ajax.params = { "estado": 6 };
+                        this.$.grid_databound_ajax.generateRequest();
+                    } else {
+                        this._Aprovados = 0;
+                        this._Validados = 0;
+                        this._Disponiveis = 0;
+                        this._Todos = 0;
+                        this._Arquivados = 0;
+
+                        this.$.grid_databound_ajax.params = { "estado": 2 };
+                        this.$.grid_databound_ajax.generateRequest();
+                    }
+
+                    this._setButtonTexts();
+                },
+
+                _showTodos: function () {
+                    if (this._Todos == 0) {
+                        this._Aprovados = 0;
+                        this._Validados = 0;
+                        this._Disponiveis = 0;
+                        this._Todos = 1;
+                        this._Arquivados = 0;
+
+                        this.$.grid_databound_ajax.params = { "estado": 99 };
+                        this.$.grid_databound_ajax.generateRequest();
+                    } else {
+                        this._Aprovados = 0;
+                        this._Validados = 0;
+                        this._Disponiveis = 0;
+                        this._Todos = 0;
+                        this._Arquivados = 0;
+
+                        this.$.grid_databound_ajax.params = { "estado": 2 };
+                        this.$.grid_databound_ajax.generateRequest();
+                    }
+
+                    this._setButtonTexts();
+                },
+
+                _showArquivados: function () {
+                    if (this._Arquivados == 0) {
+                        this._Aprovados = 0;
+                        this._Validados = 0;
+                        this._Disponiveis = 0;
+                        this._Todos = 0;
+                        this._Arquivados = 1;
+
+                        this.$.grid_databound_ajax.params = { "estado": 7 };
+                        this.$.grid_databound_ajax.generateRequest();
+                    } else {
+                        this._Aprovados = 0;
+                        this._Validados = 0;
+                        this._Disponiveis = 0;
+                        this._Todos = 0;
+                        this._Arquivados = 0;
+
+                        this.$.grid_databound_ajax.params = { "estado": 2 };
+                        this.$.grid_databound_ajax.generateRequest();
+                    }
+
+                    this._setButtonTexts();
+                },
+
+                _setButtonTexts: function () {
+                    var _self = this;
+                    _self.selectedItems = [];
+                    $(_self.$.btn_CriarTransferencia).addClass('hidden');
+                    $(_self.$.btn_Arquivar).addClass('hidden');
+
+                    if (this._Aprovados == 0) {
+                        this._showAprovadosMessage = "Aprovados";
+                    } else {
+                        this._showAprovadosMessage = "Em Aprovação";
+                    }
+
+                    if (this._Validados == 0) {
+                        this._showValidadosMessage = "Validados";
+                    } else {
+                        $(_self.$.btn_CriarTransferencia).removeClass('hidden');
+                        this._showValidadosMessage = "Em Aprovação";
+                    }
+
+                    if (this._Disponiveis == 0) {
+                        this._showDisponiveisMessage = "Disponíveis";
+                    } else {
+                        $(_self.$.btn_Arquivar).removeClass('hidden');
+                        this._showDisponiveisMessage = "Em Aprovação";
+                    }
+
+                    if (this._Todos == 0) {
+                        this._showTodosMessage = "Todos";
+                    } else {
+                        this._showTodosMessage = "Em Aprovação";
+                    }
+
+                    if (this._Arquivados == 0) {
+                        this._showArquivadosMessage = "Arquivados";
+                    } else {
+                        this._showArquivadosMessage = "Em Aprovação";
+                    }
+                },
+
+                _CriarTransferencia: function () {
+                    if (this.selectedItems != null && this.selectedItems != "") {
+                        if (this.result != null || this.result != undefined || this.result.length != 0) {
+                            this.$.page_CriarTransferencia_ajax.body = JSON.stringify(this.selectedItems);
+                            this.$.page_CriarTransferencia_ajax.generateRequest();
+                        }
+                        else {
+                            this._openToastError("Não existem Pedidos de Pagamento disponíveis para Criar Transferência.");
+                        }
+                    }
+                    else {
+                        this._openToastError("As linhas não foram selecionadas.");
+                    }
+                },
+
+                _Arquivar: function () {
+                    debugger;
+                    if (this.selectedItems != null && this.selectedItems != "") {
+                        if (this.result != null || this.result != undefined || this.result.length != 0) {
+                            var ajax_request = this.$.page_Arquivar_ajax;
+                            ajax_request.body = JSON.stringify(this.selectedItems);
+
+                            bootbox.confirm({
+                                message: "Tem a certeza que pretende Arquivar o(s) Pedido(s) de Pagamento?",
+                                buttons: {
+                                    confirm: {
+                                        label: 'Sim',
+                                        className: 'btn-success'
+                                    },
+                                    cancel: {
+                                        label: 'Não',
+                                        className: 'btn-danger'
+                                    }
+                                },
+                                callback: function (result) {
+                                    if (result) {
+                                        ajax_request.generateRequest();
+                                    }
+                                }
+                            });
+                        }
+                        else {
+                            this._openToastError("Não existem Pedidos de Pagamento disponíveis para Criar Transferência.");
+                        }
+                    }
+                    else {
+                        this._openToastError("As linhas não foram selecionadas.");
+                    }
+                },
+                _ArquivarResponse: function (e) {
+                    debugger;
+                    if (this.resultArquivar.eReasonCode == "1") {
+                        this._openToast(this.resultArquivar.eMessage);
+                    }
+                    else {
+                        if (this.resultArquivar.eMessages.length > 0)
+                            this._toggleToastMultiple();
+                        else
+                            this._openToastError(this.resultArquivar.eMessage);
+                    }
+
+                    this.selectedItems = [];
+                    this.$.grid_databound_ajax.params = { "estado": 2 };
+                    this.$.grid_databound_ajax.generateRequest();
+                },
+
+                _exportEXCEL: function () {
+                    var payload = { list: this.result, columns: this._columns };
+                    console.log(payload);
+
+                    this.$.ajax_Export.body = JSON.stringify(payload);
+                    this.$.ajax_Export.generateRequest();
+                },
+                _exportEXCELResponse: function (e) {
+                    var FileName = this.export;
+                    location.href = '../Encomendas/ExportToExcel?fileName=' + FileName;
+                },
+
+                /*start - ColumnToggle*/
+                _startColumnToggle: function () {
+                    var columns = {
+                        "noPedido": { hidden: false, label: "Nº Pedido" },
+                        "dataText": { hidden: false, label: "Data" },
+                        "estadoText": { hidden: false, label: "Estado" },
+                        "noEncomenda": { hidden: false, label: "Nº Encomenda" },
+                        "codigoFornecedor": { hidden: false, label: "Cód. Fornecedor" },
+                        "fornecedor": { hidden: false, label: "Fornecedor" },
+                        "tipoText": { hidden: false, label: "Tipo" },
+                        "nib": { hidden: false, label: "NIB" },
+                        "iban": { hidden: false, label: "IBAN" },
+                        "descricao": { hidden: false, label: "Descrição" },
+                        "valorEncomenda": { hidden: false, label: "Valor da Encomenda" },
+                        "valor": { hidden: false, label: "Valor do Pedido" },
+                        "prioritarioText": { hidden: false, label: "Prioritário" },
+                        "aprovadores": { hidden: false, label: "Aprovadores" },
+                        "numeroTransferencia": { hidden: false, label: "Nº Transferência" },
+                        "dataEnvioAprovacaoText": { hidden: false, label: "Data de Envio para Aprovação" },
+                        "dataPrioridadeText": { hidden: false, label: "Data da Prioridade" },
+                        "motivoAnulacao": { hidden: false, label: "Motivo da Anulação" },
+                        "aprovadoText": { hidden: false, label: "Aprovado" },
+                        "bloqueadoFaltaPagamentoText": { hidden: false, label: "Bloqueado por Falta de Pagamento" },
+                        "resolvidoText": { hidden: false, label: "Resolvido" },
+                        "arquivadoText": { hidden: false, label: "Arquivado" },
+                        "userPedido": { hidden: false, label: "Utilizador do Pedido" },
+                        "dataPedidoText": { hidden: false, label: "Data do Pedido" },
+                        "userAprovacao": { hidden: false, label: "Utilizador da Aprovação" },
+                        "dataAprovacaoText": { hidden: false, label: "Data da Aprovação" },
+                        "userFinanceiros": { hidden: false, label: "Utilizador da Disponibilização" },
+                        "dataDisponibilizacaoText": { hidden: false, label: "Data da Disponibilização" },
+                        "userValidacao": { hidden: false, label: "Utilizador da Validação" },
+                        "dataValidacaoText": { hidden: false, label: "Data de Validação" },
+                        "userArquivo": { hidden: false, label: "Utilizador do Arquivo" },
+                        "dataArquivoText": { hidden: false, label: "Data do Arquivo" }
+                    };
+
+                    if (localStorage["pedidospagamentolist.ToggleColumn"]) {
+                        var keys = Object.keys(columns);
+                        var storedColumns = JSON.parse(localStorage["pedidospagamentolist.ToggleColumn"]);
+                        for (var i = 0; i < keys.length; i++) {
+                            columns[keys[i]] = storedColumns[keys[i]];
+                        }
+                    };
+                    this._columns = columns;
+                },
+
+                _toggleColumn: function (event) {
+                    var columnIndex = JSON.parse(event.target.dataset.item).key;
+                    event.path[0].classList.toggle("selected");
+                    this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
+                    if (typeof (Storage) !== "undefined") {
+                        localStorage["pedidospagamentolist.ToggleColumn"] = JSON.stringify(this._columns);
+                    }
+                },
+
+                _getColumnItemClass: function (columnIndex) {
+                    return !this._columns[columnIndex].hidden ? "selected" : "";
+                },
+
+                _toArray: function (obj) {
+                    return Object.keys(obj).map(function (key) {
+                        return {
+                            key: key,
+                            value: obj[key]
+                        };
+                    });
+                },
+
+                _formatBoolValue: function (value) {
+                    return value ? "Sim" : "Não";
+                }
+                /* end - ColumnToggle */
+            });
+        });
+    </script>
+
+</dom-module>

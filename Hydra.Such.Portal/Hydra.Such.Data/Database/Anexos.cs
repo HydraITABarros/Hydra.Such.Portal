@@ -5,7 +5,7 @@ namespace Hydra.Such.Data.Database
 {
     public partial class Anexos
     {
-        public int TipoOrigem { get; set; }
+        public TipoOrigemAnexos TipoOrigem { get; set; }
         public string NºOrigem { get; set; }
         public int NºLinha { get; set; }
         public string UrlAnexo { get; set; }
@@ -15,5 +15,16 @@ namespace Hydra.Such.Data.Database
         public string UtilizadorModificação { get; set; }
 
         public PréRequisição NºOrigemNavigation { get; set; }
+    }
+
+    public enum TipoOrigemAnexos
+    {
+        PreRequisicao = 1,
+        Requisicao = 2,
+        Contratos = 3,
+        Procedimentos = 4,
+        ConsultaMercado = 5,
+        Oportunidades = 6,
+        Propostas = 7
     }
 }

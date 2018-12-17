@@ -111,6 +111,7 @@ namespace Hydra.Such.Data.ViewModel.Contracts
         public bool? History { get; set; }
         public int Type { get; set; }
         public string NoVEP { get; set; }
+        public string TextoFatura { get; set; }
 
         //EXPORTAR PARA EXCEL
         public Object ColunasEXCEL { get; set; }

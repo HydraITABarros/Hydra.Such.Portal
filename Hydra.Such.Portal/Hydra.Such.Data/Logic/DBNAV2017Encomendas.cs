@@ -57,6 +57,7 @@ namespace Hydra.Such.Data.Logic
                                 FunctionalAreaId = temp.FunctionalAreaId.Equals(DBNull.Value) ? "" : (string)temp.FunctionalAreaId,
                                 RespCenterId = temp.RespCenterId.Equals(DBNull.Value) ? "" : (string)temp.RespCenterId,
                                 HasAnAdvance = (bool)temp.HasAnAdvance,
+                                Total = temp.Total.Equals(DBNull.Value) ? 0 : (decimal)temp.Total,
                             });
                         }
                     }
