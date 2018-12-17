@@ -7,6 +7,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
+using static Hydra.Such.Data.Enumerations;
 
 namespace Hydra.Such.Data.Logic.ProjectMovements
 {
@@ -33,7 +34,7 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.MovimentosDeProjeto.Where(x => x.Utilizador == user && x.Registado != true && x.NºProjetoNavigation.Estado != 4 && x.NºProjetoNavigation.Estado != 5).ToList();
+                    return ctx.MovimentosDeProjeto.Where(x => x.Utilizador == user && x.Registado != true && x.NºProjetoNavigation.Estado != EstadoProjecto.Terminado).ToList();
                 }
             }
             catch (Exception ex)
@@ -171,6 +172,28 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
             {
 
                 return null;
+            }
+        }
+
+        public static bool Create(List<MovimentosDeProjeto> items)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    if (items != null)
+                    {
+                        items.ForEach(x => x.DataHoraCriação = DateTime.Now);
+                    }
+                    ctx.MovimentosDeProjeto.AddRange(items);
+                    ctx.SaveChanges();
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
             }
         }
 

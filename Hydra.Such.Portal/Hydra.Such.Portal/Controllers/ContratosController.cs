@@ -761,6 +761,7 @@ namespace Hydra.Such.Portal.Controllers
                             CLine.Tipo = x.Type;
                             CLine.Código = x.Code;
                             CLine.Descrição = x.Description;
+                            CLine.Descricao2 = x.Description2;
                             CLine.Quantidade = x.Quantity;
                             CLine.CódUnidadeMedida = x.CodeMeasureUnit;
                             CLine.PreçoUnitário = x.UnitPrice;
@@ -1556,7 +1557,7 @@ namespace Hydra.Such.Portal.Controllers
                             postNAV.Wait();
                             if (postNAV.IsCompletedSuccessfully == true && postNAV.Result != null)
                             {
-                                if (postNAV.Result.Blocked == WSClientNAV.Blocked.Invoice || postNAV.Result.Blocked == WSClientNAV.Blocked.All)
+                                if (postNAV.Result.Blocked == Blocked.Invoice || postNAV.Result.Blocked == Blocked.All)
                                 {
                                     Problema += " Cliente Bloqueado";
                                 }
@@ -1636,6 +1637,7 @@ namespace Hydra.Such.Portal.Controllers
                         Tipo = contractLine.Tipo.ToString(),
                         Código = contractLine.Código,
                         Descrição = contractLine.Descrição,
+                        Descricao2 = contractLine.Descricao2,
                         Quantidade = lineQuantity,
                         CódUnidadeMedida = contractLine.CódUnidadeMedida,
                         PreçoUnitário = contractLine.PreçoUnitário,
@@ -1854,7 +1856,9 @@ namespace Hydra.Such.Portal.Controllers
                     //actualiar data ultima fatura para o fim do mes
                     contractLine.ÚltimaDataFatura = Lastdate;
                     //Estado Pendente
-                    contractLine.Estado = 3;
+                    //11-12-2018 ARomao@such.pt
+                    //A pedido do Marco Marcelo o contrato nunca pode mudar de estado
+                    //contractLine.Estado = 3;
                     DBContracts.Update(contractLine);
                     
                 }
@@ -1869,11 +1873,13 @@ namespace Hydra.Such.Portal.Controllers
                         ProjectDetailsViewModel proj = new ProjectDetailsViewModel();
                         proj.ProjectNo = item.NºContrato;
                         proj.ClientNo = item.NºCliente;
-                        proj.Status = item.Estado;
+                        proj.Status = EstadoProjecto.Encomenda;
                         proj.RegionCode = item.CódigoRegião;
                         proj.ResponsabilityCenterCode = item.CódigoCentroResponsabilidade;
                         proj.FunctionalAreaCode = item.CódigoÁreaFuncional;
                         proj.Description = item.Descrição;
+                        proj.Visivel = false;
+
                         Task<WSCreateNAVProject.Create_Result> createProject = WSProject.CreateNavProject(proj, _configws);
                         createProject.Wait();
                     }
@@ -1884,7 +1890,9 @@ namespace Hydra.Such.Portal.Controllers
                     if (InvoiceHeader.IsCompletedSuccessfully && InvoiceHeader != null && InvoiceHeader.Result != null)
                     {
                         //Estado Pendente
-                        item.Estado = 3;
+                        //11-12-2018 ARomao@such.pt
+                        //A pedido do Marco Marcelo o contrato nunca pode mudar de estado
+                        //item.Estado = 3;
                       
                         String InvoiceHeaderNo = InvoiceHeader.Result.WSPreInvoice.No;
                         List<LinhasFaturaçãoContrato> itemList = lineList.Where(x => x.NºContrato == item.NºContrato && x.GrupoFatura == item.GrupoFatura).ToList();
@@ -2227,12 +2235,13 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         ProjectDetailsViewModel proj = new ProjectDetailsViewModel();
                         proj.ProjectNo = Contract.ContractNo;
-                        proj.ClientNo = Contract.ClientNo;
-                        proj.Status = Contract.Status;
+                        proj.ClientNo = Contract.ClientNo;                                               
+                        proj.Status = EstadoProjecto.Encomenda;
                         proj.RegionCode = Contract.CodeRegion;
                         proj.ResponsabilityCenterCode = Contract.CodeResponsabilityCenter;
                         proj.FunctionalAreaCode = Contract.CodeFunctionalArea;
                         proj.Description = Contract.Description;
+                        proj.Visivel = false;
                         try
                         {
                             Task<WSCreateNAVProject.Create_Result> createProject = WSProject.CreateNavProject(proj, _configws);
@@ -2331,6 +2340,7 @@ namespace Hydra.Such.Portal.Controllers
                                         PreInvoiceLinesToCreate.Tipo = line.Type.Value.ToString();
                                         PreInvoiceLinesToCreate.Código = line.Code;
                                         PreInvoiceLinesToCreate.Descrição = line.Description;
+                                        PreInvoiceLinesToCreate.Descricao2 = line.Description2;
                                         PreInvoiceLinesToCreate.CódUnidadeMedida = line.CodeMeasureUnit;
                                         PreInvoiceLinesToCreate.CódigoÁreaFuncional = line.CodeFunctionalArea;
                                         PreInvoiceLinesToCreate.CódigoRegião = line.CodeRegion;
@@ -2412,6 +2422,7 @@ namespace Hydra.Such.Portal.Controllers
                                         PreInvoiceLinesToCreate.Tipo = line.Type.Value.ToString();
                                         PreInvoiceLinesToCreate.Código = line.Code;
                                         PreInvoiceLinesToCreate.Descrição = line.Description;
+                                        PreInvoiceLinesToCreate.Descricao2 = line.Description2;
                                         PreInvoiceLinesToCreate.CódUnidadeMedida = line.CodeMeasureUnit;
                                         PreInvoiceLinesToCreate.CódigoÁreaFuncional = line.CodeFunctionalArea;
                                         PreInvoiceLinesToCreate.CódigoRegião = line.CodeRegion;
@@ -2677,6 +2688,7 @@ namespace Hydra.Such.Portal.Controllers
             newline.DataInícioVersão = contractlinestocreate.DataInícioVersão;
             newline.DescontoLinha = contractlinestocreate.DescontoLinha;
             newline.Descrição = contractlinestocreate.Descrição;
+            newline.Descricao2 = contractlinestocreate.Descricao2;
             newline.Faturável = contractlinestocreate.Faturável;
             newline.GrupoFatura = contractlinestocreate.GrupoFatura;
             newline.NºHorasIntervenção = contractlinestocreate.NºHorasIntervenção;
@@ -2691,6 +2703,7 @@ namespace Hydra.Such.Portal.Controllers
 
             return newline;
         }
+
         private static int GetNumeration(int type)
         {
             //Get Contract Numeration
@@ -3712,6 +3725,7 @@ namespace Hydra.Such.Portal.Controllers
 
         [HttpPost]
         [Route("Contratos/FileUpload")]
+        [Route("Contratos/FileUpload/{id}")]
         [Route("Contratos/FileUpload/{id}/{linha}")]
         public JsonResult FileUpload(string id, int linha)
         {
@@ -3737,7 +3751,7 @@ namespace Hydra.Such.Portal.Controllers
                             newfile.UrlAnexo = full_filename;
 
                             //TipoOrigem: 1-PréRequisição; 2-Requisição; 3-Contratos; 4-Procedimentos;5-ConsultaMercado 
-                            newfile.TipoOrigem = 3;
+                            newfile.TipoOrigem = TipoOrigemAnexos.Contratos;
 
                             newfile.DataHoraCriação = DateTime.Now;
                             newfile.UtilizadorCriação = User.Identity.Name;
@@ -3755,7 +3769,7 @@ namespace Hydra.Such.Portal.Controllers
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception e )
             {
                 throw;
             }

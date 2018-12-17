@@ -36,7 +36,8 @@ namespace Hydra.Such.Data.NAV
             itemToCreate.ResponsabilityCenterCode20 = purchDoc.CodCentroResponsabilidade;
             itemToCreate.Buy_from_Vendor_No = purchDoc.CodFornecedor;
             itemToCreate.Rececao_Faturacao = purchDoc.Id;
-            itemToCreate.No_Series = prePurchInvoiceNoSerie;
+            itemToCreate.No_Series = string.Empty;
+            itemToCreate.Posting_No_Series = prePurchInvoiceNoSerie;
             if (purchDoc.Valor.HasValue)
             {
                 itemToCreate.Valor_Factura = purchDoc.Valor.Value;

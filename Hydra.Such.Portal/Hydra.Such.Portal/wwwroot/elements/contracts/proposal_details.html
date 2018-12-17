@@ -28,6 +28,9 @@
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
 
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload-file.html">
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload.html">
+
 <dom-module id="x-proposalsdetails">
     <template>
         <!-- STYLES -->
@@ -141,6 +144,13 @@
                    on-response="_responseProcessor"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/Contratos/LoadAttachments"
+                   last-response="{{uploads}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_update_ajax"
+                   content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/Contratos/DeleteContract"
                    last-response="{{deletedData}}"
                    method="post"
@@ -235,16 +245,7 @@
                         {{item.dueDate}}
                     </template>
                 </vaadin-grid-column>
-                <vaadin-grid-column width="200px">
-                    <template class="header">
-                        <vaadin-grid-sorter path="contactNo">Nº Contacto</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="contactNo" />
-                    </template>
-                    <template>
-                        {{item.contactNo}}
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="200px">
+                <vaadin-grid-column width="110px">
                     <template class="header">
                         <vaadin-grid-sorter path="clientNo">Nº Cliente</vaadin-grid-sorter>
                         <vaadin-grid-filter path="clientNo" />
@@ -260,6 +261,15 @@
                     </template>
                     <template>
                         {{item.clientName}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="200px">
+                    <template class="header">
+                        <vaadin-grid-sorter path="contactNoText">Nome Contacto</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="contactNoText" />
+                    </template>
+                    <template>
+                        {{item.contactNoText}}
                     </template>
                 </vaadin-grid-column>
                 <vaadin-grid-column width="160px">
@@ -341,6 +351,7 @@
                                 <paper-tab>Geral</paper-tab>
                                 <paper-tab>Envio</paper-tab>
                                 <paper-tab>Detalhes Fatura</paper-tab>
+                                <paper-tab>Anexos</paper-tab>
                             </paper-tabs>
                             <iron-pages selected="{{selected}}">
                                 <!--Geral-->
@@ -353,7 +364,7 @@
                                             <vaadin-text-field value="{{data.description}}" id="Description" name="Description" label="Âmbito do Serviço" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <such-selectbox id="contactNo" value="{{data.contactNo}}" label="Nº Contato"
+                                            <such-selectbox id="contactNo" value="{{data.contactNo}}" label="Nome Contacto"
                                                             items="[[CBContacts]]"
                                                             text-path="value"
                                                             value-path="id"
@@ -364,7 +375,7 @@
 
                                         </div>
                                         <div class="col-md-3 ">
-                                            <such-selectbox id="mClients" value="{{data.clientNo}}" label="Nº Cliente"
+                                            <such-selectbox id="mClients" value="{{data.clientNo}}" label="Nome Cliente"
                                                             items="[[CBClients]]"
                                                             text-path="name"
                                                             value-path="no_"
@@ -390,14 +401,14 @@
                                         <div class="col-md-3 ">
                                             <vaadin-text-field value="{{data.relatedContract}}" id="txtRelatedContractNo" name="txtRelatedContractNo" label="Nº Contrato" disabled="true"> </vaadin-text-field>
                                         </div>
-                                        <div class="col-md-3 ">
+                                        <div class="col-md-3 hide">
                                             <vaadin-text-field value="{{data.versionNo}}" id="versionNo" name="versionNo" label="Nº Versão" disabled="true"> </vaadin-text-field>
                                         </div>
-                                    </div>
-                                    <div class="row break_clear">
                                         <div class="col-md-3 ">
                                             <vaadin-date-picker label="Data Inicial Prevista" id="mStartData" name="startData" value="{{data.startData}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
                                         </div>
+                                    </div>
+                                    <div class="row break_clear">
                                         <div class="col-md-3">
                                             <vaadin-date-picker label="Data Expiração Prevista" id="DueDate" name="DueDate" value="{{data.dueDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
                                         </div>
@@ -415,11 +426,11 @@
                                         <div class="col-md-3 ">
                                             <vaadin-date-picker label="Data Envio" id="mCustomerShipmentDate" name="CustomerShipmentDate" value="{{data.customerShipmentDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
                                         </div>
-                                    </div>
-                                    <div class="row break_clear">
                                         <div class="col-md-3 ">
                                             <vaadin-date-picker label="Data Alteração" id="mProposalChangeDate" name="ProposalChangeDate" value="{{data.proposalChangeDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
                                         </div>
+                                    </div>
+                                    <div class="row break_clear">
                                         <div class="col-md-3 ">
                                             <vaadin-text-field value="{{data.internalNumeration}}" id="mInternalNumeration" name="mInternalNumeration" label="Numeração Interna" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                         </div>
@@ -436,8 +447,6 @@
 
                                             </such-selectbox>
                                         </div>
-                                    </div>
-                                    <div class="row break_clear">
                                         <div class="col-md-3 ">
                                             <such-selectbox id="mFunctionalArea" name="mFunctionalArea" value="{{data.codeFunctionalArea}}" label="Cód. Área Funcional" disabled="{{ !_permissions.update }}"
                                                             items="[[CBFunctionalAreas]]"
@@ -446,6 +455,8 @@
                                                             fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
                                             </such-selectbox>
                                         </div>
+                                    </div>
+                                    <div class="row break_clear">
                                         <div class="col-md-3 ">
                                             <such-selectbox id="mResponsabilityCenter" name="mResponsabilityCenter" value="{{data.codeResponsabilityCenter}}" label="Cód. Centro Respon." disabled="{{ !_permissions.update }}"
                                                             items="[[CBResponsabilityCenterCodes]]"
@@ -465,26 +476,24 @@
                                                             disabled="{{ !_permissions.update }}">
                                             </such-selectbox>
                                         </div>
-                                    </div>
-
-                                    <div class="row break_clear">
                                         <div class="col-md-3 ">
                                             <vaadin-text-field value="{{data.oportunityNo}}" id="mOportunity" name="mOportunity" label="Nº Oportunidade" disabled> </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
                                             <vaadin-text-field value="{{data.baseValueProcedure}}" id="mBaseValueProcedure" name="mBaseValueProcedure" on-value-changed="_ConvertDecimals" placeholder="0.0000" pattern="^[0-9]\d*(\.[0-9]{1,4})?$" label="Valor Base Procedimento" disabled="{{ !_permissions.update }}"><div slot="suffix">€</div></vaadin-text-field>
                                         </div>
+                                    </div>
 
-                                        <div class="row break_clear">
-                                            <div class="col-md-6 ">
-                                                <such-textarea rows="5" value="{{data.notes}}" id="mNotes" name="mNotes" label="Notas" disabled="{{ !_permissions.update }}"> </such-textarea>
-                                            </div>
-                                            <div class="col-md-6 ">
-                                                <such-textarea rows="5" value="{{data.archiveReason}}" label="Razão Arquivo" id="txtArchiveReason" disabled hidden> </such-textarea>
-                                            </div>
+                                    <div class="row break_clear">
+                                        <div class="col-md-6 ">
+                                            <such-textarea rows="5" value="{{data.notes}}" id="mNotes" name="mNotes" label="Notas" disabled="{{ !_permissions.update }}"> </such-textarea>
+                                        </div>
+                                        <div class="col-md-6 ">
+                                            <such-textarea rows="5" value="{{data.archiveReason}}" label="Razão Arquivo" id="txtArchiveReason" disabled hidden> </such-textarea>
                                         </div>
                                     </div>
                                 </div>
+
                                 <!--Envio-->
                                 <div>
                                     <div class="row break_clear">
@@ -519,6 +528,7 @@
                                         </div>
                                     </div>
                                 </div>
+
                                 <!--Detalhes Fatura-->
                                 <div>
                                     <div class="row break_clear">
@@ -568,6 +578,55 @@
                                         <div class="col-md-3">
                                             <vaadin-checkbox id="mcontractLinesInBilling" checked="{{data.contractLinesInBilling}}" disabled="{{ !_permissions.update }}">Linhas Contrato em Fact.</vaadin-checkbox>
                                         </div>
+                                    </div>
+                                </div>
+
+                                <!--Anexos-->
+                                <div>
+                                    <div class="row break_clear">
+                                        <template is="dom-if" if="{{ _permissions.update}}">
+                                            <vaadin-upload id="uploadRequest"
+                                                           target="/Contratos/FileUpload/{{_contractno}}"
+                                                           method="POST"
+                                                           headers="{'Accept': 'application/json'}"
+                                                           timeout=15000>
+                                            </vaadin-upload>
+                                        </template>
+                                    </div>
+                                    <div class="row break_clear">
+                                        <vaadin-grid aria-label="ReqUpdateGrid" items="[[uploads]]" class="grid" multi-sort="true">
+                                            <vaadin-grid-column width="70%" resizable>
+                                                <template class="header">
+                                                    <vaadin-grid-sorter path="url">Anexo</vaadin-grid-sorter>
+                                                    <vaadin-grid-filter path="url" />
+                                                </template>
+                                                <template>
+                                                    <a href="/PreRequisicoes/DownloadFile/{{item.url}}" target="_blank">{{item.url}}</a>
+                                                </template>
+                                            </vaadin-grid-column>
+                                            <vaadin-grid-column width="20%" resizable>
+                                                <template class="header">
+                                                    <vaadin-grid-sorter path="createDateTime">Anexado em</vaadin-grid-sorter>
+                                                    <vaadin-grid-filter path="createDateTime" />
+                                                </template>
+                                                <template>
+                                                    {{item.createDateTime}}
+                                                </template>
+                                            </vaadin-grid-column>
+                                            <vaadin-grid-column width="10%" resizable>
+                                                <template class="header">
+                                                </template>
+                                                <template>
+                                                    <center>
+                                                        <template is="dom-if" if="{{ _permissions.update }}">
+                                                            <center>
+                                                                <paper-button class="btnRemove tableBtn" raised on-tap="_deleteFiles" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                                            </center>
+                                                        </template>
+                                                    </center>
+                                                </template>
+                                            </vaadin-grid-column>
+                                        </vaadin-grid>
                                     </div>
                                 </div>
                             </iron-pages>
@@ -693,7 +752,11 @@
                                         </such-selectbox>
                                     </div>
                                     <div class="col-lg-2">
-                                        <vaadin-text-field value="{{_CLDescription}}" id="_CLDescription" name="_CLDescription" label="Descrição" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                        <vaadin-text-field value="{{_CLDescription}}" id="_CLDescription" name="_CLDescription" label="Descrição" maxlength="50" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                    </div>
+
+                                    <div class="col-lg-2">
+                                        <vaadin-text-field value="{{_CLDescription2}}" id="_CLDescription2" name="_CLDescription2" label="Descrição 2" maxlength="50" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                     </div>
 
                                     <div class="col-lg-2">
@@ -853,10 +916,24 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.description}}" id="_CLGridDescription" name="_CLGridDescription" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{item.description}}" id="_CLGridDescription" name="_CLGridDescription" maxlength="50" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.description}}
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="200px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="description2">Descrição 2</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="description2" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-text-field value="{{item.description2}}" id="_CLGridDescription2" name="_CLGridDescription2" maxlength="50" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            {{item.description2}}
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
@@ -1360,6 +1437,10 @@
                         type: String,
                         value: ""
                     },
+                    _CLDescription2: {
+                        type: String,
+                        value: ""
+                    },
                     _CLDiscountLine: {
                         type: Number,
                         value: 0
@@ -1561,41 +1642,49 @@
                     if (this._contractno == "") {
                         this._isCreate = true;
                     }
+
+                    var upload = document.querySelector('vaadin-upload#uploadRequest');
+
+                    if (this._isCreate == false && this.$.uploadRequest != null) {
+                        this.$.uploadRequest.addEventListener('upload-response', function (e) {
+                            if (e.detail.xhr.status == 200) {
+                                e.detail.xhr.requestURL;
+                                var dd = document.querySelector("x-oportunitydetails");
+                                dd.$.page_update_ajax.generateRequest();
+                            }
+                        });
+                    }//if (this._isCreate == false) {
+                    //    this.$.page_update_ajax.body = JSON.stringify({ "id": this._contractno });
+                    //    this.$.page_update_ajax.generateRequest();
+                    //}
+
+                    this.$.page_update_ajax.body = JSON.stringify({ "id": this._contractno });
+                    this.$.page_update_ajax.generateRequest();
                 },
+
                 _ConvertDecimals: function (e) {
                     e.target.value = e.target.value.replace(",", ".");
                 },
+
                 _openToast: function (message) {
                     this.$.ToastMessage.text = message;
                     this.$.ToastMessage.open();
                 },
+
                 _openToastError: function (message) {
                     this.$.ToastError.text = message;
                     this.$.ToastError.open();
                 },
+
                 _validateData: function () {
                     if (this.$.Description.validate() &
-                        //this.$.mClients.validate() &
-                        //this.$.contactNo.validate() &
                         this.$.contractNo.validate() &
-                        //this.$.mFeeUnits.validate() &
-                        //this.$.mCodeRegion.validate() &
-                        //this.$.mFunctionalArea.validate() &
-                        //this.$.mResponsabilityCenter.validate() &
                         this.$.mNotes.validate() &
                         this.$.txtRelatedContractNo.validate() &
-                        //this.$.mPaymentTerms.validate() &
-                        //this.$.mStartDateFirstContract.validate() &
-                        //this.$.mFirstContractReference.validate() &
                         this.$.mClientRequisitionNo.validate() &
-                        //this.$.mPromiseNo.validate() &
                         this.$.mStartData.validate() &
                         this.$.mStatus.validate() &
-                        //this.$.mReceiptDateRequisition.validate() &
                         this.$.versionNo.validate() &
-                        //this.$.dueDate.validate() &
-                        //this.$.mChangeStatus.validate() &
-                        //this.$.mServiceObject.validate() &
                         this.$.ShippingAddress.validate() &
                         this.$.ShippingLocality.validate() &
                         this.$.ShippingName.validate() &
@@ -1618,10 +1707,12 @@
                             this._openToastError("É obrigatória seleção de um cliente ou de um contato.");
                             return false;
                         }
+                        /*
                         if (this.$.mOrderOrigin.value == "" || this.$.mOrderOrigin.value == undefined || this.$.mOrderOrigin.value == null) {
                             this._openToastError("É obrigatória seleção de Origem de Pedido.");
                             return false;
                         }
+                        */
                         if (this.$.mCodeRegion.value == "" || this.$.mCodeRegion.value == undefined || this.$.mCodeRegion.value == null) {
                             this._openToastError("É obrigatória seleção de Cód. Região.");
                             return false;
@@ -1637,6 +1728,33 @@
 
                         return true;
                     }
+
+                    if ((this.$.mClients.value == "" && this.$.mClients.value == undefined || this.$.mClients.value == null) &&
+                        (this.$.contactNo.value == "" && this.$.contactNo.value == undefined || this.$.contactNo.value == null)) {
+                        this._openToastError("É obrigatória seleção de um cliente ou de um contato.");
+                        return false;
+                    }
+
+                    if (this.$.mCodeRegion.value == "" || this.$.mCodeRegion.value == undefined || this.$.mCodeRegion.value == null) {
+                        this._openToastError("É obrigatória seleção de Cód. Região.");
+                        return false;
+                    }
+
+                    if (this.$.mFeeUnits.value == "" || this.$.mFeeUnits.value == undefined || this.$.mFeeUnits.value == null) {
+                        this._openToastError("É obrigatória seleção de uma unidade de prestação.");
+                        return false;
+                    }
+
+                    if (this.$.mBillingTypes.value == "" || this.$.mBillingTypes.value == undefined || this.$.mBillingTypes.value == null) {
+                        this._openToastError("É obrigatória seleção de um Tipo Faturação em Detalhes Fatura.");
+                        return false;
+                    }
+
+                    if (this.$.mInvoicePeriods.value == "" || this.$.mInvoicePeriods.value == undefined || this.$.mInvoicePeriods.value == null) {
+                        this._openToastError("É obrigatória seleção de um Período de Fatura em Detalhes Fatura.");
+                        return false;
+                    }
+
                     this._openToastError("Verifique os dados inseridos.");
                     return false;
                 },
@@ -1780,7 +1898,7 @@
                 },
                 //Responses Processors
                 _responseProcessor: function (data) {
-                    
+
                     this._showArchiveReason();
                     var self = this;
 
@@ -1994,6 +2112,7 @@
                         versionEndDate: this._CLVersionEndDate,
                         invoiceGroup: this._CLInvoiceGroup,
                         description: this._CLDescription,
+                        description2: this._CLDescription2,
                         lineDiscount: this._CLDiscountLine,
                         codeResponsabilityCenter: this._CLResponsabilityCenter,
                         totalTechinicians: this._CLTotalTechnicians,
@@ -2026,6 +2145,7 @@
                             this._CLInterventionHours = "";
                             this._CLInvoiceGroup._clearSelection();
                             this._CLDescription = "";
+                            this._CLDescription2 = "";
                             this._CLDiscountLine = "";
                             this._CLTotalTechnicians = "";
                             this._CLResponsible._clearSelection();
@@ -2396,6 +2516,7 @@
                         _self.$._CLContractLineType.disabled = true;
                         _self.$._CLCode.disabled = true;
                         _self.$._CLDescription.disabled = true;
+                        _self.$._CLDescription2.disabled = true;
                         _self.$._CLQuantity.disabled = true;
                         _self.$._CLMeasureUnit.disabled = true;
                         _self.$._CLUnitPrice.disabled = true;
@@ -2487,6 +2608,7 @@
                         _self.$._CLContractLineType.disabled = true;
                         _self.$._CLCode.disabled = true;
                         _self.$._CLDescription.disabled = true;
+                        _self.$._CLDescription2.disabled = true;
                         _self.$._CLQuantity.disabled = true;
                         _self.$._CLMeasureUnit.disabled = true;
                         _self.$._CLUnitPrice.disabled = true;

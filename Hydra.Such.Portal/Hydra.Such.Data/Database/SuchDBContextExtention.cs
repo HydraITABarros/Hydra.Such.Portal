@@ -59,7 +59,34 @@ namespace Hydra.Such.Data.Database
                 }
             }
         }
-        
+
+        public virtual int? execStoredProcedureNQ(String cmdText, SqlParameter[] parameters)
+        {
+            int result = 0;
+            try
+            {
+                using (var connection = new SqlConnection(ConnectionString))
+                {
+                    connection.Open();
+
+                    using (var command = new SqlCommand(cmdText, connection))
+                    {
+                        foreach (SqlParameter item in parameters)
+                        {
+                            command.Parameters.Add(item.ParameterName, System.Data.SqlDbType.NVarChar);
+                            command.Parameters[item.ParameterName].Value = item.Value == null ? "" : item.Value;
+                        }
+
+                        result = command.ExecuteNonQuery();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+            return result;
+        }
 
         public virtual int execStoredProcedureFH(String cmdText, SqlParameter[] parameters)
         {

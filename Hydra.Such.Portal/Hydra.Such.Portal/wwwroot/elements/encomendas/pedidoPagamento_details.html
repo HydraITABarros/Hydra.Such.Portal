@@ -1,0 +1,644 @@
+﻿
+<link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html" />
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html">
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/vaadin-time-picker-master/vaadin-time-picker.html">
+<link rel="import" href="/lib/such-textarea/such-textarea.html">
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
+<link rel="import" href="/lib/iron-autogrow-textarea/iron-autogrow-textarea.html" />
+<link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
+<link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html" />
+<link rel="import" href="/lib/such-dropdown-menu/such-dropdown-menu.html" />
+
+<!--Datepicker com correção de bug que impede visualização nas grids -->
+<link rel="import" href="/lib/vaadin-date-picker-3.0.0-alpha1/vaadin-date-picker.html">
+<!--<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">-->
+<!--ACORDEÃO-->
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
+
+<dom-module id="x-pedidopagamentodetails">
+    <template>
+
+        <!-- STYLES -->
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+        <style>
+            vaadin-combo-box {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-date-picker {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-text-field {
+                margin-top: 0px !important;
+                width: 100%;
+            }
+
+            paper-button {
+                margin-top: 10px;
+            }
+
+                paper-button.disabled {
+                    cursor: not-allowed;
+                    pointer-events: none;
+                }
+
+            .break_clear {
+                margin-top: 15px;
+                margin-right: 0px !important;
+                margin-left: 0px !important;
+            }
+
+            .break_frm {
+                margin-top: 15px;
+            }
+
+            .label_custom {
+                color: var(--valo-contrast-60pct) !important;
+                font-weight: 500 !important;
+                font-size: var(--valo-font-size-s) !important;
+                margin-left: calc(var(--valo-text-field-border-radius, var(--valo-border-radius)) / 4) !important;
+                margin-bottom: var(--valo-space-xs) !important;
+                transition: color 0.4s !important;
+                line-height: 1 !important;
+                font-family: var(--valo-font-family) !important;
+            }
+
+            datetime-picker {
+                border-radius: var(--valo-text-field-border-radius, var(--valo-border-radius));
+                background-color: var(--valo-contrast-5pct);
+                color: var(--valo-contrast-60pct) !important;
+                width: 100%;
+            }
+
+            .marginSpace {
+                margin: 0px !important;
+            }
+
+            textarea {
+                background-color: #f5f5f5;
+                border: none;
+                border-radius: 3px 4px;
+                align-self: baseline;
+                font-weight: 500;
+            }
+
+                textarea:hover {
+                    background-color: #eeeeee;
+                }
+
+                textarea:focus {
+                    background-color: white;
+                    border: none;
+                    outline: 1px solid #eeeeee;
+                    border-radius: 3px 4px;
+                }
+
+            datetime-picker {
+                --datetime-selected-background: #71BCC1 !important;
+                --datetime-background: #1f3133;
+                --datetime-color: #eeeeee;
+            }
+
+            /*ACORDEÃO*/
+            paper-collapse-item {
+                --paper-item: {
+                    padding: 0 0;
+                };
+                --paper-collapse-item-header: {
+                    padding: 0 15px;
+                    color: #333;
+                    background-color: #f5f5f5;
+                    border-bottom: solid #ddd 1px;
+                    border-top-left-radius: 3px;
+                    border-top-right-radius: 3px;
+
+                };
+            }
+
+            vaadin-time-picker {
+                --vaadin-combo-box-overlay-max-height: 250px;
+            }
+        </style>
+
+        <!-- PROJECT CRUDS -->
+        <iron-ajax url="/PopulateDropdowns/GetTipoPedidoPagamento" id="grid_Tipo_ajax" last-response="{{LCBTipo}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetEstadoPedidoPagamento" id="grid_Estado_ajax" last-response="{{LCBEstado}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetNAVVendorComboGrid" id="grid_Fornecedor_ajax" last-response="{{LCBFornecedor}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetAllPurchase" id="grid_Encomenda_ajax" last-response="{{LCBEncomenda}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Encomendas/GetPedidoPagamento"
+                   last-response="{{data}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_databound_ajax"
+                   on-response="_responseProcessor"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Encomendas/CriarPedidoPagamento"
+                   last-response="{{resultCriarPedidoPagamento}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_CriarPedidoPagamento_ajax"
+                   on-response="_responseCriarPedidoPagamento"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Encomendas/EnviarAprovacaoPedidoPagamento"
+                   last-response="{{resultEnviarAprovacao}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_EnviarAprovacao_ajax"
+                   on-response="_EnviarAprovacaoResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Encomendas/AprovarPedidoPagamento"
+                   last-response="{{resultAprovar}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_Aprovar_ajax"
+                   on-response="_AprovarResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Encomendas/ValidarPedidoPagamento"
+                   last-response="{{resultValidar}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_Validar_ajax"
+                   on-response="_ValidarResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Encomendas/AnularPedidoPagamento"
+                   last-response="{{resultAnular}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_Anular_ajax"
+                   on-response="_AnularResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <div class="subMenu">
+            <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+            <paper-button id="btnCreateNewPedidoPagamento" class="tablinks" on-tap="_createNewPedidoPagamento"><i class="fa fa-check-square" aria-hidden="true"></i> Criar Pedido</paper-button>
+            <such-dropdown-menu id="menuFunctios" title="Funções" items='[[ _functionsMenuItems ]]' disabled="{{ !_permissions.update }}" on-value-changed="_functionsMenuItemSelected"></such-dropdown-menu>
+        </div>
+
+        <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
+            <paper-tab>Geral</paper-tab>
+            <paper-tab>Detalhes</paper-tab>
+        </paper-tabs>
+        <iron-pages selected="{{selected}}">
+
+            <!-- GERAL -->
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="row break_clear">
+                        <div class="col-sm-3" hidden>
+                            <vaadin-text-field id="ddNoPedido" label="Nº Pedido" value="{{data.noPedido}}" disabled></vaadin-text-field>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <vaadin-date-picker id="ddData" label="Data" value="{{data.dataText}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                        </div>
+
+
+                        <div class="col-sm-3">
+                            <vaadin-text-field id="ddNoEncomenda" label="Nº Encomenda" value="{{data.noEncomenda}}" disabled></vaadin-text-field>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <vaadin-text-field id="ddFornecedor" label="Fornecedor" value="{{data.fornecedor}}" disabled></vaadin-text-field>
+                        </div>
+
+                        <div class="col-sm-3" style="text-align:right">
+                            <vaadin-text-field id="ddValorEncomenda" label="Valor da Encomenda" value="{{data.valorEncomenda}}" disabled><div slot="suffix">€</div></vaadin-text-field>
+                        </div>
+                    </div>
+
+                    <div class="row break_clear">
+
+                        <div class="col-sm-3" style="text-align:right">
+                            <vaadin-text-field id="ddValorJaPedido" label="Valor já Pedido" value="{{data.valorJaPedido}}" disabled><div slot="suffix">€</div></vaadin-text-field>
+                        </div>
+
+                        <div class="col-sm-3" style="text-align:right">
+                            <vaadin-text-field id="ddValorpedidoComIVA" label="Valor do Pedido c/ IVA" value="{{data.valor}}" disabled="{{ !_permissions.update }}" type="number" pattern="^[1-9]\d*(\.\d+)?$" on-value-changed="_ConvertDecimals" on-blur="_validarValorDoPedido"><div slot="suffix">€</div></vaadin-text-field>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <vaadin-checkbox id="ddPrioritario" checked="{{data.prioritario}}" disabled="{{ !_permissions.update }}">Prioritário</vaadin-checkbox>
+                        </div>
+                    </div>
+
+                    <div class="row break_clear">
+                        <div class="col-sm-6">
+                            <such-textarea id="ddDescricao" label="Descrição" value="{{data.descricao}}" rows="5" maxlength="250" disabled="{{ !_permissions.update }}"></such-textarea>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <such-selectbox id="ddEstado"
+                                            label="Estado"
+                                            value="{{data.estado}}"
+                                            items="[[LCBEstado]]"
+                                            text-path="value"
+                                            value-path="id"
+                                            fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Estado"}]'
+                                            disabled>
+                            </such-selectbox>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <such-selectbox id="ddTipo"
+                                            label="Tipo"
+                                            value="{{data.tipo}}"
+                                            items="[[LCBTipo]]"
+                                            text-path="value"
+                                            value-path="id"
+                                            fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Tipo"}]'
+                                            disabled>
+                            </such-selectbox>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <vaadin-text-field id="ddNIB" label="NIB" value="{{data.nib}}" disabled></vaadin-text-field>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <vaadin-text-field id="ddIBAN" label="IBAN" value="{{data.iban}}" disabled></vaadin-text-field>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DETALHES -->
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="row break_clear">
+                        <div class="col-sm-3">
+                            <vaadin-text-field id="ddUserPedido" label="Utilizador do Pedido" value="{{data.userPedido}}" disabled></vaadin-text-field>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <vaadin-date-picker id="ddDataPedido" label="Data do Pedido" value="{{data.dataPedidoText}}" disabled></vaadin-date-picker>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <vaadin-text-field id="ddUserAprovacao" label="Utilizador da Aprovação" value="{{data.userAprovacao}}" disabled></vaadin-text-field>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <vaadin-date-picker id="ddDataAprovacao" label="Data da Aprovação" value="{{data.dataAprovacaoText}}" disabled></vaadin-date-picker>
+                        </div>
+                    </div>
+
+                    <div class="row break_clear">
+                        <div class="col-sm-3">
+                            <vaadin-text-field id="ddUserValidacao" label="Utilizador da Validação" value="{{data.userValidacao}}" disabled></vaadin-text-field>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <vaadin-date-picker id="ddDataValidacao" label="Data da Validação" value="{{data.dataValidacaoText}}" disabled></vaadin-date-picker>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <vaadin-text-field id="ddUserDisponibilizacao" label="Utilizador da Disponibilização" value="{{data.userDisponibilizacao}}" disabled></vaadin-text-field>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <vaadin-date-picker id="ddDataDisponibilizacao" label="Data da Disponibilização" value="{{data.dataDisponibilizacaoText}}" disabled></vaadin-date-picker>
+                        </div>
+                    </div>
+
+                    <div class="row break_clear">
+                        <div class="col-sm-3">
+                            <vaadin-text-field id="ddUserArquivo" label="Utilizador da Anulação" value="{{data.userArquivo}}" disabled></vaadin-text-field>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <vaadin-date-picker id="ddDataArquivo" label="Data da Anulação" value="{{data.dataArquivoText}}" disabled></vaadin-date-picker>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <such-textarea id="ddMotivoAnulacao" label="Motivo da Anulação" value="{{data.motivoAnulacao}}" rows="5" maxlength="100" disabled></such-textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </iron-pages>
+
+
+        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+
+    </template>
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-pedidopagamentodetails',
+                properties: {
+                    _no: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    _permissions: {
+                        type: Array
+                    },
+                    selected: {
+                        type: Number,
+                        value: 0
+                    },
+                    _functionsMenuItems: {
+                        type: Array,
+                        value: [{ value: 1, description: "Enviar p/ Aprovação" }, { value: 2, description: "Aprovar" }, { value: 3, description: "Validar" }, { value: 4, description: "Anular Pedido" }],
+                    },
+                },
+
+                ready: function () {
+                    var _self = this;
+                    //GET DATA
+                    this.$.page_databound_ajax.params = { "id": this._no };
+                    this.$.page_databound_ajax.generateRequest();
+                },
+                _responseProcessor: function (data) {
+                    this._setFieldsEditability();
+                },
+
+                _openToast: function (message) {
+                    this.$.ToastMessage.text = message;
+                    this.$.ToastMessage.open();
+                },
+                _openToastError: function (message) {
+                    this.$.ToastError.text = message;
+                    this.$.ToastError.open();
+                },
+
+                _ConvertDecimals: function (e) {
+                    if (e.target.value != "") {
+                        e.target.value = e.target.value.replace(",", ".");
+                    }
+                },
+
+                _validarValorDoPedido: function (e) {
+                    var ValorEncomenda = this.$.ddValorEncomenda.value != "" ? parseFloat(this.$.ddValorEncomenda.value) : 0;
+                    var ValorJaPedido = this.$.ddValorJaPedido.value != "" ? parseFloat(this.$.ddValorJaPedido.value) : 0;
+                    var ValorPedidoComIVA = this.$.ddValorpedidoComIVA.value != "" ? parseFloat(this.$.ddValorpedidoComIVA.value) : 0;
+
+                    if (ValorPedidoComIVA > (ValorEncomenda - ValorJaPedido)) {
+                        this._openToastError('O valor do campo Valor do Pedido c/ IVA não pode ser superior á diferença entre os campos Valor da Encomenda e Valor Já Pedido.');
+                    }
+                },
+
+                _functionsMenuItemSelected: function (e) {
+                    var item = e.detail.value;
+                    if (item == null)
+                        return;
+                    switch (item.value) {
+                        case 1: //"Enviar p/ Aprovação"
+                            this._EnviarAprovacao();
+                            break;
+                        case 2: //"Aprovar"
+                            this._Aprovar();
+                            break;
+                        case 3: //"Validar"
+                            this._Validar();
+                            break;
+                        case 4: //"Anular Pedido"
+                            this._Anular();
+                            break;
+                    }
+                },
+
+                _goBack: function (e) {
+                    window.history.back();
+                },
+
+                _createNewPedidoPagamento: function (e) {
+                    var ValorEncomenda = this.$.ddValorEncomenda.value != "" ? parseFloat(this.$.ddValorEncomenda.value) : 0;
+                    var ValorJaPedido = this.$.ddValorJaPedido.value != "" ? parseFloat(this.$.ddValorJaPedido.value) : 0;
+                    var ValorPedidoComIVA = this.$.ddValorpedidoComIVA.value != "" ? parseFloat(this.$.ddValorpedidoComIVA.value) : 0;
+
+                    if (ValorPedidoComIVA > 0) {
+                        if (ValorPedidoComIVA <= (ValorEncomenda - ValorJaPedido)) {
+                            this.$.page_CriarPedidoPagamento_ajax.body = JSON.stringify(this.data);
+                            this.$.page_CriarPedidoPagamento_ajax.generateRequest();
+                        }
+                        else {
+                            this._openToastError('O valor do campo Valor do Pedido c/ IVA não pode ser superior á diferença entre os campos Valor da Encomenda e Valor Já Pedido.');
+                        }
+                    }
+                    else {
+                        this._openToastError('O valor do campo Valor do Pedido c/ IVA têm que ser superior a zero.');
+                    }
+                },
+                _responseCriarPedidoPagamento: function (e) {
+                    if (this.resultCriarPedidoPagamento.eReasonCode == "1") {
+                        this._openToast(this.resultCriarPedidoPagamento.eMessage);
+                    }
+                    else {
+                        this._openToastError(this.resultCriarPedidoPagamento.eMessage);
+                    }
+                    window.location.href = "/Encomendas/PedidoPagamento_List";
+                    //this.$.page_databound_ajax.body = JSON.stringify({ "No": this.data.noPedido });
+                    //this.$.page_databound_ajax.generateRequest();
+                },
+
+                _EnviarAprovacao: function () {
+                    var ajax_request = this.$.page_EnviarAprovacao_ajax;
+                    ajax_request.body = JSON.stringify(this.data);
+
+                    bootbox.confirm({
+                        message: "Tem a certeza que pretende Enviar para Aprovação o Pedido de Pagamento?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            if (result) {
+                                ajax_request.generateRequest();
+                            }
+                        }
+                    });
+                },
+                _EnviarAprovacaoResponse: function (e) {
+                    if (this.resultEnviarAprovacao.eReasonCode == "1") {
+                        this._openToast(this.resultEnviarAprovacao.eMessage);
+                    }
+                    else {
+                        this._openToastError(this.resultEnviarAprovacao.eMessage);
+                    }
+
+                    window.location.href = "/Encomendas/PedidoPagamento_List";
+                    //this.$.page_databound_ajax.params = { "id": this._no };
+                    //this.$.page_databound_ajax.generateRequest();
+                },
+
+                _Aprovar: function () {
+                    var ajax_request = this.$.page_Aprovar_ajax;
+                    ajax_request.body = JSON.stringify(this.data);
+
+                    bootbox.confirm({
+                        message: "Tem a certeza que pretende Aprovar o Pedido de Pagamento?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            if (result) {
+                                ajax_request.generateRequest();
+                            }
+                        }
+                    });
+                },
+                _AprovarResponse: function (e) {
+                    if (this.resultAprovar.eReasonCode == "1") {
+                        this._openToast(this.resultAprovar.eMessage);
+                    }
+                    else {
+                        this._openToastError(this.resultAprovar.eMessage);
+                    }
+
+                    window.location.href = "/Encomendas/PedidoPagamento_List";
+                    //this.$.page_databound_ajax.params = { "id": this._no };
+                    //this.$.page_databound_ajax.generateRequest();
+                },
+
+                _Validar: function () {
+                    var ajax_request = this.$.page_Validar_ajax;
+                    ajax_request.body = JSON.stringify(this.data);
+
+                    bootbox.confirm({
+                        message: "Tem a certeza que pretende Validar o Pedido de Pagamento?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            if (result) {
+                                ajax_request.generateRequest();
+                            }
+                        }
+                    });
+                },
+                _ValidarResponse: function (e) {
+                    if (this.resultValidar.eReasonCode == "1") {
+                        this._openToast(this.resultValidar.eMessage);
+                    }
+                    else {
+                        this._openToastError(this.resultValidar.eMessage);
+                    }
+
+                    window.location.href = "/Encomendas/PedidoPagamento_List";
+                    //this.$.page_databound_ajax.params = { "id": this._no };
+                    //this.$.page_databound_ajax.generateRequest();
+                },
+
+                _Anular: function () {
+                    var self = this;
+                    var TMessageError = self._openToastError;
+                    var ajax_request = this.$.page_Anular_ajax;
+
+                    bootbox.prompt({
+                        title: "Tem a certeza que pretende Anular o Pedido de Pagamento? Se Sim introduza o motivo da rejeição.",
+                        inputType: 'textarea',
+                        buttons: {
+                            confirm: {
+                                label: 'Rejeitar',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Cancelar',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            if (result != null) {
+                                if (result == "") {
+                                    TMessageError("É necessário preencher o motivo de rejeição.");
+                                    return false;
+                                } else {
+                                    self.data.motivoAnulacao = result;
+                                    ajax_request.body = JSON.stringify(self.data);
+                                    ajax_request.generateRequest();
+                                }
+                            }
+                        }
+                    });
+                },
+                _AnularResponse: function (e) {
+                    if (this.resultAnular.eReasonCode == "1") {
+                        this._openToast(this.resultAnular.eMessage);
+                    }
+                    else {
+                        this._openToastError(this.resultAnular.eMessage);
+                    }
+
+                    window.location.href = "/Encomendas/PedidoPagamento_List";
+                    //this.$.page_databound_ajax.params = { "id": this._no };
+                    //this.$.page_databound_ajax.generateRequest();
+                },
+
+                _setFieldsEditability() {
+                    var self = this;
+
+                    if (self.data.estado != 1)
+                    {
+                        $(self.$.btnCreateNewPedidoPagamento).addClass('hidden');
+
+                        self.$.ddData.disabled = true;
+                        self.$.ddValorpedidoComIVA.disabled = true;
+                        self.$.ddPrioritario.disabled = true;
+                        self.$.ddDescricao.disabled = true;
+                    }
+
+                    if (self.data.estado == 1 || self.data.estado == 5) {
+                        $(self.$.menuFunctios).addClass('hidden');
+                    }
+                },
+               
+            });
+        });
+    </script>
+
+</dom-module>

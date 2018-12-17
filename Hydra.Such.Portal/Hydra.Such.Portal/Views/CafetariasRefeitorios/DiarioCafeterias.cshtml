@@ -109,6 +109,16 @@
 
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+
+            <template is="dom-if" if="{{ _permissions.update }}">
+                <paper-button id="btnSaveLine" class="tablinks" on-tap="_updateDiaryLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+            </template>
+
+            <paper-button id="btnCancel" class="tablinks btnRemove" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+
+            <template is="dom-if" if="{{ _permissions.create }}">
+                <paper-button id="btnRegisterLine" class="tablinks" on-tap="_registerDiaryLines"><i class="fa fa-list-ol" aria-hidden="true"></i>&nbsp; Registar</paper-button>
+            </template>
         </div>
         <paper-collapse-group>
             <paper-collapse-item class="panel-heading" header="Novo Registo" closed>
@@ -233,7 +243,7 @@
         </vaadin-grid>
 
 
-        <div class="marginSpace">
+        @*<div class="marginSpace">
             <template is="dom-if" if="{{ _permissions.update }}">
                 <paper-button raised id="btnSaveLine" class="btnSave" on-tap="_updateDiaryLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
             </template>
@@ -241,7 +251,7 @@
             <template is="dom-if" if="{{ _permissions.create }}">
                 <paper-button raised id="btnRegisterLine" class="btnSave" on-tap="_registerDiaryLines"><i class="fa fa-list-ol" aria-hidden="true"></i>&nbsp; Registar</paper-button>
             </template>
-        </div>
+        </div>*@
 
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
@@ -253,10 +263,11 @@
         is: 'x-coffeeshopdiary',
         properties: {
             movementType: {
-            type: Number,
-            notify: true,
-            value: ""
+                type: Number,
+                notify: true,
+                value: ""
             },
+
             _permissions: {
                 type: Array
             },
@@ -282,6 +293,11 @@
             var offsetTop = $(this).offset().top;
             var height = parentHeight - offsetTop;
             grid_el.height(height);
+        },
+
+        _cancel: function (e) {
+            this.$.grid_databound_ajax.body = JSON.stringify({ "CoffeShopCode": @ViewBag.CoffeeShopNo, "ProdutiveUnityNo": @ViewBag.ProdutiveUnityNo  });
+            this.$.grid_databound_ajax.generateRequest();
         },
 
         _createCoffeeShopDiary: function () {
@@ -331,7 +347,7 @@
         },
 
         _responseUpdate: function (updated) {
-            var self = this;     
+            var self = this;
             if (updated.detail.status === 200) {
                 if (this.updated == true) {
                     this.$.grid_databound_ajax.body = JSON.stringify({ "CoffeShopCode": @ViewBag.CoffeeShopNo, "ProdutiveUnityNo": @ViewBag.ProdutiveUnityNo  });

@@ -42,7 +42,8 @@ namespace Hydra.Such.Data.Logic
                             VendorNo = (string)temp.Vendor_No_,
                             VATProductPostingGroup = (string)temp.VATProductPostingGroup,
                             UnitCost = (decimal)temp.UnitCost,
-                            InventoryValueZero = (byte)temp.InventoryValueZero
+                            InventoryValueZero = (byte)temp.InventoryValueZero,
+                            AreaFiltro = (string)temp.AreaFiltro
                         });
                     }
                 }
@@ -224,6 +225,7 @@ namespace Hydra.Such.Data.Logic
                         item.UnitCost = temp.UnitCost.Equals(DBNull.Value) ? 0 : (decimal)temp.UnitCost;
                         item.LocationCode = temp.Location_Code.Equals(DBNull.Value) ? "" : (string)temp.Location_Code;
                         item.VATProductPostingGroup = (string)temp.VATProductPostingGroup;
+                        item.AreaFiltro = (string)temp.AreaFiltro;
 
                         result.Add(item);
                     }
@@ -252,7 +254,15 @@ namespace Hydra.Such.Data.Logic
             ErrorHandler result = new ErrorHandler(1, "Os produtos não estão bloqueados.");
             if (products != null)
             {
-                if (products.Count < productsIds.Count)
+                if (products.Count == 0)
+                {
+                    var existingIds = products.Select(x => x.Code).Distinct();
+                    var blockedOrUnexisting = requisition.Lines.Where(x => !existingIds.Contains(x.Code)).ToList();
+
+                    result.eReasonCode = 22;
+                    result.eMessage = "Os seguintes produtos não existem ou estão bloqueados: " + string.Join(", ", blockedOrUnexisting.Select(x => x.Code + " - " + x.Description).ToArray());
+                }
+                else if (products.Count < productsIds.Count)
                 {
                     var existingIds = products.Select(x => x.Code).Distinct();
                     var blockedOrUnexisting = requisition.Lines.Where(x => !existingIds.Contains(x.Code)).ToList();

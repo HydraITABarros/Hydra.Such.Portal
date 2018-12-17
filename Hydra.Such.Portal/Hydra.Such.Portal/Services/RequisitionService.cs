@@ -226,6 +226,13 @@ namespace Hydra.Such.Portal.Services
         {
             if (requisition != null && requisition.Lines != null && requisition.Lines.Count > 0)
             {
+                if (string.IsNullOrEmpty(requisition.ReceivedDate))
+                {
+                    requisition.eReasonCode = 4;
+                    requisition.eMessage = "É obrigatório o preenchimento do campo Data Receção no Geral.";
+                    return requisition;
+                }
+
                 //use for database update later
                 var requisitionLines = requisition.Lines;
 
@@ -469,6 +476,9 @@ namespace Hydra.Such.Portal.Services
                 //Criar nova Consulta Mercado - Obtenção do novo NumConsultaMercado e incrementar Numerações
                 ConsultaMercado consultaMercado = DBConsultaMercado.Create(changedByUserName);
 
+                //Ir Buscar o Nº Mecanográfico do utilizado
+                ConfigUtilizadores UC = DBUserConfigurations.GetById(changedByUserName);
+
                 //Actualizar o registo com os dados possiveis
                 consultaMercado.CodProjecto = requisition.ProjectNo == "" ? null : requisition.ProjectNo;
                 consultaMercado.Descricao = "Consulta Mercado - " + requisition.RequisitionNo;
@@ -486,6 +496,7 @@ namespace Hydra.Such.Portal.Services
                 consultaMercado.PedidoCotacaoCriadoPor = changedByUserName;
                 consultaMercado.NumRequisicao = requisition.RequisitionNo;
                 consultaMercado.Urgente = requisition.Urgent;
+                consultaMercado.CodComprador = !string.IsNullOrEmpty(UC.EmployeeNo) ? UC.EmployeeNo : null;
 
                 consultaMercado = DBConsultaMercado.Update(consultaMercado);
 

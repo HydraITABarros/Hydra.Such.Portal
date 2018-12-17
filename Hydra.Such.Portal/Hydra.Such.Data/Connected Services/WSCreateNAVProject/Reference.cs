@@ -11,7 +11,7 @@ namespace WSCreateNAVProject
 {
     
     
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ServiceModel.ServiceContractAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjob", ConfigurationName="WSCreateNAVProject.WSJob_Port")]
     public interface WSJob_Port
     {
@@ -62,7 +62,7 @@ namespace WSCreateNAVProject
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjob")]
     public partial class WSJob
@@ -76,13 +76,13 @@ namespace WSCreateNAVProject
         
         private string bill_to_Customer_NoField;
         
-        private System.DateTime creation_DateField;
-        
-        private bool creation_DateFieldSpecified;
-        
         private Status statusField;
         
         private bool statusFieldSpecified;
+        
+        private System.DateTime creation_DateField;
+        
+        private bool creation_DateFieldSpecified;
         
         private string regionCode20Field;
         
@@ -95,6 +95,22 @@ namespace WSCreateNAVProject
         private string project_ManagerField;
         
         private string person_ResponsibleField;
+        
+        private string descriptionField;
+        
+        private string description_2Field;
+        
+        private bool projeto_Sem_ConsumosField;
+        
+        private bool projeto_Sem_ConsumosFieldSpecified;
+        
+        private Estado_eSUCH estado_eSUCHField;
+        
+        private bool estado_eSUCHFieldSpecified;
+        
+        private bool visivelField;
+        
+        private bool visivelFieldSpecified;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=0)]
@@ -153,35 +169,7 @@ namespace WSCreateNAVProject
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(DataType="date", Order=4)]
-        public System.DateTime Creation_Date
-        {
-            get
-            {
-                return this.creation_DateField;
-            }
-            set
-            {
-                this.creation_DateField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool Creation_DateSpecified
-        {
-            get
-            {
-                return this.creation_DateFieldSpecified;
-            }
-            set
-            {
-                this.creation_DateFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=5)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=4)]
         public Status Status
         {
             get
@@ -205,6 +193,34 @@ namespace WSCreateNAVProject
             set
             {
                 this.statusFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date", Order=5)]
+        public System.DateTime Creation_Date
+        {
+            get
+            {
+                return this.creation_DateField;
+            }
+            set
+            {
+                this.creation_DateField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool Creation_DateSpecified
+        {
+            get
+            {
+                return this.creation_DateFieldSpecified;
+            }
+            set
+            {
+                this.creation_DateFieldSpecified = value;
             }
         }
         
@@ -291,10 +307,122 @@ namespace WSCreateNAVProject
                 this.person_ResponsibleField = value;
             }
         }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=12)]
+        public string Description
+        {
+            get
+            {
+                return this.descriptionField;
+            }
+            set
+            {
+                this.descriptionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=13)]
+        public string Description_2
+        {
+            get
+            {
+                return this.description_2Field;
+            }
+            set
+            {
+                this.description_2Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=14)]
+        public bool Projeto_Sem_Consumos
+        {
+            get
+            {
+                return this.projeto_Sem_ConsumosField;
+            }
+            set
+            {
+                this.projeto_Sem_ConsumosField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool Projeto_Sem_ConsumosSpecified
+        {
+            get
+            {
+                return this.projeto_Sem_ConsumosFieldSpecified;
+            }
+            set
+            {
+                this.projeto_Sem_ConsumosFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=15)]
+        public Estado_eSUCH Estado_eSUCH
+        {
+            get
+            {
+                return this.estado_eSUCHField;
+            }
+            set
+            {
+                this.estado_eSUCHField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool Estado_eSUCHSpecified
+        {
+            get
+            {
+                return this.estado_eSUCHFieldSpecified;
+            }
+            set
+            {
+                this.estado_eSUCHFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=16)]
+        public bool Visivel
+        {
+            get
+            {
+                return this.visivelField;
+            }
+            set
+            {
+                this.visivelField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool VisivelSpecified
+        {
+            get
+            {
+                return this.visivelFieldSpecified;
+            }
+            set
+            {
+                this.visivelFieldSpecified = value;
+            }
+        }
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjob")]
     public enum Status
     {
@@ -313,7 +441,23 @@ namespace WSCreateNAVProject
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjob")]
+    public enum Estado_eSUCH
+    {
+        
+        /// <remarks/>
+        Pendente,
+        
+        /// <remarks/>
+        Encomenda,
+        
+        /// <remarks/>
+        Terminado,
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjob")]
     public partial class WSJob_Filter
@@ -353,7 +497,7 @@ namespace WSCreateNAVProject
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjob")]
     public enum WSJob_Fields
     {
@@ -368,10 +512,10 @@ namespace WSCreateNAVProject
         Bill_to_Customer_No,
         
         /// <remarks/>
-        Creation_Date,
+        Status,
         
         /// <remarks/>
-        Status,
+        Creation_Date,
         
         /// <remarks/>
         RegionCode20,
@@ -390,10 +534,25 @@ namespace WSCreateNAVProject
         
         /// <remarks/>
         Person_Responsible,
+        
+        /// <remarks/>
+        Description,
+        
+        /// <remarks/>
+        Description_2,
+        
+        /// <remarks/>
+        Projeto_Sem_Consumos,
+        
+        /// <remarks/>
+        Estado_eSUCH,
+        
+        /// <remarks/>
+        Visivel,
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Read", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjob", IsWrapped=true)]
     public partial class Read
@@ -413,7 +572,7 @@ namespace WSCreateNAVProject
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Read_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjob", IsWrapped=true)]
     public partial class Read_Result
@@ -433,7 +592,7 @@ namespace WSCreateNAVProject
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="ReadByRecId", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjob", IsWrapped=true)]
     public partial class ReadByRecId
@@ -453,7 +612,7 @@ namespace WSCreateNAVProject
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="ReadByRecId_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjob", IsWrapped=true)]
     public partial class ReadByRecId_Result
@@ -473,7 +632,7 @@ namespace WSCreateNAVProject
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="ReadMultiple", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjob", IsWrapped=true)]
     public partial class ReadMultiple
@@ -502,7 +661,7 @@ namespace WSCreateNAVProject
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="ReadMultiple_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjob", IsWrapped=true)]
     public partial class ReadMultiple_Result
@@ -523,7 +682,7 @@ namespace WSCreateNAVProject
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="IsUpdated", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjob", IsWrapped=true)]
     public partial class IsUpdated
@@ -543,7 +702,7 @@ namespace WSCreateNAVProject
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="IsUpdated_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjob", IsWrapped=true)]
     public partial class IsUpdated_Result
@@ -563,7 +722,7 @@ namespace WSCreateNAVProject
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetRecIdFromKey", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjob", IsWrapped=true)]
     public partial class GetRecIdFromKey
@@ -583,7 +742,7 @@ namespace WSCreateNAVProject
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetRecIdFromKey_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjob", IsWrapped=true)]
     public partial class GetRecIdFromKey_Result
@@ -603,7 +762,7 @@ namespace WSCreateNAVProject
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Create", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjob", IsWrapped=true)]
     public partial class Create
     {
@@ -622,7 +781,7 @@ namespace WSCreateNAVProject
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Create_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjob", IsWrapped=true)]
     public partial class Create_Result
     {
@@ -641,7 +800,7 @@ namespace WSCreateNAVProject
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="CreateMultiple", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjob", IsWrapped=true)]
     public partial class CreateMultiple
     {
@@ -661,7 +820,7 @@ namespace WSCreateNAVProject
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="CreateMultiple_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjob", IsWrapped=true)]
     public partial class CreateMultiple_Result
     {
@@ -681,7 +840,7 @@ namespace WSCreateNAVProject
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Update", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjob", IsWrapped=true)]
     public partial class Update
     {
@@ -700,7 +859,7 @@ namespace WSCreateNAVProject
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Update_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjob", IsWrapped=true)]
     public partial class Update_Result
     {
@@ -719,7 +878,7 @@ namespace WSCreateNAVProject
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="UpdateMultiple", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjob", IsWrapped=true)]
     public partial class UpdateMultiple
     {
@@ -739,7 +898,7 @@ namespace WSCreateNAVProject
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="UpdateMultiple_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjob", IsWrapped=true)]
     public partial class UpdateMultiple_Result
     {
@@ -759,7 +918,7 @@ namespace WSCreateNAVProject
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Delete", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjob", IsWrapped=true)]
     public partial class Delete
@@ -779,7 +938,7 @@ namespace WSCreateNAVProject
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Delete_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjob", IsWrapped=true)]
     public partial class Delete_Result
@@ -798,13 +957,13 @@ namespace WSCreateNAVProject
         }
     }
     
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     public interface WSJob_PortChannel : WSCreateNAVProject.WSJob_Port, System.ServiceModel.IClientChannel
     {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     public partial class WSJob_PortClient : System.ServiceModel.ClientBase<WSCreateNAVProject.WSJob_Port>, WSCreateNAVProject.WSJob_Port
     {
         
@@ -976,7 +1135,8 @@ namespace WSCreateNAVProject
         {
             if ((endpointConfiguration == EndpointConfiguration.WSJob_Port))
             {
-                return new System.ServiceModel.EndpointAddress("http://10.101.1.13:7047/DynamicsNAV100/WS/CRONUS Portugal Ltd./Page/WSJob");
+                return new System.ServiceModel.EndpointAddress("http://such-navdev.such.local:8047/DynamicsNAV100_QUAL/WS/SUCH - QUALIDADE/Page/W" +
+                        "SJob");
             }
             throw new System.InvalidOperationException(string.Format("Could not find endpoint with name \'{0}\'.", endpointConfiguration));
         }

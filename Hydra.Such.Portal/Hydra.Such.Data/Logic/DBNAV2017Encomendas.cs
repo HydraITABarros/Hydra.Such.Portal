@@ -57,6 +57,7 @@ namespace Hydra.Such.Data.Logic
                                 FunctionalAreaId = temp.FunctionalAreaId.Equals(DBNull.Value) ? "" : (string)temp.FunctionalAreaId,
                                 RespCenterId = temp.RespCenterId.Equals(DBNull.Value) ? "" : (string)temp.RespCenterId,
                                 HasAnAdvance = (bool)temp.HasAnAdvance,
+                                Total = temp.Total.Equals(DBNull.Value) ? 0 : (decimal)temp.Total,
                             });
                         }
                     }
@@ -150,6 +151,41 @@ namespace Hydra.Such.Data.Logic
                             RespCenterId = temp.RespCenterId.Equals(DBNull.Value) ? "" : (string)temp.RespCenterId,
                             UnitOfMeasure = temp.UnitOfMeasure.Equals(DBNull.Value) ? "" : (string)temp.UnitOfMeasure,
                             VAT = (decimal)temp.VAT,
+                        });
+                    }
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public static List<EncomendasViewModel> EncomendasPorRequisicao(string NAVDatabaseName, string NAVCompanyName, string Requisicao, int Tipo)
+        {
+            try
+            {
+                List<EncomendasViewModel> result = new List<EncomendasViewModel>();
+                using (var ctx = new SuchDBContextExtention())
+                {
+                    var parameters = new[]{
+                        new SqlParameter("@DBName", NAVDatabaseName),
+                        new SqlParameter("@CompanyName", NAVCompanyName),
+                        new SqlParameter("@OrderId", Requisicao ),
+                        new SqlParameter("@Type", Tipo ),
+                    };
+
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017EncomendasPorRequisicao @DBName, @CompanyName, @OrderId, @Type", parameters);
+
+                    foreach (dynamic temp in data)
+                    {
+                        result.Add(new EncomendasViewModel()
+                        {
+                            No = temp.NoEncomenda.Equals(DBNull.Value) ? "" : (string)temp.NoEncomenda,
+                            PayToVendorNo = temp.Fornecedor.Equals(DBNull.Value) ? "" : (string)temp.Fornecedor,
+                            OrderDate = (DateTime)temp.DataEncomenda,
                         });
                     }
                 }

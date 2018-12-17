@@ -955,3 +955,26 @@ input:focus::-webkit-datetime-edit {
     --vaadin-grid-header-cell_-_background-color: white;
     --vaadin-grid-header-cell_-_border-bottom: 1px solid var(--divider-color, rgba(0, 0, 0, 0.08));
 }
+
+/* Helpers */
+.spacer5 {
+    height: 5px;
+}
+.spacer10 {
+    height: 10px;
+}
+.spacer15 {
+    height: 15px;
+}
+.spacer20 {
+    height: 20px;
+}
+.spacer30 {
+    height: 30px;
+}
+.spacer40 {
+    height: 40px;
+}
+.spacer50 {
+    height: 50px;
+}

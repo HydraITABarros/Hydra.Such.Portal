@@ -16,7 +16,7 @@ namespace Hydra.Such.Data.Logic
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.Anexos.Where(x => x.NºOrigem == id).ToList();
+                    return ctx.Anexos.Where(x => x.NºOrigem.ToLower() == id.ToLower()).ToList();
                 }
             }
             catch (Exception ex)
@@ -26,7 +26,7 @@ namespace Hydra.Such.Data.Logic
         }
 
         //zpgm-Este método deve receber o tipo visto a chave da tabela ser constituída pelos campos “Tipo Origem”, “Nº Origem”, “Nº Linha”
-        public static List<Anexos> GetById(int type, string id)
+        public static List<Anexos> GetById(TipoOrigemAnexos type, string id)
         {
             try
             {
@@ -34,7 +34,7 @@ namespace Hydra.Such.Data.Logic
                 {
                     return ctx.Anexos.Where(
                         x => x.TipoOrigem == type).Where(
-                        x => x.NºOrigem == id).ToList();
+                        x => x.NºOrigem.ToLower() == id.ToLower()).ToList();
                 }
             }
             catch (Exception ex)

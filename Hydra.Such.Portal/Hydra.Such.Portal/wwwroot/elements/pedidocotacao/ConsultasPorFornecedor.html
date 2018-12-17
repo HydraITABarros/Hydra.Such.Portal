@@ -1,0 +1,382 @@
+﻿<link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html" />
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/paper-input/paper-input.html" />
+<link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/datetime-picker-master/date-picker.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="/lib/paper-input/paper-textarea.html" />
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+
+<!--start ColumnToggle-->
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-icons/iron-icons.html" />
+<link rel="import" href="/lib/iron-behaviors/iron-button-state.html" />
+<link rel="import" href="/lib/paper-menu-button/paper-menu-button.html" />
+<!--end ColumnToggle-->
+
+<dom-module id="x-consultaporfornecedorlist">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+
+        <custom-style>
+            <style is="custom-style">
+                input[readonly] {
+                    border: 2px solid transparent;
+                }
+
+                input {
+                    font: inherit;
+                }
+
+                .grid {
+                    font-size: 13px;
+                }
+
+                    .grid input {
+                        border: none;
+                        padding-left: 5px;
+                    }
+
+                paper-input {
+                    max-width: 200px !important;
+                }
+            </style>
+        </custom-style>
+
+        <iron-ajax url="/ConsultaMercado/GetAllConsultasPorFornecedor" last-response="{{result}}" method="post" handle-as="json" id="grid_databound_ajax" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/ConsultaMercado/ExportToExcel_ConsultasPorFornecedor" last-response="{{export}}" id="ajax_Export" method="post" handle-as="json" on-response="_exportEXCELResponse" content-type="application/json"></iron-ajax>
+
+        <div class="subMenu">
+            <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+            <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+
+            <!--start ColumnToggle-->
+            <paper-menu-button class="column-toggle" no-animations>
+                <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
+                <div class="list-group" slot="dropdown-content">
+                    <template is="dom-repeat" items="[[ _toArray(_columns)]]" id="columnsList">
+                        <a href="javascript:void(0);" on-tap="_toggleColumn" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClass( item.key ) ]]">
+                            {{ item.value.label }}
+                        </a>
+                        <hr />
+                    </template>
+                </div>
+            </paper-menu-button>
+            <!--end ColumnToggle-->
+        </div>
+
+        <vaadin-grid aria-label="SelecaoEntidadesGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.numConsultaMercado.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="numConsultaMercado">Nº Consulta Mercado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="numConsultaMercado" />
+                </template>
+                <template>
+                    {{item.numConsultaMercado}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codFornecedor.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="codFornecedor">Código Fornecedor</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codFornecedor" />
+                </template>
+                <template>
+                    {{item.codFornecedor}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.nomeFornecedor.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="nomeFornecedor">Nome Fornecedor</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="nomeFornecedor" />
+                </template>
+                <template>
+                    {{item.nomeFornecedor}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.selecionado_Show.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="selecionado_Show">Selecionado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="selecionado_Show" />
+                </template>
+                <template>
+                    {{item.selecionado_Show}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.preferencial_Show.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="preferencial_Show">Preferencial</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="preferencial_Show" />
+                </template>
+                <template>
+                    {{item.preferencial_Show}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.emailFornecedor.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="emailFornecedor">Email Fornecedor</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="emailFornecedor" />
+                </template>
+                <template>
+                    {{item.emailFornecedor}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dataEnvioAoFornecedor_Show.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="dataEnvioAoFornecedor_Show">Data Envio ao Fornecedor</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataEnvioAoFornecedor_Show" />
+                </template>
+                <template>
+                    <div style="text-align:right">
+                        {{item.dataEnvioAoFornecedor_Show}}
+                    </div>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dataRecepcaoProposta_Show.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="dataRecepcaoProposta_Show">Data Recepção Proposta</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataRecepcaoProposta_Show" />
+                </template>
+                <template>
+                    <div style="text-align:right">
+                        {{item.dataRecepcaoProposta_Show}}
+                    </div>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.utilizadorEnvio.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="utilizadorEnvio">Utilizador Envio</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="utilizadorEnvio" />
+                </template>
+                <template>
+                    {{item.utilizadorEnvio}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.utilizadorRecepcaoProposta.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="utilizadorRecepcaoProposta">Utilizador Recepção Proposta</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="utilizadorRecepcaoProposta" />
+                </template>
+                <template>
+                    {{item.utilizadorRecepcaoProposta}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.prazoResposta.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="prazoResposta">Prazo Resposta</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="prazoResposta" />
+                </template>
+                <template>
+                    {{item.prazoResposta}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dataRespostaEsperada_Show.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="dataRespostaEsperada_Show">Data Resposta Esperada</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataRespostaEsperada_Show" />
+                </template>
+                <template>
+                    <div style="text-align:right">
+                        {{item.dataRespostaEsperada_Show}}
+                    </div>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dataPedidoEsclarecimento_Show.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="dataPedidoEsclarecimento_Show">Data Pedido Esclarecimento</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataPedidoEsclarecimento_Show" />
+                </template>
+                <template>
+                    <div style="text-align:right">
+                        {{item.dataPedidoEsclarecimento_Show}}
+                    </div>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dataRespostaEsclarecimento_Show.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="dataRespostaEsclarecimento_Show">Data Resposta Esclarecimento</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataRespostaEsclarecimento_Show" />
+                </template>
+                <template>
+                    <div style="text-align:right">
+                        {{item.dataRespostaEsclarecimento_Show}}
+                    </div>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dataRespostaDoFornecedor_Show.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="dataRespostaDoFornecedor_Show">Data Resposta do Fornecedor</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataRespostaDoFornecedor_Show" />
+                </template>
+                <template>
+                    <div style="text-align:right">
+                        {{item.dataRespostaDoFornecedor_Show}}
+                    </div>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.naoRespostaDoFornecedor_Show.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="naoRespostaDoFornecedor_Show">Não Resposta do Fornecedor</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="naoRespostaDoFornecedor_Show" />
+                </template>
+                <template>
+                    {{item.naoRespostaDoFornecedor_Show}}
+                </template>
+            </vaadin-grid-column>
+        </vaadin-grid>
+
+        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+    </template>
+
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-consultaporfornecedorlist',
+                properties: {
+                    activeItem: {
+                        observer: '_rowSelected'
+                    },
+                    _permissions: {
+                        type: Array
+                    },
+                    _columns: {
+                        type: Object,
+                        value: function () {
+                            return {};
+                        }
+                    }
+                },
+                _rowSelected: function (item) {
+                    if (item != null) {
+                        window.location.href ="/ConsultaMercado/DetalheConsultaMercado/" + item.numConsultaMercado;
+                    }
+                },
+                _showMessage: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+                _showErrorMessage: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                },
+
+                ready: function () {
+                    this.$.grid_databound_ajax.generateRequest();
+
+                    /*ColumnToggle*/
+                    this._startColumnToggle();
+
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.grid);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top;
+                    var height = parentHeight - offsetTop;
+                    grid_el.height(height);
+                },
+
+                _exportEXCEL: function () {
+                    this.result[0].ColunasEXCEL = this._columns;
+
+                    this.$.ajax_Export.body = JSON.stringify(this.result);
+                    this.$.ajax_Export.generateRequest();
+                },
+                _exportEXCELResponse: function (e) {
+                    //debugger
+                    var FileName = this.export;
+                    location.href = '../ConsultaMercado/ExportToExcelDownload_ConsultasPorFornecedor?sFileName=' + FileName;
+                },
+
+                /*start - ColumnToggle*/
+                _startColumnToggle: function () {
+                    var columns = {
+                        "numConsultaMercado": { hidden: false, label: "Nº Consulta Mercado" },
+                        "codFornecedor": { hidden: false, label: "Código Fornecedor" },
+                        "nomeFornecedor": { hidden: false, label: "Nome Fornecedor" },
+                        "selecionado_Show": { hidden: false, label: "Selecionado" },
+                        "preferencial_Show": { hidden: false, label: "Preferencial" },
+                        "emailFornecedor": { hidden: false, label: "Email Fornecedor" },
+                        "dataEnvioAoFornecedor_Show": { hidden: false, label: "Data Envio ao Fornecedor" },
+                        "dataRecepcaoProposta_Show": { hidden: false, label: "Data Recepção Proposta" },
+                        "utilizadorEnvio": { hidden: false, label: "Utilizador Envio" },
+                        "utilizadorRecepcaoProposta": { hidden: false, label: "Utilizador Recepção Proposta" },
+                        "prazoResposta": { hidden: false, label: "Prazo Resposta" },
+                        "dataRespostaEsperada_Show": { hidden: false, label: "Data Resposta Esperada" },
+                        "dataPedidoEsclarecimento_Show": { hidden: false, label: "Data Pedido Esclarecimento" },
+                        "dataRespostaEsclarecimento_Show": { hidden: false, label: "Data Resposta Esclarecimento" },
+                        "dataRespostaDoFornecedor_Show": { hidden: false, label: "Data Resposta do Fornecedor" },
+                        "naoRespostaDoFornecedor_Show": { hidden: false, label: "Não Resposta do Fornecedor" }
+                    };
+
+                    if (localStorage["consultaporfornecedorlist.ToggleColumn"]) {
+                        var keys = Object.keys(columns);
+                        var storedColumns = JSON.parse(localStorage["consultaporfornecedorlist.ToggleColumn"]);
+                        for (var i = 0; i < keys.length; i++) {
+                            columns[keys[i]] = storedColumns[keys[i]];
+                        }
+                    };
+                    this._columns = columns;
+                },
+                _toggleColumn: function (event) {
+                    var columnIndex = JSON.parse(event.target.dataset.item).key;
+                    event.path[0].classList.toggle("selected");
+                    this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
+                    if (typeof (Storage) !== "undefined") {
+                        localStorage["consultaporfornecedorlist.ToggleColumn"] = JSON.stringify(this._columns);
+                    }
+                },
+                _getColumnItemClass: function (columnIndex) {
+                    return !this._columns[columnIndex].hidden ? "selected" : "";
+                },
+                _toArray: function (obj) {
+                    return Object.keys(obj).map(function (key) {
+                        return {
+                            key: key,
+                            value: obj[key]
+                        };
+                    });
+                },
+                /* end - ColumnToggle */
+
+                _goBack: function (e) {
+                    window.history.back();
+                },
+
+            });
+        });
+    </script>
+</dom-module>

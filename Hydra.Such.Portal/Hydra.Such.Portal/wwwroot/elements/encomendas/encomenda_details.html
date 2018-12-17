@@ -153,6 +153,8 @@
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
 
             <paper-button id="btn_imprimirE" class="tablinks" on-tap="_printE"><i class="fa fa-print" aria-hidden="true"></i> Imprimir Extracto</paper-button>
+
+            <paper-button id="btn_CriarPedidoPagamento" class="tablinks" on-tap="_CriarPedidoPagamento"><i class="fa fa-plus" aria-hidden="true"></i> Criar Pedido</paper-button>
         </div>
 
         <div class="row break_frm">
@@ -471,10 +473,10 @@
                     return "";
                 },
                 
-             
                 _goBack: function (e) {
                     window.history.back();
                 },
+
                 _printE: function () {
                     //debugger;
                     if (this._reportserverurl != undefined) {
@@ -484,6 +486,10 @@
                     else {
                         this._showErrorMessage("Não é possivel imprimir. Não foi definido o servidor de relatórios.");
                     }
+                },
+
+                _CriarPedidoPagamento(e) {
+                    window.location.href = "/Encomendas/PedidoPagamento_Details/" + this._no;
                 },
 
                 //Mostra Mensagens de Erro

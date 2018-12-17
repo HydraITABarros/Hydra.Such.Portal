@@ -144,10 +144,30 @@ namespace Hydra.Such.Data.Logic.Request
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    //if (ObjectToDelete.LinhasRequisição.Count() > 0)
-                    //    ctx.LinhasRequisição.RemoveRange(ObjectToDelete.LinhasRequisição);
-                    //if (ObjectToDelete.RequisicoesRegAlteracoes.Count() > 0)
-                    //    ctx.RequisicoesRegAlteracoes.RemoveRange(ObjectToDelete.RequisicoesRegAlteracoes);
+                    //if (ObjectToDelete.DiárioDeProjeto.Count() > 0)
+                    //    ctx.DiárioDeProjeto.RemoveRange(ObjectToDelete.DiárioDeProjeto);
+
+                    //if (ObjectToDelete.LinhasPEncomendaProcedimentosCcp.Count() > 0)
+                    //    ctx.LinhasPEncomendaProcedimentosCcp.RemoveRange(ObjectToDelete.LinhasPEncomendaProcedimentosCcp);
+
+                    if (ObjectToDelete.LinhasRequisição.Count() > 0)
+                        ctx.LinhasRequisição.RemoveRange(ObjectToDelete.LinhasRequisição);
+
+                    if (ObjectToDelete.LinhasRequisiçãoHist.Count() > 0)
+                        ctx.LinhasRequisiçãoHist.RemoveRange(ObjectToDelete.LinhasRequisiçãoHist);
+
+                    if (ObjectToDelete.LinhasRequisiçõesSimplificadas.Count() > 0)
+                        ctx.LinhasRequisiçõesSimplificadas.RemoveRange(ObjectToDelete.LinhasRequisiçõesSimplificadas);
+
+                    //if (ObjectToDelete.MovimentosDeProjeto.Count() > 0)
+                    //    ctx.MovimentosDeProjeto.RemoveRange(ObjectToDelete.MovimentosDeProjeto);
+
+                    //if (ObjectToDelete.PréMovimentosProjeto.Count() > 0)
+                    //    ctx.PréMovimentosProjeto.RemoveRange(ObjectToDelete.PréMovimentosProjeto);
+
+                    if (ObjectToDelete.RequisicoesRegAlteracoes.Count() > 0)
+                        ctx.RequisicoesRegAlteracoes.RemoveRange(ObjectToDelete.RequisicoesRegAlteracoes);
+
                     ctx.Requisição.Remove(ObjectToDelete);
                     ctx.SaveChanges();
                 }

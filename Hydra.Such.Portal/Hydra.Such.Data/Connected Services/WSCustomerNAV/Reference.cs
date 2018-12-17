@@ -11,7 +11,7 @@ namespace WSCustomerNAV
 {
     
     
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ServiceModel.ServiceContractAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wscustomer", ConfigurationName="WSCustomerNAV.WSCustomer_Port")]
     public interface WSCustomer_Port
     {
@@ -59,18 +59,10 @@ namespace WSCustomerNAV
         [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wscustomer:Delete", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         System.Threading.Tasks.Task<WSCustomerNAV.Delete_Result> DeleteAsync(WSCustomerNAV.Delete request);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wscustomer:Delete_AgedAccReceivableChart", ReplyAction="*")]
-        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
-        System.Threading.Tasks.Task<WSCustomerNAV.Delete_AgedAccReceivableChart_Result> Delete_AgedAccReceivableChartAsync(WSCustomerNAV.Delete_AgedAccReceivableChart request);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wscustomer:Delete_PriceAndLineDisc", ReplyAction="*")]
-        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
-        System.Threading.Tasks.Task<WSCustomerNAV.Delete_PriceAndLineDisc_Result> Delete_PriceAndLineDiscAsync(WSCustomerNAV.Delete_PriceAndLineDisc request);
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wscustomer")]
     public partial class WSCustomer
@@ -84,64 +76,6 @@ namespace WSCustomerNAV
         
         private string search_NameField;
         
-        private string iC_Partner_CodeField;
-        
-        private decimal balance_LCYField;
-        
-        private bool balance_LCYFieldSpecified;
-        
-        private decimal balance_Due_LCYField;
-        
-        private bool balance_Due_LCYFieldSpecified;
-        
-        private decimal credit_Limit_LCYField;
-        
-        private bool credit_Limit_LCYFieldSpecified;
-        
-        private Blocked blockedField;
-        
-        private bool blockedFieldSpecified;
-        
-        private string salesperson_CodeField;
-        
-        private string responsibility_CenterField;
-        
-        private string service_Zone_CodeField;
-        
-        private bool blockedCustomerField;
-        
-        private bool blockedCustomerFieldSpecified;
-        
-        private string document_Sending_ProfileField;
-        
-        private decimal totalSales2Field;
-        
-        private bool totalSales2FieldSpecified;
-        
-        private decimal custSalesLCY_CustProfit_AdjmtCostLCYField;
-        
-        private bool custSalesLCY_CustProfit_AdjmtCostLCYFieldSpecified;
-        
-        private decimal adjCustProfitField;
-        
-        private bool adjCustProfitFieldSpecified;
-        
-        private decimal adjProfitPctField;
-        
-        private bool adjProfitPctFieldSpecified;
-        
-        private System.DateTime last_Date_ModifiedField;
-        
-        private bool last_Date_ModifiedFieldSpecified;
-        
-        private bool off_The_Perim_Bal_CustomerField;
-        
-        private bool off_The_Perim_Bal_CustomerFieldSpecified;
-        
-        private string regiao_ClienteField;
-        
-        private string no_SeriesField;
-        
         private string addressField;
         
         private string address_2Field;
@@ -151,8 +85,6 @@ namespace WSCustomerNAV
         private string cityField;
         
         private string country_Region_CodeField;
-        
-        private string showMapField;
         
         private string primary_Contact_NoField;
         
@@ -170,185 +102,43 @@ namespace WSCustomerNAV
         
         private string countyField;
         
-        private string bill_to_Customer_NoField;
-        
         private string vAT_Registration_NoField;
         
-        private string gLNField;
+        private string payment_Terms_CodeField;
         
-        private Copy_Sell_to_Addr_to_Qte_From copy_Sell_to_Addr_to_Qte_FromField;
+        private string payment_Method_CodeField;
         
-        private bool copy_Sell_to_Addr_to_Qte_FromFieldSpecified;
+        private string salesperson_CodeField;
+        
+        private string responsibility_CenterField;
+        
+        private System.DateTime last_Date_ModifiedField;
+        
+        private bool last_Date_ModifiedFieldSpecified;
+        
+        private Regiao_Cliente regiao_ClienteField;
+        
+        private bool regiao_ClienteFieldSpecified;
+        
+        private string global_Dimension_1_CodeField;
+        
+        private string centro_Resp_DimensaoField;
+        
+        private string currency_CodeField;
+        
+        private string no_SeriesField;
+        
+        private Blocked blockedField;
+        
+        private bool blockedFieldSpecified;
+        
+        private string bill_to_Customer_NoField;
         
         private string gen_Bus_Posting_GroupField;
         
         private string vAT_Bus_Posting_GroupField;
         
         private string customer_Posting_GroupField;
-        
-        private bool subject_to_Withholding_TaxField;
-        
-        private bool subject_to_Withholding_TaxFieldSpecified;
-        
-        private string income_TypeField;
-        
-        private int invoice_CopiesField;
-        
-        private bool invoice_CopiesFieldSpecified;
-        
-        private string currency_CodeField;
-        
-        private string customer_Price_GroupField;
-        
-        private string customer_Disc_GroupField;
-        
-        private bool allow_Line_DiscField;
-        
-        private bool allow_Line_DiscFieldSpecified;
-        
-        private string invoice_Disc_CodeField;
-        
-        private bool prices_Including_VATField;
-        
-        private bool prices_Including_VATFieldSpecified;
-        
-        private decimal prepayment_PercentField;
-        
-        private bool prepayment_PercentFieldSpecified;
-        
-        private Application_Method application_MethodField;
-        
-        private bool application_MethodFieldSpecified;
-        
-        private Partner_Type partner_TypeField;
-        
-        private bool partner_TypeFieldSpecified;
-        
-        private string payment_Terms_CodeField;
-        
-        private string payment_Method_CodeField;
-        
-        private string payment_Days_CodeField;
-        
-        private string non_Paymt_Periods_CodeField;
-        
-        private string reminder_Terms_CodeField;
-        
-        private string fin_Charge_Terms_CodeField;
-        
-        private string cash_Flow_Payment_Terms_CodeField;
-        
-        private bool print_StatementsField;
-        
-        private bool print_StatementsFieldSpecified;
-        
-        private int last_Statement_NoField;
-        
-        private bool last_Statement_NoFieldSpecified;
-        
-        private bool block_Payment_ToleranceField;
-        
-        private bool block_Payment_ToleranceFieldSpecified;
-        
-        private string preferred_Bank_Account_CodeField;
-        
-        private string default_Bank_Acc_CodeField;
-        
-        private string location_CodeField;
-        
-        private bool combine_ShipmentsField;
-        
-        private bool combine_ShipmentsFieldSpecified;
-        
-        private Reserve reserveField;
-        
-        private bool reserveFieldSpecified;
-        
-        private Shipping_Advice shipping_AdviceField;
-        
-        private bool shipping_AdviceFieldSpecified;
-        
-        private string shipment_Method_CodeField;
-        
-        private string shipping_Agent_CodeField;
-        
-        private string shipping_Agent_Service_CodeField;
-        
-        private string shipping_TimeField;
-        
-        private string base_Calendar_CodeField;
-        
-        private string customized_CalendarField;
-        
-        private decimal getMoneyOwedExpectedField;
-        
-        private bool getMoneyOwedExpectedFieldSpecified;
-        
-        private decimal totalMoneyOwedField;
-        
-        private bool totalMoneyOwedFieldSpecified;
-        
-        private decimal calcCreditLimitLCYExpendedPctField;
-        
-        private bool calcCreditLimitLCYExpendedPctFieldSpecified;
-        
-        private decimal balance_DueField;
-        
-        private bool balance_DueFieldSpecified;
-        
-        private decimal payments_LCYField;
-        
-        private bool payments_LCYFieldSpecified;
-        
-        private decimal amount_in_VAT_ReportField;
-        
-        private bool amount_in_VAT_ReportFieldSpecified;
-        
-        private bool cash_VAT_CustomerField;
-        
-        private bool cash_VAT_CustomerFieldSpecified;
-        
-        private bool create_ReceiptField;
-        
-        private bool create_ReceiptFieldSpecified;
-        
-        private decimal customerMgt_AvgDaysToPay_NoField;
-        
-        private bool customerMgt_AvgDaysToPay_NoFieldSpecified;
-        
-        private decimal daysPaidPastDueDateField;
-        
-        private bool daysPaidPastDueDateFieldSpecified;
-        
-        private decimal getAmountOnPostedInvoicesField;
-        
-        private bool getAmountOnPostedInvoicesFieldSpecified;
-        
-        private decimal getAmountOnCrMemoField;
-        
-        private bool getAmountOnCrMemoFieldSpecified;
-        
-        private decimal getAmountOnOutstandingInvoicesField;
-        
-        private bool getAmountOnOutstandingInvoicesFieldSpecified;
-        
-        private decimal getAmountOnOutstandingCrMemosField;
-        
-        private bool getAmountOnOutstandingCrMemosFieldSpecified;
-        
-        private decimal totalsField;
-        
-        private bool totalsFieldSpecified;
-        
-        private decimal custInvDiscAmountLCYField;
-        
-        private bool custInvDiscAmountLCYFieldSpecified;
-        
-        private string bP_Statistic_CodeField;
-        
-        private string bP_Debit_Pos_Statistic_CodeField;
-        
-        private string bP_Credit_Pos_Statistic_CodeField;
         
         private string no_Fornecedor_AssocField;
         
@@ -360,11 +150,13 @@ namespace WSCustomerNAV
         
         private bool taxa_AprovisionamentoFieldSpecified;
         
+        private bool abrigo_Lei_CompromissoField;
+        
+        private bool abrigo_Lei_CompromissoFieldSpecified;
+        
         private bool cliente_InternoField;
         
         private bool cliente_InternoFieldSpecified;
-        
-        private string centro_Resp_DimensaoField;
         
         private bool cliente_NacionalField;
         
@@ -387,10 +179,6 @@ namespace WSCustomerNAV
         private bool data_Cliente_PaiFieldSpecified;
         
         private string codigo_Serviço_DGOField;
-        
-        private Aged_Acc_Receivable_Chart[] agedAccReceivableChartField;
-        
-        private Sales_Price_and_Line_Discounts[] priceAndLineDiscField;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=0)]
@@ -450,132 +238,230 @@ namespace WSCustomerNAV
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=4)]
-        public string IC_Partner_Code
+        public string Address
         {
             get
             {
-                return this.iC_Partner_CodeField;
+                return this.addressField;
             }
             set
             {
-                this.iC_Partner_CodeField = value;
+                this.addressField = value;
             }
         }
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=5)]
-        public decimal Balance_LCY
+        public string Address_2
         {
             get
             {
-                return this.balance_LCYField;
+                return this.address_2Field;
             }
             set
             {
-                this.balance_LCYField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool Balance_LCYSpecified
-        {
-            get
-            {
-                return this.balance_LCYFieldSpecified;
-            }
-            set
-            {
-                this.balance_LCYFieldSpecified = value;
+                this.address_2Field = value;
             }
         }
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=6)]
-        public decimal Balance_Due_LCY
+        public string Post_Code
         {
             get
             {
-                return this.balance_Due_LCYField;
+                return this.post_CodeField;
             }
             set
             {
-                this.balance_Due_LCYField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool Balance_Due_LCYSpecified
-        {
-            get
-            {
-                return this.balance_Due_LCYFieldSpecified;
-            }
-            set
-            {
-                this.balance_Due_LCYFieldSpecified = value;
+                this.post_CodeField = value;
             }
         }
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=7)]
-        public decimal Credit_Limit_LCY
+        public string City
         {
             get
             {
-                return this.credit_Limit_LCYField;
+                return this.cityField;
             }
             set
             {
-                this.credit_Limit_LCYField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool Credit_Limit_LCYSpecified
-        {
-            get
-            {
-                return this.credit_Limit_LCYFieldSpecified;
-            }
-            set
-            {
-                this.credit_Limit_LCYFieldSpecified = value;
+                this.cityField = value;
             }
         }
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=8)]
-        public Blocked Blocked
+        public string Country_Region_Code
         {
             get
             {
-                return this.blockedField;
+                return this.country_Region_CodeField;
             }
             set
             {
-                this.blockedField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool BlockedSpecified
-        {
-            get
-            {
-                return this.blockedFieldSpecified;
-            }
-            set
-            {
-                this.blockedFieldSpecified = value;
+                this.country_Region_CodeField = value;
             }
         }
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=9)]
+        public string Primary_Contact_No
+        {
+            get
+            {
+                return this.primary_Contact_NoField;
+            }
+            set
+            {
+                this.primary_Contact_NoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=10)]
+        public string ContactName
+        {
+            get
+            {
+                return this.contactNameField;
+            }
+            set
+            {
+                this.contactNameField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=11)]
+        public string Phone_No
+        {
+            get
+            {
+                return this.phone_NoField;
+            }
+            set
+            {
+                this.phone_NoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=12)]
+        public string E_Mail
+        {
+            get
+            {
+                return this.e_MailField;
+            }
+            set
+            {
+                this.e_MailField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=13)]
+        public string Fax_No
+        {
+            get
+            {
+                return this.fax_NoField;
+            }
+            set
+            {
+                this.fax_NoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=14)]
+        public string Home_Page
+        {
+            get
+            {
+                return this.home_PageField;
+            }
+            set
+            {
+                this.home_PageField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=15)]
+        public string Language_Code
+        {
+            get
+            {
+                return this.language_CodeField;
+            }
+            set
+            {
+                this.language_CodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=16)]
+        public string County
+        {
+            get
+            {
+                return this.countyField;
+            }
+            set
+            {
+                this.countyField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=17)]
+        public string VAT_Registration_No
+        {
+            get
+            {
+                return this.vAT_Registration_NoField;
+            }
+            set
+            {
+                this.vAT_Registration_NoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=18)]
+        public string Payment_Terms_Code
+        {
+            get
+            {
+                return this.payment_Terms_CodeField;
+            }
+            set
+            {
+                this.payment_Terms_CodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=19)]
+        public string Payment_Method_Code
+        {
+            get
+            {
+                return this.payment_Method_CodeField;
+            }
+            set
+            {
+                this.payment_Method_CodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=20)]
         public string Salesperson_Code
         {
             get
@@ -589,7 +475,7 @@ namespace WSCustomerNAV
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=10)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=21)]
         public string Responsibility_Center
         {
             get
@@ -603,175 +489,7 @@ namespace WSCustomerNAV
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=11)]
-        public string Service_Zone_Code
-        {
-            get
-            {
-                return this.service_Zone_CodeField;
-            }
-            set
-            {
-                this.service_Zone_CodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=12)]
-        public bool BlockedCustomer
-        {
-            get
-            {
-                return this.blockedCustomerField;
-            }
-            set
-            {
-                this.blockedCustomerField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool BlockedCustomerSpecified
-        {
-            get
-            {
-                return this.blockedCustomerFieldSpecified;
-            }
-            set
-            {
-                this.blockedCustomerFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=13)]
-        public string Document_Sending_Profile
-        {
-            get
-            {
-                return this.document_Sending_ProfileField;
-            }
-            set
-            {
-                this.document_Sending_ProfileField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=14)]
-        public decimal TotalSales2
-        {
-            get
-            {
-                return this.totalSales2Field;
-            }
-            set
-            {
-                this.totalSales2Field = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool TotalSales2Specified
-        {
-            get
-            {
-                return this.totalSales2FieldSpecified;
-            }
-            set
-            {
-                this.totalSales2FieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=15)]
-        public decimal CustSalesLCY_CustProfit_AdjmtCostLCY
-        {
-            get
-            {
-                return this.custSalesLCY_CustProfit_AdjmtCostLCYField;
-            }
-            set
-            {
-                this.custSalesLCY_CustProfit_AdjmtCostLCYField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool CustSalesLCY_CustProfit_AdjmtCostLCYSpecified
-        {
-            get
-            {
-                return this.custSalesLCY_CustProfit_AdjmtCostLCYFieldSpecified;
-            }
-            set
-            {
-                this.custSalesLCY_CustProfit_AdjmtCostLCYFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=16)]
-        public decimal AdjCustProfit
-        {
-            get
-            {
-                return this.adjCustProfitField;
-            }
-            set
-            {
-                this.adjCustProfitField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool AdjCustProfitSpecified
-        {
-            get
-            {
-                return this.adjCustProfitFieldSpecified;
-            }
-            set
-            {
-                this.adjCustProfitFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=17)]
-        public decimal AdjProfitPct
-        {
-            get
-            {
-                return this.adjProfitPctField;
-            }
-            set
-            {
-                this.adjProfitPctField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool AdjProfitPctSpecified
-        {
-            get
-            {
-                return this.adjProfitPctFieldSpecified;
-            }
-            set
-            {
-                this.adjProfitPctFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(DataType="date", Order=18)]
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date", Order=22)]
         public System.DateTime Last_Date_Modified
         {
             get
@@ -799,36 +517,8 @@ namespace WSCustomerNAV
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=19)]
-        public bool Off_The_Perim_Bal_Customer
-        {
-            get
-            {
-                return this.off_The_Perim_Bal_CustomerField;
-            }
-            set
-            {
-                this.off_The_Perim_Bal_CustomerField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool Off_The_Perim_Bal_CustomerSpecified
-        {
-            get
-            {
-                return this.off_The_Perim_Bal_CustomerFieldSpecified;
-            }
-            set
-            {
-                this.off_The_Perim_Bal_CustomerFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=20)]
-        public string Regiao_Cliente
+        [System.Xml.Serialization.XmlElementAttribute(Order=23)]
+        public Regiao_Cliente Regiao_Cliente
         {
             get
             {
@@ -841,399 +531,49 @@ namespace WSCustomerNAV
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=21)]
-        public string No_Series
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool Regiao_ClienteSpecified
         {
             get
             {
-                return this.no_SeriesField;
+                return this.regiao_ClienteFieldSpecified;
             }
             set
             {
-                this.no_SeriesField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=22)]
-        public string Address
-        {
-            get
-            {
-                return this.addressField;
-            }
-            set
-            {
-                this.addressField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=23)]
-        public string Address_2
-        {
-            get
-            {
-                return this.address_2Field;
-            }
-            set
-            {
-                this.address_2Field = value;
+                this.regiao_ClienteFieldSpecified = value;
             }
         }
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=24)]
-        public string Post_Code
+        public string Global_Dimension_1_Code
         {
             get
             {
-                return this.post_CodeField;
+                return this.global_Dimension_1_CodeField;
             }
             set
             {
-                this.post_CodeField = value;
+                this.global_Dimension_1_CodeField = value;
             }
         }
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=25)]
-        public string City
+        public string Centro_Resp_Dimensao
         {
             get
             {
-                return this.cityField;
+                return this.centro_Resp_DimensaoField;
             }
             set
             {
-                this.cityField = value;
+                this.centro_Resp_DimensaoField = value;
             }
         }
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=26)]
-        public string Country_Region_Code
-        {
-            get
-            {
-                return this.country_Region_CodeField;
-            }
-            set
-            {
-                this.country_Region_CodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=27)]
-        public string ShowMap
-        {
-            get
-            {
-                return this.showMapField;
-            }
-            set
-            {
-                this.showMapField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=28)]
-        public string Primary_Contact_No
-        {
-            get
-            {
-                return this.primary_Contact_NoField;
-            }
-            set
-            {
-                this.primary_Contact_NoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=29)]
-        public string ContactName
-        {
-            get
-            {
-                return this.contactNameField;
-            }
-            set
-            {
-                this.contactNameField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=30)]
-        public string Phone_No
-        {
-            get
-            {
-                return this.phone_NoField;
-            }
-            set
-            {
-                this.phone_NoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=31)]
-        public string E_Mail
-        {
-            get
-            {
-                return this.e_MailField;
-            }
-            set
-            {
-                this.e_MailField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=32)]
-        public string Fax_No
-        {
-            get
-            {
-                return this.fax_NoField;
-            }
-            set
-            {
-                this.fax_NoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=33)]
-        public string Home_Page
-        {
-            get
-            {
-                return this.home_PageField;
-            }
-            set
-            {
-                this.home_PageField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=34)]
-        public string Language_Code
-        {
-            get
-            {
-                return this.language_CodeField;
-            }
-            set
-            {
-                this.language_CodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=35)]
-        public string County
-        {
-            get
-            {
-                return this.countyField;
-            }
-            set
-            {
-                this.countyField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=36)]
-        public string Bill_to_Customer_No
-        {
-            get
-            {
-                return this.bill_to_Customer_NoField;
-            }
-            set
-            {
-                this.bill_to_Customer_NoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=37)]
-        public string VAT_Registration_No
-        {
-            get
-            {
-                return this.vAT_Registration_NoField;
-            }
-            set
-            {
-                this.vAT_Registration_NoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=38)]
-        public string GLN
-        {
-            get
-            {
-                return this.gLNField;
-            }
-            set
-            {
-                this.gLNField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=39)]
-        public Copy_Sell_to_Addr_to_Qte_From Copy_Sell_to_Addr_to_Qte_From
-        {
-            get
-            {
-                return this.copy_Sell_to_Addr_to_Qte_FromField;
-            }
-            set
-            {
-                this.copy_Sell_to_Addr_to_Qte_FromField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool Copy_Sell_to_Addr_to_Qte_FromSpecified
-        {
-            get
-            {
-                return this.copy_Sell_to_Addr_to_Qte_FromFieldSpecified;
-            }
-            set
-            {
-                this.copy_Sell_to_Addr_to_Qte_FromFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=40)]
-        public string Gen_Bus_Posting_Group
-        {
-            get
-            {
-                return this.gen_Bus_Posting_GroupField;
-            }
-            set
-            {
-                this.gen_Bus_Posting_GroupField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=41)]
-        public string VAT_Bus_Posting_Group
-        {
-            get
-            {
-                return this.vAT_Bus_Posting_GroupField;
-            }
-            set
-            {
-                this.vAT_Bus_Posting_GroupField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=42)]
-        public string Customer_Posting_Group
-        {
-            get
-            {
-                return this.customer_Posting_GroupField;
-            }
-            set
-            {
-                this.customer_Posting_GroupField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=43)]
-        public bool Subject_to_Withholding_Tax
-        {
-            get
-            {
-                return this.subject_to_Withholding_TaxField;
-            }
-            set
-            {
-                this.subject_to_Withholding_TaxField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool Subject_to_Withholding_TaxSpecified
-        {
-            get
-            {
-                return this.subject_to_Withholding_TaxFieldSpecified;
-            }
-            set
-            {
-                this.subject_to_Withholding_TaxFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=44)]
-        public string Income_Type
-        {
-            get
-            {
-                return this.income_TypeField;
-            }
-            set
-            {
-                this.income_TypeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=45)]
-        public int Invoice_Copies
-        {
-            get
-            {
-                return this.invoice_CopiesField;
-            }
-            set
-            {
-                this.invoice_CopiesField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool Invoice_CopiesSpecified
-        {
-            get
-            {
-                return this.invoice_CopiesFieldSpecified;
-            }
-            set
-            {
-                this.invoice_CopiesFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=46)]
         public string Currency_Code
         {
             get
@@ -1247,1071 +587,105 @@ namespace WSCustomerNAV
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=47)]
-        public string Customer_Price_Group
+        [System.Xml.Serialization.XmlElementAttribute(Order=27)]
+        public string No_Series
         {
             get
             {
-                return this.customer_Price_GroupField;
+                return this.no_SeriesField;
             }
             set
             {
-                this.customer_Price_GroupField = value;
+                this.no_SeriesField = value;
             }
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=48)]
-        public string Customer_Disc_Group
+        [System.Xml.Serialization.XmlElementAttribute(Order=28)]
+        public Blocked Blocked
         {
             get
             {
-                return this.customer_Disc_GroupField;
+                return this.blockedField;
             }
             set
             {
-                this.customer_Disc_GroupField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=49)]
-        public bool Allow_Line_Disc
-        {
-            get
-            {
-                return this.allow_Line_DiscField;
-            }
-            set
-            {
-                this.allow_Line_DiscField = value;
+                this.blockedField = value;
             }
         }
         
         /// <remarks/>
         [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool Allow_Line_DiscSpecified
+        public bool BlockedSpecified
         {
             get
             {
-                return this.allow_Line_DiscFieldSpecified;
+                return this.blockedFieldSpecified;
             }
             set
             {
-                this.allow_Line_DiscFieldSpecified = value;
+                this.blockedFieldSpecified = value;
             }
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=50)]
-        public string Invoice_Disc_Code
+        [System.Xml.Serialization.XmlElementAttribute(Order=29)]
+        public string Bill_to_Customer_No
         {
             get
             {
-                return this.invoice_Disc_CodeField;
+                return this.bill_to_Customer_NoField;
             }
             set
             {
-                this.invoice_Disc_CodeField = value;
+                this.bill_to_Customer_NoField = value;
             }
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=51)]
-        public bool Prices_Including_VAT
+        [System.Xml.Serialization.XmlElementAttribute(Order=30)]
+        public string Gen_Bus_Posting_Group
         {
             get
             {
-                return this.prices_Including_VATField;
+                return this.gen_Bus_Posting_GroupField;
             }
             set
             {
-                this.prices_Including_VATField = value;
+                this.gen_Bus_Posting_GroupField = value;
             }
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool Prices_Including_VATSpecified
+        [System.Xml.Serialization.XmlElementAttribute(Order=31)]
+        public string VAT_Bus_Posting_Group
         {
             get
             {
-                return this.prices_Including_VATFieldSpecified;
+                return this.vAT_Bus_Posting_GroupField;
             }
             set
             {
-                this.prices_Including_VATFieldSpecified = value;
+                this.vAT_Bus_Posting_GroupField = value;
             }
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=52)]
-        public decimal Prepayment_Percent
+        [System.Xml.Serialization.XmlElementAttribute(Order=32)]
+        public string Customer_Posting_Group
         {
             get
             {
-                return this.prepayment_PercentField;
+                return this.customer_Posting_GroupField;
             }
             set
             {
-                this.prepayment_PercentField = value;
+                this.customer_Posting_GroupField = value;
             }
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool Prepayment_PercentSpecified
-        {
-            get
-            {
-                return this.prepayment_PercentFieldSpecified;
-            }
-            set
-            {
-                this.prepayment_PercentFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=53)]
-        public Application_Method Application_Method
-        {
-            get
-            {
-                return this.application_MethodField;
-            }
-            set
-            {
-                this.application_MethodField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool Application_MethodSpecified
-        {
-            get
-            {
-                return this.application_MethodFieldSpecified;
-            }
-            set
-            {
-                this.application_MethodFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=54)]
-        public Partner_Type Partner_Type
-        {
-            get
-            {
-                return this.partner_TypeField;
-            }
-            set
-            {
-                this.partner_TypeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool Partner_TypeSpecified
-        {
-            get
-            {
-                return this.partner_TypeFieldSpecified;
-            }
-            set
-            {
-                this.partner_TypeFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=55)]
-        public string Payment_Terms_Code
-        {
-            get
-            {
-                return this.payment_Terms_CodeField;
-            }
-            set
-            {
-                this.payment_Terms_CodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=56)]
-        public string Payment_Method_Code
-        {
-            get
-            {
-                return this.payment_Method_CodeField;
-            }
-            set
-            {
-                this.payment_Method_CodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=57)]
-        public string Payment_Days_Code
-        {
-            get
-            {
-                return this.payment_Days_CodeField;
-            }
-            set
-            {
-                this.payment_Days_CodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=58)]
-        public string Non_Paymt_Periods_Code
-        {
-            get
-            {
-                return this.non_Paymt_Periods_CodeField;
-            }
-            set
-            {
-                this.non_Paymt_Periods_CodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=59)]
-        public string Reminder_Terms_Code
-        {
-            get
-            {
-                return this.reminder_Terms_CodeField;
-            }
-            set
-            {
-                this.reminder_Terms_CodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=60)]
-        public string Fin_Charge_Terms_Code
-        {
-            get
-            {
-                return this.fin_Charge_Terms_CodeField;
-            }
-            set
-            {
-                this.fin_Charge_Terms_CodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=61)]
-        public string Cash_Flow_Payment_Terms_Code
-        {
-            get
-            {
-                return this.cash_Flow_Payment_Terms_CodeField;
-            }
-            set
-            {
-                this.cash_Flow_Payment_Terms_CodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=62)]
-        public bool Print_Statements
-        {
-            get
-            {
-                return this.print_StatementsField;
-            }
-            set
-            {
-                this.print_StatementsField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool Print_StatementsSpecified
-        {
-            get
-            {
-                return this.print_StatementsFieldSpecified;
-            }
-            set
-            {
-                this.print_StatementsFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=63)]
-        public int Last_Statement_No
-        {
-            get
-            {
-                return this.last_Statement_NoField;
-            }
-            set
-            {
-                this.last_Statement_NoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool Last_Statement_NoSpecified
-        {
-            get
-            {
-                return this.last_Statement_NoFieldSpecified;
-            }
-            set
-            {
-                this.last_Statement_NoFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=64)]
-        public bool Block_Payment_Tolerance
-        {
-            get
-            {
-                return this.block_Payment_ToleranceField;
-            }
-            set
-            {
-                this.block_Payment_ToleranceField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool Block_Payment_ToleranceSpecified
-        {
-            get
-            {
-                return this.block_Payment_ToleranceFieldSpecified;
-            }
-            set
-            {
-                this.block_Payment_ToleranceFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=65)]
-        public string Preferred_Bank_Account_Code
-        {
-            get
-            {
-                return this.preferred_Bank_Account_CodeField;
-            }
-            set
-            {
-                this.preferred_Bank_Account_CodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=66)]
-        public string Default_Bank_Acc_Code
-        {
-            get
-            {
-                return this.default_Bank_Acc_CodeField;
-            }
-            set
-            {
-                this.default_Bank_Acc_CodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=67)]
-        public string Location_Code
-        {
-            get
-            {
-                return this.location_CodeField;
-            }
-            set
-            {
-                this.location_CodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=68)]
-        public bool Combine_Shipments
-        {
-            get
-            {
-                return this.combine_ShipmentsField;
-            }
-            set
-            {
-                this.combine_ShipmentsField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool Combine_ShipmentsSpecified
-        {
-            get
-            {
-                return this.combine_ShipmentsFieldSpecified;
-            }
-            set
-            {
-                this.combine_ShipmentsFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=69)]
-        public Reserve Reserve
-        {
-            get
-            {
-                return this.reserveField;
-            }
-            set
-            {
-                this.reserveField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool ReserveSpecified
-        {
-            get
-            {
-                return this.reserveFieldSpecified;
-            }
-            set
-            {
-                this.reserveFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=70)]
-        public Shipping_Advice Shipping_Advice
-        {
-            get
-            {
-                return this.shipping_AdviceField;
-            }
-            set
-            {
-                this.shipping_AdviceField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool Shipping_AdviceSpecified
-        {
-            get
-            {
-                return this.shipping_AdviceFieldSpecified;
-            }
-            set
-            {
-                this.shipping_AdviceFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=71)]
-        public string Shipment_Method_Code
-        {
-            get
-            {
-                return this.shipment_Method_CodeField;
-            }
-            set
-            {
-                this.shipment_Method_CodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=72)]
-        public string Shipping_Agent_Code
-        {
-            get
-            {
-                return this.shipping_Agent_CodeField;
-            }
-            set
-            {
-                this.shipping_Agent_CodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=73)]
-        public string Shipping_Agent_Service_Code
-        {
-            get
-            {
-                return this.shipping_Agent_Service_CodeField;
-            }
-            set
-            {
-                this.shipping_Agent_Service_CodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=74)]
-        public string Shipping_Time
-        {
-            get
-            {
-                return this.shipping_TimeField;
-            }
-            set
-            {
-                this.shipping_TimeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=75)]
-        public string Base_Calendar_Code
-        {
-            get
-            {
-                return this.base_Calendar_CodeField;
-            }
-            set
-            {
-                this.base_Calendar_CodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=76)]
-        public string Customized_Calendar
-        {
-            get
-            {
-                return this.customized_CalendarField;
-            }
-            set
-            {
-                this.customized_CalendarField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=77)]
-        public decimal GetMoneyOwedExpected
-        {
-            get
-            {
-                return this.getMoneyOwedExpectedField;
-            }
-            set
-            {
-                this.getMoneyOwedExpectedField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool GetMoneyOwedExpectedSpecified
-        {
-            get
-            {
-                return this.getMoneyOwedExpectedFieldSpecified;
-            }
-            set
-            {
-                this.getMoneyOwedExpectedFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=78)]
-        public decimal TotalMoneyOwed
-        {
-            get
-            {
-                return this.totalMoneyOwedField;
-            }
-            set
-            {
-                this.totalMoneyOwedField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool TotalMoneyOwedSpecified
-        {
-            get
-            {
-                return this.totalMoneyOwedFieldSpecified;
-            }
-            set
-            {
-                this.totalMoneyOwedFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=79)]
-        public decimal CalcCreditLimitLCYExpendedPct
-        {
-            get
-            {
-                return this.calcCreditLimitLCYExpendedPctField;
-            }
-            set
-            {
-                this.calcCreditLimitLCYExpendedPctField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool CalcCreditLimitLCYExpendedPctSpecified
-        {
-            get
-            {
-                return this.calcCreditLimitLCYExpendedPctFieldSpecified;
-            }
-            set
-            {
-                this.calcCreditLimitLCYExpendedPctFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=80)]
-        public decimal Balance_Due
-        {
-            get
-            {
-                return this.balance_DueField;
-            }
-            set
-            {
-                this.balance_DueField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool Balance_DueSpecified
-        {
-            get
-            {
-                return this.balance_DueFieldSpecified;
-            }
-            set
-            {
-                this.balance_DueFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=81)]
-        public decimal Payments_LCY
-        {
-            get
-            {
-                return this.payments_LCYField;
-            }
-            set
-            {
-                this.payments_LCYField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool Payments_LCYSpecified
-        {
-            get
-            {
-                return this.payments_LCYFieldSpecified;
-            }
-            set
-            {
-                this.payments_LCYFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=82)]
-        public decimal Amount_in_VAT_Report
-        {
-            get
-            {
-                return this.amount_in_VAT_ReportField;
-            }
-            set
-            {
-                this.amount_in_VAT_ReportField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool Amount_in_VAT_ReportSpecified
-        {
-            get
-            {
-                return this.amount_in_VAT_ReportFieldSpecified;
-            }
-            set
-            {
-                this.amount_in_VAT_ReportFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=83)]
-        public bool Cash_VAT_Customer
-        {
-            get
-            {
-                return this.cash_VAT_CustomerField;
-            }
-            set
-            {
-                this.cash_VAT_CustomerField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool Cash_VAT_CustomerSpecified
-        {
-            get
-            {
-                return this.cash_VAT_CustomerFieldSpecified;
-            }
-            set
-            {
-                this.cash_VAT_CustomerFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=84)]
-        public bool Create_Receipt
-        {
-            get
-            {
-                return this.create_ReceiptField;
-            }
-            set
-            {
-                this.create_ReceiptField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool Create_ReceiptSpecified
-        {
-            get
-            {
-                return this.create_ReceiptFieldSpecified;
-            }
-            set
-            {
-                this.create_ReceiptFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=85)]
-        public decimal CustomerMgt_AvgDaysToPay_No
-        {
-            get
-            {
-                return this.customerMgt_AvgDaysToPay_NoField;
-            }
-            set
-            {
-                this.customerMgt_AvgDaysToPay_NoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool CustomerMgt_AvgDaysToPay_NoSpecified
-        {
-            get
-            {
-                return this.customerMgt_AvgDaysToPay_NoFieldSpecified;
-            }
-            set
-            {
-                this.customerMgt_AvgDaysToPay_NoFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=86)]
-        public decimal DaysPaidPastDueDate
-        {
-            get
-            {
-                return this.daysPaidPastDueDateField;
-            }
-            set
-            {
-                this.daysPaidPastDueDateField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool DaysPaidPastDueDateSpecified
-        {
-            get
-            {
-                return this.daysPaidPastDueDateFieldSpecified;
-            }
-            set
-            {
-                this.daysPaidPastDueDateFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=87)]
-        public decimal GetAmountOnPostedInvoices
-        {
-            get
-            {
-                return this.getAmountOnPostedInvoicesField;
-            }
-            set
-            {
-                this.getAmountOnPostedInvoicesField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool GetAmountOnPostedInvoicesSpecified
-        {
-            get
-            {
-                return this.getAmountOnPostedInvoicesFieldSpecified;
-            }
-            set
-            {
-                this.getAmountOnPostedInvoicesFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=88)]
-        public decimal GetAmountOnCrMemo
-        {
-            get
-            {
-                return this.getAmountOnCrMemoField;
-            }
-            set
-            {
-                this.getAmountOnCrMemoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool GetAmountOnCrMemoSpecified
-        {
-            get
-            {
-                return this.getAmountOnCrMemoFieldSpecified;
-            }
-            set
-            {
-                this.getAmountOnCrMemoFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=89)]
-        public decimal GetAmountOnOutstandingInvoices
-        {
-            get
-            {
-                return this.getAmountOnOutstandingInvoicesField;
-            }
-            set
-            {
-                this.getAmountOnOutstandingInvoicesField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool GetAmountOnOutstandingInvoicesSpecified
-        {
-            get
-            {
-                return this.getAmountOnOutstandingInvoicesFieldSpecified;
-            }
-            set
-            {
-                this.getAmountOnOutstandingInvoicesFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=90)]
-        public decimal GetAmountOnOutstandingCrMemos
-        {
-            get
-            {
-                return this.getAmountOnOutstandingCrMemosField;
-            }
-            set
-            {
-                this.getAmountOnOutstandingCrMemosField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool GetAmountOnOutstandingCrMemosSpecified
-        {
-            get
-            {
-                return this.getAmountOnOutstandingCrMemosFieldSpecified;
-            }
-            set
-            {
-                this.getAmountOnOutstandingCrMemosFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=91)]
-        public decimal Totals
-        {
-            get
-            {
-                return this.totalsField;
-            }
-            set
-            {
-                this.totalsField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool TotalsSpecified
-        {
-            get
-            {
-                return this.totalsFieldSpecified;
-            }
-            set
-            {
-                this.totalsFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=92)]
-        public decimal CustInvDiscAmountLCY
-        {
-            get
-            {
-                return this.custInvDiscAmountLCYField;
-            }
-            set
-            {
-                this.custInvDiscAmountLCYField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool CustInvDiscAmountLCYSpecified
-        {
-            get
-            {
-                return this.custInvDiscAmountLCYFieldSpecified;
-            }
-            set
-            {
-                this.custInvDiscAmountLCYFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=93)]
-        public string BP_Statistic_Code
-        {
-            get
-            {
-                return this.bP_Statistic_CodeField;
-            }
-            set
-            {
-                this.bP_Statistic_CodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=94)]
-        public string BP_Debit_Pos_Statistic_Code
-        {
-            get
-            {
-                return this.bP_Debit_Pos_Statistic_CodeField;
-            }
-            set
-            {
-                this.bP_Debit_Pos_Statistic_CodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=95)]
-        public string BP_Credit_Pos_Statistic_Code
-        {
-            get
-            {
-                return this.bP_Credit_Pos_Statistic_CodeField;
-            }
-            set
-            {
-                this.bP_Credit_Pos_Statistic_CodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=96)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=33)]
         public string No_Fornecedor_Assoc
         {
             get
@@ -2325,7 +699,7 @@ namespace WSCustomerNAV
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=97)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=34)]
         public bool Cliente_Associado
         {
             get
@@ -2353,7 +727,7 @@ namespace WSCustomerNAV
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=98)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=35)]
         public decimal Taxa_Aprovisionamento
         {
             get
@@ -2381,7 +755,35 @@ namespace WSCustomerNAV
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=99)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=36)]
+        public bool Abrigo_Lei_Compromisso
+        {
+            get
+            {
+                return this.abrigo_Lei_CompromissoField;
+            }
+            set
+            {
+                this.abrigo_Lei_CompromissoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool Abrigo_Lei_CompromissoSpecified
+        {
+            get
+            {
+                return this.abrigo_Lei_CompromissoFieldSpecified;
+            }
+            set
+            {
+                this.abrigo_Lei_CompromissoFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=37)]
         public bool Cliente_Interno
         {
             get
@@ -2409,21 +811,7 @@ namespace WSCustomerNAV
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=100)]
-        public string Centro_Resp_Dimensao
-        {
-            get
-            {
-                return this.centro_Resp_DimensaoField;
-            }
-            set
-            {
-                this.centro_Resp_DimensaoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=101)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=38)]
         public bool Cliente_Nacional
         {
             get
@@ -2451,7 +839,7 @@ namespace WSCustomerNAV
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=102)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=39)]
         public string Associado_A_N
         {
             get
@@ -2465,7 +853,7 @@ namespace WSCustomerNAV
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=103)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=40)]
         public Tipo_Cliente Tipo_Cliente
         {
             get
@@ -2493,7 +881,7 @@ namespace WSCustomerNAV
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=104)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=41)]
         public Natureza_Cliente Natureza_Cliente
         {
             get
@@ -2521,7 +909,7 @@ namespace WSCustomerNAV
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=105)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=42)]
         public string Cliente_Principal
         {
             get
@@ -2535,7 +923,7 @@ namespace WSCustomerNAV
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(DataType="date", Order=106)]
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date", Order=43)]
         public System.DateTime Data_Cliente_Pai
         {
             get
@@ -2563,7 +951,7 @@ namespace WSCustomerNAV
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=107)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=44)]
         public string Codigo_Serviço_DGO
         {
             get
@@ -2575,40 +963,29 @@ namespace WSCustomerNAV
                 this.codigo_Serviço_DGOField = value;
             }
         }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlArrayAttribute(Order=108)]
-        [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public Aged_Acc_Receivable_Chart[] AgedAccReceivableChart
-        {
-            get
-            {
-                return this.agedAccReceivableChartField;
-            }
-            set
-            {
-                this.agedAccReceivableChartField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlArrayAttribute(Order=109)]
-        [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public Sales_Price_and_Line_Discounts[] PriceAndLineDisc
-        {
-            get
-            {
-                return this.priceAndLineDiscField;
-            }
-            set
-            {
-                this.priceAndLineDiscField = value;
-            }
-        }
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wscustomer")]
+    public enum Regiao_Cliente
+    {
+        
+        /// <remarks/>
+        _blank_,
+        
+        /// <remarks/>
+        Norte,
+        
+        /// <remarks/>
+        Centro,
+        
+        /// <remarks/>
+        Sul,
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wscustomer")]
     public enum Blocked
     {
@@ -2627,78 +1004,7 @@ namespace WSCustomerNAV
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.0")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wscustomer")]
-    public enum Copy_Sell_to_Addr_to_Qte_From
-    {
-        
-        /// <remarks/>
-        Company,
-        
-        /// <remarks/>
-        Person,
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.0")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wscustomer")]
-    public enum Application_Method
-    {
-        
-        /// <remarks/>
-        Manual,
-        
-        /// <remarks/>
-        Apply_to_Oldest,
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.0")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wscustomer")]
-    public enum Partner_Type
-    {
-        
-        /// <remarks/>
-        _blank_,
-        
-        /// <remarks/>
-        Company,
-        
-        /// <remarks/>
-        Person,
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.0")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wscustomer")]
-    public enum Reserve
-    {
-        
-        /// <remarks/>
-        Never,
-        
-        /// <remarks/>
-        Optional,
-        
-        /// <remarks/>
-        Always,
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.0")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wscustomer")]
-    public enum Shipping_Advice
-    {
-        
-        /// <remarks/>
-        Partial,
-        
-        /// <remarks/>
-        Complete,
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wscustomer")]
     public enum Tipo_Cliente
     {
@@ -2717,7 +1023,7 @@ namespace WSCustomerNAV
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wscustomer")]
     public enum Natureza_Cliente
     {
@@ -2739,31 +1045,7 @@ namespace WSCustomerNAV
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wscustomer")]
-    public partial class Aged_Acc_Receivable_Chart
-    {
-        
-        private string keyField;
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
-        public string Key
-        {
-            get
-            {
-                return this.keyField;
-            }
-            set
-            {
-                this.keyField = value;
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wscustomer")]
     public partial class WSCustomer_Filter
@@ -2803,7 +1085,7 @@ namespace WSCustomerNAV
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wscustomer")]
     public enum WSCustomer_Fields
     {
@@ -2816,60 +1098,6 @@ namespace WSCustomerNAV
         
         /// <remarks/>
         Search_Name,
-        
-        /// <remarks/>
-        IC_Partner_Code,
-        
-        /// <remarks/>
-        Balance_LCY,
-        
-        /// <remarks/>
-        Balance_Due_LCY,
-        
-        /// <remarks/>
-        Credit_Limit_LCY,
-        
-        /// <remarks/>
-        Blocked,
-        
-        /// <remarks/>
-        Salesperson_Code,
-        
-        /// <remarks/>
-        Responsibility_Center,
-        
-        /// <remarks/>
-        Service_Zone_Code,
-        
-        /// <remarks/>
-        BlockedCustomer,
-        
-        /// <remarks/>
-        Document_Sending_Profile,
-        
-        /// <remarks/>
-        TotalSales2,
-        
-        /// <remarks/>
-        CustSalesLCY_CustProfit_AdjmtCostLCY,
-        
-        /// <remarks/>
-        AdjCustProfit,
-        
-        /// <remarks/>
-        AdjProfitPct,
-        
-        /// <remarks/>
-        Last_Date_Modified,
-        
-        /// <remarks/>
-        Off_The_Perim_Bal_Customer,
-        
-        /// <remarks/>
-        Regiao_Cliente,
-        
-        /// <remarks/>
-        No_Series,
         
         /// <remarks/>
         Address,
@@ -2885,9 +1113,6 @@ namespace WSCustomerNAV
         
         /// <remarks/>
         Country_Region_Code,
-        
-        /// <remarks/>
-        ShowMap,
         
         /// <remarks/>
         Primary_Contact_No,
@@ -2914,16 +1139,43 @@ namespace WSCustomerNAV
         County,
         
         /// <remarks/>
-        Bill_to_Customer_No,
-        
-        /// <remarks/>
         VAT_Registration_No,
         
         /// <remarks/>
-        GLN,
+        Payment_Terms_Code,
         
         /// <remarks/>
-        Copy_Sell_to_Addr_to_Qte_From,
+        Payment_Method_Code,
+        
+        /// <remarks/>
+        Salesperson_Code,
+        
+        /// <remarks/>
+        Responsibility_Center,
+        
+        /// <remarks/>
+        Last_Date_Modified,
+        
+        /// <remarks/>
+        Regiao_Cliente,
+        
+        /// <remarks/>
+        Global_Dimension_1_Code,
+        
+        /// <remarks/>
+        Centro_Resp_Dimensao,
+        
+        /// <remarks/>
+        Currency_Code,
+        
+        /// <remarks/>
+        No_Series,
+        
+        /// <remarks/>
+        Blocked,
+        
+        /// <remarks/>
+        Bill_to_Customer_No,
         
         /// <remarks/>
         Gen_Bus_Posting_Group,
@@ -2935,165 +1187,6 @@ namespace WSCustomerNAV
         Customer_Posting_Group,
         
         /// <remarks/>
-        Subject_to_Withholding_Tax,
-        
-        /// <remarks/>
-        Income_Type,
-        
-        /// <remarks/>
-        Invoice_Copies,
-        
-        /// <remarks/>
-        Currency_Code,
-        
-        /// <remarks/>
-        Customer_Price_Group,
-        
-        /// <remarks/>
-        Customer_Disc_Group,
-        
-        /// <remarks/>
-        Allow_Line_Disc,
-        
-        /// <remarks/>
-        Invoice_Disc_Code,
-        
-        /// <remarks/>
-        Prices_Including_VAT,
-        
-        /// <remarks/>
-        Prepayment_Percent,
-        
-        /// <remarks/>
-        Application_Method,
-        
-        /// <remarks/>
-        Partner_Type,
-        
-        /// <remarks/>
-        Payment_Terms_Code,
-        
-        /// <remarks/>
-        Payment_Method_Code,
-        
-        /// <remarks/>
-        Payment_Days_Code,
-        
-        /// <remarks/>
-        Non_Paymt_Periods_Code,
-        
-        /// <remarks/>
-        Reminder_Terms_Code,
-        
-        /// <remarks/>
-        Fin_Charge_Terms_Code,
-        
-        /// <remarks/>
-        Cash_Flow_Payment_Terms_Code,
-        
-        /// <remarks/>
-        Print_Statements,
-        
-        /// <remarks/>
-        Last_Statement_No,
-        
-        /// <remarks/>
-        Block_Payment_Tolerance,
-        
-        /// <remarks/>
-        Preferred_Bank_Account_Code,
-        
-        /// <remarks/>
-        Default_Bank_Acc_Code,
-        
-        /// <remarks/>
-        Location_Code,
-        
-        /// <remarks/>
-        Combine_Shipments,
-        
-        /// <remarks/>
-        Reserve,
-        
-        /// <remarks/>
-        Shipping_Advice,
-        
-        /// <remarks/>
-        Shipment_Method_Code,
-        
-        /// <remarks/>
-        Shipping_Agent_Code,
-        
-        /// <remarks/>
-        Shipping_Agent_Service_Code,
-        
-        /// <remarks/>
-        Shipping_Time,
-        
-        /// <remarks/>
-        Base_Calendar_Code,
-        
-        /// <remarks/>
-        Customized_Calendar,
-        
-        /// <remarks/>
-        GetMoneyOwedExpected,
-        
-        /// <remarks/>
-        TotalMoneyOwed,
-        
-        /// <remarks/>
-        CalcCreditLimitLCYExpendedPct,
-        
-        /// <remarks/>
-        Balance_Due,
-        
-        /// <remarks/>
-        Payments_LCY,
-        
-        /// <remarks/>
-        Amount_in_VAT_Report,
-        
-        /// <remarks/>
-        Cash_VAT_Customer,
-        
-        /// <remarks/>
-        Create_Receipt,
-        
-        /// <remarks/>
-        CustomerMgt_AvgDaysToPay_No,
-        
-        /// <remarks/>
-        DaysPaidPastDueDate,
-        
-        /// <remarks/>
-        GetAmountOnPostedInvoices,
-        
-        /// <remarks/>
-        GetAmountOnCrMemo,
-        
-        /// <remarks/>
-        GetAmountOnOutstandingInvoices,
-        
-        /// <remarks/>
-        GetAmountOnOutstandingCrMemos,
-        
-        /// <remarks/>
-        Totals,
-        
-        /// <remarks/>
-        CustInvDiscAmountLCY,
-        
-        /// <remarks/>
-        BP_Statistic_Code,
-        
-        /// <remarks/>
-        BP_Debit_Pos_Statistic_Code,
-        
-        /// <remarks/>
-        BP_Credit_Pos_Statistic_Code,
-        
-        /// <remarks/>
         No_Fornecedor_Assoc,
         
         /// <remarks/>
@@ -3103,10 +1196,10 @@ namespace WSCustomerNAV
         Taxa_Aprovisionamento,
         
         /// <remarks/>
-        Cliente_Interno,
+        Abrigo_Lei_Compromisso,
         
         /// <remarks/>
-        Centro_Resp_Dimensao,
+        Cliente_Interno,
         
         /// <remarks/>
         Cliente_Nacional,
@@ -3130,525 +1223,8 @@ namespace WSCustomerNAV
         Codigo_Serviço_DGO,
     }
     
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wscustomer")]
-    public partial class Sales_Price_and_Line_Discounts
-    {
-        
-        private string keyField;
-        
-        private Line_Type line_TypeField;
-        
-        private bool line_TypeFieldSpecified;
-        
-        private Sales_Type sales_TypeField;
-        
-        private bool sales_TypeFieldSpecified;
-        
-        private string sales_CodeField;
-        
-        private Type typeField;
-        
-        private bool typeFieldSpecified;
-        
-        private string codeField;
-        
-        private string unit_of_Measure_CodeField;
-        
-        private decimal minimum_QuantityField;
-        
-        private bool minimum_QuantityFieldSpecified;
-        
-        private decimal line_Discount_PercentField;
-        
-        private bool line_Discount_PercentFieldSpecified;
-        
-        private decimal unit_PriceField;
-        
-        private bool unit_PriceFieldSpecified;
-        
-        private System.DateTime starting_DateField;
-        
-        private bool starting_DateFieldSpecified;
-        
-        private System.DateTime ending_DateField;
-        
-        private bool ending_DateFieldSpecified;
-        
-        private string currency_CodeField;
-        
-        private bool price_Includes_VATField;
-        
-        private bool price_Includes_VATFieldSpecified;
-        
-        private bool allow_Invoice_DiscField;
-        
-        private bool allow_Invoice_DiscFieldSpecified;
-        
-        private string vAT_Bus_Posting_Gr_PriceField;
-        
-        private string variant_CodeField;
-        
-        private bool allow_Line_DiscField;
-        
-        private bool allow_Line_DiscFieldSpecified;
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
-        public string Key
-        {
-            get
-            {
-                return this.keyField;
-            }
-            set
-            {
-                this.keyField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
-        public Line_Type Line_Type
-        {
-            get
-            {
-                return this.line_TypeField;
-            }
-            set
-            {
-                this.line_TypeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool Line_TypeSpecified
-        {
-            get
-            {
-                return this.line_TypeFieldSpecified;
-            }
-            set
-            {
-                this.line_TypeFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
-        public Sales_Type Sales_Type
-        {
-            get
-            {
-                return this.sales_TypeField;
-            }
-            set
-            {
-                this.sales_TypeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool Sales_TypeSpecified
-        {
-            get
-            {
-                return this.sales_TypeFieldSpecified;
-            }
-            set
-            {
-                this.sales_TypeFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
-        public string Sales_Code
-        {
-            get
-            {
-                return this.sales_CodeField;
-            }
-            set
-            {
-                this.sales_CodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=4)]
-        public Type Type
-        {
-            get
-            {
-                return this.typeField;
-            }
-            set
-            {
-                this.typeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool TypeSpecified
-        {
-            get
-            {
-                return this.typeFieldSpecified;
-            }
-            set
-            {
-                this.typeFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=5)]
-        public string Code
-        {
-            get
-            {
-                return this.codeField;
-            }
-            set
-            {
-                this.codeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=6)]
-        public string Unit_of_Measure_Code
-        {
-            get
-            {
-                return this.unit_of_Measure_CodeField;
-            }
-            set
-            {
-                this.unit_of_Measure_CodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=7)]
-        public decimal Minimum_Quantity
-        {
-            get
-            {
-                return this.minimum_QuantityField;
-            }
-            set
-            {
-                this.minimum_QuantityField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool Minimum_QuantitySpecified
-        {
-            get
-            {
-                return this.minimum_QuantityFieldSpecified;
-            }
-            set
-            {
-                this.minimum_QuantityFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=8)]
-        public decimal Line_Discount_Percent
-        {
-            get
-            {
-                return this.line_Discount_PercentField;
-            }
-            set
-            {
-                this.line_Discount_PercentField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool Line_Discount_PercentSpecified
-        {
-            get
-            {
-                return this.line_Discount_PercentFieldSpecified;
-            }
-            set
-            {
-                this.line_Discount_PercentFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=9)]
-        public decimal Unit_Price
-        {
-            get
-            {
-                return this.unit_PriceField;
-            }
-            set
-            {
-                this.unit_PriceField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool Unit_PriceSpecified
-        {
-            get
-            {
-                return this.unit_PriceFieldSpecified;
-            }
-            set
-            {
-                this.unit_PriceFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(DataType="date", Order=10)]
-        public System.DateTime Starting_Date
-        {
-            get
-            {
-                return this.starting_DateField;
-            }
-            set
-            {
-                this.starting_DateField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool Starting_DateSpecified
-        {
-            get
-            {
-                return this.starting_DateFieldSpecified;
-            }
-            set
-            {
-                this.starting_DateFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(DataType="date", Order=11)]
-        public System.DateTime Ending_Date
-        {
-            get
-            {
-                return this.ending_DateField;
-            }
-            set
-            {
-                this.ending_DateField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool Ending_DateSpecified
-        {
-            get
-            {
-                return this.ending_DateFieldSpecified;
-            }
-            set
-            {
-                this.ending_DateFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=12)]
-        public string Currency_Code
-        {
-            get
-            {
-                return this.currency_CodeField;
-            }
-            set
-            {
-                this.currency_CodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=13)]
-        public bool Price_Includes_VAT
-        {
-            get
-            {
-                return this.price_Includes_VATField;
-            }
-            set
-            {
-                this.price_Includes_VATField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool Price_Includes_VATSpecified
-        {
-            get
-            {
-                return this.price_Includes_VATFieldSpecified;
-            }
-            set
-            {
-                this.price_Includes_VATFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=14)]
-        public bool Allow_Invoice_Disc
-        {
-            get
-            {
-                return this.allow_Invoice_DiscField;
-            }
-            set
-            {
-                this.allow_Invoice_DiscField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool Allow_Invoice_DiscSpecified
-        {
-            get
-            {
-                return this.allow_Invoice_DiscFieldSpecified;
-            }
-            set
-            {
-                this.allow_Invoice_DiscFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=15)]
-        public string VAT_Bus_Posting_Gr_Price
-        {
-            get
-            {
-                return this.vAT_Bus_Posting_Gr_PriceField;
-            }
-            set
-            {
-                this.vAT_Bus_Posting_Gr_PriceField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=16)]
-        public string Variant_Code
-        {
-            get
-            {
-                return this.variant_CodeField;
-            }
-            set
-            {
-                this.variant_CodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=17)]
-        public bool Allow_Line_Disc
-        {
-            get
-            {
-                return this.allow_Line_DiscField;
-            }
-            set
-            {
-                this.allow_Line_DiscField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool Allow_Line_DiscSpecified
-        {
-            get
-            {
-                return this.allow_Line_DiscFieldSpecified;
-            }
-            set
-            {
-                this.allow_Line_DiscFieldSpecified = value;
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.0")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wscustomer")]
-    public enum Line_Type
-    {
-        
-        /// <remarks/>
-        _blank_,
-        
-        /// <remarks/>
-        Sales_Line_Discount,
-        
-        /// <remarks/>
-        Sales_Price,
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.0")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wscustomer")]
-    public enum Sales_Type
-    {
-        
-        /// <remarks/>
-        Customer,
-        
-        /// <remarks/>
-        Customer_Price_Disc_Group,
-        
-        /// <remarks/>
-        All_Customers,
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.0")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wscustomer")]
-    public enum Type
-    {
-        
-        /// <remarks/>
-        Item,
-        
-        /// <remarks/>
-        Item_Disc_Group,
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Read", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wscustomer", IsWrapped=true)]
     public partial class Read
@@ -3668,7 +1244,7 @@ namespace WSCustomerNAV
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Read_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wscustomer", IsWrapped=true)]
     public partial class Read_Result
@@ -3688,7 +1264,7 @@ namespace WSCustomerNAV
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="ReadByRecId", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wscustomer", IsWrapped=true)]
     public partial class ReadByRecId
@@ -3708,7 +1284,7 @@ namespace WSCustomerNAV
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="ReadByRecId_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wscustomer", IsWrapped=true)]
     public partial class ReadByRecId_Result
@@ -3728,7 +1304,7 @@ namespace WSCustomerNAV
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="ReadMultiple", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wscustomer", IsWrapped=true)]
     public partial class ReadMultiple
@@ -3757,7 +1333,7 @@ namespace WSCustomerNAV
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="ReadMultiple_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wscustomer", IsWrapped=true)]
     public partial class ReadMultiple_Result
@@ -3778,7 +1354,7 @@ namespace WSCustomerNAV
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="IsUpdated", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wscustomer", IsWrapped=true)]
     public partial class IsUpdated
@@ -3798,7 +1374,7 @@ namespace WSCustomerNAV
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="IsUpdated_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wscustomer", IsWrapped=true)]
     public partial class IsUpdated_Result
@@ -3818,7 +1394,7 @@ namespace WSCustomerNAV
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetRecIdFromKey", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wscustomer", IsWrapped=true)]
     public partial class GetRecIdFromKey
@@ -3838,7 +1414,7 @@ namespace WSCustomerNAV
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetRecIdFromKey_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wscustomer", IsWrapped=true)]
     public partial class GetRecIdFromKey_Result
@@ -3858,7 +1434,7 @@ namespace WSCustomerNAV
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Create", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wscustomer", IsWrapped=true)]
     public partial class Create
     {
@@ -3877,7 +1453,7 @@ namespace WSCustomerNAV
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Create_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wscustomer", IsWrapped=true)]
     public partial class Create_Result
     {
@@ -3896,7 +1472,7 @@ namespace WSCustomerNAV
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="CreateMultiple", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wscustomer", IsWrapped=true)]
     public partial class CreateMultiple
     {
@@ -3916,7 +1492,7 @@ namespace WSCustomerNAV
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="CreateMultiple_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wscustomer", IsWrapped=true)]
     public partial class CreateMultiple_Result
     {
@@ -3936,7 +1512,7 @@ namespace WSCustomerNAV
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Update", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wscustomer", IsWrapped=true)]
     public partial class Update
     {
@@ -3955,7 +1531,7 @@ namespace WSCustomerNAV
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Update_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wscustomer", IsWrapped=true)]
     public partial class Update_Result
     {
@@ -3974,7 +1550,7 @@ namespace WSCustomerNAV
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="UpdateMultiple", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wscustomer", IsWrapped=true)]
     public partial class UpdateMultiple
     {
@@ -3994,7 +1570,7 @@ namespace WSCustomerNAV
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="UpdateMultiple_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wscustomer", IsWrapped=true)]
     public partial class UpdateMultiple_Result
     {
@@ -4014,7 +1590,7 @@ namespace WSCustomerNAV
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Delete", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wscustomer", IsWrapped=true)]
     public partial class Delete
@@ -4034,7 +1610,7 @@ namespace WSCustomerNAV
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Delete_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wscustomer", IsWrapped=true)]
     public partial class Delete_Result
@@ -4053,93 +1629,13 @@ namespace WSCustomerNAV
         }
     }
     
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.0")]
-    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="Delete_AgedAccReceivableChart", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wscustomer", IsWrapped=true)]
-    public partial class Delete_AgedAccReceivableChart
-    {
-        
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wscustomer", Order=0)]
-        public string AgedAccReceivableChart_Key;
-        
-        public Delete_AgedAccReceivableChart()
-        {
-        }
-        
-        public Delete_AgedAccReceivableChart(string AgedAccReceivableChart_Key)
-        {
-            this.AgedAccReceivableChart_Key = AgedAccReceivableChart_Key;
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.0")]
-    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="Delete_AgedAccReceivableChart_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wscustomer", IsWrapped=true)]
-    public partial class Delete_AgedAccReceivableChart_Result
-    {
-        
-        [System.ServiceModel.MessageBodyMemberAttribute(Name="Delete_AgedAccReceivableChart_Result", Namespace="urn:microsoft-dynamics-schemas/page/wscustomer", Order=0)]
-        public bool Delete_AgedAccReceivableChart_Result1;
-        
-        public Delete_AgedAccReceivableChart_Result()
-        {
-        }
-        
-        public Delete_AgedAccReceivableChart_Result(bool Delete_AgedAccReceivableChart_Result1)
-        {
-            this.Delete_AgedAccReceivableChart_Result1 = Delete_AgedAccReceivableChart_Result1;
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.0")]
-    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="Delete_PriceAndLineDisc", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wscustomer", IsWrapped=true)]
-    public partial class Delete_PriceAndLineDisc
-    {
-        
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wscustomer", Order=0)]
-        public string PriceAndLineDisc_Key;
-        
-        public Delete_PriceAndLineDisc()
-        {
-        }
-        
-        public Delete_PriceAndLineDisc(string PriceAndLineDisc_Key)
-        {
-            this.PriceAndLineDisc_Key = PriceAndLineDisc_Key;
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.0")]
-    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="Delete_PriceAndLineDisc_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wscustomer", IsWrapped=true)]
-    public partial class Delete_PriceAndLineDisc_Result
-    {
-        
-        [System.ServiceModel.MessageBodyMemberAttribute(Name="Delete_PriceAndLineDisc_Result", Namespace="urn:microsoft-dynamics-schemas/page/wscustomer", Order=0)]
-        public bool Delete_PriceAndLineDisc_Result1;
-        
-        public Delete_PriceAndLineDisc_Result()
-        {
-        }
-        
-        public Delete_PriceAndLineDisc_Result(bool Delete_PriceAndLineDisc_Result1)
-        {
-            this.Delete_PriceAndLineDisc_Result1 = Delete_PriceAndLineDisc_Result1;
-        }
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     public interface WSCustomer_PortChannel : WSCustomerNAV.WSCustomer_Port, System.ServiceModel.IClientChannel
     {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     public partial class WSCustomer_PortClient : System.ServiceModel.ClientBase<WSCustomerNAV.WSCustomer_Port>, WSCustomerNAV.WSCustomer_Port
     {
         
@@ -4281,32 +1777,6 @@ namespace WSCustomerNAV
             WSCustomerNAV.Delete inValue = new WSCustomerNAV.Delete();
             inValue.Key = Key;
             return ((WSCustomerNAV.WSCustomer_Port)(this)).DeleteAsync(inValue);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<WSCustomerNAV.Delete_AgedAccReceivableChart_Result> WSCustomerNAV.WSCustomer_Port.Delete_AgedAccReceivableChartAsync(WSCustomerNAV.Delete_AgedAccReceivableChart request)
-        {
-            return base.Channel.Delete_AgedAccReceivableChartAsync(request);
-        }
-        
-        public System.Threading.Tasks.Task<WSCustomerNAV.Delete_AgedAccReceivableChart_Result> Delete_AgedAccReceivableChartAsync(string AgedAccReceivableChart_Key)
-        {
-            WSCustomerNAV.Delete_AgedAccReceivableChart inValue = new WSCustomerNAV.Delete_AgedAccReceivableChart();
-            inValue.AgedAccReceivableChart_Key = AgedAccReceivableChart_Key;
-            return ((WSCustomerNAV.WSCustomer_Port)(this)).Delete_AgedAccReceivableChartAsync(inValue);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<WSCustomerNAV.Delete_PriceAndLineDisc_Result> WSCustomerNAV.WSCustomer_Port.Delete_PriceAndLineDiscAsync(WSCustomerNAV.Delete_PriceAndLineDisc request)
-        {
-            return base.Channel.Delete_PriceAndLineDiscAsync(request);
-        }
-        
-        public System.Threading.Tasks.Task<WSCustomerNAV.Delete_PriceAndLineDisc_Result> Delete_PriceAndLineDiscAsync(string PriceAndLineDisc_Key)
-        {
-            WSCustomerNAV.Delete_PriceAndLineDisc inValue = new WSCustomerNAV.Delete_PriceAndLineDisc();
-            inValue.PriceAndLineDisc_Key = PriceAndLineDisc_Key;
-            return ((WSCustomerNAV.WSCustomer_Port)(this)).Delete_PriceAndLineDiscAsync(inValue);
         }
         
         public virtual System.Threading.Tasks.Task OpenAsync()

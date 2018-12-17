@@ -153,7 +153,7 @@
 
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.contactNoText.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="contactNoText">Contato</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="contactNoText">Nome Contacto</vaadin-grid-sorter>
                     <vaadin-grid-filter path="contactNoText" />
                 </template>
                 <template>
@@ -203,7 +203,7 @@
 
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.startData.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="startData">Data Inicial Prevista</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="startData">Data Inicial Prevista da Prestação</vaadin-grid-sorter>
                     <vaadin-grid-filter path="startData" />
                 </template>
                 <template>
@@ -213,7 +213,7 @@
 
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dueDate.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="dueDate">Data Expiração Prevista</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="dueDate">Data Expiração Prevista da Prestação</vaadin-grid-sorter>
                     <vaadin-grid-filter path="dueDate" />
                 </template>
                 <template>
@@ -223,7 +223,7 @@
 
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.customerShipmentDate.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="customerShipmentDate">Data Envio</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="customerShipmentDate">Data Prevista para a Ajudicação</vaadin-grid-sorter>
                     <vaadin-grid-filter path="customerShipmentDate" />
                 </template>
                 <template>
@@ -331,43 +331,13 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.limitClarificationDate.hidden }}">
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.limitClarificationDate.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="limitClarificationDate">Data - Limite Esclarecimentos</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="limitClarificationDate">Data/Hora - Limite Esclarecimentos, Erros e Omissões</vaadin-grid-sorter>
                     <vaadin-grid-filter path="limitClarificationDate" />
                 </template>
                 <template>
-                    {{item.limitClarificationDate}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.limitClarificationTime.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="limitClarificationTime">Hora - Limite Esclarecimentos</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="limitClarificationTime" />
-                </template>
-                <template>
-                    {{item.limitClarificationTime}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.errorsOmissionsDate.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="errorsOmissionsDate">Data - Erros e Omissões</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="errorsOmissionsDate" />
-                </template>
-                <template>
-                    {{item.errorsOmissionsDate}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.errorsOmissionsTime.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="errorsOmissionsTime">Hora - Erros e Omissões</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="errorsOmissionsTime" />
-                </template>
-                <template>
-                    {{item.errorsOmissionsTime}}
+                    {{item.limitClarificationDate}} {{item.limitClarificationTime}}
                 </template>
             </vaadin-grid-column>
 
@@ -579,14 +549,14 @@
                         "description": { hidden: false, label: "Âmbito do Serviço" },
                         "clientNo": { hidden: false, label: "Nº Cliente" },
                         "clientName": { hidden: false, label: "Nome Cliente" },
-                        "contactNoText": { hidden: false, label: "Contato" },
+                        "contactNoText": { hidden: false, label: "Nome Contacto" },
                         "orderOriginText": { hidden: false, label: "Origem do Pedido" },
                         "ordOrderSource": { hidden: false, label: "Origem do Pedido Descrição" },
                         "proposalNo": { hidden: false, label: "Nº Proposta" },
                         //"versionNo": { hidden: false, label: "Nº Versão" },
-                        "startData": { hidden: false, label: "Data Inicial Prevista" },
-                        "dueDate": { hidden: false, label: "Data Expiração Prevista" },
-                        "customerShipmentDate": { hidden: false, label: "Data Envio" },
+                        "startData": { hidden: false, label: "Data Inicial Prevista da Prestação" },
+                        "dueDate": { hidden: false, label: "Data Expiração Prevista da Prestação" },
+                        "customerShipmentDate": { hidden: false, label: "Data Prevista para a Ajudicação" },
                         "proposalChangeDate": { hidden: false, label: "Data Alteração" },
                         "internalNumeration": { hidden: false, label: "Numeração Interna" },
                         "totalProposalValue": { hidden: false, label: "Valor Total" },

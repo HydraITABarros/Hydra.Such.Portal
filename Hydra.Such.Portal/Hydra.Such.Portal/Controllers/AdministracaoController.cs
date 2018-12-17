@@ -165,6 +165,10 @@ namespace Hydra.Such.Portal.Controllers
                 result.Centroresp = userConfig.CentroDeResponsabilidade;
                 result.SuperiorHierarquico = userConfig.SuperiorHierarquico;
                 result.RequisicaoStock = userConfig.RequisicaoStock.HasValue ? userConfig.RequisicaoStock : false;
+                result.AprovadorPedidoPag1 = userConfig.AprovadorPedidoPag1;
+                result.AprovadorPedidoPag2 = userConfig.AprovadorPedidoPag2;
+                result.AnulacaoPedidoPagamento = userConfig.AnulacaoPedidoPagamento.HasValue ? userConfig.AnulacaoPedidoPagamento : false;
+
 
                 result.UserAccesses = DBUserAccesses.GetByUserId(data.IdUser).Select(x => new UserAccessesViewModel()
                 {
@@ -224,7 +228,10 @@ namespace Hydra.Such.Portal.Controllers
                 NumSerieNotasDebito = data.NumSerieNotasDebito,
                 CentroDeResponsabilidade=data.Centroresp,
                 SuperiorHierarquico = data.SuperiorHierarquico,
-                RequisicaoStock = data.RequisicaoStock.HasValue ? data.RequisicaoStock.Value : false
+                RequisicaoStock = data.RequisicaoStock.HasValue ? data.RequisicaoStock.Value : false,
+                AprovadorPedidoPag1 = data.AprovadorPedidoPag1,
+                AprovadorPedidoPag2 = data.AprovadorPedidoPag2,
+                AnulacaoPedidoPagamento = data.AnulacaoPedidoPagamento.HasValue ? data.AnulacaoPedidoPagamento : false
         });
 
             data.IdUser = ObjectCreated.IdUtilizador;
@@ -301,6 +308,9 @@ namespace Hydra.Such.Portal.Controllers
                 userConfig.CentroDeResponsabilidade = data.Centroresp;
                 userConfig.SuperiorHierarquico = data.SuperiorHierarquico;
                 userConfig.RequisicaoStock = data.RequisicaoStock.HasValue ? data.RequisicaoStock : false;
+                userConfig.AprovadorPedidoPag1 = data.AprovadorPedidoPag1;
+                userConfig.AprovadorPedidoPag2 = data.AprovadorPedidoPag2;
+                userConfig.AnulacaoPedidoPagamento = data.AnulacaoPedidoPagamento.HasValue ? data.AnulacaoPedidoPagamento : false;
 
                 DBUserConfigurations.Update(userConfig);
 
@@ -1623,7 +1633,8 @@ namespace Hydra.Such.Portal.Controllers
                 ServiceCode = x.CódServiço,
                 ServiceDescription = DBServices.GetById(x.CódServiço) != null ? DBServices.GetById(x.CódServiço).Descrição : "",
                 //ServiceDescription = x.CódServiçoNavigation != null ? x.CódServiçoNavigation.Descrição : "",
-                ServiceGroup = x.GrupoServiços
+                ServiceGroup = x.GrupoServiços,
+                ServiceGroup_Show = x.GrupoServiços.HasValue ? x.GrupoServiços == true ? "Sim" : "Não" : "Não"
             }).ToList();
 
             return Json(result);
@@ -6011,7 +6022,7 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["codProduto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodProduto); Col = Col + 1; }
                         if (dp["descricaoProduto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DescricaoProduto); Col = Col + 1; }
                         if (dp["codCategoriaProduto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodCategoriaProduto == null ? string.Empty : item.CodCategoriaProduto.ToString()); Col = Col + 1; }
-                        if (dp["custoUnitarioTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CustoUnitarioTexto); Col = Col + 1; }
+                        if (dp["custoUnitarioTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CustoUnitario.ToString()); Col = Col + 1; }
                         if (dp["um"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Um); Col = Col + 1; }
                         if (dp["qtdPorUmTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.QtdPorUmTexto); Col = Col + 1; }
                         if (dp["pesoUnitarioTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.PesoUnitarioTexto); Col = Col + 1; }

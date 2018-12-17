@@ -184,6 +184,37 @@
         <vaadin-grid id="grdPendingReqGrid" aria-label="PendingReqGrid" items="[[result]]" class="grid" multi-sort="true" active-item="{{activeItem}}">
             <!--active-item="{{activeItem}}"-->
 
+            <vaadin-grid-column width="50px" resizable>
+                <template class="header">
+                </template>
+                <template>
+                    <center>
+                        <paper-button class="btnSave tableBtn" on-tap="_GoToReq" title="Ver Requisição" disabled="{{_permissionsCreate}}"><i class="fa fa-info" aria-hidden="true"></i></paper-button>
+                    </center>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="50px" resizable hidden="{{ !_permissions.update }}">
+                <template class="header">
+                </template>
+                <template>
+                    <center>
+                        <paper-button hidden="{{ !item.sentReqToAprove }}" class="btnEditPending tableBtn" on-tap="_ToApproved" disabled="{{_permissionsCreate}}" title="Enviar para Aprovação"><i class="fa fa-check" aria-hidden="true"></i></paper-button>
+                    </center>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="50px" resizable hidden="{{ !_permissions.update }}">
+                <template class="header">
+                </template>
+                <template>
+                    <center>
+                        <!--<paper-button class="btnRemove" on-tap="_closeRequisition" disabled="{{_permissionsCreate}}">Fechar</paper-button>-->
+                        <paper-button class="btnRemove tableBtn" on-tap="_closeRequisition" disabled="{{_permissionsCreate}}" title="Fechar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                    </center>
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.requisitionNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="requisitionNo">Nº Requisição</vaadin-grid-sorter>
@@ -193,7 +224,7 @@
                     {{item.requisitionNo}}
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.state.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="state">Estado</vaadin-grid-sorter>
@@ -203,7 +234,7 @@
                     [[ _clFormatState(item.state) ]]
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.createDate.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="createDate">Data Requisição</vaadin-grid-sorter>
@@ -281,37 +312,6 @@
                 </template>
                 <template>
                     {{item.centerResponsibilityCode}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="50px" resizable>
-                <template class="header">
-                </template>
-                <template>
-                    <center>
-                        <paper-button class="btnSave tableBtn" on-tap="_GoToReq" title="Ver Requisição" disabled="{{_permissionsCreate}}"><i class="fa fa-info" aria-hidden="true"></i></paper-button>
-                    </center>
-                </template>
-            </vaadin-grid-column>
-            
-            <vaadin-grid-column width="50px" resizable hidden="{{ !_permissions.update }}">
-                <template class="header">
-                </template>
-                <template>
-                    <center>
-                        <paper-button hidden="{{ !item.sentReqToAprove }}" class="btnEditPending tableBtn" on-tap="_ToApproved" disabled="{{_permissionsCreate}}" title="Enviar para Aprovação"><i class="fa fa-check" aria-hidden="true"></i></paper-button>
-                    </center>
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="50px" resizable hidden="{{ !_permissions.update }}">
-                <template class="header">
-                </template>
-                <template>
-                    <center>
-                        <!--<paper-button class="btnRemove" on-tap="_closeRequisition" disabled="{{_permissionsCreate}}">Fechar</paper-button>-->
-                        <paper-button class="btnRemove tableBtn" on-tap="_closeRequisition" disabled="{{_permissionsCreate}}" title="Fechar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
-                    </center>
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
@@ -482,10 +482,33 @@
                     window.location.href = "/GestaoRequisicoes/Arquivadas";
                 },
                 _closeRequisition: function (e) {
+                    debugger;
+                    //var index = this.result.indexOf(e.model.item);
+                    //this.result.splice(index, 1);
+
                     if (e.model.item.state == 5 | e.model.item.state == 5) {
-                        this.$.closereq_ajax.body = JSON.stringify(e.model.item);
-                        this.$.closereq_ajax.params = { "registType": "Fechar Requisicao" };
-                        this.$.closereq_ajax.generateRequest();
+                        var ajax_request = this.$.closereq_ajax;
+                        ajax_request.body = JSON.stringify(e.model.item);
+                        ajax_request.params = { "registType": "Fechar Requisicao" };
+
+                        bootbox.confirm({
+                            message: "Tem a certeza que pretende Fechar a Requisição?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (result) {
+                                if (result) {
+                                    ajax_request.generateRequest();
+                                }
+                            }
+                        });
                     } else {
                         this._openToastError("O estado da requisição não permite o fecho.");
                     }

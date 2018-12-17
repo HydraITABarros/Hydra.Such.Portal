@@ -148,15 +148,6 @@
                     {{item.statusDescription}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.contactNo.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="contactNo">Nº Contacto</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="contactNo" />
-                </template>
-                <template>
-                    {{item.contactNo}}
-                </template>
-            </vaadin-grid-column>
             <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.clientNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="clientNo">Nº Cliente</vaadin-grid-sorter>
@@ -173,6 +164,15 @@
                 </template>
                 <template>
                     {{item.clientName}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.contactNoText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="contactNoText">Nome Contacto</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="contactNoText" />
+                </template>
+                <template>
+                    {{item.contactNoText}}
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.description.hidden }}">
@@ -533,7 +533,7 @@
                         "oportunityNo": { hidden: false, label: "Nº Oportunidade" },
                         "startData": { hidden: false, label: "Data Inicio" },
                         "dueDate": { hidden: false, label: "Data Fim" },
-                        "contactNo": { hidden: false, label: "Nº Contacto" },
+                        "contactNoText": { hidden: false, label: "Nome Contacto" },
                         "clientNo": { hidden: false, label: "Nº Cliente" },
                         "clientName": { hidden: false, label: "Nome Cliente" },
                         "description": { hidden: false, label: "Descrição" },

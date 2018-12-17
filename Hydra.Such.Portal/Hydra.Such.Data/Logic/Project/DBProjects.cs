@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using static Hydra.Such.Data.Enumerations;
 
 namespace Hydra.Such.Data.Logic.Project
 {
@@ -109,7 +110,7 @@ namespace Hydra.Such.Data.Logic.Project
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.Projetos.Where(x => x.Área == AreaId && x.Estado != 3).ToList();
+                    return ctx.Projetos.Where(x => x.Área == AreaId && x.Estado != EstadoProjecto.Encomenda).ToList();
                 }
             }
             catch (Exception ex)

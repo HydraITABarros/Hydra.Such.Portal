@@ -82,6 +82,24 @@ namespace Hydra.Such.Data.Logic.Approvals
                 return null;
             }
         }
+
+        public static bool Delete(MovimentosDeAprovação ObjectToDelete)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    ctx.MovimentosDeAprovação.Remove(ObjectToDelete);
+                    ctx.SaveChanges();
+                }
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
         #endregion
 
         public static List<MovimentosDeAprovação> GetAllAssignedToUserFilteredByStatus(string userId, int status)

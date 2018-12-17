@@ -24,5 +24,6 @@ namespace Hydra.Such.Data.Database
         public string TelemovelContato { get; set; }
         public string EmailContato { get; set; }
         public string Notas { get; set; }
+        public string ClientNo { get; set; }
     }
 }

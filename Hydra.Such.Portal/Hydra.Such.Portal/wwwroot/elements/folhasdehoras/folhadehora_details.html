@@ -411,7 +411,7 @@
             <!--Viagens-->
             <div class="panel panel-default">
                 <!--<paper-collapse-group>
-                    <paper-collapse-item class="panel-heading" header="Cabeçalho" opened>-->
+                <paper-collapse-item class="panel-heading" header="Cabeçalho" opened>-->
                 <!--<div class="panel-heading" style="font-size:16px">Cabeçalho</div>-->
                 <div class="panel-body">
                     <div class="row break_clear">
@@ -420,11 +420,18 @@
                         </div>
 
                         <div class="col-sm-3">
+                            <!--<such-selectbox id="projetoNo" value="{{data.projetoNo}}" label="Nº Ordem/Projecto"
+                                        items="[[LFolhaDeHoraNavProjectNo]]"
+                                        text-path="no"
+                                        value-path="no"
+                                        fields='[{"field":"no", "name":"Nº Projecto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"globalDimension1", "name":"Dimensão Global 1"}, {"field":"globalDimension2", "name":"Dimensão Global 2"}]'
+                                        disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                        </such-selectbox>-->
                             <such-selectbox id="projetoNo" value="{{data.projetoNo}}" label="Nº Ordem/Projecto"
                                             items="[[LFolhaDeHoraNavProjectNo]]"
                                             text-path="no"
                                             value-path="no"
-                                            fields='[{"field":"no", "name":"Nº Projecto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"globalDimension1", "name":"Dimensão Global 1"}, {"field":"globalDimension2", "name":"Dimensão Global 2"}]'
+                                            fields='[{"field":"no", "name":"Nº Projecto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"regionCode", "name":"Cód. Região"}, {"field":"areaCode", "name":"Cód. Área"}, {"field":"centerResponsibilityCode", "name":"Cód. Cresp"}]'
                                             disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                             </such-selectbox>
                         </div>
@@ -458,11 +465,11 @@
 
 
                         <!--<div class="col-sm-3">
-                            <vaadin-date-picker label="Data Inicio" id="dataPartidaTexto" name="dataPartidaTexto" on-blur="_validacaoDataPartidaChegada" disabled="{{ !_permissions.update }}" value="{{data.dataPartidaTexto}}"></vaadin-date-picker>
-                        </div>-->
+                        <vaadin-date-picker label="Data Inicio" id="dataPartidaTexto" name="dataPartidaTexto" on-blur="_validacaoDataPartidaChegada" disabled="{{ !_permissions.update }}" value="{{data.dataPartidaTexto}}"></vaadin-date-picker>
+                    </div>-->
                         <!--<div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.horaPartidaTexto}}" id="horaPartidaTexto" on-value-changed="_validacaoHoraPartidaChegada" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Inicio"></vaadin-text-field>
-                        </div>-->
+                        <vaadin-text-field type="text" value="{{data.horaPartidaTexto}}" id="horaPartidaTexto" on-value-changed="_validacaoHoraPartidaChegada" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Inicio"></vaadin-text-field>
+                    </div>-->
 
                         <div class="col-sm-3">
                             <label part="label" id="vaadin-text-field-label-21" class="label_custom">Data/Hora - Fim</label>
@@ -480,11 +487,11 @@
 
 
                         <!--<div class="col-sm-3">
-                            <vaadin-date-picker label="Data Fim" id="dataChegadaTexto" name="dataChegadaTexto" on-blur="_validacaoDataPartidaChegada" disabled="{{ !_permissions.update }}" value="{{data.dataChegadaTexto}}"></vaadin-date-picker>
-                        </div>-->
+                        <vaadin-date-picker label="Data Fim" id="dataChegadaTexto" name="dataChegadaTexto" on-blur="_validacaoDataPartidaChegada" disabled="{{ !_permissions.update }}" value="{{data.dataChegadaTexto}}"></vaadin-date-picker>
+                    </div>-->
                         <!--<div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.horaChegadaTexto}}" id="horaChegadaTexto" on-value-changed="_validacaoHoraPartidaChegada" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Fim"></vaadin-text-field>
-                        </div>-->
+                        <vaadin-text-field type="text" value="{{data.horaChegadaTexto}}" id="horaChegadaTexto" on-value-changed="_validacaoHoraPartidaChegada" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Fim"></vaadin-text-field>
+                    </div>-->
 
                         <div class="col-sm-3">
                             <vaadin-combo-box items="[[LFolhaDeHoraTypeDeslocation]]" id="tipoDeslocacao" item-value-path="id" item-label-path="value" value="{{data.tipoDeslocacao}}" on-value-changed="_validacaoTipoDeslocacao" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" label="Tipo Deslocação">
@@ -532,15 +539,15 @@
                         </div>
 
                         <!--<div class="col-sm-3" style="padding-top:20px">
-                            <paper-button raised id="btn_updateFH1" class="btnSave" on-tap="_updateFH" disabled="{{ !_permissions.update }}" title="Guardar"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                        </div>-->
+                        <paper-button raised id="btn_updateFH1" class="btnSave" on-tap="_updateFH" disabled="{{ !_permissions.update }}" title="Guardar"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                    </div>-->
                     </div>
 
                     <!--<div class="marginSpace">
-                    </div>-->
+                </div>-->
                 </div>
                 <!--</paper-collapse-item>
-                </paper-collapse-group>-->
+            </paper-collapse-group>-->
                 <!------------ PERCURSOS ------------>
 
 
@@ -580,8 +587,8 @@
 
 
                                 <!--<div class="col-sm-1" style="padding-top:23px">
-                                    <paper-button id="btn_createPercurso" class="btnSave" raised on-tap="_createPercurso" disabled="{{ !_permissions.create }}" title="Criar">Criar</paper-button>
-                                </div>-->
+                                <paper-button id="btn_createPercurso" class="btnSave" raised on-tap="_createPercurso" disabled="{{ !_permissions.create }}" title="Criar">Criar</paper-button>
+                            </div>-->
                                 <div class="col-sm-1" style="padding-top:32px">
                                     <center>
                                         <paper-button id="btn_createPercurso" class="btnSave tableBtn" raised on-tap="_createPercurso" disabled="{{ !_permissions.create }}" title="Adicionar"><i class="fa fa-plus" aria-hidden="true"></i></paper-button>
@@ -992,8 +999,8 @@
                                 </div>
 
                                 <!--<div class="col-sm-1 alignPoga">
-                                    <paper-button id="btn_createMaoDeObra" class="btnSave" raised on-tap="_createMaoDeObra" disabled="{{ !_permissions.create }}" title="Criar">Criar</paper-button>
-                                </div>-->
+                                <paper-button id="btn_createMaoDeObra" class="btnSave" raised on-tap="_createMaoDeObra" disabled="{{ !_permissions.create }}" title="Criar">Criar</paper-button>
+                            </div>-->
                                 <div class="col-sm-1" style="padding-top:32px">
                                     <center>
                                         <paper-button id="btn_createMaoDeObra" class="btnSave tableBtn" raised on-tap="_createMaoDeObra" disabled="{{ !_permissions.create }}" title="Adicionar"><i class="fa fa-plus" aria-hidden="true"></i></paper-button>
@@ -1150,14 +1157,14 @@
                             </template>
                             <template>
                                 <!--<vaadin-combo-box items="[[LFolhaDeHoraResponsabilityCenterCodes]]" id="tabMaoDeObraCodigoCentroResponsabilidade" item-value-path="id" item-label-path="value" value="{{item.codigoCentroResponsabilidade}}" on-blur="_updateLinhaMaoDeObra" disabled="true" style="text-align:left;">
-                                    <template>
-                                        <paper-icon-item>
-                                            <paper-item-body two-line>
-                                                <div>[[item.value]]</div>
-                                            </paper-item-body>
-                                        </paper-icon-item>
-                                    </template>
-                                </vaadin-combo-box>-->
+                                <template>
+                                    <paper-icon-item>
+                                        <paper-item-body two-line>
+                                            <div>[[item.value]]</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
+                                </template>
+                            </vaadin-combo-box>-->
                                 <such-selectbox id="tabMaoDeObraCodigoCentroResponsabilidade" name="tabMaoDeObraCodigoCentroResponsabilidade" value="{{item.codigoCentroResponsabilidade}}" disabled="true" style="margin-top:-20px"
                                                 items="[[CBResponsabilityCenterCodes]]"
                                                 text-path="value"
@@ -1246,8 +1253,8 @@
                                 </div>
 
                                 <!--<div class="col-sm-1 alignPoga">
-                                    <paper-button id="btn_createPresenca" class="btnSave" raised on-tap="_createPresenca" disabled="{{ !_permissions.create }}" title="Criar">Criar</paper-button>
-                                </div>-->
+                                <paper-button id="btn_createPresenca" class="btnSave" raised on-tap="_createPresenca" disabled="{{ !_permissions.create }}" title="Criar">Criar</paper-button>
+                            </div>-->
                                 <div class="col-sm-1" style="padding-top:32px">
                                     <center>
                                         <paper-button id="btn_createPresenca" class="btnSave tableBtn" raised on-tap="_createPresenca" disabled="{{ !_permissions.create }}" title="Adicionar"><i class="fa fa-plus" aria-hidden="true"></i></paper-button>
@@ -1395,15 +1402,15 @@
                                             required error-message="Este campo é obrigatório">
                             </such-selectbox>
                             <!--<vaadin-combo-box items="[[LFolhaDeHoraRegionCodes]]" id="codigoRegiao" item-value-path="id" item-label-path="value" value="{{data.codigoRegiao}}" disabled="{{ !_permissions.update }}" label="Região" required error-message="Este campo é obrigatório">
-                                <template>
-                                    <table width="300px">
-                                        <tr>
-                                            <td width="15%">[[item.id]]</td>
-                                            <td width="85%"> <b>[[item.value]]</b></td>
-                                        </tr>
-                                    </table>
-                                </template>
-                            </vaadin-combo-box>-->
+                            <template>
+                                <table width="300px">
+                                    <tr>
+                                        <td width="15%">[[item.id]]</td>
+                                        <td width="85%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>-->
                         </div>
 
                         <div class="col-sm-3">
@@ -1414,15 +1421,15 @@
                                             fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
                             </such-selectbox>
                             <!--<vaadin-combo-box items="[[LFolhaDeHoraFunctionalAreaCodes]]" id="codigoAreaFuncional" item-value-path="id" item-label-path="value" value="{{data.codigoAreaFuncional}}" disabled="{{ !_permissions.update }}" label="Área Funcional" required error-message="Este campo é obrigatório">
-                                <template>
-                                    <table width="400px">
-                                        <tr>
-                                            <td width="20%">[[item.id]]</td>
-                                            <td width="80%"> <b>[[item.value]]</b></td>
-                                        </tr>
-                                    </table>
-                                </template>
-                            </vaadin-combo-box>-->
+                            <template>
+                                <table width="400px">
+                                    <tr>
+                                        <td width="20%">[[item.id]]</td>
+                                        <td width="80%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>-->
                         </div>
 
                         <div class="col-sm-3">
@@ -1433,15 +1440,15 @@
                                             fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
                             </such-selectbox>
                             <!--<vaadin-combo-box items="[[LFolhaDeHoraResponsabilityCenterCodes]]" id="codigoCentroResponsabilidade" item-value-path="id" item-label-path="value" value="{{data.codigoCentroResponsabilidade}}" disabled="{{ !_permissions.update }}" label="Centro Respon." required error-message="Este campo é obrigatório">
-                                <template>
-                                    <table width="350px">
-                                        <tr>
-                                            <td width="10%">[[item.id]]</td>
-                                            <td width="90%"> <b>[[item.value]]</b></td>
-                                        </tr>
-                                    </table>
-                                </template>
-                            </vaadin-combo-box>-->
+                            <template>
+                                <table width="350px">
+                                    <tr>
+                                        <td width="10%">[[item.id]]</td>
+                                        <td width="90%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>-->
                         </div>
                     </div>
 
@@ -2219,38 +2226,42 @@
                 },
 
                 _deletePercurso: function (e) {
-                    var index = this.data.folhaDeHorasPercurso.indexOf(e.model.item);
-                    var percursoFH = this.$.folhaDeHorasNo.value;
-                    var percursoNoLinha = e.model.item.noLinha;
-                    var ajax_request = this.$.page_deletepercurso_ajax;
+                    if (this.data.terminada == true || this.data.estado == 1 || this.data.estado == 2) {
+                    }
+                    else {
+                        var index = this.data.folhaDeHorasPercurso.indexOf(e.model.item);
+                        var percursoFH = this.$.folhaDeHorasNo.value;
+                        var percursoNoLinha = e.model.item.noLinha;
+                        var ajax_request = this.$.page_deletepercurso_ajax;
 
-                    this.$.page_updatefolhadehoras_ajax.body = JSON.stringify(this.data);
-                    this.$.page_updatefolhadehoras_ajax.generateRequest();
+                        this.$.page_updatefolhadehoras_ajax.body = JSON.stringify(this.data);
+                        this.$.page_updatefolhadehoras_ajax.generateRequest();
 
-                    bootbox.confirm({
-                        message: "Tem a certeza que pretende remover o Percurso?",
-                        buttons: {
-                            confirm: {
-                                label: 'Sim',
-                                className: 'btn-success'
+                        bootbox.confirm({
+                            message: "Tem a certeza que pretende remover o Percurso?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
                             },
-                            cancel: {
-                                label: 'Não',
-                                className: 'btn-danger'
-                            }
-                        },
-                        callback: function (deletePercurso) {
-                            if (deletePercurso) {
-                                ajax_request.body = JSON.stringify({
-                                    noFolhaHoras: percursoFH,
-                                    noLinha: percursoNoLinha
-                                });
-                                ajax_request.generateRequest();
+                            callback: function (deletePercurso) {
+                                if (deletePercurso) {
+                                    ajax_request.body = JSON.stringify({
+                                        noFolhaHoras: percursoFH,
+                                        noLinha: percursoNoLinha
+                                    });
+                                    ajax_request.generateRequest();
 
-                                this.$.tabPercurso.clearCache();
+                                    this.$.tabPercurso.clearCache();
+                                }
                             }
-                        }
-                    });
+                        });
+                    }
                 },
 
                 //_updatePercurso: function () {
@@ -2260,20 +2271,26 @@
                 //},
 
                 _updateLinhaPercurso: function (e) {
+                    debugger;
                     var index = this.data.folhaDeHorasPercurso.indexOf(e.model.item);
 
-                    this.$.page_updatelinhapercurso_ajax.body = JSON.stringify({
-                        noFolhaHoras: this.$.folhaDeHorasNo.value,
-                        noLinha: e.model.item.noLinha,
-                        codOrigem: e.model.item.codOrigem,
-                        codDestino: e.model.item.codDestino,
-                        dataDespesa: e.model.item.dataDespesaTexto,
-                        observacao: e.model.item.observacao,
-                        distancia: e.model.item.distancia,
-                        custoUnitario: e.model.item.custoUnitario
-                    });
-                    this.$.page_updatelinhapercurso_ajax.generateRequest();
-                    this.$.tabAjuda.clearCache();
+                    if (this.data.terminada == true || this.data.estado == 1 || this.data.estado == 2) {
+                        this.$.page_databound_ajax.generateRequest();
+                    }
+                    else {
+                        this.$.page_updatelinhapercurso_ajax.body = JSON.stringify({
+                            noFolhaHoras: this.$.folhaDeHorasNo.value,
+                            noLinha: e.model.item.noLinha,
+                            codOrigem: e.model.item.codOrigem,
+                            codDestino: e.model.item.codDestino,
+                            dataDespesa: e.model.item.dataDespesaTexto,
+                            observacao: e.model.item.observacao,
+                            distancia: e.model.item.distancia,
+                            custoUnitario: e.model.item.custoUnitario
+                        });
+                        this.$.page_updatelinhapercurso_ajax.generateRequest();
+                        this.$.tabAjuda.clearCache();
+                    }
                 },
 
                 _PercursoDataValidar: function () {
@@ -2392,37 +2409,41 @@
                 },
 
                 _deleteAjuda: function (e) {
-                    var index = this.data.folhaDeHorasAjuda.indexOf(e.model.item);
-                    var ajudaFH = this.$.folhaDeHorasNo.value;
-                    var ajudaNoLinha = e.model.item.noLinha;
-                    var ajax_request = this.$.page_deleteajuda_ajax;
+                    if (this.data.terminada == true || this.data.estado == 1 || this.data.estado == 2) {
+                    }
+                    else {
+                        var index = this.data.folhaDeHorasAjuda.indexOf(e.model.item);
+                        var ajudaFH = this.$.folhaDeHorasNo.value;
+                        var ajudaNoLinha = e.model.item.noLinha;
+                        var ajax_request = this.$.page_deleteajuda_ajax;
 
-                    this.$.page_updatefolhadehoras_ajax.body = JSON.stringify(this.data);
-                    this.$.page_updatefolhadehoras_ajax.generateRequest();
+                        this.$.page_updatefolhadehoras_ajax.body = JSON.stringify(this.data);
+                        this.$.page_updatefolhadehoras_ajax.generateRequest();
 
-                    bootbox.confirm({
-                        message: "Tem a certeza que pretende remover a Ajuda?",
-                        buttons: {
-                            confirm: {
-                                label: 'Sim',
-                                className: 'btn-success'
+                        bootbox.confirm({
+                            message: "Tem a certeza que pretende remover a Ajuda?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
                             },
-                            cancel: {
-                                label: 'Não',
-                                className: 'btn-danger'
+                            callback: function (deleteAjuda) {
+                                if (deleteAjuda) {
+                                    ajax_request.body = JSON.stringify({
+                                        noFolhaHoras: ajudaFH,
+                                        noLinha: ajudaNoLinha
+                                    });
+                                    ajax_request.generateRequest();
+                                    this.$.tabAjuda.clearCache();
+                                }
                             }
-                        },
-                        callback: function (deleteAjuda) {
-                            if (deleteAjuda) {
-                                ajax_request.body = JSON.stringify({
-                                    noFolhaHoras: ajudaFH,
-                                    noLinha: ajudaNoLinha
-                                });
-                                ajax_request.generateRequest();
-                                this.$.tabAjuda.clearCache();
-                            }
-                        }
-                    });
+                        });
+                    }
                 },
 
                 //_updateAjuda: function () {
@@ -2432,23 +2453,28 @@
                 //},
 
                 _updateLinhaAjuda: function (e) {
-                    var index = this.data.folhaDeHorasAjuda.indexOf(e.model.item);
+                    if (this.data.terminada == true || this.data.estado == 1 || this.data.estado == 2) {
+                        this.$.page_databound_ajax.generateRequest();
+                    }
+                    else {
+                        var index = this.data.folhaDeHorasAjuda.indexOf(e.model.item);
 
-                    this.$.page_updatelinhaajuda_ajax.body = JSON.stringify({
-                        noFolhaHoras: this.$.folhaDeHorasNo.value,
-                        noLinha: e.model.item.noLinha,
-                        tipoCusto: e.model.item.tipoCusto,
-                        codTipoCusto: e.model.item.codTipoCusto,
-                        quantidade: e.model.item.quantidade,
-                        custoUnitario: e.model.item.custoUnitario,
-                        custoTotal: e.model.item.custoTotal,
-                        precoUnitario: e.model.item.precoUnitario,
-                        precoVenda: e.model.item.precoVenda,
-                        dataDespesa: e.model.item.dataDespesaTexto,
-                        observacao: e.model.item.observacao
-                    });
-                    this.$.page_updatelinhaajuda_ajax.generateRequest();
-                    this.$.tabAjuda.clearCache();
+                        this.$.page_updatelinhaajuda_ajax.body = JSON.stringify({
+                            noFolhaHoras: this.$.folhaDeHorasNo.value,
+                            noLinha: e.model.item.noLinha,
+                            tipoCusto: e.model.item.tipoCusto,
+                            codTipoCusto: e.model.item.codTipoCusto,
+                            quantidade: e.model.item.quantidade,
+                            custoUnitario: e.model.item.custoUnitario,
+                            custoTotal: e.model.item.custoTotal,
+                            precoUnitario: e.model.item.precoUnitario,
+                            precoVenda: e.model.item.precoVenda,
+                            dataDespesa: e.model.item.dataDespesaTexto,
+                            observacao: e.model.item.observacao
+                        });
+                        this.$.page_updatelinhaajuda_ajax.generateRequest();
+                        this.$.tabAjuda.clearCache();
+                    }
                 },
 
                 _AjudaDataValidar: function () {
@@ -2599,37 +2625,41 @@
                 },
 
                 _deleteMaoDeObra: function (e) {
-                    var index = this.data.folhaDeHorasMaoDeObra.indexOf(e.model.item);
-                    var maoDeObraFH = this.$.folhaDeHorasNo.value;
-                    var maoDeObraNoLinha = e.model.item.linhaNo;
-                    var ajax_request = this.$.page_deletemaodeobra_ajax;
+                    if (this.data.terminada == true || this.data.estado == 1 || this.data.estado == 2) {
+                    }
+                    else {
+                        var index = this.data.folhaDeHorasMaoDeObra.indexOf(e.model.item);
+                        var maoDeObraFH = this.$.folhaDeHorasNo.value;
+                        var maoDeObraNoLinha = e.model.item.linhaNo;
+                        var ajax_request = this.$.page_deletemaodeobra_ajax;
 
-                    this.$.page_updatefolhadehoras_ajax.body = JSON.stringify(this.data);
-                    this.$.page_updatefolhadehoras_ajax.generateRequest();
+                        this.$.page_updatefolhadehoras_ajax.body = JSON.stringify(this.data);
+                        this.$.page_updatefolhadehoras_ajax.generateRequest();
 
-                    bootbox.confirm({
-                        message: "Tem a certeza que pretende remover a Mão de Obra?",
-                        buttons: {
-                            confirm: {
-                                label: 'Sim',
-                                className: 'btn-success'
+                        bootbox.confirm({
+                            message: "Tem a certeza que pretende remover a Mão de Obra?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
                             },
-                            cancel: {
-                                label: 'Não',
-                                className: 'btn-danger'
+                            callback: function (deleteMaoDeObra) {
+                                if (deleteMaoDeObra) {
+                                    ajax_request.body = JSON.stringify({
+                                        folhaDeHorasNo: maoDeObraFH,
+                                        linhaNo: maoDeObraNoLinha
+                                    });
+                                    ajax_request.generateRequest();
+                                    this.$.tabMaoDeObra.clearCache();
+                                }
                             }
-                        },
-                        callback: function (deleteMaoDeObra) {
-                            if (deleteMaoDeObra) {
-                                ajax_request.body = JSON.stringify({
-                                    folhaDeHorasNo: maoDeObraFH,
-                                    linhaNo: maoDeObraNoLinha
-                                });
-                                ajax_request.generateRequest();
-                                this.$.tabMaoDeObra.clearCache();
-                            }
-                        }
-                    });
+                        });
+                    }
                 },
 
                 //_updateMaoDeObra: function () {
@@ -2639,30 +2669,35 @@
                 //},
 
                 _updateLinhaMaoDeObra: function (e) {
-                    var index = this.data.folhaDeHorasMaoDeObra.indexOf(e.model.item);
+                    if (this.data.terminada == true || this.data.estado == 1 || this.data.estado == 2) {
+                        this.$.page_databound_ajax.generateRequest();
+                    }
+                    else {
+                        var index = this.data.folhaDeHorasMaoDeObra.indexOf(e.model.item);
 
-                    this.$.page_updatelinhamaodeobra_ajax.body = JSON.stringify({
-                        folhaDeHorasNo: this.$.folhaDeHorasNo.value,
-                        linhaNo: e.model.item.linhaNo,
-                        date: e.model.item.dateTexto,
-                        projetoNo: e.model.item.projetoNo,
-                        empregadoNo: this.$.empregadoNo.value,
-                        codigoTipoTrabalho: e.model.item.codigoTipoTrabalho,
-                        horaInicio: e.model.item.horaInicioTexto,
-                        horarioAlmoco: e.model.item.horarioAlmoco,
-                        horaFim: e.model.item.horaFimTexto,
-                        horarioJantar: e.model.item.horarioJantar,
-                        codigoFamiliaRecurso: e.model.item.codigoFamiliaRecurso,
-                        noDeHoras: e.model.item.horasNoTexto,
-                        custoUnitárioDireto: e.model.item.custoUnitarioDireto,
-                        codigoRegiao: this.$.codigoRegiao.value,
-                        codigoAreaFuncional: this.$.codigoAreaFuncional.value,
-                        codigoCentroResponsabilidade: this.$.codigoCentroResponsabilidade.value,
-                        precoTotal: e.model.item.precoTotal,
-                        descricao: e.model.item.descricao
-                    });
-                    this.$.page_updatelinhamaodeobra_ajax.generateRequest();
-                    this.$.tabMaoDeObra.clearCache();
+                        this.$.page_updatelinhamaodeobra_ajax.body = JSON.stringify({
+                            folhaDeHorasNo: this.$.folhaDeHorasNo.value,
+                            linhaNo: e.model.item.linhaNo,
+                            date: e.model.item.dateTexto,
+                            projetoNo: e.model.item.projetoNo,
+                            empregadoNo: this.$.empregadoNo.value,
+                            codigoTipoTrabalho: e.model.item.codigoTipoTrabalho,
+                            horaInicio: e.model.item.horaInicioTexto,
+                            horarioAlmoco: e.model.item.horarioAlmoco,
+                            horaFim: e.model.item.horaFimTexto,
+                            horarioJantar: e.model.item.horarioJantar,
+                            codigoFamiliaRecurso: e.model.item.codigoFamiliaRecurso,
+                            noDeHoras: e.model.item.horasNoTexto,
+                            custoUnitárioDireto: e.model.item.custoUnitarioDireto,
+                            codigoRegiao: this.$.codigoRegiao.value,
+                            codigoAreaFuncional: this.$.codigoAreaFuncional.value,
+                            codigoCentroResponsabilidade: this.$.codigoCentroResponsabilidade.value,
+                            precoTotal: e.model.item.precoTotal,
+                            descricao: e.model.item.descricao
+                        });
+                        this.$.page_updatelinhamaodeobra_ajax.generateRequest();
+                        this.$.tabMaoDeObra.clearCache();
+                    }
                 },
 
                 _MaoDeObraData: function () {
@@ -2867,37 +2902,41 @@
                 },
 
                 _deletePresenca: function (e) {
-                    var index = this.data.folhaDeHorasPresenca.indexOf(e.model.item);
-                    var presencaFH = this.$.folhaDeHorasNo.value;
-                    var presencaData = e.model.item.dataTexto;
-                    var ajax_request = this.$.page_deletepresenca_ajax;
+                    if (this.data.terminada == true || this.data.estado == 1 || this.data.estado == 2) {
+                    }
+                    else {
+                        var index = this.data.folhaDeHorasPresenca.indexOf(e.model.item);
+                        var presencaFH = this.$.folhaDeHorasNo.value;
+                        var presencaData = e.model.item.dataTexto;
+                        var ajax_request = this.$.page_deletepresenca_ajax;
 
-                    this.$.page_updatefolhadehoras_ajax.body = JSON.stringify(this.data);
-                    this.$.page_updatefolhadehoras_ajax.generateRequest();
+                        this.$.page_updatefolhadehoras_ajax.body = JSON.stringify(this.data);
+                        this.$.page_updatefolhadehoras_ajax.generateRequest();
 
-                    bootbox.confirm({
-                        message: "Tem a certeza que pretende remover a Presença?",
-                        buttons: {
-                            confirm: {
-                                label: 'Sim',
-                                className: 'btn-success'
+                        bootbox.confirm({
+                            message: "Tem a certeza que pretende remover a Presença?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
                             },
-                            cancel: {
-                                label: 'Não',
-                                className: 'btn-danger'
+                            callback: function (deletePresenca) {
+                                if (deletePresenca) {
+                                    ajax_request.body = JSON.stringify({
+                                        folhaDeHorasNo: presencaFH,
+                                        data: presencaData
+                                    });
+                                    ajax_request.generateRequest();
+                                    this.$.tabPresenca.clearCache();
+                                }
                             }
-                        },
-                        callback: function (deletePresenca) {
-                            if (deletePresenca) {
-                                ajax_request.body = JSON.stringify({
-                                    folhaDeHorasNo: presencaFH,
-                                    data: presencaData
-                                });
-                                ajax_request.generateRequest();
-                                this.$.tabPresenca.clearCache();
-                            }
-                        }
-                    });
+                        });
+                    }
                 },
 
                 //_updatePresenca: function () {
@@ -2907,20 +2946,25 @@
                 //},
 
                 _updateLinhaPresenca: function (e) {
-                    var index = this.data.folhaDeHorasPresenca.indexOf(e.model.item);
+                    if (this.data.terminada == true || this.data.estado == 1 || this.data.estado == 2) {
+                        this.$.page_databound_ajax.generateRequest();
+                    }
+                    else {
+                        var index = this.data.folhaDeHorasPresenca.indexOf(e.model.item);
 
-                    this.$.page_updatelinhapresenca_ajax.body = JSON.stringify({
-                        folhaDeHorasNo: this.$.folhaDeHorasNo.value,
-                        data: e.model.item.dataTexto,
-                        noEmpregado: this.$.empregadoNo.value,
-                        hora1Entrada: e.model.item.hora1Entrada,
-                        hora1Saida: e.model.item.hora1Saida,
-                        hora2Entrada: e.model.item.hora2Entrada,
-                        hora2Saida: e.model.item.hora2Saida,
-                        observacoes: e.model.item.observacoes
-                    });
-                    this.$.page_updatelinhapresenca_ajax.generateRequest();
-                    this.$.tabPresenca.clearCache();
+                        this.$.page_updatelinhapresenca_ajax.body = JSON.stringify({
+                            folhaDeHorasNo: this.$.folhaDeHorasNo.value,
+                            data: e.model.item.dataTexto,
+                            noEmpregado: this.$.empregadoNo.value,
+                            hora1Entrada: e.model.item.hora1Entrada,
+                            hora1Saida: e.model.item.hora1Saida,
+                            hora2Entrada: e.model.item.hora2Entrada,
+                            hora2Saida: e.model.item.hora2Saida,
+                            observacoes: e.model.item.observacoes
+                        });
+                        this.$.page_updatelinhapresenca_ajax.generateRequest();
+                        this.$.tabPresenca.clearCache();
+                    }
                 },
 
                 _PresencaData: function () {
@@ -3941,25 +3985,31 @@
                     var _self = this;
 
                     //BOTÕES
-                    if (data.terminada == true) { //TERMINADA
-                        $(_self.$.btn_calcularAjudasCusto).addClass('disabled');
-                        $(_self.$.btn_updateFH1).addClass('disabled');
-                        $(_self.$.btn_updateFH2).addClass('disabled');
-                        $(_self.$.btn_createPercurso).addClass('disabled');
-                        $(_self.$.btn_createAjuda).addClass('disabled');
-                        if (_self.$.integradorEmRH.value != null) {
-                            $(_self.$.btn_integrarEmRH).addClass('disabled');
-                        }
-                        if (_self.$.integradorEmRHKM.value != null) {
-                            $(_self.$.btn_integrarEmRHKM).addClass('disabled');
-                        }
-                    };
+                    //if (data.terminada == true) { //TERMINADA
+                    //    $(_self.$.btn_calcularAjudasCusto).addClass('disabled');
+                    //    $(_self.$.btn_updateFH1).addClass('disabled');
+                    //    $(_self.$.btn_updateFH2).addClass('disabled');
+                    //    $(_self.$.btn_createPercurso).addClass('disabled');
+                    //    $(_self.$.btn_createAjuda).addClass('disabled');
+                    //    $(_self.$.btn_createMaoDeObra).addClass('disabled');
+                    //    $(_self.$.btn_createPresenca).addClass('disabled');
+                    //    if (_self.$.integradorEmRH.value != null) {
+                    //        $(_self.$.btn_integrarEmRH).addClass('disabled');
+                    //    }
+                    //    if (_self.$.integradorEmRHKM.value != null) {
+                    //        $(_self.$.btn_integrarEmRHKM).addClass('disabled');
+                    //    }
+                    //};
+
                     if (data.estado == 1) { //VALIDADO
                         $(_self.$.btn_calcularAjudasCusto).addClass('disabled');
                         $(_self.$.btn_validarFolhaDeHoras).addClass('disabled');
+                        $(_self.$.btn_updateFH1).addClass('disabled');
                         $(_self.$.btn_delete).addClass('disabled');
                         $(_self.$.btn_createPercurso).addClass('disabled');
                         $(_self.$.btn_createAjuda).addClass('disabled');
+                        $(_self.$.btn_createMaoDeObra).addClass('disabled');
+                        $(_self.$.btn_createPresenca).addClass('disabled');
                         if (_self.$.integradorEmRH.value != null) {
                             $(_self.$.btn_integrarEmRH).addClass('disabled');
                         }
@@ -3967,6 +4017,7 @@
                             $(_self.$.btn_integrarEmRHKM).addClass('disabled');
                         }
                     };
+
                     if (data.estado == 2) { //REGISTADO
                         $(_self.$.btn_calcularAjudasCusto).addClass('disabled');
                         $(_self.$.btn_validarFolhaDeHoras).addClass('disabled');
@@ -3989,24 +4040,24 @@
                     }
 
                     //CAMPOS
-                    if (data.terminada == true) { //TERMINADA
-                        _self.$.projetoNo.disabled = true;
-                        _self.$.empregadoNo.disabled = true;
-                        _self.$.dataPartidaTexto.disabled = true;
-                        _self.$.horaPartidaTexto.disabled = true;
-                        _self.$.dataChegadaTexto.disabled = true;
-                        _self.$.horaChegadaTexto.disabled = true;
-                        _self.$.tipoDeslocacao.disabled = true;
-                        _self.$.codigoTipoKms.disabled = true;
-                        _self.$.matricula.disabled = true;
-                        _self.$.deslocacaoForaConcelho.disabled = true;
-                        _self.$.terminada.disabled = true;
+                    //if (data.terminada == true) { //TERMINADA
+                    //    _self.$.projetoNo.disabled = true;
+                    //    _self.$.empregadoNo.disabled = true;
+                    //    _self.$.dataPartidaTexto.disabled = true;
+                    //    _self.$.horaPartidaTexto.disabled = true;
+                    //    _self.$.dataChegadaTexto.disabled = true;
+                    //    _self.$.horaChegadaTexto.disabled = true;
+                    //    _self.$.tipoDeslocacao.disabled = true;
+                    //    _self.$.codigoTipoKms.disabled = true;
+                    //    _self.$.matricula.disabled = true;
+                    //    _self.$.deslocacaoForaConcelho.disabled = true;
+                    //    _self.$.terminada.disabled = true;
 
-                        _self.$.codigoRegiao.disabled = true;
-                        _self.$.codigoAreaFuncional.disabled = true;
-                        _self.$.codigoCentroResponsabilidade.disabled = true;
-                        _self.$.observacoes.disabled = true;
-                    };
+                    //    _self.$.codigoRegiao.disabled = true;
+                    //    _self.$.codigoAreaFuncional.disabled = true;
+                    //    _self.$.codigoCentroResponsabilidade.disabled = true;
+                    //    _self.$.observacoes.disabled = true;
+                    //};
                     if (data.estado == 1) { //VALIDADO
                         _self.$.projetoNo.disabled = true;
                         _self.$.empregadoNo.disabled = true;
@@ -4100,20 +4151,20 @@
                     };
 
                     //TABELAS
-                    if (data.terminada == true) { //TERMINADA
-                        $(_self.$.tabPercurso).addClass('disabled');
-                        $(_self.$.tabAjuda).addClass('disabled');
-                    }
-                    if (data.estado == 1) { //VALIDADO
-                        $(_self.$.tabPercurso).addClass('disabled');
-                        $(_self.$.tabAjuda).addClass('disabled');
-                    };
-                    if (data.estado == 2) { //REGISTADO
-                        $(_self.$.tabPercurso).addClass('disabled');
-                        $(_self.$.tabAjuda).addClass('disabled');
-                        $(_self.$.tabMaoDeObra).addClass('disabled');
-                        $(_self.$.tabPresenca).addClass('disabled');
-                    };
+                    //if (data.terminada == true) { //TERMINADA
+                    //    $(_self.$.tabPercurso).addClass('disabled');
+                    //    $(_self.$.tabAjuda).addClass('disabled');
+                    //}
+                    //if (data.estado == 1) { //VALIDADO
+                    //    $(_self.$.tabPercurso).addClass('disabled');
+                    //    $(_self.$.tabAjuda).addClass('disabled');
+                    //};
+                    //if (data.estado == 2) { //REGISTADO
+                    //    $(_self.$.tabPercurso).addClass('disabled');
+                    //    $(_self.$.tabAjuda).addClass('disabled');
+                    //    $(_self.$.tabMaoDeObra).addClass('disabled');
+                    //    $(_self.$.tabPresenca).addClass('disabled');
+                    //};
                 },
 
                 _printFH: function () {

@@ -220,7 +220,8 @@ namespace Hydra.Such.Data.NAV
                     Vendor_Mail = purchFromSupplier.Vendor_Mail,
                     N_Consulta = Consulta,
                     Observacoes = Observacoes,
-                    Purchaser_Code = purchFromSupplier.Purchaser_Code
+                    Purchaser_Code = purchFromSupplier.Purchaser_Code,
+                    No_Consulta_Mercado = Consulta,
                 }
             };
 

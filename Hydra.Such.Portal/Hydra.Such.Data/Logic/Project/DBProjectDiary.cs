@@ -4,6 +4,7 @@ using System.Text;
 using System.Linq;
 using Hydra.Such.Data.Database;
 using Hydra.Such.Data.ViewModel;
+using static Hydra.Such.Data.Enumerations;
 
 namespace Hydra.Such.Data.Logic.Project
 {
@@ -46,7 +47,7 @@ namespace Hydra.Such.Data.Logic.Project
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.DiárioDeProjeto.Where(x => x.Utilizador == user && x.Registado != true && x.NºProjetoNavigation.Estado != 4 && x.NºProjetoNavigation.Estado != 5 && x.PréRegisto == false).ToList();
+                    return ctx.DiárioDeProjeto.Where(x => x.Utilizador == user && x.Registado != true && x.NºProjetoNavigation.Estado != EstadoProjecto.Terminado && x.PréRegisto == false).ToList();
                 }
             }
             catch (Exception ex)
@@ -60,7 +61,7 @@ namespace Hydra.Such.Data.Logic.Project
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.DiárioDeProjeto.Where(x => x.Utilizador == user && x.Registado != true && x.NºProjetoNavigation.Estado != 4 && x.NºProjetoNavigation.Estado != 5 && x.PréRegisto == true).ToList();
+                    return ctx.DiárioDeProjeto.Where(x => x.Utilizador == user && x.Registado != true && x.NºProjetoNavigation.Estado != EstadoProjecto.Terminado && x.PréRegisto == true).ToList();
                 }
             }
             catch (Exception ex)
@@ -380,7 +381,26 @@ namespace Hydra.Such.Data.Logic.Project
                 ExternalGuideNo = x.NºGuiaExterna,
                 ConsumptionDate = !x.DataConsumo.HasValue ? "" : x.DataConsumo.Value.ToString("yyyy-MM-dd"),
                 InvoiceToClientNo = x.FaturaANºCliente,
-                ServiceClientCode = x.CódServiçoCliente
+                ServiceClientCode = x.CódServiçoCliente,
+
+                AdjustedPrice = x.AcertoDePreços,
+                ResidueFinalDestinyCode = x.CódDestinoFinalResíduos,
+                AutorizatedInvoiceData = x.DataAutorizaçãoFaturação.HasValue ? "" : x.DataAutorizaçãoFaturação.Value.ToString("yyyy-MM-dd"),
+                AdjustedDocumentData = x.DataDocumentoCorrigido.HasValue ? "" : x.DataDocumentoCorrigido.Value.ToString("yyyy-MM-dd"),
+                CreateDate = x.DataHoraCriação,
+                AdjustedDocument = x.DocumentoCorrigido,
+                OriginalDocument = x.DocumentoOriginal,
+                AutorizatedInvoice = x.FaturaçãoAutorizada,
+                Driver = x.Motorista,
+                DocumentNo = x.NºDocumento,
+                FolhaHoras = x.NºFolhaHoras,
+                EmployeeNo = x.NºFuncionário,
+                RequestLineNo = x.NºLinhaRequisição,
+                RequestNo = x.NºRequisição,
+                QuantityReturned = (decimal)x.QuantidadeDevolvida,
+                InternalRequest = x.RequisiçãoInterna,
+                ResourceType = x.TipoRecurso,
+                CreateUser = x.UtilizadorCriação
             };
         }
 
@@ -431,6 +451,25 @@ namespace Hydra.Such.Data.Logic.Project
                 DataHoraModificação = x.UpdateDate,
                 UtilizadorModificação = x.UpdateUser,
                 PréRegisto = x.PreRegistered,
+
+                AcertoDePreços = x.AdjustedPrice,
+                CódDestinoFinalResíduos = x.ResidueFinalDestinyCode,
+                DataAutorizaçãoFaturação = x.AutorizatedInvoiceData == "" || x.AutorizatedInvoiceData == null ? (DateTime?)null : DateTime.Parse(x.AutorizatedInvoiceData),
+                DataDocumentoCorrigido = x.AdjustedDocumentData == "" || x.AdjustedDocumentData == null ? (DateTime?)null : DateTime.Parse(x.AdjustedDocumentData),
+                DataHoraCriação = x.CreateDate,
+                DocumentoCorrigido = x.AdjustedDocument,
+                DocumentoOriginal = x.OriginalDocument,
+                FaturaçãoAutorizada = x.AutorizatedInvoice,
+                Motorista = x.Driver,
+                NºDocumento = x.DocumentNo,
+                NºFolhaHoras = x.FolhaHoras,
+                NºFuncionário = x.EmployeeNo,
+                NºLinhaRequisição = x.RequestLineNo,
+                NºRequisição = x.RequestNo,
+                QuantidadeDevolvida = x.QuantityReturned,
+                RequisiçãoInterna = x.InternalRequest,
+                TipoRecurso = x.ResourceType,
+                UtilizadorCriação = x.CreateUser
             };
         }
 

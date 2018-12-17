@@ -23,6 +23,7 @@
         <iron-ajax method="post" handle-as="json" content-type="application/json" last-response="{{contact}}" id="create_contact_request" url="/Contactos/CreateContact" on-response="_onContactResponse"></iron-ajax>
         <iron-ajax method="post" handle-as="json" content-type="application/json" last-response="{{numValidationResponse}}" id="numValidation_contact_request" url="/Contactos/ValidateNumeration" on-response="_onNumValidationResponse"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetAllRegionCode" last-response="{{CBRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetAllClientsComboGrid" last-response="{{CBClients}}" auto method="post" handle-as="json" content-type="application/json" id="clients_ajax"></iron-ajax>
 
         @*<template is="dom-if" if="{{ !_isCreate }}">
             <div class="subMenu">
@@ -51,8 +52,22 @@
                 <vaadin-text-field id="contactName" name="contactName" label="Nome" value="{{contact.name}}" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
             </div>
             <div class="col-lg-3">
+                <div class="spacer10"></div>
+                <such-selectbox id="clientNo" value="{{contact.clientNo}}" label="Nº Cliente"
+                                items="[[CBClients]]"
+                                text-path="name"
+                                value-path="no_"
+                                fields='[{"field":"no_", "name":"Cód. Cliente"}, {"field":"name", "name":"Nome"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Cód. Postal"}, {"field":"city", "name":"Cidade"}, {"field":"country_RegionCode", "name":"Região"}, {"field":"country_RegionCode", "name":"Região"}]'                               
+                                disabled="{{ !_permissions.update }}">
+                </such-selectbox>
+
+            </div>
+            <div class="col-lg-3">
                 <vaadin-text-field id="address" name="address" label="Endereço" value="{{contact.address}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
             </div>
+        </div>
+
+        <div class="row">
             <div class="col-lg-3">
                 <vaadin-text-field id="zipcode" name="zipcode" label="Código Postal" value="{{contact.zipCode}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
             </div>
@@ -60,6 +75,7 @@
                 <vaadin-text-field id="city" name="city" label="Cidade" value="{{contact.city}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
             </div>
             <div class="col-lg-3">
+                <div class="spacer10"></div>
                 <such-selectbox id="codigoRegiao" name="codigoRegiao" value="{{contact.regiao}}" label="Região" disabled="{{ !_permissions.update }}"
                                 items="[[CBRegions]]"
                                 text-path="value"
@@ -70,6 +86,9 @@
             <div class="col-lg-3">
                 <vaadin-text-field id="phone" name="phone" label="Telefone" value="{{contact.phone}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
             </div>
+        </div>
+
+        <div class="row">
             <div class="col-lg-3">
                 <vaadin-text-field id="email" name="email" label="Email" value="{{contact.email}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
             </div>
@@ -82,6 +101,9 @@
             <div class="col-lg-3">
                 <vaadin-text-field id="PhoneContact" name="PhoneContact" label="Telefone Contato" value="{{contact.phoneContact}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
             </div>
+        </div>
+
+        <div class="row">
             <div class="col-lg-3">
                 <vaadin-text-field id="ContactFunction" name="ContactFunction" label="Função Contato" value="{{contact.contactFunction}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
             </div>
@@ -93,6 +115,7 @@
             </div>
 
             <div class="col-md-6">
+                <div class="spacer10"></div>
                 <such-textarea rows="5" value="{{contact.notes}}" id="notes" name="notes" label="Notas" disabled="{{ !_permissions.update }}"> </such-textarea>
             </div>
         </div>

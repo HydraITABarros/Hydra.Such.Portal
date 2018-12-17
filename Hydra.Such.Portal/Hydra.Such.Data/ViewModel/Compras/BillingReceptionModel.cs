@@ -47,6 +47,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         }
         public string DataRececao { get; set; }
         public string CodFornecedor { get; set; }
+        public string NomeFornecedor { get; set; }
         public string NumDocFornecedor { get; set; }
         public string DataDocFornecedor { get; set; }
         public string NumEncomenda { get; set; }

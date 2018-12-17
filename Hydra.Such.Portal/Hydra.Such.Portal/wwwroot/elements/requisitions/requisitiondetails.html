@@ -172,15 +172,26 @@
                    last-response="{{Requisition}}"
                    method="post" handle-as="json" content-type="application/json"
                    on-response="_reqDataSourceResponse"></iron-ajax>
+
         <iron-ajax url="/GestaoRequisicoes/DeleteRequisitionLine"
                    id="deleteReqLine_ajax"
                    last-response="{{DelReqLineResponse}}"
                    on-response="_deleteReqLineResponse"
                    method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/GestaoRequisicoes/CreateRequisitionLine"
                    id="createReqLine_ajax"
                    last-response="{{AddReqLineResponse}}"
                    on-response="_createReqLineResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/GestaoRequisicoes/UpdateLinhaRequisicao"
+                   last-response="{{updateLinhaRequisicaoResponse}}"
+                   method="post"
+                   handle-as="json"
+                   id="Lines_UpdateLinhaRequisicao_ajax"
+                   on-response="_UpdateLinhaRequisicao_ResponseProcessor"
+                   content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/GestaoRequisicoes/ValidacaoMercadoLocal"
                    last-response="{{Requisition}}"
                    id="validateLocalMarket_datasource"
@@ -305,6 +316,13 @@
                    on-response="_TodasLinhasNotaEncomendaResponseProcessor"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/GestaoRequisicoes/TodasEncomendasPorRequisicao"
+                   last-response="{{Encomendas}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_TodasEncomendasPorProduto"
+                   content-type="application/json"></iron-ajax>
+
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" id="btnGoBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
 
@@ -326,6 +344,8 @@
             <paper-button class="tablinks" id="btnPrint" on-tap="_printRequisition"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Imprimir</paper-button>
             <paper-button class="tablinks" id="btnStatOfPlay" on-tap="_redirectToStatOfPlay" hidden="{{ !Requisition.showPontoSituacao }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Ponto situação</paper-button>
             <paper-button class="tablinks" id="btnShowChangeLog" on-tap="_showChangeLog"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Workflow</paper-button>
+            <paper-button class="tablinks" id="btnShowEncomendas" on-tap="_showEncomendas"><i class="fa fa-first-order" aria-hidden="true"></i>&nbsp; Encomendas</paper-button>
+
         </div>
 
         <div class="row break_frm">
@@ -458,17 +478,35 @@
                                     </div>
 
                                     <div class="row break_clear">
-                                        <div class="col-sm-6 ">
+                                        <div class="col-sm-6">
                                             <such-textarea rows="5" value="{{Requisition.comments}}" id="Notes" name="Notes" label="Observações" disabled="{{ !_permissions.update }}"> </such-textarea>
                                         </div>
-                                        <div class="col-sm-3 ">
-                                            <vaadin-date-picker label="Data Receção" id="dpReceptionDate" name="dpReceptionDate" value="{{Requisition.receivedDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
-                                        </div>
-                                        <div class="col-sm-3">
-                                            <vaadin-text-field id="txtStatus" name="txtStatus" label="Estado" value="[[stateDescription]]" disabled></vaadin-text-field>
-                                        </div>
-                                        <div class="col-sm-3 ">
-                                            <vaadin-text-field id="EmployeeNo" name="EmployeeNo" label="Nº Funcionário" value="{{Requisition.employeeNo}}" hidden disabled></vaadin-text-field>
+
+                                        <div class="col-sm-6">
+                                            <div class="col-sm-6">
+                                                <vaadin-date-picker label="Data Receção" id="dpReceptionDate" name="dpReceptionDate" value="{{Requisition.receivedDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                            </div>
+
+                                            <div class="col-sm-6">
+                                                <vaadin-text-field id="txtStatus" name="txtStatus" label="Estado" value="[[stateDescription]]" disabled></vaadin-text-field>
+                                            </div>
+
+                                            <div class="col-sm-6">
+                                                <vaadin-combo-box items="[[Locations]]" id="CBLocations" item-value-path="id" item-label-path="value" value="{{Requisition.localCode}}" label="Localização">
+                                                    <template>
+                                                        <table width="350px">
+                                                            <tr>
+                                                                <td width="30%">[[item.id]]</td>
+                                                                <td width="70%"><b>[[item.value]]</b></td>
+                                                            </tr>
+                                                        </table>
+                                                    </template>
+                                                </vaadin-combo-box>
+                                            </div>
+
+                                            <div class="col-sm-6">
+                                                <vaadin-text-field id="EmployeeNo" name="EmployeeNo" label="Nº Funcionário" value="{{Requisition.employeeNo}}" hidden disabled></vaadin-text-field>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -935,7 +973,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-combo-box items="[[Locations]]" id="CBGridLocations" item-value-path="id" item-label-path="value" value="{{item.localCode}}" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLines">
+                                            <vaadin-combo-box items="[[Locations]]" id="CBGridLocations" item-value-path="id" item-label-path="value" value="{{item.localCode}}" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLinesNew">
                                                 <template>
                                                     <table width="200px">
                                                         <tr>
@@ -999,7 +1037,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.description2}}" id="_CLGridDescription2" name="_CLGridDescription2" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLines" maxlength="50"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{item.description2}}" id="_CLGridDescription2" name="_CLGridDescription2" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLinesNew" maxlength="50"> </vaadin-text-field>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.description2}}
@@ -1014,7 +1052,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-combo-box items="[[UnitsOfMmeasure]]" id="_CLGridUnitMeasureCode" name="_CLGridUnitMeasureCode" item-value-path="id" item-label-path="id" value="{{item.unitMeasureCode}}" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLines">
+                                            <vaadin-combo-box items="[[UnitsOfMmeasure]]" id="_CLGridUnitMeasureCode" name="_CLGridUnitMeasureCode" item-value-path="id" item-label-path="id" value="{{item.unitMeasureCode}}" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLinesNew">
                                                 <template>
                                                     <table width="200px">
                                                         <tr>
@@ -1038,7 +1076,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.unitCost}}" id="_CLGridUnitCost" name="_CLGridUnitCost" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals" on-blur="_updateRequisitionLines"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{item.unitCost}}" id="_CLGridUnitCost" name="_CLGridUnitCost" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals" on-blur="_updateRequisitionLinesNew"> </vaadin-text-field>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.unitCost}}
@@ -1053,7 +1091,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.quantityToRequire}}" id="_CLGridQuantityToRequire" name="_CLGridQuantityToRequire" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals" on-blur="_updateRequisitionLines"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{item.quantityToRequire}}" id="_CLGridQuantityToRequire" name="_CLGridQuantityToRequire" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals" on-blur="_updateRequisitionLinesNew"> </vaadin-text-field>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.quantityToRequire}}
@@ -1068,7 +1106,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.quantityRequired}}" id="_CLGridQuantityRequired" name="_CLGridQuantityRequired" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals" on-blur="_updateRequisitionLines"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{item.quantityRequired}}" id="_CLGridQuantityRequired" name="_CLGridQuantityRequired" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals" on-blur="_updateRequisitionLinesNew"> </vaadin-text-field>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.quantityRequired}}
@@ -1083,7 +1121,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.quantityToProvide}}" id="_CLGridQuantityToProvide" name="_CLGridQuantityToProvide" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals" on-blur="_updateRequisitionLines"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{item.quantityToProvide}}" id="_CLGridQuantityToProvide" name="_CLGridQuantityToProvide" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals" on-blur="_updateRequisitionLinesNew"> </vaadin-text-field>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.quantityToProvide}}
@@ -1098,7 +1136,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.quantityAvailable}}" id="_CLGridQuantityAvailable" name="_CLGridQuantityAvailable" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals" on-blur="_updateRequisitionLines"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{item.quantityAvailable}}" id="_CLGridQuantityAvailable" name="_CLGridQuantityAvailable" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals" on-blur="_updateRequisitionLinesNew"> </vaadin-text-field>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.quantityAvailable}}
@@ -1113,7 +1151,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.quantityReceivable}}" id="_CLGridQuantityReceivable" name="_CLGridQuantityReceivable" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals" on-blur="_updateRequisitionLines"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{item.quantityReceivable}}" id="_CLGridQuantityReceivable" name="_CLGridQuantityReceivable" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals" on-blur="_updateRequisitionLinesNew"> </vaadin-text-field>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.quantityReceivable}}
@@ -1128,7 +1166,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.quantityReceived}}" id="_CLGridQuantityReceived" name="_CLGridQuantityReceived" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals" on-blur="_updateRequisitionLines"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{item.quantityReceived}}" id="_CLGridQuantityReceived" name="_CLGridQuantityReceived" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals" on-blur="_updateRequisitionLinesNew"> </vaadin-text-field>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.quantityReceived}}
@@ -1158,7 +1196,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.unitCostsould}}" id="_CLGridUnitPriceSale" name="_CLGridUnitPriceSale" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals" on-blur="_updateRequisitionLines"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{item.unitCostsould}}" id="_CLGridUnitPriceSale" name="_CLGridUnitPriceSale" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals" on-blur="_updateRequisitionLinesNew"> </vaadin-text-field>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.unitCostsould}}
@@ -1173,7 +1211,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.budgetValue}}" id="_CLGridBudgetValue" name="_CLGridBudgetValue" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals" on-blur="_updateRequisitionLines"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{item.budgetValue}}" id="_CLGridBudgetValue" name="_CLGridBudgetValue" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals" on-blur="_updateRequisitionLinesNew"> </vaadin-text-field>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.budgetValue}}
@@ -1188,7 +1226,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.queryCreatedMarketNo}}" id="_CLGridCreatedMarketNo" name="_CLGridCreatedMarketNo" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLines"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{item.queryCreatedMarketNo}}" id="_CLGridCreatedMarketNo" name="_CLGridCreatedMarketNo" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLinesNew"> </vaadin-text-field>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.queryCreatedMarketNo}}
@@ -1200,11 +1238,11 @@
                                     <template class="header">
                                         <p class="alignCenter">Criar Consulta Mercado</p>
                                         <!--<vaadin-grid-filter path="createMarketSearchStringValue">
-                                    </vaadin-grid-filter>-->
+                    </vaadin-grid-filter>-->
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-checkbox id="chkCreateMarketSearch" checked="{{item.createMarketSearch}}" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLines"></vaadin-checkbox>
+                                            <vaadin-checkbox id="chkCreateMarketSearch" checked="{{item.createMarketSearch}}" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLinesNew"></vaadin-checkbox>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             <vaadin-checkbox checked="{{item.createMarketSearch}}" disabled></vaadin-checkbox>
@@ -1219,7 +1257,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-checkbox id="chkCriarNotaEncomenda" checked="{{item.criarNotaEncomenda}}" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLines"></vaadin-checkbox>
+                                            <vaadin-checkbox id="chkCriarNotaEncomenda" checked="{{item.criarNotaEncomenda}}" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLinesNew"></vaadin-checkbox>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             <vaadin-checkbox checked="{{item.criarNotaEncomenda}}" disabled></vaadin-checkbox>
@@ -1236,7 +1274,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-checkbox id="chkLocalMarket" checked="{{item.localMarket}}" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLines"></vaadin-checkbox>
+                                            <vaadin-checkbox id="chkLocalMarket" checked="{{item.localMarket}}" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLinesNew"></vaadin-checkbox>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             <vaadin-checkbox checked="{{item.localMarket}}" disabled></vaadin-checkbox>
@@ -1254,7 +1292,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-checkbox id="chkSubmitPrePurchase" checked="{{item.submitPrePurchase}}" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLines"></vaadin-checkbox>
+                                            <vaadin-checkbox id="chkSubmitPrePurchase" checked="{{item.submitPrePurchase}}" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLinesNew"></vaadin-checkbox>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             <vaadin-checkbox checked="{{item.submitPrePurchase}}" disabled></vaadin-checkbox>
@@ -1272,7 +1310,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-checkbox id="chkSendPrePurchase" checked="{{item.sendPrePurchase}}" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLines"></vaadin-checkbox>
+                                            <vaadin-checkbox id="chkSendPrePurchase" checked="{{item.sendPrePurchase}}" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLinesNew"></vaadin-checkbox>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             <vaadin-checkbox checked="{{item.sendPrePurchase}}" disabled></vaadin-checkbox>
@@ -1288,7 +1326,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.createdOrderNo}}" id="_CLGridcreatedOrderNo" name="_CLGridcreatedOrderNo" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLines"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{item.createdOrderNo}}" id="_CLGridcreatedOrderNo" name="_CLGridcreatedOrderNo" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLinesNew"> </vaadin-text-field>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.createdOrderNo}}
@@ -1303,7 +1341,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.maintenanceOrderLineNo}}" id="_CLGridMaintenanceOrderLineNo" name="_CLGridMaintenanceOrderLineNo" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLines"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{item.maintenanceOrderLineNo}}" id="_CLGridMaintenanceOrderLineNo" name="_CLGridMaintenanceOrderLineNo" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLinesNew"> </vaadin-text-field>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.maintenanceOrderLineNo}}
@@ -1318,7 +1356,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-combo-box items="[[CBVehicle]]" id="_CLGridVehicle" name="_CLGridVehicle" item-value-path="id" item-label-path="id" value="{{item.vehicle}}" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLines">
+                                            <vaadin-combo-box items="[[CBVehicle]]" id="_CLGridVehicle" name="_CLGridVehicle" item-value-path="id" item-label-path="id" value="{{item.vehicle}}" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLinesNew">
                                                 <template>
                                                     <paper-icon-item>
                                                         <paper-item-body two-line>
@@ -1341,15 +1379,15 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <!--<vaadin-combo-box items="[[Suppliers]]" id="_CLGridSupplierNo" name="_CLGridSupplierNo" item-value-path="no_" item-label-path="name" value="{{item.supplierNo}}" on-change="_onSupplierInGridChanged" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLines">
-                                            <template>
-                                                <paper-icon-item>
-                                                    <paper-item-body two-line>
-                                                        <div>[[item.name]]</div>
-                                                    </paper-item-body>
-                                                </paper-icon-item>
-                                            </template>
-                                        </vaadin-combo-box>-->
+                                            <!--<vaadin-combo-box items="[[Suppliers]]" id="_CLGridSupplierNo" name="_CLGridSupplierNo" item-value-path="no_" item-label-path="name" value="{{item.supplierNo}}" on-change="_onSupplierInGridChanged" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLinesNew">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.name]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>-->
                                             <such-selectbox id="_CLGridSupplierNo"
                                                             items="[[Suppliers]]"
                                                             value="{{item.supplierNo}}"
@@ -1373,7 +1411,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-combo-box items="[[Projects]]" id="_CLGridProjectNo" name="_CLGridProjectNo" item-value-path="no" item-label-path="no" value="{{item.projectNo}}" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLines">
+                                            <vaadin-combo-box items="[[Projects]]" id="_CLGridProjectNo" name="_CLGridProjectNo" item-value-path="no" item-label-path="no" value="{{item.projectNo}}" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLinesNew">
                                                 <template>
                                                     <paper-icon-item>
                                                         <paper-item-body two-line>
@@ -1468,7 +1506,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-combo-box items="[[GridPurchaseHeaders]]" id="_CBGridPurchaseHeader" item-value-path="id" item-label-path="id" value="{{item.openOrderNo}}" on-change="_PopulatePurchaseLinesGrid" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLines">
+                                            <vaadin-combo-box items="[[GridPurchaseHeaders]]" id="_CBGridPurchaseHeader" item-value-path="id" item-label-path="id" value="{{item.openOrderNo}}" on-change="_PopulatePurchaseLinesGrid" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLinesNew">
                                                 <template>
                                                     <table width="200px">
                                                         <tr>
@@ -1491,7 +1529,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-combo-box items="[[CBPurchaseLineGrid]]" id="_CBGridPurchaseLine" item-value-path="id" item-label-path="value" value="{{item.openOrderLineNo}}" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLines">
+                                            <vaadin-combo-box items="[[CBPurchaseLineGrid]]" id="_CBGridPurchaseLine" item-value-path="id" item-label-path="value" value="{{item.openOrderLineNo}}" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLinesNew">
                                                 <template>
                                                     <table width="200px">
                                                         <tr>
@@ -1515,7 +1553,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-combo-box items="[[VATBusinessPostingGroups]]" id="cmbVATBusinessPostingGroups" item-value-path="id" item-label-path="value" value="{{item.vatBusinessPostingGroup}}" disabled="{{ _permissionsCreate }}" on-blur="_updateRequisitionLines">
+                                            <vaadin-combo-box items="[[VATBusinessPostingGroups]]" id="cmbVATBusinessPostingGroups" item-value-path="id" item-label-path="value" value="{{item.vatBusinessPostingGroup}}" disabled="{{ _permissionsCreate }}" on-blur="_updateRequisitionLinesNew">
                                                 <template>
                                                     <table width="220px">
                                                         <tr>
@@ -1539,7 +1577,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-combo-box items="[[VATProductsPostingGroups]]" id="cmbVATProductsPostingGroups" item-value-path="id" item-label-path="value" value="{{item.vatProductPostingGroup}}" disabled="{{ _permissionsCreate }}" on-blur="_updateRequisitionLines">
+                                            <vaadin-combo-box items="[[VATProductsPostingGroups]]" id="cmbVATProductsPostingGroups" item-value-path="id" item-label-path="value" value="{{item.vatProductPostingGroup}}" disabled="{{ _permissionsCreate }}" on-blur="_updateRequisitionLinesNew">
                                                 <template>
                                                     <table width="220px">
                                                         <tr>
@@ -1563,7 +1601,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field id="cmbDiscountPercentage" on-value-changed="_ConvertDecimals" value="{{item.discountPercentage}}" pattern="^-?[0-9]+([\.][0-9]+)?" required error-message="Valor inválido" on-blur="_updateRequisitionLines"></vaadin-text-field>
+                                            <vaadin-text-field id="cmbDiscountPercentage" on-value-changed="_ConvertDecimals" value="{{item.discountPercentage}}" pattern="^-?[0-9]+([\.][0-9]+)?" required error-message="Valor inválido" on-blur="_updateRequisitionLinesNew"></vaadin-text-field>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             [[ item.discountPercentage ]]
@@ -1592,10 +1630,10 @@
                         </div>
 
                         <!--<div class="marginSpace">
-                        <template is="dom-if" if="{{ _permissions.update }}">
-                            <paper-button raised id="btnSaveLine" class="btnEdit" on-tap="_updateRequisitionLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                        </template>
-                    </div>-->
+        <template is="dom-if" if="{{ _permissions.update }}">
+            <paper-button raised id="btnSaveLine" class="btnEdit" on-tap="_updateRequisitionLinesNew"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+        </template>
+    </div>-->
                     </div>
                 </iron-form>
             </div>
@@ -1664,6 +1702,41 @@
             </vaadin-grid>
             <div class="buttons">
                 <paper-button class="btnRemove" id="btnCloseChangeLogDlg" on-tap="_closeChangeLogDlg"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
+            </div>
+        </paper-dialog>
+
+        <paper-dialog id="dlgEncomendas" class="dialgoBox" modal>
+            <vaadin-grid id="grdChangeLog" aria-label="ChangeLog" items="[[Encomendas]]" class="grid">
+                <vaadin-grid-column width="160px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="no">Nº Encomenda</vaadin-grid-sorter>
+                    </template>
+                    <template>
+                        {{item.no}}
+                    </template>
+                </vaadin-grid-column>
+
+                <vaadin-grid-column width="160px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="payToVendorNo">Fornecedor</vaadin-grid-sorter>
+                    </template>
+                    <template>
+                        {{item.payToVendorNo}}
+                    </template>
+                </vaadin-grid-column>
+
+                <vaadin-grid-column width="160px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="orderDate">Data Encomenda</vaadin-grid-sorter>
+                    </template>
+                    <template>
+                        {{item.orderDate}}
+                    </template>
+                </vaadin-grid-column>
+            </vaadin-grid>
+
+            <div class="buttons">
+                <paper-button class="btnRemove" id="btnEncomendasDlg" on-tap="_closeEncomendasDlg"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
             </div>
         </paper-dialog>
     </template>
@@ -1812,7 +1885,9 @@
                             //if (this.Requisition.orderNo)
                             //    this._openToastError("Já foi criada uma encomenda para esta requisição.");
                             //else
-                                this._createPurchaseOrder();
+                                //this._createPurchaseOrder();
+
+                            this._createPurchaseOrder();
                             break;
                         case 3://"Criar Guia Transporte"
                             this._createTransferShipment();
@@ -2019,6 +2094,110 @@
                 },
                 _updateRequisitionLinesQtRequerer: function () {
                     this._sendReqRequest("/GestaoRequisicoes/UpdateRequisitionLinesQtRequerer", this.Requisition);
+                },
+
+                _updateRequisitionLinesNew: function (e) {
+                    debugger;
+                    var index = this.Requisition.lines.indexOf(e.model.item);
+
+                    if (e.model.item.projectNo != "" & e.model.item.projectNo != null) {
+                        if (e.model.item.code != "" & e.model.item.code != null) {
+                            if (e.model.item.localCode != "" & e.model.item.localCode != null) {
+                                if (e.model.item.quantityToRequire > 0) {
+                                    this.$.Lines_UpdateLinhaRequisicao_ajax.body = JSON.stringify({
+                                        requestNo: e.model.item.requestNo,
+                                        lineNo: e.model.item.lineNo,
+                                        type: e.model.item.type,
+                                        code: e.model.item.code,
+                                        description: e.model.item.description,
+                                        description2: e.model.item.description2,
+                                        unitMeasureCode: e.model.item.unitMeasureCode,
+                                        localCode: e.model.item.localCode,
+                                        localMarket: e.model.item.localMarket,
+                                        quantityToRequire: e.model.item.quantityToRequire,
+                                        quantityRequired: e.model.item.quantityRequired,
+                                        quantityToProvide: e.model.item.quantityToProvide,
+                                        quantityAvailable: e.model.item.quantityAvailable,
+                                        quantityReceivable: e.model.item.quantityReceivable,
+                                        quantityReceived: e.model.item.quantityReceived,
+                                        quantityPending: e.model.item.quantityPending,
+                                        quantidadeInicial: e.model.item.quantidadeInicial,
+                                        unitCost: e.model.item.unitCost,
+                                        unitCostWithIVA: e.model.item.unitCostWithIVA,
+                                        expectedReceivingDate: e.model.item.expectedReceivingDate,
+                                        billable: e.model.item.billable,
+                                        projectNo: e.model.item.projectNo,
+                                        regionCode: e.model.item.regionCode,
+                                        functionalAreaCode: e.model.item.functionalAreaCode,
+                                        centerResponsibilityCode: e.model.item.centerResponsibilityCode,
+                                        functionalNo: e.model.item.functionalNo,
+                                        vehicle: e.model.item.vehicle,
+                                        createDateTime: e.model.item.createDateTime,
+                                        createUser: e.model.item.createUser,
+                                        updateDateTime: e.model.item.updateDateTime,
+                                        updateUser: e.model.item.updateUser,
+                                        qtyByUnitOfMeasure: e.model.item.qtyByUnitOfMeasure,
+                                        unitCostsould: e.model.item.unitCostsould,
+                                        budgetValue: e.model.item.budgetValue,
+                                        maintenanceOrderLineNo: e.model.item.maintenanceOrderLineNo,
+                                        criarNotaEncomenda: e.model.item.criarNotaEncomenda,
+                                        createMarketSearch: e.model.item.createMarketSearch,
+                                        submitPrePurchase: e.model.item.submitPrePurchase,
+                                        sendPrePurchase: e.model.item.sendPrePurchase,
+                                        localMarketDate: e.model.item.localMarketDate,
+                                        localMarketUser: e.model.item.localMarketUser,
+                                        sendForPurchase: e.model.item.sendForPurchase,
+                                        sendForPurchaseDate: e.model.item.sendForPurchaseDate,
+                                        purchaseValidated: e.model.item.purchaseValidated,
+                                        purchaseRefused: e.model.item.purchaseRefused,
+                                        reasonToRejectionLocalMarket: e.model.item.reasonToRejectionLocalMarket,
+                                        rejectionLocalMarketDate: e.model.item.rejectionLocalMarketDate,
+                                        purchaseId: e.model.item.purchaseId,
+                                        supplierNo: e.model.item.supplierNo,
+                                        openOrderNo: e.model.item.openOrderNo,
+                                        openOrderLineNo: e.model.item.openOrderLineNo,
+                                        queryCreatedMarketNo: e.model.item.queryCreatedMarketNo,
+                                        createdOrderNo: e.model.item.createdOrderNo,
+                                        supplierProductCode: e.model.item.supplierProductCode,
+                                        unitNutritionProduction: e.model.item.unitNutritionProduction,
+                                        marketLocalRegion: e.model.item.marketLocalRegion,
+                                        customerNo: e.model.item.customerNo,
+                                        approvers: e.model.item.approvers,
+                                        urgent: e.model.item.urgent,
+                                        vatBusinessPostingGroup: e.model.item.vatBusinessPostingGroup,
+                                        vatProductPostingGroup: e.model.item.vatProductPostingGroup,
+                                        discountPercentage: e.model.item.discountPercentage,
+                                        selected: e.model.item.selected,
+                                    });
+                                    this.$.Lines_UpdateLinhaRequisicao_ajax.generateRequest();
+                                    this.$.grdRequisitionLines.clearCache();
+                                }
+                                else {
+                                    this._openToastError('Na linha o campo Qt. a Requerer tem que ser superior a zero.');
+                                }
+                            }
+                            else {
+                                this._openToastError('Na linha o campo Código Localização é de preenchimento obrigatório.');
+                            }
+                        }
+                        else {
+                            this._openToastError('Na linha o campo Nº Ordem/projecto é de preenchimento obrigatório.');
+                        }
+                    }
+                    else {
+                        this._openToastError('Na linha o campo Cód. Produto é de preenchimento obrigatório.');
+                    }
+                },
+                _UpdateLinhaRequisicao_ResponseProcessor: function (e) {
+                    debugger;
+                    if (this.updateLinhaRequisicaoResponse.eReasonCode == 1) {
+                        this._openToast(this.updateLinhaRequisicaoResponse.eMessage);
+                    }
+                    else {
+                        this._openToastError(this.updateLinhaRequisicaoResponse.eMessage);
+                    }
+                    this.$.page_update_ajax.body = JSON.stringify({ "id": this._requisitionid });
+                    this.$.page_update_ajax.generateRequest();
                 },
 
                 _validateReqHeaderInput: function () {
@@ -2276,12 +2455,10 @@
                 },
 
                 _todasLinhasNotaEncomenda: function () {
-                    debugger;
                     this.$.ajax_TodasLinhasNotaEncomenda.body = JSON.stringify({ "requisitionNo": this.$.requisitionNo.value });
                     this.$.ajax_TodasLinhasNotaEncomenda.generateRequest();
                 },
                 _TodasLinhasNotaEncomendaResponseProcessor: function (e) {
-                    debugger;
                     if (this.resultTodasLinhasNotaEncomenda.eReasonCode == "1") {
                         this._openToast(this.resultTodasLinhasNotaEncomenda.eMessage);
 
@@ -2435,6 +2612,9 @@
                         this._isValidated = true;
                     }
 
+                    //Preencher o POP-UP das Encomendas
+                    this.$.ajax_TodasEncomendasPorProduto.body = JSON.stringify({ "requisitionNo": this.Requisition.requisitionNo });
+                    this.$.ajax_TodasEncomendasPorProduto.generateRequest();
                 },
                 _deleteReqLineResponse: function (e) {
                     if (this.DelReqLineResponse.eReasonCode == "1") {
@@ -2492,7 +2672,10 @@
                         this._openToast(this.Requisition.eMessage);
                     }
                     else {
-                        this._openToastError(this.Requisition.eMessage);
+                        if (this.Requisition.eMessages.length > 0)
+                            this._toggleToastMultiple();
+                        else
+                            this._openToastError(this.Requisition.eMessage);
                     }
                 },
                 _createPurchaseOrder: function () {
@@ -2509,11 +2692,21 @@
                         else
                             this._openToastError(this.Requisition.eMessage);
                     }
+                    this.$.grdRequisitionLines.clearCache();
+                    this.$.requisition_datasource.url = "/GestaoRequisicoes/GetRequisition"
+                    this.$.requisition_datasource.body = JSON.stringify({ "requisitionId": this._requisitionid, "status": this._requisitionstatus });
+                    this.$.requisition_datasource.generateRequest();
                 },
                 _printRequisition: function () {
                     if (this._reportserverurl != undefined) {
                         //window.open(this._reportserverurl + "Requisi%C3%A7%C3%B5es&CodRequisicao=" + this.Requisition.requisitionNo, "_blank");
-                        this.$.rptContainer.src = this._reportserverurl + "RequisitionReport&NoRequisicao=" + this.Requisition.requisitionNo;
+                        //this.$.rptContainer.src = this._reportserverurl + "RequisitionReport&NoRequisicao=" + this.Requisition.requisitionNo;
+                        if (this.$.CBHeaderProjects.value != "") {
+                            this.$.rptContainer.src = this._reportserverurl + "RequisitionReport&NoRequisicao=" + this.Requisition.requisitionNo;
+                        }
+                        else {
+                            this.$.rptContainer.src = this._reportserverurl + "RequisitionStockReport&NoRequisicao=" + this.Requisition.requisitionNo;
+                        }
                         this.$.rptDialog.open();
                     }
                     else {
@@ -2637,6 +2830,7 @@
                     }
                     else {
                         this._openToastError(this.regist.eMessage);
+                        location.reload();
                     }
                 },
                 _submitForApproval: function () {
@@ -2665,17 +2859,24 @@
                     this.$.dlgChangeLog.close();
                 },
 
+                _showEncomendas: function () {
+                    this.$.dlgEncomendas.open();;
+                },
+                _closeEncomendasDlg: function () {
+                    this.$.dlgEncomendas.close();
+                },
+
                 _anularAprovacao: function (e) {
                     var loads = this;
                     var TMessage = this.$.ToastMessageSuccess;
                     var TMessageError = this.$.ToastMessageError;
 
                     bootbox.prompt({
-                        title: "Introduza o motivo de rejeição!",
+                        title: "Introduza o motivo da Anulação!",
                         inputType: 'textarea',
                         buttons: {
                             confirm: {
-                                label: 'Rejeitar',
+                                label: 'Anular',
                                 className: 'btn-success'
                             },
                             cancel: {

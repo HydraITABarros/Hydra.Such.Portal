@@ -26,5 +26,14 @@ namespace Hydra.Such.Data.ViewModel
         public string RegionId { get; set; }
         public string FunctionalAreaId { get; set; }
         public string RespCenterId { get; set; }
+
+        public string TipoRefeicao { get; set; }
+        public string MealTypeDescription { get; set; }
+        public string GrupoServico { get; set; }
+        public string ServiceGroupDescription { get; set; }
+        public string CodServCliente { get; set; }
+        public string DesServCliente { get; set; }
+        public string NGuiaResiduosGAR { get; set; }
+        public string NGuiaExterna { get; set; }
     }
 }

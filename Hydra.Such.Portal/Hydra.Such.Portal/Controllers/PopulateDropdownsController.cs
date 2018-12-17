@@ -32,6 +32,7 @@ using System.Dynamic;
 using Hydra.Such.Portal.Extensions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Hydra.Such.Data.ViewModel.Encomendas;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -162,7 +163,17 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetProjectStatus()
         {
-            List<EnumData> result = EnumerablesFixed.ProjectStatus;
+            var result = new List<EnumData>();
+            foreach (EstadoProjecto item in Enum.GetValues(typeof(EstadoProjecto)))
+            {
+                result.Add(new EnumData()
+                {
+                    Id = (int)item,
+                    Value = item.GetDescription(),
+                });
+
+            }
+
             return Json(result);
         }
         [HttpPost]
@@ -397,6 +408,21 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetAllPurchase([FromBody] string respcenter)
+        {
+            List<DDMessageString> result = null;
+
+            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            result = DBNAV2017Encomendas.ListByDimListAndNoFilter(_config.NAVDatabaseName, _config.NAVCompanyName, userDimensions, "C%").Select(x => new DDMessageString()
+            {
+                id = x.No,
+                value = x.PayToName
+            }).ToList();
+
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetpriceAgreementByDate([FromBody] DateTime date, int produtivityUnitId, int type)
         {
             try
@@ -507,6 +533,23 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetUnitOfMeasureByProduct(string produto)
+        {
+            List<DDMessageString> result = new List<DDMessageString>();
+
+            if (!string.IsNullOrEmpty(produto))
+            {
+                result = DBNAV2017UnitOfMeasure.GetAllByProduct(_config.NAVDatabaseName, _config.NAVCompanyName).Where(y => y.code == produto).Select(x => new DDMessageString()
+                {
+                    id = x.description,
+                    value = x.description
+                }).ToList();
+            }
+
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetUnitOfMeasureByCodeeSUCH()
         {
             List<DDMessageString> result = DBUnidadeMedida.GetAll().Select(x => new DDMessageString()
@@ -564,10 +607,10 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetContactsByType([FromBody] int type)
         {
-            List<DDMessageString> result = DBNAV2017Contacts.GetContactsByType(_config.NAVDatabaseName, _config.NAVCompanyName, "", type).Select(x => new DDMessageString()
+            List<DDMessageString> result = DBContacts.GetAll().Select(x => new DDMessageString()
             {
-                id = x.No_,
-                value = x.Name
+                id = x.Nº,
+                value = x.Nome
             }).ToList();
             return Json(result);
         }
@@ -1301,7 +1344,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetProjectListDiary()
         {
-            List<DDMessageString> result = DBProjects.GetAll().Where(x => x.Estado != 5 && x.Estado != 4).Select(x => new DDMessageString()
+            List<DDMessageString> result = DBProjects.GetAll().Where(x => x.Estado != EstadoProjecto.Terminado).Select(x => new DDMessageString()
             {
                 id = x.NºProjeto,
                 value = x.Descrição
@@ -1999,21 +2042,17 @@ namespace Hydra.Such.Portal.Controllers
             string allowedProductsFilter = string.Empty;
             string rootAreaId = string.Empty;
             string requisitionType = string.Empty;
-            //string locationCode = string.Empty;
             List<NAVProductsViewModel> products = new List<NAVProductsViewModel>();
-            //products = null;
 
             if (requestParams != null)
             {
                 allowedProductsFilter = "";
                 rootAreaId = "";
                 requisitionType = requestParams["requisitionType"].ToString();
-                //locationCode = requestParams["locationCode"].ToString();
 
                 if (requisitionType != "")// && locationCode != "")
                 {
                     List<NAVProductsViewModel> productsReqParams = DBNAV2017Products.GetProductsForPreRequisitions(_config.NAVDatabaseName, _config.NAVCompanyName, allowedProductsFilter, requisitionType).ToList();
-                    //List<NAVProductsViewModel> productsReqParams = DBNAV2017Products.GetProductsForPreRequisitions(_config.NAVDatabaseName, _config.NAVCompanyName, allowedProductsFilter, requisitionType, locationCode).ToList();
 
                     if (productsReqParams != null && productsReqParams.Count > 0)
                     {
@@ -2471,7 +2510,19 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        [HttpPost]
+        public JsonResult GetTipoPedidoPagamento()
+        {
+            List<EnumData> result = EnumerablesFixed.TipoPedidoPagamento;
+            return Json(result);
+        }
 
+        [HttpPost]
+        public JsonResult GetEstadoPedidoPagamento()
+        {
+            List<EnumData> result = EnumerablesFixed.EstadoPedidoPagamento;
+            return Json(result);
+        }
     }
 
 

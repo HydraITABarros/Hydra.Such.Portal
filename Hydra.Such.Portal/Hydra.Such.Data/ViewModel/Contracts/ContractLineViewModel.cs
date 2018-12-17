@@ -13,6 +13,7 @@ namespace Hydra.Such.Data.ViewModel.Contracts
         public int? Type { get; set; }
         public string Code { get; set; }
         public string Description { get; set; }
+        public string Description2 { get; set; }
         public decimal? Quantity { get; set; }
         public string CodeMeasureUnit { get; set; }
         public decimal? UnitPrice { get; set; }

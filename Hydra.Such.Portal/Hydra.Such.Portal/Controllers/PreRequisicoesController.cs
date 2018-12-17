@@ -825,6 +825,8 @@ namespace Hydra.Such.Portal.Controllers
                 reqID.FunctionalAreaCode = CU.AreaPorDefeito;
                 reqID.ResponsabilityCenterCode = CU.CentroRespPorDefeito;
 
+
+
                 return Json(reqID);
             }
             else
@@ -839,9 +841,9 @@ namespace Hydra.Such.Portal.Controllers
                     }
                 }
                 //Apagar Anexos
-                if (DBAttachments.GetById(1, User.Identity.Name).Count() > 0)
+                if (DBAttachments.GetById(TipoOrigemAnexos.PreRequisicao, User.Identity.Name).Count() > 0)
                 {
-                    List<Anexos> ListAnexos = DBAttachments.GetAll().Where(x => x.TipoOrigem == 1 && x.NºOrigem == User.Identity.Name).ToList();
+                    List<Anexos> ListAnexos = DBAttachments.GetAll().Where(x => x.TipoOrigem == TipoOrigemAnexos.PreRequisicao && x.NºOrigem == User.Identity.Name).ToList();
                     foreach (var Anexo in ListAnexos)
                     {
                         //System.IO.File.Delete(_config.FileUploadFolder + Anexo.UrlAnexo);
@@ -1167,7 +1169,7 @@ namespace Hydra.Such.Portal.Controllers
                     }
 
                     //Delete Anexos
-                    List<Anexos> ListAnexos = DBAttachments.GetAll().Where(x => x.TipoOrigem == 1 && x.NºOrigem == data.PreRequesitionsNo).ToList();
+                    List<Anexos> ListAnexos = DBAttachments.GetAll().Where(x => x.TipoOrigem == TipoOrigemAnexos.PreRequisicao && x.NºOrigem == data.PreRequesitionsNo).ToList();
                     foreach (var Anexo in ListAnexos)
                     {
                         if (Anexo != null)
@@ -1447,6 +1449,7 @@ namespace Hydra.Such.Portal.Controllers
             if (requisition != null)
             {
                 requisition.ForEach(x => result.Add(x.ParseToViewModel()));
+                result.RemoveAll(x => x.State == RequisitionStates.Archived);
                 if (result.Count > 0)
                 {
                     foreach (RequisitionViewModel item in result)
@@ -1755,7 +1758,6 @@ namespace Hydra.Such.Portal.Controllers
                     data.eMessage = "";
                     if (PreRequesitionLines.Count > 0)
                     {
-
                         if (data.Complaint == true && (data.ClaimedRequesitionNo == "" || data.ClaimedRequesitionNo == null))
                         {
                             data.eReasonCode = 2;
@@ -1800,14 +1802,18 @@ namespace Hydra.Such.Portal.Controllers
 
                             if (PreRequesitionLines != null)
                             {
-                                foreach (var lines in PreRequesitionLines)
+                                if (PreRequesitionLines.Any(x => string.IsNullOrEmpty(x.NºProjeto)))
                                 {
-                                    if (lines.NºProjeto == null || lines.NºProjeto == "")
-                                    {
-                                        data.eReasonCode = 8;
-                                        data.eMessage = "O campo Nº Ordem/Projecto nas linhas deve estar preenchido.";
-                                        return Json(data);
-                                    }
+                                    data.eReasonCode = 8;
+                                    data.eMessage = "O campo Nº Ordem/Projecto em todas as linhas deve estar preenchido.";
+                                    return Json(data);
+                                }
+
+                                if (PreRequesitionLines.Any(x => string.IsNullOrEmpty(x.CódigoLocalização)))
+                                {
+                                    data.eReasonCode = 8;
+                                    data.eMessage = "O campo Código Localização em todas as linhas deve estar preenchido.";
+                                    return Json(data);
                                 }
                             }
                         }
@@ -1894,6 +1900,7 @@ namespace Hydra.Such.Portal.Controllers
                                 State = RequisitionStates.Pending,
                                 RequisitionDate = DateTime.Now.ToString("dd-MM-yyyy"),
                                 CreateUser = User.Identity.Name,
+                                PedirOrcamento = data.PedirOrcamento,
 
                                 Lines = items.Select(line => new RequisitionLineViewModel()
                                 {
@@ -1978,6 +1985,7 @@ namespace Hydra.Such.Portal.Controllers
                                 State = RequisitionStates.Pending,
                                 RequisitionDate = DateTime.Now.ToString("dd-MM-yyyy"),
                                 CreateUser = User.Identity.Name,
+                                PedirOrcamento = data.PedirOrcamento,
 
                                 Lines = items.Select(line => new RequisitionLineViewModel()
                                 {
@@ -2114,7 +2122,7 @@ namespace Hydra.Such.Portal.Controllers
                                 AttachmentsViewModel CopyFile = new AttachmentsViewModel();
                                 CopyFile.DocNumber = createReq.NºRequisição;
                                 CopyFile.CreateUser = User.Identity.Name;
-                                CopyFile.DocType = 2;
+                                CopyFile.DocType = TipoOrigemAnexos.Requisicao;
                                 CopyFile.Url = NewFileName;
                                 Anexos newFile = DBAttachments.Create(DBAttachments.ParseToDB(CopyFile));
                                 if (newFile != null)
@@ -2196,7 +2204,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (data != null)
                 {
                     List<LinhasPréRequisição> PreRequesitionLines = DBPreRequesitionLines.GetAllByNo(data.PreRequesitionsNo);
-                    List<Anexos> FilesLoaded = DBAttachments.GetById(1, data.PreRequesitionsNo);
+                    List<Anexos> FilesLoaded = DBAttachments.GetById(TipoOrigemAnexos.PreRequisicao, data.PreRequesitionsNo);
                     data.eMessage = "";
 
                     if (FilesLoaded.Count() > 0)
@@ -2257,6 +2265,7 @@ namespace Hydra.Such.Portal.Controllers
                                         RequisitionDate = DateTime.Now.ToString("dd-MM-yyyy"),
                                         CreateUser = User.Identity.Name,
                                         ValorTotalDocComIVA = data.ValorTotalDocComIVA,
+                                        PedirOrcamento = data.PedirOrcamento,
                                         
                                         Lines = items.Select(line => new RequisitionLineViewModel()
                                         {
@@ -2343,6 +2352,7 @@ namespace Hydra.Such.Portal.Controllers
                                         RequisitionDate = DateTime.Now.ToString("dd-MM-yyyy"),
                                         CreateUser = User.Identity.Name,
                                         ValorTotalDocComIVA = data.ValorTotalDocComIVA,
+                                        PedirOrcamento = data.PedirOrcamento,
 
                                         Lines = items.Select(line => new RequisitionLineViewModel()
                                         {
@@ -2492,7 +2502,7 @@ namespace Hydra.Such.Portal.Controllers
                                 AttachmentsViewModel CopyFile = new AttachmentsViewModel();
                                 CopyFile.DocNumber = createReq.NºRequisição;
                                 CopyFile.CreateUser = User.Identity.Name;
-                                CopyFile.DocType = 2;
+                                CopyFile.DocType = TipoOrigemAnexos.Requisicao;
                                 CopyFile.Url = NewFileName;
                                 Anexos newFile = DBAttachments.Create(DBAttachments.ParseToDB(CopyFile));
                                 if (newFile != null)
@@ -2744,6 +2754,155 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetLocationInfo(string produto, string localizacao)
+        {
+            ErrorHandler result = new ErrorHandler();
+            NAVProductsViewModel product = new NAVProductsViewModel();
+
+            try
+            {
+                result.eReasonCode = 1;
+                result.eMessage = "";
+
+                //OBTER AS LOCALIZAÇÕES DO UTILIZADOR
+                List<AcessosLocalizacoes> userLocations = DBAcessosLocalizacoes.GetByUserId(User.Identity.Name);
+                List<DDMessageRelated> result_all = new List<DDMessageRelated>();
+                var allLocations = DBNAV2017Locations.GetAllLocations(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName);
+                if (userLocations == null || userLocations.Count == 0)
+                {
+                    result_all = allLocations.Select(x => new DDMessageRelated()
+                    {
+                        id = x.Code,
+                        value = x.Name,
+                        extra = Convert.ToString(x.ArmazemCDireta)
+                    }).ToList();
+                }
+                else
+                {
+                    var userLocationsIds = userLocations.Select(x => x.Localizacao).Distinct().ToList();
+                    result_all = allLocations.Where(x => userLocationsIds.Contains(x.Code)).Select(x => new DDMessageRelated()
+                    {
+                        id = x.Code,
+                        value = x.Name,
+                        extra = Convert.ToString(x.ArmazemCDireta)
+                    }).ToList();
+                }
+
+                if (!string.IsNullOrEmpty(localizacao))
+                {
+                    if (!string.IsNullOrEmpty(produto))
+                    {
+                        product = DBNAV2017Products.GetAllProducts(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, produto).FirstOrDefault();
+
+                        if (product != null)
+                        {
+                            if (product.InventoryValueZero == 1)
+                            {
+                                if (localizacao != "DIR")
+                                {
+                                    if (result_all.Any(x => x.id == "DIR"))
+                                    {
+                                        result.eReasonCode = 2;
+                                        result.eMessage = "DIR";
+                                    }
+                                    else
+                                    {
+                                        result.eReasonCode = 3;
+                                        result.eMessage = "";
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if (localizacao == "DIR")
+                                {
+                                    result_all.RemoveAll(x => x.id == "DIR");
+                                    if (result_all.Count() > 0)
+                                    {
+                                        NAVStockKeepingUnitViewModel local = DBNAV2017StockKeepingUnit.GetByProductsNo(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, produto).FirstOrDefault();
+                                        product.LocationCode = local.LocationCode;
+
+                                        result.eReasonCode = 2;
+                                        result.eMessage = local.LocationCode;
+                                    }
+                                    else
+                                    {
+                                        result.eReasonCode = 3;
+                                        result.eMessage = "";
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(null);
+            }
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetProductsPreRequisition([FromBody] JObject requestParams)
+        {
+            try
+            {
+                string requisitionType = string.Empty;
+                List<NAVProductsViewModel> ListaProdutos = new List<NAVProductsViewModel>();
+                if (requestParams != null)
+                {
+                    requisitionType = requestParams["requisitionType"].ToString();
+                    if (requisitionType != "")
+                    {
+                        //ListaProdutos = DBNAV2017Products.GetAllProducts(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, string.Empty);
+                        ListaProdutos = DBNAV2017Products.GetProductsForPreRequisitions(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, "", requisitionType);
+                        ListaProdutos.RemoveAll(x => string.IsNullOrEmpty(x.AreaFiltro));
+
+                        List<AcessosDimensões> UserAcessos = DBUserDimensions.GetByUserId(User.Identity.Name);
+                        //List<AcessosDimensões> UserAcessos = DBUserDimensions.GetByUserId("abeldoo@such.pt");
+                        UserAcessos.RemoveAll(x => x.Dimensão != 2);
+
+                        if (UserAcessos.Count() > 0)
+                        {
+                            UserAcessos.ForEach(x =>
+                            {
+                                if (x.ValorDimensão.StartsWith("0"))
+                                    x.ValorDimensão = "-0-";
+                                else
+                                if (x.ValorDimensão.StartsWith("3"))
+                                    x.ValorDimensão = "-3-";
+                                else
+                                if (x.ValorDimensão.StartsWith("5"))
+                                    x.ValorDimensão = "-5-";
+                                else
+                                    x.ValorDimensão = "-" + x.ValorDimensão + "-";
+                            });
+                            UserAcessos = UserAcessos.Distinct().ToList();
+
+                            ListaProdutos.ForEach(x =>
+                            {
+                                x.ToRemove = true;
+                                UserAcessos.ForEach(y =>
+                                {
+                                    if (x.AreaFiltro.Contains(y.ValorDimensão))
+                                        x.ToRemove = false;
+                                });
+                            });
+                            ListaProdutos.RemoveAll(x => x.ToRemove == true);
+                        }
+                    }
+                }
+                return Json(ListaProdutos);
+            }
+            catch (Exception ex)
+            {
+                return Json(null);
+            }
+        }
+
+        [HttpPost]
         public JsonResult GetProductLocation([FromBody] PreRequisitionLineViewModel linha)
         {
             NAVProductsViewModel product = new NAVProductsViewModel();
@@ -2852,7 +3011,7 @@ namespace Hydra.Such.Portal.Controllers
                                 Anexos newfile = new Anexos();
                                 newfile.NºOrigem = id;
                                 newfile.UrlAnexo = full_filename;
-                                newfile.TipoOrigem = 1;
+                                newfile.TipoOrigem = TipoOrigemAnexos.PreRequisicao;
                                 newfile.DataHoraCriação = DateTime.Now;
                                 newfile.UtilizadorCriação = User.Identity.Name;
 

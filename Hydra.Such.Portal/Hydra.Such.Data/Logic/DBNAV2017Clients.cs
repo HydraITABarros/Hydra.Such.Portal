@@ -5,6 +5,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Text;
+using WSCustomerNAV;
 
 namespace Hydra.Such.Data.Logic
 {
@@ -48,9 +49,9 @@ namespace Hydra.Such.Data.Logic
                             Name = temp.Name.Equals(DBNull.Value) ? "" : (string)temp.Name,
                             VATRegistrationNo_ = temp.VATRegistrationNo.Equals(DBNull.Value) ? "" : (string)temp.VATRegistrationNo,
                             Address = temp.Address.Equals(DBNull.Value) ? "" : (string)temp.Address,
-                            PostCode = temp.PostalCode.Equals(DBNull.Value) ? "" : (string)temp.PostalCode,
-                            City = temp.PostalCode.Equals(DBNull.Value) ? "" : (string)temp.City,
-                            Country_RegionCode = temp.Country_RegionCode.Equals(DBNull.Value) ? "" : (string)temp.Country_RegionCode,
+                            PostCode = temp.PostCode.Equals(DBNull.Value) ? "" : (string)temp.PostCode,
+                            City = temp.City.Equals(DBNull.Value) ? "" : (string)temp.City,
+                            CountryRegionCode = temp.CountryRegionCode.Equals(DBNull.Value) ? "" : (string)temp.CountryRegionCode,
                             UnderCompromiseLaw = temp.UnderCompromiseLaw.Equals(DBNull.Value) ? false : ((int)temp.UnderCompromiseLaw) == 0 ? false : true,
                             InternalClient = temp.InternalClient.Equals(DBNull.Value) ? false : ((int)temp.InternalClient) == 0 ? false : true,
                             National = temp.NationalCustomer.Equals(DBNull.Value) ? false : ((int)temp.NationalCustomer) == 0 ? false : true,
@@ -59,6 +60,23 @@ namespace Hydra.Such.Data.Logic
                             RegionCode = temp.RegionCode.Equals(DBNull.Value) ? "" : (string)temp.RegionCode,
                             FunctionalAreaCode = temp.FunctionalAreaCode.Equals(DBNull.Value) ? "" : (string)temp.FunctionalAreaCode,
                             ResponsabilityCenterCode = temp.ResponsabilityCenterCode.Equals(DBNull.Value) ? "" : (string)temp.ResponsabilityCenterCode,
+                            RegiaoCliente = (Regiao_Cliente)temp.RegiaoCliente,
+                            AbrigoLeiCompromisso = ((int)temp.AbrigoLeiCompromisso > 0 ? true : false),
+                            AssociadoAN = temp.AssociadoAN.Equals(DBNull.Value) ? "" : (string)temp.AssociadoAN,
+                            Blocked = (Blocked)temp.Blocked,
+                            ClienteAssociado = ((int)temp.ClienteAssociado > 0 ? true : false),
+                            ClienteInterno = ((int)temp.ClienteInterno > 0 ? true : false),
+                            ClienteNacional = ((int)temp.ClienteNacional > 0 ? true : false),
+                            County = temp.County.Equals(DBNull.Value) ? "" : (string)temp.County,
+                            EMail = temp.EMail.Equals(DBNull.Value) ? "" : (string)temp.EMail,
+                            FaxNo = temp.FaxNo.Equals(DBNull.Value) ? "" : (string)temp.FaxNo,
+                            HomePage = temp.HomePage.Equals(DBNull.Value) ? "" : (string)temp.HomePage,
+                            NaturezaCliente = (Natureza_Cliente)temp.NaturezaCliente,
+                            NoFornecedorAssoc = temp.ResponsabilityCenterCode.Equals(DBNull.Value) ? "" : (string)temp.ResponsabilityCenterCode,
+                            NoSeries = temp.NoSeries.Equals(DBNull.Value) ? "" : (string)temp.NoSeries,
+                            PhoneNo = temp.PhoneNo.Equals(DBNull.Value) ? "" : (string)temp.PhoneNo,
+                            TaxaAprovisionamento = (decimal)temp.TaxaAprovisionamento,
+                            TipoCliente = (Tipo_Cliente)temp.TipoCliente
                         });
                     }
                     return result;
@@ -179,7 +197,7 @@ namespace Hydra.Such.Data.Logic
                     };
 
                     IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017ClientesInvoices @DBName, @CompanyName, @CustomerNo", parameters);
-
+                    var minDate = new DateTime(2008, 1, 1);
                     foreach (dynamic temp in data)
                     {
                         result.Add(new NAVClientesInvoicesViewModel()
@@ -202,6 +220,83 @@ namespace Hydra.Such.Data.Logic
                         });
                     }
                     return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public static List<NAVClientesBalanceControlViewModel> GetBalances(string NAVDatabaseName, string NAVCompanyName, string NAVClientNo)
+        {
+            try
+            {
+                var result = new List<NAVClientesBalanceControlViewModel>();
+                using (var ctx = new SuchDBContextExtention())
+                {
+                    var parameters = new[]{
+                        new SqlParameter("@DBName", NAVDatabaseName),
+                        new SqlParameter("@CompanyName", NAVCompanyName),
+                        new SqlParameter("@CustomerNo", NAVClientNo ),
+                        //new SqlParameter("@Regions", "''"),
+                        //new SqlParameter("@FunctionalAreas", "''"),
+                        //new SqlParameter("@RespCenters", "''"),
+                    };
+
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017ClientesBalances @DBName, @CompanyName, @CustomerNo", parameters);
+                    var minDate = new DateTime(2008, 1, 1);
+                    foreach (dynamic temp in data)
+                    {
+                        result.Add(new NAVClientesBalanceControlViewModel()
+                        {
+                            EntryNo = (int)temp.EntryNo,
+                            Amount = (decimal?)temp.Amount,
+                            CustomerNo = temp.CustomerNo.Equals(DBNull.Value) ? "" : (string)temp.CustomerNo,
+                            DataConcil = (DateTime?)temp.DataConcil != null && (DateTime?)temp.DataConcil > minDate ? (DateTime?)temp.DataConcil : null,
+                            Description = temp.Description.Equals(DBNull.Value) ? "" : (string)temp.Description,
+                            DocumentNo = temp.DocumentNo.Equals(DBNull.Value) ? "" : (string)temp.DocumentNo,
+                            DocumentType = temp.DocumentType.Equals(DBNull.Value) ? "" : (string)temp.DocumentType.ToString(),
+                            Obs = temp.Obs.Equals(DBNull.Value) ? "" : (string)temp.Obs,
+                            PostingDate = (DateTime?)temp.PostingDate,
+                            RemainingAmount = (decimal?)temp.RemainingAmount,
+                            SinalizacaoRec = (int?)temp.SinalizacaoRec == 0 || (int?)temp.SinalizacaoRec == null ? false : true ,
+                            DocumentDate = (DateTime?)temp.DocumentDate,
+                            DueDate = (DateTime?)temp.DueDate,
+                            FunctionalAreaId = temp.FunctionalAreaId.Equals(DBNull.Value) ? "" : (string)temp.FunctionalAreaId,
+                            RegionId = temp.RegionId.Equals(DBNull.Value) ? "" : (string)temp.RegionId,
+                            RespCenterId = temp.RespCenterId.Equals(DBNull.Value) ? "" : (string)temp.RespCenterId
+                        });
+                    }
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public static int? UpdateBalance(string NAVDatabaseName, string NAVCompanyName, string NAVClientNo, string EntryNo, string SinalizacaoRec, string Obs)
+        {
+            try
+            {
+                var result = new List<NAVClientesBalanceControlViewModel>();
+                using (var ctx = new SuchDBContextExtention())
+                {
+                    var _parameters = new[]{
+                        new SqlParameter("@DBName", NAVDatabaseName),
+                        new SqlParameter("@CompanyName", NAVCompanyName),
+                        new SqlParameter("@CustomerNo", NAVClientNo ),
+                        new SqlParameter("@Obs", Obs ),
+                        new SqlParameter("@SinalizacaoRec", SinalizacaoRec ),
+                        new SqlParameter("@EntryNo", EntryNo )
+                    };
+
+                    var data = ctx.execStoredProcedureNQ("exec NAV2017ClientesBalancesUpdate @DBName, @CompanyName, @CustomerNo, @Obs, @SinalizacaoRec, @EntryNo", _parameters);
+
+                    return data;
+
                 }
             }
             catch (Exception ex)
@@ -249,8 +344,15 @@ namespace Hydra.Such.Data.Logic
                             ServiceContractNo = temp.ServiceContractNo.Equals(DBNull.Value) ? "" : (string)temp.ServiceContractNo.ToString(),
                             UnitOfMeasure = temp.UnitOfMeasure.Equals(DBNull.Value) ? "" : (string)temp.UnitOfMeasure.ToString(),
                             UnitPrice = temp.UnitPrice.Equals(DBNull.Value) ? "" : (string)temp.UnitPrice.ToString(),
-                            VAT = temp.VAT.Equals(DBNull.Value) ? "" : (string)temp.VAT.ToString()
-
+                            VAT = temp.VAT.Equals(DBNull.Value) ? "" : (string)temp.VAT.ToString(),
+                            TipoRefeicao = temp.TipoRefeicao.Equals(DBNull.Value) ? "" : (string)temp.TipoRefeicao.ToString(),
+                            MealTypeDescription = temp.MealTypeDescription.Equals(DBNull.Value) ? "" : (string)temp.MealTypeDescription.ToString(),
+                            GrupoServico = temp.GrupoServico.Equals(DBNull.Value) ? "" : (string)temp.GrupoServico.ToString(),
+                            ServiceGroupDescription = temp.ServiceGroupDescription.Equals(DBNull.Value) ? "" : (string)temp.ServiceGroupDescription.ToString(),
+                            CodServCliente = temp.CodServCliente.Equals(DBNull.Value) ? "" : (string)temp.CodServCliente.ToString(),
+                            DesServCliente = temp.DesServCliente.Equals(DBNull.Value) ? "" : (string)temp.DesServCliente.ToString(),
+                            NGuiaResiduosGAR = temp.NGuiaResiduosGAR.Equals(DBNull.Value) ? "" : (string)temp.NGuiaResiduosGAR.ToString(),
+                            NGuiaExterna = temp.NGuiaExterna.Equals(DBNull.Value) ? "" : (string)temp.NGuiaExterna.ToString(),
                         });
                     }
                     return result;
@@ -261,8 +363,6 @@ namespace Hydra.Such.Data.Logic
                 return null;
             }
         }
-
-
         
         public static List<NAVClientesInvoicesDetailsViewModel> GetCrMemoDetails(string NAVDatabaseName, string NAVCompanyName, string No)
         {
@@ -303,8 +403,15 @@ namespace Hydra.Such.Data.Logic
                             ServiceContractNo = temp.ServiceContractNo.Equals(DBNull.Value) ? "" : (string)temp.ServiceContractNo.ToString(),
                             UnitOfMeasure = temp.UnitOfMeasure.Equals(DBNull.Value) ? "" : (string)temp.UnitOfMeasure.ToString(),
                             UnitPrice = temp.UnitPrice.Equals(DBNull.Value) ? "" : (string)temp.UnitPrice.ToString(),
-                            VAT = temp.VAT.Equals(DBNull.Value) ? "" : (string)temp.VAT.ToString()
-
+                            VAT = temp.VAT.Equals(DBNull.Value) ? "" : (string)temp.VAT.ToString(),
+                            TipoRefeicao = temp.TipoRefeicao.Equals(DBNull.Value) ? "" : (string)temp.TipoRefeicao.ToString(),
+                            MealTypeDescription = temp.MealTypeDescription.Equals(DBNull.Value) ? "" : (string)temp.MealTypeDescription.ToString(),
+                            GrupoServico = temp.GrupoServico.Equals(DBNull.Value) ? "" : (string)temp.GrupoServico.ToString(),
+                            ServiceGroupDescription = temp.ServiceGroupDescription.Equals(DBNull.Value) ? "" : (string)temp.ServiceGroupDescription.ToString(),
+                            CodServCliente = temp.CodServCliente.Equals(DBNull.Value) ? "" : (string)temp.CodServCliente.ToString(),
+                            DesServCliente = temp.DesServCliente.Equals(DBNull.Value) ? "" : (string)temp.DesServCliente.ToString(),
+                            NGuiaResiduosGAR = temp.NGuiaResiduosGAR.Equals(DBNull.Value) ? "" : (string)temp.NGuiaResiduosGAR.ToString(),
+                            NGuiaExterna = temp.NGuiaExterna.Equals(DBNull.Value) ? "" : (string)temp.NGuiaExterna.ToString(),
                         });
                     }
                     return result;

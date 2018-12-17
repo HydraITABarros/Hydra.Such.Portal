@@ -1,0 +1,11 @@
+﻿
+@{
+    ViewData["Title"] = "Pedido de Pagamento ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="import" href="~/elements/encomendas/pedidopagamento_details.html">
+
+<x-pedidopagamentodetails _no="@ViewBag.No"
+                    _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'>
+</x-pedidopagamentodetails>

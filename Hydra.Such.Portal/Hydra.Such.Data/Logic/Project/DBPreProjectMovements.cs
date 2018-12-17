@@ -21,7 +21,7 @@ namespace Hydra.Such.Data.Logic.Project
                 return null;
             }
         }
-           public static PréMovimentosProjeto GetByLine(int Line)
+        public static PréMovimentosProjeto GetByLine(int Line)
         {
             try
             {
@@ -35,7 +35,24 @@ namespace Hydra.Such.Data.Logic.Project
                 return null;
             }
         }
-          public static PréMovimentosProjeto Update(PréMovimentosProjeto ObjectToUpdate)
+
+        public static List<PréMovimentosProjeto> GetUnregisteredById(List<int> ids)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.PréMovimentosProjeto.Where(x => ids.Contains(x.NºLinha) && x.Registado == false).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+
+        public static PréMovimentosProjeto Update(PréMovimentosProjeto ObjectToUpdate)
         {
             try
             {
@@ -47,6 +64,26 @@ namespace Hydra.Such.Data.Logic.Project
                 }
 
                 return ObjectToUpdate;
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+        public static List<PréMovimentosProjeto> Update(List<PréMovimentosProjeto> items)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    if (items != null)
+                        items.ForEach(x => x.DataHoraModificação = DateTime.Now);
+                    ctx.PréMovimentosProjeto.UpdateRange(items);
+                    ctx.SaveChanges();
+                }
+
+                return items;
             }
             catch (Exception ex)
             {
@@ -73,6 +110,26 @@ namespace Hydra.Such.Data.Logic.Project
                 return null;
             }
         }
+
+        public static bool Delete(PréMovimentosProjeto ObjectToDelete)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    ctx.PréMovimentosProjeto.Remove(ObjectToDelete);
+                    ctx.SaveChanges();
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+
+                return false;
+            }
+        }
+
     }
-      
+
 }
