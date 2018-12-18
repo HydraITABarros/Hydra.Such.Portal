@@ -4,10 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
-
 namespace Hydra.Such.Data.ViewModel.GuiaTransporte
 {
-    public class GuiaTransporteNavViewModel
+    public class CabecalhoGuiaTransporteSqlModel
     {
         public string NoGuiaTransporte { get; set; }
         public string Address { get; set; }
@@ -17,25 +16,25 @@ namespace Hydra.Such.Data.ViewModel.GuiaTransporte
         public string CodPais { get; set; }
         public string CodPostal { get; set; }
         public string CodPostalDescarga { get; set; }
-        [JsonConverter(typeof(DateFormatConverter), "dd-MM-yyyy")]
-        public DateTime DataCarga { get; set; }
-        [JsonConverter(typeof(DateFormatConverter), "dd-MM-yyyy")]
-        public DateTime DataDescarga { get; set; }
-        [JsonConverter(typeof(DateFormatConverter), "dd-MM-yyyy")]
-        public DateTime DataGuia { get; set; }
-        [JsonConverter(typeof(DateFormatConverter), "dd-MM-yyyy")]
-        public DateTime DataObservacoesAdicionais { get; set; }
-        [JsonConverter(typeof(DateFormatConverter), "dd-MM-yyyy")]
-        public DateTime DataSaida { get; set; }
+
+        public string DataCarga { get; set; }
+
+        public string DataDescarga { get; set; }
+
+        public string DataGuia { get; set; }
+       
+        public string DataObservacoesAdicionais { get; set; }
+        
+        public string DataSaida { get; set; }
         public int DimensionSetId { get; set; }
         public string GlobalDimension1Code { get; set; }
         public string GlobalDimension2Code { get; set; }
         public string GlobalDimension3Code { get; set; }
         public int GuiaTransporteInterface { get; set; }
         public bool Historico { get; set; }
-        public TimeSpan HoraCarga { get; set; }
-        public TimeSpan HoraDescarga { get; set; }
-        public TimeSpan HoraObservacoesAdicionais { get; set; }
+        public string HoraCarga { get; set; }
+        public string HoraDescarga { get; set; }
+        public string HoraObservacoesAdicionais { get; set; }
         public string LocalDescarga { get; set; }
         public string LocalDescarga1 { get; set; }
         public string MaintenanceOrderNo { get; set; }
@@ -63,10 +62,10 @@ namespace Hydra.Such.Data.ViewModel.GuiaTransporte
         public string NoSolicitacao { get; set; }
 
         public string ResponsabilityCenter { get; set; }
-        [JsonConverter(typeof(DateFormatConverter), "dd-MM-yyyy")]
-        public DateTime ShipmentStartDate { get; set; }
-        
-        public TimeSpan ShipmentStartTime { get; set; }
+
+        public string ShipmentStartDate { get; set; }
+
+        public string ShipmentStartTime { get; set; }
         public string SourceCode { get; set; }
         public string Telefone { get; set; }
         public int Tipo { get; set; }
@@ -76,9 +75,5 @@ namespace Hydra.Such.Data.ViewModel.GuiaTransporte
         public string VATRegistrationNo { get; set; }
 
         public string Viatura { get; set; }
-
-        public List<LinhaGuiaTransporteNavViewModel> LinhasGuiaTransporte { get; set; }
-        public FiscalAuthorityCommunicationLog FiscalCommunicationLog { get; set; }
-
     }
 }
