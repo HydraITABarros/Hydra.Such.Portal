@@ -20,6 +20,7 @@ using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using Newtonsoft.Json;
 using Hydra.Such.Data;
+using Hydra.Such.Data.Extensions;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -61,7 +62,25 @@ namespace Hydra.Such.Portal.Controllers
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.ImpressaoGuiaTransporteNAV);
 
-            if(UPerm!=null && UPerm.Read.Value)
+
+            #region zpgm.TESTE UPDATE GUIA
+            //GuiaTransporteNavViewModel guia = new GuiaTransporteNavViewModel
+            //{
+            //    NoGuiaTransporte = "GT1000016",
+            //    Tipo = 0,
+            //    NoCliente = "200001",
+            //    DataGuia = DateTime.Now,
+            //    LinhasGuiaTransporte = null
+            //};
+
+            //if (!DBNAV2017GuiasTransporte.UpdateGuiaTransporte(guia))
+            //{
+            //    int x = 0;
+            //}
+            #endregion
+
+
+            if (UPerm!=null && UPerm.Read.Value)
             {
                 ViewBag.No = id ?? "";
                 ViewBag.reportServerURL = _config.ReportServerURL;
@@ -92,6 +111,7 @@ namespace Hydra.Such.Portal.Controllers
             bool historic = requestParams["Historic"] == null ? false : bool.Parse(requestParams["Historic"].ToString());
             List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
             List<GuiaTransporteNavViewModel> result = DBNAV2017GuiasTransporte.GetListByDim(_config.NAVDatabaseName, _config.NAVCompanyName, userDimensions, historic);
+
             return Json(result);
         }
 
@@ -114,6 +134,13 @@ namespace Hydra.Such.Portal.Controllers
             {
                 return null;
             }
+        }
+
+        public JsonResult UpdateGuia([FromBody] GuiaTransporteNavViewModel data)
+        {
+            
+
+            return Json(true);
         }
 
     }

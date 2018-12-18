@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Hydra.Such.Data.ViewModel.GuiaTransporte
 {
-    public class LinhaGuiaTransporteNavViewModel
+    public class LinhaGuiaTransporteSqlModel
     {
         public string NoGuiaTransporte { get; set; }
         public int NoLinha { get; set; }
@@ -15,15 +15,15 @@ namespace Hydra.Such.Data.ViewModel.GuiaTransporte
         public int Acessories { get; set; }
         public string CodUnidadeMedida { get; set; }
         public int Correction { get; set; }
-        [JsonConverter(typeof(DateFormatConverter), "dd-MM-yyyy")]
-        public DateTime DataEntrega { get; set; }
-        [JsonConverter(typeof(DateFormatConverter), "dd-MM-yyyy")]
-        public DateTime DataGuia { get; set; }
+        
+        public string DataEntrega { get; set; }
+        
+        public string DataGuia { get; set; }
         public string Descricao { get; set; }
         public int DimensionSetID { get; set; }
         public int EstadoEquipamento { get; set; }
         public string EstadoEquipamentoDescription { get; set; }
-        public string FlDescription { get; set; }
+        public string FLDescription { get; set; }
         public string FunctionalLocationNo { get; set; }
         public string InventoryNo { get; set; }
         public string MaintOrderNo { get; set; }
@@ -44,9 +44,5 @@ namespace Hydra.Such.Data.ViewModel.GuiaTransporte
         public decimal TotalPrice { get; set; }
         public decimal UnitCost { get; set; }
         public decimal UnitPrice { get; set; }
-
-
-        public GuiaTransporteNavViewModel ParentNo { get; set; }
-
     }
 }

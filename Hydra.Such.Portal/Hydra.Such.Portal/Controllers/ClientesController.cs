@@ -542,6 +542,47 @@ namespace Hydra.Such.Portal.Controllers
                     Col = Col + 1;
                 }
 
+                if (dp["tipoRefeicao"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Tp Refeição");
+                    Col = Col + 1;
+                }
+                if (dp["mealTypeDescription"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Descrição Tp Refeição");
+                    Col = Col + 1;
+                }
+                if (dp["grupoServico"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Gr Serviço");
+                    Col = Col + 1;
+                }
+                if (dp["serviceGroupDescription"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Descrição Gr Serviço");
+                    Col = Col + 1;
+                }
+                if (dp["codServCliente"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Cod Serv Cliente");
+                    Col = Col + 1;
+                }
+                if (dp["desServCliente"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Descrição Serv Cliente");
+                    Col = Col + 1;
+                }
+                if (dp["nGuiaResiduosGAR"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº Guia Resíduos (GAR)");
+                    Col = Col + 1;
+                }
+                if (dp["nGuiaExterna"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº Guia Externa");
+                    Col = Col + 1;
+                }
+
                 if (dp != null)
                 {
                     int count = 1;
@@ -599,6 +640,47 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["amount"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item["amount"].ToString());
+                            Col = Col + 1;
+                        }
+
+                        if (dp["tipoRefeicao"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item["tipoRefeicao"].ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["mealTypeDescription"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item["mealTypeDescription"].ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["grupoServico"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item["grupoServico"].ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["serviceGroupDescription"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item["serviceGroupDescription"].ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["codServCliente"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item["codServCliente"].ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["desServCliente"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item["desServCliente"].ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["nGuiaResiduosGAR"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item["nGuiaResiduosGAR"].ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["nGuiaExterna"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item["nGuiaExterna"].ToString());
                             Col = Col + 1;
                         }
 
