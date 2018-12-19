@@ -58,6 +58,8 @@ namespace Hydra.Such.Data.Logic
                                 RespCenterId = temp.RespCenterId.Equals(DBNull.Value) ? "" : (string)temp.RespCenterId,
                                 HasAnAdvance = (bool)temp.HasAnAdvance,
                                 Total = temp.Total.Equals(DBNull.Value) ? 0 : (decimal)temp.Total,
+                                VlrRececionadoComIVA = temp.VlrRececionadoComIVA.Equals(DBNull.Value) ? 0 : (decimal)temp.VlrRececionadoComIVA,        
+                                VlrRececionadoSemIVA = temp.VlrRececionadoSemIVA.Equals(DBNull.Value) ? 0 : (decimal)temp.VlrRececionadoSemIVA,
                             });
                         }
                     }

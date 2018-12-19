@@ -141,6 +141,30 @@
                 </template>
             </vaadin-grid-column>
 
+            <vaadin-grid-column width="220px" resizable hidden$="{{ _columns.vlrRececionadoComIVA.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="vlrRececionadoComIVA">Vlr rececionado com IVA</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="vlrRececionadoComIVA" />
+                </template>
+                <template>
+                    <div class="text-right">
+                        [[ _formatCurrencyValue(item.vlrRececionadoComIVA) ]]
+                    </div>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="220px" resizable hidden$="{{ _columns.total.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="vlrRececionadoSemIVA">Vlr rececionado sem IVA</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="vlrRececionadoSemIVA" />
+                </template>
+                <template>
+                    <div class="text-right">
+                        [[ _formatCurrencyValue(item.vlrRececionadoSemIVA) ]]
+                    </div>
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.total.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="total">Total</vaadin-grid-sorter>
@@ -162,6 +186,7 @@
                     {{item.expectedReceiptDate}}
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="220px" resizable hidden$="{{ _columns.requisitionNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="requisitionNo">Nº Requisição</vaadin-grid-sorter>
@@ -171,6 +196,7 @@
                     {{item.requisitionNo}}
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.regionId.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="regionId">Cód. Região</vaadin-grid-sorter>
@@ -247,6 +273,8 @@
 
                     this.$.grid_databound_ajax.generateRequest();
 
+                    window.teste = this;
+
                     /*ColumnToggle*/
                     this._startColumnToggle();
 
@@ -298,7 +326,9 @@
                         "regionId": { hidden: false, label: "Cód. Região" },
                         "functionalAreaId": { hidden: false, label: "Cód. Área Funcional" },
                         "respCenterId": { hidden: false, label: "Cód. Centro de Responsabilidade" },
-                        "hasAnAdvance": { hidden: false, label: "Adiantamento" }
+                        "hasAnAdvance": { hidden: false, label: "Adiantamento" },
+                        "vlrRececionadoComIVA": { hidden: false, label: "Vlr rececionado com IVA" },
+                        "vlrRececionadoSemIVA": { hidden: false, label: "Vlr rececionado sem IVA" },
                     };
 
                     if (localStorage["encomendaslist.ToggleColumn"]) {

@@ -27,6 +27,9 @@ namespace Hydra.Such.Data.ViewModel.Encomendas
         public bool HasAnAdvance { get; set; }
         public decimal Total { get; set; }
 
+        public decimal VlrRececionadoComIVA { get; set; }
+        public decimal VlrRececionadoSemIVA { get; set; }
+
         //EXPORTAR PARA EXCEL
         public Object ColunasEXCEL { get; set; }
 
