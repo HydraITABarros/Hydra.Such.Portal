@@ -98,11 +98,16 @@ namespace Hydra.Such.Portal.Controllers
             //int AreaId = int.Parse(requestParams["areaid"].ToString());
             Boolean Ended = Boolean.Parse(requestParams["ended"].ToString());
 
-            List<ProjectListItemViewModel> result = DBProjects.GetAllByAreaToList();
+            List<ProjectListItemViewModel> result = new List<ProjectListItemViewModel>();
 
             if (!Ended)
             {
+                result = DBProjects.GetAllByAreaToList();
                 result.RemoveAll(x => x.Status == EstadoProjecto.Terminado);
+            }
+            else
+            {
+                result = DBProjects.GetAllByEstado((EstadoProjecto)2); //Terminado
             }
 
             result.ForEach(x =>
