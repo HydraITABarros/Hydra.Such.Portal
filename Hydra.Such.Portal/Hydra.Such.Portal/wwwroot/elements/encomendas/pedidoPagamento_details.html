@@ -622,18 +622,22 @@
                 _setFieldsEditability() {
                     var self = this;
 
-                    if (self.data.estado != 1)
-                    {
+                    debugger;
+                    if (self.data.estado == 1 && self.data.noPedido == 0) {
+                        $(self.$.menuFunctios).addClass('hidden');
+                    }
+                    else {
                         $(self.$.btnCreateNewPedidoPagamento).addClass('hidden');
 
                         self.$.ddData.disabled = true;
                         self.$.ddValorpedidoComIVA.disabled = true;
                         self.$.ddPrioritario.disabled = true;
                         self.$.ddDescricao.disabled = true;
-                    }
 
-                    if (self.data.estado == 1 || self.data.estado == 5) {
-                        $(self.$.menuFunctios).addClass('hidden');
+                        if (self.data.estado == 5 || self.data.estado == 7) {
+                            $(self.$.menuFunctios).addClass('hidden');
+                        }
+
                     }
                 },
                

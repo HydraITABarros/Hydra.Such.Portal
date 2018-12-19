@@ -9092,6 +9092,10 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Cód. Serviço")
                     .HasMaxLength(50);
 
+                entity.Property(e => e.CodGrupoServico)
+                    .HasColumnName("CodGrupoServico")
+                    .HasMaxLength(50);
+
                 entity.Property(e => e.DataHoraCriação)
                     .HasColumnName("Data/Hora Criação")
                     .HasColumnType("datetime");

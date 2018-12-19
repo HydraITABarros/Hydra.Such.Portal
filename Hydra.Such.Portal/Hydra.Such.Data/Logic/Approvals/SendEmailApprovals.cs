@@ -94,5 +94,45 @@ namespace Hydra.Such.Data.Logic.Approvals
             string UserState = "EmailAprovações";
             Client.SendAsync(MMessage, UserState);
         }
+
+        public void SendEmail_Simple()
+        {
+            SmtpClient Client = new SmtpClient(Config.Host, Config.Port);
+            NetworkCredential Credentials = new NetworkCredential(Config.Username, Config.Password);
+            Client.UseDefaultCredentials = true;
+            Client.Credentials = Credentials;
+            Client.EnableSsl = Config.SSL;
+
+            MailMessage MMessage = new MailMessage
+            {
+                From = new MailAddress(From, DisplayName)
+            };
+
+            foreach (var t in To)
+            {
+                MMessage.To.Add(new MailAddress(t));
+            }
+
+            foreach (var cc in CC)
+            {
+                if (IsValidEmail(cc))
+                    MMessage.CC.Add(cc);
+            }
+
+            foreach (var bcc in BCC)
+            {
+                if (IsValidEmail(bcc))
+                    MMessage.Bcc.Add(bcc);
+            }
+
+            MMessage.Subject = Subject;
+            MMessage.Body = Body;
+            MMessage.IsBodyHtml = IsBodyHtml;
+
+            Client.SendCompleted += new SendCompletedEventHandler(SendCompletedCallback);
+
+            string UserState = "EmailAprovações";
+            Client.SendAsync(MMessage, UserState);
+        }
     }
 }

@@ -8,6 +8,7 @@ namespace Hydra.Such.Data.Database
         public string NºCliente { get; set; }
         public string CódServiço { get; set; }
         public bool? GrupoServiços { get; set; }
+        public string CodGrupoServico { get; set; }
         public DateTime? DataHoraCriação { get; set; }
         public string UtilizadorCriação { get; set; }
         public DateTime? DataHoraModificação { get; set; }
