@@ -339,6 +339,7 @@ namespace Hydra.Such.Portal.Controllers
 
                     if (DBPedidoPagamento.Create(DBPedidoPagamento.ParseToDB(data)) != null)
                     {
+                        data = DBPedidoPagamento.ParseToViewModel(DBPedidoPagamento.GetAllPedidosPagamento().Where(x => x.UserPedido.ToLower() == User.Identity.Name.ToLower()).LastOrDefault());
                         data.eReasonCode = 1;
                         data.eMessage = "Foi criado com sucesso o Pedido de Pagemento.";
                     }

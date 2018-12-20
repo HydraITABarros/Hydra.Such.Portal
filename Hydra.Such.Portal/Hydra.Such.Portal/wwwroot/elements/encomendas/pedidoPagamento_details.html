@@ -202,7 +202,7 @@
 
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
-            <paper-button id="btnCreateNewPedidoPagamento" class="tablinks" on-tap="_createNewPedidoPagamento"><i class="fa fa-check-square" aria-hidden="true"></i> Criar Pedido</paper-button>
+            <paper-button id="btnCreateNewPedidoPagamento" class="tablinks" on-tap="_createNewPedidoPagamento"><i class="fa fa-check-square" aria-hidden="true"></i> Criar</paper-button>
             <such-dropdown-menu id="menuFunctios" title="Funções" items='[[ _functionsMenuItems ]]' disabled="{{ !_permissions.update }}" on-value-changed="_functionsMenuItemSelected"></such-dropdown-menu>
         </div>
 
@@ -281,14 +281,6 @@
                                             disabled>
                             </such-selectbox>
                         </div>
-
-                        <div class="col-sm-3">
-                            <vaadin-text-field id="ddNIB" label="NIB" value="{{data.nib}}" disabled></vaadin-text-field>
-                        </div>
-
-                        <div class="col-sm-3">
-                            <vaadin-text-field id="ddIBAN" label="IBAN" value="{{data.iban}}" disabled></vaadin-text-field>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -333,6 +325,10 @@
                     </div>
 
                     <div class="row break_clear">
+                        <div class="col-sm-6">
+                            <such-textarea id="ddMotivoAnulacao" label="Motivo da Anulação" value="{{data.motivoAnulacao}}" rows="5" maxlength="100" disabled></such-textarea>
+                        </div>
+
                         <div class="col-sm-3">
                             <vaadin-text-field id="ddUserArquivo" label="Utilizador da Anulação" value="{{data.userArquivo}}" disabled></vaadin-text-field>
                         </div>
@@ -341,8 +337,12 @@
                             <vaadin-date-picker id="ddDataArquivo" label="Data da Anulação" value="{{data.dataArquivoText}}" disabled></vaadin-date-picker>
                         </div>
 
-                        <div class="col-sm-6">
-                            <such-textarea id="ddMotivoAnulacao" label="Motivo da Anulação" value="{{data.motivoAnulacao}}" rows="5" maxlength="100" disabled></such-textarea>
+                        <div class="col-sm-3">
+                            <vaadin-text-field id="ddNIB" label="NIB" value="{{data.nib}}" disabled></vaadin-text-field>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <vaadin-text-field id="ddIBAN" label="IBAN" value="{{data.iban}}" disabled></vaadin-text-field>
                         </div>
                     </div>
                 </div>
@@ -455,13 +455,19 @@
                     }
                 },
                 _responseCriarPedidoPagamento: function (e) {
+                    debugger;
                     if (this.resultCriarPedidoPagamento.eReasonCode == "1") {
                         this._openToast(this.resultCriarPedidoPagamento.eMessage);
+
+                        this._no = this.resultCriarPedidoPagamento.noPedido;
+
+                        this.$.page_databound_ajax.params = { "id": this._no };
+                        this.$.page_databound_ajax.generateRequest();
                     }
                     else {
                         this._openToastError(this.resultCriarPedidoPagamento.eMessage);
                     }
-                    window.location.href = "/Encomendas/PedidoPagamento_List";
+                    //window.location.href = "/Encomendas/PedidoPagamento_List";
                     //this.$.page_databound_ajax.body = JSON.stringify({ "No": this.data.noPedido });
                     //this.$.page_databound_ajax.generateRequest();
                 },
@@ -492,12 +498,12 @@
                 _EnviarAprovacaoResponse: function (e) {
                     if (this.resultEnviarAprovacao.eReasonCode == "1") {
                         this._openToast(this.resultEnviarAprovacao.eMessage);
+
+                        window.location.href = "/Encomendas/PedidoPagamento_List";
                     }
                     else {
                         this._openToastError(this.resultEnviarAprovacao.eMessage);
                     }
-
-                    window.location.href = "/Encomendas/PedidoPagamento_List";
                     //this.$.page_databound_ajax.params = { "id": this._no };
                     //this.$.page_databound_ajax.generateRequest();
                 },
@@ -528,12 +534,12 @@
                 _AprovarResponse: function (e) {
                     if (this.resultAprovar.eReasonCode == "1") {
                         this._openToast(this.resultAprovar.eMessage);
+
+                        window.location.href = "/Encomendas/PedidoPagamento_List";
                     }
                     else {
                         this._openToastError(this.resultAprovar.eMessage);
                     }
-
-                    window.location.href = "/Encomendas/PedidoPagamento_List";
                     //this.$.page_databound_ajax.params = { "id": this._no };
                     //this.$.page_databound_ajax.generateRequest();
                 },
@@ -564,12 +570,12 @@
                 _ValidarResponse: function (e) {
                     if (this.resultValidar.eReasonCode == "1") {
                         this._openToast(this.resultValidar.eMessage);
+
+                        window.location.href = "/Encomendas/PedidoPagamento_List";
                     }
                     else {
                         this._openToastError(this.resultValidar.eMessage);
                     }
-
-                    window.location.href = "/Encomendas/PedidoPagamento_List";
                     //this.$.page_databound_ajax.params = { "id": this._no };
                     //this.$.page_databound_ajax.generateRequest();
                 },
@@ -609,12 +615,12 @@
                 _AnularResponse: function (e) {
                     if (this.resultAnular.eReasonCode == "1") {
                         this._openToast(this.resultAnular.eMessage);
+
+                        window.location.href = "/Encomendas/PedidoPagamento_List";
                     }
                     else {
                         this._openToastError(this.resultAnular.eMessage);
                     }
-
-                    window.location.href = "/Encomendas/PedidoPagamento_List";
                     //this.$.page_databound_ajax.params = { "id": this._no };
                     //this.$.page_databound_ajax.generateRequest();
                 },
@@ -637,7 +643,9 @@
                         if (self.data.estado == 5 || self.data.estado == 7) {
                             $(self.$.menuFunctios).addClass('hidden');
                         }
-
+                        else {
+                            $(self.$.menuFunctios).removeClass('hidden');
+                        }
                     }
                 },
                
