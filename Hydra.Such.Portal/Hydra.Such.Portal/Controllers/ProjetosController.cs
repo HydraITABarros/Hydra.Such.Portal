@@ -2581,18 +2581,22 @@ namespace Hydra.Such.Portal.Controllers
             var customersIds = authProjectMovements.Select(x => x.CodCliente).Distinct();
             List<PreçosServiçosCliente> customersServicesPrices = new List<PreçosServiçosCliente>();
 
+            //NR20181220
+            List<MovimentosDeProjeto> movimentosDeProjetos = new List<MovimentosDeProjeto>();
+            
+
             //get all movements from authProjects
             List<SPInvoiceListViewModel> data = null;
             using (SuchDBContext ctx = new SuchDBContext())
             {
                 projectsDetails = ctx.Projetos.Where(x => projectsIds.Contains(x.NºProjeto)).ToList();
-
+                
                 data = ctx.MovimentosProjectoAutorizados
                     .Join(ctx.MovimentosDeProjeto,
                         mpa => mpa.NumMovimento,
                         mp => mp.NºLinha,
                         (mpa, mp) => new SPInvoiceListViewModel
-                        {
+                        {                            
                             /*
                             ProjectDimension;
                             */
