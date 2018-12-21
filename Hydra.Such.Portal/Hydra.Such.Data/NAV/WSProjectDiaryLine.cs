@@ -200,6 +200,73 @@ namespace Hydra.Such.Data.NAV
 
         }
 
+        public static async Task<WSCreateProjectDiaryLine.Create_Result> CreateNavDiaryLines(WSCreateProjectDiaryLine.WSJobJournalLine DiaryLines, Guid TransactID, NAVWSConfigurations WSConfigurations)
+        {
+            EndpointAddress WS_URL = new EndpointAddress(WSConfigurations.WS_JobJournalLine_URL.Replace("Company", WSConfigurations.WS_User_Company));
+            WSCreateProjectDiaryLine.WSJobJournalLine_PortClient WS_Client = new WSCreateProjectDiaryLine.WSJobJournalLine_PortClient(navWSBinding, WS_URL);
+            WS_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
+            WS_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
+
+            try
+            {
+                WSCreateProjectDiaryLine.Create toCreate = new WSCreateProjectDiaryLine.Create();
+                toCreate.WSJobJournalLine = DiaryLines;
+                WSCreateProjectDiaryLine.Create_Result result = await WS_Client.CreateAsync(toCreate);
+
+                if (result != null)
+                {
+                    WSCreateProjectDiaryLine.Update toUpdate = new WSCreateProjectDiaryLine.Update()
+                    {
+                        WSJobJournalLine = new WSCreateProjectDiaryLine.WSJobJournalLine()
+                        {
+                            Key = result.WSJobJournalLine.Key,
+                            Line_No = result.WSJobJournalLine.Line_No,
+                            Portal_Transaction_No = TransactID.ToString(),
+                            Job_No = result.WSJobJournalLine.Job_No,
+                            Document_DateSpecified = result.WSJobJournalLine.Document_DateSpecified,
+                            Document_Date = result.WSJobJournalLine.Document_Date,
+                            Document_No = result.WSJobJournalLine.Document_No,
+                            TypeSpecified = true,
+                            Type = result.WSJobJournalLine.Type,
+                            Description100 = result.WSJobJournalLine.Description100,
+                            FunctionAreaCode20 = result.WSJobJournalLine.FunctionAreaCode20,
+                            ResponsabilityCenterCode20 = result.WSJobJournalLine.ResponsabilityCenterCode20,
+                            RegionCode20 = result.WSJobJournalLine.RegionCode20,
+                            Location_Code = result.WSJobJournalLine.Location_Code,
+                            No = result.WSJobJournalLine.No,
+                            Posting_DateSpecified = true,
+                            Posting_Date = result.WSJobJournalLine.Posting_Date,
+                            Unit_of_Measure_Code = result.WSJobJournalLine.Unit_of_Measure_Code,
+                            ChargeableSpecified = true,
+                            Chargeable = result.WSJobJournalLine.Chargeable,
+                            QuantitySpecified = true,
+                            Quantity = result.WSJobJournalLine.Quantity,
+                            Unit_Cost = DiaryLines.Unit_Cost,
+                            Unit_CostSpecified = true,
+                            Unit_Price = DiaryLines.Unit_Price,
+                            Unit_PriceSpecified = true,
+                        }
+                    };
+                    WS_Client = new WSCreateProjectDiaryLine.WSJobJournalLine_PortClient(navWSBinding, WS_URL);
+                    WS_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
+                    WS_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
+                    WSCreateProjectDiaryLine.Update_Result resultUpdate = await WS_Client.UpdateAsync(toUpdate);
+
+                }
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+
+
+
+
         public static async Task<WSGenericCodeUnit.FxPostJobJrnlLines_Result> RegsiterNavDiaryLines(Guid TransactID, NAVWSConfigurations WSConfigurations)
         {
             //Configure NAV Client
