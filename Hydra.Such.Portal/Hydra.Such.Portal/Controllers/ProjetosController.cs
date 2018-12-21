@@ -2612,29 +2612,29 @@ namespace Hydra.Such.Portal.Controllers
                             wSJobJournalLine.Job_No = NumProjecto;
                             wSJobJournalLine.Document_Date = movimento.Data ?? DateTime.Now;
                             wSJobJournalLine.Document_DateSpecified = true;
-                            switch (movimento.TipoMovimento.ToString())
-                            {
-                                case "0":
-                                    wSJobJournalLine.Entry_Type = WSCreateProjectDiaryLine.Entry_Type.Usage;
-                                    wSJobJournalLine.Entry_TypeSpecified = true;
-                                    break;
-                                case "1":
-                                    wSJobJournalLine.Entry_Type = WSCreateProjectDiaryLine.Entry_Type.Sale;
-                                    wSJobJournalLine.Entry_TypeSpecified = true;
-                                    break;
-                            }
+                            //switch (movimento.TipoMovimento.ToString())
+                            //{
+                            //    case "0":
+                            //        wSJobJournalLine.Entry_Type = WSCreateProjectDiaryLine.Entry_Type.Usage;
+                            //        wSJobJournalLine.Entry_TypeSpecified = true;
+                            //        break;
+                            //    case "1":
+                            //        wSJobJournalLine.Entry_Type = WSCreateProjectDiaryLine.Entry_Type.Sale;
+                            //        wSJobJournalLine.Entry_TypeSpecified = true;
+                            //        break;
+                            //}
                             wSJobJournalLine.Document_No = movimento.NºDocumento ?? string.Empty;
                             switch (movimento.Tipo.ToString())
                             {
-                                case "0":
-                                    wSJobJournalLine.Type = WSCreateProjectDiaryLine.Type.Resource;
-                                    wSJobJournalLine.TypeSpecified = true;
-                                    break;
                                 case "1":
                                     wSJobJournalLine.Type = WSCreateProjectDiaryLine.Type.Item;
                                     wSJobJournalLine.TypeSpecified = true;
                                     break;
                                 case "2":
+                                    wSJobJournalLine.Type = WSCreateProjectDiaryLine.Type.Resource;
+                                    wSJobJournalLine.TypeSpecified = true;
+                                    break;
+                                case "3":
                                     wSJobJournalLine.Type = WSCreateProjectDiaryLine.Type.G_L_Account;
                                     wSJobJournalLine.TypeSpecified = true;
                                     break;
@@ -2645,7 +2645,7 @@ namespace Hydra.Such.Portal.Controllers
                             wSJobJournalLine.QuantitySpecified = true;
                             wSJobJournalLine.Unit_of_Measure_Code = movimento.CódUnidadeMedida ?? string.Empty;
                             wSJobJournalLine.Location_Code = movimento.CódLocalização ?? string.Empty;
-                            wSJobJournalLine.Posting_Group = movimento.GrupoContabProjeto ?? string.Empty;
+                            //wSJobJournalLine.Posting_Group = movimento.GrupoContabProjeto ?? string.Empty;
                             wSJobJournalLine.RegionCode20 = string.Empty;
                             wSJobJournalLine.FunctionAreaCode20 = string.Empty;
                             wSJobJournalLine.ResponsabilityCenterCode20 = string.Empty;
