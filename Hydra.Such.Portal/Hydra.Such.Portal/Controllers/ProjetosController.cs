@@ -2693,6 +2693,10 @@ namespace Hydra.Such.Portal.Controllers
                                 TRegisterNavDiaryLine.Wait();
                             }
 
+                            //Atualizar movimento para não ser criado novamente
+                            movimento.CriarMovNav2017 = false;
+                            ctx.MovimentosDeProjeto.Update(movimento);
+                            ctx.SaveChanges();
                         }
                         catch (Exception ex)
                         {
@@ -2703,11 +2707,6 @@ namespace Hydra.Such.Portal.Controllers
                             errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
                             result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails + errorMessage));
                         }
-
-                        //Atualizar movimento para não ser criado novamente
-                        movimento.CriarMovNav2017 = false;
-                        ctx.MovimentosDeProjeto.Update(movimento);
-                        ctx.SaveChanges();
                     }
                 }
 
