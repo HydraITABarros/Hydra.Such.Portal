@@ -2633,6 +2633,30 @@ namespace Hydra.Such.Portal.Configurations
                 Value = "Arquivado"
             }
         };
+
+        public static readonly List<EnumData> TipoGuiaTransporte = new List<EnumData>()
+        {
+            new EnumData()
+            {
+                Id = 0,
+                Value = "Cliente"
+            },
+            new EnumData()
+            {
+                Id = 1,
+                Value = "Fornecedor"
+            },
+             new EnumData()
+             {
+                 Id = 2,
+                 Value="Armazém"
+             }                  ,
+             new EnumData()
+             {
+                 Id = 3,
+                 Value="Logistica"
+             }
+        };
     }
 
     public class EnumDataString

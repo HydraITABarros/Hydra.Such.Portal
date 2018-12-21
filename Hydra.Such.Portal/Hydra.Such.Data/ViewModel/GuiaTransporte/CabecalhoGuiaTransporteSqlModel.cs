@@ -22,16 +22,16 @@ namespace Hydra.Such.Data.ViewModel.GuiaTransporte
         public string DataDescarga { get; set; }
 
         public string DataGuia { get; set; }
-       
+
         public string DataObservacoesAdicionais { get; set; }
-        
+
         public string DataSaida { get; set; }
         public int DimensionSetId { get; set; }
         public string GlobalDimension1Code { get; set; }
         public string GlobalDimension2Code { get; set; }
         public string GlobalDimension3Code { get; set; }
         public int GuiaTransporteInterface { get; set; }
-        public bool Historico { get; set; }
+        public int Historico { get; set; }
         public string HoraCarga { get; set; }
         public string HoraDescarga { get; set; }
         public string HoraObservacoesAdicionais { get; set; }
@@ -48,6 +48,7 @@ namespace Hydra.Such.Data.ViewModel.GuiaTransporte
         public string NomeCliente2 { get; set; }
         public string NoProjecto { get; set; }
         public string NoRequisicao { get; set; }
+        public string NoSolicitacao { get; set; }
         public string Observacoes { get; set; }
         public string ObservacoesAdicionais { get; set; }
         public string OrdemTransferencia { get; set; }
@@ -59,7 +60,6 @@ namespace Hydra.Such.Data.ViewModel.GuiaTransporte
         public decimal QuantidadeTotal { get; set; }
         public string ReportedBy { get; set; }
         public string Requisicao { get; set; }
-        public string NoSolicitacao { get; set; }
 
         public string ResponsabilityCenter { get; set; }
 
