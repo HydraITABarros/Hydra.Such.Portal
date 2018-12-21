@@ -112,6 +112,9 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     ViaturasViewModel result = DBViatura.ParseToViewModel(viatura);
 
+                    if (DBViaturaImagem.GetByMatricula(data.Matricula) != null)
+                        result.Imagem = DBViaturaImagem.GetByMatricula(result.Matricula).Imagem;
+
                     return Json(result);
                 }
 
@@ -132,10 +135,20 @@ namespace Hydra.Such.Portal.Controllers
                     if (data.Matricula != null)
                     {
                         Viaturas viatura = DBViatura.ParseToDB(data);
-
                         viatura.UtilizadorCriação = User.Identity.Name;
-
                         viatura = DBViatura.Create(viatura);
+
+                        if (data.Imagem != null)
+                        {
+                            ViaturasImagens ViaturaImagem = new ViaturasImagens
+                            {
+                                Matricula = data.Matricula,
+                                Imagem = data.Imagem,
+                                UtilizadorCriacao = User.Identity.Name
+                            };
+                            DBViaturaImagem.Create(ViaturaImagem);
+                        }
+
                         data.eReasonCode = 1;
 
                         if (viatura == null)
@@ -163,8 +176,23 @@ namespace Hydra.Such.Portal.Controllers
             {
                 Viaturas viatura = DBViatura.ParseToDB(data);
                 viatura.UtilizadorModificação = User.Identity.Name;
-
                 DBViatura.Update(viatura);
+
+                if (data.Imagem != null)
+                {
+                    ViaturasImagens ViaturaImagem = new ViaturasImagens
+                    {
+                        Matricula = data.Matricula,
+                        Imagem = data.Imagem,
+                        UtilizadorModificacao = User.Identity.Name
+                    };
+                    if (DBViaturaImagem.GetByMatricula(data.Matricula) != null)
+                        DBViaturaImagem.Update(ViaturaImagem);
+                    else
+                        DBViaturaImagem.Create(ViaturaImagem);
+                }
+
+
                 return Json(data);
             }
             return Json(false);
@@ -178,6 +206,13 @@ namespace Hydra.Such.Portal.Controllers
             {
                 ErrorHandler result = new ErrorHandler();
                 DBViatura.Delete(DBViatura.ParseToDB(data));
+
+                if (DBViaturaImagem.GetByMatricula(data.Matricula) != null)
+                {
+                    ViaturasImagens ViaturaImagem = DBViaturaImagem.GetByMatricula(data.Matricula);
+                    DBViaturaImagem.Delete(ViaturaImagem);
+                }
+
                 result = new ErrorHandler()
                 {
                     eReasonCode = 0,
