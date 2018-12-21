@@ -65,6 +65,7 @@ namespace Hydra.Such.Data.Database
         public int? GrupoFatura { get; set; }
         public string GrupoFaturaDescricao { get; set; }
         public string AutorizadoPor { get; set; }
+        public bool? CriarMovNav2017 { get; set; }
 
         public DestinosFinaisResíduos CódDestinoFinalResíduosNavigation { get; set; }
         public Projetos NºProjetoNavigation { get; set; }
