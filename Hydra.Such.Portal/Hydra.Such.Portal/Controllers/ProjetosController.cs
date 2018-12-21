@@ -98,11 +98,16 @@ namespace Hydra.Such.Portal.Controllers
             //int AreaId = int.Parse(requestParams["areaid"].ToString());
             Boolean Ended = Boolean.Parse(requestParams["ended"].ToString());
 
-            List<ProjectListItemViewModel> result = DBProjects.GetAllByAreaToList();
+            List<ProjectListItemViewModel> result = new List<ProjectListItemViewModel>();
 
             if (!Ended)
             {
+                result = DBProjects.GetAllByAreaToList();
                 result.RemoveAll(x => x.Status == EstadoProjecto.Terminado);
+            }
+            else
+            {
+                result = DBProjects.GetAllByEstado((EstadoProjecto)2); //Terminado
             }
 
             result.ForEach(x =>
@@ -2580,14 +2585,141 @@ namespace Hydra.Such.Portal.Controllers
             List<SPInvoiceListViewModel> data = null;
             using (SuchDBContext ctx = new SuchDBContext())
             {
-                projectsDetails = ctx.Projetos.Where(x => projectsIds.Contains(x.NºProjeto)).ToList();
+                //NR20181221 - Criar movimentos de projeto no NAV2017
+                List<MovimentosDeProjeto> movimentosDeProjetos = new List<MovimentosDeProjeto>();
 
+                foreach (AuthorizedProjectViewModel Movimento in authProjectMovements)
+                {
+                    string NumProjecto = Movimento.CodProjeto.ToString();
+                    int GrupoFatura = Movimento.GrupoFactura;
+
+                    //Obter os movimentos de projecto que sejam para tratar (Campo CriarMovNav2017 = 1)
+                    movimentosDeProjetos = ctx.MovimentosDeProjeto.Where(x => x.NºProjeto == NumProjecto).Where(x => x.GrupoFatura == GrupoFatura).Where(x => x.CriarMovNav2017 == true).ToList();
+
+                    foreach (MovimentosDeProjeto movimento in movimentosDeProjetos)
+                    {
+                        int NumLinha = movimento.NºLinha;
+                        DateTime _Data_Agora = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
+                        Guid transactID = Guid.NewGuid();
+
+                        try
+                        {
+                            WSCreateProjectDiaryLine.WSJobJournalLine wSJobJournalLine = new WSCreateProjectDiaryLine.WSJobJournalLine();
+                            
+
+                            wSJobJournalLine.Line_No = NumLinha;
+                            wSJobJournalLine.Line_NoSpecified = true;
+                            wSJobJournalLine.Job_No = NumProjecto;
+                            wSJobJournalLine.Document_Date = movimento.Data ?? DateTime.Now;
+                            wSJobJournalLine.Document_DateSpecified = true;
+                            //switch (movimento.TipoMovimento.ToString())
+                            //{
+                            //    case "0":
+                            //        wSJobJournalLine.Entry_Type = WSCreateProjectDiaryLine.Entry_Type.Usage;
+                            //        wSJobJournalLine.Entry_TypeSpecified = true;
+                            //        break;
+                            //    case "1":
+                            //        wSJobJournalLine.Entry_Type = WSCreateProjectDiaryLine.Entry_Type.Sale;
+                            //        wSJobJournalLine.Entry_TypeSpecified = true;
+                            //        break;
+                            //}
+                            wSJobJournalLine.Document_No = movimento.NºDocumento ?? string.Empty;
+                            switch (movimento.Tipo.ToString())
+                            {
+                                case "1":
+                                    wSJobJournalLine.Type = WSCreateProjectDiaryLine.Type.Item;
+                                    wSJobJournalLine.TypeSpecified = true;
+                                    break;
+                                case "2":
+                                    wSJobJournalLine.Type = WSCreateProjectDiaryLine.Type.Resource;
+                                    wSJobJournalLine.TypeSpecified = true;
+                                    break;
+                                case "3":
+                                    wSJobJournalLine.Type = WSCreateProjectDiaryLine.Type.G_L_Account;
+                                    wSJobJournalLine.TypeSpecified = true;
+                                    break;
+                            }
+                            wSJobJournalLine.No = movimento.Código;
+                            wSJobJournalLine.Description100 = string.Empty;
+                            wSJobJournalLine.Quantity = movimento.Quantidade ?? 0;
+                            wSJobJournalLine.QuantitySpecified = true;
+                            wSJobJournalLine.Unit_of_Measure_Code = movimento.CódUnidadeMedida ?? string.Empty;
+                            wSJobJournalLine.Location_Code = movimento.CódLocalização ?? string.Empty;
+                            //wSJobJournalLine.Posting_Group = movimento.GrupoContabProjeto ?? string.Empty;
+                            wSJobJournalLine.RegionCode20 = string.Empty;
+                            wSJobJournalLine.FunctionAreaCode20 = string.Empty;
+                            wSJobJournalLine.ResponsabilityCenterCode20 = string.Empty;
+                            wSJobJournalLine.Unit_Cost = movimento.CustoUnitário ?? 0;
+                            wSJobJournalLine.Total_Cost = movimento.CustoTotal ?? 0;
+                            wSJobJournalLine.Unit_Price = movimento.PreçoUnitário ?? 0;
+                            wSJobJournalLine.Total_Price = movimento.PreçoTotal ?? 0;
+                            wSJobJournalLine.Unit_CostSpecified = true;
+                            wSJobJournalLine.Unit_PriceSpecified = true;
+                            switch (movimento.Faturável.ToString())
+                            {
+                                case "False":
+                                    wSJobJournalLine.Chargeable = false;
+                                    wSJobJournalLine.ChargeableSpecified = true;
+                                    break;
+                                case "True":
+                                    wSJobJournalLine.Chargeable = true;
+                                    wSJobJournalLine.ChargeableSpecified = true;
+                                    break;
+                                default:
+                                    wSJobJournalLine.Chargeable = false;
+                                    wSJobJournalLine.ChargeableSpecified = true;
+                                    break;
+                            }
+                            wSJobJournalLine.External_Document_No = movimento.DocumentoOriginal;
+                            wSJobJournalLine.Portal_Transaction_No = transactID.ToString();
+                            wSJobJournalLine.Posting_Date = _Data_Agora;
+                            wSJobJournalLine.Posting_DateSpecified = true;
+                            wSJobJournalLine.OM_Line_No = 0;
+                            wSJobJournalLine.Description = movimento.Descrição ?? string.Empty;
+                            wSJobJournalLine.Description_2 = string.Empty;
+                            wSJobJournalLine.gDec1 = 0;
+                            wSJobJournalLine.gDec2 = 0;
+                            wSJobJournalLine.gDec3 = 0;
+                            wSJobJournalLine.gDec4 = 0;
+
+                            //WSCreateProjectDiaryLine.Create_Result create_Result = new WSCreateProjectDiaryLine.Create_Result(wSJobJournalLine);
+
+                            Task<WSCreateProjectDiaryLine.Create_Result> TCreateNavDiaryLine = WSProjectDiaryLine.CreateNavDiaryLines(wSJobJournalLine, transactID, _configws);
+                            TCreateNavDiaryLine.Wait();
+
+                            if (TCreateNavDiaryLine != null)
+                            {
+                                Task<WSGenericCodeUnit.FxPostJobJrnlLines_Result> TRegisterNavDiaryLine = WSProjectDiaryLine.RegsiterNavDiaryLines(transactID, _configws);
+                                TRegisterNavDiaryLine.Wait();
+                            }
+
+                            //Atualizar movimento para não ser criado novamente
+                            movimento.CriarMovNav2017 = false;
+                            ctx.MovimentosDeProjeto.Update(movimento);
+                            ctx.SaveChanges();
+                        }
+                        catch (Exception ex)
+                        {
+                            if (!hasErrors)
+                                hasErrors = true;
+
+                            execDetails += " Erro ao criar as linhas de movimentos de projeto no Nav2017: ";
+                            errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                            result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails + errorMessage));
+                        }
+                    }
+                }
+
+
+
+                projectsDetails = ctx.Projetos.Where(x => projectsIds.Contains(x.NºProjeto)).ToList();
+                
                 data = ctx.MovimentosProjectoAutorizados
                     .Join(ctx.MovimentosDeProjeto,
                         mpa => mpa.NumMovimento,
                         mp => mp.NºLinha,
                         (mpa, mp) => new SPInvoiceListViewModel
-                        {
+                        {                            
                             /*
                             ProjectDimension;
                             */

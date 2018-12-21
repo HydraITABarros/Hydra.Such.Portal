@@ -182,6 +182,10 @@
                             <vaadin-checkbox id="chkServiceGroup" checked="{{chkServiceGroup}}" disabled="{{ _permissionsCreate }}"> Grupo Serviços </vaadin-checkbox>
                         </div>
 
+                        <div class="col-lg-2">
+                            <vaadin-text-field id="cboCodGrupoServico" name="cboCodGrupoServico" label="Cód. Grupo Serviço" value="{{ddCodGrupoServico}}" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+                        </div>
+
                         <div class="col-lg-1 alignPoga">
                             <paper-button class="btnSave" on-tap="_createClientService" disabled="{{ _permissionsCreate }}">Criar</paper-button>
                         </div>
@@ -215,22 +219,22 @@
             </vaadin-grid-column>
 
             @*<vaadin-grid-column resizable width="150px">
-                    <template class="header">
-                        <vaadin-grid-sorter path="clientNumber">Cliente</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="clientNumber" />
-                    </template>
+            <template class="header">
+                <vaadin-grid-sorter path="clientNumber">Cliente</vaadin-grid-sorter>
+                <vaadin-grid-filter path="clientNumber" />
+            </template>
+            <template>
+                <vaadin-combo-box items="[[Clients]]" item-value-path="id" item-label-path="value" value="{{item.clientNumber}}" disabled>
                     <template>
-                        <vaadin-combo-box items="[[Clients]]" item-value-path="id" item-label-path="value" value="{{item.clientNumber}}" disabled>
-                            <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.name]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
-                            </template>
-                        </vaadin-combo-box>
+                        <paper-icon-item>
+                            <paper-item-body two-line>
+                                <div>[[item.name]]</div>
+                            </paper-item-body>
+                        </paper-icon-item>
                     </template>
-                </vaadin-grid-column>*@
+                </vaadin-combo-box>
+            </template>
+        </vaadin-grid-column>*@
 
             <vaadin-grid-column resizable width="150px">
                 <template class="header">
@@ -255,35 +259,45 @@
             </vaadin-grid-column>
 
             @*<vaadin-grid-column resizable width="150px">
-                    <template class="header">
-                        <vaadin-grid-sorter path="serviceCode">Serviço</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="serviceCode" />
-                    </template>
+            <template class="header">
+                <vaadin-grid-sorter path="serviceCode">Serviço</vaadin-grid-sorter>
+                <vaadin-grid-filter path="serviceCode" />
+            </template>
+            <template>
+                <vaadin-combo-box items="[[Services]]" item-value-path="id" item-label-path="value" value="{{item.serviceCode}}" disabled>
                     <template>
-                        <vaadin-combo-box items="[[Services]]" item-value-path="id" item-label-path="value" value="{{item.serviceCode}}" disabled>
-                            <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
-                            </template>
-                        </vaadin-combo-box>
+                        <paper-icon-item>
+                            <paper-item-body two-line>
+                                <div>[[item.value]]</div>
+                            </paper-item-body>
+                        </paper-icon-item>
                     </template>
-                </vaadin-grid-column>*@
+                </vaadin-combo-box>
+            </template>
+        </vaadin-grid-column>*@
 
             <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <p>
                         @*<vaadin-grid-filter path="serviceGroup" value="[[_filterActive]]">
-                                <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
-                            </vaadin-grid-filter>*@
+                        <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
+                    </vaadin-grid-filter>*@
                         Grupo Serviços
                     </p>
                 </template>
                 <template>
                     @*<vaadin-checkbox checked="{{item.serviceGroup}}" disabled="{{ _permissionsUpdate }}"></vaadin-checkbox>*@
                     {{item.serviceGroup_Show}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px">
+                <template class="header">
+                    <vaadin-grid-sorter path="codGrupoServico">Cód. Grupo Serviço</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codGrupoServico" />
+                </template>
+                <template>
+                    {{item.codGrupoServico}}
                 </template>
             </vaadin-grid-column>
 
@@ -343,6 +357,11 @@
                     notify: true,
                     value: ""
                 },
+                ddCodGrupoServico: {
+                    type: Text,
+                    notify: true,
+                    value: ""
+                },
                 _filterActive: {
                     type: Boolean,
                     value: true
@@ -389,6 +408,7 @@
                     this.ddClients = "";
                     this.ddServices = "";
                     this.chkServiceGroup = false;
+                    this.ddCodGrupoServico = "";
 
                     this.$.page_databound_ajax.generateRequest();
                 }
@@ -436,7 +456,8 @@
                         this.result.unshift({
                             ClientNumber: this.ddClients,
                             ServiceCode: this.ddServices,
-                            ServiceGroup: this.chkServiceGroup
+                            ServiceGroup: this.chkServiceGroup,
+                            CodGrupoServico: this.ddCodGrupoServico
                         });
                     }
                     else
@@ -444,7 +465,8 @@
                         this.result.unshift({
                             ClientNumber: this.ddClients,
                             ServiceCode: this.ddServices,
-                            ServiceGroup: this.chkServiceGroup
+                            ServiceGroup: this.chkServiceGroup,
+                            CodGrupoServico: this.ddCodGrupoServico
                         });
                     }
                     this.$.page_create_ajax.body = JSON.stringify(this.result);

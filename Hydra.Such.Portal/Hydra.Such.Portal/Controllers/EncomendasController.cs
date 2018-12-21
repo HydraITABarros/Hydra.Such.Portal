@@ -22,6 +22,7 @@ using NPOI.XSSF.UserModel;
 using Hydra.Such.Data.ViewModel.Encomendas;
 using Newtonsoft.Json;
 using Hydra.Such.Data.Logic.Encomendas;
+using Hydra.Such.Data.Logic.Approvals;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -147,6 +148,9 @@ namespace Hydra.Such.Portal.Controllers
                 if (dp["respCenterId"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Centro de Responsabilidade"); Col = Col + 1; }
                 if (dp["hasAnAdvance"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Adiantamento"); Col = Col + 1; }
 
+                if (dp["vlrRececionadoComIVA"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Vlr rececionado com IVA"); Col = Col + 1; }
+                if (dp["vlrRececionadoSemIVA"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Vlr rececionado sem IVA"); Col = Col + 1; }
+
                 if (dp != null)
                 {
                     int count = 1;
@@ -169,6 +173,9 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["functionalAreaId"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.FunctionalAreaId); Col = Col + 1; }
                         if (dp["respCenterId"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RespCenterId); Col = Col + 1; }
                         if (dp["hasAnAdvance"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.HasAnAdvance); Col = Col + 1; }
+
+                        if (dp["vlrRececionadoComIVA"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.VlrRececionadoComIVA.ToString()); Col = Col + 1; }
+                        if (dp["vlrRececionadoSemIVA"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.VlrRececionadoSemIVA.ToString()); Col = Col + 1; }
 
                         count++;
                     }
@@ -332,6 +339,7 @@ namespace Hydra.Such.Portal.Controllers
 
                     if (DBPedidoPagamento.Create(DBPedidoPagamento.ParseToDB(data)) != null)
                     {
+                        data = DBPedidoPagamento.ParseToViewModel(DBPedidoPagamento.GetAllPedidosPagamento().Where(x => x.UserPedido.ToLower() == User.Identity.Name.ToLower()).LastOrDefault());
                         data.eReasonCode = 1;
                         data.eMessage = "Foi criado com sucesso o Pedido de Pagemento.";
                     }
@@ -406,7 +414,29 @@ namespace Hydra.Such.Portal.Controllers
                         return Json(data);
                     }
 
-                    //FALTA O ENVIO DE EMAIL
+                    //ENVIO DE EMAIL
+                    List<string> UsersToNotify = new List<string>();
+                    if (!string.IsNullOrEmpty(Aprovador1))
+                        UsersToNotify.Add(Aprovador1);
+                    if (!string.IsNullOrEmpty(Aprovador2))
+                        UsersToNotify.Add(Aprovador2);
+                    
+                    if (UsersToNotify.Count() > 0)
+                    {
+                        UsersToNotify = UsersToNotify.Distinct().ToList();
+                        UsersToNotify.ForEach(e =>
+                        {
+                            SendEmailApprovals Email = new SendEmailApprovals();
+
+                            Email.Subject = "eSUCH - Aprovação Pendente - Movimento de Pagamento Nº "  + data.NoPedido.ToString();
+                            Email.From = User.Identity.Name;
+                            Email.To.Add(e);
+                            Email.Body = MakeEmailBodyContent("Existe uma nova tarefa pendente da sua aprovação no eSUCH!");
+                            Email.IsBodyHtml = true;
+
+                            Email.SendEmail_Simple();
+                        });
+                    }
 
                     data.eReasonCode = 1;
                     data.eMessage = "O Pedido de Pagamento foi Enviado para Aprovação com sucesso.";
@@ -706,6 +736,50 @@ namespace Hydra.Such.Portal.Controllers
                 result.eMessages.Add(new TraceInformation(TraceType.Error, "Ocorreu um erro."));
             }
             return Json(result);
+        }
+
+        public static string MakeEmailBodyContent(string BodyText)
+        {
+            string Body = @"<html>" +
+                                "<head>" +
+                                    "<style>" +
+                                        "table{border:0;} " +
+                                        "td{width:600px; vertical-align: top;}" +
+                                    "</style>" +
+                                "</head>" +
+                                "<body>" +
+                                    "<table>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "Caro (a)," +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr><td>&nbsp;</td></tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                BodyText +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "&nbsp;" +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "Com os melhores cumprimentos," +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "<i>SUCH - Serviço de Utilização Comum dos Hospitais</i>" +
+                                            "</td>" +
+                                        "</tr>" +
+                                    "</table>" +
+                                "</body>" +
+                            "</html>";
+
+            return Body;
         }
 
         #endregion

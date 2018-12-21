@@ -156,6 +156,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<UtilizadoresGruposAprovação> UtilizadoresGruposAprovação { get; set; }
         public virtual DbSet<UtilizadoresMovimentosDeAprovação> UtilizadoresMovimentosDeAprovação { get; set; }
         public virtual DbSet<Viaturas> Viaturas { get; set; }
+        public virtual DbSet<ViaturasImagens> ViaturasImagens { get; set; }
         public virtual DbSet<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
         public virtual DbSet<PedidosPagamento> PedidosPagamento { get; set; }
 
@@ -9092,6 +9093,10 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Cód. Serviço")
                     .HasMaxLength(50);
 
+                entity.Property(e => e.CodGrupoServico)
+                    .HasColumnName("CodGrupoServico")
+                    .HasMaxLength(50);
+
                 entity.Property(e => e.DataHoraCriação)
                     .HasColumnName("Data/Hora Criação")
                     .HasColumnType("datetime");
@@ -10454,7 +10459,7 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.DuraçãoPneus).HasColumnName("Duração Pneus");
 
-                entity.Property(e => e.Imagem).HasColumnType("image");
+                //entity.Property(e => e.Imagem).HasColumnType("image");
 
                 entity.Property(e => e.IntervaloRevisões).HasColumnName("Intervalo Revisões");
 
@@ -10538,6 +10543,35 @@ namespace Hydra.Such.Data.Database
                     .WithMany(p => p.Viaturas)
                     .HasForeignKey(d => new { d.CódigoMarca, d.CódigoModelo })
                     .HasConstraintName("FK_Viaturas_Modelos");
+            });
+
+            modelBuilder.Entity<ViaturasImagens>(entity =>
+            {
+                entity.HasKey(e => e.Matricula);
+
+                entity.Property(e => e.Matricula)
+                    .HasColumnName("Matrícula")
+                    .HasMaxLength(10)
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.Imagem)
+                    .HasColumnType("Imagem");
+
+                entity.Property(e => e.DataHoraCriacao)
+                    .HasColumnName("DataHoraCriacao")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DataHoraModificacao)
+                    .HasColumnName("DataHoraModificacao")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.UtilizadorCriacao)
+                    .HasColumnName("UtilizadorCriacao")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.UtilizadorModificacao)
+                    .HasColumnName("UtilizadorModificacao")
+                    .HasMaxLength(50);
             });
 
             modelBuilder.Entity<WorkflowProcedimentosCcp>(entity =>

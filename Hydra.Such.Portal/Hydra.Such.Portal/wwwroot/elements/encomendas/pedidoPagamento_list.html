@@ -773,6 +773,22 @@
                         this._openToastError("As linhas não foram selecionadas.");
                     }
                 },
+                _CriarTransferenciaResponse: function (e) {
+                    debugger;
+                    if (this.resultCriarTransferencia.eReasonCode == "1") {
+                        this._openToast(this.resultCriarTransferencia.eMessage);
+                    }
+                    else {
+                        if (this.resultCriarTransferencia.eMessages.length > 0)
+                            this._toggleToastMultiple();
+                        else
+                            this._openToastError(this.resultCriarTransferencia.eMessage);
+                    }
+
+                    this.selectedItems = [];
+                    this.$.grid_databound_ajax.params = { "estado": 2 };
+                    this.$.grid_databound_ajax.generateRequest();
+                },
 
                 _Arquivar: function () {
                     debugger;

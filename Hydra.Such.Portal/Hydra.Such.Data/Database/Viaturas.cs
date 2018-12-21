@@ -57,7 +57,7 @@ namespace Hydra.Such.Data.Database
         public decimal? ValorVenda { get; set; }
         public DateTime? ValidadeApólice { get; set; }
         public DateTime? ValidadeCartãoCombustivel { get; set; }
-        public byte[] Imagem { get; set; }
+        //public byte[] Imagem { get; set; }
         public DateTime? DataUltimaRevisão { get; set; }
         public int? KmUltimaRevisão { get; set; }
         public int? IntervaloRevisões { get; set; }
@@ -71,5 +71,6 @@ namespace Hydra.Such.Data.Database
         public ICollection<LinhasRequisição> LinhasRequisição { get; set; }
         public ICollection<MovimentosViaturas> MovimentosViaturas { get; set; }
         public ICollection<Requisição> Requisição { get; set; }
+        //public Marcas ImagemNavigation { get; set; }
     }
 }

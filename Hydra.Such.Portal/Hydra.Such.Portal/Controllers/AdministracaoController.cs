@@ -1634,7 +1634,8 @@ namespace Hydra.Such.Portal.Controllers
                 ServiceDescription = DBServices.GetById(x.CódServiço) != null ? DBServices.GetById(x.CódServiço).Descrição : "",
                 //ServiceDescription = x.CódServiçoNavigation != null ? x.CódServiçoNavigation.Descrição : "",
                 ServiceGroup = x.GrupoServiços,
-                ServiceGroup_Show = x.GrupoServiços.HasValue ? x.GrupoServiços == true ? "Sim" : "Não" : "Não"
+                ServiceGroup_Show = x.GrupoServiços.HasValue ? x.GrupoServiços == true ? "Sim" : "Não" : "Não",
+                CodGrupoServico = x.CodGrupoServico
             }).ToList();
 
             return Json(result);
@@ -1654,6 +1655,7 @@ namespace Hydra.Such.Portal.Controllers
                     tpval.DataHoraModificação = DateTime.Now;
                     tpval.GrupoServiços = dt.ServiceGroup;
                     tpval.CódServiço = dt.ServiceCode;
+                    tpval.CodGrupoServico = dt.CodGrupoServico;
                     tpval.NºCliente = dt.ClientNumber;
 
                     DBClientServices.Update(tpval);
@@ -1682,6 +1684,7 @@ namespace Hydra.Such.Portal.Controllers
                             tpval.DataHoraCriação = DateTime.Now;
                             tpval.GrupoServiços = dt.ServiceGroup;
                             tpval.CódServiço = dt.ServiceCode;
+                            tpval.CodGrupoServico = dt.CodGrupoServico;
                             tpval.NºCliente = dt.ClientNumber;
 
                             DBClientServices.Create(tpval);
@@ -1726,7 +1729,8 @@ namespace Hydra.Such.Portal.Controllers
             {
                 ClientNumber = x.NºCliente,
                 ServiceCode = x.CódServiço,
-                ServiceGroup = x.GrupoServiços
+                ServiceGroup = x.GrupoServiços,
+                CodGrupoServico = x.CodGrupoServico
             }).ToList();
 
             bool exists = false;

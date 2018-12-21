@@ -125,6 +125,7 @@ namespace Hydra.Such.Data.Logic.ProjectDiary
                         ServiceCode = x.CódServiço,
                         ServiceDescription = x.CódServiçoNavigation.Descrição,
                         ServiceGroup = x.GrupoServiços,
+                        CodGrupoServico = x.CodGrupoServico,
                         ClientNumber = x.NºCliente
                     }).ToList();
                 }
@@ -149,6 +150,7 @@ namespace Hydra.Such.Data.Logic.ProjectDiary
                             ServiceCode = x.CódServiço,
                             ServiceDescription = x.CódServiçoNavigation.Descrição,
                             ServiceGroup = x.GrupoServiços,
+                            CodGrupoServico = x.CodGrupoServico,
                             ClientNumber = x.NºCliente
                         }).ToList();
                     }
@@ -159,6 +161,7 @@ namespace Hydra.Such.Data.Logic.ProjectDiary
                             ServiceCode = x.CódServiço,
                             ServiceDescription = x.CódServiçoNavigation.Descrição,
                             ServiceGroup = x.GrupoServiços,
+                            CodGrupoServico = x.CodGrupoServico,
                             ClientNumber = x.NºCliente
                         }).ToList();
                     }                                
@@ -184,6 +187,7 @@ namespace Hydra.Such.Data.Logic.ProjectDiary
                             ServiceCode = x.CódServiço,
                             ServiceDescription = x.CódServiçoNavigation.Descrição,
                             ServiceGroup = x.GrupoServiços,
+                            CodGrupoServico = x.CodGrupoServico,
                             ClientNumber = x.NºCliente
                         }).ToList();
                     }
@@ -194,6 +198,7 @@ namespace Hydra.Such.Data.Logic.ProjectDiary
                             ServiceCode = x.CódServiço,
                             ServiceDescription = x.CódServiçoNavigation.Descrição,
                             ServiceGroup = x.GrupoServiços,
+                            CodGrupoServico = x.CodGrupoServico,
                             ClientNumber = x.NºCliente                            
                         }).ToList();
                     }
