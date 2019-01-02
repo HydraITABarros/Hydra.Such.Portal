@@ -45,8 +45,8 @@ namespace Hydra.Such.Portal.Controllers
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.ImpressaoGuiaTransporteNAV);
             if (UPerm != null && UPerm.Read.Value)
             {
-                ViewBag.ifHistoric = true;
-                ViewBag.Historic = "(Histórico) ";
+                ViewBag.ifHistoric = false;
+                ViewBag.Historic = " ";
                 return View();
             }
             else
@@ -61,23 +61,6 @@ namespace Hydra.Such.Portal.Controllers
         public ActionResult GuiaTransporteDetails(string id, bool isHistoric = false)
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.ImpressaoGuiaTransporteNAV);
-
-
-            #region zpgm.TESTE UPDATE GUIA
-            //GuiaTransporteNavViewModel guia = new GuiaTransporteNavViewModel
-            //{
-            //    NoGuiaTransporte = "GT1000016",
-            //    Tipo = 0,
-            //    NoCliente = "200001",
-            //    DataGuia = DateTime.Now,
-            //    LinhasGuiaTransporte = null
-            //};
-
-            //if (!DBNAV2017GuiasTransporte.UpdateGuiaTransporte(guia))
-            //{
-            //    int x = 0;
-            //}
-            #endregion
 
 
             if (UPerm!=null && UPerm.Read.Value)
@@ -112,6 +95,16 @@ namespace Hydra.Such.Portal.Controllers
             List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
             List<GuiaTransporteNavViewModel> result = DBNAV2017GuiasTransporte.GetListByDim(_config.NAVDatabaseName, _config.NAVCompanyName, userDimensions, historic);
 
+            if (historic)
+            {
+                ViewBag.Historic = "(Histórico) ";
+                ViewBag.ifHistoric = true;
+            }
+            else
+            {
+                ViewBag.Historic = " ";
+                ViewBag.ifHistoric = false;
+            }
             return Json(result);
         }
 
@@ -136,12 +129,36 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
+        [HttpPost]
+        public JsonResult GetThirdPartiesList([FromBody] JObject requestParams)
+        {
+            int type = requestParams["type"] == null ? -1 : (int)requestParams["type"];
+            if(type== -1)
+            {
+                return null;
+            }
+
+            List<ThirdPartyViewModel> result = DBNAV2017GuiasTransporte.GetThirdParties(_config.NAVDatabaseName, _config.NAVCompanyName, type);
+
+            return Json(result);
+        }
+
+        #region CRUD
+        [HttpPost]
+        public JsonResult CreateGuiaTransporte()
+        {
+            // call webservice and return the id of the the new object 
+            //Task<WSSuchNav2017.WSNovaGuiaTransporte_Result> newGuia = WSSuchNav2017.WSNovaGuiaTransporte_Result();
+            return Json(null);
+        }
+
+        [HttpPost]
         public JsonResult UpdateGuia([FromBody] GuiaTransporteNavViewModel data)
         {
-            
-
-            return Json(true);
+            return Json(DBNAV2017GuiasTransporte.UpdateGuiaTransporte(data));
         }
+        #endregion
+
 
     }
 }

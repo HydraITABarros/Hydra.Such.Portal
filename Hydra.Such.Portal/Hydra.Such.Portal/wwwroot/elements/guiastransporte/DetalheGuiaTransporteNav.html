@@ -148,7 +148,9 @@
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
 
-            <paper-button id="btn_imprimirE" class="tablinks" on-tap="_printE"><i class="fa fa-print" aria-hidden="true"></i> Imprimir</paper-button>
+            <template is="dom-if" if="{{ _history }}">
+                <paper-button id="btn_imprimirE" class="tablinks" on-tap="_printE"><i class="fa fa-print" aria-hidden="true"></i> Imprimir</paper-button>
+            </template>
         </div>
 
         <div class="row break_frm">
@@ -189,18 +191,18 @@
                                                     <vaadin-text-field id="noCliente" name="noCliente" label="Nº Terceiro" value="{{ data.noCliente }}" disabled="disabled"></vaadin-text-field>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="codEnvio" name="codEnvio" label="Cód. Envio" value="{{ data.codEnvio }}" disabled="disabled"></vaadin-text-field>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <vaadin-text-field id="noProjecto" name="noProjecto" label="Projecto" value="{{ data.noProjecto }}" disabled="disabled"></vaadin-text-field>
-                                                </div>
-                                            </div>
-                                            <div class="row break_clear">
-                                                <div class="col-md-3">
                                                     <vaadin-text-field id="nomeCliente" name="nomeCliente" label="Nome Cliente" value="{{ data.nomeCliente }}" disabled="disabled"></vaadin-text-field>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <vaadin-text-field id="nomeCliente2" name="nomeCliente2" label="Nome Cliente 2" value="{{ data.nomeCliente2 }}" disabled="disabled"></vaadin-text-field>
+                                                </div>
+                                            </div>
+                                            <div class="row break_clear">
+                                                <div class="col-md-3">
+                                                    <vaadin-text-field id="codEnvio" name="codEnvio" label="Cód. Envio" value="{{ data.codEnvio }}" disabled="disabled"></vaadin-text-field>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <vaadin-text-field id="noProjecto" name="noProjecto" label="Projecto" value="{{ data.noProjecto }}" disabled="disabled"></vaadin-text-field>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <vaadin-text-field id="moradaCliente" name="moradaCliente" label="Morada Clente" value="{{ data.moradaCliente }}" disabled="disabled"></vaadin-text-field>

@@ -136,6 +136,30 @@
             }
         </style>
 
+        <iron-ajax url="/PopulateDropdowns/TiposGuiaTransporte"
+                   last-response="{{ cbTipoGT }}"
+                   auto method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProjectNavList"
+                   last-response="{{cbJobNo}}"
+                   auto method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+        <!-- ******* dropdowns to use on NoCliente.b ********** -->
+        <iron-ajax url="/GuiasTransporteNav/GetThirdPartiesList"
+                   last-response="{{ cbThirdParty }}"
+                   auto method="post"
+                   id="ajax_thirdparties"
+                   on-response="_thirdPartiesResponse"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <!-- ******* dropdowns to use on NoCliente.e ********** -->
+
         <iron-ajax url="/GuiasTransporteNav/GetDetailsGuia"
                    last-response="{{ data }}"
                    method="post"
@@ -145,9 +169,17 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/GuiasTransporteNav/UpdateGuia"
+                   last-response="{{ guiaUpdated }}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_update_guia"
+                   on-response="_updateGuiaResponse"
+                   content-type="application/json">
+        </iron-ajax>
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
-
+            <paper-button raised id="btnUpdate" class="tablinks" on-tap="_update" title="Gravar" style="background-color:#1DB73C"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Gravar</paper-button>
         </div>
 
         <div class="row break_frm">
@@ -157,8 +189,6 @@
                         <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
                             <paper-tab>Geral</paper-tab>
                             <paper-tab>Moradas</paper-tab>
-                            <paper-tab>Comunicação AT</paper-tab>
-                            <paper-tab>Observações Adicionais</paper-tab>
                         </paper-tabs>
                         <iron-pages selected="{{ selected }}">
                             <!-- Tab Geral-->
@@ -182,24 +212,43 @@
                                             </div>
                                             <div class="row break_clear">
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="tipo" name="tipo" label="Tipo" value="{{ data.tipoDescription }}" disabled="disabled"></vaadin-text-field>
+                                                    <such-selectbox id="tipoGuia"
+                                                                    name="tipoGuia"
+                                                                    label="Tipo"
+                                                                    value="{{ data.tipo }}"
+                                                                    items="[[cbTipoGT]]"
+                                                                    text-path="value"
+                                                                    value-path="id"
+                                                                    fields='[{"field":"value", "name":"Tipo Guia"}]'
+                                                                    on-value-change="_thirdPartyChanged">
+                                                    </such-selectbox>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="noCliente" name="noCliente" label="Nº Terceiro" value="{{ data.noCliente }}" disabled="disabled"></vaadin-text-field>
+                                                    <such-selectbox id="noCliente"
+                                                                    name="noCliente"
+                                                                    label="Nº Terceiro"
+                                                                    value="{{ data.noCliente }}"
+                                                                    items="[[cbThirdParty]]"
+                                                                    text-path="no_"
+                                                                    value-path="no_"
+                                                                    fields='[{"field":"no_", "name":"Nº"}, {"field":"name", "name":"Nome"}, {"field":"vatRegistrationNo", "name":"Nº VAT"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Código Postal"}]'
+                                                                    >
+                                                                    
+                                                    </such-selectbox>
                                                 </div>
-                                                <div class="col-md-3">
-                                                    <vaadin-text-field id="codEnvio" name="codEnvio" label="Cód. Envio" value="{{ data.codEnvio }}" disabled="disabled"></vaadin-text-field>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <vaadin-text-field id="noProjecto" name="noProjecto" label="Projecto" value="{{ data.noProjecto }}" disabled="disabled"></vaadin-text-field>
-                                                </div>
-                                            </div>
-                                            <div class="row break_clear">
                                                 <div class="col-md-3">
                                                     <vaadin-text-field id="nomeCliente" name="nomeCliente" label="Nome Cliente" value="{{ data.nomeCliente }}" disabled="disabled"></vaadin-text-field>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <vaadin-text-field id="nomeCliente2" name="nomeCliente2" label="Nome Cliente 2" value="{{ data.nomeCliente2 }}" disabled="disabled"></vaadin-text-field>
+                                                </div>
+                                            </div>
+                                            <div class="row break_clear">
+                                                <div class="col-md-3">
+                                                    <vaadin-text-field id="codEnvio" name="codEnvio" label="Cód. Envio" value="{{ data.codEnvio }}" disabled="disabled"></vaadin-text-field>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <vaadin-text-field id="noProjecto" name="noProjecto" label="Projecto" value="{{ data.noProjecto }}" disabled="disabled"></vaadin-text-field>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <vaadin-text-field id="moradaCliente" name="moradaCliente" label="Morada Clente" value="{{ data.moradaCliente }}" disabled="disabled"></vaadin-text-field>
@@ -489,7 +538,7 @@
             <div class="buttons">
                 <paper-button class="btnRemove" on-tap="_closeRptDialog"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
             </div>
-           
+
         </paper-dialog>
 
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
@@ -498,7 +547,7 @@
     <script>
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
-                is: 'x-detailguiatransportenav',
+                is: 'x-newguiatransportenav',
                 properties: {
                     _guiatransporteid: {
                         type: String,
@@ -534,8 +583,32 @@
 
                 ready: function () {
                     debugger;;
-                    this.$.page_databound_ajax.body = JSON.stringify({ "No": this._guiatransporteid, "Historic": this._history });
-                    this.$.page_databound_ajax.generateRequest();
+                    if (!this._history) {
+                        this.$.page_databound_ajax.body = JSON.stringify({ "No": this._guiatransporteid, "Historic": this._history });
+                        this.$.page_databound_ajax.generateRequest();
+
+                        
+
+                    } else {
+                        this._openToast("Apenas para edição de guias que não esetejam em histórico!")
+                        window.location.href = "/GuiasTransporteNav";
+                    }
+                    
+                },
+
+                _update: function () {
+                    debugger;;
+                    this.$.ajax_update_guia.body = JSON.stringify(this.data);
+                    this.$.ajax_update_guia.generateRequest();
+                },
+
+                _updateGuiaResponse: function (e) {
+                    debugger;;
+                    if (this.guiaUpdated) {
+                        this._openToast("Guia actualizada com sucesso!");
+                    } else {
+                        this._openToastError("Não foi possível actualizar a Guia! Tente novamente.");
+                    }
                 },
 
                 _responseProcessor: function (data) {
@@ -544,12 +617,24 @@
                     var self = this;
 
                     if (data.detail.status === 200) {
+                        this.$.ajax_thirdparties.body = JSON.stringify({ "type": this.data.tipo });
+                        this.$.ajax_thirdparties.generateRequest();
                         //this._openToast(this.data.noGuiaTransporte);
                     } else {
                         this._openToastError("Ocorreu um erro desconhecido.")
                     }
-                }
+                },
+                
+                _thirdPartyChanged: function (e) {
+                    this.$.ajax_thirdparties.body = JSON.stringify({ "type": this.data.tipo });
+                    this.$.ajax_thirdparties.generateRequest();
+                },
 
+                _thirdPartiesResponse: function (e) {
+                    if (this.cbThirdParty == null) {
+                        this._openToastError("Erro!!");
+                    }
+                }
                 
             });
         })

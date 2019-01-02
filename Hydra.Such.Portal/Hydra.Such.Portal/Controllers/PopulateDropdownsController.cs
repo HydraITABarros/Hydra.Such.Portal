@@ -991,6 +991,7 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result_all);
         }
 
+      
         [HttpPost]
         public JsonResult GetLocationsValuesFromLines([FromBody] string locationId)
         {
@@ -2521,6 +2522,12 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetEstadoPedidoPagamento()
         {
             List<EnumData> result = EnumerablesFixed.EstadoPedidoPagamento;
+            return Json(result);
+        }
+
+        public JsonResult TiposGuiaTransporte()
+        {
+            List<EnumData> result = EnumerablesFixed.TipoGuiaTransporte;
             return Json(result);
         }
     }

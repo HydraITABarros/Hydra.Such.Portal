@@ -57,13 +57,24 @@
                    content-type="application/json">
         </iron-ajax>
 
-        <!--<div class="subMenu">-->
-            
-            <!--<paper-button class="tablinks" id="showHistory" on-tap="_showHistory"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{_showHistoryMessage}}</paper-button>-->
+        <iron-ajax url="/GuiasTransporteNav/CreateGuiaTransporte"
+                   last-response="{{ guiaTransporteId }}"
+                   method="post"
+                   handle-as="json"
+                   id="create_guia_ajax"
+                   on-response="_createResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <div class="subMenu">
+
+            <paper-button class="tablinks" id="showHistory" on-tap="_showHistory"><i class="fa fa-edit" aria-hidden="true"></i>&nbsp;{{ _showHistoryMessage }}</paper-button>
+            <paper-button class="tablinks" id="showActive" on-tap="_showHistory"><i class="fa fa-archive" aria-hidden="true"></i>&nbsp;{{ _showHistoryMessage }}</paper-button>
+            <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar Novo</paper-button>
             <!--<paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>-->
 
-            
-        <!--</div>-->
+
+        </div>
         <vaadin-grid aria-label="GuiasGrid" id="guiasTransporteGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="110px" resizable>
                 <template class="header">
@@ -146,7 +157,7 @@
                     {{item.globalDimension2Code}}
                 </template>
             </vaadin-grid-column>
-           
+
         </vaadin-grid>
     </template>
     
@@ -165,6 +176,7 @@
                         type: String,
                         value: "Mostrar Histórico"
                     },
+                
                     _historico: {
                         type: Boolean,
                         notify: true,
@@ -181,11 +193,40 @@
                         }
                     }
                 },
+                _openToast: function (message) {
+                    ;
+                    this.$.ToastMessage.text = message;
+                    this.$.ToastMessage.open();
+                },
+
+                _showMessage: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+
+                _showErrorMessage: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                },
+
                 ready: function () {
                     this.$.grid_databound_ajax.body = JSON.stringify({ "Historic": this._historico });
                     this.$.grid_databound_ajax.generateRequest();
 
+                    if (!this._historico) {
+                        $(this.$.showActive).removeClass('hidden');
+                        $(this.$.showHistory).addClass('hidden');
+
+                        this._showHistoryMessage = "Mostrar Histórico";
+                    }
+                    if (this._historico) {
+                        $(this.$.showHistory).removeClass('hidden');
+                        $(this.$.showActive).addClass('hidden');
+                        this._showHistoryMessage = "Mostrar Ativos";
+                    }
+
                     var _this = this;
+                    
                     var gridToBottomTimeout;
                     $(window).resize(function () {
                         _this.fixGridToBottom();
@@ -205,15 +246,24 @@
 
                 _rowSelected: function (item) {
                     if (item != null) {
-                        window.location.href = "/GuiasTransporteNav/GuiaTransporteDetails/" + item.noGuiaTransporte + "?isHistoric=" + item.historico;
+                        if (item.historico) {
+                            window.location.href = "/GuiasTransporteNav/GuiaTransporteDetails/" + item.noGuiaTransporte + "?isHistoric=" + item.historico;
+                        } else {
+                            window.location.href = "/GuiasTransporteNav/GuiaTransporteDetails/" + item.noGuiaTransporte + "?isHistoric=" + false;
+                        }
+                        
                     }
                 },
 
                 _showHistory: function (item) {
+                    debugger;;
+                    var _self = this;
+
                     if (item != null) {
                         if (!this._historico) {
                             this._historico = true;
                             this._isHistoricTxt = "true";
+                            
                         } else {
                             this._historico = false;
                             this._isHistoricTxt = "false";
@@ -226,12 +276,31 @@
                 },
                 _setButtonTexts: function () {
                     if (!this._historico) {
+                        $(this.$.showActive).removeClass('hidden');
+                        $(this.$.showHistory).addClass('hidden');
+                        
                         this._showHistoryMessage = "Mostrar Histórico";
                     }
                     if (this._historico) {
+                        $(this.$.showHistory).removeClass('hidden');
+                        $(this.$.showActive).addClass('hidden');
                         this._showHistoryMessage = "Mostrar Ativos";
                     }
-                }
+                },
+
+                 _create: function (item) {
+                     this.$.create_guia_ajax.generateRequest();
+                },
+
+                _createResponse: function (e) {
+                    if (this.guiaTransporteId == "") {
+                        this._showErrorMessage("Não foi possível criar uma nova guia de transporte!")
+                    } else {
+                       
+                        window.location.href = "/GuiasTransporteNav/NovaGuiaTransporte/" + this.guiaTransporteId + "?isHistoric=" + false;
+                    }                                                                              
+
+                }   
 
             });
         });

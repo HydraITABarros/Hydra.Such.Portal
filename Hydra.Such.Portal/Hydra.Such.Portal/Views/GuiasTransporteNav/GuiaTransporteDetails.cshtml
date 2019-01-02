@@ -1,12 +1,22 @@
-﻿
+﻿<link rel="import" href="~/elements/guiastransporte/DetalheGuiaTransporteNav.html" />
+<link rel="import" href="~/elements/guiastransporte/NovaGuiaTransporte.html"/>
 @{
     ViewData["Title"] = "Detalhe Guia Transporte " + ViewBag.Historic + ViewBag.No; ;
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+    if (@ViewBag.ifHistoric)
+    {
+        <x-detailguiatransportenav _guiatransporteid="@ViewBag.No" _reportserverurl="@ViewBag.reportServerURL" _history="@ViewBag.ifHistoric"></x-detailguiatransportenav>
+    }
+    else
+    {
+       <x-newguiatransportenav _guiatransporteid="@ViewBag.No" _history="@ViewBag.ifHistoric"></x-newguiatransportenav>
+    }
 }
 
 
 
-<link rel="import" href="~/elements/guiastransporte/DetalheGuiaTransporteNav.html" />
 
-<x-detailguiatransportenav _guiatransporteid="@ViewBag.No" _reportserverurl="@ViewBag.reportServerURL" _history="@ViewBag.ifHistoric"></x-detailguiatransportenav>
+
+
 
