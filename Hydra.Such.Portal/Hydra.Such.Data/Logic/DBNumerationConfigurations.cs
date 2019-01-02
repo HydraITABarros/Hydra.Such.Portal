@@ -158,9 +158,9 @@ namespace Hydra.Such.Data.Logic
                             }
                         }
 
-                        //ConfNumeration.ÚltimoNºUsado = NextNumeration;
-                        //ctx.ConfiguraçãoNumerações.Update(ConfNumeration);
-                        //ctx.SaveChanges();
+                        ConfNumeration.ÚltimoNºUsado = NextNumeration;
+                        ctx.ConfiguraçãoNumerações.Update(ConfNumeration);
+                        ctx.SaveChanges();
 
                         return NextNumeration;
                     }

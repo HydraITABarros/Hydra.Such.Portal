@@ -1923,8 +1923,10 @@
 
                 //FOLHA DE HORAS
                 _updateFH: function () {
-                    this.$.page_updatefolhadehorasvalidacao_ajax.body = JSON.stringify(this.data);
-                    this.$.page_updatefolhadehorasvalidacao_ajax.generateRequest();
+                    if (this._validacaoDataPartidaChegada()) {
+                        this.$.page_updatefolhadehorasvalidacao_ajax.body = JSON.stringify(this.data);
+                        this.$.page_updatefolhadehorasvalidacao_ajax.generateRequest();
+                    }
                 },
 
                 _deleteFH: function () {
@@ -1976,9 +1978,11 @@
                 },
 
                 _validacaoDataPartidaChegada: function () {
+                    debugger;
                     if (this.$.dataPartidaTexto.value != "" & this.$.dataPartidaTexto.validate() &
                         this.$.dataChegadaTexto.value != "" & this.$.dataChegadaTexto.validate()) {
 
+                        var DataInicio = new Date("01/01/2019")
                         var myDataPartida = new Date(this.$.dataPartidaTexto.value);
                         var myDataChegada = new Date(this.$.dataChegadaTexto.value);
                         var myDataHoje = new Date();
@@ -1993,6 +1997,14 @@
                         }
                         if (myDataChegada > myDataHoje) {
                             this._showErrorMessage('O campo Data Fim tem que ser inferior ou igual á data hoje.');
+                            return false;
+                        }
+                        if (myDataPartida < DataInicio) {
+                            this._showErrorMessage('O campo Data Inicio tem que ser superior a 01/01/2019.');
+                            return false;
+                        }
+                        if (myDataChegada < DataInicio) {
+                            this._showErrorMessage('O campo Data Fim tem que ser superior a 01/01/2019.');
                             return false;
                         }
 
