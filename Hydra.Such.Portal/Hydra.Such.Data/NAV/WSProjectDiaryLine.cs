@@ -161,7 +161,12 @@ namespace Hydra.Such.Data.NAV
                 line.Job_No = item.ProjectNo;
                 line.Document_Date = item.CreateDateTime.HasValue ? item.CreateDateTime.Value : DateTime.Now;
                 line.Document_DateSpecified = true;
+
+                //ORIGINAL
                 line.Posting_Date = DateTime.Now;
+                //AROMAO COPIA
+                //line.Posting_Date = Convert.ToDateTime("31/12/2018"); // DateTime.Now;
+
                 line.Posting_DateSpecified = true;
                 line.Entry_Type = WSCreateProjectDiaryLine.Entry_Type.Usage;
                 line.Entry_TypeSpecified = true;
@@ -169,7 +174,7 @@ namespace Hydra.Such.Data.NAV
                 line.TypeSpecified = true;
                 line.No = item.Code;
                 line.Description100 = item.Description;
-                line.Quantity = item.QuantityReceived.Value;
+                line.Quantity = item.QuantityReceived == null ? 0 : item.QuantityReceived.Value;
                 line.QuantitySpecified = true;
                 line.Unit_of_Measure_Code = item.UnitMeasureCode;
                 line.Location_Code = item.LocalCode;

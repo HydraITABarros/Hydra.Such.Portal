@@ -4166,7 +4166,7 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.Descrição).HasMaxLength(50);
 
-                entity.Property(e => e.Descricao2).HasMaxLength(50);
+                entity.Property(e => e.Descricao2).HasMaxLength(80);
 
                 entity.Property(e => e.GrupoFatura).HasColumnName("Grupo Fatura");
 
@@ -4239,7 +4239,7 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.Descricao2)
                     .HasColumnName("Descricao2")
-                    .HasMaxLength(50);
+                    .HasMaxLength(80);
 
                 entity.Property(e => e.CódigoCentroResponsabilidade)
                     .HasColumnName("Código Centro Responsabilidade")

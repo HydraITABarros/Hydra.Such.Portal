@@ -108,7 +108,7 @@ namespace Hydra.Such.Data.NAV
                    
                    Type = ConvertToSaleslineType(x.Tipo.Replace(" ", String.Empty)),
                    Description = x.Descrição,
-                   Description_2 = x.Descricao2,
+                   Description_2 = x.Descricao2.Substring(0, 50),
                    //Quantity = x.Quantidade.Value,
                    Quantity = x.Quantidade.HasValue ? x.Quantidade.Value : 0,
                    QuantitySpecified = true,

@@ -1049,7 +1049,7 @@
                                         <vaadin-text-field value="{{_CLDescription}}" id="_CLDescription" name="_CLDescription" label="Descrição" maxlength="50" disabled="{{ _lockFields }}"> </vaadin-text-field>
                                     </div>
                                     <div class="col-lg-2">
-                                        <vaadin-text-field value="{{_CLDescription2}}" id="_CLDescription2" name="_CLDescription2" label="Descrição 2" maxlength="50" disabled="{{ _lockFields }}"> </vaadin-text-field>
+                                        <vaadin-text-field value="{{_CLDescription2}}" id="_CLDescription2" name="_CLDescription2" label="Descrição 2" maxlength="80" disabled="{{ _lockFields }}"> </vaadin-text-field>
                                     </div>
                                     <div class="col-lg-2">
                                         <vaadin-text-field value="{{_CLQuantity}}" id="_CLQuantity" name="_CLQuantity" on-value-changed="_ConvertDecimals" label="Quantidade" disabled="{{ _lockFields }}" pattern="[0-9]+([\.][0-9]+)?"> </vaadin-text-field>
@@ -1212,7 +1212,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.description2}}" id="_CLGridDescription2" name="_CLGridDescription2" maxlength="50" disabled="{{ _lockFields }}"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{item.description2}}" id="_CLGridDescription2" name="_CLGridDescription2" maxlength="80" disabled="{{ _lockFields }}"> </vaadin-text-field>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.description2}}

@@ -1160,6 +1160,8 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         FH.CodigoAreaFuncional = DBUserConfigurations.GetByEmployeeNo(idEmployee) == null ? "" : DBUserConfigurations.GetByEmployeeNo(idEmployee).AreaPorDefeito;
                         FH.CodigoCentroResponsabilidade = DBUserConfigurations.GetByEmployeeNo(idEmployee) == null ? "" : DBUserConfigurations.GetByEmployeeNo(idEmployee).CentroRespPorDefeito;
 
+                        string Superior;
+
                         //GET LIST VALIDADORES
                         List<ConfiguraçãoAprovações> ApprovalConfigurationsValidadores = DBApprovalConfigurations.GetByTypeAreaValueDateAndDimensionsAndNivel(3, FH.CodigoAreaFuncional, FH.CodigoCentroResponsabilidade, FH.CodigoRegiao, CustoTotal, DateTime.Now, 1);
                         ApprovalConfigurationsValidadores.RemoveAll(x => !x.NívelAprovação.HasValue || x.NívelAprovação < 1);
@@ -1171,7 +1173,14 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                             var approvalConfiguration = ApprovalConfigurationsValidadores[0];
                             if (approvalConfiguration.UtilizadorAprovação != "" && approvalConfiguration.UtilizadorAprovação != null)
                             {
-                                UsersToNotify.Add(approvalConfiguration.UtilizadorAprovação);
+                                if (approvalConfiguration.UtilizadorAprovação.ToLower() == idEmployeePortal.ToLower())
+                                {
+                                    Superior = DBUserConfigurations.GetById(idEmployeePortal).SuperiorHierarquico;
+                                    if (!string.IsNullOrEmpty(Superior))
+                                        UsersToNotify.Add(Superior);
+                                }
+                                else
+                                    UsersToNotify.Add(approvalConfiguration.UtilizadorAprovação);
                             }
                             else if (approvalConfiguration.GrupoAprovação.HasValue)
                             {
@@ -1179,7 +1188,14 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
 
                                 GUsers.ForEach(y =>
                                 {
-                                    UsersToNotify.Add(y);
+                                    if (y.ToLower() == idEmployeePortal.ToLower())
+                                    {
+                                        Superior = DBUserConfigurations.GetById(idEmployeePortal).SuperiorHierarquico;
+                                        if (!string.IsNullOrEmpty(Superior))
+                                            UsersToNotify.Add(Superior);
+                                    }
+                                    else
+                                        UsersToNotify.Add(y);
                                 });
                             }
 
@@ -1211,7 +1227,14 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                             var approvalConfiguration = ApprovalConfigurationsIntegradoresEmRH[0];
                             if (approvalConfiguration.UtilizadorAprovação != "" && approvalConfiguration.UtilizadorAprovação != null)
                             {
-                                UsersToNotify.Add(approvalConfiguration.UtilizadorAprovação);
+                                if (approvalConfiguration.UtilizadorAprovação.ToLower() == idEmployeePortal.ToLower())
+                                {
+                                    Superior = DBUserConfigurations.GetById(idEmployeePortal).SuperiorHierarquico;
+                                    if (!string.IsNullOrEmpty(Superior))
+                                        UsersToNotify.Add(Superior);
+                                }
+                                else
+                                    UsersToNotify.Add(approvalConfiguration.UtilizadorAprovação);
                             }
                             else if (approvalConfiguration.GrupoAprovação.HasValue)
                             {
@@ -1219,7 +1242,14 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
 
                                 GUsers.ForEach(y =>
                                 {
-                                    UsersToNotify.Add(y);
+                                    if (y.ToLower() == idEmployeePortal.ToLower())
+                                    {
+                                        Superior = DBUserConfigurations.GetById(idEmployeePortal).SuperiorHierarquico;
+                                        if (!string.IsNullOrEmpty(Superior))
+                                            UsersToNotify.Add(Superior);
+                                    }
+                                    else
+                                        UsersToNotify.Add(y);
                                 });
                             }
 
@@ -1242,7 +1272,14 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                             var approvalConfiguration = ApprovalConfigurationsIntegradoresEmRHKM[0];
                             if (approvalConfiguration.UtilizadorAprovação != "" && approvalConfiguration.UtilizadorAprovação != null)
                             {
-                                UsersToNotify.Add(approvalConfiguration.UtilizadorAprovação);
+                                if (approvalConfiguration.UtilizadorAprovação.ToLower() == idEmployeePortal.ToLower())
+                                {
+                                    Superior = DBUserConfigurations.GetById(idEmployeePortal).SuperiorHierarquico;
+                                    if (!string.IsNullOrEmpty(Superior))
+                                        UsersToNotify.Add(Superior);
+                                }
+                                else
+                                    UsersToNotify.Add(approvalConfiguration.UtilizadorAprovação);
                             }
                             else if (approvalConfiguration.GrupoAprovação.HasValue)
                             {
@@ -1250,7 +1287,14 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
 
                                 GUsers.ForEach(y =>
                                 {
-                                    UsersToNotify.Add(y);
+                                    if (y.ToLower() == idEmployeePortal.ToLower())
+                                    {
+                                        Superior = DBUserConfigurations.GetById(idEmployeePortal).SuperiorHierarquico;
+                                        if (!string.IsNullOrEmpty(Superior))
+                                            UsersToNotify.Add(Superior);
+                                    }
+                                    else
+                                        UsersToNotify.Add(y);
                                 });
                             }
 
