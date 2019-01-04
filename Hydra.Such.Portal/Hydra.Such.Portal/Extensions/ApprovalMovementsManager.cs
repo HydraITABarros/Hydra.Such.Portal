@@ -396,6 +396,8 @@ namespace Hydra.Such.Portal.Extensions
                     eMessages = new List<TraceInformation>()
                 };
 
+                string Criador = DBFolhasDeHoras.GetById(number).CriadoPor;
+
                 //Get Compatible ApprovalConfigurations
                 List<ConfiguraçãoAprovações> ApprovalConfigurations = DBApprovalConfigurations.GetByTypeAreaValueDateAndDimensions(type, functionalArea, responsabilityCenter, region, value, DateTime.Now);
 
@@ -431,10 +433,10 @@ namespace Hydra.Such.Portal.Extensions
                     var approvalConfiguration = ApprovalConfigurations[0];
                     if (approvalConfiguration.UtilizadorAprovação != "" && approvalConfiguration.UtilizadorAprovação != null)
                     {
-                        if (approvalConfiguration.UtilizadorAprovação.ToLower() == requestUser.ToLower())
-                            approvalConfiguration.UtilizadorAprovação = DBUserConfigurations.GetById(requestUser).SuperiorHierarquico;
+                        if (approvalConfiguration.UtilizadorAprovação.ToLower() == Criador.ToLower())
+                            approvalConfiguration.UtilizadorAprovação = DBUserConfigurations.GetById(Criador).SuperiorHierarquico;
 
-                        if (approvalConfiguration.UtilizadorAprovação != "" && approvalConfiguration.UtilizadorAprovação != null && approvalConfiguration.UtilizadorAprovação.ToLower() != requestUser.ToLower())
+                        if (approvalConfiguration.UtilizadorAprovação != "" && approvalConfiguration.UtilizadorAprovação != null && approvalConfiguration.UtilizadorAprovação.ToLower() != Criador.ToLower())
                         {
                             DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = approvalConfiguration.UtilizadorAprovação });
                             UsersToNotify.Add(approvalConfiguration.UtilizadorAprovação);
@@ -443,18 +445,19 @@ namespace Hydra.Such.Portal.Extensions
                     else if (approvalConfiguration.GrupoAprovação.HasValue)
                     {
                         List<string> GUsers = DBApprovalUserGroup.GetAllFromGroup(approvalConfiguration.GrupoAprovação.Value);
-                        if (GUsers.Exists(x => x.ToLower() == requestUser.ToLower()))
+                        if (GUsers.Exists(x => x.ToLower() == Criador.ToLower()))
                         {
-                            string SH = DBUserConfigurations.GetById(requestUser).SuperiorHierarquico;
+                            GUsers.RemoveAll(x => x.ToLower() == Criador.ToLower());
+
+                            string SH = DBUserConfigurations.GetById(Criador).SuperiorHierarquico;
                             if (!string.IsNullOrEmpty(SH))
                                 GUsers.Add(SH);
-                            GUsers.RemoveAll(x => x.ToLower() == requestUser.ToLower());
                         }
                         GUsers = GUsers.Distinct().ToList();
 
                         GUsers.ForEach(y =>
                         {
-                            if (y != "" && y != null && y.ToLower() != requestUser.ToLower())
+                            if (y != "" && y != null && y.ToLower() != Criador.ToLower())
                             {
                                 DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = y });
                                 //UsersToNotify.Add(y);
@@ -462,12 +465,13 @@ namespace Hydra.Such.Portal.Extensions
                         });
 
                         List<string> GUsersWithEmailAlerta = DBApprovalUserGroup.GetAllFromGroupWithEmailAlerta(approvalConfiguration.GrupoAprovação.Value);
-                        if (GUsersWithEmailAlerta.Exists(x => x.ToLower() == requestUser.ToLower()))
+                        if (GUsersWithEmailAlerta.Exists(x => x.ToLower() == Criador.ToLower()))
                         {
-                            string SH = DBUserConfigurations.GetById(requestUser).SuperiorHierarquico;
+                            GUsersWithEmailAlerta.RemoveAll(x => x.ToLower() == Criador.ToLower());
+
+                            string SH = DBUserConfigurations.GetById(Criador).SuperiorHierarquico;
                             if (!string.IsNullOrEmpty(SH))
                                 GUsersWithEmailAlerta.Add(SH);
-                            GUsersWithEmailAlerta.RemoveAll(x => x.ToLower() == requestUser.ToLower());
                         }
                         GUsersWithEmailAlerta = GUsersWithEmailAlerta.Distinct().ToList();
 
@@ -554,6 +558,7 @@ namespace Hydra.Such.Portal.Extensions
                 int nivel = 99;
                 bool IntegradoEmRh = false;
                 bool IntegradoEmRhkm = false;
+                string Criador = FolhaHoras.CriadoPor;
 
                 if (FolhaHoras.TipoDeslocação != 2 && NoAjudasCusto == 0)
                 {
@@ -632,18 +637,19 @@ namespace Hydra.Such.Portal.Extensions
                             else if (approvalConfiguration.GrupoAprovação.HasValue)
                             {
                                 List<string> GUsers = DBApprovalUserGroup.GetAllFromGroup(approvalConfiguration.GrupoAprovação.Value);
-                                if (GUsers.Exists(x => x.ToLower() == ApproveUser.ToLower()))
+                                if (GUsers.Exists(x => x.ToLower() == Criador.ToLower()))
                                 {
-                                    string SH = DBUserConfigurations.GetById(ApproveUser).SuperiorHierarquico;
+                                    GUsers.RemoveAll(x => x == Criador);
+
+                                    string SH = DBUserConfigurations.GetById(Criador).SuperiorHierarquico;
                                     if (!string.IsNullOrEmpty(SH))
                                         GUsers.Add(SH);
-                                    GUsers.RemoveAll(x => x == ApproveUser);
                                 }
                                 GUsers = GUsers.Distinct().ToList();
 
                                 GUsers.ForEach(y =>
                                 {
-                                    if (y != "" && y != null && y != ApproveUser)
+                                    if (y != "" && y != null && y != Criador)
                                     { 
                                         DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = y });
                                         //UsersToNotify.Add(y);
@@ -651,12 +657,13 @@ namespace Hydra.Such.Portal.Extensions
                                 });
 
                                 List<string> GUsersWithEmailAlerta = DBApprovalUserGroup.GetAllFromGroupWithEmailAlerta(approvalConfiguration.GrupoAprovação.Value);
-                                if (GUsersWithEmailAlerta.Exists(x => x.ToLower() == ApproveUser.ToLower()))
+                                if (GUsersWithEmailAlerta.Exists(x => x.ToLower() == Criador.ToLower()))
                                 {
-                                    string SH = DBUserConfigurations.GetById(ApproveUser).SuperiorHierarquico;
+                                    GUsersWithEmailAlerta.RemoveAll(x => x == Criador);
+
+                                    string SH = DBUserConfigurations.GetById(Criador).SuperiorHierarquico;
                                     if (!string.IsNullOrEmpty(SH))
                                         GUsersWithEmailAlerta.Add(SH);
-                                    GUsersWithEmailAlerta.RemoveAll(x => x == ApproveUser);
                                 }
                                 GUsersWithEmailAlerta = GUsersWithEmailAlerta.Distinct().ToList();
 
@@ -790,18 +797,19 @@ namespace Hydra.Such.Portal.Extensions
                             else if (approvalConfiguration.GrupoAprovação.HasValue)
                             {
                                 List<string> GUsers = DBApprovalUserGroup.GetAllFromGroup(approvalConfiguration.GrupoAprovação.Value);
-                                if (GUsers.Exists(x => x.ToLower() == ApproveUser.ToLower()))
+                                if (GUsers.Exists(x => x.ToLower() == Criador.ToLower()))
                                 {
-                                    string SH = DBUserConfigurations.GetById(ApproveUser).SuperiorHierarquico;
+                                    GUsers.RemoveAll(x => x == Criador);
+
+                                    string SH = DBUserConfigurations.GetById(Criador).SuperiorHierarquico;
                                     if (!string.IsNullOrEmpty(SH))
                                         GUsers.Add(SH);
-                                    GUsers.RemoveAll(x => x == ApproveUser);
                                 }
                                 GUsers = GUsers.Distinct().ToList();
 
                                 GUsers.ForEach(y =>
                                 {
-                                    if (y != "" && y != null && y != ApproveUser)
+                                    if (y != "" && y != null)
                                     {
                                         DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = y });
                                         //UsersToNotify.Add(y);
@@ -809,12 +817,13 @@ namespace Hydra.Such.Portal.Extensions
                                 });
 
                                 List<string> GUsersWithEmailAlerta = DBApprovalUserGroup.GetAllFromGroupWithEmailAlerta(approvalConfiguration.GrupoAprovação.Value);
-                                if (GUsersWithEmailAlerta.Exists(x => x.ToLower() == ApproveUser.ToLower()))
+                                if (GUsersWithEmailAlerta.Exists(x => x.ToLower() == Criador.ToLower()))
                                 {
-                                    string SH = DBUserConfigurations.GetById(ApproveUser).SuperiorHierarquico;
+                                    GUsersWithEmailAlerta.RemoveAll(x => x == Criador);
+
+                                    string SH = DBUserConfigurations.GetById(Criador).SuperiorHierarquico;
                                     if (!string.IsNullOrEmpty(SH))
                                         GUsersWithEmailAlerta.Add(SH);
-                                    GUsersWithEmailAlerta.RemoveAll(x => x == ApproveUser);
                                 }
                                 GUsersWithEmailAlerta = GUsersWithEmailAlerta.Distinct().ToList();
 
