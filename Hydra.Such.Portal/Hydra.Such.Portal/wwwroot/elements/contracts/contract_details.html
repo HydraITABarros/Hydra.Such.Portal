@@ -881,7 +881,7 @@
                                                                 <div class="col-md-3 ">
                                                                     <such-selectbox id="_IRProjectNo" name="_IRProjectNo" value="{{_IRProjectNo}}" label="Nº Projeto" disabled="{{ _lockFields }}"
                                                                                     items="[[CBProjects]]"
-                                                                                    text-path="value"
+                                                                                    text-path="id"
                                                                                     value-path="id"
                                                                                     required error-message="Este campo é obrigatório"
                                                                                     fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
@@ -923,7 +923,7 @@
                                                                     <vaadin-grid-filter path="projectNo" />
                                                                 </template>
                                                                 <template>
-                                                                    <vaadin-combo-box items="[[CBProjects]]" item-value-path="id" item-label-path="value" id="_IRGridProjectNo" name="_IRGridProjectNo" value="{{item.projectNo}}" disabled="{{ _lockFields }}">
+                                                                    <!--<vaadin-combo-box items="[[CBProjects]]" item-value-path="id" item-label-path="value" id="_IRGridProjectNo" name="_IRGridProjectNo" value="{{item.projectNo}}" disabled="{{ _lockFields }}">
                                                                         <template>
                                                                             <paper-icon-item>
                                                                                 <paper-item-body two-line>
@@ -931,7 +931,14 @@
                                                                                 </paper-item-body>
                                                                             </paper-icon-item>
                                                                         </template>
-                                                                    </vaadin-combo-box>
+                                                                    </vaadin-combo-box>-->
+                                                                    <such-selectbox id="_IRGridProjectNo" name="_IRGridProjectNo" value="{{item.projectNo}}" disabled="{{ _lockFields }}"
+                                                                                    items="[[CBProjects]]"
+                                                                                    text-path="id"
+                                                                                    value-path="id"
+                                                                                    required error-message="Este campo é obrigatório"
+                                                                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                                                                    </such-selectbox>
                                                                 </template>
                                                             </vaadin-grid-column>
                                                             <vaadin-grid-column resizable>
