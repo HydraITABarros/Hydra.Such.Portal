@@ -1978,7 +1978,6 @@
                 },
 
                 _validacaoDataPartidaChegada: function () {
-                    debugger;
                     if (this.$.dataPartidaTexto.value != "" & this.$.dataPartidaTexto.validate() &
                         this.$.dataChegadaTexto.value != "" & this.$.dataChegadaTexto.validate()) {
 
@@ -2128,7 +2127,7 @@
 
                 _integrarEmRH: function () {
                     if (this._validateFolhaHoras()) {
-                        if (this.$.integradorEmRH.value == null) {
+                        if (this.$.integradorEmRH.value == null | this.$.integradorEmRH.value == "") {
                             if (this.$.tipoDeslocacao.value == 1) {
                                 if (this.$.matricula.validate() & this.$.matricula.value != "") {
                                     this.$.integraremrhfolhadehoras_ajax.body = JSON.stringify(this.data);
@@ -2151,7 +2150,7 @@
 
                 _integrarEmRHKM: function () {
                     if (this._validateFolhaHoras()) {
-                        if (this.$.integradorEmRHKM.value == null) {
+                        if (this.$.integradorEmRHKM.value == null | this.$.integradorEmRHKM.value == "") {
                             if (this.$.tipoDeslocacao.value == 1) {
                                 if (this.$.matricula.validate() & this.$.matricula.value != "") {
                                     this.$.integraremrhkmfolhadehoras_ajax.body = JSON.stringify(this.data);
@@ -2283,7 +2282,6 @@
                 //},
 
                 _updateLinhaPercurso: function (e) {
-                    debugger;
                     var index = this.data.folhaDeHorasPercurso.indexOf(e.model.item);
 
                     if (this.data.terminada == true || this.data.estado == 1 || this.data.estado == 2) {
@@ -3994,6 +3992,7 @@
 
 
                 _setFieldsEditability(data) {
+                    debugger;
                     var _self = this;
 
                     //BOTÕES
@@ -4022,10 +4021,10 @@
                         $(_self.$.btn_createAjuda).addClass('disabled');
                         $(_self.$.btn_createMaoDeObra).addClass('disabled');
                         $(_self.$.btn_createPresenca).addClass('disabled');
-                        if (_self.$.integradorEmRH.value != null) {
+                        if (_self.$.integradorEmRH.value != null & _self.$.integradorEmRH.value != "" & _self.$.integradorEmRH.value) {
                             $(_self.$.btn_integrarEmRH).addClass('disabled');
                         }
-                        if (_self.$.integradorEmRHKM.value != null) {
+                        if (_self.$.integradorEmRHKM.value != null & _self.$.integradorEmRHKM.value != "") {
                             $(_self.$.btn_integrarEmRHKM).addClass('disabled');
                         }
                     };

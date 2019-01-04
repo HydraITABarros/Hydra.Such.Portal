@@ -1238,7 +1238,7 @@ namespace Hydra.Such.Portal.Controllers
             List<DDMessageString> result = DBNAV2017ShippingAddresses.GetByClientNo(ClientNo, _config.NAVDatabaseName, _config.NAVCompanyName).Select(X => new DDMessageString()
             {
                 id = X.Code,
-                value = X.Name + " - " + X.Address + " - " + X.City
+                value = X.Address + " - " + X.City
             }).ToList();
             return Json(result);
         }

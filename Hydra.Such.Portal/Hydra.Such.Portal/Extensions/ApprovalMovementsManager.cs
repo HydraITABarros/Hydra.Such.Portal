@@ -457,7 +457,7 @@ namespace Hydra.Such.Portal.Extensions
 
                         GUsers.ForEach(y =>
                         {
-                            if (y != "" && y != null && y.ToLower() != Criador.ToLower())
+                            if (y != "" && y != null)
                             {
                                 DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = y });
                                 //UsersToNotify.Add(y);
@@ -475,6 +475,7 @@ namespace Hydra.Such.Portal.Extensions
                         }
                         GUsersWithEmailAlerta = GUsersWithEmailAlerta.Distinct().ToList();
 
+                        UsersToNotify.Clear();
                         GUsersWithEmailAlerta.ForEach(y =>
                         {
                             UsersToNotify.Add(y);
@@ -649,7 +650,7 @@ namespace Hydra.Such.Portal.Extensions
 
                                 GUsers.ForEach(y =>
                                 {
-                                    if (y != "" && y != null && y != Criador)
+                                    if (y != "" && y != null)
                                     { 
                                         DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = y });
                                         //UsersToNotify.Add(y);
@@ -667,6 +668,7 @@ namespace Hydra.Such.Portal.Extensions
                                 }
                                 GUsersWithEmailAlerta = GUsersWithEmailAlerta.Distinct().ToList();
 
+                                UsersToNotify.Clear();
                                 GUsersWithEmailAlerta.ForEach(y =>
                                 {
                                     UsersToNotify.Add(y);
@@ -827,6 +829,7 @@ namespace Hydra.Such.Portal.Extensions
                                 }
                                 GUsersWithEmailAlerta = GUsersWithEmailAlerta.Distinct().ToList();
 
+                                UsersToNotify.Clear();
                                 GUsersWithEmailAlerta.ForEach(y =>
                                 {
                                     UsersToNotify.Add(y);

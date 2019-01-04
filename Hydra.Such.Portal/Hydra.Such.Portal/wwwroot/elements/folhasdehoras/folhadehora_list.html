@@ -331,6 +331,36 @@
                 </template>
             </vaadin-grid-column>
 
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.codigoRegiao.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="codigoRegiao">Nº Total km</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codigoRegiao" />
+                </template>
+                <template>
+                    {{item.codigoRegiao}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.numTotalKM.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="numTotalKM">Nº Total km</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="numTotalKM" />
+                </template>
+                <template>
+                    {{item.numTotalKM}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.numTotalKM.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="numTotalKM">Nº Total km</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="numTotalKM" />
+                </template>
+                <template>
+                    {{item.numTotalKM}}
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.numTotalKM.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="numTotalKM">Nº Total km</vaadin-grid-sorter>
