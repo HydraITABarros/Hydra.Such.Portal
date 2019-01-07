@@ -310,7 +310,7 @@ namespace Hydra.Such.Data.Logic
                         new SqlParameter("@Type", type)
                 };
 
-                IEnumerable<dynamic> data = _contextExt.execStoredProcedure("exec NAV2017GuiaTransporteThirdPartyDetails @DBName, @CompanyName, @Type", parameters);
+                IEnumerable<dynamic> data = _contextExt.execStoredProcedure("exec NAV2017GuiaTransporteThirdPartyList @DBName, @CompanyName, @Type", parameters);
 
                 if (data == null)
                     return null;
@@ -319,44 +319,87 @@ namespace Hydra.Such.Data.Logic
 
                 foreach(dynamic temp in data)
                 {
-                    if (temp == null)
-                        return null;
-
-                    if(temp != null && temp == -1)
-                        return null;
-
-                    if(!temp.EntityId.Equals(DBNull.Value))
+                    if (temp != null)
                     {
+                        if (!temp.EntityId.Equals(DBNull.Value))
+                        {
+                            ThirdPartyViewModel entity = new ThirdPartyViewModel()
+                            {
+                                EntityId = temp.EntityId.Equals(DBNull.Value) ? "" : (string)temp.EntityId,
+                                Name = temp.Name.Equals(DBNull.Value) ? "" : (string)temp.Name,
+                                Name2 = temp.Name2.Equals(DBNull.Value) ? "" : (string)temp.Name2,
+                                Address = temp.Address.Equals(DBNull.Value) ? "" : (string)temp.Address,
+                                Address2 = temp.Address2.Equals(DBNull.Value) ? "" : (string)temp.Address2,
+                                City = temp.City.Equals(DBNull.Value) ? "" : (string)temp.City,
+                                PostCode = temp.PostCode.Equals(DBNull.Value) ? "" : (string)temp.PostCode,
+                                PhoneNo = temp.PhoneNo.Equals(DBNull.Value) ? "" : (string)temp.PhoneNo,
+                                CountryCode = temp.CountryCode.Equals(DBNull.Value) ? "" : (string)temp.CountryCode,
+                                CustomerAddress = temp.CustomerAddress.Equals(DBNull.Value) ? "" : (string)temp.CustomerAddress,
+                                VatRegistrationNo = temp.VatRegistrationNo.Equals(DBNull.Value) ? "" : (string)temp.VatRegistrationNo
+                            };
 
+                            partiesList.Add(entity);
+                        }
                     }
-
-                    ThirdPartyViewModel entity = new ThirdPartyViewModel()
-                    {
-                        EntityId = temp.EntityId.Equals(DBNull.Value) ? "" : (string)temp.EntityId,
-                        Name = temp.Name.Equals(DBNull.Value) ? "" : (string)temp.Name,
-                        Name2 = temp.Name2.Equals(DBNull.Value) ? "" : (string)temp.Name2,
-                        Address = temp.Address.Equals(DBNull.Value) ? "" : (string)temp.Address,
-                        Address2 = temp.Address2.Equals(DBNull.Value) ? "" : (string)temp.Address2,
-                        City = temp.City.Equals(DBNull.Value) ? "" : (string)temp.City,
-                        PostCode = temp.PostCode.Equals(DBNull.Value) ? "" : (string)temp.PostCode,
-                        PhoneNo = temp.PhoneNo.Equals(DBNull.Value) ? "" : (string)temp.PhoneNo,
-                        CountryCode = temp.CountryCode.Equals(DBNull.Value) ? "" : (string)temp.CountryCode,
-                        CustomerAddress = temp.CustomerAddress.Equals(DBNull.Value) ?  "" : (string)temp.CustomerAddress,
-                        VatRegistrationNo = temp.VatRegistrationNo.Equals(DBNull.Value) ? "" : (string)temp.VatRegistrationNo
-                    };
-
-                    partiesList.Add(entity);
 
                 }
 
                 return partiesList;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
                 return null;
             }
             
+        }
+
+        public static ThirdPartyViewModel GetThirdPartyDetails(string NAVDatabase, string NAVCompany, int type, string entityId)
+        {
+            try
+            {
+                SuchDBContextExtention _contextExt = new SuchDBContextExtention();
+
+                var parameters = new[]{
+                        new SqlParameter("@DBName", NAVDatabase),
+                        new SqlParameter("@CompanyName", NAVCompany),
+                        new SqlParameter("@Type", type),
+                        new SqlParameter("@EntityId", entityId)
+                };
+
+                dynamic data = _contextExt.execStoredProcedure("exec NAV2017GuiaTransporteThirdPartyDetails @DBName, @CompanyName, @Type, @EntityId", parameters).FirstOrDefault();
+
+                if (data == null)
+                    return null;
+
+                string eId = data.EntityId.Equals(DBNull.Value) ? "" : (string)data.EntityId;
+                if (eId != null && eId != "")
+                {
+                    ThirdPartyViewModel entity = new ThirdPartyViewModel()
+                    {
+                        EntityId = data.EntityId.Equals(DBNull.Value) ? "" : (string)data.EntityId,
+                        Name = data.Name.Equals(DBNull.Value) ? "" : (string)data.Name,
+                        Name2 = data.Name2.Equals(DBNull.Value) ? "" : (string)data.Name2,
+                        Address = data.Address.Equals(DBNull.Value) ? "" : (string)data.Address,
+                        Address2 = data.Address2.Equals(DBNull.Value) ? "" : (string)data.Address2,
+                        City = data.City.Equals(DBNull.Value) ? "" : (string)data.City,
+                        PostCode = data.PostCode.Equals(DBNull.Value) ? "" : (string)data.PostCode,
+                        PhoneNo = data.PhoneNo.Equals(DBNull.Value) ? "" : (string)data.PhoneNo,
+                        CountryCode = data.CountryCode.Equals(DBNull.Value) ? "" : (string)data.CountryCode,
+                        CustomerAddress = data.CustomerAddress.Equals(DBNull.Value) ? "" : (string)data.CustomerAddress,
+                        VatRegistrationNo = data.VatRegistrationNo.Equals(DBNull.Value) ? "" : (string)data.VatRegistrationNo
+                    };
+
+                     return entity;
+                }
+                return null;
+                
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
         }
         public static bool UpdateGuiaTransporte(GuiaTransporteNavViewModel guia)
         {

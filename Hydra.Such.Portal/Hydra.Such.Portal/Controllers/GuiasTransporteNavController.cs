@@ -132,13 +132,36 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetThirdPartiesList([FromBody] JObject requestParams)
         {
-            int type = requestParams["type"] == null ? -1 : (int)requestParams["type"];
-            if(type== -1)
+            if (requestParams == null)
+                return null;
+
+            int type = (requestParams["type"] == null || string.Compare((string)requestParams["type"], "") == 0) ? -1 : (int)requestParams["type"];
+            if(type == -1)
             {
                 return null;
             }
 
             List<ThirdPartyViewModel> result = DBNAV2017GuiasTransporte.GetThirdParties(_config.NAVDatabaseName, _config.NAVCompanyName, type);
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetThirdPartyDetails([FromBody] JObject requestParams)
+        {
+            if (requestParams == null)
+                return null;
+
+            int type = (requestParams["type"] == null || string.Compare((string)requestParams["type"], "") == 0) ? -1 : (int)requestParams["type"];
+            string entityId = requestParams["entityId"] == null ? "" : (string)requestParams["entityId"];
+
+            if (type == -1)
+                return null;
+
+            if (entityId == "")
+                return null;
+
+            ThirdPartyViewModel result = DBNAV2017GuiasTransporte.GetThirdPartyDetails(_config.NAVDatabaseName, _config.NAVCompanyName, type, entityId);
 
             return Json(result);
         }

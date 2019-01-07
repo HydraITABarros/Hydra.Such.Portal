@@ -158,6 +158,15 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/GuiasTransporteNav/GetThirdPartyDetails"
+                   last-response="{{ thirdPartyDetails }}"
+                   auto method="post"
+                   id="ajax_thirdparty_details"
+                   on-response="_thirdPartyDetailsResponse"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
         <!-- ******* dropdowns to use on NoCliente.e ********** -->
 
         <iron-ajax url="/GuiasTransporteNav/GetDetailsGuia"
@@ -215,25 +224,25 @@
                                                     <such-selectbox id="tipoGuia"
                                                                     name="tipoGuia"
                                                                     label="Tipo"
+                                                                    on-value-changed="_onTipoGuiaChanged"
                                                                     value="{{ data.tipo }}"
                                                                     items="[[cbTipoGT]]"
                                                                     text-path="value"
                                                                     value-path="id"
-                                                                    fields='[{"field":"value", "name":"Tipo Guia"}]'
-                                                                    on-value-change="_thirdPartyChanged">
+                                                                    fields='[{"field":"value", "name":"Tipo Guia"}]'>
                                                     </such-selectbox>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <such-selectbox id="noCliente"
                                                                     name="noCliente"
                                                                     label="Nº Terceiro"
+                                                                    on-value-changed="_setThirdParty"
                                                                     value="{{ data.noCliente }}"
                                                                     items="[[cbThirdParty]]"
-                                                                    text-path="no_"
-                                                                    value-path="no_"
-                                                                    fields='[{"field":"no_", "name":"Nº"}, {"field":"name", "name":"Nome"}, {"field":"vatRegistrationNo", "name":"Nº VAT"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Código Postal"}]'
-                                                                    >
-                                                                    
+                                                                    text-path="entityId"
+                                                                    value-path="entityId"
+                                                                    fields='[{"field":"entityId", "name":"Nº"}, {"field":"name", "name":"Nome"}, {"field":"name2", "name":"Nome 2"}, {"field":"vatRegistrationNo", "name":"Nº VAT"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Código Postal"}]'>
+
                                                     </such-selectbox>
                                                 </div>
                                                 <div class="col-md-3">
@@ -564,7 +573,21 @@
                     selected: {
                         type: Number,
                         value: 0
+                    },
+                    thidrPartyNo: {
+                        observer:'_setThirdParty'
                     }
+                },
+
+                observers: ['_onCacheLoaded(data, cbThirdParty)'],
+
+                _onCacheLoaded: function (data, cbThirdParty) {
+                    if (!this.Flag) {
+                        //this.$.page_databound_ajax.body = JSON.stringify({ "No": this._guiatransporteid, "Historic": this._history });
+                        //this.$.page_databound_ajax.generateRequest();
+                        
+                    }
+                    this.Flag = true;
                 },
 
                 _openToast: function (message) {
@@ -587,13 +610,25 @@
                         this.$.page_databound_ajax.body = JSON.stringify({ "No": this._guiatransporteid, "Historic": this._history });
                         this.$.page_databound_ajax.generateRequest();
 
-                        
-
                     } else {
                         this._openToast("Apenas para edição de guias que não esetejam em histórico!")
                         window.location.href = "/GuiasTransporteNav";
                     }
                     
+                },
+
+                _responseProcessor: function (data) {
+                    debugger;;
+
+                    var self = this;
+
+                    if (data.detail.status === 200) {
+                        this.$.ajax_thirdparties.body = JSON.stringify({ "type": this.data.tipo });
+                        this.$.ajax_thirdparties.generateRequest();
+                        
+                    } else {
+                        this._openToastError("Ocorreu um erro desconhecido.")
+                    }
                 },
 
                 _update: function () {
@@ -611,29 +646,81 @@
                     }
                 },
 
-                _responseProcessor: function (data) {
+                _onTipoGuiaChanged: function (e) {
                     debugger;;
+                    if (this.data != undefined) {
+                        var tipoG = this.$.tipoGuia.value;
 
-                    var self = this;
+                        this._resetThirdPartyData();
 
-                    if (data.detail.status === 200) {
-                        this.$.ajax_thirdparties.body = JSON.stringify({ "type": this.data.tipo });
+                        this.$.ajax_thirdparties.body = JSON.stringify({ "type": tipoG });
                         this.$.ajax_thirdparties.generateRequest();
-                        //this._openToast(this.data.noGuiaTransporte);
-                    } else {
-                        this._openToastError("Ocorreu um erro desconhecido.")
                     }
-                },
-                
-                _thirdPartyChanged: function (e) {
-                    this.$.ajax_thirdparties.body = JSON.stringify({ "type": this.data.tipo });
-                    this.$.ajax_thirdparties.generateRequest();
+                    
                 },
 
                 _thirdPartiesResponse: function (e) {
-                    if (this.cbThirdParty == null) {
-                        this._openToastError("Erro!!");
+                    if (this.cbThirdParty === null) {
+                        //this._openToastError("Erro!!");
                     }
+                },
+
+                _setThirdParty: function (e) {
+                    debugger;
+                    if (this.data != undefined) {
+                        var type = this.$.tipoGuia.value;
+                        var entityId = this.$.noCliente.value;
+
+                        if (type != null && type != "") {
+                            if (type != null && entityId != null && entityId != "") {
+                                this.$.ajax_thirdparty_details.body = JSON.stringify({ "type": type, "entityId": entityId })
+                                this.$.ajax_thirdparty_details.generateRequest();
+                            }
+
+                            if (entityId == "" || type == "") {
+                                this._resetThirdPartyData();
+                            }
+                        }
+                    }   
+                },
+
+                _thirdPartyDetailsResponse: function (e) {
+                    debugger;;
+
+                    if (this.thirdPartyDetails != null) {
+                        debugger;;
+                        this.data.noCliente = this.thirdPartyDetails.entityId;
+                        this.$.noCliente.value = this.thirdPartyDetails.entityId;
+
+                        this.data.name = this.thirdPartyDetails.name;
+                        this.$.name.value = this.thirdPartyDetails.name;
+
+                        this.data.nomeCliente = this.thirdPartyDetails.name;
+                        this.$.nomeCliente.value = this.thirdPartyDetails.name;
+
+                        this.data.nomeCliente2 = this.thirdPartyDetails.name2;
+                        this.$.nomeCliente2.value = this.thirdPartyDetails.name2;
+                    } else {
+                        debugger;;
+
+                    }
+                },
+
+                _resetThirdPartyData: function () {
+                    var self = this.data;
+                    
+                    this.data.noCliente = "";
+                    this.$.noCliente.value = "";
+                    this.$.noCliente.valueText = "";
+
+                    this.data.name = "";
+                    this.$.name.value = "";
+
+                    this.data.nomeCliente = "";
+                    this.$.nomeCliente.value = "";
+
+                    this.data.nomeCliente2 = "";
+                    this.$.nomeCliente2.value = "";
                 }
                 
             });

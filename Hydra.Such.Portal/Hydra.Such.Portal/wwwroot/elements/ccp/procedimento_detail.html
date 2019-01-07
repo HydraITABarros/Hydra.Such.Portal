@@ -4895,6 +4895,7 @@
                         "Confirma a Autorização de Adjudicação?", ajax_request
                     );
 
+                    this.data.autorizacaoAdjudicacao = true;    //zpgm.07012019
                     //NR 20180301 - Se não fizer isto, o this.data.nomeProcesso não leva o valor que têm!!!
                     this.data.nomeProcesso = this.$.nomeProcesso.value;
 
@@ -4924,7 +4925,8 @@
                             "O Valor do procedimento é superior a 5.000, pretende ratificar em CA?",
                             ajax_request
                         );
-                    } else if (!(this.data.imobilizado) && (this.data.valorAdjudicacaoAtual > 20000) && (this.data.nome_Utilizador != "CASUCH")) {
+                    }
+                    else if (!(this.data.imobilizado) && (this.data.valorAdjudicacaoAtual > 20000) && (this.data.nome_Utilizador != "CASUCH")) {
                         this._confirmAndExecuteActionToast_NR(
                             "O Valor do procedimento é superior a 20.000, pretende ratificar em CA?",
                             ajax_request
@@ -4935,6 +4937,7 @@
                     this.data.nomeProcesso = this.$.nomeProcesso.value;
 
                     this.$.ajax_confirmAutorizacaoAdjudicacao_Confirmar.body = JSON.stringify(this.data);
+                    this.$.ajax_confirmAutorizacaoAdjudicacao_Confirmar.generateRequest();
                 },
                 _confirmAutorizacaoAdjudicacao_ConfirmarResponse: function (e) {
 
@@ -4951,6 +4954,7 @@
                         "Confirma a Rejeição do Processo?", ajax_request
                     );
 
+                    this.data.naoAdjudicacaoEncerramento = true;    // zpgm.07012019
                     //NR 20180301 - Se não fizer isto, o this.data.nomeProcesso não leva o valor que têm!!!
                     this.data.nomeProcesso = this.$.nomeProcesso.value;
 
@@ -4980,6 +4984,7 @@
                         "Confirma a suspensão do processo?", ajax_request
                     );
 
+                    this.data.naoAdjudicacaoSuspensao = true;   // zpgm.07012019
                     //NR 20180301 - Se não fizer isto, o this.data.nomeProcesso não leva o valor que têm!!!
                     this.data.nomeProcesso = this.$.nomeProcesso.value;
 
