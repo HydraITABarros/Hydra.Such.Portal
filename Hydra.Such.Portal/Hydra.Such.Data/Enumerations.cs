@@ -161,6 +161,11 @@ namespace Hydra.Such.Data
             FaturacaoDeProjetos = 59,
             [Description("Pedidos de Pagamento")]
             PedidosPagamento = 60,
+            [Description("Contratos Internos")]
+            ContratosInternos = 61,
+            [Description("Contratos Quotas")]
+            ContratosQuotas = 62,
+
 
 
             [Description("Administração Geral")]
