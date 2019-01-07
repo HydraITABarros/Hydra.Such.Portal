@@ -197,7 +197,9 @@
                     <vaadin-grid-filter path="empregadoNo" />
                 </template>
                 <template>
-                    {{item.empregadoNo}}
+                    <div style="text-align:right">
+                        {{item.empregadoNo}}
+                    </div>
                 </template>
             </vaadin-grid-column>
 
@@ -217,7 +219,9 @@
                     <vaadin-grid-filter path="dataPartidaTexto" />
                 </template>
                 <template>
-                    {{item.dataPartidaTexto}}
+                    <div style="text-align:center">
+                        {{item.dataPartidaTexto}}
+                    </div>
                 </template>
             </vaadin-grid-column>
 
@@ -227,7 +231,9 @@
                     <vaadin-grid-filter path="horaPartidaTexto" />
                 </template>
                 <template>
-                    {{item.horaPartidaTexto}}
+                    <div style="text-align:center">
+                        {{item.horaPartidaTexto}}
+                    </div>
                 </template>
             </vaadin-grid-column>
 
@@ -237,7 +243,9 @@
                     <vaadin-grid-filter path="dataChegadaTexto" />
                 </template>
                 <template>
-                    {{item.dataChegadaTexto}}
+                    <div style="text-align:center">
+                        {{item.dataChegadaTexto}}
+                    </div>
                 </template>
             </vaadin-grid-column>
 
@@ -247,7 +255,9 @@
                     <vaadin-grid-filter path="horaChegadaTexto" />
                 </template>
                 <template>
-                    {{item.horaChegadaTexto}}
+                    <div style="text-align:center">
+                        {{item.horaChegadaTexto}}
+                    </div>
                 </template>
             </vaadin-grid-column>
 
@@ -307,7 +317,9 @@
                     <vaadin-grid-filter path="custoTotalAjudaCusto" />
                 </template>
                 <template>
-                    [[_formatValue(item.custoTotalAjudaCusto)]]
+                    <div style="text-align:right">
+                        [[_formatValue(item.custoTotalAjudaCusto)]] €
+                    </div>
                 </template>
             </vaadin-grid-column>
 
@@ -317,7 +329,9 @@
                     <vaadin-grid-filter path="custoTotalHoras" />
                 </template>
                 <template>
-                    [[_formatValue(item.custoTotalHoras)]]
+                    <div style="text-align:right">
+                        [[_formatValue(item.custoTotalHoras)]] €
+                    </div>
                 </template>
             </vaadin-grid-column>
 
@@ -327,13 +341,27 @@
                     <vaadin-grid-filter path="custoTotalKM" />
                 </template>
                 <template>
-                    [[_formatValue(item.custoTotalKM)]]
+                    <div style="text-align:right">
+                        [[_formatValue(item.custoTotalKM)]] €
+                    </div>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.numTotalKM.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="numTotalKM">Nº Total km</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="numTotalKM" />
+                </template>
+                <template>
+                    <div style="text-align:right">
+                        {{item.numTotalKM}} km
+                    </div>
                 </template>
             </vaadin-grid-column>
 
             <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.codigoRegiao.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="codigoRegiao">Nº Total km</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="codigoRegiao">Região</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codigoRegiao" />
                 </template>
                 <template>
@@ -341,33 +369,23 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.numTotalKM.hidden }}">
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.codigoAreaFuncional.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="numTotalKM">Nº Total km</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="numTotalKM" />
+                    <vaadin-grid-sorter path="codigoAreaFuncional">Área Funcional</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codigoAreaFuncional" />
                 </template>
                 <template>
-                    {{item.numTotalKM}}
+                    {{item.codigoAreaFuncional}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.numTotalKM.hidden }}">
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.codigoCentroResponsabilidade.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="numTotalKM">Nº Total km</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="numTotalKM" />
+                    <vaadin-grid-sorter path="codigoCentroResponsabilidade">Centro Respon.</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codigoCentroResponsabilidade" />
                 </template>
                 <template>
-                    {{item.numTotalKM}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.numTotalKM.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="numTotalKM">Nº Total km</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="numTotalKM" />
-                </template>
-                <template>
-                    {{item.numTotalKM}}
+                    {{item.codigoCentroResponsabilidade}}
                 </template>
             </vaadin-grid-column>
 
@@ -388,9 +406,6 @@
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
-
-
-
 
         <vaadin-grid id="grid_Pendentes" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true" hidden>
             <vaadin-grid-column resizable width="150px" hidden$="{{ _columnsPendentes.folhaDeHorasNo.hidden }}">
@@ -999,6 +1014,9 @@
                         "custoTotalHoras": { hidden: false, label: "Custo Total Horas" },
                         "custoTotalKM": { hidden: false, label: "Custo Total km" },
                         "numTotalKM": { hidden: false, label: "Nº Total km" },
+                        "codigoRegiao": { hidden: false, label: "Região" },
+                        "codigoAreaFuncional": { hidden: false, label: "Área Funcional" },
+                        "codigoCentroResponsabilidade": { hidden: false, label: "Centro Respon." },
                         "observacoes": { hidden: false, label: "Observações" }
                     };
 

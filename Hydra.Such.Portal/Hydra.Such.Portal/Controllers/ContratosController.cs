@@ -61,6 +61,42 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
+        public IActionResult IndexInternos(int? archived, string contractNo)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.ContratosInternos);
+
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.UploadURL = _generalConfig.FileUploadFolder;
+                ViewBag.Archived = archived == null ? 0 : 1;
+                ViewBag.ContractNo = contractNo ?? "";
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        public IActionResult IndexQuotas(int? archived, string contractNo)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.ContratosQuotas);
+
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.UploadURL = _generalConfig.FileUploadFolder;
+                ViewBag.Archived = archived == null ? 0 : 1;
+                ViewBag.ContractNo = contractNo ?? "";
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
         //public IActionResult Details(string id, string version)
         //{
         //    UserAccessesViewModel UPerm = DBUserAccesses.ParseToViewModel(DBUserAccesses.GetByUserId(User.Identity.Name).Where(x => x.Área == 1 && x.Funcionalidade == 2).FirstOrDefault());
@@ -86,6 +122,92 @@ namespace Hydra.Such.Portal.Controllers
             string ifHistoric;
 
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Contratos);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                Contratos cContract = null;
+                if (version != "")
+                    cContract = DBContracts.GetByIdAndVersion(id, int.Parse(version));
+                else
+                    cContract = DBContracts.GetByIdLastVersion(id);
+
+                //if (cContract != null && (cContract.Arquivado == true || cContract.EstadoAlteração == 2))
+                if (cContract != null && cContract.Arquivado == true)
+                {
+                    UPerm.Update = false;
+                    UPerm.Delete = false;
+                }
+                if (hist == true)
+                {
+                    ViewBag.Historic = "(Histórico) ";
+                    ifHistoric = "true";
+                }
+                else
+                {
+                    ViewBag.Historic = "";
+                    ifHistoric = "false";
+                }
+
+                ViewBag.ifHistoric = ifHistoric;
+                ViewBag.ContractNo = id ?? "";
+                ViewBag.VersionNo = version ?? "";
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        public IActionResult DetalhesContratoInternos(string id, string version = "", bool isHistoric = false)
+        {
+            bool hist = isHistoric;
+            string ifHistoric;
+
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.ContratosInternos);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                Contratos cContract = null;
+                if (version != "")
+                    cContract = DBContracts.GetByIdAndVersion(id, int.Parse(version));
+                else
+                    cContract = DBContracts.GetByIdLastVersion(id);
+
+                //if (cContract != null && (cContract.Arquivado == true || cContract.EstadoAlteração == 2))
+                if (cContract != null && cContract.Arquivado == true)
+                {
+                    UPerm.Update = false;
+                    UPerm.Delete = false;
+                }
+                if (hist == true)
+                {
+                    ViewBag.Historic = "(Histórico) ";
+                    ifHistoric = "true";
+                }
+                else
+                {
+                    ViewBag.Historic = "";
+                    ifHistoric = "false";
+                }
+
+                ViewBag.ifHistoric = ifHistoric;
+                ViewBag.ContractNo = id ?? "";
+                ViewBag.VersionNo = version ?? "";
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        public IActionResult DetalhesContratoQuotas(string id, string version = "", bool isHistoric = false)
+        {
+            bool hist = isHistoric;
+            string ifHistoric;
+
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.ContratosQuotas);
             if (UPerm != null && UPerm.Read.Value)
             {
                 Contratos cContract = null;
@@ -154,6 +276,154 @@ namespace Hydra.Such.Portal.Controllers
             else if (Historic == 1)
             {
                 ContractsList = DBContracts.GetAllHistoric((int)ContractType.Contract);
+            }
+            else
+            {
+                ContractsList = DBContracts.GetByNo(ContractNo, true);
+            }
+
+            //Apply User Dimensions Validations
+            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            //Regions
+            if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.Region).Count() > 0)
+                ContractsList.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.CódigoRegião));
+            //FunctionalAreas
+            if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                ContractsList.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.CódigoÁreaFuncional));
+            //ResponsabilityCenter
+            if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                ContractsList.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CódigoCentroResponsabilidade));
+
+
+            List<ContractViewModel> result = new List<ContractViewModel>();
+
+            ContractsList.ForEach(x => result.Add(DBContracts.ParseToViewModel(x, _config.NAVDatabaseName, _config.NAVCompanyName)));
+
+            List<EnumData> status = EnumerablesFixed.ContractStatus;
+            result.ForEach(x => { x.StatusDescription = status.Where(y => y.Id == x.Status).Select(y => y.Value).FirstOrDefault(); });
+
+            return Json(result);
+        }
+
+        public JsonResult GetListContracts([FromBody] JObject requestParams)
+        {
+            int Archived = int.Parse(requestParams["Archived"].ToString());
+            string ContractNo = requestParams["ContractNo"].ToString();
+            int Historic = 0;
+            if (requestParams["Historic"] != null)
+                Historic = int.Parse(requestParams["Historic"].ToString());
+
+            List<Contratos> ContractsList = null;
+
+            if ((Archived == 0 || ContractNo == "") && (Historic == 0))
+            {
+                int type = 1; //CONTRATOS
+                ContractsList = DBContracts.GetAllByContractTypeAndType(ContractType.Contract, type);
+                ContractsList.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
+            }
+            else if (Historic == 1)
+            {
+                ContractsList = DBContracts.GetAllHistoric((int)ContractType.Contract);
+                ContractsList.RemoveAll(x => x.Tipo != 1);
+            }
+            else
+            {
+                ContractsList = DBContracts.GetByNo(ContractNo, true);
+            }
+
+            //Apply User Dimensions Validations
+            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            //Regions
+            if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.Region).Count() > 0)
+                ContractsList.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.CódigoRegião));
+            //FunctionalAreas
+            if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                ContractsList.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.CódigoÁreaFuncional));
+            //ResponsabilityCenter
+            if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                ContractsList.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CódigoCentroResponsabilidade));
+
+
+            List<ContractViewModel> result = new List<ContractViewModel>();
+
+            ContractsList.ForEach(x => result.Add(DBContracts.ParseToViewModel(x, _config.NAVDatabaseName, _config.NAVCompanyName)));
+
+            List<EnumData> status = EnumerablesFixed.ContractStatus;
+            result.ForEach(x => { x.StatusDescription = status.Where(y => y.Id == x.Status).Select(y => y.Value).FirstOrDefault(); });
+
+            return Json(result);
+        }
+
+        public JsonResult GetListContractsInternos([FromBody] JObject requestParams)
+        {
+            int Archived = int.Parse(requestParams["Archived"].ToString());
+            string ContractNo = requestParams["ContractNo"].ToString();
+            int Historic = 0;
+            if (requestParams["Historic"] != null)
+                Historic = int.Parse(requestParams["Historic"].ToString());
+
+            List<Contratos> ContractsList = null;
+
+            if ((Archived == 0 || ContractNo == "") && (Historic == 0))
+            {
+                int type = 2; //CONTRATOS INTERNOS
+                ContractsList = DBContracts.GetAllByContractTypeAndType(ContractType.Contract, type);
+
+                ContractsList.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
+            }
+            else if (Historic == 1)
+            {
+                ContractsList = DBContracts.GetAllHistoric((int)ContractType.Contract);
+                ContractsList.RemoveAll(x => x.Tipo != 2);
+            }
+            else
+            {
+                ContractsList = DBContracts.GetByNo(ContractNo, true);
+            }
+
+            //Apply User Dimensions Validations
+            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            //Regions
+            if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.Region).Count() > 0)
+                ContractsList.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.CódigoRegião));
+            //FunctionalAreas
+            if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                ContractsList.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.CódigoÁreaFuncional));
+            //ResponsabilityCenter
+            if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                ContractsList.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CódigoCentroResponsabilidade));
+
+
+            List<ContractViewModel> result = new List<ContractViewModel>();
+
+            ContractsList.ForEach(x => result.Add(DBContracts.ParseToViewModel(x, _config.NAVDatabaseName, _config.NAVCompanyName)));
+
+            List<EnumData> status = EnumerablesFixed.ContractStatus;
+            result.ForEach(x => { x.StatusDescription = status.Where(y => y.Id == x.Status).Select(y => y.Value).FirstOrDefault(); });
+
+            return Json(result);
+        }
+
+        public JsonResult GetListContractsQuotas([FromBody] JObject requestParams)
+        {
+            int Archived = int.Parse(requestParams["Archived"].ToString());
+            string ContractNo = requestParams["ContractNo"].ToString();
+            int Historic = 0;
+            if (requestParams["Historic"] != null)
+                Historic = int.Parse(requestParams["Historic"].ToString());
+
+            List<Contratos> ContractsList = null;
+
+            if ((Archived == 0 || ContractNo == "") && (Historic == 0))
+            {
+                int type = 3; //CONTRATOS QUOTAS
+                ContractsList = DBContracts.GetAllByContractTypeAndType(ContractType.Contract, type);
+                ContractsList.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
+            }
+            else if (Historic == 1)
+            {
+                ContractsList = DBContracts.GetAllHistoric((int)ContractType.Contract);
+                ContractsList.RemoveAll(x => x.Tipo != 3);
             }
             else
             {
@@ -273,6 +543,128 @@ namespace Hydra.Such.Portal.Controllers
                     result.InvoiceTexts = new List<ContractInvoiceTextViewModel>();
                 }
 
+                result.Type = 1; //CONTRATOS
+
+                return Json(result);
+            }
+            return Json(false);
+        }
+
+        [HttpPost]
+        public JsonResult GetContractDetailsInternos([FromBody] ContractViewModel data)
+        {
+            if (data != null)
+            {
+                Contratos cContract = null;
+                ContractType? contractType = null;
+                if (EnumHelper.ValidateRange(typeof(ContractType), data.ContractType))
+                    contractType = (ContractType)data.ContractType;
+                ;
+                if (data.VersionNo != 0)
+                {
+                    cContract = DBContracts.GetByIdAndVersion(data.ContractNo, data.VersionNo, contractType);
+                }
+                else
+                {
+                    cContract = DBContracts.GetByIdLastVersion(data.ContractNo, contractType);
+                }
+
+                ContractViewModel result = new ContractViewModel();
+
+
+                if (cContract != null)
+                {
+                    result = DBContracts.ParseToViewModel(cContract, _config.NAVDatabaseName, _config.NAVCompanyName);
+
+
+                    //GET CLIENT REQUISITIONS
+                    List<RequisiçõesClienteContrato> ClientRequisition = DBContractClientRequisition.GetByContract(result.ContractNo);
+                    result.ClientRequisitions = new List<ContractClientRequisitionViewModel>();
+
+                    if (ClientRequisition != null)
+                    {
+                        ClientRequisition.ForEach(x => result.ClientRequisitions.Add(DBContractClientRequisition.ParseToViewModel(x)));
+                    }
+
+                    //GET INVOICE TEXTS
+                    List<TextoFaturaContrato> InvoicesTexts = DBContractInvoiceText.GetByContract(result.ContractNo);
+                    result.InvoiceTexts = new List<ContractInvoiceTextViewModel>();
+
+                    if (InvoicesTexts != null)
+                    {
+                        InvoicesTexts.ForEach(x => result.InvoiceTexts.Add(DBContractInvoiceText.ParseToViewModel(x)));
+                    }
+                }
+                else
+                {
+                    if (data.ContractType == 1)
+                        result.Status = 1;
+                    result.ClientRequisitions = new List<ContractClientRequisitionViewModel>();
+                    result.InvoiceTexts = new List<ContractInvoiceTextViewModel>();
+                }
+
+                result.Type = 2; //INTERNOS
+
+                return Json(result);
+            }
+            return Json(false);
+        }
+
+        [HttpPost]
+        public JsonResult GetContractDetailsQuotas([FromBody] ContractViewModel data)
+        {
+            if (data != null)
+            {
+                Contratos cContract = null;
+                ContractType? contractType = null;
+                if (EnumHelper.ValidateRange(typeof(ContractType), data.ContractType))
+                    contractType = (ContractType)data.ContractType;
+                ;
+                if (data.VersionNo != 0)
+                {
+                    cContract = DBContracts.GetByIdAndVersion(data.ContractNo, data.VersionNo, contractType);
+                }
+                else
+                {
+                    cContract = DBContracts.GetByIdLastVersion(data.ContractNo, contractType);
+                }
+
+                ContractViewModel result = new ContractViewModel();
+
+
+                if (cContract != null)
+                {
+                    result = DBContracts.ParseToViewModel(cContract, _config.NAVDatabaseName, _config.NAVCompanyName);
+
+
+                    //GET CLIENT REQUISITIONS
+                    List<RequisiçõesClienteContrato> ClientRequisition = DBContractClientRequisition.GetByContract(result.ContractNo);
+                    result.ClientRequisitions = new List<ContractClientRequisitionViewModel>();
+
+                    if (ClientRequisition != null)
+                    {
+                        ClientRequisition.ForEach(x => result.ClientRequisitions.Add(DBContractClientRequisition.ParseToViewModel(x)));
+                    }
+
+                    //GET INVOICE TEXTS
+                    List<TextoFaturaContrato> InvoicesTexts = DBContractInvoiceText.GetByContract(result.ContractNo);
+                    result.InvoiceTexts = new List<ContractInvoiceTextViewModel>();
+
+                    if (InvoicesTexts != null)
+                    {
+                        InvoicesTexts.ForEach(x => result.InvoiceTexts.Add(DBContractInvoiceText.ParseToViewModel(x)));
+                    }
+                }
+                else
+                {
+                    if (data.ContractType == 1)
+                        result.Status = 1;
+                    result.ClientRequisitions = new List<ContractClientRequisitionViewModel>();
+                    result.InvoiceTexts = new List<ContractInvoiceTextViewModel>();
+                }
+
+                result.Type = 3; //QUOTAS
+
                 return Json(result);
             }
             return Json(false);
@@ -299,7 +691,20 @@ namespace Hydra.Such.Portal.Controllers
                             ProjectNumerationConfigurationId = Configs.NumeraçãoPropostas.Value;
                             break;
                         case 3:
-                            ProjectNumerationConfigurationId = Configs.NumeraçãoContratos.Value;
+                            switch (data.Type)
+                            {
+                                case 1:
+                                    ProjectNumerationConfigurationId = Configs.NumeraçãoContratos.Value;
+                                    break;
+                                case 2:
+                                    ProjectNumerationConfigurationId = Configs.NumeracaoContratosInternos.Value;
+                                    break;
+                                case 3:
+                                    ProjectNumerationConfigurationId = Configs.NumeracaoContratosQuotas.Value;
+                                    break;
+                                default:
+                                    break;
+                            }
                             break;
                         default:
                             break;

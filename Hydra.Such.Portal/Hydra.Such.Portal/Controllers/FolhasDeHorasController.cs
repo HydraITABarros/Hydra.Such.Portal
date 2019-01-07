@@ -3441,6 +3441,21 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Nº Total km");
                     Col = Col + 1;
                 }
+                if (dp["codigoRegiao"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Região");
+                    Col = Col + 1;
+                }
+                if (dp["codigoAreaFuncional"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Área Funcional");
+                    Col = Col + 1;
+                }
+                if (dp["codigoCentroResponsabilidade"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Centro Respon.");
+                    Col = Col + 1;
+                }
                 if (dp["observacoes"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Observações");
@@ -3543,6 +3558,21 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["numTotalKM"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.NumTotalKM.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["codigoRegiao"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.CodigoRegiao);
+                            Col = Col + 1;
+                        }
+                        if (dp["codigoAreaFuncional"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.CodigoAreaFuncional);
+                            Col = Col + 1;
+                        }
+                        if (dp["codigoCentroResponsabilidade"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.CodigoCentroResponsabilidade);
                             Col = Col + 1;
                         }
                         if (dp["observacoes"]["hidden"].ToString() == "False")
