@@ -120,7 +120,7 @@
                    on-response="_clResponseProcessor"
                    content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/Contratos/ExportToExcel_Contratos"
+        <iron-ajax url="/Contratos/ExportToExcel_ContratosInternos"
                    last-response="{{export}}"
                    id="ajax_Export"
                    method="post"
@@ -171,7 +171,7 @@
                     {{item.contractNo}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.oportunityNo.hidden }}">
+            <vaadin-grid-column width="120px" resizable hidden>
                 <template class="header">
                     <vaadin-grid-sorter path="oportunityNo">Nº Oportunidade</vaadin-grid-sorter>
                     <vaadin-grid-filter path="oportunityNo" />
@@ -478,14 +478,14 @@
                 _exportEXCELResponse: function (e) {
                     //debugger
                     var FileName = this.export;
-                    location.href = '../Contratos/ExportToExcelDownload_Contratos?sFileName=' + FileName;
+                    location.href = '../Contratos/ExportToExcelDownload_ContratosInternos?sFileName=' + FileName;
                 },
 
                 /*start - ColumnToggle*/
                 _startColumnToggle: function () {
                     var columns = {
                         "contractNo": { hidden: false, label: "Nº Contrato" },
-                        "oportunityNo": { hidden: false, label: "Nº Oportunidade" },
+                        //"oportunityNo": { hidden: false, label: "Nº Oportunidade" },
                         "type": { hidden: false, label: "Tipo" },
                         "startData": { hidden: false, label: "Data Inicio" },
                         "dueDate": { hidden: false, label: "Data Fim" },

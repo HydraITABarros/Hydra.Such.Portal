@@ -98,15 +98,15 @@ namespace Hydra.Such.Portal.Controllers
                 Historic = int.Parse(requestParams["Historic"].ToString());
 
             List<ConsultaMercado> result = DBConsultaMercado.GetAllConsultaMercado_Historico_ToList(Historic);
-            List<ConsultaMercadoView> list = new List<ConsultaMercadoView>();
 
-            foreach (ConsultaMercado cm in result)
-            {
-                list.Add(DBConsultaMercado.CastConsultaMercadoToView(cm));
-            }
+            //List<ConsultaMercadoView> list = new List<ConsultaMercadoView>();
+            //foreach (ConsultaMercado cm in result)
+            //{
+            //    list.Add(DBConsultaMercado.CastConsultaMercadoToView(cm));
+            //}
+            //return Json(list.OrderByDescending(x => x.NumConsultaMercado));
 
-            //return Json(result);
-            return Json(list.OrderByDescending(x => x.NumConsultaMercado));
+            return Json(result.OrderByDescending(x => x.NumConsultaMercado));
         }
 
         [HttpPost]

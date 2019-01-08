@@ -223,6 +223,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 ViewBag.No = id ?? "";
                 ViewBag.UPermissions = UPerm;
+                ViewBag.reportServerURL = _config.ReportServerURL;
 
                 return View();
             }

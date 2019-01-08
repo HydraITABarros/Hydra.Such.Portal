@@ -261,7 +261,7 @@
                 <template is="dom-if" if="{{ _permissions.update }}">
                     <paper-button class="tablinks" id="btnContractAdd" on-tap="_createNewContract"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
                     <!--<paper-button class="tablinks" on-tap="_archive" id="_archive"><i class="fa fa-archive" aria-hidden="true"></i> Arquivar</paper-button>-->
-                    <paper-button class="tablinks" on-tap="_openNewproposalDialog" id="_btnCreateProposal"><i class="fa fa-archive" aria-hidden="true"></i> Criar Proposta</paper-button>
+                    <!--<paper-button class="tablinks" on-tap="_openNewproposalDialog" id="_btnCreateProposal"><i class="fa fa-archive" aria-hidden="true"></i> Criar Proposta</paper-button>-->
                     <paper-button class="tablinks" on-tap="_openNewinvoiceDialog" id="_btnCreateInvoice"><i class="fa fa-archive" aria-hidden="true"></i> Criar Fatura</paper-button>
                     <paper-button class="tablinks" on-tap="_openUpdatePricesDlg" id="_btnUpdatePrices"><i class="fa fa-archive" aria-hidden="true"></i> Atualizar Preços</paper-button>
                     <paper-button class="tablinks" on-tap="_createProject" id="_btnCreateProject"><i class="fa fa-archive" aria-hidden="true"></i> Criar Projeto</paper-button>
@@ -364,7 +364,7 @@
 
                                     </div>
                                     <div class="row break_clear">
-                                        <div class="col-md-3 ">
+                                        <div class="col-md-3 " hidden>
                                             <vaadin-text-field value="{{data.proposalNo}}" maxlength="20" id="mProposalNo" name="proposalNo" label="Nº Proposta" disabled="true"> </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
@@ -1818,7 +1818,7 @@
                     },
                     _viewMenuItems: {
                         type: Array,
-                        value: [{ value: 1, description: "Arquivos" }, { value: 2, description: "Projetos" }, { value: 3, description: "Propostas" }],
+                        value: [{ value: 1, description: "Arquivos" }, { value: 2, description: "Projetos" }/*, { value: 3, description: "Propostas" }*/],
                     },
                     _lockFields: {
                         type: Boolean,

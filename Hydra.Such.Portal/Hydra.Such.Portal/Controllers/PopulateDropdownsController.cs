@@ -1026,6 +1026,19 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetMealTypesData()
+        {
+            List<MealTypesViewModel> result = DBMealTypes.GetAll().Select(x => new MealTypesViewModel()
+            {
+                Code = x.Código,
+                Description = x.Descrição,
+                GrupoContabProduto = x.GrupoContabProduto,
+                GrupoContabProdutoText = DBNAV2017GruposContabilisticos.GetGruposContabProduto(_config.NAVDatabaseName, _config.NAVCompanyName).Where(y => y.Code == x.GrupoContabProduto).Count() > 0 ? DBNAV2017GruposContabilisticos.GetGruposContabProduto(_config.NAVDatabaseName, _config.NAVCompanyName).Where(y => y.Code == x.GrupoContabProduto).FirstOrDefault().Description : "",
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetEmployees()
         {
             List<DDMessageString> result = DBNAV2009Employees.GetAll("", _config.NAV2009DatabaseName, _config.NAV2009CompanyName).Select(x => new DDMessageString()
