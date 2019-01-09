@@ -289,6 +289,16 @@
             <vaadin-grid-selection-column id="selectColumn" auto-select>
             </vaadin-grid-selection-column>
 
+            <vaadin-grid-column width="50px" resizable>
+                <template class="header">
+                </template>
+                <template>
+                    <center>
+                        <paper-button class="btnSave tableBtn" on-tap="_showAuthorizationDetails" title="Ver Detalhes Autorização"><i class="fa fa-info" aria-hidden="true"></i></paper-button>
+                    </center>
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.codProjeto.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codProjeto">Nº Projeto</vaadin-grid-sorter>
@@ -466,15 +476,7 @@
                     {{item.utilizador}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="150px" resizable>
-                <template class="header">
-                </template>
-                <template>
-                    <center>
-                        <paper-button class="btnSave tableBtn" on-tap="_showAuthorizationDetails" title="Ver Detalhes Autorização"><i class="fa fa-info" aria-hidden="true"></i></paper-button>
-                    </center>
-                </template>
-            </vaadin-grid-column>
+
         </vaadin-grid>
 
         <paper-dialog id="dialog" class="dialgoBox">
@@ -806,7 +808,7 @@
                 </vaadin-combo-box>
             </div>
             <div class="buttons">
-                <paper-button raised class="btnEdit" on-tap="_validateInvoice">Guardar</paper-button>
+                <paper-button raised class="btnEdit" on-tap="_validateInvoice">Confirmar</paper-button>
                 <paper-button raised class="btnRemove" dialog-dismiss>Cancelar</paper-button>
             </div>
         </paper-dialog>

@@ -65,6 +65,7 @@
     <Report Include="FolhaCaixa.rdl" />
     <Report Include="FolhaHora.rdl" />
     <Report Include="GuiaTransporteNav.rdl" />
+    <Report Include="PedidoPagamentoAntecipado.rdl" />
     <Report Include="Procedimento.rdl" />
     <Report Include="RequisitionReport.rdl" />
     <Report Include="RequisitionStockReport.rdl" />

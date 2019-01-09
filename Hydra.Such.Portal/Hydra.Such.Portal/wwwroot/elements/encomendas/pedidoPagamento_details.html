@@ -204,6 +204,7 @@
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
             <paper-button id="btnCreateNewPedidoPagamento" class="tablinks" on-tap="_createNewPedidoPagamento"><i class="fa fa-check-square" aria-hidden="true"></i> Criar</paper-button>
             <such-dropdown-menu id="menuFunctios" title="Funções" items='[[ _functionsMenuItems ]]' disabled="{{ !_permissions.update }}" on-value-changed="_functionsMenuItemSelected"></such-dropdown-menu>
+            <paper-button id="btn_imprimirPedidoPagamento" class="tablinks" on-tap="_printPedidoPagamento" disabled="{{ !_permissions.create }}" title="Imprimir"><i class="fa fa-print" aria-hidden="true"></i> Imprimir</paper-button>
         </div>
 
         <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
@@ -353,6 +354,13 @@
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
 
+        <paper-dialog id="rptDialog" class="dialgoBox" modal>
+            <div class="buttons">
+                <paper-button class="btnRemove" on-tap="_closeRptDialog" title="Fechar"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
+            </div>
+            <iframe id="rptContainer" src="" frameborder="0" style="width: 100%; height: 92%; margin: 0px; padding: 0px"></iframe>
+        </paper-dialog>
+
     </template>
     <script>
         document.addEventListener('WebComponentsReady', function () {
@@ -374,6 +382,9 @@
                     _functionsMenuItems: {
                         type: Array,
                         value: [{ value: 1, description: "Enviar p/ Aprovação" }, { value: 2, description: "Aprovar" }, { value: 3, description: "Validar" }, { value: 4, description: "Anular Pedido" }],
+                    },
+                    _reportserverurl: {
+                        type: String,
                     },
                 },
 
@@ -649,6 +660,21 @@
                     }
                 },
                
+                _printPedidoPagamento: function () {
+                    if (this._reportserverurl != undefined) {
+                        this.$.rptContainer.src = this._reportserverurl + "PedidoPagamentoAntecipado&NoPedido=" + this.data.noPedido;
+                        this.$.rptDialog.open();
+                    }
+                    else {
+                        this._openToastError("Não é possivel imprimir. Não foi definido o servidor de relatórios.");
+                    }
+                },
+
+                _closeRptDialog: function () {
+                    this.$.rptContainer.src = "about:blank";
+                    this.$.rptDialog.close();
+                },
+
             });
         });
     </script>

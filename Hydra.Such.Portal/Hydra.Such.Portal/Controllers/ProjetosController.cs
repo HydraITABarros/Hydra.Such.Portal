@@ -1469,6 +1469,7 @@ namespace Hydra.Such.Portal.Controllers
                         {
 
                             DiárioDeProjeto dpValidation = new DiárioDeProjeto();
+                            item.Type = 2; //Recurso
                             item.CreateUser = User.Identity.Name;
                             item.CreateDate = DateTime.Now;
                             item.InvoiceToClientNo = proj.NºCliente;

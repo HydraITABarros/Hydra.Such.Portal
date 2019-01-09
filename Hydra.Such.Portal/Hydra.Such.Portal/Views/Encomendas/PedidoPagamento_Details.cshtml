@@ -7,5 +7,6 @@
 <link rel="import" href="~/elements/encomendas/pedidopagamento_details.html">
 
 <x-pedidopagamentodetails _no="@ViewBag.No"
-                    _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'>
+                    _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'
+                    _reportserverurl='@ViewBag.reportServerURL'>
 </x-pedidopagamentodetails>

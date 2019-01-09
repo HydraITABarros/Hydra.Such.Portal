@@ -222,7 +222,7 @@
                         <vaadin-checkbox checked="{{data.billable}}" disabled="{{ !_permissions.update }}">Faturável</vaadin-checkbox>
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-combo-box items="[[LProjectContracts]]" id="ContractNo" item-value-path="id" item-label-path="id" value="{{data.contractNo}}" label="Nº Contrato" disabled="{{ !_permissions.update }}">
+                        <!--<vaadin-combo-box items="[[LProjectContracts]]" id="ContractNo" item-value-path="id" item-label-path="id" value="{{data.contractNo}}" label="Nº Contrato" disabled="{{ !_permissions.update }}">
                             <template>
                                 <table width="200px">
                                     <tr>
@@ -231,7 +231,14 @@
                                     </tr>
                                 </table>
                             </template>
-                        </vaadin-combo-box>
+                        </vaadin-combo-box>-->
+                        <such-selectbox id="ContractNo" value="{{data.contractNo}}" label="Nº Contrato"
+                                        items="[[LProjectContracts]]"
+                                        text-path="id"
+                                        value-path="id"
+                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Contrato"}]'
+                                        disabled="{{ !_permissions.update }}">
+                        </such-selectbox>
                     </div>
                     <div class="col-lg-3">
                         <vaadin-text-field value="{{data.ourProposal}}" maxlength="50" id="OurProposal" name="OurProposal" label="Nossa Proposta" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
