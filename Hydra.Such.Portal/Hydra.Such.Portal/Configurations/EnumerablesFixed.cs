@@ -1897,6 +1897,11 @@ namespace Hydra.Such.Portal.Configurations
                 Id = 4,
                 Value = "Compras Dinheiro"
             },
+            new EnumData
+            {
+                Id = 5,
+                Value = "Projetos"
+            },
         };
 
         public static readonly List<EnumData> CookingTechniqueTypes = new List<EnumData>()

@@ -136,6 +136,16 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult ValidatedCreateNewProject()
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Projetos);
+            if (UPerm != null && UPerm.Create.Value)
+                return Json(true);
+            else
+                return Json(false);
+        }
+
+        [HttpPost]
         public JsonResult GetByContract([FromBody] JObject requestParams)
         {
             string contractId = requestParams["contractId"].ToString();
@@ -222,10 +232,25 @@ namespace Hydra.Such.Portal.Controllers
 
                     return Json(result);
                 }
-                ProjectDetailsViewModel finalr = new ProjectDetailsViewModel()
+
+                ConfigUtilizadores user = DBUserConfigurations.GetById(User.Identity.Name);
+                ProjectDetailsViewModel finalr = new ProjectDetailsViewModel();
+                if (user.CriarProjetoSemAprovacao == true)
                 {
-                    Status = (EstadoProjecto)1
-                };
+                    finalr.Status = (EstadoProjecto)1; //ENCOMENDA
+                    finalr.ProjectLeader = user.EmployeeNo;
+                    finalr.ProjectResponsible = user.EmployeeNo;
+                }
+                else
+                {
+                    finalr.Status = (EstadoProjecto)0; //PENDENTE
+                    finalr.ProjectLeader = user.EmployeeNo;
+
+                    //TEMPORÁRIO AMARO
+                    finalr.Status = (EstadoProjecto)1; //ENCOMENDA
+                    finalr.ProjectResponsible = user.EmployeeNo;
+                }
+
                 return Json(finalr);
             }
             return Json(false);
@@ -287,102 +312,228 @@ namespace Hydra.Such.Portal.Controllers
                         data.ProjectNo = projNoAuto;
                     }
 
-                    if (data.ProjectNo != null)
+                    if (data.Status == (EstadoProjecto)1) //ENCOMENDA
                     {
-                        Projetos cProject = new Projetos()
+                        if (data.ProjectNo != null)
                         {
-                            NºProjeto = data.ProjectNo,
-                            Área = data.Area,
-                            Descrição = data.Description,
-                            NºCliente = data.ClientNo,
-                            Data = data.Date != "" && data.Date != null ? DateTime.Parse(data.Date) : (DateTime?)null,
-                            Estado = data.Status,
-                            CódigoRegião = data.RegionCode,
-                            CódigoÁreaFuncional = data.FunctionalAreaCode,
-                            CódigoCentroResponsabilidade = data.ResponsabilityCenterCode,
-                            Faturável = data.Billable,
-                            NºContrato = data.ContractNo,
-                            CódEndereçoEnvio = data.ShippingAddressCode,
-                            EnvioANome = data.ShippingName,
-                            EnvioAEndereço = data.ShippingAddress,
-                            EnvioACódPostal = data.ShippingPostalCode,
-                            EnvioALocalidade = data.ShippingLocality,
-                            EnvioAContato = data.ShippingContact,
-                            CódTipoProjeto = data.ProjectTypeCode,
-                            NossaProposta = data.OurProposal,
-                            CódObjetoServiço = data.ServiceObjectCode,
-                            NºCompromisso = data.CommitmentCode,
-                            GrupoContabObra = "PROJETO",
-                            TipoGrupoContabProjeto = data.GroupContabProjectType,
-                            //TipoGrupoContabOmProjeto = data.GroupContabOMProjectType,
-                            PedidoDoCliente = data.ClientRequest,
-                            DataDoPedido = data.RequestDate != "" && data.RequestDate != null ? DateTime.Parse(data.RequestDate) : (DateTime?)null,
-                            ValidadeDoPedido = data.RequestValidity,
-                            DescriçãoDetalhada = data.DetailedDescription,
-                            CategoriaProjeto = data.ProjectCategory,
-                            NºContratoOrçamento = data.BudgetContractNo,
-                            ProjetoInterno = data.InternalProject,
-                            ChefeProjeto = data.ProjectLeader,
-                            ResponsávelProjeto = data.ProjectResponsible,
-                            UtilizadorCriação = User.Identity.Name
-                        };
-
-                        //Create Project On Database
-                        cProject = DBProjects.Create(cProject);
-
-                        if (cProject == null)
-                        {
-                            data.eReasonCode = 3;
-                            data.eMessage = "Ocorreu um erro ao criar o projeto no portal.";
-                        }
-                        else
-                        {
-                            //Create Project on NAV
-                            data.Visivel = true;
-                            Task<WSCreateNAVProject.Create_Result> TCreateNavProj = WSProject.CreateNavProject(data, _configws);
-                            try
+                            Projetos cProject = new Projetos()
                             {
-                                TCreateNavProj.Wait();
-                            }
-                            catch (Exception ex)
+                                NºProjeto = data.ProjectNo,
+                                Área = data.Area,
+                                Descrição = data.Description,
+                                NºCliente = data.ClientNo,
+                                Data = data.Date != "" && data.Date != null ? DateTime.Parse(data.Date) : (DateTime?)null,
+                                Estado = data.Status,
+                                CódigoRegião = data.RegionCode,
+                                CódigoÁreaFuncional = data.FunctionalAreaCode,
+                                CódigoCentroResponsabilidade = data.ResponsabilityCenterCode,
+                                Faturável = data.Billable,
+                                NºContrato = data.ContractNo,
+                                CódEndereçoEnvio = data.ShippingAddressCode,
+                                EnvioANome = data.ShippingName,
+                                EnvioAEndereço = data.ShippingAddress,
+                                EnvioACódPostal = data.ShippingPostalCode,
+                                EnvioALocalidade = data.ShippingLocality,
+                                EnvioAContato = data.ShippingContact,
+                                CódTipoProjeto = data.ProjectTypeCode,
+                                NossaProposta = data.OurProposal,
+                                CódObjetoServiço = data.ServiceObjectCode,
+                                NºCompromisso = data.CommitmentCode,
+                                GrupoContabObra = "PROJETO",
+                                TipoGrupoContabProjeto = data.GroupContabProjectType,
+                                //TipoGrupoContabOmProjeto = data.GroupContabOMProjectType,
+                                PedidoDoCliente = data.ClientRequest,
+                                DataDoPedido = data.RequestDate != "" && data.RequestDate != null ? DateTime.Parse(data.RequestDate) : (DateTime?)null,
+                                ValidadeDoPedido = data.RequestValidity,
+                                DescriçãoDetalhada = data.DetailedDescription,
+                                CategoriaProjeto = data.ProjectCategory,
+                                NºContratoOrçamento = data.BudgetContractNo,
+                                ProjetoInterno = data.InternalProject,
+                                ChefeProjeto = data.ProjectLeader,
+                                ResponsávelProjeto = data.ProjectResponsible,
+                                UtilizadorCriação = User.Identity.Name
+                            };
+
+                            //Create Project On Database
+                            cProject = DBProjects.Create(cProject);
+
+                            if (cProject == null)
                             {
                                 data.eReasonCode = 3;
-                                data.eMessage = "Ocorreu um erro ao criar o projeto no NAV.";
-                            }
-                            if (!TCreateNavProj.IsCompletedSuccessfully)
-                            {
-                                //Delete Created Project on Database
-                                DBProjects.Delete(cProject.NºProjeto);
-
-                                data.eReasonCode = 3;
-                                data.eMessage = "Ocorreu um erro ao criar o projeto no NAV.";
-                                if (TCreateNavProj.Exception != null)
-                                    data.eMessages.Add(new TraceInformation(TraceType.Exception, TCreateNavProj.Exception.Message));
-                                if (TCreateNavProj.Exception.InnerException != null)
-                                    data.eMessages.Add(new TraceInformation(TraceType.Exception, TCreateNavProj.Exception.InnerException.ToString()));
+                                data.eMessage = "Ocorreu um erro ao criar o projeto no portal.";
                             }
                             else
                             {
-                                //Update Last Numeration Used
-                                if (autoGenId)
+                                //Create Project on NAV
+                                data.Visivel = true;
+                                Task<WSCreateNAVProject.Create_Result> TCreateNavProj = WSProject.CreateNavProject(data, _configws);
+                                try
                                 {
-                                    ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(ProjectNumerationConfigurationId);
-                                    ConfigNumerations.ÚltimoNºUsado = data.ProjectNo;
-                                    ConfigNumerations.UtilizadorModificação = User.Identity.Name;
-                                    DBNumerationConfigurations.Update(ConfigNumerations);
+                                    TCreateNavProj.Wait();
                                 }
-                                data.eReasonCode = 1;
+                                catch (Exception ex)
+                                {
+                                    data.eReasonCode = 3;
+                                    data.eMessage = "Ocorreu um erro ao criar o projeto no NAV.";
+                                }
+                                if (!TCreateNavProj.IsCompletedSuccessfully)
+                                {
+                                    //Delete Created Project on Database
+                                    DBProjects.Delete(cProject.NºProjeto);
+
+                                    data.eReasonCode = 3;
+                                    data.eMessage = "Ocorreu um erro ao criar o projeto no NAV.";
+                                    if (TCreateNavProj.Exception != null)
+                                        data.eMessages.Add(new TraceInformation(TraceType.Exception, TCreateNavProj.Exception.Message));
+                                    if (TCreateNavProj.Exception.InnerException != null)
+                                        data.eMessages.Add(new TraceInformation(TraceType.Exception, TCreateNavProj.Exception.InnerException.ToString()));
+                                }
+                                else
+                                {
+                                    //Update Last Numeration Used
+                                    if (autoGenId)
+                                    {
+                                        ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(ProjectNumerationConfigurationId);
+                                        ConfigNumerations.ÚltimoNºUsado = data.ProjectNo;
+                                        ConfigNumerations.UtilizadorModificação = User.Identity.Name;
+                                        DBNumerationConfigurations.Update(ConfigNumerations);
+                                    }
+                                    data.eReasonCode = 1;
+                                }
                             }
+                        }
+                        else
+                        {
+                            data.eReasonCode = 5;
+                            data.eMessage = "A numeração configurada não é compativel com a inserida.";
+                        }
+                        if (data.eReasonCode != 1 && projNoAuto != "")
+                        {
+                            data.ProjectNo = "";
                         }
                     }
                     else
                     {
-                        data.eReasonCode = 5;
-                        data.eMessage = "A numeração configurada não é compativel com a inserida.";
-                    }
-                    if (data.eReasonCode != 1 && projNoAuto != "")
-                    {
-                        data.ProjectNo = "";
+                        if (data.Status == (EstadoProjecto)2) //PENDENTE
+                        {
+                            //if (data.ProjectNo != null)
+                            //{
+
+                            //    ErrorHandler resultApprovalMovement = new ErrorHandler();
+
+                            //    resultApprovalMovement = ApprovalMovementsManager.StartApprovalMovement_Projetos(5, data.FunctionalAreaCode, data.ResponsabilityCenterCode, data.RegionCode, 0, data.ProjectNo, User.Identity.Name);
+                            //}
+                            //else
+                            //{
+                            //    data.eReasonCode = 5;
+                            //    data.eMessage = "A numeração configurada não é compativel com a inserida.";
+                            //}
+                            //if (data.eReasonCode != 1 && projNoAuto != "")
+                            //{
+                            //    data.ProjectNo = "";
+                            //}
+
+
+
+
+                            if (data.ProjectNo != null)
+                            {
+                                Projetos cProject = new Projetos()
+                                {
+                                    NºProjeto = data.ProjectNo,
+                                    Área = data.Area,
+                                    Descrição = data.Description,
+                                    NºCliente = data.ClientNo,
+                                    Data = data.Date != "" && data.Date != null ? DateTime.Parse(data.Date) : (DateTime?)null,
+                                    Estado = data.Status,
+                                    CódigoRegião = data.RegionCode,
+                                    CódigoÁreaFuncional = data.FunctionalAreaCode,
+                                    CódigoCentroResponsabilidade = data.ResponsabilityCenterCode,
+                                    Faturável = data.Billable,
+                                    NºContrato = data.ContractNo,
+                                    CódEndereçoEnvio = data.ShippingAddressCode,
+                                    EnvioANome = data.ShippingName,
+                                    EnvioAEndereço = data.ShippingAddress,
+                                    EnvioACódPostal = data.ShippingPostalCode,
+                                    EnvioALocalidade = data.ShippingLocality,
+                                    EnvioAContato = data.ShippingContact,
+                                    CódTipoProjeto = data.ProjectTypeCode,
+                                    NossaProposta = data.OurProposal,
+                                    CódObjetoServiço = data.ServiceObjectCode,
+                                    NºCompromisso = data.CommitmentCode,
+                                    GrupoContabObra = "PROJETO",
+                                    TipoGrupoContabProjeto = data.GroupContabProjectType,
+                                    //TipoGrupoContabOmProjeto = data.GroupContabOMProjectType,
+                                    PedidoDoCliente = data.ClientRequest,
+                                    DataDoPedido = data.RequestDate != "" && data.RequestDate != null ? DateTime.Parse(data.RequestDate) : (DateTime?)null,
+                                    ValidadeDoPedido = data.RequestValidity,
+                                    DescriçãoDetalhada = data.DetailedDescription,
+                                    CategoriaProjeto = data.ProjectCategory,
+                                    NºContratoOrçamento = data.BudgetContractNo,
+                                    ProjetoInterno = data.InternalProject,
+                                    ChefeProjeto = data.ProjectLeader,
+                                    ResponsávelProjeto = data.ProjectResponsible,
+                                    UtilizadorCriação = User.Identity.Name
+                                };
+
+                                //Create Project On Database
+                                cProject = DBProjects.Create(cProject);
+
+                                if (cProject == null)
+                                {
+                                    data.eReasonCode = 3;
+                                    data.eMessage = "Ocorreu um erro ao criar o projeto no portal.";
+                                }
+                                else
+                                {
+                                    //Create Project on NAV
+                                    data.Visivel = true;
+                                    Task<WSCreateNAVProject.Create_Result> TCreateNavProj = WSProject.CreateNavProject(data, _configws);
+                                    try
+                                    {
+                                        TCreateNavProj.Wait();
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        data.eReasonCode = 3;
+                                        data.eMessage = "Ocorreu um erro ao criar o projeto no NAV.";
+                                    }
+                                    if (!TCreateNavProj.IsCompletedSuccessfully)
+                                    {
+                                        //Delete Created Project on Database
+                                        DBProjects.Delete(cProject.NºProjeto);
+
+                                        data.eReasonCode = 3;
+                                        data.eMessage = "Ocorreu um erro ao criar o projeto no NAV.";
+                                        if (TCreateNavProj.Exception != null)
+                                            data.eMessages.Add(new TraceInformation(TraceType.Exception, TCreateNavProj.Exception.Message));
+                                        if (TCreateNavProj.Exception.InnerException != null)
+                                            data.eMessages.Add(new TraceInformation(TraceType.Exception, TCreateNavProj.Exception.InnerException.ToString()));
+                                    }
+                                    else
+                                    {
+                                        //Update Last Numeration Used
+                                        if (autoGenId)
+                                        {
+                                            ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(ProjectNumerationConfigurationId);
+                                            ConfigNumerations.ÚltimoNºUsado = data.ProjectNo;
+                                            ConfigNumerations.UtilizadorModificação = User.Identity.Name;
+                                            DBNumerationConfigurations.Update(ConfigNumerations);
+                                        }
+                                        data.eReasonCode = 1;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                data.eReasonCode = 5;
+                                data.eMessage = "A numeração configurada não é compativel com a inserida.";
+                            }
+                            if (data.eReasonCode != 1 && projNoAuto != "")
+                            {
+                                data.ProjectNo = "";
+                            }
+                        }
                     }
                 }
             }

@@ -39,8 +39,9 @@ namespace Hydra.Such.Data.ViewModel
         public string AprovadorPedidoPag2 { get; set; }
         public bool? AnulacaoPedidoPagamento { get; set; }
         public bool? ValidarPedidoPagamento { get; set; }
+        public bool? CriarProjetoSemAprovacao { get; set; }
 
-    public List<UserAccessesViewModel> UserAccesses { get; set; }
+        public List<UserAccessesViewModel> UserAccesses { get; set; }
         public List<ProfileModelsViewModel> UserProfiles { get; set; }
         public List<UserDimensionsViewModel> AllowedUserDimensions { get; set; }
         public List<UserAcessosLocalizacoesViewModel> UserAcessosLocalizacoes { get; set; }

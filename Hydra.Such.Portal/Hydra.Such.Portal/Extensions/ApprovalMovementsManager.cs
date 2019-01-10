@@ -81,10 +81,11 @@ namespace Hydra.Such.Portal.Extensions
                         List<string> GUsers = DBApprovalUserGroup.GetAllFromGroup(approvalConfiguration.GrupoAprovação.Value);
                         if (GUsers.Exists(x => x.ToLower() == requestUser.ToLower()))
                         {
+                            GUsers.RemoveAll(x => x.ToLower() == requestUser.ToLower());
+
                             string SH = DBUserConfigurations.GetById(requestUser).SuperiorHierarquico;
                             if (!string.IsNullOrEmpty(SH))
                                 GUsers.Add(SH);
-                            GUsers.RemoveAll(x => x.ToLower() == requestUser.ToLower());
                         }
                         GUsers = GUsers.Distinct().ToList();
 
@@ -102,10 +103,11 @@ namespace Hydra.Such.Portal.Extensions
                         List<string> GUsersWithEmailAlerta = DBApprovalUserGroup.GetAllFromGroupWithEmailAlerta(approvalConfiguration.GrupoAprovação.Value);
                         if (GUsersWithEmailAlerta.Exists(x => x.ToLower() == requestUser.ToLower()))
                         {
+                            GUsersWithEmailAlerta.RemoveAll(x => x.ToLower() == requestUser.ToLower());
+
                             string SH = DBUserConfigurations.GetById(requestUser).SuperiorHierarquico;
                             if (!string.IsNullOrEmpty(SH))
                                 GUsersWithEmailAlerta.Add(SH);
-                            GUsersWithEmailAlerta.RemoveAll(x => x.ToLower() == requestUser.ToLower());
                         }
                         GUsersWithEmailAlerta = GUsersWithEmailAlerta.Distinct().ToList();
 
@@ -928,6 +930,157 @@ namespace Hydra.Such.Portal.Extensions
                 {
                     eReasonCode = 351,
                     eMessage = "Ocorreu um erro desconhecido ao aprovar a tarefa."
+                };
+            }
+        }
+
+        public static ErrorHandler StartApprovalMovement_Projetos(int type, string functionalArea, string responsabilityCenter, string region, decimal value, string number, string requestUser)
+        {
+            try
+            {
+                ErrorHandler result = new ErrorHandler()
+                {
+                    eReasonCode = 100,
+                    eMessage = "Fluxo Iniciado com sucesso",
+                    eMessages = new List<TraceInformation>()
+                };
+
+                //Get Compatible ApprovalConfigurations
+                List<ConfiguraçãoAprovações> ApprovalConfigurations = DBApprovalConfigurations.GetByTypeAreaValueDateAndDimensions(type, functionalArea, responsabilityCenter, region, value, DateTime.Now);
+
+                int lowLevel = ApprovalConfigurations.Where(x => x.NívelAprovação.HasValue).OrderBy(x => x.NívelAprovação.Value).Select(x => x.NívelAprovação.Value).FirstOrDefault();
+                ApprovalConfigurations.RemoveAll(x => x.NívelAprovação != lowLevel);
+
+                if (ApprovalConfigurations != null && ApprovalConfigurations.Count > 0)
+                {
+                    //Create ApprovalMovement
+                    ApprovalMovementsViewModel ApprovalMovement = new ApprovalMovementsViewModel()
+                    {
+                        Type = type,
+                        ResponsabilityCenter = responsabilityCenter,
+                        FunctionalArea = functionalArea,
+                        Region = region,
+                        Number = number,
+                        RequestUser = requestUser,
+                        Value = value,
+                        DateTimeCreate = DateTime.Now,
+                        UserCreate = requestUser,
+                        Status = 1,
+                        Level = lowLevel
+                    };
+
+                    ApprovalMovement = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.Create(DBApprovalMovements.ParseToDatabase(ApprovalMovement)));
+
+                    result.eMessages.Add(new TraceInformation(TraceType.Error, ApprovalMovement.MovementNo.ToString()));
+
+                    //Create User ApprovalMovements
+                    List<string> UsersToNotify = new List<string>();
+                    //ApprovalConfigurations.ForEach(x =>
+                    //{
+                    var approvalConfiguration = ApprovalConfigurations[0];
+                    if (approvalConfiguration.UtilizadorAprovação != "" && approvalConfiguration.UtilizadorAprovação != null)
+                    {
+                        if (approvalConfiguration.UtilizadorAprovação.ToLower() == requestUser.ToLower())
+                            approvalConfiguration.UtilizadorAprovação = DBUserConfigurations.GetById(requestUser).SuperiorHierarquico;
+
+                        if (approvalConfiguration.UtilizadorAprovação != "" && approvalConfiguration.UtilizadorAprovação != null && approvalConfiguration.UtilizadorAprovação.ToLower() != requestUser.ToLower())
+                        {
+                            DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = approvalConfiguration.UtilizadorAprovação });
+                            UsersToNotify.Add(approvalConfiguration.UtilizadorAprovação);
+                        }
+                    }
+                    else if (approvalConfiguration.GrupoAprovação.HasValue)
+                    {
+                        List<string> GUsers = DBApprovalUserGroup.GetAllFromGroup(approvalConfiguration.GrupoAprovação.Value);
+                        if (GUsers.Exists(x => x.ToLower() == requestUser.ToLower()))
+                        {
+                            GUsers.RemoveAll(x => x.ToLower() == requestUser.ToLower());
+
+                            string SH = DBUserConfigurations.GetById(requestUser).SuperiorHierarquico;
+                            if (!string.IsNullOrEmpty(SH))
+                                GUsers.Add(SH);
+                        }
+                        GUsers = GUsers.Distinct().ToList();
+
+                        GUsers.ForEach(y =>
+                        {
+                            if (y != "" && y != null)
+                            {
+                                DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = y });
+                                //UsersToNotify.Add(y);
+                            }
+                        });
+
+                        List<string> GUsersWithEmailAlerta = DBApprovalUserGroup.GetAllFromGroupWithEmailAlerta(approvalConfiguration.GrupoAprovação.Value);
+                        if (GUsersWithEmailAlerta.Exists(x => x.ToLower() == requestUser.ToLower()))
+                        {
+                            GUsersWithEmailAlerta.RemoveAll(x => x.ToLower() == requestUser.ToLower());
+
+                            string SH = DBUserConfigurations.GetById(requestUser).SuperiorHierarquico;
+                            if (!string.IsNullOrEmpty(SH))
+                                GUsersWithEmailAlerta.Add(SH);
+                        }
+                        GUsersWithEmailAlerta = GUsersWithEmailAlerta.Distinct().ToList();
+
+                        UsersToNotify.Clear();
+                        GUsersWithEmailAlerta.ForEach(y =>
+                        {
+                            UsersToNotify.Add(y);
+                        });
+                    }
+                    //});
+
+
+                    string itemToApproveInfo = string.Empty;
+                    if (type == 5 && !string.IsNullOrEmpty(number))
+                        itemToApproveInfo += " - Projeto " + number;
+
+                    UsersToNotify = UsersToNotify.Distinct().ToList();
+                    //Notify Users
+                    UsersToNotify.ForEach(e =>
+                    {
+                        EmailsAprovações EmailApproval = new EmailsAprovações()
+                        {
+                            NºMovimento = ApprovalMovement.MovementNo,
+                            EmailDestinatário = e,
+                            NomeDestinatário = e,
+                            Assunto = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Aprovação Pendente" : "eSUCH - Aprovação Pendente" + itemToApproveInfo,
+                            DataHoraEmail = DateTime.Now,
+                            TextoEmail = "Existe uma nova tarefa pendente da sua aprovação no eSUCH!",
+                            Enviado = false
+                        };
+
+
+                        SendEmailApprovals Email = new SendEmailApprovals
+                        {
+                            Subject = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Aprovação Pendente" : "eSUCH - Aprovação Pendente" + itemToApproveInfo,
+                            //From = "plataforma@such.pt"
+                            From = requestUser
+                        };
+
+                        Email.To.Add(e);
+
+                        Email.Body = MakeEmailBodyContent("Existe uma nova tarefa pendente da sua aprovação no eSUCH!");
+
+                        Email.IsBodyHtml = true;
+                        Email.EmailApproval = EmailApproval;
+
+                        Email.SendEmail();
+                    });
+                }
+                else
+                {
+                    result.eReasonCode = 101;
+                    result.eMessage = "Não existem configurações de numerações compativeis.";
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return new ErrorHandler()
+                {
+                    eReasonCode = 102,
+                    eMessage = "Ocorreu um erro desconhecido."
                 };
             }
         }

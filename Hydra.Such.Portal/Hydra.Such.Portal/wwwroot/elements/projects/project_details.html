@@ -159,7 +159,7 @@
                 </div>
                 <div class="row break_clear">
                     <div class="col-lg-3">
-                        <vaadin-combo-box items="[[LProjectStatus]]" item-value-path="id" item-label-path="value" value="{{data.status}}" label="Estado" disabled="{{ !_permissions.update }}">
+                        <vaadin-combo-box id="ProjectStatus" items="[[LProjectStatus]]" item-value-path="id" item-label-path="value" value="{{data.status}}" label="Estado" disabled>
                             <template>
                                 <paper-icon-item>
                                     <paper-item-body two-line>
@@ -170,7 +170,7 @@
                         </vaadin-combo-box>
                     </div>
                     <div class="col-lg-3">
-                        <such-selectbox id="ProjectLeader" value="{{data.projectLeader}}" label="Chefe Projeto" disabled="{{ !_permissions.update }}"
+                        <such-selectbox id="ProjectLeader" value="{{data.projectLeader}}" label="Chefe Projeto" disabled
                                         required error-message="Este campo é obrigatório"
                                         items="[[LProjectEmployees]]"
                                         text-path="value"
@@ -189,7 +189,7 @@
                         </vaadin-combo-box>-->
                     </div>
                     <div class="col-lg-3">
-                        <such-selectbox id="ProjectResponsible" value="{{data.projectResponsible}}" label="Responsável Projeto" disabled="{{ !_permissions.update }}"
+                        <such-selectbox id="ProjectResponsible" value="{{data.projectResponsible}}" label="Responsável Projeto" disabled
                                         required error-message="Este campo é obrigatório"
                                         items="[[LProjectEmployees]]"
                                         text-path="value"
@@ -233,6 +233,7 @@
                             </template>
                         </vaadin-combo-box>-->
                         <such-selectbox id="ContractNo" value="{{data.contractNo}}" label="Nº Contrato"
+                                        required error-message="Este campo é obrigatório"
                                         items="[[LProjectContracts]]"
                                         text-path="id"
                                         value-path="id"
@@ -568,15 +569,17 @@
                     this.$.ToastMessageError.open();
                 },
                 _validateData: function () {
+                    debugger;
                     this.$.ProjectClient.validate();
                     this.$.ProjectType.validate();
                     this.$.ProjectLeader.validate();
-                    this.$.ProjectResponsible.validate();
+                    if (this.$.ProjectStatus.value == 1) {
+                        this.$.ProjectResponsible.validate();
+                    }
                     this.$.RegionCode.validate();
                     this.$.FunctionalAreaCode.validate();
                     this.$.ResponsabilityCenterCode.validate();
-                    if (this.$.Description.validate() &
-                        this.$.ContractNo.validate()) {
+                    if (this.$.Description.validate() && this.$.ContractNo.validate()) {
 
                         //if (this.$.ProjectClient.value != "" && this.$.ProjectClient.value != undefined) {
                         //    return true;
@@ -586,7 +589,7 @@
                             this._openToastError("É obrigatória seleção de um Chefe de Projeto.");
                             return false;
                         }
-                        if (this.$.ProjectResponsible.value == "" || this.$.ProjectResponsible.value == undefined) {
+                        if (this.$.ProjectStatus.value == 0 && (this.$.ProjectResponsible.value == "" || this.$.ProjectResponsible.value == undefined)) {
                             this._openToastError("É obrigatória seleção de um Responsável de Projeto.");
                             return false;
                         }
