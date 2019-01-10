@@ -11,6 +11,7 @@
 <link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
 <link rel="import" href="/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/datetime-picker-master/date-picker.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
 
 <!--start ColumnToggle-->
 <link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
@@ -55,6 +56,14 @@
                    method="post"
                    handle-as="json"
                    id="grid_databound_ajax"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Projetos/ValidatedCreateNewProject"
+                   last-response="{{validatedCreateNewProject}}"
+                   id="page_validatedCreateNewProject_ajax"
+                   method="post"
+                   handle-as="json"
+                   on-response="_validatedCreateNewProjectResponse"
                    content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/Projetos/ExportToExcel_Projetos"
@@ -200,7 +209,8 @@
             </vaadin-grid-column>
         </vaadin-grid>
 
-
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
 
     <script>
@@ -237,10 +247,16 @@
                     }
                 },
                 _create: function (item) {
-                    if (item != null) {
+                    this.$.page_validatedCreateNewProject_ajax.generateRequest();
+                },
+                _validatedCreateNewProjectResponse: function (e) {
+                    if (this.validatedCreateNewProject) {
                         window.location.href = "Projetos/Detalhes/";
+                    } else {
+                        this._openToastError("Não têm permissões para criar projetos.");
                     }
                 },
+
                 ready: function () {
                     this.$.grid_databound_ajax.body = JSON.stringify({ "ended": false });
                     this.$.grid_databound_ajax.generateRequest();
@@ -265,6 +281,16 @@
                     var height = windowHeight - offsetTop - paddingTop;
                     grid_el.height(height);
                 },
+
+                _openToast: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+                _openToastError: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                },
+
                 _showClosed: function (item) {
                     if (item != null) {
                         if (this._showEnded) {
@@ -282,7 +308,6 @@
                 },
 
                 _exportEXCEL: function () {
-                    //debugger;
                     this.result[0].ColunasEXCEL = this._columns;
 
                     this.$.ajax_Export.body = JSON.stringify(this.result);
@@ -290,7 +315,6 @@
                 },
 
                 _exportEXCELResponse: function (e) {
-                    //debugger
                     var FileName = this.export;
                     location.href = '../Projetos/ExportToExcelDownload_Projetos?sFileName=' + FileName;
                 },

@@ -137,9 +137,6 @@
                 <div class="col-lg-2 alignPoga">
                     <vaadin-checkbox checked="{{data.active}}"> Ativo</vaadin-checkbox>
                 </div>
-                <div class="col-lg-2 alignPoga">
-                    <vaadin-checkbox checked="{{data.requisicaoStock}}"> Reposição Stock</vaadin-checkbox>
-                </div>
             </div>
         <div class="row break_clear">
             <div class="col-sm-3">
@@ -273,6 +270,14 @@
                         </table>
                     </template>
                 </vaadin-combo-box>
+            </div>
+
+            <div class="col-lg-2 alignPoga">
+                <vaadin-checkbox checked="{{data.requisicaoStock}}"> Reposição Stock</vaadin-checkbox>
+            </div>
+
+            <div class="col-lg-2 alignPoga">
+                <vaadin-checkbox checked="{{data.criarProjetoSemAprovacao}}"> Criar Projeto sem Aprovação</vaadin-checkbox>
             </div>
         </div>
         <paper-collapse-group>

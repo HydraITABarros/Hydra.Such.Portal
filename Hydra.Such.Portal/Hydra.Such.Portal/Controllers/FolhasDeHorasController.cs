@@ -1002,7 +1002,25 @@ namespace Hydra.Such.Portal.Controllers
                 data.DataHoraModificacao = DateTime.Now; //UPDATE
 
                 if (!string.IsNullOrEmpty(data.ProjetoNo))
-                    data.ProjetoDescricao = DBProjects.GetById(data.ProjetoNo) != null ? DBProjects.GetById(data.ProjetoNo).Descrição : DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, data.ProjetoNo).FirstOrDefault().Description;
+                {
+                    Projetos proj = new Projetos();
+                    proj = DBProjects.GetById(data.ProjetoNo);
+                    if (proj != null)
+                    {
+                        data.ProjetoDescricao = string.IsNullOrEmpty(proj.Descrição) ? "" : proj.Descrição;
+                    }
+                    else
+                    {
+                        NAVProjectsViewModel NAVproj = new NAVProjectsViewModel();
+                        NAVproj = DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, data.ProjetoNo).FirstOrDefault();
+                        if (NAVproj != null)
+                        {
+                            data.ProjetoDescricao = string.IsNullOrEmpty(NAVproj.Description) ? "" : NAVproj.Description;
+                        }
+                    }
+
+                    //data.ProjetoDescricao = DBProjects.GetById(data.ProjetoNo) != null ? string.IsNullOrEmpty(DBProjects.GetById(data.ProjetoNo).Descrição) ? "" : DBProjects.GetById(data.ProjetoNo).Descrição : string.IsNullOrEmpty(DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, data.ProjetoNo).FirstOrDefault().Description) ? "" : DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, data.ProjetoNo).FirstOrDefault().Description;
+                }
 
                 if (!string.IsNullOrEmpty(data.EmpregadoNo))
                     data.EmpregadoNome = DBNAV2009Employees.GetAll(data.EmpregadoNo, _config.NAV2009DatabaseName, _config.NAV2009CompanyName).FirstOrDefault().Name;
@@ -1096,10 +1114,10 @@ namespace Hydra.Such.Portal.Controllers
                     Percurso2.CodTipoCusto = data.CodTipoCusto;
                     Percurso2.DescricaoTipoCusto = DBTabelaConfRecursosFh.GetDescricaoByRecurso("1", data.CodTipoCusto);
                     Percurso2.Quantidade = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
-                    Percurso2.CodOrigem = data.CodOrigem;
-                    Percurso2.DescricaoOrigem = DBOrigemDestinoFh.GetOrigemDestinoDescricao(data.CodOrigem);
-                    Percurso2.CodDestino = data.CodDestino;
-                    Percurso2.DescricaoDestino = DBOrigemDestinoFh.GetOrigemDestinoDescricao(data.CodDestino);
+                    Percurso2.CodOrigem = data.CodDestino;
+                    Percurso2.DescricaoOrigem = DBOrigemDestinoFh.GetOrigemDestinoDescricao(data.CodDestino);
+                    Percurso2.CodDestino = data.CodOrigem;
+                    Percurso2.DescricaoDestino = DBOrigemDestinoFh.GetOrigemDestinoDescricao(data.CodOrigem);
                     Percurso2.DataDespesa = data.DataDespesa;
                     Percurso2.Observacao = data.Observacao;
                     Percurso2.Distancia = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);

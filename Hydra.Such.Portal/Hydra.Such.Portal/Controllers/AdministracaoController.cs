@@ -168,6 +168,7 @@ namespace Hydra.Such.Portal.Controllers
                 result.AprovadorPedidoPag1 = userConfig.AprovadorPedidoPag1;
                 result.AprovadorPedidoPag2 = userConfig.AprovadorPedidoPag2;
                 result.AnulacaoPedidoPagamento = userConfig.AnulacaoPedidoPagamento.HasValue ? userConfig.AnulacaoPedidoPagamento : false;
+                result.CriarProjetoSemAprovacao = userConfig.CriarProjetoSemAprovacao.HasValue ? userConfig.CriarProjetoSemAprovacao : false;
 
 
                 result.UserAccesses = DBUserAccesses.GetByUserId(data.IdUser).Select(x => new UserAccessesViewModel()
@@ -231,7 +232,8 @@ namespace Hydra.Such.Portal.Controllers
                 RequisicaoStock = data.RequisicaoStock.HasValue ? data.RequisicaoStock.Value : false,
                 AprovadorPedidoPag1 = data.AprovadorPedidoPag1,
                 AprovadorPedidoPag2 = data.AprovadorPedidoPag2,
-                AnulacaoPedidoPagamento = data.AnulacaoPedidoPagamento.HasValue ? data.AnulacaoPedidoPagamento : false
+                AnulacaoPedidoPagamento = data.AnulacaoPedidoPagamento.HasValue ? data.AnulacaoPedidoPagamento : false,
+                CriarProjetoSemAprovacao = data.CriarProjetoSemAprovacao.HasValue ? data.CriarProjetoSemAprovacao : false
         });
 
             data.IdUser = ObjectCreated.IdUtilizador;
@@ -311,6 +313,7 @@ namespace Hydra.Such.Portal.Controllers
                 userConfig.AprovadorPedidoPag1 = data.AprovadorPedidoPag1;
                 userConfig.AprovadorPedidoPag2 = data.AprovadorPedidoPag2;
                 userConfig.AnulacaoPedidoPagamento = data.AnulacaoPedidoPagamento.HasValue ? data.AnulacaoPedidoPagamento : false;
+                userConfig.CriarProjetoSemAprovacao = data.CriarProjetoSemAprovacao.HasValue ? data.CriarProjetoSemAprovacao : false;
 
                 DBUserConfigurations.Update(userConfig);
 
