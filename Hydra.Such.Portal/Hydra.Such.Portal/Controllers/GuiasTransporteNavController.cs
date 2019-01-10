@@ -119,13 +119,15 @@ namespace Hydra.Such.Portal.Controllers
                 GuiaTransporteNavViewModel guia = DBNAV2017GuiasTransporte.GetDetailsByNo(_config.NAVDatabaseName, _config.NAVCompanyName, userDimensions, noGuia, historic);
 
                 if(guia == null)
-                    return null;
+                    return Json(null);
+
+                guia.CastDateTimePropertiesToString();
 
                 return Json(guia);
             }
             else
             {
-                return null;
+                return Json(null); ;
             }
         }
 
@@ -133,12 +135,12 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetThirdPartiesList([FromBody] JObject requestParams)
         {
             if (requestParams == null)
-                return null;
+                return Json(null);
 
             int type = (requestParams["type"] == null || string.Compare((string)requestParams["type"], "") == 0) ? -1 : (int)requestParams["type"];
             if(type == -1)
             {
-                return null;
+                return Json(null);
             }
 
             List<ThirdPartyViewModel> result = DBNAV2017GuiasTransporte.GetThirdParties(_config.NAVDatabaseName, _config.NAVCompanyName, type);
@@ -150,16 +152,16 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetThirdPartyDetails([FromBody] JObject requestParams)
         {
             if (requestParams == null)
-                return null;
+                return Json(null);
 
             int type = (requestParams["type"] == null || string.Compare((string)requestParams["type"], "") == 0) ? -1 : (int)requestParams["type"];
             string entityId = requestParams["entityId"] == null ? "" : (string)requestParams["entityId"];
 
             if (type == -1)
-                return null;
+                return Json(null);
 
             if (entityId == "")
-                return null;
+                return Json(null);
 
             ThirdPartyViewModel result = DBNAV2017GuiasTransporte.GetThirdPartyDetails(_config.NAVDatabaseName, _config.NAVCompanyName, type, entityId);
 
@@ -178,7 +180,9 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult UpdateGuia([FromBody] GuiaTransporteNavViewModel data)
         {
-            return Json(DBNAV2017GuiasTransporte.UpdateGuiaTransporte(data));
+            data.CastDateTimeStringPropertiesToDateTime();
+            bool result = DBNAV2017GuiasTransporte.UpdateGuiaTransporte(data);
+            return Json(result);
         }
         #endregion
 

@@ -210,13 +210,26 @@
                                                     <vaadin-text-field id="noGuiaTransporte" name="noGuiaTransporte" label="Nº Guia" value="{{ data.noGuiaTransporte}}" disabled="disabled"></vaadin-text-field>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="shipmentStartTime" name="shipmentStartTime" label="Hora Inicio Transporte" value="{{ data.shipmentStartTime }}" disabled="disabled"></vaadin-text-field>
+                                                    <vaadin-time-picker id="shipmentStartTime" 
+                                                                        name="shipmentStartTime" 
+                                                                        label="Hora Inicio Transporte" 
+                                                                        value="{{ data.shipmentStartTime }}" step="1800">
+                                                    </vaadin-time-picker>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="dataGuia" name="dataGuia" label="Data Guia" value="{{ data.dataGuia }}" disabled="disabled"></vaadin-text-field>
+                                                    <vaadin-date-picker id="dataGuia" 
+                                                                        name="dataGuia" 
+                                                                        label="Data Guia" 
+                                                                        value="{{ data.dataGuiaTxt }}"
+                                                                        on-value-changed="_dataGuiaChanged">
+                                                    </vaadin-date-picker>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="dataSaida" name="dataSaida" label="Data Saida" value="{{ data.dataSaida }}" disabled="disabled"></vaadin-text-field>
+                                                    <vaadin-date-picker id="dataSaida" 
+                                                                        name="dataSaida" 
+                                                                        label="Data Saida" 
+                                                                        value="{{ data.dataSaidaTxt }}">
+                                                    </vaadin-date-picker>
                                                 </div>
                                             </div>
                                             <div class="row break_clear">
@@ -246,61 +259,61 @@
                                                     </such-selectbox>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="nomeCliente" name="nomeCliente" label="Nome Cliente" value="{{ data.nomeCliente }}" disabled="disabled"></vaadin-text-field>
+                                                    <vaadin-text-field id="nomeCliente" name="nomeCliente" label="Nome Cliente" value="{{ data.nomeCliente }}"></vaadin-text-field>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="nomeCliente2" name="nomeCliente2" label="Nome Cliente 2" value="{{ data.nomeCliente2 }}" disabled="disabled"></vaadin-text-field>
-                                                </div>
-                                            </div>
-                                            <div class="row break_clear">
-                                                <div class="col-md-3">
-                                                    <vaadin-text-field id="codEnvio" name="codEnvio" label="Cód. Envio" value="{{ data.codEnvio }}" disabled="disabled"></vaadin-text-field>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <vaadin-text-field id="noProjecto" name="noProjecto" label="Projecto" value="{{ data.noProjecto }}" disabled="disabled"></vaadin-text-field>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <vaadin-text-field id="moradaCliente" name="moradaCliente" label="Morada Clente" value="{{ data.moradaCliente }}" disabled="disabled"></vaadin-text-field>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <vaadin-text-field id="moradaCliente2" name="moradaCliente2" label="Morada Clente 2" value="{{ data.moradaCliente2 }}" disabled="disabled"></vaadin-text-field>
+                                                    <vaadin-text-field id="nomeCliente2" name="nomeCliente2" label="Nome Cliente 2" value="{{ data.nomeCliente2 }}" ></vaadin-text-field>
                                                 </div>
                                             </div>
                                             <div class="row break_clear">
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="codPostal" name="codPostal" label="Cód. Postal" value="{{ data.codPostal }}" disabled="disabled"></vaadin-text-field>
+                                                    <vaadin-text-field id="codEnvio" name="codEnvio" label="Cód. Envio" value="{{ data.codEnvio }}" ></vaadin-text-field>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="cidade" name="cidade" label="Cidade" value="{{ data.cidade }}" disabled="disabled"></vaadin-text-field>
+                                                    <vaadin-text-field id="noProjecto" name="noProjecto" label="Projecto" value="{{ data.noProjecto }}" ></vaadin-text-field>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="nifCliente" name="nifCliente" label="No. Contribuinte" value="{{ data.nifCliente }}" disabled="disabled"></vaadin-text-field>
+                                                    <vaadin-text-field id="moradaCliente" name="moradaCliente" label="Morada Clente" value="{{ data.moradaCliente }}" ></vaadin-text-field>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <vaadin-text-field id="moradaCliente2" name="moradaCliente2" label="Morada Clente 2" value="{{ data.moradaCliente2 }}" ></vaadin-text-field>
+                                                </div>
+                                            </div>
+                                            <div class="row break_clear">
+                                                <div class="col-md-3">
+                                                    <vaadin-text-field id="codPostal" name="codPostal" label="Cód. Postal" value="{{ data.codPostal }}" ></vaadin-text-field>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <vaadin-text-field id="cidade" name="cidade" label="Cidade" value="{{ data.cidade }}" ></vaadin-text-field>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <vaadin-text-field id="nifCliente" name="nifCliente" label="No. Contribuinte" value="{{ data.nifCliente }}" ></vaadin-text-field>
                                                 </div>
 
                                             </div>
                                             <div class="row break_clear">
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="sourceCode" name="sourceCode" label="Cód. Origem" value="{{ data.sourceCode }}" disabled="disabled"></vaadin-text-field>
+                                                    <vaadin-text-field id="sourceCode" name="sourceCode" label="Cód. Origem" value="{{ data.sourceCode }}" ></vaadin-text-field>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="origem" name="origem" label="Origem" value="{{ data.origem }}" disabled="disabled"></vaadin-text-field>
+                                                    <vaadin-text-field id="origem" name="origem" label="Origem" value="{{ data.origem }}" ></vaadin-text-field>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="requisicao" name="requisicao" label="V/ Requisição" value="{{ data.requisicao }}" disabled="disabled"></vaadin-text-field>
+                                                    <vaadin-text-field id="requisicao" name="requisicao" label="V/ Requisição" value="{{ data.requisicao }}" ></vaadin-text-field>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="reportedBy" name="reportedBy" label="Reportado por" value="{{ data.reportedBy }}" disabled="disabled"></vaadin-text-field>
+                                                    <vaadin-text-field id="reportedBy" name="reportedBy" label="Reportado por" value="{{ data.reportedBy }}" ></vaadin-text-field>
                                                 </div>
                                             </div>
                                             <div class="row break_clear">
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="ordemTransferencia" name="ordemTransferencia" label="Ordem Transferência" value="{{ data.ordemTransferencia }}" disabled="disabled"></vaadin-text-field>
+                                                    <vaadin-text-field id="ordemTransferencia" name="ordemTransferencia" label="Ordem Transferência" value="{{ data.ordemTransferencia }}" ></vaadin-text-field>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="noRequisicao" name="noRequisicao" label="No. Requisição" value="{{ data.noRequisicao }}" disabled="disabled"></vaadin-text-field>
+                                                    <vaadin-text-field id="noRequisicao" name="noRequisicao" label="No. Requisição" value="{{ data.noRequisicao }}" ></vaadin-text-field>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="responsabilityCenter" name="responsabilityCenter" label="Centro Responsabilidade" value="{{ data.responsabilityCenter }}" disabled="disabled"></vaadin-text-field>
+                                                    <vaadin-text-field id="responsabilityCenter" name="responsabilityCenter" label="Centro Responsabilidade" value="{{ data.responsabilityCenter }}" ></vaadin-text-field>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <vaadin-text-field id="utilizador" name="utilizador" label="Utilizador" value="{{ data.utilizador }}" disabled="disabled"></vaadin-text-field>
@@ -308,24 +321,24 @@
                                             </div>
                                             <div class="row break_clear">
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="globalDimension1Code" name="globalDimension1Code" label="Área Funcional" value="{{ data.globalDimension1Code }}" disabled="disabled"></vaadin-text-field>
+                                                    <vaadin-text-field id="globalDimension1Code" name="globalDimension1Code" label="Área Funcional" value="{{ data.globalDimension1Code }}" ></vaadin-text-field>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="globalDimension2Code" name="globalDimension2Code" label="Fonte Financiamento" value="{{ data.globalDimension2Code }}" disabled="disabled"></vaadin-text-field>
+                                                    <vaadin-text-field id="globalDimension2Code" name="globalDimension2Code" label="Fonte Financiamento" value="{{ data.globalDimension2Code }}" ></vaadin-text-field>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="globalDimension3Code" name="globalDimension3Code" label="CResp" value="{{ data.globalDimension3Code }}" disabled="disabled"></vaadin-text-field>
+                                                    <vaadin-text-field id="globalDimension3Code" name="globalDimension3Code" label="CResp" value="{{ data.globalDimension3Code }}" ></vaadin-text-field>
                                                 </div>
                                             </div>
                                             <div class="row break_clear">
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="pesoTotal" name="pesoTotal" label="Peso Total" value="{{ data.pesoTotal }}" disabled="disabled"></vaadin-text-field>
+                                                    <vaadin-text-field id="pesoTotal" name="pesoTotal" label="Peso Total" value="{{ data.pesoTotal }}" ></vaadin-text-field>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="quantidadeTotal" name="quantidadeTotal" label="Quantidade Total" value="{{ data.quantidadeTotal }}" disabled="disabled"></vaadin-text-field>
+                                                    <vaadin-text-field id="quantidadeTotal" name="quantidadeTotal" label="Quantidade Total" value="{{ data.quantidadeTotal }}" ></vaadin-text-field>
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <such-textarea id="observacoes" name="observacoes" label="Observações" rows="3" value="{{ data.observacoes }}" disabled="disabled"> </such-textarea>
+                                                    <such-textarea id="observacoes" name="observacoes" label="Observações" rows="3" value="{{ data.observacoes }}" > </such-textarea>
                                                 </div>
                                             </div>
                                         </div>
@@ -356,10 +369,18 @@
                                                                 <vaadin-text-field id="postCode" name="postCode" label="Cód. Postal" value="{{ data.postCode }}" disabled="disabled"></vaadin-text-field>
                                                             </div>
                                                             <div class="col-xs-12">
-                                                                <vaadin-text-field id="horaCarga" name="horaCarga" label="Hora Carga" value="{{ data.horaCarga }}" disabled="disabled"></vaadin-text-field>
+                                                                <vaadin-time-picker id="horaCarga" 
+                                                                                    name="horaCarga" 
+                                                                                    label="Hora Carga" 
+                                                                                    value="{{ data.horaCarga }}">
+                                                                </vaadin-time-picker>
                                                             </div>
                                                             <div class="col-xs-12">
-                                                                <vaadin-text-field id="dataCarga" name="dataCarga" label="Data Carga" value="{{ data.dataCarga }}" disabled="disabled"></vaadin-text-field>
+                                                                <vaadin-date-picker id="dataCarga" 
+                                                                                    name="dataCarga" 
+                                                                                    label="Data Carga" 
+                                                                                    value="{{ data.dataCargaTxt }}">
+                                                                </vaadin-date-picker>
                                                             </div>
                                                             <div class="col-xs-12">
                                                                 <vaadin-text-field id="paisCarga" name="paisCarga" label="País Carga" value="{{ data.paisCarga }}" disabled="disabled"></vaadin-text-field>
@@ -384,10 +405,18 @@
                                                                 <vaadin-text-field id="codPostalDescarga" name="codPostalDescarga" label="Cód. Postal Descarga" value="{{ data.codPostalDescarga }}" disabled="disabled"></vaadin-text-field>
                                                             </div>
                                                             <div class="col-xs-12">
-                                                                <vaadin-text-field id="horaDescarga" name="horaDescarga" label="Hora Descarga" value="{{ data.horaDescarga }}" disabled="disabled"></vaadin-text-field>
+                                                                <vaadin-time-picker id="horaDescarga"
+                                                                                    name="horaDescarga" 
+                                                                                    label="Hora Descarga" 
+                                                                                    value="{{ data.horaDescarga }}">
+                                                                </vaadin-time-picker>
                                                             </div>
                                                             <div class="col-xs-12">
-                                                                <vaadin-text-field id="dataDescarga" name="dataDescarga" label="Data Descarga" value="{{ data.dataDescarga }}" disabled="disabled"></vaadin-text-field>
+                                                                <vaadin-date-picker id="dataDescarga" 
+                                                                                    name="dataDescarga" 
+                                                                                    label="Data Descarga" 
+                                                                                    value="{{ data.dataDescargaTxt }}">
+                                                                </vaadin-date-picker>
                                                             </div>
                                                             <div class="col-xs-12">
                                                                 <vaadin-text-field id="viatura" name="viatura" label="Viatura" value="{{ data.viatura }}" disabled="disabled"></vaadin-text-field>
@@ -573,22 +602,22 @@
                     selected: {
                         type: Number,
                         value: 0
-                    },
-                    thidrPartyNo: {
-                        observer:'_setThirdParty'
-                    }
+                    }//,
+                    //thidrPartyNo: {
+                    //    observer:'_setThirdParty'
+                    //}
                 },
 
-                observers: ['_onCacheLoaded(data, cbThirdParty)'],
+                //observers: ['_onCacheLoaded(data, cbThirdParty)'],
 
-                _onCacheLoaded: function (data, cbThirdParty) {
-                    if (!this.Flag) {
-                        //this.$.page_databound_ajax.body = JSON.stringify({ "No": this._guiatransporteid, "Historic": this._history });
-                        //this.$.page_databound_ajax.generateRequest();
+                //_onCacheLoaded: function (data, cbThirdParty) {
+                //    if (!this.Flag) {
+                //        //this.$.page_databound_ajax.body = JSON.stringify({ "No": this._guiatransporteid, "Historic": this._history });
+                //        //this.$.page_databound_ajax.generateRequest();
                         
-                    }
-                    this.Flag = true;
-                },
+                //    }
+                //    this.Flag = true;
+                //},
 
                 _openToast: function (message) {
                     this.$.ToastMessage.text = message;
@@ -633,6 +662,8 @@
 
                 _update: function () {
                     debugger;;
+
+                    
                     this.$.ajax_update_guia.body = JSON.stringify(this.data);
                     this.$.ajax_update_guia.generateRequest();
                 },
@@ -640,6 +671,12 @@
                 _updateGuiaResponse: function (e) {
                     debugger;;
                     if (this.guiaUpdated) {
+                        if (this.$.tipoGuia.value == "") {
+                            this.data.tipo = 0;
+                            this.$.ajax_thirdparties.body = JSON.stringify({ "type": this.data.tipo });
+                            this.$.ajax_thirdparties.generateRequest();
+                            this.$.tipoGuia.valueText = "Cliente";
+                        }
                         this._openToast("Guia actualizada com sucesso!");
                     } else {
                         this._openToastError("Não foi possível actualizar a Guia! Tente novamente.");
@@ -651,8 +688,22 @@
                     if (this.data != undefined) {
                         var tipoG = this.$.tipoGuia.value;
 
-                        this._resetThirdPartyData();
+                        this.data.noCliente = "";
+                        this.$.noCliente.value = "";
+                        this.$.noCliente.valueText = "";
 
+                        this.data.name = "";
+                        this.$.name.value = "";
+                        this.$.name.valueText = "";
+
+                        this.data.nomeCliente = "";
+                        this.$.nomeCliente.value = "";
+                        this.$.nomeCliente.valueText = "";
+
+                        this.data.nomeCliente2 = "";
+                        this.$.nomeCliente2.value = "";
+                        this.$.nomeCliente2.valueText = "";
+                        
                         this.$.ajax_thirdparties.body = JSON.stringify({ "type": tipoG });
                         this.$.ajax_thirdparties.generateRequest();
                     }
@@ -660,6 +711,7 @@
                 },
 
                 _thirdPartiesResponse: function (e) {
+                    debugger;;
                     if (this.cbThirdParty === null) {
                         //this._openToastError("Erro!!");
                     }
@@ -671,16 +723,13 @@
                         var type = this.$.tipoGuia.value;
                         var entityId = this.$.noCliente.value;
 
-                        if (type != null && type != "") {
+                        //if (type != null && type != "") {
                             if (type != null && entityId != null && entityId != "") {
                                 this.$.ajax_thirdparty_details.body = JSON.stringify({ "type": type, "entityId": entityId })
                                 this.$.ajax_thirdparty_details.generateRequest();
                             }
 
-                            if (entityId == "" || type == "") {
-                                this._resetThirdPartyData();
-                            }
-                        }
+                       // }
                     }   
                 },
 
@@ -691,36 +740,42 @@
                         debugger;;
                         this.data.noCliente = this.thirdPartyDetails.entityId;
                         this.$.noCliente.value = this.thirdPartyDetails.entityId;
+                        this.$.noCliente.valueText = this.thirdPartyDetails.entityId;
 
                         this.data.name = this.thirdPartyDetails.name;
                         this.$.name.value = this.thirdPartyDetails.name;
+                        this.$.name.valueText = this.thirdPartyDetails.name;
 
                         this.data.nomeCliente = this.thirdPartyDetails.name;
                         this.$.nomeCliente.value = this.thirdPartyDetails.name;
+                        this.$.nomeCliente.valueText = this.thirdPartyDetails.name;
 
                         this.data.nomeCliente2 = this.thirdPartyDetails.name2;
                         this.$.nomeCliente2.value = this.thirdPartyDetails.name2;
+                        this.$.nomeCliente2.valueText = this.thirdPartyDetails.name2;
                     } else {
-                        debugger;;
+                        this.data.noCliente = "";
+                        this.$.noCliente.value = "";
+                        this.$.noCliente.valueText = "";
 
+                        this.data.name = "";
+                        this.$.name.value = "";
+                        this.$.name.valueText = "";
+
+                        this.data.nomeCliente = "";
+                        this.$.nomeCliente.value = "";
+                        this.$.nomeCliente.valueText = "";
+
+                        this.data.nomeCliente2 = "";
+                        this.$.nomeCliente2.value = "";
+                        this.$.nomeCliente2.valueText = "";
+                        
                     }
                 },
 
-                _resetThirdPartyData: function () {
-                    var self = this.data;
-                    
-                    this.data.noCliente = "";
-                    this.$.noCliente.value = "";
-                    this.$.noCliente.valueText = "";
-
-                    this.data.name = "";
-                    this.$.name.value = "";
-
-                    this.data.nomeCliente = "";
-                    this.$.nomeCliente.value = "";
-
-                    this.data.nomeCliente2 = "";
-                    this.$.nomeCliente2.value = "";
+                _dataGuiaChanged: function (e) {
+                    debugger;;
+                    this.$.dataSaida.min = this.$.dataGuia.value;
                 }
                 
             });

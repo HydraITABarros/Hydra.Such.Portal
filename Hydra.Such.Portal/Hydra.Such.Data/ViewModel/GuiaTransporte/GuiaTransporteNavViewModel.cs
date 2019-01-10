@@ -9,6 +9,7 @@ namespace Hydra.Such.Data.ViewModel.GuiaTransporte
 {
     public class GuiaTransporteNavViewModel
     {
+        #region class properties
         public string NoGuiaTransporte { get; set; }
         public string Address { get; set; }
         public string Cidade { get; set; }
@@ -17,16 +18,27 @@ namespace Hydra.Such.Data.ViewModel.GuiaTransporte
         public string CodPais { get; set; }
         public string CodPostal { get; set; }
         public string CodPostalDescarga { get; set; }
+
         [JsonConverter(typeof(DateFormatConverter), "dd-MM-yyyy")]
         public DateTime DataCarga { get; set; }
+        public string DataCargaTxt { get; set; }
+        
         [JsonConverter(typeof(DateFormatConverter), "dd-MM-yyyy")]
         public DateTime DataDescarga { get; set; }
+        public string DataDescargaTxt { get; set; }
+
         [JsonConverter(typeof(DateFormatConverter), "dd-MM-yyyy")]
         public DateTime DataGuia { get; set; }
+        public string DataGuiaTxt { get; set; }
+
         [JsonConverter(typeof(DateFormatConverter), "dd-MM-yyyy")]
         public DateTime DataObservacoesAdicionais { get; set; }
+        public string DataObsAdicionaisTxt { get; set; }
+
         [JsonConverter(typeof(DateFormatConverter), "dd-MM-yyyy")]
         public DateTime DataSaida { get; set; }
+        public string DataSaidaTxt { get; set; }
+
         public int DimensionSetId { get; set; }
         public string GlobalDimension1Code { get; set; }
         public string GlobalDimension2Code { get; set; }
@@ -65,7 +77,8 @@ namespace Hydra.Such.Data.ViewModel.GuiaTransporte
         public string ResponsabilityCenter { get; set; }
         [JsonConverter(typeof(DateFormatConverter), "dd-MM-yyyy")]
         public DateTime ShipmentStartDate { get; set; }
-        
+        public string ShipmentStartDateTxt { get; set; }
+
         public TimeSpan ShipmentStartTime { get; set; }
         public string SourceCode { get; set; }
         public string Telefone { get; set; }
@@ -79,6 +92,56 @@ namespace Hydra.Such.Data.ViewModel.GuiaTransporte
 
         public List<LinhaGuiaTransporteNavViewModel> LinhasGuiaTransporte { get; set; }
         public FiscalAuthorityCommunicationLog FiscalCommunicationLog { get; set; }
+        #endregion
+
+        #region class methods
+        private string DateToText(DateTime dateToCheck)
+        {
+            try
+            {
+                return dateToCheck.CompareTo(DateTime.Parse("1900-01-01")) == 0 || dateToCheck.CompareTo(DateTime.Parse("1753-01-01")) == 0 ? string.Empty : dateToCheck.ToString("yyyy-MM-dd");
+            }
+            catch (Exception ex)
+            {
+
+                return string.Empty;
+            }
+             
+        }
+
+        private DateTime TextToDateTime(string textToCheck)
+        {
+            try
+            {
+                return string.IsNullOrWhiteSpace(textToCheck) ? DateTime.Parse("1900-01-01") : DateTime.Parse(textToCheck);
+            }
+            catch (Exception ex)
+            {
+                return DateTime.Parse("1900-01-01");
+            }
+        }
+
+        public void CastDateTimePropertiesToString()
+        {
+            DataCargaTxt = DateToText(DataCarga);
+            DataDescargaTxt = DateToText(DataDescarga);
+            DataGuiaTxt = DateToText(DataGuia);
+            DataObsAdicionaisTxt = DateToText(DataObservacoesAdicionais);
+            DataSaidaTxt = DateToText(DataSaida);
+            ShipmentStartDateTxt = DateToText(ShipmentStartDate);
+        }
+
+        public void CastDateTimeStringPropertiesToDateTime()
+        {
+            DataCarga = TextToDateTime(DataCargaTxt);
+            DataDescarga = TextToDateTime(DataDescargaTxt);
+            DataGuia = TextToDateTime(DataGuiaTxt);
+            DataObservacoesAdicionais = TextToDateTime(DataObsAdicionaisTxt);
+            DataSaida = TextToDateTime(DataSaidaTxt);
+            ShipmentStartDate = TextToDateTime(ShipmentStartDateTxt);
+        }
+        #endregion
+        
 
     }
 }
