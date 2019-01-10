@@ -136,24 +136,60 @@
             }
         </style>
 
+        <iron-ajax url="/GuiasTransporteNav/GetDetailsGuia"
+                   last-response="{{ data }}"
+                   method="post"
+                   handle-as="json"
+                   id="page_databound_ajax"
+                   on-response="_responseProcessor"
+                   content-type="application/json">
+        </iron-ajax>
+
         <iron-ajax url="/PopulateDropdowns/TiposGuiaTransporte"
                    last-response="{{ cbTipoGT }}"
                    auto method="post"
                    handle-as="json"
                    content-type="application/json">
         </iron-ajax>
+        <!-- ************* Dimension values.b ****************-->
+        <iron-ajax url="/PopulateDropdowns/GetRegionCode"
+                   last-response="{{CBRegions}}"
+                   auto method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode"
+                   last-response="{{CBFunctionalAreas}}"
+                   auto method="post" handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode"
+                   last-response="{{CBResponsabilityCenterCodes}}"
+                   auto method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+        <!-- ************* Dimension values.e ****************-->
+        <!-- ************* Project no.b **********************-->
         <iron-ajax url="/PopulateDropdowns/GetProjectNavList"
                    last-response="{{cbJobNo}}"
                    auto method="post"
                    handle-as="json"
                    content-type="application/json">
         </iron-ajax>
-        <!-- ******* dropdowns to use on NoCliente.b ********** -->
+        <iron-ajax url="/GuiasTransporteNav/GetProjectDim"
+                   last-response="{{ projectDims}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_project_dims_ajax"
+                   on-response="_projectDimsResponse"
+                   content-type="application/json"></iron-ajax>
+        <!-- ************* Project no.e **********************-->
+        <!-- ******* NoCliente.b ********** -->
         <iron-ajax url="/GuiasTransporteNav/GetThirdPartiesList"
                    last-response="{{ cbThirdParty }}"
                    auto method="post"
                    id="ajax_thirdparties"
-                   on-response="_thirdPartiesResponse"
                    handle-as="json"
                    content-type="application/json">
         </iron-ajax>
@@ -166,15 +202,13 @@
                    handle-as="json"
                    content-type="application/json">
         </iron-ajax>
+        <!-- ******* NoCliente.e ********** -->
 
-        <!-- ******* dropdowns to use on NoCliente.e ********** -->
-
-        <iron-ajax url="/GuiasTransporteNav/GetDetailsGuia"
-                   last-response="{{ data }}"
-                   method="post"
+        <iron-ajax url="/GuiasTransporteNav/GetSourceCodes"
+                   last-response="{{ sourceList }}"
+                   auto method="post"
+                   id="ajax_sources"
                    handle-as="json"
-                   id="page_databound_ajax"
-                   on-response="_responseProcessor"
                    content-type="application/json">
         </iron-ajax>
 
@@ -186,6 +220,9 @@
                    on-response="_updateGuiaResponse"
                    content-type="application/json">
         </iron-ajax>
+
+
+
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
             <paper-button raised id="btnUpdate" class="tablinks" on-tap="_update" title="Gravar" style="background-color:#1DB73C"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Gravar</paper-button>
@@ -210,24 +247,24 @@
                                                     <vaadin-text-field id="noGuiaTransporte" name="noGuiaTransporte" label="Nº Guia" value="{{ data.noGuiaTransporte}}" disabled="disabled"></vaadin-text-field>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <vaadin-time-picker id="shipmentStartTime" 
-                                                                        name="shipmentStartTime" 
-                                                                        label="Hora Inicio Transporte" 
+                                                    <vaadin-time-picker id="shipmentStartTime"
+                                                                        name="shipmentStartTime"
+                                                                        label="Hora Inicio Transporte"
                                                                         value="{{ data.shipmentStartTime }}" step="1800">
                                                     </vaadin-time-picker>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <vaadin-date-picker id="dataGuia" 
-                                                                        name="dataGuia" 
-                                                                        label="Data Guia" 
+                                                    <vaadin-date-picker id="dataGuia"
+                                                                        name="dataGuia"
+                                                                        label="Data Guia"
                                                                         value="{{ data.dataGuiaTxt }}"
                                                                         on-value-changed="_dataGuiaChanged">
                                                     </vaadin-date-picker>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <vaadin-date-picker id="dataSaida" 
-                                                                        name="dataSaida" 
-                                                                        label="Data Saida" 
+                                                    <vaadin-date-picker id="dataSaida"
+                                                                        name="dataSaida"
+                                                                        label="Data Saida"
                                                                         value="{{ data.dataSaidaTxt }}">
                                                     </vaadin-date-picker>
                                                 </div>
@@ -262,58 +299,75 @@
                                                     <vaadin-text-field id="nomeCliente" name="nomeCliente" label="Nome Cliente" value="{{ data.nomeCliente }}"></vaadin-text-field>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="nomeCliente2" name="nomeCliente2" label="Nome Cliente 2" value="{{ data.nomeCliente2 }}" ></vaadin-text-field>
+                                                    <vaadin-text-field id="nomeCliente2" name="nomeCliente2" label="Nome Cliente 2" value="{{ data.nomeCliente2 }}"></vaadin-text-field>
                                                 </div>
                                             </div>
                                             <div class="row break_clear">
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="codEnvio" name="codEnvio" label="Cód. Envio" value="{{ data.codEnvio }}" ></vaadin-text-field>
+                                                    <vaadin-text-field id="codEnvio" name="codEnvio" label="Cód. Envio" value="{{ data.codEnvio }}"></vaadin-text-field>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="noProjecto" name="noProjecto" label="Projecto" value="{{ data.noProjecto }}" ></vaadin-text-field>
+                                                    <such-selectbox id="noProjecto"
+                                                                    name="noProjecto"
+                                                                    label="Projecto"
+                                                                    value="{{ data.noProjecto }}"
+                                                                    on-value-changed="_setProjectDim"
+                                                                    items="[[cbJobNo]]"
+                                                                    text-path="no"
+                                                                    value-path="no"
+                                                                    fields='[{"field":"no", "name":"Nº Projecto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"regionCode", "name":"Cód. Região"}, {"field":"areaCode", "name":"Cód. Área"}, {"field":"centerResponsibilityCode", "name":"Cód. Cresp"}]'>
+                                                    </such-selectbox>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="moradaCliente" name="moradaCliente" label="Morada Clente" value="{{ data.moradaCliente }}" ></vaadin-text-field>
+                                                    <vaadin-text-field id="moradaCliente" name="moradaCliente" label="Morada Clente" value="{{ data.moradaCliente }}"></vaadin-text-field>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="moradaCliente2" name="moradaCliente2" label="Morada Clente 2" value="{{ data.moradaCliente2 }}" ></vaadin-text-field>
+                                                    <vaadin-text-field id="moradaCliente2" name="moradaCliente2" label="Morada Clente 2" value="{{ data.moradaCliente2 }}"></vaadin-text-field>
                                                 </div>
                                             </div>
                                             <div class="row break_clear">
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="codPostal" name="codPostal" label="Cód. Postal" value="{{ data.codPostal }}" ></vaadin-text-field>
+                                                    <vaadin-text-field id="codPostal" name="codPostal" label="Cód. Postal" value="{{ data.codPostal }}"></vaadin-text-field>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="cidade" name="cidade" label="Cidade" value="{{ data.cidade }}" ></vaadin-text-field>
+                                                    <vaadin-text-field id="cidade" name="cidade" label="Cidade" value="{{ data.cidade }}"></vaadin-text-field>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="nifCliente" name="nifCliente" label="No. Contribuinte" value="{{ data.nifCliente }}" ></vaadin-text-field>
+                                                    <vaadin-text-field id="nifCliente" name="nifCliente" label="No. Contribuinte" value="{{ data.nifCliente }}"></vaadin-text-field>
                                                 </div>
 
                                             </div>
                                             <div class="row break_clear">
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="sourceCode" name="sourceCode" label="Cód. Origem" value="{{ data.sourceCode }}" ></vaadin-text-field>
+                                                    <such-selectbox id="sourceCode"
+                                                                    name="sourceCode"
+                                                                    label="Cód. Origem"
+                                                                    value="{{ data.sourceCode}}"
+                                                                    items="[[sourceList]]"
+                                                                    text-path="sourceDescription"
+                                                                    value-path="sourceCode"
+                                                                    fields='[{"field":"sourceCode", "name":"Código"}, {"field":"sourceDescription", "name":"Descrição"}]'>
+                                                    </such-selectbox>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="origem" name="origem" label="Origem" value="{{ data.origem }}" ></vaadin-text-field>
+                                                    <vaadin-text-field id="origem" name="origem" label="Origem" value="{{ data.origem }}"></vaadin-text-field>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="requisicao" name="requisicao" label="V/ Requisição" value="{{ data.requisicao }}" ></vaadin-text-field>
+                                                    <vaadin-text-field id="requisicao" name="requisicao" label="V/ Requisição" value="{{ data.requisicao }}"></vaadin-text-field>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="reportedBy" name="reportedBy" label="Reportado por" value="{{ data.reportedBy }}" ></vaadin-text-field>
+                                                    <vaadin-text-field id="reportedBy" name="reportedBy" label="Reportado por" value="{{ data.reportedBy }}"></vaadin-text-field>
                                                 </div>
                                             </div>
                                             <div class="row break_clear">
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="ordemTransferencia" name="ordemTransferencia" label="Ordem Transferência" value="{{ data.ordemTransferencia }}" ></vaadin-text-field>
+                                                    <vaadin-text-field id="ordemTransferencia" name="ordemTransferencia" label="Ordem Transferência" value="{{ data.ordemTransferencia }}"></vaadin-text-field>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="noRequisicao" name="noRequisicao" label="No. Requisição" value="{{ data.noRequisicao }}" ></vaadin-text-field>
+                                                    <vaadin-text-field id="noRequisicao" name="noRequisicao" label="No. Requisição" value="{{ data.noRequisicao }}"></vaadin-text-field>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="responsabilityCenter" name="responsabilityCenter" label="Centro Responsabilidade" value="{{ data.responsabilityCenter }}" ></vaadin-text-field>
+                                                    <vaadin-text-field id="responsabilityCenter" name="responsabilityCenter" label="Centro Responsabilidade" value="{{ data.responsabilityCenter }}"></vaadin-text-field>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <vaadin-text-field id="utilizador" name="utilizador" label="Utilizador" value="{{ data.utilizador }}" disabled="disabled"></vaadin-text-field>
@@ -321,24 +375,48 @@
                                             </div>
                                             <div class="row break_clear">
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="globalDimension1Code" name="globalDimension1Code" label="Área Funcional" value="{{ data.globalDimension1Code }}" ></vaadin-text-field>
+                                                    <such-selectbox id="globalDimension1Code"
+                                                                    name="globalDimension1Code"
+                                                                    label="Região"
+                                                                    value="{{ data.globalDimension1Code }}"
+                                                                    items="[[CBRegions]]"
+                                                                    text-path="value"
+                                                                    value-path="id"
+                                                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                                                    </such-selectbox>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="globalDimension2Code" name="globalDimension2Code" label="Fonte Financiamento" value="{{ data.globalDimension2Code }}" ></vaadin-text-field>
+                                                    <such-selectbox id="globalDimension2Code"
+                                                                    name="globalDimension2Code"
+                                                                    label="Área Funcional"
+                                                                    value="{{ data.globalDimension2Code }}"
+                                                                    items="[[CBFunctionalAreas]]"
+                                                                    text-path="value"
+                                                                    value-path="id"
+                                                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                                                    </such-selectbox>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="globalDimension3Code" name="globalDimension3Code" label="CResp" value="{{ data.globalDimension3Code }}" ></vaadin-text-field>
+                                                    <such-selectbox id="globalDimension3Code"
+                                                                    name="globalDimension3Code"
+                                                                    label="CResp"
+                                                                    value="{{ data.globalDimension3Code }}"
+                                                                    items="[[CBResponsabilityCenterCodes]]"
+                                                                    text-path="value"
+                                                                    value-path="id"
+                                                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                                                    </such-selectbox>
                                                 </div>
                                             </div>
                                             <div class="row break_clear">
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="pesoTotal" name="pesoTotal" label="Peso Total" value="{{ data.pesoTotal }}" ></vaadin-text-field>
+                                                    <vaadin-text-field id="pesoTotal" name="pesoTotal" label="Peso Total" value="{{ data.pesoTotal }}"></vaadin-text-field>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="quantidadeTotal" name="quantidadeTotal" label="Quantidade Total" value="{{ data.quantidadeTotal }}" ></vaadin-text-field>
+                                                    <vaadin-text-field id="quantidadeTotal" name="quantidadeTotal" label="Quantidade Total" value="{{ data.quantidadeTotal }}"></vaadin-text-field>
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <such-textarea id="observacoes" name="observacoes" label="Observações" rows="3" value="{{ data.observacoes }}" > </such-textarea>
+                                                    <such-textarea id="observacoes" name="observacoes" label="Observações" rows="3" value="{{ data.observacoes }}"> </such-textarea>
                                                 </div>
                                             </div>
                                         </div>
@@ -357,28 +435,28 @@
                                                     <div class="panel-body">
                                                         <div class="row">
                                                             <div class="col-xs-12">
-                                                                <vaadin-text-field id="name" name="name" label="Nome" value="{{ data.name }}" disabled="disabled"></vaadin-text-field>
+                                                                <vaadin-text-field id="name" name="name" label="Nome" value="{{ data.name }}"></vaadin-text-field>
                                                             </div>
                                                             <div class="col-xs-12">
-                                                                <vaadin-text-field id="address" name="address" label="Endereço" value="{{ data.address }}" disabled="disabled"></vaadin-text-field>
+                                                                <vaadin-text-field id="address" name="address" label="Endereço" value="{{ data.address }}"></vaadin-text-field>
                                                             </div>
                                                             <div class="col-xs-12">
-                                                                <vaadin-text-field id="city" name="city" label="Cidade" value="{{ data.city }}" disabled="disabled"></vaadin-text-field>
+                                                                <vaadin-text-field id="city" name="city" label="Cidade" value="{{ data.city }}"></vaadin-text-field>
                                                             </div>
                                                             <div class="col-xs-12">
-                                                                <vaadin-text-field id="postCode" name="postCode" label="Cód. Postal" value="{{ data.postCode }}" disabled="disabled"></vaadin-text-field>
+                                                                <vaadin-text-field id="postCode" name="postCode" label="Cód. Postal" value="{{ data.postCode }}"></vaadin-text-field>
                                                             </div>
                                                             <div class="col-xs-12">
-                                                                <vaadin-time-picker id="horaCarga" 
-                                                                                    name="horaCarga" 
-                                                                                    label="Hora Carga" 
+                                                                <vaadin-time-picker id="horaCarga"
+                                                                                    name="horaCarga"
+                                                                                    label="Hora Carga"
                                                                                     value="{{ data.horaCarga }}">
                                                                 </vaadin-time-picker>
                                                             </div>
                                                             <div class="col-xs-12">
-                                                                <vaadin-date-picker id="dataCarga" 
-                                                                                    name="dataCarga" 
-                                                                                    label="Data Carga" 
+                                                                <vaadin-date-picker id="dataCarga"
+                                                                                    name="dataCarga"
+                                                                                    label="Data Carga"
                                                                                     value="{{ data.dataCargaTxt }}">
                                                                 </vaadin-date-picker>
                                                             </div>
@@ -396,30 +474,30 @@
                                                     <div class="panel-body">
                                                         <div class="row">
                                                             <div class="col-xs-12">
-                                                                <vaadin-text-field id="localDescarga" name="localDescarga" label="Local Descarga" value="{{ data.localDescarga }}" disabled="disabled"></vaadin-text-field>
+                                                                <vaadin-text-field id="localDescarga" name="localDescarga" label="Local Descarga" value="{{ data.localDescarga }}"></vaadin-text-field>
                                                             </div>
                                                             <div class="col-xs-12">
-                                                                <vaadin-text-field id="localDescarga1" name="localDescarga1" label="Local Descarga 1" value="{{ data.localDescarga1 }}" disabled="disabled"></vaadin-text-field>
+                                                                <vaadin-text-field id="localDescarga1" name="localDescarga1" label="Local Descarga 1" value="{{ data.localDescarga1 }}"></vaadin-text-field>
                                                             </div>
                                                             <div class="col-xs-12">
-                                                                <vaadin-text-field id="codPostalDescarga" name="codPostalDescarga" label="Cód. Postal Descarga" value="{{ data.codPostalDescarga }}" disabled="disabled"></vaadin-text-field>
+                                                                <vaadin-text-field id="codPostalDescarga" name="codPostalDescarga" label="Cód. Postal Descarga" value="{{ data.codPostalDescarga }}"></vaadin-text-field>
                                                             </div>
                                                             <div class="col-xs-12">
                                                                 <vaadin-time-picker id="horaDescarga"
-                                                                                    name="horaDescarga" 
-                                                                                    label="Hora Descarga" 
+                                                                                    name="horaDescarga"
+                                                                                    label="Hora Descarga"
                                                                                     value="{{ data.horaDescarga }}">
                                                                 </vaadin-time-picker>
                                                             </div>
                                                             <div class="col-xs-12">
-                                                                <vaadin-date-picker id="dataDescarga" 
-                                                                                    name="dataDescarga" 
-                                                                                    label="Data Descarga" 
+                                                                <vaadin-date-picker id="dataDescarga"
+                                                                                    name="dataDescarga"
+                                                                                    label="Data Descarga"
                                                                                     value="{{ data.dataDescargaTxt }}">
                                                                 </vaadin-date-picker>
                                                             </div>
                                                             <div class="col-xs-12">
-                                                                <vaadin-text-field id="viatura" name="viatura" label="Viatura" value="{{ data.viatura }}" disabled="disabled"></vaadin-text-field>
+                                                                <vaadin-text-field id="viatura" name="viatura" label="Viatura" value="{{ data.viatura }}"></vaadin-text-field>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -692,10 +770,6 @@
                         this.$.noCliente.value = "";
                         this.$.noCliente.valueText = "";
 
-                        this.data.name = "";
-                        this.$.name.value = "";
-                        this.$.name.valueText = "";
-
                         this.data.nomeCliente = "";
                         this.$.nomeCliente.value = "";
                         this.$.nomeCliente.valueText = "";
@@ -703,6 +777,52 @@
                         this.data.nomeCliente2 = "";
                         this.$.nomeCliente2.value = "";
                         this.$.nomeCliente2.valueText = "";
+
+                        this.data.moradaCliente = "";
+                        this.$.moradaCliente.value = "";
+                        this.$.moradaCliente.valueText = "";
+
+                        this.data.moradaCliente2 = "";
+                        this.$.moradaCliente2.value = "";
+                        this.$.moradaCliente2.valueText = "";
+
+                        this.data.cidade = "";
+                        this.$.cidade.value = "";
+                        this.$.cidade.valueText = "";
+
+                        this.data.codPostal = "";
+                        this.$.codPostal.value = "";
+                        this.$.codPostal.valueText = "";
+
+                        this.data.localDescarga = "";
+                        this.$.localDescarga.value = "";
+                        this.$.localDescarga.valueText = "";
+
+                        this.data.nifCliente = "";
+                        this.$.nifCliente.value = "";
+                        this.$.nifCliente.valueText = "";
+
+                        this.data.telefone = "";
+
+                        this.data.responsabilityCenter = "";
+                        this.$.responsabilityCenter.value = "";
+                        this.$.responsabilityCenter.valueText = "";
+
+                        this.data.name = "";
+                        this.$.name.value = "";
+                        this.$.name.valueText = "";
+
+                        this.data.address = "";
+                        this.$.address.value = "";
+                        this.$.address.valueText = "";
+
+                        this.data.city = "";
+                        this.$.city.value = "";
+                        this.$.city.valueText = "";
+
+                        this.data.postCode = "";
+                        this.$.postCode.value = "";
+                        this.$.postCode.valueText = "";
                         
                         this.$.ajax_thirdparties.body = JSON.stringify({ "type": tipoG });
                         this.$.ajax_thirdparties.generateRequest();
@@ -710,12 +830,12 @@
                     
                 },
 
-                _thirdPartiesResponse: function (e) {
-                    debugger;;
-                    if (this.cbThirdParty === null) {
-                        //this._openToastError("Erro!!");
-                    }
-                },
+                //_thirdPartiesResponse: function (e) {
+                //    debugger;;
+                //    if (this.cbThirdParty === null) {
+                //        //this._openToastError("Erro!!");
+                //    }
+                //},
 
                 _setThirdParty: function (e) {
                     debugger;
@@ -742,10 +862,6 @@
                         this.$.noCliente.value = this.thirdPartyDetails.entityId;
                         this.$.noCliente.valueText = this.thirdPartyDetails.entityId;
 
-                        this.data.name = this.thirdPartyDetails.name;
-                        this.$.name.value = this.thirdPartyDetails.name;
-                        this.$.name.valueText = this.thirdPartyDetails.name;
-
                         this.data.nomeCliente = this.thirdPartyDetails.name;
                         this.$.nomeCliente.value = this.thirdPartyDetails.name;
                         this.$.nomeCliente.valueText = this.thirdPartyDetails.name;
@@ -753,14 +869,63 @@
                         this.data.nomeCliente2 = this.thirdPartyDetails.name2;
                         this.$.nomeCliente2.value = this.thirdPartyDetails.name2;
                         this.$.nomeCliente2.valueText = this.thirdPartyDetails.name2;
+
+                        this.data.moradaCliente = this.thirdPartyDetails.address;
+                        this.$.moradaCliente.value = this.thirdPartyDetails.address;
+                        this.$.moradaCliente.valueText = this.thirdPartyDetails.address;
+
+                        this.data.moradaCliente2 = this.thirdPartyDetails.address2;
+                        this.$.moradaCliente2.value = this.thirdPartyDetails.address2;
+                        this.$.moradaCliente2.valueText = this.thirdPartyDetails.address2;
+
+                        this.data.cidade = this.thirdPartyDetails.city;
+                        this.$.cidade.value = this.thirdPartyDetails.city;
+                        this.$.cidade.valueText = this.thirdPartyDetails.city;
+
+                        this.data.codPostal = this.thirdPartyDetails.postCode;
+                        this.$.codPostal.value = this.thirdPartyDetails.postCode;
+                        this.$.codPostal.valueText = this.thirdPartyDetails.postCode;
+
+                        this.data.codPostalDescarga = this.thirdPartyDetails.postCode;
+                        this.$.codPostalDescarga.value = this.thirdPartyDetails.postCode;
+                        this.$.codPostalDescarga.valueText = this.thirdPartyDetails.postCode;
+
+                        this.data.localDescarga = this.thirdPartyDetails.address;
+                        this.$.localDescarga.value = this.thirdPartyDetails.address;
+                        this.$.localDescarga.valueText = this.thirdPartyDetails.address;
+
+                        this.data.nifCliente = this.thirdPartyDetails.vatRegistrationNo;
+                        this.$.nifCliente.value = this.thirdPartyDetails.vatRegistrationNo;
+                        this.$.nifCliente.valueText = this.thirdPartyDetails.vatRegistrationNo;
+
+                        this.data.telefone = this.thirdPartyDetails.phoneNo;
+
+                        if (this.data.tipo == 3) {
+                            this.data.responsabilityCenter = this.thirdPartyDetails.entityId;
+                            this.$.responsabilityCenter.value = this.thirdPartyDetails.entityId;
+                            this.$.responsabilityCenter.valueText = this.thirdPartyDetails.entityId;
+
+                            this.data.name = this.thirdPartyDetails.name;
+                            this.$.name.value = this.thirdPartyDetails.name;
+                            this.$.name.valueText = this.thirdPartyDetails.name;
+
+                            this.data.address = this.thirdPartyDetails.address;
+                            this.$.address.value = this.thirdPartyDetails.address;
+                            this.$.address.valueText = this.thirdPartyDetails.address;
+
+                            this.data.city = this.thirdPartyDetails.city;
+                            this.$.city.value = this.thirdPartyDetails.city;
+                            this.$.city.valueText = this.thirdPartyDetails.city;
+
+                            this.data.postCode = this.thirdPartyDetails.postCode;
+                            this.$.postCode.value = this.thirdPartyDetails.postCode;
+                            this.$.postCode.valueText = this.thirdPartyDetails.postCode;
+                        }
+
                     } else {
                         this.data.noCliente = "";
                         this.$.noCliente.value = "";
                         this.$.noCliente.valueText = "";
-
-                        this.data.name = "";
-                        this.$.name.value = "";
-                        this.$.name.valueText = "";
 
                         this.data.nomeCliente = "";
                         this.$.nomeCliente.value = "";
@@ -769,13 +934,86 @@
                         this.data.nomeCliente2 = "";
                         this.$.nomeCliente2.value = "";
                         this.$.nomeCliente2.valueText = "";
-                        
+
+                        this.data.moradaCliente = "";
+                        this.$.moradaCliente.value = "";
+                        this.$.moradaCliente.valueText = "";
+
+                        this.data.moradaCliente2 = "";
+                        this.$.moradaCliente2.value = "";
+                        this.$.moradaCliente2.valueText = "";
+
+                        this.data.cidade = "";
+                        this.$.cidade.value = "";
+                        this.$.cidade.valueText = "";
+
+                        this.data.codPostal = "";
+                        this.$.codPostal.value = "";
+                        this.$.codPostal.valueText = "";
+
+                        this.data.localDescarga = "";
+                        this.$.localDescarga.value = "";
+                        this.$.localDescarga.valueText = "";
+
+                        this.data.nifCliente = "";
+                        this.$.nifCliente.value = "";
+                        this.$.nifCliente.valueText = "";
+
+                        this.data.telefone = "";
+
+                        this.data.responsabilityCenter = "";
+                        this.$.responsabilityCenter.value = "";
+                        this.$.responsabilityCenter.valueText = "";
+
+                        this.data.name = "";
+                        this.$.name.value = "";
+                        this.$.name.valueText = "";
+
+                        this.data.address = "";
+                        this.$.address.value = "";
+                        this.$.address.valueText = "";
+
+                        this.data.city = "";
+                        this.$.city.value = "";
+                        this.$.city.valueText = "";
+
+                        this.data.postCode = "";
+                        this.$.postCode.value = "";
+                        this.$.postCode.valueText = "";
                     }
                 },
 
                 _dataGuiaChanged: function (e) {
                     debugger;;
                     this.$.dataSaida.min = this.$.dataGuia.value;
+                },
+
+                _setProjectDim: function (e) {
+                    if (this.data != undefined) {
+                        var projectNo = this.$.noProjecto.value;
+                        if (projectNo != "") {
+                            this.$.page_project_dims_ajax.body = JSON.stringify(projectNo);
+                            this.$.page_project_dims_ajax.generateRequest();
+                        }
+                    }  
+                },
+                _projectDimsResponse: function (e) {
+                    if (e.detail.status === 200) {
+                        if (this.projectDims.regionCode != "") {
+                            this.$.globalDimension1Code.value = this.projectDims.regionCode;
+                            this.data.globalDimension1Code = this.projectDims.regionCode;
+                        }
+
+                        if (this.projectDims.functionalAreaCode != "") {
+                            this.$.globalDimension2Code.value = this.projectDims.functionalAreaCode;
+                            this.data.globalDimension2Code = this.projectDims.functionalAreaCode;
+                        }
+
+                        if (this.projectDims.responsabilityCenterCode != "") {
+                            this.$.globalDimension3Code.value = this.projectDims.responsabilityCenterCode;
+                            this.data.globalDimension3Code = this.projectDims.responsabilityCenterCode;
+                        }
+                    }
                 }
                 
             });
