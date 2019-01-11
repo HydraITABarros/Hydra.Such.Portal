@@ -21,6 +21,7 @@ using NPOI.XSSF.UserModel;
 using Newtonsoft.Json;
 using Hydra.Such.Data;
 using Hydra.Such.Data.Extensions;
+using Hydra.Such.Data.ViewModel.Projects;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -166,6 +167,38 @@ namespace Hydra.Such.Portal.Controllers
             ThirdPartyViewModel result = DBNAV2017GuiasTransporte.GetThirdPartyDetails(_config.NAVDatabaseName, _config.NAVCompanyName, type, entityId);
 
             return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetProjectDim([FromBody] string ProjectNo)
+        {
+
+            ProjectListItemViewModel result = new ProjectListItemViewModel();
+
+            List<NAVProjectsViewModel> navList = DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, ProjectNo).ToList();
+            NAVProjectsViewModel Project = navList.Where(x => x.No == ProjectNo).FirstOrDefault();
+
+            if (Project != null)
+            {
+                result.ProjectNo = ProjectNo;
+                result.RegionCode = Project.RegionCode != null ? Project.RegionCode : "";
+                result.FunctionalAreaCode = Project.AreaCode != null ? Project.AreaCode : "";
+                result.ResponsabilityCenterCode = Project.CenterResponsibilityCode != null ? Project.CenterResponsibilityCode : "";
+            }
+            else
+            {
+                result.RegionCode = "";
+                result.FunctionalAreaCode = "";
+                result.ResponsabilityCenterCode = "";
+            }
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetSourceCodes()
+        {
+            return Json(DBNAV2017GuiasTransporte.GetShipmentSourceCodes(_config.NAVDatabaseName, _config.NAVCompanyName));
         }
 
         #region CRUD

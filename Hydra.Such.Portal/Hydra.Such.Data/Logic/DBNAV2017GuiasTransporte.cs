@@ -401,6 +401,49 @@ namespace Hydra.Such.Data.Logic
                 return null;
             }
         }
+
+        public static List<SourceCodeViewModel> GetShipmentSourceCodes(string NAVDatabase, string NAVCompany)
+        {
+            try
+            {
+                SuchDBContextExtention _contextExt = new SuchDBContextExtention();
+
+                var parameters = new[]{
+                        new SqlParameter("@DBName", NAVDatabase),
+                        new SqlParameter("@CompanyName", NAVCompany)
+                };
+
+                IEnumerable<dynamic> data = _contextExt.execStoredProcedure("exec NAV2017GuiaTransporteSourceCodesList @DBName, @CompanyName", parameters);
+
+                List<SourceCodeViewModel> sources = new List<SourceCodeViewModel>();
+
+                foreach (dynamic temp in data)
+                {
+                    if (temp != null)
+                    {
+                        if (!temp.SourceCode.Equals(DBNull.Value))
+                        {
+                            SourceCodeViewModel source = new SourceCodeViewModel()
+                            {
+                                SourceCode = (string)temp.SourceCode,
+                                SourceDescription = temp.SourceDescription.Equals(DBNull.Value) ? "" : (string)temp.SourceDescription
+                            };
+
+                            sources.Add(source);
+                        }
+
+                    }
+                }
+                return sources;
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+
+        }
+
         public static bool UpdateGuiaTransporte(GuiaTransporteNavViewModel guia)
         {
             if(guia == null)
