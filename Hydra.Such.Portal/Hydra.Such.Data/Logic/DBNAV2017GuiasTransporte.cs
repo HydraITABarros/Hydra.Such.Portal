@@ -325,6 +325,7 @@ namespace Hydra.Such.Data.Logic
                         {
                             ThirdPartyViewModel entity = new ThirdPartyViewModel()
                             {
+                                EntityType = type,
                                 EntityId = temp.EntityId.Equals(DBNull.Value) ? "" : (string)temp.EntityId,
                                 Name = temp.Name.Equals(DBNull.Value) ? "" : (string)temp.Name,
                                 Name2 = temp.Name2.Equals(DBNull.Value) ? "" : (string)temp.Name2,
@@ -377,6 +378,7 @@ namespace Hydra.Such.Data.Logic
                 {
                     ThirdPartyViewModel entity = new ThirdPartyViewModel()
                     {
+                        EntityType = type,
                         EntityId = data.EntityId.Equals(DBNull.Value) ? "" : (string)data.EntityId,
                         Name = data.Name.Equals(DBNull.Value) ? "" : (string)data.Name,
                         Name2 = data.Name2.Equals(DBNull.Value) ? "" : (string)data.Name2,
@@ -442,6 +444,53 @@ namespace Hydra.Such.Data.Logic
                 return null;
             }
 
+        }
+
+        public static List<GuiaTransporteShipToAddress> GetShipToAddresses(string NAVDatabase, string NAVCompany, string CustomerId, string ShipToAddrCode)
+        {
+            try
+            {
+                List<GuiaTransporteShipToAddress> addresses = new List<GuiaTransporteShipToAddress>();
+
+                SuchDBContextExtention _contextExt = new SuchDBContextExtention();
+
+                var parameters = new[]{
+                        new SqlParameter("@DBName", NAVDatabase),
+                        new SqlParameter("@CompanyName", NAVCompany),
+                        new SqlParameter("@CustomerId", CustomerId),
+                        new SqlParameter("@ShipToAddressCode", ShipToAddrCode)
+                };
+
+
+                IEnumerable<dynamic> data = _contextExt.execStoredProcedure("exec NAV2017GuiaTransporteShipToAddresses @DBName, @CompanyName, @CustomerId, @ShipToAddressCode", parameters);
+
+                foreach(dynamic temp in data)
+                {
+                    if (!temp.CustomerId.Equals(DBNull.Value))
+                    {
+                        GuiaTransporteShipToAddress shipTo = new GuiaTransporteShipToAddress()
+                        {
+                          Customer_No = (string)temp.CustomerId,
+                          Code = temp.ShipToAddressCode.Equals(DBNull.Value)? "" : (string)temp.ShipToAddressCode,
+                          Name = temp.Name.Equals(DBNull.Value)? "" : (string)temp.Name,
+                          Name2 = temp.Name2.Equals(DBNull.Value)? "" : (string)temp.Name2,
+                          Address = temp.Address.Equals(DBNull.Value)?"":(string)temp.Address,
+                          Address_2 = temp.Address2.Equals(DBNull.Value)?"":(string)temp.Address2,
+                          City = temp.City.Equals(DBNull.Value)? "" : (string)temp.City,
+                          Phone_No = temp.PhoneNo.Equals(DBNull.Value) ?"":(string)temp.PhoneNo,
+                          Post_Code = temp.PostCode.Equals(DBNull.Value) ? "":(string)temp.PostCode
+                        };
+
+                        addresses.Add(shipTo);
+                    }
+                }
+                return addresses;
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
         }
 
         public static bool UpdateGuiaTransporte(GuiaTransporteNavViewModel guia)

@@ -201,6 +201,20 @@ namespace Hydra.Such.Portal.Controllers
             return Json(DBNAV2017GuiasTransporte.GetShipmentSourceCodes(_config.NAVDatabaseName, _config.NAVCompanyName));
         }
 
+        [HttpPost]
+        public JsonResult GetShipToAdd([FromBody] JObject requestParams)
+        {
+            string custId = requestParams["customerId"] == null ? "" : (string)requestParams["customerId"];
+            string shipCode = requestParams["shipToCode"] == null ? "-1" : (string)requestParams["shipToCode"];
+
+            if (custId == "")
+                return Json(null);
+
+            // zpgm.11012019 TO DO: Get the ship-to addresses in the back-end and front-end
+
+            return Json(null);
+        }
+
         #region CRUD
         [HttpPost]
         public JsonResult CreateGuiaTransporte()

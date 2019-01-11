@@ -344,13 +344,13 @@
                                                                     label="Cód. Origem"
                                                                     value="{{ data.sourceCode}}"
                                                                     items="[[sourceList]]"
-                                                                    text-path="sourceDescription"
+                                                                    text-path="sourceCode"
                                                                     value-path="sourceCode"
                                                                     fields='[{"field":"sourceCode", "name":"Código"}, {"field":"sourceDescription", "name":"Descrição"}]'>
                                                     </such-selectbox>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="origem" name="origem" label="Origem" value="{{ data.origem }}"></vaadin-text-field>
+                                                    <vaadin-text-field id="origem" name="origem" label="Origem" value="{{ data.origem }}" disbled="disabled"></vaadin-text-field>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <vaadin-text-field id="requisicao" name="requisicao" label="V/ Requisição" value="{{ data.requisicao }}"></vaadin-text-field>
@@ -842,88 +842,243 @@
                     if (this.data != undefined) {
                         var type = this.$.tipoGuia.value;
                         var entityId = this.$.noCliente.value;
+                        if (entityId == "" && this.data.noCliente) {
+                            entityId = this.data.noCliente;
+                        }
 
-                        //if (type != null && type != "") {
-                            if (type != null && entityId != null && entityId != "") {
+                        if (type != null && entityId != null && entityId != "") {
+                            if (this.cbThirdParty != null) {
+                                debugger;;
+                                var _third = this.cbThirdParty.find(t => t.entityType == type && t.entityId == entityId);
+                                if (_third != null) {
+                                    this._setThirdPartyDetails(_third);
+                                }
+                                else {
+                                    this.$.ajax_thirdparty_details.body = JSON.stringify({ "type": type, "entityId": entityId })
+                                    this.$.ajax_thirdparty_details.generateRequest();
+                                }
+                                
+                                debugger;;
+                            }
+                            else {
                                 this.$.ajax_thirdparty_details.body = JSON.stringify({ "type": type, "entityId": entityId })
                                 this.$.ajax_thirdparty_details.generateRequest();
                             }
-
-                       // }
+                            
+                        }
                     }   
                 },
 
                 _thirdPartyDetailsResponse: function (e) {
                     debugger;;
 
-                    if (this.thirdPartyDetails != null) {
+                    this._setThirdPartyDetails(this.thirdPartyDetails);
+                    //if (this.thirdPartyDetails != null) {
+                    //    debugger;;
+                    //    this.data.noCliente = this.thirdPartyDetails.entityId;
+                    //    this.$.noCliente.value = this.thirdPartyDetails.entityId;
+                    //    this.$.noCliente.valueText = this.thirdPartyDetails.entityId;
+
+                    //    this.data.nomeCliente = this.thirdPartyDetails.name;
+                    //    this.$.nomeCliente.value = this.thirdPartyDetails.name;
+                    //    this.$.nomeCliente.valueText = this.thirdPartyDetails.name;
+
+                    //    this.data.nomeCliente2 = this.thirdPartyDetails.name2;
+                    //    this.$.nomeCliente2.value = this.thirdPartyDetails.name2;
+                    //    this.$.nomeCliente2.valueText = this.thirdPartyDetails.name2;
+
+                    //    this.data.moradaCliente = this.thirdPartyDetails.address;
+                    //    this.$.moradaCliente.value = this.thirdPartyDetails.address;
+                    //    this.$.moradaCliente.valueText = this.thirdPartyDetails.address;
+
+                    //    this.data.moradaCliente2 = this.thirdPartyDetails.address2;
+                    //    this.$.moradaCliente2.value = this.thirdPartyDetails.address2;
+                    //    this.$.moradaCliente2.valueText = this.thirdPartyDetails.address2;
+
+                    //    this.data.cidade = this.thirdPartyDetails.city;
+                    //    this.$.cidade.value = this.thirdPartyDetails.city;
+                    //    this.$.cidade.valueText = this.thirdPartyDetails.city;
+
+                    //    this.data.codPostal = this.thirdPartyDetails.postCode;
+                    //    this.$.codPostal.value = this.thirdPartyDetails.postCode;
+                    //    this.$.codPostal.valueText = this.thirdPartyDetails.postCode;
+
+                    //    this.data.codPostalDescarga = this.thirdPartyDetails.postCode;
+                    //    this.$.codPostalDescarga.value = this.thirdPartyDetails.postCode;
+                    //    this.$.codPostalDescarga.valueText = this.thirdPartyDetails.postCode;
+
+                    //    this.data.localDescarga = this.thirdPartyDetails.address;
+                    //    this.$.localDescarga.value = this.thirdPartyDetails.address;
+                    //    this.$.localDescarga.valueText = this.thirdPartyDetails.address;
+
+                    //    this.data.nifCliente = this.thirdPartyDetails.vatRegistrationNo;
+                    //    this.$.nifCliente.value = this.thirdPartyDetails.vatRegistrationNo;
+                    //    this.$.nifCliente.valueText = this.thirdPartyDetails.vatRegistrationNo;
+
+                    //    this.data.telefone = this.thirdPartyDetails.phoneNo;
+
+                    //    if (this.data.tipo == 3) {
+                    //        this.data.responsabilityCenter = this.thirdPartyDetails.entityId;
+                    //        this.$.responsabilityCenter.value = this.thirdPartyDetails.entityId;
+                    //        this.$.responsabilityCenter.valueText = this.thirdPartyDetails.entityId;
+
+                    //        this.data.name = this.thirdPartyDetails.name;
+                    //        this.$.name.value = this.thirdPartyDetails.name;
+                    //        this.$.name.valueText = this.thirdPartyDetails.name;
+
+                    //        this.data.address = this.thirdPartyDetails.address;
+                    //        this.$.address.value = this.thirdPartyDetails.address;
+                    //        this.$.address.valueText = this.thirdPartyDetails.address;
+
+                    //        this.data.city = this.thirdPartyDetails.city;
+                    //        this.$.city.value = this.thirdPartyDetails.city;
+                    //        this.$.city.valueText = this.thirdPartyDetails.city;
+
+                    //        this.data.postCode = this.thirdPartyDetails.postCode;
+                    //        this.$.postCode.value = this.thirdPartyDetails.postCode;
+                    //        this.$.postCode.valueText = this.thirdPartyDetails.postCode;
+                    //    }
+
+                    //}
+                    //else {
+                    //    if (this.data.noCliente == "") {
+                    //        this.data.noCliente = "";
+                    //    }
+                        
+                    //    this.$.noCliente.value = "";
+                    //    this.$.noCliente.valueText = "";
+
+                    //    this.data.nomeCliente = "";
+                    //    this.$.nomeCliente.value = "";
+                    //    this.$.nomeCliente.valueText = "";
+
+                    //    this.data.nomeCliente2 = "";
+                    //    this.$.nomeCliente2.value = "";
+                    //    this.$.nomeCliente2.valueText = "";
+
+                    //    this.data.moradaCliente = "";
+                    //    this.$.moradaCliente.value = "";
+                    //    this.$.moradaCliente.valueText = "";
+
+                    //    this.data.moradaCliente2 = "";
+                    //    this.$.moradaCliente2.value = "";
+                    //    this.$.moradaCliente2.valueText = "";
+
+                    //    this.data.cidade = "";
+                    //    this.$.cidade.value = "";
+                    //    this.$.cidade.valueText = "";
+
+                    //    this.data.codPostal = "";
+                    //    this.$.codPostal.value = "";
+                    //    this.$.codPostal.valueText = "";
+
+                    //    this.data.localDescarga = "";
+                    //    this.$.localDescarga.value = "";
+                    //    this.$.localDescarga.valueText = "";
+
+                    //    this.data.nifCliente = "";
+                    //    this.$.nifCliente.value = "";
+                    //    this.$.nifCliente.valueText = "";
+
+                    //    this.data.telefone = "";
+
+                    //    this.data.responsabilityCenter = "";
+                    //    this.$.responsabilityCenter.value = "";
+                    //    this.$.responsabilityCenter.valueText = "";
+
+                    //    this.data.name = "";
+                    //    this.$.name.value = "";
+                    //    this.$.name.valueText = "";
+
+                    //    this.data.address = "";
+                    //    this.$.address.value = "";
+                    //    this.$.address.valueText = "";
+
+                    //    this.data.city = "";
+                    //    this.$.city.value = "";
+                    //    this.$.city.valueText = "";
+
+                    //    this.data.postCode = "";
+                    //    this.$.postCode.value = "";
+                    //    this.$.postCode.valueText = "";
+                    //}
+                },
+
+                _setThirdPartyDetails: function (details) {
+                    debugger;;
+
+                    if (details != null) {
                         debugger;;
-                        this.data.noCliente = this.thirdPartyDetails.entityId;
-                        this.$.noCliente.value = this.thirdPartyDetails.entityId;
-                        this.$.noCliente.valueText = this.thirdPartyDetails.entityId;
+                        this.data.noCliente = details.entityId;
+                        this.$.noCliente.value = details.entityId;
+                        this.$.noCliente.valueText = details.entityId;
 
-                        this.data.nomeCliente = this.thirdPartyDetails.name;
-                        this.$.nomeCliente.value = this.thirdPartyDetails.name;
-                        this.$.nomeCliente.valueText = this.thirdPartyDetails.name;
+                        this.data.nomeCliente = details.name;
+                        this.$.nomeCliente.value = details.name;
+                        this.$.nomeCliente.valueText = details.name;
 
-                        this.data.nomeCliente2 = this.thirdPartyDetails.name2;
-                        this.$.nomeCliente2.value = this.thirdPartyDetails.name2;
-                        this.$.nomeCliente2.valueText = this.thirdPartyDetails.name2;
+                        this.data.nomeCliente2 = details.name2;
+                        this.$.nomeCliente2.value = details.name2;
+                        this.$.nomeCliente2.valueText = details.name2;
 
-                        this.data.moradaCliente = this.thirdPartyDetails.address;
-                        this.$.moradaCliente.value = this.thirdPartyDetails.address;
-                        this.$.moradaCliente.valueText = this.thirdPartyDetails.address;
+                        this.data.moradaCliente = details.address;
+                        this.$.moradaCliente.value = details.address;
+                        this.$.moradaCliente.valueText = details.address;
 
-                        this.data.moradaCliente2 = this.thirdPartyDetails.address2;
-                        this.$.moradaCliente2.value = this.thirdPartyDetails.address2;
-                        this.$.moradaCliente2.valueText = this.thirdPartyDetails.address2;
+                        this.data.moradaCliente2 = details.address2;
+                        this.$.moradaCliente2.value = details.address2;
+                        this.$.moradaCliente2.valueText = details.address2;
 
-                        this.data.cidade = this.thirdPartyDetails.city;
-                        this.$.cidade.value = this.thirdPartyDetails.city;
-                        this.$.cidade.valueText = this.thirdPartyDetails.city;
+                        this.data.cidade = details.city;
+                        this.$.cidade.value = details.city;
+                        this.$.cidade.valueText = details.city;
 
-                        this.data.codPostal = this.thirdPartyDetails.postCode;
-                        this.$.codPostal.value = this.thirdPartyDetails.postCode;
-                        this.$.codPostal.valueText = this.thirdPartyDetails.postCode;
+                        this.data.codPostal = details.postCode;
+                        this.$.codPostal.value = details.postCode;
+                        this.$.codPostal.valueText = details.postCode;
 
-                        this.data.codPostalDescarga = this.thirdPartyDetails.postCode;
-                        this.$.codPostalDescarga.value = this.thirdPartyDetails.postCode;
-                        this.$.codPostalDescarga.valueText = this.thirdPartyDetails.postCode;
+                        this.data.codPostalDescarga = details.postCode;
+                        this.$.codPostalDescarga.value = details.postCode;
+                        this.$.codPostalDescarga.valueText = details.postCode;
 
-                        this.data.localDescarga = this.thirdPartyDetails.address;
-                        this.$.localDescarga.value = this.thirdPartyDetails.address;
-                        this.$.localDescarga.valueText = this.thirdPartyDetails.address;
+                        this.data.localDescarga = details.address;
+                        this.$.localDescarga.value = details.address;
+                        this.$.localDescarga.valueText = details.address;
 
-                        this.data.nifCliente = this.thirdPartyDetails.vatRegistrationNo;
-                        this.$.nifCliente.value = this.thirdPartyDetails.vatRegistrationNo;
-                        this.$.nifCliente.valueText = this.thirdPartyDetails.vatRegistrationNo;
+                        this.data.nifCliente = details.vatRegistrationNo;
+                        this.$.nifCliente.value = details.vatRegistrationNo;
+                        this.$.nifCliente.valueText = details.vatRegistrationNo;
 
-                        this.data.telefone = this.thirdPartyDetails.phoneNo;
+                        this.data.telefone = details.phoneNo;
 
                         if (this.data.tipo == 3) {
-                            this.data.responsabilityCenter = this.thirdPartyDetails.entityId;
-                            this.$.responsabilityCenter.value = this.thirdPartyDetails.entityId;
-                            this.$.responsabilityCenter.valueText = this.thirdPartyDetails.entityId;
+                            this.data.responsabilityCenter = details.entityId;
+                            this.$.responsabilityCenter.value = details.entityId;
+                            this.$.responsabilityCenter.valueText = details.entityId;
 
-                            this.data.name = this.thirdPartyDetails.name;
-                            this.$.name.value = this.thirdPartyDetails.name;
-                            this.$.name.valueText = this.thirdPartyDetails.name;
+                            this.data.name = details.name;
+                            this.$.name.value = details.name;
+                            this.$.name.valueText = details.name;
 
-                            this.data.address = this.thirdPartyDetails.address;
-                            this.$.address.value = this.thirdPartyDetails.address;
-                            this.$.address.valueText = this.thirdPartyDetails.address;
+                            this.data.address = details.address;
+                            this.$.address.value = details.address;
+                            this.$.address.valueText = details.address;
 
-                            this.data.city = this.thirdPartyDetails.city;
-                            this.$.city.value = this.thirdPartyDetails.city;
-                            this.$.city.valueText = this.thirdPartyDetails.city;
+                            this.data.city = details.city;
+                            this.$.city.value = details.city;
+                            this.$.city.valueText = details.city;
 
-                            this.data.postCode = this.thirdPartyDetails.postCode;
-                            this.$.postCode.value = this.thirdPartyDetails.postCode;
-                            this.$.postCode.valueText = this.thirdPartyDetails.postCode;
+                            this.data.postCode = details.postCode;
+                            this.$.postCode.value = details.postCode;
+                            this.$.postCode.valueText = details.postCode;
                         }
 
-                    } else {
-                        this.data.noCliente = "";
+                    }
+                    else {
+                        if (this.data.noCliente == "") {
+                            this.data.noCliente = "";
+                        }
+
                         this.$.noCliente.value = "";
                         this.$.noCliente.valueText = "";
 
