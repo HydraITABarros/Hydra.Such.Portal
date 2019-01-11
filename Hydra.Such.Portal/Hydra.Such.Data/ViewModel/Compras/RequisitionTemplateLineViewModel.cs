@@ -108,6 +108,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string Approvers { get; set; }
 
         public bool Selected { get; set; }
+        public Object Colunas { get; set; }
 
         public RequisitionTemplateLineViewModel()
         {

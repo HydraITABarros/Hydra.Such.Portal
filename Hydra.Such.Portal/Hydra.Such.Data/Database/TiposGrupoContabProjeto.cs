@@ -12,6 +12,7 @@ namespace Hydra.Such.Data.Database
 
         public int Código { get; set; }
         public string Descrição { get; set; }
+        public string Descricao2 { get; set; }
         public string CódigoRegião { get; set; }
         public string CódigoÁreaFuncional { get; set; }
         public string CódigoCentroResponsabilidade { get; set; }

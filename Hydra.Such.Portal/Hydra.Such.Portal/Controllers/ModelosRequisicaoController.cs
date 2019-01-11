@@ -495,5 +495,73 @@ namespace Hydra.Such.Portal.Controllers
             sFileName = @"/Upload/temp/" + sFileName;
             return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Modelos de Requisição.xlsx");
         }
+
+        //1
+        [HttpPost]
+        public async Task<JsonResult> ExportToExcel_RequisitionModelDetails([FromBody] List<RequisitionTemplateLineViewModel> Lista)
+        {
+            JObject dp = (JObject)Lista[0].Colunas;
+
+            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + "_ExportEXCEL.xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            //var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Modelo de Requisição Linhas");
+                IRow row = excelSheet.CreateRow(0);
+                int Col = 0;
+
+                if (dp["localCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Localização"); Col = Col + 1; }
+                if (dp["code"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Produto"); Col = Col + 1; }
+                if (dp["description"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Descrição"); Col = Col + 1; }
+                if (dp["description2"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Descrição 2"); Col = Col + 1; }
+                if (dp["unitMeasureCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Unid. Medida"); Col = Col + 1; }
+                if (dp["quantityToRequire"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Quantidade a Requerer"); Col = Col + 1; }
+                if (dp["unitCost"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Custo Unitário"); Col = Col + 1; }
+                if (dp["projectNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Ordem/Projeto"); Col = Col + 1; }
+                if (dp["regionCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Região"); Col = Col + 1; }
+                if (dp["functionalAreaCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Área Funcional"); Col = Col + 1; }
+                if (dp["centerResponsibilityCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Centro Responsabilidade"); Col = Col + 1; }
+
+                if (Lista != null)
+                {
+                    int count = 1;
+                    foreach (RequisitionTemplateLineViewModel item in Lista)
+                    {
+                        Col = 0;
+                        row = excelSheet.CreateRow(count);
+
+                        if (dp["localCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.LocalCode); Col = Col + 1; }
+                        if (dp["code"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Code); Col = Col + 1; }
+                        if (dp["description"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Description); Col = Col + 1; }
+                        if (dp["description2"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Description2); Col = Col + 1; }
+                        if (dp["unitMeasureCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.UnitMeasureCode); Col = Col + 1; }
+                        if (dp["quantityToRequire"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.QuantityToRequire.ToString()); Col = Col + 1; }
+                        if (dp["unitCost"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.UnitCost.ToString()); Col = Col + 1; }
+                        if (dp["projectNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ProjectNo); Col = Col + 1; }
+                        if (dp["regionCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RegionCode); Col = Col + 1; }
+                        if (dp["functionalAreaCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.FunctionalAreaCode); Col = Col + 1; }
+                        if (dp["centerResponsibilityCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CenterResponsibilityCode); Col = Col + 1; }
+
+                        count++;
+                    }
+                }
+                workbook.Write(fs);
+            }
+            return Json(sFileName);
+        }
+        //2
+        public IActionResult ExportToExcelDownload_RequisitionModelDetails(string sFileName)
+        {
+            sFileName = @"/Upload/temp/" + sFileName;
+            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Modelo de Requisição Linhas.xlsx");
+        }
     }
 }

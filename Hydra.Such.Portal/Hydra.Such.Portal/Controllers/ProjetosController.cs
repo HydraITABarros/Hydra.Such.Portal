@@ -31,6 +31,7 @@ using Hydra.Such.Data.Logic.ProjectMovements;
 using System.Globalization;
 using Hydra.Such.Data.ViewModel.Clients;
 using Hydra.Such.Portal.Extensions;
+using Hydra.Such.Data.Logic.Approvals;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -108,6 +109,7 @@ namespace Hydra.Such.Portal.Controllers
             else
             {
                 result = DBProjects.GetAllByEstado((EstadoProjecto)2); //Terminado
+
             }
 
             result.ForEach(x =>
@@ -191,6 +193,20 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (cProject != null)
                 {
+                    bool EnviarParaAprovacao = false;
+                    if (cProject.Estado == 0) //PENDENTE
+                    {
+                        MovimentosDeAprovação MovAprovacao = DBApprovalMovements.GetAll().Where(x => x.Número == cProject.NºProjeto && x.Tipo == 5).LastOrDefault();
+
+                        if (MovAprovacao != null)
+                            if (MovAprovacao.Estado == 3) //REJEITADO
+                                EnviarParaAprovacao = true;
+                    }
+
+                    bool VerMenu = false;
+                    if (cProject.Estado == (EstadoProjecto)1) //ENCOMENDA
+                        VerMenu = true;
+
                     DateTime servDate = DateTime.Now;
                     string monthName = servDate.ToString("MMMM", System.Globalization.CultureInfo.CreateSpecificCulture("pt-PT"));
                     ProjectDetailsViewModel result = new ProjectDetailsViewModel()
@@ -227,7 +243,9 @@ namespace Hydra.Such.Portal.Controllers
                         BudgetContractNo = cProject.NºContratoOrçamento,
                         InternalProject = cProject.ProjetoInterno,
                         ProjectLeader = cProject.ChefeProjeto,
-                        ProjectResponsible = cProject.ResponsávelProjeto
+                        ProjectResponsible = cProject.ResponsávelProjeto,
+                        EnviarParaAprovacao = EnviarParaAprovacao,
+                        VerMenu = VerMenu
                     };
 
                     return Json(result);
@@ -245,10 +263,6 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     finalr.Status = (EstadoProjecto)0; //PENDENTE
                     finalr.ProjectLeader = user.EmployeeNo;
-
-                    //TEMPORÁRIO AMARO
-                    finalr.Status = (EstadoProjecto)1; //ENCOMENDA
-                    finalr.ProjectResponsible = user.EmployeeNo;
                 }
 
                 return Json(finalr);
@@ -414,30 +428,11 @@ namespace Hydra.Such.Portal.Controllers
                     }
                     else
                     {
-                        if (data.Status == (EstadoProjecto)2) //PENDENTE
+                        if (data.Status == (EstadoProjecto)0) //PENDENTE
                         {
-                            //if (data.ProjectNo != null)
-                            //{
-
-                            //    ErrorHandler resultApprovalMovement = new ErrorHandler();
-
-                            //    resultApprovalMovement = ApprovalMovementsManager.StartApprovalMovement_Projetos(5, data.FunctionalAreaCode, data.ResponsabilityCenterCode, data.RegionCode, 0, data.ProjectNo, User.Identity.Name);
-                            //}
-                            //else
-                            //{
-                            //    data.eReasonCode = 5;
-                            //    data.eMessage = "A numeração configurada não é compativel com a inserida.";
-                            //}
-                            //if (data.eReasonCode != 1 && projNoAuto != "")
-                            //{
-                            //    data.ProjectNo = "";
-                            //}
-
-
-
-
                             if (data.ProjectNo != null)
                             {
+                                ErrorHandler resultApprovalMovement = new ErrorHandler();
                                 Projetos cProject = new Projetos()
                                 {
                                     NºProjeto = data.ProjectNo,
@@ -486,42 +481,17 @@ namespace Hydra.Such.Portal.Controllers
                                 }
                                 else
                                 {
-                                    //Create Project on NAV
-                                    data.Visivel = true;
-                                    Task<WSCreateNAVProject.Create_Result> TCreateNavProj = WSProject.CreateNavProject(data, _configws);
-                                    try
-                                    {
-                                        TCreateNavProj.Wait();
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        data.eReasonCode = 3;
-                                        data.eMessage = "Ocorreu um erro ao criar o projeto no NAV.";
-                                    }
-                                    if (!TCreateNavProj.IsCompletedSuccessfully)
-                                    {
-                                        //Delete Created Project on Database
-                                        DBProjects.Delete(cProject.NºProjeto);
 
-                                        data.eReasonCode = 3;
-                                        data.eMessage = "Ocorreu um erro ao criar o projeto no NAV.";
-                                        if (TCreateNavProj.Exception != null)
-                                            data.eMessages.Add(new TraceInformation(TraceType.Exception, TCreateNavProj.Exception.Message));
-                                        if (TCreateNavProj.Exception.InnerException != null)
-                                            data.eMessages.Add(new TraceInformation(TraceType.Exception, TCreateNavProj.Exception.InnerException.ToString()));
-                                    }
-                                    else
+                                    resultApprovalMovement = ApprovalMovementsManager.StartApprovalMovement_Projetos(5, data.FunctionalAreaCode, data.ResponsabilityCenterCode, data.RegionCode, 0, data.ProjectNo, User.Identity.Name);
+
+                                    if (autoGenId)
                                     {
-                                        //Update Last Numeration Used
-                                        if (autoGenId)
-                                        {
-                                            ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(ProjectNumerationConfigurationId);
-                                            ConfigNumerations.ÚltimoNºUsado = data.ProjectNo;
-                                            ConfigNumerations.UtilizadorModificação = User.Identity.Name;
-                                            DBNumerationConfigurations.Update(ConfigNumerations);
-                                        }
-                                        data.eReasonCode = 1;
+                                        ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(ProjectNumerationConfigurationId);
+                                        ConfigNumerations.ÚltimoNºUsado = data.ProjectNo;
+                                        ConfigNumerations.UtilizadorModificação = User.Identity.Name;
+                                        DBNumerationConfigurations.Update(ConfigNumerations);
                                     }
+                                    data.eReasonCode = 1;
                                 }
                             }
                             else
@@ -660,67 +630,158 @@ namespace Hydra.Such.Portal.Controllers
 
             if (data != null)
             {
-                List<DiárioDeProjeto> Movements = DBProjectDiary.GetByProjectNo(data.ProjectNo, User.Identity.Name);
-                Movements.RemoveAll(x => !x.Registado.Value);
-
                 ErrorHandler result = new ErrorHandler();
-                if (Movements.Count() > 0)
+
+                MovimentosDeAprovação MovAprovacao = DBApprovalMovements.GetAll().Where(x => x.Número == data.ProjectNo && x.Tipo == 5).LastOrDefault();
+                if (MovAprovacao.Estado == 1)
                 {
                     result = new ErrorHandler()
                     {
                         eReasonCode = 1,
-                        eMessage = "Já existem movimentos de projeto."
+                        eMessage = "Existe movimento de aprovação por aprovar."
                     };
                 }
                 else
                 {
-                    //Update Project on NAV
-                    //Read NAV Project Key
-                    Task<WSCreateNAVProject.Read_Result> TReadNavProj = WSProject.GetNavProject(data.ProjectNo, _configws);
-                    try
-                    {
-                        TReadNavProj.Wait();
-                    }
-                    catch (Exception ex)
-                    {
-                        data.eReasonCode = 3;
-                        data.eMessage = "Ocorreu um erro ao atualizar o projeto no NAV.";
-                    }
+                    List<DiárioDeProjeto> Movements = DBProjectDiary.GetByProjectNo(data.ProjectNo, User.Identity.Name);
+                    Movements.RemoveAll(x => !x.Registado.Value);
 
-                    if (TReadNavProj.IsCompletedSuccessfully)
+                    if (Movements.Count() > 0)
                     {
-                        Task<WSCreateNAVProject.Delete_Result> TDeleteNavProj = WSProject.DeleteNavProject(TReadNavProj.Result.WSJob.Key, _configws);
+                        result = new ErrorHandler()
+                        {
+                            eReasonCode = 1,
+                            eMessage = "Já existem movimentos de projeto."
+                        };
+                    }
+                    else
+                    {
+                        //Update Project on NAV
+                        //Read NAV Project Key
+                        Task<WSCreateNAVProject.Read_Result> TReadNavProj = WSProject.GetNavProject(data.ProjectNo, _configws);
                         try
                         {
-                            TDeleteNavProj.Wait();
+                            TReadNavProj.Wait();
+                        }
+                        catch (Exception ex)
+                        {
+                            data.eReasonCode = 3;
+                            data.eMessage = "Ocorreu um erro ao atualizar o projeto no NAV.";
+                        }
 
-                            if (!TDeleteNavProj.IsCompletedSuccessfully)
+                        if (TReadNavProj.IsCompletedSuccessfully)
+                        {
+                            Task<WSCreateNAVProject.Delete_Result> TDeleteNavProj = WSProject.DeleteNavProject(TReadNavProj.Result.WSJob.Key, _configws);
+                            try
+                            {
+                                TDeleteNavProj.Wait();
+
+                                if (!TDeleteNavProj.IsCompletedSuccessfully)
+                                {
+                                    result.eReasonCode = 2;
+                                    result.eMessage = "Não é possivel remover o projeto no nav.";
+                                }
+                                else
+                                {
+                                    DBProjects.Delete(data.ProjectNo);
+                                    result = new ErrorHandler()
+                                    {
+                                        eReasonCode = 0,
+                                        eMessage = "Projeto removido com sucesso."
+                                    };
+                                }
+                            }
+                            catch (Exception ex)
                             {
                                 result.eReasonCode = 2;
                                 result.eMessage = "Não é possivel remover o projeto no nav.";
                             }
-                            else
-                            {
-                                DBProjects.Delete(data.ProjectNo);
-                                result = new ErrorHandler()
-                                {
-                                    eReasonCode = 0,
-                                    eMessage = "Projeto removido com sucesso."
-                                };
-                            }
                         }
-                        catch (Exception ex)
-                        {
-                            result.eReasonCode = 2;
-                            result.eMessage = "Não é possivel remover o projeto no nav.";
-                        }
-                    }
 
+                    }
                 }
                 return Json(result);
             }
             return Json(false);
         }
+
+        [HttpPost]
+        public JsonResult EnviarAprovacao([FromBody] ProjectDetailsViewModel data)
+        {
+            data.eReasonCode = 99;
+            data.eMessage = "Ocorreu um erro.";
+
+            if (data != null)
+            {
+                if (data.Status == (EstadoProjecto)0) //PENDENTE
+                {
+                    if (data.ProjectNo != null)
+                    {
+                        ErrorHandler resultApprovalMovement = new ErrorHandler();
+                        Projetos cProject = new Projetos()
+                        {
+                            NºProjeto = data.ProjectNo,
+                            Área = data.Area,
+                            Descrição = data.Description,
+                            NºCliente = data.ClientNo,
+                            Data = data.Date != "" && data.Date != null ? DateTime.Parse(data.Date) : (DateTime?)null,
+                            Estado = data.Status,
+                            CódigoRegião = data.RegionCode,
+                            CódigoÁreaFuncional = data.FunctionalAreaCode,
+                            CódigoCentroResponsabilidade = data.ResponsabilityCenterCode,
+                            Faturável = data.Billable,
+                            NºContrato = data.ContractNo,
+                            CódEndereçoEnvio = data.ShippingAddressCode,
+                            EnvioANome = data.ShippingName,
+                            EnvioAEndereço = data.ShippingAddress,
+                            EnvioACódPostal = data.ShippingPostalCode,
+                            EnvioALocalidade = data.ShippingLocality,
+                            EnvioAContato = data.ShippingContact,
+                            CódTipoProjeto = data.ProjectTypeCode,
+                            NossaProposta = data.OurProposal,
+                            CódObjetoServiço = data.ServiceObjectCode,
+                            NºCompromisso = data.CommitmentCode,
+                            GrupoContabObra = "PROJETO",
+                            TipoGrupoContabProjeto = data.GroupContabProjectType,
+                            //TipoGrupoContabOmProjeto = data.GroupContabOMProjectType,
+                            PedidoDoCliente = data.ClientRequest,
+                            DataDoPedido = data.RequestDate != "" && data.RequestDate != null ? DateTime.Parse(data.RequestDate) : (DateTime?)null,
+                            ValidadeDoPedido = data.RequestValidity,
+                            DescriçãoDetalhada = data.DetailedDescription,
+                            CategoriaProjeto = data.ProjectCategory,
+                            NºContratoOrçamento = data.BudgetContractNo,
+                            ProjetoInterno = data.InternalProject,
+                            ChefeProjeto = data.ProjectLeader,
+                            ResponsávelProjeto = data.ProjectResponsible,
+                            UtilizadorCriação = User.Identity.Name
+                        };
+
+                        //Create Project On Database
+                        cProject = DBProjects.Update(cProject);
+
+                        if (cProject == null)
+                        {
+                            data.eReasonCode = 3;
+                            data.eMessage = "Ocorreu um erro ao criar o projeto no portal.";
+                        }
+                        else
+                        {
+                            resultApprovalMovement = ApprovalMovementsManager.StartApprovalMovement_Projetos(5, data.FunctionalAreaCode, data.ResponsabilityCenterCode, data.RegionCode, 0, data.ProjectNo, User.Identity.Name);
+
+                            data.eReasonCode = 1;
+                            data.eMessage = "O Projeto foi enviado com sucesso para aprovação.";
+                        }
+                    }
+                    else
+                    {
+                        data.eReasonCode = 5;
+                        data.eMessage = "A numeração configurada não é compativel com a inserida.";
+                    }
+                }
+            }
+            return Json(data);
+        }
+
         #endregion
 
         #region DiárioDeProjetos
