@@ -10,8 +10,10 @@ namespace Hydra.Such.Data.ViewModel
         public string ProjectNo { get; set; }
         public string Date { get; set; }
         public int? MovementType { get; set; }
+        public string MovementTypeText { get; set; }
         public string DocumentNo { get; set; }
         public int? Type { get; set; }
+        public string TypeText { get; set; }
         public string Code { get; set; }
         public string Description { get; set; }
         public decimal? Quantity { get; set; }
@@ -27,6 +29,7 @@ namespace Hydra.Such.Data.ViewModel
         public decimal? UnitPrice { get; set; }
         public decimal? TotalPrice { get; set; }
         public bool? Billable { get; set; }
+        public string BillableText { get; set; }
         public string ResidueGuideNo { get; set; }
         public string ExternalGuideNo { get; set; }
         public string InvoiceToClientNo { get; set; }
@@ -36,6 +39,7 @@ namespace Hydra.Such.Data.ViewModel
         public decimal? UnitValueToInvoice { get; set; }
         public string Currency { get; set; }
         public bool Billed { get; set; }
+        public string BilledText { get; set; }
         public string FolhaHoras { get; set; }
         //public string RequisitionNo { get; set; }
         //public int? RequisitionLineNo { get; set; }
@@ -57,6 +61,7 @@ namespace Hydra.Such.Data.ViewModel
         //public decimal? ReturnedQuantity { get; set; }
         public string ConsumptionDate { get; set; }
         public bool? Registered { get; set; }
+        public string RegisteredText { get; set; }
         public string TypeDescription { get; set; }
         //public DestinosFinaisResíduos CódDestinoFinalResíduosNavigation { get; set; }
         //public LinhasRequisição Nº { get; set; }
@@ -85,9 +90,12 @@ namespace Hydra.Such.Data.ViewModel
         public string OriginalDocument { get; set; }
         public string AdjustedDocument { get; set; }
         public bool? AdjustedPrice { get; set; }
+        public string AdjustedPriceText { get; set; }
         public string AdjustedDocumentData { get; set; }
         public bool? AutorizatedInvoice { get; set; }
+        public string AutorizatedInvoiceText { get; set; }
         public bool? AutorizatedInvoice2 { get; set; }
+        public string AutorizatedInvoice2Text { get; set; }
         public string AutorizatedInvoiceData { get; set; }
         public int? ResourceType { get; set; }
         public string TimesheetNo { get; set; }
@@ -107,5 +115,9 @@ namespace Hydra.Such.Data.ViewModel
         public string InvoiceGroupDescription { get; set; }
         public string AuthorizedBy { get; set; }
 
+
+        public string Utilizador { get; set; }
+        public string NameDB { get; set; }
+        public string CompanyName { get; set; }
     }
 }

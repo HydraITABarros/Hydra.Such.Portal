@@ -4,6 +4,8 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <link rel="import" href="~/elements/projects/jobledgerentry.html">
-<x-jobledgerentry paramprojno="@ViewBag.ProjectNo"></x-jobledgerentry>
+<x-jobledgerentry paramprojno="@ViewBag.ProjectNo"
+                  _reportserverurl='@ViewBag.reportServerURL'>
+</x-jobledgerentry>
 
 

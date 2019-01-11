@@ -1741,6 +1741,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (id != null)
                 {
                     ViewBag.ProjectNo = id ?? "";
+                    ViewBag.reportServerURL = _config.ReportServerURL;
                     return View();
                 }
                 else
@@ -1757,19 +1758,26 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetProjectMovements([FromBody] string ProjectNo)
         {
+            List<NAVMeasureUnitViewModel> MeasurementUnitList = DBNAV2017MeasureUnit.GetAllMeasureUnit(_config.NAVDatabaseName, _config.NAVCompanyName);
+            List<NAVLocationsViewModel> LocationList = DBNAV2017Locations.GetAllLocations(_config.NAVDatabaseName, _config.NAVCompanyName);
+            List<NAVClientsViewModel> ClientsList = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "");
+            List<TiposRefeição> MealList = DBMealTypes.GetAll();
+
             List<ProjectDiaryViewModel> dp = DBProjectMovements.GetRegisteredDiary(ProjectNo).Select(x => new ProjectDiaryViewModel()
             {
                 LineNo = x.NºLinha,
                 ProjectNo = x.NºProjeto,
                 Date = x.Data == null ? String.Empty : x.Data.Value.ToString("yyyy-MM-dd"),
                 MovementType = x.TipoMovimento,
+                MovementTypeText = x.TipoMovimento != null ? EnumerablesFixed.ProjectDiaryMovements.Where(y => y.Id == x.TipoMovimento).FirstOrDefault().Value : "",
                 DocumentNo = x.NºDocumento,
                 Type = x.Tipo,
+                TypeText = x.Tipo != null ? EnumerablesFixed.ProjectDiaryTypes.Where(y => y.Id == x.Tipo).FirstOrDefault().Value  : "",
                 Code = x.Código,
                 Description = x.Descrição,
                 Quantity = x.Quantidade,
-                MeasurementUnitCode = x.CódUnidadeMedida,
-                LocationCode = x.CódLocalização,
+                MeasurementUnitCode = !string.IsNullOrEmpty(x.CódUnidadeMedida) ? MeasurementUnitList.Where(y => y.Code == x.CódUnidadeMedida).FirstOrDefault().Description : "",
+                LocationCode = !string.IsNullOrEmpty(x.CódLocalização) ? LocationList.Where(y => y.Code == x.CódLocalização).FirstOrDefault().Name : "",
                 ProjectContabGroup = x.GrupoContabProjeto,
                 RegionCode = x.CódigoRegião,
                 FunctionalAreaCode = x.CódigoÁreaFuncional,
@@ -1780,6 +1788,7 @@ namespace Hydra.Such.Portal.Controllers
                 UnitPrice = x.PreçoUnitário,
                 TotalPrice = x.PreçoTotal,
                 Billable = x.Faturável,
+                BillableText = x.Faturável.HasValue ? x.Faturável == true ? "Sim" : "Não" : "Não",
                 ResidueGuideNo = x.NºGuiaResíduos,
                 ExternalGuideNo = x.NºGuiaExterna,
                 InvoiceToClientNo = x.FaturaANºCliente,
@@ -1791,9 +1800,12 @@ namespace Hydra.Such.Portal.Controllers
                 OriginalDocument = x.DocumentoOriginal,
                 AdjustedDocument = x.DocumentoCorrigido,
                 AdjustedPrice = x.AcertoDePreços,
+                AdjustedPriceText = x.AcertoDePreços.HasValue ? x.AcertoDePreços == true ? "Sim" : "Não" : "Não",
                 AdjustedDocumentData = x.DataDocumentoCorrigido?.ToString("yyyy-MM-dd"),
                 AutorizatedInvoice = x.FaturaçãoAutorizada,
+                AutorizatedInvoiceText = x.FaturaçãoAutorizada.HasValue ? x.FaturaçãoAutorizada == true ? "Sim" : "Não" : "Não",
                 AutorizatedInvoice2 = x.FaturaçãoAutorizada2,
+                AutorizatedInvoice2Text = x.FaturaçãoAutorizada2.HasValue ? x.FaturaçãoAutorizada2 == true ? "Sim" : "Não" : "Não",
                 AutorizatedInvoiceData = x.DataAutorizaçãoFaturação?.ToString("yyyy-MM-dd"),
                 ServiceGroupCode = x.CódGrupoServiço,
                 ResourceType = x.TipoRecurso,
@@ -1807,7 +1819,9 @@ namespace Hydra.Such.Portal.Controllers
                 CreateUser = x.UtilizadorCriação,
                 UpdateUser = x.UtilizadorModificação,
                 Registered = x.Registado,
+                RegisteredText = x.Registado.HasValue ? x.Registado == true ? "Sim" : "Não" : "Não",
                 Billed = Convert.ToBoolean(x.Faturada),
+                BilledText = x.Faturada.HasValue ? x.Faturada == true ? "Sim" : "Não" : "Não",
                 Coin = x.Moeda,
                 UnitValueToInvoice = x.ValorUnitárioAFaturar,
                 ServiceClientCode = x.CódServiçoCliente,
@@ -1819,26 +1833,29 @@ namespace Hydra.Such.Portal.Controllers
                 InvoiceGroup = x.GrupoFatura,
                 InvoiceGroupDescription = x.GrupoFaturaDescricao,
                 AuthorizedBy = x.AutorizadoPor,
-                ClientName = DBNAV2017Clients.GetClientNameByNo(x.FaturaANºCliente, _config.NAVDatabaseName, _config.NAVCompanyName)
+                ClientName = !string.IsNullOrEmpty(x.FaturaANºCliente) ? ClientsList.Where(y => y.No_ == x.FaturaANºCliente).FirstOrDefault().Name : "",
+                MealTypeDescription = x.TipoRefeição != null ? MealList.Where(y => y.Código == x.TipoRefeição).FirstOrDefault().Descrição : "",
+                Utilizador = User.Identity.Name,
+                NameDB = _config.NAVDatabaseName,
+                CompanyName = _config.NAVCompanyName
 
             }).ToList();
 
-            foreach (ProjectDiaryViewModel item in dp)
-            {
-                if (item.MealType != null)
-                {
-                    TiposRefeição TRrow = DBMealTypes.GetById(item.MealType.Value);
-                    if (TRrow != null)
-                    {
-                        item.MealTypeDescription = TRrow.Descrição;
-                    }
-                }
-                else
-                {
-                    item.MealTypeDescription = "";
-                }
-
-            }
+            //foreach (ProjectDiaryViewModel item in dp)
+            //{
+            //    if (item.MealType != null)
+            //    {
+            //        TiposRefeição TRrow = DBMealTypes.GetById(item.MealType.Value);
+            //        if (TRrow != null)
+            //        {
+            //            item.MealTypeDescription = TRrow.Descrição;
+            //        }
+            //    }
+            //    else
+            //    {
+            //        item.MealTypeDescription = "";
+            //    }
+            //}
 
             return Json(dp);
         }
@@ -6076,7 +6093,7 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         if (dp["movementType"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.MovementType.ToString());
+                            row.CreateCell(Col).SetCellValue(item.MovementTypeText);
                             Col = Col + 1;
                         }
                         if (dp["documentNo"]["hidden"].ToString() == "False")
@@ -6086,7 +6103,7 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         if (dp["type"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.Type.ToString());
+                            row.CreateCell(Col).SetCellValue(item.TypeText);
                             Col = Col + 1;
                         }
                         if (dp["code"]["hidden"].ToString() == "False")
@@ -6161,7 +6178,7 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         if (dp["billable"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.Billable.ToString());
+                            row.CreateCell(Col).SetCellValue(item.BillableText);
                             Col = Col + 1;
                         }
                         if (dp["residueGuideNo"]["hidden"].ToString() == "False")
@@ -6221,7 +6238,7 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         if (dp["adjustedPrice"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.AdjustedPrice.ToString());
+                            row.CreateCell(Col).SetCellValue(item.AdjustedPriceText);
                             Col = Col + 1;
                         }
                         if (dp["adjustedDocumentData"]["hidden"].ToString() == "False")
@@ -6231,12 +6248,12 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         if (dp["autorizatedInvoice"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.AutorizatedInvoice.ToString());
+                            row.CreateCell(Col).SetCellValue(item.AutorizatedInvoiceText);
                             Col = Col + 1;
                         }
                         if (dp["autorizatedInvoice2"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.AutorizatedInvoice2.ToString());
+                            row.CreateCell(Col).SetCellValue(item.AutorizatedInvoice2Text);
                             Col = Col + 1;
                         }
                         if (dp["autorizatedInvoiceData"]["hidden"].ToString() == "False")
@@ -6281,12 +6298,12 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         if (dp["registered"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.Registered.ToString());
+                            row.CreateCell(Col).SetCellValue(item.RegisteredText);
                             Col = Col + 1;
                         }
                         if (dp["billed"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.Billed);
+                            row.CreateCell(Col).SetCellValue(item.BilledText);
                             Col = Col + 1;
                         }
                         if (dp["coin"]["hidden"].ToString() == "False")
