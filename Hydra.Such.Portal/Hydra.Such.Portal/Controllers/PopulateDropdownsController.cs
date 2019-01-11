@@ -1399,10 +1399,11 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetCountabGroupTypes()
         {
-            List<DDMessage> result = DBCountabGroupTypes.GetAll().Select(x => new DDMessage()
+            List<DDMessageRelatedInt> result = DBCountabGroupTypes.GetAll().Select(x => new DDMessageRelatedInt()
             {
                 id = x.Código,
-                value = x.Descrição
+                value = x.Descrição,
+                extra = x.Descricao2
             }).ToList();
 
             return Json(result);
@@ -2561,6 +2562,14 @@ namespace Hydra.Such.Portal.Controllers
     public class DDMessageRelated
     {
         public string id { get; set; }
+        public string value { get; set; }
+        public string extra { get; set; }
+        public string extra2 { get; set; }
+    }
+
+    public class DDMessageRelatedInt
+    {
+        public int id { get; set; }
         public string value { get; set; }
         public string extra { get; set; }
         public string extra2 { get; set; }

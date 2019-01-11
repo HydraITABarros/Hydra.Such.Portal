@@ -460,7 +460,11 @@
                 },
 
                 _createPurchaseOrder: function (selectedItem, selectedItems) {
+                    debugger;
                     if (this.selectedItems != null && this.selectedItems != "") {
+
+                        $(this.$.btnCreatePurchaseOrder).addClass('disabled');
+
                         var selItms = this.selectedItems;
 
                         this.$.createPurchOrder_ajax.body = JSON.stringify(selItms);
@@ -489,6 +493,7 @@
                         }
                     }
 
+                    $(this.$.btnCreatePurchaseOrder).removeClass('disabled');
                     location.reload(true);
                 },
 

@@ -27,6 +27,7 @@ using NPOI.XSSF.UserModel;
 using Hydra.Such.Portal.Services;
 using Hydra.Such.Data.NAV;
 using Microsoft.Extensions.Options;
+using Hydra.Such.Data.ViewModel.Projects;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -87,6 +88,9 @@ namespace Hydra.Such.Portal.Controllers
                         break;
                     case 4:
                         x.NumberLink = "/GestaoRequisicoes/MinhaRequisicao_CD/" + x.Number;
+                        break;
+                    case 5:
+                        x.NumberLink = "/Projetos/Detalhes/" + x.Number;
                         break;
                 }
 
@@ -975,6 +979,98 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             result.eReasonCode = 101;
                             result.eMessage = "A Folha de Horas não pode ser rejeitada neste nível.";
+                        }
+                    }
+                }
+                else if (approvalMovement.Type == 5) //PROJETOS
+                {
+                    if (movementStatus == 1) //APROVAR
+                    {
+                        string EmployeeNo = DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo;
+                        if (!string.IsNullOrEmpty(EmployeeNo))
+                        {
+                            ProjectDetailsViewModel data = DBProjects.GetById(approvalMovement.Number).ParseToViewModel();
+
+                            data.Status = (EstadoProjecto)1; //ENCOMENDA
+                            data.ProjectResponsible = EmployeeNo;
+                            data.UpdateDate = DateTime.Now;
+                            data.UpdateUser = User.Identity.Name;
+                            data.Visivel = true;
+
+                            if (DBProjects.Update(DBProjects.ParseToDB(data)) != null)
+                            {
+                                //Update Old Movement
+                                ApprovalMovementsViewModel ApprovalMovement = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetById(movementNo));
+                                ApprovalMovement.Status = 2;
+                                ApprovalMovement.DateTimeApprove = DateTime.Now;
+                                ApprovalMovement.DateTimeUpdate = DateTime.Now;
+                                ApprovalMovement.UserUpdate = User.Identity.Name;
+                                ApprovalMovement = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.Update(DBApprovalMovements.ParseToDatabase(ApprovalMovement)));
+
+                                //Delete All User Approval Movements
+                                if (DBUserApprovalMovements.DeleteFromMovementExcept(ApprovalMovement.MovementNo, User.Identity.Name) == true)
+                                {
+                                    Task<WSCreateNAVProject.Create_Result> TCreateNavProj = WSProject.CreateNavProject(data, configws);
+                                    try
+                                    {
+                                        TCreateNavProj.Wait();
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        result.eReasonCode = 503;
+                                        result.eMessage = "Ocorreu um erro ao criar o projeto no NAV.";
+                                    }
+                                    if (!TCreateNavProj.IsCompletedSuccessfully)
+                                    {
+                                        //Delete Created Project on Database
+                                        DBProjects.Delete(approvalMovement.Number);
+
+                                        result.eReasonCode = 503;
+                                        result.eMessage = "Ocorreu um erro ao criar o projeto no NAV.";
+                                        if (TCreateNavProj.Exception != null)
+                                            result.eMessages.Add(new TraceInformation(TraceType.Exception, TCreateNavProj.Exception.Message));
+                                        if (TCreateNavProj.Exception.InnerException != null)
+                                            result.eMessages.Add(new TraceInformation(TraceType.Exception, TCreateNavProj.Exception.InnerException.ToString()));
+                                    }
+                                    else
+                                    {
+                                        result.eReasonCode = 100;
+                                        result.eMessage = "O Projeto foi aprovado com sucesso.";
+                                    }
+                                }
+                                else
+                                {
+                                    result.eReasonCode = 505;
+                                    result.eMessage = "Ocorreu um erro ao atualizar o movimento de aprovação.";
+                                }
+                            }
+                            else
+                            {
+                                result.eReasonCode = 504;
+                                result.eMessage = "Ocorreu um erro ao atualizar o projeto.";
+                            }
+                        }
+                        else
+                        {
+                            result.eReasonCode = 506;
+                            result.eMessage = "Não pode aprovar o movimento pois não têm atribuído um número mecanográfico.";
+                        }
+                    }
+                    else if (movementStatus == 2) //REJEITAR
+                    {
+                        //Reject Movement
+                        ErrorHandler approveResult = ApprovalMovementsManager.RejectMovement_Projeto(approvalMovement.MovementNo, User.Identity.Name, rejectionComments);
+
+                        //Check Approve Status
+                        if (approveResult.eReasonCode == 100)
+                        {
+                            result.eReasonCode = 100;
+                            result.eMessage = "O Movimento de Aprovação foi rejeitado com sucesso.";
+                        }
+                        else
+                        {
+                            result.eReasonCode = 599;
+                            result.eMessage = "Ocorreu um erro desconhecido ao rejeitar o Movimento de Aprovação.";
                         }
                     }
                 }

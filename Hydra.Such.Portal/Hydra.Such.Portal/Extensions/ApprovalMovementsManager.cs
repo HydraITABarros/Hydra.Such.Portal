@@ -9,6 +9,8 @@ using Hydra.Such.Data.ViewModel.Approvals;
 using System.Linq;
 using System.Threading.Tasks;
 using Hydra.Such.Data.Logic.Request;
+using Hydra.Such.Data.ViewModel.Projects;
+using Hydra.Such.Data.Logic.Project;
 
 namespace Hydra.Such.Portal.Extensions
 {
@@ -1196,6 +1198,73 @@ namespace Hydra.Such.Portal.Extensions
                 };
 
                 Email.To.Add(FH.CriadoPor); // ApprovalMovement.RequestUser);
+
+                Email.Body = MakeEmailBodyContent("A sua tarefa com o Nº " + ApprovalMovement.Number + " foi rejeitada pelo seguinte motivo \"" + ApprovalMovement.ReproveReason + "\"!");
+
+                Email.IsBodyHtml = true;
+                Email.EmailApproval = EmailApproval;
+
+                Email.SendEmail();
+                return new ErrorHandler()
+                {
+                    eReasonCode = 100,
+                    eMessage = "Tarefa rejeitada com sucesso."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ErrorHandler()
+                {
+                    eReasonCode = 101,
+                    eMessage = "Ocorreu um erro desconhecido."
+                };
+            }
+        }
+
+        //100 - Tarefa rejeitada com sucesso
+        //101 - Erro desconhecido
+        public static ErrorHandler RejectMovement_Projeto(int movementNo, string rejectUser, string rejectReason)
+        {
+            try
+            {
+                //Update Old Movement
+                ApprovalMovementsViewModel ApprovalMovement = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetById(movementNo));
+                ProjectDetailsViewModel proj = DBProjects.GetById(ApprovalMovement.Number).ParseToViewModel();
+
+                ApprovalMovement.Status = 3;
+                ApprovalMovement.DateTimeApprove = DateTime.Now;
+                ApprovalMovement.DateTimeUpdate = DateTime.Now;
+                ApprovalMovement.UserUpdate = rejectUser;
+                ApprovalMovement.ReproveReason = rejectReason;
+                ApprovalMovement = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.Update(DBApprovalMovements.ParseToDatabase(ApprovalMovement)));
+
+                //Delete All User Approval Movements
+                DBUserApprovalMovements.DeleteFromMovementExcept(ApprovalMovement.MovementNo, rejectUser);
+
+                string itemToApproveInfo = string.Empty;
+                if (ApprovalMovement.Type.Value == 5 && !string.IsNullOrEmpty(ApprovalMovement.Number))
+                    itemToApproveInfo += " - Projeto " + ApprovalMovement.Number;
+
+                EmailsAprovações EmailApproval = new EmailsAprovações()
+                {
+                    NºMovimento = ApprovalMovement.MovementNo,
+                    EmailDestinatário = proj.CreateUser, // ApprovalMovement.RequestUser,
+                    NomeDestinatário = proj.CreateUser, // ApprovalMovement.RequestUser,
+                    Assunto = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Tarefa rejeitada" : "eSUCH - Tarefa rejeitada" + itemToApproveInfo,
+                    DataHoraEmail = DateTime.Now,
+                    TextoEmail = "A sua tarefa com o Nº " + ApprovalMovement.Number + " foi rejeitada pelo seguinte motivo \"" + ApprovalMovement.ReproveReason + "\"!",
+                    Enviado = false
+                };
+
+
+                SendEmailApprovals Email = new SendEmailApprovals
+                {
+                    Subject = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Tarefa rejeitada" : "eSUCH - Tarefa rejeitada" + itemToApproveInfo,
+                    //From = "plataforma@such.pt"
+                    From = rejectUser
+                };
+
+                Email.To.Add(proj.CreateUser); // ApprovalMovement.RequestUser);
 
                 Email.Body = MakeEmailBodyContent("A sua tarefa com o Nº " + ApprovalMovement.Number + " foi rejeitada pelo seguinte motivo \"" + ApprovalMovement.ReproveReason + "\"!");
 

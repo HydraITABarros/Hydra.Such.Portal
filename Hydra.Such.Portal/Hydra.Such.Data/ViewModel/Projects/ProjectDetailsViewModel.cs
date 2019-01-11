@@ -46,5 +46,7 @@ namespace Hydra.Such.Data.ViewModel.Projects
         public DateTime? CreateDate { get; set; }
         public string UpdateUser { get; set; }
         public DateTime? UpdateDate { get; set; }
+        public bool? EnviarParaAprovacao { get; set; }
+        public bool? VerMenu { get; set; }
     }
 }
