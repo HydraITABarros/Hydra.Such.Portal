@@ -190,6 +190,15 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         DBConsultaMercado.Delete(actividades);
 
+                        TabelaLog TabLog = new TabelaLog
+                        {
+                            Tabela = "[Consulta_Mercado]",
+                            Descricao = "Delete - [Num_Consulta_Mercado]: " + actividades.CodActividade.ToString(),
+                            Utilizador = User.Identity.Name,
+                            DataHora = DateTime.Now
+                        };
+                        DBTabelaLog.Create(TabLog);
+
                         item.eReasonCode = 1;
                         item.eMessage = "Actividade eliminada com sucesso!";
                     }

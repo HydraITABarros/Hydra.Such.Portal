@@ -372,41 +372,34 @@ namespace Hydra.Such.Portal.Controllers
                                 UtilizadorCriação = User.Identity.Name
                             };
 
-                            //Create Project On Database
-                            cProject = DBProjects.Create(cProject);
-
-                            if (cProject == null)
+                            //Create Project on NAV
+                            data.Visivel = true;
+                            Task<WSCreateNAVProject.Create_Result> TCreateNavProj = WSProject.CreateNavProject(cProject.ParseToViewModel(), _configws);
+                            try
+                            {
+                                TCreateNavProj.Wait();
+                            }
+                            catch (Exception ex)
                             {
                                 data.eReasonCode = 3;
-                                data.eMessage = "Ocorreu um erro ao criar o projeto no portal.";
+                                data.eMessage = "Ocorreu um erro ao criar o projeto no NAV.";
+                            }
+
+                            if (!TCreateNavProj.IsCompletedSuccessfully)
+                            {
+                                data.eReasonCode = 3;
+                                data.eMessage = "Ocorreu um erro ao criar o projeto no NAV.";
+
+                                if (TCreateNavProj.Exception != null)
+                                    data.eMessages.Add(new TraceInformation(TraceType.Exception, TCreateNavProj.Exception.Message));
+
+                                if (TCreateNavProj.Exception.InnerException != null)
+                                    data.eMessages.Add(new TraceInformation(TraceType.Exception, TCreateNavProj.Exception.InnerException.ToString()));
                             }
                             else
                             {
-                                //Create Project on NAV
-                                data.Visivel = true;
-                                Task<WSCreateNAVProject.Create_Result> TCreateNavProj = WSProject.CreateNavProject(data, _configws);
-                                try
-                                {
-                                    TCreateNavProj.Wait();
-                                }
-                                catch (Exception ex)
-                                {
-                                    data.eReasonCode = 3;
-                                    data.eMessage = "Ocorreu um erro ao criar o projeto no NAV.";
-                                }
-                                if (!TCreateNavProj.IsCompletedSuccessfully)
-                                {
-                                    //Delete Created Project on Database
-                                    DBProjects.Delete(cProject.NºProjeto);
-
-                                    data.eReasonCode = 3;
-                                    data.eMessage = "Ocorreu um erro ao criar o projeto no NAV.";
-                                    if (TCreateNavProj.Exception != null)
-                                        data.eMessages.Add(new TraceInformation(TraceType.Exception, TCreateNavProj.Exception.Message));
-                                    if (TCreateNavProj.Exception.InnerException != null)
-                                        data.eMessages.Add(new TraceInformation(TraceType.Exception, TCreateNavProj.Exception.InnerException.ToString()));
-                                }
-                                else
+                                //Create Project On Database eSUCH
+                                if (DBProjects.Create(cProject) != null)
                                 {
                                     //Update Last Numeration Used
                                     if (autoGenId)
@@ -418,6 +411,11 @@ namespace Hydra.Such.Portal.Controllers
                                     }
                                     data.eReasonCode = 1;
                                 }
+                                else
+                                {
+                                    data.eReasonCode = 3;
+                                    data.eMessage = "Ocorreu um erro ao criar o projeto no eSUCH.";
+                                }
                             }
                         }
                         else
@@ -425,6 +423,7 @@ namespace Hydra.Such.Portal.Controllers
                             data.eReasonCode = 5;
                             data.eMessage = "A numeração configurada não é compativel com a inserida.";
                         }
+
                         if (data.eReasonCode != 1 && projNoAuto != "")
                         {
                             data.ProjectNo = "";
@@ -636,7 +635,7 @@ namespace Hydra.Such.Portal.Controllers
                 ErrorHandler result = new ErrorHandler();
 
                 MovimentosDeAprovação MovAprovacao = DBApprovalMovements.GetAll().Where(x => x.Número == data.ProjectNo && x.Tipo == 5).LastOrDefault();
-                if (MovAprovacao.Estado == 1)
+                if (MovAprovacao != null && MovAprovacao.Estado == 1)
                 {
                     result = new ErrorHandler()
                     {
@@ -673,7 +672,7 @@ namespace Hydra.Such.Portal.Controllers
                             result = new ErrorHandler()
                             {
                                 eReasonCode = 5,
-                                eMessage = "Ocorreu um erro ao atualizar o projeto no NAV."
+                                eMessage = "Ocorreu um erro ao ler o projeto do NAV."
                             };
                             return Json(result);
                         }

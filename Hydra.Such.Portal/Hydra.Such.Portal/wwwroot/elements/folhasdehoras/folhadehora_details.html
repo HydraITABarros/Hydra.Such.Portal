@@ -184,6 +184,15 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/FolhasDeHoras/UpdateFolhaDeHorasCreated"
+                   last-response="{{FolhaDeHorasUpdatedCreated}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_updatefolhadehorascreated_ajax"
+                   on-response="_updatefolhadehorascreatedResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
         <iron-ajax url="/FolhasDeHoras/DeleteFolhaDeHoras"
                    last-response="{{FolhaDeHorasDeleted}}"
                    method="post"
@@ -411,7 +420,7 @@
             <!--Viagens-->
             <div class="panel panel-default">
                 <!--<paper-collapse-group>
-                <paper-collapse-item class="panel-heading" header="Cabeçalho" opened>-->
+            <paper-collapse-item class="panel-heading" header="Cabeçalho" opened>-->
                 <!--<div class="panel-heading" style="font-size:16px">Cabeçalho</div>-->
                 <div class="panel-body">
                     <div class="row break_clear">
@@ -1922,6 +1931,11 @@
                 },
 
                 //FOLHA DE HORAS
+                _updateAutoFH: function () {
+                    this.$.page_updatefolhadehoras_ajax.body = JSON.stringify(this.data);
+                    this.$.page_updatefolhadehoras_ajax.generateRequest();
+                },
+
                 _updateFH: function () {
                     if (this._validacaoDataPartidaChegada()) {
                         this.$.page_updatefolhadehorasvalidacao_ajax.body = JSON.stringify(this.data);
@@ -1978,6 +1992,7 @@
                 },
 
                 _validacaoDataPartidaChegada: function () {
+                    debugger;
                     if (this.$.dataPartidaTexto.value != "" & this.$.dataPartidaTexto.validate() &
                         this.$.dataChegadaTexto.value != "" & this.$.dataChegadaTexto.validate()) {
 
@@ -2007,6 +2022,9 @@
                             return false;
                         }
 
+                        return true;
+                    }
+                    if (this.$.dataPartidaTexto.value == "" && this.$.dataChegadaTexto.value == "") {
                         return true;
                     }
                     return false;

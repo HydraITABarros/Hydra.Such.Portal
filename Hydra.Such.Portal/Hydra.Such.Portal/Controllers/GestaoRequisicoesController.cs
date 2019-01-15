@@ -738,8 +738,6 @@ namespace Hydra.Such.Portal.Controllers
         {
             if (item != null)
             {
-                TabelaLog TabLog = new TabelaLog();
-
                 if (!string.IsNullOrEmpty(item.RequisitionNo))
                 {
                     if (item.State == RequisitionStates.Pending)
@@ -758,29 +756,32 @@ namespace Hydra.Such.Portal.Controllers
                                         {
                                             DBUserApprovalMovements.Delete(usermovimento);
 
-                                            TabLog.Tabela = "[Utilizadores Movimentos de Aprovação]";
-                                            TabLog.Descricao = "Delete - ID: " + usermovimento.NºMovimento.ToString();
-                                            TabLog.Utilizador = User.Identity.Name;
-                                            TabLog.DataHora = DateTime.Now;
-                                            DBTabelaLog.Create(TabLog);
+                                            TabelaLog TabLog_UMA = new TabelaLog();
+                                            TabLog_UMA.Tabela = "[Utilizadores Movimentos de Aprovação]";
+                                            TabLog_UMA.Descricao = "Delete - [Nº Movimento]: " + usermovimento.NºMovimento.ToString() + " - [Utilizador]: " + usermovimento.Utilizador.ToString();
+                                            TabLog_UMA.Utilizador = User.Identity.Name;
+                                            TabLog_UMA.DataHora = DateTime.Now;
+                                            DBTabelaLog.Create(TabLog_UMA);
                                         }
                                     }
 
                                     DBApprovalMovements.Delete(movimento);
 
-                                    TabLog.Tabela = "[Movimentos de Aprovação]";
-                                    TabLog.Descricao = "Delete - ID: " + movimento.NºMovimento.ToString();
-                                    TabLog.Utilizador = User.Identity.Name;
-                                    TabLog.DataHora = DateTime.Now;
-                                    DBTabelaLog.Create(TabLog);
+                                    TabelaLog TabLog_MA = new TabelaLog();
+                                    TabLog_MA.Tabela = "[Movimentos de Aprovação]";
+                                    TabLog_MA.Descricao = "Delete - [Nº Movimento]: " + movimento.NºMovimento.ToString();
+                                    TabLog_MA.Utilizador = User.Identity.Name;
+                                    TabLog_MA.DataHora = DateTime.Now;
+                                    DBTabelaLog.Create(TabLog_MA);
                                 };
                             }
 
-                            TabLog.Tabela = "[Requisição]";
-                            TabLog.Descricao = "Delete - ID: " + item.RequisitionNo.ToString();
-                            TabLog.Utilizador = User.Identity.Name;
-                            TabLog.DataHora = DateTime.Now;
-                            DBTabelaLog.Create(TabLog);
+                            TabelaLog TabLog_R = new TabelaLog();
+                            TabLog_R.Tabela = "[Requisição]";
+                            TabLog_R.Descricao = "Delete - [Nº Requisição]: " + item.RequisitionNo.ToString();
+                            TabLog_R.Utilizador = User.Identity.Name;
+                            TabLog_R.DataHora = DateTime.Now;
+                            DBTabelaLog.Create(TabLog_R);
 
                             item.eReasonCode = 1;
                             item.eMessage = "Requisição eliminada com sucesso.";

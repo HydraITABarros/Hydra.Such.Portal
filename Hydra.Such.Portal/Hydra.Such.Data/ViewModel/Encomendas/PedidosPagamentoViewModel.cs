@@ -59,5 +59,7 @@ namespace Hydra.Such.Data.ViewModel.Encomendas
         public string UtilizadorModificacao { get; set; }
         public DateTime? DataModificacao { get; set; }
         public decimal? ValorJaPedido { get; set; }
+
+        public bool? EditarPrioritario { get; set; }
     }
 }
