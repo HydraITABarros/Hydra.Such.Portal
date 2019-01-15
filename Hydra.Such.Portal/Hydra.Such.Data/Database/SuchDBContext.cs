@@ -159,6 +159,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<ViaturasImagens> ViaturasImagens { get; set; }
         public virtual DbSet<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
         public virtual DbSet<PedidosPagamento> PedidosPagamento { get; set; }
+        public virtual DbSet<TabelaLog> TabelaLog { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -10746,6 +10747,29 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.ValorEncomenda)
                     .HasColumnName("ValorEncomenda")
                     .HasColumnType("decimal(18, 4)");
+            });
+
+            modelBuilder.Entity<TabelaLog>(entity =>
+            {
+                entity.HasKey(e => new { e.ID });
+
+                entity.ToTable("Tabela_Log");
+
+                entity.Property(e => e.Tabela)
+                    .HasColumnName("Tabela")
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.Descricao)
+                    .HasColumnName("Descricao")
+                    .HasMaxLength(250);
+
+                entity.Property(e => e.Utilizador)
+                    .HasColumnName("Utilizador")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DataHora)
+                    .HasColumnName("DataHora")
+                    .HasColumnType("datetime");
             });
         }
     }

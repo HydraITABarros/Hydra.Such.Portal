@@ -2489,7 +2489,17 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 decimal CustoTotal = (decimal)FH.CustoTotalAjudaCusto;
 
-                                resultApprovalMovement = ApprovalMovementsManager.StartApprovalMovement_FH(3, FH.CódigoÁreaFuncional, FH.CódigoCentroResponsabilidade, FH.CódigoRegião, CustoTotal, FH.NºFolhaDeHoras, User.Identity.Name);
+                                if (DBFolhasDeHoras.GetById(data.FolhaDeHorasNo).Estado == 0) //CRIADO
+                                {
+                                    if (DBApprovalMovements.GetAll().Where(x => x.Tipo == 3 && x.Número == FH.NºFolhaDeHoras && x.Estado == 1).ToList().Count() == 0)
+                                        resultApprovalMovement = ApprovalMovementsManager.StartApprovalMovement_FH(3, FH.CódigoÁreaFuncional, FH.CódigoCentroResponsabilidade, FH.CódigoRegião, CustoTotal, FH.NºFolhaDeHoras, User.Identity.Name);
+                                }
+                                else
+                                {
+                                    resultApprovalMovement.eReasonCode = 7;
+                                    resultApprovalMovement.eMessage = "Não pode terminar a Folha de Horas pois a mesma já não está no estado Criado.";
+                                }
+
                             }
                             else
                             {

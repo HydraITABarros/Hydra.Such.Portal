@@ -771,13 +771,13 @@
                                 </div>
 
                                 <div class="col-sm-1">
-                                    <vaadin-text-field id="ajudaCustoUnitario" label="Custo Unitário" type="number" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" maxlength="18" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;">
+                                    <vaadin-text-field id="ajudaCustoUnitario" label="Custo Unitário" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" maxlength="18" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.\,][0-9]+)?" style="text-align:right;">
                                         <div slot="suffix">€</div>
                                     </vaadin-text-field>
                                 </div>
 
                                 <div class="col-sm-1">
-                                    <vaadin-text-field id="ajudaPrecoUnitario" label="Preço Unitário" type="number" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" maxlength="18" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;">
+                                    <vaadin-text-field id="ajudaPrecoUnitario" label="Preço Unitário" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" maxlength="18" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.\,][0-9]+)?" style="text-align:right;">
                                         <div slot="suffix">€</div>
                                     </vaadin-text-field>
                                 </div>

@@ -69,6 +69,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 ViewBag.ProjectNo = id == null ? "" : id;
                 ViewBag.UPermissions = UPerm;
+                ViewBag.reportServerURL = _config.ReportServerURL;
                 return View();
             }
             else
@@ -245,7 +246,10 @@ namespace Hydra.Such.Portal.Controllers
                         ProjectLeader = cProject.ChefeProjeto,
                         ProjectResponsible = cProject.ResponsávelProjeto,
                         EnviarParaAprovacao = EnviarParaAprovacao,
-                        VerMenu = VerMenu
+                        VerMenu = VerMenu,
+                        Utilizador = User.Identity.Name,
+                        NameDB = _config.NAVDatabaseName,
+                        CompanyName = _config.NAVCompanyName
                     };
 
                     return Json(result);
@@ -561,7 +565,6 @@ namespace Hydra.Such.Portal.Controllers
                     cProject.ResponsávelProjeto = data.ProjectResponsible;
                     cProject.UtilizadorModificação = User.Identity.Name;
 
-
                     DBProjects.Update(cProject);
 
                     data.eReasonCode = 1;
@@ -637,9 +640,10 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     result = new ErrorHandler()
                     {
-                        eReasonCode = 1,
+                        eReasonCode = 7,
                         eMessage = "Existe movimento de aprovação por aprovar."
                     };
+                    return Json(result);
                 }
                 else
                 {
@@ -650,9 +654,10 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         result = new ErrorHandler()
                         {
-                            eReasonCode = 1,
+                            eReasonCode = 6,
                             eMessage = "Já existem movimentos de projeto."
                         };
+                        return Json(result);
                     }
                     else
                     {
@@ -665,8 +670,12 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         catch (Exception ex)
                         {
-                            data.eReasonCode = 3;
-                            data.eMessage = "Ocorreu um erro ao atualizar o projeto no NAV.";
+                            result = new ErrorHandler()
+                            {
+                                eReasonCode = 5,
+                                eMessage = "Ocorreu um erro ao atualizar o projeto no NAV."
+                            };
+                            return Json(result);
                         }
 
                         if (TReadNavProj.IsCompletedSuccessfully)
@@ -678,29 +687,222 @@ namespace Hydra.Such.Portal.Controllers
 
                                 if (!TDeleteNavProj.IsCompletedSuccessfully)
                                 {
-                                    result.eReasonCode = 2;
-                                    result.eMessage = "Não é possivel remover o projeto no nav.";
+                                    result = new ErrorHandler()
+                                    {
+                                        eReasonCode = 4,
+                                        eMessage = "Não é possivel remover o projeto no nav."
+                                    };
+                                    return Json(result);
                                 }
                                 else
                                 {
-                                    DBProjects.Delete(data.ProjectNo);
-                                    result = new ErrorHandler()
+                                    if (DBProjects.Delete(data.ProjectNo) == true)
                                     {
-                                        eReasonCode = 0,
-                                        eMessage = "Projeto removido com sucesso."
-                                    };
+                                        result = new ErrorHandler()
+                                        {
+                                            eReasonCode = 0,
+                                            eMessage = "Projeto removido com sucesso."
+                                        };
+                                        return Json(result);
+                                    }
+                                    else
+                                    {
+                                        result = new ErrorHandler()
+                                        {
+                                            eReasonCode = 8,
+                                            eMessage = "Ocorreu um erro ao eliminar o Projecto do eSUCH."
+                                        };
+                                        return Json(result);
+                                    }
                                 }
                             }
                             catch (Exception ex)
                             {
-                                result.eReasonCode = 2;
-                                result.eMessage = "Não é possivel remover o projeto no nav.";
+                                result = new ErrorHandler()
+                                {
+                                    eReasonCode = 3,
+                                    eMessage = "Não é possivel remover o projeto no nav."
+                                };
+                                return Json(result);
                             }
+                        }
+                        else
+                        {
+                            result = new ErrorHandler()
+                            {
+                                eReasonCode = 2,
+                                eMessage = "Ocorreu um erro ao obter o Projeto do Navision."
+                            };
+                            return Json(result);
                         }
 
                     }
                 }
-                return Json(result);
+            }
+            return Json(false);
+        }
+
+        [HttpPost]
+        public JsonResult TerminarProject([FromBody] ProjectDetailsViewModel data)
+        {
+
+            if (data != null)
+            {
+                ErrorHandler result = new ErrorHandler();
+
+                string NoMecanografico = DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo;
+                if (data.ProjectResponsible == NoMecanografico)
+                {
+                    MovimentosDeAprovação MovAprovacao = DBApprovalMovements.GetAll().Where(x => x.Número == data.ProjectNo && x.Tipo == 5).LastOrDefault();
+                    if (MovAprovacao != null && MovAprovacao.Estado == 1)
+                    {
+                        result = new ErrorHandler()
+                        {
+                            eReasonCode = 2,
+                            eMessage = "O Projeto não pode ser Terminado pois existe movimento de aprovação por aprovar."
+                        };
+                        return Json(result);
+                    }
+                    else
+                    {
+                        try
+                        {
+                            //Read NAV Project Key
+                            Task<WSCreateNAVProject.Read_Result> TReadNavProj = WSProject.GetNavProject(data.ProjectNo, _configws);
+                            try
+                            {
+                                TReadNavProj.Wait();
+                            }
+                            catch (Exception ex)
+                            {
+                                result = new ErrorHandler()
+                                {
+                                    eReasonCode = 3,
+                                    eMessage = "Ocorreu um erro ao ler o projeto do NAV."
+                                };
+                                return Json(result);
+                            }
+
+                            if (TReadNavProj.IsCompletedSuccessfully)
+                            {
+                                if (TReadNavProj.Result.WSJob == null)
+                                {
+                                    result = new ErrorHandler()
+                                    {
+                                        eReasonCode = 4,
+                                        eMessage = "Erro ao atualizar: O projeto não existe no NAV."
+                                    };
+                                    return Json(result);
+                                }
+                                else
+                                {
+                                    data.Status = (EstadoProjecto)2; //TERMINADO
+
+                                    //Update Project on NAV
+                                    Task<WSCreateNAVProject.Update_Result> TUpdateNavProj = WSProject.UpdateNavProject(TReadNavProj.Result.WSJob.Key, data, _configws);
+                                    bool statusL = true;
+                                    try
+                                    {
+                                        TUpdateNavProj.Wait();
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        result = new ErrorHandler()
+                                        {
+                                            eReasonCode = 5,
+                                            eMessage = ex.InnerException.Message
+                                        };
+                                        return Json(result);
+                                    }
+
+                                    if (!TUpdateNavProj.IsCompletedSuccessfully && statusL)
+                                    {
+                                        result = new ErrorHandler()
+                                        {
+                                            eReasonCode = 6,
+                                            eMessage = "Ocorreu um erro ao atualizar o projeto no NAV."
+                                        };
+                                        return Json(result);
+                                    }
+                                    else
+                                    {
+                                        Projetos cProject = DBProjects.GetById(data.ProjectNo);
+
+                                        cProject.NºProjeto = data.ProjectNo;
+                                        cProject.Descrição = data.Description;
+                                        cProject.NºCliente = data.ClientNo;
+                                        cProject.Data = data.Date != "" && data.Date != null ? DateTime.Parse(data.Date) : (DateTime?)null;
+                                        cProject.Estado = (EstadoProjecto)2; //TERMINADO
+                                        cProject.ChefeProjeto = data.ProjectLeader;
+                                        cProject.ResponsávelProjeto = data.ProjectResponsible;
+                                        cProject.CódObjetoServiço = data.ServiceObjectCode;
+                                        cProject.Faturável = data.Billable;
+                                        cProject.NºContrato = data.ContractNo;
+                                        cProject.NossaProposta = data.OurProposal;
+                                        cProject.NºCompromisso = data.CommitmentCode;
+                                        cProject.CódigoRegião = data.RegionCode;
+                                        cProject.CódigoÁreaFuncional = data.FunctionalAreaCode;
+                                        cProject.CódigoCentroResponsabilidade = data.ResponsabilityCenterCode;
+                                        cProject.TipoGrupoContabProjeto = data.GroupContabProjectType;
+                                        cProject.PedidoDoCliente = data.ClientRequest;
+                                        cProject.DataDoPedido = data.RequestDate != "" && data.RequestDate != null ? DateTime.Parse(data.RequestDate) : (DateTime?)null;
+                                        cProject.DescriçãoDetalhada = data.DetailedDescription;
+                                        cProject.CódEndereçoEnvio = data.ShippingAddressCode;
+                                        cProject.EnvioANome = data.ShippingName;
+                                        cProject.EnvioAEndereço = data.ShippingAddress;
+                                        cProject.EnvioACódPostal = data.ShippingPostalCode;
+                                        cProject.EnvioALocalidade = data.ShippingLocality;
+                                        cProject.EnvioAContato = data.ShippingContact;
+                                        cProject.CódTipoProjeto = data.ProjectTypeCode;
+                                        cProject.CategoriaProjeto = data.ProjectCategory;
+                                        cProject.NºContratoOrçamento = data.BudgetContractNo;
+                                        cProject.ProjetoInterno = data.InternalProject;
+                                        cProject.GrupoContabObra = "PROJETO";
+                                        cProject.UtilizadorModificação = User.Identity.Name;
+                                        cProject.DataHoraModificação = DateTime.Now;
+
+                                        if (DBProjects.Update(cProject) != null)
+                                        {
+                                            result = new ErrorHandler()
+                                            {
+                                                eReasonCode = 0,
+                                                eMessage = "Projeto terminado com sucesso."
+                                            };
+                                            return Json(result);
+                                        }
+                                        else
+                                        {
+                                            result = new ErrorHandler()
+                                            {
+                                                eReasonCode = 7,
+                                                eMessage = "Ocorreu um erro ao atualizar o projeto no eSUCH."
+                                            };
+                                            return Json(result);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            result = new ErrorHandler()
+                            {
+                                eReasonCode = 8,
+                                eMessage = "Ocorreu um erro ao atualizar o projeto."
+                            };
+                            return Json(result);
+                        }
+                    }
+                }
+                else
+                {
+                    result = new ErrorHandler()
+                    {
+                        eReasonCode = 9,
+                        eMessage = "Só o Responsável do Projeto é que pode terminar."
+                    };
+                    return Json(result);
+                }
             }
             return Json(false);
         }
@@ -1763,83 +1965,92 @@ namespace Hydra.Such.Portal.Controllers
             List<NAVClientsViewModel> ClientsList = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "");
             List<TiposRefeição> MealList = DBMealTypes.GetAll();
 
-            List<ProjectDiaryViewModel> dp = DBProjectMovements.GetRegisteredDiary(ProjectNo).Select(x => new ProjectDiaryViewModel()
+            try
             {
-                LineNo = x.NºLinha,
-                ProjectNo = x.NºProjeto,
-                Date = x.Data == null ? String.Empty : x.Data.Value.ToString("yyyy-MM-dd"),
-                MovementType = x.TipoMovimento,
-                MovementTypeText = x.TipoMovimento != null ? EnumerablesFixed.ProjectDiaryMovements.Where(y => y.Id == x.TipoMovimento).FirstOrDefault().Value : "",
-                DocumentNo = x.NºDocumento,
-                Type = x.Tipo,
-                TypeText = x.Tipo != null ? EnumerablesFixed.ProjectDiaryTypes.Where(y => y.Id == x.Tipo).FirstOrDefault().Value  : "",
-                Code = x.Código,
-                Description = x.Descrição,
-                Quantity = x.Quantidade,
-                MeasurementUnitCode = !string.IsNullOrEmpty(x.CódUnidadeMedida) ? MeasurementUnitList.Where(y => y.Code == x.CódUnidadeMedida).FirstOrDefault().Description : "",
-                LocationCode = !string.IsNullOrEmpty(x.CódLocalização) ? LocationList.Where(y => y.Code == x.CódLocalização).FirstOrDefault().Name : "",
-                ProjectContabGroup = x.GrupoContabProjeto,
-                RegionCode = x.CódigoRegião,
-                FunctionalAreaCode = x.CódigoÁreaFuncional,
-                ResponsabilityCenterCode = x.CódigoCentroResponsabilidade,
-                User = x.Utilizador,
-                UnitCost = x.CustoUnitário,
-                TotalCost = x.CustoTotal,
-                UnitPrice = x.PreçoUnitário,
-                TotalPrice = x.PreçoTotal,
-                Billable = x.Faturável,
-                BillableText = x.Faturável.HasValue ? x.Faturável == true ? "Sim" : "Não" : "Não",
-                ResidueGuideNo = x.NºGuiaResíduos,
-                ExternalGuideNo = x.NºGuiaExterna,
-                InvoiceToClientNo = x.FaturaANºCliente,
-                RequestNo = x.NºRequisição,
-                RequestLineNo = x.NºLinhaRequisição,
-                Driver = x.Motorista,
-                MealType = x.TipoRefeição,
-                ResidueFinalDestinyCode = x.CódDestinoFinalResíduos,
-                OriginalDocument = x.DocumentoOriginal,
-                AdjustedDocument = x.DocumentoCorrigido,
-                AdjustedPrice = x.AcertoDePreços,
-                AdjustedPriceText = x.AcertoDePreços.HasValue ? x.AcertoDePreços == true ? "Sim" : "Não" : "Não",
-                AdjustedDocumentData = x.DataDocumentoCorrigido?.ToString("yyyy-MM-dd"),
-                AutorizatedInvoice = x.FaturaçãoAutorizada,
-                AutorizatedInvoiceText = x.FaturaçãoAutorizada.HasValue ? x.FaturaçãoAutorizada == true ? "Sim" : "Não" : "Não",
-                AutorizatedInvoice2 = x.FaturaçãoAutorizada2,
-                AutorizatedInvoice2Text = x.FaturaçãoAutorizada2.HasValue ? x.FaturaçãoAutorizada2 == true ? "Sim" : "Não" : "Não",
-                AutorizatedInvoiceData = x.DataAutorizaçãoFaturação?.ToString("yyyy-MM-dd"),
-                ServiceGroupCode = x.CódGrupoServiço,
-                ResourceType = x.TipoRecurso,
-                FolhaHoras = x.NºFolhaHoras,
-                InternalRequest = x.RequisiçãoInterna,
-                EmployeeNo = x.NºFuncionário,
-                QuantityReturned = Convert.ToDecimal(x.QuantidadeDevolvida),
-                ConsumptionDate = x.DataConsumo?.ToString("yyyy-MM-dd"),
-                CreateDate = x.DataHoraCriação,
-                UpdateDate = x.DataHoraModificação,
-                CreateUser = x.UtilizadorCriação,
-                UpdateUser = x.UtilizadorModificação,
-                Registered = x.Registado,
-                RegisteredText = x.Registado.HasValue ? x.Registado == true ? "Sim" : "Não" : "Não",
-                Billed = Convert.ToBoolean(x.Faturada),
-                BilledText = x.Faturada.HasValue ? x.Faturada == true ? "Sim" : "Não" : "Não",
-                Coin = x.Moeda,
-                UnitValueToInvoice = x.ValorUnitárioAFaturar,
-                ServiceClientCode = x.CódServiçoCliente,
-                ClientRequest = x.CodCliente,
-                LicensePlate = x.Matricula,
-                ReadingCode = x.CodigoLer,
-                Group = x.Grupo,
-                Operation = x.Operacao,
-                InvoiceGroup = x.GrupoFatura,
-                InvoiceGroupDescription = x.GrupoFaturaDescricao,
-                AuthorizedBy = x.AutorizadoPor,
-                ClientName = !string.IsNullOrEmpty(x.FaturaANºCliente) ? ClientsList.Where(y => y.No_ == x.FaturaANºCliente).FirstOrDefault().Name : "",
-                MealTypeDescription = x.TipoRefeição != null ? MealList.Where(y => y.Código == x.TipoRefeição).FirstOrDefault().Descrição : "",
-                Utilizador = User.Identity.Name,
-                NameDB = _config.NAVDatabaseName,
-                CompanyName = _config.NAVCompanyName
+                List<ProjectDiaryViewModel> dp = DBProjectMovements.GetRegisteredDiary(ProjectNo).Select(x => new ProjectDiaryViewModel()
+                {
+                    LineNo = x.NºLinha,
+                    ProjectNo = x.NºProjeto,
+                    Date = x.Data == null ? String.Empty : x.Data.Value.ToString("yyyy-MM-dd"),
+                    MovementType = x.TipoMovimento,
+                    MovementTypeText = x.TipoMovimento != null ? EnumerablesFixed.ProjectDiaryMovements.Where(y => y.Id == x.TipoMovimento).FirstOrDefault().Value : "",
+                    DocumentNo = x.NºDocumento,
+                    Type = x.Tipo,
+                    TypeText = x.Tipo != null ? EnumerablesFixed.ProjectDiaryTypes.Where(y => y.Id == x.Tipo).FirstOrDefault().Value : "",
+                    Code = x.Código,
+                    Description = x.Descrição,
+                    Quantity = x.Quantidade,
+                    MeasurementUnitCode = !string.IsNullOrEmpty(x.CódUnidadeMedida) ? MeasurementUnitList.Where(y => y.Code == x.CódUnidadeMedida).FirstOrDefault().Description : "",
+                    LocationCode = !string.IsNullOrEmpty(x.CódLocalização) ? LocationList.Where(y => y.Code == x.CódLocalização).FirstOrDefault().Name : "",
+                    ProjectContabGroup = x.GrupoContabProjeto,
+                    RegionCode = x.CódigoRegião,
+                    FunctionalAreaCode = x.CódigoÁreaFuncional,
+                    ResponsabilityCenterCode = x.CódigoCentroResponsabilidade,
+                    User = x.Utilizador,
+                    UnitCost = x.CustoUnitário,
+                    TotalCost = x.CustoTotal,
+                    UnitPrice = x.PreçoUnitário,
+                    TotalPrice = x.PreçoTotal,
+                    Billable = x.Faturável,
+                    BillableText = x.Faturável.HasValue ? x.Faturável == true ? "Sim" : "Não" : "Não",
+                    ResidueGuideNo = x.NºGuiaResíduos,
+                    ExternalGuideNo = x.NºGuiaExterna,
+                    InvoiceToClientNo = x.FaturaANºCliente,
+                    RequestNo = x.NºRequisição,
+                    RequestLineNo = x.NºLinhaRequisição,
+                    Driver = x.Motorista,
+                    MealType = x.TipoRefeição,
+                    ResidueFinalDestinyCode = x.CódDestinoFinalResíduos,
+                    OriginalDocument = x.DocumentoOriginal,
+                    AdjustedDocument = x.DocumentoCorrigido,
+                    AdjustedPrice = x.AcertoDePreços,
+                    AdjustedPriceText = x.AcertoDePreços.HasValue ? x.AcertoDePreços == true ? "Sim" : "Não" : "Não",
+                    AdjustedDocumentData = x.DataDocumentoCorrigido?.ToString("yyyy-MM-dd"),
+                    AutorizatedInvoice = x.FaturaçãoAutorizada,
+                    AutorizatedInvoiceText = x.FaturaçãoAutorizada.HasValue ? x.FaturaçãoAutorizada == true ? "Sim" : "Não" : "Não",
+                    AutorizatedInvoice2 = x.FaturaçãoAutorizada2,
+                    AutorizatedInvoice2Text = x.FaturaçãoAutorizada2.HasValue ? x.FaturaçãoAutorizada2 == true ? "Sim" : "Não" : "Não",
+                    AutorizatedInvoiceData = x.DataAutorizaçãoFaturação?.ToString("yyyy-MM-dd"),
+                    ServiceGroupCode = x.CódGrupoServiço,
+                    ResourceType = x.TipoRecurso,
+                    FolhaHoras = x.NºFolhaHoras,
+                    InternalRequest = x.RequisiçãoInterna,
+                    EmployeeNo = x.NºFuncionário,
+                    QuantityReturned = Convert.ToDecimal(x.QuantidadeDevolvida),
+                    ConsumptionDate = x.DataConsumo?.ToString("yyyy-MM-dd"),
+                    CreateDate = x.DataHoraCriação,
+                    UpdateDate = x.DataHoraModificação,
+                    CreateUser = x.UtilizadorCriação,
+                    UpdateUser = x.UtilizadorModificação,
+                    Registered = x.Registado,
+                    RegisteredText = x.Registado.HasValue ? x.Registado == true ? "Sim" : "Não" : "Não",
+                    Billed = Convert.ToBoolean(x.Faturada),
+                    BilledText = x.Faturada.HasValue ? x.Faturada == true ? "Sim" : "Não" : "Não",
+                    Coin = x.Moeda,
+                    UnitValueToInvoice = x.ValorUnitárioAFaturar,
+                    ServiceClientCode = x.CódServiçoCliente,
+                    ClientRequest = x.CodCliente,
+                    LicensePlate = x.Matricula,
+                    ReadingCode = x.CodigoLer,
+                    Group = x.Grupo,
+                    Operation = x.Operacao,
+                    InvoiceGroup = x.GrupoFatura,
+                    InvoiceGroupDescription = x.GrupoFaturaDescricao,
+                    AuthorizedBy = x.AutorizadoPor,
+                    ClientName = !string.IsNullOrEmpty(x.FaturaANºCliente) ? ClientsList.Where(y => y.No_ == x.FaturaANºCliente).FirstOrDefault().Name : "",
+                    MealTypeDescription = x.TipoRefeição != null ? MealList.Where(y => y.Código == x.TipoRefeição).FirstOrDefault().Descrição : "",
+                    Utilizador = User.Identity.Name,
+                    NameDB = _config.NAVDatabaseName,
+                    CompanyName = _config.NAVCompanyName
 
-            }).ToList();
+                }).ToList();
+
+                return Json(dp);
+            }
+            catch (Exception ex)
+            {
+                return Json(null);
+            }
 
             //foreach (ProjectDiaryViewModel item in dp)
             //{
@@ -1856,8 +2067,6 @@ namespace Hydra.Such.Portal.Controllers
             //        item.MealTypeDescription = "";
             //    }
             //}
-
-            return Json(dp);
         }
 
         [HttpPost]
