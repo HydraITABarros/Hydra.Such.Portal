@@ -2544,6 +2544,12 @@ namespace Hydra.Such.Portal.Controllers
             List<EnumData> result = EnumerablesFixed.TipoGuiaTransporte;
             return Json(result);
         }
+
+        public JsonResult TiposLinhaGuiaTransporte()
+        {
+            List<EnumData> result = EnumerablesFixed.TipoLinhaGuiaTransporte;
+            return Json(result);
+        }
     }
 
 

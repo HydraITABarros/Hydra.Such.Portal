@@ -202,17 +202,23 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetShipToAdd([FromBody] JObject requestParams)
+        public JsonResult GetShipToAddr([FromBody] JObject requestParams)
         {
+            if (requestParams == null)
+                return Json(null);
+
             string custId = requestParams["customerId"] == null ? "" : (string)requestParams["customerId"];
             string shipCode = requestParams["shipToCode"] == null ? "-1" : (string)requestParams["shipToCode"];
+
+            if (shipCode == null)
+                shipCode = "-1";
 
             if (custId == "")
                 return Json(null);
 
             // zpgm.11012019 TO DO: Get the ship-to addresses in the back-end and front-end
-
-            return Json(null);
+            List<GuiaTransporteShipToAddress> customerAddresses = DBNAV2017GuiasTransporte.GetShipToAddresses(_config.NAVDatabaseName, _config.NAVCompanyName, custId, shipCode);
+            return Json(customerAddresses);
         }
 
         #region CRUD
