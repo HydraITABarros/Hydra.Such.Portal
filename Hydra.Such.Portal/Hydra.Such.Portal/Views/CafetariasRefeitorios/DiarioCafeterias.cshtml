@@ -120,6 +120,7 @@
                 <paper-button id="btnRegisterLine" class="tablinks" on-tap="_registerDiaryLines"><i class="fa fa-list-ol" aria-hidden="true"></i>&nbsp; Registar</paper-button>
             </template>
         </div>
+
         <paper-collapse-group>
             <paper-collapse-item class="panel-heading" header="Novo Registo" closed>
                 <div class="row">
@@ -147,7 +148,7 @@
                         <vaadin-text-field id="description" name="description" value="{{diary.description}}" label="Descrição"></vaadin-text-field>
                     </div>
                     <div class="col-lg-2">
-                        <vaadin-text-field id="value" name="value" pattern="^[1-9]\d*([,.]\d+)?$" on-value-changed="_ConvertDecimals" error-message="Valor inválido" value="{{diary.value}}" label="Valor"></vaadin-text-field>
+                        <vaadin-text-field id="value" name="value" pattern="^[1-9]\d*([,.]\d+)?$" on-value-changed="_ConvertDecimals" value="{{diary.value}}" label="Valor"  required error-message="Este campo é obrigatório"></vaadin-text-field>
                     </div>
 
                 </div>
@@ -301,8 +302,16 @@
         },
 
         _createCoffeeShopDiary: function () {
-            this.$.create_databound_ajax.body = JSON.stringify(this.diary);
-            this.$.create_databound_ajax.generateRequest();
+            $(this.$.btnRegisterLine).addClass('disabled');
+
+            this.$.value.validate();
+            if (this.$.value.value == "" || this.$.value.value == undefined) {
+                this._openToastError("O campo Valor é de preenchimento obrigatório.");
+            }
+            else {
+                this.$.create_databound_ajax.body = JSON.stringify(this.diary);
+                this.$.create_databound_ajax.generateRequest();
+            }
         },
 
         _responseCreated: function (created) {
@@ -312,12 +321,18 @@
                     this.$.grid_databound_ajax.body = JSON.stringify({ "CoffeShopCode": @ViewBag.CoffeeShopNo, "ProdutiveUnityNo": @ViewBag.ProdutiveUnityNo  });
                     this.$.grid_databound_ajax.generateRequest();
                     this._openToast("Diário Cafetaria/Refeitório criado com sucesso.");
+
+                    this.$.description.value = "";
+                    this.$.value.value = "";
+
                 } else {
                     this._openToastError("Ocorreu um erro desconhecido.");
                 }
             } else {
                 this._openToastError("Ocorreu um erro desconhecido.");
             }
+
+            $(this.$.btnRegisterLine).removeClass('disabled');
         },
 
         _deleteDiaryLine: function (e) {

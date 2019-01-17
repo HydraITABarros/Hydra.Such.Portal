@@ -174,7 +174,7 @@
                                         items="[[LProjectClients]]"
                                         text-path="name"
                                         value-path="no_"
-                                        fields='[{"field":"no_", "name":"Nº Cliente"}, {"field":"name", "name":"Nome Cliente"}, {"field":"vatRegistrationNo_", "name":"Nº VAT"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Cód. Postal"}]'
+                                        fields='[{"field":"no_", "name":"Nº Cliente"}, {"field":"name", "name":"Nome Cliente"}, {"field":"vatRegistrationNo_", "name":"Nº Contribuinte"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Cód. Postal"}]'
                                         disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                         </such-selectbox>
                     </div>
@@ -523,55 +523,54 @@
                     this.$.ToastMessageError.open();
                 },
                 _validateData: function () {
+                    //debugger;
+                    this.$.Description.validate();
                     this.$.ProjectClient.validate();
-                    this.$.ProjectType.validate();
+                    //this.$.ContractNo.validate();
                     this.$.ProjectLeader.validate();
-                    if (this.$.ProjectStatus.value == 1) {
-                        this.$.ProjectResponsible.validate();
-                    }
+                    if (this.$.ProjectStatus.value == 1) { this.$.ProjectResponsible.validate(); }
                     this.$.RegionCode.validate();
                     this.$.FunctionalAreaCode.validate();
                     this.$.ResponsabilityCenterCode.validate();
-                    this.$.Description.validate();
-                    this.$.ContractNo.validate();
+                    this.$.ProjectType.validate();
 
-                    //if (this.$.ProjectClient.value != "" && this.$.ProjectClient.value != undefined) {
-                    //    return true;
-                    //}
-                    //console.log(this.$.ProjectResponsible.value);
-
-                    if (this.$.ProjectLeader.value == "" || this.$.ProjectLeader.value == undefined) {
-                        this._openToastError("É obrigatória seleção de um Chefe de Projeto.");
-                        return false;
-                    }
-
-                    if (this.$.ProjectStatus.value == 1 && (this.$.ProjectResponsible.value == "" || this.$.ProjectResponsible.value == undefined)) {
-                        this._openToastError("É obrigatória seleção de um Responsável de Projeto.");
-                        return false;
-                    }
-
-                    if (this.$.RegionCode.value == "" || this.$.RegionCode.value == undefined) {
-                        this._openToastError("É obrigatória seleção de um Cód. Região.");
-                        return false;
-                    }
-
-                    if (this.$.FunctionalAreaCode.value == "" || this.$.FunctionalAreaCode.value == undefined) {
-                        this._openToastError("É obrigatória seleção de um Cód. Área Funcional.");
-                        return false;
-                    }
-
-                    if (this.$.ResponsabilityCenterCode.value == "" || this.$.ResponsabilityCenterCode.value == undefined) {
-                        this._openToastError("É obrigatória seleção de um Cód. Centro Responsabilidade.");
+                    if (this.$.Description.value == "" || this.$.Description.value == undefined) {
+                        this._openToastError("O campo Descrição é de preenchimento obrigatório.");
                         return false;
                     }
                     if (this.$.ProjectClient.value == "" || this.$.ProjectClient.value == undefined) {
                         this._openToastError("É obrigatória seleção de um Nº Cliente.");
                         return false;
                     }
+                    //if (this.$.ContractNo.value == "" || this.$.ContractNo.value == undefined) {
+                    //    this._openToastError("É obrigatória seleção de um Nº Contrato");
+                    //    return false;
+                    //}
+                    if (this.$.ProjectLeader.value == "" || this.$.ProjectLeader.value == undefined) {
+                        this._openToastError("É obrigatória seleção de um Chefe de Projeto.");
+                        return false;
+                    }
+                    if (this.$.ProjectStatus.value == 1 && (this.$.ProjectResponsible.value == "" || this.$.ProjectResponsible.value == undefined)) {
+                        this._openToastError("É obrigatória seleção de um Responsável de Projeto.");
+                        return false;
+                    }
+                    if (this.$.RegionCode.value == "" || this.$.RegionCode.value == undefined) {
+                        this._openToastError("É obrigatória seleção de um Cód. Região.");
+                        return false;
+                    }
+                    if (this.$.FunctionalAreaCode.value == "" || this.$.FunctionalAreaCode.value == undefined) {
+                        this._openToastError("É obrigatória seleção de um Cód. Área Funcional.");
+                        return false;
+                    }
+                    if (this.$.ResponsabilityCenterCode.value == "" || this.$.ResponsabilityCenterCode.value == undefined) {
+                        this._openToastError("É obrigatória seleção de um Cód. Centro Responsabilidade.");
+                        return false;
+                    }
                     if (this.$.ProjectType.value == "" || this.$.ProjectType.value == undefined) {
                         this._openToastError("É obrigatória seleção do Tipo de Projeto.");
                         return false;
                     }
+
                     return true;
                     //}
 
@@ -710,7 +709,6 @@
                     }
                 },
                 _responseDeleteProcessor: function (data) {
-                    debugger;
                     var self = this;
                     if (data.detail.status === 200) {
                         if (this.deletedData.eReasonCode != 0) {
@@ -741,7 +739,6 @@
                 },
 
                 _responseEnviarAprovacao: function (data) {
-                    debugger;
                     var self = this;
                     if (data.detail.status === 200) {
                         if (this.enviarAprovacao.eReasonCode != 1) {
@@ -826,7 +823,6 @@
                 },
 
                 _printMovimentos: function () {
-                    debugger;
                     if (this._reportserverurl != undefined) {
                         this.$.rptContainer.src = this._reportserverurl + "ProjetoMovimentos&NoProjeto=" + this.data.projectNo + "&Utilizador=" + this.data.utilizador + "&DBName=" + this.data.nameDB + "&CompanyName=" + this.data.companyName;
                         this.$.rptDialog.open();
