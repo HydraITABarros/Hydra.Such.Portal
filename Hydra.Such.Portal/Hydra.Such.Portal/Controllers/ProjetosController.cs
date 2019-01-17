@@ -3872,6 +3872,7 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     ViewBag.UPermissions = userAccesses;
                     ViewBag.ProjectNo = id ?? "";
+                    ViewBag.reportServerURL = _config.ReportServerURL;
                     return View();
                 }
                 else

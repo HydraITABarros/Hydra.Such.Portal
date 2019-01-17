@@ -926,7 +926,7 @@
         <Height>1.27639cm</Height>
         <Style />
       </Body>
-      <Width>19cm</Width>
+      <Width>19.02646cm</Width>
       <Page>
         <PageHeader>
           <Height>5.22292cm</Height>
@@ -937,7 +937,7 @@
               <Source>Embedded</Source>
               <Value>SUCH2</Value>
               <Sizing>FitProportional</Sizing>
-              <Left>0.00002cm</Left>
+              <Left>0.02648cm</Left>
               <Height>2.29375cm</Height>
               <Width>6.23605cm</Width>
               <Style>
@@ -1024,7 +1024,7 @@
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox20</rd:DefaultName>
-              <Left>16.23898cm</Left>
+              <Left>16.26544cm</Left>
               <Height>2.29375cm</Height>
               <Width>2.76102cm</Width>
               <ZIndex>2</ZIndex>
