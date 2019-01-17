@@ -238,6 +238,7 @@
         </style>
         <div class="subMenu" hidden="{{ !_permissions.update }}">
             <paper-button class="tablinks" on-tap="_registerPreMov"><i class="fa fa-chevron-circle-down" aria-hidden="true"></i> Registar Movimentos</paper-button>
+            <paper-button id="btn_imprimirPreMov" class="tablinks" on-tap="_printPreMov" disabled="{{ !_permissions.create }}" title="Imprimir"><i class="fa fa-print" aria-hidden="true"></i> Imprimir Pré Registros</paper-button>
             <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
 
             <!--start ColumnToggle-->
@@ -529,8 +530,8 @@
             </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.serviceClientCode.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="user">Cód. Serviço Cliente</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="user" />
+                    <vaadin-grid-sorter path="serviceClientCode">Cód. Serviço Cliente</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="serviceClientCode" />
                 </template>
                 <template>
                     {{item.serviceClientCode}}
@@ -538,8 +539,8 @@
             </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.serviceClientDescription.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="user">Serviço Cliente</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="user" />
+                    <vaadin-grid-sorter path="serviceClientDescription">Serviço Cliente</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="serviceClientDescription" />
                 </template>
                 <template>
                     {{item.serviceClientDescription}}
@@ -583,10 +584,16 @@
                 <paper-button class="btnRemove" on-tap="_Close_Dialog" dialog-dismiss><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
             </div>
         </paper-dialog>
+
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
 
-
+        <paper-dialog id="rptDialog" class="dialgoBox" modal>
+            <div class="buttons">
+                <paper-button class="btnRemove" on-tap="_closeRptDialog" title="Fechar"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
+            </div>
+            <iframe id="rptContainer" src="" frameborder="0" style="width: 100%; height: 92%; margin: 0px; padding: 0px"></iframe>
+        </paper-dialog>
     </template>
     <script>
         document.addEventListener('WebComponentsReady', function () {
@@ -619,6 +626,9 @@
                     },
                     _permissions: {
                         type: Array
+                    },
+                    _reportserverurl: {
+                        type: String,
                     },
                 },
                 ready: function () {
@@ -817,6 +827,20 @@
                     } else {
                         this.openToastError(this.deletedPreMovimento.eMessage);
                     }
+                },
+
+                _printPreMov: function () {
+                    if (this._reportserverurl != undefined) {
+                        this.$.rptContainer.src = this._reportserverurl + "ProjetoPreMovimentos&NoProjeto=" + this.paramprojno;
+                        this.$.rptDialog.open();
+                    }
+                    else {
+                        this.openToastError("Não é possivel imprimir. Não foi definido o servidor de relatórios.");
+                    }
+                },
+                _closeRptDialog: function () {
+                    this.$.rptContainer.src = "about:blank";
+                    this.$.rptDialog.close();
                 },
 
             });

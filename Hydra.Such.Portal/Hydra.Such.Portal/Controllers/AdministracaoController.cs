@@ -169,6 +169,7 @@ namespace Hydra.Such.Portal.Controllers
                 result.AprovadorPedidoPag2 = userConfig.AprovadorPedidoPag2;
                 result.AnulacaoPedidoPagamento = userConfig.AnulacaoPedidoPagamento.HasValue ? userConfig.AnulacaoPedidoPagamento : false;
                 result.CriarProjetoSemAprovacao = userConfig.CriarProjetoSemAprovacao.HasValue ? userConfig.CriarProjetoSemAprovacao : false;
+                result.ValidarPedidoPagamento = userConfig.ValidarPedidoPagamento.HasValue ? userConfig.ValidarPedidoPagamento : false;
 
 
                 result.UserAccesses = DBUserAccesses.GetByUserId(data.IdUser).Select(x => new UserAccessesViewModel()
@@ -314,6 +315,7 @@ namespace Hydra.Such.Portal.Controllers
                 userConfig.AprovadorPedidoPag2 = data.AprovadorPedidoPag2;
                 userConfig.AnulacaoPedidoPagamento = data.AnulacaoPedidoPagamento.HasValue ? data.AnulacaoPedidoPagamento : false;
                 userConfig.CriarProjetoSemAprovacao = data.CriarProjetoSemAprovacao.HasValue ? data.CriarProjetoSemAprovacao : false;
+                userConfig.ValidarPedidoPagamento = data.ValidarPedidoPagamento.HasValue ? data.ValidarPedidoPagamento : false;
 
                 DBUserConfigurations.Update(userConfig);
 
@@ -331,6 +333,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (userAccessesToDelete.Count > 0)
                 {
                     bool uaSuccessfullyDeleted = DBUserAccesses.Delete(userAccessesToDelete);
+
                     if (!uaSuccessfullyDeleted)
                     {
                         data.eMessage = "Ocorreu um erro ao eliminar os acessos do utilizador.";
@@ -477,8 +480,27 @@ namespace Hydra.Such.Portal.Controllers
             //Remover os acessos os acessos
             DBUserAccesses.DeleteAllFromUser(data.IdUser);
 
+            TabelaLog TabLog_AU = new TabelaLog
+            {
+                Tabela = "[Acessos Utilizador]",
+                Descricao = "Delete - [Id Utilizador]: " + data.IdUser.ToString(),
+                Utilizador = User.Identity.Name,
+                DataHora = DateTime.Now
+            };
+            DBTabelaLog.Create(TabLog_AU);
+
+
             //Remover os acessos às dimensões
             DBUserDimensions.DeleteAllFromUser(data.IdUser);
+
+            TabelaLog TabLog_UD = new TabelaLog
+            {
+                Tabela = "[dbo].[Acessos Dimensões]",
+                Descricao = "Delete - [Id Utilizador]: " + data.IdUser.ToString(),
+                Utilizador = User.Identity.Name,
+                DataHora = DateTime.Now
+            };
+            DBTabelaLog.Create(TabLog_UD);
 
             UCObj.Ativo = false;
 
@@ -1527,8 +1549,9 @@ namespace Hydra.Such.Portal.Controllers
         {
             List<Enumerations.Features> features = new List<Enumerations.Features>()
             {
-                Enumerations.Features.AdminProjetos,
-                Enumerations.Features.AdminVendas,
+                //Enumerations.Features.AdminProjetos,
+                //Enumerations.Features.AdminVendas,
+                Enumerations.Features.AdminServicos
             };
 
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, features);
@@ -1608,8 +1631,9 @@ namespace Hydra.Such.Portal.Controllers
         {
             List<Enumerations.Features> features = new List<Enumerations.Features>()
             {
-                Enumerations.Features.AdminProjetos,
-                Enumerations.Features.AdminVendas,
+                //Enumerations.Features.AdminProjetos,
+                //Enumerations.Features.AdminVendas,
+                Enumerations.Features.AdminServicos
             };
 
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, features);

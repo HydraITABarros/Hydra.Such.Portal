@@ -667,6 +667,9 @@ namespace Hydra.Such.Portal.Controllers
                     FH = DBFolhasDeHoras.GetListaValidadoresIntegradores(folhaDeHorasNo, idEmployee);
                     FH.EmpregadoNo = idEmployee;
                     FH.EmpregadoNome = DBNAV2009Employees.GetAll(idEmployee, _config.NAV2009DatabaseName, _config.NAV2009CompanyName).FirstOrDefault().Name;
+
+                    data.UtilizadorModificacao = User.Identity.Name;
+                    DBFolhasDeHoras.Update(DBFolhasDeHoras.ParseToFolhaHoras(data));
                 }
             }
 
@@ -995,41 +998,98 @@ namespace Hydra.Such.Portal.Controllers
             int result = 0;
             try
             {
-                data.DataHoraPartida = DateTime.Parse(string.Concat(data.DataPartidaTexto, " ", data.HoraPartidaTexto));
-                data.DataHoraChegada = DateTime.Parse(string.Concat(data.DataChegadaTexto, " ", data.HoraChegadaTexto));
-
-                data.UtilizadorModificacao = User.Identity.Name; //UPDATE
-                data.DataHoraModificacao = DateTime.Now; //UPDATE
-
-                if (!string.IsNullOrEmpty(data.ProjetoNo))
+                if (data != null)
                 {
-                    Projetos proj = new Projetos();
-                    proj = DBProjects.GetById(data.ProjetoNo);
-                    if (proj != null)
+                    data.DataHoraPartida = DateTime.Parse(string.Concat(data.DataPartidaTexto, " ", data.HoraPartidaTexto));
+                    data.DataHoraChegada = DateTime.Parse(string.Concat(data.DataChegadaTexto, " ", data.HoraChegadaTexto));
+
+                    data.UtilizadorModificacao = User.Identity.Name; //UPDATE
+                    data.DataHoraModificacao = DateTime.Now; //UPDATE
+
+                    if (!string.IsNullOrEmpty(data.ProjetoNo))
                     {
-                        data.ProjetoDescricao = string.IsNullOrEmpty(proj.Descrição) ? "" : proj.Descrição;
-                    }
-                    else
-                    {
-                        NAVProjectsViewModel NAVproj = new NAVProjectsViewModel();
-                        NAVproj = DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, data.ProjetoNo).FirstOrDefault();
-                        if (NAVproj != null)
+                        Projetos proj = new Projetos();
+                        proj = DBProjects.GetById(data.ProjetoNo);
+                        if (proj != null)
                         {
-                            data.ProjetoDescricao = string.IsNullOrEmpty(NAVproj.Description) ? "" : NAVproj.Description;
+                            data.ProjetoDescricao = string.IsNullOrEmpty(proj.Descrição) ? "" : proj.Descrição;
                         }
+                        else
+                        {
+                            NAVProjectsViewModel NAVproj = new NAVProjectsViewModel();
+                            NAVproj = DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, data.ProjetoNo).FirstOrDefault();
+                            if (NAVproj != null)
+                            {
+                                data.ProjetoDescricao = string.IsNullOrEmpty(NAVproj.Description) ? "" : NAVproj.Description;
+                            }
+                        }
+
+                        //data.ProjetoDescricao = DBProjects.GetById(data.ProjetoNo) != null ? string.IsNullOrEmpty(DBProjects.GetById(data.ProjetoNo).Descrição) ? "" : DBProjects.GetById(data.ProjetoNo).Descrição : string.IsNullOrEmpty(DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, data.ProjetoNo).FirstOrDefault().Description) ? "" : DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, data.ProjetoNo).FirstOrDefault().Description;
                     }
 
-                    //data.ProjetoDescricao = DBProjects.GetById(data.ProjetoNo) != null ? string.IsNullOrEmpty(DBProjects.GetById(data.ProjetoNo).Descrição) ? "" : DBProjects.GetById(data.ProjetoNo).Descrição : string.IsNullOrEmpty(DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, data.ProjetoNo).FirstOrDefault().Description) ? "" : DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, data.ProjetoNo).FirstOrDefault().Description;
+                    if (!string.IsNullOrEmpty(data.EmpregadoNo))
+                        data.EmpregadoNome = DBNAV2009Employees.GetAll(data.EmpregadoNo, _config.NAV2009DatabaseName, _config.NAV2009CompanyName).FirstOrDefault().Name;
+
+                    FolhasDeHoras FH = DBFolhasDeHoras.ParseToFolhaHoras(data);
+
+                    if (DBFolhasDeHoras.Update(FH) == null)
+                    {
+                        result = 2;
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                result = 99;
+            }
+            return Json(result);
+        }
 
-                if (!string.IsNullOrEmpty(data.EmpregadoNo))
-                    data.EmpregadoNome = DBNAV2009Employees.GetAll(data.EmpregadoNo, _config.NAV2009DatabaseName, _config.NAV2009CompanyName).FirstOrDefault().Name;
-
-                FolhasDeHoras FH = DBFolhasDeHoras.ParseToFolhaHoras(data);
-
-                if (DBFolhasDeHoras.Update(FH) == null)
+        [HttpPost]
+        //Atualiza a Folha de Horas na Base de Dados
+        public JsonResult UpdateFolhaDeHorasCreated([FromBody] FolhaDeHorasViewModel data)
+        {
+            int result = 0;
+            try
+            {
+                if (!string.IsNullOrEmpty(data.FolhaDeHorasNo))
                 {
-                    result = 2;
+                    data.DataHoraPartida = DateTime.Parse(string.Concat(data.DataPartidaTexto, " ", data.HoraPartidaTexto));
+                    data.DataHoraChegada = DateTime.Parse(string.Concat(data.DataChegadaTexto, " ", data.HoraChegadaTexto));
+
+                    data.UtilizadorModificacao = User.Identity.Name; //UPDATE
+                    data.DataHoraModificacao = DateTime.Now; //UPDATE
+
+                    if (!string.IsNullOrEmpty(data.ProjetoNo))
+                    {
+                        Projetos proj = new Projetos();
+                        proj = DBProjects.GetById(data.ProjetoNo);
+                        if (proj != null)
+                        {
+                            data.ProjetoDescricao = string.IsNullOrEmpty(proj.Descrição) ? "" : proj.Descrição;
+                        }
+                        else
+                        {
+                            NAVProjectsViewModel NAVproj = new NAVProjectsViewModel();
+                            NAVproj = DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, data.ProjetoNo).FirstOrDefault();
+                            if (NAVproj != null)
+                            {
+                                data.ProjetoDescricao = string.IsNullOrEmpty(NAVproj.Description) ? "" : NAVproj.Description;
+                            }
+                        }
+
+                        //data.ProjetoDescricao = DBProjects.GetById(data.ProjetoNo) != null ? string.IsNullOrEmpty(DBProjects.GetById(data.ProjetoNo).Descrição) ? "" : DBProjects.GetById(data.ProjetoNo).Descrição : string.IsNullOrEmpty(DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, data.ProjetoNo).FirstOrDefault().Description) ? "" : DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, data.ProjetoNo).FirstOrDefault().Description;
+                    }
+
+                    if (!string.IsNullOrEmpty(data.EmpregadoNo))
+                        data.EmpregadoNome = DBNAV2009Employees.GetAll(data.EmpregadoNo, _config.NAV2009DatabaseName, _config.NAV2009CompanyName).FirstOrDefault().Name;
+
+                    FolhasDeHoras FH = DBFolhasDeHoras.ParseToFolhaHoras(data);
+
+                    if (DBFolhasDeHoras.Update(FH) == null)
+                    {
+                        result = 2;
+                    }
                 }
             }
             catch (Exception ex)
@@ -2489,7 +2549,17 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 decimal CustoTotal = (decimal)FH.CustoTotalAjudaCusto;
 
-                                resultApprovalMovement = ApprovalMovementsManager.StartApprovalMovement_FH(3, FH.CódigoÁreaFuncional, FH.CódigoCentroResponsabilidade, FH.CódigoRegião, CustoTotal, FH.NºFolhaDeHoras, User.Identity.Name);
+                                if (DBFolhasDeHoras.GetById(data.FolhaDeHorasNo).Estado == 0) //CRIADO
+                                {
+                                    if (DBApprovalMovements.GetAll().Where(x => x.Tipo == 3 && x.Número == FH.NºFolhaDeHoras && x.Estado == 1).ToList().Count() == 0)
+                                        resultApprovalMovement = ApprovalMovementsManager.StartApprovalMovement_FH(3, FH.CódigoÁreaFuncional, FH.CódigoCentroResponsabilidade, FH.CódigoRegião, CustoTotal, FH.NºFolhaDeHoras, User.Identity.Name);
+                                }
+                                else
+                                {
+                                    resultApprovalMovement.eReasonCode = 7;
+                                    resultApprovalMovement.eMessage = "Não pode terminar a Folha de Horas pois a mesma já não está no estado Criado.";
+                                }
+
                             }
                             else
                             {

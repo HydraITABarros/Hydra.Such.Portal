@@ -200,6 +200,15 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/Encomendas/UpdatePedidoPagamento"
+                   last-response="{{resultUpdate}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_Update_ajax"
+                   on-response="_UpdateResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
             <paper-button id="btnCreateNewPedidoPagamento" class="tablinks" on-tap="_createNewPedidoPagamento"><i class="fa fa-check-square" aria-hidden="true"></i> Criar</paper-button>
@@ -250,7 +259,7 @@
                         </div>
 
                         <div class="col-sm-3">
-                            <vaadin-checkbox id="ddPrioritario" checked="{{data.prioritario}}" disabled="{{ !_permissions.update }}">Prioritário</vaadin-checkbox>
+                            <vaadin-checkbox id="ddPrioritario" checked="{{data.prioritario}}" on-click="_clickPrioritario" disabled="{{ !data.editarPrioritario }}">Prioritário</vaadin-checkbox>
                         </div>
                     </div>
 
@@ -317,7 +326,7 @@
                         </div>
 
                         <div class="col-sm-3">
-                            <vaadin-text-field id="ddUserDisponibilizacao" label="Utilizador da Disponibilização" value="{{data.userDisponibilizacao}}" disabled></vaadin-text-field>
+                            <vaadin-text-field id="ddUserDisponibilizacao" label="Utilizador da Disponibilização" value="{{data.userFinanceiros}}" disabled></vaadin-text-field>
                         </div>
 
                         <div class="col-sm-3">
@@ -386,6 +395,11 @@
                     _reportserverurl: {
                         type: String,
                     },
+                    chkPrioritario: {
+                        type: Boolean,
+                        notify: true,
+                        value: false
+                    },
                 },
 
                 ready: function () {
@@ -396,6 +410,7 @@
                 },
                 _responseProcessor: function (data) {
                     this._setFieldsEditability();
+                    this.chkPrioritario = this.data.prioritario;
                 },
 
                 _openToast: function (message) {
@@ -466,7 +481,6 @@
                     }
                 },
                 _responseCriarPedidoPagamento: function (e) {
-                    debugger;
                     if (this.resultCriarPedidoPagamento.eReasonCode == "1") {
                         this._openToast(this.resultCriarPedidoPagamento.eMessage);
 
@@ -636,10 +650,34 @@
                     //this.$.page_databound_ajax.generateRequest();
                 },
 
+                _clickPrioritario: function () {
+                    debugger;
+
+                    if (this.chkPrioritario == true)
+                        this.chkPrioritario = false;
+                    else
+                        this.chkPrioritario = true;
+
+                    if (this.data.noPedido > 0) {
+                        this.data.prioritario = this.chkPrioritario;
+
+                        this.$.page_Update_ajax.body = JSON.stringify(this.data);
+                        this.$.page_Update_ajax.generateRequest();
+                    }
+                },
+                _UpdateResponse: function (e) {
+                    debugger;
+                    if (this.resultUpdate.eReasonCode == "1") {
+                        this._openToast(this.resultUpdate.eMessage);
+                    }
+                    else {
+                        this._openToastError(this.resultUpdate.eMessage);
+                    }
+                },
+
                 _setFieldsEditability() {
                     var self = this;
 
-                    debugger;
                     if (self.data.estado == 1 && self.data.noPedido == 0) {
                         $(self.$.menuFunctios).addClass('hidden');
                     }
@@ -648,7 +686,7 @@
 
                         self.$.ddData.disabled = true;
                         self.$.ddValorpedidoComIVA.disabled = true;
-                        self.$.ddPrioritario.disabled = true;
+                        //self.$.ddPrioritario.disabled = true;
                         self.$.ddDescricao.disabled = true;
 
                         if (self.data.estado == 5 || self.data.estado == 7) {

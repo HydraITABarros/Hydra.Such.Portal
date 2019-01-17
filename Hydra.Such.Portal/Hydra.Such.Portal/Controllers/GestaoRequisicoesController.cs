@@ -755,12 +755,33 @@ namespace Hydra.Such.Portal.Controllers
                                         foreach (UtilizadoresMovimentosDeAprovação usermovimento in UserMovimentos)
                                         {
                                             DBUserApprovalMovements.Delete(usermovimento);
+
+                                            TabelaLog TabLog_UMA = new TabelaLog();
+                                            TabLog_UMA.Tabela = "[Utilizadores Movimentos de Aprovação]";
+                                            TabLog_UMA.Descricao = "Delete - [Nº Movimento]: " + usermovimento.NºMovimento.ToString() + " - [Utilizador]: " + usermovimento.Utilizador.ToString();
+                                            TabLog_UMA.Utilizador = User.Identity.Name;
+                                            TabLog_UMA.DataHora = DateTime.Now;
+                                            DBTabelaLog.Create(TabLog_UMA);
                                         }
                                     }
 
                                     DBApprovalMovements.Delete(movimento);
+
+                                    TabelaLog TabLog_MA = new TabelaLog();
+                                    TabLog_MA.Tabela = "[Movimentos de Aprovação]";
+                                    TabLog_MA.Descricao = "Delete - [Nº Movimento]: " + movimento.NºMovimento.ToString();
+                                    TabLog_MA.Utilizador = User.Identity.Name;
+                                    TabLog_MA.DataHora = DateTime.Now;
+                                    DBTabelaLog.Create(TabLog_MA);
                                 };
                             }
+
+                            TabelaLog TabLog_R = new TabelaLog();
+                            TabLog_R.Tabela = "[Requisição]";
+                            TabLog_R.Descricao = "Delete - [Nº Requisição]: " + item.RequisitionNo.ToString();
+                            TabLog_R.Utilizador = User.Identity.Name;
+                            TabLog_R.DataHora = DateTime.Now;
+                            DBTabelaLog.Create(TabLog_R);
 
                             item.eReasonCode = 1;
                             item.eMessage = "Requisição eliminada com sucesso.";
@@ -2438,6 +2459,23 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     RequisitionService serv = new RequisitionService(config, configws, HttpContext.User.Identity.Name);
                     item = serv.CreateMarketConsultFor(item);
+
+                    if (item.eReasonCode == 1)
+                    {
+                        //Se Criado com sucesso a Consulta ao Mercado é adicionado uma linha ao Workflow
+                        using (var ctx = new SuchDBContext())
+                        {
+                            var logEntry = new RequisicoesRegAlteracoes
+                            {
+                                NºRequisição = item.RequisitionNo,
+                                Estado = (int)RequisitionStates.Consulta,
+                                ModificadoEm = DateTime.Now,
+                                ModificadoPor = User.Identity.Name
+                            };
+                            ctx.RequisicoesRegAlteracoes.Add(logEntry);
+                            ctx.SaveChanges();
+                        }
+                    }
                 }
                 catch (NotImplementedException ex)
                 {
@@ -2490,6 +2528,23 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 item.eReasonCode = 33;
                                 item.eMessage = "Ocorreu um erro na passagem da Requisição para Histórico.";
+                            }
+                        }
+
+                        //Se Criado com sucesso a Encomenda de Compra é adicionado uma linha ao Workflow
+                        if (item.eReasonCode == 1)
+                        {
+                            using (var ctx = new SuchDBContext())
+                            {
+                                var logEntry = new RequisicoesRegAlteracoes
+                                {
+                                    NºRequisição = item.RequisitionNo,
+                                    Estado = (int)RequisitionStates.Encomenda,
+                                    ModificadoEm = DateTime.Now,
+                                    ModificadoPor = User.Identity.Name
+                                };
+                                ctx.RequisicoesRegAlteracoes.Add(logEntry);
+                                ctx.SaveChanges();
                             }
                         }
                     }

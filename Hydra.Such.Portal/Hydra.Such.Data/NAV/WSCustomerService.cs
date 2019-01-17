@@ -163,7 +163,11 @@ namespace Hydra.Such.Data.NAV
 
             try
             {
-                
+                navUpdate.WSCustomer.Regiao_ClienteSpecified = true;
+                navUpdate.WSCustomer.BlockedSpecified = true;
+                navUpdate.WSCustomer.Tipo_ClienteSpecified = true;
+                navUpdate.WSCustomer.Natureza_ClienteSpecified = true;
+
                 WSCustomerNAV.Update_Result result = await ws_Client.UpdateAsync(navUpdate);
                 return result;
             }

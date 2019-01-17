@@ -32,7 +32,13 @@ namespace Hydra.Such.Data
             [Description("Disponibilizado")]
             Available,
             [Description("Arquivado")]
-            Archived
+            Archived,
+
+            //Criação de 2 Novos Estados para o Workflow
+            [Description("Consulta Mercado")]
+            Consulta,
+            [Description("Encomenda")]
+            Encomenda
         }
 
         public enum Dimensions
@@ -194,6 +200,8 @@ namespace Hydra.Such.Data
             AdminAcordosPrecos = 111,
             [Description("Encomendas")]
             Encomendas = 112,
+            [Description("Administração Serviços")]
+            AdminServicos = 113,
         }
 
         public enum Areas

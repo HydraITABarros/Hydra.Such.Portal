@@ -997,45 +997,49 @@ namespace Hydra.Such.Portal.Controllers
                             data.UpdateUser = User.Identity.Name;
                             data.Visivel = true;
 
-                            if (DBProjects.Update(DBProjects.ParseToDB(data)) != null)
+                            Task<WSCreateNAVProject.Create_Result> TCreateNavProj = WSProject.CreateNavProject(data, configws);
+                            try
                             {
-                                //Update Old Movement
-                                ApprovalMovementsViewModel ApprovalMovement = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetById(movementNo));
-                                ApprovalMovement.Status = 2;
-                                ApprovalMovement.DateTimeApprove = DateTime.Now;
-                                ApprovalMovement.DateTimeUpdate = DateTime.Now;
-                                ApprovalMovement.UserUpdate = User.Identity.Name;
-                                ApprovalMovement = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.Update(DBApprovalMovements.ParseToDatabase(ApprovalMovement)));
+                                TCreateNavProj.Wait();
+                            }
+                            catch (Exception ex)
+                            {
+                                result.eReasonCode = 503;
+                                result.eMessage = "Ocorreu um erro ao criar o projeto no NAV.";
+                            }
+                            if (!TCreateNavProj.IsCompletedSuccessfully)
+                            {
+                                result.eReasonCode = 503;
+                                result.eMessage = "Ocorreu um erro ao criar o projeto no NAV.";
 
-                                //Delete All User Approval Movements
-                                if (DBUserApprovalMovements.DeleteFromMovementExcept(ApprovalMovement.MovementNo, User.Identity.Name) == true)
+                                if (TCreateNavProj.Exception != null)
+                                    result.eMessages.Add(new TraceInformation(TraceType.Exception, TCreateNavProj.Exception.Message));
+
+                                if (TCreateNavProj.Exception.InnerException != null)
+                                    result.eMessages.Add(new TraceInformation(TraceType.Exception, TCreateNavProj.Exception.InnerException.ToString()));
+                            }
+                            else
+                            {
+                                if (DBProjects.Update(DBProjects.ParseToDB(data)) != null)
                                 {
-                                    Task<WSCreateNAVProject.Create_Result> TCreateNavProj = WSProject.CreateNavProject(data, configws);
-                                    try
-                                    {
-                                        TCreateNavProj.Wait();
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        result.eReasonCode = 503;
-                                        result.eMessage = "Ocorreu um erro ao criar o projeto no NAV.";
-                                    }
-                                    if (!TCreateNavProj.IsCompletedSuccessfully)
-                                    {
-                                        //Delete Created Project on Database
-                                        DBProjects.Delete(approvalMovement.Number);
+                                    //Update Old Movement
+                                    ApprovalMovementsViewModel ApprovalMovement = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetById(movementNo));
+                                    ApprovalMovement.Status = 2;
+                                    ApprovalMovement.DateTimeApprove = DateTime.Now;
+                                    ApprovalMovement.DateTimeUpdate = DateTime.Now;
+                                    ApprovalMovement.UserUpdate = User.Identity.Name;
+                                    ApprovalMovement = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.Update(DBApprovalMovements.ParseToDatabase(ApprovalMovement)));
 
-                                        result.eReasonCode = 503;
-                                        result.eMessage = "Ocorreu um erro ao criar o projeto no NAV.";
-                                        if (TCreateNavProj.Exception != null)
-                                            result.eMessages.Add(new TraceInformation(TraceType.Exception, TCreateNavProj.Exception.Message));
-                                        if (TCreateNavProj.Exception.InnerException != null)
-                                            result.eMessages.Add(new TraceInformation(TraceType.Exception, TCreateNavProj.Exception.InnerException.ToString()));
-                                    }
-                                    else
+                                    //Delete All User Approval Movements
+                                    if (DBUserApprovalMovements.DeleteFromMovementExcept(ApprovalMovement.MovementNo, User.Identity.Name) == true)
                                     {
                                         result.eReasonCode = 100;
                                         result.eMessage = "O Projeto foi aprovado com sucesso.";
+                                    }
+                                    else
+                                    {
+                                        result.eReasonCode = 504;
+                                        result.eMessage = "Ocorreu um erro ao apagar os Movimentos de Aprovação.";
                                     }
                                 }
                                 else
@@ -1043,11 +1047,6 @@ namespace Hydra.Such.Portal.Controllers
                                     result.eReasonCode = 505;
                                     result.eMessage = "Ocorreu um erro ao atualizar o movimento de aprovação.";
                                 }
-                            }
-                            else
-                            {
-                                result.eReasonCode = 504;
-                                result.eMessage = "Ocorreu um erro ao atualizar o projeto.";
                             }
                         }
                         else

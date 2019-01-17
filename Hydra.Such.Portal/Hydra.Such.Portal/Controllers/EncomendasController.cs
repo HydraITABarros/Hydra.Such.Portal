@@ -265,6 +265,7 @@ namespace Hydra.Such.Portal.Controllers
                     Pedido.Arquivado = false;
                     Pedido.Resolvido = false;
                     Pedido.Prioritario = false;
+                    Pedido.EditarPrioritario = false;
 
                     Pedido.ValorJaPedido = pedidos.Sum(x => x.Valor);
                     Pedido.DataText = DateTime.Now.ToString("yyyy-MM-dd");
@@ -280,6 +281,35 @@ namespace Hydra.Such.Portal.Controllers
                     var pedidos = DBPedidoPagamento.GetAllPedidosPagamentoByEncomenda(Pedido.NoEncomenda);
                     Pedido.ValorJaPedido = pedidos.Sum(x => x.Valor);
 
+                    Pedido.EditarPrioritario = false;
+                    if (Pedido.UserAprovacao != null && Pedido.UserAprovacao == User.Identity.Name.ToLower())
+                    {
+                        Pedido.EditarPrioritario = true;
+                    }
+                    else
+                    {
+                        if (Pedido.UserValidacao != null && Pedido.UserValidacao.ToLower() == User.Identity.Name.ToLower())
+                        {
+                            Pedido.EditarPrioritario = true;
+                        }
+                        else
+                        {
+                            if (Pedido.UserFinanceiros != null && Pedido.UserFinanceiros.ToLower() == User.Identity.Name.ToLower())
+                            {
+                                Pedido.EditarPrioritario = true;
+                            }
+                            else
+                            {
+                                MovimentosDeAprovação MDA = DBApprovalMovements.GetAll().Where(x => x.Número == Pedido.NoPedido.ToString() && x.Estado == 1).LastOrDefault();
+                                if (MDA != null)
+                                {
+                                    UtilizadoresMovimentosDeAprovação UMDA = DBUserApprovalMovements.GetById(MDA.NºMovimento, User.Identity.Name);
+                                    if (UMDA != null)
+                                        Pedido.EditarPrioritario = true;
+                                }
+                            }
+                        }
+                    }
                     return Json(Pedido);
                 }
             }
@@ -675,6 +705,42 @@ namespace Hydra.Such.Portal.Controllers
                         data.eReasonCode = 1;
                         data.eMessage = "O Pedido de Pagamento foi Anulado com sucesso.";
                         return Json(data);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                data.eReasonCode = 99;
+                data.eMessage = "Ocorreu um erro.";
+            }
+            return Json(data);
+        }
+
+        [HttpPost]
+        public JsonResult UpdatePedidoPagamento([FromBody] PedidosPagamentoViewModel data)
+        {
+            try
+            {
+                if (data != null)
+                {
+                    PedidosPagamento Pedido = DBPedidoPagamento.GetIDPedidosPagamento(data.NoPedido);
+
+                    if (Pedido != null)
+                    {
+                        Pedido.Prioritario = data.Prioritario;
+                        Pedido.UtilizadorModificacao = User.Identity.Name;
+                        Pedido.DataModificacao = DateTime.Now;
+
+                        if (DBPedidoPagamento.Update(Pedido) != null)
+                        {
+                            data.eReasonCode = 1;
+                            data.eMessage = "Pedido de Pagamento atualizado com sucesso.";
+                        }
+                        else
+                        {
+                            data.eReasonCode = 2;
+                            data.eMessage = "Ocorreu um erro ao atualizar o Pedido de Pagamento.";
+                        }
                     }
                 }
             }

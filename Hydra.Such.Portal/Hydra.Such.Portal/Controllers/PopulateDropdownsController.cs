@@ -1814,7 +1814,7 @@ namespace Hydra.Such.Portal.Controllers
             List<DDMessageString> result = DBTabelaConfRecursosFh.GetAll().Where(x => x.Tipo == tipoCusto.id.ToString()).Select(x => new DDMessageString()
             {
                 id = x.CodRecurso,
-                value = x.CodRecurso + " - " + x.Descricao
+                value = x.Descricao
             }).ToList();
             return Json(result);
         }

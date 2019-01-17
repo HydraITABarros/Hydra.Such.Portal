@@ -190,6 +190,15 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         DBConsultaMercado.Delete(actividadesPorFornecedor);
 
+                        TabelaLog TabLog = new TabelaLog
+                        {
+                            Tabela = "[Actividades_por_Fornecedor]",
+                            Descricao = "Delete - [ID]: " + actividadesPorFornecedor.Id.ToString(),
+                            Utilizador = User.Identity.Name,
+                            DataHora = DateTime.Now
+                        };
+                        DBTabelaLog.Create(TabLog);
+
                         item.eReasonCode = 1;
                         item.eMessage = "Actividade por Fornecedor eliminada com sucesso!";
                     }

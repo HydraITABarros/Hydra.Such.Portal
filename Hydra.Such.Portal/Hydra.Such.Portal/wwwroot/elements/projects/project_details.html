@@ -4,8 +4,15 @@
 <link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
 <link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
 <link rel="import" href="/lib/iron-form/iron-form.html" />
-<link rel="import" href="/lib/paper-input/paper-input.html" />
 <link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
+<link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
+<link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
+<link rel="import" href="/lib/paper-input/paper-input.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="/lib/paper-tooltip-master/paper-tooltip.html">
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
 <link rel="import" href="/lib/such-selectbox/such-selectbox.html">
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
@@ -80,6 +87,14 @@
                    on-response="_responseDeleteProcessor"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/Projetos/TerminarProject"
+                   last-response="{{terminarData}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_terminar_project"
+                   on-response="_responseTerminarProcessor"
+                   content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/Projetos/EnviarAprovacao"
                    last-response="{{enviarAprovacao}}"
                    method="post"
@@ -111,6 +126,7 @@
 
                 <template is="dom-if" if="{{ _permissions.create }}">
                     <paper-button id="btnProjectAdd" class="tablinks" on-tap="_createNewProject"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
+                    <paper-button id="btnProjectAdd" class="tablinks" on-tap="_terminarProject"><i class="fa fa-remove" aria-hidden="true"></i>&nbsp; Terminar</paper-button>
                 </template>
 
                 <template is="dom-if" if="{{ data.verMenu }}">
@@ -130,6 +146,8 @@
                 <template is="dom-if" if="{{ data.enviarParaAprovacao }}">
                     <paper-button id="btnEnviarAprovacao" class="tablinks" on-tap="_EnviarAprovacao"><i class="fa fa-arrow-right" aria-hidden="true"></i>&nbsp; Enviar Para Aprovação</paper-button>
                 </template>
+
+                <paper-button id="btn_imprimirMovimentos" class="tablinks" on-tap="_printMovimentos" title="Imprimir"><i class="fa fa-print" aria-hidden="true"></i> Imprimir Extrato</paper-button>
             </div>
         </template>
 
@@ -156,7 +174,7 @@
                                         items="[[LProjectClients]]"
                                         text-path="name"
                                         value-path="no_"
-                                        fields='[{"field":"no_", "name":"Nº Cliente"}, {"field":"name", "name":"Nome Cliente"}, {"field":"vatRegistrationNo_", "name":"Nº VAT"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Cód. Postal"}]'
+                                        fields='[{"field":"no_", "name":"Nº Cliente"}, {"field":"name", "name":"Nome Cliente"}, {"field":"vatRegistrationNo_", "name":"Nº Contribuinte"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Cód. Postal"}]'
                                         disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                         </such-selectbox>
                     </div>
@@ -273,10 +291,10 @@
                                         fields='[{"field":"value", "name":"Código"}, {"field":"extra", "name":"Descrição"}]'>
                         </such-selectbox>
                         <!--<vaadin-combo-box items="[[LProjectCountabGroupTypes]]" item-value-path="id" item-label-path="value" value="{{data.groupContabProjectType}}" label="Tipo Grupo Contab. Projeto" disabled="{{ !_permissions.update }}">
-                            <template>
-                                <b>[[item.value]]</b>
-                            </template>
-                        </vaadin-combo-box>-->
+                        <template>
+                            <b>[[item.value]]</b>
+                        </template>
+                    </vaadin-combo-box>-->
                     </div>
                 </div>
 
@@ -392,6 +410,13 @@
 
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+
+        <paper-dialog id="rptDialog" class="dialgoBox" modal>
+            <div class="buttons">
+                <paper-button class="btnRemove" on-tap="_closeRptDialog" title="Fechar"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
+            </div>
+            <iframe id="rptContainer" src="" frameborder="0" style="width: 100%; height: 92%; margin: 0px; padding: 0px"></iframe>
+        </paper-dialog>
     </template>
 
     <script>
@@ -469,6 +494,10 @@
                         value: ""
                     },
 
+                    _reportserverurl: {
+                        type: String,
+                    },
+
                 },
                 ready: function () {
                     //GET PROJECT DATA
@@ -494,56 +523,55 @@
                     this.$.ToastMessageError.open();
                 },
                 _validateData: function () {
+                    //debugger;
+                    this.$.Description.validate();
                     this.$.ProjectClient.validate();
-                    this.$.ProjectType.validate();
+                    //this.$.ContractNo.validate();
                     this.$.ProjectLeader.validate();
-                    if (this.$.ProjectStatus.value == 1) {
-                        this.$.ProjectResponsible.validate();
-                    }
+                    if (this.$.ProjectStatus.value == 1) { this.$.ProjectResponsible.validate(); }
                     this.$.RegionCode.validate();
                     this.$.FunctionalAreaCode.validate();
                     this.$.ResponsabilityCenterCode.validate();
-                    this.$.Description.validate();
-                    this.$.ContractNo.validate();
+                    this.$.ProjectType.validate();
 
-                        //if (this.$.ProjectClient.value != "" && this.$.ProjectClient.value != undefined) {
-                        //    return true;
-                        //}
-                        //console.log(this.$.ProjectResponsible.value);
+                    if (this.$.Description.value == "" || this.$.Description.value == undefined) {
+                        this._openToastError("O campo Descrição é de preenchimento obrigatório.");
+                        return false;
+                    }
+                    if (this.$.ProjectClient.value == "" || this.$.ProjectClient.value == undefined) {
+                        this._openToastError("É obrigatória seleção de um Nº Cliente.");
+                        return false;
+                    }
+                    //if (this.$.ContractNo.value == "" || this.$.ContractNo.value == undefined) {
+                    //    this._openToastError("É obrigatória seleção de um Nº Contrato");
+                    //    return false;
+                    //}
+                    if (this.$.ProjectLeader.value == "" || this.$.ProjectLeader.value == undefined) {
+                        this._openToastError("É obrigatória seleção de um Chefe de Projeto.");
+                        return false;
+                    }
+                    if (this.$.ProjectStatus.value == 1 && (this.$.ProjectResponsible.value == "" || this.$.ProjectResponsible.value == undefined)) {
+                        this._openToastError("É obrigatória seleção de um Responsável de Projeto.");
+                        return false;
+                    }
+                    if (this.$.RegionCode.value == "" || this.$.RegionCode.value == undefined) {
+                        this._openToastError("É obrigatória seleção de um Cód. Região.");
+                        return false;
+                    }
+                    if (this.$.FunctionalAreaCode.value == "" || this.$.FunctionalAreaCode.value == undefined) {
+                        this._openToastError("É obrigatória seleção de um Cód. Área Funcional.");
+                        return false;
+                    }
+                    if (this.$.ResponsabilityCenterCode.value == "" || this.$.ResponsabilityCenterCode.value == undefined) {
+                        this._openToastError("É obrigatória seleção de um Cód. Centro Responsabilidade.");
+                        return false;
+                    }
+                    if (this.$.ProjectType.value == "" || this.$.ProjectType.value == undefined) {
+                        this._openToastError("É obrigatória seleção do Tipo de Projeto.");
+                        return false;
+                    }
 
-                        if (this.$.ProjectLeader.value == "" || this.$.ProjectLeader.value == undefined) {
-                            this._openToastError("É obrigatória seleção de um Chefe de Projeto.");
-                            return false;
-                        }
-
-                        if (this.$.ProjectStatus.value == 1 && (this.$.ProjectResponsible.value == "" || this.$.ProjectResponsible.value == undefined)) {
-                            this._openToastError("É obrigatória seleção de um Responsável de Projeto.");
-                            return false;
-                        }
-
-                        if (this.$.RegionCode.value == "" || this.$.RegionCode.value == undefined) {
-                            this._openToastError("É obrigatória seleção de um Cód. Região.");
-                            return false;
-                        }
-
-                        if (this.$.FunctionalAreaCode.value == "" || this.$.FunctionalAreaCode.value == undefined) {
-                            this._openToastError("É obrigatória seleção de um Cód. Área Funcional.");
-                            return false;
-                        }
-
-                        if (this.$.ResponsabilityCenterCode.value == "" || this.$.ResponsabilityCenterCode.value == undefined) {
-                            this._openToastError("É obrigatória seleção de um Cód. Centro Responsabilidade.");
-                            return false;
-                        }
-                        if (this.$.ProjectClient.value == "" || this.$.ProjectClient.value == undefined) {
-                            this._openToastError("É obrigatória seleção de um Nº Cliente.");
-                            return false;
-                        }
-                        if (this.$.ProjectType.value == "" || this.$.ProjectType.value == undefined) {
-                            this._openToastError("É obrigatória seleção do Tipo de Projeto.");
-                            return false;
-                        }
-                        return true;
+                    return true;
                     //}
 
                     this._openToastError("Verifique os dados inseridos.");
@@ -570,6 +598,30 @@
                     var ajax_request = this.$.ajax_delete_project;
                     bootbox.confirm({
                         message: "Tem a certeza que pretende remover o projeto " + this.data.projectNo + "?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            if (result) {
+                                ajax_request.body = JSON.stringify(Project);
+                                ajax_request.generateRequest();
+                            }
+                        }
+                    });
+                },
+
+                _terminarProject: function () {
+                    var Project = this.data;
+                    var ajax_request = this.$.ajax_terminar_project;
+                    bootbox.confirm({
+                        message: "Tem a certeza que pretende terminar o projeto " + this.data.projectNo + "?",
                         buttons: {
                             confirm: {
                                 label: 'Sim',
@@ -671,8 +723,22 @@
                     }
                 },
 
+                _responseTerminarProcessor: function (data) {
+                    var self = this;
+                    if (data.detail.status === 200) {
+                        if (this.terminarData.eReasonCode != 0) {
+                            this._openToastError(this.terminarData.eMessage);
+                        } else {
+                            this._openToast(this.terminarData.eMessage);
+                            setTimeout(
+                                function () {
+                                    window.location.href = "/";
+                                }, 2500);
+                        }
+                    }
+                },
+
                 _responseEnviarAprovacao: function (data) {
-                    debugger;
                     var self = this;
                     if (data.detail.status === 200) {
                         if (this.enviarAprovacao.eReasonCode != 1) {
@@ -754,6 +820,20 @@
 
                 _goBack: function (e) {
                     window.history.back();
+                },
+
+                _printMovimentos: function () {
+                    if (this._reportserverurl != undefined) {
+                        this.$.rptContainer.src = this._reportserverurl + "ProjetoMovimentos&NoProjeto=" + this.data.projectNo + "&Utilizador=" + this.data.utilizador + "&DBName=" + this.data.nameDB + "&CompanyName=" + this.data.companyName;
+                        this.$.rptDialog.open();
+                    }
+                    else {
+                        this._openToastError("Não é possivel imprimir. Não foi definido o servidor de relatórios.");
+                    }
+                },
+                _closeRptDialog: function () {
+                    this.$.rptContainer.src = "about:blank";
+                    this.$.rptDialog.close();
                 },
 
             });

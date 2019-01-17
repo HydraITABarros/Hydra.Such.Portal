@@ -193,7 +193,7 @@
                 <div class="col-lg-2">
                     <vaadin-date-picker label="Data" id="dpDate" name="dpDate" value="{{date}}" disabled="{{ !_permissions.create }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
                 </div>
-                <div class="col-lg-2">
+                <div class="col-lg-2" hidden>
                     <vaadin-combo-box items="[[_projMovTypes]]" id="projectMovementList" name="projectMovementList" item-value-path="id" item-label-path="value" value="{{projectMovementNumber}}" label="Tipo Movimento" disabled="{{ !_permissions.create }}"
                                     required error-message="Este campo é obrigatório">
                         <template>
@@ -227,7 +227,7 @@
                                     fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
                     </such-selectbox>
                 </div>
-                <div class="col-lg-2">
+                <div class="col-lg-4">
                     <vaadin-text-field id="piDescription" label="Descrição" value="{{description}}" disabled="{{ !_permissions.create }}"></vaadin-text-field>
                 </div>
             </div>
@@ -401,7 +401,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="200px" resizable>
+            <vaadin-grid-column width="200px" resizable hidden>
                 <template class="header">
                     <vaadin-grid-sorter path="movementType">Tipo Movimento</vaadin-grid-sorter>
                 </template>
