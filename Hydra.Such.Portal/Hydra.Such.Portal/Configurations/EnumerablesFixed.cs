@@ -2662,6 +2662,30 @@ namespace Hydra.Such.Portal.Configurations
                  Value="Logistica"
              }
         };
+
+        public static readonly List<EnumData> TipoLinhaGuiaTransporte = new List<EnumData>()
+        {
+            new EnumData()
+            {
+                Id = 0,
+                Value = "Recurso"
+            },
+            new EnumData()
+            {
+                Id = 1,
+                Value="Produto"
+            },
+            new EnumData()
+            {
+                Id = 2,
+                Value = "Conta"
+            },
+            new EnumData()
+            {
+                Id = 3,
+                Value = "Equipamento"
+            }
+        };
     }
 
     public class EnumDataString

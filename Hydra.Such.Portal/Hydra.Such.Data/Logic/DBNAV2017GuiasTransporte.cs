@@ -128,6 +128,7 @@ namespace Hydra.Such.Data.Logic
                         MoradaCliente2 = data.MoradaCliente2.Equals(DBNull.Value) ? "" : (string)data.MoradaCliente2,
                         Cidade = data.Cidade.Equals(DBNull.Value) ? "" : (string)data.Cidade,
                         CodPostal = data.CodPostal.Equals(DBNull.Value) ? "" : (string)data.CodPostal,
+                        CodEnvio = data.CodEnvio.Equals(DBNull.Value)?"":(string)data.CodEnvio,
                         NifCliente = data.VatRegistrationNo.Equals(DBNull.Value) ? "" : (string)data.VatRegistrationNo,
                         SourceCode = data.SourceCode.Equals(DBNull.Value) ? "" : (string)data.SourceCode,
                         NoRequisicao = data.NoRequisicao.Equals(DBNull.Value) ? "" : (string)data.NoRequisicao,
@@ -471,7 +472,7 @@ namespace Hydra.Such.Data.Logic
                         GuiaTransporteShipToAddress shipTo = new GuiaTransporteShipToAddress()
                         {
                           Customer_No = (string)temp.CustomerId,
-                          Code = temp.ShipToAddressCode.Equals(DBNull.Value)? "" : (string)temp.ShipToAddressCode,
+                          Code = temp.Code.Equals(DBNull.Value)? "" : (string)temp.Code,
                           Name = temp.Name.Equals(DBNull.Value)? "" : (string)temp.Name,
                           Name2 = temp.Name2.Equals(DBNull.Value)? "" : (string)temp.Name2,
                           Address = temp.Address.Equals(DBNull.Value)?"":(string)temp.Address,
@@ -488,7 +489,6 @@ namespace Hydra.Such.Data.Logic
             }
             catch (Exception ex)
             {
-
                 return null;
             }
         }
