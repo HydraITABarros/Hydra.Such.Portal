@@ -809,7 +809,7 @@ Saldo</Value>
       <Width>18.7292cm</Width>
       <Page>
         <PageHeader>
-          <Height>5.05354cm</Height>
+          <Height>5.08881cm</Height>
           <PrintOnFirstPage>true</PrintOnFirstPage>
           <PrintOnLastPage>true</PrintOnLastPage>
           <ReportItems>
@@ -859,7 +859,7 @@ Saldo</Value>
               <Top>1.09736in</Top>
               <Left>1.21181in</Left>
               <Height>0.33542in</Height>
-              <Width>1in</Width>
+              <Width>1.98481in</Width>
               <ZIndex>1</ZIndex>
               <Style>
                 <Border>
@@ -888,10 +888,10 @@ Saldo</Value>
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Name</rd:DefaultName>
-              <Top>1.00847in</Top>
-              <Left>3.75in</Left>
+              <Top>0.65083in</Top>
+              <Left>3.65113in</Left>
               <Height>0.21458in</Height>
-              <Width>2.06249in</Width>
+              <Width>3.58716in</Width>
               <ZIndex>2</ZIndex>
               <Style>
                 <Border>
@@ -934,9 +934,9 @@ Saldo</Value>
               </Paragraphs>
               <rd:DefaultName>Address</rd:DefaultName>
               <Top>1.20569in</Top>
-              <Left>3.75in</Left>
+              <Left>3.65113in</Left>
               <Height>0.64778in</Height>
-              <Width>3.48828in</Width>
+              <Width>3.58715in</Width>
               <ZIndex>3</ZIndex>
               <Style>
                 <Border>
@@ -968,7 +968,7 @@ Saldo</Value>
               <Top>1.41889in</Top>
               <Left>0.3175cm</Left>
               <Height>0.25in</Height>
-              <Width>2.08681in</Width>
+              <Width>3.07162in</Width>
               <ZIndex>4</ZIndex>
               <Style>
                 <Border>
@@ -1087,10 +1087,10 @@ Contribuite Nº</Value>
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox14</rd:DefaultName>
-              <Top>1.62847in</Top>
+              <Top>1.75347in</Top>
               <Left>0.3175cm</Left>
               <Height>0.25in</Height>
-              <Width>2.375in</Width>
+              <Width>3.07162in</Width>
               <ZIndex>7</ZIndex>
               <Style>
                 <Border>
@@ -1110,7 +1110,7 @@ Contribuite Nº</Value>
           </Style>
         </PageHeader>
         <PageFooter>
-          <Height>1.41817cm</Height>
+          <Height>5.4663cm</Height>
           <PrintOnFirstPage>true</PrintOnFirstPage>
           <PrintOnLastPage>true</PrintOnLastPage>
           <ReportItems>
@@ -1134,6 +1134,7 @@ Contribuite Nº</Value>
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox48</rd:DefaultName>
+              <Top>0cm</Top>
               <Left>12.97806cm</Left>
               <Height>0.6cm</Height>
               <Width>2.50037cm</Width>
@@ -1168,6 +1169,7 @@ Contribuite Nº</Value>
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox49</rd:DefaultName>
+              <Top>0cm</Top>
               <Left>15.61955cm</Left>
               <Height>0.6cm</Height>
               <Width>2.16701cm</Width>

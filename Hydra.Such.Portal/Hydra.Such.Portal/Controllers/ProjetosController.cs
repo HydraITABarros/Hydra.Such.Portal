@@ -2934,6 +2934,7 @@ namespace Hydra.Such.Portal.Controllers
 
             string customerNo = requestParams["customerNo"].ToString();
             string commitmentNo = requestParams["commitmentNo"].ToString();
+            string data = requestParams["data"].ToString();
 
             string execDetails = string.Empty;
 
@@ -3000,7 +3001,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult CreateBillingDocuments([FromBody] List<AuthorizedProjectViewModel> authProjectMovements, string OptionInvoice)
+        public JsonResult CreateBillingDocuments([FromBody] List<AuthorizedProjectViewModel> authProjectMovements, string OptionInvoice, string dataFormulario)
         {
             string execDetails = string.Empty;
             string errorMessage = string.Empty;
@@ -3426,7 +3427,7 @@ namespace Hydra.Such.Portal.Controllers
                             header.CreateUser = User.Identity.Name;
 
                             execDetails = string.Format("Fat. Cliente: {0}, Data: {1}, Nº Compromisso: {2} - ", header.InvoiceToClientNo, header.Date, header.CommitmentNumber);
-                            Task<WSCreatePreInvoice.Create_Result> TCreatePreInvoice = WSPreInvoice.CreatePreInvoice(header, _configws);
+                            Task<WSCreatePreInvoice.Create_Result> TCreatePreInvoice = WSPreInvoice.CreatePreInvoice(header, _configws, dataFormulario);
                             TCreatePreInvoice.Wait();
 
                             if (TCreatePreInvoice.IsCompletedSuccessfully)
@@ -5962,6 +5963,115 @@ namespace Hydra.Such.Portal.Controllers
         {
             sFileName = @"/Upload/temp/" + sFileName;
             return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Faturação de Projetos.xlsx");
+        }
+
+        //1
+        [HttpPost]
+        public async Task<JsonResult> ExportToExcel_DetalhesAutorizacao([FromBody] List<ProjectMovementViewModel> Lista)
+        {
+            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + "_ExportEXCEL.xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Faturação de Projetos Detalhes");
+                IRow row = excelSheet.CreateRow(0);
+
+                row.CreateCell(0).SetCellValue("Data");
+                row.CreateCell(1).SetCellValue("Tipo Movimento");
+                row.CreateCell(2).SetCellValue("Tipo");
+                row.CreateCell(3).SetCellValue("Código");
+                row.CreateCell(4).SetCellValue("Descrição");
+                row.CreateCell(5).SetCellValue("Quantidade");
+                row.CreateCell(6).SetCellValue("Cód. Unidade Medida");
+                row.CreateCell(7).SetCellValue("Preço Unitário");
+                row.CreateCell(8).SetCellValue("Preço Total");
+                row.CreateCell(9).SetCellValue("Faturável");
+                row.CreateCell(10).SetCellValue("Tipo de Recurso");
+                row.CreateCell(11).SetCellValue("Código Serviço");
+                row.CreateCell(12).SetCellValue("Descrição Serviço");
+                row.CreateCell(13).SetCellValue("Grupo Serviços");
+                row.CreateCell(14).SetCellValue("Nº Guia Externa");
+                row.CreateCell(15).SetCellValue("Data Consumo Guia");
+                row.CreateCell(16).SetCellValue("Nº Guia de Residuos");
+                row.CreateCell(17).SetCellValue("Nº Guia Corrigida");
+                row.CreateCell(18).SetCellValue("Data Consumo Guia Corrigida");
+                row.CreateCell(19).SetCellValue("Destino Final Residuos");
+                row.CreateCell(20).SetCellValue("Tipo Refeição");
+                row.CreateCell(21).SetCellValue("Nº Documento");
+                row.CreateCell(22).SetCellValue("Localização");
+                row.CreateCell(23).SetCellValue("Custo Unitário");
+                row.CreateCell(24).SetCellValue("Custo Total");
+                row.CreateCell(25).SetCellValue("Região");
+                row.CreateCell(26).SetCellValue("Área Funcional");
+                row.CreateCell(27).SetCellValue("Centro Responsabilidade");
+                row.CreateCell(28).SetCellValue("Nº Projeto");
+                row.CreateCell(29).SetCellValue("Nº Movimento");
+                row.CreateCell(30).SetCellValue("Fatura-a Nº Cliente");
+                row.CreateCell(31).SetCellValue("Nome Cliente");
+
+                int count = 1;
+                foreach (ProjectMovementViewModel item in Lista)
+                {
+                    row = excelSheet.CreateRow(count);
+
+                    row.CreateCell(0).SetCellValue(item.Date);
+                    row.CreateCell(1).SetCellValue(item.MovementType.ToString());
+                    row.CreateCell(2).SetCellValue(item.Type.ToString());
+                    row.CreateCell(3).SetCellValue(item.Code);
+                    row.CreateCell(4).SetCellValue(item.Description);
+                    row.CreateCell(5).SetCellValue(item.Quantity.ToString());
+                    row.CreateCell(6).SetCellValue(item.MeasurementUnitCode);
+                    row.CreateCell(7).SetCellValue(item.UnitPrice.ToString());
+                    row.CreateCell(8).SetCellValue(item.TotalPrice.ToString());
+                    row.CreateCell(9).SetCellValue(item.Billable.ToString());
+                    row.CreateCell(10).SetCellValue(item.ResourceType.ToString());
+                    row.CreateCell(11).SetCellValue(item.ServiceClientCode);
+                    row.CreateCell(12).SetCellValue(item.ServiceClientDescription);
+                    row.CreateCell(13).SetCellValue(item.ServiceGroupCode);
+                    row.CreateCell(14).SetCellValue(item.ExternalGuideNo);
+                    row.CreateCell(15).SetCellValue(item.ConsumptionDate);
+                    row.CreateCell(16).SetCellValue(item.ResidueGuideNo);
+                    row.CreateCell(17).SetCellValue(item.AdjustedDocument);
+                    row.CreateCell(18).SetCellValue(item.AdjustedDocumentDate);
+                    row.CreateCell(19).SetCellValue(item.ResidueFinalDestinyCode.ToString());
+                    row.CreateCell(20).SetCellValue(item.MealType.ToString());
+                    row.CreateCell(21).SetCellValue(item.DocumentNo);
+                    row.CreateCell(22).SetCellValue(item.LocationCode);
+                    row.CreateCell(23).SetCellValue(item.UnitCost.ToString());
+                    row.CreateCell(24).SetCellValue(item.TotalCost.ToString());
+                    row.CreateCell(25).SetCellValue(item.RegionCode);
+                    row.CreateCell(26).SetCellValue(item.FunctionalAreaCode);
+                    row.CreateCell(27).SetCellValue(item.ResponsabilityCenterCode);
+                    row.CreateCell(28).SetCellValue(item.ProjectNo);
+                    row.CreateCell(29).SetCellValue(item.LineNo);
+                    row.CreateCell(30).SetCellValue(item.InvoiceToClientNo);
+                    row.CreateCell(31).SetCellValue(item.ClientName);
+
+                    count++;
+                }
+
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+        }
+        //2
+        public IActionResult ExportToExcelDownload_DetalhesAutorizacao(string sFileName)
+        {
+            sFileName = @"/Upload/temp/" + sFileName;
+            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Faturação de Projetos Detalhes.xlsx");
         }
 
         //1

@@ -5241,7 +5241,7 @@ namespace Hydra.Such.Portal.Controllers
                     DtValidadeInicio = x.DtValidadeInicio,
                     DtValidadeInicioTexto = x.DtValidadeInicio == null ? "" : Convert.ToDateTime(x.DtValidadeInicio).ToShortDateString(),
                     DtValidadeFim = x.DtValidadeFim,
-                    DtValidadeFimTexto = x.DtValidadeFim == null ? "" : Convert.ToDateTime(x.DtValidadeFim).ToShortDateString(),
+                    DtValidadeFimTexto = x.DtValidadeFim == null ? "" : Convert.ToDateTime(x.DtValidadeFim).ToString("yyyy-MM-dd"),
                     Regiao = x.Regiao,
                     //RegiaoNome = x.Regiao == null ? "" : x.Regiao.ToString() + " - " + DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 1).Where(y => y.Code == x.Regiao).SingleOrDefault()?.Name,
                     Area = x.Area,
@@ -5364,6 +5364,44 @@ namespace Hydra.Such.Portal.Controllers
                 return Json(0);
             else
                 return Json(1);
+        }
+
+        [HttpPost]
+        //Atualiza uma Presença
+        public JsonResult UpdateLinhaAcordoPreco([FromBody] LinhasAcordoPrecos data)
+        {
+            ErrorHandler result = new ErrorHandler();
+            try
+            {
+                LinhasAcordoPrecos toUpdate = DBLinhasAcordoPrecos.GetById(data.NoProcedimento, data.NoFornecedor, data.CodProduto, data.DtValidadeInicio, data.Cresp, data.Localizacao);
+                if (toUpdate != null)
+                {
+                    toUpdate.DtValidadeFim = data.DtValidadeFim;
+
+                    if (DBLinhasAcordoPrecos.Update(toUpdate) != null)
+                    {
+                        result.eReasonCode = 1;
+                        result.eMessage = "Linha Acordo de Preço atualizada com sucesso.";
+                    }
+                    else
+                    {
+                        result.eReasonCode = 2;
+                        result.eMessage = "Ocorreu um erro ao atualizar a linha Acordo de Preço.";
+                    }
+                }
+                else
+                {
+                    result.eReasonCode = 3;
+                    result.eMessage = "Ocorreu um erro ao obter a linha Acordo de Preço.";
+                }
+            }
+            catch (Exception ex)
+            {
+                result.eReasonCode = 99;
+                result.eMessage = "Ocorreu um erro.";
+            }
+
+            return Json(result);
         }
 
         [HttpPost]

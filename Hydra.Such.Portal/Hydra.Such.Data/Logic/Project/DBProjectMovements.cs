@@ -112,7 +112,7 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
                 {
                         return ctx.MovimentosDeProjeto
                             .Where(x => x.NºProjeto == projectNo &&
-                                    x.Faturada == false && //Consumo
+                                    (x.Faturada == false) && //Consumo
                                     x.Faturável == true &&
                                     x.GrupoFatura == ProjGroup &&
                                     x.FaturaçãoAutorizada == true)

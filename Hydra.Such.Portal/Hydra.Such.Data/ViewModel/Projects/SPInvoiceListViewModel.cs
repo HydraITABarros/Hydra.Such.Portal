@@ -74,6 +74,7 @@ namespace Hydra.Such.Data.ViewModel.Projects
         public string SituacoesPendentes { get; set; }
         public int? Opcao { get; set; }
         public string Comments { get; set; }
+        public DateTime Posting_Date { get; set; }
         //EXPORTAR PARA EXCEL
         public Object ColunasEXCEL { get; set; }
 
