@@ -471,6 +471,14 @@
                         if (!this.modalTitle) {
                             this.modalTitle = "Selecione o valor para: " + this.label;
                         }
+
+
+                        $(_this.$.selectBoxModal).on("click", function (e) {
+                            e.preventDefault();
+                            e.stopImmediatePropagation();
+                            e.stopPropagation();
+                        });
+
                     }
 
                     _getFieldValue(field, item) {
