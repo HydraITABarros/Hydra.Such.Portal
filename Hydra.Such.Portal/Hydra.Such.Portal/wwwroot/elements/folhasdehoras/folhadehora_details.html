@@ -1670,10 +1670,17 @@
                     _reportserverurl: {
                         type: String,
                     },
+                    _load: {
+                        type: Boolean,
+                        notify: true,
+                        value: false
+                    },
                 },
 
                 ready: function () {
                     //GET FOLHADEHORA DATA
+                    window.history.replaceState('', '', '/FolhasDeHoras/Detalhes/?FHNo=' + this._folhadehoraid);
+
                     this.$.page_databound_ajax.body = JSON.stringify({ "folhaDeHorasNo": this._folhadehoraid });
                     this.$.page_databound_ajax.generateRequest();
                 },
@@ -4009,24 +4016,24 @@
 
 
                 _setFieldsEditability(data) {
+                    debugger;
                     var _self = this;
 
                     //BOTÕES
-                    //if (data.terminada == true) { //TERMINADA
-                    //    $(_self.$.btn_calcularAjudasCusto).addClass('disabled');
-                    //    $(_self.$.btn_updateFH1).addClass('disabled');
-                    //    $(_self.$.btn_updateFH2).addClass('disabled');
-                    //    $(_self.$.btn_createPercurso).addClass('disabled');
-                    //    $(_self.$.btn_createAjuda).addClass('disabled');
-                    //    $(_self.$.btn_createMaoDeObra).addClass('disabled');
-                    //    $(_self.$.btn_createPresenca).addClass('disabled');
-                    //    if (_self.$.integradorEmRH.value != null) {
-                    //        $(_self.$.btn_integrarEmRH).addClass('disabled');
-                    //    }
-                    //    if (_self.$.integradorEmRHKM.value != null) {
-                    //        $(_self.$.btn_integrarEmRHKM).addClass('disabled');
-                    //    }
-                    //};
+                    if (data.terminada == true) { //TERMINADA
+                        $(_self.$.btn_calcularAjudasCusto).addClass('disabled');
+                        $(_self.$.btn_updateFH1).addClass('disabled');
+                        $(_self.$.btn_updateFH2).addClass('disabled');
+                        $(_self.$.btn_createPercurso).addClass('disabled');
+                        $(_self.$.btn_createAjuda).addClass('disabled');
+                        $(_self.$.btn_createMaoDeObra).addClass('disabled');
+                        $(_self.$.btn_createPresenca).addClass('disabled');
+                        //if (_self.$.integradorEmRH.value != null & _self.$.integradorEmRH.value != "" & _self.$.integradorEmRH.value) {
+                        //    $(_self.$.btn_integrarEmRH).addClass('disabled');
+                        //}
+                        //if (_self.$.integradorEmRHKM.value != null & _self.$.integradorEmRHKM.value != "") {
+                        //    $(_self.$.btn_integrarEmRHKM).addClass('disabled');
+                    };
 
                     if (data.estado == 1) { //VALIDADO
                         $(_self.$.btn_calcularAjudasCusto).addClass('disabled');
@@ -4037,7 +4044,7 @@
                         $(_self.$.btn_createAjuda).addClass('disabled');
                         $(_self.$.btn_createMaoDeObra).addClass('disabled');
                         $(_self.$.btn_createPresenca).addClass('disabled');
-                        if (_self.$.integradorEmRH.value != null & _self.$.integradorEmRH.value != "" & _self.$.integradorEmRH.value) {
+                        if (_self.$.integradorEmRH.value != null & _self.$.integradorEmRH.value != "") {
                             $(_self.$.btn_integrarEmRH).addClass('disabled');
                         }
                         if (_self.$.integradorEmRHKM.value != null & _self.$.integradorEmRHKM.value != "") {
@@ -4067,24 +4074,24 @@
                     }
 
                     //CAMPOS
-                    //if (data.terminada == true) { //TERMINADA
-                    //    _self.$.projetoNo.disabled = true;
-                    //    _self.$.empregadoNo.disabled = true;
-                    //    _self.$.dataPartidaTexto.disabled = true;
-                    //    _self.$.horaPartidaTexto.disabled = true;
-                    //    _self.$.dataChegadaTexto.disabled = true;
-                    //    _self.$.horaChegadaTexto.disabled = true;
-                    //    _self.$.tipoDeslocacao.disabled = true;
-                    //    _self.$.codigoTipoKms.disabled = true;
-                    //    _self.$.matricula.disabled = true;
-                    //    _self.$.deslocacaoForaConcelho.disabled = true;
-                    //    _self.$.terminada.disabled = true;
+                    if (data.terminada == true) { //TERMINADA
+                        _self.$.projetoNo.disabled = true;
+                        _self.$.empregadoNo.disabled = true;
+                        _self.$.dataPartidaTexto.disabled = true;
+                        _self.$.horaPartidaTexto.disabled = true;
+                        _self.$.dataChegadaTexto.disabled = true;
+                        _self.$.horaChegadaTexto.disabled = true;
+                        _self.$.tipoDeslocacao.disabled = true;
+                        _self.$.codigoTipoKms.disabled = true;
+                        _self.$.matricula.disabled = true;
+                        _self.$.deslocacaoForaConcelho.disabled = true;
+                        _self.$.terminada.disabled = true;
 
-                    //    _self.$.codigoRegiao.disabled = true;
-                    //    _self.$.codigoAreaFuncional.disabled = true;
-                    //    _self.$.codigoCentroResponsabilidade.disabled = true;
-                    //    _self.$.observacoes.disabled = true;
-                    //};
+                        _self.$.codigoRegiao.disabled = true;
+                        _self.$.codigoAreaFuncional.disabled = true;
+                        _self.$.codigoCentroResponsabilidade.disabled = true;
+                        _self.$.observacoes.disabled = true;
+                    };
                     if (data.estado == 1) { //VALIDADO
                         _self.$.projetoNo.disabled = true;
                         _self.$.empregadoNo.disabled = true;

@@ -1255,6 +1255,7 @@
                   <Group Name="Servico">
                     <GroupExpressions>
                       <GroupExpression>=Fields!Servico.Value</GroupExpression>
+                      <GroupExpression>=Fields!Recurso.Value</GroupExpression>
                     </GroupExpressions>
                   </Group>
                   <SortExpressions>
@@ -1372,9 +1373,9 @@
             <Image Name="Image1">
               <Source>Embedded</Source>
               <Value>SUCH2</Value>
-              <Sizing>FitProportional</Sizing>
-              <Height>2.29375cm</Height>
-              <Width>6.23605cm</Width>
+              <Sizing>Fit</Sizing>
+              <Height>2cm</Height>
+              <Width>6cm</Width>
               <Style>
                 <Border>
                   <Style>None</Style>
@@ -1558,7 +1559,6 @@
   <ReportParameters>
     <ReportParameter Name="NoProjeto">
       <DataType>String</DataType>
-      <Prompt>No Projeto</Prompt>
       <Hidden>true</Hidden>
     </ReportParameter>
     <ReportParameter Name="Recurso">
@@ -1605,22 +1605,22 @@
           <ParameterName>NoProjeto</ParameterName>
         </CellDefinition>
         <CellDefinition>
-          <ColumnIndex>1</ColumnIndex>
-          <RowIndex>0</RowIndex>
+          <ColumnIndex>0</ColumnIndex>
+          <RowIndex>1</RowIndex>
           <ParameterName>Recurso</ParameterName>
         </CellDefinition>
         <CellDefinition>
-          <ColumnIndex>2</ColumnIndex>
-          <RowIndex>0</RowIndex>
+          <ColumnIndex>1</ColumnIndex>
+          <RowIndex>1</RowIndex>
           <ParameterName>CodServicoCliente</ParameterName>
         </CellDefinition>
         <CellDefinition>
-          <ColumnIndex>3</ColumnIndex>
-          <RowIndex>0</RowIndex>
+          <ColumnIndex>2</ColumnIndex>
+          <RowIndex>1</RowIndex>
           <ParameterName>DataInicio</ParameterName>
         </CellDefinition>
         <CellDefinition>
-          <ColumnIndex>0</ColumnIndex>
+          <ColumnIndex>3</ColumnIndex>
           <RowIndex>1</RowIndex>
           <ParameterName>DataFim</ParameterName>
         </CellDefinition>
