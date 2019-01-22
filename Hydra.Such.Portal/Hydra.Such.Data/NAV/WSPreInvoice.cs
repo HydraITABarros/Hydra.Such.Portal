@@ -86,8 +86,10 @@ namespace Hydra.Such.Data.NAV
                     Payment_Method_Code = preInvoiceToCreate.CodMetodoPagamento,
                     Payment_Terms_Code = preInvoiceToCreate.CodTermosPagamento,
                     //Posting_Date
-                    Posting_Date = preInvoiceToCreate.Posting_Date,
-                    Document_Date = preInvoiceToCreate.Posting_Date,
+                    Posting_Date = !string.IsNullOrEmpty(preInvoiceToCreate.Posting_Date.ToString()) ? DateTime.Parse(preInvoiceToCreate.Posting_Date.ToString()) : DateTime.MinValue,
+                    Posting_DateSpecified = !string.IsNullOrEmpty(preInvoiceToCreate.Posting_Date.ToString()),
+                    Document_Date = !string.IsNullOrEmpty(preInvoiceToCreate.Posting_Date.ToString()) ? DateTime.Parse(preInvoiceToCreate.Posting_Date.ToString()) : DateTime.MinValue,
+                    Document_DateSpecified = !string.IsNullOrEmpty(preInvoiceToCreate.Posting_Date.ToString())
                     //External_Document_No = o 1º projeto das linhas
                 }
 

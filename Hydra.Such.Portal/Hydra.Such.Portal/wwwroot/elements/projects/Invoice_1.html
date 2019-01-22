@@ -1072,9 +1072,11 @@
                     }
                 },
                 _createInvoice: function () {
+                    debugger;
+                    var dataFormulario = this.$._CLData.value;
+
                     if (this.CustBillingValResponse.eMessages.length != 0) {
                         var option = this.$._CLOptionInvoice.value;
-                        var dataFormulario = this.$._CLData.value;
                         var valError = this.CustBillingValResponse.eMessages.find(x => x.type == 0);
                         if (valError) {
                             this.openToastError(valError.message);
@@ -1107,14 +1109,14 @@
                             }
                             else {
                                 this.$.billProjects_ajax.body = JSON.stringify(this.selectedItem);
-                                this.$.billProjects_ajax.params = { "OptionInvoice": this.$._CLOptionInvoice.value, "dataFormulario": this.$._CLData.value };
+                                this.$.billProjects_ajax.params = { "OptionInvoice": this.$._CLOptionInvoice.value, "dataFormulario": dataFormulario };
                                 this.$.billProjects_ajax.generateRequest();
                             }
                         }
                     }
                     else {
                         this.$.billProjects_ajax.body = JSON.stringify(this.selectedItem);
-                        this.$.billProjects_ajax.params = { "OptionInvoice": this.$._CLOptionInvoice.value, "dataFormulario": this.$._CLData.value };
+                        this.$.billProjects_ajax.params = { "OptionInvoice": this.$._CLOptionInvoice.value, "dataFormulario": dataFormulario };
                         this.$.billProjects_ajax.generateRequest();
                     }
                 },

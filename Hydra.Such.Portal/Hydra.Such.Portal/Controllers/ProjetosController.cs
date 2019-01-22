@@ -2934,7 +2934,6 @@ namespace Hydra.Such.Portal.Controllers
 
             string customerNo = requestParams["customerNo"].ToString();
             string commitmentNo = requestParams["commitmentNo"].ToString();
-            string data = requestParams["data"].ToString();
 
             string execDetails = string.Empty;
 

@@ -71,7 +71,9 @@
     <Report Include="ProjetoMovimentos.rdl" />
     <Report Include="ProjetoPreMovimentos.rdl" />
     <Report Include="RequisitionReport.rdl" />
+    <Report Include="RequisitionReportA5.rdl" />
     <Report Include="RequisitionStockReport.rdl" />
+    <Report Include="RequisitionStockReportA5.rdl" />
     <Report Include="Requisições.rdl" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Reporting Services\Microsoft.ReportingServices.MSBuilder.targets" />

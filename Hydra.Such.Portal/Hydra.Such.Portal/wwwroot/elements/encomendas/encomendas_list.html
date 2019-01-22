@@ -57,7 +57,7 @@
                    id="grid_databound_ajax"
                    content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/Encomendas/ExportToExcel"
+        <iron-ajax url="/Encomendas/ExportToExcel_ListaEncomendas"
                    last-response="{{export}}"
                    id="ajax_Export"
                    method="post"
@@ -153,7 +153,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="220px" resizable hidden$="{{ _columns.total.hidden }}">
+            <vaadin-grid-column width="220px" resizable hidden$="{{ _columns.vlrRececionadoSemIVA.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="vlrRececionadoSemIVA">Vlr rececionado sem IVA</vaadin-grid-sorter>
                     <vaadin-grid-filter path="vlrRececionadoSemIVA" />
@@ -297,7 +297,6 @@
                 },
 
                 _exportEXCEL: function () {
-                    debugger;
                     this.result[0].ColunasEXCEL = this._columns;
 
                     this.$.ajax_Export.body = JSON.stringify(this.result);
@@ -305,7 +304,6 @@
                 },
 
                 _exportEXCELResponse: function (e) {
-                    debugger;
                     var FileName = this.export;
                     location.href = '../Encomendas/ExportToExcelDownload_Encomendas?sFileName=' + FileName;
                 },
@@ -320,6 +318,8 @@
                         "yourReference": { hidden: false, label: "Sua Referência" },
                         "orderDate": { hidden: false, label: "Data da Encomenda" },
                         "noConsulta": { hidden: false, label: "Nº Consulta Mercado" },
+                        "vlrRececionadoComIVA": { hidden: false, label: "Vlr rececionado com IVA" },
+                        "vlrRececionadoSemIVA": { hidden: false, label: "Vlr rececionado sem IVA" },
                         "total": { hidden: false, label: "Total" },
                         "expectedReceiptDate": { hidden: false, label: "Data Recepção Esperada" },
                         "requisitionNo": { hidden: false, label: "Nº Requisição" },
@@ -327,8 +327,6 @@
                         "functionalAreaId": { hidden: false, label: "Cód. Área Funcional" },
                         "respCenterId": { hidden: false, label: "Cód. Centro de Responsabilidade" },
                         "hasAnAdvance": { hidden: false, label: "Adiantamento" },
-                        "vlrRececionadoComIVA": { hidden: false, label: "Vlr rececionado com IVA" },
-                        "vlrRececionadoSemIVA": { hidden: false, label: "Vlr rececionado sem IVA" },
                     };
 
                     if (localStorage["encomendaslist.ToggleColumn"]) {

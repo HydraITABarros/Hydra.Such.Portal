@@ -333,15 +333,16 @@
             <such-dropdown-menu id="menuRegister" disabled="{{ !_permissions.update }}" on-value-changed="_registerMenuItemSelected" title="Registar" items='[[ _registerMenuItems ]]'></such-dropdown-menu>
             <such-dropdown-menu id="menuFunctios" disabled="{{ !_permissions.update }}" on-value-changed="_functionsMenuItemSelected" title="Funções" items='[[ _functionsMenuItems ]]'></such-dropdown-menu>
 
-
-
             <!--<template is="dom-if" if="{{ _permissions.update }}">-->
             <!--<paper-button class="tablinks" id="btnLocalMarketValidation" style="width: 200px !important;" on-tap="_validateLocalMarket"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Enviar Mercado Local</paper-button>-->
             <!--<paper-button class="tablinks" id="btnValidate" on-tap="_validateRequisition"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Validar</paper-button>-->
             <!--<such-dropdown-menu id="menuRegister" on-value-changed="_registerMenuItemSelected" title="Registar" items='[[ _registerMenuItems ]]'></such-dropdown-menu>-->
             <!--<such-dropdown-menu id="menuFunctios" on-value-changed="_functionsMenuItemSelected" title="Funções" items='[[ _functionsMenuItems ]]'></such-dropdown-menu>-->
             <!--</template>-->
-            <paper-button class="tablinks" id="btnPrint" on-tap="_printRequisition"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Imprimir</paper-button>
+
+            <!--<paper-button class="tablinks" id="btnPrint" on-tap="_printRequisition"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Imprimir</paper-button>-->
+            <such-dropdown-menu id="menuImprimir" on-value-changed="_menuImprimir" title="Imprimir" items="[[ _imprimirMenuItems ]]"></such-dropdown-menu>
+
             <paper-button class="tablinks" id="btnStatOfPlay" on-tap="_redirectToStatOfPlay" hidden="{{ !Requisition.showPontoSituacao }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Ponto situação</paper-button>
             <paper-button class="tablinks" id="btnShowChangeLog" on-tap="_showChangeLog"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Workflow</paper-button>
             <paper-button class="tablinks" id="btnShowEncomendas" on-tap="_showEncomendas"><i class="fa fa-first-order" aria-hidden="true"></i>&nbsp; Encomendas</paper-button>
@@ -1815,6 +1816,10 @@
                     _SelectedLine: {
                         observer: '_lineSelected'
                     },
+                    _imprimirMenuItems: {
+                        type: Array,
+                        value: [{ value: 1, description: "Imprimir A4" }, { value: 2, description: "Imprimir A5" }, { value: 3, description: "Validar e Imprimir A4" }, { value: 4, description: "Validar e Imprimir A5" }],
+                    },
                 },
                 observers: [
                     '_onCacheLoaded(Projects,LProjectResponsabilityCenterCodes,LProjectRegionCodes,LProjectFunctionalAreaCodes,Locations,Products,UnitsOfMmeasure,Suppliers)'
@@ -2716,6 +2721,7 @@
                 _closeRptDialog: function () {
                     this.$.rptContainer.src = "about:blank";
                     this.$.rptDialog.close();
+                    window.history.back();
                 },
                 _createTransferShipment: function () {
                     //window.open("/GestaoRequisicoes/CreateTransferShipment/" + this.Requisition.requisitionNo, "_blank");
@@ -2988,6 +2994,87 @@
                     }
                 },
 
+                _menuImprimir: function (e) {
+                    var item = e.detail.value;
+
+                    if (item == null)
+                        return;
+
+                    this._newStatus = item.value;
+                    if (item.value == 1) { //IMPRIMIR A4
+                        if (this._reportserverurl != undefined) {
+                            if (this.$.CBHeaderProjects.value != "") {
+                                this.$.rptContainer.src = this._reportserverurl + "RequisitionReport&NoRequisicao=" + this.Requisition.requisitionNo;
+                            }
+                            else {
+                                this.$.rptContainer.src = this._reportserverurl + "RequisitionStockReport&NoRequisicao=" + this.Requisition.requisitionNo;
+                            }
+                            this.$.rptDialog.open();
+                        }
+                        else {
+                            this._openToastError("Não é possivel imprimir. Não foi definido o servidor de relatórios.");
+                        }
+
+                    }
+                    if (item.value == 2) { //IMPRIMIR A5
+                        if (this._reportserverurl != undefined) {
+                            if (this.$.CBHeaderProjects.value != "") {
+                                this.$.rptContainer.src = this._reportserverurl + "RequisitionReportA5&NoRequisicao=" + this.Requisition.requisitionNo;
+                            }
+                            else {
+                                this.$.rptContainer.src = this._reportserverurl + "RequisitionStockReportA5&NoRequisicao=" + this.Requisition.requisitionNo;
+                            }
+                            this.$.rptDialog.open();
+                        }
+                        else {
+                            this._openToastError("Não é possivel imprimir. Não foi definido o servidor de relatórios.");
+                        }
+                    }
+                    if (item.value == 3) { //VALIDAR E IMPRIMIR A4
+                        //VALIDAR
+                        this.$.validaterequisition_datasource.body = JSON.stringify(this.Requisition);
+                        this.$.validaterequisition_datasource.generateRequest();
+
+                        //IMPRIMIR
+                        if (this._reportserverurl != undefined) {
+                            if (this.$.CBHeaderProjects.value != "") {
+                                this.$.rptContainer.src = this._reportserverurl + "RequisitionReport&NoRequisicao=" + this.Requisition.requisitionNo;
+                            }
+                            else {
+                                this.$.rptContainer.src = this._reportserverurl + "RequisitionStockReport&NoRequisicao=" + this.Requisition.requisitionNo;
+                            }
+                            this.$.rptDialog.open();
+                        }
+                        else {
+                            this._openToastError("Não é possivel imprimir. Não foi definido o servidor de relatórios.");
+                        }
+                    }
+                    if (item.value == 4) { //VALIDAR E IMPRIMIR A5
+                        //VALIDAR
+                        this.$.validaterequisition_datasource.body = JSON.stringify(this.Requisition);
+                        this.$.validaterequisition_datasource.generateRequest();
+
+                        //IMPRIMIR
+                        if (this._reportserverurl != undefined) {
+                            if (this.$.CBHeaderProjects.value != "") {
+                                this.$.rptContainer.src = this._reportserverurl + "RequisitionReportA5&NoRequisicao=" + this.Requisition.requisitionNo;
+                            }
+                            else {
+                                this.$.rptContainer.src = this._reportserverurl + "RequisitionStockReportA5&NoRequisicao=" + this.Requisition.requisitionNo;
+                            }
+                            this.$.rptDialog.open();
+                        }
+                        else {
+                            this._openToastError("Não é possivel imprimir. Não foi definido o servidor de relatórios.");
+                        }
+                    }
+
+
+
+                    this.$.validaterequisition_datasource.body = JSON.stringify(this.Requisition);
+                    this.$.validaterequisition_datasource.generateRequest();
+
+                },
             });
         });
     </script>
