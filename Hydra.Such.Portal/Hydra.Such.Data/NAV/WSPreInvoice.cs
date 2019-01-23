@@ -89,8 +89,8 @@ namespace Hydra.Such.Data.NAV
                     Posting_Date = !string.IsNullOrEmpty(preInvoiceToCreate.Posting_Date.ToString()) ? DateTime.Parse(preInvoiceToCreate.Posting_Date.ToString()) : DateTime.MinValue,
                     Posting_DateSpecified = !string.IsNullOrEmpty(preInvoiceToCreate.Posting_Date.ToString()),
                     Document_Date = !string.IsNullOrEmpty(preInvoiceToCreate.Posting_Date.ToString()) ? DateTime.Parse(preInvoiceToCreate.Posting_Date.ToString()) : DateTime.MinValue,
-                    Document_DateSpecified = !string.IsNullOrEmpty(preInvoiceToCreate.Posting_Date.ToString())
-                    //External_Document_No = o 1º projeto das linhas
+                    Document_DateSpecified = !string.IsNullOrEmpty(preInvoiceToCreate.Posting_Date.ToString()),
+                    External_Document_No = preInvoiceToCreate.ProjectNo
                 }
 
             };
@@ -131,7 +131,7 @@ namespace Hydra.Such.Data.NAV
 
         }
 
-        public static async Task<WSCreatePreInvoice.Create_Result> CreatePreInvoice(AuthorizedCustomerBillingHeader billingHeader, NAVWSConfigurations WSConfigurations, string dataFormulario)
+        public static async Task<WSCreatePreInvoice.Create_Result> CreatePreInvoice(AuthorizedCustomerBillingHeader billingHeader, NAVWSConfigurations WSConfigurations, string dataFormulario, string projeto)
         {
             SPInvoiceListViewModel invoiceHeader = new SPInvoiceListViewModel();
             invoiceHeader.InvoiceToClientNo = billingHeader.InvoiceToClientNo;
@@ -152,6 +152,7 @@ namespace Hydra.Such.Data.NAV
             invoiceHeader.CodMetodoPagamento = billingHeader.CodMetodoPagamento;
             invoiceHeader.CreateUser = billingHeader.CreateUser;
             invoiceHeader.Posting_Date = Convert.ToDateTime(dataFormulario);
+            invoiceHeader.ProjectNo = projeto;
 
             return await CreatePreInvoice(invoiceHeader, WSConfigurations);
 

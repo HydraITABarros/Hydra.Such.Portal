@@ -15,7 +15,7 @@
 <link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 <link rel="import" href="/lib/vaadin-context-menu/vaadin-context-menu.html" />
-<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
+<!--<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">-->
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
@@ -35,6 +35,7 @@
 
 <link rel="import" href="~/lib/datetime-picker-master/time-element.html" />
 <link rel="import" href="~/lib/datetime-picker-master/time-picker.html" />
+<link rel="import" href="/lib/vaadin-date-picker-3.0.0-alpha1/vaadin-date-picker.html">
 
 <!--ACORDEÃO-->
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
@@ -257,6 +258,14 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/FolhasDeHoras/CopiarLinhaPercurso"
+                   last-response="{{LinhaPercursoCopiar}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_copiarlinhapercurso_ajax"
+                   on-response="_copiarLinhaPercursoResponse"
+                   content-type="application/json">
+        </iron-ajax>
 
         <!--AJUDA-->
         <iron-ajax url="/FolhasDeHoras/CreateAjuda"
@@ -283,6 +292,15 @@
                    handle-as="json"
                    id="page_updatelinhaajuda_ajax"
                    on-response="_updateLinhaAjudaResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/FolhasDeHoras/CopiarLinhaAjuda"
+                   last-response="{{LinhaAjudaCopiar}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_copiarlinhaajuda_ajax"
+                   on-response="_copiarLinhaAjudaResponse"
                    content-type="application/json">
         </iron-ajax>
 
@@ -320,6 +338,15 @@
                    handle-as="json"
                    id="page_maodeobrahorainiciofim_ajax"
                    on-response="_MaoDeObraHoraInicioFimResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/FolhasDeHoras/CopiarLinhaMaoDeObra"
+                   last-response="{{LinhaMaoDeObraCopiar}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_copiarlinhamaodeobra_ajax"
+                   on-response="_copiarLinhaMaoDeObraResponse"
                    content-type="application/json">
         </iron-ajax>
 
@@ -547,6 +574,22 @@
                             <vaadin-checkbox checked="{{chkTerminada}}" id="terminada" disabled="{{ !_permissions.update }}" on-click="_validacaoTerminada" required error-message="Este campo é obrigatório">Terminado</vaadin-checkbox>
                         </div>
 
+                        <div class="col-sm-3">
+                        </div>
+
+                        <div class="col-sm-2">
+                            <vaadin-text-field value="{{data.custoTotalAjudaCusto}}" id="custoTotalAjudaCusto" name="custoTotalAjudaCusto" type="number" disabled="true" class="alignRight" label="Custo Total Ajuda Custo">
+                                <div slot="suffix">€</div>
+                            </vaadin-text-field>
+                        </div>
+
+                        <div class="col-sm-1">
+                            <vaadin-text-field value="{{data.custoTotalKM}}" id="custoTotalKM" name="custoTotalKM" type="number" disabled="true" class="alignRight" label="Custo Total km">
+                                <div slot="suffix">€</div>
+                            </vaadin-text-field>
+                        </div>
+
+
                         <!--<div class="col-sm-3" style="padding-top:20px">
                         <paper-button raised id="btn_updateFH1" class="btnSave" on-tap="_updateFH" disabled="{{ !_permissions.update }}" title="Guardar"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
                     </div>-->
@@ -620,13 +663,31 @@
                             </template>
                         </vaadin-grid-column>
 
+                        <vaadin-grid-column width="15px" resizable>
+                            <template class="header">
+                            </template>
+                            <template>
+                                <center>
+                                    <paper-button class="btnSave tableBtn" raised on-tap="_CopiarPercurso" title="Duplicar Linha"><i class="fa fa-copy" aria-hidden="true"></i></paper-button>
+                                </center>
+                            </template>
+                        </vaadin-grid-column>
+
                         <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="codOrigem" style="text-align:center;">Código Origem</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="codOrigem"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <vaadin-text-field id="tabPercursoOrigem" value="{{item.codOrigem}}" maxlength="200" disabled="true"></vaadin-text-field>
+                                <!--<vaadin-text-field id="tabPercursoOrigem" value="{{item.codOrigem}}" maxlength="200" disabled="{{ !_permissions.update }}" on-blur="_updateLinhaPercurso"></vaadin-text-field>-->
+                                <such-selectbox id="tabPercursoOrigem" value="{{item.codOrigem}}"
+                                                items="[[LFolhaDeHoraPercursoOrigemDestino]]"
+                                                text-path="id"
+                                                value-path="id"
+                                                fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'
+                                                disabled="{{ !_permissions.update }}"
+                                                on-change="_updateLinhaPercurso">
+                                </such-selectbox>
                             </template>
                         </vaadin-grid-column>
 
@@ -646,7 +707,15 @@
                                 <vaadin-grid-filter path="codDestino"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <vaadin-text-field id="tabPercursoDestino" value="{{item.codDestino}}" maxlength="200" disabled="true"></vaadin-text-field>
+                                <!--<vaadin-text-field id="tabPercursoDestino" value="{{item.codDestino}}" maxlength="200" disabled="{{ !_permissions.update }}" on-blur="_updateLinhaPercurso"></vaadin-text-field>-->
+                                <such-selectbox id="tabPercursoDestino" value="{{item.codDestino}}"
+                                                items="[[LFolhaDeHoraPercursoOrigemDestino]]"
+                                                text-path="id"
+                                                value-path="id"
+                                                fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'
+                                                disabled="{{ !_permissions.update }}"
+                                                on-change="_updateLinhaPercurso">
+                                </such-selectbox>
                             </template>
                         </vaadin-grid-column>
 
@@ -666,7 +735,7 @@
                                 <vaadin-grid-filter path="dataDespesaTexto"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <vaadin-date-picker id="tabPercursoDataViagemTexto" name="dataViagemTexto" value="{{item.dataDespesaTexto}}" on-blur="_updateLinhaPercurso" disabled="true" style="text-align:right;"></vaadin-date-picker>
+                                <vaadin-date-picker id="tabPercursoDataViagemTexto" name="dataViagemTexto" value="{{item.dataDespesaTexto}}" on-blur="_updateLinhaPercurso" disabled="{{ !_permissions.update }}" style="text-align:right;"></vaadin-date-picker>
                             </template>
                         </vaadin-grid-column>
 
@@ -821,6 +890,16 @@
                             </template>
                         </vaadin-grid-column>
 
+                        <vaadin-grid-column width="15px" resizable hidden>
+                            <template class="header">
+                            </template>
+                            <template>
+                                <center>
+                                    <paper-button class="btnSave tableBtn" raised on-tap="_CopiarAjuda" title="Duplicar Linha"><i class="fa fa-copy" aria-hidden="true"></i></paper-button>
+                                </center>
+                            </template>
+                        </vaadin-grid-column>
+
                         <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="descricaoTipoCusto" style="text-align:center;">Tipo Custo</vaadin-grid-sorter>
@@ -905,7 +984,7 @@
                                 <vaadin-grid-filter path="dataDespesaTexto"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <vaadin-date-picker id="tabAjudaDataDespesa" name="tabAjudaDataDespesa" value="{{item.dataDespesaTexto}}" on-blur="_updateLinhaAjuda" disabled="true" style="text-align:right;"></vaadin-date-picker>
+                                <vaadin-date-picker id="tabAjudaDataDespesa" name="tabAjudaDataDespesa" value="{{item.dataDespesaTexto}}" on-blur="_updateLinhaAjuda" disabled="{{ !_permissions.update }}" style="text-align:right;"></vaadin-date-picker>
                             </template>
                         </vaadin-grid-column>
 
@@ -1029,6 +1108,16 @@
                             </template>
                             <template>
                                 <vaadin-text-field name="tabMaoDeObraLinhaNo" id="tabMaoDeObraLinhaNo" value="{{item.linhaNo}}" on-blur="_updateLinhaMaoDeObra" maxlength="200" disabled="true" style="text-align:left;"></vaadin-text-field>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column width="15px" resizable>
+                            <template class="header">
+                            </template>
+                            <template>
+                                <center>
+                                    <paper-button class="btnSave tableBtn" raised on-tap="_CopiarMaoDeObra" title="Duplicar Linha"><i class="fa fa-copy" aria-hidden="true"></i></paper-button>
+                                </center>
                             </template>
                         </vaadin-grid-column>
 
@@ -2306,6 +2395,7 @@
                 //},
 
                 _updateLinhaPercurso: function (e) {
+                    debugger;
                     var index = this.data.folhaDeHorasPercurso.indexOf(e.model.item);
 
                     if (this.data.terminada == true || this.data.estado == 1 || this.data.estado == 2) {
@@ -2323,7 +2413,24 @@
                             custoUnitario: e.model.item.custoUnitario
                         });
                         this.$.page_updatelinhapercurso_ajax.generateRequest();
-                        this.$.tabAjuda.clearCache();
+                        this.$.tabPercurso.clearCache();
+                    }
+                },
+
+                _CopiarPercurso: function (e) {
+                    debugger;
+                    var index = this.data.folhaDeHorasPercurso.indexOf(e.model.item);
+
+                    if (this.data.terminada == true || this.data.estado == 1 || this.data.estado == 2) {
+                        this.$.page_databound_ajax.generateRequest();
+                    }
+                    else {
+                        this.$.page_copiarlinhapercurso_ajax.body = JSON.stringify({
+                            noFolhaHoras: this.$.folhaDeHorasNo.value,
+                            noLinha: e.model.item.noLinha,
+                        });
+                        this.$.page_copiarlinhapercurso_ajax.generateRequest();
+                        this.$.tabPercurso.clearCache();
                     }
                 },
 
@@ -2570,6 +2677,23 @@
                     return false;
                 },
 
+                _CopiarAjuda: function (e) {
+                    debugger;
+                    var index = this.data.folhaDeHorasAjuda.indexOf(e.model.item);
+
+                    if (this.data.terminada == true || this.data.estado == 1 || this.data.estado == 2) {
+                        this.$.page_databound_ajax.generateRequest();
+                    }
+                    else {
+                        this.$.page_copiarlinhaajuda_ajax.body = JSON.stringify({
+                            noFolhaHoras: this.$.folhaDeHorasNo.value,
+                            noLinha: e.model.item.noLinha,
+                        });
+                        this.$.page_copiarlinhaajuda_ajax.generateRequest();
+                        this.$.tabAjuda.clearCache();
+                    }
+                },
+
 
                 //AJUDAS DE CUSTO
                 _calcularAjudasCusto: function () {
@@ -2769,7 +2893,7 @@
                                 return false;
                             }
 
-                            if (this.$.maoDeObraProjetoNo.value == undefined) {
+                            if (this.$.maoDeObraProjetoNo.value == "" || this.$.maoDeObraProjetoNo.value == undefined) {
                                 this.$.maoDeObraProjetoNo.value = this.$.projetoNo.value;
                             }
                             if (this.$.maoDeObraCodigoTipoTrabalho.value == "") {
@@ -2866,6 +2990,23 @@
                     }
                     else {
                         this._showErrorMessage('É necessário preencher todos os campos obrigatórios corretamente.');
+                    }
+                },
+
+                _CopiarMaoDeObra: function (e) {
+                    debugger;
+                    var index = this.data.folhaDeHorasMaoDeObra.indexOf(e.model.item);
+
+                    if (this.data.terminada == true || this.data.estado == 1 || this.data.estado == 2) {
+                        this.$.page_databound_ajax.generateRequest();
+                    }
+                    else {
+                        this.$.page_copiarlinhamaodeobra_ajax.body = JSON.stringify({
+                            folhaDeHorasNo: this.$.folhaDeHorasNo.value,
+                            linhaNo: e.model.item.linhaNo,
+                        });
+                        this.$.page_copiarlinhamaodeobra_ajax.generateRequest();
+                        this.$.tabMaoDeObra.clearCache();
                     }
                 },
 
@@ -3538,7 +3679,32 @@
                             this._showErrorMessage('O valor da Distância Efectuada tem que ser superior ou igual a 0 e inferior a 10 000.');
                         }
                         else {
-                            this._showErrorMessage('Ocorreu um erro ao actualizar o Percurso.');
+                            if (this.LinhaPercursoUpdated == 2) {
+                                this._showErrorMessage('A Data da Viagem não pode ser inferior a Data/Hora - Início.');
+                            }
+                            else {
+                                if (this.LinhaPercursoUpdated == 3) {
+                                    this._showErrorMessage('A Data da Viagem não pode ser superior a Data/Hora - Fim.');
+                                }
+                                else {
+                                    this._showErrorMessage('Ocorreu um erro ao actualizar o Percurso.');
+                                }
+                            }
+                        }
+                    }
+                    this.$.page_databound_ajax.generateRequest();
+                },
+
+                _copiarLinhaPercursoResponse: function (e) {
+                    if (this.LinhaPercursoCopiar == 0) {
+                        this._showMessage('Percurso foi copiado com sucesso.');
+                    }
+                    else {
+                        if (this.LinhaPercursoCopiar == 1) {
+                            this._showErrorMessage('Ocorreu um erro ao ciar a linha copiada do Percurso.');
+                        }
+                        else {
+                            this._showErrorMessage('Ocorreu um erro ao copiar o Percurso.');
                         }
                     }
                     this.$.page_databound_ajax.generateRequest();
@@ -3609,10 +3775,36 @@
                                         this._showErrorMessage('O valor do Preço de Venda tem que ser superior ou igual a 0.');
                                     }
                                     else {
-                                        this._showErrorMessage('Ocorreu um erro ao actualizar a Ajuda.');
+                                        if (this.LinhaAjudaUpdated == 5) {
+                                            this._showErrorMessage('A Data da Despesa não pode ser inferior a Data/Hora - Início.');
+                                        }
+                                        else {
+                                            if (this.LinhaAjudaUpdated == 6) {
+                                                this._showErrorMessage('A Data da Despesa não pode ser superior a Data/Hora - Fim.');
+                                            }
+                                            else {
+                                                this._showErrorMessage('Ocorreu um erro ao actualizar a Ajuda.');
+                                            }
+
+                                        }
                                     }
                                 }
                             }
+                        }
+                    }
+                    this.$.page_databound_ajax.generateRequest();
+                },
+
+                _copiarLinhaAjudaResponse: function (e) {
+                    if (this.LinhaAjudaCopiar == 0) {
+                        this._showMessage('Ajuda foi copiada com sucesso.');
+                    }
+                    else {
+                        if (this.LinhaAjudaCopiar == 1) {
+                            this._showErrorMessage('Ocorreu um erro ao ciar a linha copiada da Ajuda.');
+                        }
+                        else {
+                            this._showErrorMessage('Ocorreu um erro ao copiar a Ajuda.');
                         }
                     }
                     this.$.page_databound_ajax.generateRequest();
@@ -3754,6 +3946,21 @@
                     if (this.MaoDeObraHoraInicioFim == 5) {
                         this._showErrorMessage('A Hora de Início tem que ser inferior á Hora de Fim.');
                     }
+                },
+
+                _copiarLinhaMaoDeObraResponse: function (e) {
+                    if (this.LinhaMaoDeObraCopiar == 0) {
+                        this._showMessage('Mão de Obra foi copiada com sucesso.');
+                    }
+                    else {
+                        if (this.LinhaMaoDeObraCopiar == 1) {
+                            this._showErrorMessage('Ocorreu um erro ao ciar a linha copiada da Mão de Obra.');
+                        }
+                        else {
+                            this._showErrorMessage('Ocorreu um erro ao copiar a Mão de Obra.');
+                        }
+                    }
+                    this.$.page_databound_ajax.generateRequest();
                 },
 
 

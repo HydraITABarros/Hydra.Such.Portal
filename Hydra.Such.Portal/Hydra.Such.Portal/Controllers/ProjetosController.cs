@@ -3006,6 +3006,7 @@ namespace Hydra.Such.Portal.Controllers
             string errorMessage = string.Empty;
             bool hasErrors = false;
             ErrorHandler result = new ErrorHandler();
+            string projeto = string.Empty;
 
             if (authProjectMovements == null)
             {
@@ -3018,6 +3019,7 @@ namespace Hydra.Such.Portal.Controllers
             var billingGroups = authProjectMovements.Select(x => x.GrupoFactura).Distinct();
             var customersIds = authProjectMovements.Select(x => x.CodCliente).Distinct();
             List<PreçosServiçosCliente> customersServicesPrices = new List<PreçosServiçosCliente>();
+            projeto = authProjectMovements.Select(x => x.CodProjeto).FirstOrDefault();
 
             //get all movements from authProjects
             List<SPInvoiceListViewModel> data = null;
@@ -3426,7 +3428,8 @@ namespace Hydra.Such.Portal.Controllers
                             header.CreateUser = User.Identity.Name;
 
                             execDetails = string.Format("Fat. Cliente: {0}, Data: {1}, Nº Compromisso: {2} - ", header.InvoiceToClientNo, header.Date, header.CommitmentNumber);
-                            Task<WSCreatePreInvoice.Create_Result> TCreatePreInvoice = WSPreInvoice.CreatePreInvoice(header, _configws, dataFormulario);
+
+                            Task<WSCreatePreInvoice.Create_Result> TCreatePreInvoice = WSPreInvoice.CreatePreInvoice(header, _configws, dataFormulario, projeto);
                             TCreatePreInvoice.Wait();
 
                             if (TCreatePreInvoice.IsCompletedSuccessfully)
