@@ -68,20 +68,24 @@ namespace Hydra.Such.Portal.Services
                                     break;
                                 case 4: //Alterada para Perdida
                                         /*
-                                         * Fazer arquivo
-                                         * Preencher a razão do Arquivo. Deve ser criado um mecanismo tipo ‘PopUp’ para indicação desta informação.
-                                         * Preencher estado com ‘Perdida’
-                                         * Preencher Data Estado com data do sistema
-                                         * Passar p/ Histórico
+                                         * A pedido do António José quando se muda o Estado para Perdida 
+                                         * Só se atualiza-se o estado da proposta e não se cria uma nova versão de Histórico
+                                         * Pedido feito em 21-01-2019
                                          */
+                                    updatedContract.Estado = 4;
+                                    updatedContract.Historico = true;
+                                    updatedContract = DBContracts.Update(DBContracts.ParseToDB(contractToUpdate));
+                                    break;
                                 case 5: //Alterar para Cancelada
                                         /*
-                                         * Fazer arquivo
-                                         * Preencher a razão do Arquivo.Deve ser criado um mecanismo tipo ‘PopUp’ para indicação desta informação.
-                                         * Preencher estado com ‘Cancelada’
-                                         * Preencher Data Estado com data do sistema
-                                         * Passar p/ Histórico
+                                         * A pedido do António José quando se muda o Estado para Cancelada 
+                                         * Só se atualiza-se o estado da proposta e não se cria uma nova versão de Histórico
+                                         * Pedido feito em 21-01-2019
                                          */
+                                    updatedContract.Estado = 5;
+                                    updatedContract.Historico = true;
+                                    updatedContract = DBContracts.Update(DBContracts.ParseToDB(contractToUpdate));
+                                    break;
                                 case 10: //Alterar para Não Respondida
                                          /*
                                           * Fazer arquivo

@@ -154,9 +154,9 @@
                 padding-top: 0px !important;
             }
         </style>
-        <iron-ajax url="/PopulateDropdowns/GetLocations" 
+        <iron-ajax url="/PopulateDropdowns/GetLocations"
                    last-response="{{Locations}}"
-                   auto 
+                   auto
                    method="post"
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
@@ -259,6 +259,14 @@
                    method="post"
                    handle-as="json"
                    on-response="_exportEXCELResponse"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/Projetos/ExportToExcel_DetalhesAutorizacao"
+                   last-response="{{exportDetalhesAutorizacao}}"
+                   id="ajax_ExportDetalhesAutorizacao"
+                   method="post"
+                   handle-as="json"
+                   on-response="_exportEXCELDetalhesAutorizacaoResponse"
                    content-type="application/json">
         </iron-ajax>
 
@@ -490,6 +498,7 @@
                         {{item.date}}
                     </template>
                 </vaadin-grid-column>
+
                 <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.movementType.hidden }}">
                     <template class="header">
                         <vaadin-grid-sorter path="movementType">Tipo Movimento</vaadin-grid-sorter>
@@ -774,7 +783,9 @@
 
 
             <div class="buttons">
-                <paper-button dialog-dismiss>Cancelar</paper-button>
+                <paper-button class="btnSave" on-tap="_exportDetalhesAutorizacaoEXCEL" title="Exportar para Excel Detalhes de Autorização"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+                <paper-button class="btnRemove" on-tap="_closeDetalhesAutorizacaoDialog" title="Fechar"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
+                <!--<paper-button dialog-dismiss>Fechar</paper-button>-->
             </div>
         </paper-dialog>
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
@@ -795,7 +806,7 @@
             </template>
         </paper-toast>
 
-        <paper-dialog id="dlgInvoice" modal style="height:200px; width:300px">
+        <paper-dialog id="dlgInvoice" modal style="height:300px; width:300px">
             <div>
                 <vaadin-combo-box id="_CLOptionInvoice" item-value-path="id" item-label-path="value" label="Tipo de Fatura" required error-message="Este campo é obrigatório">
                     <template>
@@ -806,6 +817,9 @@
                         </paper-icon-item>
                     </template>
                 </vaadin-combo-box>
+            </div>
+            <div>
+                <vaadin-date-picker id="_CLData" label="Data" required error-message="Este campo é obrigatório"></vaadin-date-picker>
             </div>
             <div class="buttons">
                 <paper-button raised class="btnEdit" on-tap="_validateInvoice">Confirmar</paper-button>
@@ -948,6 +962,7 @@
                             if (saldo > 0) {
                                 delete availableInvoiceTypes[2];
                                 this.$._CLOptionInvoice.items = availableInvoiceTypes;
+                                this.$._CLData.value = moment().format("YYYY-MM-DD");
                                 this.$.dlgInvoice.open();
                             }
                             else {
@@ -1030,17 +1045,26 @@
                     return "Verifique os dados inseridos.";
                 },
                 _validateInvoice: function () {
+                    var teste = this.$._CLData.value;
+
                     var erro = this._validateData(this.selectedItem);
                     if (erro == "") {
-                        if (this.selectedItem && this.selectedItem.length > 0) {
-                            var customerNo = this.selectedItem[0].codCliente;
-                            var commitmentNo = this.selectedItem[0].numCompromisso;
-                            this.$.valCustomer_ajax.body = JSON.stringify({ "customerNo": customerNo, "commitmentNo": commitmentNo });
-                            this.$.valCustomer_ajax.generateRequest();
-                            this.$.dlgInvoice.close();
+                        if (this.$._CLData.value != "") {
+                            if (this.selectedItem && this.selectedItem.length > 0) {
+                                var customerNo = this.selectedItem[0].codCliente;
+                                var commitmentNo = this.selectedItem[0].numCompromisso;
+                                var data = this.$._CLData.value;
+                                this.$.valCustomer_ajax.body = JSON.stringify({ "customerNo": customerNo, "commitmentNo": commitmentNo, "data": data });
+                                this.$.valCustomer_ajax.generateRequest();
+                                this.$.dlgInvoice.close();
+                            }
+                            else {
+                                this.openToastError("Não foi possivel aceder ao registo selecionado.");
+                            }
                         }
                         else {
-                            this.openToastError("Não foi possivel aceder ao registo selecionado.");
+                            this.$.dlgInvoice.close();
+                            this.openToastError("Tem que selecionar uma data.");
                         }
                     } else {
                         this.$.dlgInvoice.close();
@@ -1048,6 +1072,9 @@
                     }
                 },
                 _createInvoice: function () {
+                    debugger;
+                    var dataFormulario = this.$._CLData.value;
+
                     if (this.CustBillingValResponse.eMessages.length != 0) {
                         var option = this.$._CLOptionInvoice.value;
                         var valError = this.CustBillingValResponse.eMessages.find(x => x.type == 0);
@@ -1074,7 +1101,7 @@
                                     callback: function (authorizeMovements) {
                                         if (authorizeMovements) {
                                             ajax_request.body = JSON.stringify(selectedItem);
-                                            ajax_request.params = { "OptionInvoice": option };
+                                            ajax_request.params = { "OptionInvoice": option, "dataFormulario": dataFormulario };
                                             ajax_request.generateRequest();
                                         }
                                     }
@@ -1082,14 +1109,14 @@
                             }
                             else {
                                 this.$.billProjects_ajax.body = JSON.stringify(this.selectedItem);
-                                this.$.billProjects_ajax.params = { "OptionInvoice": this.$._CLOptionInvoice.value };
+                                this.$.billProjects_ajax.params = { "OptionInvoice": this.$._CLOptionInvoice.value, "dataFormulario": dataFormulario };
                                 this.$.billProjects_ajax.generateRequest();
                             }
                         }
                     }
                     else {
                         this.$.billProjects_ajax.body = JSON.stringify(this.selectedItem);
-                        this.$.billProjects_ajax.params = { "OptionInvoice": this.$._CLOptionInvoice.value };
+                        this.$.billProjects_ajax.params = { "OptionInvoice": this.$._CLOptionInvoice.value, "dataFormulario": dataFormulario };
                         this.$.billProjects_ajax.generateRequest();
                     }
                 },
@@ -1283,7 +1310,22 @@
                     if (value != null && value != 0) {
                         return currency(value, { separator: '.', decimal: ',' }).format();
                     }
-                }
+                },
+
+                _exportDetalhesAutorizacaoEXCEL: function () {
+                    this.$.ajax_ExportDetalhesAutorizacao.body = JSON.stringify(this.resultlines);
+                    this.$.ajax_ExportDetalhesAutorizacao.generateRequest();
+                },
+                _exportEXCELDetalhesAutorizacaoResponse: function (e) {
+                    var FileName = this.exportDetalhesAutorizacao;
+                    location.href = '../Projetos/ExportToExcelDownload_DetalhesAutorizacao?sFileName=' + FileName;
+                },
+                
+                _closeDetalhesAutorizacaoDialog: function() {
+                    this.$.dialog.close();
+                },
+
+
             });
         });
     </script>

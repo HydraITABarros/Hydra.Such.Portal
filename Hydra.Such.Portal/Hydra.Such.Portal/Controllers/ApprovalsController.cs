@@ -553,7 +553,7 @@ namespace Hydra.Such.Portal.Controllers
 
                                                 int NoAjudasCusto = DBLinhasFolhaHoras.GetAll().Where(x => x.NoFolhaHoras.ToLower() == FolhaHoras.NºFolhaDeHoras.ToLower() && x.TipoCusto == 2).Count();
 
-                                                if (FolhaHoras.TipoDeslocação != 2 && NoAjudasCusto == 0)
+                                                if (FolhaHoras.TipoDeslocação == 2 && NoAjudasCusto == 0)
                                                     FolhaHoras.Estado = 2; // 2 = Registado
                                                 else
                                                     FolhaHoras.Estado = 1; //VALIDADO
@@ -763,7 +763,7 @@ namespace Hydra.Such.Portal.Controllers
                                                     int TipoDeslocação = (int)FolhaHoras.TipoDeslocação;
                                                     int Estado = (int)FolhaHoras.Estado;
 
-                                                    if (IntegradoEmRhKm || TipoDeslocação != 2)
+                                                    if (IntegradoEmRhKm || TipoDeslocação == 2)
                                                         Estado = 2; // 2 = Registado
 
                                                     FolhaHoras.Estado = Estado; //INTEGRAREMRH

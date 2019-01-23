@@ -152,6 +152,15 @@
                 </template>
             </vaadin-grid-column>
 
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.attachment.hidden }}">
+                <template class="header">
+                    Anexo(s)
+                </template>
+                <template>
+                    <vaadin-checkbox checked="{{item.attachment}}" disabled></vaadin-checkbox>
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.budget.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="budget">Orçamento</vaadin-grid-sorter>
@@ -457,6 +466,7 @@
                         "requestNutrition": { hidden: false, label: "Requisição Nutrição" },
                         "localMarket": { hidden: false, label: "Mercado Local" },
                         "pedirOrcamento": { hidden: false, label: "Pedir Orçamento" },
+                        "attachment": { hidden: false, label: "Anexo(s)" },
                         "budget": { hidden: false, label: "Orçamento" },
                         "localMarketRegion": { hidden: false, label: "Região Mercado Local" },
                         "localMarketDate": { hidden: false, label: "Data Mercado Local" },

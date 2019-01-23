@@ -168,7 +168,6 @@ namespace Hydra.Such.Data.NAV
                 teste = new WSClientNAV.teste
                 {
                     VAT_Registration_No = client.VAT_Registration_No,
-                  
                 }
             };
 

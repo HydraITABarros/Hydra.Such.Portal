@@ -39,6 +39,7 @@
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
 
         <iron-ajax url="/GestaoRequisicoes/GetApprovedRequisitions" id="ajax_getgrid" last-response="{{result}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        
         <iron-ajax url="/GestaoRequisicoes/ExportToExcel_RequisicoesValidar"
                    last-response="{{export}}"
                    id="ajax_Export"
@@ -136,6 +137,15 @@
                 </template>
                 <template>
                     <vaadin-checkbox checked="{{item.pedirOrcamento}}" disabled></vaadin-checkbox>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.attachment.hidden }}">
+                <template class="header">
+                    Anexo(s)
+                </template>
+                <template>
+                    <vaadin-checkbox checked="{{item.attachment}}" disabled></vaadin-checkbox>
                 </template>
             </vaadin-grid-column>
 
@@ -362,10 +372,10 @@
                         "requisitionNo": { hidden: false, label: "Nº Requisição" },
                         "state": { hidden: false, label: "Estado" },
                         "urgent": { hidden: false, label: "Urgente" },
-                        //"buyCash": { hidden: false, label: "Compra a Dinheiro" },
                         "alreadyPerformed": { hidden: false, label: "Trabalho já executado" },
                         "requestNutrition": { hidden: false, label: "Requisição Nutrição" },
                         "pedirOrcamento": { hidden: false, label: "Pedir Orçamento" },
+                        "attachment": { hidden: false, label: "Anexo(s)" },
                         "projectNo": { hidden: false, label: "Nº Projeto" },
                         "regionCode": { hidden: false, label: "Código Região" },
                         "functionalAreaCode": { hidden: false, label: "Código Área Funcional" },
@@ -374,6 +384,7 @@
                         "comments": { hidden: false, label: "Observações" },
                         "requisitionDate": { hidden: false, label: "Data requisição" },
                         "estimatedValue": { hidden: false, label: "Valor Estimado" }
+                        //"buyCash": { hidden: false, label: "Compra a Dinheiro" },
                     };
 
                     if (localStorage["requisitions.ToggleColumn"]) {

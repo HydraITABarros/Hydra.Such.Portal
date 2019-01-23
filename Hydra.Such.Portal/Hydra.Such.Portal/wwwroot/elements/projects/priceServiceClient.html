@@ -715,7 +715,7 @@
                 fixGridToBottom: function () {
                     var grid_el = $(this.$.priceServiceClientGrid);
                     var parentHeight = $(this).offsetParent().height();
-                    var offsetTop = $(this).offset().top;
+                    var offsetTop = $(this).offset().top + 237;
                     var height = parentHeight - offsetTop;
                     grid_el.height(height);
                 },

@@ -558,7 +558,7 @@
                                             <vaadin-text-field value="{{data.displacementFee}}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" error-message="Valor inválido" id="mDisplacementFee" name="mDisplacementFee" label="Taxa Deslocação" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[CBInvoicePeriods]]" id="mInvoicePeriods" item-value-path="id" item-label-path="value" value="{{data.invocePeriod}}" label="Período Fatura" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                                            <vaadin-combo-box items="[[CBInvoicePeriods]]" id="mInvoicePeriods" item-value-path="id" item-label-path="value" value="{{data.invocePeriod}}" label="Período Fatura" disabled="{{ !_permissions.update }}">
                                                 <template>
                                                     <b>[[item.value]]</b>
                                                 </template>
@@ -1579,14 +1579,17 @@
                                     Tem que existir pelo menos uma linha preenchida
                                     Preencher ‘Data Envio’ com data indicada pelo utilizador.Deve ser criado um mecanismo tipo ‘PopUp’ para indicação dessa data.
                                 */
+
                                 if (this.data.orderOrigin == "" || this.data.ordOrderSource == "") {
                                     this._openToastError("Para alterar a proposta para o estado aberta os campos Origem do Pedido e Origem do pedido descrição devem estar preenchidos.");
                                     return false;
                                 }
-                                if (this.dataLines.lines.length == 0) {
-                                    this._openToastError("É obrigatório possuir linhas para alterar o estado da proposta para enviada.");
-                                    return false;
-                                }
+
+                                //A pedido do António José retirou-se a obrigatoridade das linhas 21/01/2019
+                                //if (this.dataLines.lines.length == 0) {
+                                //    this._openToastError("É obrigatório possuir linhas para alterar o estado da proposta para enviada.");
+                                //    return false;
+                                //}
                                 if (this.$.dtpCustomerShipmentDate.validate()) {
                                     custShipDate = this.$.dtpCustomerShipmentDate.value;
                                     this.$.dlgCustomerShipmentDate.close();
@@ -1694,7 +1697,7 @@
                         this.$.mProvisioningFee.validate() &
                         this.$.mc.validate() &
                         this.$.mDisplacementFee.validate() &
-                        this.$.mInvoicePeriods.validate() &
+                        //this.$.mInvoicePeriods.validate() &
                         this.$.mTotalProposalValue.validate()) {
 
                         if ((this.$.mClients.value != "" && this.$.mClients.value != undefined) &&
@@ -1750,10 +1753,10 @@
                         return false;
                     }
 
-                    if (this.$.mInvoicePeriods.value == "" || this.$.mInvoicePeriods.value == undefined || this.$.mInvoicePeriods.value == null) {
-                        this._openToastError("É obrigatória seleção de um Período de Fatura em Detalhes Fatura.");
-                        return false;
-                    }
+                    //if (this.$.mInvoicePeriods.value == "" || this.$.mInvoicePeriods.value == undefined || this.$.mInvoicePeriods.value == null) {
+                    //    this._openToastError("É obrigatória seleção de um Período de Fatura em Detalhes Fatura.");
+                    //    return false;
+                    //}
 
                     this._openToastError("Verifique os dados inseridos.");
                     return false;

@@ -336,7 +336,9 @@
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" id="btnGoBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
 
-            <paper-button class="tablinks" id="btnPrint" on-tap="_printRequisition"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Imprimir</paper-button>
+            <!--<paper-button class="tablinks" id="btnPrint" on-tap="_printRequisition"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Imprimir</paper-button>-->
+            <such-dropdown-menu id="menuImprimir" on-value-changed="_menuImprimir" title="Imprimir" items="[[ _imprimirMenuItems ]]"></such-dropdown-menu>
+
             <paper-button class="tablinks" id="btnStatOfPlay" on-tap="_redirectToStatOfPlay" hidden="{{_estadoPendente}}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Ponto situação</paper-button>
             <paper-button class="tablinks" id="btnShowChangeLog" on-tap="_showChangeLog"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Workflow</paper-button>
             <paper-button class="tablinks" id="btnGoApprove" on-tap="_Approve" hidden="{{ !_goAprove }}"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Aprovar</paper-button>
@@ -1818,6 +1820,10 @@
                     _SelectedLine: {
                         observer: '_lineSelected'
                     },
+                    _imprimirMenuItems: {
+                        type: Array,
+                        value: [{ value: 1, description: "Imprimir A4" }, { value: 2, description: "Imprimir A5" }],
+                    },
                 },
                 observers: [
                     '_onCacheLoaded(Projects,LProjectResponsabilityCenterCodes,LProjectRegionCodes,LProjectFunctionalAreaCodes,Locations,Products,UnitsOfMmeasure,Suppliers)'
@@ -2988,6 +2994,45 @@
                     }
                     return param;
                 },
+
+                _menuImprimir: function (e) {
+                    var item = e.detail.value;
+
+                    if (item == null)
+                        return;
+
+                    this._newStatus = item.value;
+                    if (item.value == 1) {
+                        if (this._reportserverurl != undefined) {
+                            if (this.$.CBHeaderProjects.value != "") {
+                                this.$.rptContainer.src = this._reportserverurl + "RequisitionReport&NoRequisicao=" + this.Requisition.requisitionNo;
+                            }
+                            else {
+                                this.$.rptContainer.src = this._reportserverurl + "RequisitionStockReport&NoRequisicao=" + this.Requisition.requisitionNo;
+                            }
+                            this.$.rptDialog.open();
+                        }
+                        else {
+                            this._openToastError("Não é possivel imprimir. Não foi definido o servidor de relatórios.");
+                        }
+
+                    }
+                    if (item.value == 2) {
+                        if (this._reportserverurl != undefined) {
+                            if (this.$.CBHeaderProjects.value != "") {
+                                this.$.rptContainer.src = this._reportserverurl + "RequisitionReportA5&NoRequisicao=" + this.Requisition.requisitionNo;
+                            }
+                            else {
+                                this.$.rptContainer.src = this._reportserverurl + "RequisitionStockReportA5&NoRequisicao=" + this.Requisition.requisitionNo;
+                            }
+                            this.$.rptDialog.open();
+                        }
+                        else {
+                            this._openToastError("Não é possivel imprimir. Não foi definido o servidor de relatórios.");
+                        }
+                    }
+                },
+
             });
         });
     </script>

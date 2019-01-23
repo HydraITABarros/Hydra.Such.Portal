@@ -78,15 +78,22 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetList([FromBody] JObject requestParams)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Encomendas);
-
-            if (UPerm != null && UPerm.Read.Value)
+            try
             {
-                List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
-                var result = DBNAV2017Encomendas.ListByDimListAndNoFilter(_config.NAVDatabaseName, _config.NAVCompanyName, userDimensions, "C%");
-                return Json(result);
+                UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Encomendas);
+
+                if (UPerm != null && UPerm.Read.Value)
+                {
+                    List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+                    List<EncomendasViewModel> result = DBNAV2017Encomendas.ListByDimListAndNoFilter(_config.NAVDatabaseName, _config.NAVCompanyName, userDimensions, "C%");
+                    return Json(result);
+                }
+                else
+                {
+                    return Json(null);
+                }
             }
-            else
+            catch (Exception ex)
             {
                 return Json(null);
             }
@@ -114,8 +121,8 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> ExportToExcel([FromBody] List<EncomendasViewModel> Lista)
-       {
+        public async Task<JsonResult> ExportToExcel_ListaEncomendas([FromBody] List<EncomendasViewModel> Lista)
+        {
             JObject dp = (JObject)Lista[0].ColunasEXCEL;
 
             string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
@@ -140,6 +147,8 @@ namespace Hydra.Such.Portal.Controllers
                 if (dp["yourReference"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Sua Referência"); Col = Col + 1; }
                 if (dp["orderDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data da Encomenda"); Col = Col + 1; }
                 if (dp["noConsulta"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Consulta Mercado"); Col = Col + 1; }
+                if (dp["vlrRececionadoComIVA"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Vlr rececionado com IVA"); Col = Col + 1; }
+                if (dp["vlrRececionadoSemIVA"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Vlr rececionado sem IVA"); Col = Col + 1; }
                 if (dp["total"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Total"); Col = Col + 1; }
                 if (dp["expectedReceiptDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Recepção Esperada"); Col = Col + 1; }
                 if (dp["requisitionNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Requisição"); Col = Col + 1; }
@@ -148,8 +157,6 @@ namespace Hydra.Such.Portal.Controllers
                 if (dp["respCenterId"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Centro de Responsabilidade"); Col = Col + 1; }
                 if (dp["hasAnAdvance"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Adiantamento"); Col = Col + 1; }
 
-                if (dp["vlrRececionadoComIVA"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Vlr rececionado com IVA"); Col = Col + 1; }
-                if (dp["vlrRececionadoSemIVA"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Vlr rececionado sem IVA"); Col = Col + 1; }
 
                 if (dp != null)
                 {
@@ -166,6 +173,8 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["yourReference"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(!string.IsNullOrEmpty(item.YourReference) ? item.YourReference : ""); Col = Col + 1; }
                         if (dp["orderDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.OrderDate); Col = Col + 1; }
                         if (dp["noConsulta"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(!string.IsNullOrEmpty(item.NoConsulta) ? item.NoConsulta : ""); Col = Col + 1; }
+                        if (dp["vlrRececionadoComIVA"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.VlrRececionadoComIVA.ToString()); Col = Col + 1; }
+                        if (dp["vlrRececionadoSemIVA"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.VlrRececionadoSemIVA.ToString()); Col = Col + 1; }
                         if (dp["total"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Total.ToString()); Col = Col + 1; }
                         if (dp["expectedReceiptDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ExpectedReceiptDate.ToString()); Col = Col + 1; }
                         if (dp["requisitionNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RequisitionNo); Col = Col + 1; }
@@ -174,8 +183,6 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["respCenterId"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RespCenterId); Col = Col + 1; }
                         if (dp["hasAnAdvance"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.HasAnAdvance); Col = Col + 1; }
 
-                        if (dp["vlrRececionadoComIVA"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.VlrRececionadoComIVA.ToString()); Col = Col + 1; }
-                        if (dp["vlrRececionadoSemIVA"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.VlrRececionadoSemIVA.ToString()); Col = Col + 1; }
 
                         count++;
                     }

@@ -86,8 +86,13 @@ namespace Hydra.Such.Data.NAV
                     Payment_Method_Code = preInvoiceToCreate.CodMetodoPagamento,
                     Payment_Terms_Code = preInvoiceToCreate.CodTermosPagamento,
                     //Posting_Date
+                    Posting_Date = !string.IsNullOrEmpty(preInvoiceToCreate.Posting_Date.ToString()) ? DateTime.Parse(preInvoiceToCreate.Posting_Date.ToString()) : DateTime.MinValue,
+                    Posting_DateSpecified = !string.IsNullOrEmpty(preInvoiceToCreate.Posting_Date.ToString()),
+                    Document_Date = !string.IsNullOrEmpty(preInvoiceToCreate.Posting_Date.ToString()) ? DateTime.Parse(preInvoiceToCreate.Posting_Date.ToString()) : DateTime.MinValue,
+                    Document_DateSpecified = !string.IsNullOrEmpty(preInvoiceToCreate.Posting_Date.ToString()),
+                    External_Document_No = preInvoiceToCreate.ProjectNo
                 }
-                
+
             };
 
             //Configure NAV Client
@@ -121,6 +126,33 @@ namespace Hydra.Such.Data.NAV
             invoiceHeader.CodTermosPagamento = billingHeader.CodTermosPagamento;
             invoiceHeader.CodMetodoPagamento = billingHeader.CodMetodoPagamento;
             invoiceHeader.CreateUser = billingHeader.CreateUser;
+
+            return await CreatePreInvoice(invoiceHeader, WSConfigurations);
+
+        }
+
+        public static async Task<WSCreatePreInvoice.Create_Result> CreatePreInvoice(AuthorizedCustomerBillingHeader billingHeader, NAVWSConfigurations WSConfigurations, string dataFormulario, string projeto)
+        {
+            SPInvoiceListViewModel invoiceHeader = new SPInvoiceListViewModel();
+            invoiceHeader.InvoiceToClientNo = billingHeader.InvoiceToClientNo;
+            invoiceHeader.Date = billingHeader.Date;
+            invoiceHeader.CommitmentNumber = billingHeader.CommitmentNumber;
+            invoiceHeader.ClientRequest = billingHeader.ClientRequest;
+            invoiceHeader.ClientVATReg = billingHeader.ClientVATReg;
+            invoiceHeader.ContractNo = billingHeader.ContractNo;
+            invoiceHeader.Currency = billingHeader.Currency;
+            invoiceHeader.ServiceDate = billingHeader.ServiceDate;
+            invoiceHeader.UpdateDate = billingHeader.UpdateDate;
+            invoiceHeader.RegionCode = billingHeader.RegionCode;
+            invoiceHeader.FunctionalAreaCode = billingHeader.FunctionalAreaCode;
+            invoiceHeader.ResponsabilityCenterCode = billingHeader.ResponsabilityCenterCode;
+            invoiceHeader.LocationCode = billingHeader.LocationCode;
+            invoiceHeader.Comments = billingHeader.Comments;
+            invoiceHeader.CodTermosPagamento = billingHeader.CodTermosPagamento;
+            invoiceHeader.CodMetodoPagamento = billingHeader.CodMetodoPagamento;
+            invoiceHeader.CreateUser = billingHeader.CreateUser;
+            invoiceHeader.Posting_Date = Convert.ToDateTime(dataFormulario);
+            invoiceHeader.ProjectNo = projeto;
 
             return await CreatePreInvoice(invoiceHeader, WSConfigurations);
 

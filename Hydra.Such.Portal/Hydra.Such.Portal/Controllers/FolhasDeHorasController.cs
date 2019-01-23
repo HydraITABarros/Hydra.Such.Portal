@@ -1307,6 +1307,15 @@ namespace Hydra.Such.Portal.Controllers
                 if ((decimal)data.Distancia < 0 || (decimal)data.Distancia > 9999)
                     result = 1;
 
+                FolhasDeHoras FH = DBFolhasDeHoras.GetById(data.NoFolhaHoras);
+                DateTime Partida = Convert.ToDateTime(Convert.ToDateTime(FH.DataHoraPartida).ToShortDateString());
+                DateTime Chegada = Convert.ToDateTime(Convert.ToDateTime(FH.DataHoraChegada).ToShortDateString());
+
+                if (data.DataDespesa < Partida)
+                    result = 2;
+                if (data.DataDespesa > Chegada)
+                    result = 3;
+
                 if (result == 0)
                 {
                     LinhasFolhaHoras Percurso = DBLinhasFolhaHoras.GetByPercursoNo(data.NoFolhaHoras, data.NoLinha);
@@ -1326,6 +1335,63 @@ namespace Hydra.Such.Portal.Controllers
 
                     DBLinhasFolhaHoras.UpdatePercurso(Percurso);
                 }
+
+                if (result == 0)
+                {
+                    DBFolhasDeHoras.UpdateDetalhes(data.NoFolhaHoras);
+                }
+            }
+            catch (Exception ex)
+            {
+                //log
+                result = 99;
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        //Copia um percurso
+        public JsonResult CopiarLinhaPercurso([FromBody] LinhasFolhaHorasViewModel data)
+        {
+            int result = 0;
+
+            try
+            {
+                LinhasFolhaHoras PercursoOriginal = DBLinhasFolhaHoras.GetByPercursoNo(data.NoFolhaHoras, data.NoLinha);
+                LinhasFolhaHoras PercursoCopia = new LinhasFolhaHoras();
+
+                int noLinha;
+                noLinha = DBLinhasFolhaHoras.GetMaxByFolhaHoraNo(data.NoFolhaHoras);
+
+                PercursoCopia.NoFolhaHoras = PercursoOriginal.NoFolhaHoras;
+                PercursoCopia.NoLinha = noLinha;
+                PercursoCopia.TipoCusto = PercursoOriginal.TipoCusto;
+                PercursoCopia.CodTipoCusto = PercursoOriginal.CodTipoCusto;
+                PercursoCopia.DescricaoTipoCusto = PercursoOriginal.DescricaoTipoCusto;
+                PercursoCopia.Quantidade = PercursoOriginal.Quantidade;
+                PercursoCopia.CodOrigem = PercursoOriginal.CodOrigem;
+                PercursoCopia.DescricaoOrigem = PercursoOriginal.DescricaoOrigem;
+                PercursoCopia.CodDestino = PercursoOriginal.CodDestino;
+                PercursoCopia.DescricaoDestino = PercursoOriginal.DescricaoDestino;
+                PercursoCopia.DataDespesa = PercursoOriginal.DataDespesa;
+                PercursoCopia.Observacao = PercursoOriginal.Observacao;
+                PercursoCopia.Distancia = PercursoOriginal.Distancia;
+                PercursoCopia.DistanciaPrevista = PercursoOriginal.DistanciaPrevista;
+                PercursoCopia.CustoUnitario = PercursoOriginal.CustoUnitario;
+                PercursoCopia.CustoTotal = PercursoOriginal.CustoTotal;
+                PercursoCopia.RubricaSalarial = PercursoOriginal.RubricaSalarial;
+                PercursoCopia.Funcionario = PercursoOriginal.Funcionario;
+                PercursoCopia.CodRegiao = PercursoOriginal.CodRegiao;
+                PercursoCopia.CodArea = PercursoOriginal.CodArea;
+                PercursoCopia.CodCresp = PercursoOriginal.CodCresp;
+                PercursoCopia.Matricula = PercursoOriginal.Matricula;
+                PercursoCopia.UtilizadorCriacao = User.Identity.Name;
+                PercursoCopia.DataHoraCriacao = DateTime.Now;
+                PercursoCopia.UtilizadorModificacao = User.Identity.Name;
+                PercursoCopia.DataHoraModificacao = DateTime.Now;
+
+                if (DBLinhasFolhaHoras.CreatePercurso(PercursoCopia) == null)
+                    result = 1;
 
                 if (result == 0)
                 {
@@ -1505,6 +1571,14 @@ namespace Hydra.Such.Portal.Controllers
                 if ((decimal)data.PrecoVenda < 0)
                     result = 4;
 
+                FolhasDeHoras FH = DBFolhasDeHoras.GetById(data.NoFolhaHoras);
+                DateTime Partida = Convert.ToDateTime(Convert.ToDateTime(FH.DataHoraPartida).ToShortDateString());
+                DateTime Chegada = Convert.ToDateTime(Convert.ToDateTime(FH.DataHoraChegada).ToShortDateString());
+                if (data.DataDespesa < Partida)
+                    result = 5;
+                if (data.DataDespesa > Chegada)
+                    result = 6;
+
                 if (result == 0)
                 {
 
@@ -1535,6 +1609,58 @@ namespace Hydra.Such.Portal.Controllers
             }
             catch (Exception ex)
             {
+                result = 99;
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        //Copia um percurso
+        public JsonResult CopiarLinhaAjuda([FromBody] LinhasFolhaHorasViewModel data)
+        {
+            int result = 0;
+
+            try
+            {
+                LinhasFolhaHoras AjudaOriginal = DBLinhasFolhaHoras.GetByAjudaNo(data.NoFolhaHoras, data.NoLinha);
+                LinhasFolhaHoras AjudaCopia = new LinhasFolhaHoras();
+
+                int noLinha;
+                noLinha = DBLinhasFolhaHoras.GetMaxByFolhaHoraNo(data.NoFolhaHoras);
+
+                AjudaCopia.NoFolhaHoras = AjudaOriginal.NoFolhaHoras;
+                AjudaCopia.NoLinha = noLinha;
+                AjudaCopia.TipoCusto = AjudaOriginal.TipoCusto;
+                AjudaCopia.CodTipoCusto = AjudaOriginal.CodTipoCusto;
+                AjudaCopia.DescricaoTipoCusto = AjudaOriginal.DescricaoTipoCusto;
+                AjudaCopia.Quantidade = AjudaOriginal.Quantidade;
+                AjudaCopia.CustoUnitario = AjudaOriginal.CustoUnitario;
+                AjudaCopia.CustoTotal = AjudaOriginal.CustoTotal;
+                AjudaCopia.PrecoUnitario = AjudaOriginal.PrecoUnitario;
+                AjudaCopia.PrecoVenda = AjudaOriginal.PrecoVenda;
+                AjudaCopia.DataDespesa = AjudaOriginal.DataDespesa;
+                AjudaCopia.Observacao = AjudaOriginal.Observacao;
+                AjudaCopia.Funcionario = AjudaOriginal.Funcionario;
+                AjudaCopia.CodRegiao = AjudaOriginal.CodRegiao;
+                AjudaCopia.CodArea = AjudaOriginal.CodArea;
+                AjudaCopia.CodCresp = AjudaOriginal.CodCresp;
+                AjudaCopia.CalculoAutomatico = AjudaOriginal.CalculoAutomatico;
+                AjudaCopia.UtilizadorCriacao = User.Identity.Name;
+                AjudaCopia.DataHoraCriacao = DateTime.Now;
+                AjudaCopia.UtilizadorModificacao = User.Identity.Name;
+                AjudaCopia.DataHoraModificacao = DateTime.Now;
+
+                if (DBLinhasFolhaHoras.CreateAjuda(AjudaCopia) == null)
+                    result = 1;
+
+                if (result == 0)
+                {
+                    DBFolhasDeHoras.UpdateDetalhes(data.NoFolhaHoras);
+                }
+            }
+            catch (Exception ex)
+            {
+                //log
                 result = 99;
             }
             return Json(result);
@@ -1710,6 +1836,60 @@ namespace Hydra.Such.Portal.Controllers
             catch (Exception ex)
             {
                 return Json(99);
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        //Copia um percurso
+        public JsonResult CopiarLinhaMaoDeObra([FromBody] MaoDeObraFolhaDeHorasViewModel data)
+        {
+            int result = 0;
+
+            try
+            {
+                MãoDeObraFolhaDeHoras MaoDeObraOriginal = DBMaoDeObraFolhaDeHoras.GetByMaoDeObraNo((int)data.LinhaNo);
+                MãoDeObraFolhaDeHoras MaoDeObraCopia = new MãoDeObraFolhaDeHoras();
+
+                MaoDeObraCopia.NºFolhaDeHoras = MaoDeObraOriginal.NºFolhaDeHoras;
+                MaoDeObraCopia.Date = MaoDeObraOriginal.Date;
+                MaoDeObraCopia.NºProjeto = MaoDeObraOriginal.NºProjeto;
+                MaoDeObraCopia.NºEmpregado = MaoDeObraOriginal.NºEmpregado;
+                MaoDeObraCopia.CódigoTipoTrabalho = MaoDeObraOriginal.CódigoTipoTrabalho;
+                MaoDeObraCopia.HoraInício = MaoDeObraOriginal.HoraInício;
+                MaoDeObraCopia.HorárioAlmoço = MaoDeObraOriginal.HorárioAlmoço;
+                MaoDeObraCopia.HoraFim = MaoDeObraOriginal.HoraFim;
+                MaoDeObraCopia.HorárioJantar = MaoDeObraOriginal.HorárioJantar;
+                MaoDeObraCopia.CódigoFamíliaRecurso = MaoDeObraOriginal.CódigoFamíliaRecurso;
+                MaoDeObraCopia.CódigoTipoOm = MaoDeObraOriginal.CódigoTipoOm;
+                MaoDeObraCopia.NºDeHoras = MaoDeObraOriginal.NºDeHoras;
+                MaoDeObraCopia.CustoUnitárioDireto = MaoDeObraOriginal.CustoUnitárioDireto;
+                MaoDeObraCopia.CodigoRegiao = MaoDeObraOriginal.CodigoRegiao;
+                MaoDeObraCopia.CodigoArea = MaoDeObraOriginal.CodigoArea;
+                MaoDeObraCopia.CodigoCentroResponsabilidade = MaoDeObraOriginal.CodigoCentroResponsabilidade;
+                MaoDeObraCopia.PreçoTotal = MaoDeObraOriginal.PreçoTotal;
+                MaoDeObraCopia.Descricao = MaoDeObraOriginal.Descricao;
+                MaoDeObraCopia.NºRecurso = MaoDeObraOriginal.NºRecurso;
+                MaoDeObraCopia.CódUnidadeMedida = MaoDeObraOriginal.CódUnidadeMedida;
+                MaoDeObraCopia.PreçoDeCusto = MaoDeObraOriginal.PreçoDeCusto;
+                MaoDeObraCopia.PreçoDeVenda = MaoDeObraOriginal.PreçoDeVenda;
+                MaoDeObraCopia.UtilizadorCriação = User.Identity.Name;
+                MaoDeObraCopia.DataHoraCriação = DateTime.Now;
+                MaoDeObraCopia.UtilizadorModificação = User.Identity.Name;
+                MaoDeObraCopia.DataHoraModificação = DateTime.Now;
+
+                if (DBMaoDeObraFolhaDeHoras.Create(MaoDeObraCopia) == null)
+                    result = 1;
+
+                if (result == 0)
+                {
+                    DBFolhasDeHoras.UpdateDetalhes(data.FolhaDeHorasNo);
+                }
+            }
+            catch (Exception ex)
+            {
+                //log
+                result = 99;
             }
             return Json(result);
         }
@@ -2344,123 +2524,132 @@ namespace Hydra.Such.Portal.Controllers
                 decimal NoDias = 0;
                 int noLinha;
 
-                //APAGAR TODOS OS REGISTOS DAS LINHAS DE FOLHAS DE HORAS ONDE Calculo_Automatico = true
-                List<LinhasFolhaHoras> LinhasFH = DBLinhasFolhaHoras.GetAjudaByFolhaHoraNo(data.FolhaDeHorasNo).Where(x => (x.NoFolhaHoras.ToLower() == data.FolhaDeHorasNo.ToLower()) && (x.CalculoAutomatico == true)).ToList();
-                if (LinhasFH != null)
+                //Só Calcula as Ajudas de Custo se a Deslocação Fora do Concelho estiver ativa
+                if (data.DeslocacaoForaConcelho == true)
                 {
-                    LinhasFH.ForEach(x =>
+                    //APAGAR TODOS OS REGISTOS DAS LINHAS DE FOLHAS DE HORAS ONDE Calculo_Automatico = true
+                    List<LinhasFolhaHoras> LinhasFH = DBLinhasFolhaHoras.GetAjudaByFolhaHoraNo(data.FolhaDeHorasNo).Where(x => (x.NoFolhaHoras.ToLower() == data.FolhaDeHorasNo.ToLower()) && (x.CalculoAutomatico == true)).ToList();
+                    if (LinhasFH != null)
                     {
-                        DBLinhasFolhaHoras.DeleteAjuda(x.NoFolhaHoras, x.NoLinha);
-                    });
-                }
+                        LinhasFH.ForEach(x =>
+                        {
+                            DBLinhasFolhaHoras.DeleteAjuda(x.NoFolhaHoras, x.NoLinha);
+                        });
+                    }
 
-                List<ConfiguracaoAjudaCusto> AjudaCusto = DBConfiguracaoAjudaCusto.GetAll().Where(x =>
-                    (x.DataChegadaDataPartida == false) &&
-                    (x.DistanciaMinima <= GetSUMDistancia(data.FolhaDeHorasNo)) &&
-                    (x.TipoCusto != 1)
-                    ).ToList();
+                    List<ConfiguracaoAjudaCusto> AjudaCusto = DBConfiguracaoAjudaCusto.GetAll().Where(x =>
+                        (x.DataChegadaDataPartida == false) &&
+                        (x.DistanciaMinima <= GetSUMDistancia(data.FolhaDeHorasNo)) &&
+                        (x.TipoCusto != 1)
+                        ).ToList();
 
-                if (AjudaCusto != null)
-                {
-                    AjudaCusto.ForEach(x =>
+                    if (AjudaCusto != null)
                     {
-                        NoDias = Convert.ToInt32((Convert.ToDateTime(data.DataChegadaTexto) - Convert.ToDateTime(data.DataPartidaTexto)).TotalDays);
-                        NoDias = NoDias + 1;
-
-                        if (Convert.ToDateTime(data.DataPartidaTexto) == Convert.ToDateTime(data.DataChegadaTexto))
+                        AjudaCusto.ForEach(x =>
                         {
+                            NoDias = Convert.ToInt32((Convert.ToDateTime(data.DataChegadaTexto) - Convert.ToDateTime(data.DataPartidaTexto)).TotalDays);
+                            NoDias = NoDias + 1;
 
-                            if (x.CodigoRefCusto == 1) //ALMOCO
+                            if (Convert.ToDateTime(data.DataPartidaTexto) == Convert.ToDateTime(data.DataChegadaTexto))
                             {
-                                if (TimeSpan.Parse(data.HoraPartidaTexto) <= x.LimiteHoraPartida && TimeSpan.Parse(data.HoraChegadaTexto) > x.LimiteHoraPartida)
-                                    NoDias = NoDias;
-                                else
-                                    NoDias = NoDias - 1;
-                            }
 
-                            if (x.CodigoRefCusto == 2) //JANTAR
+                                if (x.CodigoRefCusto == 1) //ALMOCO
                             {
-                                if (TimeSpan.Parse(data.HoraChegadaTexto) >= x.LimiteHoraChegada && TimeSpan.Parse(data.HoraPartidaTexto) < x.LimiteHoraChegada)
-                                    NoDias = NoDias;
-                                else
-                                    NoDias = NoDias - 1;
-                            }
-                        }
-                        else
-                        {
-                            if (x.CodigoRefCusto == 1) //ALMOCO
+                                    if (TimeSpan.Parse(data.HoraPartidaTexto) <= x.LimiteHoraPartida && TimeSpan.Parse(data.HoraChegadaTexto) > x.LimiteHoraPartida)
+                                        NoDias = NoDias;
+                                    else
+                                        NoDias = NoDias - 1;
+                                }
+
+                                if (x.CodigoRefCusto == 2) //JANTAR
                             {
-                                if (TimeSpan.Parse(data.HoraPartidaTexto) <= x.LimiteHoraPartida)
-                                    NoDias = NoDias;
-                                else
-                                    NoDias = NoDias - 1;
-
-                                if ((TimeSpan.Parse(data.HoraChegadaTexto) >= x.LimiteHoraChegada) || data.DataPartidaTexto != data.DataChegadaTexto)
-                                    NoDias = NoDias;
-                                else
-                                    NoDias = NoDias - 1;
-                            }
-
-                            if (x.CodigoRefCusto == 2) //JANTAR
-                            {
-                                if ((TimeSpan.Parse(data.HoraPartidaTexto) >= x.LimiteHoraPartida) || data.DataPartidaTexto != data.DataChegadaTexto)
-                                    NoDias = NoDias;
-                                else
-                                    NoDias = NoDias - 1;
-
-                                if (TimeSpan.Parse(data.HoraChegadaTexto) >= x.LimiteHoraChegada)
-                                    NoDias = NoDias;
-                                else
-                                    NoDias = NoDias - 1;
-                            }
-                        }
-
-                        if (NoDias > 0)
-                        {
-                            noLinha = DBLinhasFolhaHoras.GetMaxByFolhaHoraNo(data.FolhaDeHorasNo);
-
-                            LinhasFolhaHoras Ajuda = new LinhasFolhaHoras();
-
-                            Ajuda.NoFolhaHoras = data.FolhaDeHorasNo;
-                            Ajuda.NoLinha = noLinha;
-                            Ajuda.CodTipoCusto = x.CodigoTipoCusto.Trim();
-                            Ajuda.TipoCusto = x.TipoCusto;
-                            Ajuda.DescricaoTipoCusto = EnumerablesFixed.FolhaDeHoraAjudaTipoCusto.Where(y => y.Id == x.TipoCusto).FirstOrDefault().Value;
-                            Ajuda.Quantidade = Convert.ToDecimal(NoDias);
-                            Ajuda.CustoUnitario = Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo == x.TipoCusto.ToString() && y.CodRecurso == x.CodigoTipoCusto.Trim()).FirstOrDefault().PrecoUnitarioCusto);
-                            Ajuda.PrecoUnitario = Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo.ToLower() == x.TipoCusto.ToString().ToLower() && y.CodRecurso.ToLower() == x.CodigoTipoCusto.ToLower().Trim()).FirstOrDefault().PrecoUnitarioVenda);
-                            Ajuda.CustoTotal = NoDias * Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo.ToLower() == x.TipoCusto.ToString().ToLower() && y.CodRecurso.ToLower() == x.CodigoTipoCusto.ToLower().Trim()).FirstOrDefault().PrecoUnitarioCusto);
-                            Ajuda.PrecoVenda = NoDias * Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo.ToLower() == x.TipoCusto.ToString().ToLower() && y.CodRecurso.ToLower() == x.CodigoTipoCusto.ToLower().Trim()).FirstOrDefault().PrecoUnitarioVenda);
-                            Ajuda.DataDespesa = Convert.ToDateTime(data.DataPartidaTexto + " " + data.HoraPartidaTexto);
-                            Ajuda.CalculoAutomatico = true;
-                            Ajuda.Funcionario = data.EmpregadoNo;
-                            Ajuda.CodRegiao = data.CodigoRegiao == "" ? null : data.CodigoRegiao;
-                            Ajuda.CodArea = data.CodigoAreaFuncional == "" ? null : data.CodigoAreaFuncional;
-                            Ajuda.CodCresp = data.CodigoCentroResponsabilidade == null ? null : data.CodigoCentroResponsabilidade;
-                            Ajuda.RubricaSalarial = DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo.ToLower() == x.TipoCusto.ToString().ToLower() && y.CodRecurso.ToLower() == x.CodigoTipoCusto.Trim().ToLower()).FirstOrDefault().RubricaSalarial;
-                            Ajuda.UtilizadorCriacao = User.Identity.Name;
-                            Ajuda.DataHoraCriacao = DateTime.Now;
-                            Ajuda.UtilizadorModificacao = User.Identity.Name;
-                            Ajuda.DataHoraModificacao = DateTime.Now;
-
-                            LinhasFolhaHoras dbCreateResult = DBLinhasFolhaHoras.CreateAjuda(Ajuda);
-                            if (dbCreateResult != null)
-                            {
-                                result.eReasonCode = 0;
-                                result.eMessage = "Foram calculados as Ajudas de Custo com sucesso.";
+                                    if (TimeSpan.Parse(data.HoraChegadaTexto) >= x.LimiteHoraChegada && TimeSpan.Parse(data.HoraPartidaTexto) < x.LimiteHoraChegada)
+                                        NoDias = NoDias;
+                                    else
+                                        NoDias = NoDias - 1;
+                                }
                             }
                             else
                             {
-                                result.eReasonCode = 1;
-                                result.eMessage = "Ocorreu um erro na no calculo das Ajudas de Custo.";
+                                if (x.CodigoRefCusto == 1) //ALMOCO
+                            {
+                                    if (TimeSpan.Parse(data.HoraPartidaTexto) <= x.LimiteHoraPartida)
+                                        NoDias = NoDias;
+                                    else
+                                        NoDias = NoDias - 1;
+
+                                    if ((TimeSpan.Parse(data.HoraChegadaTexto) >= x.LimiteHoraChegada) || data.DataPartidaTexto != data.DataChegadaTexto)
+                                        NoDias = NoDias;
+                                    else
+                                        NoDias = NoDias - 1;
+                                }
+
+                                if (x.CodigoRefCusto == 2) //JANTAR
+                            {
+                                    if ((TimeSpan.Parse(data.HoraPartidaTexto) >= x.LimiteHoraPartida) || data.DataPartidaTexto != data.DataChegadaTexto)
+                                        NoDias = NoDias;
+                                    else
+                                        NoDias = NoDias - 1;
+
+                                    if (TimeSpan.Parse(data.HoraChegadaTexto) >= x.LimiteHoraChegada)
+                                        NoDias = NoDias;
+                                    else
+                                        NoDias = NoDias - 1;
+                                }
                             }
-                        }
-                    });
+
+                            if (NoDias > 0)
+                            {
+                                noLinha = DBLinhasFolhaHoras.GetMaxByFolhaHoraNo(data.FolhaDeHorasNo);
+
+                                LinhasFolhaHoras Ajuda = new LinhasFolhaHoras();
+
+                                Ajuda.NoFolhaHoras = data.FolhaDeHorasNo;
+                                Ajuda.NoLinha = noLinha;
+                                Ajuda.CodTipoCusto = x.CodigoTipoCusto.Trim();
+                                Ajuda.TipoCusto = x.TipoCusto;
+                                Ajuda.DescricaoTipoCusto = EnumerablesFixed.FolhaDeHoraAjudaTipoCusto.Where(y => y.Id == x.TipoCusto).FirstOrDefault().Value;
+                                Ajuda.Quantidade = Convert.ToDecimal(NoDias);
+                                Ajuda.CustoUnitario = Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo == x.TipoCusto.ToString() && y.CodRecurso == x.CodigoTipoCusto.Trim()).FirstOrDefault().PrecoUnitarioCusto);
+                                Ajuda.PrecoUnitario = Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo.ToLower() == x.TipoCusto.ToString().ToLower() && y.CodRecurso.ToLower() == x.CodigoTipoCusto.ToLower().Trim()).FirstOrDefault().PrecoUnitarioVenda);
+                                Ajuda.CustoTotal = NoDias * Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo.ToLower() == x.TipoCusto.ToString().ToLower() && y.CodRecurso.ToLower() == x.CodigoTipoCusto.ToLower().Trim()).FirstOrDefault().PrecoUnitarioCusto);
+                                Ajuda.PrecoVenda = NoDias * Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo.ToLower() == x.TipoCusto.ToString().ToLower() && y.CodRecurso.ToLower() == x.CodigoTipoCusto.ToLower().Trim()).FirstOrDefault().PrecoUnitarioVenda);
+                                Ajuda.DataDespesa = Convert.ToDateTime(data.DataPartidaTexto + " " + data.HoraPartidaTexto);
+                                Ajuda.CalculoAutomatico = true;
+                                Ajuda.Funcionario = data.EmpregadoNo;
+                                Ajuda.CodRegiao = data.CodigoRegiao == "" ? null : data.CodigoRegiao;
+                                Ajuda.CodArea = data.CodigoAreaFuncional == "" ? null : data.CodigoAreaFuncional;
+                                Ajuda.CodCresp = data.CodigoCentroResponsabilidade == null ? null : data.CodigoCentroResponsabilidade;
+                                Ajuda.RubricaSalarial = DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo.ToLower() == x.TipoCusto.ToString().ToLower() && y.CodRecurso.ToLower() == x.CodigoTipoCusto.Trim().ToLower()).FirstOrDefault().RubricaSalarial;
+                                Ajuda.UtilizadorCriacao = User.Identity.Name;
+                                Ajuda.DataHoraCriacao = DateTime.Now;
+                                Ajuda.UtilizadorModificacao = User.Identity.Name;
+                                Ajuda.DataHoraModificacao = DateTime.Now;
+
+                                LinhasFolhaHoras dbCreateResult = DBLinhasFolhaHoras.CreateAjuda(Ajuda);
+                                if (dbCreateResult != null)
+                                {
+                                    result.eReasonCode = 0;
+                                    result.eMessage = "Foram calculados as Ajudas de Custo com sucesso.";
+                                }
+                                else
+                                {
+                                    result.eReasonCode = 1;
+                                    result.eMessage = "Ocorreu um erro na no calculo das Ajudas de Custo.";
+                                }
+                            }
+                        });
+                    }
+
+                    FolhasDeHoras dbUpdateResult = DBFolhasDeHoras.UpdateDetalhes(data.FolhaDeHorasNo);
+
+                    return Json(result);
                 }
-
-                FolhasDeHoras dbUpdateResult = DBFolhasDeHoras.UpdateDetalhes(data.FolhaDeHorasNo);
-
-                return Json(result);
+                else
+                {
+                    result.eReasonCode = 2;
+                    result.eMessage = "As Ajudas de Custo só podem ser calculadas se for uma Deslocação Fora do Concelho.";
+                }
             }
             catch (Exception ex)
             {
@@ -2525,48 +2714,84 @@ namespace Hydra.Such.Portal.Controllers
             {
                 if (data != null)
                 {
-                    if (data.Terminada == true)
+                    List<LinhasFolhaHorasViewModel> Percursos = DBLinhasFolhaHoras.GetAllByPercursoToList(data.FolhaDeHorasNo);
+
+                    if (data.DeslocacaoForaConcelho == true && (Percursos == null || Percursos.Count() == 0))
                     {
-                        data.DataHoraPartida = DateTime.Parse(string.Concat(data.DataPartidaTexto, " ", data.HoraPartidaTexto));
-                        data.DataHoraChegada = DateTime.Parse(string.Concat(data.DataChegadaTexto, " ", data.HoraChegadaTexto));
-
-                        data.Terminada = true; //TERMINADA
-                        data.TerminadoPor = User.Identity.Name; //TERMINADA
-                        data.DataHoraTerminado = DateTime.Now; //TERMINADA
-                        data.UtilizadorModificacao = User.Identity.Name; //TERMINADA
-                        data.DataHoraModificacao = DateTime.Now; //TERMINADA
-
-                        FolhasDeHoras FH = DBFolhasDeHoras.ParseToFolhaHoras(data);
-
-                        if (DBFolhasDeHoras.Update(FH) == null)
+                        resultApprovalMovement.eReasonCode = 8;
+                        resultApprovalMovement.eMessage = "Não pode Terminar a Folha de Horas, pois para Deslocação Fora do Concelho tem que existir pelo menos um Percurso.";
+                        return Json(resultApprovalMovement);
+                    }
+                    else
+                    {
+                        using (var ctx = new SuchDBContextExtention())
                         {
-                            resultApprovalMovement.eReasonCode = 6;
-                            resultApprovalMovement.eMessage = "Ocorreu um erro na atualização da Folha de Horas.";
-                        }
-                        else
-                        {
-                            if (FH.Terminada == true)
+                            var parameters = new[]
                             {
-                                decimal CustoTotal = (decimal)FH.CustoTotalAjudaCusto;
+                                    new SqlParameter("@NoFH", data.FolhaDeHorasNo),
+                            };
+                            resultApprovalMovement.eReasonCode = ctx.execStoredProcedureFH("exec FH_Validar_Terminar @NoFH", parameters);
 
-                                if (DBFolhasDeHoras.GetById(data.FolhaDeHorasNo).Estado == 0) //CRIADO
-                                {
-                                    if (DBApprovalMovements.GetAll().Where(x => x.Tipo == 3 && x.Número == FH.NºFolhaDeHoras && x.Estado == 1).ToList().Count() == 0)
-                                        resultApprovalMovement = ApprovalMovementsManager.StartApprovalMovement_FH(3, FH.CódigoÁreaFuncional, FH.CódigoCentroResponsabilidade, FH.CódigoRegião, CustoTotal, FH.NºFolhaDeHoras, User.Identity.Name);
-                                }
-                                else
-                                {
-                                    resultApprovalMovement.eReasonCode = 7;
-                                    resultApprovalMovement.eMessage = "Não pode terminar a Folha de Horas pois a mesma já não está no estado Criado.";
-                                }
+                            if (resultApprovalMovement.eReasonCode == 1)
+                            {
+                                resultApprovalMovement.eMessage = "Ocorreu um erro na validação de Terminar.";
+                                return Json(resultApprovalMovement);
+                            }
+                            if (resultApprovalMovement.eReasonCode == 2)
+                            {
+                                resultApprovalMovement.eMessage = "A Folha de Horas não pode ser terminada pois o Projeto não existe no eSUCH.";
+                                return Json(resultApprovalMovement);
+                            }
+                            if (resultApprovalMovement.eReasonCode == 3)
+                            {
+                                resultApprovalMovement.eMessage = "A Folha de Horas não pode ser terminada pois a Ordem Manutenção não existe no Evolution.";
+                                return Json(resultApprovalMovement);
+                            }
+                        }
 
+                        if (data.Terminada == true)
+                        {
+                            data.DataHoraPartida = DateTime.Parse(string.Concat(data.DataPartidaTexto, " ", data.HoraPartidaTexto));
+                            data.DataHoraChegada = DateTime.Parse(string.Concat(data.DataChegadaTexto, " ", data.HoraChegadaTexto));
+
+                            data.Terminada = true; //TERMINADA
+                            data.TerminadoPor = User.Identity.Name; //TERMINADA
+                            data.DataHoraTerminado = DateTime.Now; //TERMINADA
+                            data.UtilizadorModificacao = User.Identity.Name; //TERMINADA
+                            data.DataHoraModificacao = DateTime.Now; //TERMINADA
+
+                            FolhasDeHoras FH = DBFolhasDeHoras.ParseToFolhaHoras(data);
+
+                            if (DBFolhasDeHoras.Update(FH) == null)
+                            {
+                                resultApprovalMovement.eReasonCode = 6;
+                                resultApprovalMovement.eMessage = "Ocorreu um erro na atualização da Folha de Horas.";
                             }
                             else
                             {
-                                resultApprovalMovement.eReasonCode = 1;
-                                resultApprovalMovement.eMessage = "";
-                            }
-                        };
+                                if (FH.Terminada == true)
+                                {
+                                    decimal CustoTotal = (decimal)FH.CustoTotalAjudaCusto;
+
+                                    if (DBFolhasDeHoras.GetById(data.FolhaDeHorasNo).Estado == 0) //CRIADO
+                                    {
+                                        if (DBApprovalMovements.GetAll().Where(x => x.Tipo == 3 && x.Número == FH.NºFolhaDeHoras && x.Estado == 1).ToList().Count() == 0)
+                                            resultApprovalMovement = ApprovalMovementsManager.StartApprovalMovement_FH(3, FH.CódigoÁreaFuncional, FH.CódigoCentroResponsabilidade, FH.CódigoRegião, CustoTotal, FH.NºFolhaDeHoras, User.Identity.Name);
+                                    }
+                                    else
+                                    {
+                                        resultApprovalMovement.eReasonCode = 7;
+                                        resultApprovalMovement.eMessage = "Não pode terminar a Folha de Horas pois a mesma já não está no estado Criado.";
+                                    }
+
+                                }
+                                else
+                                {
+                                    resultApprovalMovement.eReasonCode = 1;
+                                    resultApprovalMovement.eMessage = "";
+                                }
+                            };
+                        }
                     }
                 }
                 else
@@ -2638,7 +2863,7 @@ namespace Hydra.Such.Portal.Controllers
 
                                         NoRegistos = DBLinhasFolhaHoras.GetAll().Where(x => x.NoFolhaHoras.ToLower() == data.FolhaDeHorasNo.ToLower() && x.TipoCusto == 2).Count();
 
-                                        if (TipoDeslocação != "2" && NoRegistos == 0)
+                                        if (TipoDeslocação == "2" && NoRegistos == 0)
                                             Estado = 2; // 2 = Registado
                                         else
                                             Estado = 1; //VALIDADO
@@ -2891,7 +3116,7 @@ namespace Hydra.Such.Portal.Controllers
                                         string TipoDeslocação = data.TipoDeslocacaoTexto;
                                         int Estado = (int)data.Estado;
 
-                                        if (IntegradoEmRhKm || TipoDeslocação != "2")
+                                        if (IntegradoEmRhKm || TipoDeslocação == "2")
                                             Estado = 2; // 2 = Registado
 
                                         if (DBFolhasDeHoras.Update(new FolhasDeHoras()
@@ -2987,7 +3212,7 @@ namespace Hydra.Such.Portal.Controllers
                                                 //Update Old Movement
                                                 MovimentosDeAprovação approvalMovement = DBApprovalMovements.GetAll().Where(x => x.Tipo == 3 && x.CódigoÁreaFuncional == data.CodigoAreaFuncional &&
                                                     x.CódigoRegião == data.CodigoRegiao && x.CódigoCentroResponsabilidade == data.CodigoCentroResponsabilidade && x.Número == data.FolhaDeHorasNo &&
-                                                    x.Estado == 1 && x.Nivel == 1).FirstOrDefault();
+                                                    x.Estado == 1 && x.Nivel == 2).FirstOrDefault();
 
                                                 if (approvalMovement != null)
                                                 {
@@ -3076,7 +3301,6 @@ namespace Hydra.Such.Portal.Controllers
                                         new SqlParameter("@NoUtilizador", data.EmpregadoNo),
                                         new SqlParameter("@NoValidador", User.Identity.Name)
                                     };
-
                                         result.eReasonCode = ctx.execStoredProcedureFH("exec FH_IntegrarEmRHKM @NoFH, @NoUtilizador, @NoValidador", parameters);
 
                                         if (result.eReasonCode == 0)
@@ -3182,7 +3406,7 @@ namespace Hydra.Such.Portal.Controllers
                                                     //Update Old Movement
                                                     MovimentosDeAprovação approvalMovement = DBApprovalMovements.GetAll().Where(x => x.Tipo == 3 && x.CódigoÁreaFuncional == data.CodigoAreaFuncional &&
                                                         x.CódigoRegião == data.CodigoRegiao && x.CódigoCentroResponsabilidade == data.CodigoCentroResponsabilidade && x.Número == data.FolhaDeHorasNo &&
-                                                        x.Estado == 1 && x.Nivel == 1).FirstOrDefault();
+                                                        x.Estado == 1 && x.Nivel == 3).FirstOrDefault();
 
                                                     if (approvalMovement != null)
                                                     {

@@ -206,6 +206,13 @@
                    method="post"
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
+        <iron-ajax url="/GestaoRequisicoes/ValidateRequisition"
+                   last-response="{{Requisition}}"
+                   id="validaterequisitionImprimir_datasource"
+                   on-response="_validateRequisitionImprimirResponse"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json"></iron-ajax>
         <iron-ajax url="/GestaoRequisicoes/AprovarRequisition"
                    last-response="{{Requisition}}"
                    id="aprovarRequisition_datasource"
@@ -333,15 +340,16 @@
             <such-dropdown-menu id="menuRegister" disabled="{{ !_permissions.update }}" on-value-changed="_registerMenuItemSelected" title="Registar" items='[[ _registerMenuItems ]]'></such-dropdown-menu>
             <such-dropdown-menu id="menuFunctios" disabled="{{ !_permissions.update }}" on-value-changed="_functionsMenuItemSelected" title="Funções" items='[[ _functionsMenuItems ]]'></such-dropdown-menu>
 
-
-
             <!--<template is="dom-if" if="{{ _permissions.update }}">-->
             <!--<paper-button class="tablinks" id="btnLocalMarketValidation" style="width: 200px !important;" on-tap="_validateLocalMarket"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Enviar Mercado Local</paper-button>-->
             <!--<paper-button class="tablinks" id="btnValidate" on-tap="_validateRequisition"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Validar</paper-button>-->
             <!--<such-dropdown-menu id="menuRegister" on-value-changed="_registerMenuItemSelected" title="Registar" items='[[ _registerMenuItems ]]'></such-dropdown-menu>-->
             <!--<such-dropdown-menu id="menuFunctios" on-value-changed="_functionsMenuItemSelected" title="Funções" items='[[ _functionsMenuItems ]]'></such-dropdown-menu>-->
             <!--</template>-->
-            <paper-button class="tablinks" id="btnPrint" on-tap="_printRequisition"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Imprimir</paper-button>
+            <!--<paper-button class="tablinks" id="btnPrint" on-tap="_printRequisition"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Imprimir</paper-button>-->
+            <such-dropdown-menu id="menuImprimirGestao" on-value-changed="_menuImprimirGestao" title="Imprimir" items="[[ _imprimirMenuItemsGestao ]]" hidden></such-dropdown-menu>
+            <such-dropdown-menu id="menuImprimirValidacao" on-value-changed="_menuImprimirValidacao" title="Imprimir" items="[[ _imprimirMenuItemsValidacao ]]" hidden></such-dropdown-menu>
+
             <paper-button class="tablinks" id="btnStatOfPlay" on-tap="_redirectToStatOfPlay" hidden="{{ !Requisition.showPontoSituacao }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Ponto situação</paper-button>
             <paper-button class="tablinks" id="btnShowChangeLog" on-tap="_showChangeLog"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Workflow</paper-button>
             <paper-button class="tablinks" id="btnShowEncomendas" on-tap="_showEncomendas"><i class="fa fa-first-order" aria-hidden="true"></i>&nbsp; Encomendas</paper-button>
@@ -1238,7 +1246,7 @@
                                     <template class="header">
                                         <p class="alignCenter">Criar Consulta Mercado</p>
                                         <!--<vaadin-grid-filter path="createMarketSearchStringValue">
-                    </vaadin-grid-filter>-->
+                                    </vaadin-grid-filter>-->
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
@@ -1380,14 +1388,14 @@
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
                                             <!--<vaadin-combo-box items="[[Suppliers]]" id="_CLGridSupplierNo" name="_CLGridSupplierNo" item-value-path="no_" item-label-path="name" value="{{item.supplierNo}}" on-change="_onSupplierInGridChanged" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLinesNew">
-                            <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.name]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
-                            </template>
-                        </vaadin-combo-box>-->
+                                            <template>
+                                                <paper-icon-item>
+                                                    <paper-item-body two-line>
+                                                        <div>[[item.name]]</div>
+                                                    </paper-item-body>
+                                                </paper-icon-item>
+                                            </template>
+                                        </vaadin-combo-box>-->
                                             <such-selectbox id="_CLGridSupplierNo"
                                                             items="[[Suppliers]]"
                                                             value="{{item.supplierNo}}"
@@ -1630,10 +1638,10 @@
                         </div>
 
                         <!--<div class="marginSpace">
-        <template is="dom-if" if="{{ _permissions.update }}">
-            <paper-button raised id="btnSaveLine" class="btnEdit" on-tap="_updateRequisitionLinesNew"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-        </template>
-    </div>-->
+                        <template is="dom-if" if="{{ _permissions.update }}">
+                            <paper-button raised id="btnSaveLine" class="btnEdit" on-tap="_updateRequisitionLinesNew"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                        </template>
+                    </div>-->
                     </div>
                 </iron-form>
             </div>
@@ -1814,6 +1822,19 @@
                     },
                     _SelectedLine: {
                         observer: '_lineSelected'
+                    },
+                    _validacao: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    _imprimirMenuItemsGestao: {
+                        type: Array,
+                        value: [{ value: 1, description: "Imprimir A4" }, { value: 2, description: "Imprimir A5" }],
+                    },
+                    _imprimirMenuItemsValidacao: {
+                        type: Array,
+                        value: [{ value: 1, description: "Imprimir A4" }, { value: 2, description: "Imprimir A5" }, { value: 3, description: "Validar e Imprimir A4" }, { value: 4, description: "Validar e Imprimir A5" }],
                     },
                 },
                 observers: [
@@ -2237,6 +2258,14 @@
                         this._openToastError(this.Requisition.eMessage);
                     }
                 },
+                _validateRequisitionImprimirResponse: function (e) {
+                    if (this.Requisition.eReasonCode == "1") {
+                        this._openToast(this.Requisition.eMessage);
+                    }
+                    else {
+                        this._openToastError(this.Requisition.eMessage);
+                    }
+                },
 
                 _PopulatePurchaseLines: function (data) {
                     var purchaseNo = this.$.CBPurchaseHeader.value;
@@ -2615,6 +2644,13 @@
                     //Preencher o POP-UP das Encomendas
                     this.$.ajax_TodasEncomendasPorProduto.body = JSON.stringify({ "requisitionNo": this.Requisition.requisitionNo });
                     this.$.ajax_TodasEncomendasPorProduto.generateRequest();
+
+                    if (this._validacao == "1") {
+                        this.$.menuImprimirValidacao.hidden = false;
+                    }
+                    else {
+                        this.$.menuImprimirGestao.hidden = false;
+                    }
                 },
                 _deleteReqLineResponse: function (e) {
                     if (this.DelReqLineResponse.eReasonCode == "1") {
@@ -2716,6 +2752,7 @@
                 _closeRptDialog: function () {
                     this.$.rptContainer.src = "about:blank";
                     this.$.rptDialog.close();
+                    window.history.back();
                 },
                 _createTransferShipment: function () {
                     //window.open("/GestaoRequisicoes/CreateTransferShipment/" + this.Requisition.requisitionNo, "_blank");
@@ -2987,6 +3024,122 @@
                         this._openToast("Não tem Linhas inseridas.");
                     }
                 },
+
+                _menuImprimirGestao: function (e) {
+                    var item = e.detail.value;
+
+                    if (item == null)
+                        return;
+
+                    this._newStatus = item.value;
+                    if (item.value == 1) { //IMPRIMIR A4
+                        if (this._reportserverurl != undefined) {
+                            if (this.$.CBHeaderProjects.value != "") {
+                                this.$.rptContainer.src = this._reportserverurl + "RequisitionReport&NoRequisicao=" + this.Requisition.requisitionNo;
+                            }
+                            else {
+                                this.$.rptContainer.src = this._reportserverurl + "RequisitionStockReport&NoRequisicao=" + this.Requisition.requisitionNo;
+                            }
+                            this.$.rptDialog.open();
+                        }
+                        else {
+                            this._openToastError("Não é possivel imprimir. Não foi definido o servidor de relatórios.");
+                        }
+
+                    }
+                    if (item.value == 2) { //IMPRIMIR A5
+                        if (this._reportserverurl != undefined) {
+                            if (this.$.CBHeaderProjects.value != "") {
+                                this.$.rptContainer.src = this._reportserverurl + "RequisitionReportA5&NoRequisicao=" + this.Requisition.requisitionNo;
+                            }
+                            else {
+                                this.$.rptContainer.src = this._reportserverurl + "RequisitionStockReportA5&NoRequisicao=" + this.Requisition.requisitionNo;
+                            }
+                            this.$.rptDialog.open();
+                        }
+                        else {
+                            this._openToastError("Não é possivel imprimir. Não foi definido o servidor de relatórios.");
+                        }
+                    }
+                },
+
+                _menuImprimirValidacao: function (e) {
+                    var item = e.detail.value;
+
+                    if (item == null)
+                        return;
+
+                    this._newStatus = item.value;
+                    if (item.value == 1) { //IMPRIMIR A4
+                        if (this._reportserverurl != undefined) {
+                            if (this.$.CBHeaderProjects.value != "") {
+                                this.$.rptContainer.src = this._reportserverurl + "RequisitionReport&NoRequisicao=" + this.Requisition.requisitionNo;
+                            }
+                            else {
+                                this.$.rptContainer.src = this._reportserverurl + "RequisitionStockReport&NoRequisicao=" + this.Requisition.requisitionNo;
+                            }
+                            this.$.rptDialog.open();
+                        }
+                        else {
+                            this._openToastError("Não é possivel imprimir. Não foi definido o servidor de relatórios.");
+                        }
+
+                    }
+                    if (item.value == 2) { //IMPRIMIR A5
+                        if (this._reportserverurl != undefined) {
+                            if (this.$.CBHeaderProjects.value != "") {
+                                this.$.rptContainer.src = this._reportserverurl + "RequisitionReportA5&NoRequisicao=" + this.Requisition.requisitionNo;
+                            }
+                            else {
+                                this.$.rptContainer.src = this._reportserverurl + "RequisitionStockReportA5&NoRequisicao=" + this.Requisition.requisitionNo;
+                            }
+                            this.$.rptDialog.open();
+                        }
+                        else {
+                            this._openToastError("Não é possivel imprimir. Não foi definido o servidor de relatórios.");
+                        }
+                    }
+                    if (item.value == 3) { //VALIDAR E IMPRIMIR A4
+                        //VALIDAR
+                        this.$.validaterequisitionImprimir_datasource.body = JSON.stringify(this.Requisition);
+                        this.$.validaterequisitionImprimir_datasource.generateRequest();
+
+                        //IMPRIMIR
+                        if (this._reportserverurl != undefined) {
+                            if (this.$.CBHeaderProjects.value != "") {
+                                this.$.rptContainer.src = this._reportserverurl + "RequisitionReport&NoRequisicao=" + this.Requisition.requisitionNo;
+                            }
+                            else {
+                                this.$.rptContainer.src = this._reportserverurl + "RequisitionStockReport&NoRequisicao=" + this.Requisition.requisitionNo;
+                            }
+                            this.$.rptDialog.open();
+                        }
+                        else {
+                            this._openToastError("Não é possivel imprimir. Não foi definido o servidor de relatórios.");
+                        }
+                    }
+                    if (item.value == 4) { //VALIDAR E IMPRIMIR A5
+                        //VALIDAR
+                        this.$.validaterequisitionImprimir_datasource.body = JSON.stringify(this.Requisition);
+                        this.$.validaterequisitionImprimir_datasource.generateRequest();
+
+                        //IMPRIMIR
+                        if (this._reportserverurl != undefined) {
+                            if (this.$.CBHeaderProjects.value != "") {
+                                this.$.rptContainer.src = this._reportserverurl + "RequisitionReportA5&NoRequisicao=" + this.Requisition.requisitionNo;
+                            }
+                            else {
+                                this.$.rptContainer.src = this._reportserverurl + "RequisitionStockReportA5&NoRequisicao=" + this.Requisition.requisitionNo;
+                            }
+                            this.$.rptDialog.open();
+                        }
+                        else {
+                            this._openToastError("Não é possivel imprimir. Não foi definido o servidor de relatórios.");
+                        }
+                    }
+                },
+
+
 
             });
         });

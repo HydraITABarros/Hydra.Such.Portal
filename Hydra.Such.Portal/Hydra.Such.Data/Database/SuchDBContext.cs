@@ -3313,7 +3313,7 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.CriadoPor)
                     .HasColumnName("Criado Por")
-                    .HasMaxLength(20);
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.CustoTotalKm).HasColumnName("CustoTotalKM");
 

@@ -586,14 +586,11 @@
                 },
 
                 ready: function () {
-                    debugger;;
                     this.$.page_databound_ajax.body = JSON.stringify({ "No": this._guiatransporteid, "Historic": this._history });
                     this.$.page_databound_ajax.generateRequest();
                 },
 
                 _responseProcessor: function (data) {
-                    debugger;;
-
                     var self = this;
 
                     if (data.detail.status === 200) {
@@ -605,7 +602,6 @@
 
                 _printE: function () {
                     if (this._reportserverurl != undefined) {
-                        debugger;;
                         var historyAux = 1;
 
                         if (!this._history)

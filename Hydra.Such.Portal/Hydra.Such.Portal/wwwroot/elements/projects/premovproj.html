@@ -236,9 +236,9 @@
                 font: inherit;
             }
         </style>
-        <div class="subMenu" hidden="{{ !_permissions.update }}">
+        <div class="subMenu" hidden="{{ !_permissions.read }}">
             <paper-button class="tablinks" on-tap="_registerPreMov"><i class="fa fa-chevron-circle-down" aria-hidden="true"></i> Registar Movimentos</paper-button>
-            <paper-button id="btn_imprimirPreMov" class="tablinks" on-tap="_printPreMov" disabled="{{ !_permissions.create }}" title="Imprimir"><i class="fa fa-print" aria-hidden="true"></i> Imprimir Pré Registros</paper-button>
+            <paper-button id="btn_imprimirPreMov" class="tablinks" on-tap="_printPreMov" title="Imprimir"><i class="fa fa-print" aria-hidden="true"></i> Imprimir Pré Registros</paper-button>
             <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
 
             <!--start ColumnToggle-->
