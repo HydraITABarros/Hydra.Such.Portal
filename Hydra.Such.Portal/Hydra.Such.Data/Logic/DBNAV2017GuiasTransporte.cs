@@ -493,6 +493,46 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
+        public static List<ShipmentLineItem> GetShipmentItems(string NAVDatabase, string NAVCompany, int itemType, string itemCode)
+        {
+            try
+            {
+                List<ShipmentLineItem> shipmentItems = new List<ShipmentLineItem>();
+                SuchDBContextExtention _contextExt = new SuchDBContextExtention();
+
+                var parameters = new[]{
+                        new SqlParameter("@DBName", NAVDatabase),
+                        new SqlParameter("@CompanyName", NAVCompany),
+                        new SqlParameter("@Type", itemType),
+                        new SqlParameter("@ItemId", itemCode)
+                };
+
+                IEnumerable<dynamic> data = _contextExt.execStoredProcedure("exec NAV2017GuiaTransporteShipmentItems @DBName, @CompanyName, @Type, @ItemId", parameters);
+
+                foreach (var temp in data)
+                {
+                    if (!temp.ItemCode.Equals(DBNull.Value))
+                    {
+                        ShipmentLineItem item = new ShipmentLineItem()
+                        {
+                            ItemType = itemType,
+                            ItemCode = temp.ItemCode.Equals(DBNull.Value) ? "" : (string)temp.ItemCode,
+                            UnitOfMeasure = temp.BaseUnitOfMeasure.Equals(DBNull.Value) ? "" : (string)temp.BaseUnitOfMeasure,
+                            Description = temp.Description.Equals(DBNull.Value) ? "" : (string)temp.Description
+                        };
+
+                        shipmentItems.Add(item);
+                    }
+                }
+                return shipmentItems;
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+            
+        }
         public static bool UpdateGuiaTransporte(GuiaTransporteNavViewModel guia)
         {
             if(guia == null)

@@ -2674,17 +2674,8 @@ namespace Hydra.Such.Portal.Configurations
             {
                 Id = 1,
                 Value="Produto"
-            },
-            new EnumData()
-            {
-                Id = 2,
-                Value = "Conta"
-            },
-            new EnumData()
-            {
-                Id = 3,
-                Value = "Equipamento"
             }
+            
         };
     }
 
