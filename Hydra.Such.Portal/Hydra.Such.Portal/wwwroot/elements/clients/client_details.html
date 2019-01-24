@@ -1181,7 +1181,8 @@
                         </template>
                         <template>
                             <div class="text-right">
-                                [[_formatCurrencyValue(item.unitPrice)]]
+                                <!--[[_formatCurrencyValue(item.unitPrice)]]-->
+                                [[_formatIntValue(item.unitPrice)]]
                             </div>
                         </template>
                     </vaadin-grid-column>
@@ -1757,6 +1758,17 @@
                     value = value * 1;
                     if (value != null && value != 0) {
                         return currency(Math.round(value * 100) / 100, { separator: '.', decimal: ',' }).format() + '€';
+                    }
+                },
+                _formatIntValue: function (value) {
+
+                    if (value) {
+                        value = value + "";
+                        value = value.replace(",", ".");
+                    }
+                    value = value * 1;
+                    if (value != null && value != 0) {
+                        return parseFloat(Math.round(value * 100) / 100, { separator: '.', decimal: ',' }).toFixed(4) + '€';
                     }
                 },
                 _invoiceSelected: function (value) {

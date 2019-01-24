@@ -430,7 +430,7 @@
             <paper-button id="btn_validarFolhaDeHoras" class="tablinks" on-tap="_validarFolhaDeHoras" disabled="{{ !_permissions.create }}" title="Validar"><i class="fa fa-check-square" aria-hidden="true"></i> Validar</paper-button>
             <paper-button id="btn_integrarEmRH" class="tablinks" on-tap="_integrarEmRH" disabled="{{ !_permissions.create }}" title="Integrar Aj. Custo"><i class="fa fa-check-square" aria-hidden="true"></i> Integrar Aj. Custo</paper-button>
             <paper-button id="btn_integrarEmRHKM" class="tablinks" on-tap="_integrarEmRHKM" disabled="{{ !_permissions.create }}" title="Integrar km"><i class="fa fa-check-square" aria-hidden="true"></i> Integrar km</paper-button>
-            <paper-button id="btn_imprimirFH" class="tablinks" on-tap="_printFH" disabled="{{ !_permissions.create }}" title="Imprimir"><i class="fa fa-print" aria-hidden="true"></i> Imprimir</paper-button>
+            <paper-button id="btn_imprimirFH" class="tablinks" on-tap="_printFH" title="Imprimir"><i class="fa fa-print" aria-hidden="true"></i> Imprimir</paper-button>
             <paper-button id="btn_updateFH1" raised class="tablinks" on-tap="_updateFH" disabled="{{ !_permissions.update }}" title="Gravar" style="background-color:#5A9E49"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Gravar</paper-button>
             <paper-button id="btn_delete" class="tablinks" on-tap="_deleteFH" disabled="{{ !_permissions.delete }}" title="Eliminar" style="background-color:#D5662F"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
             <paper-button id="btn_toHistoric" class="tablinks" on-tap="_toHistoricFH" disabled="{{ !_permissions.update }}" title="Enviar para Histórico" style="background-color:#DADADA"><i class="fa fa-history" aria-hidden="true"></i>&nbsp; Enviar para Histórico</paper-button>
@@ -577,16 +577,18 @@
                         <div class="col-sm-3">
                         </div>
 
-                        <div class="col-sm-2">
-                            <vaadin-text-field value="{{data.custoTotalAjudaCusto}}" id="custoTotalAjudaCusto" name="custoTotalAjudaCusto" type="number" disabled="true" class="alignRight" label="Custo Total Ajuda Custo">
-                                <div slot="suffix">€</div>
-                            </vaadin-text-field>
-                        </div>
+                        <div class="col-sm-3">
+                            <div class="col-sm-6">
+                                <vaadin-text-field value="{{data.custoTotalAjudaCusto}}" id="custoTotalAjudaCusto" name="custoTotalAjudaCusto" type="number" disabled="true" class="alignRight" label="Custo Total Ajuda Custo">
+                                    <div slot="suffix">€</div>
+                                </vaadin-text-field>
+                            </div>
 
-                        <div class="col-sm-1">
-                            <vaadin-text-field value="{{data.custoTotalKM}}" id="custoTotalKM" name="custoTotalKM" type="number" disabled="true" class="alignRight" label="Custo Total km">
-                                <div slot="suffix">€</div>
-                            </vaadin-text-field>
+                            <div class="col-sm-6">
+                                <vaadin-text-field value="{{data.custoTotalKM}}" id="custoTotalKM" name="custoTotalKM" type="number" disabled="true" class="alignRight" label="Custo Total km">
+                                    <div slot="suffix">€</div>
+                                </vaadin-text-field>
+                            </div>
                         </div>
 
 
@@ -668,7 +670,7 @@
                             </template>
                             <template>
                                 <center>
-                                    <paper-button class="btnSave tableBtn" raised on-tap="_CopiarPercurso" title="Duplicar Linha"><i class="fa fa-copy" aria-hidden="true"></i></paper-button>
+                                    <paper-button class="btnSave tableBtn" raised on-tap="_CopiarPercurso" title="Duplicar Linha" disabled="{{ !_permissions.create }}"><i class="fa fa-copy" aria-hidden="true"></i></paper-button>
                                 </center>
                             </template>
                         </vaadin-grid-column>
@@ -895,7 +897,7 @@
                             </template>
                             <template>
                                 <center>
-                                    <paper-button class="btnSave tableBtn" raised on-tap="_CopiarAjuda" title="Duplicar Linha"><i class="fa fa-copy" aria-hidden="true"></i></paper-button>
+                                    <paper-button class="btnSave tableBtn" raised on-tap="_CopiarAjuda" title="Duplicar Linha" disabled="{{ !_permissions.create }}"><i class="fa fa-copy" aria-hidden="true"></i></paper-button>
                                 </center>
                             </template>
                         </vaadin-grid-column>
@@ -1116,7 +1118,7 @@
                             </template>
                             <template>
                                 <center>
-                                    <paper-button class="btnSave tableBtn" raised on-tap="_CopiarMaoDeObra" title="Duplicar Linha"><i class="fa fa-copy" aria-hidden="true"></i></paper-button>
+                                    <paper-button class="btnSave tableBtn" raised on-tap="_CopiarMaoDeObra" title="Duplicar Linha" disabled="{{ !_permissions.create }}"><i class="fa fa-copy" aria-hidden="true"></i></paper-button>
                                 </center>
                             </template>
                         </vaadin-grid-column>

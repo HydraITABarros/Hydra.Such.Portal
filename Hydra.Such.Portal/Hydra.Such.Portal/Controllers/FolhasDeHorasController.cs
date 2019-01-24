@@ -302,8 +302,6 @@ namespace Hydra.Such.Portal.Controllers
 
             if (UPerm != null && UPerm.Read.Value)
             {
-                ViewBag.UPermissions = UPerm;
-
                 if (FHNo == null || FHNo == "")
                 {
                     string id = "";
@@ -391,9 +389,28 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    Estado = (int)DBFolhasDeHoras.GetById(FHNo).Estado;
+                    FolhasDeHoras Folha = DBFolhasDeHoras.GetById(FHNo);
+                    ConfigUtilizadores CriadorFH = DBUserConfigurations.GetById(Folha.CriadoPor);
+                    string SuperiorHierarquico = CriadorFH.SuperiorHierarquico == null ? "" : CriadorFH.SuperiorHierarquico;
+
+                    if (Folha.Terminada == true)
+                    {
+                        if (User.Identity.Name.ToLower() != Folha.CriadoPor.ToLower() &&
+                            User.Identity.Name.ToLower() != SuperiorHierarquico.ToLower() &&
+                            !Folha.Validadores.ToLower().Contains(User.Identity.Name.ToLower()) &&
+                            !Folha.IntegradoresEmRh.ToLower().Contains(User.Identity.Name.ToLower()) &&
+                            !Folha.IntegradoresEmRhkm.ToLower().Contains(User.Identity.Name.ToLower()))
+                        {
+                            UPerm.Create = false;
+                            UPerm.Delete = false;
+                            UPerm.Update = false;
+                        }
+                    }
+
+                    Estado = (int)Folha.Estado;
                 }
 
+                ViewBag.UPermissions = UPerm;
                 ViewBag.FolhaDeHorasNo = FHNo == null ? "" : FHNo;
                 ViewBag.Estado = Estado;
 
@@ -2543,7 +2560,7 @@ namespace Hydra.Such.Portal.Controllers
                         (x.TipoCusto != 1)
                         ).ToList();
 
-                    if (AjudaCusto != null)
+                    if (AjudaCusto != null && AjudaCusto.Count() > 0)
                     {
                         AjudaCusto.ForEach(x =>
                         {
@@ -2639,6 +2656,11 @@ namespace Hydra.Such.Portal.Controllers
                                 }
                             }
                         });
+                    }
+                    else
+                    {
+                        result.eReasonCode = 1;
+                        result.eMessage = "Com os dados preenchidos nesta Folha de Horas não é possível calcular Ajudas de Custo.";
                     }
 
                     FolhasDeHoras dbUpdateResult = DBFolhasDeHoras.UpdateDetalhes(data.FolhaDeHorasNo);
@@ -2863,7 +2885,7 @@ namespace Hydra.Such.Portal.Controllers
 
                                         NoRegistos = DBLinhasFolhaHoras.GetAll().Where(x => x.NoFolhaHoras.ToLower() == data.FolhaDeHorasNo.ToLower() && x.TipoCusto == 2).Count();
 
-                                        if (TipoDeslocação == "2" && NoRegistos == 0)
+                                        if (TipoDeslocação != "2" && NoRegistos == 0)
                                             Estado = 2; // 2 = Registado
                                         else
                                             Estado = 1; //VALIDADO
@@ -3116,7 +3138,7 @@ namespace Hydra.Such.Portal.Controllers
                                         string TipoDeslocação = data.TipoDeslocacaoTexto;
                                         int Estado = (int)data.Estado;
 
-                                        if (IntegradoEmRhKm || TipoDeslocação == "2")
+                                        if (IntegradoEmRhKm || TipoDeslocação != "2")
                                             Estado = 2; // 2 = Registado
 
                                         if (DBFolhasDeHoras.Update(new FolhasDeHoras()
