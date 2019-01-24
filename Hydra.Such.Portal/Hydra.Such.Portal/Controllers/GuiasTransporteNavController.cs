@@ -201,6 +201,7 @@ namespace Hydra.Such.Portal.Controllers
             return Json(DBNAV2017GuiasTransporte.GetShipmentSourceCodes(_config.NAVDatabaseName, _config.NAVCompanyName));
         }
 
+        
         [HttpPost]
         public JsonResult GetShipToAddr([FromBody] JObject requestParams)
         {
@@ -216,11 +217,24 @@ namespace Hydra.Such.Portal.Controllers
             if (custId == "")
                 return Json(null);
 
-            // zpgm.11012019 TO DO: Get the ship-to addresses in the back-end and front-end
             List<GuiaTransporteShipToAddress> customerAddresses = DBNAV2017GuiasTransporte.GetShipToAddresses(_config.NAVDatabaseName, _config.NAVCompanyName, custId, shipCode);
             return Json(customerAddresses);
         }
 
+        public JsonResult GetShipItems([FromBody] JObject requestParams)
+        {
+            if (requestParams == null)
+                return Json(null);
+
+            int itemType = (requestParams["itemType"] == null || string.Compare((string)requestParams["itemType"], "") == 0) ? -1 : (int)requestParams["itemType"];
+            string itemCode = requestParams["itemCode"] == null ? "-1" : (string)requestParams["itemCode"];
+
+            if (itemType == -1)
+                return Json(null);
+
+            List<ShipmentLineItem> items = DBNAV2017GuiasTransporte.GetShipmentItems(_config.NAVDatabaseName, _config.NAVCompanyName, itemType, itemCode);
+            return Json(items);
+        }
         #region CRUD
         [HttpPost]
         public JsonResult CreateGuiaTransporte()
