@@ -121,6 +121,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        [RequestSizeLimit(100_000_000)]
         public async Task<JsonResult> ExportToExcel_ListaEncomendas([FromBody] List<EncomendasViewModel> Lista)
         {
             JObject dp = (JObject)Lista[0].ColunasEXCEL;
