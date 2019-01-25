@@ -1336,6 +1336,22 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetProjectNavList_FH()
+        {
+            List<NAVProjectsViewModel> result = DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, "").Where(x => x.No.StartsWith("OM") || x.No.StartsWith("PJ")).ToList();
+
+            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && (y.ValorDimensão == x.RegionCode || string.IsNullOrEmpty(x.RegionCode))));
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && (y.ValorDimensão == x.AreaCode || string.IsNullOrEmpty(x.AreaCode))));
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && (y.ValorDimensão == x.CenterResponsibilityCode || string.IsNullOrEmpty(x.CenterResponsibilityCode))));
+
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetProjectById([FromBody] string ProjectNo)
         {
             List<NAVProjectsViewModel> result = DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, ProjectNo).ToList();
@@ -1397,14 +1413,18 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetCountabGroupTypes()
+        public JsonResult GetCountabGroupTypes([FromBody] string area)
         {
-            List<DDMessageRelatedInt> result = DBCountabGroupTypes.GetAll().Select(x => new DDMessageRelatedInt()
+            List<DDMessageRelatedInt> result = new List<DDMessageRelatedInt>();
+            if (!string.IsNullOrEmpty(area))
             {
-                id = x.Código,
-                value = x.Descrição,
-                extra = x.Descricao2
-            }).ToList();
+                result = DBCountabGroupTypes.GetAll().Where(y => y.CódigoÁreaFuncional == area).Select(x => new DDMessageRelatedInt()
+                {
+                    id = x.Código,
+                    value = x.Descrição,
+                    extra = x.Descricao2
+                }).ToList();
+            }
 
             return Json(result);
         }

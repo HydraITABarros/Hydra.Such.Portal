@@ -1646,6 +1646,13 @@ namespace Hydra.Such.Portal.Controllers
             //SET INTEGRATED IN DB
             if (dp != null)
             {
+                //AMARO
+                //VER AMANHÃ COM O MARCO
+                //dp.ForEach(x =>
+                //{
+                //    x.MovementType = 1;
+                //});
+
                 bool hasItemsWithoutDimensions = dp.Any(x => string.IsNullOrEmpty(x.RegionCode) ||
                                                             string.IsNullOrEmpty(x.FunctionalAreaCode) ||
                                                             string.IsNullOrEmpty(x.ResponsabilityCenterCode));

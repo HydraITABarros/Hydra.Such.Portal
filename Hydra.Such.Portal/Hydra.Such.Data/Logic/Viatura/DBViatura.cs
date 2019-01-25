@@ -102,47 +102,46 @@ namespace Hydra.Such.Data.Logic.Viatura
 
         public static Viaturas ParseToDB(ViaturasViewModel x)
         {
-            Viaturas viatura = new Viaturas()
-            {
-                Matrícula = x.Matricula,
-                NºQuadro = x.NQuadro,
-                Estado = x.Estado,
-                CódigoTipoViatura = Int32.Parse(x.CodigoTipoViatura),
-                CódigoMarca = Int32.Parse(x.CodigoMarca),
-                CódigoModelo = Int32.Parse(x.CodigoModelo),
-                CartãoCombustível = x.CartaoCombustivel,
-                Apólice = x.Apolice,
-                PesoBruto = x.PesoBruto,
-                Tara = x.Tara,
-                Cilindrada = x.Cilindrada,
-                TipoCombustível = x.TipoCombustivel,
-                NºLugares = x.NLugares,
-                Cor = x.Cor,
-                AtribuídaA = x.AtribuidaA,
-                CódigoRegião = x.CodigoRegiao,
-                CódigoÁreaFuncional = x.CodigoAreaFuncional,
-                CódigoCentroResponsabilidade = x.CodigoCentroResponsabilidade,
-                TipoPropriedade = x.TipoPropriedade,
-                NºImobilizado = x.NImobilizado,
-                UtilizadorCriação = x.UtilizadorCriacao,
-                UtilizadorModificação = x.UtilizadorModificacao,
-                LocalParqueamento = x.LocalParqueamento,
-                Observações = x.Observacoes,
-                Potência = x.Potencia,
-                DistânciaEntreEixos = x.DistanciaEntreEixos,
-                PneumáticosFrente = x.PneumaticosFrente,
-                PneumáticosRetaguarda = x.PneumaticosRetaguarda,
-                ConsumoIndicativo = x.ConsumoIndicativo,
-                CartaVerde = x.CartaVerde,
-                NºViaVerde = x.NViaVerde,
-                ValorAquisição = x.ValorAquisicao,
-                ValorVenda = x.ValorVenda,
-                //Imagem = x.Imagem,
-                KmUltimaRevisão = x.KmUltimaRevisao,
-                IntervaloRevisões = x.IntervaloRevisoes,
-                DuraçãoPneus = x.DuracaoPneus,
-                NoProjeto = x.NoProjeto
-            };
+            Viaturas viatura = new Viaturas();
+            viatura.Matrícula = x.Matricula;
+            viatura.NºQuadro = x.NQuadro;
+            viatura.Estado = x.Estado;
+            viatura.CódigoTipoViatura = Int32.Parse(x.CodigoTipoViatura);
+            viatura.CódigoMarca = Int32.Parse(x.CodigoMarca);
+            if (!string.IsNullOrEmpty(x.CodigoModelo))
+                viatura.CódigoModelo = Int32.Parse(x.CodigoModelo);
+            viatura.CartãoCombustível = x.CartaoCombustivel;
+            viatura.Apólice = x.Apolice;
+            viatura.PesoBruto = x.PesoBruto;
+            viatura.Tara = x.Tara;
+            viatura.Cilindrada = x.Cilindrada;
+            viatura.TipoCombustível = x.TipoCombustivel;
+            viatura.NºLugares = x.NLugares;
+            viatura.Cor = x.Cor;
+            viatura.AtribuídaA = x.AtribuidaA;
+            viatura.CódigoRegião = x.CodigoRegiao;
+            viatura.CódigoÁreaFuncional = x.CodigoAreaFuncional;
+            viatura.CódigoCentroResponsabilidade = x.CodigoCentroResponsabilidade;
+            viatura.TipoPropriedade = x.TipoPropriedade;
+            viatura.NºImobilizado = x.NImobilizado;
+            viatura.UtilizadorCriação = x.UtilizadorCriacao;
+            viatura.UtilizadorModificação = x.UtilizadorModificacao;
+            viatura.LocalParqueamento = x.LocalParqueamento;
+            viatura.Observações = x.Observacoes;
+            viatura.Potência = x.Potencia;
+            viatura.DistânciaEntreEixos = x.DistanciaEntreEixos;
+            viatura.PneumáticosFrente = x.PneumaticosFrente;
+            viatura.PneumáticosRetaguarda = x.PneumaticosRetaguarda;
+            viatura.ConsumoIndicativo = x.ConsumoIndicativo;
+            viatura.CartaVerde = x.CartaVerde;
+            viatura.NºViaVerde = x.NViaVerde;
+            viatura.ValorAquisição = x.ValorAquisicao;
+            viatura.ValorVenda = x.ValorVenda;
+            //Imagem = x.Imagem,
+            viatura.KmUltimaRevisão = x.KmUltimaRevisao;
+            viatura.IntervaloRevisões = x.IntervaloRevisoes;
+            viatura.DuraçãoPneus = x.DuracaoPneus;
+            viatura.NoProjeto = x.NoProjeto;
 
             viatura.DataMatrícula = x.DataMatricula != "" && x.DataMatricula != null ? DateTime.Parse(x.DataMatricula) : (DateTime?)null;
             viatura.DataHoraModificação = x.DataHoraModificacao != "" && x.DataHoraModificacao != null ? DateTime.Parse(x.DataHoraModificacao) : (DateTime?)null;

@@ -145,7 +145,7 @@
         <iron-ajax url="/PopulateDropdowns/GetFolhaDeHoraTypeDeslocation" last-response="{{LFolhaDeHoraTypeDeslocation}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFolhaDeHoraCodeTypeKms" last-response="{{LFolhaDeHoraCodeTypeKms}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProjectList" last-response="{{LFolhaDeHoraProjectNo}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetProjectNavList" last-response="{{LFolhaDeHoraNavProjectNo}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProjectNavList_FH" last-response="{{LFolhaDeHoraNavProjectNo}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetTipoTrabalhoList" last-response="{{LFolhaDeHoraTipoTrabalhoNo}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFolhaDeHoraDisplacementOutsideCity" last-response="{{LFolhaDeHoraDisplacementOutsideCity}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetUtilizadores" last-response="{{LFolhaDeHoraValidators}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -579,13 +579,13 @@
 
                         <div class="col-sm-3">
                             <div class="col-sm-6">
-                                <vaadin-text-field value="{{data.custoTotalAjudaCusto}}" id="custoTotalAjudaCusto" name="custoTotalAjudaCusto" type="number" disabled="true" class="alignRight" label="Custo Total Ajuda Custo">
+                                <vaadin-text-field value="{{data.custoTotalAjudaCusto}}" id="custoTotalAjudaCusto" name="custoTotalAjudaCusto" type="number" disabled="true" class="alignRight" label="Total Aj Custo">
                                     <div slot="suffix">€</div>
                                 </vaadin-text-field>
                             </div>
 
                             <div class="col-sm-6">
-                                <vaadin-text-field value="{{data.custoTotalKM}}" id="custoTotalKM" name="custoTotalKM" type="number" disabled="true" class="alignRight" label="Custo Total km">
+                                <vaadin-text-field value="{{data.custoTotalKM}}" id="custoTotalKM" name="custoTotalKM" type="number" disabled="true" class="alignRight" label="Total km">
                                     <div slot="suffix">€</div>
                                 </vaadin-text-field>
                             </div>
@@ -2397,7 +2397,6 @@
                 //},
 
                 _updateLinhaPercurso: function (e) {
-                    debugger;
                     var index = this.data.folhaDeHorasPercurso.indexOf(e.model.item);
 
                     if (this.data.terminada == true || this.data.estado == 1 || this.data.estado == 2) {
@@ -2420,7 +2419,6 @@
                 },
 
                 _CopiarPercurso: function (e) {
-                    debugger;
                     var index = this.data.folhaDeHorasPercurso.indexOf(e.model.item);
 
                     if (this.data.terminada == true || this.data.estado == 1 || this.data.estado == 2) {
@@ -2680,7 +2678,6 @@
                 },
 
                 _CopiarAjuda: function (e) {
-                    debugger;
                     var index = this.data.folhaDeHorasAjuda.indexOf(e.model.item);
 
                     if (this.data.terminada == true || this.data.estado == 1 || this.data.estado == 2) {
@@ -2996,7 +2993,6 @@
                 },
 
                 _CopiarMaoDeObra: function (e) {
-                    debugger;
                     var index = this.data.folhaDeHorasMaoDeObra.indexOf(e.model.item);
 
                     if (this.data.terminada == true || this.data.estado == 1 || this.data.estado == 2) {
@@ -3607,7 +3603,8 @@
                 _validarfolhadehorasResponse: function (e) {
                     if (this.validarFolhaDeHoras.eReasonCode == 0 || this.validarFolhaDeHoras.eReasonCode == 100) {
                         this._showMessage(this.validarFolhaDeHoras.eMessage);
-                        this.$.page_databound_ajax.generateRequest();
+                        window.history.back();
+                        //this.$.page_databound_ajax.generateRequest();
                     } else {
                         this._showErrorMessage(this.validarFolhaDeHoras.eMessage);
                     };
@@ -4225,7 +4222,6 @@
 
 
                 _setFieldsEditability(data) {
-                    debugger;
                     var _self = this;
 
                     //BOTÕES

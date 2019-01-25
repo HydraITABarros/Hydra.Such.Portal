@@ -559,18 +559,14 @@ namespace Hydra.Such.Portal.Extensions
 
                 FolhasDeHoras FolhaHoras = DBFolhasDeHoras.GetById(ApprovalMovement.Number);
                 int NoAjudasCusto = DBLinhasFolhaHoras.GetAll().Where(x => x.NoFolhaHoras.ToLower() == FolhaHoras.NºFolhaDeHoras.ToLower() && x.TipoCusto == 2).Count();
+                int Nokm = DBLinhasFolhaHoras.GetAll().Where(x => x.NoFolhaHoras.ToLower() == FolhaHoras.NºFolhaDeHoras.ToLower() && x.TipoCusto == 1).Count();
                 int Estado = 0;
                 int nivel = 99;
                 bool IntegradoEmRh = false;
                 bool IntegradoEmRhkm = false;
                 string Criador = FolhaHoras.CriadoPor;
 
-                if (FolhaHoras.TipoDeslocação != 2 && NoAjudasCusto == 0)
-                {
-                    Estado = 2; // 2 = Registado FINAL
-                    nivel = 99;
-                }
-                else
+                if ((NoAjudasCusto > 0) || (FolhaHoras.TipoDeslocação == 2 && Nokm > 0))
                 {
                     Estado = 1; //VALIDADO
                     if ((FolhaHoras.IntegradoEmRh == false || FolhaHoras.IntegradoEmRh == null) && FolhaHoras.Estado == Estado)
@@ -593,6 +589,11 @@ namespace Hydra.Such.Portal.Extensions
                             nivel = 99;
                         }
                     }
+                }
+                else
+                {
+                    Estado = 2; // 2 = Registado FINAL
+                    nivel = 99;
                 }
 
                 if (Estado == 1)

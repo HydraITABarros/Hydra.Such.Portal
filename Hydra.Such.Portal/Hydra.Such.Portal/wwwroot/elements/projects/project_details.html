@@ -58,8 +58,8 @@
         <iron-ajax url="/PopulateDropdowns/GetProjectCategories" last-response="{{LProjectCategories}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProjectTypes" last-response="{{LProjectTypes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetServiceObjects" last-response="{{LProjectServiceObjects}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetCountabGroupTypes" last-response="{{LProjectCountabGroupTypes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetCountabGroupTypesOM" last-response="{{LProjectCountabGroupTypesOM}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <!--<iron-ajax url="/PopulateDropdowns/GetCountabGroupTypes" last-response="{{LProjectCountabGroupTypes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetCountabGroupTypesOM" last-response="{{LProjectCountabGroupTypesOM}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{LProjectFunctionalAreaCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{LProjectResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{LProjectRegionCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -69,6 +69,13 @@
         <iron-ajax url="/PopulateDropdowns/GetAllClientsComboGrid" last-response="{{LProjectClients}}" auto method="post" handle-as="json" content-type="application/json" id="clients_ajax"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetAreas" last-response="{{LAreas}}" auto method="post" handle-as="json" content-type="application/json" id="clients_ajax"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetNAVShippingAddressesByClientNoAsVM" last-response="{{ClientShippingAddresses}}" method="post" handle-as="json" content-type="application/json" id="shippinhAddress_ajax"></iron-ajax>
+
+        <iron-ajax url="/PopulateDropdowns/GetCountabGroupTypes"
+                   last-response="{{LProjectCountabGroupTypes}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_getGroupContabProjectType_ajax"
+                   content-type="application/json"></iron-ajax>
 
         <!-- PROJECT CRUDS -->
         <iron-ajax url="/Projetos/GetProjectDetails"
@@ -170,6 +177,10 @@
                     </div>
 
                     <div class="col-lg-3">
+                        <vaadin-text-field value="{{data.clientNo}}" id="ProjectClientNo" label="Cliente Nº" disabled> </vaadin-text-field>
+                    </div>
+
+                    <div class="col-lg-3">
                         <such-selectbox id="ProjectClient" value="{{data.clientNo}}" label="Cliente" on-value-changed="_clientChanged"
                                         items="[[LProjectClients]]"
                                         text-path="name"
@@ -178,13 +189,13 @@
                                         disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                         </such-selectbox>
                     </div>
-
-                    <div class="col-lg-3">
-                        <vaadin-date-picker label="Data" id="Date" name="Date" value="{{data.date}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
-                    </div>
                 </div>
 
                 <div class="row break_clear">
+                    <div class="col-lg-3">
+                        <vaadin-date-picker label="Data" id="Date" name="Date" value="{{data.date}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                    </div>
+
                     <div class="col-lg-3">
                         <vaadin-combo-box id="ProjectStatus" items="[[LProjectStatus]]" item-value-path="id" item-label-path="value" value="{{data.status}}" label="Estado" disabled>
                             <template>
@@ -198,7 +209,7 @@
                     </div>
 
                     <div class="col-lg-3">
-                        <such-selectbox id="ProjectLeader" value="{{data.projectLeader}}" label="Chefe Projeto" disabled
+                        <such-selectbox id="ProjectLeader" value="{{data.projectLeader}}" label="Criador de Projeto" disabled
                                         required error-message="Este campo é obrigatório"
                                         items="[[LProjectEmployees]]"
                                         text-path="value"
@@ -208,14 +219,16 @@
                     </div>
 
                     <div class="col-lg-3">
-                        <such-selectbox id="ProjectResponsible" value="{{data.projectResponsible}}" label="Responsável Projeto" disabled
+                        <such-selectbox id="ProjectResponsible" value="{{data.projectResponsible}}" label="Validador de Projeto" disabled
                                         items="[[LProjectEmployees]]"
                                         text-path="value"
                                         value-path="id"
                                         fields='[{"field":"id", "name":"Nº Mecanográfico"}, {"field":"value", "name":"Nome"}]'>
                         </such-selectbox>
                     </div>
+                </div>
 
+                <div class="row break_clear">
                     <div class="col-lg-3">
                         <such-selectbox id="ObjectService" value="{{data.serviceObjectCode}}" label="Cód. Objeto Serviço"
                                         items="[[LProjectServiceObjects]]"
@@ -224,12 +237,6 @@
                                         fields='[{"field":"value", "name":"Nome Serviço"}]'
                                         disabled="{{ !_permissions.update }}">
                         </such-selectbox>
-                    </div>
-                </div>
-
-                <div class="row break_clear">
-                    <div class="col-lg-3 alignPoga">
-                        <vaadin-checkbox checked="{{data.billable}}" disabled="{{ !_permissions.update }}">Faturável</vaadin-checkbox>
                     </div>
 
                     <div class="col-lg-3">
@@ -269,6 +276,7 @@
                                         items="[[LProjectFunctionalAreaCodes]]"
                                         text-path="value"
                                         value-path="id"
+                                        on-value-changed="_getGroupContabProjectType"
                                         fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Área Funcional"}]'>
                         </such-selectbox>
                     </div>
@@ -283,29 +291,36 @@
                         </such-selectbox>
                     </div>
 
-                    <div class="col-lg-3">
-                        <such-selectbox value="{{data.groupContabProjectType}}" label="Tipo Grupo Contab. Projeto" disabled="{{ !_permissions.update }}"
-                                        items="[[LProjectCountabGroupTypes]]"
-                                        text-path="value"
-                                        value-path="id"
-                                        fields='[{"field":"value", "name":"Código"}, {"field":"extra", "name":"Descrição"}]'>
-                        </such-selectbox>
-                        <!--<vaadin-combo-box items="[[LProjectCountabGroupTypes]]" item-value-path="id" item-label-path="value" value="{{data.groupContabProjectType}}" label="Tipo Grupo Contab. Projeto" disabled="{{ !_permissions.update }}">
-                        <template>
-                            <b>[[item.value]]</b>
-                        </template>
-                    </vaadin-combo-box>-->
-                    </div>
                 </div>
 
                 <div class="row">
-                    <div class="col-lg-3">
-                        <vaadin-text-field value="{{data.clientRequest}}" maxlength="20" id="ClientRequest" name="ClientRequest" label="Pedido do Cliente" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                    <div class="col-lg-6">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <such-selectbox value="{{data.groupContabProjectType}}" label="Tipo Grupo Contab. Projeto" disabled="{{ !_permissions.update }}"
+                                                items="[[LProjectCountabGroupTypes]]"
+                                                text-path="value"
+                                                value-path="id"
+                                                fields='[{"field":"value", "name":"Código"}, {"field":"extra", "name":"Descrição"}]'>
+                                </such-selectbox>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <vaadin-text-field value="{{data.clientRequest}}" maxlength="20" id="ClientRequest" name="ClientRequest" label="Pedido do Cliente" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <vaadin-date-picker label="Data Pedido" id="RequestDate" name="Date" value="{{data.requestDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                            </div>
+
+                            <div class="col-lg-6 alignPoga">
+                                <vaadin-checkbox checked="{{data.billable}}" disabled="{{ !_permissions.update }}">Faturável</vaadin-checkbox>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="col-lg-3">
-                        <vaadin-date-picker label="Data Pedido" id="RequestDate" name="Date" value="{{data.requestDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
-                    </div>
 
                     <div class="col-lg-6">
                         <such-textarea rows="5" value="{{data.detailedDescription}}" id="DetailedDescription" name="DetailedDescription" label="Descrição Detalhada" disabled="{{ !_permissions.update }}"> </such-textarea>
@@ -547,11 +562,11 @@
                     //    return false;
                     //}
                     if (this.$.ProjectLeader.value == "" || this.$.ProjectLeader.value == undefined) {
-                        this._openToastError("É obrigatória seleção de um Chefe de Projeto.");
+                        this._openToastError("É obrigatória seleção de um Criador de Projeto.");
                         return false;
                     }
                     if (this.$.ProjectStatus.value == 1 && (this.$.ProjectResponsible.value == "" || this.$.ProjectResponsible.value == undefined)) {
-                        this._openToastError("É obrigatória seleção de um Responsável de Projeto.");
+                        this._openToastError("É obrigatória seleção de um Validador de Projeto.");
                         return false;
                     }
                     if (this.$.RegionCode.value == "" || this.$.RegionCode.value == undefined) {
@@ -688,6 +703,10 @@
                     } else {
                         this._openToastError("Ocorreu um erro.")
                     }
+
+                    debugger;
+                    this.$.page_getGroupContabProjectType_ajax.body = JSON.stringify(this.$.FunctionalAreaCode.value);
+                    this.$.page_getGroupContabProjectType_ajax.generateRequest();
                 },
                 _createResponseProcessor: function () {
                     if (this.data.eReasonCode == 1) {
@@ -836,6 +855,11 @@
                     this.$.rptDialog.close();
                 },
 
+                _getGroupContabProjectType: function () {
+                    debugger;
+                    this.$.page_getGroupContabProjectType_ajax.body = JSON.stringify(this.$.FunctionalAreaCode.value);
+                    this.$.page_getGroupContabProjectType_ajax.generateRequest();
+                },
             });
         });
     </script>
