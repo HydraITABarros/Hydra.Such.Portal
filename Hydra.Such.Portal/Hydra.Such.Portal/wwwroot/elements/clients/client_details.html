@@ -1170,7 +1170,9 @@
                         </template>
                         <template>
                             <div class="text-right">
-                                [[_roundValue(item.quantity, 0)]]
+                                <!--[[_roundValue(item.quantity, 2)]]-->
+                                <!--[[ item.quantity ]]-->
+                                [[_round2casas(item.quantity)]]
                             </div>
                         </template>
                     </vaadin-grid-column>
@@ -1771,6 +1773,17 @@
                         return parseFloat(Math.round(value * 100) / 100, { separator: '.', decimal: ',' }).toFixed(4) + '€';
                     }
                 },
+                _round2casas: function (value) {
+
+                    if (value) {
+                        value = value + "";
+                        value = value.replace(",", ".");
+                    }
+                    value = value * 1;
+                    if (value != null && value != 0) {
+                        return parseFloat(Math.round(value * 100) / 100, { separator: '.', decimal: ',' }).toFixed(2);
+                    }
+                },
                 _invoiceSelected: function (value) {
 
                     if (value) {
@@ -1906,7 +1919,7 @@
                         value = value.replace(",", ".");
                     }
                     return Math.round(value * 1, decimal);
-                }
+                },
             });
         });
 
