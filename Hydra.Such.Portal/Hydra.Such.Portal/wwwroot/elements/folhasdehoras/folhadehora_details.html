@@ -3517,7 +3517,7 @@
                     var self = this;
 
                     if (this.FolhaDeHorasUpdated == 0) {
-                        this._showMessage('Folha de Horas actualizada com sucesso.');
+                        //this._showMessage('Folha de Horas actualizada com sucesso.');
                         this.$.page_databound_ajax.generateRequest();
                     } else {
                         if (this.FolhaDeHorasUpdated == 1) {
@@ -3711,7 +3711,7 @@
 
                 //AJUDA
                 _createAjudaResponse: function (e) {
-                    if (this.AjudaCreated) {
+                    if (this.AjudaCreated == 1) {
                         this._showMessage('Adicionada Ajuda com sucesso.');
                         this.$.page_databound_ajax.generateRequest();
 
@@ -3724,7 +3724,21 @@
                         this.$.ajudaJustificacao.value = "";
                     }
                     else {
-                        this._showErrorMessage('Ocorreu um erro ao adicionar.');
+                        if (this.AjudaCreated == 99) {
+                            this._showErrorMessage('Ocorreu um erro.');
+                        }
+                        if (this.AjudaCreated == 2) {
+                            this._showErrorMessage('Ocorreu um erro ao adicionar a Ajuda de Custo.');
+                        }
+                        if (this.AjudaCreated == 3) {
+                            this._showErrorMessage('Ocorreu um erro ao atualizar a Folha de Horas.');
+                        }
+                        if (this.AjudaCreated == 4) {
+                            this._showErrorMessage('Não pode utilizar este código Tipo de Custo, porque é de Cálculo Automático.');
+                        }
+                        if (this.AjudaCreated == 5) {
+                            this._showErrorMessage('Ocorreu um erro ao adicionar, verifique os dados inseridos.');
+                        }
                     }
                 },
 

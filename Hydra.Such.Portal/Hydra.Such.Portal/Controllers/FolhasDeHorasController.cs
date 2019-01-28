@@ -1478,52 +1478,68 @@ namespace Hydra.Such.Portal.Controllers
         //Cria uma Ajuda
         public JsonResult CreateAjuda([FromBody] LinhasFolhaHorasViewModel data)
         {
-            bool result = false;
+            int result = 99;
             try
             {
-                int noLinha;
-                noLinha = DBLinhasFolhaHoras.GetMaxByFolhaHoraNo(data.NoFolhaHoras);
+                TabelaConfRecursosFh Recurso = DBTabelaConfRecursosFh.GetAll().Where(x => x.Tipo == data.TipoCusto.ToString() && x.CodRecurso == data.CodTipoCusto).FirstOrDefault();
 
-                LinhasFolhaHoras Ajuda = new LinhasFolhaHoras();
-
-                Ajuda.NoFolhaHoras = data.NoFolhaHoras;
-                Ajuda.NoLinha = noLinha;
-                Ajuda.TipoCusto = data.TipoCusto;
-                Ajuda.CodTipoCusto = data.CodTipoCusto;
-                Ajuda.DescricaoTipoCusto = EnumerablesFixed.FolhaDeHoraAjudaTipoCusto.Where(y => y.Id == data.TipoCusto).FirstOrDefault().Value;
-                Ajuda.Quantidade = data.Quantidade;
-                Ajuda.CustoUnitario = data.CustoUnitario;
-                Ajuda.CustoTotal = data.Quantidade * data.CustoUnitario;
-                Ajuda.PrecoUnitario = data.PrecoUnitario;
-                Ajuda.PrecoVenda = data.Quantidade * data.PrecoUnitario;
-                Ajuda.DataDespesa = data.DataDespesa;
-                Ajuda.Observacao = data.Observacao;
-                Ajuda.Funcionario = data.Funcionario;
-                Ajuda.CodRegiao = data.CodRegiao;
-                Ajuda.CodArea = data.CodArea;
-                Ajuda.CodCresp = data.CodCresp;
-                Ajuda.CalculoAutomatico = false;
-                Ajuda.UtilizadorCriacao = User.Identity.Name;
-                Ajuda.DataHoraCriacao = DateTime.Now;
-                Ajuda.UtilizadorModificacao = User.Identity.Name;
-                Ajuda.DataHoraModificacao = DateTime.Now;
-
-                var dbCreateResult = DBLinhasFolhaHoras.CreateAjuda(Ajuda);
-
-                if (dbCreateResult != null)
-                    result = true;
-                else
-                    result = false;
-
-                if (result)
+                if (Recurso != null)
                 {
-                    DBFolhasDeHoras.UpdateDetalhes(data.NoFolhaHoras);
+                    if (Recurso.CalculoAutomatico != true)
+                    {
+                        int noLinha;
+                        noLinha = DBLinhasFolhaHoras.GetMaxByFolhaHoraNo(data.NoFolhaHoras);
+
+                        LinhasFolhaHoras Ajuda = new LinhasFolhaHoras();
+
+                        Ajuda.NoFolhaHoras = data.NoFolhaHoras;
+                        Ajuda.NoLinha = noLinha;
+                        Ajuda.TipoCusto = data.TipoCusto;
+                        Ajuda.CodTipoCusto = data.CodTipoCusto;
+                        Ajuda.DescricaoTipoCusto = EnumerablesFixed.FolhaDeHoraAjudaTipoCusto.Where(y => y.Id == data.TipoCusto).FirstOrDefault().Value;
+                        Ajuda.Quantidade = data.Quantidade;
+                        Ajuda.CustoUnitario = data.CustoUnitario;
+                        Ajuda.CustoTotal = data.Quantidade * data.CustoUnitario;
+                        Ajuda.PrecoUnitario = data.PrecoUnitario;
+                        Ajuda.PrecoVenda = data.Quantidade * data.PrecoUnitario;
+                        Ajuda.DataDespesa = data.DataDespesa;
+                        Ajuda.Observacao = data.Observacao;
+                        Ajuda.Funcionario = data.Funcionario;
+                        Ajuda.CodRegiao = data.CodRegiao;
+                        Ajuda.CodArea = data.CodArea;
+                        Ajuda.CodCresp = data.CodCresp;
+                        Ajuda.CalculoAutomatico = false;
+                        Ajuda.UtilizadorCriacao = User.Identity.Name;
+                        Ajuda.DataHoraCriacao = DateTime.Now;
+                        Ajuda.UtilizadorModificacao = User.Identity.Name;
+                        Ajuda.DataHoraModificacao = DateTime.Now;
+
+                        var dbCreateResult = DBLinhasFolhaHoras.CreateAjuda(Ajuda);
+
+                        if (dbCreateResult != null)
+                            result = 1;
+                        else
+                            result = 2;
+
+                        if (result == 1)
+                        {
+                            if (DBFolhasDeHoras.UpdateDetalhes(data.NoFolhaHoras) != null)
+                                result = 1;
+                            else
+                                result = 3;
+                        }
+                    }
+                    else
+                        result = 4;
                 }
+                else
+                    result = 5;
             }
             catch (Exception ex)
             {
-                //log
+                result = 99;
             }
+
             return Json(result);
         }
 
@@ -2536,6 +2552,8 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult CalcularAjudasCusto([FromBody] FolhaDeHorasViewModel data)
         {
             ErrorHandler result = new ErrorHandler();
+            result.eReasonCode = 90;
+            result.eMessage = "Não existem Despesas válidas para calcular as Ajudas de Custo.";
             try
             {
                 decimal NoDias = 0;
