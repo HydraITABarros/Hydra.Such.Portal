@@ -221,6 +221,14 @@
                    on-response="_createInvoice"
                    content-type="application/json">
         </iron-ajax>
+        <iron-ajax url="/Projetos/ValidateCustomerForBilling"
+                   last-response="{{CustBillingValResponse}}"
+                   method="post"
+                   handle-as="json"
+                   id="valCustomerNegativo_ajax"
+                   on-response="_createInvoiceNegativo"
+                   content-type="application/json">
+        </iron-ajax>
         <iron-ajax url="/Projetos/GetAuthorizedMovements"
                    last-response="{{authorizedMovements}}"
                    method="post"
@@ -827,6 +835,15 @@
             </div>
         </paper-dialog>
 
+        <paper-dialog id="dlgInvoiceNegativo" modal style="height:300px; width:300px">
+            <div>
+                <vaadin-date-picker id="_CLDataNegativo" label="Data" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+            </div>
+            <div class="buttons">
+                <paper-button raised class="btnEdit" on-tap="_validateInvoiceNegativo">Confirmar</paper-button>
+                <paper-button raised class="btnRemove" dialog-dismiss>Cancelar</paper-button>
+            </div>
+        </paper-dialog>
     </template>
 
 
@@ -970,20 +987,23 @@
                                 delete availableInvoiceTypes[1];
                                 this.$._CLOptionInvoice.items = availableInvoiceTypes;
                                 this.$._CLOptionInvoice.value = 4;
-                                var erro = this._validateData(this.selectedItem);
-                                if (erro == "") {
-                                    if (this.selectedItem && this.selectedItem.length > 0) {
-                                        var customerNo = this.selectedItem[0].codCliente;
-                                        var commitmentNo = this.selectedItem[0].numCompromisso;
-                                        this.$.valCustomer_ajax.body = JSON.stringify({ "customerNo": customerNo, "commitmentNo": commitmentNo });
-                                        this.$.valCustomer_ajax.generateRequest();
-                                    }
-                                    else {
-                                        this.openToastError("Não foi possivel aceder ao registo selecionado.");
-                                    }
-                                } else {
-                                    this.openToastError(erro);
-                                }
+                                this.$._CLDataNegativo.value = moment().format("YYYY-MM-DD");
+                                this.$.dlgInvoiceNegativo.open();
+
+                                //var erro = this._validateData(this.selectedItem);
+                                //if (erro == "") {
+                                //    if (this.selectedItem && this.selectedItem.length > 0) {
+                                //        var customerNo = this.selectedItem[0].codCliente;
+                                //        var commitmentNo = this.selectedItem[0].numCompromisso;
+                                //        this.$.valCustomer_ajax.body = JSON.stringify({ "customerNo": customerNo, "commitmentNo": commitmentNo });
+                                //        this.$.valCustomer_ajax.generateRequest();
+                                //    }
+                                //    else {
+                                //        this.openToastError("Não foi possivel aceder ao registo selecionado.");
+                                //    }
+                                //} else {
+                                //    this.openToastError(erro);
+                                //}
                             }  
                         }
                         else {
@@ -1045,8 +1065,6 @@
                     return "Verifique os dados inseridos.";
                 },
                 _validateInvoice: function () {
-                    var teste = this.$._CLData.value;
-
                     var erro = this._validateData(this.selectedItem);
                     if (erro == "") {
                         if (this.$._CLData.value != "") {
@@ -1071,9 +1089,78 @@
                         this.openToastError(erro);
                     }
                 },
+                _validateInvoiceNegativo: function () {
+                    debugger;
+                    var erro = this._validateData(this.selectedItem);
+                    if (erro == "") {
+                        if (this.selectedItem && this.selectedItem.length > 0) {
+                            var customerNo = this.selectedItem[0].codCliente;
+                            var commitmentNo = this.selectedItem[0].numCompromisso;
+                            var data = this.$._CLDataNegativo.value;
+                            this.$.valCustomerNegativo_ajax.body = JSON.stringify({ "customerNo": customerNo, "commitmentNo": commitmentNo, "data": data });
+                            this.$.valCustomerNegativo_ajax.generateRequest();
+                            this.$.dlgInvoiceNegativo.close();
+                        }
+                        else {
+                            this.openToastError("Não foi possivel aceder ao registo selecionado.");
+                        }
+                    } else {
+                        this.openToastError(erro);
+                    }
+                },
+
                 _createInvoice: function () {
                     debugger;
                     var dataFormulario = this.$._CLData.value;
+
+                    if (this.CustBillingValResponse.eMessages.length != 0) {
+                        var option = this.$._CLOptionInvoice.value;
+                        var valError = this.CustBillingValResponse.eMessages.find(x => x.type == 0);
+                        if (valError) {
+                            this.openToastError(valError.message);
+                        }
+                        else {
+                            var valWarning = this.CustBillingValResponse.eMessages.find(x => x.type == 3);
+                            if (valWarning != undefined) {
+                                var ajax_request = this.$.billProjects_ajax;
+                                var selectedItem = this.selectedItem;
+                                bootbox.confirm({
+                                    message: valWarning.message,
+                                    buttons: {
+                                        confirm: {
+                                            label: 'Sim',
+                                            className: 'btn-success'
+                                        },
+                                        cancel: {
+                                            label: 'Não',
+                                            className: 'btn-danger'
+                                        }
+                                    },
+                                    callback: function (authorizeMovements) {
+                                        if (authorizeMovements) {
+                                            ajax_request.body = JSON.stringify(selectedItem);
+                                            ajax_request.params = { "OptionInvoice": option, "dataFormulario": dataFormulario };
+                                            ajax_request.generateRequest();
+                                        }
+                                    }
+                                });
+                            }
+                            else {
+                                this.$.billProjects_ajax.body = JSON.stringify(this.selectedItem);
+                                this.$.billProjects_ajax.params = { "OptionInvoice": this.$._CLOptionInvoice.value, "dataFormulario": dataFormulario };
+                                this.$.billProjects_ajax.generateRequest();
+                            }
+                        }
+                    }
+                    else {
+                        this.$.billProjects_ajax.body = JSON.stringify(this.selectedItem);
+                        this.$.billProjects_ajax.params = { "OptionInvoice": this.$._CLOptionInvoice.value, "dataFormulario": dataFormulario };
+                        this.$.billProjects_ajax.generateRequest();
+                    }
+                },
+                _createInvoiceNegativo: function () {
+                    debugger;
+                    var dataFormulario = this.$._CLDataNegativo.value;
 
                     if (this.CustBillingValResponse.eMessages.length != 0) {
                         var option = this.$._CLOptionInvoice.value;

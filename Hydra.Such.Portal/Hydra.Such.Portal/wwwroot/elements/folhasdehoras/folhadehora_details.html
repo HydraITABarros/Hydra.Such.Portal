@@ -1669,7 +1669,7 @@
 
                     <div class="row break_clear">
                         <div class="col-sm-12">
-                            <such-textarea rows="5" type="text" value="{{data.observacoes}}" id="observacoes" name="observacoes" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" label="Observações"></such-textarea>
+                            <such-textarea rows="5" value="{{data.observacoes}}" id="observacoes" name="observacoes" disabled="{{ !_permissions.update }}" label="Observações"></such-textarea>
                         </div>
                     </div>
                 </div>
@@ -4295,7 +4295,7 @@
                         _self.$.codigoRegiao.disabled = true;
                         _self.$.codigoAreaFuncional.disabled = true;
                         _self.$.codigoCentroResponsabilidade.disabled = true;
-                        _self.$.observacoes.disabled = true;
+                        //_self.$.observacoes.disabled = true;
                     };
                     if (data.estado == 1) { //VALIDADO
                         _self.$.projetoNo.disabled = true;
@@ -4335,7 +4335,7 @@
                         _self.$.codigoRegiao.disabled = true;
                         _self.$.codigoAreaFuncional.disabled = true;
                         _self.$.codigoCentroResponsabilidade.disabled = true;
-                        _self.$.observacoes.disabled = true;
+                        //_self.$.observacoes.disabled = true;
 
                         _self.$.percursoOrigem.disabled = true;
                         _self.$.percursoDestino.disabled = true;
@@ -4386,7 +4386,7 @@
                         _self.$.codigoRegiao.disabled = true;
                         _self.$.codigoAreaFuncional.disabled = true;
                         _self.$.codigoCentroResponsabilidade.disabled = true;
-                        _self.$.observacoes.disabled = true;
+                        //_self.$.observacoes.disabled = true;
                     };
 
                     //TABELAS

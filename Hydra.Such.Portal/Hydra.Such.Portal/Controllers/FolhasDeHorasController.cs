@@ -2987,7 +2987,7 @@ namespace Hydra.Such.Portal.Controllers
                                                 UtilizadorCriação = x.UtilizadorCriacao,
                                                 DataHoraCriação = x.DataHoraCriacao,
                                                 UtilizadorModificação = User.Identity.Name,
-                                                DataHoraModificação = DateTime.Now,
+                                                DataHoraModificação = DateTime.Now
                                             });
                                         });
                                     }
@@ -3075,6 +3075,30 @@ namespace Hydra.Such.Portal.Controllers
                                                         }
                                                     }
                                                 }
+                                                //else
+                                                //{
+                                                //    if (result.eReasonCode == 0)
+                                                //    {
+                                                //        FolhasDeHoras FHIntegrarRHKM = DBFolhasDeHoras.GetById(data.FolhaDeHorasNo);
+
+                                                //        if (FHIntegrarRHKM.IntegradoEmRh == true)
+                                                //            Estado = 2;
+
+                                                //        FHIntegrarRHKM.Estado = Estado;
+                                                //        FHIntegrarRHKM.UtilizadorModificação = User.Identity.Name;
+                                                //        FHIntegrarRHKM.DataHoraModificação = DateTime.Now;
+
+                                                //        if (DBFolhasDeHoras.Update(FHIntegrarRHKM) != null)
+                                                //        {
+                                                //            result.eReasonCode = 0;
+                                                //        }
+                                                //        else
+                                                //        {
+                                                //            result.eReasonCode = 31;
+                                                //            result.eMessage = "Ocorreu um erro ao Integrar km.";
+                                                //        }
+                                                //    }
+                                                //}
                                             }
                                         }
 
