@@ -353,6 +353,7 @@ namespace Hydra.Such.Data.Logic
                             DesServCliente = temp.DesServCliente.Equals(DBNull.Value) ? "" : (string)temp.DesServCliente.ToString(),
                             NGuiaResiduosGAR = temp.NGuiaResiduosGAR.Equals(DBNull.Value) ? "" : (string)temp.NGuiaResiduosGAR.ToString(),
                             NGuiaExterna = temp.NGuiaExterna.Equals(DBNull.Value) ? "" : (string)temp.NGuiaExterna.ToString(),
+                            DataConsumo = temp.DataConsumo.Equals(DBNull.Value) ? "" : Convert.ToDateTime((string)temp.DataConsumo.ToString()).ToShortDateString().Contains("01/01/1753") ? "" : Convert.ToDateTime((string)temp.DataConsumo.ToString()).ToShortDateString(),
                         });
                     }
                     return result;
@@ -412,6 +413,7 @@ namespace Hydra.Such.Data.Logic
                             DesServCliente = temp.DesServCliente.Equals(DBNull.Value) ? "" : (string)temp.DesServCliente.ToString(),
                             NGuiaResiduosGAR = temp.NGuiaResiduosGAR.Equals(DBNull.Value) ? "" : (string)temp.NGuiaResiduosGAR.ToString(),
                             NGuiaExterna = temp.NGuiaExterna.Equals(DBNull.Value) ? "" : (string)temp.NGuiaExterna.ToString(),
+                            DataConsumo = temp.DataConsumo.Equals(DBNull.Value) ? "" : Convert.ToDateTime((string)temp.DataConsumo.ToString()).ToShortDateString().Contains("01/01/1753") ? "" : Convert.ToDateTime((string)temp.DataConsumo.ToString()).ToShortDateString(),
                         });
                     }
                     return result;

@@ -10,8 +10,13 @@ namespace Hydra.Such.Data.Database
         public int NºLinha { get; set; }
         public int? TipoObra { get; set; }
         public string NºObra { get; set; }
+        public decimal? PercentagemValor { get; set; }
         public decimal? Valor { get; set; }
-        public decimal? Valor1 { get; set; }
+        public decimal? TotalValor { get; set; }
+        public decimal? TotalPercentagemValor { get; set; }
+        public decimal? KmTotais { get; set; }
+        public decimal? KmDistancia { get; set; }
+        public decimal? Quantidade { get; set; }
         public string CódigoRegião { get; set; }
         public string CódigoÁreaFuncional { get; set; }
         public string CódigoCentroResponsabilidade { get; set; }

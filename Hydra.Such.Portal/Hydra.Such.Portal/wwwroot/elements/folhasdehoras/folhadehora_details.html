@@ -914,7 +914,7 @@
 
                         <vaadin-grid-column resizable>
                             <template class="header">
-                                <vaadin-grid-sorter path="descricaoCodTipoCusto" style="text-align:center;">Cód. Tipo Custo</vaadin-grid-sorter>
+                                <vaadin-grid-sorter path="descricaoCodTipoCusto" style="text-align:center;">Tipo Custo</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="descricaoCodTipoCusto"></vaadin-grid-filter>
                             </template>
                             <template>
@@ -1669,7 +1669,7 @@
 
                     <div class="row break_clear">
                         <div class="col-sm-12">
-                            <such-textarea rows="5" type="text" value="{{data.observacoes}}" id="observacoes" name="observacoes" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" label="Observações"></such-textarea>
+                            <such-textarea rows="5" value="{{data.observacoes}}" id="observacoes" name="observacoes" disabled="{{ !_permissions.update }}" label="Observações"></such-textarea>
                         </div>
                     </div>
                 </div>
@@ -2487,16 +2487,18 @@
                                                                         codArea: this.$.codigoAreaFuncional.value,
                                                                         codCresp: this.$.codigoCentroResponsabilidade.value
                                                                     });
+                                                                    this.$.page_createajuda_ajax.generateRequest();
+
                                                                     //this.$.page_createajuda_ajax.generateRequest();
                                                                     //this.$.tabAjuda.clearCache();
 
-                                                                    this.$.page_updatefolhadehoras_ajax.body = JSON.stringify(this.data);
+                                                                    //this.$.page_updatefolhadehoras_ajax.body = JSON.stringify(this.data);
 
-                                                                    var update = this.$.page_updatefolhadehoras_ajax.generateRequest();
-                                                                    var linha = this.$.page_createajuda_ajax.generateRequest();
+                                                                    //var update = this.$.page_updatefolhadehoras_ajax.generateRequest();
+                                                                    //var linha = this.$.page_createajuda_ajax.generateRequest();
 
-                                                                    Promise.all([linha.completes, update.completes]).then(function (requests) {
-                                                                    })
+                                                                    //Promise.all([linha.completes, update.completes]).then(function (requests) {
+                                                                    //})
 
                                                                     this.$.tabAjuda.clearCache();
                                                                 }
@@ -3711,7 +3713,7 @@
 
                 //AJUDA
                 _createAjudaResponse: function (e) {
-                    if (this.AjudaCreated) {
+                    if (this.AjudaCreated == 1) {
                         this._showMessage('Adicionada Ajuda com sucesso.');
                         this.$.page_databound_ajax.generateRequest();
 
@@ -3724,7 +3726,21 @@
                         this.$.ajudaJustificacao.value = "";
                     }
                     else {
-                        this._showErrorMessage('Ocorreu um erro ao adicionar.');
+                        if (this.AjudaCreated == 99) {
+                            this._showErrorMessage('Ocorreu um erro.');
+                        }
+                        if (this.AjudaCreated == 2) {
+                            this._showErrorMessage('Ocorreu um erro ao adicionar a Ajuda de Custo.');
+                        }
+                        if (this.AjudaCreated == 3) {
+                            this._showErrorMessage('Ocorreu um erro ao atualizar a Folha de Horas.');
+                        }
+                        if (this.AjudaCreated == 4) {
+                            this._showErrorMessage('Não pode utilizar este código Tipo de Custo, porque é de Cálculo Automático.');
+                        }
+                        if (this.AjudaCreated == 5) {
+                            this._showErrorMessage('Ocorreu um erro ao adicionar, verifique os dados inseridos.');
+                        }
                     }
                 },
 
@@ -4295,7 +4311,7 @@
                         _self.$.codigoRegiao.disabled = true;
                         _self.$.codigoAreaFuncional.disabled = true;
                         _self.$.codigoCentroResponsabilidade.disabled = true;
-                        _self.$.observacoes.disabled = true;
+                        //_self.$.observacoes.disabled = true;
                     };
                     if (data.estado == 1) { //VALIDADO
                         _self.$.projetoNo.disabled = true;
@@ -4335,7 +4351,7 @@
                         _self.$.codigoRegiao.disabled = true;
                         _self.$.codigoAreaFuncional.disabled = true;
                         _self.$.codigoCentroResponsabilidade.disabled = true;
-                        _self.$.observacoes.disabled = true;
+                        //_self.$.observacoes.disabled = true;
 
                         _self.$.percursoOrigem.disabled = true;
                         _self.$.percursoDestino.disabled = true;
@@ -4386,7 +4402,7 @@
                         _self.$.codigoRegiao.disabled = true;
                         _self.$.codigoAreaFuncional.disabled = true;
                         _self.$.codigoCentroResponsabilidade.disabled = true;
-                        _self.$.observacoes.disabled = true;
+                        //_self.$.observacoes.disabled = true;
                     };
 
                     //TABELAS

@@ -35,5 +35,6 @@ namespace Hydra.Such.Data.ViewModel
         public string DesServCliente { get; set; }
         public string NGuiaResiduosGAR { get; set; }
         public string NGuiaExterna { get; set; }
+        public string DataConsumo { get; set; }
     }
 }
