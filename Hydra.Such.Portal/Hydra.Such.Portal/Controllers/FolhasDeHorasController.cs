@@ -564,7 +564,8 @@ namespace Hydra.Such.Portal.Controllers
                             TipoCusto = Ajuda.TipoCusto,
                             CodTipoCusto = Ajuda.CodTipoCusto,
                             DescricaoTipoCusto = Ajuda.DescricaoTipoCusto,
-                            DescricaoCodTipoCusto = Ajuda.CodTipoCusto + " - " + DBTabelaConfRecursosFh.GetAll().Where(y => y.CodRecurso == Ajuda.CodTipoCusto).FirstOrDefault().Descricao,
+                            //DescricaoCodTipoCusto = Ajuda.CodTipoCusto + " - " + DBTabelaConfRecursosFh.GetAll().Where(y => y.CodRecurso == Ajuda.CodTipoCusto).FirstOrDefault().Descricao,
+                            DescricaoCodTipoCusto = DBTabelaConfRecursosFh.GetAll().Where(y => y.CodRecurso == Ajuda.CodTipoCusto).FirstOrDefault().Descricao,
                             Quantidade = Ajuda.Quantidade,
                             CustoUnitario = Ajuda.CustoUnitario,
                             CustoTotal = Ajuda.CustoTotal,
@@ -2755,94 +2756,106 @@ namespace Hydra.Such.Portal.Controllers
                 if (data != null)
                 {
                     List<LinhasFolhaHorasViewModel> Percursos = DBLinhasFolhaHoras.GetAllByPercursoToList(data.FolhaDeHorasNo);
+                    List<LinhasFolhaHorasViewModel> Ajudas = DBLinhasFolhaHoras.GetAllByAjudaToList(data.FolhaDeHorasNo);
+                    List<MaoDeObraFolhaDeHorasViewModel> MaoDeObra = DBMaoDeObraFolhaDeHoras.GetAllByMaoDeObraToList(data.FolhaDeHorasNo);
+                    List<PresencasFolhaDeHorasViewModel> Presencas = DBPresencasFolhaDeHoras.GetAllByPresencaToList(data.FolhaDeHorasNo);
 
-                    if (data.DeslocacaoForaConcelho == true && (Percursos == null || Percursos.Count() == 0))
+                    if ((Percursos == null || Percursos.Count() == 0) && (Ajudas == null || Ajudas.Count() == 0) && (MaoDeObra == null || MaoDeObra.Count() == 0) && (Presencas == null || Presencas.Count() == 0))
                     {
-                        resultApprovalMovement.eReasonCode = 8;
-                        resultApprovalMovement.eMessage = "Não pode Terminar a Folha de Horas, pois para Deslocação Fora do Concelho tem que existir pelo menos um Percurso.";
+                        resultApprovalMovement.eReasonCode = 9;
+                        resultApprovalMovement.eMessage = "Não pode Terminar a Folha de Horas, pois não existe nenhum movimento associado á mesma.";
                         return Json(resultApprovalMovement);
                     }
                     else
                     {
-                        using (var ctx = new SuchDBContextExtention())
+                        if (data.DeslocacaoForaConcelho == true && (Percursos == null || Percursos.Count() == 0))
                         {
-                            var parameters = new[]
+                            resultApprovalMovement.eReasonCode = 8;
+                            resultApprovalMovement.eMessage = "Não pode Terminar a Folha de Horas, pois para Deslocação Fora do Concelho tem que existir pelo menos um Percurso.";
+                            return Json(resultApprovalMovement);
+                        }
+                        else
+                        {
+                            using (var ctx = new SuchDBContextExtention())
                             {
+                                var parameters = new[]
+                                {
                                     new SqlParameter("@NoFH", data.FolhaDeHorasNo),
                             };
-                            resultApprovalMovement.eReasonCode = ctx.execStoredProcedureFH("exec FH_Validar_Terminar @NoFH", parameters);
+                                resultApprovalMovement.eReasonCode = ctx.execStoredProcedureFH("exec FH_Validar_Terminar @NoFH", parameters);
 
-                            if (resultApprovalMovement.eReasonCode == 1)
-                            {
-                                resultApprovalMovement.eMessage = "Ocorreu um erro na validação de Terminar.";
-                                return Json(resultApprovalMovement);
-                            }
-                            if (resultApprovalMovement.eReasonCode == 2)
-                            {
-                                resultApprovalMovement.eMessage = "A Folha de Horas não pode ser terminada pois o Projeto não existe no eSUCH.";
-                                return Json(resultApprovalMovement);
-                            }
-                            if (resultApprovalMovement.eReasonCode == 3)
-                            {
-                                resultApprovalMovement.eMessage = "A Folha de Horas não pode ser terminada pois a Ordem Manutenção não existe no Evolution.";
-                                return Json(resultApprovalMovement);
-                            }
-                        }
-
-                        if (data.Terminada == true)
-                        {
-                            FolhaDeHorasViewModel Autorizacao = DBFolhasDeHoras.GetListaValidadoresIntegradores(data.FolhaDeHorasNo, User.Identity.Name);
-                            if (Autorizacao != null)
-                            {
-                                data.Validadores = Autorizacao.Validadores;
-                                data.IntegradoresEmRH = Autorizacao.IntegradoresEmRH;
-                                data.IntegradoresEmRHKM = Autorizacao.IntegradoresEmRHKM;
-
-                                data.Responsavel1No = Autorizacao.Responsavel1No;
-                                data.Responsavel2No = Autorizacao.Responsavel2No;
-                                data.Responsavel3No = Autorizacao.Responsavel3No;
-                            };
-
-                            data.DataHoraPartida = DateTime.Parse(string.Concat(data.DataPartidaTexto, " ", data.HoraPartidaTexto));
-                            data.DataHoraChegada = DateTime.Parse(string.Concat(data.DataChegadaTexto, " ", data.HoraChegadaTexto));
-
-                            data.Terminada = true; //TERMINADA
-                            data.TerminadoPor = User.Identity.Name; //TERMINADA
-                            data.DataHoraTerminado = DateTime.Now; //TERMINADA
-                            data.UtilizadorModificacao = User.Identity.Name; //TERMINADA
-                            data.DataHoraModificacao = DateTime.Now; //TERMINADA
-
-                            FolhasDeHoras FH = DBFolhasDeHoras.ParseToFolhaHoras(data);
-
-                            if (DBFolhasDeHoras.Update(FH) == null)
-                            {
-                                resultApprovalMovement.eReasonCode = 6;
-                                resultApprovalMovement.eMessage = "Ocorreu um erro na atualização da Folha de Horas.";
-                            }
-                            else
-                            {
-                                if (FH.Terminada == true)
+                                if (resultApprovalMovement.eReasonCode == 1)
                                 {
-                                    decimal CustoTotal = (decimal)FH.CustoTotalAjudaCusto;
+                                    resultApprovalMovement.eMessage = "Ocorreu um erro na validação de Terminar.";
+                                    return Json(resultApprovalMovement);
+                                }
+                                if (resultApprovalMovement.eReasonCode == 2)
+                                {
+                                    resultApprovalMovement.eMessage = "A Folha de Horas não pode ser terminada pois o Projeto não existe no eSUCH.";
+                                    return Json(resultApprovalMovement);
+                                }
+                                if (resultApprovalMovement.eReasonCode == 3)
+                                {
+                                    resultApprovalMovement.eMessage = "A Folha de Horas não pode ser terminada pois a Ordem Manutenção não existe no Evolution.";
+                                    return Json(resultApprovalMovement);
+                                }
+                            }
 
-                                    if (DBFolhasDeHoras.GetById(data.FolhaDeHorasNo).Estado == 0) //CRIADO
-                                    {
-                                        if (DBApprovalMovements.GetAll().Where(x => x.Tipo == 3 && x.Número == FH.NºFolhaDeHoras && x.Estado == 1).ToList().Count() == 0)
-                                            resultApprovalMovement = ApprovalMovementsManager.StartApprovalMovement_FH(3, FH.CódigoÁreaFuncional, FH.CódigoCentroResponsabilidade, FH.CódigoRegião, CustoTotal, FH.NºFolhaDeHoras, User.Identity.Name);
-                                    }
-                                    else
-                                    {
-                                        resultApprovalMovement.eReasonCode = 7;
-                                        resultApprovalMovement.eMessage = "Não pode terminar a Folha de Horas pois a mesma já não está no estado Criado.";
-                                    }
+                            if (data.Terminada == true)
+                            {
+                                FolhaDeHorasViewModel Autorizacao = DBFolhasDeHoras.GetListaValidadoresIntegradores(data.FolhaDeHorasNo, User.Identity.Name);
+                                if (Autorizacao != null)
+                                {
+                                    data.Validadores = Autorizacao.Validadores;
+                                    data.IntegradoresEmRH = Autorizacao.IntegradoresEmRH;
+                                    data.IntegradoresEmRHKM = Autorizacao.IntegradoresEmRHKM;
 
+                                    data.Responsavel1No = Autorizacao.Responsavel1No;
+                                    data.Responsavel2No = Autorizacao.Responsavel2No;
+                                    data.Responsavel3No = Autorizacao.Responsavel3No;
+                                };
+
+                                data.DataHoraPartida = DateTime.Parse(string.Concat(data.DataPartidaTexto, " ", data.HoraPartidaTexto));
+                                data.DataHoraChegada = DateTime.Parse(string.Concat(data.DataChegadaTexto, " ", data.HoraChegadaTexto));
+
+                                data.Terminada = true; //TERMINADA
+                                data.TerminadoPor = User.Identity.Name; //TERMINADA
+                                data.DataHoraTerminado = DateTime.Now; //TERMINADA
+                                data.UtilizadorModificacao = User.Identity.Name; //TERMINADA
+                                data.DataHoraModificacao = DateTime.Now; //TERMINADA
+
+                                FolhasDeHoras FH = DBFolhasDeHoras.ParseToFolhaHoras(data);
+
+                                if (DBFolhasDeHoras.Update(FH) == null)
+                                {
+                                    resultApprovalMovement.eReasonCode = 6;
+                                    resultApprovalMovement.eMessage = "Ocorreu um erro na atualização da Folha de Horas.";
                                 }
                                 else
                                 {
-                                    resultApprovalMovement.eReasonCode = 1;
-                                    resultApprovalMovement.eMessage = "";
-                                }
-                            };
+                                    if (FH.Terminada == true)
+                                    {
+                                        decimal CustoTotal = (decimal)FH.CustoTotalAjudaCusto;
+
+                                        if (DBFolhasDeHoras.GetById(data.FolhaDeHorasNo).Estado == 0) //CRIADO
+                                        {
+                                            if (DBApprovalMovements.GetAll().Where(x => x.Tipo == 3 && x.Número == FH.NºFolhaDeHoras && x.Estado == 1).ToList().Count() == 0)
+                                                resultApprovalMovement = ApprovalMovementsManager.StartApprovalMovement_FH(3, FH.CódigoÁreaFuncional, FH.CódigoCentroResponsabilidade, FH.CódigoRegião, CustoTotal, FH.NºFolhaDeHoras, User.Identity.Name);
+                                        }
+                                        else
+                                        {
+                                            resultApprovalMovement.eReasonCode = 7;
+                                            resultApprovalMovement.eMessage = "Não pode terminar a Folha de Horas pois a mesma já não está no estado Criado.";
+                                        }
+
+                                    }
+                                    else
+                                    {
+                                        resultApprovalMovement.eReasonCode = 1;
+                                        resultApprovalMovement.eMessage = "";
+                                    }
+                                };
+                            }
                         }
                     }
                 }
@@ -3014,6 +3027,8 @@ namespace Hydra.Such.Portal.Controllers
                                     {
                                         if (Estado == 1) //VALIDADO
                                         {
+                                            bool integrarRH = false;
+
                                             if (data.IntegradoresEmRH.ToLower().Contains(User.Identity.Name.ToLower()))
                                             {
                                                 if (NoRegistosAjC > 0)
@@ -3043,6 +3058,7 @@ namespace Hydra.Such.Portal.Controllers
                                                         if (DBFolhasDeHoras.Update(FHIntegrarRH) != null)
                                                         {
                                                             result.eReasonCode = 0;
+                                                            integrarRH = true;
                                                         }
                                                         else
                                                         {
@@ -3051,6 +3067,13 @@ namespace Hydra.Such.Portal.Controllers
                                                         }
                                                     }
                                                 }
+                                                else
+                                                    integrarRH = true;
+                                            }
+                                            else
+                                            {
+                                                if (NoRegistosAjC == 0)
+                                                    integrarRH = true;
                                             }
 
                                             if (data.IntegradoresEmRHKM.ToLower().Contains(User.Identity.Name.ToLower()))
@@ -3072,7 +3095,7 @@ namespace Hydra.Such.Portal.Controllers
                                                     {
                                                         FolhasDeHoras FHIntegrarRHKM = DBFolhasDeHoras.GetById(data.FolhaDeHorasNo);
 
-                                                        if (FHIntegrarRHKM.IntegradoEmRh == true)
+                                                        if (integrarRH == true)
                                                             Estado = 2;
 
                                                         FHIntegrarRHKM.Estado = Estado; //INTEGRAREMRHKM
@@ -3093,30 +3116,30 @@ namespace Hydra.Such.Portal.Controllers
                                                         }
                                                     }
                                                 }
-                                                //else
-                                                //{
-                                                //    if (result.eReasonCode == 0)
-                                                //    {
-                                                //        FolhasDeHoras FHIntegrarRHKM = DBFolhasDeHoras.GetById(data.FolhaDeHorasNo);
+                                                else
+                                                {
+                                                    if (result.eReasonCode == 0)
+                                                    {
+                                                        FolhasDeHoras FHIntegrarRHKM = DBFolhasDeHoras.GetById(data.FolhaDeHorasNo);
 
-                                                //        if (FHIntegrarRHKM.IntegradoEmRh == true)
-                                                //            Estado = 2;
+                                                        if (integrarRH == true)
+                                                            Estado = 2;
 
-                                                //        FHIntegrarRHKM.Estado = Estado;
-                                                //        FHIntegrarRHKM.UtilizadorModificação = User.Identity.Name;
-                                                //        FHIntegrarRHKM.DataHoraModificação = DateTime.Now;
+                                                        FHIntegrarRHKM.Estado = Estado;
+                                                        FHIntegrarRHKM.UtilizadorModificação = User.Identity.Name;
+                                                        FHIntegrarRHKM.DataHoraModificação = DateTime.Now;
 
-                                                //        if (DBFolhasDeHoras.Update(FHIntegrarRHKM) != null)
-                                                //        {
-                                                //            result.eReasonCode = 0;
-                                                //        }
-                                                //        else
-                                                //        {
-                                                //            result.eReasonCode = 31;
-                                                //            result.eMessage = "Ocorreu um erro ao Integrar km.";
-                                                //        }
-                                                //    }
-                                                //}
+                                                        if (DBFolhasDeHoras.Update(FHIntegrarRHKM) != null)
+                                                        {
+                                                            result.eReasonCode = 0;
+                                                        }
+                                                        else
+                                                        {
+                                                            result.eReasonCode = 31;
+                                                            result.eMessage = "Ocorreu um erro ao Integrar km.";
+                                                        }
+                                                    }
+                                                }
                                             }
                                         }
 

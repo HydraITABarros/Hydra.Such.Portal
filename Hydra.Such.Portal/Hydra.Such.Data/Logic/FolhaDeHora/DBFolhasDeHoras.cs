@@ -1137,12 +1137,11 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                 {
                     string idEmployeePortal = null;
 
-                    //idEmployeePortal = DBUserConfigurations.GetAll().Where(x => x.EmployeeNo == null ? "" == idEmployee.ToLower() : x.EmployeeNo.ToLower() == idEmployee.ToLower()).SingleOrDefault().IdUtilizador;
-                    ConfigUtilizadores ConfUtilizadores = DBUserConfigurations.GetAll().Where(x => x.EmployeeNo == null ? "" == idEmployee.ToLower() : x.EmployeeNo.ToLower() == idEmployee.ToLower()).SingleOrDefault();
+                    ConfigUtilizadores ConfUtilizadores = DBUserConfigurations.GetAll().Where(x => x.EmployeeNo == null ? "" == idEmployee.ToLower() : x.EmployeeNo.ToLower() == idEmployee.ToLower()).FirstOrDefault();
 
                     if (ConfUtilizadores == null)
                     {
-                        ConfUtilizadores = DBUserConfigurations.GetAll().Where(x => x.IdUtilizador == null ? "" == idEmployee.ToLower() : x.IdUtilizador.ToLower() == idEmployee.ToLower()).SingleOrDefault();
+                        ConfUtilizadores = DBUserConfigurations.GetAll().Where(x => x.IdUtilizador == null ? "" == idEmployee.ToLower() : x.IdUtilizador.ToLower() == idEmployee.ToLower()).FirstOrDefault();
                         if (ConfUtilizadores != null)
                         {
                             idEmployee = ConfUtilizadores.EmployeeNo == null ? "" : ConfUtilizadores.EmployeeNo;

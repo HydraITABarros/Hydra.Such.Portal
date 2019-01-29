@@ -914,7 +914,7 @@
 
                         <vaadin-grid-column resizable>
                             <template class="header">
-                                <vaadin-grid-sorter path="descricaoCodTipoCusto" style="text-align:center;">Cód. Tipo Custo</vaadin-grid-sorter>
+                                <vaadin-grid-sorter path="descricaoCodTipoCusto" style="text-align:center;">Tipo Custo</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="descricaoCodTipoCusto"></vaadin-grid-filter>
                             </template>
                             <template>
@@ -2487,16 +2487,18 @@
                                                                         codArea: this.$.codigoAreaFuncional.value,
                                                                         codCresp: this.$.codigoCentroResponsabilidade.value
                                                                     });
+                                                                    this.$.page_createajuda_ajax.generateRequest();
+
                                                                     //this.$.page_createajuda_ajax.generateRequest();
                                                                     //this.$.tabAjuda.clearCache();
 
-                                                                    this.$.page_updatefolhadehoras_ajax.body = JSON.stringify(this.data);
+                                                                    //this.$.page_updatefolhadehoras_ajax.body = JSON.stringify(this.data);
 
-                                                                    var update = this.$.page_updatefolhadehoras_ajax.generateRequest();
-                                                                    var linha = this.$.page_createajuda_ajax.generateRequest();
+                                                                    //var update = this.$.page_updatefolhadehoras_ajax.generateRequest();
+                                                                    //var linha = this.$.page_createajuda_ajax.generateRequest();
 
-                                                                    Promise.all([linha.completes, update.completes]).then(function (requests) {
-                                                                    })
+                                                                    //Promise.all([linha.completes, update.completes]).then(function (requests) {
+                                                                    //})
 
                                                                     this.$.tabAjuda.clearCache();
                                                                 }
@@ -3517,7 +3519,7 @@
                     var self = this;
 
                     if (this.FolhaDeHorasUpdated == 0) {
-                        //this._showMessage('Folha de Horas actualizada com sucesso.');
+                        this._showMessage('Folha de Horas actualizada com sucesso.');
                         this.$.page_databound_ajax.generateRequest();
                     } else {
                         if (this.FolhaDeHorasUpdated == 1) {

@@ -603,6 +603,8 @@ namespace Hydra.Such.Portal.Controllers
 
                                                 if (FolhaHoras.Estado == 1) //VALIDADO
                                                 {
+                                                    bool integrarRH = false;
+
                                                     if (FolhaHoras.IntegradoresEmRh.ToLower().Contains(User.Identity.Name.ToLower()))
                                                     {
                                                         if (NoRegistosAjC > 0)
@@ -630,6 +632,7 @@ namespace Hydra.Such.Portal.Controllers
                                                                 if (DBFolhasDeHoras.Update(FolhaHoras) != null)
                                                                 {
                                                                     result.eReasonCode = 0;
+                                                                    integrarRH = true;
                                                                 }
                                                                 else
                                                                 {
@@ -638,6 +641,13 @@ namespace Hydra.Such.Portal.Controllers
                                                                 }
                                                             }
                                                         }
+                                                        else
+                                                            integrarRH = true;
+                                                    }
+                                                    else
+                                                    {
+                                                        if (NoRegistosAjC == 0)
+                                                            integrarRH = true;
                                                     }
 
                                                     if (FolhaHoras.IntegradoresEmRhkm.ToLower().Contains(User.Identity.Name.ToLower()))
@@ -657,7 +667,7 @@ namespace Hydra.Such.Portal.Controllers
 
                                                             if (result.eReasonCode == 0)
                                                             {
-                                                                if (FolhaHoras.IntegradoEmRh == true)
+                                                                if (integrarRH == true)
                                                                     Estado = 2;
 
                                                                 FolhaHoras.Estado = Estado; //INTEGRAREMRHKM
@@ -678,6 +688,29 @@ namespace Hydra.Such.Portal.Controllers
                                                                 }
                                                             }
                                                         }
+                                                        else
+                                                        {
+                                                            if (result.eReasonCode == 0)
+                                                            {
+                                                                if (integrarRH == true)
+                                                                    Estado = 2;
+
+                                                                FolhaHoras.Estado = Estado;
+                                                                FolhaHoras.UtilizadorModificação = User.Identity.Name;
+                                                                FolhaHoras.DataHoraModificação = DateTime.Now;
+
+                                                                if (DBFolhasDeHoras.Update(FolhaHoras) != null)
+                                                                {
+                                                                    result.eReasonCode = 0;
+                                                                }
+                                                                else
+                                                                {
+                                                                    result.eReasonCode = 31;
+                                                                    result.eMessage = "Ocorreu um erro ao Integrar km.";
+                                                                }
+                                                            }
+                                                        }
+
                                                     }
                                                 }
 

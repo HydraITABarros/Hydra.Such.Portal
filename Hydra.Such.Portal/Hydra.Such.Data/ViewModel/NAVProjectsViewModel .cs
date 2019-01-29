@@ -9,6 +9,7 @@ namespace Hydra.Such.Data.ViewModel
         public string No { get; set; }
         public string Description { get; set; }
         public string CustomerNo { get; set; }
+        public string CustomerName { get; set; }
         public string GlobalDimension1 { get; set; }
         public string GlobalDimension2 { get; set; }
         public string RegionCode { get; set; }

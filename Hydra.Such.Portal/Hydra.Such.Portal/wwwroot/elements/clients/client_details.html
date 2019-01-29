@@ -1310,6 +1310,16 @@
 
                     <vaadin-grid-column width="100px" resizable>
                         <template class="header">
+                            <vaadin-grid-sorter path="dataConsumo">Data de Consumo</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="dataConsumo" />
+                        </template>
+                        <template>
+                            {{item.dataConsumo}}
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="100px" resizable>
+                        <template class="header">
                             <vaadin-grid-sorter path="regionId">Cód. Região</vaadin-grid-sorter>
                             <vaadin-grid-filter path="regionId" />
                         </template>
@@ -1855,7 +1865,6 @@
                         "unitPrice": { hidden: false, label: "Preço Unitário" },
                         "vat": { hidden: false, label: "Iva" },
                         "amount": { hidden: false, label: "Custo" },
-
                         "tipoRefeicao": { hidden: false, label: "Tp Refeição" },
                         "mealTypeDescription": { hidden: false, label: "Descrição Tp Refeição" },
                         "grupoServico": { hidden: false, label: "Gr Serviço" },
@@ -1865,6 +1874,10 @@
                         "nGuiaResiduosGAR": { hidden: false, label: "Nº Guia Resíduos (GAR)" },
                         "nGuiaExterna": { hidden: false, label: "Nº Guia Externa" },
 
+                        "dataConsumo": { hidden: false, label: "Data de Consumo" },
+                        "regionId": { hidden: false, label: "Cód. Região" },
+                        "functionalAreaId": { hidden: false, label: "Cód. Área Funcional" },
+                        "respCenterId": { hidden: false, label: "Cód. Centro de Responsabilidade" },
                     };
 
 

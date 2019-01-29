@@ -32,6 +32,7 @@ namespace Hydra.Such.Data.Logic
                             No = (string)temp.No_,
                             Description = (string)temp.Description,
                             CustomerNo = (string)temp.BillToCustomerNo_,
+                            CustomerName = (string)temp.BillToCustomerName,
                             GlobalDimension1 = (string)temp.GlobalDimension1Code,
                             GlobalDimension2 = (string)temp.GlobalDimension2Code,
                             AreaCode = (string)temp.AreaCode,
