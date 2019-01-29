@@ -3,7 +3,13 @@
 $(function () {
     startMenubarResizable();
     openSelectedMenu();
+
+    window.addEventListener('WebComponentsReady', function (e) {
+        return;
+        initGridLists();
+    });
 });
+
 
 var startMenubarResizable = function () {
     var _this = this;
@@ -86,7 +92,6 @@ var startMenubarResizable = function () {
     });
 };
 
-
 var openSelectedMenu = function () {
     return;
 
@@ -104,7 +109,7 @@ var openSelectedMenu = function () {
             if (window.app.menubar == null || window.app.menubar.$scrollInner == null) {
                 setTimeout(function () {
                     tryScrollTo();
-                },300);
+                }, 300);
                 return;
             }
             if (scrollMaxTimeout) {
@@ -117,3 +122,32 @@ var openSelectedMenu = function () {
     }
 };
 
+var initGridLists = function () {
+    var gridLists = $('[_permissions]')[0].root.querySelectorAll('[column-reordering-allowed]');
+    gridLists.forEach(function (grid) {
+        window.testes = grid;
+        setGridListsColumnDragable(grid, $('[_permissions]')[0].tagName);
+    });
+};
+
+var setGridListsColumnDragable = function (grid, name) {
+    var columnTree = grid._getColumnTree()[0];
+
+    if (typeof localStorage !== 'undefined') {
+        var localStorageName = 'grid-column-order-' + name;
+        var columnOrder = JSON.parse(localStorage.getItem(localStorageName));
+        if (columnOrder) {
+            columnTree.forEach(function (column, index) {
+                column._order = columnOrder[index];
+            });
+        }
+
+        grid.ondragend = function () {
+            var columnOrderUpdated = [];
+            columnTree.forEach(function (column, index) {
+                columnOrderUpdated[index] = column._order;
+            });
+            localStorage.setItem(localStorageName, JSON.stringify(columnOrderUpdated));
+        };
+    }
+};
