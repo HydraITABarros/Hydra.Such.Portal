@@ -582,6 +582,26 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Nº Guia Externa");
                     Col = Col + 1;
                 }
+                if (dp["dataConsumo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Data de Consumo");
+                    Col = Col + 1;
+                }
+                if (dp["regionId"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Cód. Região");
+                    Col = Col + 1;
+                }
+                if (dp["functionalAreaId"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Cód. Área Funcional");
+                    Col = Col + 1;
+                }
+                if (dp["respCenterId"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Cód. Centro de Responsabilidade");
+                    Col = Col + 1;
+                }
 
                 if (dp != null)
                 {
@@ -681,6 +701,26 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["nGuiaExterna"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item["nGuiaExterna"].ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["dataConsumo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item["dataConsumo"].ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["regionId"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item["regionId"].ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["functionalAreaId"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item["functionalAreaId"].ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["respCenterId"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item["respCenterId"].ToString());
                             Col = Col + 1;
                         }
 

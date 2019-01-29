@@ -1170,7 +1170,9 @@
                         </template>
                         <template>
                             <div class="text-right">
-                                [[_roundValue(item.quantity, 0)]]
+                                <!--[[_roundValue(item.quantity, 2)]]-->
+                                <!--[[ item.quantity ]]-->
+                                [[_round2casas(item.quantity)]]
                             </div>
                         </template>
                     </vaadin-grid-column>
@@ -1181,7 +1183,8 @@
                         </template>
                         <template>
                             <div class="text-right">
-                                [[_formatCurrencyValue(item.unitPrice)]]
+                                <!--[[_formatCurrencyValue(item.unitPrice)]]-->
+                                [[_formatIntValue(item.unitPrice)]]
                             </div>
                         </template>
                     </vaadin-grid-column>
@@ -1302,6 +1305,16 @@
                             <div class="text-right">
                                 [[ item.nGuiaExterna ]]
                             </div>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="100px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="dataConsumo">Data de Consumo</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="dataConsumo" />
+                        </template>
+                        <template>
+                            {{item.dataConsumo}}
                         </template>
                     </vaadin-grid-column>
 
@@ -1759,6 +1772,28 @@
                         return currency(Math.round(value * 100) / 100, { separator: '.', decimal: ',' }).format() + '€';
                     }
                 },
+                _formatIntValue: function (value) {
+
+                    if (value) {
+                        value = value + "";
+                        value = value.replace(",", ".");
+                    }
+                    value = value * 1;
+                    if (value != null && value != 0) {
+                        return parseFloat(Math.round(value * 100) / 100, { separator: '.', decimal: ',' }).toFixed(4) + '€';
+                    }
+                },
+                _round2casas: function (value) {
+
+                    if (value) {
+                        value = value + "";
+                        value = value.replace(",", ".");
+                    }
+                    value = value * 1;
+                    if (value != null && value != 0) {
+                        return parseFloat(Math.round(value * 100) / 100, { separator: '.', decimal: ',' }).toFixed(2);
+                    }
+                },
                 _invoiceSelected: function (value) {
 
                     if (value) {
@@ -1830,7 +1865,6 @@
                         "unitPrice": { hidden: false, label: "Preço Unitário" },
                         "vat": { hidden: false, label: "Iva" },
                         "amount": { hidden: false, label: "Custo" },
-
                         "tipoRefeicao": { hidden: false, label: "Tp Refeição" },
                         "mealTypeDescription": { hidden: false, label: "Descrição Tp Refeição" },
                         "grupoServico": { hidden: false, label: "Gr Serviço" },
@@ -1840,6 +1874,10 @@
                         "nGuiaResiduosGAR": { hidden: false, label: "Nº Guia Resíduos (GAR)" },
                         "nGuiaExterna": { hidden: false, label: "Nº Guia Externa" },
 
+                        "dataConsumo": { hidden: false, label: "Data de Consumo" },
+                        "regionId": { hidden: false, label: "Cód. Região" },
+                        "functionalAreaId": { hidden: false, label: "Cód. Área Funcional" },
+                        "respCenterId": { hidden: false, label: "Cód. Centro de Responsabilidade" },
                     };
 
 
@@ -1894,7 +1932,7 @@
                         value = value.replace(",", ".");
                     }
                     return Math.round(value * 1, decimal);
-                }
+                },
             });
         });
 

@@ -96,7 +96,8 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                 PrecoUnitarioCusto = x.PrecoUnitarioCusto,
                 PrecoUnitarioVenda = x.PrecoUnitarioVenda,
                 UnidMedida = x.UnidMedida,
-                RubricaSalarial = x.RubricaSalarial
+                RubricaSalarial = x.RubricaSalarial,
+                CalculoAutomatico = x.CalculoAutomatico
             };
         }
 
@@ -110,7 +111,8 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                 PrecoUnitarioCusto = x.PrecoUnitarioCusto,
                 PrecoUnitarioVenda = x.PrecoUnitarioVenda,
                 UnidMedida = x.UnidMedida,
-                RubricaSalarial = x.RubricaSalarial
+                RubricaSalarial = x.RubricaSalarial,
+                CalculoAutomatico = x.CalculoAutomatico
             };
         }
 

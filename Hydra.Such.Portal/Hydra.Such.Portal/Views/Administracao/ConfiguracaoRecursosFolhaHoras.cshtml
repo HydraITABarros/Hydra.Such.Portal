@@ -164,6 +164,12 @@
                         <div class="col-lg-3"><vaadin-text-field id="precoUnitarioVenda" value="{{precoUnitarioVenda}}" label="Preço Unitário Venda" type="number" disabled="{{ _permissionsCreate }}"></vaadin-text-field></div>
 
                         <div class="col-lg-3"><vaadin-text-field id="rubricaSalarial" value="{{rubricaSalarial}}" label="Rúbrica Salarial" disabled="{{ _permissionsCreate }}"></vaadin-text-field></div>
+                        <div class="col-lg-2 alignPoga">
+                            <vaadin-checkbox id="chkcalculoAutomatico" checked="{{calculoAutomatico}}" disabled="{{ _permissionsCreate }}">Cálculo Automático</vaadin-checkbox>
+                        </div>
+                        
+                        
+                        
 
                         <div class="col-lg-2 alignPoga"><paper-button id="btnAddNew" class="btnSave" on-tap="_create" disabled="{{ _permissionsCreate }}">Criar</paper-button></div>
                     </div>
@@ -246,6 +252,15 @@
 
             <vaadin-grid-column resizable width="150px">
                 <template class="header">
+                    <vaadin-grid-sorter path="calculoAutomatico">Cálculo Automático</vaadin-grid-sorter>
+                </template>
+                <template>
+                    <vaadin-checkbox checked="{{item.calculoAutomatico}}" disabled="{{ _permissionsUpdate }}"></vaadin-checkbox>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px">
+                <template class="header">
                 </template>
                 <template>
                     <center>
@@ -291,7 +306,11 @@
                             type: String,
                             notify: true,
                             value: ""
-                        }
+                        },
+                        _calculoAutomatico: {
+                            type: Boolean,
+                            value: false
+                        },
                     },
                     ready: function () {
                         var _self = this;
@@ -360,7 +379,8 @@
                                     precoUnitarioCusto: this.$.precoUnitarioCusto.value,
                                     precoUnitarioVenda: this.$.precoUnitarioVenda.value,
                                     unidMedida: this.$.unidMedida.value,
-                                    rubricaSalarial: this.$.rubricaSalarial.value
+                                    rubricaSalarial: this.$.rubricaSalarial.value,
+                                    calculoAutomatico: (this.$.chkcalculoAutomatico.value == "on" ? true : false)
                                 }
                             );
                             this.$.ajax_create.generateRequest();
@@ -441,6 +461,7 @@
                                 this.$.precoUnitarioVenda.value = "";
                                 this.$.unidMedida.value = "";
                                 this.$.rubricaSalarial.value = "";
+                                this.$.chkcalculoAutomatico.value = "off";
                                 this.$.ajax_GetAll.generateRequest();
                                 this.openToast("Tabela atualizada.");
                             }

@@ -4162,7 +4162,8 @@ namespace Hydra.Such.Portal.Controllers
                     u.UnidMedida == x.UnidMedida &&
                     u.PrecoUnitarioCusto == x.PrecoUnitarioCusto &&
                     u.PrecoUnitarioVenda == x.PrecoUnitarioVenda &&
-                    u.RubricaSalarial == x.RubricaSalarial
+                    u.RubricaSalarial == x.RubricaSalarial &&
+                    u.CalculoAutomatico == x.CalculoAutomatico
             ));
 
             data.ForEach(x =>

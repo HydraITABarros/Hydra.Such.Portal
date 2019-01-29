@@ -5,6 +5,7 @@
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-column-reordering-behavior.html" />
 <link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html" />
 <link rel="import" href="/lib/iron-form/iron-form.html" />
 <link rel="import" href="/lib/paper-input/paper-input.html" />
@@ -67,7 +68,7 @@
         </iron-ajax>
 
         <div class="subMenu">
-            <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>            
+            <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
             <!--start ColumnToggle-->
             <paper-menu-button class="column-toggle" no-animations>
                 <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
@@ -84,8 +85,9 @@
 
         </div>
 
-        <vaadin-grid aria-label="CustomersGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
-            <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.no.hidden }}">
+        <vaadin-grid column-reordering-allowed aria-label="CustomersGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true" >
+            
+            <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.no.hidden }}" >
                 <template class="header">
                     <vaadin-grid-sorter path="no">Nº</vaadin-grid-sorter>
                     <vaadin-grid-filter path="no" />
@@ -272,9 +274,7 @@
                 ready: function () {
 
                     this.$.grid_databound_ajax.generateRequest();
-
-                    window.teste = this;
-
+                  
                     /*ColumnToggle*/
                     this._startColumnToggle();
 
@@ -299,7 +299,7 @@
                 _exportEXCEL: function () {
                     this.result[0].ColunasEXCEL = this._columns;
 
-                    this.$.ajax_Export.body = JSON.stringify(this.result);
+                    this.$.ajax_Export.body = JSON.stringify(this.$.grid._filter(this.$.grid.items));
                     this.$.ajax_Export.generateRequest();
                 },
 

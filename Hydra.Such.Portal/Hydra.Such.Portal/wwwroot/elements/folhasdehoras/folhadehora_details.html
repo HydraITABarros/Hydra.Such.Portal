@@ -145,7 +145,7 @@
         <iron-ajax url="/PopulateDropdowns/GetFolhaDeHoraTypeDeslocation" last-response="{{LFolhaDeHoraTypeDeslocation}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFolhaDeHoraCodeTypeKms" last-response="{{LFolhaDeHoraCodeTypeKms}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProjectList" last-response="{{LFolhaDeHoraProjectNo}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetProjectNavList" last-response="{{LFolhaDeHoraNavProjectNo}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProjectNavList_FH" last-response="{{LFolhaDeHoraNavProjectNo}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetTipoTrabalhoList" last-response="{{LFolhaDeHoraTipoTrabalhoNo}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFolhaDeHoraDisplacementOutsideCity" last-response="{{LFolhaDeHoraDisplacementOutsideCity}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetUtilizadores" last-response="{{LFolhaDeHoraValidators}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -430,7 +430,7 @@
             <paper-button id="btn_validarFolhaDeHoras" class="tablinks" on-tap="_validarFolhaDeHoras" disabled="{{ !_permissions.create }}" title="Validar"><i class="fa fa-check-square" aria-hidden="true"></i> Validar</paper-button>
             <paper-button id="btn_integrarEmRH" class="tablinks" on-tap="_integrarEmRH" disabled="{{ !_permissions.create }}" title="Integrar Aj. Custo"><i class="fa fa-check-square" aria-hidden="true"></i> Integrar Aj. Custo</paper-button>
             <paper-button id="btn_integrarEmRHKM" class="tablinks" on-tap="_integrarEmRHKM" disabled="{{ !_permissions.create }}" title="Integrar km"><i class="fa fa-check-square" aria-hidden="true"></i> Integrar km</paper-button>
-            <paper-button id="btn_imprimirFH" class="tablinks" on-tap="_printFH" disabled="{{ !_permissions.create }}" title="Imprimir"><i class="fa fa-print" aria-hidden="true"></i> Imprimir</paper-button>
+            <paper-button id="btn_imprimirFH" class="tablinks" on-tap="_printFH" title="Imprimir"><i class="fa fa-print" aria-hidden="true"></i> Imprimir</paper-button>
             <paper-button id="btn_updateFH1" raised class="tablinks" on-tap="_updateFH" disabled="{{ !_permissions.update }}" title="Gravar" style="background-color:#5A9E49"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Gravar</paper-button>
             <paper-button id="btn_delete" class="tablinks" on-tap="_deleteFH" disabled="{{ !_permissions.delete }}" title="Eliminar" style="background-color:#D5662F"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
             <paper-button id="btn_toHistoric" class="tablinks" on-tap="_toHistoricFH" disabled="{{ !_permissions.update }}" title="Enviar para Histórico" style="background-color:#DADADA"><i class="fa fa-history" aria-hidden="true"></i>&nbsp; Enviar para Histórico</paper-button>
@@ -577,16 +577,18 @@
                         <div class="col-sm-3">
                         </div>
 
-                        <div class="col-sm-2">
-                            <vaadin-text-field value="{{data.custoTotalAjudaCusto}}" id="custoTotalAjudaCusto" name="custoTotalAjudaCusto" type="number" disabled="true" class="alignRight" label="Custo Total Ajuda Custo">
-                                <div slot="suffix">€</div>
-                            </vaadin-text-field>
-                        </div>
+                        <div class="col-sm-3">
+                            <div class="col-sm-6">
+                                <vaadin-text-field value="{{data.custoTotalAjudaCusto}}" id="custoTotalAjudaCusto" name="custoTotalAjudaCusto" type="number" disabled="true" class="alignRight" label="Total Aj Custo">
+                                    <div slot="suffix">€</div>
+                                </vaadin-text-field>
+                            </div>
 
-                        <div class="col-sm-1">
-                            <vaadin-text-field value="{{data.custoTotalKM}}" id="custoTotalKM" name="custoTotalKM" type="number" disabled="true" class="alignRight" label="Custo Total km">
-                                <div slot="suffix">€</div>
-                            </vaadin-text-field>
+                            <div class="col-sm-6">
+                                <vaadin-text-field value="{{data.custoTotalKM}}" id="custoTotalKM" name="custoTotalKM" type="number" disabled="true" class="alignRight" label="Total km">
+                                    <div slot="suffix">€</div>
+                                </vaadin-text-field>
+                            </div>
                         </div>
 
 
@@ -668,7 +670,7 @@
                             </template>
                             <template>
                                 <center>
-                                    <paper-button class="btnSave tableBtn" raised on-tap="_CopiarPercurso" title="Duplicar Linha"><i class="fa fa-copy" aria-hidden="true"></i></paper-button>
+                                    <paper-button class="btnSave tableBtn" raised on-tap="_CopiarPercurso" title="Duplicar Linha" disabled="{{ !_permissions.create }}"><i class="fa fa-copy" aria-hidden="true"></i></paper-button>
                                 </center>
                             </template>
                         </vaadin-grid-column>
@@ -895,7 +897,7 @@
                             </template>
                             <template>
                                 <center>
-                                    <paper-button class="btnSave tableBtn" raised on-tap="_CopiarAjuda" title="Duplicar Linha"><i class="fa fa-copy" aria-hidden="true"></i></paper-button>
+                                    <paper-button class="btnSave tableBtn" raised on-tap="_CopiarAjuda" title="Duplicar Linha" disabled="{{ !_permissions.create }}"><i class="fa fa-copy" aria-hidden="true"></i></paper-button>
                                 </center>
                             </template>
                         </vaadin-grid-column>
@@ -912,7 +914,7 @@
 
                         <vaadin-grid-column resizable>
                             <template class="header">
-                                <vaadin-grid-sorter path="descricaoCodTipoCusto" style="text-align:center;">Cód. Tipo Custo</vaadin-grid-sorter>
+                                <vaadin-grid-sorter path="descricaoCodTipoCusto" style="text-align:center;">Tipo Custo</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="descricaoCodTipoCusto"></vaadin-grid-filter>
                             </template>
                             <template>
@@ -1116,7 +1118,7 @@
                             </template>
                             <template>
                                 <center>
-                                    <paper-button class="btnSave tableBtn" raised on-tap="_CopiarMaoDeObra" title="Duplicar Linha"><i class="fa fa-copy" aria-hidden="true"></i></paper-button>
+                                    <paper-button class="btnSave tableBtn" raised on-tap="_CopiarMaoDeObra" title="Duplicar Linha" disabled="{{ !_permissions.create }}"><i class="fa fa-copy" aria-hidden="true"></i></paper-button>
                                 </center>
                             </template>
                         </vaadin-grid-column>
@@ -1667,7 +1669,7 @@
 
                     <div class="row break_clear">
                         <div class="col-sm-12">
-                            <such-textarea rows="5" type="text" value="{{data.observacoes}}" id="observacoes" name="observacoes" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" label="Observações"></such-textarea>
+                            <such-textarea rows="5" value="{{data.observacoes}}" id="observacoes" name="observacoes" disabled="{{ !_permissions.update }}" label="Observações"></such-textarea>
                         </div>
                     </div>
                 </div>
@@ -2395,7 +2397,6 @@
                 //},
 
                 _updateLinhaPercurso: function (e) {
-                    debugger;
                     var index = this.data.folhaDeHorasPercurso.indexOf(e.model.item);
 
                     if (this.data.terminada == true || this.data.estado == 1 || this.data.estado == 2) {
@@ -2418,7 +2419,6 @@
                 },
 
                 _CopiarPercurso: function (e) {
-                    debugger;
                     var index = this.data.folhaDeHorasPercurso.indexOf(e.model.item);
 
                     if (this.data.terminada == true || this.data.estado == 1 || this.data.estado == 2) {
@@ -2487,16 +2487,18 @@
                                                                         codArea: this.$.codigoAreaFuncional.value,
                                                                         codCresp: this.$.codigoCentroResponsabilidade.value
                                                                     });
+                                                                    this.$.page_createajuda_ajax.generateRequest();
+
                                                                     //this.$.page_createajuda_ajax.generateRequest();
                                                                     //this.$.tabAjuda.clearCache();
 
-                                                                    this.$.page_updatefolhadehoras_ajax.body = JSON.stringify(this.data);
+                                                                    //this.$.page_updatefolhadehoras_ajax.body = JSON.stringify(this.data);
 
-                                                                    var update = this.$.page_updatefolhadehoras_ajax.generateRequest();
-                                                                    var linha = this.$.page_createajuda_ajax.generateRequest();
+                                                                    //var update = this.$.page_updatefolhadehoras_ajax.generateRequest();
+                                                                    //var linha = this.$.page_createajuda_ajax.generateRequest();
 
-                                                                    Promise.all([linha.completes, update.completes]).then(function (requests) {
-                                                                    })
+                                                                    //Promise.all([linha.completes, update.completes]).then(function (requests) {
+                                                                    //})
 
                                                                     this.$.tabAjuda.clearCache();
                                                                 }
@@ -2678,7 +2680,6 @@
                 },
 
                 _CopiarAjuda: function (e) {
-                    debugger;
                     var index = this.data.folhaDeHorasAjuda.indexOf(e.model.item);
 
                     if (this.data.terminada == true || this.data.estado == 1 || this.data.estado == 2) {
@@ -2994,7 +2995,6 @@
                 },
 
                 _CopiarMaoDeObra: function (e) {
-                    debugger;
                     var index = this.data.folhaDeHorasMaoDeObra.indexOf(e.model.item);
 
                     if (this.data.terminada == true || this.data.estado == 1 || this.data.estado == 2) {
@@ -3605,7 +3605,8 @@
                 _validarfolhadehorasResponse: function (e) {
                     if (this.validarFolhaDeHoras.eReasonCode == 0 || this.validarFolhaDeHoras.eReasonCode == 100) {
                         this._showMessage(this.validarFolhaDeHoras.eMessage);
-                        this.$.page_databound_ajax.generateRequest();
+                        window.history.back();
+                        //this.$.page_databound_ajax.generateRequest();
                     } else {
                         this._showErrorMessage(this.validarFolhaDeHoras.eMessage);
                     };
@@ -3712,7 +3713,7 @@
 
                 //AJUDA
                 _createAjudaResponse: function (e) {
-                    if (this.AjudaCreated) {
+                    if (this.AjudaCreated == 1) {
                         this._showMessage('Adicionada Ajuda com sucesso.');
                         this.$.page_databound_ajax.generateRequest();
 
@@ -3725,7 +3726,21 @@
                         this.$.ajudaJustificacao.value = "";
                     }
                     else {
-                        this._showErrorMessage('Ocorreu um erro ao adicionar.');
+                        if (this.AjudaCreated == 99) {
+                            this._showErrorMessage('Ocorreu um erro.');
+                        }
+                        if (this.AjudaCreated == 2) {
+                            this._showErrorMessage('Ocorreu um erro ao adicionar a Ajuda de Custo.');
+                        }
+                        if (this.AjudaCreated == 3) {
+                            this._showErrorMessage('Ocorreu um erro ao atualizar a Folha de Horas.');
+                        }
+                        if (this.AjudaCreated == 4) {
+                            this._showErrorMessage('Não pode utilizar este código Tipo de Custo, porque é de Cálculo Automático.');
+                        }
+                        if (this.AjudaCreated == 5) {
+                            this._showErrorMessage('Ocorreu um erro ao adicionar, verifique os dados inseridos.');
+                        }
                     }
                 },
 
@@ -4223,7 +4238,6 @@
 
 
                 _setFieldsEditability(data) {
-                    debugger;
                     var _self = this;
 
                     //BOTÕES
@@ -4297,7 +4311,7 @@
                         _self.$.codigoRegiao.disabled = true;
                         _self.$.codigoAreaFuncional.disabled = true;
                         _self.$.codigoCentroResponsabilidade.disabled = true;
-                        _self.$.observacoes.disabled = true;
+                        //_self.$.observacoes.disabled = true;
                     };
                     if (data.estado == 1) { //VALIDADO
                         _self.$.projetoNo.disabled = true;
@@ -4337,7 +4351,7 @@
                         _self.$.codigoRegiao.disabled = true;
                         _self.$.codigoAreaFuncional.disabled = true;
                         _self.$.codigoCentroResponsabilidade.disabled = true;
-                        _self.$.observacoes.disabled = true;
+                        //_self.$.observacoes.disabled = true;
 
                         _self.$.percursoOrigem.disabled = true;
                         _self.$.percursoDestino.disabled = true;
@@ -4388,7 +4402,7 @@
                         _self.$.codigoRegiao.disabled = true;
                         _self.$.codigoAreaFuncional.disabled = true;
                         _self.$.codigoCentroResponsabilidade.disabled = true;
-                        _self.$.observacoes.disabled = true;
+                        //_self.$.observacoes.disabled = true;
                     };
 
                     //TABELAS

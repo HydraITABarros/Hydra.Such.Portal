@@ -2641,9 +2641,19 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Utilizador Modificação")
                     .HasMaxLength(50);
 
-                entity.Property(e => e.Valor).HasColumnName("% Valor");
+                entity.Property(e => e.PercentagemValor).HasColumnName("% Valor");
 
-                entity.Property(e => e.Valor1).HasColumnName("Valor");
+                entity.Property(e => e.Valor).HasColumnName("Valor");
+
+                entity.Property(e => e.TotalValor).HasColumnName("TotalValor");
+
+                entity.Property(e => e.TotalPercentagemValor).HasColumnName("Total%Valor");
+
+                entity.Property(e => e.KmTotais).HasColumnName("KmTotais");
+
+                entity.Property(e => e.KmDistancia).HasColumnName("KmDistancia");
+
+                entity.Property(e => e.Quantidade).HasColumnName("Quantidade");
 
                 entity.HasOne(d => d.NºFolhasDeHorasNavigation)
                     .WithMany(p => p.DistribuiçãoCustoFolhaDeHoras)
