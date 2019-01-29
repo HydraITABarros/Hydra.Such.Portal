@@ -299,7 +299,7 @@
                 _exportEXCEL: function () {
                     this.result[0].ColunasEXCEL = this._columns;
 
-                    this.$.ajax_Export.body = JSON.stringify(this.result);
+                    this.$.ajax_Export.body = JSON.stringify(this.$.grid._filter(this.$.grid.items));
                     this.$.ajax_Export.generateRequest();
                 },
 

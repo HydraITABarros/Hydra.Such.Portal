@@ -126,7 +126,7 @@ var initGridLists = function () {
     var gridLists = $('[_permissions]')[0].root.querySelectorAll('[column-reordering-allowed]');
     gridLists.forEach(function (grid) {
         window.testes = grid;
-        setGridListsColumnDragable(grid, $('[_permissions]')[0].tagName);
+        setGridListsColumnDragable(grid, grid.__dataHost);
     });
 };
 
