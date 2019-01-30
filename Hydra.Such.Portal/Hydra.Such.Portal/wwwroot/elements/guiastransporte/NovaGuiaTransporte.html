@@ -190,6 +190,13 @@
                    id="page_project_dims_ajax"
                    on-response="_projectDimsResponse"
                    content-type="application/json"></iron-ajax>
+        <iron-ajax url="/GuiasTransporteNav/GetProjectDim"
+                   last-response="{{ projectItemDims}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_project_item_dims_ajax"
+                   on-response="_projectItemDimsResponse"
+                   content-type="application/json"></iron-ajax>
         <!-- ************* Project no.e **********************-->
         <!-- ******* NoCliente.b ********** -->
         <iron-ajax url="/GuiasTransporteNav/GetThirdPartiesList"
@@ -606,7 +613,17 @@
                                         <vaadin-text-field id="precoVendaItem" name="precoVendaItem" value="{{ _itemUnitPrice }}" label="Preço Venda" prevent-invalid-input pattern="[0-9.]*"></vaadin-text-field>
                                     </div>
                                     <div class="col-lg-2">
-                                        <vaadin-text-field id="noProjectoItem" name="noProjectoItem" value="{{_itemProjectUnit }}" label="Projecto"></vaadin-text-field>
+                                        <!--<vaadin-text-field id="noProjectoItem" name="noProjectoItem" value="{{_itemProjectNo }}" label="Projecto"></vaadin-text-field>-->
+                                        <such-selectbox id="noProjectoItem"
+                                                        name="noProjectoItem"
+                                                        label="Projecto"
+                                                        value="{{ _itemProjectNo }}"
+                                                        items="[[cbJobNo]]"
+                                                        on-value-changed="_setItemProjectDim"
+                                                        text-path="no"
+                                                        value-path="no"
+                                                        fields='[{"field":"no", "name":"Nº Projecto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"regionCode", "name":"Cód. Região"}, {"field":"areaCode", "name":"Cód. Área"}, {"field":"centerResponsibilityCode", "name":"Cód. Cresp"}]'>
+                                        </such-selectbox>
                                     </div>
                                     <div class="col-lg-2">
                                         <such-selectbox id="regiaoItem"
@@ -770,7 +787,7 @@
                                             <template class="header">
                                             </template>
                                             <template>
-                                                <paper-button raised class="btnRemove" on-tap="_deleteShipmentLine"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                                                <paper-button raised class="btnRemove" on-tap="_deleteShipmentLine"><i class="fa fa-trash-o" aria-hidden="true"></i></paper-button>
                                             </template>
                                         </vaadin-grid-column>
                                     </vaadin-grid>
@@ -1277,9 +1294,44 @@
                         }
 
                         debugger;;
-                        this.$.noProjectoItem.value = this.projectDims.no;
+                        this.$.noProjectoItem.value = this.projectDims.projectNo;
                         this.$.noProjectoItem.valueText = this.projectDims.no;
                         this._itemProjectNo = this.projectDims.no;
+                        
+                    }
+                },
+
+                _setItemProjectDim: function (e) {
+                    if (this.data != undefined) {
+                        var projectNo = this.$.noProjectoItem.value;
+                        if (projectNo != "") {
+                            this.$.page_project_item_dims_ajax.body = JSON.stringify(projectNo);
+                            this.$.page_project_item_dims_ajax.generateRequest();
+                        }
+                    }
+                },
+
+                _projectItemDimsResponse: function (e) {
+                    if (e.detail.status === 200) {
+                        debugger;;
+                        if (this.projectItemDims.regionCode != "") {
+                            
+                            this.$.regiaoItem.value = this.projectItemDims.regionCode;
+                            //this.$.regiaoItem.valueText = this.projectDims.regionCode;
+                            this._itemRegionCode = this.projectDims.regionCode;
+                        }
+
+                        if (this.projectItemDims.functionalAreaCode != "") {
+                            
+                            this.$.areaFuncionalItem.value = this.projectItemDims.functionalAreaCode;
+                            //this.$.areaFuncionalItem.valueText = this.projectDims.functionalAreaCode;
+                            this._itemAreaCode = this.projectItemDims.functionalAreaCode;
+                        }
+
+                        debugger;;
+                        //this.$.noProjectoItem.value = this.projectDims.no;
+                        //this.$.noProjectoItem.valueText = this.projectDims.no;
+                        //this._itemProjectNo = this.projectDims.no;
                     }
                 },
 
