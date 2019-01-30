@@ -130,33 +130,46 @@ namespace Hydra.Such.Portal.Controllers
             {
                 if (data != null)
                 {
-
-                    if (data.Matricula != null)
+                    if (data.Matricula != null && !string.IsNullOrEmpty(data.Matricula))
                     {
-                        Viaturas viatura = DBViatura.ParseToDB(data);
-                        viatura.UtilizadorCriação = User.Identity.Name;
-                        viatura = DBViatura.Create(viatura);
-
-                        if (data.Imagem != null)
-                        {
-                            ViaturasImagens ViaturaImagem = new ViaturasImagens
-                            {
-                                Matricula = data.Matricula,
-                                Imagem = data.Imagem,
-                                UtilizadorCriacao = User.Identity.Name
-                            };
-                            DBViaturaImagem.Create(ViaturaImagem);
-                        }
-
-                        data.eReasonCode = 1;
+                        Viaturas viatura = DBViatura.GetByMatricula(data.Matricula);
 
                         if (viatura == null)
                         {
-                            data.eReasonCode = 3;
-                            data.eMessage = "Ocorreu um erro ao criar a viatura no portal.";
+                            Viaturas viaturaToCreate = DBViatura.ParseToDB(data);
+                            viaturaToCreate.UtilizadorCriação = User.Identity.Name;
+                            viaturaToCreate = DBViatura.Create(viaturaToCreate);
+
+                            if (data.Imagem != null)
+                            {
+                                ViaturasImagens ViaturaImagem = new ViaturasImagens
+                                {
+                                    Matricula = data.Matricula,
+                                    Imagem = data.Imagem,
+                                    UtilizadorCriacao = User.Identity.Name
+                                };
+                                DBViaturaImagem.Create(ViaturaImagem);
+                            }
+
+                            if (viaturaToCreate == null)
+                            {
+                                data.eReasonCode = 3;
+                                data.eMessage = "Ocorreu um erro ao criar a viatura no portal.";
+                            }
+                            else
+                                data.eReasonCode = 1;
+                        }
+                        else
+                        {
+                            data.eReasonCode = 4;
+                            data.eMessage = "Não pode criar a Viatura, porque já existe uma Viatura com esta matrícula no eSUCH.";
                         }
                     }
-
+                    else
+                    {
+                        data.eReasonCode = 5;
+                        data.eMessage = "O campo Matrícula é de preenchimento obrigatório.";
+                    }
                 }
             }
             catch (Exception e)

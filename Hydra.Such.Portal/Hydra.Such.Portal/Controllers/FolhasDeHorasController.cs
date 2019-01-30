@@ -1065,6 +1065,46 @@ namespace Hydra.Such.Portal.Controllers
 
         [HttpPost]
         //Atualiza a Folha de Horas na Base de Dados
+        public JsonResult AutoUpdateFolhaDeHoras([FromBody] FolhaDeHorasViewModel data)
+        {
+            int result = 0;
+            try
+            {
+                if (data != null)
+                {
+                    if (!string.IsNullOrEmpty(data.ProjetoNo))
+                        data.ProjetoDescricao = DBProjects.GetById(data.ProjetoNo) != null ? DBProjects.GetById(data.ProjetoNo).Descrição : "";
+
+                    if (!string.IsNullOrEmpty(data.DataPartidaTexto))
+                        data.DataHoraPartida = Convert.ToDateTime(data.DataPartidaTexto);
+                    if (!string.IsNullOrEmpty(data.DataPartidaTexto) && !string.IsNullOrEmpty(data.HoraPartidaTexto))
+                        data.DataHoraPartida = Convert.ToDateTime(data.DataPartidaTexto + " " + data.HoraPartidaTexto);
+
+                    if (!string.IsNullOrEmpty(data.DataChegadaTexto))
+                        data.DataHoraChegada = Convert.ToDateTime(data.DataChegadaTexto);
+                    if (!string.IsNullOrEmpty(data.DataChegadaTexto) && !string.IsNullOrEmpty(data.HoraChegadaTexto))
+                        data.DataHoraPartida = Convert.ToDateTime(data.DataChegadaTexto + " " + data.HoraChegadaTexto);
+
+                    data.UtilizadorModificacao = User.Identity.Name;
+                    if (DBFolhasDeHoras.Update(DBFolhasDeHoras.ParseToFolhaHoras(data)) == null)
+                    {
+                        result = 2;
+                    }
+                }
+                else
+                {
+                    result = 3;
+                }
+            }
+            catch (Exception ex)
+            {
+                result = 99;
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        //Atualiza a Folha de Horas na Base de Dados
         public JsonResult UpdateFolhaDeHorasCreated([FromBody] FolhaDeHorasViewModel data)
         {
             int result = 0;
@@ -2758,9 +2798,8 @@ namespace Hydra.Such.Portal.Controllers
                     List<LinhasFolhaHorasViewModel> Percursos = DBLinhasFolhaHoras.GetAllByPercursoToList(data.FolhaDeHorasNo);
                     List<LinhasFolhaHorasViewModel> Ajudas = DBLinhasFolhaHoras.GetAllByAjudaToList(data.FolhaDeHorasNo);
                     List<MaoDeObraFolhaDeHorasViewModel> MaoDeObra = DBMaoDeObraFolhaDeHoras.GetAllByMaoDeObraToList(data.FolhaDeHorasNo);
-                    List<PresencasFolhaDeHorasViewModel> Presencas = DBPresencasFolhaDeHoras.GetAllByPresencaToList(data.FolhaDeHorasNo);
 
-                    if ((Percursos == null || Percursos.Count() == 0) && (Ajudas == null || Ajudas.Count() == 0) && (MaoDeObra == null || MaoDeObra.Count() == 0) && (Presencas == null || Presencas.Count() == 0))
+                    if ((Percursos == null || Percursos.Count() == 0) && (Ajudas == null || Ajudas.Count() == 0) && (MaoDeObra == null || MaoDeObra.Count() == 0))
                     {
                         resultApprovalMovement.eReasonCode = 9;
                         resultApprovalMovement.eMessage = "Não pode Terminar a Folha de Horas, pois não existe nenhum movimento associado á mesma.";

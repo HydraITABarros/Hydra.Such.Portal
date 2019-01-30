@@ -61,47 +61,47 @@
                    content-type="application/json"></iron-ajax>
 
         <!--<iron-ajax url="/PopulateDropdowns/GetProjectDiaryMovements"
-               last-response="{{response2}}"
-               auto
-               method="post"
-               handle-as="json"
-               content-type="application/json"></iron-ajax>-->
+           last-response="{{response2}}"
+           auto
+           method="post"
+           handle-as="json"
+           content-type="application/json"></iron-ajax>-->
         <!--<iron-ajax url="/PopulateDropdowns/GetProjectDiaryTypes"
-               last-response="{{response3}}"
-               auto
-               method="post"
-               handle-as="json"
-               content-type="application/json"></iron-ajax>-->
+           last-response="{{response3}}"
+           auto
+           method="post"
+           handle-as="json"
+           content-type="application/json"></iron-ajax>-->
         <!--<iron-ajax url="/PopulateDropdowns/GetMeasureUnits"
-               last-response="{{MeasureUnit}}"
-               auto
-               method="post"
-               handle-as="json"
-               content-type="application/json"></iron-ajax>-->
+           last-response="{{MeasureUnit}}"
+           auto
+           method="post"
+           handle-as="json"
+           content-type="application/json"></iron-ajax>-->
         <!--<iron-ajax url="/PopulateDropdowns/GetLocations"
-               last-response="{{Locations}}"
-               auto
-               method="post"
-               handle-as="json"
-               content-type="application/json"></iron-ajax>-->
+           last-response="{{Locations}}"
+           auto
+           method="post"
+           handle-as="json"
+           content-type="application/json"></iron-ajax>-->
         <!--<iron-ajax url="/PopulateDropdowns/GetRegionCode"
-               last-response="{{RegionData}}"
-               auto
-               method="post"
-               handle-as="json"
-               content-type="application/json"></iron-ajax>-->
+           last-response="{{RegionData}}"
+           auto
+           method="post"
+           handle-as="json"
+           content-type="application/json"></iron-ajax>-->
         <!--<iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode"
-               last-response="{{FunctionalAreaCodeData}}"
-               auto
-               method="post"
-               handle-as="json"
-               content-type="application/json"></iron-ajax>-->
+           last-response="{{FunctionalAreaCodeData}}"
+           auto
+           method="post"
+           handle-as="json"
+           content-type="application/json"></iron-ajax>-->
         <!--<iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode"
-               last-response="{{ResponsabilityCenterData}}"
-               auto
-               method="post"
-               handle-as="json"
-               content-type="application/json"></iron-ajax>-->
+           last-response="{{ResponsabilityCenterData}}"
+           auto
+           method="post"
+           handle-as="json"
+           content-type="application/json"></iron-ajax>-->
 
         <iron-ajax url="/Projetos/ExportToExcel_MovimentosProjetos"
                    last-response="{{export}}"
@@ -171,14 +171,14 @@
                 <template>
                     {{item.movementTypeText}}
                     <!--<vaadin-combo-box items="[[response2]]" item-value-path="id" disabled item-label-path="value" value="{{item.movementType}}">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>-->
+                <template>
+                    <paper-icon-item>
+                        <paper-item-body two-line>
+                            <div>[[item.value]]</div>
+                        </paper-item-body>
+                    </paper-icon-item>
+                </template>
+            </vaadin-combo-box>-->
                 </template>
             </vaadin-grid-column>
 
@@ -200,14 +200,14 @@
                 <template>
                     {{item.typeText}}
                     <!--<vaadin-combo-box items="[[response3]]" disabled item-value-path="id" item-label-path="value" value="{{item.type}}">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>-->
+                <template>
+                    <paper-icon-item>
+                        <paper-item-body two-line>
+                            <div>[[item.value]]</div>
+                        </paper-item-body>
+                    </paper-icon-item>
+                </template>
+            </vaadin-combo-box>-->
                 </template>
             </vaadin-grid-column>
 
@@ -249,14 +249,14 @@
                 <template>
                     {{item.measurementUnitCode}}
                     <!--<vaadin-combo-box items="[[MeasureUnit]]" item-value-path="id" disabled item-label-path="value" value="{{item.measurementUnitCode}}">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>-->
+                <template>
+                    <paper-icon-item>
+                        <paper-item-body two-line>
+                            <div>[[item.value]]</div>
+                        </paper-item-body>
+                    </paper-icon-item>
+                </template>
+            </vaadin-combo-box>-->
                 </template>
             </vaadin-grid-column>
 
@@ -268,14 +268,14 @@
                 <template>
                     {{item.locationCode}}
                     <!--<vaadin-combo-box items="[[Locations]]" item-value-path="id" disabled item-label-path="value" value="{{item.locationCode}}">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>-->
+                <template>
+                    <paper-icon-item>
+                        <paper-item-body two-line>
+                            <div>[[item.value]]</div>
+                        </paper-item-body>
+                    </paper-icon-item>
+                </template>
+            </vaadin-combo-box>-->
                 </template>
             </vaadin-grid-column>
 
@@ -297,14 +297,14 @@
                 <template>
                     {{item.regionCode}}
                     <!--<vaadin-combo-box items="[[RegionData]]" item-value-path="id" disabled item-label-path="value" value="{{item.regionCode}}">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>-->
+                <template>
+                    <paper-icon-item>
+                        <paper-item-body two-line>
+                            <div>[[item.value]]</div>
+                        </paper-item-body>
+                    </paper-icon-item>
+                </template>
+            </vaadin-combo-box>-->
                 </template>
             </vaadin-grid-column>
 
@@ -316,14 +316,14 @@
                 <template>
                     {{item.functionalAreaCode}}
                     <!--<vaadin-combo-box items="[[FunctionalAreaCodeData]]" item-value-path="id" item-label-path="value" disabled value="{{item.functionalAreaCode}}">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>-->
+                <template>
+                    <paper-icon-item>
+                        <paper-item-body two-line>
+                            <div>[[item.value]]</div>
+                        </paper-item-body>
+                    </paper-icon-item>
+                </template>
+            </vaadin-combo-box>-->
                 </template>
             </vaadin-grid-column>
 
@@ -335,14 +335,14 @@
                 <template>
                     {{item.responsabilityCenterCode}}
                     <!--<vaadin-combo-box items="[[ResponsabilityCenterData]]" disabled item-value-path="id" item-label-path="value" value="{{item.responsabilityCenterCode}}">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>-->
+                <template>
+                    <paper-icon-item>
+                        <paper-item-body two-line>
+                            <div>[[item.value]]</div>
+                        </paper-item-body>
+                    </paper-icon-item>
+                </template>
+            </vaadin-combo-box>-->
                 </template>
             </vaadin-grid-column>
 
@@ -779,6 +779,26 @@
                     {{item.serviceObject}}
                 </template>
             </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.createDateText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="createDateText">Data Criação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="createDateText" />
+                </template>
+                <template>
+                    {{item.createDateText}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.createHourText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="createHourText">Hora Criação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="createHourText" />
+                </template>
+                <template>
+                    {{item.createHourText}}
+                </template>
+            </vaadin-grid-column>
         </vaadin-grid>
 
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
@@ -928,7 +948,9 @@
                         "invoiceGroup": { hidden: false, label: "Grupo Fatura" },
                         "invoiceGroupDescription": { hidden: false, label: "Grupo Fatura Descrição" },
                         "authorizedBy": { hidden: false, label: "Autorizado Por" },
-                        "serviceObject": { hidden: false, label: "Objeto Serviço" }
+                        "serviceObject": { hidden: false, label: "Objeto Serviço" },
+                        "createDateText": { hidden: false, label: "Data Criação" },
+                        "createHourText": { hidden: false, label: "Hora Criação" }
                     };
 
                     if (localStorage["jobledgerentry.ToggleColumn"]) {

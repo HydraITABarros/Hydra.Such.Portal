@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net;
 using System.ServiceModel;
 using System.Threading.Tasks;
+using Hydra.Such.Data.Logic.ProjectDiary;
 
 namespace Hydra.Such.Data.NAV
 {
@@ -191,6 +192,10 @@ namespace Hydra.Such.Data.NAV
                 line.RegionCode20 = x.RegionCode;
                 line.FunctionAreaCode20 = x.FunctionalAreaCode;
                 line.ResponsabilityCenterCode20 = x.ResponsabilityCenterCode;
+                line.Des_Serv_Cliente = !string.IsNullOrEmpty(x.ServiceClientCode) ? DBServices.GetById(x.ServiceClientCode) != null ? DBServices.GetById(x.ServiceClientCode).Descrição : "" : "";
+                line.Data_Registo_Diario = !string.IsNullOrEmpty(x.ConsumptionDate) ? DateTime.Parse(x.ConsumptionDate) : DateTime.MinValue;
+
+
                 if (x.ResourceType.HasValue)
                 {
                     line.Tipo_Recurso = (WSCreatePreInvoiceLine.Tipo_Recurso)x.ResourceType.Value;

@@ -185,6 +185,14 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/FolhasDeHoras/AutoUpdateFolhaDeHoras"
+                   last-response="{{FolhaDeHorasAutoUpdated}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_autoupdatefolhadehoras_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
         <iron-ajax url="/FolhasDeHoras/UpdateFolhaDeHorasCreated"
                    last-response="{{FolhaDeHorasUpdatedCreated}}"
                    method="post"
@@ -446,9 +454,6 @@
         <iron-pages selected="{{selected}}">
             <!--Viagens-->
             <div class="panel panel-default">
-                <!--<paper-collapse-group>
-            <paper-collapse-item class="panel-heading" header="Cabeçalho" opened>-->
-                <!--<div class="panel-heading" style="font-size:16px">Cabeçalho</div>-->
                 <div class="panel-body">
                     <div class="row break_clear">
                         <div class="col-sm-3">
@@ -456,23 +461,25 @@
                         </div>
 
                         <div class="col-sm-3">
-                            <!--<such-selectbox id="projetoNo" value="{{data.projetoNo}}" label="Nº Ordem/Projecto"
-                                        items="[[LFolhaDeHoraNavProjectNo]]"
-                                        text-path="no"
-                                        value-path="no"
-                                        fields='[{"field":"no", "name":"Nº Projecto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"globalDimension1", "name":"Dimensão Global 1"}, {"field":"globalDimension2", "name":"Dimensão Global 2"}]'
-                                        disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
-                        </such-selectbox>-->
                             <such-selectbox id="projetoNo" value="{{data.projetoNo}}" label="Nº Ordem/Projecto"
                                             items="[[LFolhaDeHoraNavProjectNo]]"
                                             text-path="no"
                                             value-path="no"
                                             fields='[{"field":"no", "name":"Nº Projecto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"regionCode", "name":"Cód. Região"}, {"field":"areaCode", "name":"Cód. Área"}, {"field":"centerResponsibilityCode", "name":"Cód. Cresp"}]'
+                                            on-change="_updateAutoFH"
                                             disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                             </such-selectbox>
                         </div>
 
                         <div class="col-sm-6">
+                            <!--<such-selectbox id="empregadoNo" value="{{data.empregadoNo}}" label="Nº Empregado - Nome"
+                                            items="[[LFolhaDeHoraEmployees]]"
+                                            text-path="value"
+                                            value-path="id"
+                                            fields='[{"field":"id", "name":"Nº Mecanográfico"}, {"field":"extra", "name":"Nome"}]'
+                                            on-change="_codeChange"
+                                            disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                            </such-selectbox>-->
                             <vaadin-combo-box items="[[LFolhaDeHoraEmployees]]" id="empregadoNo" item-value-path="id" item-label-path="value" value="{{data.empregadoNo}}" on-value-changed="_codeChange" label="Nº Empregado - Nome" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                 <template>
                                     <paper-icon-item>
@@ -493,19 +500,10 @@
                                     <vaadin-date-picker id="dataPartidaTexto" name="dataPartidaTexto" value="{{data.dataPartidaTexto}}" on-blur="_validacaoDataPartidaChegada" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
                                 </div>
                                 <div class="col-sm-4" style="padding-left: 0px;">
-                                    <!--<vaadin-text-field value="{{data.horaPartidaTexto}}" type="time" maxlength="8" id="horaPartidaTexto" name="horaPartidaTexto" disabled="{{ !_permissions.update }}"> </vaadin-text-field>-->
                                     <vaadin-time-picker step="1800" value="{{data.horaPartidaTexto}}" id="horaPartidaTexto" name="horaPartidaTexto" on-value-changed="_validacaoHoraPartidaChegada" disabled="{{ !_permissions.update }}"></vaadin-time-picker>
                                 </div>
                             </div>
                         </div>
-
-
-                        <!--<div class="col-sm-3">
-                        <vaadin-date-picker label="Data Inicio" id="dataPartidaTexto" name="dataPartidaTexto" on-blur="_validacaoDataPartidaChegada" disabled="{{ !_permissions.update }}" value="{{data.dataPartidaTexto}}"></vaadin-date-picker>
-                    </div>-->
-                        <!--<div class="col-sm-3">
-                        <vaadin-text-field type="text" value="{{data.horaPartidaTexto}}" id="horaPartidaTexto" on-value-changed="_validacaoHoraPartidaChegada" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Inicio"></vaadin-text-field>
-                    </div>-->
 
                         <div class="col-sm-3">
                             <label part="label" id="vaadin-text-field-label-21" class="label_custom">Data/Hora - Fim</label>
@@ -514,7 +512,6 @@
                                     <vaadin-date-picker id="dataChegadaTexto" name="dataChegadaTexto" value="{{data.dataChegadaTexto}}" on-blur="_validacaoDataPartidaChegada" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
                                 </div>
                                 <div class="col-sm-4" style="padding-left: 0px;">
-                                    <!--<vaadin-text-field value="{{data.horaChegadaTexto}}" id="horaChegadaTexto" name="horaChegadaTexto" type="time" maxlength="8" disabled="{{ !_permissions.update }}"> </vaadin-text-field>-->
                                     <vaadin-time-picker step="1800" value="{{data.horaChegadaTexto}}" id="horaChegadaTexto" name="horaChegadaTexto" on-value-changed="_validacaoHoraPartidaChegada" disabled="{{ !_permissions.update }}"></vaadin-time-picker>
                                 </div>
                             </div>
@@ -2030,8 +2027,9 @@
 
                 //FOLHA DE HORAS
                 _updateAutoFH: function () {
-                    this.$.page_updatefolhadehoras_ajax.body = JSON.stringify(this.data);
-                    this.$.page_updatefolhadehoras_ajax.generateRequest();
+                    debugger;
+                    this.$.page_autoupdatefolhadehoras_ajax.body = JSON.stringify(this.data);
+                    this.$.page_autoupdatefolhadehoras_ajax.generateRequest();
                 },
 
                 _updateFH: function () {
@@ -4092,17 +4090,14 @@
                 },
 
                 //EMPREGADO FUNÇÕES
-                _codeChange: function (e) {
-                    //this.$.getEmpoyeeNAV_ajax.body = JSON.stringify(e.detail.value, this.$.folhaDeHorasNo.value);
-                    if (e.detail.value != "") {
-                        this.data.empregadoNo = e.detail.value;
+                _codeChange: function () {
+                    if (this.data.empregadoNo != "") {
                         this.$.getEmpoyeeNAV_ajax.body = JSON.stringify(this.data);
                         this.$.getEmpoyeeNAV_ajax.generateRequest();
                     };
                 },
 
                 _getEmpoyeeNAVResponse: function (e) {
-
                     if (this.getEmpoyeeNAV.empregadoNo == null | this.getEmpoyeeNAV.empregadoNo == "") {
                         this.data.empregadoNo = "";
                         this.$.empregadoNo.value = "";
@@ -4189,6 +4184,9 @@
                         this.data.integradoresEmRHKM = this.getEmpoyeeNAV.integradoresEmRHKM;
                         this.$.integradoresEmRHKM.value = this.getEmpoyeeNAV.integradoresEmRHKM;
                     }
+
+                    //AutoGravação
+                    this._updateAutoFH();
                 },
 
                 //DATA INICIO

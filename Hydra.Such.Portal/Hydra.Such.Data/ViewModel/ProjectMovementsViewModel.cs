@@ -45,6 +45,8 @@ namespace Hydra.Such.Data.ViewModel
         public bool Selected { get; set; }
         public string CreateUser { get; set; }
         public DateTime? CreateDate { get; set; }
+        public string CreateDateText { get; set; }
+        public string CreateHourText { get; set; }
         public string UpdateUser { get; set; }
         public DateTime? UpdateDate { get; set; }
         //EXPORTAR PARA EXCEL

@@ -2294,6 +2294,9 @@
                             elem.hidden = true;
                         });
                         this._isArchived = true;
+
+                        //excepto para o botão imprimir
+                        this.$.menuImprimir.hidden = false;
                     }
                 },
                 _reqDataSourceResponse: function (data) {

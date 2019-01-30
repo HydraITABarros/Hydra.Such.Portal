@@ -2025,6 +2025,8 @@ namespace Hydra.Such.Portal.Controllers
                     QuantityReturned = Convert.ToDecimal(x.QuantidadeDevolvida),
                     ConsumptionDate = x.DataConsumo?.ToString("yyyy-MM-dd"),
                     CreateDate = x.DataHoraCriação,
+                    CreateDateText = x.DataHoraCriação.HasValue ? Convert.ToDateTime(x.DataHoraCriação).ToShortDateString() : "",
+                    CreateHourText = x.DataHoraCriação.HasValue ? Convert.ToDateTime(x.DataHoraCriação).ToShortTimeString() : "",
                     UpdateDate = x.DataHoraModificação,
                     CreateUser = x.UtilizadorCriação,
                     UpdateUser = x.UtilizadorModificação,
@@ -2217,8 +2219,12 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         mov.UnitPrice = mov.UnitValueToInvoice;
                     }
+
                     if (!string.IsNullOrEmpty(mov.ServiceClientCode))
                         mov.ServiceClientDescription = customerServices.Where(x => x.ServiceCode == mov.ServiceClientCode).Select(x => x.ServiceDescription).FirstOrDefault();
+
+                    mov.CreateDateText = mov.CreateDate.HasValue ? Convert.ToDateTime(mov.CreateDate).ToShortDateString() : "";
+                    mov.CreateHourText = mov.CreateDate.HasValue ? Convert.ToDateTime(mov.CreateDate).ToShortTimeString() : "";
                 }
                 var userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
                 List<UserDimensionsViewModel> userDimensionsViewModel = userDimensions.ParseToViewModel();
@@ -5496,7 +5502,7 @@ namespace Hydra.Such.Portal.Controllers
 
         //1
         [HttpPost]
-        public async Task<JsonResult> ExportToExcel_AutorizacaoFaturacao([FromBody] List<ProjectDiaryViewModel> Lista)
+        public async Task<JsonResult> ExportToExcel_AutorizacaoFaturacao([FromBody] List<ProjectMovementViewModel> Lista)
         {
             JObject dp = (JObject)Lista[0].ColunasEXCEL;
 
@@ -5611,11 +5617,21 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Nº Compromisso");
                     Col = Col + 1;
                 }
+                if (dp["createDateText"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Data Criação");
+                    Col = Col + 1;
+                }
+                if (dp["createHourText"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Hora Criação");
+                    Col = Col + 1;
+                }
 
                 if (dp != null)
                 {
                     int count = 1;
-                    foreach (ProjectDiaryViewModel item in Lista)
+                    foreach (ProjectMovementViewModel item in Lista)
                     {
                         Col = 0;
                         row = excelSheet.CreateRow(count);
@@ -5715,6 +5731,17 @@ namespace Hydra.Such.Portal.Controllers
                             row.CreateCell(Col).SetCellValue(item.CommitmentNumber);
                             Col = Col + 1;
                         }
+                        if (dp["createDateText"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.CreateDateText);
+                            Col = Col + 1;
+                        }
+                        if (dp["createHourText"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.CreateHourText);
+                            Col = Col + 1;
+                        }
+
                         count++;
                     }
                 }
@@ -6395,6 +6422,18 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Objeto Serviço");
                     Col = Col + 1;
                 }
+                if (dp["createDateText"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Data Criação");
+                    Col = Col + 1;
+                }
+                if (dp["createHourText"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Hora Criação");
+                    Col = Col + 1;
+                }
+
+
 
                 if (dp != null)
                 {
@@ -6692,6 +6731,16 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["serviceObject"]["hidden"].ToString() == "False")
                         {
                             //row.CreateCell(Col).SetCellValue(item.ServiceObject.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["createDateText"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.CreateDateText);
+                            Col = Col + 1;
+                        }
+                        if (dp["createHourText"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.CreateHourText);
                             Col = Col + 1;
                         }
 
@@ -7075,5 +7124,42 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(result);
         }
+
+        [HttpPost]
+        public JsonResult UpdateProjectMovements([FromBody] ProjectMovementViewModel data)
+        {
+
+            try
+            {
+                if (data != null)
+                {
+                    data.TotalPrice = data.Quantity * data.UnitPrice;
+                    data.UpdateUser = User.Identity.Name;
+                    if (DBProjectMovements.Update(DBProjectMovements.ParseToDB(data)) != null)
+                    {
+                        data.eReasonCode = 1;
+                        data.eMessage = "Movimento de projeto atualizado com sucesso.";
+                    }
+                    else
+                    {
+                        data.eReasonCode = 2;
+                        data.eMessage = "Ocorreu um erro ao atualizar o movimento de projeto.";
+                    }
+                }
+                else
+                {
+                    data.eReasonCode = 3;
+                    data.eMessage = "Os dados a serem atualizados não podem ser nulos.";
+                }
+            }
+            catch (Exception ex)
+            {
+                data.eReasonCode = 99;
+                data.eMessage = "Ocorreu um erro.";
+            }
+
+            return Json(data);
+        }
+
     }
 }
