@@ -226,6 +226,31 @@
                    handle-as="json"
                    content-type="application/json">
         </iron-ajax>
+        <!-- ********* Document lines.b ***********-->
+        <iron-ajax url="/GuiasTransporteNav/GetShipItems"
+                   last-response="{{ shipItemsList }}"
+                   method="post"
+                   handle-as="json"
+                   id="page_ship_items_ajax"
+                   on-response="_shipItemsResponse"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/GuiasTransporteNav/CreateShipmentLine"
+                   last-response="{{ lineCreated }}"
+                   method="post"
+                   handle-as="json"
+                   id="page_create_line_ajax"
+                   on-response="_createLineResponse"
+                   content-type="application/json"></iron-ajax>
+        <iron-ajax url="/GuiasTransporteNav/DeleteShipmentLine"
+                   last-response="{{ lineDeleted }}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_delete_linha"
+                   on-response="_deleteShipmentLineResponse"
+                   content-type="application/json">
+        </iron-ajax>
+        <!-- ********* Document lines.e ***********-->
 
         <iron-ajax url="/GuiasTransporteNav/UpdateGuia"
                    last-response="{{ guiaUpdated }}"
@@ -337,6 +362,9 @@
                                                 <div class="col-md-3">
                                                     <vaadin-text-field id="moradaCliente2" name="moradaCliente2" label="Morada Clente 2" value="{{ data.moradaCliente2 }}"></vaadin-text-field>
                                                 </div>
+                                                <div class="col-md-3">
+                                                    <vaadin-text-field id="nifCliente" name="nifCliente" label="No. Contribuinte" value="{{ data.nifCliente }}"></vaadin-text-field>
+                                                </div>
                                             </div>
                                             <div class="row break_clear">
                                                 <div class="col-md-3">
@@ -346,7 +374,10 @@
                                                     <vaadin-text-field id="cidade" name="cidade" label="Cidade" value="{{ data.cidade }}"></vaadin-text-field>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="nifCliente" name="nifCliente" label="No. Contribuinte" value="{{ data.nifCliente }}"></vaadin-text-field>
+                                                    <vaadin-text-field id="noRequisicao" name="noRequisicao" label="No. Requisição" value="{{ data.noRequisicao }}"></vaadin-text-field>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <vaadin-text-field id="responsabilityCenter" name="responsabilityCenter" label="Centro Responsabilidade" value="{{ data.responsabilityCenter }}"></vaadin-text-field>
                                                 </div>
 
                                             </div>
@@ -368,21 +399,17 @@
                                                 <div class="col-md-3">
                                                     <vaadin-text-field id="reportedBy" name="reportedBy" label="Reportado por" value="{{ data.reportedBy }}"></vaadin-text-field>
                                                 </div>
-                                            </div>
-                                            <div class="row break_clear">
-                                                <div class="col-md-3">
-                                                    <vaadin-text-field id="ordemTransferencia" name="ordemTransferencia" label="Ordem Transferência" value="{{ data.ordemTransferencia }}"></vaadin-text-field>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <vaadin-text-field id="noRequisicao" name="noRequisicao" label="No. Requisição" value="{{ data.noRequisicao }}"></vaadin-text-field>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <vaadin-text-field id="responsabilityCenter" name="responsabilityCenter" label="Centro Responsabilidade" value="{{ data.responsabilityCenter }}"></vaadin-text-field>
-                                                </div>
                                                 <div class="col-md-3">
                                                     <vaadin-text-field id="utilizador" name="utilizador" label="Utilizador" value="{{ data.utilizador }}" disabled="disabled"></vaadin-text-field>
                                                 </div>
                                             </div>
+                                            <!--<div class="row break_clear">
+                                            <div class="col-md-3">
+                                                <vaadin-text-field id="ordemTransferencia" name="ordemTransferencia" label="Ordem Transferência" value="{{ data.ordemTransferencia }}"></vaadin-text-field>
+                                            </div>
+
+
+                                        </div>-->
                                             <div class="row break_clear">
                                                 <div class="col-md-3">
                                                     <such-selectbox id="noProjecto"
@@ -438,7 +465,7 @@
                                                     <vaadin-text-field id="quantidadeTotal" name="quantidadeTotal" label="Quantidade Total" value="{{ data.quantidadeTotal }}"></vaadin-text-field>
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <such-textarea id="observacoes" name="observacoes" label="Observações" rows="3" value="{{ data.observacoes }}"> </such-textarea>
+                                                    <such-textarea id="observacoes" name="observacoes" maxlength="250" error-message="Este campo só pode ter no máximo 250 caracteres" label="Observações" rows="3" value="{{ data.observacoes }}"> </such-textarea>
                                                 </div>
                                             </div>
                                         </div>
@@ -536,8 +563,80 @@
                             <paper-collapse-item class="panel-heading" header="Linhas" opened>
                                 <!--<div class="marginSpace"></div>-->
                                 <div class="row break_clear">
-
+                                    <div class="col-lg-2">
+                                        <such-selectbox id="tipoLinha"
+                                                        label="Tipo"
+                                                        items="[[cbTipoLinhaGT]]"
+                                                        on-value-changed="_onTipoLinhaChanged"
+                                                        value="{{ _tipoLinhaGT }}"
+                                                        value-path="id"
+                                                        text-path="value"
+                                                        fields='[{"field":"value", "name":"tipo"}]'>
+                                        </such-selectbox>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <such-selectbox id="codigoItem"
+                                                        label="Código"
+                                                        items="[[ shipItemsList]]"
+                                                        value="{{ _itemCode }}"
+                                                        on-value-changed="_setShipmentItem"
+                                                        value-path="itemCode"
+                                                        text-path="itemCode"
+                                                        fields='[{"field":"itemCode", "name":"Código"}, {"field":"description", "name":"Descrição"}, {"field":"unitOfMeasure", "name": "U.M."}]'>
+                                        </such-selectbox>
+                                    </div>
+                                    <div class="col-lg-5">
+                                        <vaadin-text-field id="descricaoItem" name="descricaoItem" value="{{ _itemDescription }}" maxlength="250" error-message="Este campo só pode ter no máximo 250 caracteres e é obrigatório!" label="Descrição"></vaadin-text-field>
+                                    </div>
+                                    <div class="col-lg-1">
+                                        <vaadin-text-field id="unidadeMedidaItem" name="unidadeMedidaItem" value="{{ _itemBaseUnit}}" label="U.M." disabled></vaadin-text-field>
+                                    </div>
+                                    <div class="col-lg-1">
+                                        <vaadin-text-field id="quantidadeItem" name="quantidadeItem" value="{{ _itemQuantity }}" label="Quant." required error-message="Este campo é obrigatório, tem que ser superior a 0 e só pode ter 4 casas decimais" prevent-invalid-input pattern="[0-9.]*" on-blur="_roundQuantity"></vaadin-text-field>
+                                    </div>
+                                    <div class="col-lg-1">
+                                        <vaadin-text-field id="quantidadeEnviarItem" name="quantidadeEnviarItem" value="{{ _itemQuantityToShip }}" label="Quant. Enviar" required error-message="Este campo é obrigatório, tem que ser superior a 0 e só pode ter 4 casas decimais" prevent-invalid-input pattern="[0-9.]*" disabled></vaadin-text-field>
+                                    </div>
                                 </div>
+                                <div class="row break_clear">
+                                    <div class="col-lg-2">
+                                        <vaadin-text-field id="precoCustoItem" name="precoCustoItem" value="{{ _itemUnitCost }}" label="Preço Custo" prevent-invalid-input pattern="[0-9.]*"></vaadin-text-field>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <vaadin-text-field id="precoVendaItem" name="precoVendaItem" value="{{ _itemUnitPrice }}" label="Preço Venda" prevent-invalid-input pattern="[0-9.]*"></vaadin-text-field>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <vaadin-text-field id="noProjectoItem" name="noProjectoItem" value="{{_itemProjectUnit }}" label="Projecto"></vaadin-text-field>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <such-selectbox id="regiaoItem"
+                                                        name="regiaoItem"
+                                                        label="Região"
+                                                        value="{{ _itemRegionCode }}"
+                                                        items="[[CBRegions]]"
+                                                        text-path="value"
+                                                        value-path="id"
+                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                                        </such-selectbox>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <such-selectbox id="areaFuncionalItem"
+                                                        name="areaFuncionalItem"
+                                                        value="{{ _itemAreaCode }}"
+                                                        label="Área Funcional"
+                                                        items="[[CBFunctionalAreas]]"
+                                                        text-path="value"
+                                                        value-path="id"
+                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+
+                                        </such-selectbox>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <br />
+                                        <paper-button raised id="btnAddShipmentLine" class="btnSave" on-tap="_addShipmentLine"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                    </div>
+                                </div>
+
                                 <div class="row break_clear">
                                     <vaadin-grid aria-label="GuiaTransporteLines" id="gridLinhas" name="gridLinhas" items="[[ data.linhasGuiaTransporte ]]" class="grid" multi-sort="true" active-item="{{_SelectedLine}}">
                                         <vaadin-grid-column resizable>
@@ -603,15 +702,16 @@
                                                 [[ item.quantidadeEnviar ]]
                                             </template>
                                         </vaadin-grid-column>
-                                        <vaadin-grid-column resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="refDocOrigem">Ref. Doc. Origem</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="refDocOrigem" />
-                                            </template>
-                                            <template>
-                                                [[ item.refDocOrigem ]]
-                                            </template>
-                                        </vaadin-grid-column>
+                                        <
+                                        <!--vaadin-grid-column resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="refDocOrigem">Ref. Doc. Origem</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="refDocOrigem" />
+                                        </template>
+                                        <template>
+                                            [[ item.refDocOrigem ]]
+                                        </template>
+                                    </vaadin-grid-column>-->
                                         <vaadin-grid-column resizable>
                                             <template class="header">
                                                 <vaadin-grid-sorter path="unitCost">Preço Custo</vaadin-grid-sorter>
@@ -639,31 +739,38 @@
                                                 [[ item.shortcutDimension1Code ]]
                                             </template>
                                         </vaadin-grid-column>
-                                        <vaadin-grid-column resizable>
+                                        <!--<vaadin-grid-column resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="shortcutDimension2Code">Fonte Financiamento</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="shortcutDimension2Code" />
+                                        </template>
+                                        <template>
+                                            [[ item.shortcutDimension2Code ]]
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="estadoEquipamentoDesc">Estado Equipamento</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="estadoEquipamentoDesc" />
+                                        </template>
+                                        <template>
+                                            [[ item.estadoEquipamentoDescription ]]
+                                        </template>
+                                    </vaadin-grid-column>-->
+                                        <!--<vaadin-grid-column resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="inventoryNo">No. Série</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="inventoryNo" />
+                                        </template>
+                                        <template>
+                                            [[ item.inventoryNo ]]
+                                        </template>
+                                    </vaadin-grid-column>-->
+                                        <vaadin-grid-column>
                                             <template class="header">
-                                                <vaadin-grid-sorter path="shortcutDimension2Code">Fonte Financiamento</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="shortcutDimension2Code" />
                                             </template>
                                             <template>
-                                                [[ item.shortcutDimension2Code ]]
-                                            </template>
-                                        </vaadin-grid-column>
-                                        <vaadin-grid-column resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="estadoEquipamentoDesc">Estado Equipamento</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="estadoEquipamentoDesc" />
-                                            </template>
-                                            <template>
-                                                [[ item.estadoEquipamentoDescription ]]
-                                            </template>
-                                        </vaadin-grid-column>
-                                        <vaadin-grid-column resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="inventoryNo">No. Série</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="inventoryNo" />
-                                            </template>
-                                            <template>
-                                                [[ item.inventoryNo ]]
+                                                <paper-button raised class="btnRemove" on-tap="_deleteShipmentLine"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
                                             </template>
                                         </vaadin-grid-column>
                                     </vaadin-grid>
@@ -764,6 +871,51 @@
                         }
 
                         self.$.codEnvio.disabled = this.data.tipo != 0;
+
+                        self.$.noProjectoItem.value = this.data.noProjecto;
+                        self.$.noProjectoItem.valueText = this.data.noProjecto;
+                        self._itemProjectNo = this.data.noProjecto;
+
+                        self.$.regiaoItem.value = this.data.globalDimension1Code;
+                        //self.$.regiaoItem.valueText = this.data.globalDimension1Code;
+                        self._itemRegionCode = this.data.globalDimension1Code;
+
+                        self.$.areaFuncionalItem.value = this.data.globalDimension2Code;
+                        //self.$.areaFuncionalItem.valueText = this.data.globalDimension2Code;
+                        self._itemAreaCode = this.data.globalDimension2Code;
+
+                        self._tipoLinhaGT = 0;
+                        self.$.tipoLinha.value = 0;
+
+                        self._itemCode = "";
+                        self.$.codigoItem.value = "";
+
+                        self._itemDescription = "";
+                        self.$.descricaoItem.value = "";
+
+                        self._itemBaseUnit = "";
+                        self.$.unidadeMedidaItem.value = "";
+
+                        self._itemQuantity = 0;
+                        self.$.quantidadeItem.value = "";
+                        self.$.quantidadeItem.valueText = "";
+
+                        self._itemQuantityToShip = 0;
+                        self.$.quantidadeEnviarItem.value = "";
+                        self.$.quantidadeEnviarItem.valueText = "";
+
+                        self._itemUnitCost = 0;
+                        self.$.precoCustoItem.value = "";
+
+                        self._itemUnitPrice = 0;
+                        self.$.precoVendaItem.value = "";
+
+                        var tipoL = this.$.tipoLinha.value;
+
+                        if (tipoL != null && tipoL >= 0 && tipoL <= 1) {
+                            this.$.page_ship_items_ajax.body = JSON.stringify({ "itemType": tipoL, "itemCode": "-1" });
+                            this.$.page_ship_items_ajax.generateRequest();
+                        }
                         
                     } else {
                         this._openToastError("Ocorreu um erro desconhecido.")
@@ -904,8 +1056,7 @@
                             else {
                                 this.$.ajax_thirdparty_details.body = JSON.stringify({ "type": type, "entityId": entityId })
                                 this.$.ajax_thirdparty_details.generateRequest();
-                            }
-                            
+                            }   
                         }
 
                         if (type != null && entityId != null && entityId == "") {
@@ -1014,6 +1165,7 @@
 
                     }
                     else {
+                        //if (this.data != undefined)
                         _self.$.codEnvio.disabled = this.data.tipo != 0;
 
                         if (this.data.noCliente == "") {
@@ -1100,20 +1252,34 @@
 
                 _projectDimsResponse: function (e) {
                     if (e.detail.status === 200) {
+                        debugger;;
                         if (this.projectDims.regionCode != "") {
                             this.$.globalDimension1Code.value = this.projectDims.regionCode;
                             this.data.globalDimension1Code = this.projectDims.regionCode;
+
+                            this.$.regiaoItem.value = this.projectDims.regionCode;
+                            //this.$.regiaoItem.valueText = this.projectDims.regionCode;
+                            this._itemRegionCode = this.projectDims.regionCode;
                         }
 
                         if (this.projectDims.functionalAreaCode != "") {
                             this.$.globalDimension2Code.value = this.projectDims.functionalAreaCode;
                             this.data.globalDimension2Code = this.projectDims.functionalAreaCode;
+
+                            this.$.areaFuncionalItem.value = this.projectDims.functionalAreaCode;
+                            //this.$.areaFuncionalItem.valueText = this.projectDims.functionalAreaCode;
+                            this._itemAreaCode = this.projectDims.functionalAreaCode;
                         }
 
                         if (this.projectDims.responsabilityCenterCode != "") {
                             this.$.globalDimension3Code.value = this.projectDims.responsabilityCenterCode;
                             this.data.globalDimension3Code = this.projectDims.responsabilityCenterCode;
                         }
+
+                        debugger;;
+                        this.$.noProjectoItem.value = this.projectDims.no;
+                        this.$.noProjectoItem.valueText = this.projectDims.no;
+                        this._itemProjectNo = this.projectDims.no;
                     }
                 },
 
@@ -1210,6 +1376,280 @@
 
                         this.data.telefone = "";
                     }
+                },
+
+                _onTipoLinhaChanged: function (e) {
+                    debugger;;
+                    if (this.data != undefined) {
+                        var tipoL = this.$.tipoLinha.value;
+
+                        this.$.codigoItem.value = "";
+                        this.$.codigoItem.valueText = "";
+                        this._itemCode = "";
+
+                        this.$.descricaoItem.value = "";
+                        this.$.descricaoItem.valueText = "";
+                        this._itemDescription = "";
+
+                        this.$.unidadeMedidaItem.value = "";
+                        this.$.unidadeMedidaItem.valueText = "";
+                        this._itemBaseUnit = "";
+
+                        if (tipoL != null && tipoL >= 0 && tipoL <= 1) {
+                            this.$.page_ship_items_ajax.body = JSON.stringify({"itemType": tipoL, "itemCode": "-1"});
+                            this.$.page_ship_items_ajax.generateRequest();
+                        }
+                        
+                    }
+                },
+
+                _shipItemsResponse: function (e) {
+                    debugger;;
+
+                    if (this.shipItemsList != null) {
+                        if (this.$.codigoItem.value != null && this.$.codigoItem.value != "") {
+                            var tipoL = this.$.tipoLinha.value;
+                            var codItem = this.$.codigoItem.value;
+
+                            var _lineItem = this.shipItemsList.find(l => l.itemType == tipoL && l.itemCode == codItem);
+                            if (_lineItem != null) {
+                                this._tipoLinhaGT = tipoL;
+                                this.$.tipoLinha.value = tipoL;
+
+                                this._itemCode = _lineItem.itemCode;
+                                this.$.codigoItem.value = _lineItem.itemCode;
+                                this.$.codigoItem.valueText = _lineItem.itemCode;
+
+                                this._itemDescription = _lineItem.description;
+                                this.$.descricaoItem.value = _lineItem.description;
+                                this.$.descricaoItem.valueText = _lineItem.description;
+
+                                this._itemBaseUnit = _lineItem.unitOfMeasure;
+                                this.$.unidadeMedidaItem.value = _lineItem.unitOfMeasure;
+                                this.$.unidadeMedidaItem.valueText = _lineItem.unitOfMeasure;
+                            }
+                        }
+                         
+                    }
+                },
+                _setShipmentItem: function (e) {
+                    if (this.shipItemsList != null) {
+                        if (this.$.codigoItem.value != null && this.$.codigoItem.value != "") {
+                            var tipoL = this.$.tipoLinha.value;
+                            var codItem = this.$.codigoItem.value;
+
+                            var _lineItem = this.shipItemsList.find(l => l.itemType == tipoL && l.itemCode == codItem);
+                            if (_lineItem != null) {
+                                this._tipoLinhaGT = tipoL;
+                                this.$.tipoLinha.value = tipoL;
+
+                                this._itemCode = _lineItem.itemCode;
+                                this.$.codigoItem.value = _lineItem.itemCode;
+                                this.$.codigoItem.valueText = _lineItem.itemCode;
+
+                                this._itemDescription = _lineItem.description;
+                                this.$.descricaoItem.value = _lineItem.description;
+                                this.$.descricaoItem.valueText = _lineItem.description;
+
+                                this._itemBaseUnit = _lineItem.unitOfMeasure;
+                                this.$.unidadeMedidaItem.value = _lineItem.unitOfMeasure;
+                                this.$.unidadeMedidaItem.valueText = _lineItem.unitOfMeasure;
+                            }
+                        }
+
+                    }
+                },
+
+                _roundQuantity: function (e) {
+                    debugger;;
+                    var quant = this.$.quantidadeItem.value;
+                    var quantEnviar = this.$.quantidadeEnviarItem.value;
+
+                    if (quant != null && quant != "") {
+                        quant = this.__preciseRound(parseFloat(quant), 4);
+
+                        quantEnviar = quant;
+
+                        this.$.quantidadeItem.value = quant;
+                        this.$.quantidadeItem.valueText = quant;
+                        this._itemQuantity = quant;
+
+                        this.$.quantidadeEnviarItem.value = quant;
+                        this.$.quantidadeEnviarItem.valueText = quant;
+                        this._itemQuantityToShip = quant;
+                    }
+                    //if (quantEnviar != null && quantEnviar != "") {
+                    //    quantEnviar = this.__preciseRound(parseFloat(quantEnviar), 4);
+
+                    //    this.$.quantidadeEnviarItem.value = quantEnviar;
+                    //    this.$.quantidadeEnviarItem.valueText = quantEnviar;
+                    //    this._itemQuantityToShip = quantEnviar;
+                    //}
+                },
+
+                _validateShipmentLine: function (shipLine) {
+                    var errorMsg = "Erro ao criar Linha: ";
+                    if (shipLine.noGuiaTransporte == "") {
+                        errorMsg += "No. guia não preenchido na linha a inserir! Contacte o suporte!";
+                        return errorMsg;
+                    }
+
+                    if (shipLine == 0) {
+                        errorMsg += "No. Linha da guia não pode ser 0! Contacte o suporte!";
+                        return errorMsg;
+                    }
+
+                    if (shipLine.no == null || shipLine.no == "") {
+                        errorMsg += "Código não preenchido!"
+                        return errorMsg;
+                    }
+
+                    if (shipLine.descricao == null || shipLine.descricao == "") {
+                        errorMsg += "Descrição não preenchida!"
+                        return errorMsg;
+                    }
+
+                    if (shipLine.codUnidadeMedida == null || shipLine.codUnidadeMedida == "") {
+                        errorMsg += "Unidade de medida não preenchida!";
+                        return errorMsg;
+                    }
+
+                    if (shipLine.quantidade < 0.01) {
+                        errorMsg += "Quantidade tem que ser superior a 0.01";
+                        return errorMsg;
+                    }
+
+                    return "Success";
+                },
+
+                _addShipmentLine: function () {
+                    debugger;;
+                    var index = 1000;
+                    var documentLines = this.data.linhasGuiaTransporte;
+                    if (documentLines != null && documentLines.length > 0) {
+                        index += documentLines[documentLines.length - 1].noLinha;
+                    }
+
+                    var shipLineToAdd = {
+                        "noGuiaTransporte": this.data.noGuiaTransporte,
+                        "noLinha": index,
+                        "tipo": this._tipoLinhaGT,
+                        "no": this._itemCode,
+                        "descricao": this._itemDescription,
+                        "codUnidadeMedida": this._itemBaseUnit,
+                        "quantidade": this._itemQuantity,
+                        "quantidadeEnviar": this._itemQuantityToShip,
+                        "noProjecto": this._itemProjectNo,
+                        "unitCost": this._itemUnitCost,
+                        "unitPrice": this._itemUnitPrice,
+                        "shortcutDimension1code": this._itemRegionCode,
+                        "shortcutDimension2Code": this._itemAreaCode,
+                        "noCliente": this.$.noCliente.value,
+                        "dataGuia": this.$.dataGuia.value,
+                        "dataEntrega": this.$.dataSaida.value,
+                        "tipoTerceiro": this.$.tipoGuia.value
+                    };
+
+                    var msg = this._validateShipmentLine(shipLineToAdd);
+                    if (msg != "Success") {
+                        this._openToastError(msg);
+                        return;                        
+                    }
+                    debugger;;
+
+                    this.$.page_create_line_ajax.body = JSON.stringify(shipLineToAdd);
+
+                    this.$.ajax_update_guia.body = JSON.stringify(this.data);
+
+                    var sav = this.$.ajax_update_guia.generateRequest();
+                    var lin = this.$.page_create_line_ajax.generateRequest();
+
+                    Promise.all([sav.completes, lin.completes]).then(function (requests) {
+                        //var savReq = requests[0].result;
+                        //var linReq = requests[1].result;
+                    });
+
+                    this.$.gridLinhas.clearCache();
+                },
+
+                _createLineResponse: function (e) {
+                    debugger;;
+                    if (this.lineCreated) {
+                        
+                        this.$.page_databound_ajax.body = JSON.stringify({ "No": this._guiatransporteid, "Historic": this._history });
+                        this.$.page_databound_ajax.generateRequest();
+
+                        this._openToast("Linha inserida com sucesso!");
+
+                        this.$.gridLinhas.clearCache();
+
+                        this._tipoLinhaGT = 0;
+                        this.$.tipoLinha.value = "";
+
+                        this._itemCode = "";
+                        this.$.codigoItem.value = "";
+
+                        this._itemDescription = "";
+                        this.$.descricaoItem.value = "";
+
+                        this._itemBaseUnit = "";
+                        this.$.unidadeMedidaItem.value = "";
+
+                        this._itemQuantity = 0;
+                        this.$.quantidadeItem.value = "";
+                        this.$.quantidadeItem.valueText = "";
+
+                        this._itemQuantityToShip = 0;
+                        this.$.quantidadeEnviarItem.value = "";
+                        this.$.quantidadeEnviarItem.valueText = "";
+
+                        this._itemUnitCost = 0;
+                        this.$.precoCustoItem.value = "";
+
+                        this._itemUnitPrice = 0;
+                        this.$.precoVendaItem.value = "";
+                    }
+                    else {
+                        this._openToastError("Falhou a criação da linha! Tente novamente!");
+                    }
+                },
+
+                _lineSelected: function (item) {
+                    if (item != null) {
+                        debugger;;
+                        //var oSel = this.data.linhasGuiaTransporte.find(x => x.selected);
+                    }
+                },
+
+                _deleteShipmentLine: function (e) {
+                    debugger;;
+                    var index = this.data.linhasGuiaTransporte.indexOf(e.model.item);
+                    this.data.linhasGuiaTransporte.splice(index, 1);
+                    this.$.ajax_delete_linha.body = JSON.stringify({ "noGuia": this.data.noGuiaTransporte, "noLinha": e.model.item.noLinha });
+                    this.$.ajax_delete_linha.generateRequest();
+
+                    this.$.gridLinhas.clearCache();
+                },
+
+                _deleteShipmentLineResponse: function (e) {
+                    if (this.lineDeleted) {
+                        this._openToast("Linha eliminada com sucesso");
+                        this.$.gridLinhas.clearCache();
+                    } else {
+                        this._openToastError("Não foi possivel eliminar a linha!");
+
+                        this.$.page_databound_ajax.body = JSON.stringify({ "No": this._guiatransporteid, "Historic": this._history });
+                        this.$.page_databound_ajax.generateRequest();
+                    }
+                },
+
+                __preciseRound: function (num, dec) {
+                    if ((typeof num !== 'number') || (typeof dec !== 'number'))
+                        return false;
+
+                    var num_sign = num >= 0 ? 1 : -1;
+
+                    return (Math.round((num * Math.pow(10, dec)) + (num_sign * 0.0001)) / Math.pow(10, dec)).toFixed(dec);
                 }
                 
             });

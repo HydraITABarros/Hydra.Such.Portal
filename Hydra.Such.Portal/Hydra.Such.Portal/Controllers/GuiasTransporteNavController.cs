@@ -251,6 +251,67 @@ namespace Hydra.Such.Portal.Controllers
             bool result = DBNAV2017GuiasTransporte.UpdateGuiaTransporte(data);
             return Json(result);
         }
+
+        [HttpPost]
+        public JsonResult CreateShipmentLine([FromBody] JObject data)
+        {
+            if (data == null)
+                return Json(false);
+
+            try
+            {
+                LinhaGuiaTransporteNavViewModel linhaGT = new LinhaGuiaTransporteNavViewModel()
+                {
+                    NoGuiaTransporte = (string)data["noGuiaTransporte"],
+                    NoLinha = (int)data["noLinha"],
+                    Tipo = (int)data["tipo"],
+                    No = (string)data["no"],
+                    Descricao = (string)data["descricao"],
+                    CodUnidadeMedida = (string)data["codUnidadeMedida"],
+                    Quantidade = (decimal)data["quantidade"],
+                    QuantidadeEnviar = (decimal)data["quantidadeEnviar"],
+                    NoProjecto = data["noProjecto"] == null ? "" : (string)data["noProjecto"],
+                    UnitCost = (data["unitCost"] == null || string.Compare((string)data["unitCost"], "") == 0) ? 0 : (decimal)data["unitCost"],
+                    UnitPrice = (data["unitPrice"] == null || string.Compare((string)data["unitPrice"], "") == 0) ? 0 : (decimal)data["unitPrice"],
+                    ShortcutDimension1Code = data["shortcutDimension1code"] == null ? "" : (string)data["shortcutDimension1code"],
+                    ShortcutDimension2Code = data["shortcutDimension2Code"] == null ? "" : (string)data["shortcutDimension2Code"],
+                    NoCliente = data["noCliente"] == null ? "" : (string)data["noCliente"],
+                    DataGuia = (data["dataGuia"] == null || string.Compare((string)data["dataGuia"], "") == 0) ? DateTime.Parse("1900-01-01") : (DateTime)data["dataGuia"],
+                    DataEntrega = (data["dataEntrega"] == null || string.Compare((string)data["dataEntrega"], "") == 0) ? DateTime.Parse("1900-01-01") : (DateTime)data["dataEntrega"],
+                    TipoTerceiro = data["tipoTerceiro"] == null ? 0 : (int)data["tipoTerceiro"]
+                };
+
+                linhaGT.TotalCost = linhaGT.UnitCost * linhaGT.Quantidade;
+                linhaGT.TotalPrice = linhaGT.UnitPrice * linhaGT.Quantidade;
+
+                bool result = DBNAV2017GuiasTransporte.CreateLinhasGuiaTransporte(linhaGT);
+
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+
+                return Json(false);
+            }
+            
+
+        }
+
+        [HttpPost]
+        public JsonResult DeleteShipmentLine([FromBody] JObject line)
+        {
+            if (line == null)
+                return Json(false);
+
+            string noGuia = (line["noGuia"] == null || string.Compare((string)line["noGuia"], "") == 0) ? "" : (string)line["noGuia"];
+            int noLinha = (line["noLinha"] == null || string.Compare((string)line["noLinha"], "") == 0) ? 0 : (int)line["noLinha"];
+
+            if (noGuia == "")
+                return Json(false);
+
+            bool result = DBNAV2017GuiasTransporte.DeleteLinhaGuiaTransporte(_config.NAVDatabaseName, _config.NAVCompanyName, noGuia, noLinha);
+            return Json(result);
+        }
         #endregion
 
 

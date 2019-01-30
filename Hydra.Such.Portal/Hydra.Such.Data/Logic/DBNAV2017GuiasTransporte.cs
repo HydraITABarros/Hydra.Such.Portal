@@ -9,6 +9,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using static Hydra.Such.Data.Enumerations;
 using Hydra.Such.Data.Extensions;
+using Microsoft.EntityFrameworkCore;
 
 namespace Hydra.Such.Data.Logic
 {
@@ -587,6 +588,43 @@ namespace Hydra.Such.Data.Logic
             return _contextExt.ExecuteTableValueProcedure(_linhasType, "NAV2017LinGuiaTransporte_Update", "@LinhasGuia", "LinGuiaTransporteType");
         }
 
+        public static bool CreateLinhasGuiaTransporte(LinhaGuiaTransporteNavViewModel linha)
+        {
+            if (linha == null)
+            {
+                return false;
+            }
+
+            List<LinhaGuiaTransporteSqlModel> _linhasType = new List<LinhaGuiaTransporteSqlModel>();
+            _linhasType.Add(CastToLinhaType(linha));
+
+            SuchDBContextExtention _contextExt = new SuchDBContextExtention();
+
+            return _contextExt.ExecuteTableValueProcedure(_linhasType, "NAV2017LinGuiaTransporte_Insert", "@LinhasGuia", "LinGuiaTransporteType");
+        }
+
+        public static bool CreateLinhasGuiaTransporte(List<LinhaGuiaTransporteNavViewModel> linhas)
+        {
+
+            if (linhas == null)
+            {
+                return false;
+            }
+
+            List<LinhaGuiaTransporteSqlModel> _linhasType = new List<LinhaGuiaTransporteSqlModel>();
+
+            foreach (var l in linhas)
+            {
+                if (l != null)
+                {
+                    _linhasType.Add(CastToLinhaType(l));
+                }
+            }
+
+            SuchDBContextExtention _contextExt = new SuchDBContextExtention();
+
+            return _contextExt.ExecuteTableValueProcedure(_linhasType, "NAV2017LinGuiaTransporte_Insert", "@LinhasGuia", "LinGuiaTransporteType");
+        }
         public static bool UpdateLinhaGuiaTransporte(LinhaGuiaTransporteNavViewModel linha)
         {
             if (linha == null)
@@ -602,6 +640,38 @@ namespace Hydra.Such.Data.Logic
             };
 
             return _contextExt.ExecuteTableValueProcedure(_linhas, "NAV2017LinGuiaTransporte_Update", "@LinhasGuia", "LinGuiaTransporteType");
+        }
+
+        public static bool DeleteLinhaGuiaTransporte(string NAVDatabase, string NAVCompany, string noGuia, int noLinha)
+        {
+            try
+            {
+                SuchDBContext _context = new SuchDBContext();
+
+                var parameters = new[]{
+                        new SqlParameter("@DBName", NAVDatabase),
+                        new SqlParameter("@CompanyName", NAVCompany),
+                        new SqlParameter("@NoGuia", noGuia),
+                        new SqlParameter("@NoLinha", noLinha)
+                };
+
+                string sqlString = string.Format("EXEC {0} {1}, {2}, {3}, {4}", "NAV2017LinGuiaTransporte_Delete", "@DBName", "@CompanyName", "@NoGuia", "@NoLinha");
+
+                try
+                {
+                    _context.Database.ExecuteSqlCommand(sqlString, parameters);
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return false;
+            }
         }
 
         public static CabecalhoGuiaTransporteSqlModel CastToCabecalhoType(GuiaTransporteNavViewModel guia)
