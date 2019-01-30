@@ -241,7 +241,21 @@ namespace Hydra.Such.Portal.Controllers
         {
             // call webservice and return the id of the the new object 
             //Task<WSSuchNav2017.WSNovaGuiaTransporte_Result> newGuia = WSSuchNav2017.WSNovaGuiaTransporte_Result();
-            return Json(null);
+            try
+            {
+                var createGuiaTask = WSGuiasTransporteNAV.CreateAsync(User.Identity.Name, _configws);
+                createGuiaTask.Wait();
+
+                var result = createGuiaTask.Result;
+
+                return Json(result.return_value);
+            }
+            catch (Exception ex)
+            {
+
+                return Json(null);
+            }
+            
         }
 
         [HttpPost]

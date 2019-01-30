@@ -27,9 +27,5 @@
     <WCFMetadata Include="Connected Services" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Logic\GuiaTransporte\" />
-  </ItemGroup>
-
 
 </Project>
