@@ -4410,6 +4410,14 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.CalculoAutomatico).HasColumnName("Calculo_Automatico");
 
+                entity.Property(e => e.NoProjeto)
+                    .HasColumnName("NoProjeto")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.ProjetoDescricao)
+                    .HasColumnName("ProjetoDescricao")
+                    .HasMaxLength(200);
+
                 entity.Property(e => e.CodArea)
                     .HasColumnName("Cod_Area")
                     .HasMaxLength(20);

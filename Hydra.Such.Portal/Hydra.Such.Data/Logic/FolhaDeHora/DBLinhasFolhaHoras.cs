@@ -385,7 +385,7 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         Observacao = Percurso.Observacao,
                         RubricaSalarial2 = Percurso.RubricaSalarial2,
                         DataDespesa = Percurso.DataDespesa,
-                        DataDespesaTexto = Percurso.DataDespesa.Value.ToString("yyyy-MM-dd"),
+                        DataDespesaTexto = Percurso.DataDespesa.HasValue ? Percurso.DataDespesa.Value.ToString("yyyy-MM-dd") : "",
                         Funcionario = Percurso.Funcionario,
                         CodRegiao = Percurso.CodRegiao,
                         CodArea = Percurso.CodArea,
@@ -394,10 +394,13 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         Matricula = Percurso.Matricula,
                         UtilizadorCriacao = Percurso.UtilizadorCriacao,
                         DataHoraCriacao = Percurso.DataHoraCriacao,
-                        DataHoraCriacaoTexto = Percurso.DataHoraCriacao.Value.ToString("yyyy-MM-dd"),
+                        DataHoraCriacaoTexto = Percurso.DataHoraCriacao.HasValue ? Percurso.DataHoraCriacao.Value.ToString("yyyy-MM-dd") : "",
                         UtilizadorModificacao = Percurso.UtilizadorModificacao,
                         DataHoraModificacao = Percurso.DataHoraModificacao,
-                        DataHoraModificacaoTexto = Percurso.DataHoraModificacao.Value.ToString("yyyy-MM-dd")
+                        DataHoraModificacaoTexto = Percurso.DataHoraModificacao.HasValue ? Percurso.DataHoraModificacao.Value.ToString("yyyy-MM-dd") : "",
+                        NoProjeto = Percurso.NoProjeto,
+                        ProjetoDescricao = Percurso.ProjetoDescricao,
+                        DescricaoCodTipoCusto = Percurso.DescricaoTipoCusto
                     }).ToList();
                 }
             }
@@ -436,7 +439,7 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         Observacao = Ajuda.Observacao,
                         RubricaSalarial2 = Ajuda.RubricaSalarial2,
                         DataDespesa = Ajuda.DataDespesa,
-                        DataDespesaTexto = Ajuda.DataDespesa.Value.ToString("yyyy-MM-dd"),
+                        DataDespesaTexto = Ajuda.DataDespesa.HasValue ? Ajuda.DataDespesa.Value.ToString("yyyy-MM-dd") : "",
                         Funcionario = Ajuda.Funcionario,
                         CodRegiao = Ajuda.CodRegiao,
                         CodArea = Ajuda.CodArea,
@@ -445,10 +448,13 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         Matricula = Ajuda.Matricula,
                         UtilizadorCriacao = Ajuda.UtilizadorCriacao,
                         DataHoraCriacao = Ajuda.DataHoraCriacao,
-                        DataHoraCriacaoTexto = Ajuda.DataHoraCriacao.Value.ToString("yyyy-MM-dd"),
+                        DataHoraCriacaoTexto = Ajuda.DataHoraCriacao.HasValue ? Ajuda.DataHoraCriacao.Value.ToString("yyyy-MM-dd") : "",
                         UtilizadorModificacao = Ajuda.UtilizadorModificacao,
                         DataHoraModificacao = Ajuda.DataHoraModificacao,
-                        DataHoraModificacaoTexto = Ajuda.DataHoraModificacao.Value.ToString("yyyy-MM-dd")
+                        DataHoraModificacaoTexto = Ajuda.DataHoraModificacao.HasValue ? Ajuda.DataHoraModificacao.Value.ToString("yyyy-MM-dd") : "",
+                        NoProjeto = Ajuda.NoProjeto,
+                        ProjetoDescricao = Ajuda.ProjetoDescricao,
+                        DescricaoCodTipoCusto = Ajuda.DescricaoTipoCusto
                     }).ToList();
                 }
             }

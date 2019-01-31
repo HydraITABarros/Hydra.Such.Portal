@@ -10,6 +10,8 @@ namespace Hydra.Such.Data.Database
         public int? TipoCusto { get; set; }
         public string CodTipoCusto { get; set; }
         public string DescricaoTipoCusto { get; set; }
+        public string NoProjeto { get; set; }
+        public string ProjetoDescricao { get; set; }
         public decimal? Quantidade { get; set; }
         public decimal? CustoUnitario { get; set; }
         public decimal? CustoTotal { get; set; }
