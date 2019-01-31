@@ -617,17 +617,6 @@
                         <div class="panel-body">
                             <div class="row break_clear">
                                 <div class="col-sm-3">
-                                    <such-selectbox id="percursoProjeto" label="Nº Ordem/Projecto"
-                                                    items="[[LFolhaDeHoraNavProjectNo]]"
-                                                    text-path="no"
-                                                    value-path="no"
-                                                    fields='[{"field":"no", "name":"Nº Projecto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"regionCode", "name":"Cód. Região"}, {"field":"areaCode", "name":"Cód. Área"}, {"field":"centerResponsibilityCode", "name":"Cód. Cresp"}]'
-                                                    on-change="_DataInicio"
-                                                    disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
-                                    </such-selectbox>
-                                </div>
-
-                                <div class="col-sm-3">
                                     <vaadin-combo-box id="percursoOrigem" items="[[LFolhaDeHoraPercursoOrigemDestino]]" item-value-path="id" item-label-path="value" label="Origem" on-value-changed="_DataInicio" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                         <template>
                                             <paper-icon-item>
@@ -655,9 +644,17 @@
                                     <vaadin-date-picker id="percursoDataViagem" label="Data Viagem" on-blur="_PercursoDataValidar" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" value="{{data.dataViagemTexto}}"></vaadin-date-picker>
                                 </div>
 
-                                <!--<div class="col-sm-1" style="padding-top:23px">
-                                <paper-button id="btn_createPercurso" class="btnSave" raised on-tap="_createPercurso" disabled="{{ !_permissions.create }}" title="Criar">Criar</paper-button>
-                            </div>-->
+                                <div class="col-sm-3">
+                                    <such-selectbox id="percursoProjeto" label="Nº Ordem/Projecto"
+                                                    items="[[LFolhaDeHoraNavProjectNo]]"
+                                                    text-path="no"
+                                                    value-path="no"
+                                                    fields='[{"field":"no", "name":"Nº Projecto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"regionCode", "name":"Cód. Região"}, {"field":"areaCode", "name":"Cód. Área"}, {"field":"centerResponsibilityCode", "name":"Cód. Cresp"}]'
+                                                    on-change="_DataInicio"
+                                                    disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                                    </such-selectbox>
+                                </div>
+
                                 <div class="col-sm-1" style="padding-top:32px">
                                     <center>
                                         <paper-button id="btn_createPercurso" class="btnSave tableBtn" raised on-tap="_createPercurso" disabled="{{ !_permissions.create }}" title="Adicionar"><i class="fa fa-plus" aria-hidden="true"></i></paper-button>
@@ -701,7 +698,7 @@
                                                 text-path="no"
                                                 value-path="no"
                                                 fields='[{"field":"no", "name":"Nº Projecto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"regionCode", "name":"Cód. Região"}, {"field":"areaCode", "name":"Cód. Área"}, {"field":"centerResponsibilityCode", "name":"Cód. Cresp"}]'
-                                                on-blur="_updateLinhaPercurso"
+                                                on-change="_updateLinhaPercurso"
                                                 disabled="{{ !_permissions.update }}">
                                 </such-selectbox>
                             </template>
@@ -855,17 +852,6 @@
                         <div class="panel-body">
                             <div class="row break_clear">
                                 <div class="col-sm-2">
-                                    <such-selectbox id="ajudaProjeto" label="Nº Ordem/Projecto"
-                                                    items="[[LFolhaDeHoraNavProjectNo]]"
-                                                    text-path="no"
-                                                    value-path="no"
-                                                    fields='[{"field":"no", "name":"Nº Projecto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"regionCode", "name":"Cód. Região"}, {"field":"areaCode", "name":"Cód. Área"}, {"field":"centerResponsibilityCode", "name":"Cód. Cresp"}]'
-                                                    on-change="_ajudaDataDespesa"
-                                                    disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
-                                    </such-selectbox>
-                                </div>
-
-                                <div class="col-sm-2">
                                     <vaadin-combo-box id="ajudaTipoCusto" items="[[LFolhaDeHoraAjudaTipoCusto]]" item-value-path="id" item-label-path="value" label="Tipo Custo" on-value-changed="_GetCodTipoCusto" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                         <template>
                                             <paper-icon-item>
@@ -905,14 +891,25 @@
                                     </vaadin-text-field>
                                 </div>
 
-                                <div class="col-sm-3">
+                                <div class="col-sm-2">
                                     <vaadin-date-picker id="ajudaDataDespesa" label="Data Despesa" on-blur="_AjudaDataValidar" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" maxlength="10"></vaadin-date-picker>
+                                </div>
+
+                                <div class="col-sm-3" style="text-align:right">
+                                    <vaadin-text-field id="ajudaJustificacao" label="Justificação" on-blur="_ajudaDataDespesa" disabled="{{ !_permissions.update }}" style="text-align:left;"></vaadin-text-field>
                                 </div>
                             </div>
 
                             <div class="row break_clear">
-                                <div class="col-sm-6" style="text-align:right">
-                                    <vaadin-text-field id="ajudaJustificacao" label="Justificação" on-blur="_ajudaDataDespesa" disabled="{{ !_permissions.update }}" style="text-align:left;"></vaadin-text-field>
+                                <div class="col-sm-2">
+                                    <such-selectbox id="ajudaProjeto" label="Nº Ordem/Projecto"
+                                                    items="[[LFolhaDeHoraNavProjectNo]]"
+                                                    text-path="no"
+                                                    value-path="no"
+                                                    fields='[{"field":"no", "name":"Nº Projecto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"regionCode", "name":"Cód. Região"}, {"field":"areaCode", "name":"Cód. Área"}, {"field":"centerResponsibilityCode", "name":"Cód. Cresp"}]'
+                                                    on-change="_ajudaDataDespesa"
+                                                    disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                                    </such-selectbox>
                                 </div>
 
                                 <div class="col-sm-1" style="padding-top:30px">
@@ -958,7 +955,7 @@
                                                 text-path="no"
                                                 value-path="no"
                                                 fields='[{"field":"no", "name":"Nº Projecto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"regionCode", "name":"Cód. Região"}, {"field":"areaCode", "name":"Cód. Área"}, {"field":"centerResponsibilityCode", "name":"Cód. Cresp"}]'
-                                                on-blur="_updateLinhaAjuda"
+                                                on-change="_updateLinhaAjuda"
                                                 disabled="{{ !_permissions.update }}">
                                 </such-selectbox>
                             </template>
@@ -2498,7 +2495,6 @@
                 //},
 
                 _updateLinhaPercurso: function (e) {
-                    debugger;
                     if (this.data.terminada == true || this.data.estado == 1 || this.data.estado == 2) {
                         this.$.page_databound_ajax.generateRequest();
                     }
@@ -2532,6 +2528,8 @@
                         }
                     }
                 },
+
+
 
                 _CopiarPercurso: function (e) {
                     var index = this.data.folhaDeHorasPercurso.indexOf(e.model.item);
@@ -3851,7 +3849,6 @@
                 //AJUDA
                 _createAjudaResponse: function (e) {
                     if (this.AjudaCreated == 1) {
-                        debugger;
                         this._showMessage('Adicionada Ajuda com sucesso.');
 
                         this.$.ajudaProjeto.value = this.$.projetoNo.value;
@@ -3990,7 +3987,6 @@
 
                 //MAODEOBRA
                 _createMaoDeObraResponse: function (e) {
-                    debugger;
                     if (this.MaoDeObraCreated == 0) {
                         this._showMessage('Adicionada Mão de Obra com sucesso.');
                         this.$.page_databound_ajax.generateRequest();
