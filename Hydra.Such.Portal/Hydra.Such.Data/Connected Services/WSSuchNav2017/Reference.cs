@@ -78,8 +78,16 @@ namespace WSSuchNav2017
     public partial class WSNovaGuiaTransporte
     {
         
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/codeunit/WSNAV2017", Order=0)]
+        public string idUtilizador;
+        
         public WSNovaGuiaTransporte()
         {
+        }
+        
+        public WSNovaGuiaTransporte(string idUtilizador)
+        {
+            this.idUtilizador = idUtilizador;
         }
     }
     
@@ -174,9 +182,10 @@ namespace WSSuchNav2017
             return base.Channel.WSNovaGuiaTransporteAsync(request);
         }
         
-        public System.Threading.Tasks.Task<WSSuchNav2017.WSNovaGuiaTransporte_Result> WSNovaGuiaTransporteAsync()
+        public System.Threading.Tasks.Task<WSSuchNav2017.WSNovaGuiaTransporte_Result> WSNovaGuiaTransporteAsync(string idUtilizador)
         {
             WSSuchNav2017.WSNovaGuiaTransporte inValue = new WSSuchNav2017.WSNovaGuiaTransporte();
+            inValue.idUtilizador = idUtilizador;
             return ((WSSuchNav2017.WSNAV2017_Port)(this)).WSNovaGuiaTransporteAsync(inValue);
         }
         
@@ -208,8 +217,7 @@ namespace WSSuchNav2017
         {
             if ((endpointConfiguration == EndpointConfiguration.WSNAV2017_Port))
             {
-                return new System.ServiceModel.EndpointAddress("http://10.101.1.13:8047/DynamicsNAV100_QUAL/WS/SUCH - QUALIDADE/Codeunit/WSNAV201" +
-                        "7");
+                return new System.ServiceModel.EndpointAddress("http://10.101.1.13:8047/DynamicsNAV100_QUAL/WS/SUCH%20-%20QUALIDADE/Codeunit/WSNAV2017");
             }
             throw new System.InvalidOperationException(string.Format("Could not find endpoint with name \'{0}\'.", endpointConfiguration));
         }

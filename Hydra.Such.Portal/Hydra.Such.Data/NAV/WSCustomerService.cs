@@ -38,7 +38,7 @@ namespace Hydra.Such.Data.NAV
             WSCustomerNAV.WSCustomer_PortClient WS_Client = new WSCustomerNAV.WSCustomer_PortClient(navWSBinding, WS_URL);
             WS_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
             WS_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
-
+            
             try
             {
                 WSCustomerNAV.Read_Result result = await WS_Client.ReadAsync(CustomerNo);

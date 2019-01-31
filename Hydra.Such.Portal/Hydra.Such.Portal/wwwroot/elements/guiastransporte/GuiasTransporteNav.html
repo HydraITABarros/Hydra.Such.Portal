@@ -287,7 +287,8 @@
                     }
                 },
 
-                 _create: function (item) {
+                _create: function (item) {
+                    debugger;;
                      this.$.create_guia_ajax.generateRequest();
                 },
 
@@ -296,7 +297,7 @@
                         this._showErrorMessage("Não foi possível criar uma nova guia de transporte!")
                     } else {
                        
-                        window.location.href = "/GuiasTransporteNav/NovaGuiaTransporte/" + this.guiaTransporteId + "?isHistoric=" + false;
+                        window.location.href = "/GuiasTransporteNav/GuiaTransporteDetails/" + this.guiaTransporteId  + "?isHistoric=" + false;
                     }                                                                              
 
                 }   

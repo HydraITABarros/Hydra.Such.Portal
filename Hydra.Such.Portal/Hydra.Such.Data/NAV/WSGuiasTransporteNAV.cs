@@ -23,13 +23,34 @@ namespace Hydra.Such.Data.NAV
             navWSBinding = new BasicHttpBinding();
             navWSBinding.Security.Mode = BasicHttpSecurityMode.TransportCredentialOnly;
             navWSBinding.Security.Transport.ClientCredentialType = HttpClientCredentialType.Windows;
+            navWSBinding.MaxReceivedMessageSize = int.MaxValue;
         }
 
-        //public static async Task<WSSuchNav2017.WSNovaGuiaTransporte_Result> CreateGuia(NAVWSConfigurations WSConfig)
-        //{
-        //    WSSuchNav2017.WSNovaGuiaTransporte newGuia = new WSNovaGuiaTransporte();
+        public static async Task<WSNovaGuiaTransporte_Result> CreateAsync(string userId, NAVWSConfigurations WSConfigurations)
+        {
+            if (userId == null || userId == "")
+                return null;
 
-        //    EndpointAddress WS_URL = new EndpointAddress(WSConfig.Ws_SuchNav2017_URL.Replace);
-        //}
+            WSNovaGuiaTransporte novaGuia = new WSNovaGuiaTransporte()
+            {
+                idUtilizador = userId
+            };
+
+            EndpointAddress ws_URL = new EndpointAddress(WSConfigurations.Ws_SuchNav2017_URL.Replace("Company", WSConfigurations.WS_User_Company));
+            WSNAV2017_PortClient ws_Client = new WSNAV2017_PortClient(navWSBinding, ws_URL);
+            ws_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
+            ws_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
+
+            try
+            {
+                WSNovaGuiaTransporte_Result result = await ws_Client.WSNovaGuiaTransporteAsync(userId);
+                return result;
+            }
+            catch (Exception)
+            {
+
+                return null;
+            }
+        }
     }
 }
