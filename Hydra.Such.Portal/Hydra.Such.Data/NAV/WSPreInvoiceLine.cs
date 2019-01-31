@@ -184,8 +184,11 @@ namespace Hydra.Such.Data.NAV
                 line.Tipo_Refeicao = x.MealType.HasValue ? x.MealType.Value.ToString() : string.Empty;// (refeicao!=null) ? refeicao.Código.ToString() : "";
                 line.Gen_Prod_Posting_Group = (refeicao != null) ? refeicao.GrupoContabProduto : x.ProjectContabGroup;
                 line.Cod_Serv_Cliente = x.ServiceClientCode;
+
                 line.Consumption_Date = !string.IsNullOrEmpty(x.ConsumptionDate) ? DateTime.Parse(x.ConsumptionDate) : DateTime.MinValue;
                 line.Consumption_DateSpecified = !string.IsNullOrEmpty(x.ConsumptionDate);
+
+
                 line.Grupo_Serviço = x.ServiceGroupCode;
                 line.Nº_Guia_Externa = x.ExternalGuideNo;
                 line.Nº_Guia_Resíduos_GAR = x.WasteGuideNo_GAR;
@@ -193,7 +196,9 @@ namespace Hydra.Such.Data.NAV
                 line.FunctionAreaCode20 = x.FunctionalAreaCode;
                 line.ResponsabilityCenterCode20 = x.ResponsabilityCenterCode;
                 line.Des_Serv_Cliente = !string.IsNullOrEmpty(x.ServiceClientCode) ? DBServices.GetById(x.ServiceClientCode) != null ? DBServices.GetById(x.ServiceClientCode).Descrição : "" : "";
+
                 line.Data_Registo_Diario = !string.IsNullOrEmpty(x.ConsumptionDate) ? DateTime.Parse(x.ConsumptionDate) : DateTime.MinValue;
+                line.Data_Registo_DiarioSpecified = !string.IsNullOrEmpty(x.ConsumptionDate);
 
 
                 if (x.ResourceType.HasValue)

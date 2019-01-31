@@ -463,21 +463,30 @@
                 },
 
                 _createNewPedidoPagamento: function (e) {
+                    debugger;
                     var ValorEncomenda = this.$.ddValorEncomenda.value != "" ? parseFloat(this.$.ddValorEncomenda.value) : 0;
                     var ValorJaPedido = this.$.ddValorJaPedido.value != "" ? parseFloat(this.$.ddValorJaPedido.value) : 0;
                     var ValorPedidoComIVA = this.$.ddValorpedidoComIVA.value != "" ? parseFloat(this.$.ddValorpedidoComIVA.value) : 0;
 
-                    if (ValorPedidoComIVA > 0) {
-                        if (ValorPedidoComIVA <= (ValorEncomenda - ValorJaPedido)) {
-                            this.$.page_CriarPedidoPagamento_ajax.body = JSON.stringify(this.data);
-                            this.$.page_CriarPedidoPagamento_ajax.generateRequest();
-                        }
-                        else {
-                            this._openToastError('O valor do campo Valor do Pedido c/ IVA não pode ser superior á diferença entre os campos Valor da Encomenda e Valor Já Pedido.');
-                        }
+                    var NIB = this.$.ddNIB.value;
+                    var IBAN = this.$.ddIBAN.value;
+
+                    if ((NIB == "" || NIB == null) || (IBAN == "" || IBAN == null)) {
+                        this._openToastError('A ficha do fornecedor no NAV 2017 não tem preenchidos o NIB e/ou IBAN.');
                     }
                     else {
-                        this._openToastError('O valor do campo Valor do Pedido c/ IVA têm que ser superior a zero.');
+                        if (ValorPedidoComIVA > 0) {
+                            if (ValorPedidoComIVA <= (ValorEncomenda - ValorJaPedido)) {
+                                this.$.page_CriarPedidoPagamento_ajax.body = JSON.stringify(this.data);
+                                this.$.page_CriarPedidoPagamento_ajax.generateRequest();
+                            }
+                            else {
+                                this._openToastError('O valor do campo Valor do Pedido c/ IVA não pode ser superior á diferença entre os campos Valor da Encomenda e Valor Já Pedido.');
+                            }
+                        }
+                        else {
+                            this._openToastError('O valor do campo Valor do Pedido c/ IVA têm que ser superior a zero.');
+                        }
                     }
                 },
                 _responseCriarPedidoPagamento: function (e) {

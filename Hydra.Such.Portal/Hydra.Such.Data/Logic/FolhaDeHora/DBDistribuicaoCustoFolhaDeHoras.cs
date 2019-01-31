@@ -41,6 +41,21 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             }
         }
 
+        public static List<DistribuiçãoCustoFolhaDeHoras> GetDistribuiçãoByLinha(string NoFolhasDeHoras, int NoLinhaPercursosAjudasCustoDespesas)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.DistribuiçãoCustoFolhaDeHoras.Where(x => x.NºFolhasDeHoras == NoFolhasDeHoras && x.NºLinhaPercursosEAjudasCustoDespesas == NoLinhaPercursosAjudasCustoDespesas).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public static DistribuiçãoCustoFolhaDeHoras Create(DistribuiçãoCustoFolhaDeHoras ObjectToCreate)
         {
             try

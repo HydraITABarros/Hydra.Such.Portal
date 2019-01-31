@@ -295,10 +295,18 @@ namespace Hydra.Such.Portal.Controllers
         public ActionResult Detalhes([FromQuery] string FHNo, [FromQuery] int area)
         {
             int Estado = 0;
+            ConfigUtilizadores Utilizador = DBUserConfigurations.GetById(User.Identity.Name);
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.FolhasHoras); //1, 6);
 
             ViewBag.reportServerURL = _config.ReportServerURL;
             ViewBag.userLogin = User.Identity.Name.ToString();
+
+            //if (Utilizador.Administrador == true)
+            //    ViewBag.mostrarDistribuicaoPercursos = true;
+            //else
+            //    ViewBag.mostrarDistribuicaoPercursos = false;
+
+            //ViewBag.mostrarDistribuicaoPercursos = "NAO";
 
             if (UPerm != null && UPerm.Read.Value)
             {
@@ -541,19 +549,21 @@ namespace Hydra.Such.Portal.Controllers
                             Observacao = Percurso.Observacao,
                             RubricaSalarial2 = Percurso.RubricaSalarial2,
                             DataDespesa = Percurso.DataDespesa,
-                            DataDespesaTexto = Percurso.DataDespesa.Value.ToString("yyyy-MM-dd"),
+                            DataDespesaTexto = Percurso.DataDespesa.HasValue ? Percurso.DataDespesa.Value.ToString("yyyy-MM-dd") : "",
                             Funcionario = Percurso.Funcionario,
                             CodRegiao = Percurso.CodRegiao,
                             CodArea = Percurso.CodArea,
                             CodCresp = Percurso.CodCresp,
                             CalculoAutomatico = Percurso.CalculoAutomatico,
                             Matricula = Percurso.Matricula,
+                            NoProjeto = Percurso.NoProjeto,
+                            ProjetoDescricao = Percurso.ProjetoDescricao,
                             UtilizadorCriacao = Percurso.UtilizadorCriacao,
                             DataHoraCriacao = Percurso.DataHoraCriacao,
-                            DataHoraCriacaoTexto = Percurso.DataHoraCriacao.Value.ToString("yyyy-MM-dd"),
+                            DataHoraCriacaoTexto = Percurso.DataHoraCriacao.HasValue ? Percurso.DataHoraCriacao.Value.ToString("yyyy-MM-dd") : "",
                             UtilizadorModificacao = Percurso.UtilizadorModificacao,
                             DataHoraModificacao = Percurso.DataHoraModificacao,
-                            DataHoraModificacaoTexto = Percurso.DataHoraModificacao.Value.ToString("yyyy-MM-dd")
+                            DataHoraModificacaoTexto = Percurso.DataHoraModificacao.HasValue ? Percurso.DataHoraModificacao.Value.ToString("yyyy-MM-dd") : ""
                         }).ToList();
 
                         //AJUDA DE CUSTO/DESPESA
@@ -582,19 +592,21 @@ namespace Hydra.Such.Portal.Controllers
                             Observacao = Ajuda.Observacao,
                             RubricaSalarial2 = Ajuda.RubricaSalarial2,
                             DataDespesa = Ajuda.DataDespesa,
-                            DataDespesaTexto = Ajuda.DataDespesa.Value.ToString("yyyy-MM-dd"),
+                            DataDespesaTexto = Ajuda.DataDespesa.HasValue ? Ajuda.DataDespesa.Value.ToString("yyyy-MM-dd") : "",
                             Funcionario = Ajuda.Funcionario,
                             CodRegiao = Ajuda.CodRegiao,
                             CodArea = Ajuda.CodArea,
                             CodCresp = Ajuda.CodCresp,
                             CalculoAutomatico = Ajuda.CalculoAutomatico,
                             Matricula = Ajuda.Matricula,
+                            NoProjeto = Ajuda.NoProjeto,
+                            ProjetoDescricao = Ajuda.ProjetoDescricao,
                             UtilizadorCriacao = Ajuda.UtilizadorCriacao,
                             DataHoraCriacao = Ajuda.DataHoraCriacao,
-                            DataHoraCriacaoTexto = Ajuda.DataHoraCriacao.Value.ToString("yyyy-MM-dd"),
+                            DataHoraCriacaoTexto = Ajuda.DataHoraCriacao.HasValue ? Ajuda.DataHoraCriacao.Value.ToString("yyyy-MM-dd") : "",
                             UtilizadorModificacao = Ajuda.UtilizadorModificacao,
                             DataHoraModificacao = Ajuda.DataHoraModificacao,
-                            DataHoraModificacaoTexto = Ajuda.DataHoraModificacao.Value.ToString("yyyy-MM-dd")
+                            DataHoraModificacaoTexto = Ajuda.DataHoraModificacao.HasValue ? Ajuda.DataHoraModificacao.Value.ToString("yyyy-MM-dd") : ""
                         }).ToList();
 
                         //MÃO-DE-OBRA
@@ -603,7 +615,7 @@ namespace Hydra.Such.Portal.Controllers
                             FolhaDeHorasNo = MaoDeObra.FolhaDeHorasNo,
                             LinhaNo = MaoDeObra.LinhaNo,
                             Date = MaoDeObra.Date,
-                            DateTexto = MaoDeObra.Date.Value.ToString("yyyy-MM-dd"),
+                            DateTexto = MaoDeObra.Date.HasValue ? MaoDeObra.Date.Value.ToString("yyyy-MM-dd") : "",
                             ProjetoNo = MaoDeObra.ProjetoNo,
                             EmpregadoNo = MaoDeObra.EmpregadoNo,
                             CodigoTipoTrabalho = MaoDeObra.CodigoTipoTrabalho,
@@ -627,10 +639,10 @@ namespace Hydra.Such.Portal.Controllers
                             PrecoDeVenda = Convert.ToDecimal(MaoDeObra.PrecoDeVenda),
                             UtilizadorCriacao = MaoDeObra.UtilizadorCriacao,
                             DataHoraCriacao = MaoDeObra.DataHoraCriacao,
-                            DataHoraCriacaoTexto = MaoDeObra.DataHoraCriacao.Value.ToString("yyyy-MM-dd"),
+                            DataHoraCriacaoTexto = MaoDeObra.DataHoraCriacao.HasValue ? MaoDeObra.DataHoraCriacao.Value.ToString("yyyy-MM-dd") : "",
                             UtilizadorModificacao = MaoDeObra.UtilizadorModificacao,
                             DataHoraModificacao = MaoDeObra.DataHoraModificacao,
-                            DataHoraModificacaoTexto = MaoDeObra.DataHoraModificacao.Value.ToString("yyyy-MM-dd")
+                            DataHoraModificacaoTexto = MaoDeObra.DataHoraModificacao.HasValue ? MaoDeObra.DataHoraModificacao.Value.ToString("yyyy-MM-dd") : ""
                         }).ToList();
 
                         //PRESENÇA
@@ -638,7 +650,7 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             FolhaDeHorasNo = Presenca.FolhaDeHorasNo,
                             Data = Presenca.Data,
-                            DataTexto = Presenca.Data.Value.ToString("yyyy-MM-dd"),
+                            DataTexto = Presenca.Data.HasValue ? Presenca.Data.Value.ToString("yyyy-MM-dd")  : "",
                             Hora1Entrada = Convert.ToDateTime(string.Concat("1900/01/01 " + Presenca.Hora1Entrada)).ToShortTimeString(),
                             Hora1Saida = Convert.ToDateTime(string.Concat("1900/01/01 " + Presenca.Hora1Saida)).ToShortTimeString(),
                             Hora2Entrada = Convert.ToDateTime(string.Concat("1900/01/01 " + Presenca.Hora2Entrada)).ToShortTimeString(),
@@ -646,10 +658,10 @@ namespace Hydra.Such.Portal.Controllers
                             Observacoes = Presenca.Observacoes,
                             UtilizadorCriacao = Presenca.UtilizadorCriacao,
                             DataHoraCriacao = Presenca.DataHoraCriacao,
-                            DataHoraCriacaoTexto = Presenca.DataHoraCriacao.Value.ToString("yyyy-MM-dd"),
+                            DataHoraCriacaoTexto = Presenca.DataHoraCriacao.HasValue ? Presenca.DataHoraCriacao.Value.ToString("yyyy-MM-dd") : "",
                             UtilizadorModificacao = Presenca.UtilizadorModificacao,
                             DataHoraModificacao = Presenca.DataHoraModificacao,
-                            DataHoraModificacaoTexto = Presenca.DataHoraModificacao.Value.ToString("yyyy-MM-dd")
+                            DataHoraModificacaoTexto = Presenca.DataHoraModificacao.HasValue ? Presenca.DataHoraModificacao.Value.ToString("yyyy-MM-dd") : ""
                         }).ToList();
 
                         return Json(result);
@@ -1083,7 +1095,7 @@ namespace Hydra.Such.Portal.Controllers
                     if (!string.IsNullOrEmpty(data.DataChegadaTexto))
                         data.DataHoraChegada = Convert.ToDateTime(data.DataChegadaTexto);
                     if (!string.IsNullOrEmpty(data.DataChegadaTexto) && !string.IsNullOrEmpty(data.HoraChegadaTexto))
-                        data.DataHoraPartida = Convert.ToDateTime(data.DataChegadaTexto + " " + data.HoraChegadaTexto);
+                        data.DataHoraChegada = Convert.ToDateTime(data.DataChegadaTexto + " " + data.HoraChegadaTexto);
 
                     data.UtilizadorModificacao = User.Identity.Name;
                     if (DBFolhasDeHoras.Update(DBFolhasDeHoras.ParseToFolhaHoras(data)) == null)
@@ -1190,6 +1202,12 @@ namespace Hydra.Such.Portal.Controllers
                 int noLinha;
                 noLinha = DBLinhasFolhaHoras.GetMaxByFolhaHoraNo(data.NoFolhaHoras);
 
+                string ProjetoDescricao;
+                if (!string.IsNullOrEmpty(data.NoProjeto))
+                    ProjetoDescricao = DBNAV2017Projects.GetAll(_config.NAV2009DatabaseName, _config.NAV2009CompanyName, data.NoProjeto) != null ? DBNAV2017Projects.GetAll(_config.NAV2009DatabaseName, _config.NAV2009CompanyName, data.NoProjeto).FirstOrDefault().Description : "";
+                else
+                    ProjetoDescricao = "";
+
                 if (noPercursos == 0)
                 {
                     LinhasFolhaHoras Percurso1 = new LinhasFolhaHoras();
@@ -1220,6 +1238,8 @@ namespace Hydra.Such.Portal.Controllers
                     Percurso1.DataHoraCriacao = DateTime.Now;
                     Percurso1.UtilizadorModificacao = User.Identity.Name;
                     Percurso1.DataHoraModificacao = DateTime.Now;
+                    Percurso1.NoProjeto = data.NoProjeto;
+                    Percurso1.ProjetoDescricao = ProjetoDescricao;
 
                     var dbCreateResult1 = DBLinhasFolhaHoras.CreatePercurso(Percurso1);
 
@@ -1252,6 +1272,9 @@ namespace Hydra.Such.Portal.Controllers
                     Percurso2.DataHoraCriacao = DateTime.Now;
                     Percurso2.UtilizadorModificacao = User.Identity.Name;
                     Percurso2.DataHoraModificacao = DateTime.Now;
+                    Percurso2.NoProjeto = data.NoProjeto;
+                    Percurso2.ProjetoDescricao = ProjetoDescricao;
+
 
                     var dbCreateResult2 = DBLinhasFolhaHoras.CreatePercurso(Percurso2);
 
@@ -1290,6 +1313,9 @@ namespace Hydra.Such.Portal.Controllers
                     Percurso1.DataHoraCriacao = DateTime.Now;
                     Percurso1.UtilizadorModificacao = User.Identity.Name;
                     Percurso1.DataHoraModificacao = DateTime.Now;
+                    Percurso1.NoProjeto = data.NoProjeto;
+                    Percurso1.ProjetoDescricao = ProjetoDescricao;
+
 
                     var dbCreateResult1 = DBLinhasFolhaHoras.CreatePercurso(Percurso1);
 
@@ -1376,6 +1402,12 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (result == 0)
                 {
+                    string ProjetoDescricao;
+                    if (!string.IsNullOrEmpty(data.NoProjeto))
+                        ProjetoDescricao = DBNAV2017Projects.GetAll(_config.NAV2009DatabaseName, _config.NAV2009CompanyName, data.NoProjeto) != null ? DBNAV2017Projects.GetAll(_config.NAV2009DatabaseName, _config.NAV2009CompanyName, data.NoProjeto).FirstOrDefault().Description : "";
+                    else
+                        ProjetoDescricao = "";
+
                     LinhasFolhaHoras Percurso = DBLinhasFolhaHoras.GetByPercursoNo(data.NoFolhaHoras, data.NoLinha);
 
                     Percurso.CodOrigem = data.CodOrigem;
@@ -1390,6 +1422,8 @@ namespace Hydra.Such.Portal.Controllers
                     Percurso.CustoTotal = data.Distancia * data.CustoUnitario;
                     Percurso.UtilizadorModificacao = User.Identity.Name;
                     Percurso.DataHoraModificacao = DateTime.Now;
+                    Percurso.NoProjeto = data.NoProjeto;
+                    Percurso.ProjetoDescricao = ProjetoDescricao;
 
                     DBLinhasFolhaHoras.UpdatePercurso(Percurso);
                 }
@@ -1443,6 +1477,8 @@ namespace Hydra.Such.Portal.Controllers
                 PercursoCopia.CodArea = PercursoOriginal.CodArea;
                 PercursoCopia.CodCresp = PercursoOriginal.CodCresp;
                 PercursoCopia.Matricula = PercursoOriginal.Matricula;
+                PercursoCopia.NoProjeto = PercursoOriginal.NoProjeto;
+                PercursoCopia.ProjetoDescricao = PercursoOriginal.ProjetoDescricao;
                 PercursoCopia.UtilizadorCriacao = User.Identity.Name;
                 PercursoCopia.DataHoraCriacao = DateTime.Now;
                 PercursoCopia.UtilizadorModificacao = User.Identity.Name;
@@ -1528,6 +1564,12 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     if (Recurso.CalculoAutomatico != true)
                     {
+                        string ProjetoDescricao;
+                        if (!string.IsNullOrEmpty(data.NoProjeto))
+                            ProjetoDescricao = DBNAV2017Projects.GetAll(_config.NAV2009DatabaseName, _config.NAV2009CompanyName, data.NoProjeto) != null ? DBNAV2017Projects.GetAll(_config.NAV2009DatabaseName, _config.NAV2009CompanyName, data.NoProjeto).FirstOrDefault().Description : "";
+                        else
+                            ProjetoDescricao = "";
+
                         int noLinha;
                         noLinha = DBLinhasFolhaHoras.GetMaxByFolhaHoraNo(data.NoFolhaHoras);
 
@@ -1550,6 +1592,8 @@ namespace Hydra.Such.Portal.Controllers
                         Ajuda.CodArea = data.CodArea;
                         Ajuda.CodCresp = data.CodCresp;
                         Ajuda.CalculoAutomatico = false;
+                        Ajuda.NoProjeto = data.NoProjeto;
+                        Ajuda.ProjetoDescricao = ProjetoDescricao;
                         Ajuda.UtilizadorCriacao = User.Identity.Name;
                         Ajuda.DataHoraCriacao = DateTime.Now;
                         Ajuda.UtilizadorModificacao = User.Identity.Name;
@@ -1655,21 +1699,38 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (result == 0)
                 {
+                    string ProjetoDescricao;
+                    if (!string.IsNullOrEmpty(data.NoProjeto))
+                        ProjetoDescricao = DBNAV2017Projects.GetAll(_config.NAV2009DatabaseName, _config.NAV2009CompanyName, data.NoProjeto) != null ? DBNAV2017Projects.GetAll(_config.NAV2009DatabaseName, _config.NAV2009CompanyName, data.NoProjeto).FirstOrDefault().Description : "";
+                    else
+                        ProjetoDescricao = "";
 
                     LinhasFolhaHoras Ajuda = DBLinhasFolhaHoras.GetByAjudaNo(data.NoFolhaHoras, data.NoLinha);
 
-                    Ajuda.TipoCusto = data.TipoCusto;
-                    Ajuda.CodTipoCusto = data.CodTipoCusto;
-                    Ajuda.DescricaoTipoCusto = EnumerablesFixed.FolhaDeHoraAjudaTipoCusto.Where(y => y.Id == data.TipoCusto).FirstOrDefault().Value;
-                    Ajuda.Quantidade = data.Quantidade;
-                    Ajuda.CustoUnitario = data.CustoUnitario;
-                    Ajuda.CustoTotal = data.Quantidade * data.CustoUnitario;
-                    Ajuda.PrecoUnitario = data.PrecoUnitario;
-                    Ajuda.PrecoVenda = data.Quantidade * data.PrecoUnitario;
-                    Ajuda.DataDespesa = data.DataDespesa;
-                    Ajuda.Observacao = data.Observacao;
-                    Ajuda.UtilizadorModificacao = User.Identity.Name;
-                    Ajuda.DataHoraModificacao = DateTime.Now;
+                    if (Ajuda.CalculoAutomatico == true)
+                    {
+                        Ajuda.NoProjeto = data.NoProjeto;
+                        Ajuda.ProjetoDescricao = ProjetoDescricao;
+                        Ajuda.UtilizadorModificacao = User.Identity.Name;
+                        Ajuda.DataHoraModificacao = DateTime.Now;
+                    }
+                    else
+                    {
+                        Ajuda.TipoCusto = data.TipoCusto;
+                        Ajuda.CodTipoCusto = data.CodTipoCusto;
+                        Ajuda.DescricaoTipoCusto = EnumerablesFixed.FolhaDeHoraAjudaTipoCusto.Where(y => y.Id == data.TipoCusto).FirstOrDefault().Value;
+                        Ajuda.Quantidade = data.Quantidade;
+                        Ajuda.CustoUnitario = data.CustoUnitario;
+                        Ajuda.CustoTotal = data.Quantidade * data.CustoUnitario;
+                        Ajuda.PrecoUnitario = data.PrecoUnitario;
+                        Ajuda.PrecoVenda = data.Quantidade * data.PrecoUnitario;
+                        Ajuda.DataDespesa = data.DataDespesa;
+                        Ajuda.Observacao = data.Observacao;
+                        Ajuda.NoProjeto = data.NoProjeto;
+                        Ajuda.ProjetoDescricao = ProjetoDescricao;
+                        Ajuda.UtilizadorModificacao = User.Identity.Name;
+                        Ajuda.DataHoraModificacao = DateTime.Now;
+                    }
 
                     DBLinhasFolhaHoras.UpdateAjuda(Ajuda);
 
@@ -1697,39 +1758,48 @@ namespace Hydra.Such.Portal.Controllers
             try
             {
                 LinhasFolhaHoras AjudaOriginal = DBLinhasFolhaHoras.GetByAjudaNo(data.NoFolhaHoras, data.NoLinha);
-                LinhasFolhaHoras AjudaCopia = new LinhasFolhaHoras();
-
-                int noLinha;
-                noLinha = DBLinhasFolhaHoras.GetMaxByFolhaHoraNo(data.NoFolhaHoras);
-
-                AjudaCopia.NoFolhaHoras = AjudaOriginal.NoFolhaHoras;
-                AjudaCopia.NoLinha = noLinha;
-                AjudaCopia.TipoCusto = AjudaOriginal.TipoCusto;
-                AjudaCopia.CodTipoCusto = AjudaOriginal.CodTipoCusto;
-                AjudaCopia.DescricaoTipoCusto = AjudaOriginal.DescricaoTipoCusto;
-                AjudaCopia.Quantidade = AjudaOriginal.Quantidade;
-                AjudaCopia.CustoUnitario = AjudaOriginal.CustoUnitario;
-                AjudaCopia.CustoTotal = AjudaOriginal.CustoTotal;
-                AjudaCopia.PrecoUnitario = AjudaOriginal.PrecoUnitario;
-                AjudaCopia.PrecoVenda = AjudaOriginal.PrecoVenda;
-                AjudaCopia.DataDespesa = AjudaOriginal.DataDespesa;
-                AjudaCopia.Observacao = AjudaOriginal.Observacao;
-                AjudaCopia.Funcionario = AjudaOriginal.Funcionario;
-                AjudaCopia.CodRegiao = AjudaOriginal.CodRegiao;
-                AjudaCopia.CodArea = AjudaOriginal.CodArea;
-                AjudaCopia.CodCresp = AjudaOriginal.CodCresp;
-                AjudaCopia.CalculoAutomatico = AjudaOriginal.CalculoAutomatico;
-                AjudaCopia.UtilizadorCriacao = User.Identity.Name;
-                AjudaCopia.DataHoraCriacao = DateTime.Now;
-                AjudaCopia.UtilizadorModificacao = User.Identity.Name;
-                AjudaCopia.DataHoraModificacao = DateTime.Now;
-
-                if (DBLinhasFolhaHoras.CreateAjuda(AjudaCopia) == null)
-                    result = 1;
-
-                if (result == 0)
+                if (AjudaOriginal.CalculoAutomatico == true)
                 {
-                    DBFolhasDeHoras.UpdateDetalhes(data.NoFolhaHoras);
+                    result = 2;
+                }
+                else
+                { 
+                    LinhasFolhaHoras AjudaCopia = new LinhasFolhaHoras();
+
+                    int noLinha;
+                    noLinha = DBLinhasFolhaHoras.GetMaxByFolhaHoraNo(data.NoFolhaHoras);
+
+                    AjudaCopia.NoFolhaHoras = AjudaOriginal.NoFolhaHoras;
+                    AjudaCopia.NoLinha = noLinha;
+                    AjudaCopia.TipoCusto = AjudaOriginal.TipoCusto;
+                    AjudaCopia.CodTipoCusto = AjudaOriginal.CodTipoCusto;
+                    AjudaCopia.DescricaoTipoCusto = AjudaOriginal.DescricaoTipoCusto;
+                    AjudaCopia.Quantidade = AjudaOriginal.Quantidade;
+                    AjudaCopia.CustoUnitario = AjudaOriginal.CustoUnitario;
+                    AjudaCopia.CustoTotal = AjudaOriginal.CustoTotal;
+                    AjudaCopia.PrecoUnitario = AjudaOriginal.PrecoUnitario;
+                    AjudaCopia.PrecoVenda = AjudaOriginal.PrecoVenda;
+                    AjudaCopia.DataDespesa = AjudaOriginal.DataDespesa;
+                    AjudaCopia.Observacao = AjudaOriginal.Observacao;
+                    AjudaCopia.Funcionario = AjudaOriginal.Funcionario;
+                    AjudaCopia.CodRegiao = AjudaOriginal.CodRegiao;
+                    AjudaCopia.CodArea = AjudaOriginal.CodArea;
+                    AjudaCopia.CodCresp = AjudaOriginal.CodCresp;
+                    AjudaCopia.CalculoAutomatico = AjudaOriginal.CalculoAutomatico;
+                    AjudaCopia.NoProjeto = AjudaOriginal.NoProjeto;
+                    AjudaCopia.ProjetoDescricao = AjudaOriginal.ProjetoDescricao;
+                    AjudaCopia.UtilizadorCriacao = User.Identity.Name;
+                    AjudaCopia.DataHoraCriacao = DateTime.Now;
+                    AjudaCopia.UtilizadorModificacao = User.Identity.Name;
+                    AjudaCopia.DataHoraModificacao = DateTime.Now;
+
+                    if (DBLinhasFolhaHoras.CreateAjuda(AjudaCopia) == null)
+                        result = 1;
+
+                    if (result == 0)
+                    {
+                        DBFolhasDeHoras.UpdateDetalhes(data.NoFolhaHoras);
+                    }
                 }
             }
             catch (Exception ex)
@@ -2697,6 +2767,8 @@ namespace Hydra.Such.Portal.Controllers
                                 Ajuda.CodArea = data.CodigoAreaFuncional == "" ? null : data.CodigoAreaFuncional;
                                 Ajuda.CodCresp = data.CodigoCentroResponsabilidade == null ? null : data.CodigoCentroResponsabilidade;
                                 Ajuda.RubricaSalarial = DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo.ToLower() == x.TipoCusto.ToString().ToLower() && y.CodRecurso.ToLower() == x.CodigoTipoCusto.Trim().ToLower()).FirstOrDefault().RubricaSalarial;
+                                Ajuda.NoProjeto = data.ProjetoNo;
+                                Ajuda.ProjetoDescricao = data.ProjetoDescricao;
                                 Ajuda.UtilizadorCriacao = User.Identity.Name;
                                 Ajuda.DataHoraCriacao = DateTime.Now;
                                 Ajuda.UtilizadorModificacao = User.Identity.Name;
@@ -4224,5 +4296,56 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         #endregion
+
+
+        [HttpPost]
+        //Cria uma Ajuda
+        public JsonResult GetDistribuicaoPercursos([FromBody] LinhasFolhaHorasViewModel data)
+        {
+            int result = 99;
+            try
+            {
+                List<DistribuiçãoCustoFolhaDeHoras> Distribuicao = DBDistribuicaoCustoFolhaDeHoras.GetDistribuiçãoByLinha(data.NoFolhaHoras, data.NoLinha);
+
+                if (Distribuicao == null || Distribuicao.Count() == 0)
+                {
+                    FolhasDeHoras FH = DBFolhasDeHoras.GetById(data.NoFolhaHoras);
+
+                    DistribuiçãoCustoFolhaDeHoras NewDistribuicao = new DistribuiçãoCustoFolhaDeHoras
+                    {
+                        NºFolhasDeHoras = data.NoFolhaHoras,
+                        NºLinhaPercursosEAjudasCustoDespesas = data.NoLinha,
+                        TipoObra = data.TipoCusto,
+                        NºObra = FH.NºProjeto,
+                        PercentagemValor = 100,
+                        Valor = data.CustoTotal,
+                        TotalValor = data.CustoTotal,
+                        TotalPercentagemValor = 100,
+                        KmTotais = data.Distancia,
+                        KmDistancia = data.Distancia,
+                        Quantidade = 0,
+                        CódigoRegião = data.CodRegiao,
+                        CódigoÁreaFuncional = data.CodArea,
+                        CódigoCentroResponsabilidade = data.CodCresp,
+                        DataHoraCriação = DateTime.Now,
+                        UtilizadorCriação = User.Identity.Name
+                    };
+
+                    if (DBDistribuicaoCustoFolhaDeHoras.Create(NewDistribuicao) != null)
+                    {
+                        return Json(DBDistribuicaoCustoFolhaDeHoras.ParseToViewModel(NewDistribuicao));
+                    }
+                }
+
+                return Json(DBDistribuicaoCustoFolhaDeHoras.ParseToViewModel(Distribuicao));
+            }
+            catch (Exception ex)
+            {
+                result = 99;
+            }
+
+            return Json(null);
+        }
+
     }
 }
