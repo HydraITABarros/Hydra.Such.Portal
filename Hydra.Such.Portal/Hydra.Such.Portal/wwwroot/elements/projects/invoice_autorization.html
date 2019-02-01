@@ -1173,7 +1173,7 @@
                     if (inverted) {
                         var items = this.$.grdProjectMovements._cache[0];
                         for (i = 0; i < items.length; i++) {
-                            if (items[i].quantity != null && items[i].quantity > 0) {
+                            if (items[i].quantity != null && items[i].quantity != 0) {
                                 if (items[i].unitPrice != null && items[i].unitPrice > 0) {
                                     if (items[i].totalPrice != null && this._totalToAuthorize != null)
                                         this._totalToAuthorize = (parseFloat(this._totalToAuthorize) + parseFloat(items[i].totalPrice)).toFixed(2);
@@ -1190,14 +1190,14 @@
                         }
                         var checkBoxes = this.$.grdProjectMovements.querySelectorAll("input[aria-label='Selecionar']");
                         for (i = 0; i < checkBoxes.length; i++) {
-                            if (items[i].quantity != null && items[i].quantity > 0) {
+                            if (items[i].quantity != null && items[i].quantity != 0) {
                                 if (items[i].unitPrice != null && items[i].unitPrice > 0) {
                                     checkBoxes[i].checked = true;
                                 }
                             }
                         }
                         if (erro == 1) {
-                            this.openToastError("Existem linhas em que o valor do Preço unitário e/ou Quantidade não é superior a 0.");
+                            this.openToastError("Existem linhas em que o valor do Preço unitário é menor ou igual a zero e/ou Quantidade igual a 0.");
                         }
                     }
                     else {
@@ -1221,7 +1221,7 @@
                 _selectItem: function (e) {
                     debugger;
                     if (e.target.checked /*=== this.inverted*/) {
-                        if (e.model.item.quantity != null && e.model.item.quantity > 0) {
+                        if (e.model.item.quantity != null && e.model.item.quantity != 0) {
                             if (e.model.item.unitPrice != null && e.model.item.unitPrice > 0) {
                                 if (e.model.item.totalPrice != null && this._totalToAuthorize != null)
                                     this._totalToAuthorize = (parseFloat(this._totalToAuthorize) + parseFloat(e.model.item.totalPrice)).toFixed(2);
@@ -1234,7 +1234,7 @@
                             }
                         }
                         else {
-                            this.openToastError("O valor da Quantidade tem que ser superior a 0.");
+                            this.openToastError("O valor da Quantidade tem que ser diferente de 0.");
                             e.target.checked = false;
                         }
                     } else {

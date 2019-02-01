@@ -1457,7 +1457,7 @@ namespace Hydra.Such.Portal.Controllers
                                             CustoTotal = pjD.TotalCost,
                                             PreçoUnitário = pjD.UnitPrice,
                                             PreçoTotal = pjD.TotalPrice,
-                                            Faturável = pjD.Billable,
+                                            Faturável = true,
                                             Registado = false,
                                             FaturaANºCliente = projecto.NºCliente,
                                             Moeda = pjD.Currency,
@@ -1468,7 +1468,10 @@ namespace Hydra.Such.Portal.Controllers
                                             NºGuiaExterna = pjD.ExternalGuideNo,
                                             DataConsumo = pjD.ConsumptionDate == "" || pjD.ConsumptionDate == String.Empty ? (DateTime?)null : DateTime.Parse(pjD.ConsumptionDate),
                                             CódServiçoCliente = pjD.ServiceClientCode,
-                                            PréRegisto = false
+                                            PréRegisto = false,
+                                            CódDestinoFinalResíduos = pjD.ResidueFinalDestinyCode,
+                                            TipoRecurso = pjD.ResourceType
+                                            
                                         };
                                         if (pjD.LineNo > 0)
                                         {
@@ -1556,7 +1559,7 @@ namespace Hydra.Such.Portal.Controllers
                             CustoTotal = x.TotalCost,
                             PreçoUnitário = x.UnitPrice,
                             PreçoTotal = x.TotalPrice,
-                            Faturável = x.Billable,
+                            Faturável = true,
                             Registado = false,
                             FaturaANºCliente = projecto.NºCliente,
                             Moeda = x.Currency,
@@ -1567,7 +1570,10 @@ namespace Hydra.Such.Portal.Controllers
                             NºGuiaExterna = x.ExternalGuideNo,
                             DataConsumo = x.ConsumptionDate == "" || x.ConsumptionDate == String.Empty ? (DateTime?)null : DateTime.Parse(x.ConsumptionDate),
                             CódServiçoCliente = x.ServiceClientCode,
-                            PréRegisto = false
+                            PréRegisto = false,
+                            CódDestinoFinalResíduos = x.ResidueFinalDestinyCode,
+                            TipoRecurso = x.ResourceType
+
 
                         };
 
@@ -2106,7 +2112,10 @@ namespace Hydra.Such.Portal.Controllers
                 Registered = x.Registado,
                 DocumentNo = x.NºDocumento,
                 MealType = x.TipoRefeição,
-                ConsumptionDate = x.DataConsumo == null ? String.Empty : x.DataConsumo.Value.ToString("yyyy-MM-dd")
+                ConsumptionDate = x.DataConsumo == null ? String.Empty : x.DataConsumo.Value.ToString("yyyy-MM-dd"),
+                ResidueGuideNo = x.NºGuiaResíduos,
+                ResidueFinalDestinyCode = x.CódDestinoFinalResíduos,
+                ExternalGuideNo = x.NºGuiaExterna,
             }).ToList();
             if (!string.IsNullOrEmpty(NoDocument))
             {

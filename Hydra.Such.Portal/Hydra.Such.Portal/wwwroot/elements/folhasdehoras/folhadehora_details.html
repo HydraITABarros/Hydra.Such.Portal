@@ -1069,7 +1069,7 @@
                                 </center>
                             </template>
                         </vaadin-grid-column>
-</div>
+                </div>
             </div>
 
 
@@ -1147,9 +1147,6 @@
                                     <vaadin-checkbox id="maoDeObraHorarioJantar" checked="{{chkJantar}}" disabled="{{ !_permissions.update }}">Jantar</vaadin-checkbox>
                                 </div>
 
-                                <!--<div class="col-sm-1 alignPoga">
-                                <paper-button id="btn_createMaoDeObra" class="btnSave" raised on-tap="_createMaoDeObra" disabled="{{ !_permissions.create }}" title="Criar">Criar</paper-button>
-                            </div>-->
                                 <div class="col-sm-1" style="padding-top:32px">
                                     <center>
                                         <paper-button id="btn_createMaoDeObra" class="btnSave tableBtn" raised on-tap="_createMaoDeObra" disabled="{{ !_permissions.create }}" title="Adicionar"><i class="fa fa-plus" aria-hidden="true"></i></paper-button>
@@ -1212,7 +1209,7 @@
 
                         <vaadin-grid-column resizable>
                             <template class="header">
-                                <vaadin-grid-sorter path="codigoTipoTrabalho" style="text-align:center;">Cód. Tipo Trabalho</vaadin-grid-sorter>
+                                <vaadin-grid-sorter path="codigoTipoTrabalho" style="text-align:center;">Tp Trabalho</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="codigoTipoTrabalho"></vaadin-grid-filter>
                             </template>
                             <template>
@@ -1230,7 +1227,7 @@
 
                         <vaadin-grid-column resizable>
                             <template class="header">
-                                <vaadin-grid-sorter path="horaInicioTexto" style="text-align:center;">Hora de Início</vaadin-grid-sorter>
+                                <vaadin-grid-sorter path="horaInicioTexto" style="text-align:center;">Início</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="horaInicioTexto"></vaadin-grid-filter>
                             </template>
                             <template>
@@ -1241,7 +1238,7 @@
 
                         <vaadin-grid-column resizable>
                             <template class="header">
-                                <vaadin-grid-sorter path="horarioAlmoco" style="text-align:center;">Horário Almoço</vaadin-grid-sorter>
+                                <vaadin-grid-sorter path="horarioAlmoco" style="text-align:center;">H Almoço</vaadin-grid-sorter>
                             </template>
                             <template>
                                 <vaadin-checkbox checked="{{item.horarioAlmoco}}" on-blur="_updateLinhaMaoDeObra" disabled="{{ !_permissions.update }}" style="text-align:center;"></vaadin-checkbox>
@@ -1250,7 +1247,7 @@
 
                         <vaadin-grid-column resizable>
                             <template class="header">
-                                <vaadin-grid-sorter path="horaFimTexto" style="text-align:center;">Hora de Fim</vaadin-grid-sorter>
+                                <vaadin-grid-sorter path="horaFimTexto" style="text-align:center;">Fim</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="horaFimTexto"></vaadin-grid-filter>
                             </template>
                             <template>
@@ -1261,7 +1258,7 @@
 
                         <vaadin-grid-column resizable>
                             <template class="header">
-                                <vaadin-grid-sorter path="horarioJantar" style="text-align:center;">Horário Jantar</vaadin-grid-sorter>
+                                <vaadin-grid-sorter path="horarioJantar" style="text-align:center;">H Jantar</vaadin-grid-sorter>
                             </template>
                             <template>
                                 <vaadin-checkbox checked="{{item.horarioJantar}}" on-blur="_updateLinhaMaoDeObra" disabled="{{ !_permissions.update }}" style="text-align:center;"></vaadin-checkbox>
@@ -1270,11 +1267,11 @@
 
                         <vaadin-grid-column resizable>
                             <template class="header">
-                                <vaadin-grid-sorter path="codigoFamiliaRecurso" style="text-align:center;">Nº Família Recurso</vaadin-grid-sorter>
+                                <vaadin-grid-sorter path="codigoFamiliaRecurso" style="text-align:center;">Família Recurso</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="codigoFamiliaRecurso"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <vaadin-combo-box items="[[LFolhaDeHoraGetRHRecursosFH]]" id="tabMaoDeObraCodigoFamiliaRecurso" item-value-path="id" item-label-path="value" value="{{item.codigoFamiliaRecurso}}" on-blur="_updateLinhaMaoDeObra" disabled="true" style="text-align:left;">
+                                <!--<vaadin-combo-box items="[[LFolhaDeHoraGetRHRecursosFH]]" id="tabMaoDeObraCodigoFamiliaRecurso" item-value-path="id" item-label-path="value" value="{{item.codigoFamiliaRecurso}}" on-blur="_updateLinhaMaoDeObra" disabled="true" style="text-align:left;">
                                     <template>
                                         <paper-icon-item>
                                             <paper-item-body two-line>
@@ -1282,7 +1279,8 @@
                                             </paper-item-body>
                                         </paper-icon-item>
                                     </template>
-                                </vaadin-combo-box>
+                                </vaadin-combo-box>-->
+                                {{item.codigoFamiliaRecurso}}
                             </template>
                         </vaadin-grid-column>
 
@@ -1315,15 +1313,6 @@
                                 <vaadin-grid-filter path="codigoCentroResponsabilidade"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <!--<vaadin-combo-box items="[[LFolhaDeHoraResponsabilityCenterCodes]]" id="tabMaoDeObraCodigoCentroResponsabilidade" item-value-path="id" item-label-path="value" value="{{item.codigoCentroResponsabilidade}}" on-blur="_updateLinhaMaoDeObra" disabled="true" style="text-align:left;">
-                                <template>
-                                    <paper-icon-item>
-                                        <paper-item-body two-line>
-                                            <div>[[item.value]]</div>
-                                        </paper-item-body>
-                                    </paper-icon-item>
-                                </template>
-                            </vaadin-combo-box>-->
                                 <such-selectbox id="tabMaoDeObraCodigoCentroResponsabilidade" name="tabMaoDeObraCodigoCentroResponsabilidade" value="{{item.codigoCentroResponsabilidade}}" disabled="true" style="margin-top:-20px"
                                                 items="[[CBResponsabilityCenterCodes]]"
                                                 text-path="value"
@@ -1350,7 +1339,6 @@
                             </template>
                             <template>
                                 <center>
-                                    <!--<paper-button class="btnRemove" raised on-tap="_deleteMaoDeObra" disabled="{{ !_permissions.delete }}">Eliminar</paper-button>-->
                                     <paper-button class="btnRemove tableBtn" raised on-tap="_deleteMaoDeObra" disabled="{{ !_permissions.delete }}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
                                 </center>
                             </template>
@@ -2849,6 +2837,7 @@
 
                 //MAODEOBRA
                 _createMaoDeObra: function () {
+                    debugger;
                     if (this.$.empregadoNo.validate() & this.$.empregadoNo.value != "") {
                         if (this.$.maoDeObraDate.validate() & this.$.maoDeObraDate.value != "") {
                             if (this.$.maoDeObraProjetoNo.value != "") {
@@ -2866,9 +2855,9 @@
                                                     codigoCentroResponsabilidade: this.$.codigoCentroResponsabilidade.value,
                                                     codigoTipoTrabalho: this.$.maoDeObraCodigoTipoTrabalho.value,
                                                     horaInicio: this.$.maoDeObraHoraInicio.value,
-                                                    horarioAlmoco: (this.$.maoDeObraHorarioAlmoco.value == "on" ? true : false),
+                                                    horarioAlmoco: this.chkAlmoco,
                                                     horaFim: this.$.maoDeObraHoraFim.value,
-                                                    horarioJantar: (this.$.maoDeObraHorarioJantar.value == "on" ? true : false)
+                                                    horarioJantar: this.chkJantar,
                                                 });
                                                 //this.$.page_createmaodeobra_ajax.generateRequest();
                                                 //this.$.tabMaoDeObra.clearCache();
