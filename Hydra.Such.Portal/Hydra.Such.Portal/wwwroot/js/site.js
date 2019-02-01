@@ -5,7 +5,7 @@ $(function () {
     openSelectedMenu();
 
     window.addEventListener('WebComponentsReady', function (e) {
-        return;
+        //return;
         initGridLists();
     });
 });
