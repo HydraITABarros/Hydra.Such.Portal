@@ -4021,6 +4021,15 @@
                         if (this.MaoDeObraCreated == 5) {
                             this._showErrorMessage('A Hora de Início tem que ser inferior á Hora de Fim.');
                         }
+
+                        if (this.MaoDeObraCreated == 6) {
+                            this._showErrorMessage('Para esta data a Hora de Fim da Mão de Obra tem que ser inferior á Hora de Início.');
+                        }
+
+                        if (this.MaoDeObraCreated == 7) {
+                            this._showErrorMessage('Houve um erro na criação da Mão de Obra.');
+                        }
+
                         if (this.MaoDeObraCreated == 99) {
                             this._showErrorMessage('Ocorreu um erro na criação da Mão de Obra.');
                         }
@@ -4409,10 +4418,12 @@
                         $(_self.$.btn_calcularAjudasCusto).addClass('disabled');
                         $(_self.$.btn_updateFH1).addClass('disabled');
                         $(_self.$.btn_updateFH2).addClass('disabled');
-                        $(_self.$.btn_createPercurso).addClass('disabled');
-                        $(_self.$.btn_createAjuda).addClass('disabled');
-                        $(_self.$.btn_createMaoDeObra).addClass('disabled');
-                        $(_self.$.btn_createPresenca).addClass('disabled');
+                        if (data.mostrarBotoes == false) {
+                            $(_self.$.btn_createPercurso).addClass('disabled');
+                            $(_self.$.btn_createAjuda).addClass('disabled');
+                            $(_self.$.btn_createMaoDeObra).addClass('disabled');
+                            $(_self.$.btn_createPresenca).addClass('disabled');
+                        }
                         //if (_self.$.integradorEmRH.value != null & _self.$.integradorEmRH.value != "" & _self.$.integradorEmRH.value) {
                         //    $(_self.$.btn_integrarEmRH).addClass('disabled');
                         //}

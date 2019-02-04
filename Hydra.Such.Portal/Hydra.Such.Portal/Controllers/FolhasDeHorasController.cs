@@ -523,7 +523,13 @@ namespace Hydra.Such.Portal.Controllers
                             HoraModificacaoTexto = FH.DataHoraModificação == null ? "" : FH.DataHoraModificação.Value.ToString("HH:mm"),
                             Eliminada = FH.Eliminada
                         };
-
+                        if (result.Estado == 0 && result.Terminada == true)
+                        {
+                            if (result.Validadores.ToLower().Contains(User.Identity.Name.ToLower()))
+                                result.MostrarBotoes = true;
+                            else
+                                result.MostrarBotoes = false;
+                        }
 
                         //PERCURSO
                         result.FolhaDeHorasPercurso = DBLinhasFolhaHoras.GetAllByPercursoToList(data.FolhaDeHorasNo).Select(Percurso => new LinhasFolhaHorasViewModel()
@@ -1920,6 +1926,14 @@ namespace Hydra.Such.Portal.Controllers
 
                     if (HoraMeiaNoite00 > HoraFim)
                         result = 5;
+
+                    if (HoraInicio >= HoraFim)
+                    {
+                        if (Convert.ToDateTime(data.Date) >= Convert.ToDateTime(Convert.ToDateTime(FH.DataHoraChegada).ToShortDateString()))
+                        {
+                            result = 6;
+                        }
+                    }
                 }
 
                 if (result == 0)
@@ -1978,27 +1992,59 @@ namespace Hydra.Such.Portal.Controllers
                     }
                     else
                     {
+                        double Num_Horas_Aux = 0;
                         TimeSpan H_Almoco = FimHoraAlmoco.Subtract(InicioHoraAlmoco);
                         TimeSpan H_Jantar = FimHoraJantar.Subtract(InicioHoraJantar);
 
-                        double Num_Horas_Aux = (HoraMeiaNoite23 - HoraInicio).Add(TimeSpan.Parse("00:01")).TotalHours + (HoraFim - HoraMeiaNoite00).TotalHours;
-                        HorasTotal = HoraMeiaNoite23.Subtract(TimeSpan.Parse(data.HoraInicio)).Add(TimeSpan.Parse("00:01")) + (TimeSpan.Parse(data.HoraFim).Subtract(TimeSpan.Parse(HoraMeiaNoite00.ToString())));
+                        if (HoraInicio < HoraFim)
+                        {
+                            Num_Horas_Aux = (HoraFim - HoraInicio).TotalHours;
+                            HorasTotal = TimeSpan.Parse(data.HoraFim) - TimeSpan.Parse(data.HoraInicio);
+                        }
+                        else
+                        {
+                            Num_Horas_Aux = (HoraMeiaNoite23 - HoraInicio).Add(TimeSpan.Parse("00:01")).TotalHours + (HoraFim - HoraMeiaNoite00).TotalHours;
+                            HorasTotal = HoraMeiaNoite23.Subtract(TimeSpan.Parse(data.HoraInicio)).Add(TimeSpan.Parse("00:01")) + (TimeSpan.Parse(data.HoraFim).Subtract(TimeSpan.Parse(HoraMeiaNoite00.ToString())));
+                        }
+
 
                         if (data.HorarioAlmoco == true)
                         {
-                            if ((HoraFim >= FimHoraAlmoco && HoraInicio < InicioHoraAlmoco) || (HoraMeiaNoite23 >= FimHoraAlmoco && HoraInicio < InicioHoraAlmoco))
+                            if (HoraInicio < HoraFim)
                             {
-                                Num_Horas_Aux = Num_Horas_Aux - H_Almoco.TotalHours;
-                                HorasTotal = HorasTotal.Subtract(H_Almoco);
+                                if ((HoraFim >= FimHoraAlmoco && HoraInicio < InicioHoraAlmoco))
+                                {
+                                    Num_Horas_Aux = Num_Horas_Aux - H_Almoco.TotalHours;
+                                    HorasTotal = HorasTotal.Subtract(H_Almoco);
+                                }
+                            }
+                            else
+                            {
+                                if ((HoraMeiaNoite23 >= FimHoraAlmoco && HoraInicio < InicioHoraAlmoco))
+                                {
+                                    Num_Horas_Aux = Num_Horas_Aux - H_Almoco.TotalHours;
+                                    HorasTotal = HorasTotal.Subtract(H_Almoco);
+                                }
                             }
                         }
 
                         if (data.HorarioJantar == true)
                         {
-                            if ((HoraFim >= FimHoraJantar && HoraInicio < InicioHoraJantar) || (HoraMeiaNoite23 >= FimHoraJantar && HoraInicio < InicioHoraJantar))
+                            if (HoraInicio <= HoraFim)
                             {
-                                Num_Horas_Aux = Num_Horas_Aux - H_Jantar.TotalHours;
-                                HorasTotal = HorasTotal.Subtract(H_Jantar);
+                                if ((HoraFim >= FimHoraJantar && HoraInicio < InicioHoraJantar))
+                                {
+                                    Num_Horas_Aux = Num_Horas_Aux - H_Jantar.TotalHours;
+                                    HorasTotal = HorasTotal.Subtract(H_Jantar);
+                                }
+                            }
+                            else
+                            {
+                                if ((HoraMeiaNoite23 >= FimHoraJantar && HoraInicio < InicioHoraJantar))
+                                {
+                                    Num_Horas_Aux = Num_Horas_Aux - H_Jantar.TotalHours;
+                                    HorasTotal = HorasTotal.Subtract(H_Jantar);
+                                }
                             }
                         }
                     }
@@ -2030,7 +2076,7 @@ namespace Hydra.Such.Portal.Controllers
                     if (dbCreateResult != null)
                         result = 0;
                     else
-                        result = 6;
+                        result = 7;
 
                     if (result == 0)
                     {

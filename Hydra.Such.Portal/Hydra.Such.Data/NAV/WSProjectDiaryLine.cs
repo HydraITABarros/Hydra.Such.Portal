@@ -250,8 +250,8 @@ namespace Hydra.Such.Data.NAV
                             Unit_CostSpecified = true,
                             Unit_Price = DiaryLines.Unit_Price,
                             Unit_PriceSpecified = true,
-                            //ws
-                            
+                            Ws_Communicated_Nav_2009 = true,
+                            Ws_Communicated_Nav_2009Specified = true                            
                         }
                     };
                     WS_Client = new WSCreateProjectDiaryLine.WSJobJournalLine_PortClient(navWSBinding, WS_URL);

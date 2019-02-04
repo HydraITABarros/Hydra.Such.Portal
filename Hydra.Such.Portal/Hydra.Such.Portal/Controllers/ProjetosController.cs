@@ -1652,12 +1652,18 @@ namespace Hydra.Such.Portal.Controllers
             //SET INTEGRATED IN DB
             if (dp != null)
             {
+
                 //AMARO
                 //VER AMANHÃ COM O MARCO
                 dp.ForEach(x =>
                 {
+                    if (x.Quantity == null || x.Quantity == 0)
+                        DBProjectDiary.Delete(DBProjectDiary.ParseToDatabase(x));
+
                     x.MovementType = 1;
                 });
+
+                dp.RemoveAll(x => x.Quantity == null || x.Quantity == 0);
 
                 bool hasItemsWithoutDimensions = dp.Any(x => string.IsNullOrEmpty(x.RegionCode) ||
                                                             string.IsNullOrEmpty(x.FunctionalAreaCode) ||
