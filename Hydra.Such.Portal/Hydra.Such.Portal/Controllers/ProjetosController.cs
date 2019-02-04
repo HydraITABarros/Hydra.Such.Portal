@@ -3134,7 +3134,7 @@ namespace Hydra.Such.Portal.Controllers
                             }
                             wSJobJournalLine.External_Document_No = movimento.DocumentoOriginal;
                             wSJobJournalLine.Portal_Transaction_No = transactID.ToString();
-                            wSJobJournalLine.Posting_Date = _Data_Agora;
+                            wSJobJournalLine.Posting_Date = (DateTime)movimento.Data;
                             wSJobJournalLine.Posting_DateSpecified = true;
                             wSJobJournalLine.OM_Line_No = 0;
                             wSJobJournalLine.Description = movimento.Descrição ?? string.Empty;
@@ -3527,9 +3527,11 @@ namespace Hydra.Such.Portal.Controllers
                                                 .Where(x => x.CodProjeto == key.Item1 && x.GrupoFactura == key.Item2)
                                                 .ToList();
                                                 //var authorizedProjectMovements = ctx.MovimentosDeProjeto.Where(x => x.CodProjeto == projectNo && x.GrupoFactura == invoiceGroup);
+
                                                 var projectMovements = ctx.MovimentosDeProjeto
                                                     .Where(x => x.NºProjeto == key.Item1 && x.GrupoFatura == key.Item2)
                                                     .ToList();
+
                                                 authorizedProjects.ForEach(x => x.Faturado = true);
                                                 //authorizedProjectMovements.ForEach(x => x.Faturada = true);
                                                 projectMovements.ForEach(x => x.Faturada = true);
