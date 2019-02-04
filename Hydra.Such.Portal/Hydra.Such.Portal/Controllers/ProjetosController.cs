@@ -3143,6 +3143,7 @@ namespace Hydra.Such.Portal.Controllers
                             wSJobJournalLine.gDec2 = 0;
                             wSJobJournalLine.gDec3 = 0;
                             wSJobJournalLine.gDec4 = 0;
+                            //wSJobJournalLine.nav
 
                             //WSCreateProjectDiaryLine.Create_Result create_Result = new WSCreateProjectDiaryLine.Create_Result(wSJobJournalLine);
 
@@ -3255,6 +3256,7 @@ namespace Hydra.Such.Portal.Controllers
                             //Billable = mp.Faturável,
                             //UpdateDate = mp.DataHoraModificação,
                             //UpdateUser = mp.UtilizadorModificação,
+                            
                         }
                     )
                     .Where(x => x.InvoiceGroup.HasValue &&

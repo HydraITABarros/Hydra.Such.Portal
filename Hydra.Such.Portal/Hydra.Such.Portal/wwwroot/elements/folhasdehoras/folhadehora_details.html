@@ -666,7 +666,7 @@
                 </paper-collapse-group>
 
                 <div class="panel-body">
-                    <vaadin-grid column-reordering-allowed id="tabPercurso" aria-label="TabelaPercursos" items="{{ data.folhaDeHorasPercurso }}" class="editGrid" multi-sort="true">
+                    <vaadin-grid id="tabPercurso" aria-label="TabelaPercursos" items="{{ data.folhaDeHorasPercurso }}" class="editGrid" multi-sort="true">
                         <vaadin-grid-column resizable hidden>
                             <template class="header">
                                 <vaadin-grid-sorter path="noLinha" style="text-align:center;">Nº Linha</vaadin-grid-sorter>
@@ -923,7 +923,7 @@
                 </paper-collapse-group>
 
                 <div class="panel-body">
-                    <vaadin-grid column-reordering-allowed id="tabAjuda" aria-label="Tabela Ajudas de Custo/Despesas" items="{{ data.folhaDeHorasAjuda }}" class="editGrid">
+                    <vaadin-grid id="tabAjuda" aria-label="Tabela Ajudas de Custo/Despesas" items="{{ data.folhaDeHorasAjuda }}" class="editGrid">
                         <vaadin-grid-column resizable hidden>
                             <template class="header">
                                 <vaadin-grid-sorter path="noLinha" style="text-align:center;">Nº Linha</vaadin-grid-sorter>
@@ -1158,7 +1158,7 @@
                 </paper-collapse-group>
 
                 <div class="panel-body">
-                    <vaadin-grid column-reordering-allowed id="tabMaoDeObra" aria-label="Tabela Mão de Obra" items="{{ data.folhaDeHorasMaoDeObra }}" class="editGrid">
+                    <vaadin-grid id="tabMaoDeObra" aria-label="Tabela Mão de Obra" items="{{ data.folhaDeHorasMaoDeObra }}" class="editGrid">
                         <vaadin-grid-column resizable hidden>
                             <template class="header">
                                 <vaadin-grid-sorter path="linhaNo" style="text-align:center;">Nº Linha</vaadin-grid-sorter>
@@ -1414,7 +1414,7 @@
                 </paper-collapse-group>
 
                 <div class="panel-body">
-                    <vaadin-grid column-reordering-allowed id="tabPresenca" aria-label="Tabela Presenças" items="{{ data.folhaDeHorasPresenca }}" class="editGrid">
+                    <vaadin-grid id="tabPresenca" aria-label="Tabela Presenças" items="{{ data.folhaDeHorasPresenca }}" class="editGrid">
                         <vaadin-grid-column resizable hidden>
                             <template class="header">
                                 <vaadin-grid-sorter path="folhaDeHorasNo" style="text-align:center;">Nº Folha de Horas</vaadin-grid-sorter>
@@ -2838,7 +2838,6 @@
 
                 //MAODEOBRA
                 _createMaoDeObra: function () {
-                    debugger;
                     if (this.$.empregadoNo.validate() & this.$.empregadoNo.value != "") {
                         if (this.$.maoDeObraDate.validate() & this.$.maoDeObraDate.value != "") {
                             if (this.$.maoDeObraProjetoNo.value != "") {
@@ -3008,6 +3007,7 @@
                                 this._showErrorMessage('O campo Data tem que ser superior ou igual ao campo Data Inicio do Cabeçalho.');
                                 return false;
                             }
+
                             if (myDataMaoDeObra > myDataChegada) {
                                 this._showErrorMessage('O campo Data tem que ser inferior ou igual ao campo Data Fim do Cabeçalho.');
                                 return false;
@@ -3045,9 +3045,19 @@
                         if (this.$.maoDeObraDate.validate() & this.$.dataPartidaTexto.validate() & this.$.dataChegadaTexto.validate() &
                             this.$.maoDeObraHoraInicio.validate() & this.$.horaPartidaTexto.validate() & this.$.horaChegadaTexto.validate()) {
 
-                            var myDataTimePartida = new Date(this.$.dataPartidaTexto.value + " " + this.$.horaPartidaTexto.value);
-                            var myDataTimeChegada = new Date(this.$.dataChegadaTexto.value + " " + this.$.horaChegadaTexto.value);
-                            var myDataTimeMaoDeObra = new Date(this.$.maoDeObraDate.value + " " + this.$.maoDeObraHoraInicio.value);
+                            var myDataPartida = new Date(this.$.dataPartidaTexto.value);
+                            var myDataChegada = new Date(this.$.dataChegadaTexto.value);
+
+                            if (myDataPartida == myDataChegada) {
+                                var myDataTimePartida = new Date(this.$.dataPartidaTexto.value + " " + this.$.horaPartidaTexto.value);
+                                var myDataTimeChegada = new Date(this.$.dataChegadaTexto.value + " " + this.$.horaChegadaTexto.value);
+                                var myDataTimeMaoDeObra = new Date(this.$.maoDeObraDate.value + " " + this.$.maoDeObraHoraInicio.value);
+                            }
+                            else {
+                                var myDataTimePartida = new Date(this.$.dataPartidaTexto.value + " " + this.$.horaPartidaTexto.value);
+                                var myDataTimeChegada = new Date(); myDataTimeChegada.setDate(myDataPartida + 1);
+                                var myDataTimeMaoDeObra = new Date(this.$.maoDeObraDate.value + " " + this.$.maoDeObraHoraInicio.value);
+                            }
 
                             if (myDataTimeMaoDeObra < myDataTimePartida) {
                                 this._showErrorMessage('O campo Hora de Início tem que ser superior ou igual ao campo Data Inicio do Cabeçalho.');
@@ -3072,9 +3082,19 @@
                         if (this.$.maoDeObraDate.validate() & this.$.dataPartidaTexto.validate() & this.$.dataChegadaTexto.validate() &
                             this.$.maoDeObraHoraFim.validate() & this.$.horaPartidaTexto.validate() & this.$.horaChegadaTexto.validate()) {
 
-                            var myDataTimePartida = new Date(this.$.dataPartidaTexto.value + " " + this.$.horaPartidaTexto.value);
-                            var myDataTimeChegada = new Date(this.$.dataChegadaTexto.value + " " + this.$.horaChegadaTexto.value);
-                            var myDataTimeMaoDeObra = new Date(this.$.maoDeObraDate.value + " " + this.$.maoDeObraHoraFim.value);
+                            var myDataPartida = new Date(this.$.dataPartidaTexto.value);
+                            var myDataChegada = new Date(this.$.dataChegadaTexto.value);
+
+                            if (myDataPartida == myDataChegada) {
+                                var myDataTimePartida = new Date(this.$.dataPartidaTexto.value + " " + this.$.horaPartidaTexto.value);
+                                var myDataTimeChegada = new Date(this.$.dataChegadaTexto.value + " " + this.$.horaChegadaTexto.value);
+                                var myDataTimeMaoDeObra = new Date(this.$.maoDeObraDate.value + " " + this.$.maoDeObraHoraFim.value);
+                            }
+                            else {
+                                var myDataTimePartida = new Date(this.$.dataPartidaTexto.value + " " + this.$.horaPartidaTexto.value);
+                                var myDataTimeChegada = new Date(); myDataTimeChegada.setDate(myDataPartida + 1);
+                                var myDataTimeMaoDeObra = new Date(this.$.maoDeObraDate.value + " " + this.$.maoDeObraHoraInicio.value);
+                            }
 
                             if (myDataTimeMaoDeObra < myDataTimePartida) {
                                 this._showErrorMessage('O campo Hora de Fim tem que ser superior ou igual ao campo Data Inicio do Cabeçalho.');

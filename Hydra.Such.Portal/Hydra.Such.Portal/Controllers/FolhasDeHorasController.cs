@@ -1860,6 +1860,13 @@ namespace Hydra.Such.Portal.Controllers
             int result = 0;
             try
             {
+                FolhasDeHoras FH = DBFolhasDeHoras.GetById(data.FolhaDeHorasNo);
+
+                string FHDataPartida = FH.DataHoraPartida.HasValue ? Convert.ToDateTime(FH.DataHoraPartida).ToShortDateString() : "";
+                string FHDataChegada = FH.DataHoraChegada.HasValue ? Convert.ToDateTime(FH.DataHoraChegada).ToShortDateString() : "";
+
+                TimeSpan HoraMeiaNoite23 = TimeSpan.Parse("23:59");
+                TimeSpan HoraMeiaNoite00 = TimeSpan.Parse("00:00");
                 TimeSpan HoraInicio = TimeSpan.Parse(data.HoraInicio);
                 TimeSpan HoraFim = TimeSpan.Parse(data.HoraFim);
                 bool Almoco = Convert.ToBoolean(data.HorarioAlmoco);
@@ -1872,24 +1879,48 @@ namespace Hydra.Such.Portal.Controllers
                 TimeSpan InicioHoraJantar = (TimeSpan)Configuracao.InicioHoraJantar;
                 TimeSpan FimHoraJantar = (TimeSpan)Configuracao.FimHoraJantar;
 
-                if (Almoco)
-                    if (HoraFim > InicioHoraAlmoco && HoraFim < FimHoraAlmoco)
-                        result = 1;
+                if (FHDataPartida == FHDataChegada)
+                {
+                    if (Almoco)
+                        if (HoraFim > InicioHoraAlmoco && HoraFim < FimHoraAlmoco)
+                            result = 1;
 
-                if (Almoco)
-                    if (HoraInicio > InicioHoraAlmoco && HoraInicio <= FimHoraAlmoco)
-                        result = 2;
+                    if (Almoco)
+                        if (HoraInicio > InicioHoraAlmoco && HoraInicio <= FimHoraAlmoco)
+                            result = 2;
 
-                if (Jantar)
-                    if (HoraFim > InicioHoraJantar && HoraFim < FimHoraJantar)
-                        result = 3;
+                    if (Jantar)
+                        if (HoraFim > InicioHoraJantar && HoraFim < FimHoraJantar)
+                            result = 3;
 
-                if (Jantar)
-                    if (HoraInicio > InicioHoraJantar && HoraInicio <= FimHoraJantar)
-                        result = 4;
+                    if (Jantar)
+                        if (HoraInicio > InicioHoraJantar && HoraInicio <= FimHoraJantar)
+                            result = 4;
 
-                if (HoraInicio > HoraFim)
-                    result = 5;
+                    if (HoraInicio > HoraFim)
+                        result = 5;
+                }
+                else
+                {
+                    if (Almoco)
+                        if (HoraFim > InicioHoraAlmoco && HoraFim < FimHoraAlmoco)
+                            result = 1;
+
+                    if (Almoco)
+                        if (HoraInicio > InicioHoraAlmoco && HoraInicio <= FimHoraAlmoco)
+                            result = 2;
+
+                    if (Jantar)
+                        if (HoraFim > InicioHoraJantar && HoraFim < FimHoraJantar)
+                            result = 3;
+
+                    if (Jantar)
+                        if (HoraInicio > InicioHoraJantar && HoraInicio <= FimHoraJantar)
+                            result = 4;
+
+                    if (HoraMeiaNoite00 > HoraFim)
+                        result = 5;
+                }
 
                 if (result == 0)
                 {
@@ -1918,27 +1949,57 @@ namespace Hydra.Such.Portal.Controllers
                     }
 
                     //CALCULAR PRECO TOTAL
-                    TimeSpan H_Almoco = FimHoraAlmoco.Subtract(InicioHoraAlmoco);
-                    TimeSpan H_Jantar = FimHoraJantar.Subtract(InicioHoraJantar);
-
-                    double Num_Horas_Aux = (HoraFim - HoraInicio).TotalHours;
-                    TimeSpan HorasTotal = TimeSpan.Parse(data.HoraFim) - TimeSpan.Parse(data.HoraInicio);
-
-                    if (data.HorarioAlmoco == true)
+                    TimeSpan HorasTotal;
+                    if (FHDataPartida == FHDataChegada)
                     {
-                        if (HoraFim >= FimHoraAlmoco && HoraInicio < InicioHoraAlmoco)
+                        TimeSpan H_Almoco = FimHoraAlmoco.Subtract(InicioHoraAlmoco);
+                        TimeSpan H_Jantar = FimHoraJantar.Subtract(InicioHoraJantar);
+
+                        double Num_Horas_Aux = (HoraFim - HoraInicio).TotalHours;
+                        HorasTotal = TimeSpan.Parse(data.HoraFim) - TimeSpan.Parse(data.HoraInicio);
+
+                        if (data.HorarioAlmoco == true)
                         {
-                            Num_Horas_Aux = Num_Horas_Aux - H_Almoco.TotalHours;
-                            HorasTotal = HorasTotal.Subtract(H_Almoco);
+                            if (HoraFim >= FimHoraAlmoco && HoraInicio < InicioHoraAlmoco)
+                            {
+                                Num_Horas_Aux = Num_Horas_Aux - H_Almoco.TotalHours;
+                                HorasTotal = HorasTotal.Subtract(H_Almoco);
+                            }
+                        }
+
+                        if (data.HorarioJantar == true)
+                        {
+                            if (HoraFim >= FimHoraJantar && HoraInicio < InicioHoraJantar)
+                            {
+                                Num_Horas_Aux = Num_Horas_Aux - H_Jantar.TotalHours;
+                                HorasTotal = HorasTotal.Subtract(H_Jantar);
+                            }
                         }
                     }
-
-                    if (data.HorarioJantar == true)
+                    else
                     {
-                        if (HoraFim >= FimHoraJantar && HoraInicio < InicioHoraJantar)
+                        TimeSpan H_Almoco = FimHoraAlmoco.Subtract(InicioHoraAlmoco);
+                        TimeSpan H_Jantar = FimHoraJantar.Subtract(InicioHoraJantar);
+
+                        double Num_Horas_Aux = (HoraMeiaNoite23 - HoraInicio).Add(TimeSpan.Parse("00:01")).TotalHours + (HoraFim - HoraMeiaNoite00).TotalHours;
+                        HorasTotal = HoraMeiaNoite23.Subtract(TimeSpan.Parse(data.HoraInicio)).Add(TimeSpan.Parse("00:01")) + (TimeSpan.Parse(data.HoraFim).Subtract(TimeSpan.Parse(HoraMeiaNoite00.ToString())));
+
+                        if (data.HorarioAlmoco == true)
                         {
-                            Num_Horas_Aux = Num_Horas_Aux - H_Jantar.TotalHours;
-                            HorasTotal = HorasTotal.Subtract(H_Jantar);
+                            if ((HoraFim >= FimHoraAlmoco && HoraInicio < InicioHoraAlmoco) || (HoraMeiaNoite23 >= FimHoraAlmoco && HoraInicio < InicioHoraAlmoco))
+                            {
+                                Num_Horas_Aux = Num_Horas_Aux - H_Almoco.TotalHours;
+                                HorasTotal = HorasTotal.Subtract(H_Almoco);
+                            }
+                        }
+
+                        if (data.HorarioJantar == true)
+                        {
+                            if ((HoraFim >= FimHoraJantar && HoraInicio < InicioHoraJantar) || (HoraMeiaNoite23 >= FimHoraJantar && HoraInicio < InicioHoraJantar))
+                            {
+                                Num_Horas_Aux = Num_Horas_Aux - H_Jantar.TotalHours;
+                                HorasTotal = HorasTotal.Subtract(H_Jantar);
+                            }
                         }
                     }
 
