@@ -1,6 +1,6 @@
 ﻿{
   "ProviderId": "Microsoft.VisualStudio.ConnectedService.Wcf",
-  "Version": "15.0.20119.1312",
+  "Version": "15.0.20628.921",
   "ExtendedData": {
     "Uri": "http://such-navdev.such.local:8047/DynamicsNAV100_QUAL/WS/SUCH%20-%20QUALIDADE/Page/WSJobJournalLine",
     "Namespace": "WSCreateProjectDiaryLine",

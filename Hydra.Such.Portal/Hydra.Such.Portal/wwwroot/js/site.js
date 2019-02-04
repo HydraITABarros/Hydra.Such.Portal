@@ -135,11 +135,13 @@ var setGridListsColumnDragable = function (grid, name) {
 
     if (typeof localStorage !== 'undefined') {
         var localStorageName = 'grid-column-order-' + name;
-        var columnOrder = JSON.parse(localStorage.getItem(localStorageName));
-        if (columnOrder) {
-            columnTree.forEach(function (column, index) {
-                column._order = columnOrder[index];
-            });
+        if (localStorage.getItem(localStorageName) !== null) {
+            var columnOrder = JSON.parse(localStorage.getItem(localStorageName));
+            if (columnOrder) {
+                columnTree.forEach(function (column, index) {
+                    column._order = columnOrder[index];
+                });
+            }
         }
 
         grid.ondragend = function () {
