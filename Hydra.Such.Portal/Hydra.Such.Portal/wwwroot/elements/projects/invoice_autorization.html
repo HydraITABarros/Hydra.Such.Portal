@@ -1173,13 +1173,16 @@
                     var erro = 0
                     this._totalToAuthorize = 0.0;
                     if (inverted) {
-                        var items = this.$.grdProjectMovements._cache[0];
+                        var items = this.$.grdProjectMovements.items;
+                        
                         for (i = 0; i < items.length; i++) {
                             if (items[i].quantity != null && items[i].quantity != 0) {
                                 if (items[i].unitPrice != null && items[i].unitPrice > 0) {
                                     if (items[i].totalPrice != null && this._totalToAuthorize != null)
                                         this._totalToAuthorize = (parseFloat(this._totalToAuthorize) + parseFloat(items[i].totalPrice)).toFixed(2);
                                     items[i].autorizatedInvoice2 = true;
+
+
                                     this.$.grdProjectMovements.selectItem(items[i]);
                                 }
                                 else {
@@ -1214,6 +1217,7 @@
                     this.indeterminate = false;
                 },
                 _invert: function (e) {
+
                     this.inverted = !this.inverted;
                 },
                 // iOS needs indeterminate + checked at the same time
@@ -1221,7 +1225,7 @@
                     return indeterminate || inverted;
                 },
                 _selectItem: function (e) {
-                    debugger;
+                    //debugger;
                     if (e.target.checked /*=== this.inverted*/) {
                         if (e.model.item.quantity != null && e.model.item.quantity != 0) {
                             if (e.model.item.unitPrice != null && e.model.item.unitPrice > 0) {
