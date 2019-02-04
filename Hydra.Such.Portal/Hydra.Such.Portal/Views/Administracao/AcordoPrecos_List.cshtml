@@ -46,7 +46,7 @@
             <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
         </div>
 
-        <vaadin-grid id="acordoPrecosTabela" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+        <vaadin-grid column-reordering-allowed id="acordoPrecosTabela" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column resizable width="150px">
                 <template class="header">
                     <vaadin-grid-sorter path="noProcedimento">Nº Procedimento</vaadin-grid-sorter>

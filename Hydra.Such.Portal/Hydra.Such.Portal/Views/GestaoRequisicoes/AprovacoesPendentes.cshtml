@@ -59,6 +59,7 @@
         </iron-ajax>
 
         <div class="subMenu">
+            <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
             <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
 
             <!--start ColumnToggle-->
@@ -76,7 +77,7 @@
             <!--end ColumnToggle-->
         </div>
 
-        <vaadin-grid aria-label="ApprovalsTable" id="grid" items="[[result]]" class="grid" multi-sort="true">
+        <vaadin-grid column-reordering-allowed aria-label="ApprovalsTable" id="grid" items="[[result]]" class="grid" multi-sort="true">
             <vaadin-grid-column width="60px" resizable hidden$="{{ _columns.movementNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="movementNo">Nº</vaadin-grid-sorter>
@@ -321,8 +322,15 @@
                             value: obj[key]
                         };
                     });
-                }
+                },
                 /* end - ColumnToggle */
+
+                _goBack: function (e) {
+                    window.history.back();
+                },
+
+
+
 
             });
         });

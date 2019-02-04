@@ -41,6 +41,8 @@
         <link rel="stylesheet" href="/css/main.css" />
 
         <div class="subMenu">
+            <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+
             <paper-button class="tablinks" id="btnConfirm" on-tap="_openDlg"><i class="fa fa-check-square" aria-hidden="true"></i> Autorizar</paper-button>
             <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
             <paper-button class="tablinks" id="btnToggleBillable" on-tap="_toggleBillable">Não Faturáveis</paper-button>
@@ -345,7 +347,7 @@
                                     </div>
                                 </div>
                                 <div class="row break_clear">
-                                    <vaadin-grid id="grdProjectMovements" selected-items={{selectedItems}} active-item="{{selectedItem}}" aria-label="Tabela Autorização Faturação" items="[[result.value]]" inverted$="[[inverted]]" class="editGrid">
+                                    <vaadin-grid column-reordering-allowed id="grdProjectMovements" selected-items={{selectedItems}} active-item="{{selectedItem}}" aria-label="Tabela Autorização Faturação" items="[[result.value]]" inverted$="[[inverted]]" class="editGrid">
 
                                         <vaadin-grid-column width="60px" flex-grow="0">
                                             <template class="header">
@@ -1418,7 +1420,13 @@
                     else {
                         this.openToastError(this.UpdateResponse.eMessage);
                     }
-                }
+                },
+
+                _goBack: function (e) {
+                    window.history.back();
+                },
+
+
 
             });
         });

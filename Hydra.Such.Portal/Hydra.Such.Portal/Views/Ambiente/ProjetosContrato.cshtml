@@ -57,7 +57,7 @@
                    id="grid_databound_ajax"
                    content-type="application/json"></iron-ajax>
 
-        <vaadin-grid id="grdProjectsGrid" aria-label="ProjectsGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+        <vaadin-grid column-reordering-allowed id="grdProjectsGrid" aria-label="ProjectsGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="120px">
                 <template class="header">
                     <vaadin-grid-sorter path="projectNo">Nº Projeto</vaadin-grid-sorter>

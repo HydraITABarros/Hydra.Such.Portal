@@ -666,7 +666,7 @@
                 </paper-collapse-group>
 
                 <div class="panel-body">
-                    <vaadin-grid id="tabPercurso" aria-label="TabelaPercursos" items="{{ data.folhaDeHorasPercurso }}" class="editGrid" multi-sort="true">
+                    <vaadin-grid column-reordering-allowed id="tabPercurso" aria-label="TabelaPercursos" items="{{ data.folhaDeHorasPercurso }}" class="editGrid" multi-sort="true">
                         <vaadin-grid-column resizable hidden>
                             <template class="header">
                                 <vaadin-grid-sorter path="noLinha" style="text-align:center;">Nº Linha</vaadin-grid-sorter>
@@ -923,7 +923,7 @@
                 </paper-collapse-group>
 
                 <div class="panel-body">
-                    <vaadin-grid id="tabAjuda" aria-label="Tabela Ajudas de Custo/Despesas" items="{{ data.folhaDeHorasAjuda }}" class="editGrid">
+                    <vaadin-grid column-reordering-allowed id="tabAjuda" aria-label="Tabela Ajudas de Custo/Despesas" items="{{ data.folhaDeHorasAjuda }}" class="editGrid">
                         <vaadin-grid-column resizable hidden>
                             <template class="header">
                                 <vaadin-grid-sorter path="noLinha" style="text-align:center;">Nº Linha</vaadin-grid-sorter>
@@ -1122,7 +1122,7 @@
                                         <template>
                                             <paper-icon-item>
                                                 <paper-item-body two-line>
-                                                    <div>[[item.value]]</div>
+                                                    <div>[[item.id]] - [[item.value]]</div>
                                                 </paper-item-body>
                                             </paper-icon-item>
                                         </template>
@@ -1149,7 +1149,7 @@
 
                                 <div class="col-sm-1" style="padding-top:32px">
                                     <center>
-                                        <paper-button id="btn_createMaoDeObra" class="btnSave tableBtn" raised on-tap="_createMaoDeObra" disabled="{{ !_permissions.create }}" title="Adicionar"><i class="fa fa-plus" aria-hidden="true"></i></paper-button>
+                                        <paper-button id="btn_createMaoDeObra" class="btnSave tableBtn" raised on-tap="_createMaoDeObra" disabled="{{ !_permissions.update }}" title="Adicionar"><i class="fa fa-plus" aria-hidden="true"></i></paper-button>
                                     </center>
                                 </div>
                             </div>
@@ -1158,7 +1158,7 @@
                 </paper-collapse-group>
 
                 <div class="panel-body">
-                    <vaadin-grid id="tabMaoDeObra" aria-label="Tabela Mão de Obra" items="{{ data.folhaDeHorasMaoDeObra }}" class="editGrid">
+                    <vaadin-grid column-reordering-allowed id="tabMaoDeObra" aria-label="Tabela Mão de Obra" items="{{ data.folhaDeHorasMaoDeObra }}" class="editGrid">
                         <vaadin-grid-column resizable hidden>
                             <template class="header">
                                 <vaadin-grid-sorter path="linhaNo" style="text-align:center;">Nº Linha</vaadin-grid-sorter>
@@ -1213,7 +1213,7 @@
                                 <vaadin-grid-filter path="codigoTipoTrabalho"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <vaadin-combo-box items="[[LFolhaDeHoraTipoTrabalhoNo]]" id="tabMaoDeObraCodigoTipoTrabalho" item-value-path="id" item-label-path="value" value="{{item.codigoTipoTrabalho}}" on-blur="_updateLinhaMaoDeObra" disabled="true" style="text-align:left;">
+                                <!--<vaadin-combo-box items="[[LFolhaDeHoraTipoTrabalhoNo]]" id="tabMaoDeObraCodigoTipoTrabalho" item-value-path="id" item-label-path="value" value="{{item.codigoTipoTrabalho}}" on-blur="_updateLinhaMaoDeObra" disabled="true" style="text-align:left;">
                                     <template>
                                         <paper-icon-item>
                                             <paper-item-body two-line>
@@ -1221,7 +1221,8 @@
                                             </paper-item-body>
                                         </paper-icon-item>
                                     </template>
-                                </vaadin-combo-box>
+                                </vaadin-combo-box>-->
+                                {{item.codigoTipoTrabalho}}
                             </template>
                         </vaadin-grid-column>
 
@@ -1413,7 +1414,7 @@
                 </paper-collapse-group>
 
                 <div class="panel-body">
-                    <vaadin-grid id="tabPresenca" aria-label="Tabela Presenças" items="{{ data.folhaDeHorasPresenca }}" class="editGrid">
+                    <vaadin-grid column-reordering-allowed id="tabPresenca" aria-label="Tabela Presenças" items="{{ data.folhaDeHorasPresenca }}" class="editGrid">
                         <vaadin-grid-column resizable hidden>
                             <template class="header">
                                 <vaadin-grid-sorter path="folhaDeHorasNo" style="text-align:center;">Nº Folha de Horas</vaadin-grid-sorter>

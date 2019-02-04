@@ -88,6 +88,7 @@
         </iron-ajax>
 
         <div class="subMenu">
+            <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
             <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
 
             <!--start ColumnToggle-->
@@ -112,7 +113,7 @@
             <div class="col-md-12 col-md-12 col-lg-12">
                 <iron-form id="frmRequisition">
                     <div class="panel panel-default">
-                        <vaadin-grid id="grdItems" aria-label="ProfileModelsTabel" items="{{_statesOfPlay1}}" class="grid" active-item="{{_selectedItem}}">
+                        <vaadin-grid column-reordering-allowed id="grdItems" aria-label="ProfileModelsTabel" items="{{_statesOfPlay1}}" class="grid" active-item="{{_selectedItem}}">
 
                             <vaadin-grid-column width="75px" resizable hidden$="{{ _columns.requisitionNo.hidden }}">
                                 <template class="header">
@@ -546,6 +547,9 @@
                     }
                 },
 
+                _goBack: function (e) {
+                    window.history.back();
+                },
 
 
 
