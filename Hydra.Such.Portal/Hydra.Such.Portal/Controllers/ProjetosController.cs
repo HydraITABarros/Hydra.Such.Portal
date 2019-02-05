@@ -1935,6 +1935,84 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        [HttpPost]
+        public JsonResult GetFaturacao(string projectNo, string serviceCod, string serviceGroup, string dateRegist)
+        {
+            ErrorHandler result = new ErrorHandler();
+            result.eReasonCode = 1;
+            result.eMessage = "Os movimentos foram obtidos com sucesso";
+
+            try
+            {
+                Projetos proj = DBProjects.GetById(projectNo);
+                List<PriceServiceClientViewModel> dp = DBPriceServiceClient.ParseToViewModel(DBPriceServiceClient.GetAll()).Where(x => x.Client == proj.NºCliente && x.CodServClient == serviceCod).ToList();
+
+                if (dp != null && dp.Count > 0)
+                {
+                    List<ProjectDiaryViewModel> newRows = new List<ProjectDiaryViewModel>();
+
+                    foreach (PriceServiceClientViewModel item in dp)
+                    {
+                        ProjectDiaryViewModel newRow = new ProjectDiaryViewModel();
+                        DiárioDeProjeto dpValidation = new DiárioDeProjeto();
+
+                        newRow.Date = dateRegist;
+                        newRow.ProjectNo = projectNo;
+                        newRow.InvoiceToClientNo = proj.NºCliente;
+                        newRow.ServiceClientCode = serviceCod;
+                        newRow.ServiceGroupCode = serviceGroup;
+                        newRow.Type = 2;
+                        newRow.Code = item.Resource;
+                        newRow.Description = item.ResourceDescription;
+                        newRow.MeasurementUnitCode = item.UnitMeasure;
+                        newRow.UnitCost = item.PriceCost;
+                        newRow.UnitPrice = item.SalePrice;
+                        newRow.Billable = true;
+                        newRow.ProjectContabGroup = proj.GrupoContabObra;
+                        newRow.MovementType = 1;
+                        if (!String.IsNullOrEmpty(item.TypeMeal))
+                        {
+                            newRow.MealType = Convert.ToInt32(item.TypeMeal);
+                        }
+                        else
+                        {
+                            newRow.MealType = null;
+                        }
+                        newRow.RegionCode = proj.CódigoRegião;
+                        newRow.FunctionalAreaCode = proj.CódigoÁreaFuncional;
+                        newRow.ResponsabilityCenterCode = proj.CódigoCentroResponsabilidade;
+                        newRow.Utilizador = User.Identity.Name;
+                        newRow.User = User.Identity.Name;
+                        newRow.Registered = false;
+                        newRow.PreRegistered = false;
+
+                        newRow.CreateUser = User.Identity.Name;
+                        newRow.CreateDate = DateTime.Now;
+
+                        dpValidation = DBProjectDiary.Create(DBProjectDiary.ParseToDatabase(newRow));
+                        if (dpValidation == null)
+                        {
+                            result.eReasonCode = 5;
+                            result.eMessage = "Ocorreu um erro ao obter os movimentos";
+                        }
+                        newRows.Add(newRow);
+                    }
+                }
+                else
+                {
+                    result.eReasonCode = 2;
+                    result.eMessage = "Tabela Preços Serviços Cliente não existe nenhuma linha com o Nº Cliente = " + proj.NºCliente + " e o Código Serviço Cliente = " + serviceCod;
+                }
+            }
+            catch (Exception)
+            {
+                result.eReasonCode = 3;
+                result.eMessage = "Ocorreu algum erro ao Obter as linhas da Tabela Preços Serviços";
+            }
+
+            return Json(result);
+        }
+
         public class ProjectInfo
         {
             public string ProjectNo { get; set; }
@@ -7152,6 +7230,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 if (data != null)
                 {
+                    data.CriarMovNav2017 = data.CriarMovNav2017;
                     data.TotalPrice = data.Quantity * data.UnitPrice;
                     data.UpdateUser = User.Identity.Name;
                     if (DBProjectMovements.Update(DBProjectMovements.ParseToDB(data)) != null)
