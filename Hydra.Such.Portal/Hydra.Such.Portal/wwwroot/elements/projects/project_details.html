@@ -538,7 +538,6 @@
                     this.$.ToastMessageError.open();
                 },
                 _validateData: function () {
-                    //debugger;
                     this.$.Description.validate();
                     this.$.ProjectClient.validate();
                     //this.$.ContractNo.validate();
@@ -704,7 +703,6 @@
                         this._openToastError("Ocorreu um erro.")
                     }
 
-                    debugger;
                     this.$.page_getGroupContabProjectType_ajax.body = JSON.stringify(this.$.FunctionalAreaCode.value);
                     this.$.page_getGroupContabProjectType_ajax.generateRequest();
                 },
@@ -856,7 +854,6 @@
                 },
 
                 _getGroupContabProjectType: function () {
-                    debugger;
                     this.$.page_getGroupContabProjectType_ajax.body = JSON.stringify(this.$.FunctionalAreaCode.value);
                     this.$.page_getGroupContabProjectType_ajax.generateRequest();
                 },

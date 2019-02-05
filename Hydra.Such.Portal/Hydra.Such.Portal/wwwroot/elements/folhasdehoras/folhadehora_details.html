@@ -4254,7 +4254,9 @@
 
                 //EMPREGADO FUNÇÕES
                 _codeChange: function () {
-                    if (this.data.empregadoNo != "") {
+                    debugger;
+                    if (this.$.empregadoNo.value != "") {
+                        this.data.empregadoNo = this.$.empregadoNo.value;
                         this.$.getEmpoyeeNAV_ajax.body = JSON.stringify(this.data);
                         this.$.getEmpoyeeNAV_ajax.generateRequest();
                     };
