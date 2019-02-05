@@ -1870,6 +1870,9 @@ namespace Hydra.Such.Portal.Controllers
 
                 string FHDataPartida = FH.DataHoraPartida.HasValue ? Convert.ToDateTime(FH.DataHoraPartida).ToShortDateString() : "";
                 string FHDataChegada = FH.DataHoraChegada.HasValue ? Convert.ToDateTime(FH.DataHoraChegada).ToShortDateString() : "";
+                TimeSpan FHHoraPartida = TimeSpan.Parse(Convert.ToDateTime(FH.DataHoraPartida).ToShortTimeString());
+                TimeSpan FHHoraChegada = TimeSpan.Parse(Convert.ToDateTime(FH.DataHoraChegada).ToShortTimeString());
+
 
                 TimeSpan HoraMeiaNoite23 = TimeSpan.Parse("23:59");
                 TimeSpan HoraMeiaNoite00 = TimeSpan.Parse("00:00");
@@ -1903,7 +1906,7 @@ namespace Hydra.Such.Portal.Controllers
                         if (HoraInicio > InicioHoraJantar && HoraInicio <= FimHoraJantar)
                             result = 4;
 
-                    if (HoraInicio > HoraFim)
+                    if ((HoraInicio > HoraFim) || (HoraInicio < FHHoraPartida) || (HoraFim > FHHoraChegada))
                         result = 5;
                 }
                 else
