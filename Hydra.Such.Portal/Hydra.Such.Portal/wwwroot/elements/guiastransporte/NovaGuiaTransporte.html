@@ -242,6 +242,14 @@
                    on-response="_shipItemsResponse"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/GuiasTransporteNav/GetShipItems"
+                   last-response="{{ gridShipItemsList }}"
+                   method="post"
+                   handle-as="json"
+                   id="page_grid_ship_items_ajax"
+                   on-response="_gridShipItemsResponse"
+                   content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/GuiasTransporteNav/CreateShipmentLine"
                    last-response="{{ lineCreated }}"
                    method="post"
@@ -593,10 +601,10 @@
                                         </such-selectbox>
                                     </div>
                                     <div class="col-lg-5">
-                                        <vaadin-text-field id="descricaoItem" name="descricaoItem" value="{{ _itemDescription }}" maxlength="250" error-message="Este campo só pode ter no máximo 250 caracteres e é obrigatório!" label="Descrição"></vaadin-text-field>
+                                        <vaadin-text-field id="descricaoItem" name="descricaoItem" value="{{ _itemDescription }}" maxlength="250" required error-message="Este campo só pode ter no máximo 250 caracteres e é obrigatório!" label="Descrição"></vaadin-text-field>
                                     </div>
                                     <div class="col-lg-1">
-                                        <vaadin-text-field id="unidadeMedidaItem" name="unidadeMedidaItem" value="{{ _itemBaseUnit}}" label="U.M." disabled></vaadin-text-field>
+                                        <vaadin-text-field id="unidadeMedidaItem" name="unidadeMedidaItem" value="{{ _itemBaseUnit}}" label="U.M." required error-message="Este campo é obrigatório!" disabled></vaadin-text-field>
                                     </div>
                                     <div class="col-lg-1">
                                         <vaadin-text-field id="quantidadeItem" name="quantidadeItem" value="{{ _itemQuantity }}" label="Quant." required error-message="Este campo é obrigatório, tem que ser superior a 0 e só pode ter 4 casas decimais" prevent-invalid-input pattern="[0-9.]*" on-blur="_roundQuantity"></vaadin-text-field>
@@ -656,13 +664,32 @@
 
                                 <div class="row break_clear">
                                     <vaadin-grid aria-label="GuiaTransporteLines" id="gridLinhas" name="gridLinhas" items="[[ data.linhasGuiaTransporte ]]" class="grid" multi-sort="true" active-item="{{_SelectedLine}}">
-                                        <vaadin-grid-column resizable>
+                                        <vaadin-grid-column width="35px">
                                             <template class="header">
-                                                <vaadin-grid-sorter path="tipoDescription">Tipo</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="tipoDescription" />
                                             </template>
                                             <template>
-                                                [[ item.tipoDescription ]]
+                                                <paper-button raised class="btnRemove tableBtn" on-tap="_deleteShipmentLine" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="tipo">Tipo</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="tipo" />
+                                            </template>
+                                            <template>
+                                                <template is="dom-if" if="{{ item.selected}}">
+                                                    <such-selectbox id="tipoLinhaGrid"
+                                                                    items="[[cbTipoLinhaGT]]"
+                                                                    value="{{ item.tipo }}"
+                                                                    on-change="_onGridTipoLinhaChanged"
+                                                                    value-path="id"
+                                                                    text-path="value"
+                                                                    fields='[{"field":"value", "name":"tipo"}]'>
+                                                    </such-selectbox>
+                                                </template>
+                                                <template is="dom-if" if="{{ !item.selected}}">
+                                                    {{ _setTipoLinhaGridText(item, cbTipoLinhaGT) }}
+                                                </template>
                                             </template>
                                         </vaadin-grid-column>
                                         <vaadin-grid-column resizable>
@@ -671,7 +698,18 @@
                                                 <vaadin-grid-filter path="no" />
                                             </template>
                                             <template>
-                                                [[ item.no ]]
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <such-selectbox id="codItemGrid"
+                                                                    items="[[gridShipItemsList]]"
+                                                                    value="{{ item.no }}"
+                                                                    value-path="itemCode"
+                                                                    text-path="itemCode"
+                                                                    fields='[{"field":"itemCode", "name":"Código"}, {"field":"description", "name":"Descrição"}, {"field":"unitOfMeasure", "name": "U.M."}]'>
+                                                    </such-selectbox>
+                                                </template>
+                                                <template is="dom-if" if="{{ !item.selected }}">
+                                                    {{ item.no }}
+                                                </template>
                                             </template>
                                         </vaadin-grid-column>
                                         <vaadin-grid-column width="450px" resizable>
@@ -680,7 +718,12 @@
                                                 <vaadin-grid-filter path="descricao" />
                                             </template>
                                             <template>
-                                                [[ item.descricao ]]
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <vaadin-text-field id="descricaoItemGrid" name="descricaoItemGrid" value="{{ item.descricao }}" maxlength="250" required error-message="Este campo só pode ter no máximo 250 caracteres e é obrigatório!"></vaadin-text-field>
+                                                </template>
+                                                <template is="dom-if" if="{{ !item.selected }}">
+                                                    {{ item.descricao }}
+                                                </template>
                                             </template>
                                         </vaadin-grid-column>
                                         <vaadin-grid-column resizable>
@@ -698,7 +741,19 @@
                                                 <vaadin-grid-filter path="noProjecto" />
                                             </template>
                                             <template>
-                                                [[ item.noProjecto ]]
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <such-selectbox id="noProjectoGrid"
+                                                                    name="noProjectoGrid"
+                                                                    items="[[cbJobNo]]"
+                                                                    value="{{ item.noProjecto }}"
+                                                                    text-path="no"
+                                                                    value-path="no"
+                                                                    fields='[{"field":"no", "name":"Nº Projecto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"regionCode", "name":"Cód. Região"}, {"field":"areaCode", "name":"Cód. Área"}, {"field":"centerResponsibilityCode", "name":"Cód. Cresp"}]'>
+                                                    </such-selectbox>
+                                                </template>
+                                                <template is="dom-if" if="{{ !item.selected }}">
+                                                    {{ item.noProjecto }}
+                                                </template>
                                             </template>
                                         </vaadin-grid-column>
                                         <vaadin-grid-column resizable>
@@ -707,7 +762,12 @@
                                                 <vaadin-grid-filter path="quantidade" />
                                             </template>
                                             <template>
-                                                [[ item.quantidade ]]
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <vaadin-text-field id="quantidadeGrid" name="quantidadeGrid" value="{{ item.quantidade }}" required error-message="Este campo é obrigatório, tem que ser superior a 0 e só pode ter 4 casas decimais" prevent-invalid-input pattern="[0-9.]*"></vaadin-text-field>
+                                                </template>
+                                                <template is="dom-if" if="{{ !item.selected }}">
+                                                    {{ item.quantidade }}
+                                                </template>
                                             </template>
                                         </vaadin-grid-column>
                                         <vaadin-grid-column resizable>
@@ -716,26 +776,26 @@
                                                 <vaadin-grid-filter path="quantidadeEnviar" />
                                             </template>
                                             <template>
-                                                [[ item.quantidadeEnviar ]]
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <vaadin-text-field id="quantidadeEnviarGrid" name="quantidadeEnviaGrid" value="{{ item.quantidadeEnviar }}" prevent-invalid-input pattern="[0-9.]*" disabled></vaadin-text-field>
+                                                </template>
+                                                <template is="dom-if" if="{{ !item.selected }}">
+                                                    {{ item.quantidadeEnviar }}
+                                                </template>
                                             </template>
                                         </vaadin-grid-column>
-                                        <
-                                        <!--vaadin-grid-column resizable>
-                                        <template class="header">
-                                            <vaadin-grid-sorter path="refDocOrigem">Ref. Doc. Origem</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="refDocOrigem" />
-                                        </template>
-                                        <template>
-                                            [[ item.refDocOrigem ]]
-                                        </template>
-                                    </vaadin-grid-column>-->
                                         <vaadin-grid-column resizable>
                                             <template class="header">
                                                 <vaadin-grid-sorter path="unitCost">Preço Custo</vaadin-grid-sorter>
                                                 <vaadin-grid-filter path="unitCost" />
                                             </template>
                                             <template>
-                                                [[ item.unitCost ]]
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <vaadin-text-field id="unitCostGrid" name="unitCostGrid" value="{{ item.unitCost }}" prevent-invalid-input pattern="[0-9.]*"></vaadin-text-field>
+                                                </template>
+                                                <template is="dom-if" if="{{ !item.selected }}">
+                                                    {{ item.unitCost }}
+                                                </template>
                                             </template>
                                         </vaadin-grid-column>
                                         <vaadin-grid-column resizable>
@@ -744,50 +804,33 @@
                                                 <vaadin-grid-filter path="unitPrice" />
                                             </template>
                                             <template>
-                                                [[ item.unitPrice ]]
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <vaadin-text-field id="unitPriceGrid" name="unitPriceGrid" value="{{ item.unitPrice }}" prevent-invalid-input pattern="[0-9.]*"></vaadin-text-field>
+                                                </template>
+                                                <template is="dom-if" if="{{ !item.selected }}">
+                                                    {{ item.unitPrice }}
+                                                </template>
                                             </template>
                                         </vaadin-grid-column>
                                         <vaadin-grid-column resizable>
                                             <template class="header">
-                                                <vaadin-grid-sorter path="shortcutDimension1Code">Área Funcional</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="shortcutDimension1Code" />
+                                                <vaadin-grid-sorter path="shortcutDimension2Code">Área Funcional</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="shortcutDimension2Code" />
                                             </template>
                                             <template>
-                                                [[ item.shortcutDimension1Code ]]
-                                            </template>
-                                        </vaadin-grid-column>
-                                        <!--<vaadin-grid-column resizable>
-                                        <template class="header">
-                                            <vaadin-grid-sorter path="shortcutDimension2Code">Fonte Financiamento</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="shortcutDimension2Code" />
-                                        </template>
-                                        <template>
-                                            [[ item.shortcutDimension2Code ]]
-                                        </template>
-                                    </vaadin-grid-column>
-                                    <vaadin-grid-column resizable>
-                                        <template class="header">
-                                            <vaadin-grid-sorter path="estadoEquipamentoDesc">Estado Equipamento</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="estadoEquipamentoDesc" />
-                                        </template>
-                                        <template>
-                                            [[ item.estadoEquipamentoDescription ]]
-                                        </template>
-                                    </vaadin-grid-column>-->
-                                        <!--<vaadin-grid-column resizable>
-                                        <template class="header">
-                                            <vaadin-grid-sorter path="inventoryNo">No. Série</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="inventoryNo" />
-                                        </template>
-                                        <template>
-                                            [[ item.inventoryNo ]]
-                                        </template>
-                                    </vaadin-grid-column>-->
-                                        <vaadin-grid-column>
-                                            <template class="header">
-                                            </template>
-                                            <template>
-                                                <paper-button raised class="btnRemove" on-tap="_deleteShipmentLine"><i class="fa fa-trash-o" aria-hidden="true"></i></paper-button>
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <such-selectbox id="areaFuncionalGrid"
+                                                                    name="areaFuncionalGrid"
+                                                                    items="[[CBFunctionalAreas]]"
+                                                                    value="{{ item.shortcutDimension2Code }}"
+                                                                    text-path="value"
+                                                                    value-path="id"
+                                                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                                                    </such-selectbox>
+                                                </template>
+                                                <template is="dom-if" if="{{ !item.selected }}">
+                                                    {{ _setGlobalDimension2Text(item, CBFunctionalAreas) }}
+                                                </template>
                                             </template>
                                         </vaadin-grid-column>
                                     </vaadin-grid>
@@ -829,22 +872,71 @@
                     selected: {
                         type: Number,
                         value: 0
-                    }//,
-                    //thidrPartyNo: {
-                    //    observer:'_setThirdParty'
-                    //}
+                    },
+                    _SelectedLine: {
+                        observer: '_activeItemChanged'
+                    }
                 },
 
-                //observers: ['_onCacheLoaded(data, cbThirdParty)'],
-
-                //_onCacheLoaded: function (data, cbThirdParty) {
-                //    if (!this.Flag) {
-                //        //this.$.page_databound_ajax.body = JSON.stringify({ "No": this._guiatransporteid, "Historic": this._history });
-                //        //this.$.page_databound_ajax.generateRequest();
+                _activeItemChanged: function (item) {
+                    //debugger;;
+                    if (item != null) {
+                        //this.$.gridLinhas.clearCache();
+                        var dataLines = this.data.linhasGuiaTransporte;
                         
-                //    }
-                //    this.Flag = true;
-                //},
+                        var oSel = dataLines.find(x => x.selected);
+                        if (oSel != undefined) {
+                            //oSel = false;
+                            dataLines.find(x => x == oSel).selected = false;
+                        }
+
+                        var sel = dataLines.find(x => x == item);
+                        if (sel != undefined) {
+                            dataLines.find(x => x == item).selected = true;
+                            
+                            var tipoL = item.tipo;
+                            if (tipoL != null && tipoL >= 0 && tipoL <= 1) {
+                                this.$.page_grid_ship_items_ajax.body = JSON.stringify({ "itemType": tipoL, "itemCode": "-1" });
+                                this.$.page_grid_ship_items_ajax.generateRequest();
+                            }
+
+                            this.$.gridLinhas.clearCache();
+                        }
+                    }
+                },
+
+                _setTipoLinhaGridText: function (item, tipoLinhaData) {
+                    //debugger;;
+                    if (item != null) {
+                        if (this.cbTipoLinhaGT != null) {
+                            var _tipoTxt = this.cbTipoLinhaGT.find(x => x.id == item.tipo).value;
+                            return _tipoTxt;
+                        } else {
+                            if (tipoLinhaData != null) {
+                                var _tipoTxt = tipoLinhaData.find(x => x.id == item.tipo).value;
+                                return _tipoTxt;
+                            }
+                        }  
+                    }
+
+                    return "";
+                },
+
+                _setGlobalDimension2Text: function (item, globalDimension2Data) {
+                    if (item != null) {
+                        if (this.CBFunctionalAreas != null) {
+                            var _areaTxt = this.CBFunctionalAreas.find(x => x.id == item.shortcutDimension2Code ).value;
+                            return _areaTxt;
+                        } else {
+                            if (globalDimension2Data != null) {
+                                var _areaTxt = globalDimension2Data.find(x => x.id == item.shortcutDimension2Code).value;
+                                return _areaTxt;
+                            }
+                        }
+                    }
+
+                    return "";
+                },
 
                 _openToast: function (message) {
                     this.$.ToastMessage.text = message;
@@ -882,12 +974,19 @@
                         this.$.ajax_thirdparties.body = JSON.stringify({ "type": this.data.tipo });
                         this.$.ajax_thirdparties.generateRequest();
 
+                        self.$.codEnvio.value = this.data.codEnvio;
+                        //self.$.codEnvio.valueText = this.data.codEnvio;
+
+                        self.$.noCliente.value = this.data.noCliente;
+
+                        debugger;;
                         if (this.data.tipo == 0 && this.data.noCliente != "" && this.data.codEnvio) {
                             this.$.page_ship_to_addresses_ajax.body = JSON.stringify({ "customerId": this.data.noCliente, "shipToCode": this.data.codEnvio });
                             this.$.page_ship_to_addresses_ajax.generateRequest();
                         }
-
+                                                
                         self.$.codEnvio.disabled = this.data.tipo != 0;
+                        
 
                         self.$.noProjectoItem.value = this.data.noProjecto;
                         self.$.noProjectoItem.valueText = this.data.noProjecto;
@@ -940,7 +1039,7 @@
                 },
 
                 _update: function () {
-                    debugger;;
+                    //debugger;;
 
                     
                     this.$.ajax_update_guia.body = JSON.stringify(this.data);
@@ -948,7 +1047,7 @@
                 },
 
                 _updateGuiaResponse: function (e) {
-                    debugger;;
+                    //debugger;;
                     if (this.guiaUpdated) {
                         if (this.$.tipoGuia.value == "") {
                             this.data.tipo = 0;
@@ -963,7 +1062,7 @@
                 },
 
                 _onTipoGuiaChanged: function (e) {
-                    debugger;;
+                    //debugger;;
                     if (this.data != undefined) {
                         var tipoG = this.$.tipoGuia.value;
                         
@@ -1041,14 +1140,14 @@
                 },     
 
                 //_thirdPartiesResponse: function (e) {
-                //    debugger;;
+                //    //debugger;;
                 //    if (this.cbThirdParty === null) {
                 //        //this._openToastError("Erro!!");
                 //    }
                 //},
 
                 _setThirdParty: function (e) {
-                    debugger;
+                    //debugger;
                     if (this.data != undefined) {
                         var type = this.$.tipoGuia.value;
                         var entityId = this.$.noCliente.value;
@@ -1058,7 +1157,7 @@
 
                         if (type != null && entityId != null && entityId != "") {
                             if (this.cbThirdParty != null) {
-                                debugger;;
+                                //debugger;;
                                 var _third = this.cbThirdParty.find(t => t.entityType == type && t.entityId == entityId);
                                 if (_third != null) {
                                     this._setThirdPartyDetails(_third);
@@ -1068,7 +1167,7 @@
                                     this.$.ajax_thirdparty_details.generateRequest();
                                 }
                                 
-                                debugger;;
+                                //debugger;;
                             }
                             else {
                                 this.$.ajax_thirdparty_details.body = JSON.stringify({ "type": type, "entityId": entityId })
@@ -1089,18 +1188,18 @@
                 },
 
                 _thirdPartyDetailsResponse: function (e) {
-                    debugger;;
+                    //debugger;;
 
                     this._setThirdPartyDetails(this.thirdPartyDetails);
                    
                 },
 
                 _setThirdPartyDetails: function (details) {
-                    debugger;;
+                    //debugger;;
                     var _self = this;
 
                     if (details != null) {
-                        debugger;;
+                        //debugger;;
 
                         _self.$.codEnvio.disabled = this.data.tipo != 0;
 
@@ -1169,7 +1268,7 @@
                         }
 
                         if (this.data.tipo == 0 && this.data.noCliente != "") {
-                            debugger;;
+                            //debugger;;
                             this.$.page_ship_to_addresses_ajax.body = JSON.stringify({ "customerId": this.data.noCliente, "shipToCode": null });
                             this.$.page_ship_to_addresses_ajax.generateRequest();
                         }
@@ -1253,7 +1352,7 @@
                 },
 
                 _dataGuiaChanged: function (e) {
-                    debugger;;
+                    //debugger;;
                     this.$.dataSaida.min = this.$.dataGuia.value;
                 },
 
@@ -1269,7 +1368,7 @@
 
                 _projectDimsResponse: function (e) {
                     if (e.detail.status === 200) {
-                        debugger;;
+                        //debugger;;
                         if (this.projectDims.regionCode != "") {
                             this.$.globalDimension1Code.value = this.projectDims.regionCode;
                             this.data.globalDimension1Code = this.projectDims.regionCode;
@@ -1293,10 +1392,10 @@
                             this.data.globalDimension3Code = this.projectDims.responsabilityCenterCode;
                         }
 
-                        debugger;;
+                        //debugger;;
                         this.$.noProjectoItem.value = this.projectDims.projectNo;
-                        this.$.noProjectoItem.valueText = this.projectDims.no;
-                        this._itemProjectNo = this.projectDims.no;
+                        this.$.noProjectoItem.valueText = this.projectDims.projectNo;
+                        this._itemProjectNo = this.projectDims.projectNo;
                         
                     }
                 },
@@ -1313,12 +1412,12 @@
 
                 _projectItemDimsResponse: function (e) {
                     if (e.detail.status === 200) {
-                        debugger;;
+                        //debugger;;
                         if (this.projectItemDims.regionCode != "") {
                             
                             this.$.regiaoItem.value = this.projectItemDims.regionCode;
                             //this.$.regiaoItem.valueText = this.projectDims.regionCode;
-                            this._itemRegionCode = this.projectDims.regionCode;
+                            this._itemRegionCode = this.projectItemDims.regionCode;
                         }
 
                         if (this.projectItemDims.functionalAreaCode != "") {
@@ -1328,7 +1427,7 @@
                             this._itemAreaCode = this.projectItemDims.functionalAreaCode;
                         }
 
-                        debugger;;
+                        //debugger;;
                         //this.$.noProjectoItem.value = this.projectDims.no;
                         //this.$.noProjectoItem.valueText = this.projectDims.no;
                         //this._itemProjectNo = this.projectDims.no;
@@ -1336,7 +1435,7 @@
                 },
 
                 _setShipToAddress: function (e) {
-                    debugger;;
+                    //debugger;;
                     if (this.data != undefined) {
                         var custNo = this.$.noCliente.value;
                         var shipCode = this.$.codEnvio.value;
@@ -1357,7 +1456,7 @@
                 },
 
                 _shipToAddressesResponse: function (e) {
-                    debugger;;
+                    //debugger;;
                     if (this.$.tipoGuia.value == 0 && this.$.noCliente.value != "" && this.$.codEnvio.value != "") {
                         var custNo = this.$.noCliente.value;
                         var shipCode = this.$.codEnvio.value;
@@ -1372,7 +1471,7 @@
                 },
 
                 _setShipToAddressDetails: function (shipToDetails) {
-                    debugger;;
+                    //debugger;;
 
                     if (shipToDetails != null) {
                         this.data.codEnvio = shipToDetails.code;
@@ -1431,7 +1530,7 @@
                 },
 
                 _onTipoLinhaChanged: function (e) {
-                    debugger;;
+                    //debugger;;
                     if (this.data != undefined) {
                         var tipoL = this.$.tipoLinha.value;
 
@@ -1455,8 +1554,37 @@
                     }
                 },
 
-                _shipItemsResponse: function (e) {
+                _onGridTipoLinhaChanged: function (e) {
                     debugger;;
+                    if (this.data != undefined) {
+                        var dataLines = this.data.linhasGuiaTransporte;
+                        var newTipoL = e.target.__data.activeItem.id;
+
+                        var index = dataLines.indexOf(e.model.item);
+                        var line = dataLines[index];
+
+                        this.gridShipItemsList = null;
+                        
+                        line.no = "";
+                        this.$.gridLinhas.activeItem.no.value = "";
+                        this.$.gridLinhas.activeItem.no.valueText = "";
+                        //this.$.gridLinhas.activeItem._clearSelection;
+                        line.descricao = "";
+                        line.codUnidadeMedida = "";
+                        line.quantidade = 0;
+                        line.quantidadeEnviar = 0;
+
+                        if (newTipoL != null && newTipoL >= 0 && newTipoL <= 1) {
+                            this.$.page_grid_ship_items_ajax.body = JSON.stringify({ "itemType": newTipoL, "itemCode": "-1" });
+                            this.$.page_grid_ship_items_ajax.generateRequest();
+                        }
+
+                        this.$.gridLinhas.clearCache();
+                    }
+                },
+
+                _shipItemsResponse: function (e) {
+                    //debugger;;
 
                     if (this.shipItemsList != null) {
                         if (this.$.codigoItem.value != null && this.$.codigoItem.value != "") {
@@ -1484,6 +1612,13 @@
                          
                     }
                 },
+
+                _gridShipItemsResponse: function (e) {
+                    debugger;;
+                    if (this.gridShipItemsList != null) {
+                    }    
+                },
+
                 _setShipmentItem: function (e) {
                     if (this.shipItemsList != null) {
                         if (this.$.codigoItem.value != null && this.$.codigoItem.value != "") {
@@ -1513,7 +1648,7 @@
                 },
 
                 _roundQuantity: function (e) {
-                    debugger;;
+                    //debugger;;
                     var quant = this.$.quantidadeItem.value;
                     var quantEnviar = this.$.quantidadeEnviarItem.value;
 
@@ -1575,7 +1710,7 @@
                 },
 
                 _addShipmentLine: function () {
-                    debugger;;
+                    //debugger;;
                     var index = 1000;
                     var documentLines = this.data.linhasGuiaTransporte;
                     if (documentLines != null && documentLines.length > 0) {
@@ -1607,7 +1742,7 @@
                         this._openToastError(msg);
                         return;                        
                     }
-                    debugger;;
+                    //debugger;;
 
                     this.$.page_create_line_ajax.body = JSON.stringify(shipLineToAdd);
 
@@ -1625,7 +1760,7 @@
                 },
 
                 _createLineResponse: function (e) {
-                    debugger;;
+                    //debugger;;
                     if (this.lineCreated) {
                         
                         this.$.page_databound_ajax.body = JSON.stringify({ "No": this._guiatransporteid, "Historic": this._history });
@@ -1666,15 +1801,8 @@
                     }
                 },
 
-                _lineSelected: function (item) {
-                    if (item != null) {
-                        debugger;;
-                        //var oSel = this.data.linhasGuiaTransporte.find(x => x.selected);
-                    }
-                },
-
                 _deleteShipmentLine: function (e) {
-                    debugger;;
+                    //debugger;;
                     var index = this.data.linhasGuiaTransporte.indexOf(e.model.item);
                     this.data.linhasGuiaTransporte.splice(index, 1);
                     this.$.ajax_delete_linha.body = JSON.stringify({ "noGuia": this.data.noGuiaTransporte, "noLinha": e.model.item.noLinha });
@@ -1697,7 +1825,7 @@
 
                 __preciseRound: function (num, dec) {
                     if ((typeof num !== 'number') || (typeof dec !== 'number'))
-                        return false;
+                        return 0;
 
                     var num_sign = num >= 0 ? 1 : -1;
 
