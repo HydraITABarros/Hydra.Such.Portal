@@ -9,6 +9,7 @@ namespace Hydra.Such.Data.Database
         public int? NºUnidadeProdutiva { get; set; }
         public string NºProduto { get; set; }
         public string Descrição { get; set; }
+        public string Descricao2 { get; set; }
         public string CódUnidadeMedida { get; set; }
         public decimal? Quantidade { get; set; }
         public decimal? CustoUnitárioDireto { get; set; }

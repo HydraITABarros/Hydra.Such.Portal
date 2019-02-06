@@ -230,7 +230,7 @@ namespace Hydra.Such.Data.NAV
                             Job_No = result.WSJobJournalLine.Job_No,
                             Document_DateSpecified = result.WSJobJournalLine.Document_DateSpecified,
                             Document_Date = result.WSJobJournalLine.Document_Date,
-                            Document_No = result.WSJobJournalLine.Document_No,
+                            Document_No = string.IsNullOrEmpty(result.WSJobJournalLine.Document_No) ? "ND" : result.WSJobJournalLine.Document_No,
                             TypeSpecified = true,
                             Type = result.WSJobJournalLine.Type,
                             Description100 = result.WSJobJournalLine.Description100,
@@ -251,7 +251,9 @@ namespace Hydra.Such.Data.NAV
                             Unit_Price = DiaryLines.Unit_Price,
                             Unit_PriceSpecified = true,
                             Ws_Communicated_Nav_2009 = true,
-                            Ws_Communicated_Nav_2009Specified = true                            
+                            Ws_Communicated_Nav_2009Specified = true,
+                            
+
                         }
                     };
                     WS_Client = new WSCreateProjectDiaryLine.WSJobJournalLine_PortClient(navWSBinding, WS_URL);

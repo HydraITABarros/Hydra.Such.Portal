@@ -206,6 +206,7 @@ namespace Hydra.Such.Data.Logic.Nutrition
                     id = item.NºEncomendaAberto + " " + item.NºLinhaEncomendaAberto + " " + item.NºProduto,
                     LineNo = item.NºLinha,
                     Description = item.Descrição,
+                    Description2 = item.Descricao2,
                     CreateDateTime = item.DataHoraCriação,
                     CreateUser = item.UtilizadorCriação,
                     DateByPriceSupplier = !item.DataPPreçoFornecedor.HasValue ? "" : item.DataPPreçoFornecedor.Value.ToString("yyyy-MM-dd"),
@@ -255,6 +256,7 @@ namespace Hydra.Such.Data.Logic.Nutrition
                 var x =  new DiárioRequisiçãoUnidProdutiva();
                 x.NºLinha = item.LineNo;
                 x.Descrição = item.Description;
+                x.Descricao2 = item.Description2;
                 x.DataHoraCriação = item.CreateDateTime;
                 x.UtilizadorCriação = item.CreateUser;
                 x.DataPPreçoFornecedor = DateTime.Parse(item.DateByPriceSupplier);

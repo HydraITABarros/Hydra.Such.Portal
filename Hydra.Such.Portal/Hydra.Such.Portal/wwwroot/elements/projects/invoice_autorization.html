@@ -434,7 +434,7 @@
                                                 <vaadin-grid-filter path="unitPrice" />
                                             </template>
                                             <template>
-                                                <vaadin-text-field rows="5" value="{{item.unitPrice}}" id="txtUnitPrice" maxlength="18" pattern="[0-9]+([\.\,][0-9]+)?" on-blur="_updateLinhaMovimento"> </vaadin-text-field>
+                                                <vaadin-text-field rows="5" value="{{item.unitPrice}}" id="txtUnitPrice" maxlength="18" pattern="[0-9]+([\.\,][0-9]+)?" on-blur="_updateLinhaMovimentoNumerico"> </vaadin-text-field>
                                             </template>
                                         </vaadin-grid-column>
 
@@ -1408,14 +1408,20 @@
                 },
                 /* end - ColumnToggle */
 
-                _updateLinhaMovimento: function (e) {
+                _updateLinhaMovimentoNumerico: function (e) {
                     e.model.item.unitPrice = e.model.item.unitPrice.replace(",", ".");
 
                     this.$.updatelines_ajax.body = JSON.stringify(e.model.item);
                     this.$.updatelines_ajax.generateRequest();
                     this.$.grdProjectMovements.clearCache();
                 },
+                _updateLinhaMovimento: function (e) {
+                    this.$.updatelines_ajax.body = JSON.stringify(e.model.item);
+                    this.$.updatelines_ajax.generateRequest();
+                    this.$.grdProjectMovements.clearCache();
+                },
                 _updateLinesResponse: function () {
+                    debugger;
                     if (this.UpdateResponse.eReasonCode == 1) {
                         this.$.grdProjectMovements.selectedItems = [];
                         this.$.movements_databound_ajax.body = JSON.stringify({ "projectNo": this._projectno, "billable": this._billable });
