@@ -6,7 +6,7 @@ $(function () {
 
     window.addEventListener('WebComponentsReady', function (e) {
         //return;
-        initGridLists();
+        //initGridLists();
     });
 });
 
@@ -123,14 +123,15 @@ var openSelectedMenu = function () {
 };
 
 var initGridLists = function () {
+    var parent = "";
     var gridLists = $('[_permissions]')[0].root.querySelectorAll('[column-reordering-allowed]');
     gridLists.forEach(function (grid) {
         window.testes = grid;
-        setGridListsColumnDragable(grid, grid.__dataHost);
+        handleGridListColumnsOrder(grid, grid.__dataHost);
     });
 };
 
-var setGridListsColumnDragable = function (grid, name) {
+var handleGridListColumnsOrder = function (grid, name) {
     var columnTree = grid._getColumnTree()[0];
 
     if (typeof localStorage !== 'undefined') {

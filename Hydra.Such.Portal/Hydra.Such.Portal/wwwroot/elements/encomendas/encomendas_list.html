@@ -274,7 +274,8 @@
                 ready: function () {
 
                     this.$.grid_databound_ajax.generateRequest();
-                  
+
+                    window.handleGridListColumnsOrder(this.$.grid, 'encomendas');
                     /*ColumnToggle*/
                     this._startColumnToggle();
 

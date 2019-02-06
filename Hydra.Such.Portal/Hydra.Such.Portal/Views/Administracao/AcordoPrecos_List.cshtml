@@ -137,6 +137,8 @@
                     this.$.grid_databound_ajax.body = JSON.stringify();
                     this.$.grid_databound_ajax.generateRequest();
 
+                    window.handleGridListColumnsOrder(this.$.acordoPrecosTabela, 'admin-acordoprecos-list');
+
                     var _this = this;
                     $(window).resize(function () {
                         _this.fixGridToBottom();
