@@ -109,7 +109,8 @@ namespace Hydra.Such.Portal.Controllers
                 List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
                 var details = DBNAV2017Encomendas.GetDetailsByNo(_config.NAVDatabaseName, _config.NAVCompanyName, encomenda.No, "C%");
                 var lines = DBNAV2017Encomendas.ListLinesByNo(_config.NAVDatabaseName, _config.NAVCompanyName, encomenda.No, "C%");
-                return Json(new {
+                return Json(new
+                {
                     details,
                     lines
                 });
@@ -459,7 +460,7 @@ namespace Hydra.Such.Portal.Controllers
                         UsersToNotify.Add(Aprovador1);
                     if (!string.IsNullOrEmpty(Aprovador2))
                         UsersToNotify.Add(Aprovador2);
-                    
+
                     if (UsersToNotify.Count() > 0)
                     {
                         UsersToNotify = UsersToNotify.Distinct().ToList();
@@ -467,7 +468,7 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             SendEmailApprovals Email = new SendEmailApprovals();
 
-                            Email.Subject = "eSUCH - Aprovação Pendente - Movimento de Pagamento Nº "  + data.NoPedido.ToString();
+                            Email.Subject = "eSUCH - Aprovação Pendente - Movimento de Pagamento Nº " + data.NoPedido.ToString();
                             Email.From = User.Identity.Name;
                             Email.To.Add(e);
                             Email.Body = MakeEmailBodyContent("Existe uma nova tarefa pendente da sua aprovação no eSUCH!");
@@ -891,7 +892,7 @@ namespace Hydra.Such.Portal.Controllers
                         isHidden = (bool)column.First()["hidden"];
                         label = (string)column.First()["label"];
                     }
-                    catch {}
+                    catch { }
 
                     if (!isHidden)
                     {
@@ -915,19 +916,20 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 var columnPath = column.Path.ToString();
                                 columnPath = columnPath.First().ToString().ToUpper() + String.Join("", columnPath.Skip(1));
-                                object value;
-                                try { value = item.GetType().GetProperty(columnPath).GetValue(item, null); }
-                                catch { value = item.GetType().GetProperty(columnPath.ToUpper()).GetValue(item, null); }
-                               
-                                if(columnPath == "Valor" || columnPath == "ValorEncomenda" || columnPath == "ValorJaPedido")
+                                object value = null;
+                                try { value = item.GetType().GetProperty(columnPath).GetValue(item, null); } catch { }
+                                if (value == null) try { value = item.GetType().GetProperty(columnPath.ToUpper()).GetValue(item, null); } catch { }
+
+                                if ( (new[] { "Valor", "ValorEncomenda", "ValorJaPedido" }).Contains(columnPath) )
                                 {
-                                    row.CreateCell(i).SetCellValue((double)(value != null ? (decimal)value: 0));
-                                } else
+                                    row.CreateCell(i).SetCellValue((double)(value != null ? (decimal)value : 0));
+                                }
+                                else
                                 {
                                     row.CreateCell(i).SetCellValue(value?.ToString());
                                 }
                             }
-                        }                        
+                        }
                         count++;
                     }
                 }

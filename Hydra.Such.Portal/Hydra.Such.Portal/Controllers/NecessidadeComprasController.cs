@@ -182,6 +182,7 @@ namespace Hydra.Such.Portal.Controllers
                             newdp.NºUnidadeProdutiva = x.ProductionUnitNo;
                             newdp.NºProduto = x.ProductNo;
                             newdp.Descrição = x.Description;
+                            newdp.Descricao2 = x.Description2;
                             newdp.CódUnidadeMedida = x.UnitMeasureCode;
                             newdp.Quantidade = x.Quantity;
                             newdp.CustoUnitárioDireto = x.DirectUnitCost;
@@ -232,6 +233,7 @@ namespace Hydra.Such.Portal.Controllers
                                 NºUnidadeProdutiva = x.ProductionUnitNo,
                                 NºProduto = x.ProductNo,
                                 Descrição = x.Description,
+                                Descricao2 = x.Description2,
                                 CódUnidadeMedida = x.UnitMeasureCode,
                                 Quantidade = x.Quantity,
                                 CustoUnitárioDireto = x.DirectUnitCost,
@@ -471,6 +473,7 @@ namespace Hydra.Such.Portal.Controllers
                             newdp.DataReceçãoEsperada = expectedReceipDate.CompareTo(DateTime.MinValue) > 0 ? expectedReceipDate : (DateTime?)null;
                             newdp.NºProduto = lr.Código;
                             newdp.Descrição = prodVal;
+                            newdp.Descricao2 = lr.Descrição2;
                             newdp.CódUnidadeMedida = lr.CódigoUnidadeMedida;
                             //newdp.CustoUnitárioDireto = lr.CustoUnitário;
                             //newdp.NºFornecedor = lr.NºFornecedor; //ACORDO DE PREÇOS
@@ -605,6 +608,7 @@ namespace Hydra.Such.Portal.Controllers
                                     Type = 2,
                                     Code = item.ProductNo,
                                     Description = item.Description,
+                                    Description2 = item.Description2,
                                     UnitMeasureCode = item.UnitMeasureCode,
                                     QtyByUnitOfMeasure = item.QuantitybyUnitMeasure,
                                     QuantityToRequire = item.Quantity,
@@ -828,6 +832,7 @@ namespace Hydra.Such.Portal.Controllers
                             newdp.NºUnidadeProdutiva = x.ProductionUnitNo;
                             newdp.NºProduto = x.ProductNo;
                             newdp.Descrição = x.Description;
+                            newdp.Descricao2 = x.Description2;
                             newdp.CódUnidadeMedida = x.UnitMeasureCode;
                             newdp.Quantidade = x.Quantity;
                             newdp.CustoUnitárioDireto = x.DirectUnitCost;
@@ -866,6 +871,7 @@ namespace Hydra.Such.Portal.Controllers
                                 NºUnidadeProdutiva = x.ProductionUnitNo,
                                 NºProduto = x.ProductNo,
                                 Descrição = x.Description,
+                                Descricao2 = x.Description2,
                                 CódUnidadeMedida = x.UnitMeasureCode,
                                 Quantidade = x.Quantity,
                                 Valor = x.TotalValue,
