@@ -1416,6 +1416,7 @@
                     this.$.grdProjectMovements.clearCache();
                 },
                 _updateLinhaMovimento: function (e) {
+                    debugger;
                     this.$.updatelines_ajax.body = JSON.stringify(e.model.item);
                     this.$.updatelines_ajax.generateRequest();
                     this.$.grdProjectMovements.clearCache();

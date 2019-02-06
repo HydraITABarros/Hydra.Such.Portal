@@ -316,6 +316,24 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult UpdateShipmentLine([FromBody] LinhaGuiaTransporteNavViewModel line)
+        {
+            if(line.NoGuiaTransporte == "" || line.NoGuiaTransporte == null)
+            {
+                return Json(false);
+            }
+
+            if(line.NoLinha == 0)
+            {
+                return Json(false);
+            }
+
+            bool result = DBNAV2017GuiasTransporte.UpdateLinhaGuiaTransporte(line);
+
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult DeleteShipmentLine([FromBody] JObject line)
         {
             if (line == null)

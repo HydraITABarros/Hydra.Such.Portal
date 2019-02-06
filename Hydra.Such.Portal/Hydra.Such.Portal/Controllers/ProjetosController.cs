@@ -7091,7 +7091,6 @@ namespace Hydra.Such.Portal.Controllers
             {
                 if (data != null)
                 {
-                    data.CriarMovNav2017 = data.CriarMovNav2017;
                     data.TotalPrice = data.Quantity * data.UnitPrice;
                     data.UpdateUser = User.Identity.Name;
                     if (DBProjectMovements.Update(DBProjectMovements.ParseToDB(data)) != null)
@@ -7119,6 +7118,43 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(data);
         }
+
+        [HttpPost]
+        public JsonResult UpdateLinhasFaturacao([FromBody] AuthorizedProjectViewModel data)
+        {
+
+            try
+            {
+                if (data != null)
+                {
+                    if (DBAuthotizedProjects.Update(DBAuthotizedProjects.ParseToDB(data)) != null)
+                    {
+                        data.eReasonCode = 1;
+                        data.eMessage = "Projeto atualizado com sucesso.";
+                    }
+                    else
+                    {
+                        data.eReasonCode = 2;
+                        data.eMessage = "Ocorreu um erro ao atualizar o Projeto.";
+                    }
+                }
+                else
+                {
+                    data.eReasonCode = 3;
+                    data.eMessage = "Os dados a serem atualizados não podem ser nulos.";
+                }
+            }
+            catch (Exception ex)
+            {
+                data.eReasonCode = 99;
+                data.eMessage = "Ocorreu um erro.";
+            }
+
+            return Json(data);
+        }
+
+
+
 
     }
 }

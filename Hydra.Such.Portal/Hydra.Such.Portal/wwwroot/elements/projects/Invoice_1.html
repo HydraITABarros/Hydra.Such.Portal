@@ -302,6 +302,16 @@
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/Projetos/UpdateLinhasFaturacao"
+                   last-response="{{UpdateResponse}}"
+                   method="post"
+                   handle-as="json"
+                   id="updatelines_ajax"
+                   on-response="_updateLinhasFaturacaoResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+
         <vaadin-grid column-reordering-allowed id="projectInvoiceAutorization" selected-items={{selectedItems}} active-item="{{selectedItem}}" aria-label="Tabela Autorização Faturação" items="[[authorizedMovements]]" class="editGrid">
             <vaadin-grid-selection-column id="selectColumn" auto-select>
             </vaadin-grid-selection-column>
@@ -392,7 +402,7 @@
                     <vaadin-grid-filter path="codTermosPagamento" />
                 </template>
                 <template>
-                    <vaadin-combo-box items="[[PaymentTerms]]" id="cmbPaymentTerms" item-value-path="id" item-label-path="value" value="{{item.codTermosPagamento}}" disabled="{{ !_permissions.update }}">
+                    <vaadin-combo-box items="[[PaymentTerms]]" id="cmbPaymentTerms" item-value-path="id" item-label-path="value" value="{{item.codTermosPagamento}}" on-blur="_updateLinhasFaturacao" disabled="{{ !_permissions.update }}">
                         <template>
                             <paper-icon-item>
                                 <paper-item-body two-line>
@@ -410,7 +420,7 @@
                     <vaadin-grid-filter path="dataPrestacaoServico" />
                 </template>
                 <template>
-                    <vaadin-date-picker value="{{item.dataPrestacaoServico}}"></vaadin-date-picker>
+                    <vaadin-date-picker value="{{item.dataPrestacaoServico}}" on-blur="_updateLinhasFaturacao" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
                 </template>
             </vaadin-grid-column>
 
@@ -420,7 +430,7 @@
                     <vaadin-grid-filter path="numCompromisso" />
                 </template>
                 <template>
-                    <vaadin-text-field rows="5" value="{{item.numCompromisso}}" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                    <vaadin-text-field rows="5" value="{{item.numCompromisso}}" on-blur="_updateLinhasFaturacao" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                 </template>
             </vaadin-grid-column>
 
@@ -460,7 +470,7 @@
                     <vaadin-grid-filter path="descricaoGrupo" />
                 </template>
                 <template>
-                    <vaadin-text-field rows="5" maxlength="30" value="{{item.descricaoGrupo}}" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                    <vaadin-text-field rows="5" maxlength="30" value="{{item.descricaoGrupo}}" on-blur="_updateLinhasFaturacao" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                 </template>
             </vaadin-grid-column>
 
@@ -470,7 +480,7 @@
                     <vaadin-grid-filter path="situacoesPendentes" />
                 </template>
                 <template>
-                    <vaadin-text-field rows="5" maxlength="60" value="{{item.situacoesPendentes}}" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                    <vaadin-text-field rows="5" maxlength="60" value="{{item.situacoesPendentes}}" on-blur="_updateLinhasFaturacao" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                 </template>
             </vaadin-grid-column>
 
@@ -1415,6 +1425,21 @@
                     window.history.back();
                 },
 
+                _updateLinhasFaturacao: function (e) {
+                    debugger;
+                    this.$.updatelines_ajax.body = JSON.stringify(e.model.item);
+                    this.$.updatelines_ajax.generateRequest();
+                    this.$.projectInvoiceAutorization.clearCache();
+                },
+                _updateLinhasFaturacaoResponse: function () {
+                    debugger;
+                    if (this.UpdateResponse.eReasonCode == 1) {
+                        this.$.page_databound_ajax.generateRequest();
+                    }
+                    else {
+                        this.openToastError(this.UpdateResponse.eMessage);
+                    }
+                },
 
 
 

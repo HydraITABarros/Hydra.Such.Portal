@@ -257,6 +257,15 @@
                    id="page_create_line_ajax"
                    on-response="_createLineResponse"
                    content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/GuiasTransporteNav/UpdateShipmentLine"
+                   last-response="{{ lineUpdated }}"
+                   method="post"
+                   handle-as="json"
+                   id="page_update_line_ajax"
+                   on-response="_updateLineResponse"
+                   content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/GuiasTransporteNav/DeleteShipmentLine"
                    last-response="{{ lineDeleted }}"
                    method="post"
@@ -702,6 +711,8 @@
                                                     <such-selectbox id="codItemGrid"
                                                                     items="[[gridShipItemsList]]"
                                                                     value="{{ item.no }}"
+                                                                    on-change="_setGridShipmentItem"
+                                                                    on-blur="_updateShipmentLine"
                                                                     value-path="itemCode"
                                                                     text-path="itemCode"
                                                                     fields='[{"field":"itemCode", "name":"Código"}, {"field":"description", "name":"Descrição"}, {"field":"unitOfMeasure", "name": "U.M."}]'>
@@ -719,7 +730,7 @@
                                             </template>
                                             <template>
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field id="descricaoItemGrid" name="descricaoItemGrid" value="{{ item.descricao }}" maxlength="250" required error-message="Este campo só pode ter no máximo 250 caracteres e é obrigatório!"></vaadin-text-field>
+                                                    <vaadin-text-field id="descricaoItemGrid" name="descricaoItemGrid" value="{{ item.descricao }}" on-blur="_updateShipmentLine" maxlength="250" required error-message="Este campo só pode ter no máximo 250 caracteres e é obrigatório!"></vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
                                                     {{ item.descricao }}
@@ -746,6 +757,7 @@
                                                                     name="noProjectoGrid"
                                                                     items="[[cbJobNo]]"
                                                                     value="{{ item.noProjecto }}"
+                                                                    on-blur="_updateShipmentLine"
                                                                     text-path="no"
                                                                     value-path="no"
                                                                     fields='[{"field":"no", "name":"Nº Projecto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"regionCode", "name":"Cód. Região"}, {"field":"areaCode", "name":"Cód. Área"}, {"field":"centerResponsibilityCode", "name":"Cód. Cresp"}]'>
@@ -763,7 +775,12 @@
                                             </template>
                                             <template>
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field id="quantidadeGrid" name="quantidadeGrid" value="{{ item.quantidade }}" required error-message="Este campo é obrigatório, tem que ser superior a 0 e só pode ter 4 casas decimais" prevent-invalid-input pattern="[0-9.]*"></vaadin-text-field>
+                                                    <vaadin-text-field id="quantidadeGrid" 
+                                                                       name="quantidadeGrid" 
+                                                                       value="{{ item.quantidade }}" 
+                                                                       on-blur="_updateShipmentLine" 
+                                                                       required error-message="Este campo é obrigatório, tem que ser superior a 0 e só pode ter 4 casas decimais" 
+                                                                       prevent-invalid-input pattern="[0-9.]*"></vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
                                                     {{ item.quantidade }}
@@ -791,7 +808,7 @@
                                             </template>
                                             <template>
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field id="unitCostGrid" name="unitCostGrid" value="{{ item.unitCost }}" prevent-invalid-input pattern="[0-9.]*"></vaadin-text-field>
+                                                    <vaadin-text-field id="unitCostGrid" name="unitCostGrid" value="{{ item.unitCost }}" on-blur="_updateShipmentLine" prevent-invalid-input pattern="[0-9.]*"></vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
                                                     {{ item.unitCost }}
@@ -805,7 +822,7 @@
                                             </template>
                                             <template>
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field id="unitPriceGrid" name="unitPriceGrid" value="{{ item.unitPrice }}" prevent-invalid-input pattern="[0-9.]*"></vaadin-text-field>
+                                                    <vaadin-text-field id="unitPriceGrid" name="unitPriceGrid" value="{{ item.unitPrice }}" on-blur="_updateShipmentLine" prevent-invalid-input pattern="[0-9.]*"></vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
                                                     {{ item.unitPrice }}
@@ -823,6 +840,7 @@
                                                                     name="areaFuncionalGrid"
                                                                     items="[[CBFunctionalAreas]]"
                                                                     value="{{ item.shortcutDimension2Code }}"
+                                                                    on-blur="_updateShipmentLine"
                                                                     text-path="value"
                                                                     value-path="id"
                                                                     fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
@@ -975,9 +993,10 @@
                         this.$.ajax_thirdparties.generateRequest();
 
                         self.$.codEnvio.value = this.data.codEnvio;
-                        //self.$.codEnvio.valueText = this.data.codEnvio;
+                        self.$.codEnvio.valueText = this.data.codEnvio;
 
                         self.$.noCliente.value = this.data.noCliente;
+                        self.$.noCliente.valueText = this.data.noCliente;
 
                         debugger;;
                         if (this.data.tipo == 0 && this.data.noCliente != "" && this.data.codEnvio) {
@@ -1138,13 +1157,6 @@
                     }
                     
                 },     
-
-                //_thirdPartiesResponse: function (e) {
-                //    //debugger;;
-                //    if (this.cbThirdParty === null) {
-                //        //this._openToastError("Erro!!");
-                //    }
-                //},
 
                 _setThirdParty: function (e) {
                     //debugger;
@@ -1573,6 +1585,8 @@
                         line.codUnidadeMedida = "";
                         line.quantidade = 0;
                         line.quantidadeEnviar = 0;
+                        line.unitCost = 0;
+                        line.unitPrice = 0;
 
                         if (newTipoL != null && newTipoL >= 0 && newTipoL <= 1) {
                             this.$.page_grid_ship_items_ajax.body = JSON.stringify({ "itemType": newTipoL, "itemCode": "-1" });
@@ -1581,11 +1595,59 @@
 
                         this.$.gridLinhas.clearCache();
                     }
+                },                       
+
+                _gridShipItemsResponse: function (e) {
+                    debugger;;
+                    if (this.gridShipItemsList != null) {
+                        debugger;;
+                        var dataLines = this.data.linhasGuiaTransporte;
+                        var index = dataLines.indexOf(e.model.item);
+
+                        var line = dataLines[index];
+                        
+                        var it = this.gridShipItemsList.find(i => i.itemType == line.tipo && i.itemCode == line.no);
+                        if (it != null) {
+                            line.descricao = it.description;
+                            line.codUnidadeMedida = it.unitOfMeasure;
+                            line.quantidade = 0;
+                            line.quantidadeEnviar = 0;
+                        } else {
+
+                        }
+                    }    
                 },
 
-                _shipItemsResponse: function (e) {
-                    //debugger;;
+                _setGridShipmentItem: function (e) {
+                    debugger;;
+                    if (this.gridShipItemsList != null) {
+                        debugger;;
+                        var dataLines = this.data.linhasGuiaTransporte;
+                        var index = dataLines.indexOf(e.model.item);
 
+                        var line = dataLines[index];
+
+                        if (this.gridShipItemsList != null) {
+                            var it = this.gridShipItemsList.find(i => i.itemType == line.tipo && i.itemCode == line.no);
+                            if (it != null) {
+                                line.descricao = it.description;
+                                line.codUnidadeMedida = it.unitOfMeasure;
+                                line.quantidade = 0;
+                                line.quantidadeEnviar = 0;
+                            } else {
+                                this.$.page_grid_ship_items_ajax.body = JSON.stringify({ "itemType": line.tipo, "itemCode": "-1" });
+                                this.$.page_grid_ship_items_ajax.generateRequest();
+                            }
+                        } else {
+                            this.$.page_grid_ship_items_ajax.body = JSON.stringify({ "itemType": line.tipo, "itemCode": "-1" });
+                            this.$.page_grid_ship_items_ajax.generateRequest();
+                        }
+
+                        this.$.gridLinhas.clearCache();
+                    }
+                },
+
+                _setShipmentItem: function (e) {
                     if (this.shipItemsList != null) {
                         if (this.$.codigoItem.value != null && this.$.codigoItem.value != "") {
                             var tipoL = this.$.tipoLinha.value;
@@ -1609,17 +1671,13 @@
                                 this.$.unidadeMedidaItem.valueText = _lineItem.unitOfMeasure;
                             }
                         }
-                         
+
                     }
                 },
 
-                _gridShipItemsResponse: function (e) {
-                    debugger;;
-                    if (this.gridShipItemsList != null) {
-                    }    
-                },
+                _shipItemsResponse: function (e) {
+                    //debugger;;
 
-                _setShipmentItem: function (e) {
                     if (this.shipItemsList != null) {
                         if (this.$.codigoItem.value != null && this.$.codigoItem.value != "") {
                             var tipoL = this.$.tipoLinha.value;
@@ -1673,6 +1731,7 @@
                     //    this._itemQuantityToShip = quantEnviar;
                     //}
                 },
+
 
                 _validateShipmentLine: function (shipLine) {
                     var errorMsg = "Erro ao criar Linha: ";
@@ -1798,6 +1857,37 @@
                     }
                     else {
                         this._openToastError("Falhou a criação da linha! Tente novamente!");
+                    }
+                },
+
+                _updateShipmentLine: function (e) {
+                    if (this.data != undefined) {
+                        debugger;;
+                        var dataLines = this.data.linhasGuiaTransporte;
+                        var index = dataLines.indexOf(e.model.item);
+
+                        var line = dataLines[index];
+
+                        line.quantidade = this.__preciseRound(parseFloat(line.quantidade), 4);
+                        line.quantidadeEnviar = line.quantidade;
+                        line.unitCost = this.__preciseRound(parseFloat(line.unitCost), 4);
+                        line.unitPrice = this.__preciseRound(parseFloat(line.unitPrice), 4);
+
+                        if (line.noGuiaTransporte != "" || line.noLinha != 0) {
+                            this.$.page_update_line_ajax.body = JSON.stringify(line);
+                            this.$.page_update_line_ajax.generateRequest();
+                        }
+
+                        this.$.gridLinhas.clearCache();
+                    }
+                },
+
+                _updateLineResponse: function (e) {
+                    if (this.lineUpdated) {
+                        this._openToast("Linha actualizada com sucesso");
+                    }
+                    else {
+                        this._openToastError("Não foi possível actualizar a linha!");
                     }
                 },
 
