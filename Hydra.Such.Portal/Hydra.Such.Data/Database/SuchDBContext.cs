@@ -2491,6 +2491,8 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.Descrição).HasMaxLength(100);
 
+                entity.Property(e => e.Descricao2).HasMaxLength(100);
+
                 entity.Property(e => e.GrupoRegistoIvaProduto).HasMaxLength(10);
 
                 entity.Property(e => e.DescriçãoProdutoFornecedor)

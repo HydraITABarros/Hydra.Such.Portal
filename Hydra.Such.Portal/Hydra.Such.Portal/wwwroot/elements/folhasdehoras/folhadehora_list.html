@@ -160,7 +160,7 @@
         </div>
 
 
-        <vaadin-grid aria-label="FolhasDeHorasGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+        <vaadin-grid column-reordering-allowed aria-label="FolhasDeHorasGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.folhaDeHorasNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="folhaDeHorasNo">Nº Folha Horas</vaadin-grid-sorter>
@@ -407,7 +407,7 @@
             </vaadin-grid-column>
         </vaadin-grid>
 
-        <vaadin-grid id="grid_Pendentes" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true" hidden>
+        <vaadin-grid column-reordering-allowed id="grid_Pendentes" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true" hidden>
             <vaadin-grid-column resizable width="150px" hidden$="{{ _columnsPendentes.folhaDeHorasNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="folhaDeHorasNo">Nº Folha Horas</vaadin-grid-sorter>

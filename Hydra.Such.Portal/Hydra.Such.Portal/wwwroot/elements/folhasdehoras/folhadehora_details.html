@@ -1069,7 +1069,7 @@
                                 </center>
                             </template>
                         </vaadin-grid-column>
-</div>
+                </div>
             </div>
 
 
@@ -1122,7 +1122,7 @@
                                         <template>
                                             <paper-icon-item>
                                                 <paper-item-body two-line>
-                                                    <div>[[item.value]]</div>
+                                                    <div>[[item.id]] - [[item.value]]</div>
                                                 </paper-item-body>
                                             </paper-icon-item>
                                         </template>
@@ -1147,12 +1147,9 @@
                                     <vaadin-checkbox id="maoDeObraHorarioJantar" checked="{{chkJantar}}" disabled="{{ !_permissions.update }}">Jantar</vaadin-checkbox>
                                 </div>
 
-                                <!--<div class="col-sm-1 alignPoga">
-                                <paper-button id="btn_createMaoDeObra" class="btnSave" raised on-tap="_createMaoDeObra" disabled="{{ !_permissions.create }}" title="Criar">Criar</paper-button>
-                            </div>-->
                                 <div class="col-sm-1" style="padding-top:32px">
                                     <center>
-                                        <paper-button id="btn_createMaoDeObra" class="btnSave tableBtn" raised on-tap="_createMaoDeObra" disabled="{{ !_permissions.create }}" title="Adicionar"><i class="fa fa-plus" aria-hidden="true"></i></paper-button>
+                                        <paper-button id="btn_createMaoDeObra" class="btnSave tableBtn" raised on-tap="_createMaoDeObra" disabled="{{ !_permissions.update }}" title="Adicionar"><i class="fa fa-plus" aria-hidden="true"></i></paper-button>
                                     </center>
                                 </div>
                             </div>
@@ -1212,11 +1209,11 @@
 
                         <vaadin-grid-column resizable>
                             <template class="header">
-                                <vaadin-grid-sorter path="codigoTipoTrabalho" style="text-align:center;">Cód. Tipo Trabalho</vaadin-grid-sorter>
+                                <vaadin-grid-sorter path="codigoTipoTrabalho" style="text-align:center;">Tp Trabalho</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="codigoTipoTrabalho"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <vaadin-combo-box items="[[LFolhaDeHoraTipoTrabalhoNo]]" id="tabMaoDeObraCodigoTipoTrabalho" item-value-path="id" item-label-path="value" value="{{item.codigoTipoTrabalho}}" on-blur="_updateLinhaMaoDeObra" disabled="true" style="text-align:left;">
+                                <!--<vaadin-combo-box items="[[LFolhaDeHoraTipoTrabalhoNo]]" id="tabMaoDeObraCodigoTipoTrabalho" item-value-path="id" item-label-path="value" value="{{item.codigoTipoTrabalho}}" on-blur="_updateLinhaMaoDeObra" disabled="true" style="text-align:left;">
                                     <template>
                                         <paper-icon-item>
                                             <paper-item-body two-line>
@@ -1224,13 +1221,14 @@
                                             </paper-item-body>
                                         </paper-icon-item>
                                     </template>
-                                </vaadin-combo-box>
+                                </vaadin-combo-box>-->
+                                {{item.codigoTipoTrabalho}}
                             </template>
                         </vaadin-grid-column>
 
                         <vaadin-grid-column resizable>
                             <template class="header">
-                                <vaadin-grid-sorter path="horaInicioTexto" style="text-align:center;">Hora de Início</vaadin-grid-sorter>
+                                <vaadin-grid-sorter path="horaInicioTexto" style="text-align:center;">Início</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="horaInicioTexto"></vaadin-grid-filter>
                             </template>
                             <template>
@@ -1241,7 +1239,7 @@
 
                         <vaadin-grid-column resizable>
                             <template class="header">
-                                <vaadin-grid-sorter path="horarioAlmoco" style="text-align:center;">Horário Almoço</vaadin-grid-sorter>
+                                <vaadin-grid-sorter path="horarioAlmoco" style="text-align:center;">H Almoço</vaadin-grid-sorter>
                             </template>
                             <template>
                                 <vaadin-checkbox checked="{{item.horarioAlmoco}}" on-blur="_updateLinhaMaoDeObra" disabled="{{ !_permissions.update }}" style="text-align:center;"></vaadin-checkbox>
@@ -1250,7 +1248,7 @@
 
                         <vaadin-grid-column resizable>
                             <template class="header">
-                                <vaadin-grid-sorter path="horaFimTexto" style="text-align:center;">Hora de Fim</vaadin-grid-sorter>
+                                <vaadin-grid-sorter path="horaFimTexto" style="text-align:center;">Fim</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="horaFimTexto"></vaadin-grid-filter>
                             </template>
                             <template>
@@ -1261,7 +1259,7 @@
 
                         <vaadin-grid-column resizable>
                             <template class="header">
-                                <vaadin-grid-sorter path="horarioJantar" style="text-align:center;">Horário Jantar</vaadin-grid-sorter>
+                                <vaadin-grid-sorter path="horarioJantar" style="text-align:center;">H Jantar</vaadin-grid-sorter>
                             </template>
                             <template>
                                 <vaadin-checkbox checked="{{item.horarioJantar}}" on-blur="_updateLinhaMaoDeObra" disabled="{{ !_permissions.update }}" style="text-align:center;"></vaadin-checkbox>
@@ -1270,11 +1268,11 @@
 
                         <vaadin-grid-column resizable>
                             <template class="header">
-                                <vaadin-grid-sorter path="codigoFamiliaRecurso" style="text-align:center;">Nº Família Recurso</vaadin-grid-sorter>
+                                <vaadin-grid-sorter path="codigoFamiliaRecurso" style="text-align:center;">Família Recurso</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="codigoFamiliaRecurso"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <vaadin-combo-box items="[[LFolhaDeHoraGetRHRecursosFH]]" id="tabMaoDeObraCodigoFamiliaRecurso" item-value-path="id" item-label-path="value" value="{{item.codigoFamiliaRecurso}}" on-blur="_updateLinhaMaoDeObra" disabled="true" style="text-align:left;">
+                                <!--<vaadin-combo-box items="[[LFolhaDeHoraGetRHRecursosFH]]" id="tabMaoDeObraCodigoFamiliaRecurso" item-value-path="id" item-label-path="value" value="{{item.codigoFamiliaRecurso}}" on-blur="_updateLinhaMaoDeObra" disabled="true" style="text-align:left;">
                                     <template>
                                         <paper-icon-item>
                                             <paper-item-body two-line>
@@ -1282,7 +1280,8 @@
                                             </paper-item-body>
                                         </paper-icon-item>
                                     </template>
-                                </vaadin-combo-box>
+                                </vaadin-combo-box>-->
+                                {{item.codigoFamiliaRecurso}}
                             </template>
                         </vaadin-grid-column>
 
@@ -1315,15 +1314,6 @@
                                 <vaadin-grid-filter path="codigoCentroResponsabilidade"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <!--<vaadin-combo-box items="[[LFolhaDeHoraResponsabilityCenterCodes]]" id="tabMaoDeObraCodigoCentroResponsabilidade" item-value-path="id" item-label-path="value" value="{{item.codigoCentroResponsabilidade}}" on-blur="_updateLinhaMaoDeObra" disabled="true" style="text-align:left;">
-                                <template>
-                                    <paper-icon-item>
-                                        <paper-item-body two-line>
-                                            <div>[[item.value]]</div>
-                                        </paper-item-body>
-                                    </paper-icon-item>
-                                </template>
-                            </vaadin-combo-box>-->
                                 <such-selectbox id="tabMaoDeObraCodigoCentroResponsabilidade" name="tabMaoDeObraCodigoCentroResponsabilidade" value="{{item.codigoCentroResponsabilidade}}" disabled="true" style="margin-top:-20px"
                                                 items="[[CBResponsabilityCenterCodes]]"
                                                 text-path="value"
@@ -1350,7 +1340,6 @@
                             </template>
                             <template>
                                 <center>
-                                    <!--<paper-button class="btnRemove" raised on-tap="_deleteMaoDeObra" disabled="{{ !_permissions.delete }}">Eliminar</paper-button>-->
                                     <paper-button class="btnRemove tableBtn" raised on-tap="_deleteMaoDeObra" disabled="{{ !_permissions.delete }}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
                                 </center>
                             </template>
@@ -2866,9 +2855,9 @@
                                                     codigoCentroResponsabilidade: this.$.codigoCentroResponsabilidade.value,
                                                     codigoTipoTrabalho: this.$.maoDeObraCodigoTipoTrabalho.value,
                                                     horaInicio: this.$.maoDeObraHoraInicio.value,
-                                                    horarioAlmoco: (this.$.maoDeObraHorarioAlmoco.value == "on" ? true : false),
+                                                    horarioAlmoco: this.chkAlmoco,
                                                     horaFim: this.$.maoDeObraHoraFim.value,
-                                                    horarioJantar: (this.$.maoDeObraHorarioJantar.value == "on" ? true : false)
+                                                    horarioJantar: this.chkJantar,
                                                 });
                                                 //this.$.page_createmaodeobra_ajax.generateRequest();
                                                 //this.$.tabMaoDeObra.clearCache();
@@ -3018,6 +3007,7 @@
                                 this._showErrorMessage('O campo Data tem que ser superior ou igual ao campo Data Inicio do Cabeçalho.');
                                 return false;
                             }
+
                             if (myDataMaoDeObra > myDataChegada) {
                                 this._showErrorMessage('O campo Data tem que ser inferior ou igual ao campo Data Fim do Cabeçalho.');
                                 return false;
@@ -3055,9 +3045,19 @@
                         if (this.$.maoDeObraDate.validate() & this.$.dataPartidaTexto.validate() & this.$.dataChegadaTexto.validate() &
                             this.$.maoDeObraHoraInicio.validate() & this.$.horaPartidaTexto.validate() & this.$.horaChegadaTexto.validate()) {
 
-                            var myDataTimePartida = new Date(this.$.dataPartidaTexto.value + " " + this.$.horaPartidaTexto.value);
-                            var myDataTimeChegada = new Date(this.$.dataChegadaTexto.value + " " + this.$.horaChegadaTexto.value);
-                            var myDataTimeMaoDeObra = new Date(this.$.maoDeObraDate.value + " " + this.$.maoDeObraHoraInicio.value);
+                            var myDataPartida = new Date(this.$.dataPartidaTexto.value);
+                            var myDataChegada = new Date(this.$.dataChegadaTexto.value);
+
+                            if (myDataPartida == myDataChegada) {
+                                var myDataTimePartida = new Date(this.$.dataPartidaTexto.value + " " + this.$.horaPartidaTexto.value);
+                                var myDataTimeChegada = new Date(this.$.dataChegadaTexto.value + " " + this.$.horaChegadaTexto.value);
+                                var myDataTimeMaoDeObra = new Date(this.$.maoDeObraDate.value + " " + this.$.maoDeObraHoraInicio.value);
+                            }
+                            else {
+                                var myDataTimePartida = new Date(this.$.dataPartidaTexto.value + " " + this.$.horaPartidaTexto.value);
+                                var myDataTimeChegada = new Date(); myDataTimeChegada.setDate(myDataPartida + 1);
+                                var myDataTimeMaoDeObra = new Date(this.$.maoDeObraDate.value + " " + this.$.maoDeObraHoraInicio.value);
+                            }
 
                             if (myDataTimeMaoDeObra < myDataTimePartida) {
                                 this._showErrorMessage('O campo Hora de Início tem que ser superior ou igual ao campo Data Inicio do Cabeçalho.');
@@ -3082,9 +3082,19 @@
                         if (this.$.maoDeObraDate.validate() & this.$.dataPartidaTexto.validate() & this.$.dataChegadaTexto.validate() &
                             this.$.maoDeObraHoraFim.validate() & this.$.horaPartidaTexto.validate() & this.$.horaChegadaTexto.validate()) {
 
-                            var myDataTimePartida = new Date(this.$.dataPartidaTexto.value + " " + this.$.horaPartidaTexto.value);
-                            var myDataTimeChegada = new Date(this.$.dataChegadaTexto.value + " " + this.$.horaChegadaTexto.value);
-                            var myDataTimeMaoDeObra = new Date(this.$.maoDeObraDate.value + " " + this.$.maoDeObraHoraFim.value);
+                            var myDataPartida = new Date(this.$.dataPartidaTexto.value);
+                            var myDataChegada = new Date(this.$.dataChegadaTexto.value);
+
+                            if (myDataPartida == myDataChegada) {
+                                var myDataTimePartida = new Date(this.$.dataPartidaTexto.value + " " + this.$.horaPartidaTexto.value);
+                                var myDataTimeChegada = new Date(this.$.dataChegadaTexto.value + " " + this.$.horaChegadaTexto.value);
+                                var myDataTimeMaoDeObra = new Date(this.$.maoDeObraDate.value + " " + this.$.maoDeObraHoraFim.value);
+                            }
+                            else {
+                                var myDataTimePartida = new Date(this.$.dataPartidaTexto.value + " " + this.$.horaPartidaTexto.value);
+                                var myDataTimeChegada = new Date(); myDataTimeChegada.setDate(myDataPartida + 1);
+                                var myDataTimeMaoDeObra = new Date(this.$.maoDeObraDate.value + " " + this.$.maoDeObraHoraInicio.value);
+                            }
 
                             if (myDataTimeMaoDeObra < myDataTimePartida) {
                                 this._showErrorMessage('O campo Hora de Fim tem que ser superior ou igual ao campo Data Inicio do Cabeçalho.');
@@ -4011,6 +4021,15 @@
                         if (this.MaoDeObraCreated == 5) {
                             this._showErrorMessage('A Hora de Início tem que ser inferior á Hora de Fim.');
                         }
+
+                        if (this.MaoDeObraCreated == 6) {
+                            this._showErrorMessage('Para esta data a Hora de Fim da Mão de Obra tem que ser inferior á Hora de Início.');
+                        }
+
+                        if (this.MaoDeObraCreated == 7) {
+                            this._showErrorMessage('Houve um erro na criação da Mão de Obra.');
+                        }
+
                         if (this.MaoDeObraCreated == 99) {
                             this._showErrorMessage('Ocorreu um erro na criação da Mão de Obra.');
                         }
@@ -4235,7 +4254,9 @@
 
                 //EMPREGADO FUNÇÕES
                 _codeChange: function () {
-                    if (this.data.empregadoNo != "") {
+                    debugger;
+                    if (this.$.empregadoNo.value != "") {
+                        this.data.empregadoNo = this.$.empregadoNo.value;
                         this.$.getEmpoyeeNAV_ajax.body = JSON.stringify(this.data);
                         this.$.getEmpoyeeNAV_ajax.generateRequest();
                     };
@@ -4396,13 +4417,15 @@
 
                     //BOTÕES
                     if (data.terminada == true) { //TERMINADA
-                        $(_self.$.btn_calcularAjudasCusto).addClass('disabled');
                         $(_self.$.btn_updateFH1).addClass('disabled');
                         $(_self.$.btn_updateFH2).addClass('disabled');
-                        $(_self.$.btn_createPercurso).addClass('disabled');
-                        $(_self.$.btn_createAjuda).addClass('disabled');
-                        $(_self.$.btn_createMaoDeObra).addClass('disabled');
-                        $(_self.$.btn_createPresenca).addClass('disabled');
+                        if (data.mostrarBotoes == false) {
+                            $(_self.$.btn_calcularAjudasCusto).addClass('disabled');
+                            $(_self.$.btn_createPercurso).addClass('disabled');
+                            $(_self.$.btn_createAjuda).addClass('disabled');
+                            $(_self.$.btn_createMaoDeObra).addClass('disabled');
+                            $(_self.$.btn_createPresenca).addClass('disabled');
+                        }
                         //if (_self.$.integradorEmRH.value != null & _self.$.integradorEmRH.value != "" & _self.$.integradorEmRH.value) {
                         //    $(_self.$.btn_integrarEmRH).addClass('disabled');
                         //}
@@ -4456,10 +4479,12 @@
                         _self.$.horaPartidaTexto.disabled = true;
                         _self.$.dataChegadaTexto.disabled = true;
                         _self.$.horaChegadaTexto.disabled = true;
-                        _self.$.tipoDeslocacao.disabled = true;
-                        _self.$.codigoTipoKms.disabled = true;
-                        _self.$.matricula.disabled = true;
-                        _self.$.deslocacaoForaConcelho.disabled = true;
+                        if (data.mostrarBotoes == false) {
+                            _self.$.tipoDeslocacao.disabled = true;
+                            _self.$.codigoTipoKms.disabled = true;
+                            _self.$.matricula.disabled = true;
+                            _self.$.deslocacaoForaConcelho.disabled = true;
+                        }    
                         _self.$.terminada.disabled = true;
 
                         _self.$.codigoRegiao.disabled = true;

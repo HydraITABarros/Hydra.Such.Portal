@@ -76,6 +76,8 @@
         </iron-ajax>
 
         <div class="subMenu">
+            <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+
             <template is="dom-if" if="{{ _permissions.create }}">
                 <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar Novo</paper-button>
             </template>
@@ -97,7 +99,7 @@
             <!--end ColumnToggle-->
         </div>
 
-        <vaadin-grid aria-label="ProjectsGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+        <vaadin-grid column-reordering-allowed aria-label="ProjectsGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.projectNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="projectNo">Nº Projeto</vaadin-grid-sorter>
@@ -365,6 +367,12 @@
                     });
                 },
                 /* end - ColumnToggle */
+
+                _goBack: function (e) {
+                    window.history.back();
+                },
+
+
 
             });
         });

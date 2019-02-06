@@ -79,5 +79,6 @@ namespace Hydra.Such.Data.ViewModel
         public string Operation { get; set; }
         public int? InvoiceGroup { get; set; }
         public string InvoiceGroupDescription { get; set; }
+        public bool? CriarMovNav2017 { get; set; }
     }
 }

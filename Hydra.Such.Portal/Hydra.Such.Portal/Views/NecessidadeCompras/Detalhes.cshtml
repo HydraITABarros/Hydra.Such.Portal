@@ -353,6 +353,21 @@
 
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
+                    <vaadin-grid-sorter path="description2">Descrição Produto 2</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="description2" />
+                </template>
+                <template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-text-field value="{{item.description2}}" disabled></vaadin-text-field>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        {{item.description2}}
+                    </template>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
                     <vaadin-grid-sorter path="quantity">Quantidade </vaadin-grid-sorter>
                     <vaadin-grid-filter path="quantity" />
                 </template>

@@ -69,6 +69,7 @@
         <iron-ajax url="/PopulateDropdowns/GetLocalMarketRegions" last-response="{{LocalMarketRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <div class="subMenu">
+            <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
             <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
 
             <!--start ColumnToggle-->
@@ -88,7 +89,7 @@
             <paper-button class="tablinks" id="btnCreatePurchaseOrder" on-tap="_createPurchaseOrder" disabled="{{ !_permissions.create }}"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Criar Encomenda de Compra</paper-button>
         </div>
 
-        <vaadin-grid id="gridrequest" aria-label="ProfileModelsTabel" items="[[result]]" class="grid" selected-items={{selectedItems}} active-item="{{_SelectedLine}}">
+        <vaadin-grid column-reordering-allowed id="gridrequest" aria-label="ProfileModelsTabel" items="[[result]]" class="grid" selected-items={{selectedItems}} active-item="{{_SelectedLine}}">
             <vaadin-grid-selection-column auto-select id="grid_SelectAll">
             </vaadin-grid-selection-column>
 
@@ -568,6 +569,11 @@
                     });
                 },
                 /* end - ColumnToggle */
+
+                _goBack: function (e) {
+                    window.history.back();
+                },
+
 
             });
         });

@@ -44,7 +44,7 @@
 
 
         <h2 class="separator">Requisições</h2>
-        <vaadin-grid id="gridrequest" aria-label="ProfileModelsTabel" items="[[result]]" class="grid" active-item="{{_SelectedLine}}">
+        <vaadin-grid column-reordering-allowed id="gridrequest" aria-label="ProfileModelsTabel" items="[[result]]" class="grid" active-item="{{_SelectedLine}}">
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="requisitionNo">Nº Requisição </vaadin-grid-sorter>

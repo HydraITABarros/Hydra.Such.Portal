@@ -40,6 +40,7 @@
         <link rel="stylesheet" href="/css/main.css" />
 
         <div class="subMenu">
+            <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
             <paper-button class="tablinks" id="btnConfirm" on-tap="_confirm"><i class="fa fa-check-square" aria-hidden="true"></i> Faturar</paper-button>
             <paper-button class="tablinks" id="btnConfirm" on-tap="_deleteLine"><i class="fa fa-close" aria-hidden="true"></i> Anular Linha</paper-button>
             <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
@@ -301,7 +302,7 @@
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
 
-        <vaadin-grid id="projectInvoiceAutorization" selected-items={{selectedItems}} active-item="{{selectedItem}}" aria-label="Tabela Autorização Faturação" items="[[authorizedMovements]]" class="editGrid">
+        <vaadin-grid column-reordering-allowed id="projectInvoiceAutorization" selected-items={{selectedItems}} active-item="{{selectedItem}}" aria-label="Tabela Autorização Faturação" items="[[authorizedMovements]]" class="editGrid">
             <vaadin-grid-selection-column id="selectColumn" auto-select>
             </vaadin-grid-selection-column>
 
@@ -496,7 +497,7 @@
         </vaadin-grid>
 
         <paper-dialog id="dialog" class="dialgoBox">
-            <vaadin-grid id="grdProjectLines" aria-label="ProjectLinesGrid" items="[[resultlines]]" class="grid" multi-sort="true">
+            <vaadin-grid column-reordering-allowed id="grdProjectLines" aria-label="ProjectLinesGrid" items="[[resultlines]]" class="grid" multi-sort="true">
                 <vaadin-grid-column width="100px" resizable hidden$="{{ _columns.date.hidden }}">
                     <template class="header">
                         <vaadin-grid-sorter path="date">Data</vaadin-grid-sorter>
@@ -913,6 +914,9 @@
                     /*ColumnToggle*/
                     this._startColumnToggle();
 
+                    window.handleGridListColumnsOrder(this.$.projectInvoiceAutorization, 'projetos-faturacao');
+                    window.handleGridListColumnsOrder(this.$.grdProjectLines, 'projetos-faturacao-info');
+
                     var _this = this;
                     $(window).resize(function () {
                         _this.fixGridToBottom();
@@ -1090,7 +1094,6 @@
                     }
                 },
                 _validateInvoiceNegativo: function () {
-                    debugger;
                     var erro = this._validateData(this.selectedItem);
                     if (erro == "") {
                         if (this.selectedItem && this.selectedItem.length > 0) {
@@ -1110,7 +1113,6 @@
                 },
 
                 _createInvoice: function () {
-                    debugger;
                     var dataFormulario = this.$._CLData.value;
 
                     if (this.CustBillingValResponse.eMessages.length != 0) {
@@ -1159,7 +1161,6 @@
                     }
                 },
                 _createInvoiceNegativo: function () {
-                    debugger;
                     var dataFormulario = this.$._CLDataNegativo.value;
 
                     if (this.CustBillingValResponse.eMessages.length != 0) {
@@ -1237,25 +1238,23 @@
                 /*start - ColumnToggle*/
                 _startColumnToggle: function () {
                     var columns = {
-                        "projectNo": { hidden: false, label: "Nº Projeto" },
-                        "invoiceToClientNo": { hidden: false, label: "Fatura-a Nº Cliente" },
-                        "clientName": { hidden: false, label: "Nome Cliente" },
-                        "date": { hidden: false, label: "Data" },
-                        "movementType": { hidden: false, label: "Tipo Movimento" },
-                        "type": { hidden: false, label: "Tipo" },
-                        "code": { hidden: false, label: "Código" },
-                        "description": { hidden: false, label: "Descrição" },
-                        "quantity": { hidden: false, label: "Quantidade" },
-                        "measurementUnitCode": { hidden: false, label: "Cód. Unidade Medida" },
-                        "locationCode": { hidden: false, label: "Cód. Localização" },
-                        "regionCode": { hidden: false, label: "Código Região" },
-                        "functionalAreaCode": { hidden: false, label: "Código Área" },
-                        "responsabilityCenterCode": { hidden: false, label: "Código Centro Responsabilidade" },
-                        "unitCost": { hidden: false, label: "Custo Unitário" },
-                        "totalCost": { hidden: false, label: "Custo Total" },
-                        "unitPrice": { hidden: false, label: "Preço Unitário" },
-                        "totalPrice": { hidden: false, label: "Preço Total" },
-                        "commitmentNumber": { hidden: false, label: "Nº Compromisso" }
+                        "codProjeto": { hidden: false, label: "Nº Projeto" },
+                        "codCliente": { hidden: false, label: "Nº Cliente" },
+                        "valorAutorizado": { hidden: false, label: "Valor Autorizado" },
+                        "valorPorFaturar": { hidden: false, label: "Valor por Faturar" },
+                        "codRegiao": { hidden: false, label: "Código Região" },
+                        "codAreaFuncional": { hidden: false, label: "Código Área Funcional" },
+                        "codCentroResponsabilidade": { hidden: false, label: "Código Centro Responsabilidade" },
+                        "codTermosPagamento": { hidden: false, label: "Termos de Pagamento" },
+                        "dataPrestacaoServico": { hidden: false, label: "Data Serv. Prestado" },
+                        "numCompromisso": { hidden: false, label: "Núm. Compromisso" },
+                        "pedidoCliente": { hidden: false, label: "Pedido Cliente" },
+                        "dataPedido": { hidden: false, label: "Data Pedido" },
+                        "grupoFactura": { hidden: false, label: "Grupo Factura" },
+                        "descricaoGrupo": { hidden: false, label: "Descrição Grupo" },
+                        "situacoesPendentes": { hidden: false, label: "Situações Pendentes" },
+                        "dataAutorizacao": { hidden: false, label: "Data Autorização" },
+                        "utilizador": { hidden: false, label: "Autorizado Por" }
                     };
 
                     if (localStorage["invoice.ToggleColumn"]) {
@@ -1411,6 +1410,12 @@
                 _closeDetalhesAutorizacaoDialog: function() {
                     this.$.dialog.close();
                 },
+
+                _goBack: function (e) {
+                    window.history.back();
+                },
+
+
 
 
             });

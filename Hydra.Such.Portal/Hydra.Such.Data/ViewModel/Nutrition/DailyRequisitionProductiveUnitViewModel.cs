@@ -11,6 +11,7 @@ namespace Hydra.Such.Data.ViewModel.Nutrition
         public int? ProductionUnitNo  { get; set; }
         public string ProductNo { get; set; }
         public string Description { get; set; }
+        public string Description2 { get; set; }
         public string UnitMeasureCode { get; set; }
         public decimal? Quantity { get; set; }
         public decimal?DirectUnitCost { get; set; }

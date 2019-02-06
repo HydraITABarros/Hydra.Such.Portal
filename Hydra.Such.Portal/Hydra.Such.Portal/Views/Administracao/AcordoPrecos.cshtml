@@ -512,7 +512,7 @@
 
                 <div class="panel-body">
                     <div class="row break_clear">
-                        <vaadin-grid id="tabLinhas" aria-label="TabelaLinhas" items="{{ data.linhasAcordoPrecos }}" class="editGrid">
+                        <vaadin-grid column-reordering-allowed id="tabLinhas" aria-label="TabelaLinhas" items="{{ data.linhasAcordoPrecos }}" class="editGrid">
                             <vaadin-grid-column resizable>
                                 <template class="header">
                                     <vaadin-grid-sorter path="noProcedimento" style="text-align:center;">Nº Procedimento</vaadin-grid-sorter>
@@ -790,7 +790,7 @@
                 </paper-collapse-group>
 
                 <div class="panel-body">
-                    <vaadin-grid id="tabFornecedores" aria-label="TabelaFornecedores" items="{{ data.fornecedoresAcordoPrecos }}" class="editGrid" multi-sort="true">
+                    <vaadin-grid column-reordering-allowed id="tabFornecedores" aria-label="TabelaFornecedores" items="{{ data.fornecedoresAcordoPrecos }}" class="editGrid" multi-sort="true">
                         <vaadin-grid-column resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="noProcedimento" style="text-align:center;">Nº Procedimento</vaadin-grid-sorter>
@@ -1284,7 +1284,12 @@
                     },
 
                     _export: function () {
-                        this.$.ajax_Export.body = JSON.stringify(this.data);
+                        console.log(this.data);
+                        var data = JSON.stringify(this.data);
+                        var dataObj = JSON.parse(data);
+                        dataObj.linhasAcordoPrecos = this.$.tabLinhas._filter(this.data.linhasAcordoPrecos);
+
+                        this.$.ajax_Export.body = JSON.stringify(dataObj);
                         this.$.ajax_Export.generateRequest();
                         this.$.tabLinhas.clearCache();
                     },

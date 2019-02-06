@@ -61,5 +61,8 @@ namespace Hydra.Such.Data.ViewModel.Encomendas
         public decimal? ValorJaPedido { get; set; }
 
         public bool? EditarPrioritario { get; set; }
+
+        //EXPORTAR PARA EXCEL
+        public Object ColunasEXCEL { get; set; }
     }
 }

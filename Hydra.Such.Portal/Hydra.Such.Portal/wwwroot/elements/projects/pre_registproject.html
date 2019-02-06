@@ -368,7 +368,7 @@
         <iron-ajax url="/Projetos/GetPreMovements" last-response="{{movementLines}}" id="ajax_movementLines" method="post" dle-as="json" loading="{{isloading}}" on-response="_movementLinesResponse" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Projetos/GetRelatedProjectInfo" last-response="{{related}}" id="ajax_related" method="post" on-response="_updateRelatedResponse" handle-as="json" content-type="application/json"></iron-ajax>
 
-        <vaadin-grid id="projectDiaryProject" aria-label="Tabela Numerações" items="[[result.items]]" class="editGrid" active-item="{{_SelectedLine}}">
+        <vaadin-grid column-reordering-allowed id="projectDiaryProject" aria-label="Tabela Numerações" items="[[result.items]]" class="editGrid" active-item="{{_SelectedLine}}">
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="projectNo">Nº Projeto</vaadin-grid-sorter>
@@ -861,7 +861,7 @@
         <!-- Paper Dialog -->
         <paper-dialog id="dialog" class="dialgoBox">
             <h2 class="dialogTitle">Movimentos de Projeto</h2>
-            <vaadin-grid aria-label="Movimentos de Projeto" class="editDialogGrid" selected-items={{selectedItems}} active-item="{{selectedItem}}" id="projectMovementTable" items="[[resultMovements]]">
+            <vaadin-grid column-reordering-allowed aria-label="Movimentos de Projeto" class="editDialogGrid" selected-items={{selectedItems}} active-item="{{selectedItem}}" id="projectMovementTable" items="[[resultMovements]]">
                 <vaadin-grid-selection-column auto-select>
                 </vaadin-grid-selection-column>
                 <vaadin-grid-column width="160px" resizable>
@@ -2006,6 +2006,7 @@
                         this.codeResponsabilityCenter = this.related.responsabilityCenter;
                         this.codeProjectContabGroup = this.related.contabGroup;
                         this.invoiceClientNo = this.related.invoiceClientNo;
+
                         this.ProjDescriptionDlg = this.related.description;
                         this.ClientValueDlg = this.related.clientCod;
                         this.codeRegionDlg = this.related.regionCode;

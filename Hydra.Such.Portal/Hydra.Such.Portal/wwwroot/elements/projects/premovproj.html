@@ -256,7 +256,7 @@
             <!--end ColumnToggle-->
         </div><!--on-response="_gridListResponse"-->
 
-        <vaadin-grid aria-label="Pré Movimentos de Projeto" id="projectMovementTable" items="[[result]]" class="editGrid">
+        <vaadin-grid column-reordering-allowed aria-label="Pré Movimentos de Projeto" id="projectMovementTable" items="[[result]]" class="editGrid">
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.registered.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="registered">Registado</vaadin-grid-sorter>

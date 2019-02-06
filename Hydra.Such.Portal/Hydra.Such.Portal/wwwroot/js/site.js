@@ -5,8 +5,8 @@ $(function () {
     openSelectedMenu();
 
     window.addEventListener('WebComponentsReady', function (e) {
-        return;
-        initGridLists();
+        //return;
+        //initGridLists();
     });
 });
 
@@ -123,23 +123,26 @@ var openSelectedMenu = function () {
 };
 
 var initGridLists = function () {
+    var parent = "";
     var gridLists = $('[_permissions]')[0].root.querySelectorAll('[column-reordering-allowed]');
     gridLists.forEach(function (grid) {
         window.testes = grid;
-        setGridListsColumnDragable(grid, grid.__dataHost);
+        handleGridListColumnsOrder(grid, grid.__dataHost);
     });
 };
 
-var setGridListsColumnDragable = function (grid, name) {
+var handleGridListColumnsOrder = function (grid, name) {
     var columnTree = grid._getColumnTree()[0];
 
     if (typeof localStorage !== 'undefined') {
         var localStorageName = 'grid-column-order-' + name;
-        var columnOrder = JSON.parse(localStorage.getItem(localStorageName));
-        if (columnOrder) {
-            columnTree.forEach(function (column, index) {
-                column._order = columnOrder[index];
-            });
+        if (localStorage.getItem(localStorageName) !== null) {
+            var columnOrder = JSON.parse(localStorage.getItem(localStorageName));
+            if (columnOrder) {
+                columnTree.forEach(function (column, index) {
+                    column._order = columnOrder[index];
+                });
+            }
         }
 
         grid.ondragend = function () {

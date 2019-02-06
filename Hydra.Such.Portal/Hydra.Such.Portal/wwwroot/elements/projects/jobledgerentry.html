@@ -113,6 +113,7 @@
         </iron-ajax>
 
         <div class="subMenu">
+            <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
             <paper-button id="btn_imprimirMovimentos" class="tablinks" on-tap="_printMovimentos" title="Imprimir"><i class="fa fa-print" aria-hidden="true"></i> Imprimir</paper-button>
             <paper-button id="btn_imprimirMovimentosFaturados" class="tablinks" on-tap="_printMovimentosFaturados" title="Imprimir Movimentos Faturados"><i class="fa fa-print" aria-hidden="true"></i> Imprimir Movimentos Faturados</paper-button>
             <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
@@ -132,7 +133,7 @@
             <!--end ColumnToggle-->
         </div>
 
-        <vaadin-grid aria-label="Movimentos de Projeto" id="projectMovementTable" items="[[result]]" class="editGrid">
+        <vaadin-grid column-reordering-allowed aria-label="Movimentos de Projeto" id="projectMovementTable" items="[[result]]" class="editGrid">
             <vaadin-grid-column width="100px" resizable hidden$="{{ _columns.lineNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="lineNo">Nº Linha</vaadin-grid-sorter>
@@ -1009,6 +1010,12 @@
                         this._showErrorMessage("Não é possivel imprimir. Não foi definido o servidor de relatórios.");
                     }
                 },
+
+                _goBack: function (e) {
+                    window.history.back();
+                },
+
+
 
             });
         });

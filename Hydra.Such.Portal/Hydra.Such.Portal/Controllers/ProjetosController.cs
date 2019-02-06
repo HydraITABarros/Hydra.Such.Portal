@@ -1457,7 +1457,7 @@ namespace Hydra.Such.Portal.Controllers
                                             CustoTotal = pjD.TotalCost,
                                             PreçoUnitário = pjD.UnitPrice,
                                             PreçoTotal = pjD.TotalPrice,
-                                            Faturável = pjD.Billable,
+                                            Faturável = true,
                                             Registado = false,
                                             FaturaANºCliente = projecto.NºCliente,
                                             Moeda = pjD.Currency,
@@ -1468,7 +1468,10 @@ namespace Hydra.Such.Portal.Controllers
                                             NºGuiaExterna = pjD.ExternalGuideNo,
                                             DataConsumo = pjD.ConsumptionDate == "" || pjD.ConsumptionDate == String.Empty ? (DateTime?)null : DateTime.Parse(pjD.ConsumptionDate),
                                             CódServiçoCliente = pjD.ServiceClientCode,
-                                            PréRegisto = false
+                                            PréRegisto = false,
+                                            CódDestinoFinalResíduos = pjD.ResidueFinalDestinyCode,
+                                            TipoRecurso = pjD.ResourceType
+                                            
                                         };
                                         if (pjD.LineNo > 0)
                                         {
@@ -1556,7 +1559,7 @@ namespace Hydra.Such.Portal.Controllers
                             CustoTotal = x.TotalCost,
                             PreçoUnitário = x.UnitPrice,
                             PreçoTotal = x.TotalPrice,
-                            Faturável = x.Billable,
+                            Faturável = true,
                             Registado = false,
                             FaturaANºCliente = projecto.NºCliente,
                             Moeda = x.Currency,
@@ -1567,7 +1570,10 @@ namespace Hydra.Such.Portal.Controllers
                             NºGuiaExterna = x.ExternalGuideNo,
                             DataConsumo = x.ConsumptionDate == "" || x.ConsumptionDate == String.Empty ? (DateTime?)null : DateTime.Parse(x.ConsumptionDate),
                             CódServiçoCliente = x.ServiceClientCode,
-                            PréRegisto = false
+                            PréRegisto = false,
+                            CódDestinoFinalResíduos = x.ResidueFinalDestinyCode,
+                            TipoRecurso = x.ResourceType
+
 
                         };
 
@@ -1646,12 +1652,18 @@ namespace Hydra.Such.Portal.Controllers
             //SET INTEGRATED IN DB
             if (dp != null)
             {
+
                 //AMARO
                 //VER AMANHÃ COM O MARCO
                 dp.ForEach(x =>
                 {
+                    if (x.Quantity == null || x.Quantity == 0)
+                        DBProjectDiary.Delete(DBProjectDiary.ParseToDatabase(x));
+
                     x.MovementType = 1;
                 });
+
+                dp.RemoveAll(x => x.Quantity == null || x.Quantity == 0);
 
                 bool hasItemsWithoutDimensions = dp.Any(x => string.IsNullOrEmpty(x.RegionCode) ||
                                                             string.IsNullOrEmpty(x.FunctionalAreaCode) ||
@@ -1755,6 +1767,7 @@ namespace Hydra.Such.Portal.Controllers
                                     UtilizadorCriação = User.Identity.Name,
                                     DataHoraCriação = DateTime.Now,
                                     FaturaçãoAutorizada = false,
+                                    NºDocumento = "ES_" + newdp.NºProjeto
                                 };
 
                                 DBProjectMovements.Create(ProjectMovement);
@@ -1918,6 +1931,84 @@ namespace Hydra.Such.Portal.Controllers
             {
                 result.eReasonCode = 2;
                 result.eMessage = "Não foi selecionado nenhum projeto";
+            }
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetFaturacao(string projectNo, string serviceCod, string serviceGroup, string dateRegist)
+        {
+            ErrorHandler result = new ErrorHandler();
+            result.eReasonCode = 1;
+            result.eMessage = "Os movimentos foram obtidos com sucesso";
+
+            try
+            {
+                Projetos proj = DBProjects.GetById(projectNo);
+                List<PriceServiceClientViewModel> dp = DBPriceServiceClient.ParseToViewModel(DBPriceServiceClient.GetAll()).Where(x => x.Client == proj.NºCliente && x.CodServClient == serviceCod).ToList();
+
+                if (dp != null && dp.Count > 0)
+                {
+                    List<ProjectDiaryViewModel> newRows = new List<ProjectDiaryViewModel>();
+
+                    foreach (PriceServiceClientViewModel item in dp)
+                    {
+                        ProjectDiaryViewModel newRow = new ProjectDiaryViewModel();
+                        DiárioDeProjeto dpValidation = new DiárioDeProjeto();
+
+                        newRow.Date = dateRegist;
+                        newRow.ProjectNo = projectNo;
+                        newRow.InvoiceToClientNo = proj.NºCliente;
+                        newRow.ServiceClientCode = serviceCod;
+                        newRow.ServiceGroupCode = serviceGroup;
+                        newRow.Type = 2;
+                        newRow.Code = item.Resource;
+                        newRow.Description = item.ResourceDescription;
+                        newRow.MeasurementUnitCode = item.UnitMeasure;
+                        newRow.UnitCost = item.PriceCost;
+                        newRow.UnitPrice = item.SalePrice;
+                        newRow.Billable = true;
+                        newRow.ProjectContabGroup = proj.GrupoContabObra;
+                        newRow.MovementType = 1;
+                        if (!String.IsNullOrEmpty(item.TypeMeal))
+                        {
+                            newRow.MealType = Convert.ToInt32(item.TypeMeal);
+                        }
+                        else
+                        {
+                            newRow.MealType = null;
+                        }
+                        newRow.RegionCode = proj.CódigoRegião;
+                        newRow.FunctionalAreaCode = proj.CódigoÁreaFuncional;
+                        newRow.ResponsabilityCenterCode = proj.CódigoCentroResponsabilidade;
+                        newRow.Utilizador = User.Identity.Name;
+                        newRow.User = User.Identity.Name;
+                        newRow.Registered = false;
+                        newRow.PreRegistered = false;
+
+                        newRow.CreateUser = User.Identity.Name;
+                        newRow.CreateDate = DateTime.Now;
+
+                        dpValidation = DBProjectDiary.Create(DBProjectDiary.ParseToDatabase(newRow));
+                        if (dpValidation == null)
+                        {
+                            result.eReasonCode = 5;
+                            result.eMessage = "Ocorreu um erro ao obter os movimentos";
+                        }
+                        newRows.Add(newRow);
+                    }
+                }
+                else
+                {
+                    result.eReasonCode = 2;
+                    result.eMessage = "Tabela Preços Serviços Cliente não existe nenhuma linha com o Nº Cliente = " + proj.NºCliente + " e o Código Serviço Cliente = " + serviceCod;
+                }
+            }
+            catch (Exception)
+            {
+                result.eReasonCode = 3;
+                result.eMessage = "Ocorreu algum erro ao Obter as linhas da Tabela Preços Serviços";
             }
 
             return Json(result);
@@ -2106,7 +2197,10 @@ namespace Hydra.Such.Portal.Controllers
                 Registered = x.Registado,
                 DocumentNo = x.NºDocumento,
                 MealType = x.TipoRefeição,
-                ConsumptionDate = x.DataConsumo == null ? String.Empty : x.DataConsumo.Value.ToString("yyyy-MM-dd")
+                ConsumptionDate = x.DataConsumo == null ? String.Empty : x.DataConsumo.Value.ToString("yyyy-MM-dd"),
+                ResidueGuideNo = x.NºGuiaResíduos,
+                ResidueFinalDestinyCode = x.CódDestinoFinalResíduos,
+                ExternalGuideNo = x.NºGuiaExterna,
             }).ToList();
             if (!string.IsNullOrEmpty(NoDocument))
             {
@@ -3125,7 +3219,7 @@ namespace Hydra.Such.Portal.Controllers
                             }
                             wSJobJournalLine.External_Document_No = movimento.DocumentoOriginal;
                             wSJobJournalLine.Portal_Transaction_No = transactID.ToString();
-                            wSJobJournalLine.Posting_Date = _Data_Agora;
+                            wSJobJournalLine.Posting_Date = (DateTime)movimento.Data;
                             wSJobJournalLine.Posting_DateSpecified = true;
                             wSJobJournalLine.OM_Line_No = 0;
                             wSJobJournalLine.Description = movimento.Descrição ?? string.Empty;
@@ -3134,6 +3228,7 @@ namespace Hydra.Such.Portal.Controllers
                             wSJobJournalLine.gDec2 = 0;
                             wSJobJournalLine.gDec3 = 0;
                             wSJobJournalLine.gDec4 = 0;
+                            //wSJobJournalLine.nav
 
                             //WSCreateProjectDiaryLine.Create_Result create_Result = new WSCreateProjectDiaryLine.Create_Result(wSJobJournalLine);
 
@@ -3246,6 +3341,7 @@ namespace Hydra.Such.Portal.Controllers
                             //Billable = mp.Faturável,
                             //UpdateDate = mp.DataHoraModificação,
                             //UpdateUser = mp.UtilizadorModificação,
+                            
                         }
                     )
                     .Where(x => x.InvoiceGroup.HasValue &&
@@ -3518,9 +3614,11 @@ namespace Hydra.Such.Portal.Controllers
                                                 .Where(x => x.CodProjeto == key.Item1 && x.GrupoFactura == key.Item2)
                                                 .ToList();
                                                 //var authorizedProjectMovements = ctx.MovimentosDeProjeto.Where(x => x.CodProjeto == projectNo && x.GrupoFactura == invoiceGroup);
+
                                                 var projectMovements = ctx.MovimentosDeProjeto
                                                     .Where(x => x.NºProjeto == key.Item1 && x.GrupoFatura == key.Item2)
                                                     .ToList();
+
                                                 authorizedProjects.ForEach(x => x.Faturado = true);
                                                 //authorizedProjectMovements.ForEach(x => x.Faturada = true);
                                                 projectMovements.ForEach(x => x.Faturada = true);
@@ -5673,27 +5771,42 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         if (dp["quantity"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.Quantity.ToString());
+                            var quantityCell = row.CreateCell(Col);
+                            quantityCell.SetCellType(CellType.Numeric);
+                            quantityCell.SetCellValue((double)(item.Quantity != null ? item.Quantity : 0));
+                            
                             Col = Col + 1;
                         }
                         if (dp["unitCost"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.UnitCost.ToString());
+                            var unitCostCell = row.CreateCell(Col);
+                            unitCostCell.SetCellType(CellType.Numeric);
+                            unitCostCell.SetCellValue((double)(item.UnitCost != null ? item.UnitCost : 0));
+
                             Col = Col + 1;
                         }
                         if (dp["totalCost"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.TotalCost.ToString());
+                            var totalCostCell = row.CreateCell(Col);
+                            totalCostCell.SetCellType(CellType.Numeric);
+                            totalCostCell.SetCellValue((double)(item.TotalCost != null ? item.TotalCost : 0));
+
                             Col = Col + 1;
                         }
                         if (dp["unitPrice"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.UnitPrice.ToString());
+                            var unitPriceCell = row.CreateCell(Col);
+                            unitPriceCell.SetCellType(CellType.Numeric);
+                            unitPriceCell.SetCellValue((double)(item.UnitPrice != null ? item.UnitPrice : 0));
+
                             Col = Col + 1;
                         }
                         if (dp["totalPrice"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.TotalPrice.ToString());
+                            var totalPriceCell = row.CreateCell(Col);
+                            totalPriceCell.SetCellType(CellType.Numeric);
+                            totalPriceCell.SetCellValue((double)(item.TotalPrice != null ? item.TotalPrice: 0));
+
                             Col = Col + 1;
                         }
                         if (dp["invoiceToClientNo"]["hidden"].ToString() == "False")
@@ -5763,7 +5876,7 @@ namespace Hydra.Such.Portal.Controllers
 
         //1
         [HttpPost]
-        public async Task<JsonResult> ExportToExcel_FaturacaoProjetos([FromBody] List<SPInvoiceListViewModel> Lista)
+        public async Task<JsonResult> ExportToExcel_FaturacaoProjetos([FromBody] List<AuthorizedProjectViewModel> Lista)
         {
             JObject dp = (JObject)Lista[0].ColunasEXCEL;
 
@@ -5783,205 +5896,50 @@ namespace Hydra.Such.Portal.Controllers
                 IRow row = excelSheet.CreateRow(0);
                 int Col = 0;
 
-                if (dp["projectNo"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Nº Projeto");
-                    Col = Col + 1;
-                }
-                if (dp["invoiceToClientNo"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Fatura-a Nº Cliente");
-                    Col = Col + 1;
-                }
-                if (dp["clientName"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Nome Cliente");
-                    Col = Col + 1;
-                }
-                if (dp["date"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Data");
-                    Col = Col + 1;
-                }
-                if (dp["movementType"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Tipo Movimento");
-                    Col = Col + 1;
-                }
-                if (dp["type"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Tipo");
-                    Col = Col + 1;
-                }
-                if (dp["code"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Código");
-                    Col = Col + 1;
-                }
-                if (dp["description"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Descrição");
-                    Col = Col + 1;
-                }
-                if (dp["quantity"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Quantidade");
-                    Col = Col + 1;
-                }
-                if (dp["measurementUnitCode"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Cód. Unidade Medida");
-                    Col = Col + 1;
-                }
-                if (dp["locationCode"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Cód. Localização");
-                    Col = Col + 1;
-                }
-                if (dp["regionCode"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Código Região");
-                    Col = Col + 1;
-                }
-                if (dp["functionalAreaCode"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Código Área");
-                    Col = Col + 1;
-                }
-                if (dp["responsabilityCenterCode"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Código Centro Responsabilidade");
-                    Col = Col + 1;
-                }
-                if (dp["unitCost"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Custo Unitário");
-                    Col = Col + 1;
-                }
-                if (dp["totalCost"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Custo Total");
-                    Col = Col + 1;
-                }
-                if (dp["unitPrice"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Preço Unitário");
-                    Col = Col + 1;
-                }
-                if (dp["totalPrice"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Preço Total");
-                    Col = Col + 1;
-                }
-                if (dp["commitmentNumber"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Nº Compromisso");
-                    Col = Col + 1;
-                }
+                if (dp["codProjeto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Projeto"); Col = Col + 1; }
+                if (dp["codCliente"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Cliente"); Col = Col + 1; }
+                if (dp["valorAutorizado"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Valor Autorizado"); Col = Col + 1; }
+                if (dp["valorPorFaturar"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Valor por Faturar"); Col = Col + 1; }
+                if (dp["codRegiao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Código Região"); Col = Col + 1; }
+                if (dp["codAreaFuncional"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Código Área Funcional"); Col = Col + 1; }
+                if (dp["codCentroResponsabilidade"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Código Centro Responsabilidade"); Col = Col + 1; }
+                if (dp["codTermosPagamento"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Termos de Pagamento"); Col = Col + 1; }
+                if (dp["dataPrestacaoServico"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Serv. Prestado"); Col = Col + 1; }
+                if (dp["numCompromisso"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Núm. Compromisso"); Col = Col + 1; }
+                if (dp["pedidoCliente"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Pedido Cliente"); Col = Col + 1; }
+                if (dp["dataPedido"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Pedido"); Col = Col + 1; }
+                if (dp["grupoFactura"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Grupo Factura"); Col = Col + 1; }
+                if (dp["descricaoGrupo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Descrição Grupo"); Col = Col + 1; }
+                if (dp["situacoesPendentes"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Situações Pendentes"); Col = Col + 1; }
+                if (dp["dataAutorizacao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Autorização"); Col = Col + 1; }
+                if (dp["utilizador"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Autorizado Por"); Col = Col + 1; }
 
                 if (dp != null)
                 {
                     int count = 1;
-                    foreach (SPInvoiceListViewModel item in Lista)
+                    foreach (AuthorizedProjectViewModel item in Lista)
                     {
                         Col = 0;
                         row = excelSheet.CreateRow(count);
 
-                        if (dp["projectNo"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.ProjectNo);
-                            Col = Col + 1;
-                        }
-                        if (dp["invoiceToClientNo"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.InvoiceToClientNo);
-                            Col = Col + 1;
-                        }
-                        if (dp["clientName"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.ClientName);
-                            Col = Col + 1;
-                        }
-                        if (dp["date"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.Date);
-                            Col = Col + 1;
-                        }
-                        if (dp["movementType"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.MovementType.ToString());
-                            Col = Col + 1;
-                        }
-                        if (dp["type"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.Type.ToString());
-                            Col = Col + 1;
-                        }
-                        if (dp["code"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.Code);
-                            Col = Col + 1;
-                        }
-                        if (dp["description"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.Description);
-                            Col = Col + 1;
-                        }
-                        if (dp["quantity"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.Quantity.ToString());
-                            Col = Col + 1;
-                        }
-                        if (dp["measurementUnitCode"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.MeasurementUnitCode);
-                            Col = Col + 1;
-                        }
-                        if (dp["locationCode"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.LocationCode);
-                            Col = Col + 1;
-                        }
-                        if (dp["regionCode"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.RegionCode);
-                            Col = Col + 1;
-                        }
-                        if (dp["functionalAreaCode"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.FunctionalAreaCode);
-                            Col = Col + 1;
-                        }
-                        if (dp["responsabilityCenterCode"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.ResponsabilityCenterCode);
-                            Col = Col + 1;
-                        }
-                        if (dp["unitCost"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.UnitCost.ToString());
-                            Col = Col + 1;
-                        }
-                        if (dp["totalCost"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.TotalCost.ToString());
-                            Col = Col + 1;
-                        }
-                        if (dp["unitPrice"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.UnitPrice.ToString());
-                            Col = Col + 1;
-                        }
-                        if (dp["totalPrice"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.TotalPrice.ToString());
-                            Col = Col + 1;
-                        }
-                        if (dp["commitmentNumber"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.CommitmentNumber);
-                            Col = Col + 1;
-                        }
+                        if (dp["codProjeto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodProjeto); Col = Col + 1; }
+                        if (dp["codCliente"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodCliente); Col = Col + 1; }
+                        if (dp["valorAutorizado"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ValorAutorizado.ToString()); Col = Col + 1; }
+                        if (dp["valorPorFaturar"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(""); Col = Col + 1; }
+                        if (dp["codRegiao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodRegiao); Col = Col + 1; }
+                        if (dp["codAreaFuncional"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodAreaFuncional); Col = Col + 1; }
+                        if (dp["codCentroResponsabilidade"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodCentroResponsabilidade); Col = Col + 1; }
+                        if (dp["codTermosPagamento"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodTermosPagamento); Col = Col + 1; }
+                        if (dp["dataPrestacaoServico"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DataPrestacaoServico); Col = Col + 1; }
+                        if (dp["numCompromisso"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.NumCompromisso); Col = Col + 1; }
+                        if (dp["pedidoCliente"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.PedidoCliente); Col = Col + 1; }
+                        if (dp["dataPedido"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DataPedido); Col = Col + 1; }
+                        if (dp["grupoFactura"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.GrupoFactura); Col = Col + 1; }
+                        if (dp["descricaoGrupo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DescricaoGrupo); Col = Col + 1; }
+                        if (dp["situacoesPendentes"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.SituacoesPendentes); Col = Col + 1; }
+                        if (dp["dataAutorizacao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DataAutorizacao); Col = Col + 1; }
+                        if (dp["utilizador"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Utilizador); Col = Col + 1; }
+
                         count++;
                     }
                 }
@@ -7133,6 +7091,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 if (data != null)
                 {
+                    data.CriarMovNav2017 = data.CriarMovNav2017;
                     data.TotalPrice = data.Quantity * data.UnitPrice;
                     data.UpdateUser = User.Identity.Name;
                     if (DBProjectMovements.Update(DBProjectMovements.ParseToDB(data)) != null)
