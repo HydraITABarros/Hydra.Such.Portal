@@ -842,15 +842,14 @@
                 },
 
                 _exportEXCEL: function () {
-                    var payload = { list: this.result, columns: this._columns };
-                    console.log(payload);
+                    this.result[0].ColunasEXCEL = this._columns;
 
-                    this.$.ajax_Export.body = JSON.stringify(payload);
+                    this.$.ajax_Export.body = JSON.stringify(this.result);
                     this.$.ajax_Export.generateRequest();
                 },
                 _exportEXCELResponse: function (e) {
                     var FileName = this.export;
-                    location.href = '../Encomendas/ExportToExcel?fileName=' + FileName;
+                    location.href = '../Encomendas/ExportToExcelDownload_PedidosPagamento?fileName=' + FileName;
                 },
 
                 /*start - ColumnToggle*/
