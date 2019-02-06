@@ -5771,27 +5771,42 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         if (dp["quantity"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.Quantity.ToString());
+                            var quantityCell = row.CreateCell(Col);
+                            quantityCell.SetCellType(CellType.Numeric);
+                            quantityCell.SetCellValue((double)(item.Quantity != null ? item.Quantity : 0));
+                            
                             Col = Col + 1;
                         }
                         if (dp["unitCost"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.UnitCost.ToString());
+                            var unitCostCell = row.CreateCell(Col);
+                            unitCostCell.SetCellType(CellType.Numeric);
+                            unitCostCell.SetCellValue((double)(item.UnitCost != null ? item.UnitCost : 0));
+
                             Col = Col + 1;
                         }
                         if (dp["totalCost"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.TotalCost.ToString());
+                            var totalCostCell = row.CreateCell(Col);
+                            totalCostCell.SetCellType(CellType.Numeric);
+                            totalCostCell.SetCellValue((double)(item.TotalCost != null ? item.TotalCost : 0));
+
                             Col = Col + 1;
                         }
                         if (dp["unitPrice"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.UnitPrice.ToString());
+                            var unitPriceCell = row.CreateCell(Col);
+                            unitPriceCell.SetCellType(CellType.Numeric);
+                            unitPriceCell.SetCellValue((double)(item.UnitPrice != null ? item.UnitPrice : 0));
+
                             Col = Col + 1;
                         }
                         if (dp["totalPrice"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.TotalPrice.ToString());
+                            var totalPriceCell = row.CreateCell(Col);
+                            totalPriceCell.SetCellType(CellType.Numeric);
+                            totalPriceCell.SetCellValue((double)(item.TotalPrice != null ? item.TotalPrice: 0));
+
                             Col = Col + 1;
                         }
                         if (dp["invoiceToClientNo"]["hidden"].ToString() == "False")

@@ -1284,7 +1284,12 @@
                     },
 
                     _export: function () {
-                        this.$.ajax_Export.body = JSON.stringify(this.data);
+                        console.log(this.data);
+                        var data = JSON.stringify(this.data);
+                        var dataObj = JSON.parse(data);
+                        dataObj.linhasAcordoPrecos = this.$.tabLinhas._filter(this.data.linhasAcordoPrecos);
+
+                        this.$.ajax_Export.body = JSON.stringify(dataObj);
                         this.$.ajax_Export.generateRequest();
                         this.$.tabLinhas.clearCache();
                     },

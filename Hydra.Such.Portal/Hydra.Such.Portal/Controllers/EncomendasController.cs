@@ -857,6 +857,96 @@ namespace Hydra.Such.Portal.Controllers
             return Body;
         }
 
+
+        [HttpPost]
+        [RequestSizeLimit(100_000_000)]
+        public async Task<JsonResult> ExportToExcel_PedidosPagamento([FromBody] List<PedidosPagamentoViewModel> Lista)
+        {
+            JObject dp = (JObject)Lista[0].ColunasEXCEL;
+
+            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + "_ExportEXCEL.xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Pedidos de Pagamento");
+                IRow row = excelSheet.CreateRow(0);
+                int Col = 0;
+
+                var columns = dp.AsJEnumerable().ToList();
+                for (int i = 0; i < columns.Count; i++)
+                {
+                    var column = columns[i];
+                    var isHidden = true;
+                    var label = "";
+                    try
+                    {
+                        isHidden = (bool)column.First()["hidden"];
+                        label = (string)column.First()["label"];
+                    }
+                    catch {}
+
+                    if (!isHidden)
+                    {
+                        row.CreateCell(i).SetCellValue(label);
+                    }
+                }
+
+                if (dp != null)
+                {
+                    int count = 1;
+                    foreach (PedidosPagamentoViewModel item in Lista)
+                    {
+                        row = excelSheet.CreateRow(count);
+                        for (int i = 0; i < columns.Count; i++)
+                        {
+                            var column = columns[i];
+                            var isHidden = true;
+                            try { isHidden = (bool)column.First()["hidden"]; } catch { }
+
+                            if (!isHidden)
+                            {
+                                var columnPath = column.Path.ToString();
+                                columnPath = columnPath.First().ToString().ToUpper() + String.Join("", columnPath.Skip(1));
+                                object value;
+                                try { value = item.GetType().GetProperty(columnPath).GetValue(item, null); }
+                                catch { value = item.GetType().GetProperty(columnPath.ToUpper()).GetValue(item, null); }
+                               
+                                if(columnPath == "Valor" || columnPath == "ValorEncomenda" || columnPath == "ValorJaPedido")
+                                {
+                                    row.CreateCell(i).SetCellValue((double)(value != null ? (decimal)value: 0));
+                                } else
+                                {
+                                    row.CreateCell(i).SetCellValue(value?.ToString());
+                                }
+                            }
+                        }                        
+                        count++;
+                    }
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+        }
+
+        public IActionResult ExportToExcelDownload_PedidosPagamento(string FileName)
+        {
+            FileName = @"/Upload/temp/" + FileName;
+            return File(FileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Pedidos de Pagamento.xlsx");
+        }
+
         #endregion
 
     }

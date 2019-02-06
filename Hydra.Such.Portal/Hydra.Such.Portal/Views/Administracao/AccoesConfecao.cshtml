@@ -185,6 +185,8 @@
                 ready: function () {
                     this.$.page_databound_ajax.generateRequest();
 
+                    window.handleGridListColumnsOrder(this.$.gridActionsConfection, 'admin-accoesconfecao');
+
                     var _this = this;
                     $(window).resize(function () {
                         _this.fixGridToBottom();

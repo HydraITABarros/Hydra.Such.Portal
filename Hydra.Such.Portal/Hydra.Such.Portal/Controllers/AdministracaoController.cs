@@ -2617,15 +2617,15 @@ namespace Hydra.Such.Portal.Controllers
                         row.CreateCell(8).SetCellValue(item.Area.ToString());
                         row.CreateCell(9).SetCellValue(item.Cresp.ToString());
                         row.CreateCell(10).SetCellValue(item.Localizacao.ToString());
-                        row.CreateCell(11).SetCellValue(item.CustoUnitario.HasValue ? item.CustoUnitario.ToString() : "");
+                        row.CreateCell(11).SetCellValue((double)(item.CustoUnitario.HasValue ? item.CustoUnitario : 0));
                         row.CreateCell(12).SetCellValue(item.Um.ToString());
                         row.CreateCell(13).SetCellValue(item.QtdPorUm.HasValue ? item.QtdPorUm.ToString() : "");
-                        row.CreateCell(14).SetCellValue(item.PesoUnitario.HasValue ? item.PesoUnitario.ToString() : "");
+                        row.CreateCell(14).SetCellValue((double)(item.PesoUnitario.HasValue ? item.PesoUnitario : 0));
                         row.CreateCell(15).SetCellValue(item.CodProdutoFornecedor.ToString());
                         row.CreateCell(16).SetCellValue(item.DescricaoProdFornecedor.ToString());
                         row.CreateCell(17).SetCellValue(item.FormaEntrega.HasValue ? item.FormaEntrega.ToString() : "");
                         row.CreateCell(18).SetCellValue(item.TipoPreco.HasValue ? item.TipoPreco.ToString() : "");
-                        row.CreateCell(19).SetCellValue(item.GrupoRegistoIvaProduto.ToString());
+                        row.CreateCell(19).SetCellValue(item.GrupoRegistoIvaProduto?.ToString());
                         row.CreateCell(20).SetCellValue(item.CodCategoriaProduto == null ? string.Empty : item.CodCategoriaProduto.ToString());
                         row.CreateCell(21).SetCellValue(item.UserId.ToString());
                         row.CreateCell(22).SetCellValue(item.DataCriacao.HasValue ? item.DataCriacao.ToString() : "");
