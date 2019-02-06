@@ -4417,10 +4417,10 @@
 
                     //BOTÕES
                     if (data.terminada == true) { //TERMINADA
-                        $(_self.$.btn_calcularAjudasCusto).addClass('disabled');
                         $(_self.$.btn_updateFH1).addClass('disabled');
                         $(_self.$.btn_updateFH2).addClass('disabled');
                         if (data.mostrarBotoes == false) {
+                            $(_self.$.btn_calcularAjudasCusto).addClass('disabled');
                             $(_self.$.btn_createPercurso).addClass('disabled');
                             $(_self.$.btn_createAjuda).addClass('disabled');
                             $(_self.$.btn_createMaoDeObra).addClass('disabled');
@@ -4479,10 +4479,12 @@
                         _self.$.horaPartidaTexto.disabled = true;
                         _self.$.dataChegadaTexto.disabled = true;
                         _self.$.horaChegadaTexto.disabled = true;
-                        _self.$.tipoDeslocacao.disabled = true;
-                        _self.$.codigoTipoKms.disabled = true;
-                        _self.$.matricula.disabled = true;
-                        _self.$.deslocacaoForaConcelho.disabled = true;
+                        if (data.mostrarBotoes == false) {
+                            _self.$.tipoDeslocacao.disabled = true;
+                            _self.$.codigoTipoKms.disabled = true;
+                            _self.$.matricula.disabled = true;
+                            _self.$.deslocacaoForaConcelho.disabled = true;
+                        }    
                         _self.$.terminada.disabled = true;
 
                         _self.$.codigoRegiao.disabled = true;

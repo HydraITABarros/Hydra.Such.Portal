@@ -209,7 +209,6 @@ namespace Hydra.Such.Data.Logic
                         {
                             LinhaGuiaTransporteNavViewModel line = new LinhaGuiaTransporteNavViewModel()
                             {
-
                                 NoGuiaTransporte = (string)ln.NoDocumento,
                                 NoLinha = ln.NoLinha.Equals(DBNull.Value) ? 1 : (int)ln.NoLinha,
                                 Tipo = ln.Tipo.Equals(DBNull.Value) ? 0 : (int)ln.Tipo,
@@ -225,9 +224,32 @@ namespace Hydra.Such.Data.Logic
                                 ShortcutDimension2Code = ln.ShortcutDim2Code.Equals(DBNull.Value) ? "" : (string)ln.ShortcutDim2Code,
                                 FunctionalLocationNo = ln.FunctionalLocationNo.Equals(DBNull.Value) ? "" : (string)ln.FunctionalLocationNo,
                                 EstadoEquipamento = ln.EstadoEquipamento.Equals(DBNull.Value) ? 0 : (int)ln.EstadoEquipamento,
-                                InventoryNo = ln.InventoryNo.Equals(DBNull.Value) ? "" : (string)ln.InventoryNo
+                                InventoryNo = ln.InventoryNo.Equals(DBNull.Value) ? "" : (string)ln.InventoryNo,
+                                NoProjecto = ln.NoProjecto.Equals(DBNull.Value) ? "" : (string)ln.NoProjecto,
+                                DataGuia = ln.DataGuia.Equals(DBNull.Value) ? DateTime.Parse("1900-01-01") : (DateTime)ln.DataGuia,
+                                DataEntrega = ln.DataEntrega.Equals(DBNull.Value) ? DateTime.Parse("1900-01-01") : (DateTime)ln.DataEntrega,
+                                NoCliente = ln.NoCliente.Equals(DBNull.Value) ? "" : (string)ln.NoCliente
                             };
 
+                            if((line.DataGuia.Equals(DateTime.Parse("1900-01-01")) || line.DataGuia.Equals(DateTime.Parse("1753-01-01"))) && !result.DataGuia.Equals(DateTime.Parse("1900-01-01")) && !result.DataGuia.Equals(DateTime.Parse("1753-01-01")))
+                            {
+                                line.DataGuia = result.DataGuia;
+                            }
+
+                            if ((line.DataEntrega.Equals(DateTime.Parse("1900-01-01")) || line.DataEntrega.Equals(DateTime.Parse("1753-01-01"))) && !result.DataSaida.Equals(DateTime.Parse("1900-01-01")) && !result.DataSaida.Equals(DateTime.Parse("1753-01-01")))
+                            {
+                                line.DataEntrega = result.DataSaida;
+                            }
+
+                            if(line.NoProjecto == "" && result.NoProjecto != "")
+                            {
+                                line.NoProjecto = result.NoProjecto;
+                            }
+
+                            if(line.NoCliente == "" && result.NoCliente != "")
+                            {
+                                line.NoCliente = result.NoCliente;
+                            }
 
                             switch (line.Tipo)
                             {

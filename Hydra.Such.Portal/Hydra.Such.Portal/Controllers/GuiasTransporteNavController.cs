@@ -265,6 +265,7 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult UpdateGuia([FromBody] GuiaTransporteNavViewModel data)
         {
             data.CastDateTimeStringPropertiesToDateTime();
+            
             bool result = DBNAV2017GuiasTransporte.UpdateGuiaTransporte(data);
             return Json(result);
         }

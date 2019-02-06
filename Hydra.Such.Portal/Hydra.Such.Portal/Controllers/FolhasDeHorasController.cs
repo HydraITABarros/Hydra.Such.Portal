@@ -525,7 +525,7 @@ namespace Hydra.Such.Portal.Controllers
                         };
                         if (result.Estado == 0 && result.Terminada == true)
                         {
-                            if (result.Validadores.ToLower().Contains(User.Identity.Name.ToLower()))
+                            if (result.Validadores.ToLower().Contains(User.Identity.Name.ToLower()) || result.CriadoPor.ToLower().Contains(User.Identity.Name.ToLower()))
                                 result.MostrarBotoes = true;
                             else
                                 result.MostrarBotoes = false;
@@ -3714,10 +3714,10 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    if (data.TipoDeslocacao == 2) //2 = "Viatura Própria")
+                    if (data.TipoDeslocacao != 2) //2 = "Viatura Própria")
                     {
                         result.eReasonCode = 101;
-                        result.eMessage = "Não é possível Integrar km, devido ao Tipo de Deslocação ser uma Viatura Própria.";
+                        result.eMessage = "Não é possível Integrar km, devido ao Tipo de Deslocação não ser uma Viatura Própria.";
                     }
                     else
                     {
