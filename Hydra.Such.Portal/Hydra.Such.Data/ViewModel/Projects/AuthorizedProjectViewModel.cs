@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Hydra.Such.Data.ViewModel.Projects
 {
-    public class AuthorizedProjectViewModel
+    public class AuthorizedProjectViewModel : ErrorHandler
     {
         private string dataPrestacaoServico = string.Empty;
 

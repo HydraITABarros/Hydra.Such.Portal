@@ -2484,7 +2484,8 @@
                 //},
 
                 _updateLinhaPercurso: function (e) {
-                    if (this.data.terminada == true || this.data.estado == 1 || this.data.estado == 2) {
+                    debugger;
+                    if (this.data.mostrarBotoes == false && (this.data.terminada == true || this.data.estado == 1 || this.data.estado == 2)) {
                         this.$.page_databound_ajax.generateRequest();
                     }
                     else {
@@ -2700,7 +2701,7 @@
                 //},
 
                 _updateLinhaAjuda: function (e) {
-                    if (this.data.terminada == true || this.data.estado == 1 || this.data.estado == 2) {
+                    if (this.data.mostrarBotoes == false && (this.data.terminada == true || this.data.estado == 1 || this.data.estado == 2)) {
                         this.$.page_databound_ajax.generateRequest();
                     }
                     else {
@@ -2946,7 +2947,7 @@
                 //},
 
                 _updateLinhaMaoDeObra: function (e) {
-                    if (this.data.terminada == true || this.data.estado == 1 || this.data.estado == 2) {
+                    if (this.data.mostrarBotoes == false && (this.data.terminada == true || this.data.estado == 1 || this.data.estado == 2)) {
                         this.$.page_databound_ajax.generateRequest();
                     }
                     else {
@@ -3260,7 +3261,7 @@
                 //},
 
                 _updateLinhaPresenca: function (e) {
-                    if (this.data.terminada == true || this.data.estado == 1 || this.data.estado == 2) {
+                    if (this.data.mostrarBotoes == false && (this.data.terminada == true || this.data.estado == 1 || this.data.estado == 2)) {
                         this.$.page_databound_ajax.generateRequest();
                     }
                     else {

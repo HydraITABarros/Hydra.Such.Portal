@@ -8,6 +8,25 @@ namespace Hydra.Such.Data.Logic.Project
 {
     public static class DBAuthotizedProjects
     {
+        public static ProjectosAutorizados Update(ProjectosAutorizados ObjectToUpdate)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    ctx.ProjectosAutorizados.Update(ObjectToUpdate);
+                    ctx.SaveChanges();
+                }
+
+                return ObjectToUpdate;
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
         #region Parse Utilities
         public static AuthorizedProjectViewModel ParseToViewModel(this ProjectosAutorizados item)
         {
