@@ -3979,7 +3979,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult PreMovimentosProjetos(string id)
         {
-            UserAccessesViewModel userAccesses = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Projetos);
+            UserAccessesViewModel userAccesses = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.PreRegistos);
             if (userAccesses != null && userAccesses.Read.Value)
             {
                 if (id != null)
