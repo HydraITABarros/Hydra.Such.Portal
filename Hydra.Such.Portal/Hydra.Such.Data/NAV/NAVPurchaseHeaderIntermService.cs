@@ -149,6 +149,7 @@ namespace Hydra.Such.Data.NAV
                     N_Consulta = purchFromSupplier.NAVPrePurchOrderId,
                     Expected_Receipt_Date = DataRececao,
                     Expected_Receipt_DateSpecified = true,
+                    
                 }
             };
 
