@@ -954,6 +954,8 @@
                     window.handleGridListColumnsOrder(this.$.projectInvoiceAutorization, 'projetos-faturacao');
                     window.handleGridListColumnsOrder(this.$.grdProjectLines, 'projetos-faturacao-info');
 
+                    window.grid = this.$.projectInvoiceAutorization;
+
                     var _this = this;
                     $(window).resize(function () {
                         _this.fixGridToBottom();
@@ -997,6 +999,8 @@
                     return type != 1;
                 },
                 _getMovementsResponse: function (e) {
+
+                    this.$.projectInvoiceAutorization._loading = false;
                     if (this.authorizedMovements == null) {
                         this.openToastError("Ocorreu um erro ao obter os registos.");
                     }
@@ -1474,12 +1478,14 @@
                     this.$.page_databound_ajax.url = "/Projetos/GetAuthorizedMovementsHistoric";
                     this.$.page_databound_ajax.generateRequest();
                     this.authorizedMovements = [];
+                    this.$.projectInvoiceAutorization._loading = true;
                     this.isBillingList = false;
                 },
                 _getToBilling: function () {
                     this.$.page_databound_ajax.url = "/Projetos/GetAuthorizedMovements";
                     this.$.page_databound_ajax.generateRequest();
                     this.authorizedMovements = [];
+                    this.$.projectInvoiceAutorization._loading = true;
                     this.isBillingList = true;
 
                 }
