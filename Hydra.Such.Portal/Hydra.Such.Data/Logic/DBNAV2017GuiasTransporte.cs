@@ -610,6 +610,23 @@ namespace Hydra.Such.Data.Logic
             return _contextExt.ExecuteTableValueProcedure(_linhasType, "NAV2017LinGuiaTransporte_Update", "@LinhasGuia", "LinGuiaTransporteType");
         }
 
+        public static bool UpdateLinhaGuiaTransporte(LinhaGuiaTransporteNavViewModel linha)
+        {
+            if (linha == null)
+            {
+                return false;
+            }
+
+            SuchDBContextExtention _contextExt = new SuchDBContextExtention();
+
+            List<LinhaGuiaTransporteSqlModel> _linhas = new List<LinhaGuiaTransporteSqlModel>
+            {
+                CastToLinhaType(linha)
+            };
+
+            return _contextExt.ExecuteTableValueProcedure(_linhas, "NAV2017LinGuiaTransporte_Update", "@LinhasGuia", "LinGuiaTransporteType");
+        }
+
         public static bool CreateLinhasGuiaTransporte(LinhaGuiaTransporteNavViewModel linha)
         {
             if (linha == null)
@@ -647,22 +664,7 @@ namespace Hydra.Such.Data.Logic
 
             return _contextExt.ExecuteTableValueProcedure(_linhasType, "NAV2017LinGuiaTransporte_Insert", "@LinhasGuia", "LinGuiaTransporteType");
         }
-        public static bool UpdateLinhaGuiaTransporte(LinhaGuiaTransporteNavViewModel linha)
-        {
-            if (linha == null)
-            {
-                return false;
-            }
-
-            SuchDBContextExtention _contextExt = new SuchDBContextExtention();
-
-            List<LinhaGuiaTransporteSqlModel> _linhas = new List<LinhaGuiaTransporteSqlModel>
-            {
-                CastToLinhaType(linha)
-            };
-
-            return _contextExt.ExecuteTableValueProcedure(_linhas, "NAV2017LinGuiaTransporte_Update", "@LinhasGuia", "LinGuiaTransporteType");
-        }
+       
 
         public static bool DeleteLinhaGuiaTransporte(string NAVDatabase, string NAVCompany, string noGuia, int noLinha)
         {

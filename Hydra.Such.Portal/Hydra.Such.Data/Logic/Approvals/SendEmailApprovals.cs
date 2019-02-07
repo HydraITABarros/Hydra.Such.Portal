@@ -16,36 +16,42 @@ namespace Hydra.Such.Data.Logic.Approvals
 
         private void SendCompletedCallback(object sender, AsyncCompletedEventArgs e)
         {
-            MailSent = false;
-            string Token = (string)e.UserState;
-            if (!e.Cancelled && e.Error == null)
+            try
             {
-                MailSent = true;
-                if (MailSent)
+                MailSent = false;
+                string Token = (string)e.UserState;
+                if (!e.Cancelled && e.Error == null)
                 {
-                    EmailApproval.ObservaçõesEnvio = "Mensagem enviada com Sucesso";
-                    EmailApproval.Enviado = true;
+                    MailSent = true;
+                    if (MailSent)
+                    {
+                        EmailApproval.ObservaçõesEnvio = "Mensagem enviada com Sucesso";
+                        EmailApproval.Enviado = true;
+                        DBApprovalEmails.Update(EmailApproval);
+                    }
+                }
+
+                if (e.Error != null)
+                {
+                    EmailApproval.ObservaçõesEnvio = "Não foi possível enviar a mensagem " + DateTime.Now.ToString();
                     DBApprovalEmails.Update(EmailApproval);
                 }
             }
-
-            if (e.Error != null)
-            {
-                EmailApproval.ObservaçõesEnvio = "Não foi possível enviar a mensagem " + DateTime.Now.ToString();
-                DBApprovalEmails.Update(EmailApproval);
-            }
+            catch { }
         }
 
         public void SendEmail()
         {
             if (EmailApproval == null)
+            {
                 return;
-            
+            }
+
             if (string.IsNullOrEmpty(From) && !IsValidEmail(From))
             {
                 EmailApproval.ObservaçõesEnvio = "Email do remetente inválido!";
 
-                DBApprovalEmails.Update(EmailApproval);
+                try { DBApprovalEmails.Update(EmailApproval); } catch { }
                 return;
             }
 
@@ -55,7 +61,7 @@ namespace Hydra.Such.Data.Logic.Approvals
                 return;
             }
 
-            DBApprovalEmails.Update(EmailApproval);
+            try {DBApprovalEmails.Update(EmailApproval);} catch { }
 
             SmtpClient Client = new SmtpClient(Config.Host, Config.Port);
             NetworkCredential Credentials = new NetworkCredential(Config.Username, Config.Password);
@@ -93,6 +99,9 @@ namespace Hydra.Such.Data.Logic.Approvals
 
             string UserState = "EmailAprovações";
             Client.SendAsync(MMessage, UserState);
+
+
+            MMessage.Dispose();
         }
 
         public void SendEmail_Simple()
