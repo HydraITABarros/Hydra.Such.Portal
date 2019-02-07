@@ -22,6 +22,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public int? LocalCollectionCode { get; set; }
         public int? LocalDeliveryCode { get; set; }
         public string Notes { get; set; }
+        public string NoDocumento { get; set; }
         public bool? PreRequesitionModel { get; set; }
         public DateTime? CreateDateTime { get; set; }
         public string CreateUser { get; set; }

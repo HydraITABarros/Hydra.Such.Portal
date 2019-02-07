@@ -988,6 +988,7 @@ namespace Hydra.Such.Portal.Controllers
                         PreRequisicaoDB.CódigoLocalRecolha = data.LocalCollectionCode;
                         PreRequisicaoDB.CódigoLocalEntrega = data.LocalDeliveryCode;
                         PreRequisicaoDB.Observações = data.Notes;
+                        PreRequisicaoDB.NoDocumento = data.NoDocumento;
                         PreRequisicaoDB.ModeloDePréRequisição = data.PreRequesitionModel;
                         PreRequisicaoDB.DataHoraCriação = data.CreateDateTime;
                         PreRequisicaoDB.UtilizadorCriação = data.CreateUser;
@@ -1087,6 +1088,7 @@ namespace Hydra.Such.Portal.Controllers
                             PreRequisicaoDB.CódigoLocalRecolha = data.LocalCollectionCode;
                             PreRequisicaoDB.CódigoLocalEntrega = data.LocalDeliveryCode;
                             PreRequisicaoDB.Observações = data.Notes;
+                            PreRequisicaoDB.NoDocumento = data.NoDocumento;
                             PreRequisicaoDB.ModeloDePréRequisição = data.PreRequesitionModel;
                             PreRequisicaoDB.DataHoraCriação = data.CreateDateTime;
                             PreRequisicaoDB.UtilizadorCriação = data.CreateUser;
@@ -1882,6 +1884,7 @@ namespace Hydra.Such.Portal.Controllers
                                 ProjectNo = data.ProjectNo,
                                 ReceivedDate = data.ReceptionDate,
                                 Comments = data.Notes,
+                                NoDocumento = data.NoDocumento,
                                 RepairWithWarranty = data.WarrantyRepair,
                                 Emm = data.EMM,
                                 WarehouseDeliveryDate = data.DeliveryWarehouseDate,
@@ -1967,6 +1970,7 @@ namespace Hydra.Such.Portal.Controllers
                                 ProjectNo = data.ProjectNo,
                                 ReceivedDate = data.ReceptionDate,
                                 Comments = data.Notes,
+                                NoDocumento = data.NoDocumento,
                                 RepairWithWarranty = data.WarrantyRepair,
                                 Emm = data.EMM,
                                 WarehouseDeliveryDate = data.DeliveryWarehouseDate,
@@ -2246,6 +2250,7 @@ namespace Hydra.Such.Portal.Controllers
                                         ProjectNo = data.ProjectNo,
                                         ReceivedDate = data.ReceptionDate,
                                         Comments = data.Notes,
+                                        NoDocumento = data.NoDocumento,
                                         RepairWithWarranty = data.WarrantyRepair,
                                         Emm = data.EMM,
                                         WarehouseDeliveryDate = data.DeliveryWarehouseDate,
@@ -2333,6 +2338,7 @@ namespace Hydra.Such.Portal.Controllers
                                         ProjectNo = data.ProjectNo,
                                         ReceivedDate = data.ReceptionDate,
                                         Comments = data.Notes,
+                                        NoDocumento = data.NoDocumento,
                                         RepairWithWarranty = data.WarrantyRepair,
                                         Emm = data.EMM,
                                         WarehouseDeliveryDate = data.DeliveryWarehouseDate,

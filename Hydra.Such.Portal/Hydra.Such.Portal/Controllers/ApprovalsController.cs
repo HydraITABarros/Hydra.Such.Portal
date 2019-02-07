@@ -640,6 +640,32 @@ namespace Hydra.Such.Portal.Controllers
                                                                     result.eMessage = "Ocorreu um erro ao Integrar Ajudas de Custo.";
                                                                 }
                                                             }
+                                                            else
+                                                            {
+                                                                result.eReasonCode = 199;
+                                                                result.eMessage = "Ocorreu no script SQL de integração RH.";
+
+                                                                if (Resultado == 1)
+                                                                {
+                                                                    result.eReasonCode = 101;
+                                                                    result.eMessage = "Não tem permissões para validar.";
+                                                                }
+                                                                if (Resultado == 2)
+                                                                {
+                                                                    result.eReasonCode = 102;
+                                                                    result.eMessage = "O projecto não existe no eSUCH e no Evolution.";
+                                                                }
+                                                                if (Resultado == 3)
+                                                                {
+                                                                    result.eReasonCode = 103;
+                                                                    result.eMessage = "O projecto na Mão de Obra não existe no eSUCH e no Evolution.";
+                                                                }
+                                                                if (Resultado == 5)
+                                                                {
+                                                                    result.eReasonCode = 105;
+                                                                    result.eMessage = "Não Pode validar pois já se encontra validada.";
+                                                                }
+                                                            }
                                                         }
                                                         else
                                                             integrarRH = true;
@@ -685,6 +711,32 @@ namespace Hydra.Such.Portal.Controllers
                                                                 {
                                                                     result.eReasonCode = 31;
                                                                     result.eMessage = "Ocorreu um erro ao Integrar km.";
+                                                                }
+                                                            }
+                                                            else
+                                                            {
+                                                                result.eReasonCode = 199;
+                                                                result.eMessage = "Ocorreu no script SQL de Integração de Km.";
+
+                                                                if (Resultado == 1)
+                                                                {
+                                                                    result.eReasonCode = 101;
+                                                                    result.eMessage = "Não tem permissões para validar.";
+                                                                }
+                                                                if (Resultado == 2)
+                                                                {
+                                                                    result.eReasonCode = 102;
+                                                                    result.eMessage = "O projecto não existe no eSUCH e no Evolution.";
+                                                                }
+                                                                if (Resultado == 3)
+                                                                {
+                                                                    result.eReasonCode = 103;
+                                                                    result.eMessage = "O projecto na Mão de Obra não existe no eSUCH e no Evolution.";
+                                                                }
+                                                                if (Resultado == 5)
+                                                                {
+                                                                    result.eReasonCode = 105;
+                                                                    result.eMessage = "Não Pode validar pois já se encontra validada.";
                                                                 }
                                                             }
                                                         }
@@ -935,6 +987,11 @@ namespace Hydra.Such.Portal.Controllers
                                                                         result.eMessage = "Ocorreu um erro ao Integrar km.";
                                                                     }
                                                                 }
+                                                                else
+                                                                {
+                                                                    result.eReasonCode = 101;
+                                                                    result.eMessage = "Ocorreu um erro no script SQL de Integração Km na Folha de Horas.";
+                                                                }
                                                             }
                                                         }
                                                     }
@@ -986,7 +1043,7 @@ namespace Hydra.Such.Portal.Controllers
                                             else
                                             {
                                                 result.eReasonCode = 101;
-                                                result.eMessage = "Ocorreu um erro no script SQL de Validaçãodo na Folha de Horas.";
+                                                result.eMessage = "Ocorreu um erro no script SQL de Integração RH na Folha de Horas.";
                                             }
                                         }
                                     }
@@ -1167,7 +1224,7 @@ namespace Hydra.Such.Portal.Controllers
                                             else
                                             {
                                                 result.eReasonCode = 101;
-                                                result.eMessage = "Ocorreu um erro no script SQL de Validaçãodo na Folha de Horas.";
+                                                result.eMessage = "Ocorreu um erro no script SQL de Integração Km na Folha de Horas.";
                                             }
                                         }
                                     }
