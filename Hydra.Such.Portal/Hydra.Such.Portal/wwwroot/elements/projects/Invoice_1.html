@@ -41,9 +41,18 @@
 
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
-            <paper-button class="tablinks" id="btnConfirm" on-tap="_confirm"><i class="fa fa-check-square" aria-hidden="true"></i> Faturar</paper-button>
-            <paper-button class="tablinks" id="btnConfirm" on-tap="_deleteLine"><i class="fa fa-close" aria-hidden="true"></i> Anular Linha</paper-button>
+            <template is="dom-if" if="{{isBillingList}}">
+                <paper-button class="tablinks" id="btnConfirm" on-tap="_confirm"><i class="fa fa-check-square" aria-hidden="true"></i> Faturar</paper-button>
+                <paper-button class="tablinks" id="btnConfirm" on-tap="_deleteLine"><i class="fa fa-close" aria-hidden="true"></i> Anular Linha</paper-button>
+            </template>
+
             <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+            <template is="dom-if" if="{{isBillingList}}">
+                <paper-button class="tablinks" id="btnHistory" on-tap="_getHistory"><i class="fa fa-history" aria-hidden="true"></i> Histórico</paper-button>
+            </template>
+            <template is="dom-if" if="{{isNot(isBillingList)}}">
+                <paper-button class="tablinks" id="btnHistory" on-tap="_getToBilling"><i class="fa fa-list-alt" aria-hidden="true"></i> Não Faturados</paper-button>
+            </template>
 
             <!--start ColumnToggle-->
             <paper-menu-button class="column-toggle" no-animations>
@@ -313,6 +322,7 @@
 
 
         <vaadin-grid column-reordering-allowed id="projectInvoiceAutorization" selected-items={{selectedItems}} active-item="{{selectedItem}}" aria-label="Tabela Autorização Faturação" items="[[authorizedMovements]]" class="editGrid">
+
             <vaadin-grid-selection-column id="selectColumn" auto-select>
             </vaadin-grid-selection-column>
 
@@ -352,19 +362,23 @@
                     <vaadin-grid-filter path="valorAutorizado" />
                 </template>
                 <template>
-                    [[_formatValue(item.valorAutorizado)]]
+                    <div class="text-right">
+                        [[_formatValue(item.valorAutorizado)]]
+                    </div>
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.valorPorFaturar.hidden }}">
+            <!--<vaadin-grid-column width="15%" resizable hidden$="{{ _columns.valorPorFaturar.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="valorPorFaturar">Valor por Faturar</vaadin-grid-sorter>
                     <vaadin-grid-filter path="valorPorFaturar" />
                 </template>
                 <template>
-                    [[_formatValue(item.valorPorFaturar)]]
+                    <div class="text-right">
+                        [[_formatValue(item.valorPorFaturar)]]
+                    </div>
                 </template>
-            </vaadin-grid-column>
+            </vaadin-grid-column>-->
 
             <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.codRegiao.hidden }}">
                 <template class="header">
@@ -578,7 +592,9 @@
                         <vaadin-grid-filter path="unitPrice" />
                     </template>
                     <template>
-                        [[_formatValue(item.unitPrice)]]
+                        <div class="text-right">
+                            [[_formatValue(item.unitPrice)]]
+                        </div>
                     </template>
                 </vaadin-grid-column>
                 <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.totalPrice.hidden }}">
@@ -587,7 +603,10 @@
                         <vaadin-grid-filter path="totalPrice" />
                     </template>
                     <template>
-                        <span slot="suffix">[[_formatValue(item.totalPrice)]]€</span>
+
+                        <div class="text-right">
+                            <span slot="suffix">[[_formatValue(item.totalPrice)]]€</span>
+                        </div>
                     </template>
                 </vaadin-grid-column>
                 <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.billable.hidden }}">
@@ -723,7 +742,9 @@
                         <vaadin-grid-filter path="unitCost" />
                     </template>
                     <template>
-                        <span slot="suffix">[[_formatValue(item.unitCost)]]€</span>
+                        <div class="text-right">
+                            <span slot="suffix">[[_formatValue(item.unitCost)]]€</span>
+                        </div>
                     </template>
                 </vaadin-grid-column>
                 <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.totalCost.hidden }}">
@@ -732,7 +753,9 @@
                         <vaadin-grid-filter path="totalCost" />
                     </template>
                     <template>
-                        <span slot="suffix">[[_formatValue(item.totalCost)]]€</span>
+                        <div class="text-right">
+                            <span slot="suffix">[[_formatValue(item.totalCost)]]€</span>
+                        </div>
                     </template>
                 </vaadin-grid-column>
                 <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.regionCode.hidden }}">
@@ -868,7 +891,7 @@
                         notify: true,
                         value: 0
                     },
-                   
+
                     _projectno: {
                         type: String,
                         notify: true,
@@ -889,7 +912,7 @@
 
                     selectedItem: {
                         type: Array,
-                       
+
                     },
 
                     selectedItems: {
@@ -908,6 +931,10 @@
                         type: Boolean,
                         value: false
                     },
+                    isBillingList: {
+                        type: Boolean,
+                        value: true
+                    }
                 },
 
                 observers: [
@@ -1018,7 +1045,7 @@
                                 //} else {
                                 //    this.openToastError(erro);
                                 //}
-                            }  
+                            }
                         }
                         else {
                             this.openToastError("Selecione apenas projetos de um cliente!");
@@ -1236,10 +1263,10 @@
                 _exportEXCEL: function () {
                     this.authorizedMovements[0].ColunasEXCEL = this._columns;
 
-                    this.$.ajax_Export.body = JSON.stringify(this.authorizedMovements);
+                    this.$.ajax_Export.body = JSON.stringify(this.$.projectInvoiceAutorization._filter(this.authorizedMovements));
                     this.$.ajax_Export.generateRequest();
                 },
-               
+
                 _exportEXCELResponse: function (e) {
                     var FileName = this.export;
                     location.href = '../Projetos/ExportToExcelDownload_FaturacaoProjetos?sFileName=' + FileName;
@@ -1290,11 +1317,11 @@
                 _showAuthorizationDetails: function (e) {
                     if (e != null) {
                         var Item = e.model.item;
-                        this.$.grid_dataprojlines_ajax.params = {"ProjGroup": Item.grupoFactura};
+                        this.$.grid_dataprojlines_ajax.params = { "ProjGroup": Item.grupoFactura };
                         this.$.grid_dataprojlines_ajax.body = JSON.stringify(Item.codProjeto);
                         this.$.grid_dataprojlines_ajax.generateRequest();
                         this.$.dialog.open();
-                       
+
                     }
                 },
                 _toArray: function (obj) {
@@ -1409,15 +1436,15 @@
                 },
 
                 _exportDetalhesAutorizacaoEXCEL: function () {
-                    this.$.ajax_ExportDetalhesAutorizacao.body = JSON.stringify(this.resultlines);
+                    this.$.ajax_ExportDetalhesAutorizacao.body = JSON.stringify(this.$.grdProjectLines._filter(this.resultlines));
                     this.$.ajax_ExportDetalhesAutorizacao.generateRequest();
                 },
                 _exportEXCELDetalhesAutorizacaoResponse: function (e) {
                     var FileName = this.exportDetalhesAutorizacao;
                     location.href = '../Projetos/ExportToExcelDownload_DetalhesAutorizacao?sFileName=' + FileName;
                 },
-                
-                _closeDetalhesAutorizacaoDialog: function() {
+
+                _closeDetalhesAutorizacaoDialog: function () {
                     this.$.dialog.close();
                 },
 
@@ -1440,8 +1467,22 @@
                         this.openToastError(this.UpdateResponse.eMessage);
                     }
                 },
+                isNot: function () {
+                    return !this.isBillingList;
+                },
+                _getHistory: function () {
+                    this.$.page_databound_ajax.url = "/Projetos/GetAuthorizedMovementsHistoric";
+                    this.$.page_databound_ajax.generateRequest();
+                    this.authorizedMovements = [];
+                    this.isBillingList = false;
+                },
+                _getToBilling: function () {
+                    this.$.page_databound_ajax.url = "/Projetos/GetAuthorizedMovements";
+                    this.$.page_databound_ajax.generateRequest();
+                    this.authorizedMovements = [];
+                    this.isBillingList = true;
 
-
+                }
 
             });
         });
