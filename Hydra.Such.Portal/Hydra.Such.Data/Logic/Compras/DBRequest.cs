@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Hydra.Such.Data.Database;
+using Hydra.Such.Data.Logic.Project;
 using Hydra.Such.Data.ViewModel.Compras;
+using Hydra.Such.Data.ViewModel.ProjectView;
 using Microsoft.EntityFrameworkCore;
 using static Hydra.Such.Data.Enumerations;
 
@@ -53,6 +55,120 @@ namespace Hydra.Such.Data.Logic.Request
                         .Include(x => x.RequisicoesRegAlteracoes)
                         .Where(x => stateValues.Contains(x.Estado.Value) && x.TipoReq == TipoReq)
                         .ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public static List<Requisição> GetByState(List<RequisitionStates> states, List<AcessosDimensões> userDims, string NAVDatabaseName, string NAVCompanyName)
+        {
+            try
+            {
+                List<int> stateValues = states.Cast<int>().ToList();
+
+                string userRegions = "";
+                string userAreas = "";
+                string userCresps = "";
+
+                if (userDims != null)
+                {
+                    userDims.ForEach(x =>
+                    {
+                       if(x.Dimensão == 1)
+                        {
+                            if (userRegions == "")
+                                userRegions = x.ValorDimensão;
+                            else
+                                userRegions = userRegions + "," + x.ValorDimensão;
+                        }
+
+                        if (x.Dimensão == 2)
+                        {
+                            if (userAreas == "")
+                                userAreas = x.ValorDimensão;
+                            else
+                                userAreas = userAreas + "," + x.ValorDimensão;
+                        }
+
+                        if (x.Dimensão == 3)
+                        {
+                            if (userCresps == "")
+                                userCresps = x.ValorDimensão;
+                            else
+                                userCresps = userCresps + "," + x.ValorDimensão;
+                        }
+                    });
+                }
+
+                if (userRegions == "")
+                {
+                    List<NAVDimValueViewModel> nav2017Regions = DBNAV2017DimensionValues.GetByDimType(NAVDatabaseName, NAVCompanyName, 1);
+
+                    if(nav2017Regions != null)
+                    {
+                        nav2017Regions.ForEach(x => { 
+                           if (userRegions == "")
+                                userRegions = x.Code;
+                            else
+                                userRegions = userRegions + "," + x.Code;
+                        });
+                    }
+                }
+
+                if (userAreas == "")
+                {
+                    List<NAVDimValueViewModel> nav2017Areas = DBNAV2017DimensionValues.GetByDimType(NAVDatabaseName, NAVCompanyName, 2);
+
+                    if (nav2017Areas != null)
+                    {
+                        nav2017Areas.ForEach(x => {
+                            if (userAreas == "")
+                                userAreas = x.Code;
+                            else
+                                userAreas = userAreas + "," + x.Code;
+                        });
+                    }
+                }
+
+                if (userCresps == "")
+                {
+                    List<NAVDimValueViewModel> nav2017Cresps = DBNAV2017DimensionValues.GetByDimType(NAVDatabaseName, NAVCompanyName, 3);
+
+                    if (userCresps != null)
+                    {
+                        nav2017Cresps.ForEach(x => {
+                            if (userCresps == "")
+                                userCresps = x.Code;
+                            else
+                                userCresps = userCresps + "," + x.Code;
+                        });
+                    }
+                }
+
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.Requisição.Where(x =>
+                        (stateValues.Contains(x.Estado.Value)) &&
+                        (userRegions.ToLower().Contains(x.CódigoRegião.ToLower()) || x.CódigoRegião == null) &&
+                        (userAreas.ToLower().Contains(x.CódigoÁreaFuncional.ToLower()) || x.CódigoÁreaFuncional == null) &&
+                        (userCresps.ToLower().Contains(x.CódigoCentroResponsabilidade.ToLower()) || x.CódigoCentroResponsabilidade == null)
+                    ).Select(Rq => new Requisição()
+                    {
+                               NºRequisição = Rq.NºRequisição,
+                               Estado = Rq.Estado,
+                               CódigoRegião = Rq.CódigoRegião,
+                               CódigoCentroResponsabilidade = Rq.CódigoCentroResponsabilidade,
+                               CódigoÁreaFuncional = Rq.CódigoÁreaFuncional,
+                               CódigoLocalEntrega = Rq.CódigoLocalEntrega,
+                               CódigoLocalRecolha = Rq.CódigoLocalRecolha,
+                               CódigoLocalização = Rq.CódigoLocalização,
+                               NºProjeto = Rq.NºProjeto,
+                               ResponsávelAprovação = Rq.ResponsávelAprovação,
+                               ResponsávelCriação = Rq.ResponsávelCriação
+                    }).ToList();
                 }
             }
             catch (Exception ex)

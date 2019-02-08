@@ -665,6 +665,54 @@ namespace Hydra.Such.Data.Logic
             return _contextExt.ExecuteTableValueProcedure(_linhasType, "NAV2017LinGuiaTransporte_Insert", "@LinhasGuia", "LinGuiaTransporteType");
         }
        
+        public static bool CreateLinhasFromRequisitionNo(string noGuia, string requisitionNo, int lastLineNo)
+        {
+            try
+            {
+                SuchDBContext _context = new SuchDBContext();
+
+                List<LinhasRequisição> linhasRq = new List<LinhasRequisição>();
+
+                linhasRq = _context.LinhasRequisição.Where(r => r.NºRequisição == requisitionNo).ToList();
+
+                if (linhasRq == null)
+                    return false;
+
+                List<LinhaGuiaTransporteNavViewModel> linhasGT = new List<LinhaGuiaTransporteNavViewModel>();
+                int nextLineNo = lastLineNo + 1000;
+
+                linhasRq.ForEach(l =>
+                {
+                    LinhaGuiaTransporteNavViewModel linha = new LinhaGuiaTransporteNavViewModel()
+                    {
+                          NoGuiaTransporte = noGuia,
+                          NoLinha = nextLineNo,
+                          No = l.Código,
+                          Descricao = l.Descrição,
+                          CodUnidadeMedida = l.CódigoUnidadeMedida,
+                          NoProjecto=l.NºProjeto,
+                          Quantidade = l.QuantidadeDisponibilizada ?? 0,
+                          QuantidadeEnviar = l.QuantidadeDisponibilizada ?? 0,
+                          UnitPrice = l.PreçoUnitárioVenda ?? 0,
+                          ShortcutDimension1Code = l.CódigoRegião,
+                          ShortcutDimension2Code = l.CódigoÁreaFuncional,
+                          ShortcutDimension3Code = l.CódigoCentroResponsabilidade                          
+                    };
+
+                    linhasGT.Add(linha);
+
+                    nextLineNo += 1000;
+                });
+
+                return CreateLinhasGuiaTransporte(linhasGT);
+            }
+            catch (Exception ex)
+            {
+
+                return false;
+            }
+            
+        }
 
         public static bool DeleteLinhaGuiaTransporte(string NAVDatabase, string NAVCompany, string noGuia, int noLinha)
         {
