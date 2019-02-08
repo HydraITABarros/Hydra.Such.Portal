@@ -27,6 +27,7 @@ namespace Hydra.Such.Data.Database
         public int? CódigoLocalRecolha { get; set; }
         public int? CódigoLocalEntrega { get; set; }
         public string Observações { get; set; }
+        public string NoDocumento { get; set; }
         public bool? ModeloDePréRequisição { get; set; }
         public DateTime? DataHoraCriação { get; set; }
         public string UtilizadorCriação { get; set; }

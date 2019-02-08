@@ -929,7 +929,9 @@
                 },
                 _export: function () {
                     debugger;
-                    this.$.ajax_Export.body = JSON.stringify(this.$.priceServiceClientGrid._cache[0]);
+
+                    window.grid = this.$.priceServiceClientGrid;
+                    this.$.ajax_Export.body = JSON.stringify(this.$.priceServiceClientGrid._filter(this.$.priceServiceClientGrid.items));
                     this.$.ajax_Export.generateRequest();
                     this.$.priceServiceClientGrid.clearCache();
                 },

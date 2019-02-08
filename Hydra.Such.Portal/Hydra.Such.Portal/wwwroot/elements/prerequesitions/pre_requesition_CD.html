@@ -522,6 +522,10 @@
                                                             disabled="{{ !_permissions.update }}">
                                             </such-selectbox>
                                         </div>
+
+                                        <div class="col-md-3">
+                                            <vaadin-text-field rows="5" value="{{data.noDocumento}}" id="noDocumento" name="noDocumento" label="Nº Documento" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                        </div>
                                     </div>
 
                                     <div class="row break_clear" hidden>
@@ -1685,6 +1689,7 @@
                 },
 
                 _createnewreq: function (e) {
+                    debugger;
                     this.data.area = this._areaid;
                     var countWithIVA = 0;
                     if (this.dataLines.lines != null) {
@@ -2184,95 +2189,100 @@
                         validLocalCode = (localCode !== null && localCode !== "");
                     }
 
-                    if (this._Products != undefined && this._Products != "") {
-                        if (validLocalCode) {
-                            if (this._CBVendor != undefined && this._CBVendor != "") {
-                                if (this.$._QuantityToRequire.validate() && parseFloat(this.$._QuantityToRequire.value) > 0) {
-                                    if (this.$._UnitCost.validate() && parseFloat(this.$._UnitCost.value) > 0) {
-                                        if (this.$._UnitCostWithIVA.validate() && parseFloat(this.$._UnitCostWithIVA.value) > 0) {
-                                            if (this.$._ProjectNo.value != "" && this.$._ProjectNo.value != null) {
-                                                var totalCost = this._QuantityToRequire * this._UnitCost;
-                                                if (isNaN(totalCost)) {
-                                                    totalCost = 0;
+                    if (this.$.valorTotalDocComIVA.value != null && this.$.valorTotalDocComIVA.value != "") {
+                        if (this._Products != undefined && this._Products != "") {
+                            if (validLocalCode) {
+                                if (this._CBVendor != undefined && this._CBVendor != "") {
+                                    if (this.$._QuantityToRequire.validate() && parseFloat(this.$._QuantityToRequire.value) > 0) {
+                                        if (this.$._UnitCost.validate() && parseFloat(this.$._UnitCost.value) > 0) {
+                                            if (this.$._UnitCostWithIVA.validate() && parseFloat(this.$._UnitCostWithIVA.value) > 0) {
+                                                if (this.$._ProjectNo.value != "" && this.$._ProjectNo.value != null) {
+                                                    var totalCost = this._QuantityToRequire * this._UnitCost;
+                                                    if (isNaN(totalCost)) {
+                                                        totalCost = 0;
+                                                    }
+
+                                                    //var purchHeaderNo = "";
+                                                    //var purchLineNo = "";
+                                                    //if (this.$._CBPurchaseLine.value != undefined & this.$._CBPurchaseLine.value != "") {
+                                                    //    var composedKey = this.$._CBPurchaseLine.value.split(" ", 2);
+                                                    //    purchHeaderNo = composedKey[0];
+                                                    //    purchLineNo = composedKey[1];
+                                                    //}
+
+                                                    this.dataLines.lines.unshift({
+                                                        preRequisitionLineNo: this.data.preRequesitionsNo,
+                                                        type: 2, //PRODUTO
+                                                        code: this._Products,
+                                                        localCode: localCode,
+                                                        description: this._Description,
+                                                        description2: this._Description2,
+                                                        unitMeasureCode: this._UnitMeasureCode,
+                                                        quantityToRequire: this._QuantityToRequire,
+                                                        unitCost: this._UnitCost,
+                                                        unitCostWithIVA: this._UnitCostWithIVA,
+                                                        projectNo: this.$._ProjectNo.value,
+                                                        vehicle: this.data.vehicle,
+                                                        supplierNo: this._CBVendor,
+                                                        regionCode: this.$._CLRegion.value,
+                                                        functionalAreaCode: this.$._CLFunctionalAreaCode.value,
+                                                        centerResponsibilityCode: this.$._CLResponsabilityCenterCode.value,
+                                                        //qtyByUnitOfMeasure
+                                                        //quantityRequired
+                                                        //quantityPending:
+                                                        quantidadeInicial: this._QuantityToRequire,
+                                                        //sellUnityPrice
+                                                        //budgetValue
+                                                        //expectedReceivingDate
+                                                        //billable
+                                                        maintenanceOrderLineNo: this._MaintenanceOrderLineNo,
+                                                        //employeeNo
+                                                        //supplierProductCode
+                                                        armazemCDireta: this._CBItemsCDirect,
+                                                        //unitNutritionProduction
+                                                        //customerNo
+                                                        //openOrderNo: purchHeaderNo,
+                                                        //openOrderLineNo: purchLineNo,
+                                                        totalCost: totalCost > 0 ? totalCost : "",
+                                                        totalCostWithIVA: this.$._CustoTotalComIVA.value,
+                                                        grupoRegistoIVAProduto: this.$._CLVATProductsPostingGroups.value,
+                                                    });
+
+                                                    this.$.prereqLines_databound_ajax.url = "/PreRequisicoes/UpdateContractLines";
+                                                    this.$.prereqLines_databound_ajax.body = JSON.stringify(this.dataLines);
+                                                    this.$.prereqLines_databound_ajax.generateRequest();
+                                                    this.$.grid_prereqlines.clearCache();
                                                 }
-
-                                                //var purchHeaderNo = "";
-                                                //var purchLineNo = "";
-                                                //if (this.$._CBPurchaseLine.value != undefined & this.$._CBPurchaseLine.value != "") {
-                                                //    var composedKey = this.$._CBPurchaseLine.value.split(" ", 2);
-                                                //    purchHeaderNo = composedKey[0];
-                                                //    purchLineNo = composedKey[1];
-                                                //}
-
-                                                this.dataLines.lines.unshift({
-                                                    preRequisitionLineNo: this.data.preRequesitionsNo,
-                                                    type: 2, //PRODUTO
-                                                    code: this._Products,
-                                                    localCode: localCode,
-                                                    description: this._Description,
-                                                    description2: this._Description2,
-                                                    unitMeasureCode: this._UnitMeasureCode,
-                                                    quantityToRequire: this._QuantityToRequire,
-                                                    unitCost: this._UnitCost,
-                                                    unitCostWithIVA: this._UnitCostWithIVA,
-                                                    projectNo: this.$._ProjectNo.value,
-                                                    vehicle: this.data.vehicle,
-                                                    supplierNo: this._CBVendor,
-                                                    regionCode: this.$._CLRegion.value,
-                                                    functionalAreaCode: this.$._CLFunctionalAreaCode.value,
-                                                    centerResponsibilityCode: this.$._CLResponsabilityCenterCode.value,
-                                                    //qtyByUnitOfMeasure
-                                                    //quantityRequired
-                                                    //quantityPending:
-                                                    quantidadeInicial: this._QuantityToRequire,
-                                                    //sellUnityPrice
-                                                    //budgetValue
-                                                    //expectedReceivingDate
-                                                    //billable
-                                                    maintenanceOrderLineNo: this._MaintenanceOrderLineNo,
-                                                    //employeeNo
-                                                    //supplierProductCode
-                                                    armazemCDireta: this._CBItemsCDirect,
-                                                    //unitNutritionProduction
-                                                    //customerNo
-                                                    //openOrderNo: purchHeaderNo,
-                                                    //openOrderLineNo: purchLineNo,
-                                                    totalCost: totalCost > 0 ? totalCost : "",
-                                                    totalCostWithIVA: this.$._CustoTotalComIVA.value,
-                                                    grupoRegistoIVAProduto: this.$._CLVATProductsPostingGroups.value,
-                                                });
-
-                                                this.$.prereqLines_databound_ajax.url = "/PreRequisicoes/UpdateContractLines";
-                                                this.$.prereqLines_databound_ajax.body = JSON.stringify(this.dataLines);
-                                                this.$.prereqLines_databound_ajax.generateRequest();
-                                                this.$.grid_prereqlines.clearCache();
+                                                else {
+                                                    this._openToastError('O valor do campo Nº Ordem/Projeto tem que estar preenchido.');
+                                                }
                                             }
                                             else {
-                                                this._openToastError('O valor do campo Nº Ordem/Projeto tem que estar preenchido.');
+                                                this._openToastError('O valor do campo Custo Unitário com IVA tem que estar preenchido, ser superior a 0 e só pode ter 4 casas decimais.');
                                             }
                                         }
                                         else {
-                                            this._openToastError('O valor do campo Custo Unitário com IVA tem que estar preenchido, ser superior a 0 e só pode ter 4 casas decimais.');
+                                            this._openToastError('O valor do campo Custo Unitário tem que estar preenchido, ser superior a 0 e só pode ter 5 casas decimais.');
                                         }
                                     }
                                     else {
-                                        this._openToastError('O valor do campo Custo Unitário tem que estar preenchido, ser superior a 0 e só pode ter 5 casas decimais.');
+                                        this._openToastError('O valor do campo Qt. a Requerer tem que estar preenchido, ser superior a 0 e só pode ter 4 casas decimais.');
                                     }
                                 }
                                 else {
-                                    this._openToastError('O valor do campo Qt. a Requerer tem que estar preenchido, ser superior a 0 e só pode ter 4 casas decimais.');
+                                    this._openToastError('O valor do campo Nº Fornecedor tem que estar preenchido.');
                                 }
                             }
                             else {
-                                this._openToastError('O valor do campo Nº Fornecedor tem que estar preenchido.');
+                                this._openToastError('O valor do campo Cód. Localização tem que estar preenchido.');
                             }
                         }
                         else {
-                            this._openToastError('O valor do campo Cód. Localização tem que estar preenchido.');
+                            this._openToastError('O valor do campo Cód. Produto tem que estar preenchido.');
                         }
                     }
                     else {
-                        this._openToastError('O valor do campo Cód. Produto tem que estar preenchido.');
+                        this._openToastError('O valor do campo Valor Total Doc. com IVA tem que estar preenchido.');
                     }
                 },
 

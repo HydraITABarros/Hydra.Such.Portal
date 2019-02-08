@@ -3287,6 +3287,43 @@ namespace Hydra.Such.Portal.Controllers
                                                             result.eMessage = "Ocorreu um erro ao Integrar Ajudas de Custo.";
                                                         }
                                                     }
+                                                    else
+                                                    {
+                                                        if (result.eReasonCode == 1)
+                                                        {
+                                                            result.eReasonCode = 101;
+                                                            result.eMessage = "Não tem permissões para validar.";
+                                                        }
+                                                        else
+                                                        {
+                                                            if (result.eReasonCode == 2)
+                                                            {
+                                                                result.eReasonCode = 102;
+                                                                result.eMessage = "O projecto não existe no eSUCH e no Evolution.";
+                                                            }
+                                                            else
+                                                            {
+                                                                if (result.eReasonCode == 3)
+                                                                {
+                                                                    result.eReasonCode = 103;
+                                                                    result.eMessage = "O projecto na Mão de Obra não existe no eSUCH e no Evolution.";
+                                                                }
+                                                                else
+                                                                {
+                                                                    if (result.eReasonCode == 5)
+                                                                    {
+                                                                        result.eReasonCode = 105;
+                                                                        result.eMessage = "Não Pode validar pois já se encontra validada.";
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        result.eReasonCode = 199;
+                                                                        result.eMessage = "Ocorreu um erro no script SQL de Validaçãodo na Folha de Horas.";
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
                                                 }
                                                 else
                                                     integrarRH = true;
@@ -3451,6 +3488,43 @@ namespace Hydra.Such.Portal.Controllers
                                                         result.eReasonCode = 199;
                                                         result.eMessage = "Ocorreu um erro no script SQL de Validaçãodo na Folha de Horas.";
                                                     }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    if (result.eReasonCode == 1)
+                                    {
+                                        result.eReasonCode = 101;
+                                        result.eMessage = "Não tem permissões para validar.";
+                                    }
+                                    else
+                                    {
+                                        if (result.eReasonCode == 2)
+                                        {
+                                            result.eReasonCode = 102;
+                                            result.eMessage = "O projecto nas Linhas da Folha de Horas não existe no eSUCH e no Evolution.";
+                                        }
+                                        else
+                                        {
+                                            if (result.eReasonCode == 3)
+                                            {
+                                                result.eReasonCode = 103;
+                                                result.eMessage = "O projecto na Mão de Obra não existe no eSUCH e no Evolution.";
+                                            }
+                                            else
+                                            {
+                                                if (result.eReasonCode == 5)
+                                                {
+                                                    result.eReasonCode = 105;
+                                                    result.eMessage = "Não Pode validar pois já se encontra validada.";
+                                                }
+                                                else
+                                                {
+                                                    result.eReasonCode = 199;
+                                                    result.eMessage = "Ocorreu um erro no script SQL de Validaçãodo na Folha de Horas.";
                                                 }
                                             }
                                         }
@@ -3623,6 +3697,11 @@ namespace Hydra.Such.Portal.Controllers
                                                             result.eMessage = "Ocorreu um erro ao Integrar km.";
                                                         }
                                                     }
+                                                    else
+                                                    {
+                                                        result.eReasonCode = 101;
+                                                        result.eMessage = "Ocorreu um erro no script SQL de Integração KM na Folha de Horas.";
+                                                    }
                                                 }
                                             }
                                         }
@@ -3685,7 +3764,7 @@ namespace Hydra.Such.Portal.Controllers
                                 else
                                 {
                                     result.eReasonCode = 101;
-                                    result.eMessage = "Ocorreu um erro no script SQL de Validaçãodo na Folha de Horas.";
+                                    result.eMessage = "Ocorreu um erro no script SQL de Integrar RH na Folha de Horas.";
                                 }
                             }
                         }
@@ -3923,7 +4002,7 @@ namespace Hydra.Such.Portal.Controllers
                                     else
                                     {
                                         result.eReasonCode = 101;
-                                        result.eMessage = "Ocorreu um erro no script SQL de Validaçãodo na Folha de Horas.";
+                                        result.eMessage = "Ocorreu um erro no script SQL de Integrar Km na Folha de Horas.";
                                     }
                                 }
                             }

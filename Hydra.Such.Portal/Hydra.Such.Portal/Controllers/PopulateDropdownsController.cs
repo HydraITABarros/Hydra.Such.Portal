@@ -951,6 +951,22 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetMeasureUnitsWithResource(string resource)
+        {
+            List<DDMessageString> result = new List<DDMessageString>();
+
+            if (resource != null && resource != "")
+            {
+                result = DBNAV2017MeasureUnit.GetAllMeasureUnitWithResource(_config.NAVDatabaseName, _config.NAVCompanyName, resource).Select(x => new DDMessageString()
+                {
+                    id = x.Code,
+                    value = x.Description
+                }).ToList();
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetLocations()
         {
             List<AcessosLocalizacoes> userLocations = DBAcessosLocalizacoes.GetByUserId(User.Identity.Name);

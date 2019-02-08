@@ -31,6 +31,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public int? LocalCollectionCode { get; set; }
         public int? LocalDeliveryCode { get; set; }
         public string Comments { get; set; }
+        public string NoDocumento { get; set; }
         public string RejeicaoMotivo { get; set; }
         public bool? RequestModel { get; set; }
         public string CreateUser { get; set; }

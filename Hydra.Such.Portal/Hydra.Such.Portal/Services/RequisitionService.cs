@@ -271,6 +271,7 @@ namespace Hydra.Such.Portal.Services
                                     LocationCode = requisition.LocalCode,
                                     Purchaser_Code = requisition.NumeroMecanografico,
                                     
+                                    
                                     Lines = items.Select(line => new PurchOrderLineDTO()
                                     {
                                         LineId = line.LineNo,

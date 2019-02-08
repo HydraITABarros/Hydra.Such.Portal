@@ -7050,6 +7050,10 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Localidade Recolha")
                     .HasMaxLength(50);
 
+                entity.Property(e => e.NoDocumento)
+                    .HasColumnName("NoDocumento")
+                    .HasMaxLength(50);
+
                 entity.Property(e => e.MercadoLocal).HasColumnName("Mercado Local");
 
                 entity.Property(e => e.ModeloDePréRequisição).HasColumnName("Modelo de Pré-Requisição");
@@ -8463,6 +8467,10 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.NºFatura)
                     .HasColumnName("Nº Fatura")
                     .HasMaxLength(20);
+
+                entity.Property(e => e.NoDocumento)
+                    .HasColumnName("NoDocumento")
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.NºFuncionário)
                     .HasColumnName("Nº Funcionário")
