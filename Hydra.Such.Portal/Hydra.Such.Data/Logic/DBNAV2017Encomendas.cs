@@ -13,7 +13,7 @@ namespace Hydra.Such.Data.Logic
     public class DBNAV2017Encomendas
     {
 
-        public static List<EncomendasViewModel> ListByDimListAndNoFilter(string NAVDatabaseName, string NAVCompanyName, List<AcessosDimensões> Dimensions, string No_FilterExpression)
+        public static List<EncomendasViewModel> ListByDimListAndNoFilter(string NAVDatabaseName, string NAVCompanyName, List<AcessosDimensões> Dimensions, string No_FilterExpression, string from = null, string to = null, string fornecedor = null)
         {
             try
             {
@@ -31,10 +31,13 @@ namespace Hydra.Such.Data.Logic
                         new SqlParameter("@Regions", regions != null && regions.Count() > 0 ? string.Join(',', regions) : null),
                         new SqlParameter("@FunctionalAreas",functionalAreas != null && functionalAreas.Count() > 0 ?  string.Join(',', functionalAreas): null),
                         new SqlParameter("@RespCenters", responsabilityCenters != null && responsabilityCenters.Count() > 0 ? '\'' + string.Join("',\'",responsabilityCenters) + '\'': null),
+                        new SqlParameter("@CodFornecedor", fornecedor),
+                        new SqlParameter("@From", from),
+                        new SqlParameter("@To", to),
                         new SqlParameter("@No_FilterExpression", No_FilterExpression )
                     };
 
-                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017EncomendasList @DBName, @CompanyName, @Regions, @FunctionalAreas,@RespCenters,@No_FilterExpression", parameters);
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017EncomendasList @DBName, @CompanyName, @Regions, @FunctionalAreas, @RespCenters, @CodFornecedor, @From, @To, @No_FilterExpression", parameters);
 
                     foreach (dynamic temp in data)
                     {

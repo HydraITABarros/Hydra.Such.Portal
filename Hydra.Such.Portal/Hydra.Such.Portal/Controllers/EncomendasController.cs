@@ -82,10 +82,24 @@ namespace Hydra.Such.Portal.Controllers
             {
                 UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Encomendas);
 
+                int year = 0;
+                int.TryParse(requestParams.GetValue("year")?.ToString(), out year);
+                int month = 0;
+                int.TryParse(requestParams.GetValue("month")?.ToString(), out month);
+                string fornecedor = (string)requestParams.GetValue("fornecedor");
+                string from = "";
+                string to = "";
+                if (year != 0)
+                {
+                    from = new DateTime((int)year, (month == 0 ? 1 : month), 1).ToString("yyyy-MM-dd");
+                    int days = DateTime.DaysInMonth((int)year, (month == 0 ? 12 : month));
+                    to = new DateTime((int)year, (month == 0 ? 12 : month), days).ToString("yyyy-MM-dd");
+                }
+
                 if (UPerm != null && UPerm.Read.Value)
                 {
                     List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
-                    List<EncomendasViewModel> result = DBNAV2017Encomendas.ListByDimListAndNoFilter(_config.NAVDatabaseName, _config.NAVCompanyName, userDimensions, "C%");
+                    List<EncomendasViewModel> result = DBNAV2017Encomendas.ListByDimListAndNoFilter(_config.NAVDatabaseName, _config.NAVCompanyName, userDimensions, "C%", from, to, fornecedor);
                     return Json(result);
                 }
                 else
@@ -920,7 +934,7 @@ namespace Hydra.Such.Portal.Controllers
                                 try { value = item.GetType().GetProperty(columnPath).GetValue(item, null); } catch { }
                                 if (value == null) try { value = item.GetType().GetProperty(columnPath.ToUpper()).GetValue(item, null); } catch { }
 
-                                if ( (new[] { "Valor", "ValorEncomenda", "ValorJaPedido" }).Contains(columnPath) )
+                                if ((new[] { "Valor", "ValorEncomenda", "ValorJaPedido" }).Contains(columnPath))
                                 {
                                     row.CreateCell(i).SetCellValue((double)(value != null ? (decimal)value : 0));
                                 }
