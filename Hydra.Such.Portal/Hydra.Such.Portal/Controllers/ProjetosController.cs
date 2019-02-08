@@ -2964,6 +2964,48 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
+
+        [HttpPost]
+        public JsonResult GetAuthorizedMovementsHistoric()
+        {
+            //TODO: substituir GetMovimentosFaturacao
+            try
+            {
+                List<AuthorizedProjectViewModel> result = null;
+                using (SuchDBContext ctx = new SuchDBContext())
+                {
+                    result = ctx.ProjectosAutorizados
+                        .Where(x => x.Faturado)
+                        .ToList()
+                        .ParseToViewModel();
+                }
+                if (result != null)
+                {
+                    var userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+                    List<UserDimensionsViewModel> userDimensionsViewModel = userDimensions.ParseToViewModel();
+                    if (userDimensionsViewModel.Where(x => x.Dimension == (int)Dimensions.Region).Count() > 0)
+                        result.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.CodRegiao));
+                    if (userDimensionsViewModel.Where(x => x.Dimension == (int)Dimensions.FunctionalArea).Count() > 0)
+                        result.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.CodAreaFuncional));
+                    if (userDimensionsViewModel.Where(x => x.Dimension == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                        result.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.CodCentroResponsabilidade));
+
+                    result.ForEach(x =>
+                    {
+                        var movements = DBAuthorizedProjectMovements.GetMovementById(x.GrupoFactura, x.CodProjeto);
+                        if (movements != null)
+                            x.ValorAutorizado = movements.Sum(y => y.PrecoTotal);
+                    });
+                }
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+
         [HttpPost]
         public JsonResult GetProjMovementsLines([FromBody] string ProjNo, int? ProjGroup)
         {
@@ -5899,7 +5941,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (dp["codProjeto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Projeto"); Col = Col + 1; }
                 if (dp["codCliente"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Cliente"); Col = Col + 1; }
                 if (dp["valorAutorizado"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Valor Autorizado"); Col = Col + 1; }
-                if (dp["valorPorFaturar"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Valor por Faturar"); Col = Col + 1; }
+                //if (dp["valorPorFaturar"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Valor por Faturar"); Col = Col + 1; }
                 if (dp["codRegiao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Código Região"); Col = Col + 1; }
                 if (dp["codAreaFuncional"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Código Área Funcional"); Col = Col + 1; }
                 if (dp["codCentroResponsabilidade"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Código Centro Responsabilidade"); Col = Col + 1; }
@@ -5924,8 +5966,9 @@ namespace Hydra.Such.Portal.Controllers
 
                         if (dp["codProjeto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodProjeto); Col = Col + 1; }
                         if (dp["codCliente"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodCliente); Col = Col + 1; }
-                        if (dp["valorAutorizado"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ValorAutorizado.ToString()); Col = Col + 1; }
-                        if (dp["valorPorFaturar"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(""); Col = Col + 1; }
+                        if (dp["valorAutorizado"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue((double)item.ValorAutorizado); Col = Col + 1; }
+                        /*ToDo*/
+                        //if (dp["valorPorFaturar"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(""); Col = Col + 1; }
                         if (dp["codRegiao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodRegiao); Col = Col + 1; }
                         if (dp["codAreaFuncional"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodAreaFuncional); Col = Col + 1; }
                         if (dp["codCentroResponsabilidade"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodCentroResponsabilidade); Col = Col + 1; }
@@ -6021,10 +6064,10 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(2).SetCellValue(item.Type.ToString());
                     row.CreateCell(3).SetCellValue(item.Code);
                     row.CreateCell(4).SetCellValue(item.Description);
-                    row.CreateCell(5).SetCellValue(item.Quantity.ToString());
+                    row.CreateCell(5).SetCellValue((double)item.Quantity);
                     row.CreateCell(6).SetCellValue(item.MeasurementUnitCode);
-                    row.CreateCell(7).SetCellValue(item.UnitPrice.ToString());
-                    row.CreateCell(8).SetCellValue(item.TotalPrice.ToString());
+                    row.CreateCell(7).SetCellValue((double)item.UnitPrice);
+                    row.CreateCell(8).SetCellValue((double)item.TotalPrice);
                     row.CreateCell(9).SetCellValue(item.Billable.ToString());
                     row.CreateCell(10).SetCellValue(item.ResourceType.ToString());
                     row.CreateCell(11).SetCellValue(item.ServiceClientCode);
@@ -6039,8 +6082,8 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(20).SetCellValue(item.MealType.ToString());
                     row.CreateCell(21).SetCellValue(item.DocumentNo);
                     row.CreateCell(22).SetCellValue(item.LocationCode);
-                    row.CreateCell(23).SetCellValue(item.UnitCost.ToString());
-                    row.CreateCell(24).SetCellValue(item.TotalCost.ToString());
+                    row.CreateCell(23).SetCellValue((double)item.UnitCost);
+                    row.CreateCell(24).SetCellValue((double)item.TotalCost);
                     row.CreateCell(25).SetCellValue(item.RegionCode);
                     row.CreateCell(26).SetCellValue(item.FunctionalAreaCode);
                     row.CreateCell(27).SetCellValue(item.ResponsabilityCenterCode);
