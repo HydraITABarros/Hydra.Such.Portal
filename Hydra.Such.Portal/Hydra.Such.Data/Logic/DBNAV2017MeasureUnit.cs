@@ -41,5 +41,38 @@ namespace Hydra.Such.Data.Logic.Project
                 return null;
             }
         }
+
+        public static List<NAVMeasureUnitViewModel> GetAllMeasureUnitWithResource(string NAVDatabaseName, string NAVCompanyName, string resource)
+        {
+            try
+            {
+                List<NAVMeasureUnitViewModel> result = new List<NAVMeasureUnitViewModel>();
+                using (var ctx = new SuchDBContextExtention())
+                {
+                    var parameters = new[]{
+                        new SqlParameter("@DBName", NAVDatabaseName),
+                        new SqlParameter("@CompanyName", NAVCompanyName),
+                        new SqlParameter("@resource", resource),
+                    };
+
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017UnidadesMedidaWithResource @DBName, @CompanyName, @resource", parameters);
+
+                    foreach (dynamic temp in data)
+                    {
+                        result.Add(new NAVMeasureUnitViewModel()
+                        {
+                            Code = (string)temp.Code,
+                            Description = (string)temp.Code
+                        });
+                    }
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
     }
 }

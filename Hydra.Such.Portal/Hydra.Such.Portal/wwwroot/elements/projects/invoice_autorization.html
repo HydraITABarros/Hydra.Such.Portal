@@ -1177,17 +1177,17 @@
                         
                         for (i = 0; i < items.length; i++) {
                             if (items[i].quantity != null && items[i].quantity != 0) {
-                                if (items[i].unitPrice != null && items[i].unitPrice > 0) {
+                                //if (items[i].unitPrice != null && items[i].unitPrice > 0) {
                                     if (items[i].totalPrice != null && this._totalToAuthorize != null)
                                         this._totalToAuthorize = (parseFloat(this._totalToAuthorize) + parseFloat(items[i].totalPrice)).toFixed(2);
                                     items[i].autorizatedInvoice2 = true;
 
 
                                     this.$.grdProjectMovements.selectItem(items[i]);
-                                }
-                                else {
-                                    erro = 1;
-                                }
+                                //}
+                                //else {
+                                //    erro = 1;
+                                //}
                             }
                             else {
                                 erro = 1;
@@ -1202,7 +1202,7 @@
                             }
                         }
                         if (erro == 1) {
-                            this.openToastError("Existem linhas em que o valor do Preço unitário é menor ou igual a zero e/ou Quantidade igual a 0.");
+                            this.openToastError("Existem linhas em que o valor da Quantidade igual a 0.");
                         }
                     }
                     else {
@@ -1228,16 +1228,16 @@
                     //debugger;
                     if (e.target.checked /*=== this.inverted*/) {
                         if (e.model.item.quantity != null && e.model.item.quantity != 0) {
-                            if (e.model.item.unitPrice != null && e.model.item.unitPrice > 0) {
+                            //if (e.model.item.unitPrice != null && e.model.item.unitPrice > 0) {
                                 if (e.model.item.totalPrice != null && this._totalToAuthorize != null)
                                     this._totalToAuthorize = (parseFloat(this._totalToAuthorize) + parseFloat(e.model.item.totalPrice)).toFixed(2);
                                 e.model.item.autorizatedInvoice2 = true;
                                 this.$.grdProjectMovements.selectItem(e.model.item);
-                            }
-                            else {
-                                this.openToastError("O valor do Preço unitário tem que ser superior a 0.");
-                                e.target.checked = false;
-                            }
+                            //}
+                            //else {
+                            //    this.openToastError("O valor do Preço unitário tem que ser superior a 0.");
+                            //    e.target.checked = false;
+                            //}
                         }
                         else {
                             this.openToastError("O valor da Quantidade tem que ser diferente de 0.");
