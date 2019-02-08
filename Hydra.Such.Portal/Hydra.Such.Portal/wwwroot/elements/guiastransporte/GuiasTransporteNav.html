@@ -293,7 +293,7 @@
                 },
 
                 _createResponse: function (e) {
-                    if (this.guiaTransporteId == "") {
+                    if (this.guiaTransporteId == "" || this.guiaTransporteId == null) {
                         this._showErrorMessage("Não foi possível criar uma nova guia de transporte!")
                     } else {
                        

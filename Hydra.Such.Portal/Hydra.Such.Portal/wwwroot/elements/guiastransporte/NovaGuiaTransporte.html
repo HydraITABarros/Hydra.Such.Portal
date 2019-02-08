@@ -157,6 +157,13 @@
                    handle-as="json"
                    content-type="application/json">
         </iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetRequestStatus"
+                   last-response="{{ CBStatus }}"
+                   on-response="_responsehead"
+                   auto method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
         <!-- ************* Dimension values.b ****************-->
         <iron-ajax url="/PopulateDropdowns/GetRegionCode"
                    last-response="{{CBRegions}}"
@@ -285,10 +292,26 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/GuiasTransporteNav/GetRequisicoes"
+                   last-response="{{ requisitions }}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_requisitions"
+                   content-type="application/json">
+        </iron-ajax>
 
+        <iron-ajax url="/GuiasTransporteNav/CopyRequsitionLines"
+                   last-response="{{ linesCopied }}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_copy_requisition_lines"
+                   on-response="_copyLinesResponse"
+                   content-type="application/json">
+        </iron-ajax>
 
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+            <paper-button class="tablinks" on-tap="_copyLines"><i class="fa fa-calculator" aria-hidden="true"></i>Copiar Linhas</paper-button>
             <paper-button raised id="btnUpdate" class="tablinks" on-tap="_update" title="Gravar" style="background-color:#1DB73C"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Gravar</paper-button>
         </div>
 
@@ -775,11 +798,11 @@
                                             </template>
                                             <template>
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field id="quantidadeGrid" 
-                                                                       name="quantidadeGrid" 
-                                                                       value="{{ item.quantidade }}" 
-                                                                       on-blur="_updateShipmentLine" 
-                                                                       required error-message="Este campo é obrigatório, tem que ser superior a 0 e só pode ter 4 casas decimais" 
+                                                    <vaadin-text-field id="quantidadeGrid"
+                                                                       name="quantidadeGrid"
+                                                                       value="{{ item.quantidade }}"
+                                                                       on-blur="_updateShipmentLine"
+                                                                       required error-message="Este campo é obrigatório, tem que ser superior a 0 e só pode ter 4 casas decimais"
                                                                        prevent-invalid-input pattern="[0-9.]*"></vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
@@ -864,7 +887,114 @@
             <div class="buttons">
                 <paper-button class="btnRemove" on-tap="_closeRptDialog"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
             </div>
+        </paper-dialog>
 
+        <paper-dialog id="copyLinesFromReq" class="dialgoBox">
+            <h2>Copiar de Requisição</h2>
+            <vaadin-grid aria-label="gridRequisicao" items="[[requisitions]]" class="grid" multi-sort="true">
+                <vaadin-grid-column width="120px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="requisitionNo">Nº Requisição</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="requisitionNo" />
+                    </template>
+                    <template>
+                        {{ item.requisitionNo }}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="120px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="estado">Estado</vaadin-grid-sorter>
+                        <!--<vaadin-grid-filter path="estado" />-->
+                    </template>
+                    <template>
+                        [[ _clFormatState(item.state) ]]
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="110px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="regionCode">Região</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="regionCode" />
+                    </template>
+                    <template>
+                        {{item.regionCode}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="110px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="functionalAreaCode">Área</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="functionalAreaCode" />
+                    </template>
+                    <template>
+                        {{item.functionalAreaCode}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="110px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="centerResponsibilityCode">CResp</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="centerResponsibilityCode" />
+                    </template>
+                    <template>
+                        {{item.centerResponsibilityCode}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="110px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="localCode">Cód. Localização</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="localCode" />
+                    </template>
+                    <template>
+                        {{item.localCode}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="110px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="localCollectionCode">Cód. Recolha</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="localCollectionCode" />
+                    </template>
+                    <template>
+                        {{item.localCollectionCode}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="110px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="projectNo">Projecto</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="projectNo" />
+                    </template>
+                    <template>
+                        {{item.projectNo}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="110px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="responsibleCreation">Resp. Criação</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="responsibleCreation" />
+                    </template>
+                    <template>
+                        {{item.responsibleCreation}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="110px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="responsibleApproval">Resp. Aprovação</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="responsibleApproval" />
+                    </template>
+                    <template>
+                        {{item.responsibleApproval}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="10%" resizable>
+                    <template class="header">
+                    </template>
+                    <template>
+                        <center>
+                            <paper-button class="btnSave" raised on-tap="_copyLinesFromRequisition">Copiar Linhas</paper-button>
+                        </center>
+                    </template>
+                </vaadin-grid-column>
+            </vaadin-grid>
+            <div class="buttons">
+                <paper-button class="btnRemove" dialog-dismiss>Cancelar</paper-button>
+            </div>
         </paper-dialog>
 
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
@@ -1910,6 +2040,52 @@
 
                         this.$.page_databound_ajax.body = JSON.stringify({ "No": this._guiatransporteid, "Historic": this._history });
                         this.$.page_databound_ajax.generateRequest();
+                    }
+                },
+
+                _copyLines: function (e) {
+                    this.$.ajax_requisitions.generateRequest();
+                    this.$.copyLinesFromReq.open();
+                    
+                },
+
+                _clFormatState: function (param) {
+                    if (param != undefined) {
+                        var sel = this.CBStatus.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return param;
+                },
+
+                _copyLinesFromRequisition: function (e) {
+                    debugger;;
+
+                    this.$.ajax_update_guia.body = JSON.stringify(this.data);
+                    
+                    var documentLines = this.data.linhasGuiaTransporte;
+                    var lastLineNo = 0;
+
+                    if (documentLines != null && documentLines.length > 0) {
+                        lastLineNo = documentLines[documentLines.length - 1].noLinha;
+                    }
+
+                    this.$.ajax_copy_requisition_lines.body = JSON.stringify({ "noGuia": this.data.noGuiaTransporte, "requisitionNo": e.model.item.requisitionNo, "lastLineNo": lastLineNo });
+                    this.$.ajax_copy_requisition_lines.generateRequest();
+                    
+                },
+
+                _copyLinesResponse: function (e) {
+                    if (this.linesCopied) {
+                        
+
+                        this.$.page_databound_ajax.body = JSON.stringify({ "No": this._guiatransporteid, "Historic": this._history });
+                        this.$.page_databound_ajax.generateRequest();
+
+                        this._openToast("Linhas de Requisição copiadas com sucesso!");
+                    } else {
+                        this._openToastError("Não foi possível copiar as linhas da Requisição!");
                     }
                 },
 
