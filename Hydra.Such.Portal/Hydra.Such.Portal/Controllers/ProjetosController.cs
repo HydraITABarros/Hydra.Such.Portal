@@ -749,9 +749,12 @@ namespace Hydra.Such.Portal.Controllers
             {
                 ErrorHandler result = new ErrorHandler();
 
-                string NoMecanografico = DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo;
-                if (data.ProjectResponsible == NoMecanografico)
+                UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Projetos);
+                if (UPerm != null && UPerm.Update == true)
                 {
+                //string NoMecanografico = DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo;
+                //if (data.ProjectResponsible == NoMecanografico)
+                //{
                     MovimentosDeAprovação MovAprovacao = DBApprovalMovements.GetAll().Where(x => x.Número == data.ProjectNo && x.Tipo == 5).LastOrDefault();
                     if (MovAprovacao != null && MovAprovacao.Estado == 1)
                     {
@@ -898,10 +901,20 @@ namespace Hydra.Such.Portal.Controllers
                     result = new ErrorHandler()
                     {
                         eReasonCode = 9,
-                        eMessage = "Só o Responsável do Projeto é que pode terminar."
+                        eMessage = "Não tem permissões para Terminar o Projeto."
                     };
                     return Json(result);
                 }
+                //}
+                //else
+                //    {
+                //        result = new ErrorHandler()
+                //        {
+                //            eReasonCode = 9,
+                //            eMessage = "Só o Responsável do Projeto é que pode terminar."
+                //        };
+                //        return Json(result);
+                //    }
             }
             return Json(false);
         }
@@ -4477,9 +4490,9 @@ namespace Hydra.Such.Portal.Controllers
                         newdp.CódigoCentroResponsabilidade = x.ResponsabilityCenterCode;
                         newdp.Utilizador = User.Identity.Name;
                         newdp.CustoUnitário = x.UnitCost;
-                        newdp.CustoTotal = x.TotalCost;
+                        newdp.CustoTotal = x.Quantity * x.UnitCost;
                         newdp.PreçoUnitário = x.UnitPrice;
-                        newdp.PreçoTotal = x.TotalPrice;
+                        newdp.PreçoTotal = x.Quantity * x.UnitPrice;
                         newdp.Faturável = x.Billable;
                         newdp.Registado = false;
                         newdp.FaturaANºCliente = x.InvoiceToClientNo;
@@ -4517,9 +4530,9 @@ namespace Hydra.Such.Portal.Controllers
                             CódigoCentroResponsabilidade = x.ResponsabilityCenterCode,
                             Utilizador = User.Identity.Name,
                             CustoUnitário = x.UnitCost,
-                            CustoTotal = x.TotalCost,
+                            CustoTotal = x.Quantity * x.UnitCost,
                             PreçoUnitário = x.UnitPrice,
-                            PreçoTotal = x.TotalPrice,
+                            PreçoTotal = x.Quantity * x.UnitPrice,
                             Faturável = x.Billable,
                             Registado = false,
                             FaturaANºCliente = x.InvoiceToClientNo,
