@@ -122,22 +122,22 @@
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
-                  <Width>1.7cm</Width>
+                  <Width>1.62062cm</Width>
                 </TablixColumn>
                 <TablixColumn>
                   <Width>1.5cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>4.3cm</Width>
+                  <Width>4cm</Width>
                 </TablixColumn>
                 <TablixColumn>
                   <Width>1.5cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>4.42061cm</Width>
+                  <Width>4cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>2.2cm</Width>
+                  <Width>2cm</Width>
                 </TablixColumn>
                 <TablixColumn>
                   <Width>1.8cm</Width>
@@ -1652,7 +1652,7 @@
             <Top>0.03528cm</Top>
             <Left>0.00001cm</Left>
             <Height>2.9cm</Height>
-            <Width>18.99999cm</Width>
+            <Width>18cm</Width>
             <Style>
               <Border>
                 <Color>White</Color>
@@ -1664,7 +1664,7 @@
         <Height>1.15562in</Height>
         <Style />
       </Body>
-      <Width>19cm</Width>
+      <Width>18.00001cm</Width>
       <Page>
         <PageHeader>
           <Height>3.57188cm</Height>
@@ -1736,7 +1736,7 @@
               <Top>2.95438cm</Top>
               <Left>0.00001cm</Left>
               <Height>0.6cm</Height>
-              <Width>18.99999cm</Width>
+              <Width>18cm</Width>
               <ZIndex>2</ZIndex>
               <Style>
                 <Border>
@@ -1828,7 +1828,7 @@
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox20</rd:DefaultName>
-              <Left>16.23898cm</Left>
+              <Left>15.23899cm</Left>
               <Height>2.29375cm</Height>
               <Width>2.76102cm</Width>
               <ZIndex>4</ZIndex>
@@ -1851,10 +1851,10 @@
         </PageHeader>
         <PageHeight>29.7cm</PageHeight>
         <PageWidth>21cm</PageWidth>
-        <LeftMargin>2cm</LeftMargin>
-        <RightMargin>2cm</RightMargin>
-        <TopMargin>2cm</TopMargin>
-        <BottomMargin>2cm</BottomMargin>
+        <LeftMargin>1cm</LeftMargin>
+        <RightMargin>1cm</RightMargin>
+        <TopMargin>1cm</TopMargin>
+        <BottomMargin>1cm</BottomMargin>
         <ColumnSpacing>0.13cm</ColumnSpacing>
         <Style />
       </Page>
@@ -1863,25 +1863,7 @@
   <ReportParameters>
     <ReportParameter Name="NoProjeto">
       <DataType>String</DataType>
-      <Prompt>No Projeto</Prompt>
       <Hidden>true</Hidden>
-    </ReportParameter>
-    <ReportParameter Name="Servico">
-      <DataType>String</DataType>
-      <DefaultValue>
-        <Values>
-          <Value>=""</Value>
-        </Values>
-      </DefaultValue>
-      <AllowBlank>true</AllowBlank>
-      <Prompt>Servico</Prompt>
-      <ValidValues>
-        <DataSetReference>
-          <DataSetName>Servicos</DataSetName>
-          <ValueField>Servico</ValueField>
-          <LabelField>ServicoDescricao</LabelField>
-        </DataSetReference>
-      </ValidValues>
     </ReportParameter>
     <ReportParameter Name="Recurso">
       <DataType>String</DataType>
@@ -1925,6 +1907,23 @@
         </ParameterValues>
       </ValidValues>
     </ReportParameter>
+    <ReportParameter Name="Servico">
+      <DataType>String</DataType>
+      <DefaultValue>
+        <Values>
+          <Value>=""</Value>
+        </Values>
+      </DefaultValue>
+      <AllowBlank>true</AllowBlank>
+      <Prompt>Servico</Prompt>
+      <ValidValues>
+        <DataSetReference>
+          <DataSetName>Servicos</DataSetName>
+          <ValueField>Servico</ValueField>
+          <LabelField>ServicoDescricao</LabelField>
+        </DataSetReference>
+      </ValidValues>
+    </ReportParameter>
   </ReportParameters>
   <ReportParametersLayout>
     <GridLayoutDefinition>
@@ -1937,23 +1936,23 @@
           <ParameterName>NoProjeto</ParameterName>
         </CellDefinition>
         <CellDefinition>
-          <ColumnIndex>1</ColumnIndex>
-          <RowIndex>0</RowIndex>
+          <ColumnIndex>0</ColumnIndex>
+          <RowIndex>1</RowIndex>
           <ParameterName>Servico</ParameterName>
         </CellDefinition>
         <CellDefinition>
-          <ColumnIndex>2</ColumnIndex>
+          <ColumnIndex>1</ColumnIndex>
           <RowIndex>0</RowIndex>
           <ParameterName>Recurso</ParameterName>
         </CellDefinition>
         <CellDefinition>
-          <ColumnIndex>3</ColumnIndex>
+          <ColumnIndex>2</ColumnIndex>
           <RowIndex>0</RowIndex>
           <ParameterName>Data</ParameterName>
         </CellDefinition>
         <CellDefinition>
-          <ColumnIndex>0</ColumnIndex>
-          <RowIndex>1</RowIndex>
+          <ColumnIndex>3</ColumnIndex>
+          <RowIndex>0</RowIndex>
           <ParameterName>MostrarPrecoUnitario</ParameterName>
         </CellDefinition>
       </CellDefinitions>

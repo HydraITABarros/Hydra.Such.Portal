@@ -2118,7 +2118,6 @@
                 },
 
                 _updateRequisitionLinesNew: function (e) {
-                    debugger;
                     var index = this.Requisition.lines.indexOf(e.model.item);
 
                     if (e.model.item.projectNo != "" & e.model.item.projectNo != null) {
@@ -2210,7 +2209,6 @@
                     }
                 },
                 _UpdateLinhaRequisicao_ResponseProcessor: function (e) {
-                    debugger;
                     if (this.updateLinhaRequisicaoResponse.eReasonCode == 1) {
                         this._openToast(this.updateLinhaRequisicaoResponse.eMessage);
                     }
