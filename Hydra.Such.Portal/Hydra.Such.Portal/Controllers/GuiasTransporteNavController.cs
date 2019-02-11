@@ -22,6 +22,8 @@ using Newtonsoft.Json;
 using Hydra.Such.Data;
 using Hydra.Such.Data.Extensions;
 using Hydra.Such.Data.ViewModel.Projects;
+using Hydra.Such.Data.ViewModel.Compras;
+using static Hydra.Such.Data.Enumerations;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -199,6 +201,45 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetSourceCodes()
         {
             return Json(DBNAV2017GuiasTransporte.GetShipmentSourceCodes(_config.NAVDatabaseName, _config.NAVCompanyName));
+        }
+   
+        [HttpPost]
+        public JsonResult GetRequisicoes()
+        {
+            List<RequisitionStates> states = new List<RequisitionStates>()
+            {
+              RequisitionStates.Approved,
+              RequisitionStates.Archived,
+              RequisitionStates.Available,
+              RequisitionStates.Consulta,
+              RequisitionStates.Encomenda,
+              RequisitionStates.Pending,
+              RequisitionStates.Received,
+              RequisitionStates.Treated,
+              RequisitionStates.Validated
+            };
+
+            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+
+            
+            List<RequisitionViewModel> requisitions = DBRequest.GetByState(states, userDimensions, _config.NAVDatabaseName, _config.NAVCompanyName).ParseToViewModel();
+
+            return Json(requisitions);
+        }
+
+        [HttpPost]
+        public JsonResult CopyRequsitionLines([FromBody] JObject requestParams)
+        {
+            string noGuia = requestParams["noGuia"] == null ? "" : (string)requestParams["noGuia"];
+            string requisitionNo = requestParams["requisitionNo"] == null ? "" : (string)requestParams["requisitionNo"];
+            int lastLineNo = requestParams["lastLineNo"] == null ? 0 : (int)requestParams["lastLineNo"];
+
+            if (noGuia == "" || requisitionNo == "")
+                return Json(false);
+
+            bool result = DBNAV2017GuiasTransporte.CreateLinhasFromRequisitionNo(noGuia, requisitionNo, lastLineNo);
+
+            return Json(result);
         }
 
         

@@ -3007,13 +3007,13 @@ namespace Hydra.Such.Portal.Controllers
 
 
         [HttpPost]
-        public JsonResult GetProjMovementsLines([FromBody] string ProjNo, int? ProjGroup)
+        public JsonResult GetProjMovementsLines([FromBody] string ProjNo, int? ProjGroup, bool Faturada = false)
         {
             //TODO: substituir GetMovimentosFaturacao         
             List<ProjectMovementViewModel> projectMovements = new List<ProjectMovementViewModel>();
             try
             {
-                projectMovements = DBProjectMovements.GetProjMovementsById(ProjNo, ProjGroup)
+                projectMovements = DBProjectMovements.GetProjMovementsById(ProjNo, ProjGroup, Faturada)
                .ParseToViewModel(_config.NAVDatabaseName, _config.NAVCompanyName)
                .OrderBy(x => x.ClientName).ToList();
 

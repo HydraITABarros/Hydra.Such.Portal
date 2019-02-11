@@ -7,6 +7,12 @@
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-column-reordering-behavior.html" />
 <link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html" />
+
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html" />
+<link rel="import" href="/lib/such-dropdown-menu/such-dropdown-menu.html" />
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+
 <link rel="import" href="/lib/iron-form/iron-form.html" />
 <link rel="import" href="/lib/paper-input/paper-input.html" />
 <link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
@@ -48,6 +54,15 @@
                 paper-input {
                     max-width: 200px !important;
                 }
+
+                .opacity05 {
+                    opacity: 0.5;
+                }
+
+                .grid-header {
+                    background: white;
+                    border: 1px solid var(--divider-color, rgba(0, 0, 0, 0.08));
+                }
             </style>
         </custom-style>
 
@@ -56,6 +71,7 @@
                    method="post"
                    handle-as="json"
                    id="grid_databound_ajax"
+                   on-response="resultHandler"
                    content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/Encomendas/ExportToExcel_ListaEncomendas"
@@ -67,27 +83,100 @@
                    content-type="application/json">
         </iron-ajax>
 
-        <div class="subMenu">
-            <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
-            <!--start ColumnToggle-->
-            <paper-menu-button class="column-toggle" no-animations>
-                <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
-                <div class="list-group" slot="dropdown-content">
-                    <template is="dom-repeat" items="[[ _toArray(_columns)]]" id="columnsList">
-                        <a href="javascript:void(0);" on-tap="_toggleColumn" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClass( item.key ) ]]">
-                            {{ item.value.label }}
-                        </a>
-                        <hr />
-                    </template>
-                </div>
-            </paper-menu-button>
-            <!--end ColumnToggle-->
+        <!--Filters-->
+        <iron-ajax url="/PopulateDropdowns/GetEncomendasYearList" id="grid_years_ajax" last-response="{{years}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/PopulateDropdowns/GetNAVVendor" id="grid_fornecedor_ajax" last-response="{{forcecedores}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+        <div class="subMenu">
+            <template is="dom-if" if="{{loaded}}">
+                <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+                <!--start ColumnToggle-->
+                <paper-menu-button class="column-toggle" no-animations>
+                    <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
+                    <div class="list-group" slot="dropdown-content">
+                        <template is="dom-repeat" items="[[ _toArray(_columns)]]" id="columnsList">
+                            <a href="javascript:void(0);" on-tap="_toggleColumn" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClass( item.key ) ]]">
+                                {{ item.value.label }}
+                            </a>
+                            <hr />
+                        </template>
+                    </div>
+                </paper-menu-button>
+                <!--end ColumnToggle-->
+            </template>
+            <template is="dom-if" if="[[!loaded]]">
+                <span style="display: inline-block;height:25px;"></span>
+            </template>
         </div>
 
-        <vaadin-grid column-reordering-allowed aria-label="CustomersGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true" >
-            
-            <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.no.hidden }}" >
+        <div class="grid-header" id="gridheader">
+            <div class="panel-body">
+                <div class="row break_clear">
+                    <div class="col-sm-3">
+                        <such-selectbox style="margin-top:11px;" id="selectbox-forcecedor"
+                                        label="Fornecedor"
+                                        value="{{forcecedor}}"
+                                        items="[[forcecedores]]"
+                                        text-path="value"
+                                        value-path="id"
+                                        fields='[{"field":"id", "name":"Código Fornecedor"}, {"field":"value", "name":"Nome Fornecedor"}]'>
+                        </such-selectbox>
+                    </div>
+                    <div class="col-sm-3">
+
+                        <vaadin-combo-box style="margin-top:11px;" items="[[years]]" item-value-path="id" item-label-path="value" value="{{year}}" label="Ano">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+
+                    </div>
+
+                    <div class="col-sm-3">
+
+                        <vaadin-combo-box style="margin-top:11px;"
+                                          items="[[months]]"
+                                          item-value-path="id"
+                                          item-label-path="value"
+                                          value="{{month}}"
+                                          label="Mês"
+                                          id="monthSelect"
+                                          disabled>
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+
+                    </div>
+                    <div class="col-sm-3 alignPoga text-right">
+                        <paper-button raised id="btnUpdate" class="btnSave" on-tap="_search"><i class="fa fa-search" aria-hidden="true"></i>&nbsp; Pesquisar</paper-button>
+                    </div>
+                </div>
+            </div>
+
+            <br />
+        </div>
+
+        <template is="dom-if" if="[[!loaded]]">
+            <div class="clearfix"></div>
+            <div class="col-xs-12 grey" style="padding: 5px 0 15px 0;">
+                * <small><i>Defina a sua pesquisa.</i></small>
+            </div>
+            <div class="clearfix"></div>
+        </template>
+
+        <vaadin-grid column-reordering-allowed aria-label="CustomersGrid" id="grid" items="[[result]]" class="grid hide" active-item="{{activeItem}}" multi-sort="true">
+        
+            <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.no.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="no">Nº</vaadin-grid-sorter>
                     <vaadin-grid-filter path="no" />
@@ -240,8 +329,8 @@
 
         </vaadin-grid>
 
-
     </template>
+
 
     <script>
         document.addEventListener('WebComponentsReady', function () {
@@ -264,6 +353,31 @@
                         value: function () {
                             return {};
                         }
+                    },
+                    loaded: {
+                        type: Boolean,
+                        value: false
+                    },
+                    loading: {
+                        type: Boolean,
+                        value: true
+                    },
+                    months: {
+                        type: Array,
+                        value: [{ id: 1, value: 'Janeiro' }, { id: 2, value: 'Fevereiro' }, { id: 3, value: 'Março' }, { id: 4, value: 'Abril' }, { id: 5, value: 'Maio' }, { id: 6, value: 'Junho' }, { id: 7, value: 'Julho' }, { id: 8, value: 'Agosto' }, { id: 9, value: 'Setembro' }, { id: 10, value: 'Outubro' }, { id: 11, value: 'Novembro' }, { id: 12, value: 'Dezembro' }]
+                    },
+                    month: {
+                        type: String,
+                        value: ""
+                    },
+                    year: {
+                        type: String,
+                        value: "",
+                        observer: 'yearHandler'
+                    },
+                    fornecedor: {
+                        type: String,
+                        value: ""
                     }
                 },
                 _rowSelected: function (item) {
@@ -273,7 +387,7 @@
                 },
                 ready: function () {
 
-                    this.$.grid_databound_ajax.generateRequest();
+                    //this.$.grid_databound_ajax.generateRequest();
 
                     window.handleGridListColumnsOrder(this.$.grid, 'encomendas');
                     /*ColumnToggle*/
@@ -288,13 +402,16 @@
                     $(window).trigger('resize');
                 },
                 fixGridToBottom: function () {
-                    var grid_el = $(this.$.grid);
-                    var parentHeight = $(this).offsetParent().height();
-                    var windowHeight = $(window).height();
-                    var paddingTop = $(this).offsetParent().css('padding-top').replace("px", "");
-                    var offsetTop = $(this).offset().top;
-                    var height = windowHeight - offsetTop - paddingTop;
-                    $(this.$.grid).height(height);
+                    var _this = this;
+                    setTimeout(function () {
+                        var grid_el = $(_this.$.grid);
+                        var parentHeight = $(_this).offsetParent().height();
+                        var windowHeight = $(window).height();
+                        var paddingTop = $(_this).offsetParent().css('padding-top').replace("px", "");
+                        var offsetTop = $(_this).offset().top;
+                        var height = windowHeight - offsetTop - paddingTop;
+                        $(_this.$.grid).height(height - $(_this.$.gridheader).height());
+                    }, 3600);
                 },
 
                 _exportEXCEL: function () {
@@ -373,6 +490,29 @@
                         return currency(Math.round(value * 100) / 100, { separator: '.', decimal: ',' }).format() + ' €';
                     }
                 },
+                _search: function () {
+
+                    this.loaded = true;
+                    this.$.grid_databound_ajax.body = JSON.stringify({ fornecedor: this.forcecedor, year: this.year, month: this.month });
+                    this.$.grid_databound_ajax.generateRequest();
+                    $(this.$.grid).removeClass('hide');
+                    this.$.grid._loading = true;
+                },
+                yearHandler: function (value) {
+                    if (value == "") {
+                        return this.$.monthSelect.disabled = true;
+                    }
+                    this.$.monthSelect.disabled = false;
+                    if ((value * 1) == moment().year()) {
+                        this.$.monthSelect.items = this.months.filter(function (item) {
+                            return item.id <= (moment().month() + 1);
+                        });
+                    } else {
+                        this.$.monthSelect.items = this.months;
+                    }
+                },
+                resultHandler: function () {
+                }
                 /* end - ColumnToggle */
             });
         });
