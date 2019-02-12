@@ -470,6 +470,48 @@ namespace Hydra.Such.Data.Logic
 
         }
 
+        public static List<NAVPostCode> GetNAVPostCodes(string NAVDatabase, string NAVCompany)
+        {
+            try
+            {
+                SuchDBContextExtention _contextExt = new SuchDBContextExtention();
+
+                var parameters = new[]{
+                        new SqlParameter("@DBName", NAVDatabase),
+                        new SqlParameter("@CompanyName", NAVCompany)
+                };
+
+                IEnumerable<dynamic> data = _contextExt.execStoredProcedure("exec NAV2017GuiaTransportePostCodes @DBName, @CompanyName", parameters);
+
+                List<NAVPostCode> postCodes = new List<NAVPostCode>();
+
+                foreach (dynamic temp in data)
+                {
+                    if (temp != null)
+                    {
+                        if (!temp.Code.Equals(DBNull.Value))
+                        {
+                            NAVPostCode post = new NAVPostCode()
+                            {
+                              PostCode = (string)temp.Code,
+                              City = temp.City.Equals(DBNull.Value) ? "" : (string)temp.City
+                            };
+
+                            postCodes.Add(post);
+                        }
+
+                    }
+                }
+                return postCodes;
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+
+        }
+
         public static List<GuiaTransporteShipToAddress> GetShipToAddresses(string NAVDatabase, string NAVCompany, string CustomerId, string ShipToAddrCode)
         {
             try

@@ -281,6 +281,13 @@
                    on-response="_deleteShipmentLineResponse"
                    content-type="application/json">
         </iron-ajax>
+        <iron-ajax url="/GuiasTransporteNav/GetPostCodes"
+                   last-response="{{ postCodeList }}"
+                   method="post"
+                   id="ajax_post_codes"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
         <!-- ********* Document lines.e ***********-->
 
         <iron-ajax url="/GuiasTransporteNav/UpdateGuia"
@@ -310,8 +317,8 @@
         </iron-ajax>
 
         <div class="subMenu">
-            <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
-            <paper-button class="tablinks" on-tap="_copyLines"><i class="fa fa-calculator" aria-hidden="true"></i>Copiar Linhas</paper-button>
+            <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Voltar</paper-button>
+            <paper-button class="tablinks" on-tap="_copyLines"><i class="fa fa-clone" aria-hidden="true"></i>&nbsp; Linhas</paper-button>
             <paper-button raised id="btnUpdate" class="tablinks" on-tap="_update" title="Gravar" style="background-color:#1DB73C"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Gravar</paper-button>
         </div>
 
@@ -415,7 +422,7 @@
                                             </div>
                                             <div class="row break_clear">
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="codPostal" name="codPostal" label="Cód. Postal" value="{{ data.codPostal }}"></vaadin-text-field>
+                                                    <vaadin-text-field id="codPostal" name="codPostal" label="Cód. Postal" value="{{ data.codPostal }}" on-click="_selectPostCode" required error-message="Campo obrigatório"></vaadin-text-field>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <vaadin-text-field id="cidade" name="cidade" label="Cidade" value="{{ data.cidade }}"></vaadin-text-field>
@@ -540,7 +547,16 @@
                                                                 <vaadin-text-field id="city" name="city" label="Cidade" value="{{ data.city }}"></vaadin-text-field>
                                                             </div>
                                                             <div class="col-xs-12">
-                                                                <vaadin-text-field id="postCode" name="postCode" label="Cód. Postal" value="{{ data.postCode }}"></vaadin-text-field>
+                                                                <vaadin-text-field id="postCode" name="postCode" label="Cód. Postal" value="{{ data.postCode }}" on-click="_selectPostCode"></vaadin-text-field>
+                                                                <!--<such-selectbox id="postCode"
+                                                                                name="postCode"
+                                                                                label="Cód. Postal"
+                                                                                value="{{ data.postCode }}"
+                                                                                items="[[postCodeList]]"
+                                                                                text-path="postCode"
+                                                                                text-value="postCode"
+                                                                                fields='[{"field":"postCode", "name":"Código"}, {"field":"city", "name":"Cidade"}]'>
+                                                                </such-selectbox>-->
                                                             </div>
                                                             <div class="col-xs-12">
                                                                 <vaadin-time-picker id="horaCarga"
@@ -576,7 +592,16 @@
                                                                 <vaadin-text-field id="localDescarga1" name="localDescarga1" label="Local Descarga 1" value="{{ data.localDescarga1 }}"></vaadin-text-field>
                                                             </div>
                                                             <div class="col-xs-12">
-                                                                <vaadin-text-field id="codPostalDescarga" name="codPostalDescarga" label="Cód. Postal Descarga" value="{{ data.codPostalDescarga }}"></vaadin-text-field>
+                                                                <vaadin-text-field id="codPostalDescarga" name="codPostalDescarga" label="Cód. Postal Descarga" value="{{ data.codPostalDescarga }}" on-click="_selectPostCode" required error-message="Campo obrigatório"></vaadin-text-field>
+                                                                <!--<such-selectbox id="codPostalDescarga"
+                    name="codPostalDescarga"
+                    label="Cód. Postal Descarga"
+                    value="{{ data.codPostalDescarga }}"
+                    items="[[postCodeList]]"
+                    text-path="postCode"
+                    text-value="postCode"
+                    fields='[{"field":"postCode", "name":"Código"}, {"field":"city", "name":"Cidade"}]'>
+    </such-selectbox>-->
                                                             </div>
                                                             <div class="col-xs-12">
                                                                 <vaadin-time-picker id="horaDescarga"
@@ -892,6 +917,15 @@
         <paper-dialog id="copyLinesFromReq" class="dialgoBox">
             <h2>Copiar de Requisição</h2>
             <vaadin-grid aria-label="gridRequisicao" items="[[requisitions]]" class="grid" multi-sort="true">
+                <vaadin-grid-column>
+                    <template class="header">
+                    </template>
+                    <template>
+                        <center>
+                            <paper-button class="btnSave fa fa-caret-square-o-down" raised on-tap="_copyLinesFromRequisition"></paper-button>
+                        </center>
+                    </template>
+                </vaadin-grid-column>
                 <vaadin-grid-column width="120px" resizable>
                     <template class="header">
                         <vaadin-grid-sorter path="requisitionNo">Nº Requisição</vaadin-grid-sorter>
@@ -982,18 +1016,46 @@
                         {{item.responsibleApproval}}
                     </template>
                 </vaadin-grid-column>
-                <vaadin-grid-column width="10%" resizable>
+
+            </vaadin-grid>
+            <div class="buttons">
+                <paper-button class="btnRemove" dialog-dismiss>Fechar</paper-button>
+            </div>
+        </paper-dialog>
+
+        <paper-dialog id="selectPostCode" class="dialgoBox">
+            <h2>Código Postal</h2>
+            <vaadin-grid id="postCodeGrid" aria-label="gridPostCode" items="[[postCodeList]]" class="grid" multi-sort="true" active-item="{{_SelectedPostCode}}">
+                <vaadin-grid-column>
+                    <template class="header">
+                        <vaadin-grid-sorter path="postCode">Código Postal</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="postCode" />
+                    </template>
+                    <template>
+                        {{ item.postCode }}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column>
+                    <template class="header">
+                        <vaadin-grid-sorter path="city">Local</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="city" />
+                    </template>
+                    <template>
+                        {{ item.city }}
+                    </template>
+                </vaadin-grid-column>
+                <!--<vaadin-grid-column width="10%" resizable>
                     <template class="header">
                     </template>
                     <template>
                         <center>
-                            <paper-button class="btnSave" raised on-tap="_copyLinesFromRequisition">Copiar Linhas</paper-button>
+                            <paper-button class="btnSave" raised on-tap="_usePostCode">Usar</paper-button>
                         </center>
                     </template>
-                </vaadin-grid-column>
+                </vaadin-grid-column>-->
             </vaadin-grid>
             <div class="buttons">
-                <paper-button class="btnRemove" dialog-dismiss>Cancelar</paper-button>
+                <paper-button class="btnRemove" dialog-dismiss>Fechar</paper-button>
             </div>
         </paper-dialog>
 
@@ -1017,12 +1079,24 @@
                         type: Boolean,
                         value: false
                     },
+                    _isPageLoad: {
+                        type: Boolean,
+                        value: false
+                    },
+
                     selected: {
                         type: Number,
                         value: 0
                     },
+                    postCodeFieldCall: {
+                        type: Number,
+                        value: -1
+                    },
                     _SelectedLine: {
                         observer: '_activeItemChanged'
+                    },
+                    _SelectedPostCode: {
+                        observer: '_postCodeSelected'
                     }
                 },
 
@@ -1051,6 +1125,40 @@
                             this.$.gridLinhas.clearCache();
                         }
                     }
+                },
+
+                _postCodeSelected: function (item) {
+                    debugger;;
+
+                    if (item != null) {
+                        var postC = item.postCode;
+
+                        if (postC != null) {
+                            if (this.postCodeFieldCall === 100) {
+                                this.data.codPostal = postC;
+                                this.$.codPostal.value = postC;
+                                this.$.codPostal.valueText = postC;
+                            }
+
+                            if (this.postCodeFieldCall === 200) {
+                                this.data.postCode = postC;
+                                this.$.postCode.value = postC;
+                                this.$.postCode.valueText = postC;
+                            }
+
+                            if (this.postCodeFieldCall === 300) {
+                                this.data.codPostalDescarga = postC;
+                                this.$.codPostalDescarga.value = postC;
+                                this.$.codPostalDescarga.valueText = postC;
+                            }
+
+                            this.$.selectPostCode.close();
+                        }
+
+                        this.postCodeFieldCall = -1;
+                    }
+                    //var oSel = this.$.postCodeGrid.find(x => x.selected);
+                    debugger;;
                 },
 
                 _setTipoLinhaGridText: function (item, tipoLinhaData) {
@@ -1103,6 +1211,7 @@
                 ready: function () {
                     debugger;;
                     if (!this._history) {
+                        this._isPageLoad = true;
                         this.$.page_databound_ajax.body = JSON.stringify({ "No": this._guiatransporteid, "Historic": this._history });
                         this.$.page_databound_ajax.generateRequest();
 
@@ -1119,6 +1228,8 @@
                     var self = this;
 
                     if (data.detail.status === 200) {
+                        this.$.ajax_post_codes.generateRequest();
+
                         this.$.ajax_thirdparties.body = JSON.stringify({ "type": this.data.tipo });
                         this.$.ajax_thirdparties.generateRequest();
 
@@ -1127,6 +1238,15 @@
 
                         self.$.noCliente.value = this.data.noCliente;
                         self.$.noCliente.valueText = this.data.noCliente;
+
+                        self.$.codPostal.value = this.data.codPostal;
+                        self.$.codPostal.valueText = this.data.codPostal;
+
+                        self.$.codPostalDescarga.value = this.data.codPostalDescarga;
+                        self.$.codPostalDescarga.valueText = this.data.codPostalDescarga;
+
+                        self.$.postCode.value = this.data.postCode;
+                        self.$.postCode.valueText = this.data.postCode;
 
                         debugger;;
                         if (this.data.tipo == 0 && this.data.noCliente != "" && this.data.codEnvio) {
@@ -1181,7 +1301,8 @@
                             this.$.page_ship_items_ajax.body = JSON.stringify({ "itemType": tipoL, "itemCode": "-1" });
                             this.$.page_ship_items_ajax.generateRequest();
                         }
-                        
+
+                        this._isPageLoad = false;
                     } else {
                         this._openToastError("Ocorreu um erro desconhecido.")
                     }
@@ -1289,7 +1410,7 @@
                 },     
 
                 _setThirdParty: function (e) {
-                    //debugger;
+                    debugger;
                     if (this.data != undefined) {
                         var type = this.$.tipoGuia.value;
                         var entityId = this.$.noCliente.value;
@@ -1337,7 +1458,7 @@
                 },
 
                 _setThirdPartyDetails: function (details) {
-                    //debugger;;
+                    debugger;;
                     var _self = this;
 
                     if (details != null) {
@@ -2043,6 +2164,54 @@
                     }
                 },
 
+                _selectPostCode: function (e) {
+                    debugger;;
+                    var _targetId = e.currentTarget.id;
+
+                    this.postCodeFieldCall = -1;
+                    
+                    if (_targetId == "codPostal")
+                        this.postCodeFieldCall = 100;
+
+                    if (_targetId == "postCode")
+                        this.postCodeFieldCall = 200;
+
+                    if (_targetId == "codPostalDescarga")
+                        this.postCodeFieldCall = 300;
+
+                    if (this.postCodeList == null || this.postCodeList == "")
+                        this.$.ajax_post_codes.generateRequest();
+
+                    this.$.selectPostCode.open();
+                },
+
+                //_usePostCode: function (e) {
+                //    debugger;;
+                //    var postC = e.model.item.postCode;
+
+                //    if (postC != null) {
+                //        if (this.postCodeFieldCall === 100) {
+                //            this.data.codPostal = postC;
+                //            this.$.codPostal.value = postC;
+                //            this.$.codPostal.valueText = postC;
+                //        }
+
+                //        if (this.postCodeFieldCall === 200) {
+                //            this.data.postCode = postC;
+                //            this.$.postCode.value = postC;
+                //            this.$.postCode.valueText = postC;
+                //        }
+
+                //        if (this.postCodeFieldCall === 300) {
+                //            this.data.codPostalDescarga = postC;
+                //            this.$.codPostalDescarga.value = postC;
+                //            this.$.codPostalDescarga.valueText = postC;
+                //        }
+                //    }
+
+                //    this.postCodeFieldCall = -1;
+                //},
+
                 _copyLines: function (e) {
                     this.$.ajax_requisitions.generateRequest();
                     this.$.copyLinesFromReq.open();
@@ -2063,6 +2232,7 @@
                     debugger;;
 
                     this.$.ajax_update_guia.body = JSON.stringify(this.data);
+                    this.$.ajax_update_guia.generateRequest();
                     
                     var documentLines = this.data.linhasGuiaTransporte;
                     var lastLineNo = 0;
@@ -2087,6 +2257,46 @@
                     } else {
                         this._openToastError("Não foi possível copiar as linhas da Requisição!");
                     }
+                },
+
+                _lastCheckBeforeRegister: function (guia) {
+                    var localDescFilled =
+                        (guia.localDescarga1 != null && guia.localDescarga1 != "") &&
+                            (guia.codPostalDescarga != null && guia.codPostalDescarga != "") ? true : false;
+
+                    if (!localDescFilled) {
+                        this._openToastError("Detalhes de descarga incompletos: ver Local Descarga e/ou Código Postal Descarga!")
+                    }
+
+                    var codPostalFilled =
+                        (guia.codPostal != null && guia.codPostal != "" && guia.codPostal.length == 8) &&
+                            (guia.codPostalDescarga != null && guia.codPostalDescarga != "" && guia.codPostalDescarga == 8) ? true : false;
+
+                    if (!codPostalFilled) {
+                        this._openToastError("Códigos Postal não preenchidos: ver Código Postal e/ou Código Postal Descarga!");
+                    }
+
+                    var lines = guia.linhasGuiaTransporte;
+
+                    var nullQuantityLine = lines.find(l => l.quantidade <= 0);
+
+                    if (nullQuantityLine != null) {
+                           this._openToastError("Existem linhas com Quantidade <= 0!")
+                    }
+                    return true;
+                },
+
+                _registerDocument: function (e) {
+                    this.$.ajax_update_guia.body = JSON.stringify(this.data);
+                    this.$.ajax_update_guia.generateRequest();
+
+                    if (_lastCheckBeforeRegister(this.data)) {
+
+                    }
+                },
+
+                _registerDocumentResponse: function (e) {
+
                 },
 
                 __preciseRound: function (num, dec) {

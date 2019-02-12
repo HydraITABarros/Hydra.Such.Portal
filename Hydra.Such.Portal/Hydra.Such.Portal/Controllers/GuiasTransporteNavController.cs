@@ -276,6 +276,13 @@ namespace Hydra.Such.Portal.Controllers
             List<ShipmentLineItem> items = DBNAV2017GuiasTransporte.GetShipmentItems(_config.NAVDatabaseName, _config.NAVCompanyName, itemType, itemCode);
             return Json(items);
         }
+
+        [HttpPost]
+        public JsonResult GetPostCodes()
+        {
+            List<NAVPostCode> postCodes = DBNAV2017GuiasTransporte.GetNAVPostCodes(_config.NAVDatabaseName, _config.NAVCompanyName);
+            return Json(postCodes);
+        }
         #region CRUD
         [HttpPost]
         public JsonResult CreateGuiaTransporte()
