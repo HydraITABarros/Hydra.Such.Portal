@@ -4696,9 +4696,9 @@ namespace Hydra.Such.Portal.Controllers
                         DiárioDeProjeto newdp = DBProjectDiary.GetAllPreRegByCode(User.Identity.Name, x.Code);
                         if (newdp != null)
                         {
-                            DBProjectDiary.Delete(newdp);
-                            if (newdp.Quantidade != null && newdp.Quantidade > 0)
+                            if (newdp.Quantidade != null && newdp.Quantidade != 0)
                             {
+                                DBProjectDiary.Delete(newdp);
                                 if (!String.IsNullOrEmpty(newdp.FaturaANºCliente))
                                 {
                                     if (InvoiceClient != "")
