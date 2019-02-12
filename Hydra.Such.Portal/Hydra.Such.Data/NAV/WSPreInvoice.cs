@@ -62,7 +62,7 @@ namespace Hydra.Such.Data.NAV
                     Document_TypeSpecified = true,
                     Sell_to_Customer_No = preInvoiceToCreate.InvoiceToClientNo,
                     VAT_Registration_No = preInvoiceToCreate.ClientVATReg,
-                    Contract_No = preInvoiceToCreate.DocumentNo,
+                    Contract_No = preInvoiceToCreate.ContractNo,
                     Debit_Memo = notaDebito,
                     Debit_MemoSpecified = true,
                     Posting_No_Series = PostingNoSeries,
@@ -153,6 +153,8 @@ namespace Hydra.Such.Data.NAV
             invoiceHeader.CreateUser = billingHeader.CreateUser;
             invoiceHeader.Posting_Date = Convert.ToDateTime(dataFormulario);
             invoiceHeader.ProjectNo = projeto;
+            invoiceHeader.MovementType = billingHeader.MovementType;
+           
 
             return await CreatePreInvoice(invoiceHeader, WSConfigurations);
 
