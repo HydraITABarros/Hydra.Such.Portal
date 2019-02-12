@@ -104,7 +104,7 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
             }
         }
 
-        public static List<MovimentosDeProjeto> GetProjMovementsById(string projectNo, int? ProjGroup)
+        public static List<MovimentosDeProjeto> GetProjMovementsById(string projectNo, int? ProjGroup, bool Faturada = false)
         {
             try
             {
@@ -112,7 +112,7 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
                 {
                         return ctx.MovimentosDeProjeto
                             .Where(x => x.NºProjeto == projectNo &&
-                                    (x.Faturada == false) && //Consumo
+                                    (x.Faturada == Faturada) && //Consumo
                                     x.Faturável == true &&
                                     x.GrupoFatura == ProjGroup &&
                                     x.FaturaçãoAutorizada == true)

@@ -1321,7 +1321,7 @@
                 _showAuthorizationDetails: function (e) {
                     if (e != null) {
                         var Item = e.model.item;
-                        this.$.grid_dataprojlines_ajax.params = { "ProjGroup": Item.grupoFactura };
+                        this.$.grid_dataprojlines_ajax.params = { "ProjGroup": Item.grupoFactura, "Faturada": !this.isBillingList };
                         this.$.grid_dataprojlines_ajax.body = JSON.stringify(Item.codProjeto);
                         this.$.grid_dataprojlines_ajax.generateRequest();
                         this.$.dialog.open();
