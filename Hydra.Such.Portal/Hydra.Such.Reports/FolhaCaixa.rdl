@@ -964,7 +964,9 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Sum(Fields!Credito.Value, "MovCaixa")+Sum(Fields!Debito.Value, "MovCaixa")+Sum(Fields!Deposito.Value, "MovCaixa") - First(Fields!TotalSaldo.Value, "dsResumoAnterior")</Value>
+                                  <Value>=First(Fields!TotalSaldo.Value, "dsResumoAnterior") + ((Sum(Fields!Credito.Value) + First(Fields!TotalCredito.Value, "dsResumoAnterior"))
+	+ (Sum(Fields!Debito.Value) + First(Fields!TotalDebito.Value, "dsResumoAnterior"))
+	+ (Sum(Fields!Deposito.Value) + First(Fields!TotalDeposito.Value, "dsResumoAnterior")) - First(Fields!TotalSaldo.Value, "dsResumoAnterior"))</Value>
                                   <Style>
                                     <FontSize>8pt</FontSize>
                                   </Style>
@@ -988,6 +990,7 @@
                             <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
+                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                   </TablixCells>
@@ -1034,7 +1037,7 @@
             </Style>
           </Tablix>
         </ReportItems>
-        <Height>4.83658cm</Height>
+        <Height>8.2497cm</Height>
         <Style>
           <Border>
             <Style>None</Style>

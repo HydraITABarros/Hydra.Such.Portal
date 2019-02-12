@@ -3498,6 +3498,7 @@ namespace Hydra.Such.Portal.Controllers
                     string projectRegion = proj != null ? proj.CódigoRegião : string.Empty;
                     var customer = customers.FirstOrDefault(y => y.No_ == x.InvoiceToClientNo);
                     x.SetDimensionsFor(authProj, projectRegion, customer);
+                    x.DataPedido = authProj.DataPedido;
 
                     TiposGrupoContabProjeto contabGroupType = new TiposGrupoContabProjeto();
                     x.Items.ForEach(item =>
@@ -3592,6 +3593,7 @@ namespace Hydra.Such.Portal.Controllers
                             header.CreateUser = User.Identity.Name;
 
                             execDetails = string.Format("Fat. Cliente: {0}, Data: {1}, Nº Compromisso: {2} - ", header.InvoiceToClientNo, header.Date, header.CommitmentNumber);
+
 
                             Task<WSCreatePreInvoice.Create_Result> TCreatePreInvoice = WSPreInvoice.CreatePreInvoice(header, _configws, dataFormulario, projeto);
                             TCreatePreInvoice.Wait();
