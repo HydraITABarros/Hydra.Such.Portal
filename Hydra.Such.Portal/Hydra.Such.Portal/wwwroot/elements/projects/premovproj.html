@@ -364,7 +364,9 @@
                     <vaadin-grid-filter path="quantity" />
                 </template>
                 <template>
-                    {{item.quantity}}
+                    <div class="text-right">
+                        [[formatCurrency(item.quantity)]]
+                    </div>
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.unitPrice.hidden }}">
@@ -373,7 +375,9 @@
                     <vaadin-grid-filter path="unitPrice" />
                 </template>
                 <template>
-                    {{item.unitPrice}}€
+                    <div class="text-right">
+                        [[formatCurrency(item.unitPrice)]]
+                    </div>
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.totalPrice.hidden }}">
@@ -382,7 +386,9 @@
                     <vaadin-grid-filter path="TotalPrice" />
                 </template>
                 <template>
-                    {{item.totalPrice}}€
+                    <div class="text-right">
+                        [[formatCurrency(item.totalPrice)]]
+                    </div>
                 </template>
             </vaadin-grid-column>
 
@@ -392,7 +398,10 @@
                     <vaadin-grid-filter path="unitCost" />
                 </template>
                 <template>
-                    {{item.unitCost}}€
+                    <div class="text-right">
+                        [[formatCurrency(item.unitCost)]]
+                    </div>
+
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.totalCost.hidden }}">
@@ -401,7 +410,9 @@
                     <vaadin-grid-filter path="totalCost" />
                 </template>
                 <template>
-                    {{item.totalCost}}€
+                    <div class="text-right">
+                        [[formatCurrency(item.totalCost)]]
+                    </div>
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.invoiceToClientNo.hidden }}">
@@ -715,9 +726,10 @@
 
                 _exportEXCEL: function () {
                     //debugger;
-                    this.result[0].ColunasEXCEL = this._columns;
+                    var result = this.$.projectMovementTable._filter(this.result);
+                    result[0].ColunasEXCEL = this._columns;
 
-                    this.$.ajax_Export.body = JSON.stringify(this.result);
+                    this.$.ajax_Export.body = JSON.stringify(result);
                     this.$.ajax_Export.generateRequest();
                 },
 
@@ -842,6 +854,12 @@
                     this.$.rptContainer.src = "about:blank";
                     this.$.rptDialog.close();
                 },
+                formatCurrency: function (value) {
+                    if (value && value != "") {
+                        value = value + " €";
+                    }
+                    return value;
+                }
 
             });
         });
