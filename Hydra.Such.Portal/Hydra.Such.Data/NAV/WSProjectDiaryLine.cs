@@ -79,7 +79,10 @@ namespace Hydra.Such.Data.NAV
                     Unit_Price = Convert.ToDecimal(y.UnitPrice),
                     //Total_PriceSpecified = true,
                     //Total_Price = Convert.ToDecimal(y.TotalPrice),
-                    Portal_Transaction_No = TransactID.ToString()
+                    Portal_Transaction_No = TransactID.ToString(),
+                    Ws_Communicated_Nav_2009= true,
+                    Ws_Communicated_Nav_2009Specified = true
+
                 }).ToArray()
             };
            

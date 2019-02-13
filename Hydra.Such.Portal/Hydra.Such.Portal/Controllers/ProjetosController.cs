@@ -1780,7 +1780,8 @@ namespace Hydra.Such.Portal.Controllers
                                     UtilizadorCriação = User.Identity.Name,
                                     DataHoraCriação = DateTime.Now,
                                     FaturaçãoAutorizada = false,
-                                    NºDocumento = "ES_" + newdp.NºProjeto
+                                    NºDocumento = "ES_" + newdp.NºProjeto,
+                                    CriarMovNav2017 = false
                                 };
 
                                 DBProjectMovements.Create(ProjectMovement);
