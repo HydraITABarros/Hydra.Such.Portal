@@ -113,51 +113,60 @@
         <div class="grid-header" id="gridheader">
             <div class="panel-body">
                 <div class="row break_clear">
-                    <div class="col-sm-3">
-                        <such-selectbox style="margin-top:11px;" id="selectbox-forcecedor"
-                                        label="Fornecedor"
-                                        value="{{forcecedor}}"
-                                        items="[[forcecedores]]"
-                                        text-path="value"
-                                        value-path="id"
-                                        fields='[{"field":"id", "name":"Código Fornecedor"}, {"field":"value", "name":"Nome Fornecedor"}]'>
-                        </such-selectbox>
+                    <div class="col-sm-10">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <such-selectbox style="margin-top:11px;" id="selectbox-forcecedor"
+                                                label="Fornecedor"
+                                                value="{{forcecedor}}"
+                                                items="[[forcecedores]]"
+                                                text-path="value"
+                                                value-path="id"
+                                                fields='[{"field":"id", "name":"Código Fornecedor"}, {"field":"value", "name":"Nome Fornecedor"}]'>
+                                </such-selectbox>
+                            </div>
+                            <div class="col-sm-3">
+
+                                <vaadin-text-field id="requisitionNo" name="requisitionNo" label="Nº Requisição" value="{{requisitionNo}}">  </vaadin-text-field>
+                            </div>
+                            <div class="col-sm-3">
+
+                                <vaadin-combo-box style="margin-top:11px;" items="[[years]]" item-value-path="id" item-label-path="value" value="{{year}}" label="Ano">
+                                    <template>
+                                        <paper-icon-item>
+                                            <paper-item-body two-line>
+                                                <div>[[item.value]]</div>
+                                            </paper-item-body>
+                                        </paper-icon-item>
+                                    </template>
+                                </vaadin-combo-box>
+
+                            </div>
+
+                            <div class="col-sm-3">
+
+                                <vaadin-combo-box style="margin-top:11px;"
+                                                  items="[[months]]"
+                                                  item-value-path="id"
+                                                  item-label-path="value"
+                                                  value="{{month}}"
+                                                  label="Mês"
+                                                  id="monthSelect"
+                                                  disabled>
+                                    <template>
+                                        <paper-icon-item>
+                                            <paper-item-body two-line>
+                                                <div>[[item.value]]</div>
+                                            </paper-item-body>
+                                        </paper-icon-item>
+                                    </template>
+                                </vaadin-combo-box>
+
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-sm-3">
 
-                        <vaadin-combo-box style="margin-top:11px;" items="[[years]]" item-value-path="id" item-label-path="value" value="{{year}}" label="Ano">
-                            <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
-                            </template>
-                        </vaadin-combo-box>
-
-                    </div>
-
-                    <div class="col-sm-3">
-
-                        <vaadin-combo-box style="margin-top:11px;"
-                                          items="[[months]]"
-                                          item-value-path="id"
-                                          item-label-path="value"
-                                          value="{{month}}"
-                                          label="Mês"
-                                          id="monthSelect"
-                                          disabled>
-                            <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
-                            </template>
-                        </vaadin-combo-box>
-
-                    </div>
-                    <div class="col-sm-3 alignPoga text-right">
+                    <div class="col-sm-2 alignPoga text-right">
                         <paper-button raised id="btnUpdate" class="btnSave" on-tap="_search"><i class="fa fa-search" aria-hidden="true"></i>&nbsp; Pesquisar</paper-button>
                     </div>
                 </div>
@@ -378,6 +387,10 @@
                     fornecedor: {
                         type: String,
                         value: ""
+                    },
+                    requisitionNo: {
+                        type: String,
+                        value: ""
                     }
                 },
                 _rowSelected: function (item) {
@@ -493,7 +506,7 @@
                 _search: function () {
 
                     this.loaded = true;
-                    this.$.grid_databound_ajax.body = JSON.stringify({ fornecedor: this.forcecedor, year: this.year, month: this.month });
+                    this.$.grid_databound_ajax.body = JSON.stringify({ fornecedor: this.forcecedor, year: this.year, month: this.month, requisitionNo: this.requisitionNo });
                     this.$.grid_databound_ajax.generateRequest();
                     $(this.$.grid).removeClass('hide');
                     this.$.grid._loading = true;
