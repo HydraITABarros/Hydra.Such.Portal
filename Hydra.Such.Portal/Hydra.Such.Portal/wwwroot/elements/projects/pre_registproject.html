@@ -352,7 +352,7 @@
                 </div>
             </div>
             <div class="row">
-               
+
                 <div class="col-lg-2" hidden="{{ !_permissions.create }}">
                     <paper-button class="btnSave" disabled="{{ !_permissions.create }}" raised on-tap="_add"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                 </div>
@@ -520,7 +520,9 @@
                         <vaadin-text-field pattern="^[1-9]\d*(\.\d+)?$" id="lineQuantity" disabled="{{ !_permissions.update }}" value="{{item.quantity}}" on-value-changed="_lineCalcTotals"></vaadin-text-field>
                     </template>
                     <template is="dom-if" if="{{ !item.selected }}">
-                        {{item.quantity}}
+                        <div class="text-right">
+                            {{item.quantity}}
+                        </div>
                     </template>
                 </template>
             </vaadin-grid-column>
@@ -649,7 +651,9 @@
                         <vaadin-text-field id="lineUnitCost" on-value-changed="_lineCalcTotals" disabled="{{ !_permissions.update }}" pattern="^[1-9]\d*(\.\d+)?$" class="alignRight" value="{{item.unitCost}}"><div slot="suffix">€</div></vaadin-text-field>
                     </template>
                     <template is="dom-if" if="{{ !item.selected }}">
-                        {{item.unitCost}}€
+                        <div class="text-right">
+                            [[formatCurrency(item.unitCost)]]
+                        </div>
                     </template>
                 </template>
             </vaadin-grid-column>
@@ -659,7 +663,10 @@
                     <vaadin-grid-filter path="totalCost"></vaadin-grid-filter>
                 </template>
                 <template>
-                    {{item.totalCost}}€
+                    <div class="text-right">
+                        [[formatCurrency(item.totalCost)]]
+                    </div>
+
                     <!--<template is="dom-if" if="{{ item.selected }}">
                         <vaadin-text-field pattern="^[1-9]\d*(\.\d+)?$" disabled="{{ !_permissions.update }}" class="alignRight" value="{{item.totalCost}}"><div slot="suffix">€</div></vaadin-text-field>
                     </template>
@@ -667,6 +674,7 @@
                         {{item.totalCost}}€
                     </template>-->
                 </template>
+
             </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
@@ -678,7 +686,9 @@
                         <vaadin-text-field pattern="^[1-9]\d*(\.\d+)?$" disabled="{{ !_permissions.update }}" id="lineUnitPrice" on-value-changed="_lineCalcTotals" class="alignRight" value="{{item.unitPrice}}"><div slot="suffix">€</div></vaadin-text-field>
                     </template>
                     <template is="dom-if" if="{{ !item.selected }}">
-                        {{item.unitPrice}}€
+                        <div class="text-right">
+                            [[formatCurrency(item.unitPrice)]]
+                        </div>
                     </template>
                 </template>
             </vaadin-grid-column>
@@ -688,7 +698,10 @@
                     <vaadin-grid-filter path="totalPrice"></vaadin-grid-filter>
                 </template>
                 <template>
-                    {{item.totalPrice}}€
+                    <div class="text-right">
+                        [[formatCurrency(item.totalPrice)]]
+                    </div>
+
                     <!--<template is="dom-if" if="{{ item.selected }}">
                         <vaadin-text-field pattern="^[1-9]\d*(\.\d+)?$" disabled="{{ !_permissions.update }}" class="alignRight" value="{{item.totalPrice}}"><div slot="suffix">€</div></vaadin-text-field>
                     </template>
@@ -696,6 +709,7 @@
                         {{item.totalPrice}}€
                     </template>-->
                 </template>
+                
             </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable hidden>
                 <template class="header">
@@ -707,7 +721,10 @@
                         <vaadin-text-field pattern="^[1-9]\d*(\.\d+)?$" disabled="{{ !_permissions.update }}" class="alignRight" value="{{item.unitValueToInvoice}}"><div slot="suffix">€</div></vaadin-text-field>
                     </template>
                     <template is="dom-if" if="{{ !item.selected }}">
-                        {{item.unitValueToInvoice}}€
+                        <div class="text-right">
+                            [[formatCurrency(item.unitValueToInvoice)]]
+                        </div>
+
                     </template>
                 </template>
             </vaadin-grid-column>
@@ -715,8 +732,8 @@
                 <template class="header">
                     <p class="alignCenter">Faturável</p>
                     <!--<vaadin-grid-filter path="billable" value="[[_filterActive]]">
-                    <vaadin-checkbox checked="{{_filterActive}}" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
-                </vaadin-grid-filter>-->
+                        <vaadin-checkbox checked="{{_filterActive}}" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
+                    </vaadin-grid-filter>-->
                 </template>
                 <template>
                     <vaadin-checkbox checked="{{item.billable}}"></vaadin-checkbox>
@@ -1128,199 +1145,199 @@
 
         </paper-dialog>
 
-        <paper-dialog id="dialogGetPriceServiceClient" style="height:auto;" >
+        <paper-dialog id="dialogGetPriceServiceClient" style="height:auto;">
 
-                <h2>Obter Faturação</h2>
-                <div class="row">
-                    <div class="col-lg-3">
-                        <such-selectbox id="projectDlg" name="projectDlg" value="{{projectNoDlg}}" label="Nº Projeto" disabled="{{disabledProjectNo}}"
-                                        items="[[responseDlg]]"
-                                        text-path="projectNo"
-                                        value-path="projectNo"
-                                        on-value-changed="_projectDlgChange"
-                                        fields='[{"field":"projectNo", "name":"Código"}, {"field":"projectTypeDescription", "name":"descrição"}]'>
-                        </such-selectbox>
-                    </div>
-                    <div class="col-lg-3">
-                        <vaadin-text-field id="ProjDescription" label="Descrição" value="{{ProjDescriptionDlg}}" readonly></vaadin-text-field>
-                    </div>
-                    <div class="col-lg-3">
-                        <such-selectbox id="piClient" value="{{ClientValueDlg}}" label="Cliente" on-value-changed="_clientChanged" disabled
-                                        items="[[LProjectClients]]"
-                                        text-path="no_"
-                                        value-path="no_"
-                                        fields='[{"field":"no_", "name":"Nº Cliente"}, {"field":"name", "name":"Nome Cliente"}, {"field":"vatRegistrationNo_", "name":"Nº VAT"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Cód. Postal"}]'>
-                        </such-selectbox>
-                    </div>
-                    <div class="col-lg-3">
-                        <vaadin-text-field id="piClientDescription" label="Nome Cliente" value="{{ClDescriptionValueDlg}}" readonly></vaadin-text-field>
-                    </div>
+            <h2>Obter Faturação</h2>
+            <div class="row">
+                <div class="col-lg-3">
+                    <such-selectbox id="projectDlg" name="projectDlg" value="{{projectNoDlg}}" label="Nº Projeto" disabled="{{disabledProjectNo}}"
+                                    items="[[responseDlg]]"
+                                    text-path="projectNo"
+                                    value-path="projectNo"
+                                    on-value-changed="_projectDlgChange"
+                                    fields='[{"field":"projectNo", "name":"Código"}, {"field":"projectTypeDescription", "name":"descrição"}]'>
+                    </such-selectbox>
                 </div>
-                <div class="row">
-                    <div class="col-lg-3">
-                        <such-selectbox id="piServiceClientCode" name="piCodeResponsabilityCenter" value="{{CServClientCodeValue}}" label="Cód. Serviço Cliente" on-value-changed="_ServiceChanged"
-                                        items="[[ServiceClientData]]"
-                                        text-path="serviceCode"
-                                        value-path="serviceCode"
-                                        fields='[{"field":"serviceCode", "name":"Código"}, {"field":"serviceDescription", "name":"Descrição"}]'
-                                        disabled="{{ projSelected }}">
-                        </such-selectbox>
-                    </div>
-                    <div class="col-lg-3">
-                        <vaadin-text-field id="piservicedescription" label="Descrição Cód. Serviço" value="{{CServClientDescValue}}" readonly></vaadin-text-field>
-                    </div>
-                    <div class="col-lg-3">
-                        <such-selectbox id="piServiceGroupDlg" name="piServiceGroupDlg" value="{{ServiceGroupDlg}}" label="Grupo Serviço" disabled="{{ projSelected }}" on-value-changed="_ServiceGroupChanged"
-                                        items="[[ServiceGroupData]]"
-                                        text-path="serviceCode"
-                                        value-path="serviceCode"
-                                        fields='[{"field":"serviceCode", "name":"Código"}, {"field":"serviceDescription", "name":"Descrição"}]'>
-                        </such-selectbox>
-                    </div>
-                    <div class="col-lg-3">
-                        <vaadin-text-field id="piserviceGroupdescription" label="Descrição Grupo Serviço" value="{{CServGroupClientDescValue}}" readonly></vaadin-text-field>
-                    </div>
+                <div class="col-lg-3">
+                    <vaadin-text-field id="ProjDescription" label="Descrição" value="{{ProjDescriptionDlg}}" readonly></vaadin-text-field>
                 </div>
-                <div class="row">
-                    <div class="col-lg-3">
-                        <vaadin-date-picker label="Data Registo" id="idDateRegistDlg" name="DateRegistnameDlg" value="{{DateRegistDlg}}"></vaadin-date-picker>
-                    </div>
-                    <div class="col-lg-3">
-                        <such-selectbox id="piCodeRegionDlg" name="piCodeRegionDlg" value="{{codeRegionDlg}}" label="Cód. Região" disabled
-                                        items="[[RegionData]]"
-                                        text-path="value"
-                                        value-path="id"
-                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
-                        </such-selectbox>
-                    </div>
-                    <div class="col-lg-3">
-                        <such-selectbox id="piFuncAreaDlg" name="piFuncAreaDlg" value="{{codeFuncAreaDlg}}" label="Cód. Área Funcional" disabled
-                                        items="[[FunctionalAreaCodeData]]"
-                                        text-path="value"
-                                        value-path="id"
-                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
-                        </such-selectbox>
-                    </div>
-                    <div class="col-lg-3">
-                        <such-selectbox id="piCodeResponsabilityCenterDlg" name="piCodeResponsabilityCenterDlg" value="{{codeResponsabilityCenterDlg}}" label="Cód. Centro Respon." disabled
-                                        items="[[ResponsabilityCenterData]]"
-                                        text-path="value"
-                                        value-path="id"
-                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
-                        </such-selectbox>
-                    </div>
+                <div class="col-lg-3">
+                    <such-selectbox id="piClient" value="{{ClientValueDlg}}" label="Cliente" on-value-changed="_clientChanged" disabled
+                                    items="[[LProjectClients]]"
+                                    text-path="no_"
+                                    value-path="no_"
+                                    fields='[{"field":"no_", "name":"Nº Cliente"}, {"field":"name", "name":"Nome Cliente"}, {"field":"vatRegistrationNo_", "name":"Nº VAT"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Cód. Postal"}]'>
+                    </such-selectbox>
                 </div>
-                <div class="buttons">
-                    <paper-button class="btnSave" raised on-tap="_dlgGetPriceServClient"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Obter</paper-button>
-                    <paper-button class="btnRemove" on-tap="_dlgCancelPriceServClient" dialog-dismiss><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancel</paper-button>
+                <div class="col-lg-3">
+                    <vaadin-text-field id="piClientDescription" label="Nome Cliente" value="{{ClDescriptionValueDlg}}" readonly></vaadin-text-field>
                 </div>
-                <div></div>
-            </paper-dialog>
-            <paper-dialog id="dialogGetMovements" modal style="height:250px; width:600px">
-                <div class="row">
-                    <div class="col-lg-4">
-                        <such-selectbox id="projectMovementDlg" name="projectMovementDlg" value="{{MovementprojectNoDlg}}" label="Nº Projeto" disabled="{{disabledProjectNo}}"
-                                        items="[[responseDlg]]"
-                                        text-path="projectNo"
-                                        value-path="projectNo"
-                                        on-value-changed="_projectMovementDlgChange"
-                                        fields='[{"field":"projectNo", "name":"Código"}, {"field":"projectTypeDescription", "name":"descrição"}]'>
-                        </such-selectbox>
-                    </div>
-                    <div class="col-lg-4">
-                        <such-selectbox id="piSClientMovement" name="piCodeMovement" value="{{SClientMovementValue}}" label="Cód. Serviço Cliente" on-value-changed="_ServiceMovementChanged"
-                                        items="[[ServiceClientData]]"
-                                        text-path="serviceCode"
-                                        value-path="serviceCode"
-                                        disabled="{{ projMovementSelected }}"
-                                        fields='[{"field":"serviceCode", "name":"Código"}, {"field":"serviceDescription", "name":"Descrição"}]'>
-                        </such-selectbox>
-                    </div>
-                    <div class="col-lg-4">
-                        <vaadin-text-field id="piMovementSDescription" label="Descrição Cód. Serviço" value="{{MovementCServClient}}" readonly></vaadin-text-field>
-                    </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-3">
+                    <such-selectbox id="piServiceClientCode" name="piCodeResponsabilityCenter" value="{{CServClientCodeValue}}" label="Cód. Serviço Cliente" on-value-changed="_ServiceChanged"
+                                    items="[[ServiceClientData]]"
+                                    text-path="serviceCode"
+                                    value-path="serviceCode"
+                                    fields='[{"field":"serviceCode", "name":"Código"}, {"field":"serviceDescription", "name":"Descrição"}]'
+                                    disabled="{{ projSelected }}">
+                    </such-selectbox>
                 </div>
-                <div class="row">
-                    <div class="col-lg-4">
-                        <such-selectbox id="piSGroupDlg" name="piSGroupDlg" value="{{SGroupDlg}}" label="Grupo Serviço" disabled="{{ projMovementSelected }}" on-value-changed="_SGroupChanged"
-                                        items="[[ServiceGroupData]]"
-                                        text-path="serviceCode"
-                                        value-path="serviceCode"
-                                        fields='[{"field":"serviceCode", "name":"Código"}, {"field":"serviceDescription", "name":"Descrição"}]'>
-                        </such-selectbox>
-                    </div>
-                    <div class="col-lg-4">
-                        <vaadin-text-field id="piSGroupdescription" label="Descrição Grupo Serviço" value="{{CServGroupClientDescValue}}" readonly></vaadin-text-field>
-                    </div>
-                    <div class="col-lg-4">
-                        <vaadin-date-picker label="Data" id="idDateMovementDlg" name="DateMovementnameDlg" value="{{DateMovementDlg}}"></vaadin-date-picker>
-                    </div>
-
+                <div class="col-lg-3">
+                    <vaadin-text-field id="piservicedescription" label="Descrição Cód. Serviço" value="{{CServClientDescValue}}" readonly></vaadin-text-field>
                 </div>
-                <div class="buttons">
-                    <paper-button class="btnSave" raised on-tap="_dlgGetMovements"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Obter</paper-button>
-                    <paper-button class="btnRemove" on-tap="_dlgGetMovementsCancel" dialog-dismiss><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancel</paper-button>
+                <div class="col-lg-3">
+                    <such-selectbox id="piServiceGroupDlg" name="piServiceGroupDlg" value="{{ServiceGroupDlg}}" label="Grupo Serviço" disabled="{{ projSelected }}" on-value-changed="_ServiceGroupChanged"
+                                    items="[[ServiceGroupData]]"
+                                    text-path="serviceCode"
+                                    value-path="serviceCode"
+                                    fields='[{"field":"serviceCode", "name":"Código"}, {"field":"serviceDescription", "name":"Descrição"}]'>
+                    </such-selectbox>
                 </div>
-            </paper-dialog>
-            <paper-dialog id="dialogGetProjetStart" class="dialgoBox">
-                <div class="row">
-                    <div class="col-lg-2">
-                        <such-selectbox id="projectSourceDlg" name="projectSourceDlg" label="Nº Projeto Origem"
-                                        items="[[response]]"
-                                        text-path="id"
-                                        value-path="id"
-                                        on-value-changed="_projectChange"
-                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
-                        </such-selectbox>
-                    </div>
-                    <div class="col-lg-2">
-                        <such-selectbox id="projectTargetDlg" name="projectTargetDlg" value="{{projectNumber}}" label="Nº Projeto Destino" disabled="{{disabledProjectNo}}"
-                                        items="[[response]]"
-                                        text-path="id"
-                                        value-path="id"
-                                        on-value-changed="_projectChange"
-                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
-                        </such-selectbox>
-                    </div>
-                    <div class="col-lg-2">
-                        <vaadin-text-field id="DocIdDlg" label="Nº Documento" on-value-changed="_projectChange" value="{{DocDlg}}"></vaadin-text-field>
-                    </div>
-                    <div class="col-lg-2">
-                        <such-selectbox id="ResourcesDlg" name="ResourcesDlg" value="{{_ResourcesDlg}}" label="Nº Recurso"
-                                        items="[[CBResourceCode]]"
-                                        on-value-changed="_projectChange"
-                                        text-path="id"
-                                        value-path="id"
-                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
-                        </such-selectbox>
-                    </div>
-
-                    <div class="col-lg-2">
-                        <vaadin-date-picker label="Data" id="idDateDlg" name="DatenameDlg" value="{{DateDlg}}"></vaadin-date-picker>
-                    </div>
-
-                    <div class="col-lg-2">
-                        <vaadin-combo-box items="[[ProjDiary_Price]]" id="ProjDiaryPriceDlg" label="Preço" item-value-path="id" item-label-path="value" on-value-changed="_projectChange" value="{{_ProjDiaryPriceDlg}}">
-                            <template>
-                                <table width="550px">
-                                    <tr>
-                                        <td width="20%">[[item.id]]</td>
-                                        <td width="80%"> <b>[[item.value]]</b></td>
-                                    </tr>
-                                </table>
-                            </template>
-                        </vaadin-combo-box>
-                    </div>
-
+                <div class="col-lg-3">
+                    <vaadin-text-field id="piserviceGroupdescription" label="Descrição Grupo Serviço" value="{{CServGroupClientDescValue}}" readonly></vaadin-text-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-3">
+                    <vaadin-date-picker label="Data Registo" id="idDateRegistDlg" name="DateRegistnameDlg" value="{{DateRegistDlg}}"></vaadin-date-picker>
+                </div>
+                <div class="col-lg-3">
+                    <such-selectbox id="piCodeRegionDlg" name="piCodeRegionDlg" value="{{codeRegionDlg}}" label="Cód. Região" disabled
+                                    items="[[RegionData]]"
+                                    text-path="value"
+                                    value-path="id"
+                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                    </such-selectbox>
+                </div>
+                <div class="col-lg-3">
+                    <such-selectbox id="piFuncAreaDlg" name="piFuncAreaDlg" value="{{codeFuncAreaDlg}}" label="Cód. Área Funcional" disabled
+                                    items="[[FunctionalAreaCodeData]]"
+                                    text-path="value"
+                                    value-path="id"
+                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                    </such-selectbox>
+                </div>
+                <div class="col-lg-3">
+                    <such-selectbox id="piCodeResponsabilityCenterDlg" name="piCodeResponsabilityCenterDlg" value="{{codeResponsabilityCenterDlg}}" label="Cód. Centro Respon." disabled
+                                    items="[[ResponsabilityCenterData]]"
+                                    text-path="value"
+                                    value-path="id"
+                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                    </such-selectbox>
+                </div>
+            </div>
+            <div class="buttons">
+                <paper-button class="btnSave" raised on-tap="_dlgGetPriceServClient"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Obter</paper-button>
+                <paper-button class="btnRemove" on-tap="_dlgCancelPriceServClient" dialog-dismiss><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancel</paper-button>
+            </div>
+            <div></div>
+        </paper-dialog>
+        <paper-dialog id="dialogGetMovements" modal style="height:250px; width:600px">
+            <div class="row">
+                <div class="col-lg-4">
+                    <such-selectbox id="projectMovementDlg" name="projectMovementDlg" value="{{MovementprojectNoDlg}}" label="Nº Projeto" disabled="{{disabledProjectNo}}"
+                                    items="[[responseDlg]]"
+                                    text-path="projectNo"
+                                    value-path="projectNo"
+                                    on-value-changed="_projectMovementDlgChange"
+                                    fields='[{"field":"projectNo", "name":"Código"}, {"field":"projectTypeDescription", "name":"descrição"}]'>
+                    </such-selectbox>
+                </div>
+                <div class="col-lg-4">
+                    <such-selectbox id="piSClientMovement" name="piCodeMovement" value="{{SClientMovementValue}}" label="Cód. Serviço Cliente" on-value-changed="_ServiceMovementChanged"
+                                    items="[[ServiceClientData]]"
+                                    text-path="serviceCode"
+                                    value-path="serviceCode"
+                                    disabled="{{ projMovementSelected }}"
+                                    fields='[{"field":"serviceCode", "name":"Código"}, {"field":"serviceDescription", "name":"Descrição"}]'>
+                    </such-selectbox>
+                </div>
+                <div class="col-lg-4">
+                    <vaadin-text-field id="piMovementSDescription" label="Descrição Cód. Serviço" value="{{MovementCServClient}}" readonly></vaadin-text-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4">
+                    <such-selectbox id="piSGroupDlg" name="piSGroupDlg" value="{{SGroupDlg}}" label="Grupo Serviço" disabled="{{ projMovementSelected }}" on-value-changed="_SGroupChanged"
+                                    items="[[ServiceGroupData]]"
+                                    text-path="serviceCode"
+                                    value-path="serviceCode"
+                                    fields='[{"field":"serviceCode", "name":"Código"}, {"field":"serviceDescription", "name":"Descrição"}]'>
+                    </such-selectbox>
+                </div>
+                <div class="col-lg-4">
+                    <vaadin-text-field id="piSGroupdescription" label="Descrição Grupo Serviço" value="{{CServGroupClientDescValue}}" readonly></vaadin-text-field>
+                </div>
+                <div class="col-lg-4">
+                    <vaadin-date-picker label="Data" id="idDateMovementDlg" name="DateMovementnameDlg" value="{{DateMovementDlg}}"></vaadin-date-picker>
                 </div>
 
-                <div class="buttons">
-                    <paper-button class="btnSave" raised on-tap="_dlgNext"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Seguinte</paper-button>
-                    <paper-button class="btnRemove" on-tap="_Close_Dialog" dialog-dismiss><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancel</paper-button>
+            </div>
+            <div class="buttons">
+                <paper-button class="btnSave" raised on-tap="_dlgGetMovements"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Obter</paper-button>
+                <paper-button class="btnRemove" on-tap="_dlgGetMovementsCancel" dialog-dismiss><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancel</paper-button>
+            </div>
+        </paper-dialog>
+        <paper-dialog id="dialogGetProjetStart" class="dialgoBox">
+            <div class="row">
+                <div class="col-lg-2">
+                    <such-selectbox id="projectSourceDlg" name="projectSourceDlg" label="Nº Projeto Origem"
+                                    items="[[response]]"
+                                    text-path="id"
+                                    value-path="id"
+                                    on-value-changed="_projectChange"
+                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                    </such-selectbox>
+                </div>
+                <div class="col-lg-2">
+                    <such-selectbox id="projectTargetDlg" name="projectTargetDlg" value="{{projectNumber}}" label="Nº Projeto Destino" disabled="{{disabledProjectNo}}"
+                                    items="[[response]]"
+                                    text-path="id"
+                                    value-path="id"
+                                    on-value-changed="_projectChange"
+                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                    </such-selectbox>
+                </div>
+                <div class="col-lg-2">
+                    <vaadin-text-field id="DocIdDlg" label="Nº Documento" on-value-changed="_projectChange" value="{{DocDlg}}"></vaadin-text-field>
+                </div>
+                <div class="col-lg-2">
+                    <such-selectbox id="ResourcesDlg" name="ResourcesDlg" value="{{_ResourcesDlg}}" label="Nº Recurso"
+                                    items="[[CBResourceCode]]"
+                                    on-value-changed="_projectChange"
+                                    text-path="id"
+                                    value-path="id"
+                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                    </such-selectbox>
                 </div>
 
-            </paper-dialog>
-</template>
+                <div class="col-lg-2">
+                    <vaadin-date-picker label="Data" id="idDateDlg" name="DatenameDlg" value="{{DateDlg}}"></vaadin-date-picker>
+                </div>
+
+                <div class="col-lg-2">
+                    <vaadin-combo-box items="[[ProjDiary_Price]]" id="ProjDiaryPriceDlg" label="Preço" item-value-path="id" item-label-path="value" on-value-changed="_projectChange" value="{{_ProjDiaryPriceDlg}}">
+                        <template>
+                            <table width="550px">
+                                <tr>
+                                    <td width="20%">[[item.id]]</td>
+                                    <td width="80%"> <b>[[item.value]]</b></td>
+                                </tr>
+                            </table>
+                        </template>
+                    </vaadin-combo-box>
+                </div>
+
+            </div>
+
+            <div class="buttons">
+                <paper-button class="btnSave" raised on-tap="_dlgNext"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Seguinte</paper-button>
+                <paper-button class="btnRemove" on-tap="_Close_Dialog" dialog-dismiss><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancel</paper-button>
+            </div>
+
+        </paper-dialog>
+    </template>
 
     <script>
         document.addEventListener('WebComponentsReady', function () {
@@ -1596,7 +1613,7 @@
                         this.$.projectList.value = this.paramprojno;
                         this.$.projectList.valueText = this.paramprojno;
                         this.disabledProjectNo = true;
-                        
+
                         this.$.projectTargetDlg.value = this.paramprojno;
                         this.$.projectTargetDlg.valueText = this.paramprojno;
                         this.$.projectDlg.value = this.paramprojno;
@@ -1783,7 +1800,7 @@
                         this.$.piMovementSDescription.value = "";
                     }
                 },
-                
+
                 _createmovprojResponse: function (e) {
                     if (e.detail.status === 200) {
                         this.$.projectSourceDlg.value = "";
@@ -1800,15 +1817,13 @@
 
                         this.$.ajax_getall.generateRequest();
                         this.$.projectDiaryProject.clearCache();
-                        if (this.result.eReasonCode === 1)
-                        {
+                        if (this.result.eReasonCode === 1) {
                             this.openToastSuccess(this.result.eMessage);
-                        } 
-                        else
-                        {
+                        }
+                        else {
                             this.openToastError(this.result.eMessage);
                         }
-                    }                   
+                    }
                 },
                 _updatediaryResponse: function (e) {
                     if (e.detail.status === 200) {
@@ -1840,14 +1855,14 @@
                                 this.$.ajax_updatediary.body = JSON.stringify(this.newDiaryPSClient.items);
                                 this.$.ajax_updatediary.generateRequest();
                                 this.$.projectDiaryProject.clearCache();
-                            } 
+                            }
                         }
                         else {
                             this.openToastError(this.newDiaryPSClient.eMessage);
                         }
                     }
                     else {
-                        this.openToastError("Occorreu um erro ao obter as linhas.");    
+                        this.openToastError("Occorreu um erro ao obter as linhas.");
                     }
                 },
                 _updateResponse: function (e) {
@@ -1989,7 +2004,7 @@
                         this.$.ajax_related.generateRequest();
 
                         //Request Project Data
-                        this.$.grid_databound_ajax.params = { "allProjs": false, "projectTarget":this.$.projectTargetDlg.value, "NoDocument": this.$.DocIdDlg.value, "Resources": this.$.ResourcesDlg.value, "ProjDiaryPrice": this.$.ProjDiaryPriceDlg.value };
+                        this.$.grid_databound_ajax.params = { "allProjs": false, "projectTarget": this.$.projectTargetDlg.value, "NoDocument": this.$.DocIdDlg.value, "Resources": this.$.ResourcesDlg.value, "ProjDiaryPrice": this.$.ProjDiaryPriceDlg.value };
                         this.$.grid_databound_ajax.body = JSON.stringify(this.$.projectSourceDlg.value);
                         this.$.grid_databound_ajax.generateRequest();
                         this.$.projectMovementTable.clearCache();
@@ -2084,7 +2099,7 @@
                 _getMovements: function () {
                     //Request
                     this.$.dialogGetMovements.open();
-                  
+
 
                 },
                 _getMovementsProject: function () {
@@ -2094,7 +2109,7 @@
                     this.$.dialogGetPriceServiceClient.open();
                 },
                 _dlgNext: function () {
-                    if (this.$.projectSourceDlg.value != undefined && this.$.projectSourceDlg.value != "" && 
+                    if (this.$.projectSourceDlg.value != undefined && this.$.projectSourceDlg.value != "" &&
                         this.$.projectTargetDlg.value != undefined && this.$.projectTargetDlg.value != "" &&
                         this.$.idDateDlg.value != undefined && this.$.idDateDlg.value != "") {
                         this.$.dialogGetProjetStart.close();
@@ -2123,13 +2138,13 @@
                             this.$.piSGroupDlg.value = "";
                         }
                         this.$.ajax_movementLines.body = JSON.stringify(this.$.projectMovementDlg.value);
-                        this.$.ajax_movementLines.params = { "data": this.$.idDateMovementDlg.value, "codSClient": this.$.piSClientMovement.value, "codSGroupClient": this.$.piSGroupDlg.value};
+                        this.$.ajax_movementLines.params = { "data": this.$.idDateMovementDlg.value, "codSClient": this.$.piSClientMovement.value, "codSGroupClient": this.$.piSGroupDlg.value };
                         this.$.ajax_movementLines.generateRequest();
-                        }
-                        else {
-                            this.openToastError("É obrigatório escolher o Nº Projeto e a Data.");
-                        }
-                   
+                    }
+                    else {
+                        this.openToastError("É obrigatório escolher o Nº Projeto e a Data.");
+                    }
+
                 },
                 _dlgGetPriceServClient: function () {
                     if (this.$.projectDlg.value != undefined && this.$.projectDlg.value != "" &&
@@ -2154,7 +2169,7 @@
                     this.$.idDateMovementDlg.value = "";
                     this.$.piSGroupDlg.valueText = "";
                     this.$.piSGroupDlg.value = "";
-                    
+
                 },
                 _movementLinesResponse: function (e) {
                     if (e.detail.status === 200) {
@@ -2455,6 +2470,12 @@
                         var x = date.split("-");
                         return x[2] + "-" + x[1] + "-" + x[0];
                     }
+                },
+                formatCurrency: function (value) {
+                    if (value && value != "") {
+                        value = value + " €";
+                    }
+                    return value;
                 }
             });
 
