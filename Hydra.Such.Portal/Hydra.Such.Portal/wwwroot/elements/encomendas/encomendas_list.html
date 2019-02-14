@@ -126,6 +126,10 @@
                                                 fields='[{"field":"id", "name":"Código Fornecedor"}, {"field":"value", "name":"Nome Fornecedor"}]'>
                                 </such-selectbox>
                             </div>
+                            <div class="col-sm-3">
+
+                                <vaadin-text-field id="requisitionNo" name="requisitionNo" label="Nº Requisição" value="{{requisitionNo}}">  </vaadin-text-field>
+                            </div>
 
                             <div class="col-sm-3">
                                 <vaadin-combo-box style="margin-top:11px;" items="[[years]]" item-value-path="id" item-label-path="value" value="{{year}}" label="Ano">
@@ -518,7 +522,7 @@
                 _search: function () {
 
                     this.loaded = true;
-                    this.$.grid_databound_ajax.body = JSON.stringify({ fornecedor: this.forcecedor, year: this.year, month: this.month });
+                    this.$.grid_databound_ajax.body = JSON.stringify({ fornecedor: this.forcecedor, year: this.year, month: this.month, requisitionNo: this.requisitionNo });
                     this.$.grid_databound_ajax.generateRequest();
                     $(this.$.grid).removeClass('hide');
                     this.$.grid._loading = true;
