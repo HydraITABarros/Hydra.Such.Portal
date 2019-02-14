@@ -336,12 +336,21 @@ namespace Hydra.Such.Portal.Controllers
             //Regions
             if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.Region).Count() > 0)
                 ContractsList.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.CódigoRegião));
+
             //FunctionalAreas
             if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
-                ContractsList.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.CódigoÁreaFuncional));
+                ContractsList.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && (y.ValorDimensão == x.CódigoÁreaFuncional || string.IsNullOrEmpty(x.CódigoÁreaFuncional))));
+            
             //ResponsabilityCenter
             if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
                 ContractsList.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CódigoCentroResponsabilidade));
+
+            //List<Contratos> AuxContractsList = ContractsList.Where(x => string.IsNullOrEmpty(x.CódigoÁreaFuncional)).ToList();
+            //if (AuxContractsList != null && AuxContractsList.Count() > 0)
+            //{
+
+            //}
+
 
 
             List<ContractViewModel> result = new List<ContractViewModel>();

@@ -19,6 +19,10 @@
 <link rel="import" href="/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/datetime-picker-master/date-picker.html" />
 
+<!--ACORDEÃO-->
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
+
 <!--start ColumnToggle-->
 <link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
 <link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
@@ -63,6 +67,26 @@
                     background: white;
                     border: 1px solid var(--divider-color, rgba(0, 0, 0, 0.08));
                 }
+
+                /*ACORDEÃO*/
+                paper-collapse-item {
+                    --paper-item: {
+                    padding: 0 0;
+                };
+                    --paper-collapse-item-header: {
+                    padding: 0 15px;
+                    color: #333;
+                    background-color: #f5f5f5;
+                    border-bottom: solid #ddd 1px;
+                    border-top-left-radius: 3px;
+                    border-top-right-radius: 3px;
+
+                };
+                }
+
+                .panel-body {
+                    padding-top: 0px !important;
+                }
             </style>
         </custom-style>
 
@@ -85,8 +109,73 @@
 
         <!--Filters-->
         <iron-ajax url="/PopulateDropdowns/GetEncomendasYearList" id="grid_years_ajax" last-response="{{years}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-
         <iron-ajax url="/PopulateDropdowns/GetNAVVendor" id="grid_fornecedor_ajax" last-response="{{forcecedores}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+        <paper-collapse-group>
+            <paper-collapse-item class="panel-heading" header="Filtros" closed>
+                <div class="grid-header" id="gridheader">
+                    <div class="panel-body">
+                        <div class="row break_clear">
+                            <div class="col-sm-3">
+                                <such-selectbox style="margin-top:11px;" id="selectbox-forcecedor"
+                                                label="Fornecedor"
+                                                value="{{forcecedor}}"
+                                                items="[[forcecedores]]"
+                                                text-path="value"
+                                                value-path="id"
+                                                fields='[{"field":"id", "name":"Código Fornecedor"}, {"field":"value", "name":"Nome Fornecedor"}]'>
+                                </such-selectbox>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <vaadin-combo-box style="margin-top:11px;" items="[[years]]" item-value-path="id" item-label-path="value" value="{{year}}" label="Ano">
+                                    <template>
+                                        <paper-icon-item>
+                                            <paper-item-body two-line>
+                                                <div>[[item.value]]</div>
+                                            </paper-item-body>
+                                        </paper-icon-item>
+                                    </template>
+                                </vaadin-combo-box>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <vaadin-combo-box style="margin-top:11px;"
+                                                  items="[[months]]"
+                                                  item-value-path="id"
+                                                  item-label-path="value"
+                                                  value="{{month}}"
+                                                  label="Mês"
+                                                  id="monthSelect"
+                                                  disabled>
+                                    <template>
+                                        <paper-icon-item>
+                                            <paper-item-body two-line>
+                                                <div>[[item.value]]</div>
+                                            </paper-item-body>
+                                        </paper-icon-item>
+                                    </template>
+                                </vaadin-combo-box>
+                            </div>
+
+                            <div class="col-sm-3 alignPoga text-right">
+                                <paper-button raised id="btnUpdate" class="btnSave" on-tap="_search"><i class="fa fa-search" aria-hidden="true"></i>&nbsp; Pesquisar</paper-button>
+                            </div>
+                        </div>
+
+                        <template is="dom-if" if="[[!loaded]]">
+                            <div class="clearfix"></div>
+                            <div class="col-xs-12 grey" style="padding: 5px 0 15px 0;">
+                                * <small><i>Defina a sua pesquisa.</i></small>
+                            </div>
+                            <div class="clearfix"></div>
+                        </template>
+                    </div>
+
+                </div>
+
+            </paper-collapse-item>
+        </paper-collapse-group>
 
         <div class="subMenu">
             <template is="dom-if" if="{{loaded}}">
@@ -110,72 +199,8 @@
             </template>
         </div>
 
-        <div class="grid-header" id="gridheader">
-            <div class="panel-body">
-                <div class="row break_clear">
-                    <div class="col-sm-3">
-                        <such-selectbox style="margin-top:11px;" id="selectbox-forcecedor"
-                                        label="Fornecedor"
-                                        value="{{forcecedor}}"
-                                        items="[[forcecedores]]"
-                                        text-path="value"
-                                        value-path="id"
-                                        fields='[{"field":"id", "name":"Código Fornecedor"}, {"field":"value", "name":"Nome Fornecedor"}]'>
-                        </such-selectbox>
-                    </div>
-                    <div class="col-sm-3">
-
-                        <vaadin-combo-box style="margin-top:11px;" items="[[years]]" item-value-path="id" item-label-path="value" value="{{year}}" label="Ano">
-                            <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
-                            </template>
-                        </vaadin-combo-box>
-
-                    </div>
-
-                    <div class="col-sm-3">
-
-                        <vaadin-combo-box style="margin-top:11px;"
-                                          items="[[months]]"
-                                          item-value-path="id"
-                                          item-label-path="value"
-                                          value="{{month}}"
-                                          label="Mês"
-                                          id="monthSelect"
-                                          disabled>
-                            <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
-                            </template>
-                        </vaadin-combo-box>
-
-                    </div>
-                    <div class="col-sm-3 alignPoga text-right">
-                        <paper-button raised id="btnUpdate" class="btnSave" on-tap="_search"><i class="fa fa-search" aria-hidden="true"></i>&nbsp; Pesquisar</paper-button>
-                    </div>
-                </div>
-            </div>
-
-            <br />
-        </div>
-
-        <template is="dom-if" if="[[!loaded]]">
-            <div class="clearfix"></div>
-            <div class="col-xs-12 grey" style="padding: 5px 0 15px 0;">
-                * <small><i>Defina a sua pesquisa.</i></small>
-            </div>
-            <div class="clearfix"></div>
-        </template>
-
         <vaadin-grid column-reordering-allowed aria-label="CustomersGrid" id="grid" items="[[result]]" class="grid hide" active-item="{{activeItem}}" multi-sort="true">
-        
+
             <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.no.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="no">Nº</vaadin-grid-sorter>
