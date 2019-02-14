@@ -318,6 +318,38 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+
+        [HttpPost]
+        public JsonResult Register([FromBody] JObject param)
+        {
+            if (param["noGuia"] == null)
+                return null;
+
+            string noGuia = (string)param["noGuia"];
+
+            try
+            {
+                var registerGuiaTask = WSGuiasTransporteNAV.RegisterAsync(noGuia, _configws);
+                registerGuiaTask.Wait();
+
+                var result = registerGuiaTask.Result;
+
+                if (result == null)
+                    return Json(null);
+
+                if (result.return_value == "0")
+                    return Json(null);
+
+                return Json(result.return_value);
+            }
+            catch (Exception ex)
+            {
+
+                return Json(null);
+            }
+
+            
+        }
         [HttpPost]
         public JsonResult CreateShipmentLine([FromBody] JObject data)
         {

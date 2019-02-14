@@ -55,5 +55,30 @@ namespace Hydra.Such.Data.NAV
                 return null;
             }
         }
+
+        public static async Task<WSRegistaGuia_Result> RegisterAsync(string noGuia, NAVWSConfigurations WSConfigurations)
+        {
+            WSRegistaGuia noGuiaRegistar = new WSRegistaGuia()
+            {
+                noGuiaTransporte = noGuia
+            };
+
+            EndpointAddress ws_URL = new EndpointAddress(WSConfigurations.Ws_SuchNav2017_URL.Replace("Company", WSConfigurations.WS_User_Company));
+            WSNAV2017_PortClient ws_Client = new WSNAV2017_PortClient(navWSBinding, ws_URL);
+            ws_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
+            ws_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
+
+            try
+            {
+                WSRegistaGuia_Result result = await ws_Client.WSRegistaGuiaAsync(noGuia);
+                return result;
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+
+        }
     }
 }
