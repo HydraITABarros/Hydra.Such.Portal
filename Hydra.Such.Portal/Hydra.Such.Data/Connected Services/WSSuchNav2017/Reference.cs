@@ -21,6 +21,9 @@ namespace WSSuchNav2017
         
         [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/codeunit/WSNAV2017:WSNovaGuiaTransporte", ReplyAction="*")]
         System.Threading.Tasks.Task<WSSuchNav2017.WSNovaGuiaTransporte_Result> WSNovaGuiaTransporteAsync(WSSuchNav2017.WSNovaGuiaTransporte request);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/codeunit/WSNAV2017:WSRegistaGuia", ReplyAction="*")]
+        System.Threading.Tasks.Task<WSSuchNav2017.WSRegistaGuia_Result> WSRegistaGuiaAsync(WSSuchNav2017.WSRegistaGuia request);
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
@@ -111,6 +114,46 @@ namespace WSSuchNav2017
         }
     }
     
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="WSRegistaGuia", WrapperNamespace="urn:microsoft-dynamics-schemas/codeunit/WSNAV2017", IsWrapped=true)]
+    public partial class WSRegistaGuia
+    {
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/codeunit/WSNAV2017", Order=0)]
+        public string noGuiaTransporte;
+        
+        public WSRegistaGuia()
+        {
+        }
+        
+        public WSRegistaGuia(string noGuiaTransporte)
+        {
+            this.noGuiaTransporte = noGuiaTransporte;
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="WSRegistaGuia_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/codeunit/WSNAV2017", IsWrapped=true)]
+    public partial class WSRegistaGuia_Result
+    {
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/codeunit/WSNAV2017", Order=0)]
+        public string return_value;
+        
+        public WSRegistaGuia_Result()
+        {
+        }
+        
+        public WSRegistaGuia_Result(string return_value)
+        {
+            this.return_value = return_value;
+        }
+    }
+    
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     public interface WSNAV2017_PortChannel : WSSuchNav2017.WSNAV2017_Port, System.ServiceModel.IClientChannel
     {
@@ -189,6 +232,19 @@ namespace WSSuchNav2017
             return ((WSSuchNav2017.WSNAV2017_Port)(this)).WSNovaGuiaTransporteAsync(inValue);
         }
         
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        System.Threading.Tasks.Task<WSSuchNav2017.WSRegistaGuia_Result> WSSuchNav2017.WSNAV2017_Port.WSRegistaGuiaAsync(WSSuchNav2017.WSRegistaGuia request)
+        {
+            return base.Channel.WSRegistaGuiaAsync(request);
+        }
+        
+        public System.Threading.Tasks.Task<WSSuchNav2017.WSRegistaGuia_Result> WSRegistaGuiaAsync(string noGuiaTransporte)
+        {
+            WSSuchNav2017.WSRegistaGuia inValue = new WSSuchNav2017.WSRegistaGuia();
+            inValue.noGuiaTransporte = noGuiaTransporte;
+            return ((WSSuchNav2017.WSNAV2017_Port)(this)).WSRegistaGuiaAsync(inValue);
+        }
+        
         public virtual System.Threading.Tasks.Task OpenAsync()
         {
             return System.Threading.Tasks.Task.Factory.FromAsync(((System.ServiceModel.ICommunicationObject)(this)).BeginOpen(null, null), new System.Action<System.IAsyncResult>(((System.ServiceModel.ICommunicationObject)(this)).EndOpen));
@@ -213,12 +269,12 @@ namespace WSSuchNav2017
             throw new System.InvalidOperationException(string.Format("Could not find endpoint with name \'{0}\'.", endpointConfiguration));
         }
         
-        
         private static System.ServiceModel.EndpointAddress GetEndpointAddress(EndpointConfiguration endpointConfiguration)
         {
             if ((endpointConfiguration == EndpointConfiguration.WSNAV2017_Port))
             {
                 return new System.ServiceModel.EndpointAddress("http://10.101.1.13:8047/DynamicsNAV100_QUAL/WS/SUCH%20-%20QUALIDADE/Codeunit/WSNAV2017");
+                
             }
             throw new System.InvalidOperationException(string.Format("Could not find endpoint with name \'{0}\'.", endpointConfiguration));
         }

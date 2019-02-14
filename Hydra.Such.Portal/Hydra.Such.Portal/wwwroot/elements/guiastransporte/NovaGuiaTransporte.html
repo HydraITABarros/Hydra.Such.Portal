@@ -299,6 +299,15 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/GuiasTransporteNav/Register"
+                   last-response="{{ noGuiaTransporteHistoric }}"
+                   method="post"
+                   handle-as="json"
+                   id="register_guia_ajax"
+                   on-response="_registerResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
         <iron-ajax url="/GuiasTransporteNav/GetRequisicoes"
                    last-response="{{ requisitions }}"
                    method="post"
@@ -318,8 +327,9 @@
 
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Voltar</paper-button>
-            <paper-button class="tablinks" on-tap="_copyLines"><i class="fa fa-clone" aria-hidden="true"></i>&nbsp; Linhas</paper-button>
+            <paper-button class="tablinks" on-tap="_copyLines"><i class="fa fa-clone" aria-hidden="true"></i>&nbsp; Copiar Linhas Requisição</paper-button>
             <paper-button raised id="btnUpdate" class="tablinks" on-tap="_update" title="Gravar" style="background-color:#1DB73C"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Gravar</paper-button>
+            <paper-button raised id="btnUpdate" class="tablinks" on-tap="_registerDocument" title="Registar" style="background-color:#EF842D; font-weight:bold"><i class="fa fa-institution" aria-hidden="true"></i>&nbsp; Registar</paper-button>
         </div>
 
         <div class="row break_frm">
@@ -352,14 +362,16 @@
                                                                         name="dataGuia"
                                                                         label="Data Guia"
                                                                         value="{{ data.dataGuiaTxt }}"
-                                                                        on-value-changed="_dataGuiaChanged">
+                                                                        on-value-changed="_dataGuiaChanged"
+                                                                        required error-message="Campo obrigatório">
                                                     </vaadin-date-picker>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <vaadin-date-picker id="dataSaida"
                                                                         name="dataSaida"
                                                                         label="Data Saida"
-                                                                        value="{{ data.dataSaidaTxt }}">
+                                                                        value="{{ data.dataSaidaTxt }}"
+                                                                        required error-message="Campo obrigatório">
                                                     </vaadin-date-picker>
                                                 </div>
                                             </div>
@@ -417,7 +429,7 @@
                                                     <vaadin-text-field id="moradaCliente2" name="moradaCliente2" label="Morada Clente 2" value="{{ data.moradaCliente2 }}"></vaadin-text-field>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="nifCliente" name="nifCliente" label="No. Contribuinte" value="{{ data.nifCliente }}"></vaadin-text-field>
+                                                    <vaadin-text-field id="nifCliente" name="nifCliente" label="No. Contribuinte" value="{{ data.nifCliente }}" required error-message="Campo obrigatório"></vaadin-text-field>
                                                 </div>
                                             </div>
                                             <div class="row break_clear">
@@ -548,21 +560,13 @@
                                                             </div>
                                                             <div class="col-xs-12">
                                                                 <vaadin-text-field id="postCode" name="postCode" label="Cód. Postal" value="{{ data.postCode }}" on-click="_selectPostCode"></vaadin-text-field>
-                                                                <!--<such-selectbox id="postCode"
-                                                                                name="postCode"
-                                                                                label="Cód. Postal"
-                                                                                value="{{ data.postCode }}"
-                                                                                items="[[postCodeList]]"
-                                                                                text-path="postCode"
-                                                                                text-value="postCode"
-                                                                                fields='[{"field":"postCode", "name":"Código"}, {"field":"city", "name":"Cidade"}]'>
-                                                                </such-selectbox>-->
                                                             </div>
                                                             <div class="col-xs-12">
                                                                 <vaadin-time-picker id="horaCarga"
                                                                                     name="horaCarga"
                                                                                     label="Hora Carga"
-                                                                                    value="{{ data.horaCarga }}">
+                                                                                    value="{{ data.horaCarga }}"
+                                                                                    required error-message="Campo obrigatório">
                                                                 </vaadin-time-picker>
                                                             </div>
                                                             <div class="col-xs-12">
@@ -593,15 +597,6 @@
                                                             </div>
                                                             <div class="col-xs-12">
                                                                 <vaadin-text-field id="codPostalDescarga" name="codPostalDescarga" label="Cód. Postal Descarga" value="{{ data.codPostalDescarga }}" on-click="_selectPostCode" required error-message="Campo obrigatório"></vaadin-text-field>
-                                                                <!--<such-selectbox id="codPostalDescarga"
-                    name="codPostalDescarga"
-                    label="Cód. Postal Descarga"
-                    value="{{ data.codPostalDescarga }}"
-                    items="[[postCodeList]]"
-                    text-path="postCode"
-                    text-value="postCode"
-                    fields='[{"field":"postCode", "name":"Código"}, {"field":"city", "name":"Cidade"}]'>
-    </such-selectbox>-->
                                                             </div>
                                                             <div class="col-xs-12">
                                                                 <vaadin-time-picker id="horaDescarga"
@@ -1045,14 +1040,14 @@
                     </template>
                 </vaadin-grid-column>
                 <!--<vaadin-grid-column width="10%" resizable>
-                    <template class="header">
-                    </template>
-                    <template>
-                        <center>
-                            <paper-button class="btnSave" raised on-tap="_usePostCode">Usar</paper-button>
-                        </center>
-                    </template>
-                </vaadin-grid-column>-->
+                <template class="header">
+                </template>
+                <template>
+                    <center>
+                        <paper-button class="btnSave" raised on-tap="_usePostCode">Usar</paper-button>
+                    </center>
+                </template>
+            </vaadin-grid-column>-->
             </vaadin-grid>
             <div class="buttons">
                 <paper-button class="btnRemove" dialog-dismiss>Fechar</paper-button>
@@ -1080,6 +1075,11 @@
                         value: false
                     },
                     _isPageLoad: {
+                        type: Boolean,
+                        value: false
+                    },
+
+                    _skipMsg: {
                         type: Boolean,
                         value: false
                     },
@@ -1204,6 +1204,27 @@
                     this.$.ToastError.open();
                 },
 
+                _confirmAndExecuteActionToast: function (_message, _ajaxRequest) {
+                    bootbox.confirm({
+                        message: _message,
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            if (result) {
+                                _ajaxRequest.generateRequest();
+                            }
+                        }
+                    });
+                },
+
                 _goBack: function (e) {
                     window.history.back();
                 },
@@ -1311,7 +1332,11 @@
                 _update: function () {
                     //debugger;;
 
-                    
+                    if (this.data.nifCliente != "" && this.vatRegistrationNo == "") {
+                        this.data.vatRegistrationNo = this.data.nifCliente;
+                    }
+
+                    this._skipMsg = false;
                     this.$.ajax_update_guia.body = JSON.stringify(this.data);
                     this.$.ajax_update_guia.generateRequest();
                 },
@@ -1325,10 +1350,29 @@
                             this.$.ajax_thirdparties.generateRequest();
                             this.$.tipoGuia.valueText = "Cliente";
                         }
-                        this._openToast("Guia actualizada com sucesso!");
+
+                        if (this.data.dataGuiaTxt != null && this.data.dataGuiaTxt != "") {
+                            var _dataGuia = this.__formatDate(this.data.dataGuiaTxt);
+                            if (_dataGuia != null) {
+                                this.data.dataGuia = _dataGuia;
+                            }
+                        }
+
+                        if (this.data.dataSaidaTxt != null && this.data.dataSaidaTxt != "") {
+                            var _dataSaida = this.__formatDate(this.data.dataSaidaTxt);
+                            if (_dataSaida != null) {
+                                this.data.dataSaida = _dataSaida;
+                            }
+                        }
+
+                        if(!this._skipMsg)
+                            this._openToast("Guia actualizada com sucesso!");
                     } else {
-                        this._openToastError("Não foi possível actualizar a Guia! Tente novamente.");
+                        if (!this._skipMsg)
+                         this._openToastError("Não foi possível actualizar a Guia! Tente novamente.");
                     }
+
+                    this._skipMsg = false;
                 },
 
                 _onTipoGuiaChanged: function (e) {
@@ -1503,8 +1547,10 @@
                         this.$.localDescarga.valueText = details.address;
 
                         this.data.nifCliente = details.vatRegistrationNo;
+                        this.data.vatRegistrationNo = details.vatRegistrationNo;
                         this.$.nifCliente.value = details.vatRegistrationNo;
                         this.$.nifCliente.valueText = details.vatRegistrationNo;
+
 
                         this.data.telefone = details.phoneNo;
 
@@ -1583,6 +1629,7 @@
                         this.$.localDescarga.valueText = "";
 
                         this.data.nifCliente = "";
+                        this.data.vatRegistrationNo = "";
                         this.$.nifCliente.value = "";
                         this.$.nifCliente.valueText = "";
 
@@ -2260,45 +2307,147 @@
                 },
 
                 _lastCheckBeforeRegister: function (guia) {
+                    var lines = guia.linhasGuiaTransporte;
+                    if (lines == null) {
+                        this._openToastError("Guia não tem linhas preenchidas!");
+                        return false;
+                    }
+
+                    debugger;;
+                    const _TODAY = new Date();  
+
+                    const _DATE = _TODAY.toLocaleDateString("pt-PT").replace(new RegExp("/", 'g'), "-");
+                    const _TIME = _TODAY.toLocaleTimeString().match(/\d{2}:\d{2}|[AMP]+/g).join('-');                  
+                    
+                    //  1. Check destination details
                     var localDescFilled =
                         (guia.localDescarga1 != null && guia.localDescarga1 != "") &&
                             (guia.codPostalDescarga != null && guia.codPostalDescarga != "") ? true : false;
 
                     if (!localDescFilled) {
-                        this._openToastError("Detalhes de descarga incompletos: ver Local Descarga e/ou Código Postal Descarga!")
+                        this._openToastError("Detalhes de descarga incompletos: ver Local Descarga e/ou Código Postal Descarga!");
+                        return false;
                     }
 
+                    //  2. Check post code integrity
                     var codPostalFilled =
-                        (guia.codPostal != null && guia.codPostal != "" && guia.codPostal.length == 8) &&
-                            (guia.codPostalDescarga != null && guia.codPostalDescarga != "" && guia.codPostalDescarga == 8) ? true : false;
+                        (guia.codPostal != null && guia.codPostal != "" && guia.codPostal.length == 8) &&                       // filled and correct length
+                            (guia.codPostalDescarga != null && guia.codPostalDescarga != "" && guia.codPostalDescarga.length == 8) &&  // filled and correct length
+                            (guia.codPostal.indexOf("-") == 4 && guia.codPostalDescarga.indexOf("-") == 4) ? true : false;      // correct format
 
                     if (!codPostalFilled) {
-                        this._openToastError("Códigos Postal não preenchidos: ver Código Postal e/ou Código Postal Descarga!");
+                        this._openToastError("Códigos Postal não preenchidos/incorrectos: ver Código Postal e/ou Código Postal Descarga!");
+                        return false;
+                    }   
+
+                    //  3. Incorrect third party VAT number
+                    if (guia.vatRegistrationNo == null || guia.vatRegistrationNo == "") {
+                        this._openToastError("Nif Cliente não preenchido!");
+                        return false;
                     }
 
-                    var lines = guia.linhasGuiaTransporte;
+                    // 4. Check Date fields values
+                    if (guia.dataGuiaTxt == null || guia.dataGuiaTxt == "") {
+                        this._openToastError("Data da Guia não preenchida!");
+                        return false;
+                    }
+
+                    if (guia.dataSaidaTxt == null || guia.dataSaidaTxt == "") {
+                        this._openToastError("Data Saída não preenchida!");
+                        return false;
+                    }
+
+                    if (guia.shipmentStartTime == null) {
+                        this._openToastError("Hora de saída não preenchida!");
+                        return false;
+                    }
+
+                    var _testDate = this.__compareDateAndTimeValues(guia.dataSaidaTxt, _DATE, "date");
+
+                    if (_testDate === -9) {
+                        this._openToastError("Erro na comparação de datas. Por favor, contactar o Suporte!");
+                        return false;
+                    }
+
+                    if (_testDate === 1) {
+                        this._openToastError("Data Saída (" + guia.dataSaidaTxt + ") inferior à data actual (" + _DATE + ")! Por favor corrija!");
+                        return false;
+                    }
+
+                    if (_testDate === 0) {
+                        var _testTime = this.__compareDateAndTimeValues(guia.shipmentStartTime, _TIME, "time");
+                        if (_testTime === -9) {
+                            this._openToastError("Erro na comparação de datas. Por favor, contactar o Suporte!");
+                            return false;
+                        }
+
+                        if (_testTime === -1) {
+                            this._openToastError("Hora de saída (" + guia.shipmentStartTime + ") posterior à hora actual(" + _TIME + ")! Por favor corrija!");
+                            return false;
+                        }
+                    }
 
                     var nullQuantityLine = lines.find(l => l.quantidade <= 0);
 
                     if (nullQuantityLine != null) {
-                           this._openToastError("Existem linhas com Quantidade <= 0!")
+                        this._openToastError("Existem linhas com Quantidade <= 0!");
+                        return false;
                     }
+
+                    var nullUnitOfMeasure = lines.find(l => l.codUnidadeMedida == "" || l.codUnidadeMedida == null);
+
+                    if (nullUnitOfMeasure != null) {
+                        this._openToastError("Há linhas sem código unidade medida preenchido!")
+                        return false;
+                    }
+
+                    var nullQuantityCount = 0;
+
+                    for (var i; i < lines.length; i++) {
+                        if (lines.quantidade == 0)
+                            nullQuantityCount += 1;
+                    }
+
+                    if (nullQuantityCount == lines.length) {
+                        this._openToastError("Não existem linhas com quantidade preenchida!");
+                        return false;
+                    }
+
+                    if (guia.globalDimension1Code == null || guia.globalDimension1Code == "" || guia.globalDimension2Code == null || guia.globalDimension2Code == "") {
+                        this._openToastError("Verifique o preenchimento da Região e Área Funcional!");
+                        return false;
+                    }
+
                     return true;
                 },
 
+                
                 _registerDocument: function (e) {
+                    this._skipMsg = true;
                     this.$.ajax_update_guia.body = JSON.stringify(this.data);
                     this.$.ajax_update_guia.generateRequest();
 
-                    if (_lastCheckBeforeRegister(this.data)) {
+                    if (this._lastCheckBeforeRegister(this.data)) {
+                        var ajax_request = this.$.register_guia_ajax;
 
+                        ajax_request.body = JSON.stringify({ "noGuia": this.data.noGuiaTransporte });
+                        this._confirmAndExecuteActionToast(
+                            "Confirma o registo da guia de transporte no. " + this.data.noGuiaTransporte + "?",
+                            ajax_request);
+                        
+                    }                                                                                                                 
+                },
+
+                _registerResponse: function (e) {
+                    if (this.noGuiaTransporteHistoric == null) {
+                        this._openToastError("Não foi possível Registar a guia. Tente novamente! Em caso de falha persistente contacte o Suporte!");
+                        return;
                     }
+
+                    window.location.href = "/GuiasTransporteNav/GuiaTransporteDetails/" + noGuiaTransporteHistoric + "?isHistoric=" + true;
                 },
 
-                _registerDocumentResponse: function (e) {
-
-                },
-
+                // **** Auxiliary functions ********
                 __preciseRound: function (num, dec) {
                     if ((typeof num !== 'number') || (typeof dec !== 'number'))
                         return 0;
@@ -2306,6 +2455,88 @@
                     var num_sign = num >= 0 ? 1 : -1;
 
                     return (Math.round((num * Math.pow(10, dec)) + (num_sign * 0.0001)) / Math.pow(10, dec)).toFixed(dec);
+                },
+
+                __formatDate: function (_date) {
+                    var d = new Date(_date),
+                        month = '' + (d.getMonth() + 1),
+                        day = '' + d.getDate(),
+                        year = d.getFullYear();
+
+                    if (d == null)
+                        return null;
+
+                    if (month < 1 || month > 12)
+                        return null;
+
+                    if (day < 1 || day > 31)
+                        return null;
+
+                    if (month == 2) {
+                        var lastDayofMonth = new Date(year, month, 0).getDate();
+
+                        if (day > lastDayofMonth)
+                            return null;
+                    }
+
+                    if (month.length < 2)
+                        month = '0' + month;
+
+                    if (day.length < 2)
+                        day = '0' + day;
+
+                    return [day, month, year].join('-');
+                },
+
+                __compareDateAndTimeValues: function (start, end, which) {
+                    if (start == null || start == "" || end == null || end == "" || which == null || which == "")
+                        return null;
+
+                    if (which.toUpperCase() === "DATE") {
+                        var sD = new Date(start);
+                        var eD = new Date(end);
+
+                        if (sD == null || eD == null)
+                            return -9;
+
+                        if(sD > eD)
+                            return -1;  // start date is greater (in most cases this is not allowed)
+
+                        if (sD < eD)
+                            return 1;   // end date is greater (in most cases this is the standard)
+
+                        return 0;       // both dates are equal
+                    }
+
+                    if (which.toUpperCase() === "TIME") {
+                        var sT = new Date();
+                        var pS = start.split(":");
+                        if (pS[2] == null || pS[2] == "")
+                            pS[2] = "00";
+
+                        var eT = new Date();
+                        var pE = end.split(":");
+
+                        if (pE[2] == null || pS[2] == "")
+                            pE[2] = "00";
+
+                        
+                        sT.setHours(pS[0], pS[1], pS[2], 0);
+                        eT.setHours(pE[0], pE[1], pE[2], 0);
+
+                        if (sT == null || eT == null)
+                            return -9;
+
+                        if (sT.getTime() > eT.getTime())
+                            return -1;  // start time is greater
+
+                        if (sT.getTime() < eT.getTime())
+                            return 1;   // end time is greater
+
+                        return 0;       // both times are equal
+                    }
+
+                    return -9;  // comparison could not be made! (/!\/!\*** check cause ***/!\/!\ )
                 }
                 
             });

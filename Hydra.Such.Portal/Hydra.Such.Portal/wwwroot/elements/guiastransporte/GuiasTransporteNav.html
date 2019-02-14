@@ -85,6 +85,15 @@
                     {{item.noGuiaTransporte}}
                 </template>
             </vaadin-grid-column>
+            <vaadin-grid-column width="110px" resizable hidden="{{ !_historico }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="noGuiaOriginalInterface">Nº Guia Original</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="noGuiaOriginalInterface" />
+                </template>
+                <template>
+                    {{ item.noGuiaOriginalInterface }}
+                </template>
+            </vaadin-grid-column>
             <vaadin-grid-column width="110px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="dataGuia">Data Guia</vaadin-grid-sorter>
@@ -186,6 +195,10 @@
                         type: String,
                         value: "false"
                     },
+                    _hideColumn: {
+                        type: Boolean,
+                        value: true
+                    },
                     _columns: {
                         type: Object,
                         value: function () {
@@ -210,6 +223,7 @@
                 },
 
                 ready: function () {
+                    this._hideColumn = !this._historico;
                     this.$.grid_databound_ajax.body = JSON.stringify({ "Historic": this._historico });
                     this.$.grid_databound_ajax.generateRequest();
 
