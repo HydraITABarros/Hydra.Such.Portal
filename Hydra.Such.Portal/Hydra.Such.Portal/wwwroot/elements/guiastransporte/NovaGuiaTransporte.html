@@ -1101,7 +1101,7 @@
                 },
 
                 _activeItemChanged: function (item) {
-                    //debugger;;
+                    ////debugger;;
                     if (item != null) {
                         //this.$.gridLinhas.clearCache();
                         var dataLines = this.data.linhasGuiaTransporte;
@@ -1128,7 +1128,7 @@
                 },
 
                 _postCodeSelected: function (item) {
-                    debugger;;
+                    ////debugger;;
 
                     if (item != null) {
                         var postC = item.postCode;
@@ -1157,12 +1157,12 @@
 
                         this.postCodeFieldCall = -1;
                     }
-                    //var oSel = this.$.postCodeGrid.find(x => x.selected);
-                    debugger;;
+                    
+                    ////debugger;;
                 },
 
                 _setTipoLinhaGridText: function (item, tipoLinhaData) {
-                    //debugger;;
+                    ////debugger;;
                     if (item != null) {
                         if (this.cbTipoLinhaGT != null) {
                             var _tipoTxt = this.cbTipoLinhaGT.find(x => x.id == item.tipo).value;
@@ -1230,7 +1230,7 @@
                 },
 
                 ready: function () {
-                    debugger;;
+                    ////debugger;;
                     if (!this._history) {
                         this._isPageLoad = true;
                         this.$.page_databound_ajax.body = JSON.stringify({ "No": this._guiatransporteid, "Historic": this._history });
@@ -1244,7 +1244,7 @@
                 },
 
                 _responseProcessor: function (data) {
-                    debugger;;
+                    ////debugger;;
 
                     var self = this;
 
@@ -1269,7 +1269,7 @@
                         self.$.postCode.value = this.data.postCode;
                         self.$.postCode.valueText = this.data.postCode;
 
-                        debugger;;
+                        ////debugger;;
                         if (this.data.tipo == 0 && this.data.noCliente != "" && this.data.codEnvio) {
                             this.$.page_ship_to_addresses_ajax.body = JSON.stringify({ "customerId": this.data.noCliente, "shipToCode": this.data.codEnvio });
                             this.$.page_ship_to_addresses_ajax.generateRequest();
@@ -1330,7 +1330,7 @@
                 },
 
                 _update: function () {
-                    //debugger;;
+                    ////debugger;;
 
                     if (this.data.nifCliente != "" && this.vatRegistrationNo == "") {
                         this.data.vatRegistrationNo = this.data.nifCliente;
@@ -1342,7 +1342,7 @@
                 },
 
                 _updateGuiaResponse: function (e) {
-                    //debugger;;
+                    ////debugger;;
                     if (this.guiaUpdated) {
                         if (this.$.tipoGuia.value == "") {
                             this.data.tipo = 0;
@@ -1376,7 +1376,7 @@
                 },
 
                 _onTipoGuiaChanged: function (e) {
-                    //debugger;;
+                    ////debugger;;
                     if (this.data != undefined) {
                         var tipoG = this.$.tipoGuia.value;
                         
@@ -1454,7 +1454,7 @@
                 },     
 
                 _setThirdParty: function (e) {
-                    debugger;
+                    ////debugger;
                     if (this.data != undefined) {
                         var type = this.$.tipoGuia.value;
                         var entityId = this.$.noCliente.value;
@@ -1464,7 +1464,7 @@
 
                         if (type != null && entityId != null && entityId != "") {
                             if (this.cbThirdParty != null) {
-                                //debugger;;
+                                ////debugger;;
                                 var _third = this.cbThirdParty.find(t => t.entityType == type && t.entityId == entityId);
                                 if (_third != null) {
                                     this._setThirdPartyDetails(_third);
@@ -1474,7 +1474,7 @@
                                     this.$.ajax_thirdparty_details.generateRequest();
                                 }
                                 
-                                //debugger;;
+                                ////debugger;;
                             }
                             else {
                                 this.$.ajax_thirdparty_details.body = JSON.stringify({ "type": type, "entityId": entityId })
@@ -1495,18 +1495,18 @@
                 },
 
                 _thirdPartyDetailsResponse: function (e) {
-                    //debugger;;
+                    ////debugger;;
 
                     this._setThirdPartyDetails(this.thirdPartyDetails);
                    
                 },
 
                 _setThirdPartyDetails: function (details) {
-                    debugger;;
+                    ////debugger;;
                     var _self = this;
 
                     if (details != null) {
-                        //debugger;;
+                        ////debugger;;
 
                         _self.$.codEnvio.disabled = this.data.tipo != 0;
 
@@ -1577,7 +1577,7 @@
                         }
 
                         if (this.data.tipo == 0 && this.data.noCliente != "") {
-                            //debugger;;
+                            ////debugger;;
                             this.$.page_ship_to_addresses_ajax.body = JSON.stringify({ "customerId": this.data.noCliente, "shipToCode": null });
                             this.$.page_ship_to_addresses_ajax.generateRequest();
                         }
@@ -1662,7 +1662,7 @@
                 },
 
                 _dataGuiaChanged: function (e) {
-                    //debugger;;
+                    ////debugger;;
                     this.$.dataSaida.min = this.$.dataGuia.value;
                 },
 
@@ -1678,7 +1678,7 @@
 
                 _projectDimsResponse: function (e) {
                     if (e.detail.status === 200) {
-                        //debugger;;
+                        ////debugger;;
                         if (this.projectDims.regionCode != "") {
                             this.$.globalDimension1Code.value = this.projectDims.regionCode;
                             this.data.globalDimension1Code = this.projectDims.regionCode;
@@ -1702,7 +1702,7 @@
                             this.data.globalDimension3Code = this.projectDims.responsabilityCenterCode;
                         }
 
-                        //debugger;;
+                        ////debugger;;
                         this.$.noProjectoItem.value = this.projectDims.projectNo;
                         this.$.noProjectoItem.valueText = this.projectDims.projectNo;
                         this._itemProjectNo = this.projectDims.projectNo;
@@ -1722,7 +1722,7 @@
 
                 _projectItemDimsResponse: function (e) {
                     if (e.detail.status === 200) {
-                        //debugger;;
+                        ////debugger;;
                         if (this.projectItemDims.regionCode != "") {
                             
                             this.$.regiaoItem.value = this.projectItemDims.regionCode;
@@ -1737,7 +1737,7 @@
                             this._itemAreaCode = this.projectItemDims.functionalAreaCode;
                         }
 
-                        //debugger;;
+                        ////debugger;;
                         //this.$.noProjectoItem.value = this.projectDims.no;
                         //this.$.noProjectoItem.valueText = this.projectDims.no;
                         //this._itemProjectNo = this.projectDims.no;
@@ -1745,7 +1745,7 @@
                 },
 
                 _setShipToAddress: function (e) {
-                    //debugger;;
+                    ////debugger;;
                     if (this.data != undefined) {
                         var custNo = this.$.noCliente.value;
                         var shipCode = this.$.codEnvio.value;
@@ -1766,7 +1766,7 @@
                 },
 
                 _shipToAddressesResponse: function (e) {
-                    //debugger;;
+                    ////debugger;;
                     if (this.$.tipoGuia.value == 0 && this.$.noCliente.value != "" && this.$.codEnvio.value != "") {
                         var custNo = this.$.noCliente.value;
                         var shipCode = this.$.codEnvio.value;
@@ -1781,7 +1781,7 @@
                 },
 
                 _setShipToAddressDetails: function (shipToDetails) {
-                    //debugger;;
+                    ////debugger;;
 
                     if (shipToDetails != null) {
                         this.data.codEnvio = shipToDetails.code;
@@ -1840,7 +1840,7 @@
                 },
 
                 _onTipoLinhaChanged: function (e) {
-                    //debugger;;
+                    ////debugger;;
                     if (this.data != undefined) {
                         var tipoL = this.$.tipoLinha.value;
 
@@ -1865,7 +1865,7 @@
                 },
 
                 _onGridTipoLinhaChanged: function (e) {
-                    debugger;;
+                    ////debugger;;
                     if (this.data != undefined) {
                         var dataLines = this.data.linhasGuiaTransporte;
                         var newTipoL = e.target.__data.activeItem.id;
@@ -1896,9 +1896,9 @@
                 },                       
 
                 _gridShipItemsResponse: function (e) {
-                    debugger;;
+                    ////debugger;;
                     if (this.gridShipItemsList != null) {
-                        debugger;;
+                        ////debugger;;
                         var dataLines = this.data.linhasGuiaTransporte;
                         var index = dataLines.indexOf(e.model.item);
 
@@ -1917,9 +1917,9 @@
                 },
 
                 _setGridShipmentItem: function (e) {
-                    debugger;;
+                    //debugger;;
                     if (this.gridShipItemsList != null) {
-                        debugger;;
+                        //debugger;;
                         var dataLines = this.data.linhasGuiaTransporte;
                         var index = dataLines.indexOf(e.model.item);
 
@@ -1974,7 +1974,7 @@
                 },
 
                 _shipItemsResponse: function (e) {
-                    //debugger;;
+                    ////debugger;;
 
                     if (this.shipItemsList != null) {
                         if (this.$.codigoItem.value != null && this.$.codigoItem.value != "") {
@@ -2004,7 +2004,7 @@
                 },
 
                 _roundQuantity: function (e) {
-                    //debugger;;
+                    ////debugger;;
                     var quant = this.$.quantidadeItem.value;
                     var quantEnviar = this.$.quantidadeEnviarItem.value;
 
@@ -2067,7 +2067,7 @@
                 },
 
                 _addShipmentLine: function () {
-                    //debugger;;
+                    ////debugger;;
                     var index = 1000;
                     var documentLines = this.data.linhasGuiaTransporte;
                     if (documentLines != null && documentLines.length > 0) {
@@ -2099,7 +2099,7 @@
                         this._openToastError(msg);
                         return;                        
                     }
-                    //debugger;;
+                    ////debugger;;
 
                     this.$.page_create_line_ajax.body = JSON.stringify(shipLineToAdd);
 
@@ -2117,7 +2117,7 @@
                 },
 
                 _createLineResponse: function (e) {
-                    //debugger;;
+                    ////debugger;;
                     if (this.lineCreated) {
                         
                         this.$.page_databound_ajax.body = JSON.stringify({ "No": this._guiatransporteid, "Historic": this._history });
@@ -2160,7 +2160,7 @@
 
                 _updateShipmentLine: function (e) {
                     if (this.data != undefined) {
-                        debugger;;
+                        //debugger;;
                         var dataLines = this.data.linhasGuiaTransporte;
                         var index = dataLines.indexOf(e.model.item);
 
@@ -2190,7 +2190,7 @@
                 },
 
                 _deleteShipmentLine: function (e) {
-                    //debugger;;
+                    ////debugger;;
                     var index = this.data.linhasGuiaTransporte.indexOf(e.model.item);
                     this.data.linhasGuiaTransporte.splice(index, 1);
                     this.$.ajax_delete_linha.body = JSON.stringify({ "noGuia": this.data.noGuiaTransporte, "noLinha": e.model.item.noLinha });
@@ -2212,7 +2212,7 @@
                 },
 
                 _selectPostCode: function (e) {
-                    debugger;;
+                    //debugger;;
                     var _targetId = e.currentTarget.id;
 
                     this.postCodeFieldCall = -1;
@@ -2233,7 +2233,7 @@
                 },
 
                 //_usePostCode: function (e) {
-                //    debugger;;
+                //    //debugger;;
                 //    var postC = e.model.item.postCode;
 
                 //    if (postC != null) {
@@ -2276,7 +2276,7 @@
                 },
 
                 _copyLinesFromRequisition: function (e) {
-                    debugger;;
+                    //debugger;;
 
                     this.$.ajax_update_guia.body = JSON.stringify(this.data);
                     this.$.ajax_update_guia.generateRequest();
@@ -2313,7 +2313,7 @@
                         return false;
                     }
 
-                    debugger;;
+                    //debugger;;
                     const _TODAY = new Date();  
 
                     const _DATE = _TODAY.toLocaleDateString("pt-PT").replace(new RegExp("/", 'g'), "-");
