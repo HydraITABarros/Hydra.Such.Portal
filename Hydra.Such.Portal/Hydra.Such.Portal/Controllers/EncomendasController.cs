@@ -759,6 +759,7 @@ namespace Hydra.Such.Portal.Controllers
                     if (Pedido != null)
                     {
                         Pedido.RegiaoMercadoLocal = data.RegiaoMercadoLocal;
+                        Pedido.Descricao = data.Descricao;
                         Pedido.Prioritario = data.Prioritario;
                         Pedido.UtilizadorModificacao = User.Identity.Name;
                         Pedido.DataModificacao = DateTime.Now;

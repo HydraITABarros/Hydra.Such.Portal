@@ -287,7 +287,7 @@
 
                     <div class="row break_clear">
                         <div class="col-sm-6">
-                            <such-textarea id="ddDescricao" label="Descrição" value="{{data.descricao}}" rows="5" maxlength="250" on-value-changed="_AutoUpdatePedidoPagamento"></such-textarea>
+                            <such-textarea id="ddDescricao" label="Descrição" value="{{data.descricao}}" rows="5" maxlength="250" on-blur="_AutoUpdatePedidoPagamento" disabled="{{ !data.editarPrioritario }}"></such-textarea>
                         </div>
 
                         <div class="col-sm-3">
@@ -698,6 +698,7 @@
                 },
                 _AutoUpdatePedidoPagamento: function () {
                     if (this.data.noPedido > 0) {
+                        this.data.descricao = this.$.ddDescricao.value
                         this.data.regiaoMercadoLocal = this.$.idMercadoLocal.value;
 
                         this.$.page_Update_ajax.body = JSON.stringify(this.data);
@@ -740,7 +741,7 @@
                         self.$.ddData.disabled = true;
                         self.$.ddValorpedidoComIVA.disabled = true;
                         //self.$.ddPrioritario.disabled = true;
-                        self.$.ddDescricao.disabled = true;
+                        //self.$.ddDescricao.disabled = true;
 
                         if (self.data.estado == 5 || self.data.estado == 7) {
                             $(self.$.menuFunctios).addClass('hidden');
