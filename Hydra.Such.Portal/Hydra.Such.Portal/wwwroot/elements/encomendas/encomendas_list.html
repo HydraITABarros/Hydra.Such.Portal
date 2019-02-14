@@ -87,6 +87,9 @@
                 .panel-body {
                     padding-top: 0px !important;
                 }
+                .panel-heading {
+                    padding: 0 !important;
+                }
             </style>
         </custom-style>
 
@@ -111,8 +114,7 @@
         <iron-ajax url="/PopulateDropdowns/GetEncomendasYearList" id="grid_years_ajax" last-response="{{years}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetNAVVendor" id="grid_fornecedor_ajax" last-response="{{forcecedores}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
-        <paper-collapse-group>
-            <paper-collapse-item class="panel-heading" header="Filtros" closed>
+            <paper-collapse-item class="panel-heading" header="Filtros" opened>
                 <div class="grid-header" id="gridheader">
                     <div class="panel-body">
                         <div class="row break_clear">
@@ -127,11 +129,10 @@
                                 </such-selectbox>
                             </div>
                             <div class="col-sm-3">
-
                                 <vaadin-text-field id="requisitionNo" name="requisitionNo" label="Nº Requisição" value="{{requisitionNo}}">  </vaadin-text-field>
                             </div>
 
-                            <div class="col-sm-3">
+                            <div class="col-sm-2">
                                 <vaadin-combo-box style="margin-top:11px;" items="[[years]]" item-value-path="id" item-label-path="value" value="{{year}}" label="Ano">
                                     <template>
                                         <paper-icon-item>
@@ -143,7 +144,7 @@
                                 </vaadin-combo-box>
                             </div>
 
-                            <div class="col-sm-3">
+                            <div class="col-sm-2">
                                 <vaadin-combo-box style="margin-top:11px;"
                                                   items="[[months]]"
                                                   item-value-path="id"
@@ -162,7 +163,7 @@
                                 </vaadin-combo-box>
                             </div>
 
-                            <div class="col-sm-3 alignPoga text-right">
+                            <div class="col-sm-2 alignPoga text-right">
                                 <paper-button raised id="btnUpdate" class="btnSave" on-tap="_search"><i class="fa fa-search" aria-hidden="true"></i>&nbsp; Pesquisar</paper-button>
                             </div>
                         </div>
@@ -179,7 +180,6 @@
                 </div>
 
             </paper-collapse-item>
-        </paper-collapse-group>
 
         <div class="subMenu">
             <template is="dom-if" if="{{loaded}}">
@@ -438,7 +438,7 @@
                         var windowHeight = $(window).height();
                         var paddingTop = $(_this).offsetParent().css('padding-top').replace("px", "");
                         var offsetTop = $(_this).offset().top;
-                        var height = windowHeight - offsetTop - paddingTop;
+                        var height = windowHeight - offsetTop - paddingTop + 100;
                         $(_this.$.grid).height(height - $(_this.$.gridheader).height());
                     }, 3600);
                 },
