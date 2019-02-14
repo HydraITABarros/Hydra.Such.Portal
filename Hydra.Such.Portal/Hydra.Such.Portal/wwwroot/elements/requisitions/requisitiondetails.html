@@ -1664,6 +1664,27 @@
             </template>
         </paper-toast>
 
+
+
+        <paper-dialog id="dlgMessageSuccess" class="dialgoBox" modal style="height:150px">
+            <div>
+                <vaadin-text-field id="dlgToastMessageSuccess" horizontalAlign="left" class="toastSuccess" disabled></vaadin-text-field>
+            </div>
+            <div class="buttons">
+                <paper-button class="btnRemove" on-tap="_closeDlMessageSuccess"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
+            </div>
+        </paper-dialog>
+        <paper-dialog id="dlgMessageError" class="dialgoBox" modal style="height:150px">
+            <div style="font-size:larger">
+                <vaadin-text-field id="dlgToastMessageError" horizontalAlign="left" class="toastError" disabled></vaadin-text-field>
+            </div>
+            <div class="buttons">
+                <paper-button class="btnRemove" on-tap="_closeDlgMessageError"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
+            </div>
+        </paper-dialog>
+
+
+
         <!-- Paper Dialog Total Linhas-->
         <paper-dialog id="dialogTotal" style="height:120px; width:300px">
             <div>
@@ -1904,7 +1925,7 @@
                             break;
                         case 2://"Criar Encomenda de Compra"
                             //if (this.Requisition.orderNo)
-                            //    this._openToastError("Já foi criada uma encomenda para esta requisição.");
+                            //    this._openDlgMessageError("Já foi criada uma encomenda para esta requisição.");
                             //else
                                 //this._createPurchaseOrder();
 
@@ -2048,7 +2069,7 @@
                     if (true) {
                         return true;
                     }
-                    this._openToastError("Verifique os dados inseridos.");
+                    this._openDlgMessageError("Verifique os dados inseridos.");
                     return false;
                 },
                 _validateUserInputForLine() {
@@ -2057,7 +2078,7 @@
                     if (this.$.lineQuantity.validate()) {
                         return true;
                     }
-                    this._openToastError("Verifique os dados inseridos.");
+                    this._openDlgMessageError("Verifique os dados inseridos.");
                     return false;
                     */
                     return true;
@@ -2193,19 +2214,19 @@
                                     this.$.grdRequisitionLines.clearCache();
                                 }
                                 else {
-                                    this._openToastError('Na linha o campo Qt. a Requerer tem que ser superior a zero.');
+                                    this._openDlgMessageError('Na linha o campo Qt. a Requerer tem que ser superior a zero.');
                                 }
                             }
                             else {
-                                this._openToastError('Na linha o campo Código Localização é de preenchimento obrigatório.');
+                                this._openDlgMessageError('Na linha o campo Código Localização é de preenchimento obrigatório.');
                             }
                         }
                         else {
-                            this._openToastError('Na linha o campo Nº Ordem/projecto é de preenchimento obrigatório.');
+                            this._openDlgMessageError('Na linha o campo Nº Ordem/projecto é de preenchimento obrigatório.');
                         }
                     }
                     else {
-                        this._openToastError('Na linha o campo Cód. Produto é de preenchimento obrigatório.');
+                        this._openDlgMessageError('Na linha o campo Cód. Produto é de preenchimento obrigatório.');
                     }
                 },
                 _UpdateLinhaRequisicao_ResponseProcessor: function (e) {
@@ -2213,17 +2234,17 @@
                         this._openToast(this.updateLinhaRequisicaoResponse.eMessage);
                     }
                     else {
-                        this._openToastError(this.updateLinhaRequisicaoResponse.eMessage);
+                        this._openDlgMessageError(this.updateLinhaRequisicaoResponse.eMessage);
                     }
-                    this.$.page_update_ajax.body = JSON.stringify({ "id": this._requisitionid });
-                    this.$.page_update_ajax.generateRequest();
+                    //this.$.page_update_ajax.body = JSON.stringify({ "id": this._requisitionid });
+                    //this.$.page_update_ajax.generateRequest();
                 },
 
                 _validateReqHeaderInput: function () {
                     if (true) {
                         return true;
                     }
-                    this._openToastError("Verifique os dados inseridos.");
+                    this._openDlgMessageError("Verifique os dados inseridos.");
                     return false;
                 },
 
@@ -2239,7 +2260,7 @@
                         if (this.Requisition.eMessages.length > 0)
                             this._toggleToastMultiple();
                         else
-                            this._openToastError(this.Requisition.eMessage);
+                            this._openDlgMessageError(this.Requisition.eMessage);
                     }
                     this.$.requisition_datasource.generateRequest();
                 },
@@ -2253,7 +2274,7 @@
                         window.history.back();
                     }
                     else {
-                        this._openToastError(this.Requisition.eMessage);
+                        this._openDlgMessageError(this.Requisition.eMessage);
                     }
                 },
                 _validateRequisitionImprimirResponse: function (e) {
@@ -2261,7 +2282,7 @@
                         this._openToast(this.Requisition.eMessage);
                     }
                     else {
-                        this._openToastError(this.Requisition.eMessage);
+                        this._openDlgMessageError(this.Requisition.eMessage);
                     }
                 },
 
@@ -2477,7 +2498,7 @@
                         this._resetUserInputForLine();
                     }
                     else {
-                        this._openToastError(this.AddReqLineResponse.eMessage);
+                        this._openDlgMessageError(this.AddReqLineResponse.eMessage);
                     }
                 },
 
@@ -2494,7 +2515,7 @@
                         this.$.grdRequisitionLines.clearCache();
                     }
                     else {
-                        this._openToastError(this.resultTodasLinhasNotaEncomenda.eMessage);
+                        this._openDlgMessageError(this.resultTodasLinhasNotaEncomenda.eMessage);
                     }
                 },
 
@@ -2588,7 +2609,7 @@
                                     }, 1000);
                             }
                             else {
-                                this._openToastError(this.data.eMessage);
+                                this._openDlgMessageError(this.data.eMessage);
                             }
                             this._isCreate = !(this.Requisition.eReasonCode == "1");
                         }
@@ -2598,7 +2619,7 @@
                                 this.$.requisition_datasource.url = "/GestaoRequisicoes/GetRequisition";
                             }
                             else {
-                                this._openToastError(this.data.eMessage);
+                                this._openDlgMessageError(this.data.eMessage);
                             }
                         }
                         else if (data.detail.url.indexOf("UpdateRequisitionLines") !== -1) {
@@ -2608,7 +2629,7 @@
                                 this.$.requisition_datasource.url = "/GestaoRequisicoes/GetRequisition";
                             }
                             else {
-                                this._openToastError(this.data.eMessage);
+                                this._openDlgMessageError(this.data.eMessage);
                             }
                         }
                         else if (data.detail.url.indexOf("Delete") !== -1) {
@@ -2619,11 +2640,11 @@
                                 }, 2500);
                             }
                             else {
-                                this._openToastError(this.Requisition.eMessage);
+                                this._openDlgMessageError(this.Requisition.eMessage);
                             }
                         }
                     } else {
-                        this._openToastError("Ocorreu um erro desconhecido.")
+                        this._openDlgMessageError("Ocorreu um erro desconhecido.")
                     }
 
                     if (this.$.Vehicle.value != "") {
@@ -2666,7 +2687,7 @@
                         }
                     }
                     else {
-                        this._openToastError(this.DelReqLineResponse.eMessage);
+                        this._openDlgMessageError(this.DelReqLineResponse.eMessage);
                     }
                 },
                 _RegistProvide: function () {
@@ -2709,7 +2730,7 @@
                         if (this.Requisition.eMessages.length > 0)
                             this._toggleToastMultiple();
                         else
-                            this._openToastError(this.Requisition.eMessage);
+                            this._openDlgMessageError(this.Requisition.eMessage);
                     }
                 },
                 _createPurchaseOrder: function () {
@@ -2724,7 +2745,7 @@
                         if (this.Requisition.eMessages.length > 0)
                             this._toggleToastMultiple();
                         else
-                            this._openToastError(this.Requisition.eMessage);
+                            this._openDlgMessageError(this.Requisition.eMessage);
                     }
                     this.$.grdRequisitionLines.clearCache();
                     this.$.requisition_datasource.url = "/GestaoRequisicoes/GetRequisition"
@@ -2744,7 +2765,7 @@
                         this.$.rptDialog.open();
                     }
                     else {
-                        this._openToastError("Não é possivel imprimir. Não foi definido o servidor de relatórios.");
+                        this._openDlgMessageError("Não é possivel imprimir. Não foi definido o servidor de relatórios.");
                     }
                 },
                 _closeRptDialog: function () {
@@ -2767,7 +2788,7 @@
                         //URL.revokeObjectURL(blobUrl);
                     }
                     else {
-                        this._openToastError(this.TransferShipmentResponse.eMessage);
+                        this._openDlgMessageError(this.TransferShipmentResponse.eMessage);
                     }
                 },
                 _convertBase64ToBlob: function (b64Data, contentType, sliceSize) {
@@ -2804,7 +2825,7 @@
                         if (this.Requisition.eMessages.length > 0)
                             this._toggleToastMultiple();
                         else
-                            this._openToastError(this.Requisition.eMessage);
+                            this._openDlgMessageError(this.Requisition.eMessage);
                     }
                 },
                 _onProductChanged: function (e) {
@@ -2864,8 +2885,8 @@
                         location.reload();
                     }
                     else {
-                        this._openToastError(this.regist.eMessage);
-                        location.reload();
+                        this._openDlgMessageError(this.regist.eMessage);
+                        //location.reload();
                     }
                 },
                 _submitForApproval: function () {
@@ -2877,7 +2898,7 @@
                         this._openToast(this.SubmitForApprovalResponse.eMessage);
                     }
                     else {
-                        this._openToastError(this.SubmitForApprovalResponse.eMessage);
+                        this._openDlgMessageError(this.SubmitForApprovalResponse.eMessage);
                     }
                 },
                 _redirectToStatOfPlay: function () {
@@ -2942,7 +2963,7 @@
                     if (this.actionResult.eReasonCode == 100) {
                         this._openToast(this.Requisition.eMessage);
                     } else {
-                        this._openToastError(this.Requisition.eMessage);
+                        this._openDlgMessageError(this.Requisition.eMessage);
                     }
                 },
 
@@ -3006,7 +3027,7 @@
 
                         window.history.back();
                     } else {
-                        this._openToastError(this.actionResult.eMessage);
+                        this._openDlgMessageError(this.actionResult.eMessage);
                     }
                 },
 
@@ -3041,7 +3062,7 @@
                             this.$.rptDialog.open();
                         }
                         else {
-                            this._openToastError("Não é possivel imprimir. Não foi definido o servidor de relatórios.");
+                            this._openDlgMessageError("Não é possivel imprimir. Não foi definido o servidor de relatórios.");
                         }
 
                     }
@@ -3056,7 +3077,7 @@
                             this.$.rptDialog.open();
                         }
                         else {
-                            this._openToastError("Não é possivel imprimir. Não foi definido o servidor de relatórios.");
+                            this._openDlgMessageError("Não é possivel imprimir. Não foi definido o servidor de relatórios.");
                         }
                     }
                 },
@@ -3079,7 +3100,7 @@
                             this.$.rptDialog.open();
                         }
                         else {
-                            this._openToastError("Não é possivel imprimir. Não foi definido o servidor de relatórios.");
+                            this._openDlgMessageError("Não é possivel imprimir. Não foi definido o servidor de relatórios.");
                         }
 
                     }
@@ -3094,7 +3115,7 @@
                             this.$.rptDialog.open();
                         }
                         else {
-                            this._openToastError("Não é possivel imprimir. Não foi definido o servidor de relatórios.");
+                            this._openDlgMessageError("Não é possivel imprimir. Não foi definido o servidor de relatórios.");
                         }
                     }
                     if (item.value == 3) { //VALIDAR E IMPRIMIR A4
@@ -3113,7 +3134,7 @@
                             this.$.rptDialog.open();
                         }
                         else {
-                            this._openToastError("Não é possivel imprimir. Não foi definido o servidor de relatórios.");
+                            this._openDlgMessageError("Não é possivel imprimir. Não foi definido o servidor de relatórios.");
                         }
                     }
                     if (item.value == 4) { //VALIDAR E IMPRIMIR A5
@@ -3132,12 +3153,27 @@
                             this.$.rptDialog.open();
                         }
                         else {
-                            this._openToastError("Não é possivel imprimir. Não foi definido o servidor de relatórios.");
+                            this._openDlgMessageError("Não é possivel imprimir. Não foi definido o servidor de relatórios.");
                         }
                     }
                 },
 
-
+                _openDlMessageSuccess: function (message) {
+                    this.$.dlgToastMessageSuccess.value = message;
+                    this.$.dlgMessageSuccess.open();
+                },
+                _openDlgMessageError: function (message) {
+                    this.$.dlgToastMessageError.value = message;
+                    this.$.dlgMessageError.open();
+                },
+                _closeDlMessageSuccess: function () {
+                    this.$.dlgMessageSuccess.close();
+                    location.reload();
+                },
+                _closeDlgMessageError: function () {
+                    this.$.dlgMessageError.close();
+                    location.reload();
+                },
 
             });
         });

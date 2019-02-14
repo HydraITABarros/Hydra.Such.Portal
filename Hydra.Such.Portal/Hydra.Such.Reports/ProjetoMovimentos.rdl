@@ -191,6 +191,7 @@
                                 <TextRun>
                                   <Value>Data</Value>
                                   <Style>
+                                    <FontFamily>Arial</FontFamily>
                                     <FontSize>8pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
                                   </Style>
@@ -209,6 +210,9 @@
                             <TopBorder>
                               <Style>None</Style>
                             </TopBorder>
+                            <BottomBorder>
+                              <Style>Solid</Style>
+                            </BottomBorder>
                             <LeftBorder>
                               <Style>None</Style>
                             </LeftBorder>
@@ -234,6 +238,7 @@
                                 <TextRun>
                                   <Value>Recurso</Value>
                                   <Style>
+                                    <FontFamily>Arial</FontFamily>
                                     <FontSize>8pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
                                   </Style>
@@ -252,6 +257,9 @@
                             <TopBorder>
                               <Style>None</Style>
                             </TopBorder>
+                            <BottomBorder>
+                              <Style>Solid</Style>
+                            </BottomBorder>
                             <LeftBorder>
                               <Style>None</Style>
                             </LeftBorder>
@@ -277,6 +285,7 @@
                                 <TextRun>
                                   <Value>Descrição</Value>
                                   <Style>
+                                    <FontFamily>Arial</FontFamily>
                                     <FontSize>8pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
                                   </Style>
@@ -295,6 +304,9 @@
                             <TopBorder>
                               <Style>None</Style>
                             </TopBorder>
+                            <BottomBorder>
+                              <Style>Solid</Style>
+                            </BottomBorder>
                             <LeftBorder>
                               <Style>None</Style>
                             </LeftBorder>
@@ -339,6 +351,9 @@
                             <TopBorder>
                               <Style>None</Style>
                             </TopBorder>
+                            <BottomBorder>
+                              <Style>Solid</Style>
+                            </BottomBorder>
                             <LeftBorder>
                               <Style>None</Style>
                             </LeftBorder>
@@ -383,6 +398,9 @@
                             <TopBorder>
                               <Style>None</Style>
                             </TopBorder>
+                            <BottomBorder>
+                              <Style>Solid</Style>
+                            </BottomBorder>
                             <LeftBorder>
                               <Style>None</Style>
                             </LeftBorder>
@@ -427,6 +445,9 @@
                             <TopBorder>
                               <Style>None</Style>
                             </TopBorder>
+                            <BottomBorder>
+                              <Style>Solid</Style>
+                            </BottomBorder>
                             <LeftBorder>
                               <Style>None</Style>
                             </LeftBorder>
@@ -471,6 +492,9 @@
                             <TopBorder>
                               <Style>None</Style>
                             </TopBorder>
+                            <BottomBorder>
+                              <Style>Solid</Style>
+                            </BottomBorder>
                             <LeftBorder>
                               <Style>None</Style>
                             </LeftBorder>
@@ -515,6 +539,9 @@
                             <TopBorder>
                               <Style>None</Style>
                             </TopBorder>
+                            <BottomBorder>
+                              <Style>Solid</Style>
+                            </BottomBorder>
                             <LeftBorder>
                               <Style>None</Style>
                             </LeftBorder>
@@ -559,6 +586,9 @@
                             <TopBorder>
                               <Style>None</Style>
                             </TopBorder>
+                            <BottomBorder>
+                              <Style>Solid</Style>
+                            </BottomBorder>
                             <LeftBorder>
                               <Style>None</Style>
                             </LeftBorder>
@@ -571,6 +601,7 @@
                             <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
+                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                   </TablixCells>
@@ -910,15 +941,14 @@
               <TablixMembers>
                 <TablixMember>
                   <KeepWithGroup>After</KeepWithGroup>
+                  <RepeatOnNewPage>true</RepeatOnNewPage>
                 </TablixMember>
                 <TablixMember>
                   <Group Name="Details" />
                 </TablixMember>
               </TablixMembers>
             </TablixRowHierarchy>
-            <RepeatColumnHeaders>true</RepeatColumnHeaders>
             <RepeatRowHeaders>true</RepeatRowHeaders>
-            <FixedColumnHeaders>true</FixedColumnHeaders>
             <FixedRowHeaders>true</FixedRowHeaders>
             <DataSetName>LINHAS</DataSetName>
             <Top>3.12208cm</Top>
@@ -1539,18 +1569,6 @@
               <PaddingBottom>2pt</PaddingBottom>
             </Style>
           </Textbox>
-          <Line Name="Line2">
-            <Top>3.05152cm</Top>
-            <Left>0.0265cm</Left>
-            <Height>0cm</Height>
-            <Width>18.79996cm</Width>
-            <ZIndex>20</ZIndex>
-            <Style>
-              <Border>
-                <Style>Solid</Style>
-              </Border>
-            </Style>
-          </Line>
           <Textbox Name="Textbox23">
             <CanGrow>true</CanGrow>
             <KeepTogether>true</KeepTogether>
@@ -1573,7 +1591,7 @@
             <Left>6.29065cm</Left>
             <Height>0.6cm</Height>
             <Width>6.4891cm</Width>
-            <ZIndex>21</ZIndex>
+            <ZIndex>20</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -1605,7 +1623,7 @@
             <Left>6.29065cm</Left>
             <Height>1.30584cm</Height>
             <Width>6.4891cm</Width>
-            <ZIndex>22</ZIndex>
+            <ZIndex>21</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -1621,7 +1639,7 @@
             <Left>0.00002cm</Left>
             <Height>0cm</Height>
             <Width>18.79998cm</Width>
-            <ZIndex>23</ZIndex>
+            <ZIndex>22</ZIndex>
             <Style>
               <Border>
                 <Style>Solid</Style>

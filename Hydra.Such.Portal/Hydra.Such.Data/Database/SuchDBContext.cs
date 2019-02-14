@@ -10760,6 +10760,10 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("NumeroTransferencia")
                     .HasMaxLength(20);
 
+                entity.Property(e => e.RegiaoMercadoLocal)
+                    .HasColumnName("RegiaoMercadoLocal")
+                    .HasMaxLength(20);
+
                 entity.Property(e => e.UtilizadorCriacao)
                     .HasColumnName("UtilizadorCriacao")
                     .HasMaxLength(50);

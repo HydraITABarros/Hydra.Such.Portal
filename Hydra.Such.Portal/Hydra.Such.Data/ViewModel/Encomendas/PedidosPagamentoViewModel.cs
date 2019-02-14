@@ -54,6 +54,8 @@ namespace Hydra.Such.Data.ViewModel.Encomendas
         public DateTime? DataPrioridade { get; set; }
         public string DataPrioridadeText { get; set; }
         public string NumeroTransferencia { get; set; }
+        public string RegiaoMercadoLocal { get; set; }
+        public string RegiaoMercadoLocalText { get; set; }
         public string UtilizadorCriacao { get; set; }
         public DateTime? DataCriacao { get; set; }
         public string UtilizadorModificacao { get; set; }

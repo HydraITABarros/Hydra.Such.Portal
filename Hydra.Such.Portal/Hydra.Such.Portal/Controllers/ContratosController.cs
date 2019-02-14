@@ -336,12 +336,21 @@ namespace Hydra.Such.Portal.Controllers
             //Regions
             if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.Region).Count() > 0)
                 ContractsList.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.CódigoRegião));
+
             //FunctionalAreas
             if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
-                ContractsList.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.CódigoÁreaFuncional));
+                ContractsList.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && (y.ValorDimensão == x.CódigoÁreaFuncional || string.IsNullOrEmpty(x.CódigoÁreaFuncional))));
+            
             //ResponsabilityCenter
             if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
                 ContractsList.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CódigoCentroResponsabilidade));
+
+            //List<Contratos> AuxContractsList = ContractsList.Where(x => string.IsNullOrEmpty(x.CódigoÁreaFuncional)).ToList();
+            //if (AuxContractsList != null && AuxContractsList.Count() > 0)
+            //{
+
+            //}
+
 
 
             List<ContractViewModel> result = new List<ContractViewModel>();
@@ -3526,166 +3535,57 @@ namespace Hydra.Such.Portal.Controllers
                 workbook = new XSSFWorkbook();
                 ISheet excelSheet = workbook.CreateSheet("Propostas");
                 IRow row = excelSheet.CreateRow(0);
-                int Col = 0;
 
-                if (dp["contractNo"]["hidden"].ToString() == "False")
+                var columns = dp.AsJEnumerable().ToList();
+                for (int i = 0; i < columns.Count; i++)
                 {
-                    row.CreateCell(Col).SetCellValue("Nº Proposta");
-                    Col = Col + 1;
+                    var column = columns[i];
+                    var isHidden = true;
+                    var label = "";
+                    try
+                    {
+                        isHidden = (bool)column.First()["hidden"];
+                        label = (string)column.First()["label"];
+                    }
+                    catch { }
+
+                    if (!isHidden)
+                    {
+                        row.CreateCell(i).SetCellValue(label);
+                    }
                 }
-                if (dp["oportunityNo"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Nº Oportunidade");
-                    Col = Col + 1;
-                }
-                if (dp["startData"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Data Inicio");
-                    Col = Col + 1;
-                }
-                if (dp["dueDate"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Data Fim");
-                    Col = Col + 1;
-                }
-                if (dp["contactNo"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Nº Contacto");
-                    Col = Col + 1;
-                }
-                if (dp["clientNo"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Nº Cliente");
-                    Col = Col + 1;
-                }
-                if (dp["clientName"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Nome Cliente");
-                    Col = Col + 1;
-                }
-                if (dp["description"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Descrição");
-                    Col = Col + 1;
-                }
-                if (dp["statusDescription"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Estado");
-                    Col = Col + 1;
-                }
-                if (dp["codeRegion"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Cód. Região");
-                    Col = Col + 1;
-                }
-                if (dp["codeFunctionalArea"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Cód. Área Funcional");
-                    Col = Col + 1;
-                }
-                if (dp["codeResponsabilityCenter"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Cód. Centro Responsabilidade");
-                    Col = Col + 1;
-                }
-                if (dp["versionNo"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Nº Versão");
-                    Col = Col + 1;
-                }
-                if (dp["ordOrderSource"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Origem do Pedido Descrição"); Col = Col + 1; }
-                if (dp["relatedContract"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Contrato"); Col = Col + 1; }
-                if (dp["customerShipmentDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Envio"); Col = Col + 1; }
-                if (dp["proposalChangeDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Alteração"); Col = Col + 1; }
-                if (dp["internalNumeration"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Numeração Interna"); Col = Col + 1; }
-                if (dp["totalProposalValue"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Valor Total"); Col = Col + 1; }
-                if (dp["provisionUnit"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Unidade de Prestação"); Col = Col + 1; }
-                if (dp["baseValueProcedure"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Valor Base Procedimento"); Col = Col + 1; }
-                if (dp["notes"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Notas"); Col = Col + 1; }
 
                 if (dp != null)
                 {
                     int count = 1;
                     foreach (ContractViewModel item in Lista)
                     {
-                        Col = 0;
                         row = excelSheet.CreateRow(count);
 
-                        if (dp["contractNo"]["hidden"].ToString() == "False")
+                        for (int i = 0; i < columns.Count; i++)
                         {
-                            row.CreateCell(Col).SetCellValue(item.ContractNo);
-                            Col = Col + 1;
-                        }
-                        if (dp["oportunityNo"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.OportunityNo);
-                            Col = Col + 1;
-                        }
-                        if (dp["startData"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.StartData);
-                            Col = Col + 1;
-                        }
-                        if (dp["dueDate"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.DueDate);
-                            Col = Col + 1;
-                        }
-                        if (dp["contactNo"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.ContactNo);
-                            Col = Col + 1;
-                        }
-                        if (dp["clientNo"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.ClientNo);
-                            Col = Col + 1;
-                        }
-                        if (dp["clientName"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.ClientName);
-                            Col = Col + 1;
-                        }
-                        if (dp["description"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.Description);
-                            Col = Col + 1;
-                        }
-                        if (dp["statusDescription"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.StatusDescription);
-                            Col = Col + 1;
-                        }
-                        if (dp["codeRegion"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.CodeRegion);
-                            Col = Col + 1;
-                        }
-                        if (dp["codeFunctionalArea"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.CodeFunctionalArea);
-                            Col = Col + 1;
-                        }
-                        if (dp["codeResponsabilityCenter"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.CodeResponsabilityCenter);
-                            Col = Col + 1;
-                        }
-                        if (dp["versionNo"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.VersionNo);
-                            Col = Col + 1;
-                        }
+                            var column = columns[i];
+                            var isHidden = true;
+                            try { isHidden = (bool)column.First()["hidden"]; } catch { }
 
-                        if (dp["ordOrderSource"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.OrdOrderSource); Col = Col + 1; }
-                        if (dp["relatedContract"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RelatedContract); Col = Col + 1; }
-                        if (dp["customerShipmentDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CustomerShipmentDate); Col = Col + 1; }
-                        if (dp["proposalChangeDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ProposalChangeDate); Col = Col + 1; }
-                        if (dp["internalNumeration"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.InternalNumeration); Col = Col + 1; }
-                        if (dp["totalProposalValue"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.TotalProposalValue.ToString()); Col = Col + 1; }
-                        if (dp["provisionUnit"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ProvisionUnitText); Col = Col + 1; }
-                        if (dp["baseValueProcedure"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.BaseValueProcedure.ToString()); Col = Col + 1; }
-                        if (dp["notes"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Notes); Col = Col + 1; }
+                            if (!isHidden)
+                            {
+                                var columnPath = column.Path.ToString();
+                                columnPath = columnPath.First().ToString().ToUpper() + String.Join("", columnPath.Skip(1));
+                                object value = null;
+                                try { value = item.GetType().GetProperty(columnPath).GetValue(item, null); } catch { }
+                                if (value == null) try { value = item.GetType().GetProperty(columnPath.ToUpper()).GetValue(item, null); } catch { }
+
+                                if ((new[] { "TotalProposalValue", "BaseValueProcedure" }).Contains(columnPath))
+                                {
+                                    row.CreateCell(i).SetCellValue((double)(value != null ? (decimal)value : 0));
+                                }
+                                else
+                                {
+                                    row.CreateCell(i).SetCellValue(value?.ToString());
+                                }
+                            }
+                        }
 
                         count++;
                     }

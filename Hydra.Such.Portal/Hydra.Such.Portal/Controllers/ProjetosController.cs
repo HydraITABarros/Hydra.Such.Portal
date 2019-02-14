@@ -1780,7 +1780,8 @@ namespace Hydra.Such.Portal.Controllers
                                     UtilizadorCriação = User.Identity.Name,
                                     DataHoraCriação = DateTime.Now,
                                     FaturaçãoAutorizada = false,
-                                    NºDocumento = "ES_" + newdp.NºProjeto
+                                    NºDocumento = "ES_" + newdp.NºProjeto,
+                                    CriarMovNav2017 = false
                                 };
 
                                 DBProjectMovements.Create(ProjectMovement);
@@ -3498,6 +3499,7 @@ namespace Hydra.Such.Portal.Controllers
                     string projectRegion = proj != null ? proj.CódigoRegião : string.Empty;
                     var customer = customers.FirstOrDefault(y => y.No_ == x.InvoiceToClientNo);
                     x.SetDimensionsFor(authProj, projectRegion, customer);
+                    x.DataPedido = authProj.DataPedido;
 
                     TiposGrupoContabProjeto contabGroupType = new TiposGrupoContabProjeto();
                     x.Items.ForEach(item =>
@@ -3592,6 +3594,7 @@ namespace Hydra.Such.Portal.Controllers
                             header.CreateUser = User.Identity.Name;
 
                             execDetails = string.Format("Fat. Cliente: {0}, Data: {1}, Nº Compromisso: {2} - ", header.InvoiceToClientNo, header.Date, header.CommitmentNumber);
+
 
                             Task<WSCreatePreInvoice.Create_Result> TCreatePreInvoice = WSPreInvoice.CreatePreInvoice(header, _configws, dataFormulario, projeto);
                             TCreatePreInvoice.Wait();
@@ -6499,7 +6502,7 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         if (dp["quantity"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.Quantity.ToString());
+                            row.CreateCell(Col).SetCellValue((double)item.Quantity);
                             Col = Col + 1;
                         }
                         if (dp["measurementUnitCode"]["hidden"].ToString() == "False")
@@ -6539,22 +6542,22 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         if (dp["unitCost"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.UnitCost.ToString());
+                            row.CreateCell(Col).SetCellValue((double)(item.UnitCost??0));
                             Col = Col + 1;
                         }
                         if (dp["totalCost"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.TotalCost.ToString());
+                            row.CreateCell(Col).SetCellValue((double)(item.TotalCost??0));
                             Col = Col + 1;
                         }
                         if (dp["unitPrice"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.UnitPrice.ToString());
+                            row.CreateCell(Col).SetCellValue((double)(item.UnitPrice??0));
                             Col = Col + 1;
                         }
                         if (dp["totalPrice"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.TotalPrice.ToString());
+                            row.CreateCell(Col).SetCellValue((double)(item.TotalPrice??0));
                             Col = Col + 1;
                         }
                         if (dp["billable"]["hidden"].ToString() == "False")
@@ -6694,7 +6697,7 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         if (dp["unitValueToInvoice"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.UnitValueToInvoice.ToString());
+                            row.CreateCell(Col).SetCellValue((double)(item.UnitValueToInvoice??0));
                             Col = Col + 1;
                         }
                         if (dp["serviceClientCode"]["hidden"].ToString() == "False")
@@ -6975,27 +6978,27 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         if (dp["quantity"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.Quantity.ToString());
+                            row.CreateCell(Col).SetCellValue((double)(item.Quantity??0));
                             Col = Col + 1;
                         }
                         if (dp["unitPrice"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.UnitPrice.ToString());
+                            row.CreateCell(Col).SetCellValue((double)(item.UnitPrice??0));
                             Col = Col + 1;
                         }
                         if (dp["totalPrice"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.TotalPrice.ToString());
+                            row.CreateCell(Col).SetCellValue((double)(item.TotalPrice??0));
                             Col = Col + 1;
                         }
                         if (dp["unitCost"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.UnitCost.ToString());
+                            row.CreateCell(Col).SetCellValue((double)(item.UnitCost??0));
                             Col = Col + 1;
                         }
                         if (dp["totalCost"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.TotalCost.ToString());
+                            row.CreateCell(Col).SetCellValue((double)(item.TotalCost??0));
                             Col = Col + 1;
                         }
                         if (dp["invoiceToClientNo"]["hidden"].ToString() == "False")

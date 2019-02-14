@@ -238,7 +238,9 @@
                     <vaadin-grid-filter path="quantity" />
                 </template>
                 <template>
-                    {{item.quantity}}
+                    <div class="text-right">
+                        {{item.quantity}}
+                    </div>
                 </template>
             </vaadin-grid-column>
 
@@ -363,7 +365,9 @@
                     <vaadin-grid-filter path="unitCost" />
                 </template>
                 <template>
-                    {{item.unitCost}}€
+                    <div class="text-right">
+                        [[formatCurrency(item.unitCost)]]
+                    </div>
                 </template>
             </vaadin-grid-column>
 
@@ -373,7 +377,9 @@
                     <vaadin-grid-filter path="totalCost" />
                 </template>
                 <template>
-                    {{item.totalCost}}€
+                    <div class="text-right">
+                        [[formatCurrency(item.totalCost)]]
+                    </div>
                 </template>
             </vaadin-grid-column>
 
@@ -383,7 +389,9 @@
                     <vaadin-grid-filter path="unitPrice" />
                 </template>
                 <template>
-                    {{item.unitPrice}}€
+                    <div class="text-right">
+                        [[formatCurrency(item.unitPrice)]]
+                    </div>
                 </template>
             </vaadin-grid-column>
 
@@ -393,7 +401,9 @@
                     <vaadin-grid-filter path="TotalPrice" />
                 </template>
                 <template>
-                    {{item.totalPrice}}€
+                    <div class="text-right">
+                        [[formatCurrency(item.totalPrice)]]
+                    </div>
                 </template>
             </vaadin-grid-column>
 
@@ -625,7 +635,9 @@
                     <vaadin-grid-filter path="quantityReturned" />
                 </template>
                 <template>
-                    {{item.quantityReturned}}
+                    <div class="text-right">
+                        {{item.quantityReturned}}
+                    </div>
                 </template>
             </vaadin-grid-column>
 
@@ -677,7 +689,9 @@
                     <vaadin-grid-filter path="unitValueToInvoice" />
                 </template>
                 <template>
-                    {{item.unitValueToInvoice}}
+                    <div class="text-right">
+                        [[ formatCurrency(item.unitValueToInvoice) ]]
+                    </div>
                 </template>
             </vaadin-grid-column>
 
@@ -878,9 +892,10 @@
                 },
 
                 _exportEXCEL: function () {
-                    this.result[0].ColunasEXCEL = this._columns;
+                    var result = this.$.projectMovementTable._filter(this.result);
+                    result[0].ColunasEXCEL = this._columns;
 
-                    this.$.ajax_Export.body = JSON.stringify(this.result);
+                    this.$.ajax_Export.body = JSON.stringify(result);
                     this.$.ajax_Export.generateRequest();
                 },
 
@@ -1014,8 +1029,12 @@
                 _goBack: function (e) {
                     window.history.back();
                 },
-
-
+                formatCurrency: function (value) {
+                    if (value && value != "") {
+                        value = value + " €";
+                    }
+                    return value;
+                }
 
             });
         });

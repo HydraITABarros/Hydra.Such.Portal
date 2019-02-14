@@ -182,6 +182,16 @@
                 </template>
             </vaadin-grid-column>
 
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.regiaoMercadoLocalText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="regiaoMercadoLocalText">Mercado Local</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="regiaoMercadoLocalText" />
+                </template>
+                <template>
+                    {{item.regiaoMercadoLocalText}}
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.tipoText.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="tipoText">Tipo</vaadin-grid-sorter>
@@ -861,6 +871,7 @@
                         "noEncomenda": { hidden: false, label: "Nº Encomenda" },
                         "codigoFornecedor": { hidden: false, label: "Cód. Fornecedor" },
                         "fornecedor": { hidden: false, label: "Fornecedor" },
+                        "regiaoMercadoLocalText": { hidden: false, label: "Mercado Local" },
                         "tipoText": { hidden: false, label: "Tipo" },
                         "nib": { hidden: false, label: "NIB" },
                         "iban": { hidden: false, label: "IBAN" },
