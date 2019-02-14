@@ -145,6 +145,7 @@
         <iron-ajax url="/PopulateDropdowns/GetEstadoPedidoPagamento" id="grid_Estado_ajax" last-response="{{LCBEstado}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetNAVVendorComboGrid" id="grid_Fornecedor_ajax" last-response="{{LCBFornecedor}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetAllPurchase" id="grid_Encomenda_ajax" last-response="{{LCBEncomenda}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetLocalMarketRegions" last-response="{{CBLocalMarketRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/Encomendas/GetPedidoPagamento"
                    last-response="{{data}}"
@@ -209,6 +210,15 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/Encomendas/ObterNIB"
+                   last-response="{{resultNIB}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_ObterNIB_ajax"
+                   on-response="_ObterNIBResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
             <paper-button id="btnCreateNewPedidoPagamento" class="tablinks" on-tap="_createNewPedidoPagamento"><i class="fa fa-check-square" aria-hidden="true"></i> Criar</paper-button>
@@ -259,13 +269,25 @@
                         </div>
 
                         <div class="col-sm-3">
+                            <vaadin-combo-box items="[[CBLocalMarketRegions]]" id="idMercadoLocal" item-value-path="id" item-label-path="value" value="{{data.regiaoMercadoLocal}}" label="Mercado Local" on-value-changed="_AutoUpdatePedidoPagamento">
+                                <template>
+                                    <table width="180px">
+                                        <tr>
+                                            <td width="100%"> <b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
+
+                        <div class="col-sm-3">
                             <vaadin-checkbox id="ddPrioritario" checked="{{data.prioritario}}" on-click="_clickPrioritario" disabled="{{ !data.editarPrioritario }}">Prioritário</vaadin-checkbox>
                         </div>
                     </div>
 
                     <div class="row break_clear">
                         <div class="col-sm-6">
-                            <such-textarea id="ddDescricao" label="Descrição" value="{{data.descricao}}" rows="5" maxlength="250" disabled="{{ !_permissions.update }}"></such-textarea>
+                            <such-textarea id="ddDescricao" label="Descrição" value="{{data.descricao}}" rows="5" maxlength="250" on-value-changed="_AutoUpdatePedidoPagamento"></such-textarea>
                         </div>
 
                         <div class="col-sm-3">
@@ -390,7 +412,7 @@
                     },
                     _functionsMenuItems: {
                         type: Array,
-                        value: [{ value: 1, description: "Enviar p/ Aprovação" }, { value: 2, description: "Aprovar" }, { value: 3, description: "Validar" }, { value: 4, description: "Anular Pedido" }],
+                        value: [{ value: 1, description: "Enviar p/ Aprovação" }, { value: 2, description: "Aprovar" }, { value: 3, description: "Validar" }, { value: 4, description: "Anular Pedido" }, { value: 5, description: "Obter NIB/IBAN" }],
                     },
                     _reportserverurl: {
                         type: String,
@@ -455,6 +477,9 @@
                         case 4: //"Anular Pedido"
                             this._Anular();
                             break;
+                        case 5: //"Obter NIB"
+                            this._ObterNIB();
+                            break;
                     }
                 },
 
@@ -463,7 +488,6 @@
                 },
 
                 _createNewPedidoPagamento: function (e) {
-                    debugger;
                     var ValorEncomenda = this.$.ddValorEncomenda.value != "" ? parseFloat(this.$.ddValorEncomenda.value) : 0;
                     var ValorJaPedido = this.$.ddValorJaPedido.value != "" ? parseFloat(this.$.ddValorJaPedido.value) : 0;
                     var ValorPedidoComIVA = this.$.ddValorpedidoComIVA.value != "" ? parseFloat(this.$.ddValorpedidoComIVA.value) : 0;
@@ -660,8 +684,6 @@
                 },
 
                 _clickPrioritario: function () {
-                    debugger;
-
                     if (this.chkPrioritario == true)
                         this.chkPrioritario = false;
                     else
@@ -674,13 +696,35 @@
                         this.$.page_Update_ajax.generateRequest();
                     }
                 },
+                _AutoUpdatePedidoPagamento: function () {
+                    if (this.data.noPedido > 0) {
+                        this.data.regiaoMercadoLocal = this.$.idMercadoLocal.value;
+
+                        this.$.page_Update_ajax.body = JSON.stringify(this.data);
+                        this.$.page_Update_ajax.generateRequest();
+                    }
+                },
                 _UpdateResponse: function (e) {
-                    debugger;
                     if (this.resultUpdate.eReasonCode == "1") {
                         this._openToast(this.resultUpdate.eMessage);
                     }
                     else {
                         this._openToastError(this.resultUpdate.eMessage);
+                    }
+                },
+
+                _ObterNIB: function () {
+                    debugger;
+                    this.$.page_ObterNIB_ajax.body = JSON.stringify(this.data);
+                    this.$.page_ObterNIB_ajax.generateRequest();
+                },
+                _ObterNIBResponse: function (e) {
+                    debugger;
+                    if (this.resultNIB.eReasonCode == "1") {
+                        this._openToast(this.resultNIB.eMessage);
+                    }
+                    else {
+                        this._openToastError(this.resultNIB.eMessage);
                     }
                 },
 

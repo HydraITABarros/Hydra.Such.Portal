@@ -306,25 +306,25 @@ namespace Hydra.Such.Portal.Controllers
                     Pedido.ValorJaPedido = pedidos.Sum(x => x.Valor);
 
                     Pedido.EditarPrioritario = false;
-                    if (Pedido.Aprovadores.ToLower().Contains(User.Identity.Name.ToLower()))
+                    if (!string.IsNullOrEmpty(Pedido.Aprovadores) && Pedido.Aprovadores.ToLower().Contains(User.Identity.Name.ToLower()))
                     {
                         Pedido.EditarPrioritario = true;
                     }
                     else
                     {
-                        if (Pedido.UserAprovacao != null && Pedido.UserAprovacao == User.Identity.Name.ToLower())
+                        if (!string.IsNullOrEmpty(Pedido.UserAprovacao) && Pedido.UserAprovacao == User.Identity.Name.ToLower())
                         {
                             Pedido.EditarPrioritario = true;
                         }
                         else
                         {
-                            if (Pedido.UserValidacao != null && Pedido.UserValidacao.ToLower() == User.Identity.Name.ToLower())
+                            if (!string.IsNullOrEmpty(Pedido.UserValidacao) && Pedido.UserValidacao.ToLower() == User.Identity.Name.ToLower())
                             {
                                 Pedido.EditarPrioritario = true;
                             }
                             else
                             {
-                                if (Pedido.UserFinanceiros != null && Pedido.UserFinanceiros.ToLower() == User.Identity.Name.ToLower())
+                                if (!string.IsNullOrEmpty(Pedido.UserFinanceiros) && Pedido.UserFinanceiros.ToLower() == User.Identity.Name.ToLower())
                                 {
                                     Pedido.EditarPrioritario = true;
                                 }
@@ -758,6 +758,7 @@ namespace Hydra.Such.Portal.Controllers
 
                     if (Pedido != null)
                     {
+                        Pedido.RegiaoMercadoLocal = data.RegiaoMercadoLocal;
                         Pedido.Prioritario = data.Prioritario;
                         Pedido.UtilizadorModificacao = User.Identity.Name;
                         Pedido.DataModificacao = DateTime.Now;
@@ -773,6 +774,62 @@ namespace Hydra.Such.Portal.Controllers
                             data.eMessage = "Ocorreu um erro ao atualizar o Pedido de Pagamento.";
                         }
                     }
+                }
+            }
+            catch (Exception ex)
+            {
+                data.eReasonCode = 99;
+                data.eMessage = "Ocorreu um erro.";
+            }
+            return Json(data);
+        }
+
+        [HttpPost]
+        public JsonResult ObterNIB([FromBody] PedidosPagamentoViewModel data)
+        {
+            try
+            {
+                if (data != null)
+                {
+                    if (!string.IsNullOrEmpty(data.CodigoFornecedor))
+                    {
+                        var vendor = DBNAV2017VendorBankAccount.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName, data.CodigoFornecedor);
+
+                        if (vendor != null)
+                        {
+                            data.NIB = vendor.NIB;
+                            data.IBAN = vendor.IBAN;
+
+                            if (data.NoPedido > 0)
+                            {
+                                if (DBPedidoPagamento.Update(DBPedidoPagamento.ParseToDB(data)) != null)
+                                {
+                                    data.eReasonCode = 1;
+                                    data.eMessage = "O NIB/IBAN foi obtido com sucesso.";
+                                }
+                                else
+                                {
+                                    data.eReasonCode = 2;
+                                    data.eMessage = "Ocorreu um erro ao atualizar o Pedido de Pagamento.";
+                                }
+                            }
+                        }
+                        else
+                        {
+                            data.eReasonCode = 3;
+                            data.eMessage = "Não foi possível encontrar o fornecedor para obter NIB/IBAN.";
+                        }
+                    }
+                    else
+                    {
+                        data.eReasonCode = 4;
+                        data.eMessage = "Para obter NIB/IBAN é necessário definir qual o Fornecedor no Pedido de Pagemento.";
+                    }
+                }
+                else
+                {
+                    data.eReasonCode = 4;
+                    data.eMessage = "Ocorreu um erro nos dados.";
                 }
             }
             catch (Exception ex)

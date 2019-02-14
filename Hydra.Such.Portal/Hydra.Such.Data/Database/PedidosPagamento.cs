@@ -38,6 +38,7 @@ namespace Hydra.Such.Data.Database
         public bool? Prioritario { get; set; }
         public DateTime? DataPrioridade { get; set; }
         public string NumeroTransferencia { get; set; }
+        public string RegiaoMercadoLocal { get; set; }
         public string UtilizadorCriacao { get; set; }
         public DateTime? DataCriacao { get; set; }
         public string UtilizadorModificacao { get; set; }
