@@ -87,6 +87,7 @@ namespace Hydra.Such.Portal.Controllers
                 int month = 0;
                 int.TryParse(requestParams.GetValue("month")?.ToString(), out month);
                 string fornecedor = (string)requestParams.GetValue("fornecedor");
+                string requisitionNo = (string)requestParams.GetValue("requisitionNo");
                 string from = "";
                 string to = "";
                 if (year != 0)
@@ -99,7 +100,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (UPerm != null && UPerm.Read.Value)
                 {
                     List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
-                    List<EncomendasViewModel> result = DBNAV2017Encomendas.ListByDimListAndNoFilter(_config.NAVDatabaseName, _config.NAVCompanyName, userDimensions, "C%", from, to, fornecedor);
+                    List<EncomendasViewModel> result = DBNAV2017Encomendas.ListByDimListAndNoFilter(_config.NAVDatabaseName, _config.NAVCompanyName, userDimensions, "C%", from, to, fornecedor, requisitionNo);
                     return Json(result);
                 }
                 else
