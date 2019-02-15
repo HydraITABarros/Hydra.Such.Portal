@@ -154,7 +154,7 @@ namespace Hydra.Such.Portal.Controllers
         public IActionResult ComprasDinheiroByDimensions()
         {
             UserAccessesViewModel userPermissions =
-                DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.RequisiçõesComprasDinheiro);
+                DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.ListaComprasDinheiro);
             if (userPermissions != null && userPermissions.Read.Value)
             {
                 ViewBag.UPermissions = userPermissions;
@@ -2741,7 +2741,7 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (requisition != null)
                 {
-                    var totalValue = requisition.GetTotalValue();
+                    var totalValue = requisition.GetTotalValueWithUnitCost();
                     result = ApprovalMovementsManager.StartApprovalMovement(1, requisition.FunctionalAreaCode, requisition.CenterResponsibilityCode, requisition.RegionCode, totalValue, requisitionId, User.Identity.Name, "");
                 }
             }

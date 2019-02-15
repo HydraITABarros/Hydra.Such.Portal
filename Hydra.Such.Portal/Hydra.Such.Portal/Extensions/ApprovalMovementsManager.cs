@@ -70,7 +70,7 @@ namespace Hydra.Such.Portal.Extensions
                         if (approvalConfiguration.UtilizadorAprovação.ToLower() == requestUser.ToLower())
                             approvalConfiguration.UtilizadorAprovação = DBUserConfigurations.GetById(requestUser).SuperiorHierarquico;
 
-                        if (approvalConfiguration.UtilizadorAprovação != "" && approvalConfiguration.UtilizadorAprovação != null && approvalConfiguration.UtilizadorAprovação.ToLower() != requestUser.ToLower())
+                        if (approvalConfiguration.UtilizadorAprovação != "" && approvalConfiguration.UtilizadorAprovação != null)
                         {
                             Aprovadores = approvalConfiguration.UtilizadorAprovação;
                             DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = approvalConfiguration.UtilizadorAprovação });
@@ -93,7 +93,7 @@ namespace Hydra.Such.Portal.Extensions
 
                         GUsers.ForEach(y =>
                         {
-                            if (y != "" && y != null && y.ToLower() != requestUser.ToLower())
+                            if (y != "" && y != null)
                             {
                                 Aprovadores = Aprovadores + y + " - ";
                                 DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = y });

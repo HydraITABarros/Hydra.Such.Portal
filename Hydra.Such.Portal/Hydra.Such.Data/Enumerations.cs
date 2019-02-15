@@ -171,7 +171,8 @@ namespace Hydra.Such.Data
             ContratosInternos = 61,
             [Description("Contratos Quotas")]
             ContratosQuotas = 62,
-
+            [Description("Lista Compras a Dinheiro")]
+            ListaComprasDinheiro = 63,
 
 
             [Description("Administração Geral")]

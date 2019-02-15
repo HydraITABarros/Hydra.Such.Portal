@@ -729,7 +729,7 @@ namespace Hydra.Such.Portal.Controllers
                         ctx.RequisicoesRegAlteracoes.Add(logEntry);
                         ctx.SaveChanges();
 
-                        var totalValue = requisition.GetTotalValue();
+                        var totalValue = requisition.GetTotalValueWithUnitCost();
                         //Start Approval
                         ErrorHandler result = ApprovalMovementsManager.StartApprovalMovement(1, createReq.CódigoÁreaFuncional, createReq.CódigoCentroResponsabilidade, createReq.CódigoRegião, totalValue, createReq.NºRequisição, User.Identity.Name, "");
                         if (result.eReasonCode != 100)

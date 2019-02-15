@@ -112,7 +112,19 @@ namespace Hydra.Such.Data.ViewModel.Compras
             this.ChangeLog = new List<RequisitionChangeLog>();
         }
 
-        public decimal GetTotalValue()
+        public decimal GetTotalValueWithUnitCost()
+        {
+            decimal value = 0;
+            if (this.Lines != null && this.Lines.Count > 0)
+            {
+                value = this.Lines
+                    .Where(x => x.UnitCost.HasValue && x.QuantityToRequire.HasValue)
+                    .Sum(x => x.UnitCost.Value * x.QuantityToRequire.Value);
+            }
+            return value;
+        }
+
+        public decimal GetTotalValueWithIVA()
         {
             decimal value = 0;
             if (this.Lines != null && this.Lines.Count > 0)

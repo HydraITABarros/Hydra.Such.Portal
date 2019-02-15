@@ -1409,7 +1409,7 @@
                         this.$.page_getProject_ajax.generateRequest();
                     }
                     else {
-                        this.$._CLRegion.value = "";
+                        this.$._CLRegion._clearSelection.value = "";
                         this.$._CLRegion.valueText = "";
                         this.$.RegionCode.value = "";
                         this.$.RegionCode.valueText = "";
@@ -1689,7 +1689,6 @@
                 },
 
                 _createnewreq: function (e) {
-                    debugger;
                     this.data.area = this._areaid;
                     var countWithIVA = 0;
                     if (this.dataLines.lines != null) {
@@ -1704,7 +1703,11 @@
                         if (this.$.valorTotalDocComIVA.value != "" && this.$.valorTotalDocComIVA.value != null) {
                             if (this.$.projectNo.value != "" && this.$.projectNo.value != null) {
                                 if (this.dataLines.lines != null) {
-                                    if (countWithIVA == this.$.valorTotalDocComIVA.value.toFixed(2).replace(",", ".")) {
+                                    var totalComIva = this.$.valorTotalDocComIVA.value;
+                                    //totalComIva = totalComIva.toFixed(2);
+                                    totalComIva = totalComIva.replace(",", ".");
+
+                                    if (countWithIVA == parseFloat(totalComIva)) {
                                         this.$.page_validator_req_ajax.body = JSON.stringify(this.data);
                                         this.$.page_validator_req_ajax.generateRequest();
                                     }
@@ -2929,7 +2932,7 @@
                                 this.$._UnitCost.value = "";
                                 this.$._UnitCostWithIVA.value = "";
                                 this.$._CustoTotalComIVA.value = "";
-
+                                
                                 this.$._ProjectNo.value = this.data.projectNo;
                                 this.$._CLRegion.value = this.data.regionCode;
                                 this.$._CLFunctionalAreaCode.value = this.data.functionalAreaCode;
