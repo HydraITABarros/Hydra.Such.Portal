@@ -119,7 +119,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
             {
                 value = this.Lines
                     .Where(x => x.UnitCost.HasValue && x.QuantityToRequire.HasValue)
-                    .Sum(x => x.UnitCost.Value * x.QuantityToRequire.Value);
+                    .Sum(x => x.UnitCostWithIVA.Value * x.QuantityToRequire.Value);
             }
             return value;
         }

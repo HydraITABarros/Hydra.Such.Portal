@@ -222,6 +222,27 @@ namespace Hydra.Such.Portal.Extensions
 
                 //Get Next Level Configuration
                 List<ConfiguraçãoAprovações> ApprovalConfigurations = DBApprovalConfigurations.GetByTypeAreaValueDateAndDimensions(ApprovalMovement.Type.Value, ApprovalMovement.FunctionalArea, ApprovalMovement.ResponsabilityCenter, ApprovalMovement.Region, ApprovalMovement.Value.Value, DateTime.Now);
+
+                if (ApprovalMovement.Type == 4)
+                {
+                    if (ApprovalConfigurations != null && ApprovalConfigurations.Count() > 0)
+                    {
+                        decimal valorMinimo = 0;
+                        decimal valorMaximo = 0;
+
+                        ApprovalConfigurations.OrderBy(x => x.NívelAprovação).ToList().ForEach(y =>
+                        {
+                            valorMaximo = (decimal)y.ValorAprovação;
+                            if (!(ApprovalMovement.Value >= valorMinimo && ApprovalMovement.Value <= valorMaximo))
+                            {
+                                valorMinimo = (decimal)y.ValorAprovação;
+                                ApprovalConfigurations.RemoveAll(z => z.NívelAprovação == y.NívelAprovação);
+                            }
+                            valorMinimo = (decimal)y.ValorAprovação;
+                        });
+                    }
+                }
+
                 ApprovalConfigurations.RemoveAll(x => !x.NívelAprovação.HasValue || x.NívelAprovação <= ApprovalMovement.Level);
 
                 string itemToApproveInfo = string.Empty;
