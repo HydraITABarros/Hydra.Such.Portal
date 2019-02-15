@@ -2153,7 +2153,7 @@ namespace Hydra.Such.Portal.Controllers
                         //count successful items for later validation
                         totalItems++;
                         //createdReqIds += RequisitionNo + "; ";
-                        var totalValue = req.GetTotalValueWithUnitCost();
+                        var totalValue = req.GetTotalValue();
                         //Start Approval
                         ErrorHandler result = ApprovalMovementsManager.StartApprovalMovement(1, createReq.CódigoÁreaFuncional, createReq.CódigoCentroResponsabilidade, createReq.CódigoRegião, totalValue, createReq.NºRequisição, User.Identity.Name, "");
                         if (result.eReasonCode != 100)
