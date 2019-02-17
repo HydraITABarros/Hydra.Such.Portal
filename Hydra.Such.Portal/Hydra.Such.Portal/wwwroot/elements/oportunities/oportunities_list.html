@@ -56,7 +56,8 @@
                    method="post"
                    handle-as="json"
                    id="grid_databound_ajax"
-                   content-type="application/json"></iron-ajax>
+                   content-type="application/json"
+                   on-response="_responseProcessor"></iron-ajax>
 
         <iron-ajax url="/Contratos/DeleteContract"
                    last-response="{{deletedData}}"
@@ -100,7 +101,7 @@
             <!--end ColumnToggle-->
         </div>
 
-        <vaadin-grid aria-label="ContractsGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+        <vaadin-grid column-reordering-allowed aria-label="ContractsGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.contractNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="contractNo">Nº Oportunidade</vaadin-grid-sorter>
@@ -436,6 +437,7 @@
                     }
                 },
                 ready: function () {
+                    var _this = this;
                     if (this._archived == 1) {
                         this._disabledCreate = true;
                     }
@@ -451,8 +453,17 @@
                     $(window).resize(function () {
                         clearTimeout(gridToBottomTimeout);
                         gridToBottomTimeout = setTimeout(function () { _this.fixGridToBottom(); }, 200);
+
                     });
                     $(window).trigger('resize');
+
+                },
+                attached: function () {
+                    var _this = this;
+                    setTimeout(function () {
+                        window.handleGridListColumnsOrder(_this.$.grid, 'contratos-oportunidades');
+                    }, 600);
+
                 },
                 fixGridToBottom: function () {
                     var grid_el = $(this.$.grid);
@@ -531,9 +542,10 @@
                 },
 
                 _exportEXCEL: function () {
-                    this.result[0].ColunasEXCEL = this._columns;
+                    var result = this.$.grid._filter(this.result);
+                    result[0].ColunasEXCEL = this._columns;
 
-                    this.$.ajax_Export.body = JSON.stringify(this.result);
+                    this.$.ajax_Export.body = JSON.stringify(result);
                     this.$.ajax_Export.generateRequest();
                 },
 
@@ -611,6 +623,9 @@
                     if (value != null && value != 0) {
                         return currency(value, { separator: '.', decimal: ',' }).format();
                     }
+                },
+                _responseProcessor: function () {
+
                 }
             });
         });
