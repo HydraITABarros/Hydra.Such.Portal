@@ -123,6 +123,18 @@ namespace Hydra.Such.Data.ViewModel.Compras
             }
             return value;
         }
+
+        public decimal GetTotalValueWithIVA()
+        {
+            decimal value = 0;
+            if (this.Lines != null && this.Lines.Count > 0)
+            {
+                value = this.Lines
+                    .Where(x => x.UnitCostWithIVA.HasValue && x.QuantityToRequire.HasValue)
+                    .Sum(x => x.UnitCostWithIVA.Value * x.QuantityToRequire.Value);
+            }
+            return value;
+        }
     }
 
     public partial class RequisitionChangeLog

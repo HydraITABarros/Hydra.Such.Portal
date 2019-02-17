@@ -2535,7 +2535,7 @@ namespace Hydra.Such.Portal.Controllers
                         //count successful items for later validation
                         totalItems++;
                         //createdReqIds += RequisitionNo + "; ";
-                        var totalValue = req.GetTotalValue();
+                        var totalValue = req.GetTotalValueWithIVA();
                         //Start Approval
                         ErrorHandler result = ApprovalMovementsManager.StartApprovalMovement(4, createReq.CódigoÁreaFuncional, createReq.CódigoCentroResponsabilidade, createReq.CódigoRegião, totalValue, createReq.NºRequisição, User.Identity.Name, "");
                         if (result.eReasonCode != 100)
@@ -2671,7 +2671,9 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (String.IsNullOrEmpty(Error))
                 {
-                    ApprovalMovResult = ApprovalMovementsManager.StartApprovalMovement(4, createReq.CódigoÁreaFuncional, createReq.CódigoCentroResponsabilidade, createReq.CódigoRegião, 0, createReq.NºRequisição, User.Identity.Name, "");
+                    decimal totalValue = (decimal)createReq.ValorTotalDocComIVA;
+
+                    ApprovalMovResult = ApprovalMovementsManager.StartApprovalMovement(4, createReq.CódigoÁreaFuncional, createReq.CódigoCentroResponsabilidade, createReq.CódigoRegião, totalValue, createReq.NºRequisição, User.Identity.Name, "");
 
                     if (ApprovalMovResult.eReasonCode != 100)
                     {
@@ -2687,7 +2689,9 @@ namespace Hydra.Such.Portal.Controllers
             }
             else
             {
-                ApprovalMovResult = ApprovalMovementsManager.StartApprovalMovement(4, createReq.CódigoÁreaFuncional, createReq.CódigoCentroResponsabilidade, createReq.CódigoRegião, 0, createReq.NºRequisição, User.Identity.Name, "");
+                decimal totalValue = (decimal)createReq.ValorTotalDocComIVA;
+
+                ApprovalMovResult = ApprovalMovementsManager.StartApprovalMovement(4, createReq.CódigoÁreaFuncional, createReq.CódigoCentroResponsabilidade, createReq.CódigoRegião, totalValue, createReq.NºRequisição, User.Identity.Name, "");
                 if (ApprovalMovResult.eReasonCode != 100)
                 {
                     ApprovalMovResult.eReasonCode = 2;

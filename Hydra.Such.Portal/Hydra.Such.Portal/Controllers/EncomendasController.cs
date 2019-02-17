@@ -291,7 +291,7 @@ namespace Hydra.Such.Portal.Controllers
                     Pedido.Prioritario = false;
                     Pedido.EditarPrioritario = false;
 
-                    Pedido.ValorJaPedido = pedidos.Sum(x => x.Valor);
+                    Pedido.ValorJaPedido = pedidos.Where(y => y.Estado != 5).Sum(x => x.Valor);
                     Pedido.DataText = DateTime.Now.ToString("yyyy-MM-dd");
                     Pedido.DataPedidoText = DateTime.Now.ToString("yyyy-MM-dd");
 
@@ -303,7 +303,7 @@ namespace Hydra.Such.Portal.Controllers
                     PedidosPagamentoViewModel Pedido = DBPedidoPagamento.ParseToViewModel(DBPedidoPagamento.GetIDPedidosPagamento(idPedido));
 
                     var pedidos = DBPedidoPagamento.GetAllPedidosPagamentoByEncomenda(Pedido.NoEncomenda);
-                    Pedido.ValorJaPedido = pedidos.Sum(x => x.Valor);
+                    Pedido.ValorJaPedido = pedidos.Where(y => y.Estado != 5).Sum(x => x.Valor);
 
                     Pedido.EditarPrioritario = false;
                     if (!string.IsNullOrEmpty(Pedido.Aprovadores) && Pedido.Aprovadores.ToLower().Contains(User.Identity.Name.ToLower()))
@@ -433,18 +433,18 @@ namespace Hydra.Such.Portal.Controllers
                         data.eMessage = "O Pedido de Pagamento tem que estar no estado no Inicial.";
                         return Json(data);
                     }
-                    if (string.IsNullOrEmpty(data.NIB))
-                    {
-                        data.eReasonCode = 3;
-                        data.eMessage = "O campo NIB é de preenchimento obrigatório.";
-                        return Json(data);
-                    }
-                    if (string.IsNullOrEmpty(data.IBAN))
-                    {
-                        data.eReasonCode = 4;
-                        data.eMessage = "O campo IBAN é de preenchimento obrigatório.";
-                        return Json(data);
-                    }
+                    //if (string.IsNullOrEmpty(data.NIB))
+                    //{
+                    //    data.eReasonCode = 3;
+                    //    data.eMessage = "O campo NIB é de preenchimento obrigatório.";
+                    //    return Json(data);
+                    //}
+                    //if (string.IsNullOrEmpty(data.IBAN))
+                    //{
+                    //    data.eReasonCode = 4;
+                    //    data.eMessage = "O campo IBAN é de preenchimento obrigatório.";
+                    //    return Json(data);
+                    //}
                     if (data.Valor <= 0)
                     {
                         data.eReasonCode = 5;

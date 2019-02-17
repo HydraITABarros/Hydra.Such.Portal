@@ -495,10 +495,10 @@
                     var NIB = this.$.ddNIB.value;
                     var IBAN = this.$.ddIBAN.value;
 
-                    if ((NIB == "" || NIB == null) || (IBAN == "" || IBAN == null)) {
-                        this._openToastError('A ficha do fornecedor no NAV 2017 não tem preenchidos o NIB e/ou IBAN.');
-                    }
-                    else {
+                    //if ((NIB == "" || NIB == null) || (IBAN == "" || IBAN == null)) {
+                    //    this._openToastError('A ficha do fornecedor no NAV 2017 não tem preenchidos o NIB e/ou IBAN.');
+                    //}
+                    //else {
                         if (ValorPedidoComIVA > 0) {
                             if (ValorPedidoComIVA <= (ValorEncomenda - ValorJaPedido)) {
                                 this.$.page_CriarPedidoPagamento_ajax.body = JSON.stringify(this.data);
@@ -511,7 +511,7 @@
                         else {
                             this._openToastError('O valor do campo Valor do Pedido c/ IVA têm que ser superior a zero.');
                         }
-                    }
+                    //}
                 },
                 _responseCriarPedidoPagamento: function (e) {
                     if (this.resultCriarPedidoPagamento.eReasonCode == "1") {

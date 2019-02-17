@@ -154,7 +154,7 @@ namespace Hydra.Such.Portal.Controllers
         public IActionResult ComprasDinheiroByDimensions()
         {
             UserAccessesViewModel userPermissions =
-                DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.RequisiçõesComprasDinheiro);
+                DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.ListaComprasDinheiro);
             if (userPermissions != null && userPermissions.Read.Value)
             {
                 ViewBag.UPermissions = userPermissions;
