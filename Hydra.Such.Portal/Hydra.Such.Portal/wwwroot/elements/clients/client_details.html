@@ -158,6 +158,16 @@
                    content-type="application/json">
         </iron-ajax>
 
+
+        <iron-ajax url="/Clientes/InvoiceListExportToExcel"
+                   last-response="{{export}}"
+                   id="ajax_InvoiceLinesExport"
+                   method="post"
+                   handle-as="json" 
+                   on-response="_invoiceListExportEXCELResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
         <iron-ajax url="/Clientes/BalancesExportToExcel"
                    last-response="{{export}}"
                    id="ajax_BalancesExport"
@@ -301,7 +311,7 @@
                                                             <vaadin-text-field value="{{data.fax_No}}" pattern="^(?:\s*\d){9}$" onKeyDown="forceNumericWithMaxLength(this,event,9, true)" onblur="trimPhone(this,event)" disabled="{{ !_permissions.update }}" id="fax_No" name="fax_No" label="Nº Fax" required> </vaadin-text-field>
                                                         </div>
                                                         <div class="col-lg-3">
-                                                            <vaadin-text-field value="{{data.home_Page}}" maxlength="255" id="home_Page" name="home_Page" label="Home Page" disabled="{{ !_permissions.update }}" > </vaadin-text-field>
+                                                            <vaadin-text-field value="{{data.home_Page}}" maxlength="255" id="home_Page" name="home_Page" label="Home Page" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                                         </div>
                                                     </div>
 
@@ -363,7 +373,7 @@
 
                                                 </div>
                                                 <div class="row break_clear">
-                                                    <div class="col-lg-4">                                   
+                                                    <div class="col-lg-4">
                                                         <vaadin-combo-box items='[{"id":0,"value":""},{"id":1,"value":"Norte"},{"id":2,"value":"Centro"},{"id":3,"value":"Sul"}]' id="regiao_Cliente" disabled="{{ !_permissions.update }}" item-value-path="id" item-label-path="value" value="{{data.regiao_Cliente}}" label="Região">
                                                             <template>
                                                                 &nbsp;[[item.value]]&nbsp;
@@ -456,6 +466,9 @@
                                             <div class="panel-body">
                                                 <div class="row break_clear">
 
+                                                    <div class="col-xs-12 text-right">
+                                                        <paper-button class="btnSave" on-tap="_exportInvoiceLines"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+                                                    </div>
 
                                                     <div class="break_clear col-xs-12">
 
@@ -609,14 +622,14 @@
                                                         <vaadin-grid aria-label="Balances" id="grid_balances" name="grid_balances" items="[[balances]]" class="grid break_clear" multi-sort="true" active-item="{{_SelectedBalance}}">
 
                                                             <!--<vaadin-grid-column width="100px" resizable>
-                                    <template class="header">
-                                        <vaadin-grid-sorter path="entryNo">entryNo</vaadin-grid-sorter>
-                                        <vaadin-grid-filter path="entryNo" />
-                                    </template>
-                                    <template>
-                                        {{item.entryNo}}
-                                    </template>
-                                </vaadin-grid-column>-->
+                                                            <template class="header">
+                                                                <vaadin-grid-sorter path="entryNo">entryNo</vaadin-grid-sorter>
+                                                                <vaadin-grid-filter path="entryNo" />
+                                                            </template>
+                                                            <template>
+                                                                {{item.entryNo}}
+                                                            </template>
+                                                        </vaadin-grid-column>-->
 
                                                             <vaadin-grid-column width="100px" resizable>
                                                                 <template class="header">
@@ -1103,7 +1116,7 @@
 
         <paper-dialog id="dlgInvoiceLines" class="dialgoBox" modal>
             <div class="buttons">
-                <paper-button class="btnSave" on-tap="_exportInvoiceLines"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+                <paper-button class="btnSave" on-tap="_exportInvoiceDetails"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
                 <paper-button class="btnRemove" on-tap="_closeInvoiceLines"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
             </div>
             <div class="break_clear"></div>
@@ -1417,6 +1430,12 @@
                             return {};
                         }
                     },
+                    _invoiceDetailsColumns: {
+                        type: Object,
+                        value: function () {
+                            return {};
+                        }
+                    },
                     _balancesColumns: {
                         type: Object,
                         value: function () {
@@ -1442,6 +1461,7 @@
 
                     /*ColumnToggle*/
                     this._startInvoiceLinesColumnToggle();
+                    this._startInvoiceDetailsColumnToggle();
                     this._startBalancesColumnToggle();
 
                     if (this._no == "") {
@@ -1832,7 +1852,19 @@
                     this.$.dlgInvoiceLines.close();
                 },
                 _exportInvoiceLines: function () {
-                    var payload = { list: this.invoicesLines, columns: this._invoiceLinesColumns, noFatura: this._SelectedInvoice.no_, "tipo": this._SelectedInvoice.tipo };
+                    var payload = this.$.grid_invoices._filter(this.invoices);
+                    payload[0].ColunasEXCEL = this._invoiceLinesColumns;
+
+                    this.$.ajax_InvoiceLinesExport.body = JSON.stringify(payload);
+                    this.$.ajax_InvoiceLinesExport.generateRequest();
+                },
+                _exportInvoiceDetails: function () {
+                    var payload = {
+                        list: this.invoicesLines,
+                        columns: this._invoiceDetailsColumns,
+                        noFatura: this._SelectedInvoice.no_,
+                        tipo: this._SelectedInvoice.tipo
+                    };
 
                     this.$.ajax_InvoiceDetailsExport.body = JSON.stringify(payload);
                     this.$.ajax_InvoiceDetailsExport.generateRequest();
@@ -1847,13 +1879,17 @@
                     var FileName = this.export;
                     location.href = '../InvoiceDetailsExportToExcel?fileName=' + FileName + "&tipo=" + this._SelectedInvoice.tipo;
                 },
+                _invoiceListExportEXCELResponse: function () {
+                    var FileName = this.export;
+                    location.href = '../InvoiceListExportToExcel?fileName=' + FileName;
+                },
 
                 _balancesExportEXCELResponse: function () {
                     var FileName = this.export;
                     location.href = '../BalancesExportToExcel?fileName=' + FileName;
                 },
 
-                _startInvoiceLinesColumnToggle: function () {
+                _startInvoiceDetailsColumnToggle: function () {
                     var columns = {
                         "documentNo": { hidden: false, label: "documentNo" },
                         "tipo": { hidden: false, label: "Tipo" },
@@ -1884,6 +1920,31 @@
                     if (localStorage["clientesinvoicelist.ToggleColumn"]) {
                         var keys = Object.keys(columns);
                         var storedColumns = JSON.parse(localStorage["clientesinvoicelist.ToggleColumn"]);
+                        for (var i = 0; i < keys.length; i++) {
+                            columns[keys[i]] = storedColumns[keys[i]];
+                        }
+                    };
+                    this._invoiceDetailsColumns = columns;
+                },
+                _startInvoiceLinesColumnToggle: function () {
+                    var columns = {
+                        "tipo": { hidden: false, label: "Tipo" },
+                        "no_": { hidden: false, label: "Nº" },
+                        "projectNo": { hidden: false, label: "Project Nº" },
+                        "dataServPrestado": { hidden: false, label: "Data Serv. Prestado" },
+                        "dueDate": { hidden: false, label: "Data Venc." },
+                        "amountIncludingVAT": { hidden: false, label: "Valor com IVA" },
+                        "valorPendente": { hidden: false, label: "Valor Pendente" },
+                        "paid": { hidden: false, label: "Pago" },
+                        "regionId": { hidden: false, label: "Cód. Região" },
+                        "functionalAreaId": { hidden: false, label: "Cód. Área Funcional" },
+                        "respCenterId": { hidden: false, label: "Cód. Centro de Responsabilidade" },
+                    };
+
+
+                    if (localStorage["clientesinvoicelineslist.ToggleColumn"]) {
+                        var keys = Object.keys(columns);
+                        var storedColumns = JSON.parse(localStorage["clientesinvoicelineslist.ToggleColumn"]);
                         for (var i = 0; i < keys.length; i++) {
                             columns[keys[i]] = storedColumns[keys[i]];
                         }

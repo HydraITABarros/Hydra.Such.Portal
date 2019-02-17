@@ -644,22 +644,22 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         if (dp["quantity"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item["quantity"].ToString());
+                            row.CreateCell(Col).SetCellValue((double)(item["quantity"] != null ? (decimal)item["quantity"] : 0));
                             Col = Col + 1;
                         }
                         if (dp["unitPrice"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item["unitPrice"].ToString());
+                            row.CreateCell(Col).SetCellValue((double)(item["unitPrice"] != null ? (decimal)item["unitPrice"] : 0));
                             Col = Col + 1;
                         }
                         if (dp["vat"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item["vat"].ToString());
+                            row.CreateCell(Col).SetCellValue((double)(item["vat"] != null ? (decimal)item["vat"] : 0));
                             Col = Col + 1;
                         }
                         if (dp["amount"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item["amount"].ToString());
+                            row.CreateCell(Col).SetCellValue((double)(item["amount"] != null ? (decimal)item["amount"] : 0));
                             Col = Col + 1;
                         }
 
@@ -737,11 +737,121 @@ namespace Hydra.Such.Portal.Controllers
             return Json(sFileName);
         }
 
+        [HttpPost]
+        public async Task<JsonResult> InvoiceListExportToExcel([FromBody] dynamic Lista)
+        {
+
+            JObject dp = (JObject)Lista[0].ColunasEXCEL;
+
+            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + "_ExportEXCEL.xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet;
+
+                excelSheet = workbook.CreateSheet("Faturas Notas de Crédito");
+
+                IRow row = excelSheet.CreateRow(0);
+
+                var columns = dp.AsJEnumerable().ToList();
+                for (int i = 0; i < columns.Count; i++)
+                {
+                    var column = columns[i];
+                    var isHidden = true;
+                    var label = "";
+                    try
+                    {
+                        isHidden = (bool)column.First()["hidden"];
+                        label = (string)column.First()["label"];
+                    }
+                    catch { }
+
+                    if (!isHidden)
+                    {
+                        row.CreateCell(i).SetCellValue(label);
+                    }
+                }
+
+                if (dp != null)
+                {
+                    int count = 1;
+                    try
+                    {
+
+
+                        foreach (var item in Lista)
+                        {
+                            row = excelSheet.CreateRow(count);
+
+
+                            for (int i = 0; i < columns.Count; i++)
+                            {
+                                var column = columns[i];
+                                var isHidden = true;
+                                try { isHidden = (bool)column.First()["hidden"]; } catch { }
+
+                                if (!isHidden)
+                                {
+                                    var _columnPath = column.Path.ToString().Split(".");
+                                    var columnPath = _columnPath[_columnPath.Length - 1].ToString()/*.ToUpper() + String.Join("", columnPath.Skip(1))*/;
+                                    object value = null;
+                                    try { value = item[columnPath]; } catch { }
+                                    if (value == null) try { value = item[columnPath.ToUpper()]; } catch { }
+
+                                    if ((new[] { "amountIncludingVAT", "valorPendente" }).Contains(columnPath))
+                                    {
+                                        row.CreateCell(i).SetCellValue((double)(value != null ? decimal.Parse(value.ToString()) : 0));
+                                    }
+                                    else
+                                    {
+                                        row.CreateCell(i).SetCellValue(value?.ToString());
+                                    }
+                                }
+                            }
+
+                            count++;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+
+                        throw;
+                    }
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+        }
+
+
         public IActionResult InvoiceDetailsExportToExcel(string fileName, string tipo)
+
         {
             fileName = @"/Upload/temp/" + fileName;
 
-            string fileExportName = tipo == "Fatura" ? "DetalheFatura" : "DetalheNotaCredito";
+            string fileExportName = tipo == "Fatura" ? "Detalhe Fatura" : "Detalhe Nota de Crédito";
+
+            return File(fileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileExportName + ".xlsx");
+        }
+
+        public IActionResult InvoiceListExportToExcel(string fileName)
+        {
+            fileName = @"/Upload/temp/" + fileName;
+
+            string fileExportName = "Faturas / Notas de Crédito";
 
             return File(fileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileExportName + ".xlsx");
         }
