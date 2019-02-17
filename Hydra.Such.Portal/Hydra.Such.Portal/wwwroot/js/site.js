@@ -132,16 +132,22 @@ var initGridLists = function () {
 };
 
 var handleGridListColumnsOrder = function (grid, name) {
+
     var columnTree = grid._getColumnTree()[0];
 
     if (typeof localStorage !== 'undefined') {
+
         var localStorageName = 'grid-column-order-' + name;
         if (localStorage.getItem(localStorageName) !== null) {
             var columnOrder = JSON.parse(localStorage.getItem(localStorageName));
-            if (columnOrder) {
+
+            if (columnOrder && columnTree.length === columnOrder.length) {
+
                 columnTree.forEach(function (column, index) {
                     column._order = columnOrder[index];
                 });
+            } else if (columnOrder && columnTree.length !== columnOrder.length) {
+                localStorage.removeItem(localStorageName);
             }
         }
 
@@ -153,4 +159,29 @@ var handleGridListColumnsOrder = function (grid, name) {
             localStorage.setItem(localStorageName, JSON.stringify(columnOrderUpdated));
         };
     }
+};
+
+
+var getGridFilter = function (name) {
+    var retval = {};
+    if (typeof localStorage !== 'undefined') {
+        var localStorageName = 'grit-filter-' + name;
+        if (localStorage.getItem(localStorageName) !== null) {
+            retval = JSON.parse(localStorage.getItem(localStorageName));
+            localStorage.removeItem(localStorageName);
+        }
+
+    }
+    return retval;
+};
+
+var setGridFilter = function (name, filter) {
+    
+    if (typeof localStorage !== 'undefined') {
+        var localStorageName = 'grit-filter-' + name;
+
+        localStorage.setItem(localStorageName, JSON.stringify(filter));
+
+    }
+    
 };
