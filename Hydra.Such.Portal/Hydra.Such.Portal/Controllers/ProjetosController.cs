@@ -2951,6 +2951,7 @@ namespace Hydra.Such.Portal.Controllers
                         .Where(x => !x.Faturado)
                         .ToList()
                         .ParseToViewModel();
+
                 }
                 if (result != null)
                 {
@@ -2963,11 +2964,17 @@ namespace Hydra.Such.Portal.Controllers
                     if (userDimensionsViewModel.Where(x => x.Dimension == (int)Dimensions.ResponsabilityCenter).Count() > 0)
                         result.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.CodCentroResponsabilidade));
 
+                    var clients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, string.Join(",", result.Select(r=>r.CodCliente).ToList()) ).ToList();
+
                     result.ForEach(x =>
                     {
                         var movements = DBAuthorizedProjectMovements.GetMovementById(x.GrupoFactura, x.CodProjeto);
-                        if (movements != null)
+                        if (movements != null) { 
                             x.ValorAutorizado = movements.Sum(y => y.PrecoTotal);
+                        }
+
+                        var client = clients.FirstOrDefault(c => c.No_ == x.CodCliente);
+                        x.NomeCliente = client != null ? client.Name : null;
                     });
                 }
                 return Json(result);
@@ -5955,6 +5962,7 @@ namespace Hydra.Such.Portal.Controllers
                 int Col = 0;
 
                 if (dp["codProjeto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Projeto"); Col = Col + 1; }
+                if (dp["nomeCliente"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nome Cliente"); Col = Col + 1; }
                 if (dp["codCliente"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Cliente"); Col = Col + 1; }
                 if (dp["valorAutorizado"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Valor Autorizado"); Col = Col + 1; }
                 //if (dp["valorPorFaturar"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Valor por Faturar"); Col = Col + 1; }
@@ -5981,6 +5989,7 @@ namespace Hydra.Such.Portal.Controllers
                         row = excelSheet.CreateRow(count);
 
                         if (dp["codProjeto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodProjeto); Col = Col + 1; }
+                        if (dp["nomeCliente"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.NomeCliente); Col = Col + 1; }
                         if (dp["codCliente"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodCliente); Col = Col + 1; }
                         if (dp["valorAutorizado"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue((double)item.ValorAutorizado); Col = Col + 1; }
                         /*ToDo*/
