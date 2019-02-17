@@ -161,7 +161,7 @@
             <!--end ColumnToggle-->
         </div>
 
-        <vaadin-grid aria-label="ContractsGrid" items="[[result]]" id="gridContracts" class="grid" active-item="{{activeItem}}" multi-sort="true">
+        <vaadin-grid column-reordering-allowed aria-label="ContractsGrid" items="[[result]]" id="gridContracts" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.contractNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="contractNo">Nº Contrato</vaadin-grid-sorter>
@@ -360,6 +360,8 @@
                         this._disabledCreate = true;
                     }
 
+                    window.handleGridListColumnsOrder(this.$.gridContracts, 'contracts');
+
                     this.$.grid_databound_ajax.body = JSON.stringify({ "Archived": this._archived, "ContractNo": this._contractno });
                     this.$.grid_databound_ajax.generateRequest();
 
@@ -469,9 +471,10 @@
 
                 _exportEXCEL: function () {
                     //debugger;
-                    this.result[0].ColunasEXCEL = this._columns;
+                    var result = this.$.gridContracts._filter(this.result);
+                    result[0].ColunasEXCEL = this._columns;
 
-                    this.$.ajax_Export.body = JSON.stringify(this.result);
+                    this.$.ajax_Export.body = JSON.stringify(result);
                     this.$.ajax_Export.generateRequest();
                 },
 
