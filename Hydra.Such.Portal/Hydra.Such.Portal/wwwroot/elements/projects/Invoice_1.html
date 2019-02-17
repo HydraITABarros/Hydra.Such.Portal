@@ -346,6 +346,16 @@
                 </template>
             </vaadin-grid-column>
 
+            <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.nomeCliente.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="nomeCliente">Nome Cliente</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="nomeCliente" />
+                </template>
+                <template>
+                    {{item.nomeCliente}}
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.codCliente.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codCliente">Nº Cliente</vaadin-grid-sorter>
@@ -369,16 +379,16 @@
             </vaadin-grid-column>
 
             <!--<vaadin-grid-column width="15%" resizable hidden$="{{ _columns.valorPorFaturar.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="valorPorFaturar">Valor por Faturar</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="valorPorFaturar" />
-                </template>
-                <template>
-                    <div class="text-right">
-                        [[_formatValue(item.valorPorFaturar)]]
-                    </div>
-                </template>
-            </vaadin-grid-column>-->
+        <template class="header">
+            <vaadin-grid-sorter path="valorPorFaturar">Valor por Faturar</vaadin-grid-sorter>
+            <vaadin-grid-filter path="valorPorFaturar" />
+        </template>
+        <template>
+            <div class="text-right">
+                [[_formatValue(item.valorPorFaturar)]]
+            </div>
+        </template>
+    </vaadin-grid-column>-->
 
             <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.codRegiao.hidden }}">
                 <template class="header">
@@ -1280,6 +1290,7 @@
                 _startColumnToggle: function () {
                     var columns = {
                         "codProjeto": { hidden: false, label: "Nº Projeto" },
+                        "nomeCliente": { hidden: false, label: "Nome Cliente" },
                         "codCliente": { hidden: false, label: "Nº Cliente" },
                         "valorAutorizado": { hidden: false, label: "Valor Autorizado" },
                         "valorPorFaturar": { hidden: false, label: "Valor por Faturar" },
