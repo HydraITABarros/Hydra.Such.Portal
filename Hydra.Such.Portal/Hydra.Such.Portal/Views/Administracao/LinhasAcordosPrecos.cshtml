@@ -121,7 +121,9 @@
                     <vaadin-grid-filter path="custoUnitario" />
                 </template>
                 <template>
-                    {{item.custoUnitario}}
+                    <div class="text-right">
+                        [[_formatCurrencyValue(item.custoUnitario)]]
+                    </div>
                 </template>
             </vaadin-grid-column>
 
@@ -141,7 +143,9 @@
                     <vaadin-grid-filter path="qtdPorUm" />
                 </template>
                 <template>
-                    {{item.qtdPorUm}}
+                    <div class="text-right">
+                        {{item.qtdPorUm}}
+                    </div>
                 </template>
             </vaadin-grid-column>
 
@@ -151,7 +155,9 @@
                     <vaadin-grid-filter path="pesoUnitario" />
                 </template>
                 <template>
-                    {{item.pesoUnitario}}
+                    <div class="text-right">
+                        {{item.pesoUnitario}}
+                    </div>
                 </template>
             </vaadin-grid-column>
 
@@ -307,9 +313,10 @@
 
 
                 _exportEXCEL: function () {
-                    this.result[0].ColunasEXCEL = this._columns;
+                    var result = this.$.grid._filter(this.result);
+                    result[0].ColunasEXCEL = this._columns;
 
-                    this.$.ajax_Export.body = JSON.stringify(this.result);
+                    this.$.ajax_Export.body = JSON.stringify(result);
                     this.$.ajax_Export.generateRequest();
                 },
 
@@ -374,6 +381,17 @@
 
                 _goBack: function (e) {
                     window.history.back();
+                },
+                _formatCurrencyValue: function (value) {
+
+                    if (value) {
+                        value = value + "";
+                        value = value.replace(",", ".");
+                    }
+                    value = value * 1;
+                    if (value != null && value != 0) {
+                        return currency(Math.round(value * 100) / 100, { separator: '.', decimal: ',' }).format() + ' €';
+                    }
                 },
             });
         });
