@@ -91,7 +91,7 @@
 
         </div>
         
-        <vaadin-grid aria-label="CustomersGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+        <vaadin-grid column-reordering-allowed aria-label="CustomersGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.no.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="no">Nº</vaadin-grid-sorter>
@@ -385,6 +385,12 @@
                     });
                     $(window).trigger('resize');
                 },
+                attached: function () {
+                    var _this = this;
+                    setTimeout(function () {
+                        window.handleGridListColumnsOrder(_this.$.grid, 'clientes');
+                    }, 600);
+                },
                 fixGridToBottom: function () {
                     var grid_el = $(this.$.grid);
                     var parentHeight = $(this).offsetParent().height();
@@ -396,15 +402,15 @@
                 },
 
                 _exportEXCEL: function () {
-                    debugger;
-                    this.result[0].ColunasEXCEL = this._columns;
+                    var result = this.$.grid._filter(this.result);
+                    result[0].ColunasEXCEL = this._columns;
 
-                    this.$.ajax_Export.body = JSON.stringify(this.result);
+                    this.$.ajax_Export.body = JSON.stringify(result);
                     this.$.ajax_Export.generateRequest();
                 },
 
                 _exportEXCELResponse: function (e) {
-                    debugger
+                    
                     var FileName = this.export;
                     location.href = '../Clientes/ExportToExcelDownload_Clientes?sFileName=' + FileName;
                 },

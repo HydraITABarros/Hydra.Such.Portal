@@ -11,6 +11,7 @@ namespace Hydra.Such.Data.ViewModel.Projects
         public string CodProjeto { get; set; }
         public int GrupoFactura { get; set; }
         public string Descricao { get; set; }
+        public string NomeCliente { get; set; }
         public string CodCliente { get; set; }
         public string CodRegiao { get; set; }
         public string CodAreaFuncional { get; set; }

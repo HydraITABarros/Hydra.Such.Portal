@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Hydra.Such.Data.Database
 {
@@ -9,6 +10,10 @@ namespace Hydra.Such.Data.Database
         public int GrupoFactura { get; set; }
         public string Descricao { get; set; }
         public string CodCliente { get; set; }
+
+        [NotMapped]
+        public string NomeCliente { get; set; }
+
         public string CodRegiao { get; set; }
         public string CodAreaFuncional { get; set; }
         public string CodCentroResponsabilidade { get; set; }
