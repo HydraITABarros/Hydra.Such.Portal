@@ -15,4 +15,10 @@
     }*@
 
 
-<x-oportunitydetails _contractno="@ViewBag.ContractNo" _versionno="@ViewBag.VersionNo" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))' _history="@ViewBag.Historic"></x-oportunitydetails>
+<x-oportunitydetails
+                     _contractno="@ViewBag.ContractNo"
+                     _versionno="@ViewBag.VersionNo"
+                     _reportserverurl='@ViewBag.reportServerURL'
+                     _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'
+                     _history="@ViewBag.Historic">
+</x-oportunitydetails>

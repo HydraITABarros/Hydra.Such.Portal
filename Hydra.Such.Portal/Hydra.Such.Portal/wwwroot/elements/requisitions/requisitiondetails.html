@@ -1419,7 +1419,14 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-combo-box items="[[Projects]]" id="_CLGridProjectNo" name="_CLGridProjectNo" item-value-path="no" item-label-path="no" value="{{item.projectNo}}" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLinesNew">
+                                            <such-selectbox id="_CLGridProjectNo" name="_CLGridProjectNo" value="{{item.projectNo}}" disabled="{{ !_permissions.update }}"
+                                                            items="[[Projects]]"
+                                                            on-blur="_updateRequisitionLinesNew"
+                                                            text-path="no"
+                                                            value-path="no"
+                                                            fields='[{"field":"no", "name":"Nº Projeto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"globalDimension1", "name":"Dimensão Global 1"}, {"field":"globalDimension2", "name":"Dimensão Global 2"}]'>
+                                            </such-selectbox>
+                                            <!--<vaadin-combo-box items="[[Projects]]" id="_CLGridProjectNo" name="_CLGridProjectNo" item-value-path="no" item-label-path="no" value="{{item.projectNo}}" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLinesNew">
                                                 <template>
                                                     <paper-icon-item>
                                                         <paper-item-body two-line>
@@ -1427,7 +1434,7 @@
                                                         </paper-item-body>
                                                     </paper-icon-item>
                                                 </template>
-                                            </vaadin-combo-box>
+                                            </vaadin-combo-box>-->
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.projectNo}}
@@ -2141,7 +2148,14 @@
                 _updateRequisitionLinesNew: function (e) {
                     var index = this.Requisition.lines.indexOf(e.model.item);
 
-                    if (e.model.item.projectNo != "" & e.model.item.projectNo != null) {
+                    if (this.Requisition.stockReplacement == false) {
+                        if (e.model.item.projectNo == "" || e.model.item.projectNo == null) {
+                            this._openDlgMessageError('Na linha o campo Projeto é de preenchimento obrigatório.');
+                            return false;
+                        }
+                    }
+
+                        //if (e.model.item.projectNo != "" & e.model.item.projectNo != null) {
                         if (e.model.item.code != "" & e.model.item.code != null) {
                             if (e.model.item.localCode != "" & e.model.item.localCode != null) {
                                 if (e.model.item.quantityToRequire > 0) {
@@ -2222,12 +2236,12 @@
                             }
                         }
                         else {
-                            this._openDlgMessageError('Na linha o campo Nº Ordem/projecto é de preenchimento obrigatório.');
+                            this._openDlgMessageError('Na linha o campo Cód. Produto é de preenchimento obrigatório.');
                         }
-                    }
-                    else {
-                        this._openDlgMessageError('Na linha o campo Cód. Produto é de preenchimento obrigatório.');
-                    }
+                        //}
+                        //else {
+                        //    this._openDlgMessageError('Na linha o campo Cód. Produto é de preenchimento obrigatório.');
+                        //}
                 },
                 _UpdateLinhaRequisicao_ResponseProcessor: function (e) {
                     if (this.updateLinhaRequisicaoResponse.eReasonCode == 1) {

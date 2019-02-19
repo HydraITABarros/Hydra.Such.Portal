@@ -1369,6 +1369,7 @@ namespace Hydra.Such.Portal.Controllers
                 ViewBag.ContractNo = id ?? "";
                 ViewBag.VersionNo = version ?? "";
                 ViewBag.UPermissions = UPerm;
+                ViewBag.reportServerURL = _config.ReportServerURL;
                 return View();
             }
             else

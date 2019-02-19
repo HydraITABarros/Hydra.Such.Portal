@@ -227,7 +227,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult LinhasRequisicao_CD(string id)
         {
-            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.PréRequisiçõesComprasDinheiro);
+            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.RequisiçõesComprasDinheiro);
 
 
             if (userPermissions != null && userPermissions.Read.Value)
@@ -268,7 +268,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult LinhasRequisicaoReadOnly_CD(string id)
         {
-            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.RequisiçõesComprasDinheiro);
+            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.ListaComprasDinheiro);
 
             if (userPermissions != null && userPermissions.Read.Value)
             {
@@ -347,7 +347,7 @@ namespace Hydra.Such.Portal.Controllers
             userPermissions.Area = 1;
             userPermissions.Create = true;
             userPermissions.Delete = true;
-            userPermissions.Feature = (int)Enumerations.Features.PréRequisiçõesComprasDinheiro;
+            userPermissions.Feature = (int)Enumerations.Features.RequisiçõesComprasDinheiro;
             userPermissions.IdUser = User.Identity.Name;
             userPermissions.Read = true;
             userPermissions.Update = true;
@@ -1266,48 +1266,53 @@ namespace Hydra.Such.Portal.Controllers
 
             try
             {
-                if (!string.IsNullOrEmpty(linha.ProjectNo))
-                {
-                    if (!string.IsNullOrEmpty(linha.Code))
-                    {
-                        if (!string.IsNullOrEmpty(linha.LocalCode))
-                        {
-                            if (linha.QuantityToRequire > 0)
-                            {
-                                linha.UpdateUser = User.Identity.Name;
-                                if (DBRequestLine.Update(DBRequestLine.ParseToDB(linha)) != null)
-                                {
-                                    result.eReasonCode = 1;
-                                    result.eMessage = "Linha Atualizada com Sucesso.";
+                Requisição REQ = DBRequest.GetById(linha.RequestNo);
 
-                                }
-                                else
-                                {
-                                    result.eReasonCode = 2;
-                                    result.eMessage = "Ocorreu um erro ao atualizar a linha.";
-                                }
+                if (REQ.ReposiçãoDeStock == false || REQ.ReposiçãoDeStock == null)
+                {
+                    if (string.IsNullOrEmpty(linha.ProjectNo))
+                    {
+                        result.eReasonCode = 6;
+                        result.eMessage = "Na linha o campo Projeto é de preenchimento obrigatório.";
+
+                        return Json(result);
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(linha.Code))
+                {
+                    if (!string.IsNullOrEmpty(linha.LocalCode))
+                    {
+                        if (linha.QuantityToRequire > 0)
+                        {
+                            linha.UpdateUser = User.Identity.Name;
+                            if (DBRequestLine.Update(DBRequestLine.ParseToDB(linha)) != null)
+                            {
+                                result.eReasonCode = 1;
+                                result.eMessage = "Linha Atualizada com Sucesso.";
+
                             }
                             else
                             {
-                                result.eReasonCode = 3;
-                                result.eMessage = "Na linha o campo Qt. a Requerer tem que ser superior a zero.";
+                                result.eReasonCode = 2;
+                                result.eMessage = "Ocorreu um erro ao atualizar a linha.";
                             }
                         }
                         else
                         {
-                            result.eReasonCode = 4;
-                            result.eMessage = "Na linha o campo Código Localização é de preenchimento obrigatório.";
+                            result.eReasonCode = 3;
+                            result.eMessage = "Na linha o campo Qt. a Requerer tem que ser superior a zero.";
                         }
                     }
                     else
                     {
-                        result.eReasonCode = 5;
-                        result.eMessage = "Na linha o campo Nº Ordem/projecto é de preenchimento obrigatório.";
+                        result.eReasonCode = 4;
+                        result.eMessage = "Na linha o campo Código Localização é de preenchimento obrigatório.";
                     }
                 }
                 else
                 {
-                    result.eReasonCode = 6;
+                    result.eReasonCode = 5;
                     result.eMessage = "Na linha o campo Cód. Produto é de preenchimento obrigatório.";
                 }
             }

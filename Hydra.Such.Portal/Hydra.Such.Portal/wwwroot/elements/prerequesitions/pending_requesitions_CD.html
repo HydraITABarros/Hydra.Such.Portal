@@ -189,7 +189,7 @@
                 </template>
                 <template>
                     <center>
-                        <paper-button class="btnSave tableBtn" on-tap="_GoToReq" title="Ver Requisição" disabled="{{_permissionsCreate}}"><i class="fa fa-info" aria-hidden="true"></i></paper-button>
+                        <paper-button class="btnSave tableBtn" on-tap="_GoToReq" title="Ver Compra a Dinheiro" disabled="{{_permissionsCreate}}"><i class="fa fa-info" aria-hidden="true"></i></paper-button>
                     </center>
                 </template>
             </vaadin-grid-column>
@@ -470,7 +470,7 @@
                 _GoToReq: function (e) {
                     var index = this.result.indexOf(e.model.item);
                     this.result.splice(index, 1);
-                    window.location.href = "/GestaoRequisicoes/MinhaRequisicao/" + e.model.item.requisitionNo;
+                    window.location.href = "/GestaoRequisicoes/MinhaRequisicao_CD/" + e.model.item.requisitionNo;
                 },
                 _ToApproved: function (e) {
                     if (e != null) {
