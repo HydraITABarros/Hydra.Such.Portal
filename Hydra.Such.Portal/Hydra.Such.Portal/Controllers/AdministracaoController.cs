@@ -6092,7 +6092,7 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["codProduto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodProduto); Col = Col + 1; }
                         if (dp["descricaoProduto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DescricaoProduto); Col = Col + 1; }
                         if (dp["codCategoriaProduto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodCategoriaProduto == null ? string.Empty : item.CodCategoriaProduto.ToString()); Col = Col + 1; }
-                        if (dp["custoUnitarioTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CustoUnitario.ToString()); Col = Col + 1; }
+                        if (dp["custoUnitarioTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue((double)(item.CustoUnitario != null ? (decimal)item.CustoUnitario : 0)); Col = Col + 1; }
                         if (dp["um"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Um); Col = Col + 1; }
                         if (dp["qtdPorUmTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.QtdPorUmTexto); Col = Col + 1; }
                         if (dp["pesoUnitarioTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.PesoUnitarioTexto); Col = Col + 1; }
