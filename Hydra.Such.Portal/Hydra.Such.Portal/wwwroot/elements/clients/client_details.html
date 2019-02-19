@@ -1860,7 +1860,7 @@
                 },
                 _exportInvoiceDetails: function () {
                     var payload = {
-                        list: this.invoicesLines,
+                        list: this.$.grid_invoicesdetails._filter(this.invoicesLines),
                         columns: this._invoiceDetailsColumns,
                         noFatura: this._SelectedInvoice.no_,
                         tipo: this._SelectedInvoice.tipo

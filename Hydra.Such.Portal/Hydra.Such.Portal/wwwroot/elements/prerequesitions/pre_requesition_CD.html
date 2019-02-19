@@ -1703,9 +1703,9 @@
                         if (this.$.valorTotalDocComIVA.value != "" && this.$.valorTotalDocComIVA.value != null) {
                             if (this.$.projectNo.value != "" && this.$.projectNo.value != null) {
                                 if (this.dataLines.lines != null) {
-                                    var totalComIva = this.$.valorTotalDocComIVA.value;
+                                    var totalComIva = this.data.valorTotalDocComIVA.replace(',', '.');
                                     //totalComIva = totalComIva.toFixed(2);
-                                    totalComIva = totalComIva.replace(",", ".");
+                                    //totalComIva = totalComIva.toFixed(2).replace(',', '.');
 
                                     if (countWithIVA == parseFloat(totalComIva)) {
                                         this.$.page_validator_req_ajax.body = JSON.stringify(this.data);
