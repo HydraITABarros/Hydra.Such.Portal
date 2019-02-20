@@ -662,7 +662,24 @@
                                                                     <vaadin-grid-filter path="projectNo" />
                                                                 </template>
                                                                 <template>
-                                                                    <vaadin-combo-box items="[[CBProjects]]" item-value-path="id" item-label-path="value" id="_CRGridProjectNo" name="_CRGridProjectNo" value="{{item.projectNo}}" disabled="{{ _lockFields }}">
+                                                                    <vaadin-combo-box items="[[CBProjects]]" item-value-path="id" item-label-path="id" id="_CRGridProjectNo" name="_CRGridProjectNo" value="{{item.projectNo}}" disabled="{{ _lockFields }}">
+                                                                        <template>
+                                                                            <paper-icon-item>
+                                                                                <paper-item-body two-line>
+                                                                                    <div>[[item.id]]</div>
+                                                                                </paper-item-body>
+                                                                            </paper-icon-item>
+                                                                        </template>
+                                                                    </vaadin-combo-box>
+                                                                </template>
+                                                            </vaadin-grid-column>
+                                                            <vaadin-grid-column resizable>
+                                                                <template class="header">
+                                                                    <vaadin-grid-sorter path="projectNo">Descrição</vaadin-grid-sorter>
+                                                                    <vaadin-grid-filter path="projectNo" />
+                                                                </template>
+                                                                <template>
+                                                                    <vaadin-combo-box items="[[CBProjects]]" item-value-path="id" item-label-path="value" id="_CRGridProjectName" name="_CRGridProjectName" value="{{item.projectNo}}" disabled="{{ _lockFields }}">
                                                                         <template>
                                                                             <paper-icon-item>
                                                                                 <paper-item-body two-line>

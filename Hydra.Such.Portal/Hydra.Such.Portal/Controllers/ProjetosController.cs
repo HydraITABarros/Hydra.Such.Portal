@@ -2955,14 +2955,16 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 if (result != null)
                 {
-                    var userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
-                    List<UserDimensionsViewModel> userDimensionsViewModel = userDimensions.ParseToViewModel();
-                    if (userDimensionsViewModel.Where(x => x.Dimension == (int)Dimensions.Region).Count() > 0)
-                        result.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.CodRegiao));
-                    if (userDimensionsViewModel.Where(x => x.Dimension == (int)Dimensions.FunctionalArea).Count() > 0)
-                        result.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.CodAreaFuncional));
-                    if (userDimensionsViewModel.Where(x => x.Dimension == (int)Dimensions.ResponsabilityCenter).Count() > 0)
-                        result.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.CodCentroResponsabilidade));
+                    List<AcessosDimensões> CUserDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+                    //Regions
+                    if (CUserDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
+                        result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.CodRegiao));
+                    //FunctionalAreas
+                    if (CUserDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                        result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.CodAreaFuncional));
+                    //ResponsabilityCenter
+                    if (CUserDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                        result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CodCentroResponsabilidade));
 
                     var clients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, string.Join(",", result.Select(r=>r.CodCliente).ToList()) ).ToList();
 

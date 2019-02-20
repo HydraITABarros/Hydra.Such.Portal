@@ -252,7 +252,7 @@
                                             <vaadin-text-field value="{{data.no}}" maxlength="20" id="no" name="no" label="Nº" readonly> </vaadin-text-field>
                                         </div>
                                         <div class="col-lg-8">
-                                            <vaadin-text-field value="{{data.name}}" maxlength="100" id="name" name="name" label="Nome" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.name}}" maxlength="50" id="name" name="name" label="Nome" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
                                         </div>
                                     </div>
                                 </div>
@@ -269,24 +269,24 @@
 
                                                     <div class="row break_clear">
                                                         <div class="col-lg-6">
-                                                            <vaadin-text-field value="{{data.address}}" maxlength="255" disabled="{{ !_permissions.update }}" id="address" name="address" label="Endereço" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                                                            <vaadin-text-field value="{{data.address}}" maxlength="50" disabled="{{ !_permissions.update }}" id="address" name="address" label="Endereço" required error-message="Este campo é obrigatório"></vaadin-text-field>
                                                         </div>
                                                         <div class="col-lg-6">
-                                                            <vaadin-text-field value="{{data.address_2}}" maxlength="255" id="address_2" name="address_2" label="Endereço 2" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                                            <vaadin-text-field value="{{data.address_2}}" maxlength="50" id="address_2" name="address_2" label="Endereço 2" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                                                         </div>
                                                     </div>
 
                                                     <div class="row break_clear">
 
                                                         <div class="col-lg-3">
-                                                            <vaadin-text-field value="{{data.post_Code}}" maxlength="255" disabled="{{ !_permissions.update }}" id="post_Code" name="post_Code" label="Código Postal" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                                                            <vaadin-text-field value="{{data.post_Code}}" maxlength="20" disabled="{{ !_permissions.update }}" id="post_Code" name="post_Code" label="Código Postal" required error-message="Este campo é obrigatório"></vaadin-text-field>
                                                         </div>
                                                         <div class="col-lg-3">
-                                                            <vaadin-text-field value="{{data.city}}" maxlength="100" id="city" name="city" label="Cidade" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
+                                                            <vaadin-text-field value="{{data.city}}" maxlength="30" id="city" name="city" label="Cidade" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
                                                         </div>
 
                                                         <div class="col-lg-3">
-                                                            <vaadin-text-field value="{{data.county}}" maxlength="255" id="county" name="county" label="Distrito" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
+                                                            <vaadin-text-field value="{{data.county}}" maxlength="30" id="county" name="county" label="Distrito" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
                                                         </div>
                                                         <div class="col-lg-3">
                                                             <vaadin-combo-box items='[{"value":"PT"}]' id="country_Region_Code" label="Código Pais/Região" disabled="{{ !_permissions.update }}" item-value-path="value" item-label-path="value" value="{{item.country_Region_Code}}">
@@ -302,16 +302,18 @@
                                                     <div class="row break_clear">
 
                                                         <div class="col-lg-3">
-                                                            <vaadin-text-field pattern="^(?:\s*\d){9}$" value="{{data.phone_No}}" onKeyDown="forceNumericWithMaxLength(this,event,9, true)" onblur="trimPhone(this,event)" disabled="{{ !_permissions.update }}" id="phone_No" name="phone_No" label="Telefone" required></vaadin-text-field>
+                                                            <!--<vaadin-text-field pattern="^(?:\s*\d){9}$" value="{{data.phone_No}}" onKeyDown="forceNumericWithMaxLength(this,event,9, true)" onblur="trimPhone(this,event)" disabled="{{ !_permissions.update }}" id="phone_No" name="phone_No" label="Telefone" required></vaadin-text-field>-->
+                                                            <vaadin-text-field value="{{data.phone_No}}" maxlength="30" disabled="{{ !_permissions.update }}" id="phone_No" name="phone_No" label="Telefone" required></vaadin-text-field>
                                                         </div>
                                                         <div class="col-lg-3">
-                                                            <vaadin-text-field value="{{data.e_Mail}}" pattern='[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$' maxlength="255" id="e_Mail" name="e_Mail" label="Email" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                                            <vaadin-text-field value="{{data.e_Mail}}" pattern='[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$' maxlength="80" id="e_Mail" name="e_Mail" label="Email" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                                         </div>
                                                         <div class="col-lg-3">
-                                                            <vaadin-text-field value="{{data.fax_No}}" pattern="^(?:\s*\d){9}$" onKeyDown="forceNumericWithMaxLength(this,event,9, true)" onblur="trimPhone(this,event)" disabled="{{ !_permissions.update }}" id="fax_No" name="fax_No" label="Nº Fax"> </vaadin-text-field>
+                                                            <!--<vaadin-text-field value="{{data.fax_No}}" pattern="^(?:\s*\d){9}$" onKeyDown="forceNumericWithMaxLength(this,event,9, true)" onblur="trimPhone(this,event)" disabled="{{ !_permissions.update }}" id="fax_No" name="fax_No" label="Nº Fax"> </vaadin-text-field>-->
+                                                            <vaadin-text-field value="{{data.fax_No}}" maxlength="30" disabled="{{ !_permissions.update }}" id="fax_No" name="fax_No" label="Nº Fax"> </vaadin-text-field>
                                                         </div>
                                                         <div class="col-lg-3">
-                                                            <vaadin-text-field value="{{data.home_Page}}" maxlength="255" id="home_Page" name="home_Page" label="Home Page" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                                            <vaadin-text-field value="{{data.home_Page}}" maxlength="80" id="home_Page" name="home_Page" label="Home Page" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                                         </div>
                                                     </div>
 
@@ -329,11 +331,12 @@
                                                 <div class="row break_clear">
 
                                                     <div class="col-lg-4">
-                                                        <vaadin-text-field value="{{data.vaT_Registration_No}}" pattern="[0-9]{9}" onKeyDown="forceNumericWithMaxLength(this,event,9)" disabled="{{ !_permissions.update }}" id="vaT_Registration_No" name="vaT_Registration_No" label="Nº Contribuinte" required> </vaadin-text-field>
+                                                        <!--<vaadin-text-field value="{{data.vaT_Registration_No}}" pattern="[0-9]{9}" onKeyDown="forceNumericWithMaxLength(this,event,9)" disabled="{{ !_permissions.update }}" id="vaT_Registration_No" name="vaT_Registration_No" label="Nº Contribuinte" required> </vaadin-text-field>-->
+                                                        <vaadin-text-field value="{{data.vaT_Registration_No}}" maxlength="20" disabled="{{ !_permissions.update }}" id="vaT_Registration_No" name="vaT_Registration_No" label="Nº Contribuinte" required> </vaadin-text-field>
                                                     </div>
 
                                                     <div class="col-lg-4">
-                                                        <vaadin-text-field value="{{data.taxa_Aprovisionamento}}" disabled="{{ !_permissions.update }}" id="taxa_Aprovisionamento" name="taxa_Aprovisionamento" label="Taxa Aprovisionamento"> </vaadin-text-field>
+                                                        <vaadin-text-field value="{{data.taxa_Aprovisionamento}}" pattern="[0-9]{9}" onKeyDown="forceNumericWithMaxLength(this,event,20)" disabled="{{ !_permissions.update }}" id="taxa_Aprovisionamento" name="taxa_Aprovisionamento" label="Taxa Aprovisionamento"> </vaadin-text-field>
                                                     </div>
 
                                                     <div class="col-lg-4 alignPoga">
@@ -406,7 +409,7 @@
                                                         <vaadin-checkbox checked="{{data.cliente_Associado}}" id="cliente_Associado" name="cliente_Associado" disabled="{{ !_permissions.update }}">Cliente Associado</vaadin-checkbox>
                                                     </div>
                                                     <div class="col-md-3">
-                                                        <vaadin-combo-box items='[{"value":"A"},{"value":"M"}]' id="associado_A_N" disabled="{{ !_permissions.update }}" item-value-path="value" item-label-path="value" value="{{data.associado_A_N}}" label="Associado (A/N)">
+                                                        <vaadin-combo-box items='[{"value":"A"},{"value":"N"}]' id="associado_A_N" disabled="{{ !_permissions.update }}" item-value-path="value" item-label-path="value" value="{{data.associado_A_N}}" label="Associado (A/N)">
                                                             <template>
                                                                 &nbsp;[[item.value]]&nbsp;
                                                             </template>

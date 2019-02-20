@@ -1011,108 +1011,282 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult UpdateProposalContract([FromBody] JObject requestParams)
         {
-            ContractViewModel proposal = null;
-            bool partialUpdate = false;
-            if (requestParams != null)
-            {
-                proposal = requestParams["proposal"].ToObject<ContractViewModel>();
-                partialUpdate = requestParams["partialUpdate"].ToObject<bool>();
-            }
+            ContractViewModel proposal = new ContractViewModel();
+            proposal.eReasonCode = 99;
+            proposal.eMessage = "Ocorreu um erro ao atualizar a proposta.";
 
-            if (proposal != null)
+            try
             {
-                Contratos contract = DBContracts.GetByIdLastVersion(proposal.RelatedContract);
+                bool partialUpdate = false;
 
-                if (contract != null)
+                if (requestParams != null)
                 {
-                    try
+                    proposal = requestParams["proposal"].ToObject<ContractViewModel>();
+                    partialUpdate = requestParams["partialUpdate"].ToObject<bool>();
+                }
+
+                if (proposal != null)
+                {
+                    Contratos OldContract = DBContracts.GetByIdLastVersion(proposal.RelatedContract);
+
+                    if (OldContract != null)
                     {
-                        /*
-                        •	Se o estado da proposta estiver aberta, perguntar se quer mudar para Enviada ou para Revista (tem de mudar para um destes estados obrigatoriamente);
-                        •	Arquiva a proposta;
-                        •	Pergunta que linhas vai passar para o contrato, tal como faz no tornar em contrato parcial;
-                        •	Atualiza o contrato com os dados da proposta (as linhas do contrato atuais são eliminadas e criadas novamente com as linhas da proposta, passa apenas as linhas marcadas como sendo para passar);
-                        •	Muda o estado da proposta para Renovada se for total, ou para Parcialmente Aceite se for parcial (se selecionou todas as linhas ou não);
-                        */
-
-                        Contratos proposalToUpdate = DBContracts.GetByIdAndVersion(proposal.ContractNo, proposal.VersionNo);
-                        proposalToUpdate.Estado = proposal.Status;
-                        proposalToUpdate.DataExpiração = DateTime.Parse(proposal.DueDate);
-                        proposalToUpdate.UtilizadorModificação = User.Identity.Name;
-                        proposalToUpdate.Arquivado = true;
-                        proposalToUpdate = DBContracts.Update(proposalToUpdate);
-                        if (proposalToUpdate != null)
+                        //1 » Passar o contrato atual para Histórico
+                        OldContract.UtilizadorModificação = User.Identity.Name;
+                        OldContract.Arquivado = true;
+                        OldContract.Historico = true;
+                        if (DBContracts.Update(OldContract) == null)
                         {
-                            proposalToUpdate.NºVersão = proposal.VersionNo + 1;
-                            proposalToUpdate.UtilizadorCriação = User.Identity.Name;
-                            proposalToUpdate.UtilizadorModificação = "";
+                            proposal.eReasonCode = 2;
+                            proposal.eMessage = "Ocorreu um erro ao atualizar o contrato original.";
+                            return Json(proposal);
+                        }
 
-                            proposalToUpdate.DataHoraModificação = null;
-                            proposalToUpdate.Arquivado = false;
-                            DBContracts.Create(proposalToUpdate);
+                        //2 » Criar um novo contrato com os dados da proposta
+                        Contratos NewContract = new Contratos
+                        {
+                            TipoContrato = 3,
+                            NºDeContrato = OldContract.NºDeContrato,
+                            NºVersão = OldContract.NºVersão + 1,
 
-                            //Duplicate proposal Lines
-                            List<LinhasContratos> proposalLines = DBContractLines.GetAllByActiveContract(proposal.ContractNo, proposal.VersionNo);
+                            Área = proposal.Area,
+                            Descrição = proposal.Description,
+                            Estado = OldContract.Estado,
+                            EstadoAlteração = proposal.ChangeStatus,
+                            NºCliente = proposal.ClientNo,
+                            CódigoRegião = proposal.CodeRegion,
+                            CódigoÁreaFuncional = proposal.CodeFunctionalArea,
+                            CódigoCentroResponsabilidade = proposal.CodeResponsabilityCenter,
+                            CódEndereçoEnvio = proposal.CodeShippingAddress,
+                            EnvioANome = proposal.ShippingName,
+                            EnvioAEndereço = proposal.ShippingAddress,
+                            EnvioACódPostal = proposal.ShippingZipCode,
+                            EnvioALocalidade = proposal.ShippingLocality,
+                            PeríodoFatura = proposal.InvocePeriod,
+                            ÚltimaDataFatura = string.IsNullOrEmpty(proposal.LastInvoiceDate) ? (DateTime?)null : DateTime.Parse(proposal.LastInvoiceDate),
+                            PróximaDataFatura = string.IsNullOrEmpty(proposal.NextInvoiceDate) ? (DateTime?)null : DateTime.Parse(proposal.NextInvoiceDate),
+                            DataInicial = string.IsNullOrEmpty(proposal.StartData) ? (DateTime?)null : DateTime.Parse(proposal.StartData),
+                            DataExpiração = string.IsNullOrEmpty(proposal.DueDate) ? (DateTime?)null : DateTime.Parse(proposal.DueDate),
+                            JuntarFaturas = proposal.BatchInvoices,
+                            PróximoPeríodoFact = proposal.NextBillingPeriod,
+                            LinhasContratoEmFact = proposal.ContractLinesInBilling,
+                            CódTermosPagamento = proposal.CodePaymentTerms,
+                            TipoProposta = proposal.ProposalType,
+                            TipoFaturação = proposal.BillingType,
+                            TipoContratoManut = proposal.MaintenanceContractType,
+                            NºRequisiçãoDoCliente = proposal.ClientRequisitionNo,
+                            DataReceçãoRequisição = string.IsNullOrEmpty(proposal.ReceiptDateRequisition) ? (DateTime?)null : DateTime.Parse(proposal.ReceiptDateRequisition),
+                            NºCompromisso = proposal.PromiseNo,
+                            TaxaAprovisionamento = proposal.ProvisioningFee,
+                            Mc = proposal.Mc,
+                            TaxaDeslocação = proposal.DisplacementFee,
+                            ContratoAvençaFixa = proposal.FixedVowsAgreement,
+                            ObjetoServiço = proposal.ServiceObject,
+                            ContratoAvençaVariável = proposal.VariableAvengeAgrement,
+                            Notas = proposal.Notes,
+                            NºContrato = proposal.ContractNo,
+                            DataInícioContrato = string.IsNullOrEmpty(proposal.ContractStartDate) ? (DateTime?)null : DateTime.Parse(proposal.ContractStartDate),
+                            DataFimContrato = string.IsNullOrEmpty(proposal.ContractEndDate) ? (DateTime?)null : DateTime.Parse(proposal.ContractEndDate),
+                            DescriçãoDuraçãoContrato = proposal.ContractDurationDescription,
+                            DataInício1ºContrato = string.IsNullOrEmpty(proposal.StartDateFirstContract) ? (DateTime?)null : DateTime.Parse(proposal.StartDateFirstContract),
+                            Referência1ºContrato = proposal.FirstContractReference,
+                            DuraçãoMáxContrato = string.IsNullOrEmpty(proposal.ContractMaxDuration) ? (DateTime?)null : DateTime.Parse(proposal.ContractMaxDuration),
+                            RescisãoPrazoAviso = proposal.TerminationTermNotice,
+                            CondiçõesParaRenovação = proposal.RenovationConditions,
+                            CondiçõesRenovaçãoOutra = proposal.RenovationConditionsAnother,
+                            CondiçõesPagamento = proposal.PaymentTerms,
+                            CondiçõesPagamentoOutra = proposal.PaymentTermsAnother,
+                            AssinadoPeloCliente = proposal.CustomerSigned,
+                            Juros = proposal.Interests,
+                            DataDaAssinatura = string.IsNullOrEmpty(proposal.SignatureDate) ? (DateTime?)null : DateTime.Parse(proposal.SignatureDate),
+                            DataEnvioCliente = string.IsNullOrEmpty(proposal.CustomerShipmentDate) ? (DateTime?)null : DateTime.Parse(proposal.CustomerShipmentDate),
+                            UnidadePrestação = proposal.ProvisionUnit,
+                            ReferênciaContrato = proposal.ContractReference,
+                            ValorTotalProposta = proposal.TotalProposalValue,
+                            LocalArquivoFísico = proposal.PhysicalFileLocation,
+                            NºOportunidade = proposal.OportunityNo,
+                            NºProposta = proposal.ProposalNo,
+                            NºContato = proposal.ContactNo,
+                            DataEstadoProposta = string.IsNullOrEmpty(proposal.DateProposedState) ? (DateTime?)null : DateTime.Parse(proposal.DateProposedState),
+                            OrigemDoPedido = proposal.OrderOrigin,
+                            DescOrigemDoPedido = proposal.OrdOrderSource,
+                            NumeraçãoInterna = proposal.InternalNumeration,
+                            DataAlteraçãoProposta = string.IsNullOrEmpty(proposal.ProposalChangeDate) ? (DateTime?)null : DateTime.Parse(proposal.ProposalChangeDate),
+                            DataHoraLimiteEsclarecimentos = string.IsNullOrEmpty(proposal.LimitClarificationDate) ? (DateTime?)null : DateTime.Parse(proposal.LimitClarificationDate),
+                            DataHoraErrosEOmissões = string.IsNullOrEmpty(proposal.ErrorsOmissionsDate) ? (DateTime?)null : DateTime.Parse(proposal.ErrorsOmissionsDate),
+                            DataHoraRelatórioFinal = string.IsNullOrEmpty(proposal.FinalReportDate) ? (DateTime?)null : DateTime.Parse(proposal.FinalReportDate),
+                            DataHoraHabilitaçãoDocumental = string.IsNullOrEmpty(proposal.DocumentationHabilitationDate) ? (DateTime?)null : DateTime.Parse(proposal.DocumentationHabilitationDate),
+                            DataHoraEntregaProposta = string.IsNullOrEmpty(proposal.ProposalDelivery) ? (DateTime?)null : DateTime.Parse(proposal.ProposalDelivery),
+                            NºComprimissoObrigatório = proposal.CompulsoryCompulsoryNo,
+                            DataHoraCriação = DateTime.Now,
+                            DataHoraModificação = (DateTime?)null,
+                            UtilizadorCriação = User.Identity.Name,
+                            UtilizadorModificação = null,
+                            Arquivado = false,
+                            ValorBaseProcedimento = proposal.BaseValueProcedure,
+                            AudiênciaPrévia = string.IsNullOrEmpty(proposal.PreviousHearing) ? (DateTime?)null : DateTime.Parse(proposal.PreviousHearing),
+                            RazãoArquivo = proposal.ArchiveReason,
+                            Historico = false,
+                            Tipo = proposal.Type,
+                            NºVep = proposal.NoVEP,
+                            TextoFatura = proposal.TextoFatura
+                        };
+                        if (DBContracts.Create(NewContract) == null)
+                        {
+                            proposal.eReasonCode = 3;
+                            proposal.eMessage = "Ocorreu um erro ao criar o novo contrato.";
+                            return Json(proposal);
+                        }
+
+                        List<LinhasContratos> proposalLines = DBContractLines.GetAllByActiveContract(proposal.ContractNo, proposal.VersionNo);
+                        if (proposalLines != null && proposalLines.Count() > 0)
+                        {
                             proposalLines.ForEach(x =>
                             {
-                                x.NºVersão = proposalToUpdate.NºVersão;
-                                DBContractLines.Create(x);
-                            });
-
-                            if (DBContractLines.DeleteAllFromContract(proposal.RelatedContract))
-                            {
-                                if (partialUpdate)
+                                if (partialUpdate == true)
                                 {
-                                    proposalLines.RemoveAll(x => !x.CriaContrato.HasValue || !x.CriaContrato.Value);
-                                    proposalToUpdate.Estado = 8;
+                                    if (x.CriaContrato == true)
+                                    {
+                                        x.TipoContrato = 3;
+                                        x.NºContrato = NewContract.NºDeContrato;
+                                        x.NºVersão = NewContract.NºVersão;
+                                        x.DataHoraCriação = DateTime.Now;
+                                        DBContractLines.Create(x);
+                                    }
                                 }
                                 else
                                 {
-                                    proposalToUpdate.Estado = 6;
+                                    x.TipoContrato = 3;
+                                    x.NºContrato = NewContract.NºDeContrato;
+                                    x.NºVersão = NewContract.NºVersão;
+                                    x.DataHoraCriação = DateTime.Now;
+                                    DBContractLines.Create(x);
                                 }
-                                DBContracts.Update(proposalToUpdate);
-                                proposalLines.ForEach(x =>
-                                {
-                                    LinhasContratos newline = ParseToNewModel(x);
-                                    newline.TipoContrato = contract.TipoContrato;
-                                    newline.NºContrato = contract.NºContrato;
-                                    newline.NºVersão = contract.NºVersão;
-                                    DBContractLines.Create(newline);
-                                });
+                            });
+                        }
 
-                                proposal = DBContracts.ParseToViewModel(proposalToUpdate, _config.NAVDatabaseName, _config.NAVCompanyName);
+                        //3 » Passa a proposta para histórico
+                        Contratos proposalToUpdate = DBContracts.GetByIdAndVersion(proposal.ContractNo, proposal.VersionNo);
 
-                                proposal.eReasonCode = 1;
-                                proposal.eMessage = "Contrato atualizado com sucesso.";
-                                return Json(proposal);
-                            }
-                            else
+                        if (proposalToUpdate != null)
+                        {
+                            proposalToUpdate.Estado = proposal.Status;
+                            proposalToUpdate.DataExpiração = DateTime.Parse(proposal.DueDate);
+                            proposalToUpdate.UtilizadorModificação = User.Identity.Name;
+                            proposalToUpdate.Arquivado = true;
+
+                            if (DBContracts.Update(proposalToUpdate) == null)
                             {
-                                proposal.eReasonCode = 2;
-                                proposal.eMessage = "Ocorreu um erro ao atualizar as linhas do contrato.";
+                                proposal.eReasonCode = 4;
+                                proposal.eMessage = "Ocorreu um erro ao actualizar a proposta original.";
+                                return Json(proposal);
                             }
                         }
                         else
                         {
-                            proposal.eReasonCode = 2;
-                            proposal.eMessage = "Ocorreu um erro ao atualizar o contrato.";
+                            proposal.eReasonCode = 5;
+                            proposal.eMessage = "Ocorreu um erro ao obter a proposta original.";
+                            return Json(proposal);
                         }
 
+                        proposal.eReasonCode = 1;
+                        proposal.eMessage = "Proposta atualizada com sucesso.";
                         return Json(proposal);
                     }
-                    catch (Exception)
+                    else
                     {
-                        proposal.eReasonCode = 2;
-                        proposal.eMessage = "Ocorreu um erro ao atualizar o contrato.";
+                        proposal.eReasonCode = 6;
+                        proposal.eMessage = "Não foi possível obter o contrato da proposta.";
                     }
                 }
+                else
+                {
+                    proposal.eReasonCode = 7;
+                    proposal.eMessage = "Ocorreu um erro na passagem dos dados da proposta.";
+                }
+                return Json(proposal);
             }
-            else
+            catch (Exception)
             {
-                proposal.eReasonCode = 2;
-                proposal.eMessage = "Ocorreu um erro ao atualizar o contrato.";
+                proposal.eReasonCode = 99;
+                proposal.eMessage = "Ocorreu um erro ao atualizar a proposta.";
             }
+
             return Json(proposal);
+
+
+            //CODIGO ORIGINAL DA HYDRA
+            /*
+            •	Se o estado da proposta estiver aberta, perguntar se quer mudar para Enviada ou para Revista (tem de mudar para um destes estados obrigatoriamente);
+            •	Arquiva a proposta;
+            •	Pergunta que linhas vai passar para o contrato, tal como faz no tornar em contrato parcial;
+            •	Atualiza o contrato com os dados da proposta (as linhas do contrato atuais são eliminadas e criadas novamente com as linhas da proposta, passa apenas as linhas marcadas como sendo para passar);
+            •	Muda o estado da proposta para Renovada se for total, ou para Parcialmente Aceite se for parcial (se selecionou todas as linhas ou não);
+            */
+            //Contratos proposalToUpdate = DBContracts.GetByIdAndVersion(proposal.ContractNo, proposal.VersionNo);
+            //proposalToUpdate.Estado = proposal.Status;
+            //proposalToUpdate.DataExpiração = DateTime.Parse(proposal.DueDate);
+            //proposalToUpdate.UtilizadorModificação = User.Identity.Name;
+            //proposalToUpdate.Arquivado = true;
+            //proposalToUpdate = DBContracts.Update(proposalToUpdate);
+            //if (proposalToUpdate != null)
+            //{
+            //    proposalToUpdate.NºVersão = proposal.VersionNo + 1;
+            //    proposalToUpdate.UtilizadorCriação = User.Identity.Name;
+            //    proposalToUpdate.UtilizadorModificação = "";
+
+            //    proposalToUpdate.DataHoraModificação = null;
+            //    proposalToUpdate.Arquivado = false;
+            //    DBContracts.Create(proposalToUpdate);
+
+            //    //Duplicate proposal Lines
+            //    List<LinhasContratos> proposalLines = DBContractLines.GetAllByActiveContract(proposal.ContractNo, proposal.VersionNo);
+            //    proposalLines.ForEach(x =>
+            //    {
+            //        x.NºVersão = proposalToUpdate.NºVersão;
+            //        DBContractLines.Create(x);
+            //    });
+
+            //    if (DBContractLines.DeleteAllFromContract(proposal.RelatedContract))
+            //    {
+            //        if (partialUpdate)
+            //        {
+            //            proposalLines.RemoveAll(x => !x.CriaContrato.HasValue || !x.CriaContrato.Value);
+            //            proposalToUpdate.Estado = 8;
+            //        }
+            //        else
+            //        {
+            //            proposalToUpdate.Estado = 6;
+            //        }
+            //        DBContracts.Update(proposalToUpdate);
+            //        proposalLines.ForEach(x =>
+            //        {
+            //            LinhasContratos newline = ParseToNewModel(x);
+            //            newline.TipoContrato = contract.TipoContrato;
+            //            newline.NºContrato = contract.NºContrato;
+            //            newline.NºVersão = contract.NºVersão;
+            //            DBContractLines.Create(newline);
+            //        });
+
+            //        proposal = DBContracts.ParseToViewModel(proposalToUpdate, _config.NAVDatabaseName, _config.NAVCompanyName);
+
+            //        proposal.eReasonCode = 1;
+            //        proposal.eMessage = "Contrato atualizado com sucesso.";
+            //        return Json(proposal);
+            //    }
+            //    else
+            //    {
+            //        proposal.eReasonCode = 2;
+            //        proposal.eMessage = "Ocorreu um erro ao atualizar as linhas do contrato.";
+            //    }
+            //}
+            //else
+            //{
+            //    proposal.eReasonCode = 2;
+            //    proposal.eMessage = "Ocorreu um erro ao atualizar o contrato.";
+            //}
+
+            //return Json(proposal);
         }
 
         [HttpPost]
