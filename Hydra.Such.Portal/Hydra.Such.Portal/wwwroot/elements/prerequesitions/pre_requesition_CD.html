@@ -1690,30 +1690,30 @@
 
                 _createnewreq: function (e) {
                     this.data.area = this._areaid;
+
                     var countWithIVA = 0;
                     if (this.dataLines.lines != null) {
                         for (var i = 0; i < this.dataLines.lines.length; i++) {
                             countWithIVA += this.dataLines.lines[i].totalCostWithIVA;
                         }
                     }
-
-                    countWithIVA = countWithIVA.toFixed(2).replace(",", ".");
+                    this.data.linhasValorTotalDocComIVA = countWithIVA.toFixed(2).replace(",", ".");
 
                     if (this.$.gridAnexos.__data.items.length > 0) {
                         if (this.$.valorTotalDocComIVA.value != "" && this.$.valorTotalDocComIVA.value != null) {
                             if (this.$.projectNo.value != "" && this.$.projectNo.value != null) {
                                 if (this.dataLines.lines != null) {
-                                    var totalComIva = this.data.valorTotalDocComIVA.replace(',', '.');
+                                    //var totalComIva = this.$.valorTotalDocComIVA.toFixed(2).replace(',', '.');
                                     //totalComIva = totalComIva.toFixed(2);
                                     //totalComIva = totalComIva.toFixed(2).replace(',', '.');
 
-                                    if (countWithIVA == parseFloat(totalComIva)) {
+                                    //if (countWithIVA == parseFloat(totalComIva)) {
                                         this.$.page_validator_req_ajax.body = JSON.stringify(this.data);
                                         this.$.page_validator_req_ajax.generateRequest();
-                                    }
-                                    else {
-                                        this._openToastError('O valor do campo Valor Total Doc. com IVA têm que ser igual ao sumatório do campo Custo Total com IVA das linhas.');
-                                    }
+                                    //}
+                                    //else {
+                                    //    this._openToastError('O valor do campo Valor Total Doc. com IVA têm que ser igual ao sumatório do campo Custo Total com IVA das linhas.');
+                                    //}
                                 }
                                 else {
                                     this._openToastError('É necessário existir pelo menos uma linha para criar a Requisição.');

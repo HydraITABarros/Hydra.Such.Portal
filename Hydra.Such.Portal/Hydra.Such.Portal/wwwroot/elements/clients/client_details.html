@@ -1186,6 +1186,7 @@
                                 <!--[[_roundValue(item.quantity, 2)]]-->
                                 <!--[[ item.quantity ]]-->
                                 [[_round2casas(item.quantity)]]
+                                <!--{{item.quantity}}-->
                             </div>
                         </template>
                     </vaadin-grid-column>
@@ -1198,6 +1199,7 @@
                             <div class="text-right">
                                 <!--[[_formatCurrencyValue(item.unitPrice)]]-->
                                 [[_formatIntValue(item.unitPrice)]]
+                                <!--{{item.unitPrice}}-->
                             </div>
                         </template>
                     </vaadin-grid-column>
@@ -1209,18 +1211,20 @@
                         <template>
                             <div class="text-right">
                                 [[_formatPercentValue(item.vat)]]
+                                <!--{{item.vat}}-->
                             </div>
                         </template>
                     </vaadin-grid-column>
 
                     <vaadin-grid-column width="100px" resizable>
                         <template class="header">
-                            <vaadin-grid-sorter path="amount">Custo</vaadin-grid-sorter>
+                            <vaadin-grid-sorter path="amount">Preço Total</vaadin-grid-sorter>
                             <vaadin-grid-filter path="amount" />
                         </template>
                         <template>
                             <div class="text-right">
                                 [[_formatCurrencyValue(item.amount)]]
+                                <!--{{item.amount}}-->
                             </div>
                         </template>
                     </vaadin-grid-column>
@@ -1791,6 +1795,9 @@
                     if (value != null && value != 0) {
                         return currency(Math.round(value * 100) / 100, { separator: '.', decimal: ',' }).format() + '€';
                     }
+                    else {
+                        return "0.00€";
+                    }
                 },
                 _formatIntValue: function (value) {
 
@@ -1800,7 +1807,11 @@
                     }
                     value = value * 1;
                     if (value != null && value != 0) {
-                        return parseFloat(Math.round(value * 100) / 100, { separator: '.', decimal: ',' }).toFixed(4) + '€';
+                        //return parseFloat(Math.round(value * 100) / 100, { separator: '.', decimal: ',' }).toFixed(4) + '€';
+                        return parseFloat(value).toFixed(4) + '€';
+                    }
+                    else {
+                        return "0.0000€";
                     }
                 },
                 _round2casas: function (value) {
@@ -1812,6 +1823,9 @@
                     value = value * 1;
                     if (value != null && value != 0) {
                         return parseFloat(Math.round(value * 100) / 100, { separator: '.', decimal: ',' }).toFixed(2);
+                    }
+                    else {
+                        return "0.00"
                     }
                 },
                 _invoiceSelected: function (value) {
@@ -1859,14 +1873,14 @@
                     this.$.ajax_InvoiceLinesExport.generateRequest();
                 },
                 _exportInvoiceDetails: function () {
-                    var payload = {
-                        list: this.$.grid_invoicesdetails._filter(this.invoicesLines),
-                        columns: this._invoiceDetailsColumns,
-                        noFatura: this._SelectedInvoice.no_,
-                        tipo: this._SelectedInvoice.tipo
-                    };
+                    //var payload = {
+                    //    list: this.$.grid_invoicesdetails._filter(this.invoicesLines),
+                    //    columns: this._invoiceDetailsColumns,
+                    //    noFatura: this._SelectedInvoice.no_,
+                    //    tipo: this._SelectedInvoice.tipo
+                    //};
 
-                    this.$.ajax_InvoiceDetailsExport.body = JSON.stringify(payload);
+                    this.$.ajax_InvoiceDetailsExport.body = JSON.stringify(this.$.grid_invoicesdetails._filter(this.invoicesLines));
                     this.$.ajax_InvoiceDetailsExport.generateRequest();
                 },
                 _exportBalances: function () {
@@ -1986,7 +2000,14 @@
                     if (value) {
                         value = value.replace(",", ".");
                     }
-                    return this._roundValue(value, 0) + "%";
+
+                    if (value != null && value != 0) {
+                        return this._roundValue(value, 0) + "%";
+                    }
+                    else {
+                        return "0%";
+                    }
+                    //return this._roundValue(value, 0) + "%";
                 },
                 _roundValue: function (value, decimal) {
                     if (value) {
