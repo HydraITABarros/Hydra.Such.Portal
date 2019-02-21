@@ -806,8 +806,17 @@ namespace Hydra.Such.Portal.Controllers
                             List<RequisiçõesClienteContrato> RCCToDelete = RCC
                                 .Where(x => !data.ClientRequisitions.Any(
                                     y => x.NºRequisiçãoCliente == x.NºRequisiçãoCliente &&
-                                         x.GrupoFatura == y.InvoiceGroup && x.NºProjeto == y.ProjectNo &&
-                                         x.DataInícioCompromisso == DateTime.Parse(y.StartDate))).ToList();
+                                         x.GrupoFatura == y.InvoiceGroup &&
+                                         x.NºProjeto == y.ProjectNo &&
+                                         
+                                         x.DataInícioCompromisso == (y.StartDate != "" ? DateTime.Parse(y.StartDate) : (DateTime?)null) &&
+                                         x.DataFimCompromisso == (y.EndDate != "" ? DateTime.Parse(y.EndDate) : (DateTime?)null) &&
+                                         x.NºRequisiçãoCliente == y.ClientRequisitionNo &&
+                                         x.DataRequisição == (y.RequisitionDate != null ? DateTime.Parse(y.RequisitionDate) : (DateTime?)null) &&
+                                         x.NºCompromisso == y.PromiseNo &&
+                                         x.GrupoFatura == y.InvoiceGroup &&
+                                         x.NºProjeto == y.ProjectNo &&
+                                         x.DataÚltimaFatura == (y.LastInvoiceDate != "" ? DateTime.Parse(y.LastInvoiceDate) : (DateTime?)null))).ToList();
 
                             data.ClientRequisitions.ForEach(y =>
                             {
@@ -821,6 +830,7 @@ namespace Hydra.Such.Portal.Controllers
                                     RCCO.NºContrato = y.ContractNo;
                                     RCCO.GrupoFatura = y.InvoiceGroup;
                                     RCCO.NºProjeto = y.ProjectNo;
+
                                     RCCO.DataInícioCompromisso = DateTime.Parse(y.StartDate);
                                     RCCO.DataFimCompromisso = y.EndDate != "" ? DateTime.Parse(y.EndDate) : (DateTime?)null;
                                     RCCO.NºRequisiçãoCliente = y.ClientRequisitionNo;
@@ -2929,7 +2939,7 @@ namespace Hydra.Such.Portal.Controllers
                                         PreInvoiceLinesToCreate.Tipo = line.Type.Value.ToString();
                                         PreInvoiceLinesToCreate.Código = line.Code;
                                         PreInvoiceLinesToCreate.Descrição = line.Description;
-                                        PreInvoiceLinesToCreate.Descricao2 = line.Description2.Substring(0, 50);
+                                        PreInvoiceLinesToCreate.Descricao2 = line.Description2.Length > 50 ?  line.Description2.Substring(1, 50) : line.Description2;
                                         PreInvoiceLinesToCreate.CódUnidadeMedida = line.CodeMeasureUnit;
                                         PreInvoiceLinesToCreate.CódigoÁreaFuncional = line.CodeFunctionalArea;
                                         PreInvoiceLinesToCreate.CódigoRegião = line.CodeRegion;

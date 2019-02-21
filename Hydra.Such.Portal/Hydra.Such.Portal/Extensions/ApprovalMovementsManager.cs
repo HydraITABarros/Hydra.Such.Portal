@@ -593,7 +593,7 @@ namespace Hydra.Such.Portal.Extensions
                     if ((FolhaHoras.IntegradoEmRh == false || FolhaHoras.IntegradoEmRh == null) && FolhaHoras.Estado == Estado)
                     {
                         IntegradoEmRh = true; //IntegracaoAjuda
-                        ApprovalMovement.Value = FolhaHoras.CustoTotalHoras;
+                        ApprovalMovement.Value = FolhaHoras.CustoTotalAjudaCusto;
                         nivel = 2;
                     }
                     else

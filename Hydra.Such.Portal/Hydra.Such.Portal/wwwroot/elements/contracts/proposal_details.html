@@ -358,10 +358,10 @@
                                 <div>
                                     <div class="row break_clear">
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field id="contractNo" name="contractNo" label="Nº Proposta" value="{{data.contractNo}}" disabled="{{ !_isCreate}}"></vaadin-text-field>
+                                            <vaadin-text-field id="contractNo" name="contractNo" label="Nº Proposta" value="{{data.contractNo}}" maxlength="20" disabled="{{ !_isCreate}}"></vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field value="{{data.description}}" id="Description" name="Description" label="Âmbito do Serviço" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.description}}" id="Description" name="Description" label="Âmbito do Serviço" maxlength="100" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
                                             <such-selectbox id="contactNo" value="{{data.contactNo}}" label="Nome Contacto"
@@ -396,10 +396,10 @@
                                             </such-selectbox>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field value="{{data.ordOrderSource}}" id="mOrdOrderSource" name="mOrdOrderSource" label="Origem do Pedido Descrição" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.ordOrderSource}}" id="mOrdOrderSource" name="mOrdOrderSource" label="Origem do Pedido Descrição" maxlength="50" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field value="{{data.relatedContract}}" id="txtRelatedContractNo" name="txtRelatedContractNo" label="Nº Contrato" disabled="true"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.relatedContract}}" id="txtRelatedContractNo" name="txtRelatedContractNo" label="Nº Contrato" maxlength="20" disabled="true"> </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 hide">
                                             <vaadin-text-field value="{{data.versionNo}}" id="versionNo" name="versionNo" label="Nº Versão" disabled="true"> </vaadin-text-field>
@@ -432,7 +432,7 @@
                                     </div>
                                     <div class="row break_clear">
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field value="{{data.internalNumeration}}" id="mInternalNumeration" name="mInternalNumeration" label="Numeração Interna" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.internalNumeration}}" id="mInternalNumeration" name="mInternalNumeration" label="Numeração Interna" maxlength="20" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
                                             <vaadin-text-field value="{{data.totalProposalValue}}" on-value-changed="_ConvertDecimals" placeholder="0.0000" pattern="^[0-9]\d*(\.[0-9]{1,4})?$" error-message="Valor inválido" id="mTotalProposalValue" name="mTotalProposalValue" label="Valor Total" disabled="{{ !_permissions.update }}"><div slot="suffix">€</div></vaadin-text-field>
@@ -466,7 +466,6 @@
                                             </such-selectbox>
                                         </div>
                                         <div class="col-md-3 ">
-
                                             <such-selectbox id="mFeeUnits" value="{{data.provisionUnit}}" label="Unidade de Prestação"
                                                             items="[[LFetchUnits]]"
                                                             text-path="value"
@@ -477,7 +476,7 @@
                                             </such-selectbox>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field value="{{data.oportunityNo}}" id="mOportunity" name="mOportunity" label="Nº Oportunidade" disabled> </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.oportunityNo}}" id="mOportunity" name="mOportunity" label="Nº Oportunidade" maxlength="20" disabled> </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
                                             <vaadin-text-field value="{{data.baseValueProcedure}}" id="mBaseValueProcedure" name="mBaseValueProcedure" on-value-changed="_ConvertDecimals" placeholder="0.0000" pattern="^[0-9]\d*(\.[0-9]{1,4})?$" label="Valor Base Procedimento" disabled="{{ !_permissions.update }}"><div slot="suffix">€</div></vaadin-text-field>
@@ -509,22 +508,22 @@
                                             </vaadin-combo-box>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field value="{{data.shippingName}}" id="ShippingName" name="ShippingName" label="Envio-a Nome" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.shippingName}}" id="ShippingName" name="ShippingName" label="Envio-a Nome" maxlength="100" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field value="{{data.shippingAddress}}" id="ShippingAddress" name="ShippingAddress" label="Envio-a Endereço" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                            <vaadin-text-field value="{{data.shippingAddress}}" id="ShippingAddress" name="ShippingAddress" label="Envio-a Endereço" maxlength="100" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field value="{{data.shippingZipCode}}" id="shippingZipCode" name="shippingZipCode" label="Envio-a Cód. Postal" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.shippingZipCode}}" id="shippingZipCode" name="shippingZipCode" label="Envio-a Cód. Postal" maxlength="20" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                         </div>
 
                                     </div>
                                     <div class="row break_clear">
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field value="{{data.shippingLocality}}" id="ShippingLocality" name="ShippingLocality" label="Envio-a Localidade" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.shippingLocality}}" id="ShippingLocality" name="ShippingLocality" label="Envio-a Localidade" maxlength="30" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field value="{{data.clientRequisitionNo}}" id="mClientRequisitionNo" label="Nº Requisição Cliente" name="mClientRequisitionNo" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.clientRequisitionNo}}" id="mClientRequisitionNo" label="Nº Requisição Cliente" name="mClientRequisitionNo" maxlength="30" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                         </div>
                                     </div>
                                 </div>
@@ -550,7 +549,7 @@
                                             <vaadin-text-field value="{{data.provisioningFee}}" id="mProvisioningFee" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" error-message="Valor inválido" name="provisioningFee" label="Taxa Aprovisionamento" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field value="{{data.mc}}" id="mc" name="mc" label="% MC" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.mc}}" id="mc" name="mc" label="% MC" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" error-message="Valor inválido" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                         </div>
                                     </div>
                                     <div class="row break_clear">
@@ -568,7 +567,7 @@
                                             <vaadin-date-picker label="Próxima Data Fatura" id="mNextInvoiceDate" name="mNextInvoiceDate" value="{{data.nextInvoiceDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field value="{{data.nextBillingPeriod}}" id="mNextBillingPeriod" name="mNextBillingPeriod" label="Próximo Período Fat." disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.nextBillingPeriod}}" id="mNextBillingPeriod" name="mNextBillingPeriod" label="Próximo Período Fat." maxlength="30" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                         </div>
                                     </div>
                                     <div class="row break_clear">

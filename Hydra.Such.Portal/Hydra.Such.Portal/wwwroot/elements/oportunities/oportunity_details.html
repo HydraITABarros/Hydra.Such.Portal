@@ -2008,7 +2008,7 @@
                     return "";
                 },
                 _clFormatResponsible: function (param) {
-                    if (param != undefined) {
+                    if (param != undefined && this.CBEmployees != undefined) {
                         var sel = this.CBEmployees.find(x => x.id == param);
                         if (sel != undefined) {
                             return sel.value;
