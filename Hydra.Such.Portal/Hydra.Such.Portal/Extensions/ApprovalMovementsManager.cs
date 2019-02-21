@@ -589,7 +589,7 @@ namespace Hydra.Such.Portal.Extensions
 
                 if ((NoAjudasCusto > 0) || (FolhaHoras.TipoDeslocação == 2 && Nokm > 0))
                 {
-                    Estado = 1; //VALIDADO
+                    Estado = 1; //VALIDADO 
                     if ((FolhaHoras.IntegradoEmRh == false || FolhaHoras.IntegradoEmRh == null) && FolhaHoras.Estado == Estado)
                     {
                         IntegradoEmRh = true; //IntegracaoAjuda
