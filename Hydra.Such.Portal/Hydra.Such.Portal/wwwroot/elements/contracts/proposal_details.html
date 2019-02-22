@@ -2139,12 +2139,19 @@
                 _clResponseProcessor: function (data) {
                     if (data.detail.status === 200) {
                         if (!(data.detail.url.indexOf("GetContractLines") !== -1)) {
+                            if (this.dataLines.eReasonCode != 1) {
+                                this._openToastError(this.dataLines.eMessage);
+                            }
+                            else {
+                                this._openToast(this.dataLines.eMessage);
+                            }
+
                             this._CLContractLineType = "";
                             this._CLMeasureUnit._clearSelection();
                             this._CLFrequency = "";
                             this._CLServiceClient._clearSelection();
                             this._CLCode = "";
-                            this.$._CLCode._clearSelection();
+                            this._CLCode._clearSelection();
                             this._CLUnitPrice = "";
                             this._CLInterventionHours = "";
                             this._CLInvoiceGroup._clearSelection();
@@ -2163,7 +2170,6 @@
                             this._CLVersionStartDate = this.data.startData;
                             this._CLVersionEndDate = this.data.dueDate;
 
-                            this._openToast(this.dataLines.eMessage);
                         }
                     }
                 },

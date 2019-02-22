@@ -251,7 +251,7 @@
                    method="post"
                    handle-as="json"
                    id="removeFromHistoric_ajax"
-                   on-response="_clResponseProcessor"
+                   on-response="_clResponseProcessorHistoric"
                    content-type="application/json"></iron-ajax>
 
         <template is="dom-if" if="{{ !_isCreate }}">
@@ -3204,7 +3204,7 @@
                         }
                     });
                 },
-                _clResponseProcessor: function (e) {
+                _clResponseProcessorHistoric: function (e) {
                     var response = this.removedHistoric;
                     if (typeof response != 'undefined') {
                         if (response.eReasonCode == 1) {
