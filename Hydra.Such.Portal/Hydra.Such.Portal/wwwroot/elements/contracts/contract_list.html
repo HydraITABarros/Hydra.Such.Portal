@@ -135,6 +135,8 @@
                    content-type="application/json"></iron-ajax>
 
         <div class="subMenu">
+            <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+
             <template is="dom-if" if="{{ _permissions.create }}">
                 <template is="dom-if" if="{{ !_disabledCreate }}">
                     <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar Novo</paper-button>
@@ -143,6 +145,7 @@
             <template is="dom-if" if="{{ !_contractno }}">
                 <paper-button id="btnContractHistory" class="tablinks" on-tap="_redirectToContractHistory"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; {{_showMessage}}</paper-button>
                 <!--<such-dropdown-menu style="display: {{ _showOptionsForAccounting }};" on-value-changed="_filterOptionSelected" title="Exibir" items='[[ _filterMenuItems ]]'></such-dropdown-menu>-->
+                ="
                 <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
             </template>
 
@@ -545,7 +548,16 @@
                     if (value != null && value != 0) {
                         return currency(value, { separator: '.', decimal: ',' }).format() + ' €';
                     }
-                }
+                },
+
+                _goBack: function (e) {
+                    window.history.back();
+                },
+
+
+
+
+
             });
         });
     </script>

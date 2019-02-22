@@ -83,51 +83,69 @@
             <paper-button id="btnCancel" class="tablinks" on-tap="_cancel" disabled="{{ _permissionsUpdate }}"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
         </div>
 
-                <div class="panel-body">
-                    <div class="row">
-                        <div class="col-lg-2" hidden>
-                            <vaadin-text-field id="ddID" label="ID" value="{{result.iD}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
-                        </div>
-
-                        <div class="col-lg-2">
-                            <vaadin-text-field id="ddEmail1Regiao12" label="Email 1 Região 12" value="{{result.email1Regiao12}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
-                        </div>
-
-                        <div class="col-lg-2">
-                            <vaadin-text-field id="ddEmail1Regiao23" label="Email 1 Região 23" value="{{result.email1Regiao23}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
-                        </div>
-
-                        <div class="col-lg-2">
-                            <vaadin-text-field id="ddEmail1Regiao33" label="Email 1 Região 33" value="{{result.email1Regiao33}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
-                        </div>
-
-                        <div class="col-lg-2">
-                            <vaadin-text-field id="ddEmail1Regiao43" label="Email 1 Região 43" value="{{result.email1Regiao43}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-lg-2">
-                            <vaadin-text-field id="ddEmail2Regiao12" label="Email 2 Região 12" value="{{result.email2Regiao12}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
-                        </div>
-
-                        <div class="col-lg-2">
-                            <vaadin-text-field id="ddEmail2Regiao23" label="Email 2 Região 23" value="{{result.email2Regiao23}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
-                        </div>
-
-                        <div class="col-lg-2">
-                            <vaadin-text-field id="ddEmail2Regiao33" label="Email 2 Região 33" value="{{result.email2Regiao33}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
-                        </div>
-
-                        <div class="col-lg-2">
-                            <vaadin-text-field id="ddEmail2Regiao43" label="Email 2 Região 43" value="{{result.email2Regiao43}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
-                        </div>
-
-                        <div class="col-lg-2">
-                            <vaadin-text-field id="ddDiasParaEnvioAlerta" label="Dias Para Envio do Alerta" value="{{result.diasParaEnvioAlerta}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
-                        </div>
-                    </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-2" hidden>
+                    <vaadin-text-field id="ddID" label="ID" value="{{result.iD}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
                 </div>
+
+                <div class="col-lg-2">
+                    <vaadin-text-field id="ddEmail1Regiao12" label="Email 1 Região 12" value="{{result.email1Regiao12}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
+                </div>
+
+                <div class="col-lg-2">
+                    <vaadin-text-field id="ddEmail1Regiao23" label="Email 1 Região 23" value="{{result.email1Regiao23}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
+                </div>
+
+                <div class="col-lg-2">
+                    <vaadin-text-field id="ddEmail1Regiao33" label="Email 1 Região 33" value="{{result.email1Regiao33}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
+                </div>
+
+                <div class="col-lg-2">
+                    <vaadin-text-field id="ddEmail1Regiao43" label="Email 1 Região 43" value="{{result.email1Regiao43}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
+                </div>
+
+                <div class="col-lg-2">
+                    <vaadin-text-field id="ddDiasParaEnvioAlerta" label="Dias Para Envio do Alerta" value="{{result.diasParaEnvioAlerta}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-2">
+                    <vaadin-text-field id="ddEmail2Regiao12" label="Email 2 Região 12" value="{{result.email2Regiao12}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
+                </div>
+
+                <div class="col-lg-2">
+                    <vaadin-text-field id="ddEmail2Regiao23" label="Email 2 Região 23" value="{{result.email2Regiao23}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
+                </div>
+
+                <div class="col-lg-2">
+                    <vaadin-text-field id="ddEmail2Regiao33" label="Email 2 Região 33" value="{{result.email2Regiao33}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
+                </div>
+
+                <div class="col-lg-2">
+                    <vaadin-text-field id="ddEmail2Regiao43" label="Email 2 Região 43" value="{{result.email2Regiao43}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-2">
+                    <vaadin-text-field id="ddEmail3Regiao12" label="Email 3 Região 12" value="{{result.email3Regiao12}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
+                </div>
+
+                <div class="col-lg-2">
+                    <vaadin-text-field id="ddEmail3Regiao23" label="Email 3 Região 23" value="{{result.email3Regiao23}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
+                </div>
+
+                <div class="col-lg-2">
+                    <vaadin-text-field id="ddEmail3Regiao33" label="Email 3 Região 33" value="{{result.email3Regiao33}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
+                </div>
+
+                <div class="col-lg-2">
+                    <vaadin-text-field id="ddEmail3Regiao43" label="Email 3 Região 43" value="{{result.email3Regiao43}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
+                </div>
+            </div>
+        </div>
 
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>

@@ -1660,11 +1660,20 @@
                     </vaadin-grid-column>
                     <vaadin-grid-column resizable>
                         <template class="header">
-                            <vaadin-grid-sorter path="valorContrato">Valor Contrato</vaadin-grid-sorter>
+                            <vaadin-grid-sorter path="valorContrato">Valor</vaadin-grid-sorter>
                             <vaadin-grid-filter path="valorContrato" />
                         </template>
                         <template>
                             {{item.valorContrato}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="data">Data</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="data" />
+                        </template>
+                        <template>
+                            {{item.data}}
                         </template>
                     </vaadin-grid-column>
                 </vaadin-grid>

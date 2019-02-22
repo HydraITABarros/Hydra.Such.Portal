@@ -17,12 +17,25 @@
 <link rel="import" href="/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/datetime-picker-master/date-picker.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
+<link rel="import" href="/lib/such-textarea/such-textarea.html">
+<link rel="import" href="/lib/such-dropdown-menu/such-dropdown-menu.html" />
+
+<!--start ColumnToggle-->
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-icons/iron-icons.html" />
+<link rel="import" href="/lib/iron-behaviors/iron-button-state.html" />
+<link rel="import" href="/lib/paper-menu-button/paper-menu-button.html" />
+<!--end ColumnToggle-->
 
 <x-proposals-contract _areaid="2" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))' _contractno="@ViewBag.ContractNo"></x-proposals-contract>
 
 <dom-module id="x-proposals-contract">
     <template>
-        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
 
         <custom-style>
@@ -56,6 +69,10 @@
                    handle-as="json"
                    id="grid_databound_ajax"
                    content-type="application/json"></iron-ajax>
+
+        <div class="subMenu">
+            <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+        </div>
 
         <vaadin-grid id="grdContractsGrid" aria-label="ContractsGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="120px" resizable>
@@ -177,16 +194,16 @@
                 </template>
             </vaadin-grid-column>
             @*<template is="dom-if" if="{{ _permissions.delete }}">
-                    <vaadin-grid-column width="10%" resizable>
-                        <template class="header">
-                        </template>
-                        <template>
-                            <center>
-                                <paper-button class="btnRemove" raised on-tap="_deleteOprotunity" disabled="{{_permissionsDelete}}">Eliminar</paper-button>
-                            </center>
-                        </template>
-                    </vaadin-grid-column>
-                </template>*@
+                <vaadin-grid-column width="10%" resizable>
+                    <template class="header">
+                    </template>
+                    <template>
+                        <center>
+                            <paper-button class="btnRemove" raised on-tap="_deleteOprotunity" disabled="{{_permissionsDelete}}">Eliminar</paper-button>
+                        </center>
+                    </template>
+                </vaadin-grid-column>
+            </template>*@
         </vaadin-grid>
     </template>
     <script>
@@ -355,6 +372,16 @@
                         this._showHistoryMessage = "Exibir Histórico";
                     }
                 },
+
+                _goBack: function (e) {
+                    window.history.back();
+                },
+
+
+
+
+
+
             });
         });
     </script>
