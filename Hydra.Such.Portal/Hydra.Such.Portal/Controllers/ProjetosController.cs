@@ -249,8 +249,33 @@ namespace Hydra.Such.Portal.Controllers
                         VerMenu = VerMenu,
                         Utilizador = User.Identity.Name,
                         NameDB = _config.NAVDatabaseName,
-                        CompanyName = _config.NAVCompanyName
+                        CompanyName = _config.NAVCompanyName,
+                        ObservacoesAutorizarFaturacao = ""
                     };
+
+                    //AMARO
+                    string TextoFatura = "";
+                    if (!string.IsNullOrEmpty(cProject.NºProjeto) && !string.IsNullOrEmpty(cProject.NºContrato))
+                    {
+                        TextoFatura = DBContractInvoiceText.GetByContractAndProject(cProject.NºContrato, cProject.NºProjeto).FirstOrDefault().TextoFatura;
+
+                        if (!string.IsNullOrEmpty(TextoFatura))
+                        {
+                            result.ObservacoesAutorizarFaturacao = TextoFatura;
+                        }
+                    }
+                    else
+                    {
+                        if (!string.IsNullOrEmpty(cProject.NºContrato))
+                        { 
+                            TextoFatura = DBContracts.GetAllByContractNo(cProject.NºContrato).FirstOrDefault().TextoFatura;
+
+                            if (!string.IsNullOrEmpty(TextoFatura))
+                            {
+                                result.ObservacoesAutorizarFaturacao = TextoFatura;
+                            }
+                        }
+                    }
 
                     return Json(result);
                 }

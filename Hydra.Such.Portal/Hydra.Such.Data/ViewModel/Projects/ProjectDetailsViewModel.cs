@@ -51,5 +51,6 @@ namespace Hydra.Such.Data.ViewModel.Projects
         public string Utilizador { get; set; }
         public string NameDB { get; set; }
         public string CompanyName { get; set; }
+        public string ObservacoesAutorizarFaturacao { get; set; }
     }
 }

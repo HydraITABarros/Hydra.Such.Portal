@@ -802,27 +802,31 @@ namespace Hydra.Such.Portal.Controllers
 
                             //Create/Update Contract Client Requests
                             List<RequisiçõesClienteContrato> RCC =
-                                DBContractClientRequisition.GetByContract(ContratoDB.NºContrato);
+                                DBContractClientRequisition.GetByContract(ContratoDB.NºDeContrato);
+
                             List<RequisiçõesClienteContrato> RCCToDelete = RCC
                                 .Where(x => !data.ClientRequisitions.Any(
-                                    y => x.NºRequisiçãoCliente == x.NºRequisiçãoCliente &&
-                                         x.GrupoFatura == y.InvoiceGroup &&
-                                         x.NºProjeto == y.ProjectNo &&
-                                         
-                                         x.DataInícioCompromisso == (y.StartDate != "" ? DateTime.Parse(y.StartDate) : (DateTime?)null) &&
-                                         x.DataFimCompromisso == (y.EndDate != "" ? DateTime.Parse(y.EndDate) : (DateTime?)null) &&
-                                         x.NºRequisiçãoCliente == y.ClientRequisitionNo &&
-                                         x.DataRequisição == (y.RequisitionDate != null ? DateTime.Parse(y.RequisitionDate) : (DateTime?)null) &&
-                                         x.NºCompromisso == y.PromiseNo &&
-                                         x.GrupoFatura == y.InvoiceGroup &&
-                                         x.NºProjeto == y.ProjectNo &&
-                                         x.DataÚltimaFatura == (y.LastInvoiceDate != "" ? DateTime.Parse(y.LastInvoiceDate) : (DateTime?)null))).ToList();
+                                    y => x.NºContrato == y.ContractNo &&
+                                            x.GrupoFatura == y.InvoiceGroup &&
+                                            x.NºProjeto == y.ProjectNo &&
+                                            x.DataInícioCompromisso == DateTime.Parse(y.StartDate))).ToList();
+
+
+                                         //!= "" ? DateTime.Parse(y.StartDate) : (DateTime?)null) &&
+                                         //x.DataFimCompromisso == (y.EndDate != "" ? DateTime.Parse(y.EndDate) : (DateTime?)null) &&
+                                         //x.NºRequisiçãoCliente == y.ClientRequisitionNo &&
+                                         //x.DataRequisição == (y.RequisitionDate != null ? DateTime.Parse(y.RequisitionDate) : (DateTime?)null) &&
+                                         //x.NºCompromisso == y.PromiseNo &&
+                                         //x.GrupoFatura == y.InvoiceGroup &&
+                                         //x.NºProjeto == y.ProjectNo &&
+                                         //x.DataÚltimaFatura == (y.LastInvoiceDate != "" ? DateTime.Parse(y.LastInvoiceDate) : (DateTime?)null))).ToList();
 
                             data.ClientRequisitions.ForEach(y =>
                             {
                                 RequisiçõesClienteContrato RCCO =
-                                    RCC.Where(x => x.NºRequisiçãoCliente == x.NºRequisiçãoCliente &&
-                                                   x.GrupoFatura == y.InvoiceGroup && x.NºProjeto == y.ProjectNo &&
+                                    RCC.Where(x => x.NºContrato == y.ContractNo &&
+                                                   x.GrupoFatura == y.InvoiceGroup &&
+                                                   x.NºProjeto == y.ProjectNo &&
                                                    x.DataInícioCompromisso == DateTime.Parse(y.StartDate))
                                         .FirstOrDefault();
                                 if (RCCO != null)
@@ -1148,6 +1152,7 @@ namespace Hydra.Such.Portal.Controllers
                             return Json(proposal);
                         }
 
+                        //Passar as Linhas da Proposta para o novo Contrato
                         List<LinhasContratos> proposalLines = DBContractLines.GetAllByActiveContract(proposal.ContractNo, proposal.VersionNo);
                         if (proposalLines != null && proposalLines.Count() > 0)
                         {
@@ -1180,7 +1185,7 @@ namespace Hydra.Such.Portal.Controllers
 
                         if (proposalToUpdate != null)
                         {
-                            proposalToUpdate.Estado = proposal.Status;
+                            proposalToUpdate.Estado = 6; //Renovada
                             proposalToUpdate.DataExpiração = DateTime.Parse(proposal.DueDate);
                             proposalToUpdate.UtilizadorModificação = User.Identity.Name;
                             proposalToUpdate.Arquivado = true;

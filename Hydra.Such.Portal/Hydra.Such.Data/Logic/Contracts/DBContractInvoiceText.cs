@@ -138,6 +138,21 @@ namespace Hydra.Such.Data.Logic.Contracts
             }
         }
 
+        public static List<TextoFaturaContrato> GetByContractAndProject(string ContractNo, string ProjectNo)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.TextoFaturaContrato.Where(x => x.NºContrato == ContractNo && x.NºProjeto == ProjectNo).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
 
 
         public static TextoFaturaContrato ParseToDB(ContractInvoiceTextViewModel ObjectToParse)

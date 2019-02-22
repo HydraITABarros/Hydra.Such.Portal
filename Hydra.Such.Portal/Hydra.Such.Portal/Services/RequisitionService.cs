@@ -236,12 +236,6 @@ namespace Hydra.Such.Portal.Services
                 //use for database update later
                 var requisitionLines = requisition.Lines;
 
-                //AMARO TESTES COMENTAR
-                //if (!string.IsNullOrEmpty(requisition.OrderNo))
-                //    throw new Exception("A Encomenda de Compra já foi criada para esta Requisição com o Nº " + requisition.OrderNo);
-                //FIM
-
-                //AMARO TESTES DESCOMENTAR
                 requisitionLines.RemoveAll(x => x.CriarNotaEncomenda == null || x.CriarNotaEncomenda == false);
                 requisitionLines.RemoveAll(x => x.CreatedOrderNo != "" && x.CreatedOrderNo != null);
                 //FIM
