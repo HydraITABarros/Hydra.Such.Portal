@@ -1065,8 +1065,8 @@ namespace Hydra.Such.Portal.Controllers
 
                             Área = proposal.Area,
                             Descrição = proposal.Description,
-                            Estado = OldContract.Estado,
-                            EstadoAlteração = proposal.ChangeStatus,
+                            Estado = 4, //Assinado
+                            EstadoAlteração = 1, //Aberto
                             NºCliente = proposal.ClientNo,
                             CódigoRegião = proposal.CodeRegion,
                             CódigoÁreaFuncional = proposal.CodeFunctionalArea,
@@ -1119,7 +1119,7 @@ namespace Hydra.Such.Portal.Controllers
                             ValorTotalProposta = proposal.TotalProposalValue,
                             LocalArquivoFísico = proposal.PhysicalFileLocation,
                             NºOportunidade = proposal.OportunityNo,
-                            NºProposta = proposal.ProposalNo,
+                            NºProposta = proposal.ContractNo,
                             NºContato = proposal.ContactNo,
                             DataEstadoProposta = string.IsNullOrEmpty(proposal.DateProposedState) ? (DateTime?)null : DateTime.Parse(proposal.DateProposedState),
                             OrigemDoPedido = proposal.OrderOrigin,

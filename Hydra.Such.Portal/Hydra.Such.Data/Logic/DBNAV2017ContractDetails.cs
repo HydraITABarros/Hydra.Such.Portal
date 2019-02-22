@@ -70,7 +70,8 @@ namespace Hydra.Such.Data.Logic
                         result.Add(new NAVContractInvoiceHeaderViewModel()
                         {
                             No_ = (string)temp.No_,
-                            ValorContrato = (decimal?)temp.ValorContrato
+                            ValorContrato = (decimal?)temp.ValorContrato,
+                            Data = (string)temp.Data
                         });
                     }
                 }
