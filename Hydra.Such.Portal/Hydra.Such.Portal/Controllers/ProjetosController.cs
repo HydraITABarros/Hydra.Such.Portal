@@ -257,7 +257,7 @@ namespace Hydra.Such.Portal.Controllers
                     string TextoFatura = "";
                     if (!string.IsNullOrEmpty(cProject.NºProjeto) && !string.IsNullOrEmpty(cProject.NºContrato))
                     {
-                        TextoFatura = DBContractInvoiceText.GetByContractAndProject(cProject.NºContrato, cProject.NºProjeto).FirstOrDefault().TextoFatura;
+                        TextoFatura = DBContractInvoiceText.GetByContractAndProject(cProject.NºContrato, cProject.NºProjeto).FirstOrDefault() != null ? DBContractInvoiceText.GetByContractAndProject(cProject.NºContrato, cProject.NºProjeto).FirstOrDefault().TextoFatura : "";
 
                         if (!string.IsNullOrEmpty(TextoFatura))
                         {
@@ -268,7 +268,7 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         if (!string.IsNullOrEmpty(cProject.NºContrato))
                         { 
-                            TextoFatura = DBContracts.GetAllByContractNo(cProject.NºContrato).FirstOrDefault().TextoFatura;
+                            TextoFatura = DBContracts.GetAllByContractNo(cProject.NºContrato).FirstOrDefault() != null ? DBContracts.GetAllByContractNo(cProject.NºContrato).FirstOrDefault().TextoFatura : "";
 
                             if (!string.IsNullOrEmpty(TextoFatura))
                             {
