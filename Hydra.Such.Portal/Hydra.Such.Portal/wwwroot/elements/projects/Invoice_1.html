@@ -1275,10 +1275,20 @@
                 },
 
                 _exportEXCEL: function () {
-                    this.authorizedMovements[0].ColunasEXCEL = this._columns;
+                    //this.authorizedMovements[0].colunasEXCEL = this._columns;
 
-                    this.$.ajax_Export.body = JSON.stringify(this.$.projectInvoiceAutorization._filter(this.authorizedMovements));
-                    this.$.ajax_Export.generateRequest();
+                    var listateste = this.$.projectInvoiceAutorization._filter(this.authorizedMovements);
+
+                    if (listateste != null && listateste.length > 0) {
+                        listateste[0].colunasEXCEL = this._columns;
+                        this.$.ajax_Export.body = JSON.stringify(listateste);
+                        this.$.ajax_Export.generateRequest();
+                    }
+                    else {
+                        this.openToastError("Não existem linhas para exportar.");
+                    }
+
+                    //this.$.ajax_Export.body = JSON.stringify(this.$.projectInvoiceAutorization._filter(this.authorizedMovements));
                 },
 
                 _exportEXCELResponse: function (e) {
@@ -1468,13 +1478,11 @@
                 },
 
                 _updateLinhasFaturacao: function (e) {
-                    debugger;
                     this.$.updatelines_ajax.body = JSON.stringify(e.model.item);
                     this.$.updatelines_ajax.generateRequest();
                     this.$.projectInvoiceAutorization.clearCache();
                 },
                 _updateLinhasFaturacaoResponse: function () {
-                    debugger;
                     if (this.UpdateResponse.eReasonCode == 1) {
                         this.$.page_databound_ajax.generateRequest();
                     }
