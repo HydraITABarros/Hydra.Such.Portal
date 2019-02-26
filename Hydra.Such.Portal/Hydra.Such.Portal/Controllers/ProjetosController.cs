@@ -3637,14 +3637,14 @@ namespace Hydra.Such.Portal.Controllers
 
                             if (!string.IsNullOrEmpty(proj.EnvioANome) && !string.IsNullOrEmpty(proj.EnvioAEndereço))
                             {
-                                Ship.Ship_to_Address = proj.EnvioAEndereço;
+                                Ship.Ship_to_Address = proj.EnvioAEndereço.Length > 50 ? proj.EnvioAEndereço.Substring(1, 50) : proj.EnvioAEndereço;
                                 Ship.Ship_to_Address_2 = "";
                                 Ship.Ship_to_City = proj.EnvioALocalidade;
                                 Ship.Ship_to_Code = proj.CódEndereçoEnvio;
                                 Ship.Ship_to_Contact = proj.EnvioAContato;
                                 Ship.Ship_to_Country_Region_Code = "";
                                 Ship.Ship_to_County = "";
-                                Ship.Ship_to_Name = proj.EnvioANome;
+                                Ship.Ship_to_Name = proj.EnvioANome.Length > 50 ? proj.EnvioANome.Substring(1, 50) : proj.EnvioANome;
                                 Ship.Ship_to_Name_2 = "";
                                 Ship.Ship_to_Post_Code = proj.EnvioACódPostal;
                             }
@@ -3652,27 +3652,27 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 if (!string.IsNullOrEmpty(cont.EnvioANome) && !string.IsNullOrEmpty(cont.EnvioAEndereço))
                                 {
-                                    Ship.Ship_to_Address = cont.EnvioAEndereço;
+                                    Ship.Ship_to_Address = cont.EnvioAEndereço.Length > 50 ? cont.EnvioAEndereço.Substring(1, 50) : cont.EnvioAEndereço;
                                     Ship.Ship_to_Address_2 = "";
                                     Ship.Ship_to_City = cont.EnvioALocalidade;
                                     Ship.Ship_to_Code = cont.CódEndereçoEnvio;
                                     Ship.Ship_to_Contact = "";
                                     Ship.Ship_to_Country_Region_Code = "";
                                     Ship.Ship_to_County = "";
-                                    Ship.Ship_to_Name = cont.EnvioANome;
+                                    Ship.Ship_to_Name = cont.EnvioANome.Length > 50 ? cont.EnvioANome.Substring(1, 50) : cont.EnvioANome;
                                     Ship.Ship_to_Name_2 = "";
                                     Ship.Ship_to_Post_Code = cont.EnvioACódPostal;
                                 }
                                 else
                                 {
-                                    Ship.Ship_to_Address = cli.Address;
+                                    Ship.Ship_to_Address = cli.Address.Length > 50 ? cli.Address.Substring(1, 50) : cli.Address;
                                     Ship.Ship_to_Address_2 = "";
                                     Ship.Ship_to_City = cli.City;
                                     Ship.Ship_to_Code = "";
                                     Ship.Ship_to_Contact = cli.PhoneNo;
                                     Ship.Ship_to_Country_Region_Code = cli.CountryRegionCode;
                                     Ship.Ship_to_County = cli.County;
-                                    Ship.Ship_to_Name = cli.Name;
+                                    Ship.Ship_to_Name = cli.Name.Length > 50 ? cli.Name.Substring(1, 50) : cli.Name;
                                     Ship.Ship_to_Name_2 = "";
                                     Ship.Ship_to_Post_Code = cli.PostCode;
                                 }
