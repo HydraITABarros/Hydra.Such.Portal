@@ -152,10 +152,6 @@ namespace Hydra.Such.Portal.Services
                             {
                                 contract.NºProposta = "";
                             }
-                            else if (contract.TipoContrato == 2)
-                            {
-                                contract.NºContrato = "";
-                            }
 
                             contract.DataHoraModificação = null;
                             List<int> finishingStates = new List<int>() { 4, 5, 10 };

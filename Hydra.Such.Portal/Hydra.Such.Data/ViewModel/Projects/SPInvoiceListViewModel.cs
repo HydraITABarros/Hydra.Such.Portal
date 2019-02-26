@@ -76,6 +76,19 @@ namespace Hydra.Such.Data.ViewModel.Projects
         public int? Opcao { get; set; }
         public string Comments { get; set; }
         public DateTime Posting_Date { get; set; }
+
+        public string Ship_to_Address { get; set; }
+        public string Ship_to_Address_2 { get; set; }
+        public string Ship_to_City { get; set; }
+        public string Ship_to_Code { get; set; }
+        public string Ship_to_Contact { get; set; }
+        public string Ship_to_Country_Region_Code { get; set; }
+        public string Ship_to_County { get; set; }
+        public string Ship_to_Name { get; set; }
+        public string Ship_to_Name_2 { get; set; }
+        public string Ship_to_Post_Code { get; set; }
+
+
         //EXPORTAR PARA EXCEL
         public Object ColunasEXCEL { get; set; }
 

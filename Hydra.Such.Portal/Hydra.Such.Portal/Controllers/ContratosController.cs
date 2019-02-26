@@ -2520,7 +2520,6 @@ namespace Hydra.Such.Portal.Controllers
                     item.CódigoÁreaFuncional = contractLine.CódigoÁreaFuncional;
                     item.CódigoCentroResponsabilidade = contractLine.CódigoCentroResponsabilidade;
                     item.DataRececaoRequisicao = contractLine.DataReceçãoRequisição;
-                    item.ValorDoContrato = contractLine.ValorTotalProposta;
 
                     Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreateContractInvoice(item, _configws, ContractInvoicePeriod, InvoiceBorrowed);
                     InvoiceHeader.Wait();

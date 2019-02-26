@@ -53,7 +53,6 @@ namespace Hydra.Such.Data.NAV
                 PostingNoSeries = CUsers.NumSerieFaturas;
             }
 
-
             WSCreatePreInvoice.Create NAVCreate = new WSCreatePreInvoice.Create()
             {
                 WSPreInvoice = new WSCreatePreInvoice.WSPreInvoice() {
@@ -90,7 +89,18 @@ namespace Hydra.Such.Data.NAV
                     Posting_DateSpecified = !string.IsNullOrEmpty(preInvoiceToCreate.Posting_Date.ToString()),
                     Document_Date = !string.IsNullOrEmpty(preInvoiceToCreate.Posting_Date.ToString()) ? DateTime.Parse(preInvoiceToCreate.Posting_Date.ToString()) : DateTime.MinValue,
                     Document_DateSpecified = !string.IsNullOrEmpty(preInvoiceToCreate.Posting_Date.ToString()),
-                    External_Document_No = preInvoiceToCreate.ProjectNo
+                    External_Document_No = preInvoiceToCreate.ProjectNo,
+
+                    Ship_to_Address = preInvoiceToCreate.Ship_to_Address,
+                    Ship_to_Address_2 = preInvoiceToCreate.Ship_to_Address_2,
+                    Ship_to_City = preInvoiceToCreate.Ship_to_City,
+                    Ship_to_Code = preInvoiceToCreate.Ship_to_Code,
+                    Ship_to_Contact = preInvoiceToCreate.Ship_to_Contact,
+                    Ship_to_Country_Region_Code = preInvoiceToCreate.Ship_to_Country_Region_Code,
+                    Ship_to_County = preInvoiceToCreate.Ship_to_County,
+                    Ship_to_Name = preInvoiceToCreate.Ship_to_Name,
+                    Ship_to_Name_2 = preInvoiceToCreate.Ship_to_Name_2,
+                    Ship_to_Post_Code = preInvoiceToCreate.Ship_to_Post_Code
                 }
 
             };
@@ -131,7 +141,7 @@ namespace Hydra.Such.Data.NAV
 
         }
 
-        public static async Task<WSCreatePreInvoice.Create_Result> CreatePreInvoice(AuthorizedCustomerBillingHeader billingHeader, NAVWSConfigurations WSConfigurations, string dataFormulario, string projeto)
+        public static async Task<WSCreatePreInvoice.Create_Result> CreatePreInvoice(AuthorizedCustomerBillingHeader billingHeader, NAVWSConfigurations WSConfigurations, string dataFormulario, string projeto, SPInvoiceListViewModel Ship)
         {
             SPInvoiceListViewModel invoiceHeader = new SPInvoiceListViewModel();
             invoiceHeader.InvoiceToClientNo = billingHeader.InvoiceToClientNo;
@@ -155,7 +165,17 @@ namespace Hydra.Such.Data.NAV
             invoiceHeader.Posting_Date = Convert.ToDateTime(dataFormulario);
             invoiceHeader.ProjectNo = projeto;
             invoiceHeader.MovementType = billingHeader.MovementType;
-           
+
+            invoiceHeader.Ship_to_Address = Ship.Ship_to_Address;
+            invoiceHeader.Ship_to_Address_2 = Ship.Ship_to_Address_2;
+            invoiceHeader.Ship_to_City = Ship.Ship_to_City;
+            invoiceHeader.Ship_to_Code = Ship.Ship_to_Code;
+            invoiceHeader.Ship_to_Contact = Ship.Ship_to_Contact;
+            invoiceHeader.Ship_to_Country_Region_Code = Ship.Ship_to_Country_Region_Code;
+            invoiceHeader.Ship_to_County = Ship.Ship_to_County;
+            invoiceHeader.Ship_to_Name = Ship.Ship_to_Name;
+            invoiceHeader.Ship_to_Name_2 = Ship.Ship_to_Name_2;
+            invoiceHeader.Ship_to_Post_Code = Ship.Ship_to_Post_Code;
 
             return await CreatePreInvoice(invoiceHeader, WSConfigurations);
 
@@ -266,8 +286,6 @@ namespace Hydra.Such.Data.NAV
                     RegionCode20 = CreateInvoice.CódigoRegião,
                     FunctionAreaCode20 = CreateInvoice.CódigoÁreaFuncional,
                     ResponsabilityCenterCode20 = CreateInvoice.CódigoCentroResponsabilidade,
-                    Valor_Contrato = (decimal)CreateInvoice.ValorDoContrato,
-                    Valor_ContratoSpecified = true
                 }
             };
 

@@ -3630,7 +3630,55 @@ namespace Hydra.Such.Portal.Controllers
                             execDetails = string.Format("Fat. Cliente: {0}, Data: {1}, Nº Compromisso: {2} - ", header.InvoiceToClientNo, header.Date, header.CommitmentNumber);
 
 
-                            Task<WSCreatePreInvoice.Create_Result> TCreatePreInvoice = WSPreInvoice.CreatePreInvoice(header, _configws, dataFormulario, projeto);
+                            SPInvoiceListViewModel Ship = new SPInvoiceListViewModel();
+                            Projetos proj = DBProjects.GetById(projeto);
+                            Contratos cont = DBContracts.GetByIdLastVersion(proj.NºContrato);
+                            NAVClientsViewModel cli = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, proj.NºCliente);
+
+                            if (!string.IsNullOrEmpty(proj.EnvioANome) && !string.IsNullOrEmpty(proj.EnvioAEndereço))
+                            {
+                                Ship.Ship_to_Address = proj.EnvioAEndereço;
+                                Ship.Ship_to_Address_2 = "";
+                                Ship.Ship_to_City = proj.EnvioALocalidade;
+                                Ship.Ship_to_Code = proj.CódEndereçoEnvio;
+                                Ship.Ship_to_Contact = proj.EnvioAContato;
+                                Ship.Ship_to_Country_Region_Code = "";
+                                Ship.Ship_to_County = "";
+                                Ship.Ship_to_Name = proj.EnvioANome;
+                                Ship.Ship_to_Name_2 = "";
+                                Ship.Ship_to_Post_Code = proj.EnvioACódPostal;
+                            }
+                            else
+                            {
+                                if (!string.IsNullOrEmpty(cont.EnvioANome) && !string.IsNullOrEmpty(cont.EnvioAEndereço))
+                                {
+                                    Ship.Ship_to_Address = cont.EnvioAEndereço;
+                                    Ship.Ship_to_Address_2 = "";
+                                    Ship.Ship_to_City = cont.EnvioALocalidade;
+                                    Ship.Ship_to_Code = cont.CódEndereçoEnvio;
+                                    Ship.Ship_to_Contact = "";
+                                    Ship.Ship_to_Country_Region_Code = "";
+                                    Ship.Ship_to_County = "";
+                                    Ship.Ship_to_Name = cont.EnvioANome;
+                                    Ship.Ship_to_Name_2 = "";
+                                    Ship.Ship_to_Post_Code = cont.EnvioACódPostal;
+                                }
+                                else
+                                {
+                                    Ship.Ship_to_Address = cli.Address;
+                                    Ship.Ship_to_Address_2 = "";
+                                    Ship.Ship_to_City = cli.City;
+                                    Ship.Ship_to_Code = "";
+                                    Ship.Ship_to_Contact = cli.PhoneNo;
+                                    Ship.Ship_to_Country_Region_Code = cli.CountryRegionCode;
+                                    Ship.Ship_to_County = cli.County;
+                                    Ship.Ship_to_Name = cli.Name;
+                                    Ship.Ship_to_Name_2 = "";
+                                    Ship.Ship_to_Post_Code = cli.PostCode;
+                                }
+                            }
+
+                            Task<WSCreatePreInvoice.Create_Result> TCreatePreInvoice = WSPreInvoice.CreatePreInvoice(header, _configws, dataFormulario, projeto, Ship);
                             TCreatePreInvoice.Wait();
 
                             if (TCreatePreInvoice.IsCompletedSuccessfully)
