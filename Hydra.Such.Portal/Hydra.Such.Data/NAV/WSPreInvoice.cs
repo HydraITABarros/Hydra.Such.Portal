@@ -248,10 +248,26 @@ namespace Hydra.Such.Data.NAV
                     Document_Type = WSCreatePreInvoice.Document_Type.Invoice,
                     Document_TypeSpecified = true,
                     Posting_Date = CreateInvoice.DataDeRegisto ?? DateTime.Now,
+                    Posting_DateSpecified = true,
                     Periodo_de_Fact_Contrato = ContractInvoicePeriod,
                     Data_Serv_Prestado = InvoiceBorrowed,
                     Responsibility_Center= CUsers.CentroDeResponsabilidade,
-                    Posting_No_Series = CUsers.NumSerieFaturas
+                    Posting_No_Series = CUsers.NumSerieFaturas,
+
+                    //Amaro
+                    Observacoes = CreateInvoice.Descrição,
+                    Contract_No = CreateInvoice.NºContrato,
+                    Factura_CAF = true,
+                    Factura_CAFSpecified = true,
+                    Codigo_Pedido = CreateInvoice.NoRequisicaoDoCliente,
+                    No_Compromisso = CreateInvoice.NoCompromisso,
+                    Data_Encomenda = (DateTime)CreateInvoice.DataRececaoRequisicao,
+                    Data_EncomendaSpecified = true,
+                    RegionCode20 = CreateInvoice.CódigoRegião,
+                    FunctionAreaCode20 = CreateInvoice.CódigoÁreaFuncional,
+                    ResponsabilityCenterCode20 = CreateInvoice.CódigoCentroResponsabilidade,
+                    Valor_Contrato = (decimal)CreateInvoice.ValorDoContrato,
+                    Valor_ContratoSpecified = true
                 }
             };
 

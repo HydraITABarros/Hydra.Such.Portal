@@ -2488,6 +2488,40 @@ namespace Hydra.Such.Portal.Controllers
                         createProject.Wait();
                     }
                     item.UtilizadorCriação = User.Identity.Name;
+
+
+
+                    //AMARO CONTABILIZAR
+                    string obs = "";
+                    List<TextoFaturaContrato> ListTextoFatura = DBContractInvoiceText.GetByContractAndGrupoFatura(contractLine.NºDeContrato, item.GrupoFatura);
+
+                    if (ListTextoFatura != null && ListTextoFatura.Count() > 0)
+                    {
+
+                        foreach (TextoFaturaContrato texts in ListTextoFatura)
+                        {
+                            obs += texts.TextoFatura;
+                        }
+                    }
+                    if (!string.IsNullOrEmpty(obs))
+                    {
+                        item.Descrição = obs;
+                    }
+                    else
+                    {
+                        item.Descrição = contractLine.TextoFatura;
+                    }
+                    obs = "";
+
+                    item.NºContrato = contractLine.NºDeContrato;
+                    item.NoRequisicaoDoCliente = contractLine.NºRequisiçãoDoCliente;
+                    item.NoCompromisso = contractLine.NºCompromisso;
+                    item.CódigoRegião = contractLine.CódigoRegião;
+                    item.CódigoÁreaFuncional = contractLine.CódigoÁreaFuncional;
+                    item.CódigoCentroResponsabilidade = contractLine.CódigoCentroResponsabilidade;
+                    item.DataRececaoRequisicao = contractLine.DataReceçãoRequisição;
+                    item.ValorDoContrato = contractLine.ValorTotalProposta;
+
                     Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreateContractInvoice(item, _configws, ContractInvoicePeriod, InvoiceBorrowed);
                     InvoiceHeader.Wait();
 
@@ -2876,6 +2910,7 @@ namespace Hydra.Such.Portal.Controllers
                     //DBContracts.Update(DBContracts.ParseToDB(Contract));
 
                     //CREATE SALES HEADER
+                    //AMARO
                     NAVSalesHeaderViewModel PreInvoiceToCreate = new NAVSalesHeaderViewModel();
                     PreInvoiceToCreate.PeriododeFact_Contrato = dataInicio.ToString("dd/MM/yyyy") + " a " + dataFim.ToString("dd/MM/yyyy");
                     string mes = dataFim.ToString("MMMM");
@@ -2923,7 +2958,14 @@ namespace Hydra.Such.Portal.Controllers
                                     obs += texts.InvoiceText;
                                 }
                             }
-                            PreInvoiceToCreate.Observacoes = obs;
+                            if (!string.IsNullOrEmpty(obs))
+                            {
+                                PreInvoiceToCreate.Observacoes = obs;
+                            }
+                            else
+                            {
+                                PreInvoiceToCreate.Observacoes = Contract.TextoFatura;
+                            }
                             obs = "";
 
 
