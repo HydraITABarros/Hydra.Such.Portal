@@ -11,6 +11,8 @@
 <link rel="import" href="/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/datetime-picker-master/date-picker.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
+<link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
 
 <!--start ColumnToggle-->
 <link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
@@ -130,6 +132,7 @@
             <paper-button class="tablinks" id="showPorIntegrarKm" on-tap="_showPorIntegrarKm"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{ _showPorIntegrarKmMessage }}</paper-button>
             <paper-button class="tablinks" id="showHistory" on-tap="_showHistory"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{ _showHistoryMessage }}</paper-button>
             <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+            <paper-button id="btn_imprimirFH" class="tablinks" on-tap="_printFH" title="Imprimir"><i class="fa fa-print" aria-hidden="true"></i> Imprimir Aj Custos Integradas em RH</paper-button>
 
             <!--start ColumnToggle-->
             <paper-menu-button class="column-toggle" no-animations id="gridOpcaoGeral">
@@ -482,6 +485,13 @@
 
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+
+        <paper-dialog id="rptDialog" class="dialgoBox" modal>
+            <div class="buttons">
+                <paper-button class="btnRemove" on-tap="_closeRptDialog" title="Fechar"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
+            </div>
+            <iframe id="rptContainer" src="" frameborder="0" style="width: 100%; height: 92%; margin: 0px; padding: 0px"></iframe>
+        </paper-dialog>
     </template>
 
     <script>
@@ -560,7 +570,10 @@
                         value: function () {
                             return {};
                         }
-                    }
+                    },
+                    _reportserverurl: {
+                        type: String,
+                    },
                 },
 
                 _rowSelected: function (item) {
@@ -1098,7 +1111,27 @@
                     if (value != null && value != 0) {
                         return currency(value, { separator: '.', decimal: ',' }).format();
                     }
-                }
+                },
+
+                _printFH: function () {
+                    if (this._reportserverurl != undefined) {
+                        this.$.rptContainer.src = this._reportserverurl + "FH_AjudasCustoIntegradasRH";
+                        this.$.rptDialog.open();
+                    }
+                    else {
+                        this._showErrorMessage("Não é possivel imprimir. Não foi definido o servidor de relatórios.");
+                    }
+                },
+
+                _closeRptDialog: function () {
+                    this.$.rptContainer.src = "about:blank";
+                    this.$.rptDialog.close();
+                },
+
+
+
+
+
             });
         });
     </script>

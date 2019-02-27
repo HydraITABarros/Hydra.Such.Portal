@@ -53,6 +53,8 @@ namespace Hydra.Such.Portal.Controllers
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.UPermissions = UPerm;
+                ViewBag.reportServerURL = _config.ReportServerURL;
+
                 return View();
             }
             else
