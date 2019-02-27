@@ -5964,6 +5964,11 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.ValorUnitárioAFaturar).HasColumnName("Valor Unitário a Faturar");
 
+                entity.Property(e => e.Selecionada)
+                    .HasColumnName("Selecionada")
+                    .HasDefaultValueSql("((0))");
+
+
                 entity.HasOne(d => d.CódDestinoFinalResíduosNavigation)
                     .WithMany(p => p.MovimentosDeProjeto)
                     .HasForeignKey(d => d.CódDestinoFinalResíduos)

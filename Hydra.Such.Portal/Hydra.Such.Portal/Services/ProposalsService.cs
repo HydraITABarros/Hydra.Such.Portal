@@ -28,7 +28,7 @@ namespace Hydra.Such.Portal.Services
             {
                 if (contractToUpdate.ContractType == (int)ContractType.Proposal)
                 {
-                    Contratos updatedContract = null;
+                    Contratos updatedContract = new Contratos();
                     Contratos contractWithoutChanges = DBContracts.GetByIdAndVersion(contractToUpdate.ContractNo, contractToUpdate.VersionNo);
 
                     if (contractWithoutChanges != null)
@@ -72,8 +72,9 @@ namespace Hydra.Such.Portal.Services
                                          * Só se atualiza-se o estado da proposta e não se cria uma nova versão de Histórico
                                          * Pedido feito em 21-01-2019
                                          */
-                                    updatedContract.Estado = 4;
-                                    updatedContract.Historico = true;
+                                    contractToUpdate.Status = 4;
+                                    contractToUpdate.History = true;
+                                    contractToUpdate.Filed = true;
                                     updatedContract = DBContracts.Update(DBContracts.ParseToDB(contractToUpdate));
                                     break;
                                 case 5: //Alterar para Cancelada

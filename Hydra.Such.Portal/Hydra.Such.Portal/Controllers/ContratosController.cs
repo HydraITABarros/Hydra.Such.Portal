@@ -3047,7 +3047,14 @@ namespace Hydra.Such.Portal.Controllers
                                 }
                             }
 
-                            PreInvoiceToCreate.Observacoes = obs;
+                            if (!string.IsNullOrEmpty(obs))
+                            {
+                                PreInvoiceToCreate.Observacoes = obs;
+                            }
+                            else
+                            {
+                                PreInvoiceToCreate.Observacoes = Contract.TextoFatura;
+                            }
                             obs = "";
 
 
@@ -3067,7 +3074,7 @@ namespace Hydra.Such.Portal.Controllers
                                         PreInvoiceLinesToCreate.Tipo = line.Type.Value.ToString();
                                         PreInvoiceLinesToCreate.Código = line.Code;
                                         PreInvoiceLinesToCreate.Descrição = line.Description;
-                                        PreInvoiceLinesToCreate.Descricao2 = line.Description2.Substring(0, 50);
+                                        PreInvoiceLinesToCreate.Descricao2 = line.Description2.Length > 50 ? line.Description2.Substring(1, 50) : line.Description2;
                                         PreInvoiceLinesToCreate.CódUnidadeMedida = line.CodeMeasureUnit;
                                         PreInvoiceLinesToCreate.CódigoÁreaFuncional = line.CodeFunctionalArea;
                                         PreInvoiceLinesToCreate.CódigoRegião = line.CodeRegion;

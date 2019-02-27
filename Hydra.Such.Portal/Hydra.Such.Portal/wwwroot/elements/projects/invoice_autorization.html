@@ -354,7 +354,7 @@
                                                 <input aria-label="Selecionar Todos" type="checkbox" disabled="[[!_billable]]" on-click="_invert" checked="[[_isChecked(inverted, indeterminate)]]" indeterminate="[[indeterminate]]">
                                             </template>
                                             <template>
-                                                <input aria-label="Selecionar" type="checkbox" on-change="_selectItem" checked="[[_isSelected(inverted, selected)]]">
+                                                <input aria-label="Selecionar" type="checkbox" checked="{{item.selecionada}}" on-change="_selectItem" checked="[[_isSelected(inverted, selected)]]">
                                             </template>
                                         </vaadin-grid-column>
 
@@ -531,7 +531,7 @@
                                                 <vaadin-text-field rows="5" value="{{item.externalGuideNo}}" on-blur="_updateLinhaMovimento"> </vaadin-text-field>
                                             </template>
                                         </vaadin-grid-column>
-                                        
+
                                         <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.consumptionDate.hidden }}">
                                             <template class="header">
                                                 <vaadin-grid-sorter path="consumptionDate">Data Consumo Guia</vaadin-grid-sorter>
@@ -561,7 +561,7 @@
                                                 <span slot="suffix">{{item.adjustedDocument}}</span>
                                             </template>
                                         </vaadin-grid-column>
-                                        
+
                                         <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.adjustedDocumentData.hidden }}">
                                             <template class="header">
                                                 <vaadin-grid-sorter path="adjustedDocumentData">Data Consumo Guia Corrigida</vaadin-grid-sorter>
@@ -571,7 +571,7 @@
                                                 <span slot="suffix">{{item.adjustedDocumentData}}</span>
                                             </template>
                                         </vaadin-grid-column>
-                                        
+
                                         <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.residueFinalDestinyCode.hidden }}">
                                             <template class="header">
                                                 <vaadin-grid-sorter path="residueFinalDestinyCode">Destino Final Residuos</vaadin-grid-sorter>
@@ -581,7 +581,7 @@
                                                 <span slot="suffix">{{item.residueFinalDestinyCode}}</span>
                                             </template>
                                         </vaadin-grid-column>
-                                        
+
                                         <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.mealType.hidden }}">
                                             <template class="header">
                                                 <vaadin-grid-sorter path="mealType">Tipo Refeição</vaadin-grid-sorter>
@@ -731,14 +731,14 @@
                                         </vaadin-grid-column>
 
                                         <!--<vaadin-grid-column width="15%" resizable hidden$="{{ _columns.commitmentNumber.hidden }}">
-                                        <template class="header">
-                                            <vaadin-grid-sorter path="commitmentNumber">Nº Compromisso</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="commitmentNumber" />
-                                        </template>
-                                        <template>
-                                            {{item.commitmentNumber}}
-                                        </template>
-                                    </vaadin-grid-column>-->
+        <template class="header">
+            <vaadin-grid-sorter path="commitmentNumber">Nº Compromisso</vaadin-grid-sorter>
+            <vaadin-grid-filter path="commitmentNumber" />
+        </template>
+        <template>
+            {{item.commitmentNumber}}
+        </template>
+    </vaadin-grid-column>-->
                                     </vaadin-grid>
                                 </div>
                                 <div class="marginSpace">
@@ -1078,6 +1078,17 @@
                     else {
                         this.openToastError("Não foi possivel obter os movimentos.");
                     }
+
+                    var total = 0;
+                    var items = this.$.grdProjectMovements.items;
+                    if (items.length > 0) {
+                        for (var i = 0; i < items.length; i++) {
+                            if (items[i].totalPrice != null && items[i].selecionada == true) {
+                                total = total + items[i].totalPrice;
+                            }
+                        }
+                    }
+                    this._totalToAuthorize = parseFloat(total).toFixed(2);
                 },
                 GetProjectResponse: function (e) {
                     if (e.detail.status === 200) {
@@ -1225,7 +1236,7 @@
                     return indeterminate || inverted;
                 },
                 _selectItem: function (e) {
-                    //debugger;
+                    debugger;
                     if (e.target.checked /*=== this.inverted*/) {
                         if (e.model.item.quantity != null && e.model.item.quantity != 0) {
                             //if (e.model.item.unitPrice != null && e.model.item.unitPrice > 0) {
@@ -1233,6 +1244,11 @@
                                     this._totalToAuthorize = (parseFloat(this._totalToAuthorize) + parseFloat(e.model.item.totalPrice)).toFixed(2);
                                 e.model.item.autorizatedInvoice2 = true;
                                 this.$.grdProjectMovements.selectItem(e.model.item);
+
+                                e.model.item.selecionada = true;
+                                this.$.updatelines_ajax.body = JSON.stringify(e.model.item);
+                                this.$.updatelines_ajax.generateRequest();
+                                this.$.grdProjectMovements.clearCache();                        
                             //}
                             //else {
                             //    this.openToastError("O valor do Preço unitário tem que ser superior a 0.");
@@ -1248,6 +1264,11 @@
                             this._totalToAuthorize = (parseFloat(this._totalToAuthorize) - parseFloat(e.model.item.totalPrice)).toFixed(2);
                         e.model.item.autorizatedInvoice2 = false;
                         this.$.grdProjectMovements.deselectItem(e.model.item);
+
+                        e.model.item.selecionada = false;
+                        this.$.updatelines_ajax.body = JSON.stringify(e.model.item);
+                        this.$.updatelines_ajax.generateRequest();
+                        this.$.grdProjectMovements.clearCache();                        
                     }
                     this.indeterminate = this.$.grdProjectMovements.selectedItems.length > 0;
                 },
@@ -1416,7 +1437,6 @@
                     this.$.grdProjectMovements.clearCache();
                 },
                 _updateLinhaMovimento: function (e) {
-                    debugger;
                     this.$.updatelines_ajax.body = JSON.stringify(e.model.item);
                     this.$.updatelines_ajax.generateRequest();
                     this.$.grdProjectMovements.clearCache();

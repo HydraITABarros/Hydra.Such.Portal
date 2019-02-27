@@ -1355,7 +1355,8 @@
                                             </vaadin-combo-box>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
-                                            [[ _clFormatRegion(item.codeRegion) ]]
+                                            <!--[[ _clFormatRegion(item.codeRegion) ]]-->
+                                            {{item.codeRegion}}
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
@@ -1379,7 +1380,8 @@
                                             </vaadin-combo-box>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
-                                            [[ _clFormatFunctionalArea(item.codeFunctionalArea) ]]
+                                            <!--[[ _clFormatFunctionalArea(item.codeFunctionalArea) ]]-->
+                                            {{item.codeFunctionalArea}}
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
@@ -1403,7 +1405,8 @@
                                             </vaadin-combo-box>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
-                                            [[ _clFormatResponsabilityCenter(item.codeResponsabilityCenter) ]]
+                                            <!--[[ _clFormatResponsabilityCenter(item.codeResponsabilityCenter) ]]-->
+                                            {{item.codeResponsabilityCenter}}
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
