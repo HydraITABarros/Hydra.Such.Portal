@@ -83,8 +83,9 @@ namespace Hydra.Such.Portal.Services
                                          * Só se atualiza-se o estado da proposta e não se cria uma nova versão de Histórico
                                          * Pedido feito em 21-01-2019
                                          */
-                                    updatedContract.Estado = 5;
-                                    updatedContract.Historico = true;
+                                    contractToUpdate.Status = 5;
+                                    contractToUpdate.History = true;
+                                    contractToUpdate.Filed = true;
                                     updatedContract = DBContracts.Update(DBContracts.ParseToDB(contractToUpdate));
                                     break;
                                 case 10: //Alterar para Não Respondida
