@@ -145,7 +145,6 @@
             <template is="dom-if" if="{{ !_contractno }}">
                 <paper-button id="btnContractHistory" class="tablinks" on-tap="_redirectToContractHistory"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; {{_showMessage}}</paper-button>
                 <!--<such-dropdown-menu style="display: {{ _showOptionsForAccounting }};" on-value-changed="_filterOptionSelected" title="Exibir" items='[[ _filterMenuItems ]]'></such-dropdown-menu>-->
-                ="
                 <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
             </template>
 
