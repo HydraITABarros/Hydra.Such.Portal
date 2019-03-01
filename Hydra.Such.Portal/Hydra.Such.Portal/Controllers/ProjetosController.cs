@@ -3679,15 +3679,6 @@ namespace Hydra.Such.Portal.Controllers
                                 }
                             }
 
-                            //if (string.IsNullOrEmpty(header.Comments))
-                            //{
-                            //    if (!string.IsNullOrEmpty(header.ContractNo))
-                            //    {
-                            //        Contratos CONT = DBContracts.GetByIdLastVersion(header.ContractNo);
-                            //        header.Comments = cont.TextoFatura;
-                            //    }
-                            //}
-
                             Task<WSCreatePreInvoice.Create_Result> TCreatePreInvoice = WSPreInvoice.CreatePreInvoice(header, _configws, dataFormulario, projeto, Ship);
                             TCreatePreInvoice.Wait();
 
