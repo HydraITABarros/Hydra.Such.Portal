@@ -1255,7 +1255,6 @@
                     return indeterminate || inverted;
                 },
                 _selectItem: function (e) {
-                    debugger;
                     if (e.target.checked /*=== this.inverted*/) {
                         if (e.model.item.quantity != null && e.model.item.quantity != 0) {
                             //if (e.model.item.unitPrice != null && e.model.item.unitPrice > 0) {
@@ -1462,7 +1461,6 @@
                     this.$.grdProjectMovements.clearCache();
                 },
                 _updateLinesResponse: function () {
-                    debugger;
                     if (this.UpdateResponse.eReasonCode == 1) {
                         this.$.grdProjectMovements.selectedItems = [];
                         this.$.movements_databound_ajax.body = JSON.stringify({ "projectNo": this._projectno, "billable": this._billable });

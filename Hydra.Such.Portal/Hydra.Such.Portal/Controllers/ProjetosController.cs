@@ -264,16 +264,14 @@ namespace Hydra.Such.Portal.Controllers
                             result.ObservacoesAutorizarFaturacao = TextoFatura;
                         }
                     }
-                    else
-                    {
-                        if (!string.IsNullOrEmpty(cProject.NºContrato))
-                        { 
-                            TextoFatura = DBContracts.GetAllByContractNo(cProject.NºContrato).FirstOrDefault() != null ? DBContracts.GetAllByContractNo(cProject.NºContrato).FirstOrDefault().TextoFatura : "";
 
-                            if (!string.IsNullOrEmpty(TextoFatura))
-                            {
-                                result.ObservacoesAutorizarFaturacao = TextoFatura;
-                            }
+                    if (string.IsNullOrEmpty(TextoFatura) && !string.IsNullOrEmpty(cProject.NºContrato))
+                    { 
+                        TextoFatura = DBContracts.GetAllByContractNo(cProject.NºContrato).FirstOrDefault() != null ? DBContracts.GetAllByContractNo(cProject.NºContrato).FirstOrDefault().TextoFatura : "";
+
+                        if (!string.IsNullOrEmpty(TextoFatura))
+                        {
+                            result.ObservacoesAutorizarFaturacao = TextoFatura;
                         }
                     }
 
@@ -3680,6 +3678,15 @@ namespace Hydra.Such.Portal.Controllers
                                     }
                                 }
                             }
+
+                            //if (string.IsNullOrEmpty(header.Comments))
+                            //{
+                            //    if (!string.IsNullOrEmpty(header.ContractNo))
+                            //    {
+                            //        Contratos CONT = DBContracts.GetByIdLastVersion(header.ContractNo);
+                            //        header.Comments = cont.TextoFatura;
+                            //    }
+                            //}
 
                             Task<WSCreatePreInvoice.Create_Result> TCreatePreInvoice = WSPreInvoice.CreatePreInvoice(header, _configws, dataFormulario, projeto, Ship);
                             TCreatePreInvoice.Wait();

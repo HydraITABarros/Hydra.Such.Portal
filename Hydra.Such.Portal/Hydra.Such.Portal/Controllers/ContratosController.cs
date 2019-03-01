@@ -2986,7 +2986,7 @@ namespace Hydra.Such.Portal.Controllers
                                         PreInvoiceLinesToCreate.Tipo = line.Type.Value.ToString();
                                         PreInvoiceLinesToCreate.Código = line.Code;
                                         PreInvoiceLinesToCreate.Descrição = line.Description;
-                                        PreInvoiceLinesToCreate.Descricao2 = line.Description2.Length > 50 ?  line.Description2.Substring(1, 50) : line.Description2;
+                                        PreInvoiceLinesToCreate.Descricao2 = !string.IsNullOrEmpty(line.Description2) && line.Description2.Length > 50 ?  line.Description2.Substring(1, 50) : !string.IsNullOrEmpty(line.Description2) ? line.Description2 : "";
                                         PreInvoiceLinesToCreate.CódUnidadeMedida = line.CodeMeasureUnit;
                                         PreInvoiceLinesToCreate.CódigoÁreaFuncional = line.CodeFunctionalArea;
                                         PreInvoiceLinesToCreate.CódigoRegião = line.CodeRegion;
@@ -3075,7 +3075,7 @@ namespace Hydra.Such.Portal.Controllers
                                         PreInvoiceLinesToCreate.Tipo = line.Type.Value.ToString();
                                         PreInvoiceLinesToCreate.Código = line.Code;
                                         PreInvoiceLinesToCreate.Descrição = line.Description;
-                                        PreInvoiceLinesToCreate.Descricao2 = line.Description2.Length > 50 ? line.Description2.Substring(1, 50) : line.Description2;
+                                        PreInvoiceLinesToCreate.Descricao2 = !string.IsNullOrEmpty(line.Description2) && line.Description2.Length > 50 ? line.Description2.Substring(1, 50) : string.IsNullOrEmpty(line.Description2) ? "" : line.Description2;
                                         PreInvoiceLinesToCreate.CódUnidadeMedida = line.CodeMeasureUnit;
                                         PreInvoiceLinesToCreate.CódigoÁreaFuncional = line.CodeFunctionalArea;
                                         PreInvoiceLinesToCreate.CódigoRegião = line.CodeRegion;
