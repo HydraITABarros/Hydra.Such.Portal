@@ -4173,6 +4173,7 @@ namespace Hydra.Such.Portal.Controllers
                 FolhaHoras = x.NºDocumento,
                 InvoiceToClientNo = x.FaturaANºCliente,
                 ServiceClientCode = x.CódServiçoCliente,
+                ServiceGroupCode = x.CódGrupoServiço,
                 ClientName = DBNAV2017Clients.GetClientNameByNo(x.FaturaANºCliente, _config.NAVDatabaseName, _config.NAVCompanyName),
 
             }).ToList();
@@ -4953,6 +4954,7 @@ namespace Hydra.Such.Portal.Controllers
                         projectMovement.Quantidade = item.Quantity;
                         projectMovement.CustoTotal = item.TotalCost;
                         projectMovement.PreçoTotal = item.TotalPrice;
+
                         projectMovements.Add(projectMovement);
                     }
 
@@ -5858,6 +5860,11 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Nº Compromisso");
                     Col = Col + 1;
                 }
+                if (dp["serviceGroupCode"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Cód. Grupo Serviço");
+                    Col = Col + 1;
+                }
                 if (dp["createDateText"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Data Criação");
@@ -5985,6 +5992,11 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["commitmentNumber"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.CommitmentNumber);
+                            Col = Col + 1;
+                        }
+                        if (dp["serviceGroupCode"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ServiceGroupCode);
                             Col = Col + 1;
                         }
                         if (dp["createDateText"]["hidden"].ToString() == "False")
@@ -7014,6 +7026,11 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Serviço Cliente");
                     Col = Col + 1;
                 }
+                if (dp["serviceGroupCode"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Cód. Grupo Serviço");
+                    Col = Col + 1;
+                }
 
                 if (dp != null)
                 {
@@ -7146,6 +7163,11 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["serviceClientDescription"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.ServiceClientDescription);
+                            Col = Col + 1;
+                        }
+                        if (dp["serviceGroupCode"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ServiceGroupCode);
                             Col = Col + 1;
                         }
                         count++;

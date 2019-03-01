@@ -506,7 +506,8 @@
                         this.openToastSuccess("CAF's Pendentes.");
                     }
                 },
-                _count: function () {                  
+                _count: function () {
+                    debugger;
                     if (this.selectedItems != null && this.selectedItems != "") {
                         if (this.result != null || this.result != undefined || this.result.length != 0) {
                             this.$.ajax_count.body = JSON.stringify(this.selectedItems);
@@ -595,10 +596,14 @@
                 },
 
                 _exportEXCEL: function () {
-                    this.result[0].ColunasEXCEL = this._columns;
+                    var result = this.$.avencaFixaTable._filter(this.result);
 
-                    this.$.ajax_Export.body = JSON.stringify(this.result);
-                    this.$.ajax_Export.generateRequest();
+                    if (result != null && result.length > 0) {
+                        result[0].ColunasEXCEL = this._columns;
+
+                        this.$.ajax_Export.body = JSON.stringify(result);
+                        this.$.ajax_Export.generateRequest();
+                    }
                 },
 
                 _exportEXCELResponse: function (e) {

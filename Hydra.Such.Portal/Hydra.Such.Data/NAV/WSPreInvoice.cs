@@ -258,7 +258,7 @@ namespace Hydra.Such.Data.NAV
             {
                 WSPreInvoice = new WSCreatePreInvoice.WSPreInvoice()
                 {
-                    Sell_to_Customer_No = CreateInvoice.NºCliente,
+                    Sell_to_Customer_No = !string.IsNullOrEmpty(CreateInvoice.NºCliente) ? CreateInvoice.NºCliente : "",
                     Document_Date = DateTime.Today,
                     Document_DateSpecified = true,
                     Shipment_Date = now,
@@ -269,23 +269,23 @@ namespace Hydra.Such.Data.NAV
                     Document_TypeSpecified = true,
                     Posting_Date = CreateInvoice.DataDeRegisto ?? DateTime.Now,
                     Posting_DateSpecified = true,
-                    Periodo_de_Fact_Contrato = ContractInvoicePeriod,
-                    Data_Serv_Prestado = InvoiceBorrowed,
-                    Responsibility_Center= CUsers.CentroDeResponsabilidade,
-                    Posting_No_Series = CUsers.NumSerieFaturas,
+                    Periodo_de_Fact_Contrato = !string.IsNullOrEmpty(ContractInvoicePeriod) ? ContractInvoicePeriod : "",
+                    Data_Serv_Prestado = !string.IsNullOrEmpty(InvoiceBorrowed) ? InvoiceBorrowed : "",
+                    Responsibility_Center = !string.IsNullOrEmpty(CUsers.CentroDeResponsabilidade) ? CUsers.CentroDeResponsabilidade : "",
+                    Posting_No_Series = !string.IsNullOrEmpty(CUsers.NumSerieFaturas) ? CUsers.NumSerieFaturas : "",
 
                     //Amaro
-                    Observacoes = CreateInvoice.Descrição,
-                    Contract_No = CreateInvoice.NºContrato,
+                    Observacoes = !string.IsNullOrEmpty(CreateInvoice.Descrição) ? CreateInvoice.Descrição : "",
+                    Contract_No = !string.IsNullOrEmpty(CreateInvoice.NºContrato) ? CreateInvoice.NºContrato : "",
                     Factura_CAF = true,
                     Factura_CAFSpecified = true,
-                    Codigo_Pedido = CreateInvoice.NoRequisicaoDoCliente,
-                    No_Compromisso = CreateInvoice.NoCompromisso,
-                    Data_Encomenda = (DateTime)CreateInvoice.DataRececaoRequisicao,
+                    Codigo_Pedido = !string.IsNullOrEmpty(CreateInvoice.NoRequisicaoDoCliente) ? CreateInvoice.NoRequisicaoDoCliente : "",
+                    No_Compromisso = !string.IsNullOrEmpty(CreateInvoice.NoCompromisso) ? CreateInvoice.NoCompromisso : "",
+                    Data_Encomenda = CreateInvoice.DataRececaoRequisicao ?? DateTime.MinValue,
                     Data_EncomendaSpecified = true,
-                    RegionCode20 = CreateInvoice.CódigoRegião,
-                    FunctionAreaCode20 = CreateInvoice.CódigoÁreaFuncional,
-                    ResponsabilityCenterCode20 = CreateInvoice.CódigoCentroResponsabilidade,
+                    RegionCode20 = !string.IsNullOrEmpty(CreateInvoice.CódigoRegião) ? CreateInvoice.CódigoRegião : "",
+                    FunctionAreaCode20 = !string.IsNullOrEmpty(CreateInvoice.CódigoÁreaFuncional) ? CreateInvoice.CódigoÁreaFuncional : "",
+                    ResponsabilityCenterCode20 = !string.IsNullOrEmpty(CreateInvoice.CódigoCentroResponsabilidade) ? CreateInvoice.CódigoCentroResponsabilidade : "",
                 }
             };
 

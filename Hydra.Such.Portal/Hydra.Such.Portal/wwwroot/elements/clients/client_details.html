@@ -306,7 +306,7 @@
                                                             <vaadin-text-field value="{{data.phone_No}}" maxlength="30" disabled="{{ !_permissions.update }}" id="phone_No" name="phone_No" label="Telefone" required></vaadin-text-field>
                                                         </div>
                                                         <div class="col-lg-3">
-                                                            <vaadin-text-field value="{{data.e_Mail}}" pattern='[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$' maxlength="80" id="e_Mail" name="e_Mail" label="Email" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                                            <vaadin-text-field value="{{data.e_Mail}}"  maxlength="80" id="e_Mail" name="e_Mail" label="Email" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                                         </div>
                                                         <div class="col-lg-3">
                                                             <!--<vaadin-text-field value="{{data.fax_No}}" pattern="^(?:\s*\d){9}$" onKeyDown="forceNumericWithMaxLength(this,event,9, true)" onblur="trimPhone(this,event)" disabled="{{ !_permissions.update }}" id="fax_No" name="fax_No" label="Nº Fax"> </vaadin-text-field>-->
@@ -336,7 +336,7 @@
                                                     </div>
 
                                                     <div class="col-lg-4">
-                                                        <vaadin-text-field value="{{data.taxa_Aprovisionamento}}" pattern="[0-9]{9}" onKeyDown="forceNumericWithMaxLength(this,event,20)" disabled="{{ !_permissions.update }}" id="taxa_Aprovisionamento" name="taxa_Aprovisionamento" label="Taxa Aprovisionamento"> </vaadin-text-field>
+                                                        <vaadin-text-field value="{{data.taxa_Aprovisionamento}}" onKeyDown="forceNumericWithMaxLength(this,event,20)" disabled="{{ !_permissions.update }}" id="taxa_Aprovisionamento" name="taxa_Aprovisionamento" label="Taxa Aprovisionamento"> </vaadin-text-field>
                                                     </div>
 
                                                     <div class="col-lg-4 alignPoga">
@@ -887,7 +887,7 @@
                                                 <vaadin-text-field pattern="^(?:\s*\d){9}$" value="{{shippingData.fax_No}}" onKeyDown="forceNumericWithMaxLength(this,event,9, true)" onblur="trimPhone(this,event)" disabled="{{ !_permissions.update }}" id="shippingData.fax_No" name="shippingData.fax_No" label="Nº Fax"></vaadin-text-field>
                                             </div>
                                             <div class="col-lg-3">
-                                                <vaadin-text-field value="{{shippingData.e_Mail}}" pattern='[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$' maxlength="255" id="shippingData.e_Mail" name="shippingData.e_Mail" label="Email" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                                <vaadin-text-field value="{{shippingData.e_Mail}}" maxlength="255" id="shippingData.e_Mail" name="shippingData.e_Mail" label="Email" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                             </div>
                                         </div>
                                     </div>

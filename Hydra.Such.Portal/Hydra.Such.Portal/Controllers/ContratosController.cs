@@ -2282,7 +2282,8 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     foreach (AutorizarFaturaçãoContratos item in contract_List)
                     {
-                        contractList.Add(item);
+                        if (item.NºDeFaturasAEmitir > 0)
+                            contractList.Add(item);
                     }
                 }
             }

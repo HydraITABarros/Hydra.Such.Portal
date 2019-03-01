@@ -184,7 +184,6 @@ namespace Hydra.Such.Data.NAV
                 line.Tipo_Refeicao = x.MealType.HasValue ? x.MealType.Value.ToString() : string.Empty;// (refeicao!=null) ? refeicao.Código.ToString() : "";
                 line.Gen_Prod_Posting_Group = (refeicao != null) ? refeicao.GrupoContabProduto : x.ProjectContabGroup;
                 line.Cod_Serv_Cliente = x.ServiceClientCode;
-
                 line.Consumption_Date = !string.IsNullOrEmpty(x.ConsumptionDate) ? DateTime.Parse(x.ConsumptionDate) : DateTime.MinValue;
                 line.Consumption_DateSpecified = !string.IsNullOrEmpty(x.ConsumptionDate);
 
