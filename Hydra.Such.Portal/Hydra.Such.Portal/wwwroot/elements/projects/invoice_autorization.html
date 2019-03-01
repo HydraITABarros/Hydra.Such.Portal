@@ -1103,6 +1103,7 @@
                         for (var i = 0; i < items.length; i++) {
                             if (items[i].totalPrice != null && items[i].selecionada == true) {
                                 total = total + items[i].totalPrice;
+                                this.$.grdProjectMovements.selectItem(items[i]);
                             }
                         }
                     }
@@ -1263,6 +1264,7 @@
                                 e.model.item.autorizatedInvoice2 = true;
                                 this.$.grdProjectMovements.selectItem(e.model.item);
 
+                                //AMARO
                                 e.model.item.selecionada = true;
                                 this.$.updatelinesSelecionada_ajax.body = JSON.stringify(e.model.item);
                                 this.$.updatelinesSelecionada_ajax.generateRequest();
@@ -1282,6 +1284,7 @@
                         e.model.item.autorizatedInvoice2 = false;
                         this.$.grdProjectMovements.deselectItem(e.model.item);
 
+                        //AMARO
                         e.model.item.selecionada = false;
                         this.$.updatelinesSelecionada_ajax.body = JSON.stringify(e.model.item);
                         this.$.updatelinesSelecionada_ajax.generateRequest();
