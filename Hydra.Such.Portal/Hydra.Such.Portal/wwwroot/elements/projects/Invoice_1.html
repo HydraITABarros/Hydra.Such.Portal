@@ -527,6 +527,18 @@
                     {{item.utilizador}}
                 </template>
             </vaadin-grid-column>
+            
+            <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.observacoes.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="observacoes">Observações</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="observacoes" />
+                </template>
+                <template>
+                    {{item.observacoes}}
+                </template>
+            </vaadin-grid-column>
+
+
 
         </vaadin-grid>
 
@@ -1316,7 +1328,9 @@
                         "descricaoGrupo": { hidden: false, label: "Descrição Grupo" },
                         "situacoesPendentes": { hidden: false, label: "Situações Pendentes" },
                         "dataAutorizacao": { hidden: false, label: "Data Autorização" },
-                        "utilizador": { hidden: false, label: "Autorizado Por" }
+                        "utilizador": { hidden: false, label: "Autorizado Por" },
+                        "observacoes": { hidden: false, label: "Observações" }
+                       
                     };
 
                     if (localStorage["invoice.ToggleColumn"]) {
@@ -1461,8 +1475,17 @@
                 },
 
                 _exportDetalhesAutorizacaoEXCEL: function () {
-                    this.$.ajax_ExportDetalhesAutorizacao.body = JSON.stringify(this.$.grdProjectLines._filter(this.resultlines));
-                    this.$.ajax_ExportDetalhesAutorizacao.generateRequest();
+                    var lista = this.$.projectInvoiceAutorization._filter(this.$.grdProjectLines._filter(this.resultlines));
+
+                    if (lista != null && lista.length > 0) {
+                        this.$.ajax_ExportDetalhesAutorizacao.body = JSON.stringify(lista);
+                        this.$.ajax_ExportDetalhesAutorizacao.generateRequest();
+                    }
+                    else {
+                        this.openToastError("Não existem linhas para exportar.");
+                    }
+                    //this.$.ajax_ExportDetalhesAutorizacao.body = JSON.stringify(this.$.grdProjectLines._filter(this.resultlines));
+                    //this.$.ajax_ExportDetalhesAutorizacao.generateRequest();
                 },
                 _exportEXCELDetalhesAutorizacaoResponse: function (e) {
                     var FileName = this.exportDetalhesAutorizacao;

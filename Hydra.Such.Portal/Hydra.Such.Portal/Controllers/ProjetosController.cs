@@ -6067,6 +6067,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (dp["situacoesPendentes"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Situações Pendentes"); Col = Col + 1; }
                 if (dp["dataAutorizacao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Autorização"); Col = Col + 1; }
                 if (dp["utilizador"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Autorizado Por"); Col = Col + 1; }
+                if (dp["observacoes"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Observações"); Col = Col + 1; }
 
                 if (dp != null)
                 {
@@ -6095,6 +6096,7 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["situacoesPendentes"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.SituacoesPendentes); Col = Col + 1; }
                         if (dp["dataAutorizacao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DataAutorizacao); Col = Col + 1; }
                         if (dp["utilizador"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Utilizador); Col = Col + 1; }
+                        if (dp["observacoes"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Observacoes); Col = Col + 1; }
 
                         count++;
                     }
@@ -6177,10 +6179,10 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(2).SetCellValue(item.Type.ToString());
                     row.CreateCell(3).SetCellValue(item.Code);
                     row.CreateCell(4).SetCellValue(item.Description);
-                    row.CreateCell(5).SetCellValue((double)item.Quantity);
+                    if (item.Quantity != null) row.CreateCell(5).SetCellValue((double)item.Quantity);
                     row.CreateCell(6).SetCellValue(item.MeasurementUnitCode);
-                    row.CreateCell(7).SetCellValue((double)item.UnitPrice);
-                    row.CreateCell(8).SetCellValue((double)item.TotalPrice);
+                    if (item.UnitPrice != null) row.CreateCell(7).SetCellValue((double)item.UnitPrice);
+                    if (item.TotalPrice != null) row.CreateCell(8).SetCellValue((double)item.TotalPrice);
                     row.CreateCell(9).SetCellValue(item.Billable.ToString());
                     row.CreateCell(10).SetCellValue(item.ResourceType.ToString());
                     row.CreateCell(11).SetCellValue(item.ServiceClientCode);
@@ -6195,8 +6197,8 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(20).SetCellValue(item.MealType.ToString());
                     row.CreateCell(21).SetCellValue(item.DocumentNo);
                     row.CreateCell(22).SetCellValue(item.LocationCode);
-                    row.CreateCell(23).SetCellValue((double)item.UnitCost);
-                    row.CreateCell(24).SetCellValue((double)item.TotalCost);
+                    if (item.UnitCost != null) row.CreateCell(23).SetCellValue((double)item.UnitCost);
+                    if (item.TotalCost != null) row.CreateCell(24).SetCellValue((double)item.TotalCost);
                     row.CreateCell(25).SetCellValue(item.RegionCode);
                     row.CreateCell(26).SetCellValue(item.FunctionalAreaCode);
                     row.CreateCell(27).SetCellValue(item.ResponsabilityCenterCode);
