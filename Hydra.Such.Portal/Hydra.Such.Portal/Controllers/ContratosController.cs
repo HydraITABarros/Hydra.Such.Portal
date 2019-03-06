@@ -1381,7 +1381,7 @@ namespace Hydra.Such.Portal.Controllers
                             CLine.DataFimVersão = x.VersionEndDate != null && x.VersionStartDate != "" ? DateTime.Parse(x.VersionEndDate) : (DateTime?)null;
                             CLine.NºResponsável = x.ResponsibleNo;
                             CLine.CódServiçoCliente = x.ServiceClientNo;
-                            CLine.GrupoFatura = x.InvoiceGroup;
+                            CLine.GrupoFatura = x.InvoiceGroup != null ? x.InvoiceGroup : 0;
                             CLine.CriaContrato = x.CreateContract;
                             CLine.NºProjeto = x.ProjectNo;
                             CLine.UtilizadorModificação = User.Identity.Name;
@@ -2249,7 +2249,7 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         NºContrato = contractLine.NºContrato,
                         NºProjeto = contractLine.NºProjeto,
-                        GrupoFatura = contractLine.GrupoFatura == null ? -1 : contractLine.GrupoFatura.Value,
+                        GrupoFatura = contractLine.GrupoFatura == null ? 0 : contractLine.GrupoFatura.Value, //06-03-2019 Antes estava -1
                         NºLinha = contractLine.NºLinha,
                         Tipo = contractLine.Tipo.ToString(),
                         Código = contractLine.Código,

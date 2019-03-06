@@ -100,7 +100,8 @@
                    method="post"
                    handle-as="json"
                    id="grid_databound_ajax"
-                   content-type="application/json">
+                   content-type="application/json"
+                   on-response="_responseGetListFolhasDeHoras">
         </iron-ajax>
 
         <iron-ajax url="/FolhasDeHoras/EnviarParaAprovacao"
@@ -132,7 +133,8 @@
             <paper-button class="tablinks" id="showPorIntegrarKm" on-tap="_showPorIntegrarKm"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{ _showPorIntegrarKmMessage }}</paper-button>
             <paper-button class="tablinks" id="showHistory" on-tap="_showHistory"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{ _showHistoryMessage }}</paper-button>
             <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
-            <paper-button id="btn_imprimirFH" class="tablinks" on-tap="_printFH" title="Imprimir"><i class="fa fa-print" aria-hidden="true"></i> Imprimir Aj Custos Integradas em RH</paper-button>
+            <paper-button id="btn_imprimirFH" class="tablinks" on-tap="_printFH" title="Imprimir" hidden><i class="fa fa-print" aria-hidden="true"></i> Imprimir Aj Custos Integradas em RH</paper-button>
+
 
             <!--start ColumnToggle-->
             <paper-menu-button class="column-toggle" no-animations id="gridOpcaoGeral">
@@ -577,7 +579,6 @@
                 },
 
                 _rowSelected: function (item) {
-                    //debugger;
                     if (item != null) {
                         if (item.estadotexto != "Não está Terminada") {
                             if (item.estadotexto != "Faltam Validadores") {
@@ -627,16 +628,25 @@
                     grid_el.height(height);
                 },
 
+                _responseGetListFolhasDeHoras: function (e) {
+                    if (this.result != null && this.result != undefined && this.result.length > 0) {
+                        if (this.result[0].mostrarReportAjCustosRH == true) {
+                            this.$.btn_imprimirFH.hidden = false;
+                        }
+                        else {
+                            this.$.btn_imprimirFH.hidden = true;
+                        }
+                    }
+                },
+
                 //Mostra Mensagens
                 _showMessage: function (message) {
-                    //debugger;
                     this.$.ToastMessageSuccess.text = message;
                     this.$.ToastMessageSuccess.open();
                 },
 
                 //Mostra Mensagens de Erro
                 _showErrorMessage: function (message) {
-                    //debugger;
                     this.$.ToastMessageError.text = message;
                     this.$.ToastMessageError.open();
                 },
@@ -646,7 +656,6 @@
                 },
 
                 _showDetails: function (e) {
-                    //debugger;
                     var index = this.result.indexOf(e.model.item);
                     var noFH = e.model.item.folhaDeHorasNo;
 
@@ -951,7 +960,6 @@
                 },
 
                 _toApproved: function (e) {
-                    //debugger;
                     var index = this.result.indexOf(e.model.item);
                     var noFH = e.model.item.folhaDeHorasNo;
 
@@ -981,7 +989,6 @@
                 },
 
                 _toApprovedResponse: function (e) {
-                    //debugger;
                     var self = this;
 
                     if (self.resultAprovacao.eReasonCode == 0) {
@@ -993,7 +1000,6 @@
                 },
 
                 _exportEXCEL: function () {
-                    //debugger;
                     this.result[0].Colunas = this._columns;
 
                     this.$.ajax_Export.body = JSON.stringify(this.result);
@@ -1001,7 +1007,6 @@
                 },
 
                 _exportEXCELResponse: function (e) {
-                    //debugger
                     var FileName = this.export;
                     location.href = '../FolhasDeHoras/ExportToExcelDownload_FolhasHoras?sFileName=' + FileName;
                 },
@@ -1065,7 +1070,6 @@
 
 
                 _startColumnTogglePendentes: function () {
-                    //debugger;
                     var columnsPendentes = {
                         "folhaDeHorasNo": { hidden: false, label: "Nº Folha Horas" },
                         "estadotexto": { hidden: false, label: "Motivo" },
@@ -1085,7 +1089,6 @@
                     this._columnsPendentes = columnsPendentes;
                 },
                 _toggleColumnPendentes: function (event) {
-                    //debugger;
                     var columnPendentesIndex = JSON.parse(event.target.dataset.item).key;
                     event.path[0].classList.toggle("selected");
                     this.set('_columnsPendentes.' + columnPendentesIndex + '.hidden', (!this._columnsPendentes[columnPendentesIndex].hidden));
@@ -1094,11 +1097,9 @@
                     }
                 },
                 _getColumnItemClassPendentes: function (columnPendentesIndex) {
-                    //debugger;
                     return !this._columnsPendentes[columnPendentesIndex].hidden ? "selected" : "";
                 },
                 _toArrayPendentes: function (obj) {
-                    //debugger;
                     return Object.keys(obj).map(function (key) {
                         return {
                             key: key,

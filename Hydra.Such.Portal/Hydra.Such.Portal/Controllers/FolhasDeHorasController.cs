@@ -155,6 +155,7 @@ namespace Hydra.Such.Portal.Controllers
             try
             {
                 UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.FolhasHoras); //1, 6);
+                UserAccessesViewModel UPermReportAjCustosRH = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.FHReportAjCustoRH); //65);
 
                 if (UPerm != null && UPerm.Read.Value)
                 {
@@ -173,6 +174,7 @@ namespace Hydra.Such.Portal.Controllers
                                 FH.DeslocacaoForaConcelhoTexto = FH.DeslocacaoForaConcelho == null ? "" : FH.DeslocacaoForaConcelho == false ? "Não" : "Sim";
                                 FH.Terminada = FH.Terminada == null ? false : FH.Terminada;
                                 FH.TerminadaTexto = FH.Terminada == null ? "" : FH.Terminada == false ? "Não" : "Sim";
+                                FH.MostrarReportAjCustosRH = UPermReportAjCustosRH == null ? false : (bool)UPermReportAjCustosRH.Read;
                             });
                         }
 
@@ -198,6 +200,7 @@ namespace Hydra.Such.Portal.Controllers
                                     FH.DeslocacaoForaConcelhoTexto = FH.DeslocacaoForaConcelho == null ? "" : FH.DeslocacaoForaConcelho == false ? "Não" : "Sim";
                                     FH.Terminada = FH.Terminada == null ? false : FH.Terminada;
                                     FH.TerminadaTexto = FH.Terminada == null ? "" : FH.Terminada == false ? "Não" : "Sim";
+                                    FH.MostrarReportAjCustosRH = UPermReportAjCustosRH == null ? false : (bool)UPermReportAjCustosRH.Read;
                                 });
                             }
 
@@ -218,6 +221,7 @@ namespace Hydra.Such.Portal.Controllers
                                         FH.DeslocacaoForaConcelhoTexto = FH.DeslocacaoForaConcelho == null ? "" : FH.DeslocacaoForaConcelho == false ? "Não" : "Sim";
                                         FH.Terminada = FH.Terminada == null ? false : FH.Terminada;
                                         FH.TerminadaTexto = FH.Terminada == null ? "" : FH.Terminada == false ? "Não" : "Sim";
+                                        FH.MostrarReportAjCustosRH = UPermReportAjCustosRH == null ? false : (bool)UPermReportAjCustosRH.Read;
                                     });
                                 }
 
@@ -238,6 +242,7 @@ namespace Hydra.Such.Portal.Controllers
                                             FH.DeslocacaoForaConcelhoTexto = FH.DeslocacaoForaConcelho == null ? "" : FH.DeslocacaoForaConcelho == false ? "Não" : "Sim";
                                             FH.Terminada = FH.Terminada == null ? false : FH.Terminada;
                                             FH.TerminadaTexto = FH.Terminada == null ? "" : FH.Terminada == false ? "Não" : "Sim";
+                                            FH.MostrarReportAjCustosRH = UPermReportAjCustosRH == null ? false : (bool)UPermReportAjCustosRH.Read;
                                         });
                                     }
 
@@ -258,6 +263,7 @@ namespace Hydra.Such.Portal.Controllers
                                                 FH.DeslocacaoForaConcelhoTexto = FH.DeslocacaoForaConcelho == null ? "" : FH.DeslocacaoForaConcelho == false ? "Não" : "Sim";
                                                 FH.Terminada = FH.Terminada == null ? false : FH.Terminada;
                                                 FH.TerminadaTexto = FH.Terminada == null ? "" : FH.Terminada == false ? "Não" : "Sim";
+                                                FH.MostrarReportAjCustosRH = UPermReportAjCustosRH == null ? false : (bool)UPermReportAjCustosRH.Read;
                                             });
                                         }
 
@@ -278,6 +284,7 @@ namespace Hydra.Such.Portal.Controllers
                                                     FH.DeslocacaoForaConcelhoTexto = FH.DeslocacaoForaConcelho == null ? "" : FH.DeslocacaoForaConcelho == false ? "Não" : "Sim";
                                                     FH.Terminada = FH.Terminada == null ? false : FH.Terminada;
                                                     FH.TerminadaTexto = FH.Terminada == null ? "" : FH.Terminada == false ? "Não" : "Sim";
+                                                    FH.MostrarReportAjCustosRH = UPermReportAjCustosRH == null ? false : (bool)UPermReportAjCustosRH.Read;
                                                 });
                                             }
 
