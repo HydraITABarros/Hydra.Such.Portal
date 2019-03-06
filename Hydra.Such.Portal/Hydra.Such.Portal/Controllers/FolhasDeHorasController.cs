@@ -3472,6 +3472,13 @@ namespace Hydra.Such.Portal.Controllers
                                             result.eReasonCode = 100;
                                             result.eMessage = "A Folha de Horas foi aprovada e encerrada com sucesso.";
                                         }
+
+                                        FolhasDeHoras FHFinal = DBFolhasDeHoras.GetById(data.FolhaDeHorasNo);
+                                        if (FHFinal.Estado == 1 && FHFinal.TipoDeslocação != 2 && FHFinal.IntegradoEmRh == true)
+                                        {
+                                            FHFinal.Estado = 2;
+                                            DBFolhasDeHoras.Update(FHFinal);
+                                        }
                                     }
                                     else
                                     {
@@ -3776,6 +3783,13 @@ namespace Hydra.Such.Portal.Controllers
 
                                             result.eReasonCode = 100;
                                             result.eMessage = "A Folha de Horas foi aprovada e encerrada com sucesso.";
+                                        }
+
+                                        FolhasDeHoras FHFinal = DBFolhasDeHoras.GetById(data.FolhaDeHorasNo);
+                                        if (FHFinal.Estado == 1 && FHFinal.TipoDeslocação != 2 && FHFinal.IntegradoEmRh == true)
+                                        {
+                                            FHFinal.Estado = 2;
+                                            DBFolhasDeHoras.Update(FHFinal);
                                         }
                                     }
                                 }

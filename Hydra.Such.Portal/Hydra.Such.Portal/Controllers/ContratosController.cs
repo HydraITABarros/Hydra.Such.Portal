@@ -2182,12 +2182,26 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             if (item.ÚltimaDataFatura == null)
                             {
-                                Problema += " Falta Nota Encomenda";
+                                //AMARO 04/03/2019
+                                item.ÚltimaDataFatura = nextInvoiceDate;
+                                List<RequisiçõesClienteContrato> ListaContratos = DBContractClientRequisition.GetByContract(item.NºDeContrato);
+                                RequisiçõesClienteContrato Reqcontract = ListaContratos.Find(x => x.GrupoFatura == contractLine.GrupoFatura
+                                    && x.DataInícioCompromisso <= item.ÚltimaDataFatura
+                                    && x.DataFimCompromisso >= item.ÚltimaDataFatura);
+                                if (Reqcontract == null)
+                                {
+                                    Problema += " Falta Nota Encomenda";
+                                }
+                                
+                                //CÓDIGO ORIGINAL
+                                //Problema += " Falta Nota Encomenda";
                             }
                             else
                             {
                                 List<RequisiçõesClienteContrato> ListaContratos = DBContractClientRequisition.GetByContract(item.NºDeContrato);
-                                RequisiçõesClienteContrato Reqcontract = ListaContratos.Find(x => x.GrupoFatura == contractLine.GrupoFatura && x.DataInícioCompromisso <= item.ÚltimaDataFatura && x.DataFimCompromisso >= item.ÚltimaDataFatura);
+                                RequisiçõesClienteContrato Reqcontract = ListaContratos.Find(x => x.GrupoFatura == contractLine.GrupoFatura
+                                    && x.DataInícioCompromisso <= item.ÚltimaDataFatura
+                                    && x.DataFimCompromisso >= item.ÚltimaDataFatura);
                                 if(Reqcontract == null ) {
                                     Problema += " Falta Nota Encomenda";
                                 }
@@ -2214,7 +2228,6 @@ namespace Hydra.Such.Portal.Controllers
                             Situação=Problema,
                             DataHoraCriação = DateTime.Now,
                             UtilizadorCriação = User.Identity.Name
-                            
                         };
                         try
                         {
@@ -2492,7 +2505,7 @@ namespace Hydra.Such.Portal.Controllers
 
 
 
-                    //AMARO CONTABILIZAR
+                    //AMARO TEXTO FATURA
                     string obs = "";
                     List<TextoFaturaContrato> ListTextoFatura = DBContractInvoiceText.GetByContractAndGrupoFatura(contractLine.NºDeContrato, item.GrupoFatura);
 
