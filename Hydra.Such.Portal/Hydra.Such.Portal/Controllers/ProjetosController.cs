@@ -3437,12 +3437,31 @@ namespace Hydra.Such.Portal.Controllers
                         billingGroups.Contains(x.InvoiceGroup.Value))
                     .ToList();
 
+                //teste AROMAO
+                if (authProjectMovements != null && authProjectMovements.Count() > 0)
+                {
+                    if (data != null && data.Count() > 0)
+                    {
+                        foreach (AuthorizedProjectViewModel movimento in authProjectMovements)
+                        {
+                            foreach (SPInvoiceListViewModel dt in data)
+                            {
+                                if (dt.ProjectNo == movimento.CodProjeto && dt.InvoiceGroup != movimento.GrupoFactura)
+                                {
+                                    dt.Apagar_Linha = true;
+                                }
+                            }
+                        }
+                        data.RemoveAll(z => z.Apagar_Linha == true);
+                    }
+                }
+
                 customersServicesPrices = ctx.PreçosServiçosCliente
                     .Where(x => customersIds.Contains(x.Cliente))
                     .ToList();
-
             }
-            if (data != null)
+
+            if (data != null && data.Count() > 0)
             {
                 var userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
                 List<UserDimensionsViewModel> userDimensionsViewModel = userDimensions.ParseToViewModel();
@@ -3531,7 +3550,7 @@ namespace Hydra.Such.Portal.Controllers
                     string projectRegion = proj != null ? proj.CódigoRegião : string.Empty;
                     var customer = customers.FirstOrDefault(y => y.No_ == x.InvoiceToClientNo);
                     x.SetDimensionsFor(authProj, projectRegion, customer);
-                    x.DataPedido = authProj.DataPedido;
+                    x.DataPedido = authProj != null ? authProj.DataPedido : null;
 
                     TiposGrupoContabProjeto contabGroupType = new TiposGrupoContabProjeto();
                     x.Items.ForEach(item =>

@@ -362,7 +362,8 @@
                                                 <input aria-label="Selecionar Todos" type="checkbox" disabled="[[!_billable]]" on-click="_invert" checked="[[_isChecked(inverted, indeterminate)]]" indeterminate="[[indeterminate]]">
                                             </template>
                                             <template>
-                                                <input aria-label="Selecionar" type="checkbox" checked="{{item.selecionada}}" on-change="_selectItem" checked="[[_isSelected(inverted, selected)]]">
+                                                <!--<input aria-label="Selecionar" type="checkbox" checked="{{item.selecionada}}" on-change="_selectItem" checked="[[_isSelected(inverted, selected)]]">-->
+                                                <input aria-label="Selecionar" type="checkbox" on-change="_selectItem" checked="[[_isSelected(inverted, selected)]]">
                                             </template>
                                         </vaadin-grid-column>
 
@@ -1264,9 +1265,9 @@
                                 this.$.grdProjectMovements.selectItem(e.model.item);
 
                                 //AMARO
-                                e.model.item.selecionada = true;
-                                this.$.updatelinesSelecionada_ajax.body = JSON.stringify(e.model.item);
-                                this.$.updatelinesSelecionada_ajax.generateRequest();
+                                //e.model.item.selecionada = true;
+                                //this.$.updatelinesSelecionada_ajax.body = JSON.stringify(e.model.item);
+                                //this.$.updatelinesSelecionada_ajax.generateRequest();
                             //}
                             //else {
                             //    this.openToastError("O valor do Preço unitário tem que ser superior a 0.");
@@ -1284,9 +1285,9 @@
                         this.$.grdProjectMovements.deselectItem(e.model.item);
 
                         //AMARO
-                        e.model.item.selecionada = false;
-                        this.$.updatelinesSelecionada_ajax.body = JSON.stringify(e.model.item);
-                        this.$.updatelinesSelecionada_ajax.generateRequest();
+                        //e.model.item.selecionada = false;
+                        //this.$.updatelinesSelecionada_ajax.body = JSON.stringify(e.model.item);
+                        //this.$.updatelinesSelecionada_ajax.generateRequest();
                     }
                     this.indeterminate = this.$.grdProjectMovements.selectedItems.length > 0;
                 },

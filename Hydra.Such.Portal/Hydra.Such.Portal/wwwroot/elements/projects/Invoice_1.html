@@ -1032,12 +1032,17 @@
                         //Verifica se a lista é do mesmo cliente
                         var clienteNo = this.selectedItems[0].codCliente;
                         var verifica = true;
+                        //var verificaDataPedido = true;
                         var saldo = 0;
                         for (i = 0; i < this.selectedItems.length; i++) {
                             if (clienteNo != this.selectedItems[i].codCliente) {
                                 verifica = false;
                             }
                             saldo = saldo + this.selectedItems[i].valorAutorizado;
+
+                            //if (this.selectedItems[i].dataPedido == null || this.selectedItems[i].dataPedido == undefined || this.selectedItems[i].dataPedido == "") {
+                            //    verificaDataPedido = false;
+                            //}
                         }
                         if (verifica == true) {
                             this.selectedItem = this.selectedItems;
@@ -1074,7 +1079,12 @@
                             }
                         }
                         else {
-                            this.openToastError("Selecione apenas projetos de um cliente!");
+                            if (verifica != true) {
+                                this.openToastError("Selecione apenas projetos de um cliente!");
+                            }
+                            //if (verificaDataPedido != true) {
+                            //    this.openToastError("Existe pelo meno uma linha selecionada com a data de pedido a vazio!");
+                            //}
                         }
                     } else {
                         this.openToastError("Selecione pelo menos um projeto!");

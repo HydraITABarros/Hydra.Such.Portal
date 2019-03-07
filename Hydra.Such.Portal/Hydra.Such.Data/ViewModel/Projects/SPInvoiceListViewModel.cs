@@ -87,6 +87,7 @@ namespace Hydra.Such.Data.ViewModel.Projects
         public string Ship_to_Name { get; set; }
         public string Ship_to_Name_2 { get; set; }
         public string Ship_to_Post_Code { get; set; }
+        public bool Apagar_Linha { get; set; }
 
 
         //EXPORTAR PARA EXCEL
