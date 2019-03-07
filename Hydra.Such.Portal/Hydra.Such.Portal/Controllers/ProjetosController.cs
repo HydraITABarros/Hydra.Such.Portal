@@ -267,7 +267,7 @@ namespace Hydra.Such.Portal.Controllers
 
                     if (string.IsNullOrEmpty(TextoFatura) && !string.IsNullOrEmpty(cProject.NºContrato))
                     { 
-                        TextoFatura = DBContracts.GetAllByContractNo(cProject.NºContrato).FirstOrDefault() != null ? DBContracts.GetAllByContractNo(cProject.NºContrato).FirstOrDefault().TextoFatura : "";
+                        TextoFatura = DBContracts.GetByIdLastVersion(cProject.NºContrato) != null ? DBContracts.GetByIdLastVersion(cProject.NºContrato).TextoFatura : "";
 
                         if (!string.IsNullOrEmpty(TextoFatura))
                         {

@@ -188,6 +188,7 @@ namespace Hydra.Such.Data.NAV
                 line.Consumption_DateSpecified = !string.IsNullOrEmpty(x.ConsumptionDate);
 
                 line.Grupo_Serviço = x.ServiceGroupCode;
+                line.Service_Group_Description = DBServices.GetById(x.ServiceGroupCode).Descrição;
                 line.Nº_Guia_Externa = x.ExternalGuideNo;
                 line.Nº_Guia_Resíduos_GAR = x.WasteGuideNo_GAR;
                 line.RegionCode20 = x.RegionCode;
