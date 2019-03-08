@@ -113,13 +113,16 @@ namespace Hydra.Such.Portal.Controllers
 
             }
 
+            List<NAVClientsViewModel> AllClients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "");
+
             result.ForEach(x =>
             {
                 if (x.Status.HasValue)
                 {
                     x.StatusDescription = x.Status.Value.GetDescription() ;
                 }
-                x.ClientName = DBNAV2017Clients.GetClientNameByNo(x.ClientNo, _config.NAVDatabaseName, _config.NAVCompanyName);
+                x.ClientName = AllClients.Where(y => y.No_ == x.ClientNo).FirstOrDefault() != null ? AllClients.Where(y => y.No_ == x.ClientNo).FirstOrDefault().Name : "";
+                //x.ClientName = DBNAV2017Clients.GetClientNameByNo(x.ClientNo, _config.NAVDatabaseName, _config.NAVCompanyName);
             });
 
 
@@ -253,7 +256,6 @@ namespace Hydra.Such.Portal.Controllers
                         ObservacoesAutorizarFaturacao = ""
                     };
 
-                    //AMARO
                     string TextoFatura = "";
                     if (!string.IsNullOrEmpty(cProject.NºProjeto) && !string.IsNullOrEmpty(cProject.NºContrato))
                     {
@@ -3349,7 +3351,56 @@ namespace Hydra.Such.Portal.Controllers
 
 
                 projectsDetails = ctx.Projetos.Where(x => projectsIds.Contains(x.NºProjeto)).ToList();
-                
+
+                //AMARO NOVO METODO PARA IR BUSCAR AS LINHAS
+                //INICIO
+                //List<SPInvoiceListViewModel> data2 = null;
+                //List<MovimentosProjectoAutorizados> ListMPA = DBAuthorizedProjectMovements.GetAll("");
+                //foreach (AuthorizedProjectViewModel AuthProj in authProjectMovements)
+                //{
+                //    List<MovimentosDeProjeto> MOV = DBProjectMovements.GetByProjectNo(AuthProj.CodProjeto);
+                //    foreach (MovimentosProjectoAutorizados MPA in ListMPA)
+                //    {
+                //        if (MPA.CodProjeto == AuthProj.CodProjeto && MPA.GrupoFactura == AuthProj.GrupoFactura)
+                //        {
+                //            SPInvoiceListViewModel addlinha = new SPInvoiceListViewModel
+                //            {
+                //                CommitmentNumber = AuthProj.NumCompromisso,
+                //                Date = AuthProj.DataPrestacaoServico,
+                //                InvoiceToClientNo = AuthProj.CodCliente,
+                //                ClientRequest = AuthProj.PedidoCliente,
+
+                //                MealType = MPA.TipoRefeicao,
+                //                Type = MPA.Tipo,
+                //                Code = MPA.Codigo,
+                //                Description = MPA.Descricao,
+                //                RegionCode = MPA.CodRegiao,
+                //                FunctionalAreaCode = MPA.CodAreaFuncional,
+                //                ResponsabilityCenterCode = MPA.CodCentroResponsabilidade,
+                //                ProjectNo = MPA.CodProjeto,
+                //                ContractNo = projectsDetails.Select(x => x.NºContrato).FirstOrDefault(x => x == MPA.CodProjeto),
+                //                ConsumptionDate = MPA.DataConsumo.HasValue ? MPA.DataConsumo.Value.ToString("yyyy-MM-dd") : "",
+                //                ServiceClientCode = MPA.CodServCliente,
+                //                MeasurementUnitCode = MPA.CodUnidadeMedida,
+                //                Quantity = MPA.Quantidade,
+                //                ServiceGroupCode = MPA.CodGrupoServico,
+                //                ExternalGuideNo = MPA.NumGuiaExterna,
+                //                WasteGuideNo_GAR = MPA.NumGuiaResiduosGar,
+                //                InvoiceGroup = MPA.GrupoFactura,
+
+                //                UnitPrice = MOV.FirstOrDefault(y => y.NºLinha == MPA.NumMovimento).PreçoUnitário,
+                //                UnitCost = MOV.FirstOrDefault(y => y.NºLinha == MPA.NumMovimento).CustoUnitário,
+                //                LocationCode = MOV.FirstOrDefault(y => y.NºLinha == MPA.NumMovimento).CódLocalização,
+                //                ProjectContabGroup = MOV.FirstOrDefault(y => y.NºLinha == MPA.NumMovimento).GrupoContabProjeto,
+                //            };
+                //            data2.Add(addlinha);
+                //        }
+                //    }
+                //}
+                //FIM
+
+
+
                 data = ctx.MovimentosProjectoAutorizados
                     .Join(ctx.MovimentosDeProjeto,
                         mpa => mpa.NumMovimento,
@@ -3437,7 +3488,7 @@ namespace Hydra.Such.Portal.Controllers
                         billingGroups.Contains(x.InvoiceGroup.Value))
                     .ToList();
 
-                //teste AROMAO
+                //TESTE AROMAO CORRIGIR 08/03/2019
                 if (authProjectMovements != null && authProjectMovements.Count() > 0)
                 {
                     if (data != null && data.Count() > 0)
@@ -4163,62 +4214,79 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetPreMovementsProject([FromBody] string ProjectNo)
         {
-            List<ProjectDiaryViewModel> dp = DBPreProjectMovements.GetPreRegistered(ProjectNo).Select(x => new ProjectDiaryViewModel()
+            try
             {
-                LineNo = x.NºLinha,
-                ProjectNo = x.NºProjeto,
-                Date = x.Data == null ? String.Empty : x.Data.Value.ToString("yyyy-MM-dd"),
-                MovementType = x.TipoMovimento,
-                Type = x.Tipo,
-                Code = x.Código,
-                Description = x.Descrição,
-                Quantity = x.Quantidade,
-                MeasurementUnitCode = x.CódUnidadeMedida,
-                LocationCode = x.CódLocalização,
-                ProjectContabGroup = x.GrupoContabProjeto,
-                RegionCode = x.CódigoRegião,
-                FunctionalAreaCode = x.CódigoÁreaFuncional,
-                ResponsabilityCenterCode = x.CódigoCentroResponsabilidade,
-                User = x.Utilizador,
-                UnitCost = x.CustoUnitário,
-                TotalCost = x.CustoTotal,
-                UnitPrice = x.PreçoUnitário,
-                TotalPrice = x.PreçoTotal,
-                Billable = x.Faturável,
-                Registered = x.Registado,
-                MealType = x.TipoRefeição,
-                FolhaHoras = x.NºDocumento,
-                InvoiceToClientNo = x.FaturaANºCliente,
-                ServiceClientCode = x.CódServiçoCliente,
-                ServiceGroupCode = x.CódGrupoServiço,
-                ClientName = DBNAV2017Clients.GetClientNameByNo(x.FaturaANºCliente, _config.NAVDatabaseName, _config.NAVCompanyName),
+                string NoCliente = DBProjects.GetById(ProjectNo).NºCliente;
+                string ClientName = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, NoCliente).Name;
 
-            }).ToList();
-            foreach (ProjectDiaryViewModel item in dp)
-            {
-                if (!String.IsNullOrEmpty(item.ServiceClientCode))
-                {
-                    Serviços GetService = DBServices.GetById(item.ServiceClientCode);
-                    if (GetService != null)
-                    {
-                        item.ServiceClientDescription = GetService.Descrição;
-                    }
+                List<Serviços> AllServices = DBServices.GetAll();
+                List<TiposRefeição>  AllMealTypes = DBMealTypes.GetAll();
 
-                }
-                if (item.MealType != null)
+                List<ProjectDiaryViewModel> dp = DBPreProjectMovements.GetPreRegistered(ProjectNo).Select(x => new ProjectDiaryViewModel()
                 {
-                    TiposRefeição TRrow = DBMealTypes.GetById(item.MealType.Value);
-                    if (TRrow != null)
-                    {
-                        item.MealTypeDescription = TRrow.Descrição;
-                    }
-                }
-                else
-                {
-                    item.MealTypeDescription = "";
-                }
+                    LineNo = x.NºLinha,
+                    ProjectNo = x.NºProjeto,
+                    Date = x.Data == null ? String.Empty : x.Data.Value.ToString("yyyy-MM-dd"),
+                    MovementType = x.TipoMovimento,
+                    Type = x.Tipo,
+                    Code = x.Código,
+                    Description = x.Descrição,
+                    Quantity = x.Quantidade,
+                    MeasurementUnitCode = x.CódUnidadeMedida,
+                    LocationCode = x.CódLocalização,
+                    ProjectContabGroup = x.GrupoContabProjeto,
+                    RegionCode = x.CódigoRegião,
+                    FunctionalAreaCode = x.CódigoÁreaFuncional,
+                    ResponsabilityCenterCode = x.CódigoCentroResponsabilidade,
+                    User = x.Utilizador,
+                    UnitCost = x.CustoUnitário,
+                    TotalCost = x.CustoTotal,
+                    UnitPrice = x.PreçoUnitário,
+                    TotalPrice = x.PreçoTotal,
+                    Billable = x.Faturável,
+                    Registered = x.Registado,
+                    MealType = x.TipoRefeição,
+                    FolhaHoras = x.NºDocumento,
+                    InvoiceToClientNo = x.FaturaANºCliente,
+                    ServiceClientCode = x.CódServiçoCliente,
+                    ServiceGroupCode = x.CódGrupoServiço,
+                    ClientName = ClientName,
+                    //ClientName = DBNAV2017Clients.GetClientNameByNo(x.FaturaANºCliente, _config.NAVDatabaseName, _config.NAVCompanyName),
+                    ServiceClientDescription = !String.IsNullOrEmpty(x.CódServiçoCliente) ? AllServices.Where(y => y.Código == x.CódServiçoCliente).FirstOrDefault().Descrição : "",
+                    MealTypeDescription = x.TipoRefeição != null ? AllMealTypes.Where(y => y.Código == x.TipoRefeição).FirstOrDefault().Descrição : ""
+
+                }).ToList();
+                //foreach (ProjectDiaryViewModel item in dp)
+                //{
+                //    if (!String.IsNullOrEmpty(item.ServiceClientCode))
+                //    {
+                //        Serviços GetService = DBServices.GetById(item.ServiceClientCode);
+                //        if (GetService != null)
+                //        {
+                //            item.ServiceClientDescription = GetService.Descrição;
+                //        }
+
+                //    }
+                //    if (item.MealType != null)
+                //    {
+                //        TiposRefeição TRrow = DBMealTypes.GetById(item.MealType.Value);
+                //        if (TRrow != null)
+                //        {
+                //            item.MealTypeDescription = TRrow.Descrição;
+                //        }
+                //    }
+                //    else
+                //    {
+                //        item.MealTypeDescription = "";
+                //    }
+                //}
+                return Json(dp);
             }
-            return Json(dp);
+            catch (Exception e)
+            {
+                //throw;
+                return Json(null);
+            }
         }
 
         public IActionResult PreregistoProjetos(String id)
@@ -4975,6 +5043,8 @@ namespace Hydra.Such.Portal.Controllers
                         projectMovements.Add(projectMovement);
                     }
 
+                    projectDiaryItems.RemoveAll(x => x.Quantity == 0);
+
                     //Create project diary in NAV
                     Guid transactionId = Guid.NewGuid();
                     try
@@ -4988,59 +5058,69 @@ namespace Hydra.Such.Portal.Controllers
                         catch (Exception ex)
                         {
                             response.eReasonCode = 3;
-                            response.eMessage = ex.Message;
+                            response.eMessage = "Erro: (" + ex.InnerException != null ? ex.InnerException.Message : ex.Message + ")";
                             return Json(response);
                         }
 
                         //Register Lines in NAV
-                        Task<WSGenericCodeUnit.FxPostJobJrnlLines_Result> registerNavDiaryTask = WSProjectDiaryLine.RegsiterNavDiaryLines(transactionId, _configws);
-                        registerNavDiaryTask.Wait();
+                        try
+                        {
+                            Task<WSGenericCodeUnit.FxPostJobJrnlLines_Result> registerNavDiaryTask = WSProjectDiaryLine.RegsiterNavDiaryLines(transactionId, _configws);
+                            registerNavDiaryTask.Wait();
 
-                        if (!registerNavDiaryTask.IsCompletedSuccessfully)
-                        {
-                            response.eReasonCode = 3;
-                            response.eMessage = "Não foi possivel criar as linhas no nav";
-                            Response.StatusCode = (int)HttpStatusCode.NoContent;
-                            return Json(premov);
-                        }
-                        else
-                        {
-                            //Create project movement in e-SUCH and update pré-movements. Ensure atomicity
-                            using (var ctx = new SuchDBContext())
+                            if (!registerNavDiaryTask.IsCompletedSuccessfully)
                             {
-                                projectMovements.ForEach(x => x.DataHoraCriação = DateTime.Now);
-                                ctx.MovimentosDeProjeto.AddRange(projectMovements);
-
-                                foreach (var item in projectDiaryItems)
+                                response.eReasonCode = 3;
+                                response.eMessage = "Não foi possivel criar as linhas no nav";
+                                Response.StatusCode = (int)HttpStatusCode.NoContent;
+                                return Json(premov);
+                            }
+                            else
+                            {
+                                //Create project movement in e-SUCH and update pré-movements. Ensure atomicity
+                                using (var ctx = new SuchDBContext())
                                 {
-                                    var preMovementIds = groupedPreRecords.SelectMany(x => x.Items).Where(x => x.ProjectNo == item.ProjectNo &&
-                                                                                     x.Code == item.Code &&
-                                                                                     x.ServiceGroupCode == item.ServiceGroupCode &&
-                                                                                     x.ServiceClientCode == item.ServiceClientCode)
-                                                                         .Select(x => x.LineNo)
-                                                                         .ToList();
+                                    projectMovements.ForEach(x => x.DataHoraCriação = DateTime.Now);
+                                    ctx.MovimentosDeProjeto.AddRange(projectMovements);
 
-                                    var preMovements = DBPreProjectMovements.GetUnregisteredById(preMovementIds);
-                                    if (preMovements != null && preMovements.Count > 0)
+                                    foreach (var item in projectDiaryItems)
                                     {
-                                        preMovements.ForEach(x =>
+                                        var preMovementIds = groupedPreRecords.SelectMany(x => x.Items).Where(x => x.ProjectNo == item.ProjectNo &&
+                                                                                         x.Code == item.Code &&
+                                                                                         x.ServiceGroupCode == item.ServiceGroupCode &&
+                                                                                         x.ServiceClientCode == item.ServiceClientCode)
+                                                                             .Select(x => x.LineNo)
+                                                                             .ToList();
+
+                                        var preMovements = DBPreProjectMovements.GetUnregisteredById(preMovementIds);
+                                        if (preMovements != null && preMovements.Count > 0)
                                         {
-                                            x.Registado = true;
-                                            x.UtilizadorCriação = User.Identity.Name;
-                                            x.DataHoraModificação = DateTime.Now;
-                                        });
-                                        ctx.PréMovimentosProjeto.UpdateRange(preMovements);
+                                            preMovements.ForEach(x =>
+                                            {
+                                                x.Registado = true;
+                                                x.UtilizadorCriação = User.Identity.Name;
+                                                x.DataHoraModificação = DateTime.Now;
+                                            });
+                                            ctx.PréMovimentosProjeto.UpdateRange(preMovements);
+                                        }
                                     }
+                                    ctx.SaveChanges();
                                 }
-                                ctx.SaveChanges();
                             }
                         }
+                        catch (Exception ex)
+                        {
+                            response.eReasonCode = 3;
+                            response.eMessage = "Erro: (" + ex.InnerException != null ? ex.InnerException.Message : ex.Message + ")";
+                            return Json(response);
+                        }
+
                     }
                     catch (Exception ex)
                     {
                         WSProjectDiaryLine.DeleteNavDiaryLines(transactionId, _configws);
                         response.eReasonCode = 3;
-                        response.eMessage = "Não foi possivel criar as linhas no nav (" + ex.Message + ")";
+                        response.eMessage = "Não foi possivel criar as linhas no nav (" + ex.InnerException != null ? ex.InnerException.Message : ex.Message + ")";
                         //Response.StatusCode = (int)HttpStatusCode.NoContent;
                         return Json(response);
                     }

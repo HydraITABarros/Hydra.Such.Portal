@@ -14,6 +14,9 @@
       <Query>
         <DataSourceName>eSuchDS</DataSourceName>
         <QueryParameters>
+          <QueryParameter Name="@NoEmpregado">
+            <Value>=Parameters!NoEmpregado.Value</Value>
+          </QueryParameter>
           <QueryParameter Name="@DataInicio">
             <Value>=Parameters!DataInicio.Value</Value>
           </QueryParameter>
@@ -23,6 +26,7 @@
         </QueryParameters>
         <CommandType>StoredProcedure</CommandType>
         <CommandText>rpt_FH_AjudasCustoIntegradasRH</CommandText>
+        <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
       </Query>
       <Fields>
         <Field Name="PartidaData">
@@ -1137,6 +1141,11 @@
       <DataType>DateTime</DataType>
       <Prompt>Data Fim</Prompt>
     </ReportParameter>
+    <ReportParameter Name="NoEmpregado">
+      <DataType>String</DataType>
+      <AllowBlank>true</AllowBlank>
+      <Prompt>No Empregado</Prompt>
+    </ReportParameter>
   </ReportParameters>
   <ReportParametersLayout>
     <GridLayoutDefinition>
@@ -1152,6 +1161,11 @@
           <ColumnIndex>1</ColumnIndex>
           <RowIndex>0</RowIndex>
           <ParameterName>DataFim</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>2</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>NoEmpregado</ParameterName>
         </CellDefinition>
       </CellDefinitions>
     </GridLayoutDefinition>

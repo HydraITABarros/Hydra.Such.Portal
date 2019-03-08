@@ -168,7 +168,13 @@ namespace Hydra.Such.Data.NAV
                 line.QuantitySpecified = true;
                 line.Quantity = x.Quantity.HasValue ? x.Quantity.Value : 0;
                 line.TypeSpecified = true;
+
+
                 line.Unit_of_Measure = x.MeasurementUnitCode;
+
+
+
+
                 line.Location_Code = x.LocationCode;
                 line.Unit_Price = x.UnitPrice.HasValue ? x.UnitPrice.Value : 0;
                 line.Unit_PriceSpecified = true;
@@ -187,8 +193,8 @@ namespace Hydra.Such.Data.NAV
                 line.Consumption_Date = !string.IsNullOrEmpty(x.ConsumptionDate) ? DateTime.Parse(x.ConsumptionDate) : DateTime.MinValue;
                 line.Consumption_DateSpecified = !string.IsNullOrEmpty(x.ConsumptionDate);
 
-                line.Grupo_Serviço = x.ServiceGroupCode;
-                line.Service_Group_Description = DBServices.GetById(x.ServiceGroupCode).Descrição;
+                line.Grupo_Serviço = !string.IsNullOrEmpty(x.ServiceGroupCode) ? x.ServiceGroupCode : "";
+                line.Service_Group_Description = !string.IsNullOrEmpty(x.ServiceGroupCode) && DBServices.GetById(x.ServiceGroupCode) != null ? DBServices.GetById(x.ServiceGroupCode).Descrição : "";
                 line.Nº_Guia_Externa = x.ExternalGuideNo;
                 line.Nº_Guia_Resíduos_GAR = x.WasteGuideNo_GAR;
                 line.RegionCode20 = x.RegionCode;
@@ -198,7 +204,6 @@ namespace Hydra.Such.Data.NAV
 
                 line.Data_Registo_Diario = !string.IsNullOrEmpty(x.ConsumptionDate) ? DateTime.Parse(x.ConsumptionDate) : DateTime.MinValue;
                 line.Data_Registo_DiarioSpecified = !string.IsNullOrEmpty(x.ConsumptionDate);
-
 
                 if (x.ResourceType.HasValue)
                 {

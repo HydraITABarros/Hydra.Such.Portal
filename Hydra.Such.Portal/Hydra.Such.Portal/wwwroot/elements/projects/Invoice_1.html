@@ -886,7 +886,7 @@
                 <vaadin-date-picker id="_CLData" label="Data" required error-message="Este campo é obrigatório"></vaadin-date-picker>
             </div>
             <div class="buttons">
-                <paper-button raised class="btnEdit" on-tap="_validateInvoice">Confirmar</paper-button>
+                <paper-button raised id="btn_FaturarConfirmarPositivo" class="btnEdit" on-tap="_validateInvoice">Confirmar</paper-button>
                 <paper-button raised class="btnRemove" dialog-dismiss>Cancelar</paper-button>
             </div>
         </paper-dialog>
@@ -896,7 +896,7 @@
                 <vaadin-date-picker id="_CLDataNegativo" label="Data" required error-message="Este campo é obrigatório"></vaadin-date-picker>
             </div>
             <div class="buttons">
-                <paper-button raised class="btnEdit" on-tap="_validateInvoiceNegativo">Confirmar</paper-button>
+                <paper-button raised id="btn_FaturarConfirmarNegativo" class="btnEdit" on-tap="_validateInvoiceNegativo">Confirmar</paper-button>
                 <paper-button raised class="btnRemove" dialog-dismiss>Cancelar</paper-button>
             </div>
         </paper-dialog>
@@ -1149,6 +1149,7 @@
                                 var customerNo = this.selectedItem[0].codCliente;
                                 var commitmentNo = this.selectedItem[0].numCompromisso;
                                 var data = this.$._CLData.value;
+
                                 this.$.valCustomer_ajax.body = JSON.stringify({ "customerNo": customerNo, "commitmentNo": commitmentNo, "data": data });
                                 this.$.valCustomer_ajax.generateRequest();
                                 this.$.dlgInvoice.close();
@@ -1173,6 +1174,7 @@
                             var customerNo = this.selectedItem[0].codCliente;
                             var commitmentNo = this.selectedItem[0].numCompromisso;
                             var data = this.$._CLDataNegativo.value;
+
                             this.$.valCustomerNegativo_ajax.body = JSON.stringify({ "customerNo": customerNo, "commitmentNo": commitmentNo, "data": data });
                             this.$.valCustomerNegativo_ajax.generateRequest();
                             this.$.dlgInvoiceNegativo.close();
@@ -1213,6 +1215,9 @@
                                     },
                                     callback: function (authorizeMovements) {
                                         if (authorizeMovements) {
+
+                                            //$(this.$.btn_FaturarConfirmarPositivo).addClass('disabled');
+
                                             ajax_request.body = JSON.stringify(selectedItem);
                                             ajax_request.params = { "OptionInvoice": option, "dataFormulario": dataFormulario };
                                             ajax_request.generateRequest();
@@ -1261,6 +1266,9 @@
                                     },
                                     callback: function (authorizeMovements) {
                                         if (authorizeMovements) {
+
+                                            //$(this.$.btn_FaturarConfirmarNegativo).addClass('disabled');
+
                                             ajax_request.body = JSON.stringify(selectedItem);
                                             ajax_request.params = { "OptionInvoice": option, "dataFormulario": dataFormulario };
                                             ajax_request.generateRequest();
@@ -1291,6 +1299,10 @@
                         else
                             this.openToastError(this.CreateInvoiceResponse.eMessage);
                     }
+
+                    //$(this.$.btn_FaturarConfirmarPositivo).removeClass('disabled');
+                    //$(this.$.btn_FaturarConfirmarNegativo).removeClass('disabled');
+
                     this.selectedItems = [];
                     this.$.page_databound_ajax.generateRequest();
                     this.$.projectInvoiceAutorization.clearCache();
