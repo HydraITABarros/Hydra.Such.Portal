@@ -231,6 +231,13 @@
                    id="page_ship_to_addresses_ajax"
                    on-response="_shipToAddressesResponse"
                    content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/GuiasTransporteNav/GetShipToAddr"
+                   last-response="{{ shipToAddressesList }}"
+                   auto method="post"
+                   handle-as="json"
+                   id="page_customer_ship_to_addresses_ajax"
+                   content-type="application/json"></iron-ajax>
         <!-- ******* CodEnvio.e ***********-->
 
         <iron-ajax url="/GuiasTransporteNav/GetSourceCodes"
@@ -1230,12 +1237,12 @@
                 },
 
                 ready: function () {
-                    ////debugger;;
+                    debugger;;
+                    this._isPageLoad = true;
                     if (!this._history) {
                         this._isPageLoad = true;
                         this.$.page_databound_ajax.body = JSON.stringify({ "No": this._guiatransporteid, "Historic": this._history });
                         this.$.page_databound_ajax.generateRequest();
-
                     } else {
                         this._openToast("Apenas para edição de guias que não esetejam em histórico!")
                         window.location.href = "/GuiasTransporteNav";
@@ -1247,36 +1254,22 @@
                     ////debugger;;
 
                     var self = this;
-
+                    
                     if (data.detail.status === 200) {
                         this.$.ajax_post_codes.generateRequest();
 
                         this.$.ajax_thirdparties.body = JSON.stringify({ "type": this.data.tipo });
                         this.$.ajax_thirdparties.generateRequest();
+                        
 
-                        self.$.codEnvio.value = this.data.codEnvio;
-                        self.$.codEnvio.valueText = this.data.codEnvio;
-
-                        self.$.noCliente.value = this.data.noCliente;
-                        self.$.noCliente.valueText = this.data.noCliente;
-
-                        self.$.codPostal.value = this.data.codPostal;
-                        self.$.codPostal.valueText = this.data.codPostal;
-
-                        self.$.codPostalDescarga.value = this.data.codPostalDescarga;
-                        self.$.codPostalDescarga.valueText = this.data.codPostalDescarga;
-
-                        self.$.postCode.value = this.data.postCode;
-                        self.$.postCode.valueText = this.data.postCode;
-
-                        ////debugger;;
-                        if (this.data.tipo == 0 && this.data.noCliente != "" && this.data.codEnvio) {
-                            this.$.page_ship_to_addresses_ajax.body = JSON.stringify({ "customerId": this.data.noCliente, "shipToCode": this.data.codEnvio });
-                            this.$.page_ship_to_addresses_ajax.generateRequest();
+                        if (this.data.tipo == 0 && this.data.noCliente != "") {
+                            this.$.page_customer_ship_to_addresses_ajax.body = JSON.stringify({ "customerId": this.data.noCliente, "shipToCode": "-1" });
+                            this.$.page_customer_ship_to_addresses_ajax.generateRequest();
                         }
                                                 
                         self.$.codEnvio.disabled = this.data.tipo != 0;
                         
+
 
                         self.$.noProjectoItem.value = this.data.noProjecto;
                         self.$.noProjectoItem.valueText = this.data.noProjecto;
@@ -1316,6 +1309,7 @@
                         self._itemUnitPrice = 0;
                         self.$.precoVendaItem.value = "";
 
+                        
                         var tipoL = this.$.tipoLinha.value;
 
                         if (tipoL != null && tipoL >= 0 && tipoL <= 1) {
@@ -1327,13 +1321,20 @@
                     } else {
                         this._openToastError("Ocorreu um erro desconhecido.")
                     }
+                    
                 },
 
                 _update: function () {
-                    ////debugger;;
+                    debugger;;
 
-                    if (this.data.nifCliente != "" && this.vatRegistrationNo == "") {
+                    this.data.vatRegistrationNo = this.data.vatRegistrationNo == null ? "" : this.data.vatRegistrationNo;
+
+                    if (this.data.nifCliente != "" && this.data.vatRegistrationNo == "") {
                         this.data.vatRegistrationNo = this.data.nifCliente;
+                    }
+
+                    if (this.data.vatRegistrationNo == "" && this.$.nifCliente.value != "") {
+                        this.data.vatRegistrationNo = this.$.nifCliente.value;
                     }
 
                     this._skipMsg = false;
@@ -1454,73 +1455,89 @@
                 },     
 
                 _setThirdParty: function (e) {
-                    ////debugger;
+                   debugger;
+                    
                     if (this.data != undefined) {
                         var type = this.$.tipoGuia.value;
                         var entityId = this.$.noCliente.value;
-                        //if (entityId == "" && this.data.noCliente) {
-                        //    entityId = this.data.noCliente;
-                        //}
 
-                        if (type != null && entityId != null && entityId != "") {
+                        this.$.codEnvio.value = "";
+                        //if (type != null && entityId == "" && this.data.noCliente != "" && this.data.noCliente != null)
+                        //    entityId = this.data.noCliente;
+
+                        if ((type != null && entityId != null && entityId != "") || (type != null && entityId == "")) {
                             if (this.cbThirdParty != null) {
-                                ////debugger;;
+                                debugger;;
                                 var _third = this.cbThirdParty.find(t => t.entityType == type && t.entityId == entityId);
                                 if (_third != null) {
                                     this._setThirdPartyDetails(_third);
                                 }
                                 else {
+                                    debugger;;
                                     this.$.ajax_thirdparty_details.body = JSON.stringify({ "type": type, "entityId": entityId })
                                     this.$.ajax_thirdparty_details.generateRequest();
                                 }
                                 
-                                ////debugger;;
+                                debugger;;
                             }
                             else {
                                 this.$.ajax_thirdparty_details.body = JSON.stringify({ "type": type, "entityId": entityId })
                                 this.$.ajax_thirdparty_details.generateRequest();
                             }   
                         }
-
+                        
                         if (type != null && entityId != null && entityId == "") {
                             this._setThirdPartyDetails(null);
                         }
 
-                        if (type != null && type == 0 && entityId == "") {
+                        if (type != null && type != 0 /*&& entityId == ""*/) {
                             this.$.codEnvio.value = "";
                             this.$.codEnvio.valueText = "";
                             this.data.codEnvio = "";
                         }
-                    }   
+                    } 
+                    
                 },
 
                 _thirdPartyDetailsResponse: function (e) {
                     ////debugger;;
+                   // console.log("_thirdPartyDetailsResponse method");
+                   // this._setThirdPartyDetails(this.thirdPartyDetails);
+                    if (this.data != undefined) {
+                        var type = this.$.tipoGuia.value;
+                        var entityId = this.$.noCliente.value;
 
-                    this._setThirdPartyDetails(this.thirdPartyDetails);
+                        if (this.cbThirdParty != null) {
+                            debugger;;
+                            var _third = this.cbThirdParty.find(t => t.entityType == type && t.entityId == entityId);
+                            if (_third != null) {
+                                this._setThirdPartyDetails(_third);
+                            }
+                        }
+                    }
                    
                 },
 
                 _setThirdPartyDetails: function (details) {
-                    ////debugger;;
+                    debugger;;
                     var _self = this;
-
+                     
                     if (details != null) {
-                        ////debugger;;
-
+                        //debugger;;
+                        
                         _self.$.codEnvio.disabled = this.data.tipo != 0;
 
                         this.data.noCliente = details.entityId;
                         this.$.noCliente.value = details.entityId;
                         this.$.noCliente.valueText = details.entityId;
 
-                        this.data.nomeCliente = details.name;
-                        this.$.nomeCliente.value = details.name;
-                        this.$.nomeCliente.valueText = details.name;
+                        this.data.nomeCliente = details.name.substring(0, 30);
+                        this.$.nomeCliente.value = details.name.substring(0, 30);
+                        this.$.nomeCliente.valueText = details.name.substring(0, 30);
 
-                        this.data.nomeCliente2 = details.name2;
-                        this.$.nomeCliente2.value = details.name2;
-                        this.$.nomeCliente2.valueText = details.name2;
+                        this.data.nomeCliente2 = details.name2.substring(0, 30);
+                        this.$.nomeCliente2.value = details.name2.substring(0, 30);
+                        this.$.nomeCliente2.valueText = details.name2.substring(0, 30);
 
                         this.data.moradaCliente = details.address;
                         this.$.moradaCliente.value = details.address;
@@ -1559,9 +1576,9 @@
                             this.$.responsabilityCenter.value = details.entityId;
                             this.$.responsabilityCenter.valueText = details.entityId;
 
-                            this.data.name = details.name;
-                            this.$.name.value = details.name;
-                            this.$.name.valueText = details.name;
+                            this.data.name = details.name.substring(0, 30);
+                            this.$.name.value = details.name.substring(0, 30);
+                            this.$.name.valueText = details.name.substring(0, 30);
 
                             this.data.address = details.address;
                             this.$.address.value = details.address;
@@ -1577,7 +1594,7 @@
                         }
 
                         if (this.data.tipo == 0 && this.data.noCliente != "") {
-                            ////debugger;;
+                            debugger;;
                             this.$.page_ship_to_addresses_ajax.body = JSON.stringify({ "customerId": this.data.noCliente, "shipToCode": null });
                             this.$.page_ship_to_addresses_ajax.generateRequest();
                         }
@@ -1590,7 +1607,7 @@
 
                     }
                     else {
-                        //if (this.data != undefined)
+                        if (this.data != undefined)
                         _self.$.codEnvio.disabled = this.data.tipo != 0;
 
                         if (this.data.noCliente == "") {
@@ -1659,8 +1676,117 @@
                             this._setShipToAddressDetails(null);
                         }
                     }
+                    
                 },
 
+                _setShipToAddress: function (e) {
+                    debugger;;
+                    
+                    if (this.data != undefined) {
+                        var custNo = this.$.noCliente.value;
+                        var shipCode = this.$.codEnvio.value;
+
+                        if (this.$.tipoGuia.value == 0 && custNo != "" && shipCode != "") {
+                            
+                            if (this.shipToAddressesList != null) {
+                                var _shipTo = this.shipToAddressesList.find(s => s.customer_No == custNo && s.code == shipCode);
+
+                                this._setShipToAddressDetails(_shipTo);
+                            } else {
+                                this.$.page_ship_to_addresses_ajax.body = JSON.stringify({ "customerId": custNo, "shipToCode": shipCode });
+                                this.$.page_ship_to_addresses_ajax.generateRequest();
+                            }
+                        }
+
+                        if (this.$.tipoGuia.value == 0 && shipCode == "") {
+                            this._setShipToAddressDetails(null);
+                        }
+                    }
+                    
+                },
+
+                _shipToAddressesResponse: function (e) {
+                    debugger;;
+                    if (this.$.tipoGuia.value == 0 && this.$.noCliente.value != "" && this.$.codEnvio.value != "") {
+                        var custNo = this.$.noCliente.value;
+                        var shipCode = this.$.codEnvio.value;
+                        if (this.shipToAddressesList != null) {
+                            var _shipTo = this.shipToAddressesList.find(s => s.customer_No == custNo && s.code == shipCode);
+
+                            this._setShipToAddressDetails(_shipTo);
+                        }
+                    }
+
+
+                },
+
+                _setShipToAddressDetails: function (shipToDetails) {
+                    debugger;;
+                    
+                    if (shipToDetails != null) {
+                        this.data.codEnvio = shipToDetails.code;
+                        this.$.codEnvio.value = shipToDetails.code;
+                        this.$.codEnvio.valueText = shipToDetails.code;
+
+                        this.data.nomeCliente2 = shipToDetails.name2.substring(0, 30);
+                        this.$.nomeCliente2.value = shipToDetails.name2.substring(0, 30);
+                        this.$.nomeCliente2.valueText = shipToDetails.name2.substring(0, 30);
+
+                        this.data.moradaCliente = shipToDetails.address;
+                        this.$.moradaCliente.value = shipToDetails.address;
+                        this.$.moradaCliente.valueText = shipToDetails.address;
+
+                        this.data.moradaCliente2 = shipToDetails.address2;
+                        this.$.moradaCliente2.value = shipToDetails.address2;
+                        this.$.moradaCliente2.valueText = shipToDetails.address2;
+
+                        this.data.cidade = shipToDetails.city;
+                        this.$.cidade.value = shipToDetails.city;
+                        this.$.cidade.valueText = shipToDetails.city;
+
+                        this.data.codPostal = shipToDetails.postCode;
+                        this.$.codPostal.value = shipToDetails.postCode;
+                        this.$.codPostal.valueText = shipToDetails.postCode;
+
+                        this.data.localDescarga = shipToDetails.address;
+                        this.$.localDescarga.value = shipToDetails.address;
+                        this.$.localDescarga.valueText = shipToDetails.address;
+
+                        this.data.telefone = shipToDetails.phoneNo;
+                    }
+                    else {
+                        this.data.codEnvio = "";
+                        this.$.codEnvio.value = "";
+                        this.$.codEnvio.valueText = "";
+
+                        this.data.nomeCliente2 = "";
+                        this.$.nomeCliente2.value = "";
+                        this.$.nomeCliente2.valueText = "";
+
+                        this.data.moradaCliente = "";
+                        this.$.moradaCliente.value = "";
+                        this.$.moradaCliente.valueText = "";
+
+                        this.data.moradaCliente2 = "";
+                        this.$.moradaCliente2.value = "";
+                        this.$.moradaCliente2.valueText = "";
+
+                        this.data.cidade = "";
+                        this.$.cidade.value = "";
+                        this.$.cidade.valueText = "";
+
+                        this.data.codPostal = "";
+                        this.$.codPostal.value = "";
+                        this.$.codPostal.valueText = "";
+
+                        this.data.localDescarga = "";
+                        this.$.localDescarga.value = "";
+                        this.$.localDescarga.valueText = "";
+
+                        this.data.telefone = "";
+                    }
+                    
+                },
                 _dataGuiaChanged: function (e) {
                     ////debugger;;
                     this.$.dataSaida.min = this.$.dataGuia.value;
@@ -1744,100 +1870,7 @@
                     }
                 },
 
-                _setShipToAddress: function (e) {
-                    ////debugger;;
-                    if (this.data != undefined) {
-                        var custNo = this.$.noCliente.value;
-                        var shipCode = this.$.codEnvio.value;
-
-                        if (this.$.tipoGuia.value == 0 && custNo != "" && shipCode != "") {
-                            
-                            if (this.shipToAddressesList != null) {
-                                var _shipTo = this.shipToAddressesList.find(s => s.customer_No == custNo && s.code == shipCode);
-
-                                this._setShipToAddressDetails(_shipTo);
-                            } else {
-                                this.$.page_ship_to_addresses_ajax.body = JSON.stringify({ "customerId": custNo, "shipToCode": shipCode });
-                                this.$.page_ship_to_addresses_ajax.generateRequest();
-                            }
-                        }
-                    }
-                    
-                },
-
-                _shipToAddressesResponse: function (e) {
-                    ////debugger;;
-                    if (this.$.tipoGuia.value == 0 && this.$.noCliente.value != "" && this.$.codEnvio.value != "") {
-                        var custNo = this.$.noCliente.value;
-                        var shipCode = this.$.codEnvio.value;
-                        if (this.shipToAddressesList != null) {
-                            var _shipTo = this.shipToAddressesList.find(s => s.customer_No == custNo && s.code == shipCode);
-
-                            this._setShipToAddressDetails(_shipTo);
-                        } 
-                    }
-                
-                    
-                },
-
-                _setShipToAddressDetails: function (shipToDetails) {
-                    ////debugger;;
-
-                    if (shipToDetails != null) {
-                        this.data.codEnvio = shipToDetails.code;
-                        this.$.codEnvio.value = shipToDetails.code;
-                        this.$.codEnvio.valueText = shipToDetails.code;
-
-                        this.data.moradaCliente = shipToDetails.address;
-                        this.$.moradaCliente.value = shipToDetails.address;
-                        this.$.moradaCliente.valueText = shipToDetails.address;
-
-                        this.data.moradaCliente2 = shipToDetails.address2;
-                        this.$.moradaCliente2.value = shipToDetails.address2;
-                        this.$.moradaCliente2.valueText = shipToDetails.address2;
-
-                        this.data.cidade = shipToDetails.city;
-                        this.$.cidade.value = shipToDetails.city;
-                        this.$.cidade.valueText = shipToDetails.city;
-
-                        this.data.codPostal = shipToDetails.postCode;
-                        this.$.codPostal.value = shipToDetails.postCode;
-                        this.$.codPostal.valueText = shipToDetails.postCode;
-
-                        this.data.localDescarga = shipToDetails.address;
-                        this.$.localDescarga.value = shipToDetails.address;
-                        this.$.localDescarga.valueText = shipToDetails.address;
-
-                        this.data.telefone = shipToDetails.phoneNo;
-                    }
-                    else {
-                        this.data.codEnvio = "";
-                        this.$.codEnvio.value = "";
-                        this.$.codEnvio.valueText = "";
-
-                        this.data.moradaCliente = "";
-                        this.$.moradaCliente.value = "";
-                        this.$.moradaCliente.valueText = "";
-
-                        this.data.moradaCliente2 = "";
-                        this.$.moradaCliente2.value = "";
-                        this.$.moradaCliente2.valueText = "";
-
-                        this.data.cidade = "";
-                        this.$.cidade.value = "";
-                        this.$.cidade.valueText = "";
-
-                        this.data.codPostal = "";
-                        this.$.codPostal.value = "";
-                        this.$.codPostal.valueText = "";
-
-                        this.data.localDescarga = "";
-                        this.$.localDescarga.value = "";
-                        this.$.localDescarga.valueText = "";
-
-                        this.data.telefone = "";
-                    }
-                },
+               
 
                 _onTipoLinhaChanged: function (e) {
                     ////debugger;;
@@ -2232,32 +2265,6 @@
                     this.$.selectPostCode.open();
                 },
 
-                //_usePostCode: function (e) {
-                //    //debugger;;
-                //    var postC = e.model.item.postCode;
-
-                //    if (postC != null) {
-                //        if (this.postCodeFieldCall === 100) {
-                //            this.data.codPostal = postC;
-                //            this.$.codPostal.value = postC;
-                //            this.$.codPostal.valueText = postC;
-                //        }
-
-                //        if (this.postCodeFieldCall === 200) {
-                //            this.data.postCode = postC;
-                //            this.$.postCode.value = postC;
-                //            this.$.postCode.valueText = postC;
-                //        }
-
-                //        if (this.postCodeFieldCall === 300) {
-                //            this.data.codPostalDescarga = postC;
-                //            this.$.codPostalDescarga.value = postC;
-                //            this.$.codPostalDescarga.valueText = postC;
-                //        }
-                //    }
-
-                //    this.postCodeFieldCall = -1;
-                //},
 
                 _copyLines: function (e) {
                     this.$.ajax_requisitions.generateRequest();

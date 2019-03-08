@@ -312,8 +312,11 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult UpdateGuia([FromBody] GuiaTransporteNavViewModel data)
         {
+            if (data.NifCliente != "" && data.VATRegistrationNo == "")
+                data.VATRegistrationNo = data.NifCliente;
+
             data.CastDateTimeStringPropertiesToDateTime();
-            
+                                          
             bool result = DBNAV2017GuiasTransporte.UpdateGuiaTransporte(data);
             return Json(result);
         }
