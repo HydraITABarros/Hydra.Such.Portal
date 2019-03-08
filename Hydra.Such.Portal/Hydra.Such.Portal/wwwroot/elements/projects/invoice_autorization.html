@@ -203,12 +203,20 @@
                    content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/Projetos/UpdateProjectMovements"
-               last-response="{{UpdateResponse}}"
-               method="post"
-               handle-as="json"
-               id="updatelines_ajax"
-               on-response="_updateLinesResponse"
-               content-type="application/json">
+                   last-response="{{UpdateResponse}}"
+                   method="post"
+                   handle-as="json"
+                   id="updatelines_ajax"
+                   on-response="_updateLinesResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Projetos/UpdateProjectMovements"
+                   last-response="{{UpdateResponse}}"
+                   method="post"
+                   handle-as="json"
+                   id="updatelinesSelecionada_ajax"
+                   content-type="application/json">
         </iron-ajax>
 
         <iron-ajax url="/Projetos/AuthorizeProjectMovements"
@@ -354,6 +362,7 @@
                                                 <input aria-label="Selecionar Todos" type="checkbox" disabled="[[!_billable]]" on-click="_invert" checked="[[_isChecked(inverted, indeterminate)]]" indeterminate="[[indeterminate]]">
                                             </template>
                                             <template>
+                                                <!--<input aria-label="Selecionar" type="checkbox" checked="{{item.selecionada}}" on-change="_selectItem" checked="[[_isSelected(inverted, selected)]]">-->
                                                 <input aria-label="Selecionar" type="checkbox" on-change="_selectItem" checked="[[_isSelected(inverted, selected)]]">
                                             </template>
                                         </vaadin-grid-column>
@@ -531,7 +540,7 @@
                                                 <vaadin-text-field rows="5" value="{{item.externalGuideNo}}" on-blur="_updateLinhaMovimento"> </vaadin-text-field>
                                             </template>
                                         </vaadin-grid-column>
-                                        
+
                                         <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.consumptionDate.hidden }}">
                                             <template class="header">
                                                 <vaadin-grid-sorter path="consumptionDate">Data Consumo Guia</vaadin-grid-sorter>
@@ -561,7 +570,7 @@
                                                 <span slot="suffix">{{item.adjustedDocument}}</span>
                                             </template>
                                         </vaadin-grid-column>
-                                        
+
                                         <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.adjustedDocumentData.hidden }}">
                                             <template class="header">
                                                 <vaadin-grid-sorter path="adjustedDocumentData">Data Consumo Guia Corrigida</vaadin-grid-sorter>
@@ -571,7 +580,7 @@
                                                 <span slot="suffix">{{item.adjustedDocumentData}}</span>
                                             </template>
                                         </vaadin-grid-column>
-                                        
+
                                         <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.residueFinalDestinyCode.hidden }}">
                                             <template class="header">
                                                 <vaadin-grid-sorter path="residueFinalDestinyCode">Destino Final Residuos</vaadin-grid-sorter>
@@ -581,7 +590,7 @@
                                                 <span slot="suffix">{{item.residueFinalDestinyCode}}</span>
                                             </template>
                                         </vaadin-grid-column>
-                                        
+
                                         <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.mealType.hidden }}">
                                             <template class="header">
                                                 <vaadin-grid-sorter path="mealType">Tipo Refeição</vaadin-grid-sorter>
@@ -710,6 +719,16 @@
                                             </template>
                                         </vaadin-grid-column>
 
+                                        <vaadin-grid-column width="140px" resizable hidden$="{{ _columns.serviceGroupCode.hidden }}">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="serviceGroupCode">Cód. Grupo Serviço</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="serviceGroupCode" />
+                                            </template>
+                                            <template>
+                                                {{item.serviceGroupCode}}
+                                            </template>
+                                        </vaadin-grid-column>
+
                                         <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.createDateText.hidden }}">
                                             <template class="header">
                                                 <vaadin-grid-sorter path="createDateText">Data Criação</vaadin-grid-sorter>
@@ -743,7 +762,7 @@
                                 </div>
                                 <div class="marginSpace">
                                     <!--<paper-button raised id="btnSave" class="btnSave" on-tap="_updateMovements" disabled="{{ !_permissions.update }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>-->
-                                    
+
 
                                 </div>
                             </div>
@@ -1078,6 +1097,18 @@
                     else {
                         this.openToastError("Não foi possivel obter os movimentos.");
                     }
+
+                    var total = 0;
+                    var items = this.$.grdProjectMovements.items;
+                    if (items.length > 0) {
+                        for (var i = 0; i < items.length; i++) {
+                            if (items[i].totalPrice != null && items[i].selecionada == true) {
+                                total = total + items[i].totalPrice;
+                                this.$.grdProjectMovements.selectItem(items[i]);
+                            }
+                        }
+                    }
+                    this._totalToAuthorize = parseFloat(total).toFixed(2);
                 },
                 GetProjectResponse: function (e) {
                     if (e.detail.status === 200) {
@@ -1225,7 +1256,6 @@
                     return indeterminate || inverted;
                 },
                 _selectItem: function (e) {
-                    //debugger;
                     if (e.target.checked /*=== this.inverted*/) {
                         if (e.model.item.quantity != null && e.model.item.quantity != 0) {
                             //if (e.model.item.unitPrice != null && e.model.item.unitPrice > 0) {
@@ -1233,6 +1263,11 @@
                                     this._totalToAuthorize = (parseFloat(this._totalToAuthorize) + parseFloat(e.model.item.totalPrice)).toFixed(2);
                                 e.model.item.autorizatedInvoice2 = true;
                                 this.$.grdProjectMovements.selectItem(e.model.item);
+
+                                //AMARO
+                                //e.model.item.selecionada = true;
+                                //this.$.updatelinesSelecionada_ajax.body = JSON.stringify(e.model.item);
+                                //this.$.updatelinesSelecionada_ajax.generateRequest();
                             //}
                             //else {
                             //    this.openToastError("O valor do Preço unitário tem que ser superior a 0.");
@@ -1248,6 +1283,11 @@
                             this._totalToAuthorize = (parseFloat(this._totalToAuthorize) - parseFloat(e.model.item.totalPrice)).toFixed(2);
                         e.model.item.autorizatedInvoice2 = false;
                         this.$.grdProjectMovements.deselectItem(e.model.item);
+
+                        //AMARO
+                        //e.model.item.selecionada = false;
+                        //this.$.updatelinesSelecionada_ajax.body = JSON.stringify(e.model.item);
+                        //this.$.updatelinesSelecionada_ajax.generateRequest();
                     }
                     this.indeterminate = this.$.grdProjectMovements.selectedItems.length > 0;
                 },
@@ -1302,6 +1342,7 @@
                         "functionalAreaCode": { hidden: false, label: "Código Área" },
                         "responsabilityCenterCode": { hidden: false, label: "Código Centro Responsabilidade" },
                         "commitmentNumber": { hidden: false, label: "Nº Compromisso" },
+                        "serviceGroupCode": { hidden: false, label: "Cód. Grupo Serviço" },
                         "createDateText": { hidden: false, label: "Data Criação" },
                         "createHourText": { hidden: false, label: "Hora Criação" }
                     };
@@ -1416,13 +1457,11 @@
                     this.$.grdProjectMovements.clearCache();
                 },
                 _updateLinhaMovimento: function (e) {
-                    debugger;
                     this.$.updatelines_ajax.body = JSON.stringify(e.model.item);
                     this.$.updatelines_ajax.generateRequest();
                     this.$.grdProjectMovements.clearCache();
                 },
                 _updateLinesResponse: function () {
-                    debugger;
                     if (this.UpdateResponse.eReasonCode == 1) {
                         this.$.grdProjectMovements.selectedItems = [];
                         this.$.movements_databound_ajax.body = JSON.stringify({ "projectNo": this._projectno, "billable": this._billable });

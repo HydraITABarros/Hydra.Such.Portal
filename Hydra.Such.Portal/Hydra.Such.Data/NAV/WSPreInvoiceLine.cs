@@ -108,8 +108,8 @@ namespace Hydra.Such.Data.NAV
                    TypeSpecified = true,
                    
                    Type = ConvertToSaleslineType(x.Tipo.Replace(" ", String.Empty)),
-                   Description = x.Descrição.Length > 50 ? x.Descrição.Substring(0, 50) : x.Descrição,
-                   Description_2 = x.Descricao2.Length > 50 ? x.Descricao2.Substring(0, 50) : x.Descricao2,
+                   Description = x.Descrição != null && x.Descrição.Length > 50 ? x.Descrição.Substring(0, 50) : !string.IsNullOrEmpty(x.Descrição) ? x.Descrição : "",
+                   Description_2 = x.Descricao2 != null && x.Descricao2.Length > 50 ? x.Descricao2.Substring(0, 50) : !string.IsNullOrEmpty(x.Descricao2) ? x.Descricao2 : "",
                                             //Quantity = x.Quantidade.Value,
                    Quantity = x.Quantidade.HasValue ? x.Quantidade.Value : 0,
                    QuantitySpecified = true,
@@ -168,7 +168,13 @@ namespace Hydra.Such.Data.NAV
                 line.QuantitySpecified = true;
                 line.Quantity = x.Quantity.HasValue ? x.Quantity.Value : 0;
                 line.TypeSpecified = true;
+
+
                 line.Unit_of_Measure = x.MeasurementUnitCode;
+
+
+
+
                 line.Location_Code = x.LocationCode;
                 line.Unit_Price = x.UnitPrice.HasValue ? x.UnitPrice.Value : 0;
                 line.Unit_PriceSpecified = true;
@@ -184,11 +190,11 @@ namespace Hydra.Such.Data.NAV
                 line.Tipo_Refeicao = x.MealType.HasValue ? x.MealType.Value.ToString() : string.Empty;// (refeicao!=null) ? refeicao.Código.ToString() : "";
                 line.Gen_Prod_Posting_Group = (refeicao != null) ? refeicao.GrupoContabProduto : x.ProjectContabGroup;
                 line.Cod_Serv_Cliente = x.ServiceClientCode;
-
                 line.Consumption_Date = !string.IsNullOrEmpty(x.ConsumptionDate) ? DateTime.Parse(x.ConsumptionDate) : DateTime.MinValue;
                 line.Consumption_DateSpecified = !string.IsNullOrEmpty(x.ConsumptionDate);
 
-                line.Grupo_Serviço = x.ServiceGroupCode;
+                line.Grupo_Serviço = !string.IsNullOrEmpty(x.ServiceGroupCode) ? x.ServiceGroupCode : "";
+                line.Service_Group_Description = !string.IsNullOrEmpty(x.ServiceGroupCode) && DBServices.GetById(x.ServiceGroupCode) != null ? DBServices.GetById(x.ServiceGroupCode).Descrição : "";
                 line.Nº_Guia_Externa = x.ExternalGuideNo;
                 line.Nº_Guia_Resíduos_GAR = x.WasteGuideNo_GAR;
                 line.RegionCode20 = x.RegionCode;
@@ -198,7 +204,6 @@ namespace Hydra.Such.Data.NAV
 
                 line.Data_Registo_Diario = !string.IsNullOrEmpty(x.ConsumptionDate) ? DateTime.Parse(x.ConsumptionDate) : DateTime.MinValue;
                 line.Data_Registo_DiarioSpecified = !string.IsNullOrEmpty(x.ConsumptionDate);
-
 
                 if (x.ResourceType.HasValue)
                 {

@@ -83,6 +83,8 @@ namespace Hydra.Such.Data.ViewModel.FH
         public bool? Eliminada { get; set; }
 
         public bool MostrarBotoes { get; set; }
+        public bool MostrarReportAjCustosRH { get; set; }
+        
 
         public Object Colunas { get; set; }
 

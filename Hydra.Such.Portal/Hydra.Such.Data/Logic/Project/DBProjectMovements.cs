@@ -497,6 +497,7 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
                 projMovement.ClientName = DBNAV2017Clients.GetClientNameByNo(item.FaturaANºCliente, navDatabaseName, navCompanyName);
                 projMovement.ClientVATReg = DBNAV2017Clients.GetClientVATByNo(item.FaturaANºCliente, navDatabaseName, navCompanyName);
                 projMovement.CriarMovNav2017 = item.CriarMovNav2017;
+                projMovement.Selecionada = item.Selecionada;
                 return projMovement;
             }
             return null;
@@ -583,6 +584,7 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
                 projMovement.GrupoFatura = item.InvoiceGroup;
                 projMovement.GrupoFaturaDescricao = item.InvoiceGroupDescription;
                 projMovement.CriarMovNav2017 = item.CriarMovNav2017;
+                projMovement.Selecionada = item.Selecionada;
 
                 return projMovement;
             }

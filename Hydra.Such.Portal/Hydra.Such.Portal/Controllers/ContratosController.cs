@@ -1381,7 +1381,7 @@ namespace Hydra.Such.Portal.Controllers
                             CLine.DataFimVersão = x.VersionEndDate != null && x.VersionStartDate != "" ? DateTime.Parse(x.VersionEndDate) : (DateTime?)null;
                             CLine.NºResponsável = x.ResponsibleNo;
                             CLine.CódServiçoCliente = x.ServiceClientNo;
-                            CLine.GrupoFatura = x.InvoiceGroup;
+                            CLine.GrupoFatura = x.InvoiceGroup != null ? x.InvoiceGroup : 0;
                             CLine.CriaContrato = x.CreateContract;
                             CLine.NºProjeto = x.ProjectNo;
                             CLine.UtilizadorModificação = User.Identity.Name;
@@ -2182,12 +2182,26 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             if (item.ÚltimaDataFatura == null)
                             {
-                                Problema += " Falta Nota Encomenda";
+                                //AMARO 04/03/2019
+                                item.ÚltimaDataFatura = nextInvoiceDate;
+                                List<RequisiçõesClienteContrato> ListaContratos = DBContractClientRequisition.GetByContract(item.NºDeContrato);
+                                RequisiçõesClienteContrato Reqcontract = ListaContratos.Find(x => x.GrupoFatura == contractLine.GrupoFatura
+                                    && x.DataInícioCompromisso <= item.ÚltimaDataFatura
+                                    && x.DataFimCompromisso >= item.ÚltimaDataFatura);
+                                if (Reqcontract == null)
+                                {
+                                    Problema += " Falta Nota Encomenda";
+                                }
+                                
+                                //CÓDIGO ORIGINAL
+                                //Problema += " Falta Nota Encomenda";
                             }
                             else
                             {
                                 List<RequisiçõesClienteContrato> ListaContratos = DBContractClientRequisition.GetByContract(item.NºDeContrato);
-                                RequisiçõesClienteContrato Reqcontract = ListaContratos.Find(x => x.GrupoFatura == contractLine.GrupoFatura && x.DataInícioCompromisso <= item.ÚltimaDataFatura && x.DataFimCompromisso >= item.ÚltimaDataFatura);
+                                RequisiçõesClienteContrato Reqcontract = ListaContratos.Find(x => x.GrupoFatura == contractLine.GrupoFatura
+                                    && x.DataInícioCompromisso <= item.ÚltimaDataFatura
+                                    && x.DataFimCompromisso >= item.ÚltimaDataFatura);
                                 if(Reqcontract == null ) {
                                     Problema += " Falta Nota Encomenda";
                                 }
@@ -2214,7 +2228,6 @@ namespace Hydra.Such.Portal.Controllers
                             Situação=Problema,
                             DataHoraCriação = DateTime.Now,
                             UtilizadorCriação = User.Identity.Name
-                            
                         };
                         try
                         {
@@ -2236,7 +2249,7 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         NºContrato = contractLine.NºContrato,
                         NºProjeto = contractLine.NºProjeto,
-                        GrupoFatura = contractLine.GrupoFatura == null ? -1 : contractLine.GrupoFatura.Value,
+                        GrupoFatura = contractLine.GrupoFatura == null ? 0 : contractLine.GrupoFatura.Value, //06-03-2019 Antes estava -1
                         NºLinha = contractLine.NºLinha,
                         Tipo = contractLine.Tipo.ToString(),
                         Código = contractLine.Código,
@@ -2282,7 +2295,8 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     foreach (AutorizarFaturaçãoContratos item in contract_List)
                     {
-                        contractList.Add(item);
+                        if (item.NºDeFaturasAEmitir > 0)
+                            contractList.Add(item);
                     }
                 }
             }
@@ -2488,6 +2502,39 @@ namespace Hydra.Such.Portal.Controllers
                         createProject.Wait();
                     }
                     item.UtilizadorCriação = User.Identity.Name;
+
+
+
+                    //AMARO TEXTO FATURA
+                    string obs = "";
+                    List<TextoFaturaContrato> ListTextoFatura = DBContractInvoiceText.GetByContractAndGrupoFatura(contractLine.NºDeContrato, item.GrupoFatura);
+
+                    if (ListTextoFatura != null && ListTextoFatura.Count() > 0)
+                    {
+
+                        foreach (TextoFaturaContrato texts in ListTextoFatura)
+                        {
+                            obs += texts.TextoFatura;
+                        }
+                    }
+                    if (!string.IsNullOrEmpty(obs))
+                    {
+                        item.Descrição = obs;
+                    }
+                    else
+                    {
+                        item.Descrição = contractLine.TextoFatura;
+                    }
+                    obs = "";
+
+                    item.NºContrato = contractLine.NºDeContrato;
+                    item.NoRequisicaoDoCliente = contractLine.NºRequisiçãoDoCliente;
+                    item.NoCompromisso = contractLine.NºCompromisso;
+                    item.CódigoRegião = contractLine.CódigoRegião;
+                    item.CódigoÁreaFuncional = contractLine.CódigoÁreaFuncional;
+                    item.CódigoCentroResponsabilidade = contractLine.CódigoCentroResponsabilidade;
+                    item.DataRececaoRequisicao = contractLine.DataReceçãoRequisição;
+
                     Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreateContractInvoice(item, _configws, ContractInvoicePeriod, InvoiceBorrowed);
                     InvoiceHeader.Wait();
 
@@ -2876,6 +2923,7 @@ namespace Hydra.Such.Portal.Controllers
                     //DBContracts.Update(DBContracts.ParseToDB(Contract));
 
                     //CREATE SALES HEADER
+                    //AMARO
                     NAVSalesHeaderViewModel PreInvoiceToCreate = new NAVSalesHeaderViewModel();
                     PreInvoiceToCreate.PeriododeFact_Contrato = dataInicio.ToString("dd/MM/yyyy") + " a " + dataFim.ToString("dd/MM/yyyy");
                     string mes = dataFim.ToString("MMMM");
@@ -2923,7 +2971,14 @@ namespace Hydra.Such.Portal.Controllers
                                     obs += texts.InvoiceText;
                                 }
                             }
-                            PreInvoiceToCreate.Observacoes = obs;
+                            if (!string.IsNullOrEmpty(obs))
+                            {
+                                PreInvoiceToCreate.Observacoes = obs;
+                            }
+                            else
+                            {
+                                PreInvoiceToCreate.Observacoes = Contract.TextoFatura;
+                            }
                             obs = "";
 
 
@@ -2944,7 +2999,7 @@ namespace Hydra.Such.Portal.Controllers
                                         PreInvoiceLinesToCreate.Tipo = line.Type.Value.ToString();
                                         PreInvoiceLinesToCreate.Código = line.Code;
                                         PreInvoiceLinesToCreate.Descrição = line.Description;
-                                        PreInvoiceLinesToCreate.Descricao2 = line.Description2.Length > 50 ?  line.Description2.Substring(1, 50) : line.Description2;
+                                        PreInvoiceLinesToCreate.Descricao2 = !string.IsNullOrEmpty(line.Description2) && line.Description2.Length > 50 ?  line.Description2.Substring(1, 50) : !string.IsNullOrEmpty(line.Description2) ? line.Description2 : "";
                                         PreInvoiceLinesToCreate.CódUnidadeMedida = line.CodeMeasureUnit;
                                         PreInvoiceLinesToCreate.CódigoÁreaFuncional = line.CodeFunctionalArea;
                                         PreInvoiceLinesToCreate.CódigoRegião = line.CodeRegion;
@@ -3006,7 +3061,14 @@ namespace Hydra.Such.Portal.Controllers
                                 }
                             }
 
-                            PreInvoiceToCreate.Observacoes = obs;
+                            if (!string.IsNullOrEmpty(obs))
+                            {
+                                PreInvoiceToCreate.Observacoes = obs;
+                            }
+                            else
+                            {
+                                PreInvoiceToCreate.Observacoes = Contract.TextoFatura;
+                            }
                             obs = "";
 
 
@@ -3026,7 +3088,7 @@ namespace Hydra.Such.Portal.Controllers
                                         PreInvoiceLinesToCreate.Tipo = line.Type.Value.ToString();
                                         PreInvoiceLinesToCreate.Código = line.Code;
                                         PreInvoiceLinesToCreate.Descrição = line.Description;
-                                        PreInvoiceLinesToCreate.Descricao2 = line.Description2.Substring(0, 50);
+                                        PreInvoiceLinesToCreate.Descricao2 = !string.IsNullOrEmpty(line.Description2) && line.Description2.Length > 50 ? line.Description2.Substring(1, 50) : string.IsNullOrEmpty(line.Description2) ? "" : line.Description2;
                                         PreInvoiceLinesToCreate.CódUnidadeMedida = line.CodeMeasureUnit;
                                         PreInvoiceLinesToCreate.CódigoÁreaFuncional = line.CodeFunctionalArea;
                                         PreInvoiceLinesToCreate.CódigoRegião = line.CodeRegion;

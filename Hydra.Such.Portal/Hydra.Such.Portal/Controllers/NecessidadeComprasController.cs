@@ -304,6 +304,18 @@ namespace Hydra.Such.Portal.Controllers
             {
                 try
                 {
+                    UnidadesProdutivas UP = DBProductivityUnits.GetById((int)dp.ProductionUnitNo);
+                    if (UP != null && dp.Tipo == 1)
+                    {
+                        dp.ProjectNo = UP.ProjetoCozinha;
+                    }
+                    else
+                    {
+                        if (UP != null && dp.Tipo == 2)
+                        {
+                            dp.ProjectNo = UP.ProjetoMatSubsidiárias;
+                        }
+                    }
                     dp.CreateUser = User.Identity.Name;
                     var newdp = DBShoppingNecessity.Create(dp.ParseToDB()).ParseToViewModel();
                     if (newdp == null)
@@ -464,10 +476,16 @@ namespace Hydra.Such.Portal.Controllers
 
                             }
 
+                            string projeto = "";
+                            if (tipo == 1)
+                                projeto = prodUnit.ProjectKitchen;
+                            if (tipo == 2)
+                                projeto = prodUnit.ProjectSubsidiaries;
+
                             DiárioRequisiçãoUnidProdutiva newdp = new DiárioRequisiçãoUnidProdutiva();
                             newdp.NºUnidadeProdutiva = prodUnit.ProductivityUnitNo;
                             newdp.CodigoLocalização = prodUnit.Warehouse;
-                            newdp.NºProjeto = prodUnit.ProjectKitchen;
+                            newdp.NºProjeto = projeto;
                             newdp.DescriçãoUnidadeProduto = prodUnit.Description;
                             newdp.Quantidade = 0;
                             newdp.DataReceçãoEsperada = expectedReceipDate.CompareTo(DateTime.MinValue) > 0 ? expectedReceipDate : (DateTime?)null;
@@ -580,6 +598,13 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     UnidadesProdutivas productivityUnit = DBProductivityUnits.GetById(productivityUnitId.Value);
 
+                    int Tipo = (int)data.FirstOrDefault().Tipo;
+                    string Projeto = "";
+                    if (Tipo == 1)
+                        Projeto = productivityUnit.ProjetoCozinha;
+                    if (Tipo == 2)
+                        Projeto = productivityUnit.ProjetoMatSubsidiárias;
+
                     if (productivityUnit != null)
                     {
                         RequisitionViewModel req = new RequisitionViewModel();
@@ -592,7 +617,7 @@ namespace Hydra.Such.Portal.Controllers
                         req.RequestNutrition = true;
                         req.RequisitionDate = DateTime.Now.ToString();
                         req.ReceivedDate = expextedDate != DateTime.MinValue ? expextedDate.ToString() : string.Empty;
-                        req.ProjectNo = productivityUnit.ProjetoCozinha;
+                        req.ProjectNo = Projeto;
                         req.CreateUser = User.Identity.Name;
                         req.CreateDate = DateTime.Now.ToString();
                         req.State = RequisitionStates.Pending;
@@ -620,7 +645,7 @@ namespace Hydra.Such.Portal.Controllers
                                     CenterResponsibilityCode = req.CenterResponsibilityCode,
                                     RegionCode = req.RegionCode,
                                     CreateUser = User.Identity.Name,
-                                    ProjectNo = productivityUnit.ProjetoCozinha,
+                                    ProjectNo = Projeto,
                                     LocalCode = productivityUnit.Armazém,
                                     VATProductPostingGroup = string.IsNullOrEmpty(item.GrupoRegistoIvaProduto) ? productsInReq.Where(x => x.Code == item.ProductNo).FirstOrDefault().VATProductPostingGroup : item.GrupoRegistoIvaProduto,
                                     CriarNotaEncomenda = true

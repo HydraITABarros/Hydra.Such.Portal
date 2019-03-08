@@ -447,6 +447,10 @@
                                         <div class="col-sm-3">
                                             <vaadin-text-field id="txtStatus" name="txtStatus" label="Estado" value="[[stateDescription]]" disabled></vaadin-text-field>
                                         </div>
+
+                                        <div class="col-sm-2 ">
+                                            <vaadin-checkbox id="chkAttachment" checked="{{Requisition.attachment}}" disabled>Anexo(s)</vaadin-checkbox>
+                                        </div>
                                     </div>
 
                                     <div class="row break_clear">
@@ -454,8 +458,8 @@
                                             <such-textarea rows="5" value="{{Requisition.comments}}" id="Notes" name="Notes" label="Observações" disabled="{{ !_permissions.update }}"> </such-textarea>
                                         </div>
 
-                                        <div class="col-sm-2 ">
-                                            <vaadin-checkbox id="chkAttachment" checked="{{Requisition.attachment}}" disabled>Anexo(s)</vaadin-checkbox>
+                                        <div class="col-sm-6 ">
+                                            <such-textarea rows="5" value="{{Requisition.rejeicaoMotivo}}" id="txtRejeicaoMotivo" name="txtRejeicaoMotivo" label="Motivo de Rejeição" hidden disabled> </such-textarea>
                                         </div>
 
                                         <div class="col-sm-3 ">
@@ -2346,6 +2350,13 @@
                     this._estadoPendente = false;
                     if (this.Requisition.state == 0) {
                         this._estadoPendente = true;
+                    }
+
+                    if (this.$.txtRejeicaoMotivo.value == "" || this.$.txtRejeicaoMotivo.value == null) {
+                        this.$.txtRejeicaoMotivo.hidden = true;
+                    }
+                    else {
+                        this.$.txtRejeicaoMotivo.hidden = false;
                     }
                 },
 

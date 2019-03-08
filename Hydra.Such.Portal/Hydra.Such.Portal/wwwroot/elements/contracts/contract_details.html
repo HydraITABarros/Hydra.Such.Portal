@@ -251,7 +251,7 @@
                    method="post"
                    handle-as="json"
                    id="removeFromHistoric_ajax"
-                   on-response="_clResponseProcessor"
+                   on-response="_clResponseProcessorHistoric"
                    content-type="application/json"></iron-ajax>
 
         <template is="dom-if" if="{{ !_isCreate }}">
@@ -1165,7 +1165,7 @@
                                         </such-selectbox>
                                     </div>
                                     <div class="col-lg-2">
-                                        <vaadin-combo-box items="[[CBInvoiceGroups]]" id="_CLInvoiceGroup" name="_CLInvoiceGroup" item-value-path="id" item-label-path="value" value="{{_CLInvoiceGroup}}" label="Grupo Fatura" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório">
+                                        <vaadin-combo-box items="[[CBInvoiceGroups]]" id="_CLInvoiceGroup" name="_CLInvoiceGroup" item-value-path="id" item-label-path="value" value="{{_CLInvoiceGroup}}" label="Grupo Fatura" disabled="{{ _lockFields }}">
                                             <template>
                                                 <paper-icon-item>
                                                     <paper-item-body two-line>
@@ -1355,7 +1355,8 @@
                                             </vaadin-combo-box>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
-                                            [[ _clFormatRegion(item.codeRegion) ]]
+                                            <!--[[ _clFormatRegion(item.codeRegion) ]]-->
+                                            {{item.codeRegion}}
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
@@ -1379,7 +1380,8 @@
                                             </vaadin-combo-box>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
-                                            [[ _clFormatFunctionalArea(item.codeFunctionalArea) ]]
+                                            <!--[[ _clFormatFunctionalArea(item.codeFunctionalArea) ]]-->
+                                            {{item.codeFunctionalArea}}
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
@@ -1403,7 +1405,8 @@
                                             </vaadin-combo-box>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
-                                            [[ _clFormatResponsabilityCenter(item.codeResponsabilityCenter) ]]
+                                            <!--[[ _clFormatResponsabilityCenter(item.codeResponsabilityCenter) ]]-->
+                                            {{item.codeResponsabilityCenter}}
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
@@ -3204,7 +3207,7 @@
                         }
                     });
                 },
-                _clResponseProcessor: function (e) {
+                _clResponseProcessorHistoric: function (e) {
                     var response = this.removedHistoric;
                     if (typeof response != 'undefined') {
                         if (response.eReasonCode == 1) {

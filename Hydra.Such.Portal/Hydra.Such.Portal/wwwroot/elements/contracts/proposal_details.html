@@ -1012,7 +1012,6 @@
                                         <vaadin-grid-filter path="codeRegion" />
                                     </template>
                                     <template>
-
                                         <template is="dom-if" if="{{ item.selected }}">
                                             <vaadin-combo-box items="[[CBRegions]]" id="_CLGridRegion" name="_CLGridRegion" item-value-path="id" item-label-path="value" value="{{item.codeRegion}}" disabled="{{ !_permissions.update }}">
                                                 <template>
@@ -1026,7 +1025,8 @@
                                             </vaadin-combo-box>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
-                                            [[ _clFormatRegion(item.codeRegion) ]]
+                                            <!--[[ _clFormatRegion(item.codeRegion) ]]-->
+                                            {{item.codeRegion}}
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
@@ -1047,7 +1047,8 @@
 
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
-                                            [[ _clFormatFunctionalArea(item.codeFunctionalArea) ]]
+                                            <!--[[ _clFormatFunctionalArea(item.codeFunctionalArea) ]]-->
+                                            {{item.codeFunctionalArea}}
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
@@ -1070,7 +1071,8 @@
                                             </vaadin-combo-box>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
-                                            [[ _clFormatResponsabilityCenter(item.codeResponsabilityCenter) ]]
+                                            <!--[[ _clFormatResponsabilityCenter(item.codeResponsabilityCenter) ]]-->
+                                            {{item.codeResponsabilityCenter}}
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
@@ -1123,7 +1125,8 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <input type="date" id="_CLGridVersionStartDate" name="_CLGridVersionStartDate" value="{{item.versionStartDate}}" disabled="{{ !_permissions.update }}">
+                                            <!--<input type="date" id="_CLGridVersionStartDate" name="_CLGridVersionStartDate" value="{{item.versionStartDate}}" disabled="{{ !_permissions.update }}">-->
+                                            <vaadin-date-picker id="_CLGridVersionStartDate" name="_CLGridVersionStartDate" value="{{item.versionStartDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.versionStartDate}}
@@ -1139,7 +1142,8 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <input type="date" id="_CLGridVersionEndDate" name="_CLGridVersionEndDate" value="{{item.versionStartDate}}" disabled="{{ !_permissions.update }}">
+                                            <!--<input type="date" id="_CLGridVersionEndDate" name="_CLGridVersionEndDate" value="{{item.versionStartDate}}" disabled="{{ !_permissions.update }}">-->
+                                            <vaadin-date-picker id="_CLGridVersionEndDate" name="_CLGridVersionEndDate" value="{{item.versionEndDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
                                         </template>
 
                                         <template is="dom-if" if="{{ !item.selected }}">
@@ -2098,38 +2102,43 @@
                 //        CONTRACT LINES
                 //#################################
                 _createContractLine: function () {
-                    this.dataLines.lines.unshift({
-                        contractNo: this.data.contractNo,
-                        versionNo: this.data.versionNo,
-                        contractType: 2,
-                        //type: this._CLContractLineType,
-                        type: 2,
-                        codeMeasureUnit: this._CLMeasureUnit,
-                        codeRegion: this._CLRegion,
-                        frequency: this._CLFrequency,
-                        versionStartDate: this._CLVersionStartDate,
-                        serviceClientNo: this._CLServiceClient,
-                        code: this._CLCode,
-                        unitPrice: this._CLUnitPrice,
-                        codeFunctionalArea: this._CLFunctionalArea,
-                        interventionHours: this._CLInterventionHours,
-                        versionEndDate: this._CLVersionEndDate,
-                        invoiceGroup: this._CLInvoiceGroup,
-                        description: this._CLDescription,
-                        description2: this._CLDescription2,
-                        lineDiscount: this._CLDiscountLine,
-                        codeResponsabilityCenter: this._CLResponsabilityCenter,
-                        totalTechinicians: this._CLTotalTechnicians,
-                        responsibleNo: this._CLResponsible,
-                        createContract: this._CLCreateContract,
-                        quantity: this._CLQuantity,
-                        billable: this._CLBillable,
-                    });
-                    this.$.grid_contractlines.clearCache();
+                    if (this.data.contractNo != null && this.data.contractNo != "") {
+                        this.dataLines.lines.unshift({
+                            contractNo: this.data.contractNo,
+                            versionNo: this.data.versionNo,
+                            contractType: 2,
+                            //type: this._CLContractLineType,
+                            type: 2,
+                            codeMeasureUnit: this._CLMeasureUnit,
+                            codeRegion: this._CLRegion,
+                            frequency: this._CLFrequency,
+                            versionStartDate: this._CLVersionStartDate,
+                            serviceClientNo: this._CLServiceClient,
+                            code: this._CLCode,
+                            unitPrice: this._CLUnitPrice,
+                            codeFunctionalArea: this._CLFunctionalArea,
+                            interventionHours: this._CLInterventionHours,
+                            versionEndDate: this._CLVersionEndDate,
+                            invoiceGroup: this._CLInvoiceGroup,
+                            description: this._CLDescription,
+                            description2: this._CLDescription2,
+                            lineDiscount: this._CLDiscountLine,
+                            codeResponsabilityCenter: this._CLResponsabilityCenter,
+                            totalTechinicians: this._CLTotalTechnicians,
+                            responsibleNo: this._CLResponsible,
+                            createContract: this._CLCreateContract,
+                            quantity: this._CLQuantity,
+                            billable: this._CLBillable,
+                        });
+                        this.$.grid_contractlines.clearCache();
 
-                    this.$.contractLines_databound_ajax.url = "/Contratos/UpdateContractLines";
-                    this.$.contractLines_databound_ajax.body = JSON.stringify(this.dataLines);
-                    this.$.contractLines_databound_ajax.generateRequest();
+                        this.$.contractLines_databound_ajax.url = "/Contratos/UpdateContractLines";
+                        this.$.contractLines_databound_ajax.body = JSON.stringify(this.dataLines);
+                        this.$.contractLines_databound_ajax.generateRequest();
+                    }
+                    else {
+                        this._openToastError("Para criar a linha, primeiro tem que criar a proposta.");
+                    }
                 },
                 _updateContractLines: function () {
                     this.$.contractLines_databound_ajax.url = "/Contratos/UpdateContractLines";
@@ -2139,12 +2148,19 @@
                 _clResponseProcessor: function (data) {
                     if (data.detail.status === 200) {
                         if (!(data.detail.url.indexOf("GetContractLines") !== -1)) {
+                            if (this.dataLines.eReasonCode != 1) {
+                                this._openToastError(this.dataLines.eMessage);
+                            }
+                            else {
+                                this._openToast(this.dataLines.eMessage);
+                            }
+
                             this._CLContractLineType = "";
                             this._CLMeasureUnit._clearSelection();
                             this._CLFrequency = "";
                             this._CLServiceClient._clearSelection();
                             this._CLCode = "";
-                            this.$._CLCode._clearSelection();
+                            this._CLCode._clearSelection();
                             this._CLUnitPrice = "";
                             this._CLInterventionHours = "";
                             this._CLInvoiceGroup._clearSelection();
@@ -2163,7 +2179,6 @@
                             this._CLVersionStartDate = this.data.startData;
                             this._CLVersionEndDate = this.data.dueDate;
 
-                            this._openToast(this.dataLines.eMessage);
                         }
                     }
                 },
@@ -2398,7 +2413,7 @@
                         this.$.page_databound_ajax.generateRequest();
                     }
                     else {
-                        this._openToastError("Não foi possivel atualizar o contrato.");
+                        this._openToastError("Não foi possivel atualizar a proposta.");
                     }
                 },
                 _responseUpdateToContract: function (e) {
@@ -2408,7 +2423,7 @@
                         this.$.txtRelatedContractNo.value = this.numeration;
                     }
                     else {
-                        this._openToastError("Erro na criação da contrato.");
+                        this._openToastError("Erro na criação da proposta.");
                     }
                 },
 
@@ -2421,7 +2436,7 @@
                         var copy_request = this.$.grid_databound_ajax_proposals_details;
                         var dialogObj = this.$.dialog_proposals;
                         bootbox.confirm({
-                            message: "Tem a certeza que pretende copiar o contrato " + item.contractNo + "?",
+                            message: "Tem a certeza que pretende copiar a proposta " + item.contractNo + "?",
                             buttons: {
                                 confirm: {
                                     label: 'Sim',

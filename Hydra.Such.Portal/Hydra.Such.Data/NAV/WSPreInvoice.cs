@@ -53,7 +53,6 @@ namespace Hydra.Such.Data.NAV
                 PostingNoSeries = CUsers.NumSerieFaturas;
             }
 
-
             WSCreatePreInvoice.Create NAVCreate = new WSCreatePreInvoice.Create()
             {
                 WSPreInvoice = new WSCreatePreInvoice.WSPreInvoice() {
@@ -90,7 +89,18 @@ namespace Hydra.Such.Data.NAV
                     Posting_DateSpecified = !string.IsNullOrEmpty(preInvoiceToCreate.Posting_Date.ToString()),
                     Document_Date = !string.IsNullOrEmpty(preInvoiceToCreate.Posting_Date.ToString()) ? DateTime.Parse(preInvoiceToCreate.Posting_Date.ToString()) : DateTime.MinValue,
                     Document_DateSpecified = !string.IsNullOrEmpty(preInvoiceToCreate.Posting_Date.ToString()),
-                    External_Document_No = preInvoiceToCreate.ProjectNo
+                    External_Document_No = preInvoiceToCreate.ProjectNo,
+
+                    Ship_to_Address = preInvoiceToCreate.Ship_to_Address,
+                    Ship_to_Address_2 = preInvoiceToCreate.Ship_to_Address_2,
+                    Ship_to_City = preInvoiceToCreate.Ship_to_City,
+                    Ship_to_Code = preInvoiceToCreate.Ship_to_Code,
+                    Ship_to_Contact = preInvoiceToCreate.Ship_to_Contact,
+                    Ship_to_Country_Region_Code = preInvoiceToCreate.Ship_to_Country_Region_Code,
+                    Ship_to_County = preInvoiceToCreate.Ship_to_County,
+                    Ship_to_Name = preInvoiceToCreate.Ship_to_Name,
+                    Ship_to_Name_2 = preInvoiceToCreate.Ship_to_Name_2,
+                    Ship_to_Post_Code = preInvoiceToCreate.Ship_to_Post_Code
                 }
 
             };
@@ -131,7 +141,7 @@ namespace Hydra.Such.Data.NAV
 
         }
 
-        public static async Task<WSCreatePreInvoice.Create_Result> CreatePreInvoice(AuthorizedCustomerBillingHeader billingHeader, NAVWSConfigurations WSConfigurations, string dataFormulario, string projeto)
+        public static async Task<WSCreatePreInvoice.Create_Result> CreatePreInvoice(AuthorizedCustomerBillingHeader billingHeader, NAVWSConfigurations WSConfigurations, string dataFormulario, string projeto, SPInvoiceListViewModel Ship)
         {
             SPInvoiceListViewModel invoiceHeader = new SPInvoiceListViewModel();
             invoiceHeader.InvoiceToClientNo = billingHeader.InvoiceToClientNo;
@@ -155,7 +165,17 @@ namespace Hydra.Such.Data.NAV
             invoiceHeader.Posting_Date = Convert.ToDateTime(dataFormulario);
             invoiceHeader.ProjectNo = projeto;
             invoiceHeader.MovementType = billingHeader.MovementType;
-           
+
+            invoiceHeader.Ship_to_Address = Ship.Ship_to_Address;
+            invoiceHeader.Ship_to_Address_2 = Ship.Ship_to_Address_2;
+            invoiceHeader.Ship_to_City = Ship.Ship_to_City;
+            invoiceHeader.Ship_to_Code = Ship.Ship_to_Code;
+            invoiceHeader.Ship_to_Contact = Ship.Ship_to_Contact;
+            invoiceHeader.Ship_to_Country_Region_Code = Ship.Ship_to_Country_Region_Code;
+            invoiceHeader.Ship_to_County = Ship.Ship_to_County;
+            invoiceHeader.Ship_to_Name = Ship.Ship_to_Name;
+            invoiceHeader.Ship_to_Name_2 = Ship.Ship_to_Name_2;
+            invoiceHeader.Ship_to_Post_Code = Ship.Ship_to_Post_Code;
 
             return await CreatePreInvoice(invoiceHeader, WSConfigurations);
 
@@ -238,7 +258,7 @@ namespace Hydra.Such.Data.NAV
             {
                 WSPreInvoice = new WSCreatePreInvoice.WSPreInvoice()
                 {
-                    Sell_to_Customer_No = CreateInvoice.NºCliente,
+                    Sell_to_Customer_No = !string.IsNullOrEmpty(CreateInvoice.NºCliente) ? CreateInvoice.NºCliente : "",
                     Document_Date = DateTime.Today,
                     Document_DateSpecified = true,
                     Shipment_Date = now,
@@ -248,10 +268,24 @@ namespace Hydra.Such.Data.NAV
                     Document_Type = WSCreatePreInvoice.Document_Type.Invoice,
                     Document_TypeSpecified = true,
                     Posting_Date = CreateInvoice.DataDeRegisto ?? DateTime.Now,
-                    Periodo_de_Fact_Contrato = ContractInvoicePeriod,
-                    Data_Serv_Prestado = InvoiceBorrowed,
-                    Responsibility_Center= CUsers.CentroDeResponsabilidade,
-                    Posting_No_Series = CUsers.NumSerieFaturas
+                    Posting_DateSpecified = true,
+                    Periodo_de_Fact_Contrato = !string.IsNullOrEmpty(ContractInvoicePeriod) ? ContractInvoicePeriod : "",
+                    Data_Serv_Prestado = !string.IsNullOrEmpty(InvoiceBorrowed) ? InvoiceBorrowed : "",
+                    Responsibility_Center = !string.IsNullOrEmpty(CUsers.CentroDeResponsabilidade) ? CUsers.CentroDeResponsabilidade : "",
+                    Posting_No_Series = !string.IsNullOrEmpty(CUsers.NumSerieFaturas) ? CUsers.NumSerieFaturas : "",
+
+                    //Amaro
+                    Observacoes = !string.IsNullOrEmpty(CreateInvoice.Descrição) ? CreateInvoice.Descrição : "",
+                    Contract_No = !string.IsNullOrEmpty(CreateInvoice.NºContrato) ? CreateInvoice.NºContrato : "",
+                    Factura_CAF = true,
+                    Factura_CAFSpecified = true,
+                    Codigo_Pedido = !string.IsNullOrEmpty(CreateInvoice.NoRequisicaoDoCliente) ? CreateInvoice.NoRequisicaoDoCliente : "",
+                    No_Compromisso = !string.IsNullOrEmpty(CreateInvoice.NoCompromisso) ? CreateInvoice.NoCompromisso : "",
+                    Data_Encomenda = CreateInvoice.DataRececaoRequisicao ?? DateTime.MinValue,
+                    Data_EncomendaSpecified = true,
+                    RegionCode20 = !string.IsNullOrEmpty(CreateInvoice.CódigoRegião) ? CreateInvoice.CódigoRegião : "",
+                    FunctionAreaCode20 = !string.IsNullOrEmpty(CreateInvoice.CódigoÁreaFuncional) ? CreateInvoice.CódigoÁreaFuncional : "",
+                    ResponsabilityCenterCode20 = !string.IsNullOrEmpty(CreateInvoice.CódigoCentroResponsabilidade) ? CreateInvoice.CódigoCentroResponsabilidade : "",
                 }
             };
 

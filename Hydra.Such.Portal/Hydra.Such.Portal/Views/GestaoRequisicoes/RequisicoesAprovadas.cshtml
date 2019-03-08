@@ -355,10 +355,13 @@
 
                 _exportEXCEL: function () {
                     //debugger;
-                    this.result[0].ColunasEXCEL = this._columns;
+                    var result = this.$.gridrequest._filter(this.result);
+                    if (result != null && result.length > 0) {
+                        result[0].ColunasEXCEL = this._columns;
 
-                    this.$.ajax_Export.body = JSON.stringify(this.result);
-                    this.$.ajax_Export.generateRequest();
+                        this.$.ajax_Export.body = JSON.stringify(result);
+                        this.$.ajax_Export.generateRequest();
+                    }
                 },
 
                 _exportEXCELResponse: function (e) {

@@ -154,6 +154,21 @@ namespace Hydra.Such.Data.Logic.Contracts
             }
         }
 
+        public static List<TextoFaturaContrato> GetByContractAndGrupoFatura(string ContractNo, int GrupoFatura)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.TextoFaturaContrato.Where(x => x.NºContrato == ContractNo && x.GrupoFatura == GrupoFatura).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
 
         public static TextoFaturaContrato ParseToDB(ContractInvoiceTextViewModel ObjectToParse)
         {

@@ -1131,7 +1131,7 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                 decimal CustoTotalHoras = FolhaHoras.CustoTotalHoras == null ? 0 : (decimal)FolhaHoras.CustoTotalHoras;
                 decimal CustoTotalAjudaCusto = FolhaHoras.CustoTotalAjudaCusto == null ? 0 : (decimal)FolhaHoras.CustoTotalAjudaCusto;
                 decimal CustoTotalKm = FolhaHoras.CustoTotalKm == null ? 0 : (decimal)FolhaHoras.CustoTotalKm;
-                decimal CustoTotal = CustoTotalHoras + CustoTotalAjudaCusto + CustoTotalKm;
+                //decimal CustoTotal = CustoTotalHoras + CustoTotalAjudaCusto + CustoTotalKm;
 
                 if (idEmployee != null && idEmployee != "")
                 {
@@ -1162,7 +1162,7 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         string Superior;
 
                         //GET LIST VALIDADORES
-                        List<ConfiguraçãoAprovações> ApprovalConfigurationsValidadores = DBApprovalConfigurations.GetByTypeAreaValueDateAndDimensionsAndNivel(3, FH.CodigoAreaFuncional, FH.CodigoCentroResponsabilidade, FH.CodigoRegiao, CustoTotal, DateTime.Now, 1);
+                        List<ConfiguraçãoAprovações> ApprovalConfigurationsValidadores = DBApprovalConfigurations.GetByTypeAreaValueDateAndDimensionsAndNivel(3, FH.CodigoAreaFuncional, FH.CodigoCentroResponsabilidade, FH.CodigoRegiao, CustoTotalAjudaCusto, DateTime.Now, 1);
                         ApprovalConfigurationsValidadores.RemoveAll(x => !x.NívelAprovação.HasValue || x.NívelAprovação < 1);
 
                         if (ApprovalConfigurationsValidadores.Count > 0)
@@ -1216,7 +1216,7 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         }
 
                         //GET LIST INTEGRADORES EM RH
-                        List<ConfiguraçãoAprovações> ApprovalConfigurationsIntegradoresEmRH = DBApprovalConfigurations.GetByTypeAreaValueDateAndDimensionsAndNivel(3, FH.CodigoAreaFuncional, FH.CodigoCentroResponsabilidade, FH.CodigoRegiao, CustoTotal, DateTime.Now, 2);
+                        List<ConfiguraçãoAprovações> ApprovalConfigurationsIntegradoresEmRH = DBApprovalConfigurations.GetByTypeAreaValueDateAndDimensionsAndNivel(3, FH.CodigoAreaFuncional, FH.CodigoCentroResponsabilidade, FH.CodigoRegiao, CustoTotalAjudaCusto, DateTime.Now, 2);
                         ApprovalConfigurationsIntegradoresEmRH.RemoveAll(x => !x.NívelAprovação.HasValue || x.NívelAprovação < 2);
 
                         if (ApprovalConfigurationsIntegradoresEmRH.Count > 0)
@@ -1261,7 +1261,7 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         }
 
                         //GET LIST INTEGRADORES EM RH KM
-                        List<ConfiguraçãoAprovações> ApprovalConfigurationsIntegradoresEmRHKM = DBApprovalConfigurations.GetByTypeAreaValueDateAndDimensionsAndNivel(3, FH.CodigoAreaFuncional, FH.CodigoCentroResponsabilidade, FH.CodigoRegiao, CustoTotal, DateTime.Now, 3);
+                        List<ConfiguraçãoAprovações> ApprovalConfigurationsIntegradoresEmRHKM = DBApprovalConfigurations.GetByTypeAreaValueDateAndDimensionsAndNivel(3, FH.CodigoAreaFuncional, FH.CodigoCentroResponsabilidade, FH.CodigoRegiao, CustoTotalKm, DateTime.Now, 3);
                         ApprovalConfigurationsIntegradoresEmRHKM.RemoveAll(x => !x.NívelAprovação.HasValue || x.NívelAprovação < 3);
 
                         if (ApprovalConfigurationsIntegradoresEmRHKM.Count > 0)

@@ -567,6 +567,16 @@
                 </template>
             </vaadin-grid-column>
 
+            <vaadin-grid-column width="140px" resizable hidden$="{{ _columns.serviceGroupCode.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="serviceGroupCode">Cód. Grupo Serviço</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="serviceGroupCode" />
+                </template>
+                <template>
+                    {{item.serviceGroupCode}}
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column width="10%" resizable>
                 <template class="header">
                 </template>
@@ -591,7 +601,7 @@
                 </div>
             </div>
             <div class="buttons">
-                <paper-button class="btnSave" raised on-tap="_RegistMov"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Registar</paper-button>
+                <paper-button class="btnSave" id="btn_RegistarMovimentos" raised on-tap="_RegistMov"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Registar</paper-button>
                 <paper-button class="btnRemove" on-tap="_Close_Dialog" dialog-dismiss><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
             </div>
         </paper-dialog>
@@ -680,6 +690,9 @@
                 },
                 _RegistMov: function () {
                     if (this._validateDlgInput()) {
+
+                        //$(this.$.btn_RegistarMovimentos).addClass('disabled');
+
                         this.$.ajax_register.body = JSON.stringify(this.result);
                         this.$.ajax_register.params = { "StartDate": this.$.dpStartDate.value, "EndDate": this.$.dpEndDate.value };
                         this.$.ajax_register.generateRequest();
@@ -716,6 +729,7 @@
                             this.openToastError(this.data.eMessage);
                         }
                     }
+                    //$(this.$.btn_RegistarMovimentos).removeClass('disabled');
                 },
                 _gridListResponse: function () {
                     if (this.result == null || this.result == undefined || this.result.length == 0) {
@@ -767,8 +781,8 @@
                         "folhaHoras": { hidden: false, label: "Folha de Horas" },
                         "serviceClientCode": { hidden: false, label: "Cód. Serviço Cliente" },
                         "serviceClientDescription": { hidden: false, label: "Serviço Cliente" },
-                        "mealTypeDescription": { hidden: false, label: "Tipo de Refeição" }
-
+                        "mealTypeDescription": { hidden: false, label: "Tipo de Refeição" },
+                        "serviceGroupCode": { hidden: false, label: "Cód. Grupo Serviço" }
                     };
 
                     if (localStorage["premovproj.ToggleColumn"]) {

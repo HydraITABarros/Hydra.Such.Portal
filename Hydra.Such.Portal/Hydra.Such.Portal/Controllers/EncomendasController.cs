@@ -626,6 +626,13 @@ namespace Hydra.Such.Portal.Controllers
                         return Json(data);
                     }
 
+                    if (data.MotivoAnulacao.Length > 100)
+                    {
+                        data.eReasonCode = 2;
+                        data.eMessage = "O motivo de rejeição não pode ter mais de 100 carateres.";
+                        return Json(data);
+                    }
+
                     if (AnularPedido == true)
                     {
                         data.Estado = 5; //"Anulado"

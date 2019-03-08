@@ -245,7 +245,7 @@
                     <vaadin-date-picker label="Data Consumo" id="dpcompDate" name="dpcompDate" value="{{consumptionDate}}" disabled="{{ !_permissions.create }}"></vaadin-date-picker>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-text-field id="piQuantity" pattern="^[1-9]\d*(\.\d+)?$" error-message="Valor inválido" label="Quantidades" value="{{quantity}}" on-value-changed="_calcTotals" disabled="{{ !_permissions.create }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                    <vaadin-text-field id="piQuantity" pattern="^-?[1-9]\d*(\.\d+)?$" error-message="Valor inválido" label="Quantidades" value="{{quantity}}" on-value-changed="_calcTotals" disabled="{{ !_permissions.create }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
                     <such-selectbox id="piCodeMeasurementUnit" name="piCodeMeasurementUnit" value="{{codeMeasurementUnit}}" label="Cód. Unidade Medida" disabled="{{ !_permissions.create }}"
@@ -1215,7 +1215,7 @@
             <h2 class="dialogTitle">Movimentos de Projeto</h2>
             <div class="row">
                 <div class="col-lg-2">
-                    <such-selectbox id="projectSourceDlg" name="projectSourceDlg" value="{{projectNumber}}" label="Nº Projeto Origem"
+                    <such-selectbox id="projectSourceDlg" name="projectSourceDlg" value="" label="Nº Projeto Origem"
                                     items="[[response]]"
                                     text-path="id"
                                     value-path="id"
