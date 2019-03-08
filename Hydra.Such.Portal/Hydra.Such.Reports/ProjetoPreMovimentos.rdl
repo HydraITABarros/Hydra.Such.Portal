@@ -140,13 +140,13 @@
                   <Width>1.5cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>4.6cm</Width>
+                  <Width>4.5cm</Width>
                 </TablixColumn>
                 <TablixColumn>
                   <Width>1.5cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>4.72062cm</Width>
+                  <Width>4.6cm</Width>
                 </TablixColumn>
                 <TablixColumn>
                   <Width>1.8cm</Width>
@@ -197,7 +197,6 @@
                             <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
-                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                     <TablixCell>
@@ -1592,10 +1591,11 @@
                 </TablixMember>
               </TablixMembers>
             </TablixRowHierarchy>
+            <RepeatRowHeaders>true</RepeatRowHeaders>
             <DataSetName>PreMovimentosProjeto</DataSetName>
             <Top>0.03528cm</Top>
             <Height>3cm</Height>
-            <Width>19.07937cm</Width>
+            <Width>18.85876cm</Width>
             <Style>
               <Border>
                 <Color>White</Color>
@@ -1607,7 +1607,7 @@
         <Height>3.03528cm</Height>
         <Style />
       </Body>
-      <Width>19.07937cm</Width>
+      <Width>18.85876cm</Width>
       <Page>
         <PageHeader>
           <Height>3.55438cm</Height>
@@ -1672,8 +1672,8 @@
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox20</rd:DefaultName>
-              <Left>16.23898cm</Left>
-              <Height>2.29375cm</Height>
+              <Left>16.09774cm</Left>
+              <Height>2cm</Height>
               <Width>2.76102cm</Width>
               <ZIndex>1</ZIndex>
               <Style>
@@ -1705,10 +1705,10 @@
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox152</rd:DefaultName>
-              <Top>1cm</Top>
-              <Left>7cm</Left>
+              <Top>0.7cm</Top>
+              <Left>6.17639cm</Left>
               <Height>0.6cm</Height>
-              <Width>5cm</Width>
+              <Width>9.74496cm</Width>
               <ZIndex>2</ZIndex>
               <Style>
                 <Border>
@@ -1737,9 +1737,9 @@
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox152</rd:DefaultName>
-              <Top>2.32903cm</Top>
+              <Top>2.17639cm</Top>
               <Height>0.6cm</Height>
-              <Width>6.23605cm</Width>
+              <Width>18.85876cm</Width>
               <ZIndex>3</ZIndex>
               <Style>
                 <Border>
@@ -1768,9 +1768,9 @@
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox152</rd:DefaultName>
-              <Top>2.95438cm</Top>
+              <Top>2.84855cm</Top>
               <Height>0.6cm</Height>
-              <Width>19cm</Width>
+              <Width>18.85876cm</Width>
               <ZIndex>4</ZIndex>
               <Style>
                 <Border>
