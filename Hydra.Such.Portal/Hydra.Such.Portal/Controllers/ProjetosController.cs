@@ -3354,62 +3354,62 @@ namespace Hydra.Such.Portal.Controllers
 
                 //AMARO NOVO METODO PARA IR BUSCAR AS LINHAS
                 //INICIO
-                //List<SPInvoiceListViewModel> data2 = null;
-                //List<MovimentosProjectoAutorizados> ListMPA = DBAuthorizedProjectMovements.GetAll("");
-                //foreach (AuthorizedProjectViewModel AuthProj in authProjectMovements)
-                //{
-                //    List<MovimentosDeProjeto> MOV = DBProjectMovements.GetByProjectNo(AuthProj.CodProjeto);
-                //    foreach (MovimentosProjectoAutorizados MPA in ListMPA)
-                //    {
-                //        if (MPA.CodProjeto == AuthProj.CodProjeto && MPA.GrupoFactura == AuthProj.GrupoFactura)
-                //        {
-                //            SPInvoiceListViewModel addlinha = new SPInvoiceListViewModel
-                //            {
-                //                CommitmentNumber = AuthProj.NumCompromisso,
-                //                Date = AuthProj.DataPrestacaoServico,
-                //                InvoiceToClientNo = AuthProj.CodCliente,
-                //                ClientRequest = AuthProj.PedidoCliente,
+                /*
+                List<MovimentosProjectoAutorizados> ListMPA = DBAuthorizedProjectMovements.GetAll("");
+                foreach (AuthorizedProjectViewModel AuthProj in authProjectMovements)
+                {
+                    List<MovimentosDeProjeto> MOV = DBProjectMovements.GetByProjectNo(AuthProj.CodProjeto);
+                    foreach (MovimentosProjectoAutorizados MPA in ListMPA)
+                    {
+                        if (MPA.CodProjeto == AuthProj.CodProjeto && MPA.GrupoFactura == AuthProj.GrupoFactura)
+                        {
+                            SPInvoiceListViewModel addlinha = new SPInvoiceListViewModel
+                            {
+                                CommitmentNumber = AuthProj.NumCompromisso,
+                                Date = AuthProj.DataPrestacaoServico,
+                                InvoiceToClientNo = AuthProj.CodCliente,
+                                ClientRequest = AuthProj.PedidoCliente,
 
-                //                MealType = MPA.TipoRefeicao,
-                //                Type = MPA.Tipo,
-                //                Code = MPA.Codigo,
-                //                Description = MPA.Descricao,
-                //                RegionCode = MPA.CodRegiao,
-                //                FunctionalAreaCode = MPA.CodAreaFuncional,
-                //                ResponsabilityCenterCode = MPA.CodCentroResponsabilidade,
-                //                ProjectNo = MPA.CodProjeto,
-                //                ContractNo = projectsDetails.Select(x => x.NºContrato).FirstOrDefault(x => x == MPA.CodProjeto),
-                //                ConsumptionDate = MPA.DataConsumo.HasValue ? MPA.DataConsumo.Value.ToString("yyyy-MM-dd") : "",
-                //                ServiceClientCode = MPA.CodServCliente,
-                //                MeasurementUnitCode = MPA.CodUnidadeMedida,
-                //                Quantity = MPA.Quantidade,
-                //                ServiceGroupCode = MPA.CodGrupoServico,
-                //                ExternalGuideNo = MPA.NumGuiaExterna,
-                //                WasteGuideNo_GAR = MPA.NumGuiaResiduosGar,
-                //                InvoiceGroup = MPA.GrupoFactura,
+                                MealType = MPA.TipoRefeicao,
+                                Type = MPA.Tipo,
+                                Code = MPA.Codigo,
+                                Description = MPA.Descricao,
+                                RegionCode = MPA.CodRegiao,
+                                FunctionalAreaCode = MPA.CodAreaFuncional,
+                                ResponsabilityCenterCode = MPA.CodCentroResponsabilidade,
+                                ProjectNo = MPA.CodProjeto,
+                                ContractNo = projectsDetails.Select(x => x.NºContrato).FirstOrDefault(x => x == MPA.CodProjeto),
+                                ConsumptionDate = MPA.DataConsumo.HasValue ? MPA.DataConsumo.Value.ToString("yyyy-MM-dd") : "",
+                                ServiceClientCode = MPA.CodServCliente,
+                                MeasurementUnitCode = MPA.CodUnidadeMedida,
+                                Quantity = MPA.Quantidade,
+                                ServiceGroupCode = MPA.CodGrupoServico,
+                                ExternalGuideNo = MPA.NumGuiaExterna,
+                                WasteGuideNo_GAR = MPA.NumGuiaResiduosGar,
+                                InvoiceGroup = MPA.GrupoFactura,
 
-                //                UnitPrice = MOV.FirstOrDefault(y => y.NºLinha == MPA.NumMovimento).PreçoUnitário,
-                //                UnitCost = MOV.FirstOrDefault(y => y.NºLinha == MPA.NumMovimento).CustoUnitário,
-                //                LocationCode = MOV.FirstOrDefault(y => y.NºLinha == MPA.NumMovimento).CódLocalização,
-                //                ProjectContabGroup = MOV.FirstOrDefault(y => y.NºLinha == MPA.NumMovimento).GrupoContabProjeto,
-                //            };
-                //            data2.Add(addlinha);
-                //        }
-                //    }
-                //}
+                                UnitPrice = MOV.FirstOrDefault(y => y.NºLinha == MPA.NumMovimento).PreçoUnitário,
+                                UnitCost = MOV.FirstOrDefault(y => y.NºLinha == MPA.NumMovimento).CustoUnitário,
+                                LocationCode = MOV.FirstOrDefault(y => y.NºLinha == MPA.NumMovimento).CódLocalização,
+                                ProjectContabGroup = MOV.FirstOrDefault(y => y.NºLinha == MPA.NumMovimento).GrupoContabProjeto,
+                            };
+                            data.Add(addlinha);
+                        }
+                    }
+                }
+                */
                 //FIM
 
 
-
+                
                 data = ctx.MovimentosProjectoAutorizados
                     .Join(ctx.MovimentosDeProjeto,
                         mpa => mpa.NumMovimento,
                         mp => mp.NºLinha,
                         (mpa, mp) => new SPInvoiceListViewModel
                         {                            
-                            /*
-                            ProjectDimension;
-                            */
+                            
+                            //ProjectDimension;
                             //##################################    Obter de projetos autorizados (campos editaveis)
                             //CodTermosPagamento = authProjectMovements.FirstOrDefault(y => y.CodProjeto == mpa.CodProjeto && y.GrupoFactura == mpa.GrupoFactura).CodTermosPagamento,
                             //CodMetodoPagamento = authProjectMovements.FirstOrDefault(y => y.CodProjeto == mpa.CodProjeto && y.GrupoFactura == mpa.GrupoFactura).CodMetodoPagamento,
@@ -3506,6 +3506,7 @@ namespace Hydra.Such.Portal.Controllers
                         data.RemoveAll(z => z.Apagar_Linha == true);
                     }
                 }
+                
 
                 customersServicesPrices = ctx.PreçosServiçosCliente
                     .Where(x => customersIds.Contains(x.Cliente))
