@@ -588,7 +588,6 @@
                             <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
-                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                   </TablixCells>
@@ -957,9 +956,10 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=IIF(Sum(Fields!Credito.Value, "MovCaixa") &lt; 0, ABS(Sum(Fields!Credito.Value, "MovCaixa")), Sum(Fields!Credito.Value, "MovCaixa")) -
+                                  <Value>=First(Fields!TotalSaldo.Value, "dsResumoAnterior") + (
+IIF(Sum(Fields!Credito.Value, "MovCaixa") &lt; 0, ABS(Sum(Fields!Credito.Value, "MovCaixa")), Sum(Fields!Credito.Value, "MovCaixa")) -
 IIF(Sum(Fields!Debito.Value, "MovCaixa") &lt; 0, ABS(Sum(Fields!Debito.Value, "MovCaixa")), Sum(Fields!Debito.Value, "MovCaixa")) -
-IIF(Sum(Fields!Deposito.Value, "MovCaixa") &lt; 0, ABS(Sum(Fields!Deposito.Value, "MovCaixa")), Sum(Fields!Deposito.Value, "MovCaixa"))</Value>
+IIF(Sum(Fields!Deposito.Value, "MovCaixa") &lt; 0, ABS(Sum(Fields!Deposito.Value, "MovCaixa")), Sum(Fields!Deposito.Value, "MovCaixa")))</Value>
                                   <Style>
                                     <FontSize>8pt</FontSize>
                                   </Style>
@@ -983,6 +983,7 @@ IIF(Sum(Fields!Deposito.Value, "MovCaixa") &lt; 0, ABS(Sum(Fields!Deposito.Value
                             <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
+                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                   </TablixCells>

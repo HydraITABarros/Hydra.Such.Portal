@@ -425,7 +425,9 @@ namespace Hydra.Such.Portal.Controllers
                     
                     try
                     {
-                        purchOrders = list.GroupBy(x =>
+                        if (list != null && list.Count() > 0)
+                        {
+                            purchOrders = list.GroupBy(x =>
                                 x.NumFornecedor,
                                 x => x,
                                 (key, items) => new PurchOrderDTO
@@ -454,17 +456,16 @@ namespace Hydra.Such.Portal.Controllers
                                         UnitMeasureCode = line.CodigoUnidadeMedida,
                                         VATBusinessPostingGroup = string.Empty,
                                         VATProductPostingGroup = string.Empty
-                                    })
-                                    .ToList()
-                                })
-                        .ToList();
+                                    }).ToList()
+                                }).ToList();
+                        }
                     }
                     catch
                     {
                         throw new Exception("Ocorreu um erro ao agrupar as linhas.");
                     }
 
-                    if (purchOrders.Count() > 0)
+                    if (purchOrders != null && purchOrders.Count() > 0)
                     {
                         purchOrders.ForEach(purchOrder =>
                         {
@@ -475,14 +476,14 @@ namespace Hydra.Such.Portal.Controllers
                                 //purchOrder.Purchaser_Code = User.Identity.Name;
                                 purchOrder.Purchaser_Code = string.IsNullOrEmpty(DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo) ? "" : DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo;
 
-                                var result = CreateNAVPurchaseOrderFor(purchOrder);
+                                var result = CreateNAVPurchaseOrderFor(purchOrder, Convert.ToDateTime(requisition.ReceivedDate));
                                 if (result.CompletedSuccessfully)
                                 {
                                     //Update req
                                     requisition.OrderNo = result.ResultValue;
 
                                     //Update Requisition Lines
-                                    requisition.Lines.ForEach(line =>
+                                    requisition.Lines.Where(x => x.LineNo == purchOrder.OpenOrderLineNo).ToList().ForEach(line =>
                                     {
                                         line.CreatedOrderNo = result.ResultValue;
                                         line.UpdateUser = User.Identity.Name;
@@ -534,23 +535,27 @@ namespace Hydra.Such.Portal.Controllers
         }
 
 
-        private GenericResult CreateNAVPurchaseOrderFor(PurchOrderDTO purchOrder)
+        private GenericResult CreateNAVPurchaseOrderFor(PurchOrderDTO purchOrder, DateTime DataRececao)
         {
             GenericResult createPrePurchOrderResult = new GenericResult();
 
-            //purchOrder.Purchaser_Code = User.Identity.Name;
-            purchOrder.Purchaser_Code = string.IsNullOrEmpty(DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo) ? "" : DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo;
+            if (!string.IsNullOrEmpty(purchOrder.SupplierId) && !string.IsNullOrEmpty(purchOrder.CenterResponsibilityCode))
+            {
+                ConfiguraçãoEmailFornecedores ConfigEmailForne = DBConfigEmailFornecedores.GetById(purchOrder.SupplierId, purchOrder.CenterResponsibilityCode);
 
-            Task<WSPurchaseInvHeader.Create_Result> createPurchaseHeaderTask = NAVPurchaseHeaderIntermService.CreateAsync(purchOrder, configws);
+                if (ConfigEmailForne != null && !string.IsNullOrEmpty(ConfigEmailForne.Email))
+                    purchOrder.Vendor_Mail = ConfigEmailForne.Email;
+            }
+
+            Task<WSPurchaseInvHeader.Create_Result> createPurchaseHeaderTask = NAVPurchaseHeaderIntermService.CreateAsync(purchOrder, configws, DataRececao);
             createPurchaseHeaderTask.Wait();
             if (createPurchaseHeaderTask.IsCompletedSuccessfully)
             {
                 createPrePurchOrderResult.ResultValue = createPurchaseHeaderTask.Result.WSPurchInvHeaderInterm.No;
                 purchOrder.NAVPrePurchOrderId = createPrePurchOrderResult.ResultValue;
 
-                Task<WSPurchaseInvLine.CreateMultiple_Result> createPurchaseLinesTask = NAVPurchaseLineService.CreateMultipleAsync(purchOrder, configws);
-                createPurchaseLinesTask.Wait();
-                if (createPurchaseLinesTask.IsCompletedSuccessfully)
+                bool createPurchaseLinesTask = NAVPurchaseLineService.CreateAndUpdateMultipleAsync(purchOrder, configws);
+                if (createPurchaseLinesTask)
                 {
                     try
                     {
@@ -558,16 +563,41 @@ namespace Hydra.Such.Portal.Controllers
                          *  Swallow errors at this stage as they will be managed in NAV
                          */
                         //Task<WSGenericCodeUnit.FxCabimento_Result> createPurchOrderTask = WSGeneric.CreatePurchaseOrder(purchOrder.NAVPrePurchOrderId, configws);
-                        //createPurchOrderTask.Wait();
-                        //if (createPurchOrderTask.IsCompletedSuccessfully)
-                        //{
-                        //    createPrePurchOrderResult.CompletedSuccessfully = true;
-                        //}
+                        //createPurchOrderTask.Start();
+                        ////if (createPurchOrderTask.IsCompletedSuccessfully)
+                        ////{
+                        ////    createPrePurchOrderResult.CompletedSuccessfully = true;
+                        ////}
                     }
                     catch (Exception ex) { }
+                    createPrePurchOrderResult.CompletedSuccessfully = true;
                 }
             }
             return createPrePurchOrderResult;
+
+            
+            //GenericResult createPrePurchOrderResult = new GenericResult();
+
+            //purchOrder.Purchaser_Code = string.IsNullOrEmpty(DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo) ? "" : DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo;
+
+            //Task<WSPurchaseInvHeader.Create_Result> createPurchaseHeaderTask = NAVPurchaseHeaderIntermService.CreateAsync(purchOrder, configws, DataRececao);
+            //createPurchaseHeaderTask.Wait();
+            //if (createPurchaseHeaderTask.IsCompletedSuccessfully)
+            //{
+            //    createPrePurchOrderResult.ResultValue = createPurchaseHeaderTask.Result.WSPurchInvHeaderInterm.No;
+            //    purchOrder.NAVPrePurchOrderId = createPrePurchOrderResult.ResultValue;
+
+            //    Task<WSPurchaseInvLine.CreateMultiple_Result> createPurchaseLinesTask = NAVPurchaseLineService.CreateMultipleAsync(purchOrder, configws);
+            //    createPurchaseLinesTask.Wait();
+            //    if (createPurchaseLinesTask.IsCompletedSuccessfully)
+            //    {
+            //        try
+            //        {
+            //        }
+            //        catch (Exception ex) { }
+            //    }
+            //}
+            //return createPrePurchOrderResult;
         }
     }
 }
