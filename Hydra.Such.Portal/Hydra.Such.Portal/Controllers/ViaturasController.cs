@@ -369,7 +369,7 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         if (dp["tipoViatura"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.TipoViatura.Descricao);
+                            row.CreateCell(Col).SetCellValue(item.TipoViatura != null ? item.TipoViatura.Descricao : "");
                             Col = Col + 1;
                         }
                         if (dp["codigoMarca"]["hidden"].ToString() == "False")
@@ -379,7 +379,7 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         if (dp["marca"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.Marca.Descricao);
+                            row.CreateCell(Col).SetCellValue(item.Marca != null ? item.Marca.Descricao : "");
                             Col = Col + 1;
                         }
                         if (dp["codigoModelo"]["hidden"].ToString() == "False")
@@ -389,7 +389,7 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         if (dp["modelo"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.Modelo.Descricao);
+                            row.CreateCell(Col).SetCellValue(item.Modelo != null ? item.Modelo.Descricao : "");
                             Col = Col + 1;
                         }
                         if (dp["codigoRegiao"]["hidden"].ToString() == "False")

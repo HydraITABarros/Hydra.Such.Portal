@@ -2484,7 +2484,6 @@
                 //},
 
                 _updateLinhaPercurso: function (e) {
-                    debugger;
                     if (this.data.mostrarBotoes == false && (this.data.terminada == true || this.data.estado == 1 || this.data.estado == 2)) {
                         this.$.page_databound_ajax.generateRequest();
                     }
@@ -4031,6 +4030,14 @@
                             this._showErrorMessage('Houve um erro na criação da Mão de Obra.');
                         }
 
+                        if (this.MaoDeObraCreated == 8) {
+                            this._showErrorMessage('Não está definido o recurso escolhido para este utilizador.');
+                        }
+
+                        if (this.MaoDeObraCreated == 9) {
+                            this._showErrorMessage('Não estão definidos os preços de Venda e de Custo para o recurso escolhido.');
+                        }
+
                         if (this.MaoDeObraCreated == 99) {
                             this._showErrorMessage('Ocorreu um erro na criação da Mão de Obra.');
                         }
@@ -4255,7 +4262,6 @@
 
                 //EMPREGADO FUNÇÕES
                 _codeChange: function () {
-                    debugger;
                     if (this.$.empregadoNo.value != "") {
                         this.data.empregadoNo = this.$.empregadoNo.value;
                         this.$.getEmpoyeeNAV_ajax.body = JSON.stringify(this.data);

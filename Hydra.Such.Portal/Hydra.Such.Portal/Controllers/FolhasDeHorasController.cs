@@ -1980,6 +1980,11 @@ namespace Hydra.Such.Portal.Controllers
                         MaoDeObra.NºRecurso = Recurso.Recurso;
                         MaoDeObra.CódigoFamíliaRecurso = Recurso.FamiliaRecurso;
                     }
+                    else
+                    {
+                        result = 8;
+                        return Json(result);
+                    }
 
                     //TABELA PRECOVENDARECURSOFH
                     PrecoVendaRecursoFh PrecoVendaRecurso = DBPrecoVendaRecursoFH.GetAll().Where(x => x.Code.ToLower() == MaoDeObra.NºRecurso.ToLower() && x.CodTipoTrabalho.ToLower() == data.CodigoTipoTrabalho.ToString().ToLower() && Convert.ToDateTime(x.StartingDate) <= DateTime.Now && Convert.ToDateTime(x.EndingDate) >= DateTime.Now).FirstOrDefault();
@@ -1988,6 +1993,11 @@ namespace Hydra.Such.Portal.Controllers
                         MaoDeObra.PreçoDeVenda = PrecoVendaRecurso.PrecoUnitario;
                         MaoDeObra.PreçoDeCusto = PrecoVendaRecurso.CustoUnitario;
                         MaoDeObra.CustoUnitárioDireto = PrecoVendaRecurso.PrecoUnitario;
+                    }
+                    else
+                    {
+                        result = 9;
+                        return Json(result);
                     }
 
                     //CALCULAR PRECO TOTAL

@@ -94,9 +94,6 @@
         <DataSourceName>eSuchDS</DataSourceName>
         <QueryParameters>
           <QueryParameter Name="@StartDate">
-            <Value>=DateSerial(2000, 1, 1)</Value>
-          </QueryParameter>
-          <QueryParameter Name="@EndDate">
             <Value>=Parameters!StartDate.Value</Value>
           </QueryParameter>
           <QueryParameter Name="@CodCafetaria">
@@ -105,15 +102,10 @@
           <QueryParameter Name="@CodUnidProd">
             <Value>=Parameters!CodUnidProd.Value</Value>
           </QueryParameter>
-          <QueryParameter Name="@StartOnMovNo">
-            <Value>=Parameters!StartOnMovNo.Value</Value>
-          </QueryParameter>
-          <QueryParameter Name="@EndOnMovNo">
-            <Value>=Parameters!EndOnMovNo.Value</Value>
-          </QueryParameter>
         </QueryParameters>
         <CommandType>StoredProcedure</CommandType>
         <CommandText>rpt_FolhaCaixa_Resumo</CommandText>
+        <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
       </Query>
       <Fields>
         <Field Name="TotalCredito">
@@ -572,7 +564,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=IIf(IsNothing(First(Fields!TotalSaldo.Value, "dsResumoAnterior")), 0, First(Fields!TotalSaldo.Value, "dsResumoAnterior"))</Value>
+                                  <Value>=First(Fields!TotalSaldo.Value, "dsResumoAnterior")</Value>
                                   <Style>
                                     <FontSize>8pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
@@ -596,6 +588,7 @@
                             <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
+                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                   </TablixCells>
@@ -865,7 +858,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Sum(Fields!Credito.Value) + First(Fields!TotalCredito.Value, "dsResumoAnterior")</Value>
+                                  <Value>=Sum(Fields!Credito.Value)</Value>
                                   <Style>
                                     <FontSize>8pt</FontSize>
                                   </Style>
@@ -898,7 +891,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Sum(Fields!Debito.Value) + First(Fields!TotalDebito.Value, "dsResumoAnterior")</Value>
+                                  <Value>=Sum(Fields!Debito.Value)</Value>
                                   <Style>
                                     <FontSize>8pt</FontSize>
                                   </Style>
@@ -931,7 +924,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Sum(Fields!Deposito.Value) + First(Fields!TotalDeposito.Value, "dsResumoAnterior")</Value>
+                                  <Value>=Sum(Fields!Deposito.Value)</Value>
                                   <Style>
                                     <FontSize>8pt</FontSize>
                                   </Style>
@@ -964,9 +957,9 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=First(Fields!TotalSaldo.Value, "dsResumoAnterior") + ((Sum(Fields!Credito.Value) + First(Fields!TotalCredito.Value, "dsResumoAnterior"))
-	+ (Sum(Fields!Debito.Value) + First(Fields!TotalDebito.Value, "dsResumoAnterior"))
-	+ (Sum(Fields!Deposito.Value) + First(Fields!TotalDeposito.Value, "dsResumoAnterior")) - First(Fields!TotalSaldo.Value, "dsResumoAnterior"))</Value>
+                                  <Value>=IIF(Sum(Fields!Credito.Value, "MovCaixa") &lt; 0, ABS(Sum(Fields!Credito.Value, "MovCaixa")), Sum(Fields!Credito.Value, "MovCaixa")) -
+IIF(Sum(Fields!Debito.Value, "MovCaixa") &lt; 0, ABS(Sum(Fields!Debito.Value, "MovCaixa")), Sum(Fields!Debito.Value, "MovCaixa")) -
+IIF(Sum(Fields!Deposito.Value, "MovCaixa") &lt; 0, ABS(Sum(Fields!Deposito.Value, "MovCaixa")), Sum(Fields!Deposito.Value, "MovCaixa"))</Value>
                                   <Style>
                                     <FontSize>8pt</FontSize>
                                   </Style>
@@ -1014,6 +1007,7 @@
                 </TablixMember>
                 <TablixMember>
                   <KeepWithGroup>After</KeepWithGroup>
+                  <RepeatOnNewPage>true</RepeatOnNewPage>
                 </TablixMember>
                 <TablixMember>
                   <Group Name="Details" />
@@ -1023,6 +1017,7 @@
                 </TablixMember>
               </TablixMembers>
             </TablixRowHierarchy>
+            <RepeatRowHeaders>true</RepeatRowHeaders>
             <KeepTogether>true</KeepTogether>
             <DataSetName>MovCaixa</DataSetName>
             <Top>0.20708in</Top>
