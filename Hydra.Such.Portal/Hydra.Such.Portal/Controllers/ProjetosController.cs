@@ -7126,6 +7126,11 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Serviço Cliente");
                     Col = Col + 1;
                 }
+                if (dp["mealTypeDescription"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Tipo de Refeição");
+                    Col = Col + 1;
+                }
                 if (dp["serviceGroupCode"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Cód. Grupo Serviço");
@@ -7263,6 +7268,11 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["serviceClientDescription"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.ServiceClientDescription);
+                            Col = Col + 1;
+                        }
+                        if (dp["mealTypeDescription"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.MealTypeDescription);
                             Col = Col + 1;
                         }
                         if (dp["serviceGroupCode"]["hidden"].ToString() == "False")
