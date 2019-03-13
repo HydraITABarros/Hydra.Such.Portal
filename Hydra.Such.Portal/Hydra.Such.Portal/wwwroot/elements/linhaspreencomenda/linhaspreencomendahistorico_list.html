@@ -29,7 +29,7 @@
 <!--end ColumnToggle-->
 
 
-<dom-module id="x-linhaspreencomendalist">
+<dom-module id="x-linhaspreencomendahistoricolist">
     <template>
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
@@ -66,47 +66,11 @@
 
         <iron-ajax url="/PopulateDropdowns/getSupplier" last-response="{{Fornecedores}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/LinhasPreEncomenda/GetAllLinhas"
+        <iron-ajax url="/LinhasPreEncomenda/GetAllLinhasHistorico"
                    last-response="{{result}}"
                    method="post"
                    handle-as="json"
                    id="grid_databound_ajax"
-                   content-type="application/json">
-        </iron-ajax>
-
-        <iron-ajax url="/LinhasPreEncomenda/MarcarComoConsultaMercado"
-                   last-response="{{result_ConsultaMercado}}"
-                   method="post"
-                   handle-as="json"
-                   id="ajax_ConsultaMercado"
-                   on-response="_ConsultaMercadoResponse"
-                   content-type="application/json">
-        </iron-ajax>
-
-        <iron-ajax url="/LinhasPreEncomenda/MarcarComoEncomenda"
-                   last-response="{{result_Encomenda}}"
-                   method="post"
-                   handle-as="json"
-                   id="ajax_Encomenda"
-                   on-response="_EncomendaResponse"
-                   content-type="application/json">
-        </iron-ajax>
-
-        <iron-ajax url="/LinhasPreEncomenda/MarcarComoCriarDocumento"
-                   last-response="{{result_CriarDocumento}}"
-                   method="post"
-                   handle-as="json"
-                   id="ajax_CriarDocumento"
-                   on-response="_CriarDocumentoResponse"
-                   content-type="application/json">
-        </iron-ajax>
-
-        <iron-ajax url="/LinhasPreEncomenda/MarcarComoNaoCriarDocumento"
-                   last-response="{{result_NaoCriarDocumento}}"
-                   method="post"
-                   handle-as="json"
-                   id="ajax_NaoCriarDocumento"
-                   on-response="_NaoCriarDocumentoResponse"
                    content-type="application/json">
         </iron-ajax>
 
@@ -119,23 +83,8 @@
                    content-type="application/json">
         </iron-ajax>
 
-        <iron-ajax url="/LinhasPreEncomenda/CriarEncomendaCabimento"
-                   last-response="{{CriarEncomendaCabimento}}"
-                   id="criarEncomendaCabimento_ajax"
-                   on-response="_criarEncomendaCabimentoResponse"
-                   method="post"
-                   handle-as="json"
-                   content-type="application/json"></iron-ajax>
-
         <div class="subMenu">
-            <paper-button class="tablinks" id="btn_ConsultaMercado" on-tap="_ConsultaMercado" disabled="{{ !_permissions.update }}"><i class="fa fa-check-square-o" aria-hidden="true"></i>&nbsp; Consulta Mercado</paper-button>
-            <paper-button class="tablinks" id="btn_Encomenda" on-tap="_Encomenda" disabled="{{ !_permissions.update }}"><i class="fa fa-check-square-o" aria-hidden="true"></i>&nbsp; Encomenda</paper-button>
-            <paper-button class="tablinks" id="btn_CriarDocumento" on-tap="_CriarDocumento" disabled="{{ !_permissions.update }}"><i class="fa fa-check-square-o" aria-hidden="true"></i>&nbsp; Criar Documento</paper-button>
-            <paper-button class="tablinks" id="btn_NaoCriarDocumento" on-tap="_NaoCriarDocumento" disabled="{{ !_permissions.update }}"><i class="fa fa-check-square-o" aria-hidden="true"></i>&nbsp; Não Criar Documento</paper-button>
-
-            <such-dropdown-menu on-value-changed="_functionsMenuItemSelected" title="Funções" items='[[ _functionsMenuItems ]]'></such-dropdown-menu>
-
-            <paper-button class="tablinks" id="btn_GoHistorico" on-tap="_GoHistorico"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Histórico</paper-button>
+            <paper-button class="tablinks" id="btn_GoActive" on-tap="_GoActive"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Ativas</paper-button>
 
             <!--start ColumnToggle-->
             <paper-menu-button class="column-toggle" no-animations>
@@ -153,8 +102,6 @@
         </div>
 
         <vaadin-grid aria-label="LinhasGrid" class="editDialogGrid" id="grid" selected-items={{selectedItems}} active-item="{{selectedItem}}" items="[[result]]" multi-sort="true">
-            <vaadin-grid-selection-column auto-select id="chk_auto_select">
-            </vaadin-grid-selection-column>
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.numPreEncomenda.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="numPreEncomenda">Nº Pré-Compra</vaadin-grid-sorter>
@@ -164,6 +111,7 @@
                     {{item.numPreEncomenda}}
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.numLinhaPreEncomenda.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="numLinhaPreEncomenda">Nº Linha Pré-Compra</vaadin-grid-sorter>
@@ -173,6 +121,7 @@
                     {{item.numLinhaPreEncomenda}}
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codigoProduto.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codigoProduto">Código Produto</vaadin-grid-sorter>
@@ -182,6 +131,7 @@
                     {{item.codigoProduto}}
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.descricaoProduto.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="descricaoProduto">Descrição Produto</vaadin-grid-sorter>
@@ -191,6 +141,7 @@
                     {{item.descricaoProduto}}
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.quantidadeDisponibilizada.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="quantidadeDisponibilizada">Quantidade</vaadin-grid-sorter>
@@ -200,6 +151,7 @@
                     {{item.quantidadeDisponibilizada}}
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.custoUnitario.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="custoUnitario">Custo Unitário</vaadin-grid-sorter>
@@ -209,6 +161,7 @@
                     [[_formatValue(item.custoUnitario)]]
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codigoLocalizacao.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codigoLocalizacao">Código Localização</vaadin-grid-sorter>
@@ -225,27 +178,9 @@
                     <vaadin-grid-filter path="numFornecedor" />
                 </template>
                 <template>
-                    <vaadin-combo-box items="[[Fornecedores]]" id="Fornecedor" name="Fornecedor" item-value-path="id" item-label-path="id" value="{{item.numFornecedor}}" on-change="_updateLinha" style="text-align:left;">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.id]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>
+                    {{item.numFornecedor}}
                 </template>
             </vaadin-grid-column>
-
-            <!--<vaadin-grid-column width="150px" resizable hidden$="{{ _columns.numFornecedor.hidden }}">
-        <template class="header">
-            <vaadin-grid-sorter path="numFornecedor">Código Fornecedor</vaadin-grid-sorter>
-            <vaadin-grid-filter path="numFornecedor" />
-        </template>
-        <template>
-            {{item.numFornecedor}}
-        </template>
-    </vaadin-grid-column>-->
 
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.nomeFornecedor_Show.hidden }}">
                 <template class="header">
@@ -256,6 +191,7 @@
                     {{item.nomeFornecedor_Show}}
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.documentoACriar_Show.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="documentoACriar_Show">Documento a Criar</vaadin-grid-sorter>
@@ -265,6 +201,7 @@
                     {{item.documentoACriar_Show}}
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.criarDocumento.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="criarDocumento">Criar Documento</vaadin-grid-sorter>
@@ -275,6 +212,7 @@
                     </center>
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.numRequisicao.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="numRequisicao">Nº Requisição</vaadin-grid-sorter>
@@ -284,6 +222,7 @@
                     {{item.numRequisicao}}
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.numLinhaRequisicao.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="numLinhaRequisicao">Nº Linha Requisição</vaadin-grid-sorter>
@@ -293,6 +232,7 @@
                     {{item.numLinhaRequisicao}}
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.numProjeto.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="numProjeto">Nº Projecto</vaadin-grid-sorter>
@@ -302,6 +242,7 @@
                     {{item.numProjeto}}
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.numEncomendaAberto.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="numEncomendaAberto">Nº Encomenda Aberto</vaadin-grid-sorter>
@@ -311,6 +252,7 @@
                     {{item.numEncomendaAberto}}
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.numLinhaEncomendaAberto.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="numLinhaEncomendaAberto">Nº Linha Encomenda Aberto</vaadin-grid-sorter>
@@ -320,6 +262,7 @@
                     {{item.numLinhaEncomendaAberto}}
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codigoRegiao.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codigoRegiao">Código Região</vaadin-grid-sorter>
@@ -329,6 +272,7 @@
                     {{item.codigoRegiao}}
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codigoAreaFuncional.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codigoAreaFuncional">Código Área Funcional</vaadin-grid-sorter>
@@ -338,6 +282,7 @@
                     {{item.codigoAreaFuncional}}
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codigoCentroResponsabilidade.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codigoCentroResponsabilidade">Código Centro Responsabilidade</vaadin-grid-sorter>
@@ -347,6 +292,7 @@
                     {{item.codigoCentroResponsabilidade}}
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.utilizadorCriacao.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="utilizadorCriacao">Utilizador Criação</vaadin-grid-sorter>
@@ -380,7 +326,7 @@
     <script>
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
-                is: 'x-linhaspreencomendalist',
+                is: 'x-linhaspreencomendahistoricolist',
                 properties: {
                     activeItem: {
                         observer: '_rowSelected'
@@ -413,38 +359,8 @@
                         type: Boolean,
                         value: false
                     },
-                    _functionsMenuItems: {
-                        type: Array,
-                        //value: [{ value: 1, description: "Criar Consulta Mercado" }, { value: 2, description: "Criar Encomenda Compromisso" }, { value: 3, description: "Criar Pré-Encomenda" }],
-                        value: [{ value: 1, description: "Criar Consulta Mercado" }, { value: 3, description: "Criar Encomenda de Compra" }],
-                    },
                 },
-                //_rowSelected: function (item) {
-                //    if (item != null) {
-                //        window.location.href = "/LinhasPreEncomenda/DetalheLinhasPreEncomenda/?numLinhaPreEncomenda=" + item.numLinhaPreEncomenda;
-                //    }
-                //},
-                //_create: function (item) {
-                //    if (item != null) {
-                //        window.location.href = "/LinhasPreEncomenda/DetalheLinhasPreEncomenda/";
-                //    }
-                //},
-                _functionsMenuItemSelected: function (e) {
-                    var item = e.detail.value;
-                    if (item == null)
-                        return;
-                    switch (item.value) {
-                        case 1: //"Criar Consulta Mercado"
-                            this._criarConsultaMercado();
-                            break;
-                        //case 2://"Criar Encomenda Compromisso"
-                        //    this._criarEncomendaCompromisso();
-                        //    break;
-                        case 3://"Criar Encomenda de Compra"
-                            this._criarEncomendaCabimento();
-                            break;
-                    }
-                },
+
                 ready: function () {
                     this.$.grid_databound_ajax.body = JSON.stringify(this._areaid);
                     this.$.grid_databound_ajax.generateRequest();
@@ -477,127 +393,6 @@
                     this.$.ToastMessageError.open();
                 },
 
-                _ConsultaMercado: function (selectedItem, selectedItems) {
-                    if (this.selectedItems != null && this.selectedItems != "") {
-                        var selItms = this.selectedItems;
-                        this.$.ajax_ConsultaMercado.body = JSON.stringify(selItms);
-                        this.$.ajax_ConsultaMercado.generateRequest();
-                        this.$.grid.clearCache();
-                    } else {
-                        this._showErrorMessage("Não foi selecionada nenhuma linha.");
-                    }
-                },
-                _ConsultaMercadoResponse: function () {
-                    if (this.result_ConsultaMercado.eReasonCode == 0) {
-                        this._showMessage(this.result_ConsultaMercado.eMessage);
-                        this.$.grid_databound_ajax.generateRequest();
-                        this.$.grid.selectedItems = [];
-                    } else {
-                        this._showErrorMessage(this.result_ConsultaMercado.eMessage);
-                    }
-                },
-
-                _Encomenda: function (selectedItem, selectedItems) {
-                    if (this.selectedItems != null && this.selectedItems != "") {
-                        var selItms = this.selectedItems;
-                        this.$.ajax_Encomenda.body = JSON.stringify(selItms);
-                        this.$.ajax_Encomenda.generateRequest();
-                        this.$.grid.clearCache();
-                    } else {
-                        this._showErrorMessage("Não foi selecionada nenhuma linha.");
-                    }
-                },
-                _EncomendaResponse: function () {
-                    if (this.result_Encomenda.eReasonCode == 0) {
-                        this._showMessage(this.result_Encomenda.eMessage);
-                        this.$.grid_databound_ajax.generateRequest();
-                        this.$.grid.selectedItems = [];
-                    } else {
-                        this._showErrorMessage(this.result_Encomenda.eMessage);
-                    }
-                },
-
-                _CriarDocumento: function (selectedItem, selectedItems) {
-                    if (this.selectedItems != null && this.selectedItems != "") {
-                        var selItms = this.selectedItems;
-                        this.$.ajax_CriarDocumento.body = JSON.stringify(selItms);
-                        this.$.ajax_CriarDocumento.generateRequest();
-                        this.$.grid.clearCache();
-                    } else {
-                        this._showErrorMessage("Não foi selecionada nenhuma linha.");
-                    }
-                },
-                _CriarDocumentoResponse: function () {
-                    if (this.result_CriarDocumento.eReasonCode == 0) {
-                        this._showMessage(this.result_CriarDocumento.eMessage);
-                        this.$.grid_databound_ajax.generateRequest();
-                        this.$.grid.selectedItems = [];
-                    } else {
-                        this._showErrorMessage(this.result_CriarDocumento.eMessage);
-                    }
-                },
-
-
-                _NaoCriarDocumento: function (selectedItem, selectedItems) {
-                    if (this.selectedItems != null && this.selectedItems != "") {
-                        var selItms = this.selectedItems;
-                        this.$.ajax_NaoCriarDocumento.body = JSON.stringify(selItms);
-                        this.$.ajax_NaoCriarDocumento.generateRequest();
-                        this.$.grid.clearCache();
-                    } else {
-                        this._showErrorMessage("Não foi selecionada nenhuma linha.");
-                    }
-                },
-                _NaoCriarDocumentoResponse: function () {
-                    if (this.result_NaoCriarDocumento.eReasonCode == 0) {
-                        this._showMessage(this.result_NaoCriarDocumento.eMessage);
-                        this.$.grid_databound_ajax.generateRequest();
-                        this.$.grid.selectedItems = [];
-                    } else {
-                        this._showErrorMessage(this.result_NaoCriarDocumento.eMessage);
-                    }
-                },
-
-                _updateLinha: function (e) {
-                    var index = this.result.indexOf(e.model.item);
-
-                    this.$.page_updatelinha_ajax.body = JSON.stringify({
-                        numLinhaPreEncomenda: e.model.item.numLinhaPreEncomenda,
-                        numFornecedor: e.model.item.numFornecedor
-                    });
-                    this.$.page_updatelinha_ajax.generateRequest();
-                    this.$.grid.clearCache();
-                },
-
-                _updateLinhaResponse: function (e) {
-                    if (this.LinhaUpdated.eReasonCode == 0) {
-                        this._showMessage('Linha atualizada com sucesso.');
-                    }
-                    else {
-                        this._showErrorMessage('Ocorreu um erro ao actualizar a Linha.');
-                    }
-                    this.$.grid_databound_ajax.generateRequest();
-                },
-
-
-                _criarEncomendaCabimento: function () {
-                    this.$.criarEncomendaCabimento_ajax.body = JSON.stringify(this.result);
-                    this.$.criarEncomendaCabimento_ajax.generateRequest();
-                },
-                _criarEncomendaCabimentoResponse: function (e) {
-                    if (this.CriarEncomendaCabimento.eReasonCode == "1") {
-                        this._openToast(this.CriarEncomendaCabimento.eMessage);
-                        this.$.grid_databound_ajax.generateRequest();
-                    }
-                    else {
-                        if (this.CriarEncomendaCabimento.eMessages.length > 0)
-                            this._toggleToastMultiple();
-                            //this._openToastError("Ocorreram vários erros!");
-                        else
-                            this._openToastError(this.CriarEncomendaCabimento.eMessage);
-                    }
-                },
-
                 _toggleToastMultiple: function () {
                     this._checkForErrors();
                     if (this._hasErrors)
@@ -610,14 +405,6 @@
                 _checkForErrors: function () {
                     var errors = this.CriarEncomendaCabimento.eMessages.find(x => x.type == 0);
                     this._hasErrors = !(errors == undefined);
-                },
-                _openToast: function (message) {
-                    this.$.ToastMessageSuccess.text = message;
-                    this.$.ToastMessageSuccess.open();
-                },
-                _openToastError: function (message) {
-                    this.$.ToastMessageError.text = message;
-                    this.$.ToastMessageError.open();
                 },
 
                 /*start - ColumnToggle*/
@@ -645,9 +432,9 @@
                         "utilizadorCriacao": { hidden: false, label: "Utilizador Criação" }
                     };
 
-                    if (localStorage["linhaspreencomendaList.ToggleColumn"]) {
+                    if (localStorage["linhaspreencomendahistoricolist.ToggleColumn"]) {
                         var keys = Object.keys(columns);
-                        var storedColumns = JSON.parse(localStorage["linhaspreencomendaList.ToggleColumn"]);
+                        var storedColumns = JSON.parse(localStorage["linhaspreencomendahistoricolist.ToggleColumn"]);
                         for (var i = 0; i < keys.length; i++) {
                             columns[keys[i]] = storedColumns[keys[i]];
                         }
@@ -659,7 +446,7 @@
                     event.path[0].classList.toggle("selected");
                     this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
                     if (typeof (Storage) !== "undefined") {
-                        localStorage["linhaspreencomendaList.ToggleColumn"] = JSON.stringify(this._columns);
+                        localStorage["linhaspreencomendahistoricolist.ToggleColumn"] = JSON.stringify(this._columns);
                     }
                 },
                 _getColumnItemClass: function (columnIndex) {
@@ -680,10 +467,9 @@
                     }
                 },
 
-                _GoHistorico: function () {
-                    window.location.href = "../LinhasPreEncomenda/LinhasPreEncomendaHistorico";
+                _GoActive: function () {
+                    window.location.href = "/LinhasPreEncomenda/LinhasPreEncomenda";
                 }
-
 
             });
         });

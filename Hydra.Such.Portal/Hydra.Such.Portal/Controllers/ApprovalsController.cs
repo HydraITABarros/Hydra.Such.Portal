@@ -257,7 +257,7 @@ namespace Hydra.Such.Portal.Controllers
                                     approvalResult = ApprovalMovementsManager.ApproveMovement(approvalMovement.MovementNo, User.Identity.Name);
 
                                     //Check Approve Status
-                                    if (approvalResult.eReasonCode == 103)
+                                    if (approvalResult.eReasonCode == 100 || approvalResult.eReasonCode == 103)
                                     {
                                         //Update Requisiton Data
                                         requisition.State = RequisitionStates.Approved;
@@ -418,7 +418,7 @@ namespace Hydra.Such.Portal.Controllers
                                     approvalResult = ApprovalMovementsManager.ApproveMovement(approvalMovement.MovementNo, User.Identity.Name);
 
                                     //Check Approve Status
-                                    if (approvalResult.eReasonCode == 103)
+                                    if (approvalResult.eReasonCode == 100 || approvalResult.eReasonCode == 103)
                                     {
                                         //Update Requisiton Data
                                         requisition.State = RequisitionStates.Approved;

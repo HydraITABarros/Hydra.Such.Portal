@@ -49,50 +49,66 @@ namespace Hydra.Such.Portal.Services
 
         public RequisitionViewModel ValidateRequisition(RequisitionViewModel requisition)
         {
-            if (requisition != null && requisition.Lines != null && requisition.Lines.Count > 0 && requisition.State == RequisitionStates.Approved)
+            if (requisition != null)
             {
-                var linesToValidate = requisition.Lines
-                    .Where(x => x.QuantityRequired != null && x.QuantityRequired.Value > 0)
-                    .ToList();
-
-                if (linesToValidate.Count() > 0)
+                if (requisition.State == RequisitionStates.Approved)
                 {
-                    requisition.State = RequisitionStates.Validated;
-                    requisition.ResponsibleValidation = this.changedByUserName;
-                    requisition.ValidationDate = DateTime.Now;
-                    requisition.UpdateUser = this.changedByUserName;
-
-                    linesToValidate.ForEach(item =>
+                    if (requisition.Lines != null && requisition.Lines.Count > 0)
                     {
-                        item.QuantityToProvide = item.QuantityRequired;
-                        item.UpdateUser = this.changedByUserName;
-                    });
+                        var linesToValidate = requisition.Lines
+                            .Where(x => x.QuantityRequired != null && x.QuantityRequired.Value > 0)
+                            .ToList();
 
-                    var updatedReq = DBRequest.UpdateHeaderAndLines(requisition.ParseToDB(), true);
-                    if (updatedReq != null)
-                    {
-                        requisition = updatedReq.ParseToViewModel();
-                        requisition.eReasonCode = 1;
-                        requisition.eMessage = "Requisição validada com sucesso.";
+                        if (linesToValidate.Count() > 0)
+                        {
+                            requisition.State = RequisitionStates.Validated;
+                            requisition.ResponsibleValidation = this.changedByUserName;
+                            requisition.ValidationDate = DateTime.Now;
+                            requisition.UpdateUser = this.changedByUserName;
+
+                            linesToValidate.ForEach(item =>
+                            {
+                                item.QuantityToProvide = item.QuantityRequired;
+                                item.UpdateUser = this.changedByUserName;
+                            });
+
+                            var updatedReq = DBRequest.UpdateHeaderAndLines(requisition.ParseToDB(), true);
+                            if (updatedReq != null)
+                            {
+                                requisition = updatedReq.ParseToViewModel();
+                                requisition.eReasonCode = 1;
+                                requisition.eMessage = "Requisição validada com sucesso.";
+                            }
+                            else
+                            {
+                                requisition.eReasonCode = 3;
+                                requisition.eMessage = "Ocorreu um erro ao validar a requisição.";
+                            }
+                        }
+                        else
+                        {
+                            requisition.eReasonCode = 4;
+                            requisition.eMessage = "Não existem linhas com Qt. Requerida superior a zero.";
+                        }
                     }
                     else
                     {
-                        requisition.eReasonCode = 3;
-                        requisition.eMessage = "Ocorreu um erro ao validar a requisição.";
+                        requisition.eReasonCode = 5;
+                        requisition.eMessage = "Não existem linhas para validar na Requisição.";
                     }
                 }
                 else
                 {
-                    requisition.eReasonCode = 3;
-                    requisition.eMessage = "Não existem linhas que cumpram os requisitos de validação.";
+                    requisition.eReasonCode = 6;
+                    requisition.eMessage = "A Requisição não está no estado Aprovado.";
                 }
             }
             else
             {
                 requisition = new RequisitionViewModel()
                 {
-                    eReasonCode = 3,
-                    eMessage = " O estado da requisição e / ou linhas não cumprem os requisitos de validação.",
+                    eReasonCode = 7,
+                    eMessage = "Erro na obtenção da Requisição.",
                 };
             }
             return requisition;

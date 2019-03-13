@@ -52,6 +52,21 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
+        public IActionResult LinhasPreEncomendaHistorico()
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Features.PréEncomendas);
+
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
         public IActionResult DetalheLinhasPreEncomenda(string numLinhaPreEncomenda)
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Features.PréEncomendas);
@@ -72,6 +87,22 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetAllLinhas()
         {
             List<LinhasPreEncomenda> result = DBEncomendas.GetAllLinhasPreEncomendaToList().Where(linha => linha.Tratada == false).ToList();
+            List<LinhasPreEncomendaView> list = new List<LinhasPreEncomendaView>();
+            int _contador = -1;
+            foreach (LinhasPreEncomenda lin in result)
+            {
+                _contador += 1;
+                list.Add(DBEncomendas.CastLinhasPreEncomendaToView(lin));
+                list[_contador].NomeFornecedor_Show = DBNAV2017Supplier.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, list[_contador].NumFornecedor).Count > 0 ? DBNAV2017Supplier.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, list[_contador].NumFornecedor).FirstOrDefault().Name : string.Empty;
+            }
+
+            return Json(list);
+        }
+
+        [HttpPost]
+        public JsonResult GetAllLinhasHistorico()
+        {
+            List<LinhasPreEncomenda> result = DBEncomendas.GetAllLinhasPreEncomendaToList().Where(linha => linha.Tratada == true).ToList();
             List<LinhasPreEncomendaView> list = new List<LinhasPreEncomendaView>();
             int _contador = -1;
             foreach (LinhasPreEncomenda lin in result)
@@ -419,7 +450,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 try
                 {
-                    var list = item.Where(it => it.DocumentoACriar == 1).Where(it => it.CriarDocumento == true).Where(it => it.NumEncomendaAberto == string.Empty).Where(it => !it.NumLinhaEncomendaAberto.HasValue).ToList();
+                    List<LinhasPreEncomendaView> list = item.Where(it => it.DocumentoACriar == 1).Where(it => it.CriarDocumento == true).Where(it => it.NumEncomendaAberto == string.Empty).Where(it => !it.NumLinhaEncomendaAberto.HasValue).ToList();
 
                     List<PurchOrderDTO> purchOrders = new List<PurchOrderDTO>();
                     
@@ -455,7 +486,8 @@ namespace Hydra.Such.Portal.Controllers
                                         RegionCode = line.CodigoRegiao,
                                         UnitMeasureCode = line.CodigoUnidadeMedida,
                                         VATBusinessPostingGroup = string.Empty,
-                                        VATProductPostingGroup = string.Empty
+                                        VATProductPostingGroup = string.Empty,
+                                        
                                     }).ToList()
                                 }).ToList();
                         }
@@ -479,23 +511,73 @@ namespace Hydra.Such.Portal.Controllers
                                 var result = CreateNAVPurchaseOrderFor(purchOrder, Convert.ToDateTime(requisition.ReceivedDate));
                                 if (result.CompletedSuccessfully)
                                 {
+                                    foreach(PurchOrderLineDTO Linha in purchOrder.Lines)
+                                    {
+                                        LinhasPreEncomenda LinhaPre = DBEncomendas.GetLinhasPreEncomenda((int)Linha.LineId);
+
+                                        if (LinhaPre != null)
+                                        {
+                                            string ReqNo = LinhaPre.NºRequisição;
+                                            int ReqNoLinha = (int)LinhaPre.NºLinhaRequisição;
+
+                                            Requisição Req = DBRequest.GetById(ReqNo);
+                                            if (Req != null)
+                                            {
+                                                Req.NºEncomenda = result.ResultValue;
+                                                Req.UtilizadorModificação = User.Identity.Name;
+                                                Req.DataHoraModificação = DateTime.Now;
+                                                if (DBRequest.Update(Req) != null)
+                                                {
+                                                    LinhasRequisição ReqLinha = DBRequestLine.GetByRequisicaoNoAndLineNo(ReqNo, ReqNoLinha);
+                                                    if (ReqLinha != null)
+                                                    {
+                                                        ReqLinha.NºEncomendaCriada = result.ResultValue;
+                                                        ReqLinha.UtilizadorModificação = User.Identity.Name;
+                                                        ReqLinha.DataHoraModificação = DateTime.Now;
+                                                        DBRequestLine.Update(ReqLinha);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    foreach (LinhasPreEncomendaView Linha in list)
+                                    {
+                                        if (Linha.NumFornecedor == purchOrder.SupplierId)
+                                        {
+                                            Linha.NumPreEncomenda = result.ResultValue;
+                                            Linha.DocumentoACriar = null;
+                                            Linha.CriarDocumento = false;
+                                            Linha.Tratada = true;
+                                            Linha.UtilizadorModificacao = User.Identity.Name;
+                                            Linha.DataHoraModificacao = DateTime.Now;
+                                            DBEncomendas.Update(DBEncomendas.CastLinhasPreEncomendaToDB(Linha));
+                                        }
+                                    }
+
+                                    resultado.eMessages.Add(new TraceInformation(TraceType.Success, "Criada encomenda para o fornecedor núm. " + purchOrder.SupplierId + "; "));
+
                                     //Update req
-                                    requisition.OrderNo = result.ResultValue;
+                                    //requisition.OrderNo = result.ResultValue;
 
                                     //Update Requisition Lines
-                                    requisition.Lines.Where(x => x.LineNo == purchOrder.OpenOrderLineNo).ToList().ForEach(line =>
-                                    {
-                                        line.CreatedOrderNo = result.ResultValue;
-                                        line.UpdateUser = User.Identity.Name;
-                                    });
+                                    //requisition.Lines.Where(x => x.LineNo == purchOrder.OpenOrderLineNo).ToList().ForEach(line =>
+                                    //{
+                                    //    line.CreatedOrderNo = result.ResultValue;
+                                    //    line.UpdateUser = User.Identity.Name;
+                                    //    line.UpdateDateTime = DateTime.Now;
+                                    //});
                                     //Commit to DB
-                                    var updatedReq = DBRequest.Update(requisition.ParseToDB(), true);
+                                    //var updatedReq = DBRequest.Update(requisition.ParseToDB(), true);
+
+
+
                                     //bool linesUpdated = DBRequestLine.Update(requisition.Lines.ParseToDB());
                                     //if (linesUpdated)
-                                    if (updatedReq != null)
-                                    {
-                                        resultado.eMessages.Add(new TraceInformation(TraceType.Success, "Criada encomenda para o fornecedor núm. " + purchOrder.SupplierId + "; "));
-                                    }
+                                    //if (updatedReq != null)
+                                    //{
+                                    //    resultado.eMessages.Add(new TraceInformation(TraceType.Success, "Criada encomenda para o fornecedor núm. " + purchOrder.SupplierId + "; "));
+                                    //}
                                 }
                             }
                             catch (Exception ex)
