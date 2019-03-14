@@ -113,19 +113,6 @@ namespace Hydra.Such.Portal.Controllers
 
             }
 
-            List<NAVClientsViewModel> AllClients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "");
-
-            result.ForEach(x =>
-            {
-                if (x.Status.HasValue)
-                {
-                    x.StatusDescription = x.Status.Value.GetDescription() ;
-                }
-                x.ClientName = AllClients.Where(y => y.No_ == x.ClientNo).FirstOrDefault() != null ? AllClients.Where(y => y.No_ == x.ClientNo).FirstOrDefault().Name : "";
-                //x.ClientName = DBNAV2017Clients.GetClientNameByNo(x.ClientNo, _config.NAVDatabaseName, _config.NAVCompanyName);
-            });
-
-
             //Apply User Dimensions Validations
             List<AcessosDimensões> CUserDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
             //Regions
@@ -137,6 +124,15 @@ namespace Hydra.Such.Portal.Controllers
             //ResponsabilityCenter
             if (CUserDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
                 result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.ResponsabilityCenterCode));
+
+            List<NAVClientsViewModel> AllClients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "");
+
+            result.ForEach(x =>
+            {
+                x.StatusDescription = x.Status.HasValue ? x.Status.Value.GetDescription() : "";
+                x.ClientName = !string.IsNullOrEmpty(x.ClientNo) ? AllClients.Where(y => y.No_ == x.ClientNo).FirstOrDefault() != null ? AllClients.Where(y => y.No_ == x.ClientNo).FirstOrDefault().Name : "" : "";
+                //x.ClientName = DBNAV2017Clients.GetClientNameByNo(x.ClientNo, _config.NAVDatabaseName, _config.NAVCompanyName);
+            });
 
             return Json(result);
         }
@@ -2991,17 +2987,17 @@ namespace Hydra.Such.Portal.Controllers
                     if (CUserDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
                         result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CodCentroResponsabilidade));
 
-                    var clients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, string.Join(",", result.Select(r=>r.CodCliente).ToList()) ).ToList();
+                    List<NAVClientsViewModel> clients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, string.Join(",", result.Select(r=>r.CodCliente).ToList()) ).ToList();
+                    List<MovimentosProjectoAutorizados> AllAuthorizedProjectMovements = DBAuthorizedProjectMovements.GetAll("");
 
                     result.ForEach(x =>
                     {
-                        var movements = DBAuthorizedProjectMovements.GetMovementById(x.GrupoFactura, x.CodProjeto);
+                        var movements = AllAuthorizedProjectMovements.Where(y => y.GrupoFactura == x.GrupoFactura && y.CodProjeto == x.CodProjeto);
                         if (movements != null) { 
                             x.ValorAutorizado = movements.Sum(y => y.PrecoTotal);
                         }
 
-                        var client = clients.FirstOrDefault(c => c.No_ == x.CodCliente);
-                        x.NomeCliente = client != null ? client.Name : null;
+                        x.NomeCliente = !string.IsNullOrEmpty(x.CodCliente) ? clients.Where(y => y.No_ == x.CodCliente).FirstOrDefault() != null ? clients.Where(y => y.No_ == x.CodCliente).FirstOrDefault().Name : "" : "";
                     });
                 }
                 return Json(result);
@@ -7126,6 +7122,11 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Serviço Cliente");
                     Col = Col + 1;
                 }
+                if (dp["mealTypeDescription"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Tipo de Refeição");
+                    Col = Col + 1;
+                }
                 if (dp["serviceGroupCode"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Cód. Grupo Serviço");
@@ -7263,6 +7264,11 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["serviceClientDescription"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.ServiceClientDescription);
+                            Col = Col + 1;
+                        }
+                        if (dp["mealTypeDescription"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.MealTypeDescription);
                             Col = Col + 1;
                         }
                         if (dp["serviceGroupCode"]["hidden"].ToString() == "False")

@@ -257,7 +257,7 @@ namespace Hydra.Such.Portal.Controllers
                                     approvalResult = ApprovalMovementsManager.ApproveMovement(approvalMovement.MovementNo, User.Identity.Name);
 
                                     //Check Approve Status
-                                    if (approvalResult.eReasonCode == 103)
+                                    if (approvalResult.eReasonCode == 100 || approvalResult.eReasonCode == 103)
                                     {
                                         //Update Requisiton Data
                                         requisition.State = RequisitionStates.Approved;
@@ -265,56 +265,62 @@ namespace Hydra.Such.Portal.Controllers
                                         requisition.ApprovalDate = DateTime.Now;
                                         requisition.UpdateDate = DateTime.Now;
                                         requisition.UpdateUser = User.Identity.Name;
-                                        DBRequest.Update(requisition.ParseToDB());
-
-                                        //Create Workflow
-                                        var ctx = new SuchDBContext();
-                                        var logEntry = new RequisicoesRegAlteracoes();
-                                        logEntry.NºRequisição = requisition.RequisitionNo;
-                                        logEntry.Estado = (int)RequisitionStates.Approved; //APROVADO = 4
-                                        logEntry.ModificadoEm = DateTime.Now;
-                                        logEntry.ModificadoPor = User.Identity.Name;
-                                        ctx.RequisicoesRegAlteracoes.Add(logEntry);
-                                        ctx.SaveChanges();
-
-                                        //Update Requisition Lines Data
-                                        requisition.Lines.ForEach(line =>
+                                        if (DBRequest.Update(requisition.ParseToDB()) != null)
                                         {
-                                            if (line.QuantityToRequire.HasValue && line.QuantityToRequire.Value > 0)
+                                            //Create Workflow
+                                            var ctx = new SuchDBContext();
+                                            var logEntry = new RequisicoesRegAlteracoes();
+                                            logEntry.NºRequisição = requisition.RequisitionNo;
+                                            logEntry.Estado = (int)RequisitionStates.Approved; //APROVADO = 4
+                                            logEntry.ModificadoEm = DateTime.Now;
+                                            logEntry.ModificadoPor = User.Identity.Name;
+                                            ctx.RequisicoesRegAlteracoes.Add(logEntry);
+                                            ctx.SaveChanges();
+
+                                            //Update Requisition Lines Data
+                                            requisition.Lines.ForEach(line =>
                                             {
-                                                line.QuantityRequired = line.QuantityToRequire;
-                                                DBRequestLine.Update(line.ParseToDB());
+                                                if (line.QuantityToRequire.HasValue && line.QuantityToRequire.Value > 0)
+                                                {
+                                                    line.QuantityRequired = line.QuantityToRequire;
+                                                    DBRequestLine.Update(line.ParseToDB());
+                                                }
+                                            });
+
+                                            result.eReasonCode = 100;
+                                            result.eMessage = "A requisição foi aprovada com sucesso.";
+
+                                            //Se a requesição tiver o campo "Requisição Nutrição" a true faz automaticamente a validação
+                                            if (requisition.RequestNutrition == true)
+                                            {
+                                                RequisitionService serv = new RequisitionService(configws, HttpContext.User.Identity.Name);
+                                                requisition = serv.ValidateRequisition(requisition);
+                                                if (requisition.eReasonCode == 1)
+                                                {
+                                                    //Create Workflow
+                                                    ctx = new SuchDBContext();
+                                                    logEntry = new RequisicoesRegAlteracoes();
+                                                    logEntry.NºRequisição = requisition.RequisitionNo;
+                                                    logEntry.Estado = (int)RequisitionStates.Validated; //VALIDADO = 3
+                                                    logEntry.ModificadoEm = DateTime.Now;
+                                                    logEntry.ModificadoPor = User.Identity.Name;
+                                                    ctx.RequisicoesRegAlteracoes.Add(logEntry);
+                                                    ctx.SaveChanges();
+
+                                                    result.eReasonCode = 100;
+                                                    result.eMessage = "A requisição foi aprovada e validada com sucesso.";
+                                                }
+                                                else
+                                                {
+                                                    result.eReasonCode = requisition.eReasonCode;
+                                                    result.eMessage = requisition.eMessage;
+                                                }
                                             }
-                                        });
-
-                                        result.eReasonCode = 100;
-                                        result.eMessage = "A requisição foi aprovada com sucesso.";
-
-                                        //Se a requesição tiver o campo "Requisição Nutrição" a true faz automaticamente a validação
-                                        if (requisition.RequestNutrition == true)
+                                        }
+                                        else
                                         {
-                                            RequisitionService serv = new RequisitionService(configws, HttpContext.User.Identity.Name);
-                                            requisition = serv.ValidateRequisition(requisition);
-                                            if (requisition.eReasonCode == 1)
-                                            {
-                                                //Create Workflow
-                                                ctx = new SuchDBContext();
-                                                logEntry = new RequisicoesRegAlteracoes();
-                                                logEntry.NºRequisição = requisition.RequisitionNo;
-                                                logEntry.Estado = (int)RequisitionStates.Validated; //VALIDADO = 3
-                                                logEntry.ModificadoEm = DateTime.Now;
-                                                logEntry.ModificadoPor = User.Identity.Name;
-                                                ctx.RequisicoesRegAlteracoes.Add(logEntry);
-                                                ctx.SaveChanges();
-
-                                                result.eReasonCode = 100;
-                                                result.eMessage = "A requisição foi aprovada e validada com sucesso.";
-                                            }
-                                            else
-                                            {
-                                                result.eReasonCode = requisition.eReasonCode;
-                                                result.eMessage = requisition.eMessage;
-                                            }
+                                            result.eReasonCode = 11;
+                                            result.eMessage = "Ocorreu um erro na atualização da Requisição.";
                                         }
                                     }
                                     else if (approvalResult.eReasonCode == 100)
@@ -356,20 +362,26 @@ namespace Hydra.Such.Portal.Controllers
                                 requisition.UpdateUser = User.Identity.Name;
                                 //requisition.Comments += rejectionComments;
                                 requisition.RejeicaoMotivo = rejectionComments;
-                                DBRequest.Update(requisition.ParseToDB());
+                                if (DBRequest.Update(requisition.ParseToDB()) != null)
+                                {
+                                    //Create Workflow
+                                    var ctx = new SuchDBContext();
+                                    var logEntry = new RequisicoesRegAlteracoes();
+                                    logEntry.NºRequisição = requisition.RequisitionNo;
+                                    logEntry.Estado = (int)RequisitionStates.Rejected; //REJEITADO = 5
+                                    logEntry.ModificadoEm = DateTime.Now;
+                                    logEntry.ModificadoPor = User.Identity.Name;
+                                    ctx.RequisicoesRegAlteracoes.Add(logEntry);
+                                    ctx.SaveChanges();
 
-                                //Create Workflow
-                                var ctx = new SuchDBContext();
-                                var logEntry = new RequisicoesRegAlteracoes();
-                                logEntry.NºRequisição = requisition.RequisitionNo;
-                                logEntry.Estado = (int)RequisitionStates.Rejected; //REJEITADO = 5
-                                logEntry.ModificadoEm = DateTime.Now;
-                                logEntry.ModificadoPor = User.Identity.Name;
-                                ctx.RequisicoesRegAlteracoes.Add(logEntry);
-                                ctx.SaveChanges();
-
-                                result.eReasonCode = 100;
-                                result.eMessage = "A requisição foi rejeitada com sucesso.";
+                                    result.eReasonCode = 100;
+                                    result.eMessage = "A requisição foi rejeitada com sucesso.";
+                                }
+                                else
+                                {
+                                    result.eReasonCode = 11;
+                                    result.eMessage = "Ocorreu um erro na atualização da Requisição.";
+                                }
                             }
                             else
                             {
@@ -384,6 +396,7 @@ namespace Hydra.Such.Portal.Controllers
                         result.eMessage = "A requisição já não existe.";
                     }
                 }
+                //COMPRAS A DINHEIRO
                 else if (approvalMovement.Type == 4)
                 {
                     //Get Requistion and verify if exists
@@ -405,7 +418,7 @@ namespace Hydra.Such.Portal.Controllers
                                     approvalResult = ApprovalMovementsManager.ApproveMovement(approvalMovement.MovementNo, User.Identity.Name);
 
                                     //Check Approve Status
-                                    if (approvalResult.eReasonCode == 103)
+                                    if (approvalResult.eReasonCode == 100 || approvalResult.eReasonCode == 103)
                                     {
                                         //Update Requisiton Data
                                         requisition.State = RequisitionStates.Approved;
@@ -413,30 +426,36 @@ namespace Hydra.Such.Portal.Controllers
                                         requisition.ApprovalDate = DateTime.Now;
                                         requisition.UpdateDate = DateTime.Now;
                                         requisition.UpdateUser = User.Identity.Name;
-                                        DBRequest.Update(requisition.ParseToDB());
-
-                                        //Create Workflow
-                                        var ctx = new SuchDBContext();
-                                        var logEntry = new RequisicoesRegAlteracoes();
-                                        logEntry.NºRequisição = requisition.RequisitionNo;
-                                        logEntry.Estado = (int)RequisitionStates.Approved; //APROVADO = 4
-                                        logEntry.ModificadoEm = DateTime.Now;
-                                        logEntry.ModificadoPor = User.Identity.Name;
-                                        ctx.RequisicoesRegAlteracoes.Add(logEntry);
-                                        ctx.SaveChanges();
-
-                                        //Update Requisition Lines Data
-                                        requisition.Lines.ForEach(line =>
+                                        if (DBRequest.Update(requisition.ParseToDB()) != null)
                                         {
-                                            if (line.QuantityToRequire.HasValue && line.QuantityToRequire.Value > 0)
-                                            {
-                                                line.QuantityRequired = line.QuantityToRequire;
-                                                DBRequestLine.Update(line.ParseToDB());
-                                            }
-                                        });
+                                            //Create Workflow
+                                            var ctx = new SuchDBContext();
+                                            var logEntry = new RequisicoesRegAlteracoes();
+                                            logEntry.NºRequisição = requisition.RequisitionNo;
+                                            logEntry.Estado = (int)RequisitionStates.Approved; //APROVADO = 4
+                                            logEntry.ModificadoEm = DateTime.Now;
+                                            logEntry.ModificadoPor = User.Identity.Name;
+                                            ctx.RequisicoesRegAlteracoes.Add(logEntry);
+                                            ctx.SaveChanges();
 
-                                        result.eReasonCode = 100;
-                                        result.eMessage = "A Compras Dinheiro foi aprovada com sucesso.";
+                                            //Update Requisition Lines Data
+                                            requisition.Lines.ForEach(line =>
+                                            {
+                                                if (line.QuantityToRequire.HasValue && line.QuantityToRequire.Value > 0)
+                                                {
+                                                    line.QuantityRequired = line.QuantityToRequire;
+                                                    DBRequestLine.Update(line.ParseToDB());
+                                                }
+                                            });
+
+                                            result.eReasonCode = 100;
+                                            result.eMessage = "A Compras Dinheiro foi aprovada com sucesso.";
+                                        }
+                                        else
+                                        {
+                                            result.eReasonCode = 11;
+                                            result.eMessage = "Ocorreu um erro na atualização da Compras a Dinheiro.";
+                                        }
                                     }
                                     else if (approvalResult.eReasonCode == 100)
                                     {
@@ -477,20 +496,26 @@ namespace Hydra.Such.Portal.Controllers
                                 requisition.UpdateUser = User.Identity.Name;
                                 //requisition.Comments += rejectionComments;
                                 requisition.RejeicaoMotivo = rejectionComments;
-                                DBRequest.Update(requisition.ParseToDB());
+                                if (DBRequest.Update(requisition.ParseToDB()) != null)
+                                {
+                                    //Create Workflow
+                                    var ctx = new SuchDBContext();
+                                    var logEntry = new RequisicoesRegAlteracoes();
+                                    logEntry.NºRequisição = requisition.RequisitionNo;
+                                    logEntry.Estado = (int)RequisitionStates.Rejected; //REJEITADO = 5
+                                    logEntry.ModificadoEm = DateTime.Now;
+                                    logEntry.ModificadoPor = User.Identity.Name;
+                                    ctx.RequisicoesRegAlteracoes.Add(logEntry);
+                                    ctx.SaveChanges();
 
-                                //Create Workflow
-                                var ctx = new SuchDBContext();
-                                var logEntry = new RequisicoesRegAlteracoes();
-                                logEntry.NºRequisição = requisition.RequisitionNo;
-                                logEntry.Estado = (int)RequisitionStates.Rejected; //REJEITADO = 5
-                                logEntry.ModificadoEm = DateTime.Now;
-                                logEntry.ModificadoPor = User.Identity.Name;
-                                ctx.RequisicoesRegAlteracoes.Add(logEntry);
-                                ctx.SaveChanges();
-
-                                result.eReasonCode = 100;
-                                result.eMessage = "A Compras Dinheiro foi rejeitada com sucesso.";
+                                    result.eReasonCode = 100;
+                                    result.eMessage = "A Compras Dinheiro foi rejeitada com sucesso.";
+                                }
+                                else
+                                {
+                                    result.eReasonCode = 11;
+                                    result.eMessage = "Ocorreu um erro na atualização da Compra a Dinheiro.";
+                                }
                             }
                             else
                             {

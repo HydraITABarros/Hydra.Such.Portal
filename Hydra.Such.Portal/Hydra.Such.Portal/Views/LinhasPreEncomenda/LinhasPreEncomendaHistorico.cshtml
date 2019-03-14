@@ -1,0 +1,10 @@
+﻿@model IEnumerable<Hydra.Such.Data.Database.LinhasPreEncomenda>
+
+    @{
+    ViewData["Title"] = "Linhas Pré-Compra - Histórico";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+
+    <link rel="import" href="~/elements/linhaspreencomenda/linhaspreencomendahistorico_list.html">
+
+    <x-linhaspreencomendahistoricolist _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-linhaspreencomendahistoricolist>

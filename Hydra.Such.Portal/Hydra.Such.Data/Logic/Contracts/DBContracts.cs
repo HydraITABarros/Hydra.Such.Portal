@@ -587,5 +587,121 @@ namespace Hydra.Such.Data.Logic.Contracts
             return result;
 
         }
+
+        public static ContractViewModel ParseToViewModel(Contratos x)
+        {
+            if (x == null)
+                return null;
+            ContractViewModel result = new ContractViewModel()
+            {
+                ContractType = x.TipoContrato,
+                ContractNo = x.NºDeContrato,
+                VersionNo = x.NºVersão,
+                Area = x.Área,
+                Description = x.Descrição,
+                Status = x.Estado,
+                ChangeStatus = x.EstadoAlteração,
+                ClientNo = x.NºCliente,
+                CodeRegion = x.CódigoRegião,
+                CodeFunctionalArea = x.CódigoÁreaFuncional,
+                CodeResponsabilityCenter = x.CódigoCentroResponsabilidade,
+                CodeShippingAddress = x.CódEndereçoEnvio,
+                ShippingName = x.EnvioANome,
+                ShippingAddress = x.EnvioAEndereço,
+                ShippingZipCode = x.EnvioACódPostal,
+                ShippingLocality = x.EnvioALocalidade,
+                InvocePeriod = x.PeríodoFatura,
+                LastInvoiceDate = x.ÚltimaDataFatura.HasValue ? x.ÚltimaDataFatura.Value.ToString("yyyy-MM-dd") != "1900-01-01" ? x.ÚltimaDataFatura.Value.ToString("yyyy-MM-dd") : "" : "",
+                NextInvoiceDate = x.PróximaDataFatura.HasValue ? x.PróximaDataFatura.Value.ToString("yyyy-MM-dd") != "1900-01-01" ? x.PróximaDataFatura.Value.ToString("yyyy-MM-dd") : "" : "",
+                StartData = x.DataInicial.HasValue ? x.DataInicial.Value.ToString("yyyy-MM-dd") != "1900-01-01" ? x.DataInicial.Value.ToString("yyyy-MM-dd") : "" : "",
+                DueDate = x.DataExpiração.HasValue ? x.DataExpiração.Value.ToString("yyyy-MM-dd") != "1900-01-01" ? x.DataExpiração.Value.ToString("yyyy-MM-dd") : "" : "",
+                BatchInvoices = x.JuntarFaturas,
+                NextBillingPeriod = x.PróximoPeríodoFact,
+                ContractLinesInBilling = x.LinhasContratoEmFact,
+                CodePaymentTerms = x.CódTermosPagamento,
+                ProposalType = x.TipoProposta,
+                BillingType = x.TipoFaturação,
+                MaintenanceContractType = x.TipoContratoManut,
+                ClientRequisitionNo = x.NºRequisiçãoDoCliente,
+                ReceiptDateRequisition = x.DataReceçãoRequisição.HasValue ? x.DataReceçãoRequisição.Value.ToString("yyyy-MM-dd") != "1900-01-01" ? x.DataReceçãoRequisição.Value.ToString("yyyy-MM-dd") : "" : "",
+                PromiseNo = x.NºCompromisso,
+                ProvisioningFee = x.TaxaAprovisionamento,
+                Mc = x.Mc,
+                DisplacementFee = x.TaxaDeslocação,
+                FixedVowsAgreement = x.ContratoAvençaFixa,
+                ServiceObject = x.ObjetoServiço,
+                VariableAvengeAgrement = x.ContratoAvençaVariável,
+                Notes = x.Notas,
+                ContractStartDate = x.DataInícioContrato.HasValue ? x.DataInícioContrato.Value.ToString("yyyy-MM-dd") != "1900-01-01" ? x.DataInícioContrato.Value.ToString("yyyy-MM-dd") : "" : "",
+                ContractEndDate = x.DataFimContrato.HasValue ? x.DataFimContrato.Value.ToString("yyyy-MM-dd") != "1900-01-01" ? x.DataFimContrato.Value.ToString("yyyy-MM-dd") : "" : "",
+                ContractDurationDescription = x.DescriçãoDuraçãoContrato,
+                StartDateFirstContract = x.DataInício1ºContrato.HasValue ? x.DataInício1ºContrato.Value.ToString("yyyy-MM-dd") != "1900-01-01" ? x.DataInício1ºContrato.Value.ToString("yyyy-MM-dd") : "" : "",
+                FirstContractReference = x.Referência1ºContrato,
+                ContractMaxDuration = x.DuraçãoMáxContrato.HasValue ? x.DuraçãoMáxContrato.Value.ToString("yyyy-MM-dd") != "1900-01-01" ? x.DuraçãoMáxContrato.Value.ToString("yyyy-MM-dd") : "" : "",
+                TerminationTermNotice = x.RescisãoPrazoAviso,
+                RenovationConditions = x.CondiçõesParaRenovação,
+                RenovationConditionsAnother = x.CondiçõesRenovaçãoOutra,
+                PaymentTerms = x.CondiçõesPagamento,
+                PaymentTermsAnother = x.CondiçõesPagamentoOutra,
+                CustomerSigned = x.AssinadoPeloCliente,
+                Interests = x.Juros,
+                SignatureDate = x.DataDaAssinatura.HasValue ? x.DataDaAssinatura.Value.ToString("yyyy-MM-dd") != "1900-01-01" ? x.DataDaAssinatura.Value.ToString("yyyy-MM-dd") : "" : "",
+                CustomerShipmentDate = x.DataEnvioCliente.HasValue ? x.DataEnvioCliente.Value.ToString("yyyy-MM-dd") != "1900-01-01" ? x.DataEnvioCliente.Value.ToString("yyyy-MM-dd") : "" : "",
+                ProvisionUnit = x.UnidadePrestação,
+                ContractReference = x.ReferênciaContrato,
+                TotalProposalValue = x.ValorTotalProposta,
+                PhysicalFileLocation = x.LocalArquivoFísico,
+                OportunityNo = x.NºOportunidade,
+                ProposalNo = x.NºProposta,
+                ContactNo = x.NºContato,
+                DateProposedState = x.DataEstadoProposta.HasValue ? x.DataEstadoProposta.Value.ToString("yyyy-MM-dd") != "1900-01-01" ? x.DataEstadoProposta.Value.ToString("yyyy-MM-dd") : "" : "",
+                OrderOrigin = x.OrigemDoPedido,
+                OrdOrderSource = x.DescOrigemDoPedido,
+                InternalNumeration = x.NumeraçãoInterna,
+                ProposalChangeDate = x.DataHoraModificação.HasValue ? x.DataHoraModificação.Value.ToString("yyyy-MM-dd") != "1900-01-01" ? x.DataHoraModificação.Value.ToString("yyyy-MM-dd") : "" : "",
+                ProposalChangeTime = x.DataHoraModificação.HasValue ? x.DataHoraModificação.Value.ToString("HH:mm") : "",
+                LimitClarificationDate = x.DataHoraLimiteEsclarecimentos.HasValue ? x.DataHoraLimiteEsclarecimentos.Value.ToString("yyyy-MM-dd") != "1900-01-01" ? x.DataHoraLimiteEsclarecimentos.Value.ToString("yyyy-MM-dd") : "" : "",
+                LimitClarificationTime = x.DataHoraLimiteEsclarecimentos.HasValue ? x.DataHoraLimiteEsclarecimentos.Value.ToString("HH:mm") : "",
+                ErrorsOmissionsDate = x.DataHoraErrosEOmissões.HasValue ? x.DataHoraErrosEOmissões.Value.ToString("yyyy-MM-dd") != "1900-01-01" ? x.DataHoraErrosEOmissões.Value.ToString("yyyy-MM-dd") : "" : "",
+                ErrorsOmissionsTime = x.DataHoraErrosEOmissões.HasValue ? x.DataHoraErrosEOmissões.Value.ToString("HH:mm") : "",
+                FinalReportDate = x.DataHoraRelatórioFinal.HasValue ? x.DataHoraRelatórioFinal.Value.ToString("yyyy-MM-dd") != "1900-01-01" ? x.DataHoraRelatórioFinal.Value.ToString("yyyy-MM-dd") : "" : "",
+                FinalReportTime = x.DataHoraRelatórioFinal.HasValue ? x.DataHoraRelatórioFinal.Value.ToString("HH:mm") : "",
+                DocumentationHabilitationDate = x.DataHoraHabilitaçãoDocumental.HasValue ? x.DataHoraHabilitaçãoDocumental.Value.ToString("yyyy-MM-dd") != "1900-01-01" ? x.DataHoraHabilitaçãoDocumental.Value.ToString("yyyy-MM-dd") : "" : "",
+                DocumentationHabilitationTime = x.DataHoraHabilitaçãoDocumental.HasValue ? x.DataHoraHabilitaçãoDocumental.Value.ToString("HH:mm") : "",
+                CompulsoryCompulsoryNo = x.NºComprimissoObrigatório,
+                CreateDate = x.DataHoraCriação.HasValue ? x.DataHoraCriação.Value.ToString("yyyy-MM-dd") != "1900-01-01" ? x.DataHoraCriação.Value.ToString("yyyy-MM-dd") : "" : "",
+                UpdateDate = x.DataHoraModificação.HasValue ? x.DataHoraModificação.Value.ToString("yyyy-MM-dd") != "1900-01-01" ? x.DataHoraModificação.Value.ToString("yyyy-MM-dd") : "" : "",
+                CreateUser = x.UtilizadorCriação,
+                UpdateUser = x.UtilizadorModificação,
+                Filed = x.Arquivado,
+                ArchiveReason = x.RazãoArquivo,
+                RelatedContract = x.NºContrato,
+                //RequestOrigin = x.OrigemDoPedido,
+                //RequestOriginDescription = x.DescOrigemDoPedido,
+                //EndData = x.DataExpiração.HasValue ? x.DataExpiração.Value.ToString("yyyy-MM-dd") : "",
+                //SentData = x.DataEnvioCliente.HasValue ? x.DataEnvioCliente.Value.ToString("yyyy-MM-dd") : "",
+                //UpdateData = x.DataAlteraçãoProposta.HasValue ? x.DataAlteraçãoProposta.Value.ToString("yyyy-MM-dd") : "",
+                //TotalValue = x.ValorTotalProposta,
+                //ClarificationLimite = x.DataHoraLimiteEsclarecimentos.HasValue ? x.DataHoraLimiteEsclarecimentos.Value.ToString("yyyy-MM-dd HH:mm:ss") : "",
+                //NextInvoicePeriod = x.PróximoPeríodoFact
+                BaseValueProcedure = x.ValorBaseProcedimento,
+                PreviousHearing = x.AudiênciaPrévia.HasValue ? x.AudiênciaPrévia.Value.ToString("yyyy-MM-dd") != "1900-01-01" ? x.AudiênciaPrévia.Value.ToString("yyyy-MM-dd") : "" : "",
+                PreviousHearingTime = x.AudiênciaPrévia.HasValue ? x.AudiênciaPrévia.Value.ToString("HH:mm") : "",
+                ProposalDelivery = x.DataHoraEntregaProposta.HasValue ? x.DataHoraEntregaProposta.Value.ToString("yyyy-MM-dd") != "1900-01-01" ? x.DataHoraEntregaProposta.Value.ToString("yyyy-MM-dd") : "" : "",
+                ProposalDeliveryTime = x.DataHoraEntregaProposta.HasValue ? x.DataHoraEntregaProposta.Value.ToString("HH:mm") : "",
+                History = x.Historico,
+                Type = x.Tipo ?? 0,
+                NoVEP = x.NºVep,
+                TextoFatura = x.TextoFatura
+            };
+            
+            //if (x.NºCliente != null && x.NºCliente != "")
+            //{
+            //    result.ClientName = DBNAV2017Clients.GetClientNameByNo(x.NºCliente, NAVDatabaseName, NAVCompanyName);
+            //}
+
+            return result;
+
+        }
     }
 }

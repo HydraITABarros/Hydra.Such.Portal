@@ -170,7 +170,7 @@
                    content-type="application/json"></iron-ajax>
 
         <!-- Address databound -->
-        <iron-ajax url="/Projetos/GetAddressData"
+        <iron-ajax url="/Contratos/GetAddressData"
                    last-response="{{addressData}}"
                    method="post"
                    handle-as="json"
@@ -2391,7 +2391,7 @@
 
                 //Address Functions
                 _getAddressByCode: function (e) {
-                    this.$.address_ajax.body = JSON.stringify(e.detail.value);
+                    this.$.address_ajax.body = JSON.stringify({ "clientcode": this.$.mClients.value, "addresscode": e.detail.value });
                     this.$.address_ajax.generateRequest();
                 },
                 _addressResponseProcessor: function (e) {

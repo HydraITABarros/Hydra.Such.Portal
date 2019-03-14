@@ -144,7 +144,10 @@
 
         <iron-ajax url="/Viaturas/GetList" id="grid_databound_ajax" last-response="{{vehicleresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetLocations" id="grid_Locations_ajax" last-response="{{Locations}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetUnitOfMeasureByCode" id="grid_unitofmeasure_ajax" last-response="{{UnitsOfMmeasure}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+        <!--<iron-ajax url="/PopulateDropdowns/GetUnitOfMeasureByCode" id="grid_unitofmeasure_ajax" last-response="{{UnitsOfMmeasure}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
+        <iron-ajax url="/PopulateDropdowns/GetUnitOfMeasureByProduct" id="grid_unitofmeasure_ajax" last-response="{{UnitsOfMmeasure}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/PopulateDropdowns/GetrequestTypes" id="grid_requesttypes_ajax" last-response="{{requesttypesresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <!--<iron-ajax url="/PopulateDropdowns/GetProductsForCurrentUser" id="filteredProducts_ajax" auto last-response="{{Products}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
         <iron-ajax url="/PopulateDropdowns/GetAllProductsComprasPortal" id="filteredProducts_ajax" auto last-response="{{Products}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -330,7 +333,6 @@
             <!--<such-dropdown-menu id="menuRegister" on-value-changed="_registerMenuItemSelected" title="Registar" items='[[ _registerMenuItems ]]'></such-dropdown-menu>-->
             <!--<such-dropdown-menu id="menuFunctios" on-value-changed="_functionsMenuItemSelected" title="Funções" items='[[ _functionsMenuItems ]]'></such-dropdown-menu>-->
             <!--</template>-->
-
             <!--<paper-button class="tablinks" id="btnPrint" on-tap="_printRequisition"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Imprimir</paper-button>-->
             <such-dropdown-menu id="menuImprimir" on-value-changed="_menuImprimir" title="Imprimir" items="[[ _imprimirMenuItems ]]"></such-dropdown-menu>
 
@@ -561,7 +563,7 @@
                                 </div>
                                 <div class="row break_clear" hidden="{{_isArchived}}">
                                     <div class="col-lg-3">
-                                        <vaadin-combo-box items="[[UnitsOfMmeasure]]" id="CBUnitsOfMmeasure" item-value-path="id" item-label-path="value" value="" label="Código Unidade Medida">
+                                        <!--<vaadin-combo-box items="[[UnitsOfMmeasure]]" id="CBUnitsOfMmeasure" item-value-path="id" item-label-path="value" value="" label="Código Unidade Medida">
                                             <template>
                                                 <table width="250px">
                                                     <tr>
@@ -570,7 +572,15 @@
                                                     </tr>
                                                 </table>
                                             </template>
-                                        </vaadin-combo-box>
+                                        </vaadin-combo-box>-->
+                                        <such-selectbox id="CBUnitsOfMmeasure" value="" label="Código Unidade Medida"
+                                                        items="[[UnitsOfMmeasure]]"
+                                                        text-path="id"
+                                                        value-path="value"
+                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Unidade Medida"}]'
+                                                        disabled="{{ !_permissions.update }}">
+                                        </such-selectbox>
+
                                     </div>
                                     <div class="col-lg-3">
                                         <vaadin-text-field id="quantityToRequireId" name="quantityToRequireName" label="Quantidade A Requerer" value=""></vaadin-text-field>
@@ -828,7 +838,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-combo-box items="[[UnitsOfMmeasure]]" id="_CLGridUnitMeasureCode" name="_CLGridUnitMeasureCode" item-value-path="id" item-label-path="id" value="{{item.unitMeasureCode}}" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLinesNew">
+                                            <!--<vaadin-combo-box items="[[UnitsOfMmeasure]]" id="_CLGridUnitMeasureCode" name="_CLGridUnitMeasureCode" item-value-path="id" item-label-path="id" value="{{item.unitMeasureCode}}" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLinesNew">
                                                 <template>
                                                     <table width="200px">
                                                         <tr>
@@ -837,7 +847,16 @@
                                                         </tr>
                                                     </table>
                                                 </template>
-                                            </vaadin-combo-box>
+                                            </vaadin-combo-box>-->
+                                            <such-selectbox id="_CLGridUnitMeasureCode" value="{{item.unitMeasureCode}}"
+                                                            items="[[UnitsOfMmeasure]]"
+                                                            text-path="id"
+                                                            value-path="id"
+                                                            fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Unidade Medida"}]'
+                                                            on-blur="_updateRequisitionLinesNew"
+                                                            disabled="{{ !_permissions.update }}">
+                                            </such-selectbox>
+
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.unitMeasureCode}}
@@ -2543,6 +2562,9 @@
                 _onProductChanged: function (e) {
                     var item = this.Products.find(x => x.code == e.detail.value);
                     if (item != null) {
+                        this.$.grid_unitofmeasure_ajax.params = { "produto": this.$.CBProducts.value };
+                        this.$.grid_unitofmeasure_ajax.generateRequest();
+
                         this.$.txtProductDesciption.value = item.name;
                         this.$.txtProductDesciption2.value = item.name2;
                         this.$.CBUnitsOfMmeasure.value = item.measureUnit;

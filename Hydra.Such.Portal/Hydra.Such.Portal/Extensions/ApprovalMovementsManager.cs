@@ -253,6 +253,7 @@ namespace Hydra.Such.Portal.Extensions
                     if (ApprovalMovement.Type.Value == 4 && !string.IsNullOrEmpty(ApprovalMovement.Number))
                         itemToApproveInfo += " - Compras Dinheiro " + ApprovalMovement.Number;
                 }
+
                 if (ApprovalConfigurations.Count > 0)
                 {
                     int lowLevel = ApprovalConfigurations.Where(x => x.NívelAprovação.HasValue).OrderBy(x => x.NívelAprovação.Value).Select(x => x.NívelAprovação.Value).FirstOrDefault();
@@ -395,7 +396,6 @@ namespace Hydra.Such.Portal.Extensions
                         eMessage = "A tarefa foi aprovada pelo ultimo nivel."
                     };
                 }
-
             }
             catch (Exception ex)
             {

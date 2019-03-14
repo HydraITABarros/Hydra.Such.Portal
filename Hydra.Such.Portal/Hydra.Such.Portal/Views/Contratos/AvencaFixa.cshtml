@@ -132,7 +132,7 @@
                     {{item.contractNo}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable hidden="{{checked}}">
+            <vaadin-grid-column width="160px" resizable hidden="{{checked}}" hidden$="{{ _columns.situation.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="situation">Situação</vaadin-grid-sorter>
                     <vaadin-grid-filter path="situation"></vaadin-grid-filter>
@@ -615,6 +615,7 @@
                 _startColumnToggle: function () {
                     var columns = {
                         "contractNo": { hidden: false, label: "Nº Contrato" },
+                        "situation": { hidden: false, label: "Situação" },
                         "description": { hidden: false, label: "Descrição" },
                         "clientNo": { hidden: false, label: "Nº Cliente" },
                         "clientName": { hidden: false, label: "Nome Cliente" },

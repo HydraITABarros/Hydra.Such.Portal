@@ -171,8 +171,7 @@ namespace Hydra.Such.Data.NAV
 
 
                 line.Unit_of_Measure = x.MeasurementUnitCode;
-
-
+                //line.Unit_of_Measure_Code = x.MeasurementUnitCode;
 
 
                 line.Location_Code = x.LocationCode;

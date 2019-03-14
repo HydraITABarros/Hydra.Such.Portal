@@ -1446,7 +1446,10 @@ namespace Hydra.Such.Portal.Controllers
             //    RequisitionStates.Rejected
             //};
             //requisition = DBRequest.GetReqByUserAreaStatus(User.Identity.Name, states);
+
+
             requisition = DBRequest.GetReqByUser((int)RequisitionTypes.Normal, User.Identity.Name);
+
             List<RequisitionViewModel> result = new List<RequisitionViewModel>();
             List<ApprovalMovementsViewModel> AproveList = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAll()); //.GetAllAssignedToUserFilteredByStatus(User.Identity.Name, 1));
             if (requisition != null)
@@ -1481,7 +1484,8 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 if (apmov.Number == req.RequisitionNo && (apmov.Status == 1 || apmov.Status == 2))
                                 {
-                                    req.SentReqToAprove = false;
+                                    if (req.State == RequisitionStates.Approved)
+                                        req.SentReqToAprove = false;
                                 }
                             }
                         }
