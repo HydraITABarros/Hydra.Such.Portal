@@ -283,6 +283,7 @@ namespace Hydra.Such.Portal.Controllers
             List<NAVPostCode> postCodes = DBNAV2017GuiasTransporte.GetNAVPostCodes(_config.NAVDatabaseName, _config.NAVCompanyName);
             return Json(postCodes);
         }
+
         #region CRUD
         [HttpPost]
         public JsonResult CreateGuiaTransporte()
@@ -312,7 +313,8 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult UpdateGuia([FromBody] GuiaTransporteNavViewModel data)
         {
-            if (data.NifCliente != "" && data.VATRegistrationNo == "")
+            
+            if (data.NifCliente != "" && (data.VATRegistrationNo == null || data.VATRegistrationNo == ""))
                 data.VATRegistrationNo = data.NifCliente;
 
             data.CastDateTimeStringPropertiesToDateTime();
@@ -339,6 +341,14 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (result == null)
                     return Json(null);
+
+                int num;
+
+                bool isInt = Int32.TryParse(result.return_value, out num);
+                if (isInt)
+                {
+                    return Json(num);
+                }
 
                 if (result.return_value == "0")
                     return Json(null);

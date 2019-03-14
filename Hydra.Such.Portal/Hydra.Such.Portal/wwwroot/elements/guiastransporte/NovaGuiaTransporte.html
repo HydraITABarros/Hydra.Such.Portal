@@ -171,9 +171,11 @@
                    handle-as="json"
                    content-type="application/json">
         </iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode"
+        <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCodesForUser"
                    last-response="{{CBFunctionalAreas}}"
-                   auto method="post" handle-as="json"
+                   on-response="_functionalAreasResponse"
+                   auto method="post" 
+                   handle-as="json"
                    content-type="application/json">
         </iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode"
@@ -1168,6 +1170,10 @@
                     ////debugger;;
                 },
 
+                _functionalAreasResponse: function (e) {
+                    debugger;;
+                },
+
                 _setTipoLinhaGridText: function (item, tipoLinhaData) {
                     ////debugger;;
                     if (item != null) {
@@ -1187,11 +1193,11 @@
 
                 _setGlobalDimension2Text: function (item, globalDimension2Data) {
                     if (item != null) {
-                        if (this.CBFunctionalAreas != null) {
+                        if (this.CBFunctionalAreas != null && item.shortcutDimension2Code != null && item.shortcutDimension2Code != "") {
                             var _areaTxt = this.CBFunctionalAreas.find(x => x.id == item.shortcutDimension2Code ).value;
                             return _areaTxt;
                         } else {
-                            if (globalDimension2Data != null) {
+                            if (globalDimension2Data != null && item.shortcutDimension2Code != null && item.shortcutDimension2Code != "") {
                                 var _areaTxt = globalDimension2Data.find(x => x.id == item.shortcutDimension2Code).value;
                                 return _areaTxt;
                             }
@@ -1251,8 +1257,6 @@
                 },
 
                 _responseProcessor: function (data) {
-                    ////debugger;;
-
                     var self = this;
                     
                     if (data.detail.status === 200) {
@@ -1269,8 +1273,6 @@
                                                 
                         self.$.codEnvio.disabled = this.data.tipo != 0;
                         
-
-
                         self.$.noProjectoItem.value = this.data.noProjecto;
                         self.$.noProjectoItem.valueText = this.data.noProjecto;
                         self._itemProjectNo = this.data.noProjecto;
@@ -1353,14 +1355,14 @@
                         }
 
                         if (this.data.dataGuiaTxt != null && this.data.dataGuiaTxt != "") {
-                            var _dataGuia = this.__formatDate(this.data.dataGuiaTxt);
+                            var _dataGuia = this.__formatDate(this.data.dataGuiaTxt, 0);
                             if (_dataGuia != null) {
                                 this.data.dataGuia = _dataGuia;
                             }
                         }
 
                         if (this.data.dataSaidaTxt != null && this.data.dataSaidaTxt != "") {
-                            var _dataSaida = this.__formatDate(this.data.dataSaidaTxt);
+                            var _dataSaida = this.__formatDate(this.data.dataSaidaTxt, 0);
                             if (_dataSaida != null) {
                                 this.data.dataSaida = _dataSaida;
                             }
@@ -1870,8 +1872,6 @@
                     }
                 },
 
-               
-
                 _onTipoLinhaChanged: function (e) {
                     ////debugger;;
                     if (this.data != undefined) {
@@ -2314,6 +2314,7 @@
                 },
 
                 _lastCheckBeforeRegister: function (guia) {
+                    debugger;;
                     var lines = guia.linhasGuiaTransporte;
                     if (lines == null) {
                         this._openToastError("Guia não tem linhas preenchidas!");
@@ -2323,7 +2324,7 @@
                     //debugger;;
                     const _TODAY = new Date();  
 
-                    const _DATE = _TODAY.toLocaleDateString("pt-PT").replace(new RegExp("/", 'g'), "-");
+                    const _DATE = _TODAY.toLocaleDateString("en-US").replace(new RegExp("/", 'g'), "-");
                     const _TIME = _TODAY.toLocaleTimeString().match(/\d{2}:\d{2}|[AMP]+/g).join('-');                  
                     
                     //  1. Check destination details
@@ -2348,6 +2349,9 @@
                     }   
 
                     //  3. Incorrect third party VAT number
+                    if (guia.nifCliente != null && guia.nifCliente != "" && (guia.vatRegistrationNo == null || guia.vatRegistrationNo == ""))
+                        guia.vatRegistrationNo = guia.nifCliente;
+
                     if (guia.vatRegistrationNo == null || guia.vatRegistrationNo == "") {
                         this._openToastError("Nif Cliente não preenchido!");
                         return false;
@@ -2369,7 +2373,8 @@
                         return false;
                     }
 
-                    var _testDate = this.__compareDateAndTimeValues(guia.dataSaidaTxt, _DATE, "date");
+                    debugger;;
+                    var _testDate = this.__compareDateAndTimeValues(guia.dataSaidaTxt, this.__formatDate(_DATE, 1), "date");
 
                     if (_testDate === -9) {
                         this._openToastError("Erro na comparação de datas. Por favor, contactar o Suporte!");
@@ -2377,19 +2382,21 @@
                     }
 
                     if (_testDate === 1) {
-                        this._openToastError("Data Saída (" + guia.dataSaidaTxt + ") inferior à data actual (" + _DATE + ")! Por favor corrija!");
+                        this._openToastError("Data Saída (" + guia.dataSaidaTxt + ") inferior à data actual (" + this.__formatDate(_DATE, 1) + ")! Por favor corrija!");
                         return false;
                     }
 
                     if (_testDate === 0) {
+                        debugger;;
+
                         var _testTime = this.__compareDateAndTimeValues(guia.shipmentStartTime, _TIME, "time");
                         if (_testTime === -9) {
                             this._openToastError("Erro na comparação de datas. Por favor, contactar o Suporte!");
                             return false;
                         }
 
-                        if (_testTime === -1) {
-                            this._openToastError("Hora de saída (" + guia.shipmentStartTime + ") posterior à hora actual(" + _TIME + ")! Por favor corrija!");
+                        if (_testTime === 1) {
+                            this._openToastError("Hora de saída (" + guia.shipmentStartTime + ") anterior à hora actual(" + _TIME + ")! Por favor corrija!");
                             return false;
                         }
                     }
@@ -2446,11 +2453,84 @@
                 },
 
                 _registerResponse: function (e) {
+                    var errorMsg = "(" + this.noGuiaTransporteHistoric + ") Não foi possível Registar a guia. Tente novamente!\n";
+
                     if (this.noGuiaTransporteHistoric == null) {
-                        this._openToastError("Não foi possível Registar a guia. Tente novamente! Em caso de falha persistente contacte o Suporte!");
+                        this._openToastError(errorMsg + "Em caso de falha persistente contacte o Suporte!");
                         return;
                     }
 
+                    if (this.noGuiaTransporteHistoric === -1) {
+                        this._openToastError(errorMsg + "No de Guia desconhecido!");
+                        return;
+                    }
+
+                    if (this.noGuiaTransporteHistoric === -10) {
+                        this._openToastError(errorMsg + "No de Guia desconhecido!");
+                        return;
+                    }
+
+                    if (this.noGuiaTransporteHistoric === -20) {
+                        this._openToastError(errorMsg + "Local de descarga ou Código Postal Descarga não preenchido!");
+                        return;
+                    }
+
+                    if (this.noGuiaTransporteHistoric === -30) {
+                        this._openToastError(errorMsg + "Código(s) Postal(is) (Carga ou Descarga) inválido(s)!");
+                        return;
+                    }
+
+                    if (this.noGuiaTransporteHistoric === -40) {
+                        this._openToastError(errorMsg + "Código(s) Postal(is) (Carga ou Descarga) inválido(s)!");
+                        return;
+                    }
+
+                    if (this.noGuiaTransporteHistoric === -50) {
+                        this._openToastError(errorMsg + "Nif não preenchido!");
+                        return;
+                    }
+
+                    if (this.noGuiaTransporteHistoric === -60) {
+                        this._openToastError(errorMsg + "Data Descarga inválida");
+                        return;
+                    }
+
+                    if (this.noGuiaTransporteHistoric === -70) {
+                        this._openToastError(errorMsg + "Guia sem linhas");
+                        return;
+                    }
+
+                    if (this.noGuiaTransporteHistoric === -80) {
+                        this._openToastError(errorMsg + "Guia sem linhas com quantidade válida");
+                        return;
+                    }
+
+                    if (this.noGuiaTransporteHistoric === -90) {
+                        this._openToastError(errorMsg + "Existem linhas com Unidade de Medida inválida");
+                        return;
+                    }
+
+                    if (this.noGuiaTransporteHistoric === -100) {
+                        this._openToastError(errorMsg + "Região e/ou Área Funcional inválidos");
+                        return;
+                    }
+
+                    if (this.noGuiaTransporteHistoric === -110) {
+                        this._openToastError(errorMsg + "Não existe configuração de número de série para o registo de Guias de Transporte no NAV2017");
+                        return;
+                    }
+
+                    if (this.noGuiaTransporteHistoric === -120) {
+                        this._openToastError(errorMsg + "Erro desconhecido!");
+                        return;
+                    }
+
+                    if (this.noGuiaTransporteHistoric === -999) {
+                        this._openToastError(errorMsg + "Erro desconhecido!");
+                        window.location.href = "/GuiasTransporteNav";
+                        return;
+                    }
+                    // SUCCESS
                     window.location.href = "/GuiasTransporteNav/GuiaTransporteDetails/" + noGuiaTransporteHistoric + "?isHistoric=" + true;
                 },
 
@@ -2464,7 +2544,7 @@
                     return (Math.round((num * Math.pow(10, dec)) + (num_sign * 0.0001)) / Math.pow(10, dec)).toFixed(dec);
                 },
 
-                __formatDate: function (_date) {
+                __formatDate: function (_date, _dtFormat) {
                     var d = new Date(_date),
                         month = '' + (d.getMonth() + 1),
                         day = '' + d.getDate(),
@@ -2491,6 +2571,10 @@
 
                     if (day.length < 2)
                         day = '0' + day;
+
+
+                    if (_dtFormat === 1)
+                        return [year, month, day].join('-');
 
                     return [day, month, year].join('-');
                 },

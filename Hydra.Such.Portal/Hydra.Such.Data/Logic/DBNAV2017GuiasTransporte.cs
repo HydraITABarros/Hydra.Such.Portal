@@ -10,6 +10,8 @@ using System.Linq;
 using static Hydra.Such.Data.Enumerations;
 using Hydra.Such.Data.Extensions;
 using Microsoft.EntityFrameworkCore;
+using Hydra.Such.Data.ViewModel.ProjectView;
+using Hydra.Such.Data.Logic.Project;
 
 namespace Hydra.Such.Data.Logic
 {
@@ -598,6 +600,8 @@ namespace Hydra.Such.Data.Logic
             }
             
         }
+
+       
         public static bool UpdateGuiaTransporte(GuiaTransporteNavViewModel guia)
         {
             if(guia == null)
