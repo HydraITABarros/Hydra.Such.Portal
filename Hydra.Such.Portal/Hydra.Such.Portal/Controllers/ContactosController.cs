@@ -18,6 +18,7 @@ using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using Newtonsoft.Json.Linq;
 using Hydra.Such.Data.Logic.Project;
+using Hydra.Such.Data.ViewModel.ProjectView;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -248,9 +249,12 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetContacts()
         {
             List<ContactViewModel> result = DBContacts.GetAll().ParseToViewModel();
+
+            List<NAVDimValueViewModel> AllRegions = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 1);
+
             result.ForEach(CT =>
             {
-                CT.RegiaoText = CT.Regiao != null && CT.Regiao != "" ? DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 1).Where(x => x.Code == CT.Regiao).FirstOrDefault().Name : "";
+                CT.RegiaoText = !string.IsNullOrEmpty(CT.Regiao) ? AllRegions.Where(x => x.Code == CT.Regiao).FirstOrDefault() != null ? AllRegions.Where(x => x.Code == CT.Regiao).FirstOrDefault().Name : "" : "";
             });
             return Json(result.OrderByDescending(x => x.Id));
         }
