@@ -884,7 +884,6 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetFunctionalAreaCode()
         {
-
             List<DDMessageString> result = DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 2, User.Identity.Name).Select(x => new DDMessageString()
             {
                 id = x.Code,
@@ -893,6 +892,25 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        [HttpPost]
+        public JsonResult GetFunctionalAreaCodesForUser()
+        {
+            List<AcessosDimensões> userDims = DBUserDimensions.GetByUserId(User.Identity.Name);
+            List<NAVDimValueViewModel> nav2017Areas = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 2);
+            
+            if(userDims != null && userDims.Count > 0)
+            {
+                nav2017Areas.RemoveAll(x => !userDims.Any(y => y.Dimensão == 2 && y.ValorDimensão == x.Code));
+            }
+
+            List<DDMessageString> result = nav2017Areas.Select(x => new DDMessageString()
+            {
+                id = x.Code,
+                value = x.Name
+            }).ToList();
+
+            return Json(result);
+        }
         [HttpPost]
         public JsonResult GetAllAction()
         {
