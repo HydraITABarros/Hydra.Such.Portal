@@ -3542,7 +3542,7 @@ namespace Hydra.Such.Portal.Controllers
                                 thisHeader.TipoContrato = contractType;
                                 thisHeader.NºProposta = contractNo;
                                 thisHeader.NºDeContrato = newNumeration;
-                                thisHeader.EstadoAlteração = 2;
+                                thisHeader.EstadoAlteração = 1;
                                 //thisHeader.Estado = ????? ABARROS
                                 string create = DBContracts.Create(thisHeader).NºDeContrato;
 
