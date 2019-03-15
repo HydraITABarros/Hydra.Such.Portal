@@ -576,6 +576,7 @@
                     _reportserverurl: {
                         type: String,
                     },
+                    /*FILTROS*/
                     filter: {
                         type: Object,
                         value: {},
@@ -584,12 +585,12 @@
 
                 _rowSelected: function (item) {
                     if (item != null) {
+                        /*FILTROS*/
                         var filters = {};
                         this.$.grid._filters.map(function (value, index) {
                             filters[value.path] = value.value;
                         });
-
-                        window.setGridFilter('folhadehoras-folhadehoras', filters || {});
+                        window.setGridFilter('folhasdehoras-folhadehoralist', filters || {});
 
                         if (item.estadotexto != "Não está Terminada") {
                             if (item.estadotexto != "Faltam Validadores") {
@@ -599,8 +600,9 @@
                         }
                     }
                 },
+                /*FILTROS*/
                 created: function () {
-                    this.filter = window.getGridFilter('folhadehoras-folhadehoras');
+                    this.filter = window.getGridFilter('folhasdehoras-folhadehoralist');
                 },
 
                 ready: function () {
@@ -616,7 +618,8 @@
                     this.$.grid.clearCache();
                     this.$.grid_Pendentes.clearCache();
 
-                    window.handleGridListColumnsOrder(this.$.grid, 'folhadehoras-folhadehoras');
+                    /*FILTROS*/
+                    window.handleGridListColumnsOrder(this.$.grid, 'folhasdehoras-folhadehoralist');
                     window.grid = this.$.grid;
                     window._this = this;
 

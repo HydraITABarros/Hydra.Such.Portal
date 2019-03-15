@@ -345,11 +345,6 @@ namespace Hydra.Such.Portal.Controllers
             if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
                 ContractsList.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CódigoCentroResponsabilidade));
 
-            //List<Contratos> AuxContractsList = ContractsList.Where(x => string.IsNullOrEmpty(x.CódigoÁreaFuncional)).ToList();
-            //if (AuxContractsList != null && AuxContractsList.Count() > 0)
-            //{
-
-            //}
 
             List<ContractViewModel> result = new List<ContractViewModel>();
 

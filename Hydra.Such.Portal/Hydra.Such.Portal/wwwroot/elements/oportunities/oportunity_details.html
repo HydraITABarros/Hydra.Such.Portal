@@ -1074,7 +1074,7 @@
 
         <paper-dialog id="rptDialog" class="dialgoBox" modal>
             <div class="buttons">
-                <paper-button class="btnRemove" on-tap="_closeRptDialog" title="Fechar"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
+                <paper-button id="btn_reportClose" class="btnRemove" on-tap="_closeRptDialog" title="Fechar"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
             </div>
             <iframe id="rptContainer" src="" frameborder="0" style="width: 100%; height: 92%; margin: 0px; padding: 0px"></iframe>
         </paper-dialog>
@@ -1302,7 +1302,7 @@
                 },
                 _setControlsVisibility: function (isArquived) {
                     this._btnArchiveMessage = isArquived ? "Ativar" : "Arquivar";
-                    var excludeItemsIds = ["btnContractAdd", "btnArchive"];
+                    var excludeItemsIds = ["btnContractAdd", "btnArchive", "btn_imprimir", "btn_reportClose"];
                     elems = Polymer.dom(this.root).querySelectorAll('paper-button');
                     elems.forEach(function (elem) {
                         if (excludeItemsIds.indexOf(elem.id) == -1)

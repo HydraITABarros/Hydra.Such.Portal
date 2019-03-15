@@ -79,7 +79,7 @@
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.requisitionNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="requisitionNo">Nº Requisição </vaadin-grid-sorter>
-                    <vaadin-grid-filter path="requisitionNo" />
+                    <vaadin-grid-filter path="requisitionNo" value="[[filter.requisitionNo]]" />
                 </template>
                 <template>
                     {{item.requisitionNo}}
@@ -89,7 +89,7 @@
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.state.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="state">Estado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="state" />
+                    <vaadin-grid-filter path="state" value="[[filter.state]]" />
                 </template>
                 <template>
                     [[ _parsestate(item.state)]]
@@ -153,7 +153,7 @@
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.projectNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="projectNo">Nº Projeto</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="projectNo" />
+                    <vaadin-grid-filter path="projectNo" value="[[filter.projectNo]]" />
                 </template>
                 <template>
                     {{item.projectNo}}
@@ -163,7 +163,7 @@
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.regionCode.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="regionCode">Código Região</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="regionCode" />
+                    <vaadin-grid-filter path="regionCode" value="[[filter.regionCode]]" />
                 </template>
                 <template>
                     @*[[ _parseregion(item.regionCode)]]*@
@@ -174,7 +174,7 @@
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.functionalAreaCode.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="functionalAreaCode">Código Área Funcional</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="functionalAreaCode" />
+                    <vaadin-grid-filter path="functionalAreaCode" value="[[filter.functionalAreaCode]]" />
                 </template>
                 <template>
                     @*[[ _parseArea(item.functionalAreaCode)]]*@
@@ -185,7 +185,7 @@
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.centerResponsibilityCode.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="centerResponsibilityCode">Código Centro Responsabilidade</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="centerResponsibilityCode" />
+                    <vaadin-grid-filter path="centerResponsibilityCode" value="[[filter.centerResponsibilityCode]]" />
                 </template>
                 <template>
                     {{item.centerResponsibilityCode}}
@@ -195,7 +195,7 @@
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.localCode.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="localCode">Código Localização</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="localCode" />
+                    <vaadin-grid-filter path="localCode" value="[[filter.localCode]]" />
                 </template>
                 <template>
                     {{item.localCode}}
@@ -205,7 +205,7 @@
             @*<vaadin-grid-column width="160px" resizable hidden$="{{ _columns.localCode.hidden }}">
             <template class="header">
                 <vaadin-grid-sorter path="localCode">Código Localização</vaadin-grid-sorter>
-                <vaadin-grid-filter path="localCode" />
+                <vaadin-grid-filter path="localCode" value="[[filter.localCode]]" />
             </template>
             <template>
                 {{item.localCode}}
@@ -215,7 +215,7 @@
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.comments.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="comments">Observações</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="comments" />
+                    <vaadin-grid-filter path="comments" value="[[filter.comments]]" />
                 </template>
                 <template>
                     {{item.comments}}
@@ -225,7 +225,7 @@
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.requisitionDate.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="requisitionDate">Data requisição</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="requisitionDate" />
+                    <vaadin-grid-filter path="requisitionDate" value="[[filter.requisitionDate]]" />
                 </template>
                 <template>
                     [[ _parseDateFormat(item.requisitionDate)]]
@@ -235,7 +235,7 @@
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.estimatedValue.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="estimatedValue">Valor Estimado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="estimatedValue" />
+                    <vaadin-grid-filter path="estimatedValue" value="[[filter.estimatedValue]]" />
                 </template>
                 <template>
                     {{item.estimatedValue}}
@@ -261,6 +261,11 @@
                             return {};
                         }
                     },
+                    /*FILTROS*/
+                    filter: {
+                        type: Object,
+                        value: {},
+                    },
                 },
                 observers: [
                     '_onCacheLoaded(resultstatus,RegionData,FunctionalAreaCodeData,ResponsabilityCenterData,LocationsData)'
@@ -270,6 +275,11 @@
                         this.$.ajax_getgrid.generateRequest();
                     }
                     this.Flag = true;
+
+                    /*FILTROS*/
+                    window.handleGridListColumnsOrder(this.$.gridrequest, 'gestaorequisicoes-requisicoesaprovadas');
+                    window.grid = this.$.gridrequest;
+                    window._this = this;
 
                     /*ColumnToggle*/
                     this._startColumnToggle();
@@ -301,9 +311,21 @@
                 },
                 _rowSelected: function (item) {
                     if (item != null) {
+                        /*FILTROS*/
+                        var filters = {};
+                        this.$.gridrequest._filters.map(function (value, index) {
+                            filters[value.path] = value.value;
+                        });
+                        window.setGridFilter('gestaorequisicoes-requisicoesaprovadas', filters || {});
+
                         window.location.href = "/GestaoRequisicoes/DetalhesReqAprovada/" + item.requisitionNo;
                     }
                 },
+                /*FILTROS*/
+                created: function () {
+                    this.filter = window.getGridFilter('gestaorequisicoes-requisicoesaprovadas');
+                },
+
                 _parseregion: function (param) {
                     if (param != undefined && this.RegionData != undefined) {
                         var sel = this.RegionData.find(x => x.id == param);

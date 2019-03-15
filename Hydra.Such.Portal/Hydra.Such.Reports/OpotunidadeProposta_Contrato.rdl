@@ -116,6 +116,10 @@
           <DataField>DataHabilitacaoDocumental</DataField>
           <rd:TypeName>System.DateTime</rd:TypeName>
         </Field>
+        <Field Name="Notas">
+          <DataField>Notas</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
       </Fields>
     </DataSet>
     <DataSet Name="LINHAS">
@@ -189,7 +193,6 @@
             </Paragraphs>
             <rd:DefaultName>Textbox3</rd:DefaultName>
             <Top>0.17639cm</Top>
-            <Left>0cm</Left>
             <Height>0.6cm</Height>
             <Width>4.405cm</Width>
             <Style>
@@ -221,7 +224,6 @@
             </Paragraphs>
             <rd:DefaultName>Textbox3</rd:DefaultName>
             <Top>0.77639cm</Top>
-            <Left>0cm</Left>
             <Height>0.6cm</Height>
             <Width>4.405cm</Width>
             <ZIndex>1</ZIndex>
@@ -254,7 +256,6 @@
             </Paragraphs>
             <rd:DefaultName>Textbox3</rd:DefaultName>
             <Top>1.97639cm</Top>
-            <Left>0cm</Left>
             <Height>0.6cm</Height>
             <Width>4.405cm</Width>
             <ZIndex>2</ZIndex>
@@ -287,7 +288,6 @@
             </Paragraphs>
             <rd:DefaultName>Textbox3</rd:DefaultName>
             <Top>2.57639cm</Top>
-            <Left>0cm</Left>
             <Height>0.6cm</Height>
             <Width>4.405cm</Width>
             <ZIndex>3</ZIndex>
@@ -320,7 +320,6 @@
             </Paragraphs>
             <rd:DefaultName>Textbox3</rd:DefaultName>
             <Top>3.77639cm</Top>
-            <Left>0cm</Left>
             <Height>0.6cm</Height>
             <Width>4.405cm</Width>
             <ZIndex>4</ZIndex>
@@ -353,7 +352,6 @@
             </Paragraphs>
             <rd:DefaultName>Textbox3</rd:DefaultName>
             <Top>4.37639cm</Top>
-            <Left>0cm</Left>
             <Height>0.6cm</Height>
             <Width>4.405cm</Width>
             <ZIndex>5</ZIndex>
@@ -387,7 +385,6 @@
             </Paragraphs>
             <rd:DefaultName>Textbox3</rd:DefaultName>
             <Top>4.97639cm</Top>
-            <Left>0cm</Left>
             <Height>0.6cm</Height>
             <Width>4.405cm</Width>
             <ZIndex>6</ZIndex>
@@ -421,7 +418,6 @@
             </Paragraphs>
             <rd:DefaultName>Textbox3</rd:DefaultName>
             <Top>5.57639cm</Top>
-            <Left>0cm</Left>
             <Height>0.6cm</Height>
             <Width>4.405cm</Width>
             <ZIndex>7</ZIndex>
@@ -455,7 +451,6 @@
             </Paragraphs>
             <rd:DefaultName>Textbox3</rd:DefaultName>
             <Top>6.17639cm</Top>
-            <Left>0cm</Left>
             <Height>0.6cm</Height>
             <Width>4.405cm</Width>
             <ZIndex>8</ZIndex>
@@ -2244,7 +2239,6 @@
             </TablixRowHierarchy>
             <DataSetName>LINHAS</DataSetName>
             <Top>8.75278cm</Top>
-            <Left>0cm</Left>
             <Height>1.2cm</Height>
             <Width>19cm</Width>
             <ZIndex>46</ZIndex>
@@ -2269,7 +2263,6 @@
           </Tablix>
           <Line Name="Line1">
             <Top>8.68222cm</Top>
-            <Left>0cm</Left>
             <Height>0cm</Height>
             <Width>19cm</Width>
             <ZIndex>47</ZIndex>
@@ -2291,6 +2284,70 @@
               </Border>
             </Style>
           </Line>
+          <Textbox Name="Textbox27">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>Notas</Value>
+                    <Style>
+                      <FontFamily>Arial</FontFamily>
+                      <FontSize>9pt</FontSize>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Textbox3</rd:DefaultName>
+            <Top>6.77639cm</Top>
+            <Height>0.6cm</Height>
+            <Width>4.405cm</Width>
+            <ZIndex>49</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
+          <Textbox Name="Textbox51">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=First(Fields!Notas.Value, "CABECALHO")</Value>
+                    <Style>
+                      <FontSize>8pt</FontSize>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Textbox51</rd:DefaultName>
+            <Top>7.37639cm</Top>
+            <Left>0cm</Left>
+            <Height>1.2cm</Height>
+            <Width>9.405cm</Width>
+            <ZIndex>50</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
         </ReportItems>
         <Height>10.05861cm</Height>
         <Style />
@@ -2306,7 +2363,6 @@
               <Source>Embedded</Source>
               <Value>SUCH_logo</Value>
               <Sizing>FitProportional</Sizing>
-              <Left>0cm</Left>
               <Height>1.79917cm</Height>
               <Width>5.23875cm</Width>
               <Style>
