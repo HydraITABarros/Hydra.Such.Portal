@@ -145,12 +145,23 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/GuiasTransporteNav/ForceDocRegistry"
+                   last-response="{{ registryReturnCode }}"
+                   method="post"
+                   handle-as="json"
+                   id="force_registry_guia_ajax"
+                   on-response="_registerResponse"
+                   content-type="application/json">
+        </iron-ajax>
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
 
             <template is="dom-if" if="{{ _history }}">
                 <paper-button id="btn_imprimirE" class="tablinks" on-tap="_printE"><i class="fa fa-print" aria-hidden="true"></i> Imprimir</paper-button>
             </template>
+           
+           <paper-button id="btnRegister" raised class="tablinks" on-tap="_registerDocument" title="Registar" style="background-color:#EF842D; font-weight:bold"><i class="fa fa-institution" aria-hidden="true"></i>&nbsp; Forçar Registo</paper-button>
+           
         </div>
 
         <div class="row break_frm">
@@ -397,7 +408,7 @@
                                 </div>
                             </paper-collapse-group>
                         </iron-pages>
-                        
+
                         <paper-collapse-group>
                             <paper-collapse-item header="Linhas" opened>
                                 <div class="marginSpace"></div>
@@ -533,7 +544,7 @@
                                 </div>
                             </paper-collapse-item>
                         </paper-collapse-group>
-                    </div> 
+                    </div>
                 </div>
             </iron-form>
         </div>
@@ -581,23 +592,104 @@
                     this.$.ToastError.open();
                 },
 
+                _confirmAndExecuteActionToast: function (_message, _ajaxRequest) {
+                    bootbox.confirm({
+                        message: _message,
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            if (result) {
+                                _ajaxRequest.generateRequest();
+                            }
+                        }
+                    });
+                },
+
                 _goBack: function (e) {
                     window.history.back();
                 },
 
                 ready: function () {
+                    $(this.$.btnRegister).addClass('hidden');
+
                     this.$.page_databound_ajax.body = JSON.stringify({ "No": this._guiatransporteid, "Historic": this._history });
                     this.$.page_databound_ajax.generateRequest();
                 },
 
                 _responseProcessor: function (data) {
                     var self = this;
-
+                    debugger;;
                     if (data.detail.status === 200) {
                         //this._openToast(this.data.noGuiaTransporte);
+                        if (this.data.fiscalCommunicationLog.documentCodeId == null || this.data.fiscalCommunicationLog.documentCodeId == "") {
+                            $(this.$.btnRegister).removeClass('hidden');
+                        }
                     } else {
                         this._openToastError("Ocorreu um erro desconhecido.")
                     }
+                },
+
+                _registerDocument: function (e) {
+
+                    var ajax_request = this.$.force_registry_guia_ajax;
+
+                    ajax_request.body = JSON.stringify({ "noGuia": this.data.noGuiaTransporte });
+                    this._confirmAndExecuteActionToast(
+                        "Confirma o registo da guia de transporte no. " + this.data.noGuiaTransporte + "?",
+                        ajax_request);
+
+
+                },
+
+                _registerResponse: function (e) {
+                    if (this.registryReturnCode === 0) {
+                        this.$.page_databound_ajax.body = JSON.stringify({ "No": this._guiatransporteid, "Historic": this._history });
+                        this.$.page_databound_ajax.generateRequest();
+
+                        return;
+                    }
+                    var errorMsg = "(" + this.registryReturnCode + ") Não foi possível Registar a guia. Tente novamente!\n";
+
+                    if (this.registryReturnCode == null) {
+                        this._openToastError(errorMsg + "Em caso de falha persistente contacte o Suporte!");
+                        return;
+                    }
+
+                    if (this.registryReturnCode === -1) {
+                        this._openToastError(errorMsg + "No de Guia desconhecido!");
+                        return;
+                    }
+
+                    if (this.registryReturnCode === -10) {
+                        this._openToastError(errorMsg + "No de Guia desconhecido!");
+                        return;
+                    }
+
+                    if (this.registryReturnCode === -20) {
+                        this._openToastError(errorMsg + "Falha ao obter o código da AT!");
+                        return;
+                    }
+
+                    if (this.registryReturnCode === -30) {
+                        this._openToastError(errorMsg + "Falha ao obter o código da AT!");
+                        return;
+                    }
+
+
+                    if (this.registryReturnCode === -999) {
+                        this._openToastError(errorMsg + "Erro desconhecido!");
+                        window.location.href = "/GuiasTransporteNav";
+                        return;
+                    }
+                    
                 },
 
                 _printE: function () {
