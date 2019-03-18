@@ -1787,12 +1787,12 @@
 
                 //CRUDS
                 _create: function () {
-                    if (this._validateData()) {
+                    //if (this._validateData()) {
                         this.data.contractType = 2;
                         this.data.status = 1;
                         this.$.page_validator_ajax.body = JSON.stringify(this.data);
                         this.$.page_validator_ajax.generateRequest();
-                    }
+                    //}
                 },
                 _update: function () {
                     if (this._validateData()) {
