@@ -388,10 +388,11 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
 
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.FolhasDeHoras.Where(x =>
-                        (regiao.ToLower().Contains(x.CódigoRegião.ToLower()) || x.CódigoRegião == null) &&
-                        (area.ToLower().Contains(x.CódigoÁreaFuncional.ToLower()) || x.CódigoÁreaFuncional == null) &&
-                        (cresp.ToLower().Contains(x.CódigoCentroResponsabilidade.ToLower()) || x.CódigoCentroResponsabilidade == null) &&
+                    List<FolhaDeHorasViewModel> AllFH = ctx.FolhasDeHoras.Where(x =>
+                        //(x.Intervenientes.ToLower().Contains(user.ToLower())) &&
+                        //(regiao.ToLower().Contains(x.CódigoRegião.ToLower()) || x.CódigoRegião == null) &&
+                        //(area.ToLower().Contains(x.CódigoÁreaFuncional.ToLower()) || x.CódigoÁreaFuncional == null) &&
+                        //(cresp.ToLower().Contains(x.CódigoCentroResponsabilidade.ToLower()) || x.CódigoCentroResponsabilidade == null) &&
                         (x.Eliminada == false)
                     ).Select(FH => new FolhaDeHorasViewModel()
                     {
@@ -469,6 +470,13 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         Eliminada = FH.Eliminada,
                         Intervenientes = FH.Intervenientes
                     }).ToList();
+
+                    ConfigUtilizadores ConfigUser = DBUserConfigurations.GetById(user);
+                    if (ConfigUser != null && ConfigUser.Administrador != true)
+                    {
+                        AllFH.RemoveAll(x => !x.Intervenientes.ToLower().Contains(user.ToLower()));
+                    }
+                    return AllFH;
                 }
             }
             catch (Exception ex)
@@ -493,10 +501,11 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
 
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.FolhasDeHoras.Where(x =>
-                        (regiao.ToLower().Contains(x.CódigoRegião.ToLower()) || x.CódigoRegião == null) &&
-                        (area.ToLower().Contains(x.CódigoÁreaFuncional.ToLower()) || x.CódigoÁreaFuncional == null) &&
-                        (cresp.ToLower().Contains(x.CódigoCentroResponsabilidade.ToLower()) || x.CódigoCentroResponsabilidade == null) &&
+                    List<FolhaDeHorasViewModel> AllFH = ctx.FolhasDeHoras.Where(x =>
+                        //(x.Intervenientes.ToLower().Contains(user.ToLower())) &&
+                        //(regiao.ToLower().Contains(x.CódigoRegião.ToLower()) || x.CódigoRegião == null) &&
+                        //(area.ToLower().Contains(x.CódigoÁreaFuncional.ToLower()) || x.CódigoÁreaFuncional == null) &&
+                        //(cresp.ToLower().Contains(x.CódigoCentroResponsabilidade.ToLower()) || x.CódigoCentroResponsabilidade == null) &&
                         (x.Eliminada == false) &&
 
                         (x.Estado != 2)
@@ -576,6 +585,13 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         Eliminada = FH.Eliminada,
                         Intervenientes = FH.Intervenientes
                     }).ToList();
+
+                    ConfigUtilizadores ConfigUser = DBUserConfigurations.GetById(user);
+                    if (ConfigUser != null && ConfigUser.Administrador != true)
+                    {
+                        AllFH.RemoveAll(x => !x.Intervenientes.ToLower().Contains(user.ToLower()));
+                    }
+                    return AllFH;
                 }
             }
             catch (Exception ex)
@@ -600,10 +616,11 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
 
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.FolhasDeHoras.Where(x =>
-                        (regiao.ToLower().Contains(x.CódigoRegião.ToLower()) || x.CódigoRegião == null) &&
-                        (area.ToLower().Contains(x.CódigoÁreaFuncional.ToLower()) || x.CódigoÁreaFuncional == null) &&
-                        (cresp.ToLower().Contains(x.CódigoCentroResponsabilidade.ToLower()) || x.CódigoCentroResponsabilidade == null) &&
+                    List<FolhaDeHorasViewModel> AllFH = ctx.FolhasDeHoras.Where(x =>
+                        //(x.Intervenientes.ToLower().Contains(user.ToLower())) &&
+                        //(regiao.ToLower().Contains(x.CódigoRegião.ToLower()) || x.CódigoRegião == null) &&
+                        //(area.ToLower().Contains(x.CódigoÁreaFuncional.ToLower()) || x.CódigoÁreaFuncional == null) &&
+                        //(cresp.ToLower().Contains(x.CódigoCentroResponsabilidade.ToLower()) || x.CódigoCentroResponsabilidade == null) &&
                         (x.Eliminada == false) &&
 
                         (x.Estado == 0) &&
@@ -684,6 +701,13 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         Eliminada = FH.Eliminada,
                         Intervenientes = FH.Intervenientes
                     }).ToList();
+
+                    ConfigUtilizadores ConfigUser = DBUserConfigurations.GetById(user);
+                    if (ConfigUser != null && ConfigUser.Administrador != true)
+                    {
+                        AllFH.RemoveAll(x => !x.Intervenientes.ToLower().Contains(user.ToLower()));
+                    }
+                    return AllFH;
                 }
             }
             catch (Exception ex)
@@ -708,10 +732,11 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
 
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.FolhasDeHoras.Where(x =>
-                        (regiao.ToLower().Contains(x.CódigoRegião.ToLower()) || x.CódigoRegião == null) &&
-                        (area.ToLower().Contains(x.CódigoÁreaFuncional.ToLower()) || x.CódigoÁreaFuncional == null) &&
-                        (cresp.ToLower().Contains(x.CódigoCentroResponsabilidade.ToLower()) || x.CódigoCentroResponsabilidade == null) &&
+                    List<FolhaDeHorasViewModel> AllFH = ctx.FolhasDeHoras.Where(x =>
+                        //(x.Intervenientes.ToLower().Contains(user.ToLower())) &&
+                        //(regiao.ToLower().Contains(x.CódigoRegião.ToLower()) || x.CódigoRegião == null) &&
+                        //(area.ToLower().Contains(x.CódigoÁreaFuncional.ToLower()) || x.CódigoÁreaFuncional == null) &&
+                        //(cresp.ToLower().Contains(x.CódigoCentroResponsabilidade.ToLower()) || x.CódigoCentroResponsabilidade == null) &&
                         (x.Eliminada == false) &&
 
                         //(x.Validadores.ToLower().Contains(user.ToLower())) &&
@@ -793,6 +818,13 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         Eliminada = FH.Eliminada,
                         Intervenientes = FH.Intervenientes
                     }).ToList();
+
+                    ConfigUtilizadores ConfigUser = DBUserConfigurations.GetById(user);
+                    if (ConfigUser != null && ConfigUser.Administrador != true)
+                    {
+                        AllFH.RemoveAll(x => !x.Intervenientes.ToLower().Contains(user.ToLower()));
+                    }
+                    return AllFH;
                 }
             }
             catch (Exception ex)
@@ -817,10 +849,11 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
 
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.FolhasDeHoras.Where(x =>
-                        (regiao.ToLower().Contains(x.CódigoRegião.ToLower()) || x.CódigoRegião == null) &&
-                        (area.ToLower().Contains(x.CódigoÁreaFuncional.ToLower()) || x.CódigoÁreaFuncional == null) &&
-                        (cresp.ToLower().Contains(x.CódigoCentroResponsabilidade.ToLower()) || x.CódigoCentroResponsabilidade == null) &&
+                    List<FolhaDeHorasViewModel> AllFH = ctx.FolhasDeHoras.Where(x =>
+                        //(x.Intervenientes.ToLower().Contains(user.ToLower())) &&
+                        //(regiao.ToLower().Contains(x.CódigoRegião.ToLower()) || x.CódigoRegião == null) &&
+                        //(area.ToLower().Contains(x.CódigoÁreaFuncional.ToLower()) || x.CódigoÁreaFuncional == null) &&
+                        //(cresp.ToLower().Contains(x.CódigoCentroResponsabilidade.ToLower()) || x.CódigoCentroResponsabilidade == null) &&
                         (x.Eliminada == false) &&
 
                         //(x.IntegradoresEmRh.ToLower().Contains(user.ToLower())) &&
@@ -902,6 +935,13 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         Eliminada = FH.Eliminada,
                         Intervenientes = FH.Intervenientes
                     }).ToList();
+
+                    ConfigUtilizadores ConfigUser = DBUserConfigurations.GetById(user);
+                    if (ConfigUser != null && ConfigUser.Administrador != true)
+                    {
+                        AllFH.RemoveAll(x => !x.Intervenientes.ToLower().Contains(user.ToLower()));
+                    }
+                    return AllFH;
                 }
             }
             catch (Exception ex)
@@ -926,10 +966,11 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
 
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.FolhasDeHoras.Where(x =>
-                        (regiao.ToLower().Contains(x.CódigoRegião.ToLower()) || x.CódigoRegião == null) &&
-                        (area.ToLower().Contains(x.CódigoÁreaFuncional.ToLower()) || x.CódigoÁreaFuncional == null) &&
-                        (cresp.ToLower().Contains(x.CódigoCentroResponsabilidade.ToLower()) || x.CódigoCentroResponsabilidade == null) &&
+                    List<FolhaDeHorasViewModel> AllFH = ctx.FolhasDeHoras.Where(x =>
+                        //(x.Intervenientes.ToLower().Contains(user.ToLower())) &&
+                        //(regiao.ToLower().Contains(x.CódigoRegião.ToLower()) || x.CódigoRegião == null) &&
+                        //(area.ToLower().Contains(x.CódigoÁreaFuncional.ToLower()) || x.CódigoÁreaFuncional == null) &&
+                        //(cresp.ToLower().Contains(x.CódigoCentroResponsabilidade.ToLower()) || x.CódigoCentroResponsabilidade == null) &&
                         (x.Eliminada == false) &&
 
                         //x.IntegradoresEmRhkm.ToLower().Contains(user.ToLower()) &&
@@ -1012,6 +1053,13 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         Eliminada = FH.Eliminada,
                         Intervenientes = FH.Intervenientes
                     }).ToList();
+
+                    ConfigUtilizadores ConfigUser = DBUserConfigurations.GetById(user);
+                    if (ConfigUser != null && ConfigUser.Administrador != true)
+                    {
+                        AllFH.RemoveAll(x => !x.Intervenientes.ToLower().Contains(user.ToLower()));
+                    }
+                    return AllFH;
                 }
             }
             catch (Exception ex)
@@ -1036,10 +1084,11 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
 
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.FolhasDeHoras.Where(x =>
-                        (regiao.ToLower().Contains(x.CódigoRegião.ToLower()) || x.CódigoRegião == null) &&
-                        (area.ToLower().Contains(x.CódigoÁreaFuncional.ToLower()) || x.CódigoÁreaFuncional == null) &&
-                        (cresp.ToLower().Contains(x.CódigoCentroResponsabilidade.ToLower()) || x.CódigoCentroResponsabilidade == null) &&
+                    List<FolhaDeHorasViewModel> AllFH = ctx.FolhasDeHoras.Where(x =>
+                        //(x.Intervenientes.ToLower().Contains(user.ToLower())) &&
+                        //(regiao.ToLower().Contains(x.CódigoRegião.ToLower()) || x.CódigoRegião == null) &&
+                        //(area.ToLower().Contains(x.CódigoÁreaFuncional.ToLower()) || x.CódigoÁreaFuncional == null) &&
+                        //(cresp.ToLower().Contains(x.CódigoCentroResponsabilidade.ToLower()) || x.CódigoCentroResponsabilidade == null) &&
                         (x.Eliminada == false) &&
 
                         (x.Estado == 2) // 2 == REGISTADO
@@ -1119,6 +1168,13 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         Eliminada = FH.Eliminada,
                         Intervenientes = FH.Intervenientes
                     }).ToList();
+
+                    ConfigUtilizadores ConfigUser = DBUserConfigurations.GetById(user);
+                    if (ConfigUser != null && ConfigUser.Administrador != true)
+                    {
+                        AllFH.RemoveAll(x => !x.Intervenientes.ToLower().Contains(user.ToLower()));
+                    }
+                    return AllFH;
                 }
             }
             catch (Exception ex)

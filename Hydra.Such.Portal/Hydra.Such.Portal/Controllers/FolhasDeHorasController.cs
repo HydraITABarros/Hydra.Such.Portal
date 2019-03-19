@@ -392,6 +392,11 @@ namespace Hydra.Such.Portal.Controllers
 
                     DBFolhasDeHoras.Create(FH);
 
+                    FH.Intervenientes = " CRIADOPOR: " + FH.CriadoPor;
+                    ConfigUtilizadores ConfigUser = DBUserConfigurations.GetByEmployeeNo(FH.NºEmpregado);
+                    if (ConfigUser != null)
+                        FH.Intervenientes = FH.Intervenientes + " EMPREGADO: " + ConfigUser.IdUtilizador;
+
                     FolhaDeHorasViewModel Autorizacao = DBFolhasDeHoras.GetListaValidadoresIntegradores(id, User.Identity.Name);
                     if (Autorizacao != null)
                     {
@@ -402,6 +407,10 @@ namespace Hydra.Such.Portal.Controllers
                         FH.NºResponsável1 = !string.IsNullOrEmpty(Autorizacao.Responsavel1No) ? Autorizacao.Responsavel1No : "";
                         FH.NºResponsável2 = !string.IsNullOrEmpty(Autorizacao.Responsavel2No) ? Autorizacao.Responsavel2No : "";
                         FH.NºResponsável3 = !string.IsNullOrEmpty(Autorizacao.Responsavel3No) ? Autorizacao.Responsavel3No : "";
+
+                        FH.Intervenientes = FH.Intervenientes + " VALIDADORES: " + FH.Validadores;
+                        FH.Intervenientes = FH.Intervenientes + " INTEGRADORESEMRH: " + FH.IntegradoresEmRh;
+                        FH.Intervenientes = FH.Intervenientes + " INTEGRADORESEMRHKM: " + FH.IntegradoresEmRhkm;
                     };
 
                     FH.UtilizadorModificação = User.Identity.Name;
@@ -1091,6 +1100,14 @@ namespace Hydra.Such.Portal.Controllers
                     if (!string.IsNullOrEmpty(data.EmpregadoNo))
                         data.EmpregadoNome = DBNAV2009Employees.GetAll(data.EmpregadoNo, _config.NAV2009DatabaseName, _config.NAV2009CompanyName).FirstOrDefault().Name;
 
+                    data.Intervenientes = " CRIADOPOR: " + data.CriadoPor;
+                    ConfigUtilizadores ConfigUser = DBUserConfigurations.GetByEmployeeNo(data.EmpregadoNo);
+                    if (ConfigUser != null)
+                        data.Intervenientes = data.Intervenientes + " EMPREGADO: " + ConfigUser.IdUtilizador;
+                    data.Intervenientes = data.Intervenientes + " VALIDADORES: " + data.Validadores;
+                    data.Intervenientes = data.Intervenientes + " INTEGRADORESEMRH: " + data.IntegradoresEmRH;
+                    data.Intervenientes = data.Intervenientes + " INTEGRADORESEMRHKM: " + data.IntegradoresEmRHKM;
+
                     FolhasDeHoras FH = DBFolhasDeHoras.ParseToFolhaHoras(data);
 
                     if (DBFolhasDeHoras.Update(FH) == null)
@@ -1127,6 +1144,14 @@ namespace Hydra.Such.Portal.Controllers
                         data.DataHoraChegada = Convert.ToDateTime(data.DataChegadaTexto);
                     if (!string.IsNullOrEmpty(data.DataChegadaTexto) && !string.IsNullOrEmpty(data.HoraChegadaTexto))
                         data.DataHoraChegada = Convert.ToDateTime(data.DataChegadaTexto + " " + data.HoraChegadaTexto);
+
+                    data.Intervenientes = " CRIADOPOR: " + data.CriadoPor;
+                    ConfigUtilizadores ConfigUser = DBUserConfigurations.GetByEmployeeNo(data.EmpregadoNo);
+                    if (ConfigUser != null)
+                        data.Intervenientes = data.Intervenientes + " EMPREGADO: " + ConfigUser.IdUtilizador;
+                    data.Intervenientes = data.Intervenientes + " VALIDADORES: " + data.Validadores;
+                    data.Intervenientes = data.Intervenientes + " INTEGRADORESEMRH: " + data.IntegradoresEmRH;
+                    data.Intervenientes = data.Intervenientes + " INTEGRADORESEMRHKM: " + data.IntegradoresEmRHKM;
 
                     data.UtilizadorModificacao = User.Identity.Name;
                     if (DBFolhasDeHoras.Update(DBFolhasDeHoras.ParseToFolhaHoras(data)) == null)
@@ -1184,6 +1209,14 @@ namespace Hydra.Such.Portal.Controllers
 
                     if (!string.IsNullOrEmpty(data.EmpregadoNo))
                         data.EmpregadoNome = DBNAV2009Employees.GetAll(data.EmpregadoNo, _config.NAV2009DatabaseName, _config.NAV2009CompanyName).FirstOrDefault().Name;
+
+                    data.Intervenientes = " CRIADOPOR: " + data.CriadoPor;
+                    ConfigUtilizadores ConfigUser = DBUserConfigurations.GetByEmployeeNo(data.EmpregadoNo);
+                    if (ConfigUser != null)
+                        data.Intervenientes = data.Intervenientes + " EMPREGADO: " + ConfigUser.IdUtilizador;
+                    data.Intervenientes = data.Intervenientes + " VALIDADORES: " + data.Validadores;
+                    data.Intervenientes = data.Intervenientes + " INTEGRADORESEMRH: " + data.IntegradoresEmRH;
+                    data.Intervenientes = data.Intervenientes + " INTEGRADORESEMRHKM: " + data.IntegradoresEmRHKM;
 
                     FolhasDeHoras FH = DBFolhasDeHoras.ParseToFolhaHoras(data);
 
@@ -3059,11 +3092,10 @@ namespace Hydra.Such.Portal.Controllers
 
                             if (data.Terminada == true)
                             {
-                                //data.Intervenientes = " CRIADOPOR: " + data.CriadoPor;
-                                //ConfigUtilizadores ConfigUser = DBUserConfigurations.GetByEmployeeNo(data.EmpregadoNo);
-                                //if (ConfigUser != null)
-                                //    data.Intervenientes = data.Intervenientes + " EMPREGADO: " + ConfigUser.IdUtilizador;
-
+                                data.Intervenientes = " CRIADOPOR: " + data.CriadoPor;
+                                ConfigUtilizadores ConfigUser = DBUserConfigurations.GetByEmployeeNo(data.EmpregadoNo);
+                                if (ConfigUser != null)
+                                    data.Intervenientes = data.Intervenientes + " EMPREGADO: " + ConfigUser.IdUtilizador;
 
                                 FolhaDeHorasViewModel Autorizacao = DBFolhasDeHoras.GetListaValidadoresIntegradores(data.FolhaDeHorasNo, data.EmpregadoNo);
                                 if (Autorizacao != null)
@@ -3076,9 +3108,9 @@ namespace Hydra.Such.Portal.Controllers
                                     data.Responsavel2No = !string.IsNullOrEmpty(Autorizacao.Responsavel2No) ? Autorizacao.Responsavel2No : "";
                                     data.Responsavel3No = !string.IsNullOrEmpty(Autorizacao.Responsavel3No) ? Autorizacao.Responsavel3No : "";
 
-                                    //data.Intervenientes = data.Intervenientes + " VALIDADORES: " + data.Validadores;
-                                    //data.Intervenientes = data.Intervenientes + " INTEGRADORESEMRH: " + data.IntegradoresEmRH;
-                                    //data.Intervenientes = data.Intervenientes + " INTEGRADORESEMRHKM: " + data.IntegradoresEmRHKM;
+                                    data.Intervenientes = data.Intervenientes + " VALIDADORES: " + data.Validadores;
+                                    data.Intervenientes = data.Intervenientes + " INTEGRADORESEMRH: " + data.IntegradoresEmRH;
+                                    data.Intervenientes = data.Intervenientes + " INTEGRADORESEMRHKM: " + data.IntegradoresEmRHKM;
                                 };
 
                                 data.DataHoraPartida = DateTime.Parse(string.Concat(data.DataPartidaTexto, " ", data.HoraPartidaTexto));

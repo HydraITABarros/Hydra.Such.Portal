@@ -160,6 +160,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
         public virtual DbSet<PedidosPagamento> PedidosPagamento { get; set; }
         public virtual DbSet<TabelaLog> TabelaLog { get; set; }
+        public virtual DbSet<PedidosDEV> PedidosDEV { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -10806,6 +10807,61 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.DataHora)
                     .HasColumnName("DataHora")
+                    .HasColumnType("datetime");
+            });
+
+            modelBuilder.Entity<PedidosDEV>(entity =>
+            {
+                entity.HasKey(e => new { e.ID });
+
+                entity.ToTable("PedidosDEV");
+
+                entity.Property(e => e.Processo)
+                    .HasColumnName("Processo")
+                    .HasMaxLength(2000);
+
+                entity.Property(e => e.Descricao)
+                    .HasColumnName("Descricao")
+                    .HasMaxLength(2000);
+
+                entity.Property(e => e.URL)
+                    .HasColumnName("URL")
+                    .HasMaxLength(2000);
+
+                entity.Property(e => e.PedidoPor)
+                    .HasColumnName("PedidoPor")
+                    .HasMaxLength(2000);
+
+                entity.Property(e => e.Intervenientes)
+                    .HasColumnName("Intervenientes")
+                    .HasMaxLength(2000);
+
+                entity.Property(e => e.CriadoPor)
+                    .HasColumnName("CriadoPor")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.AlteradoPor)
+                    .HasColumnName("AlteradoPor")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DataEstado)
+                    .HasColumnName("DataEstado")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DataPedido)
+                    .HasColumnName("DataPedido")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DataConclusao)
+                    .HasColumnName("DataConclusao")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DataCriacao)
+                    .HasColumnName("DataCriacao")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DataAlteracao)
+                    .HasColumnName("DataAlteracao")
                     .HasColumnType("datetime");
             });
         }

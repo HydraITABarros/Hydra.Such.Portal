@@ -207,6 +207,8 @@ namespace Hydra.Such.Data
             Encomendas = 112,
             [Description("Administração Serviços")]
             AdminServicos = 113,
+            [Description("Administração Pedidos Desenvolvimento")]
+            AdminPedidosDEV = 113,
         }
 
         public enum Areas

@@ -6967,5 +6967,45 @@ namespace Hydra.Such.Portal.Controllers
             return Json(responde);
         }
         #endregion
+
+        #region Pedidos DEV
+
+        public IActionResult PedidosDEV_List()
+        {
+            UserAccessesViewModel userPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminPedidosDEV);
+
+            if (userPerm != null && userPerm.Read.Value)
+            {
+                ViewBag.CreatePermissions = !userPerm.Create.Value;
+                ViewBag.UpdatePermissions = !userPerm.Update.Value;
+                ViewBag.DeletePermissions = !userPerm.Delete.Value;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        public IActionResult PedidosDEV(string id)
+        {
+            ViewBag.NoProcedimento = id;
+
+            UserAccessesViewModel userPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminPedidosDEV);
+            if (userPerm != null && userPerm.Read.Value)
+            {
+                ViewBag.CreatePermissions = !userPerm.Create.Value;
+                ViewBag.UpdatePermissions = !userPerm.Update.Value;
+                ViewBag.DeletePermissions = !userPerm.Delete.Value;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        #endregion
+
     }
 }

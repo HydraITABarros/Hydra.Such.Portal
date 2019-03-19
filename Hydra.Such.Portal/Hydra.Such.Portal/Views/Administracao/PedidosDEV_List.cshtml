@@ -1,0 +1,344 @@
+﻿@{
+    ViewData["Title"] = "Pedidos de Desenvolvimento - Lista";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="~/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="~/lib/iron-form/iron-form.html" />
+<link rel="import" href="~/lib/paper-button/paper-button.html" />
+<link rel="import" href="~/lib/paper-toast-master/paper-toast.html" />
+
+<x-pedidosdevlist></x-pedidosdevlist>
+<dom-module id="x-pedidosdevlist">
+    <template>
+        <!-- STYLES -->
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+
+        <iron-ajax url="/PedidosDEV/GetListPedidosDEV"
+                   last-response="{{result}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   id="grid_databound_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/PedidosDEV/DeletePedidosDEV"
+                   last-response="{{PedidosDEVDeleted}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_deletePedidosDEV_ajax"
+                   on-response="_deletePedidosDEVResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <div class="subMenu">
+            <paper-button id="btnGoBack" class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Voltar</paper-button>
+            <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+        </div>
+
+        <vaadin-grid column-reordering-allowed id="pedidosDEVTabela" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+            <vaadin-grid-column resizable width="150px">
+                <template class="header">
+                    <vaadin-grid-sorter path="id">ID</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="id" />
+                </template>
+                <template>
+                    {{item.id}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px">
+                <template class="header">
+                    <vaadin-grid-sorter path="processo">Processo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="processo" />
+                </template>
+                <template>
+                    {{item.processo}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px">
+                <template class="header">
+                    <vaadin-grid-sorter path="descricao">Descrição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="descricao" />
+                </template>
+                <template>
+                    {{item.descricao}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px">
+                <template class="header">
+                    <vaadin-grid-sorter path="url">Link da Página</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="url" />
+                </template>
+                <template>
+                    {{item.url}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px">
+                <template class="header">
+                    <vaadin-grid-sorter path="estado">Estado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="estado" />
+                </template>
+                <template>
+                    {{item.estado}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px">
+                <template class="header">
+                    <vaadin-grid-sorter path="dataEstado">Data do Estado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataEstado" />
+                </template>
+                <template>
+                    {{item.dataEstado}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px">
+                <template class="header">
+                    <vaadin-grid-sorter path="dataPedido">Data do Pedido</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataPedido" />
+                </template>
+                <template>
+                    {{item.dataPedido}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px">
+                <template class="header">
+                    <vaadin-grid-sorter path="pedidoPor">Pedido Por</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="pedidoPor" />
+                </template>
+                <template>
+                    {{item.pedidoPor}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px">
+                <template class="header">
+                    <vaadin-grid-sorter path="dataConclusao">Data da Conclusão</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataConclusao" />
+                </template>
+                <template>
+                    {{item.dataConclusao}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px">
+                <template class="header">
+                    <vaadin-grid-sorter path="intervenientes">Intervenientes</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="intervenientes" />
+                </template>
+                <template>
+                    {{item.intervenientes}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px">
+                <template class="header">
+                    <vaadin-grid-sorter path="noHorasPrevistas">Nº de Horas Previstas</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="noHorasPrevistas" />
+                </template>
+                <template>
+                    {{item.noHorasPrevistas}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px">
+                <template class="header">
+                    <vaadin-grid-sorter path="noHorasRealizadas">Nº de Horas Realizadas</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="noHorasRealizadas" />
+                </template>
+                <template>
+                    {{item.noHorasRealizadas}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px">
+                <template class="header">
+                    <vaadin-grid-sorter path="criadoPor">Criado Por</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="criadoPor" />
+                </template>
+                <template>
+                    {{item.criadoPor}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px">
+                <template class="header">
+                    <vaadin-grid-sorter path="dataCriacao">Data de Criacao</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataCriacao" />
+                </template>
+                <template>
+                    {{item.dataCriacao}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px">
+                <template class="header">
+                    <vaadin-grid-sorter path="alteradoPor">Alterado Por</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="alteradoPor" />
+                </template>
+                <template>
+                    {{item.alteradoPor}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px">
+                <template class="header">
+                    <vaadin-grid-sorter path="dataAlteracao">Data de Alteração</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataAlteracao" />
+                </template>
+                <template>
+                    {{item.dataAlteracao}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px">
+                <template class="header">
+                </template>
+                <template>
+                    <center>
+                        <paper-button id="btn_deletePedidosDEV" class="btnRemove tableBtn" raised on-tap="_delete" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                    </center>
+                </template>
+            </vaadin-grid-column>
+        </vaadin-grid>
+
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+    </template>
+
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-pedidosdevlist',
+                properties: {
+                    activeItem: {
+                        observer: '_rowSelected'
+                    },
+
+                    _filterActive: {
+                        type: Boolean,
+                        value: true
+                    }
+                },
+
+                //Mostra Mensagens
+                _showMessage: function (message) {
+                    //debugger;
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+
+                //Mostra Mensagens de Erro
+                _showErrorMessage: function (message) {
+                    //debugger;
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                },
+
+                ready: function () {
+                    //debugger;
+                    this.$.grid_databound_ajax.body = JSON.stringify();
+                    this.$.grid_databound_ajax.generateRequest();
+
+                    window.handleGridListColumnsOrder(this.$.pedidosDEVTabela, 'admin-pedidosdev-list');
+
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.pedidosDEVTabela);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top;
+                    var height = parentHeight - offsetTop;
+                    $(this.$.pedidosDEVTabela).height(height);
+                },
+
+                _rowSelected: function (item) {
+                    if (item != null) {
+                        window.location.href = "/PedidosDEV/PedidosDEV/" + item.noProcedimento;
+                    }
+                },
+
+                _create: function () {
+                    window.location.href = "/PedidosDEV/PedidosDEV/0";
+                },
+
+                _delete: function (e) {
+                    debugger;
+                    var procedimento = e.model.item.noProcedimento;
+
+                    var ajax_request = this.$.page_deletePedidosDEV_ajax;
+
+                    bootbox.confirm({
+                        message: "Tem a certeza que pretende remover o Pedido de Desenvolvimento?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (deletePedidosDEV) {
+                            if (deletePedidosDEV) {
+                                ajax_request.body = JSON.stringify({
+                                    noProcedimento: procedimento
+                                });
+                                ajax_request.generateRequest();
+                                this.$.pedidosDEVTabela.clearCache();
+                            }
+                        }
+                    });
+                },
+
+                _deletePedidosDEVResponse: function (e) {
+                    debugger;
+                    var self = this;
+
+                    setTimeout(function () {
+                        bootbox.hideAll();
+                    }, 0);
+
+                    if (this.PedidosDEVDeleted == 0) {
+                        this._showMessage('O Pedido de Desenvolvimento foi removido com sucesso.');
+                        this.$.grid_databound_ajax.generateRequest();
+                    } else {
+                        if (this.PedidosDEVDeleted == 1) {
+                            this._showErrorMessage('Ocorreu um erro ao eliminar o Pedido de Desenvolvimento.');
+                        } else {
+                            if (this.PedidosDEVDeleted == 99) {
+                                this._showErrorMessage('Ocorreu um erro!!!');
+                            }
+                        }
+                    }
+                },
+
+                _goBack: function (e) {
+                    window.history.back();
+                },
+            });
+        });
+    </script>
+</dom-module>
