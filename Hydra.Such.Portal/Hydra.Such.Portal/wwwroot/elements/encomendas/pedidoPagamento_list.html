@@ -121,7 +121,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.noPedido.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="noPedido">Nº Pedido</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="noPedido" />
+                    <vaadin-grid-filter path="noPedido" value="[[filter.noPedido]]" />
                 </template>
                 <template>
                     <div style="text-align:right">
@@ -133,7 +133,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dataText.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="dataText">Data</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataText" />
+                    <vaadin-grid-filter path="dataText" value="[[filter.dataText]]" />
                 </template>
                 <template>
                     <div style="text-align:right">
@@ -145,7 +145,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.estadoText.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="estadoText">Estado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="estadoText" />
+                    <vaadin-grid-filter path="estadoText" value="[[filter.estadoText]]" />
                 </template>
                 <template>
                     {{item.estadoText}}
@@ -155,7 +155,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.noEncomenda.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="noEncomenda">Nº Encomenda</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="noEncomenda" />
+                    <vaadin-grid-filter path="noEncomenda" value="[[filter.noEncomenda]]" />
                 </template>
                 <template>
                     {{item.noEncomenda}}
@@ -165,7 +165,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codigoFornecedor.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codigoFornecedor">Cód. Fornecedor</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codigoFornecedor" />
+                    <vaadin-grid-filter path="codigoFornecedor" value="[[filter.codigoFornecedor]]" />
                 </template>
                 <template>
                     {{item.codigoFornecedor}}
@@ -175,7 +175,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.fornecedor.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="fornecedor">Fornecedor</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="fornecedor" />
+                    <vaadin-grid-filter path="fornecedor" value="[[filter.fornecedor]]" />
                 </template>
                 <template>
                     {{item.fornecedor}}
@@ -185,7 +185,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.regiaoMercadoLocalText.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="regiaoMercadoLocalText">Mercado Local</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="regiaoMercadoLocalText" />
+                    <vaadin-grid-filter path="regiaoMercadoLocalText" value="[[filter.regiaoMercadoLocalText]]" />
                 </template>
                 <template>
                     {{item.regiaoMercadoLocalText}}
@@ -195,7 +195,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.tipoText.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="tipoText">Tipo</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="tipoText" />
+                    <vaadin-grid-filter path="tipoText" value="[[filter.tipoText]]" />
                 </template>
                 <template>
                     {{item.tipoText}}
@@ -205,7 +205,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.nib.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="nib">NIB</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="nib" />
+                    <vaadin-grid-filter path="nib" value="[[filter.nib]]" />
                 </template>
                 <template>
                     {{item.nib}}
@@ -215,7 +215,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.iban.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="iban">IBAN</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="iban" />
+                    <vaadin-grid-filter path="iban" value="[[filter.iban]]" />
                 </template>
                 <template>
                     {{item.iban}}
@@ -225,7 +225,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.descricao.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="descricao">Descrição</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="descricao" />
+                    <vaadin-grid-filter path="descricao" value="[[filter.descricao]]" />
                 </template>
                 <template>
                     {{item.descricao}}
@@ -235,7 +235,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.valorEncomenda.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="valorEncomenda">Valor da Encomenda</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="valorEncomenda" />
+                    <vaadin-grid-filter path="valorEncomenda" value="[[filter.valorEncomenda]]" />
                 </template>
                 <template>
                     <div style="text-align:right">
@@ -247,7 +247,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.valor.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="valor">Valor do Pedido</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="valor" />
+                    <vaadin-grid-filter path="valor" value="[[filter.valor]]" />
                 </template>
                 <template>
                     <div style="text-align:right">
@@ -259,7 +259,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.prioritarioText.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="prioritarioText">Prioritário</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="prioritarioText" />
+                    <vaadin-grid-filter path="prioritarioText" value="[[filter.prioritarioText]]" />
                 </template>
                 <template>
                     {{item.prioritarioText}}
@@ -269,7 +269,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.aprovadores.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="aprovadores">Aprovadores</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="aprovadores" />
+                    <vaadin-grid-filter path="aprovadores" value="[[filter.aprovadores]]" />
                 </template>
                 <template>
                     {{item.aprovadores}}
@@ -279,7 +279,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.numeroTransferencia.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="numeroTransferencia">Nº Transferência</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="numeroTransferencia" />
+                    <vaadin-grid-filter path="numeroTransferencia" value="[[filter.numeroTransferencia]]" />
                 </template>
                 <template>
                     {{item.numeroTransferencia}}
@@ -289,7 +289,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dataEnvioAprovacaoText.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="dataEnvioAprovacaoText">Data de Envio para Aprovação</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataEnvioAprovacaoText" />
+                    <vaadin-grid-filter path="dataEnvioAprovacaoText" value="[[filter.dataEnvioAprovacaoText]]" />
                 </template>
                 <template>
                     <div style="text-align:right">
@@ -301,7 +301,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dataPrioridadeText.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="dataPrioridadeText">Data da Prioridade</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataPrioridadeText" />
+                    <vaadin-grid-filter path="dataPrioridadeText" value="[[filter.dataPrioridadeText]]" />
                 </template>
                 <template>
                     <div style="text-align:right">
@@ -313,7 +313,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.motivoAnulacao.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="motivoAnulacao">Motivo da Anulação</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="motivoAnulacao" />
+                    <vaadin-grid-filter path="motivoAnulacao" value="[[filter.motivoAnulacao]]" />
                 </template>
                 <template>
                     {{item.motivoAnulacao}}
@@ -323,7 +323,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.aprovadoText.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="aprovadoText">Aprovado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="aprovadoText" />
+                    <vaadin-grid-filter path="aprovadoText" value="[[filter.aprovadoText]]" />
                 </template>
                 <template>
                     {{item.aprovadoText}}
@@ -333,7 +333,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.bloqueadoFaltaPagamentoText.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="bloqueadoFaltaPagamentoText">Bloqueado por Falta de Pagamento</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="bloqueadoFaltaPagamentoText" />
+                    <vaadin-grid-filter path="bloqueadoFaltaPagamentoText" value="[[filter.bloqueadoFaltaPagamentoText]]" />
                 </template>
                 <template>
                     {{item.bloqueadoFaltaPagamentoText}}
@@ -343,7 +343,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.resolvidoText.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="resolvidoText">Resolvido</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="resolvidoText" />
+                    <vaadin-grid-filter path="resolvidoText" value="[[filter.resolvidoText]]" />
                 </template>
                 <template>
                     {{item.resolvidoText}}
@@ -353,7 +353,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.arquivadoText.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="arquivadoText">Arquivado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="arquivadoText" />
+                    <vaadin-grid-filter path="arquivadoText" value="[[filter.arquivadoText]]" />
                 </template>
                 <template>
                     {{item.arquivadoText}}
@@ -363,7 +363,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.userPedido.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="userPedido">Utilizador do Pedido</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="userPedido" />
+                    <vaadin-grid-filter path="userPedido" value="[[filter.userPedido]]" />
                 </template>
                 <template>
                     {{item.userPedido}}
@@ -373,7 +373,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dataPedidoText.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="dataPedidoText">Data do Pedido</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataPedidoText" />
+                    <vaadin-grid-filter path="dataPedidoText" value="[[filter.dataPedidoText]]" />
                 </template>
                 <template>
                     <div style="text-align:right">
@@ -385,7 +385,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.userAprovacao.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="userAprovacao">Utilizador da Aprovação</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="userAprovacao" />
+                    <vaadin-grid-filter path="userAprovacao" value="[[filter.userAprovacao]]" />
                 </template>
                 <template>
                     {{item.userAprovacao}}
@@ -395,7 +395,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dataAprovacaoText.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="dataAprovacaoText">Data da Aprovação</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataAprovacaoText" />
+                    <vaadin-grid-filter path="dataAprovacaoText" value="[[filter.dataAprovacaoText]]" />
                 </template>
                 <template>
                     {{item.dataAprovacaoText}}
@@ -405,7 +405,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.userFinanceiros.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="userFinanceiros">Utilizador da Disponibilização</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="userFinanceiros" />
+                    <vaadin-grid-filter path="userFinanceiros" value="[[filter.userFinanceiros]]" />
                 </template>
                 <template>
                     {{item.userFinanceiros}}
@@ -415,7 +415,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dataDisponibilizacaoText.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="dataDisponibilizacaoText">Data da Disponibilização</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataDisponibilizacaoText" />
+                    <vaadin-grid-filter path="dataDisponibilizacaoText" value="[[filter.dataDisponibilizacaoText]]" />
                 </template>
                 <template>
                     <div style="text-align:right">
@@ -427,7 +427,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.userValidacao.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="userValidacao">Utilizador da Validação</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="userValidacao" />
+                    <vaadin-grid-filter path="userValidacao" value="[[filter.userValidacao]]" />
                 </template>
                 <template>
                     {{item.userValidacao}}
@@ -437,7 +437,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dataValidacaoText.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="dataValidacaoText">Data de Validação</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataValidacaoText" />
+                    <vaadin-grid-filter path="dataValidacaoText" value="[[filter.dataValidacaoText]]" />
                 </template>
                 <template>
                     <div style="text-align:right">
@@ -449,7 +449,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.userArquivo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="userArquivo">Utilizador do Arquivo</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="userArquivo" />
+                    <vaadin-grid-filter path="userArquivo" value="[[filter.userArquivo]]" />
                 </template>
                 <template>
                     {{item.userArquivo}}
@@ -459,7 +459,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dataArquivoText.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="dataArquivoText">Data do Arquivo</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataArquivoText" />
+                    <vaadin-grid-filter path="dataArquivoText" value="[[filter.dataArquivoText]]" />
                 </template>
                 <template>
                     <div style="text-align:right">
@@ -547,11 +547,23 @@
                         value: function () {
                             return {};
                         }
-                    }
+                    },
+                    /*FILTROS*/
+                    filter: {
+                        type: Object,
+                        value: {},
+                    },
                 },
 
                 _rowSelected: function (item) {
                     if (item != null) {
+                        /*FILTROS*/
+                        var filters = {};
+                        this.$.grid._filters.map(function (value, index) {
+                            filters[value.path] = value.value;
+                        });
+                        window.setGridFilter('encomendas-pedidopagamento_list', filters || {});
+
                         window.location.href = "/Encomendas/PedidoPagamento_Details/" + item.noPedido;
                     }
                 },
@@ -559,6 +571,11 @@
                 ready: function () {
                     this.$.grid_databound_ajax.params = { "estado": 2 };
                     this.$.grid_databound_ajax.generateRequest();
+
+                    /*FILTROS*/
+                    window.handleGridListColumnsOrder(this.$.grid, 'encomendas-pedidopagamento_list');
+                    window.grid = this.$.grid;
+                    window._this = this;
 
                     /*ColumnToggle*/
                     this._startColumnToggle();
@@ -582,6 +599,11 @@
                     var offsetTop = $(this).offset().top;
                     var height = windowHeight - offsetTop - paddingTop;
                     $(this.$.grid).height(height);
+                },
+
+                /*FILTROS*/
+                created: function () {
+                    this.filter = window.getGridFilter('encomendas-pedidopagamento_list');
                 },
 
                 _checkForErrors: function () {

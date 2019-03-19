@@ -218,7 +218,7 @@
             <vaadin-grid-column id="grid_estadoTexto" resizable width="150px" hidden$="{{ _columns.estadoTexto.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="estadoTexto">Estado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="estadoTexto" />
+                    <vaadin-grid-filter path="estadoTexto" value="[[filter.estadoTexto]]" />
                 </template>
                 <template>
                     {{item.estadoTexto}}
@@ -228,7 +228,7 @@
             <vaadin-grid-column id="grid_regiaoMercadoLocal" resizable width="150px" hidden$="{{ _columns.regiaoMercadoLocalTexto.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="regiaoMercadoLocalTexto">Região Mercado Local</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="regiaoMercadoLocalTexto" />
+                    <vaadin-grid-filter path="regiaoMercadoLocalTexto" value="[[filter.regiaoMercadoLocalTexto]]" />
                 </template>
                 <template>
                     {{item.regiaoMercadoLocalTexto}}
@@ -238,7 +238,7 @@
             <vaadin-grid-column id="grid_codigoProduto" resizable width="150px" hidden$="{{ _columns.codigoProdutoTexto.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codigoProdutoTexto">Cód. Produto</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codigoProdutoTexto" />
+                    <vaadin-grid-filter path="codigoProdutoTexto" value="[[filter.codigoProdutoTexto]]" />
                 </template>
                 <template>
                     {{item.codigoProdutoTexto}}
@@ -248,7 +248,7 @@
             <vaadin-grid-column id="grid_descricao" resizable width="150px" hidden$="{{ _columns.descricao.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="descricao">Descrição</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="descricao" />
+                    <vaadin-grid-filter path="descricao" value="[[filter.descricao]]" />
                 </template>
                 <template>
                     {{item.descricao}}
@@ -258,7 +258,7 @@
             <vaadin-grid-column id="grid_descricao2" resizable width="150px" hidden$="{{ _columns.descricao2.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="descricao2">Descrição 2</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="descricao2" />
+                    <vaadin-grid-filter path="descricao2" value="[[filter.descricao2]]" />
                 </template>
                 <template>
                     {{item.descricao2}}
@@ -268,7 +268,7 @@
             <vaadin-grid-column id="grid_codigoUnidadeMedida" resizable width="150px" hidden$="{{ _columns.codigoUnidadeMedida.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codigoUnidadeMedida">Cód. Unid. Medida</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codigoUnidadeMedida" />
+                    <vaadin-grid-filter path="codigoUnidadeMedida" value="[[filter.codigoUnidadeMedida]]" />
                 </template>
                 <template>
                     {{item.codigoUnidadeMedida}}
@@ -278,7 +278,7 @@
             <vaadin-grid-column id="grid_quantidade" resizable width="150px" hidden$="{{ _columns.quantidade.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="quantidade">Quantidade</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="quantidade" />
+                    <vaadin-grid-filter path="quantidade" value="[[filter.quantidade]]" />
                 </template>
                 <template>
                     {{item.quantidade}}
@@ -288,7 +288,7 @@
             <vaadin-grid-column id="grid_noRequisicao" resizable width="150px" hidden$="{{ _columns.noRequisicao.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="noRequisicao">Nº Requisição</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="noRequisicao" />
+                    <vaadin-grid-filter path="noRequisicao" value="[[filter.noRequisicao]]" />
                 </template>
                 <template>
                     {{item.noRequisicao}}
@@ -298,7 +298,7 @@
             <vaadin-grid-column id="grid_noLinhaRequisicao" resizable width="150px" hidden$="{{ _columns.noLinhaRequisicao.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="noLinhaRequisicao">Nº Linha Requisição</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="noLinhaRequisicao" />
+                    <vaadin-grid-filter path="noLinhaRequisicao" value="[[filter.noLinhaRequisicao]]" />
                 </template>
                 <template>
                     {{item.noLinhaRequisicao}}
@@ -308,7 +308,7 @@
             <vaadin-grid-column id="grid_urgenteTexto" resizable width="150px" hidden$="{{ _columns.urgenteTexto.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="urgenteTexto">Urgente</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="urgenteTexto" />
+                    <vaadin-grid-filter path="urgenteTexto" value="[[filter.urgenteTexto]]" />
                 </template>
                 <template>
                     {{item.urgenteTexto}}
@@ -318,7 +318,7 @@
             <vaadin-grid-column id="grid_dataCriacaoTexto" resizable width="150px" hidden$="{{ _columns.dataCriacaoTexto.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="dataCriacaoTexto">Data Criação</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataCriacaoTexto" />
+                    <vaadin-grid-filter path="dataCriacaoTexto" value="[[filter.dataCriacaoTexto]]" />
                 </template>
                 <template>
                     {{item.dataCriacaoTexto}}
@@ -328,7 +328,7 @@
             <vaadin-grid-column id="grid_utilizadorCriacaoTexto" resizable width="150px" hidden$="{{ _columns.utilizadorCriacaoTexto.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="utilizadorCriacaoTexto">Utilizador Criação</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="utilizadorCriacaoTexto" />
+                    <vaadin-grid-filter path="utilizadorCriacaoTexto" value="[[filter.utilizadorCriacaoTexto]]" />
                 </template>
                 <template>
                     {{item.utilizadorCriacaoTexto}}
@@ -338,7 +338,7 @@
             <vaadin-grid-column id="grid_dataValidacaoTexto" resizable width="150px" hidden$="{{ _columns.dataValidacaoTexto.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="dataValidacaoTexto">Data Validação</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataValidacaoTexto" />
+                    <vaadin-grid-filter path="dataValidacaoTexto" value="[[filter.dataValidacaoTexto]]" />
                 </template>
                 <template>
                     {{item.dataValidacaoTexto}}
@@ -348,7 +348,7 @@
             <vaadin-grid-column id="grid_utilizadorValidacaoTexto" resizable width="150px" hidden$="{{ _columns.utilizadorValidacaoTexto.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="utilizadorValidacaoTexto">Utilizador Validador</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="utilizadorValidacaoTexto" />
+                    <vaadin-grid-filter path="utilizadorValidacaoTexto" value="[[filter.utilizadorValidacaoTexto]]" />
                 </template>
                 <template>
                     {{item.utilizadorValidacaoTexto}}
@@ -358,7 +358,7 @@
             <vaadin-grid-column id="grid_dataRecusaTexto" resizable width="150px" hidden$="{{ _columns.dataRecusaTexto.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="dataRecusaTexto">Data Recusa</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataRecusaTexto" />
+                    <vaadin-grid-filter path="dataRecusaTexto" value="[[filter.dataRecusaTexto]]" />
                 </template>
                 <template>
                     {{item.dataRecusaTexto}}
@@ -368,7 +368,7 @@
             <vaadin-grid-column id="grid_utilizadorRecusaTexto" resizable width="150px" hidden$="{{ _columns.utilizadorRecusaTexto.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="utilizadorRecusaTexto">Utilizador Recusou</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="utilizadorRecusaTexto" />
+                    <vaadin-grid-filter path="utilizadorRecusaTexto" value="[[filter.utilizadorRecusaTexto]]" />
                 </template>
                 <template>
                     {{item.utilizadorRecusaTexto}}
@@ -378,7 +378,7 @@
             <vaadin-grid-column id="grid_recusadoComprasTexto" resizable width="150px" hidden$="{{ _columns.recusadoComprasTexto.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="recusadoComprasTexto">Recusado Compras</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="recusadoComprasTexto" />
+                    <vaadin-grid-filter path="recusadoComprasTexto" value="[[filter.recusadoComprasTexto]]" />
                 </template>
                 <template>
                     {{item.recusadoComprasTexto}}
@@ -388,7 +388,7 @@
             <vaadin-grid-column id="grid_dataTratadoTexto" resizable width="150px" hidden$="{{ _columns.dataTratadoTexto.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="dataTratadoTexto">Data Tratado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataTratadoTexto" />
+                    <vaadin-grid-filter path="dataTratadoTexto" value="[[filter.dataTratadoTexto]]" />
                 </template>
                 <template>
                     {{item.dataTratadoTexto}}
@@ -398,7 +398,7 @@
             <vaadin-grid-column id="grid_utilizadorTratadoTexto" resizable width="150px" hidden$="{{ _columns.utilizadorTratadoTexto.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="utilizadorTratadoTexto">Utilizador Tratado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="utilizadorTratadoTexto" />
+                    <vaadin-grid-filter path="utilizadorTratadoTexto" value="[[filter.utilizadorTratadoTexto]]" />
                 </template>
                 <template>
                     {{item.utilizadorTratadoTexto}}
@@ -408,7 +408,7 @@
             <vaadin-grid-column id="grid_noFornecedorTexto" resizable width="150px" hidden$="{{ _columns.noFornecedorTexto.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="noFornecedorTexto">Nº Fornecedor</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="noFornecedorTexto" />
+                    <vaadin-grid-filter path="noFornecedorTexto" value="[[filter.noFornecedorTexto]]" />
                 </template>
                 <template>
                     {{item.noFornecedorTexto}}
@@ -418,7 +418,7 @@
             <vaadin-grid-column id="grid_noEncomenda" resizable width="150px" hidden$="{{ _columns.noEncomenda.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="noEncomenda">Nº Encomenda</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="noEncomenda" />
+                    <vaadin-grid-filter path="noEncomenda" value="[[filter.noEncomenda]]" />
                 </template>
                 <template>
                     {{item.noEncomenda}}
@@ -428,7 +428,7 @@
             <vaadin-grid-column id="grid_noConsultaMercado" resizable width="150px" hidden$="{{ _columns.noConsultaMercado.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="noConsultaMercado">Nº Consulta Mercado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="noConsultaMercado" />
+                    <vaadin-grid-filter path="noConsultaMercado" value="[[filter.noConsultaMercado]]" />
                 </template>
                 <template>
                     {{item.noConsultaMercado}}
@@ -527,6 +527,11 @@
                             return {};
                         }
                     },
+                    /*FILTROS*/
+                    filter: {
+                        type: Object,
+                        value: {},
+                    },
                 },
 
                 ready: function () {
@@ -538,6 +543,11 @@
                     this.$.compras_databound_ajax.body = JSON.stringify({ estado: parseInt(1) });
                     this.$.compras_databound_ajax.generateRequest();
                     this.$.gridCompras.clearCache();
+
+                    /*FILTROS*/
+                    window.handleGridListColumnsOrder(this.$.gridCompras, 'gestaorequisicoes-comprasdinheirobydimensions');
+                    window.gridCompras = this.$.gridCompras;
+                    window._this = this;
 
                     /*ColumnToggle*/
                     this._startColumnToggle();
@@ -745,8 +755,21 @@
                     var noRequisicao = e.model.item.noRequisicao;
 
                     if (noRequisicao != null) {
+                        /*FILTROS*/
+                        var filters = {};
+                        this.$.gridCompras._filters.map(function (value, index) {
+                            filters[value.path] = value.value;
+                        });
+                        window.setGridFilter('compras-mercadolocal_list', filters || {});
+
+
                         window.location.href = "/GestaoRequisicoes/DetalhesReqAprovada/" + noRequisicao;
                     }
+                },
+
+                /*FILTROS*/
+                created: function () {
+                    this.filter = window.getGridFilter('compras-mercadolocal_list');
                 },
 
                 _aprovadoToTratado: function (selectedItem, selectedItems) {

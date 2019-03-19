@@ -1447,9 +1447,7 @@ namespace Hydra.Such.Portal.Controllers
             //};
             //requisition = DBRequest.GetReqByUserAreaStatus(User.Identity.Name, states);
 
-
             requisition = DBRequest.GetReqByUser((int)RequisitionTypes.Normal, User.Identity.Name);
-
             List<RequisitionViewModel> result = new List<RequisitionViewModel>();
             List<ApprovalMovementsViewModel> AproveList = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAll()); //.GetAllAssignedToUserFilteredByStatus(User.Identity.Name, 1));
             if (requisition != null)
@@ -1484,7 +1482,6 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 if (apmov.Number == req.RequisitionNo && (apmov.Status == 1 || apmov.Status == 2))
                                 {
-                                    if (req.State == RequisitionStates.Approved)
                                         req.SentReqToAprove = false;
                                 }
                             }
@@ -1505,12 +1502,14 @@ namespace Hydra.Such.Portal.Controllers
             //    RequisitionStates.Rejected
             //};
             //requisition = DBRequest.GetReqByUserAreaStatus(User.Identity.Name, states);
+
             requisition = DBRequest.GetReqByUser((int)RequisitionTypes.ComprasDinheiro, User.Identity.Name);
             List<RequisitionViewModel> result = new List<RequisitionViewModel>();
             List<ApprovalMovementsViewModel> AproveList = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAll()); //.GetAllAssignedToUserFilteredByStatus(User.Identity.Name, 1));
             if (requisition != null)
             {
                 requisition.ForEach(x => result.Add(x.ParseToViewModel()));
+                result.RemoveAll(x => x.State == RequisitionStates.Archived);
                 if (result.Count > 0)
                 {
                     foreach (RequisitionViewModel item in result)
@@ -3011,9 +3010,11 @@ namespace Hydra.Such.Portal.Controllers
                     try
                     {
                         string extension = Path.GetExtension(file.FileName);
-                        if (extension.ToLower() == ".pdf" || extension.ToLower() == ".xls" || extension.ToLower() == ".xlsx" ||
+                        if (extension.ToLower() == ".msg" ||
+                            extension.ToLower() == ".pdf" ||
+                            extension.ToLower() == ".xls" || extension.ToLower() == ".xlsx" ||
                             extension.ToLower() == ".doc" || extension.ToLower() == ".docx" ||
-                            extension.ToLower() == ".jpg" || extension.ToLower() == ".png" || extension.ToLower() == ".pdf")
+                            extension.ToLower() == ".jpg" || extension.ToLower() == ".png")
                         {
                             string filename = Path.GetFileName(file.FileName);
                             //full_filename = "Requisicoes/" + id + "_" + filename;
@@ -3066,18 +3067,22 @@ namespace Hydra.Such.Portal.Controllers
                                 //}
                             }
                         }
+                        else
+                        {
+                            return Json(false);
+                        }
                     }
                     catch (Exception ex)
                     {
-                        throw;
+                        return Json(false);
                     }
                 }
             }
             catch (Exception ex)
             {
-                throw;
+                return Json(false);
             }
-            return Json("");
+            return Json(true);
         }
 
         [HttpPost]

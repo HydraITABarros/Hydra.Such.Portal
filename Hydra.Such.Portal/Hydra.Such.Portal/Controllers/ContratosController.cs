@@ -2594,282 +2594,247 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    //CODIGO NOVO
-                    //if (item.NºDeFaturasAEmitir > 1)
-                    //{
-                    //    int? CountLines = data.Where(x => x.ContractNo == item.NºContrato && x.InvoiceGroupValue == item.GrupoFatura).Count();
-                    //    string ContractInvoicePeriod = "";
-                    //    string InvoiceBorrowed = "";
-                    //    string Month = "";
-                    //    string Year = "";
-                    //    DateTime Lastdate = item.DataDeRegisto.Value;
-                    //    Contratos contractLine = DBContracts.GetByIdAvencaFixa(item.NºContrato);
-                    //    DateTime today = DateTime.Now;
-                    //    DateTime StContractDate = today;
-                    //    if (contractLine.DataInicial != null && contractLine.DataExpiração != null && item.DataPróximaFatura == null)
-                    //    {
-                    //        //Bimensal 
-                    //        if (contractLine.PeríodoFatura == 2)
-                    //        {
-                    //            today = today.AddMonths(2);
-                    //        }
-                    //        //Trimestral 
-                    //        if (contractLine.PeríodoFatura == 3)
-                    //        {
-                    //            today = today.AddMonths(3);
-                    //        }
-                    //        //Semestral 
-                    //        if (contractLine.PeríodoFatura == 4)
-                    //        {
-                    //            today = today.AddMonths(6);
-                    //        }
-                    //        //Anual 
-                    //        if (contractLine.PeríodoFatura == 5)
-                    //        {
-                    //            today = today.AddMonths(12);
-                    //        }
-                    //        if (today < contractLine.DataInicial)
-                    //        {
-                    //            StContractDate = (DateTime)contractLine.DataInicial;
-                    //        }
-                    //        else if (today > contractLine.DataExpiração)
-                    //        {
-                    //            StContractDate = (DateTime)contractLine.DataExpiração;
-                    //        }
-                    //    }
-                    //    else if (item.DataPróximaFatura != null)
-                    //    {
-                    //        StContractDate = (DateTime)item.DataPróximaFatura;
-                    //        today = (DateTime)item.DataPróximaFatura;
-                    //        //Mensal 
-                    //        if (contractLine.PeríodoFatura == 1)
-                    //        {
-                    //            today = today.AddMonths(-1);
-                    //        }
-                    //        //Bimensal 
-                    //        if (contractLine.PeríodoFatura == 2)
-                    //        {
-                    //            today = today.AddMonths(-2);
-                    //        }
-                    //        //Trimestral 
-                    //        if (contractLine.PeríodoFatura == 3)
-                    //        {
-                    //            today = today.AddMonths(-3);
-                    //        }
-                    //        //Semestral 
-                    //        if (contractLine.PeríodoFatura == 4)
-                    //        {
-                    //            today = today.AddMonths(-6);
-                    //        }
-                    //        //Anual 
-                    //        if (contractLine.PeríodoFatura == 5)
-                    //        {
-                    //            today = today.AddMonths(-12);
-                    //        }
-                    //        if (today < contractLine.DataInicial)
-                    //        {
-                    //            StContractDate = (DateTime)contractLine.DataInicial;
-                    //        }
-                    //        else if (today > contractLine.DataExpiração)
-                    //        {
-                    //            StContractDate = (DateTime)contractLine.DataExpiração;
-                    //        }
-                    //        else
-                    //        {
-                    //            StContractDate = today;
-                    //        }
-                    //    }
-                    //    if (Lastdate != StContractDate)
-                    //    {
-                    //        Lastdate = StContractDate;
-                    //    }
-                    //    Month = StContractDate.ToString("MMMM").ToUpper();
-                    //    Year = StContractDate.Year.ToString();
-                    //    InvoiceBorrowed = Month + "/" + Year;
-                    //    if (CountLines != null && CountLines > 1)
-                    //    {
-                    //        RequisiçõesClienteContrato GetReqClientCont = DBContractClientRequisition.GetByContractAndGroup(item.NºContrato, item.GrupoFatura);
-                    //        if (GetReqClientCont != null)
-                    //        {
-                    //            Lastdate = (new DateTime(Lastdate.Year, Lastdate.Month, 1)).AddMonths(1).AddDays(-1);
-                    //            ContractInvoicePeriod = Lastdate.ToString("dd/MM/yy");
-                    //            //don't delete for now
-                    //            //string Month = Lastdate.ToString("MMMM").ToUpper();
-                    //            //string Year = Lastdate.Year.ToString();
-                    //            //InvoiceBorrowed = Month+"/"+Year;
-                    //            //actualiar data ultima fatura para o fim do mes
-                    //            GetReqClientCont.DataÚltimaFatura = Lastdate;
-                    //            DBContractClientRequisition.Update(GetReqClientCont);
+                    //AMARO INICIO NOVO PROCESSO
+                    if (item.NºDeFaturasAEmitir > 1)
+                    {
+                        for (int i = 1; i <= item.NºDeFaturasAEmitir; i++)
+                        {
+                            int? CountLines = data.Where(x => x.ContractNo == item.NºContrato && x.InvoiceGroupValue == item.GrupoFatura).Count();
+                            string ContractInvoicePeriod = "";
+                            string InvoiceBorrowed = "";
+                            string Month = "";
+                            string Year = "";
+                            DateTime Lastdate = item.DataDeRegisto.Value;
+                            Contratos contractLine = DBContracts.GetByIdAvencaFixa(item.NºContrato);
+                            DateTime today = (DateTime)contractLine.ÚltimaDataFatura; //DateTime.Now;
+                            DateTime StContractDate = today;
 
-                    //        }
-                    //    }
-                    //    else
-                    //    {
-                    //        if (contractLine != null)
-                    //        {
-                    //            if (!String.IsNullOrEmpty(contractLine.PróximoPeríodoFact))
-                    //            {
+                            if (contractLine.DataInicial != null && contractLine.DataExpiração != null)// && item.DataPróximaFatura == null)
+                            {
+                                today = (DateTime)contractLine.ÚltimaDataFatura;
 
-                    //                int findDate = contractLine.PróximoPeríodoFact.IndexOf("-");
-                    //                if (findDate == 2)
-                    //                {
-                    //                    contractLine.PróximoPeríodoFact = contractLine.PróximoPeríodoFact.Replace(" ", "");
-                    //                    if (contractLine.PróximoPeríodoFact.Length == 8)
-                    //                    {
+                                //Mensal 
+                                if (contractLine.PeríodoFatura == 1)
+                                {
+                                    today = today.AddMonths(1);
+                                }
+                                //Bimensal 
+                                if (contractLine.PeríodoFatura == 2)
+                                {
+                                    today = today.AddMonths(2);
+                                }
+                                //Trimestral 
+                                if (contractLine.PeríodoFatura == 3)
+                                {
+                                    today = today.AddMonths(3);
+                                }
+                                //Semestral 
+                                if (contractLine.PeríodoFatura == 4)
+                                {
+                                    today = today.AddMonths(6);
+                                }
+                                //Anual 
+                                if (contractLine.PeríodoFatura == 5)
+                                {
+                                    today = today.AddMonths(12);
+                                }
 
-                    //                        ContractInvoicePeriod = contractLine.PróximoPeríodoFact;
-                    //                        //don't delete for now
-                    //                        //DateTime? date = Convert.ToDateTime(contractLine.PróximoPeríodoFact);
-                    //                        //string Month =""; string Year = "";
-                    //                        //if (date != null)
-                    //                        //{
-                    //                        //    Month = date.Value.ToString("MMMM").ToUpper();
-                    //                        //    Year = date.Value.Year.ToString();
-                    //                        //}
-                    //                        //if (String.IsNullOrEmpty(Month) && String.IsNullOrEmpty(Year))
-                    //                        //{
-                    //                        //    InvoiceBorrowed = ContractInvoicePeriod;
-                    //                        //}
-                    //                        //else
-                    //                        //{
-                    //                        //    InvoiceBorrowed = Month + "/" + Year;
-                    //                        //}
-                    //                    }
-                    //                }
-                    //                else if (findDate == 4)
-                    //                {
-                    //                    string proxperFacRep = contractLine.PróximoPeríodoFact.Replace(" ", "");
-                    //                    string[] ProxPerFac = proxperFacRep.Split('a');
-                    //                    if (ProxPerFac.Count() == 2 && proxperFacRep.Length == 17)
-                    //                    {
-                    //                        ContractInvoicePeriod = contractLine.PróximoPeríodoFact;
-                    //                        //don't delete for now
-                    //                        //DateTime? date = Convert.ToDateTime(ProxPerFac[1]);
-                    //                        //string Month = ""; string Year = "";
-                    //                        //if (date != null)
-                    //                        //{
-                    //                        //    Month = date.Value.ToString("MMMM").ToUpper();
-                    //                        //    Year = date.Value.Year.ToString();
-                    //                        //}
-                    //                        //if (String.IsNullOrEmpty(Month) && String.IsNullOrEmpty(Year))
-                    //                        //{
-                    //                        //    InvoiceBorrowed = ContractInvoicePeriod;
-                    //                        //}
-                    //                        //else
-                    //                        //{
-                    //                        //    InvoiceBorrowed = Month + "/" + Year;
-                    //                        //}
-                    //                    }
+                                if (today < contractLine.DataInicial)
+                                {
+                                    StContractDate = (DateTime)contractLine.DataInicial;
+                                }
+                                else if (today > contractLine.DataExpiração)
+                                {
+                                    StContractDate = (DateTime)contractLine.DataExpiração;
+                                }
+                                else
+                                {
+                                    StContractDate = today;
+                                }
+                            }
+                            //else if (item.DataPróximaFatura != null)
+                            //{
+                            //    StContractDate = (DateTime)item.DataPróximaFatura;
+                            //    today = (DateTime)item.DataPróximaFatura;
 
-                    //                }
-                    //            }
-                    //        }
-                    //        Lastdate = (new DateTime(Lastdate.Year, Lastdate.Month, 1)).AddMonths(1).AddDays(-1);
-                    //        //actualiar data ultima fatura para o fim do mes
-                    //        contractLine.ÚltimaDataFatura = Lastdate;
-                    //        //Estado Pendente
-                    //        //11-12-2018 ARomao@such.pt
-                    //        //A pedido do Marco Marcelo o contrato nunca pode mudar de estado
-                    //        //contractLine.Estado = 3;
+                            //    //Mensal 
+                            //    if (contractLine.PeríodoFatura == 1)
+                            //    {
+                            //        today = today.AddMonths(-1);
+                            //    }
+                            //    //Bimensal 
+                            //    if (contractLine.PeríodoFatura == 2)
+                            //    {
+                            //        today = today.AddMonths(-2);
+                            //    }
+                            //    //Trimestral 
+                            //    if (contractLine.PeríodoFatura == 3)
+                            //    {
+                            //        today = today.AddMonths(-3);
+                            //    }
+                            //    //Semestral 
+                            //    if (contractLine.PeríodoFatura == 4)
+                            //    {
+                            //        today = today.AddMonths(-6);
+                            //    }
+                            //    //Anual 
+                            //    if (contractLine.PeríodoFatura == 5)
+                            //    {
+                            //        today = today.AddMonths(-12);
+                            //    }
 
-                    //        //AMARO TEMP DESCOMENTAR
-                    //        DBContracts.Update(contractLine);
+                            //    if (today < contractLine.DataInicial)
+                            //    {
+                            //        StContractDate = (DateTime)contractLine.DataInicial;
+                            //    }
+                            //    else if (today > contractLine.DataExpiração)
+                            //    {
+                            //        StContractDate = (DateTime)contractLine.DataExpiração;
+                            //    }
+                            //    else
+                            //    {
+                            //        StContractDate = today;
+                            //    }
+                            //}
 
-                    //    }
+                            if (Lastdate != StContractDate)
+                            {
+                                Lastdate = StContractDate;
+                            }
 
-                    //    if (item.Situação == "" || item.Situação == null)
-                    //    {
+                            Month = StContractDate.ToString("MMMM").ToUpper();
+                            Year = StContractDate.Year.ToString();
+                            InvoiceBorrowed = Month + "/" + Year;
+                            if (CountLines != null && CountLines > 1)
+                            {
+                                RequisiçõesClienteContrato GetReqClientCont = DBContractClientRequisition.GetByContractAndGroup(item.NºContrato, item.GrupoFatura);
+                                if (GetReqClientCont != null)
+                                {
+                                    Lastdate = (new DateTime(Lastdate.Year, Lastdate.Month, 1)).AddMonths(1).AddDays(-1);
+                                    ContractInvoicePeriod = Lastdate.ToString("dd/MM/yy");
+                                    GetReqClientCont.DataÚltimaFatura = Lastdate;
+                                    DBContractClientRequisition.Update(GetReqClientCont);
+                                }
+                            }
+                            else
+                            {
+                                //if (contractLine != null)
+                                //{
+                                //    if (!String.IsNullOrEmpty(contractLine.PróximoPeríodoFact))
+                                //    {
+                                //        int findDate = contractLine.PróximoPeríodoFact.IndexOf("-");
+                                //        if (findDate == 2)
+                                //        {
+                                //            contractLine.PróximoPeríodoFact = contractLine.PróximoPeríodoFact.Replace(" ", "");
+                                //            if (contractLine.PróximoPeríodoFact.Length == 8)
+                                //            {
+                                //                ContractInvoicePeriod = contractLine.PróximoPeríodoFact;
+                                //            }
+                                //        }
+                                //        else if (findDate == 4)
+                                //        {
+                                //            string proxperFacRep = contractLine.PróximoPeríodoFact.Replace(" ", "");
+                                //            string[] ProxPerFac = proxperFacRep.Split('a');
+                                //            if (ProxPerFac.Count() == 2 && proxperFacRep.Length == 17)
+                                //            {
+                                //                ContractInvoicePeriod = contractLine.PróximoPeríodoFact;
+                                //            }
 
-                    //        Task<WSCreateNAVProject.Read_Result> Project = WSProject.GetNavProject(item.NºContrato, _configws);
-                    //        Project.Wait();
-                    //        if (Project.IsCompletedSuccessfully && Project.Result.WSJob == null)
-                    //        {
-                    //            ProjectDetailsViewModel proj = new ProjectDetailsViewModel();
-                    //            proj.ProjectNo = item.NºContrato;
-                    //            proj.ClientNo = item.NºCliente;
-                    //            proj.Status = EstadoProjecto.Encomenda;
-                    //            proj.RegionCode = item.CódigoRegião;
-                    //            proj.ResponsabilityCenterCode = item.CódigoCentroResponsabilidade;
-                    //            proj.FunctionalAreaCode = item.CódigoÁreaFuncional;
-                    //            proj.Description = item.Descrição;
-                    //            proj.Visivel = false;
+                                //        }
+                                //    }
+                                //}
+                                Lastdate = (new DateTime(Lastdate.Year, Lastdate.Month, 1)).AddMonths(1).AddDays(-1);
+                                ContractInvoicePeriod = Lastdate.ToString("dd/MM/yy");
+                                contractLine.ÚltimaDataFatura = Lastdate;
+                                DBContracts.Update(contractLine);
+                            }
 
-                    //            Task<WSCreateNAVProject.Create_Result> createProject = WSProject.CreateNavProject(proj, _configws);
-                    //            createProject.Wait();
-                    //        }
-                    //        item.UtilizadorCriação = User.Identity.Name;
+                            if (item.Situação == "" || item.Situação == null)
+                            {
+                                Task<WSCreateNAVProject.Read_Result> Project = WSProject.GetNavProject(item.NºContrato, _configws);
+                                Project.Wait();
+                                if (Project.IsCompletedSuccessfully && Project.Result.WSJob == null)
+                                {
+                                    ProjectDetailsViewModel proj = new ProjectDetailsViewModel();
+                                    proj.ProjectNo = item.NºContrato;
+                                    proj.ClientNo = item.NºCliente;
+                                    proj.Status = EstadoProjecto.Encomenda;
+                                    proj.RegionCode = item.CódigoRegião;
+                                    proj.ResponsabilityCenterCode = item.CódigoCentroResponsabilidade;
+                                    proj.FunctionalAreaCode = item.CódigoÁreaFuncional;
+                                    proj.Description = item.Descrição;
+                                    proj.Visivel = false;
 
+                                    Task<WSCreateNAVProject.Create_Result> createProject = WSProject.CreateNavProject(proj, _configws);
+                                    createProject.Wait();
+                                }
+                                item.UtilizadorCriação = User.Identity.Name;
 
-                    //        //AMARO TEXTO FATURA
-                    //        string obs = "";
-                    //        List<TextoFaturaContrato> ListTextoFatura = DBContractInvoiceText.GetByContractAndGrupoFatura(contractLine.NºDeContrato, item.GrupoFatura);
+                                string obs = "";
+                                List<TextoFaturaContrato> ListTextoFatura = DBContractInvoiceText.GetByContractAndGrupoFatura(contractLine.NºDeContrato, item.GrupoFatura);
+                                if (ListTextoFatura != null && ListTextoFatura.Count() > 0)
+                                {
 
-                    //        if (ListTextoFatura != null && ListTextoFatura.Count() > 0)
-                    //        {
+                                    foreach (TextoFaturaContrato texts in ListTextoFatura)
+                                    {
+                                        obs += texts.TextoFatura;
+                                    }
+                                }
+                                if (!string.IsNullOrEmpty(obs))
+                                {
+                                    item.Descrição = obs;
+                                }
+                                else
+                                {
+                                    item.Descrição = contractLine.TextoFatura;
+                                }
+                                obs = "";
 
-                    //            foreach (TextoFaturaContrato texts in ListTextoFatura)
-                    //            {
-                    //                obs += texts.TextoFatura;
-                    //            }
-                    //        }
-                    //        if (!string.IsNullOrEmpty(obs))
-                    //        {
-                    //            item.Descrição = obs;
-                    //        }
-                    //        else
-                    //        {
-                    //            item.Descrição = contractLine.TextoFatura;
-                    //        }
-                    //        obs = "";
+                                item.NºContrato = contractLine.NºDeContrato;
+                                item.NoRequisicaoDoCliente = contractLine.NºRequisiçãoDoCliente;
+                                item.NoCompromisso = contractLine.NºCompromisso;
+                                item.CódigoRegião = contractLine.CódigoRegião;
+                                item.CódigoÁreaFuncional = contractLine.CódigoÁreaFuncional;
+                                item.CódigoCentroResponsabilidade = contractLine.CódigoCentroResponsabilidade;
+                                item.DataRececaoRequisicao = contractLine.DataReceçãoRequisição;
 
-                    //        item.NºContrato = contractLine.NºDeContrato;
-                    //        item.NoRequisicaoDoCliente = contractLine.NºRequisiçãoDoCliente;
-                    //        item.NoCompromisso = contractLine.NºCompromisso;
-                    //        item.CódigoRegião = contractLine.CódigoRegião;
-                    //        item.CódigoÁreaFuncional = contractLine.CódigoÁreaFuncional;
-                    //        item.CódigoCentroResponsabilidade = contractLine.CódigoCentroResponsabilidade;
-                    //        item.DataRececaoRequisicao = contractLine.DataReceçãoRequisição;
+                                Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreateContractInvoice(item, _configws, ContractInvoicePeriod, InvoiceBorrowed);
+                                InvoiceHeader.Wait();
 
-                    //        Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreateContractInvoice(item, _configws, ContractInvoicePeriod, InvoiceBorrowed);
-                    //        InvoiceHeader.Wait();
+                                if (InvoiceHeader.IsCompletedSuccessfully && InvoiceHeader != null && InvoiceHeader.Result != null)
+                                {
+                                    String InvoiceHeaderNo = InvoiceHeader.Result.WSPreInvoice.No;
+                                    List<LinhasFaturaçãoContrato> itemList = lineList.Where(x => x.NºContrato == item.NºContrato && x.GrupoFatura == item.GrupoFatura).ToList();
 
-                    //        if (InvoiceHeader.IsCompletedSuccessfully && InvoiceHeader != null && InvoiceHeader.Result != null)
-                    //        {
-                    //            //Estado Pendente
-                    //            //11-12-2018 ARomao@such.pt
-                    //            //A pedido do Marco Marcelo o contrato nunca pode mudar de estado
-                    //            //item.Estado = 3;
+                                    if (itemList.Count > 0)
+                                    {
+                                        try
+                                        {
+                                            Task<WSCreatePreInvoiceLine.CreateMultiple_Result> InvoiceLines = WSPreInvoiceLine.CreatePreInvoiceLineList(itemList, InvoiceHeaderNo, _configws);
+                                            InvoiceLines.Wait();
+                                        }
 
-                    //            String InvoiceHeaderNo = InvoiceHeader.Result.WSPreInvoice.No;
-                    //            List<LinhasFaturaçãoContrato> itemList = lineList.Where(x => x.NºContrato == item.NºContrato && x.GrupoFatura == item.GrupoFatura).ToList();
+                                        catch (Exception ex)
+                                        {
+                                            if (!hasErrors)
+                                                hasErrors = true;
 
-                    //            if (itemList.Count > 0)
-                    //            {
-                    //                try
-                    //                {
-                    //                    Task<WSCreatePreInvoiceLine.CreateMultiple_Result> InvoiceLines = WSPreInvoiceLine.CreatePreInvoiceLineList(itemList, InvoiceHeaderNo, _configws);
-                    //                    InvoiceLines.Wait();
-                    //                }
+                                            execDetails += " Erro ao criar as linhas: ";
+                                            errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                                            result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails + errorMessage));
 
-                    //                catch (Exception ex)
-                    //                {
-                    //                    if (!hasErrors)
-                    //                        hasErrors = true;
+                                        }
 
-                    //                    execDetails += " Erro ao criar as linhas: ";
-                    //                    errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                    //                    result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails + errorMessage));
-
-                    //                }
-
-                    //            }
-                    //        }
-                    //        else
-                    //        {
-                    //            return Json(false);
-                    //        }
-                    //    }
-                    //}
+                                    }
+                                }
+                                else
+                                {
+                                    return Json(false);
+                                }
+                            }
+                        }
+                    }
+                    //FIM DO NOVO PROCESSO
                 }
             }
             if (result.eMessages.Count > 0)

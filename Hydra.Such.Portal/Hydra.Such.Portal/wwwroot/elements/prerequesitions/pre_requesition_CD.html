@@ -545,10 +545,17 @@
                                 <!--Anexos-->
                                 <div>
                                     <div class="row break_clear">
+                                        <!--<vaadin-upload id="UploadRequest"
+                                                       target="/PreRequisicoes/FileUpload/{{_prerequesitionno}}/{{_lineno}}"
+                                                       method="POST"
+                                                       accept="application/vnd.ms-outlook, application/pdf, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.template, image/jpeg, image/png, image/gif"
+                                                       headers="{'Accept': 'application/json'}"
+                                                       hidden="{{ !_permissions.update }}"
+                                                       timeout=15000>
+                                        </vaadin-upload>-->
                                         <vaadin-upload id="UploadRequest"
                                                        target="/PreRequisicoes/FileUpload/{{_prerequesitionno}}/{{_lineno}}"
                                                        method="POST"
-                                                       accept="application/pdf, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.template, image/jpeg, image/png, image/gif"
                                                        headers="{'Accept': 'application/json'}"
                                                        hidden="{{ !_permissions.update }}"
                                                        timeout=15000>
@@ -1333,6 +1340,7 @@
 
                     if (this._isCreate == false && this.$.UploadRequest != null) {
                         this.$.UploadRequest.addEventListener('upload-response', function (e) {
+                            debugger;
                             if (e.detail.xhr.status == 200) {
                                 e.detail.xhr.requestURL;
                                 var dd = document.querySelector("x-prerequisitions");
