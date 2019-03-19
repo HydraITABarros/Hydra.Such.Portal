@@ -695,12 +695,19 @@
                                         <!--<template is="dom-if" if="{{ _permissions.update }}">-->
                                         <vaadin-upload id="UploadRequest"
                                                        target="/PreRequisicoes/FileUpload/{{_prerequesitionno}}/{{_lineno}}"
-                                                       accept="application/pdf, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.template, image/jpeg, image/png, image/gif"
                                                        method="POST"
                                                        headers="{'Accept': 'application/json'}"
                                                        hidden="{{ !_permissions.update }}"
                                                        timeout=15000>
                                         </vaadin-upload>
+                                        <!--<vaadin-upload id="UploadRequest"
+                                                       target="/PreRequisicoes/FileUpload/{{_prerequesitionno}}/{{_lineno}}"
+                                                       accept="application/vnd.ms-outlook, text/plain, application/pdf, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.template, image/jpeg, image/png, image/gif"
+                                                       method="POST"
+                                                       headers="{'Accept': 'application/json'}"
+                                                       hidden="{{ !_permissions.update }}"
+                                                       timeout=15000>
+                                        </vaadin-upload>-->
                                         <!--</template>-->
                                     </div>
                                     <div class="row break_clear">
@@ -1995,10 +2002,18 @@
 
                     if (this._isCreate == false && this.$.UploadRequest != null) {
                         this.$.UploadRequest.addEventListener('upload-response', function (e) {
-                            if (e.detail.xhr.status == 200) {
+                            var results = JSON.parse(e.detail.xhr.response);
+                            if (results == true) {
+                                var msg = document.querySelector("x-requisitiondetails");
+                                msg._openToast("Ficheiro adicionado com sucesso.");
+
                                 e.detail.xhr.requestURL;
-                                var dd = document.querySelector("x-prerequisitions");
+                                var dd = document.querySelector("x-requisitiondetails");
                                 dd.$.page_update_ajax.generateRequest();
+                            }
+                            else {
+                                var msg = document.querySelector("x-requisitiondetails");
+                                msg._openToastError("Não é permitido adicionar este tipo de ficheiros.");
                             }
                         });
                     }

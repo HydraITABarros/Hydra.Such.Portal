@@ -254,7 +254,8 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         DataHoraModificacao = FH.DataHoraModificação,
                         DataModificacaoTexto = FH.DataHoraModificação == null ? "" : FH.DataHoraModificação.Value.ToString("yyyy-MM-dd"),
                         HoraModificacaoTexto = FH.DataHoraModificação == null ? "" : FH.DataHoraModificação.Value.ToString("HH:mm:ss"),
-                        Eliminada = FH.Eliminada
+                        Eliminada = FH.Eliminada,
+                        Intervenientes = FH.Intervenientes
                     }).ToList();
                 }
             }
@@ -465,7 +466,8 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         DataHoraModificacao = FH.DataHoraModificação,
                         DataModificacaoTexto = FH.DataHoraModificação == null ? "" : FH.DataHoraModificação.Value.ToString("yyyy-MM-dd"),
                         HoraModificacaoTexto = FH.DataHoraModificação == null ? "" : FH.DataHoraModificação.Value.ToString("HH:mm:ss"),
-                        Eliminada = FH.Eliminada
+                        Eliminada = FH.Eliminada,
+                        Intervenientes = FH.Intervenientes
                     }).ToList();
                 }
             }
@@ -571,7 +573,8 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         DataHoraModificacao = FH.DataHoraModificação,
                         DataModificacaoTexto = FH.DataHoraModificação == null ? "" : FH.DataHoraModificação.Value.ToString("yyyy-MM-dd"),
                         HoraModificacaoTexto = FH.DataHoraModificação == null ? "" : FH.DataHoraModificação.Value.ToString("HH:mm:ss"),
-                        Eliminada = FH.Eliminada
+                        Eliminada = FH.Eliminada,
+                        Intervenientes = FH.Intervenientes
                     }).ToList();
                 }
             }
@@ -678,7 +681,8 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         DataHoraModificacao = FH.DataHoraModificação,
                         DataModificacaoTexto = FH.DataHoraModificação == null ? "" : FH.DataHoraModificação.Value.ToString("yyyy-MM-dd"),
                         HoraModificacaoTexto = FH.DataHoraModificação == null ? "" : FH.DataHoraModificação.Value.ToString("HH:mm:ss"),
-                        Eliminada = FH.Eliminada
+                        Eliminada = FH.Eliminada,
+                        Intervenientes = FH.Intervenientes
                     }).ToList();
                 }
             }
@@ -786,7 +790,8 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         DataHoraModificacao = FH.DataHoraModificação,
                         DataModificacaoTexto = FH.DataHoraModificação == null ? "" : FH.DataHoraModificação.Value.ToString("yyyy-MM-dd"),
                         HoraModificacaoTexto = FH.DataHoraModificação == null ? "" : FH.DataHoraModificação.Value.ToString("HH:mm:ss"),
-                        Eliminada = FH.Eliminada
+                        Eliminada = FH.Eliminada,
+                        Intervenientes = FH.Intervenientes
                     }).ToList();
                 }
             }
@@ -894,7 +899,8 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         DataHoraModificacao = FH.DataHoraModificação,
                         DataModificacaoTexto = FH.DataHoraModificação == null ? "" : FH.DataHoraModificação.Value.ToString("yyyy-MM-dd"),
                         HoraModificacaoTexto = FH.DataHoraModificação == null ? "" : FH.DataHoraModificação.Value.ToString("HH:mm:ss"),
-                        Eliminada = FH.Eliminada
+                        Eliminada = FH.Eliminada,
+                        Intervenientes = FH.Intervenientes
                     }).ToList();
                 }
             }
@@ -1003,7 +1009,8 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         DataHoraModificacao = FH.DataHoraModificação,
                         DataModificacaoTexto = FH.DataHoraModificação == null ? "" : FH.DataHoraModificação.Value.ToString("yyyy-MM-dd"),
                         HoraModificacaoTexto = FH.DataHoraModificação == null ? "" : FH.DataHoraModificação.Value.ToString("HH:mm:ss"),
-                        Eliminada = FH.Eliminada
+                        Eliminada = FH.Eliminada,
+                        Intervenientes = FH.Intervenientes
                     }).ToList();
                 }
             }
@@ -1109,7 +1116,8 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         DataHoraModificacao = FH.DataHoraModificação,
                         DataModificacaoTexto = FH.DataHoraModificação == null ? "" : FH.DataHoraModificação.Value.ToString("yyyy-MM-dd"),
                         HoraModificacaoTexto = FH.DataHoraModificação == null ? "" : FH.DataHoraModificação.Value.ToString("HH:mm:ss"),
-                        Eliminada = FH.Eliminada
+                        Eliminada = FH.Eliminada,
+                        Intervenientes = FH.Intervenientes
                     }).ToList();
                 }
             }
@@ -1366,6 +1374,7 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                     FH.UtilizadorModificação = FHViewModel.UtilizadorModificacao;
                     FH.DataHoraModificação = FHViewModel.DataHoraModificacao;
                     FH.Eliminada = FHViewModel.Eliminada;
+                    FH.Intervenientes = FHViewModel.Intervenientes;
 
                     return FH;
                 }

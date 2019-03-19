@@ -3609,9 +3609,13 @@ namespace Hydra.Such.Portal.Controllers
                     try
                     {
                         string extension = Path.GetExtension(file.FileName);
-                        if (extension.ToLower() == ".pdf" || extension.ToLower() == ".xls" || extension.ToLower() == ".xlsx" ||
-                            extension.ToLower() == ".doc" || extension.ToLower() == ".docx" ||
-                            extension.ToLower() == ".jpg" || extension.ToLower() == ".png" || extension.ToLower() == ".pdf")
+                        if (extension.ToLower() == ".msg" ||
+                            extension.ToLower() == ".txt" || extension.ToLower() == ".text" ||
+                            extension.ToLower() == ".pdf" ||
+                            extension.ToLower() == ".xls" || extension.ToLower() == ".xlsx" ||
+                            extension.ToLower() == ".doc" || extension.ToLower() == ".docx" || extension.ToLower() == ".dotx" ||
+                            extension.ToLower() == ".jpg" || extension.ToLower() == ".jpeg" || extension.ToLower() == ".pjpeg" || extension.ToLower() == ".jfif" || extension.ToLower() == ".pjp" ||
+                            extension.ToLower() == ".png" || extension.ToLower() == ".gif")
                         {
                             string filename = Path.GetFileName(file.FileName);
                             //full_filename = "Requisicoes/" + id + "_" + filename;

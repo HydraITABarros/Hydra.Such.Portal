@@ -81,6 +81,7 @@ namespace Hydra.Such.Data.ViewModel.FH
         public string DataModificacaoTexto { get; set; }
         public string HoraModificacaoTexto { get; set; }
         public bool? Eliminada { get; set; }
+        public string Intervenientes { get; set; }
 
         public bool MostrarBotoes { get; set; }
         public bool MostrarReportAjCustosRH { get; set; }

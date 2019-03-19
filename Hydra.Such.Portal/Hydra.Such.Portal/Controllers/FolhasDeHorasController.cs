@@ -3059,6 +3059,12 @@ namespace Hydra.Such.Portal.Controllers
 
                             if (data.Terminada == true)
                             {
+                                //data.Intervenientes = " CRIADOPOR: " + data.CriadoPor;
+                                //ConfigUtilizadores ConfigUser = DBUserConfigurations.GetByEmployeeNo(data.EmpregadoNo);
+                                //if (ConfigUser != null)
+                                //    data.Intervenientes = data.Intervenientes + " EMPREGADO: " + ConfigUser.IdUtilizador;
+
+
                                 FolhaDeHorasViewModel Autorizacao = DBFolhasDeHoras.GetListaValidadoresIntegradores(data.FolhaDeHorasNo, data.EmpregadoNo);
                                 if (Autorizacao != null)
                                 {
@@ -3069,6 +3075,10 @@ namespace Hydra.Such.Portal.Controllers
                                     data.Responsavel1No = !string.IsNullOrEmpty(Autorizacao.Responsavel1No) ? Autorizacao.Responsavel1No : "";
                                     data.Responsavel2No = !string.IsNullOrEmpty(Autorizacao.Responsavel2No) ? Autorizacao.Responsavel2No : "";
                                     data.Responsavel3No = !string.IsNullOrEmpty(Autorizacao.Responsavel3No) ? Autorizacao.Responsavel3No : "";
+
+                                    //data.Intervenientes = data.Intervenientes + " VALIDADORES: " + data.Validadores;
+                                    //data.Intervenientes = data.Intervenientes + " INTEGRADORESEMRH: " + data.IntegradoresEmRH;
+                                    //data.Intervenientes = data.Intervenientes + " INTEGRADORESEMRHKM: " + data.IntegradoresEmRHKM;
                                 };
 
                                 data.DataHoraPartida = DateTime.Parse(string.Concat(data.DataPartidaTexto, " ", data.HoraPartidaTexto));
