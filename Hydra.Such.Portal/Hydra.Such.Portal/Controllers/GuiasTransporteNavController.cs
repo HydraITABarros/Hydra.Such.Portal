@@ -328,9 +328,12 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult Register([FromBody] JObject param)
         {
             if (param["noGuia"] == null)
-                return null;
+                return Json(null);
 
             string noGuia = (string)param["noGuia"];
+
+            if (noGuia == "")
+                return Json(null);
 
             try
             {
@@ -342,9 +345,8 @@ namespace Hydra.Such.Portal.Controllers
                 if (result == null)
                     return Json(null);
 
-                int num;
 
-                bool isInt = Int32.TryParse(result.return_value, out num);
+                bool isInt = Int32.TryParse(result.return_value, out int num);
                 if (isInt)
                 {
                     return Json(num);
@@ -362,6 +364,45 @@ namespace Hydra.Such.Portal.Controllers
             }
 
             
+        }
+
+        [HttpPost]
+        public JsonResult ForceDocRegistry([FromBody] JObject param)
+        {
+            if (param["noGuia"] == null)
+                return Json(null);
+
+            string noGuia = (string)param["noGuia"];
+
+            if (noGuia == "")
+                return Json(null);
+
+
+            try
+            {
+                var forceRegisterGuiaTask = WSGuiasTransporteNAV.ForceDocumentRegistry(noGuia, _configws);
+                forceRegisterGuiaTask.Wait();
+
+                var result = forceRegisterGuiaTask.Result;
+
+                if (result == null)
+                    return Json(null);
+
+                bool isInt = Int32.TryParse(result.return_value, out int num);
+                if (isInt)
+                {
+                    return Json(num);
+                }
+
+                return Json(null);
+            }
+            catch (Exception ex)
+            {
+
+                return Json(null);
+            }
+
+
         }
         [HttpPost]
         public JsonResult CreateShipmentLine([FromBody] JObject data)
