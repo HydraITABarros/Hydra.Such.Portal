@@ -103,7 +103,7 @@
             </template>
         </template>
 
-        <vaadin-grid aria-label="ContractsGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+        <vaadin-grid column-reordering-allowed aria-label="ContractsGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.contractNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="contractNo">Nº Proposta</vaadin-grid-sorter>
