@@ -207,6 +207,23 @@
                    id="setProposalStatus_ajax"
                    on-response="_proposalStateChangeResponse"
                    content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Contratos/OpenProposta"
+                   last-response="{{openResponse}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_openProposta_ajax"
+                   on-response="_openPropostaResponse"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Contratos/CloseProposta"
+                   last-response="{{closeResponse}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_closeProposta_ajax"
+                   on-response="_closePropostaResponse"
+                   content-type="application/json"></iron-ajax>
+
         <!-- Paper Dialog -->
         <paper-dialog id="dialog_proposals" class="dialgoBox" modal>
             <h2 class="dialogTitle">Propostas</h2>
@@ -338,6 +355,10 @@
                     <paper-button class="tablinks" on-tap="_parseToContract" id="parseParcialContract" hidden="[[ _hasRelatedContract ]]"><i class="fa fa-check-square" aria-hidden="true"></i> Tornar em Contrato Parcial</paper-button>
                     <paper-button class="tablinks" on-tap="_confirmContractUpdate" id="btnUpdateContract" hidden="{{ _readOnly }}"><i class="fa fa-check-square" aria-hidden="true"></i> Atualizar Contrato</paper-button>
                     <paper-button class="tablinks" on-tap="_openProposals" id="btnContractArchive" hidden="{{ !_showContractLines }}"><i class="fa fa-check-square" aria-hidden="true"></i> Cópia de proposta</paper-button>
+
+                    <paper-button class="tablinks" on-tap="_openProposta" id="openContract"><i class="fa fa-check-square" aria-hidden="true"></i> Abrir</paper-button>
+                    <paper-button class="tablinks" on-tap="_closeProposta" id="closeContract"><i class="fa fa-check-square" aria-hidden="true"></i> Fechar</paper-button>
+
                     <such-dropdown-menu id="mnuStatus" on-value-changed="_statusMenuItemSelected" hidden="{{ _readOnly }}" title="Alterar Estado" items="[[ _statusMenuItems ]]"></such-dropdown-menu>
                     <!--<paper-button class="tablinks" on-tap="_archive" id="btnArchive"><i class="fa fa-archive" aria-hidden="true"></i>&nbsp; {{ _btnArchiveMessage }}</paper-button>-->
                 </template>
@@ -1507,7 +1528,7 @@
                     },
                     _statusMenuItems: {
                         type: Array,
-                        value: [{ value: 1, description: "Aberta" }, { value: 2, description: "Enviada" }, { value: 3, description: "Revista" }, { value: 4, description: "Perdida" }, { value: 5, description: "Cancelada" }],
+                        value: [/*{ value: 1, description: "Aberta" },*/ { value: 2, description: "Enviada" }, { value: 3, description: "Revista" }, { value: 4, description: "Perdida" }, { value: 5, description: "Cancelada" }],
                     },
                     _statusForContractUpdate: {
                         type: Array,
@@ -1545,13 +1566,19 @@
                 },
 
                 _statusMenuItemSelected: function (e) {
+                    debugger;
                     var item = e.detail.value;
 
                     if (item == null)
                         return;
 
-                    this._newStatus = item.value;
-                    this._setProposalStatus();
+                    if (this.data.oldStatus == null || this.data.oldStatus < 0) {
+                        this._newStatus = item.value;
+                        this._setProposalStatus();
+                    }
+                    else {
+                        this._openToastError("Não é possível Alterar o Estado pois a Proposta foi aberta.");
+                    }
                 },
 
                 _proposalStateChangeResponse: function () {
@@ -2657,6 +2684,41 @@
                 _goBack: function (e) {
                     window.history.back();
                 },
+
+                _openProposta: function () {
+                    debugger;
+                    this.$.page_openProposta_ajax.body = JSON.stringify(this.data);
+                    this.$.page_openProposta_ajax.generateRequest();
+                },
+                _openPropostaResponse: function () {
+                    debugger;
+                    if (this.openResponse.eReasonCode == 1) {
+                        this._openToast(this.openResponse.eMessage);
+
+                        window.location.reload();
+                    } else {
+                        this._openToastError(this.openResponse.eMessage);
+                    }
+                },
+
+                _closeProposta: function () {
+                    debugger;
+                    this.$.page_closeProposta_ajax.body = JSON.stringify(this.data);
+                    this.$.page_closeProposta_ajax.generateRequest();
+                },
+                _closePropostaResponse: function () {
+                    debugger;
+                    if (this.closeResponse.eReasonCode == 1) {
+                        this._openToast(this.closeResponse.eMessage);
+
+                        window.location.reload();
+                    } else {
+                        this._openToastError(this.closeResponse.eMessage);
+                    }
+                },
+
+
+
             });
         });
 

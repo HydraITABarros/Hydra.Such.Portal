@@ -26,6 +26,24 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
+        public IActionResult PedidosDEV(string id)
+        {
+            ViewBag.NoPedidoDEV = id;
+
+            UserAccessesViewModel userPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminPedidosDEV);
+            if (userPerm != null && userPerm.Read.Value)
+            {
+                ViewBag.CreatePermissions = !userPerm.Create.Value;
+                ViewBag.UpdatePermissions = !userPerm.Update.Value;
+                ViewBag.DeletePermissions = !userPerm.Delete.Value;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
         [HttpPost]
         public JsonResult GetListPedidosDEV()
         {

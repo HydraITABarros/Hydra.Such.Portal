@@ -6989,7 +6989,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult PedidosDEV(string id)
         {
-            ViewBag.NoProcedimento = id;
+            ViewBag.NoPedidoDEV = id;
 
             UserAccessesViewModel userPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminPedidosDEV);
             if (userPerm != null && userPerm.Read.Value)
@@ -7004,6 +7004,9 @@ namespace Hydra.Such.Portal.Controllers
                 return RedirectToAction("AccessDenied", "Error");
             }
         }
+
+
+
 
         #endregion
 

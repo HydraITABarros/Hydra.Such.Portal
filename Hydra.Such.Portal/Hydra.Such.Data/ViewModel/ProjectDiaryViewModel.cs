@@ -54,6 +54,7 @@ namespace Hydra.Such.Data.ViewModel
         //public bool? AuthorizedInvoice { get; set; }
         //public DateTime? AuthorizedInvoiceDate { get; set; }
         public string ServiceGroupCode { get; set; }
+        public string ServiceGroupCodeDescription { get; set; }
         //public int? ResourceType { get; set; }
         //public string TimeSheetNo { get; set; }
         //public string InternalRequisition { get; set; }

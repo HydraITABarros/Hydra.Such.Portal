@@ -512,7 +512,7 @@ namespace Hydra.Such.Portal.Controllers
                 ContractType? contractType = null;
                 if (EnumHelper.ValidateRange(typeof(ContractType), data.ContractType))
                     contractType = (ContractType)data.ContractType;
-;
+
                 if (data.VersionNo != 0)
                 {
                     cContract = DBContracts.GetByIdAndVersion(data.ContractNo, data.VersionNo, contractType);
@@ -3082,6 +3082,81 @@ namespace Hydra.Such.Portal.Controllers
                 return RedirectToAction("AccessDenied", "Error");
             }
         }
+
+        [HttpPost]
+        public JsonResult OpenProposta([FromBody] ContractViewModel Proposta)
+        {
+            if (Proposta != null)
+            {
+                if (Proposta.Status != 1 && (Proposta.OldStatus == null || Proposta.OldStatus == -1))
+                {
+                    Proposta.OldStatus = Proposta.Status;
+                    Proposta.Status = 1; //"Aberta"
+                    Proposta.UpdateUser = User.Identity.Name;
+
+                    if (DBContracts.Update(DBContracts.ParseToDB(Proposta)) != null)
+                    {
+                        Proposta.eReasonCode = 1;
+                        Proposta.eMessage = "A Proposta foi aberta com sucesso.";
+                    }
+                    else
+                    {
+                        Proposta.eReasonCode = 2;
+                        Proposta.eMessage = "Ocorreu um erro ao atualizar a Proposta.";
+                    }
+                }
+                else
+                {
+                    Proposta.eReasonCode = 3;
+                    Proposta.eMessage = "Não é permitido abrir a Proposta, pois a Proposta já está Aberta.";
+                }
+            }
+            else
+            {
+                Proposta.eReasonCode = 4;
+                Proposta.eMessage = "Não foi possível obter os dados da Proposta.";
+            }
+
+            return Json(Proposta);
+        }
+
+        [HttpPost]
+        public JsonResult CloseProposta([FromBody] ContractViewModel Proposta)
+        {
+            if (Proposta != null)
+            {
+                if (Proposta.OldStatus >= 0)
+                {
+                    Proposta.Status = Proposta.OldStatus;
+                    Proposta.OldStatus = -1; //FECHADA
+                    Proposta.UpdateUser = User.Identity.Name;
+
+                    if (DBContracts.Update(DBContracts.ParseToDB(Proposta)) != null)
+                    {
+                        Proposta.eReasonCode = 1;
+                        Proposta.eMessage = "A Proposta foi fechada com sucesso.";
+                    }
+                    else
+                    {
+                        Proposta.eReasonCode = 2;
+                        Proposta.eMessage = "Ocorreu um erro ao atualizar a Proposta.";
+                    }
+                }
+                else
+                {
+                    Proposta.eReasonCode = 3;
+                    Proposta.eMessage = "Não é permitido fechar a Proposta, pois a Proposta não foi Aberta.";
+                }
+            }
+            else
+            {
+                Proposta.eReasonCode = 4;
+                Proposta.eMessage = "Não foi possível obter os dados da Proposta.";
+            }
+
+            return Json(Proposta);
+        }
+
         #endregion
 
         #region Invoice
@@ -3703,7 +3778,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 if(temp.DataRegistoDiario != null)
                 {
-                    temp.DataRegistoDiarioSTR = temp.DataRegistoDiario.Value.ToString("yyyy-MM-dd");
+                    temp.DataRegistoDiarioSTR = temp.DataRegistoDiario.Value.ToShortDateString() != "1/1/1753" ? temp.DataRegistoDiario.Value.ToString("yyyy-MM-dd") : "";
                 }
             }
             return Json(result);

@@ -4218,6 +4218,7 @@ namespace Hydra.Such.Portal.Controllers
 
                 List<Serviços> AllServices = DBServices.GetAll();
                 List<TiposRefeição>  AllMealTypes = DBMealTypes.GetAll();
+                List<ClientServicesViewModel> AllServiceGroup = DBClientServices.GetAllServiceGroup(string.Empty, true);
 
                 List<ProjectDiaryViewModel> dp = DBPreProjectMovements.GetPreRegistered(ProjectNo).Select(x => new ProjectDiaryViewModel()
                 {
@@ -4247,6 +4248,7 @@ namespace Hydra.Such.Portal.Controllers
                     InvoiceToClientNo = x.FaturaANºCliente,
                     ServiceClientCode = x.CódServiçoCliente,
                     ServiceGroupCode = x.CódGrupoServiço,
+                    ServiceGroupCodeDescription = AllServiceGroup.Where(y => y.ClientNumber == NoCliente && y.ServiceCode == x.CódGrupoServiço).FirstOrDefault() != null ? AllServiceGroup.Where(y => y.ClientNumber == NoCliente && y.ServiceCode == x.CódGrupoServiço).FirstOrDefault().ServiceDescription : "",
                     ClientName = ClientName,
                     //ClientName = DBNAV2017Clients.GetClientNameByNo(x.FaturaANºCliente, _config.NAVDatabaseName, _config.NAVCompanyName),
                     ServiceClientDescription = !String.IsNullOrEmpty(x.CódServiçoCliente) ? AllServices.Where(y => y.Código == x.CódServiçoCliente).FirstOrDefault().Descrição : "",
@@ -7132,6 +7134,11 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Cód. Grupo Serviço");
                     Col = Col + 1;
                 }
+                if (dp["serviceGroupCodeDescription"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Grupo Serviço");
+                    Col = Col + 1;
+                }
 
                 if (dp != null)
                 {
@@ -7274,6 +7281,11 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["serviceGroupCode"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.ServiceGroupCode);
+                            Col = Col + 1;
+                        }
+                        if (dp["serviceGroupCodeDescription"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ServiceGroupCodeDescription);
                             Col = Col + 1;
                         }
                         count++;

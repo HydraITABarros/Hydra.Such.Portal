@@ -16,6 +16,7 @@ namespace Hydra.Such.Data.Database
         public int? Área { get; set; }
         public string Descrição { get; set; }
         public int? Estado { get; set; }
+        public int? EstadoAnterior { get; set; }
         public int? EstadoAlteração { get; set; }
         public string NºCliente { get; set; }
         public string CódigoRegião { get; set; }
