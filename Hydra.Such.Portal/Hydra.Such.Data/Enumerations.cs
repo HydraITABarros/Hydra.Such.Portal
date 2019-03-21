@@ -177,6 +177,8 @@ namespace Hydra.Such.Data
             ContratosAvencaFixa = 64,
             [Description("Folha Horas Report Aj Custo RH")]
             FHReportAjCustoRH = 65,
+            [Description("Contrato Criar Fatura")]
+            ContratosCriarFatura = 66,
 
 
             [Description("Administração Geral")]

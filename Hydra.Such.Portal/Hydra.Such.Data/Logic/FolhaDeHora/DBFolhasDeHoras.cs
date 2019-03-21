@@ -126,6 +126,8 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                     FolhaDeHora.IntegradoresEmRh = FH.IntegradoresEmRH;
                     FolhaDeHora.IntegradoresEmRhkm = FH.IntegradoresEmRHKM;
 
+                    FH.Intervenientes = FH.Intervenientes;
+
                     FolhaDeHora.DataHoraModificação = DateTime.Now;
 
                     ctx.FolhasDeHoras.Update(FolhaDeHora);
@@ -1190,6 +1192,7 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
 
             if (!string.IsNullOrEmpty(FolhaHorasNo))
             {
+                string idEmployeePortal = null;
                 FolhaHoras = DBFolhasDeHoras.GetById(FolhaHorasNo);
 
                 decimal CustoTotalHoras = FolhaHoras.CustoTotalHoras == null ? 0 : (decimal)FolhaHoras.CustoTotalHoras;
@@ -1199,8 +1202,6 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
 
                 if (idEmployee != null && idEmployee != "")
                 {
-                    string idEmployeePortal = null;
-
                     ConfigUtilizadores ConfUtilizadores = DBUserConfigurations.GetAll().Where(x => x.EmployeeNo == null ? "" == idEmployee.ToLower() : x.EmployeeNo.ToLower() == idEmployee.ToLower()).FirstOrDefault();
 
                     if (ConfUtilizadores == null)
@@ -1370,6 +1371,26 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         }
                     }
                 }
+
+                FH.Intervenientes = " CRIADOPOR: ";
+                if (!string.IsNullOrEmpty(FH.CriadoPor))
+                    FH.Intervenientes = FH.Intervenientes + FH.CriadoPor;
+
+                FH.Intervenientes = FH.Intervenientes + " EMPREGADO: ";
+                if (!string.IsNullOrEmpty(idEmployeePortal))
+                    FH.Intervenientes = FH.Intervenientes + idEmployeePortal;
+
+                FH.Intervenientes = FH.Intervenientes + " VALIDADORES: ";
+                if (!string.IsNullOrEmpty(FH.Validadores))
+                    FH.Intervenientes = FH.Intervenientes + FH.Validadores;
+
+                FH.Intervenientes = FH.Intervenientes + " INTEGRADORESEMRH: ";
+                if (!string.IsNullOrEmpty(FH.IntegradoresEmRH))
+                    FH.Intervenientes = FH.Intervenientes + FH.IntegradoresEmRH;
+
+                FH.Intervenientes = FH.Intervenientes + " INTEGRADORESEMRHKM: ";
+                if (!string.IsNullOrEmpty(FH.IntegradoresEmRHKM))
+                    FH.Intervenientes = FH.Intervenientes + FH.IntegradoresEmRHKM;
             }
 
             return FH;

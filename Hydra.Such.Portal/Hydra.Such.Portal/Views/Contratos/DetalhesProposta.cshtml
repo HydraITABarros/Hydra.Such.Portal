@@ -16,4 +16,11 @@
     }*@
 
 
-<x-proposalsdetails _archived="@ViewBag.Archived" _contractno="@ViewBag.ContractNo" _versionno="@ViewBag.VersionNo" _areaid="@ViewBag.ID" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-proposalsdetails>
+<x-proposalsdetails
+                    _archived="@ViewBag.Archived"
+                    _contractno="@ViewBag.ContractNo"
+                    _versionno="@ViewBag.VersionNo"
+                    _reportserverurl='@ViewBag.reportServerURL'
+                    _areaid="@ViewBag.ID"
+                    _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'
+></x-proposalsdetails>

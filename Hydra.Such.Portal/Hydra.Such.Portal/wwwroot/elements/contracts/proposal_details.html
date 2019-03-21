@@ -349,19 +349,19 @@
                 <!--<template is="dom-if" if="{{ _permissions.create }}">-->
                 <paper-button id="btnContractAdd" hidden="{{ _showContractLines }}" class="tablinks" on-tap="_createNewContract" disabled="{{ !_permissions.create }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
                 <!--</template>-->
-                <!--<paper-button id="btnContractArchive" hidden="{{ _showContractLines }}" class="tablinks" on-tap="_openContractArchive"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Consulta de arquivos</paper-button>-->
-                <template is="dom-if" if="{{ _permissions.update }}">
-                    <paper-button class="tablinks" on-tap="_parseToContract" id="parseContract" hidden="[[ _hasRelatedContract ]]"><i class="fa fa-check-square" aria-hidden="true"></i> Tornar em Contrato</paper-button>
-                    <paper-button class="tablinks" on-tap="_parseToContract" id="parseParcialContract" hidden="[[ _hasRelatedContract ]]"><i class="fa fa-check-square" aria-hidden="true"></i> Tornar em Contrato Parcial</paper-button>
+                <!--<template is="dom-if" if="{{ _permissions.update }}">-->
+                    <paper-button class="tablinks" on-tap="_parseToContract" id="parseContract" hidden="{{ _readOnly }}"><i class="fa fa-check-square" aria-hidden="true"></i> Tornar em Contrato</paper-button>
+                    <paper-button class="tablinks" on-tap="_parseToContract" id="parseParcialContract" hidden="{{ _readOnly }}"><i class="fa fa-check-square" aria-hidden="true"></i> Tornar em Contrato Parcial</paper-button>
                     <paper-button class="tablinks" on-tap="_confirmContractUpdate" id="btnUpdateContract" hidden="{{ _readOnly }}"><i class="fa fa-check-square" aria-hidden="true"></i> Atualizar Contrato</paper-button>
-                    <paper-button class="tablinks" on-tap="_openProposals" id="btnContractArchive" hidden="{{ !_showContractLines }}"><i class="fa fa-check-square" aria-hidden="true"></i> Cópia de proposta</paper-button>
+                    <paper-button class="tablinks" on-tap="_openProposals" id="btnContractArchive" hidden="{{ _readOnly }}"><i class="fa fa-check-square" aria-hidden="true"></i> Cópia de proposta</paper-button>
 
-                    <paper-button class="tablinks" on-tap="_openProposta" id="openContract"><i class="fa fa-check-square" aria-hidden="true"></i> Abrir</paper-button>
-                    <paper-button class="tablinks" on-tap="_closeProposta" id="closeContract"><i class="fa fa-check-square" aria-hidden="true"></i> Fechar</paper-button>
+                    <paper-button class="tablinks" on-tap="_openProposta" id="openContract" hidden="{{ _readOnly }}"><i class="fa fa-check-square" aria-hidden="true"></i> Abrir</paper-button>
+                    <paper-button class="tablinks" on-tap="_closeProposta" id="closeContract" hidden="{{ _readOnly }}"><i class="fa fa-check-square" aria-hidden="true"></i> Fechar</paper-button>
 
                     <such-dropdown-menu id="mnuStatus" on-value-changed="_statusMenuItemSelected" hidden="{{ _readOnly }}" title="Alterar Estado" items="[[ _statusMenuItems ]]"></such-dropdown-menu>
-                    <!--<paper-button class="tablinks" on-tap="_archive" id="btnArchive"><i class="fa fa-archive" aria-hidden="true"></i>&nbsp; {{ _btnArchiveMessage }}</paper-button>-->
-                </template>
+
+                    <paper-button id="btn_imprimir" class="tablinks" on-tap="_print" title="Imprimir"><i class="fa fa-print" aria-hidden="true"></i> Imprimir</paper-button>
+                <!--</template>-->
             </div>
         </template>
 
@@ -1304,6 +1304,13 @@
 
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+
+        <paper-dialog id="rptDialog" class="dialgoBox" modal>
+            <div class="buttons">
+                <paper-button id="btn_reportClose" class="btnRemove" on-tap="_closeRptDialog" title="Fechar"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
+            </div>
+            <iframe id="rptContainer" src="" frameborder="0" style="width: 100%; height: 92%; margin: 0px; padding: 0px"></iframe>
+        </paper-dialog>
     </template>
     <script>
         document.addEventListener('WebComponentsReady', function () {
@@ -1549,7 +1556,10 @@
                     _readOnly: {
                         type: Boolean,
                         value: false,
-                    }
+                    },
+                    _reportserverurl: {
+                        type: String,
+                    },
                 },
                 observers: [
                     'relatedContractChanged(data.relatedContract)',
@@ -2687,8 +2697,29 @@
 
                 _openProposta: function () {
                     debugger;
-                    this.$.page_openProposta_ajax.body = JSON.stringify(this.data);
-                    this.$.page_openProposta_ajax.generateRequest();
+                    //this.$.page_openProposta_ajax.body = JSON.stringify(this.data);
+                    //this.$.page_openProposta_ajax.generateRequest();
+
+                    var ajax = this.$.page_openProposta_ajax;
+                    ajax.body = JSON.stringify(this.data);
+                    bootbox.confirm({
+                        message: "Tem a certeza que pretende abrir a proposta?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            if (result) {
+                                ajax.generateRequest();
+                            }
+                        }
+                    });
                 },
                 _openPropostaResponse: function () {
                     debugger;
@@ -2703,8 +2734,29 @@
 
                 _closeProposta: function () {
                     debugger;
-                    this.$.page_closeProposta_ajax.body = JSON.stringify(this.data);
-                    this.$.page_closeProposta_ajax.generateRequest();
+                    //this.$.page_closeProposta_ajax.body = JSON.stringify(this.data);
+                    //this.$.page_closeProposta_ajax.generateRequest();
+
+                    var ajax = this.$.page_closeProposta_ajax;
+                    ajax.body = JSON.stringify(this.data);
+                    bootbox.confirm({
+                        message: "Tem a certeza que pretende fechar a proposta?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            if (result) {
+                                ajax.generateRequest();
+                            }
+                        }
+                    });
                 },
                 _closePropostaResponse: function () {
                     debugger;
@@ -2716,6 +2768,21 @@
                         this._openToastError(this.closeResponse.eMessage);
                     }
                 },
+
+                _print: function () {
+                    if (this._reportserverurl != undefined) {
+                        this.$.rptContainer.src = this._reportserverurl + "OpotunidadeProposta_Contrato&TipoContrato=" + this.data.contractType + "&NoContrato=" + this.data.contractNo + "&NoVersao=" + this.data.versionNo;
+                        this.$.rptDialog.open();
+                    }
+                    else {
+                        this._openToastError("Não é possivel imprimir. Não foi definido o servidor de relatórios.");
+                    }
+                },
+                _closeRptDialog: function () {
+                    this.$.rptContainer.src = "about:blank";
+                    this.$.rptDialog.close();
+                },
+
 
 
 

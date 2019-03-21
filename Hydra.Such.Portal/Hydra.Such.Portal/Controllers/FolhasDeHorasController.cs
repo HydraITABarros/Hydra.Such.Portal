@@ -389,6 +389,7 @@ namespace Hydra.Such.Portal.Controllers
                     FH.UtilizadorModificação = "";
                     FH.DataHoraModificação = null;
                     FH.Eliminada = false;
+                    FH.Intervenientes = " CRIADOPOR: " + FH.CriadoPor + " EMPREGADO: " + FH.NºEmpregado + " VALIDADORES: " + FH.Validadores + " INTEGRADORESEMRH: " + FH.IntegradoresEmRh + " INTEGRADORESEMRHKM: " + FH.IntegradoresEmRhkm;
 
                     DBFolhasDeHoras.Create(FH);
 
@@ -408,9 +409,7 @@ namespace Hydra.Such.Portal.Controllers
                         FH.NºResponsável2 = !string.IsNullOrEmpty(Autorizacao.Responsavel2No) ? Autorizacao.Responsavel2No : "";
                         FH.NºResponsável3 = !string.IsNullOrEmpty(Autorizacao.Responsavel3No) ? Autorizacao.Responsavel3No : "";
 
-                        FH.Intervenientes = FH.Intervenientes + " VALIDADORES: " + FH.Validadores;
-                        FH.Intervenientes = FH.Intervenientes + " INTEGRADORESEMRH: " + FH.IntegradoresEmRh;
-                        FH.Intervenientes = FH.Intervenientes + " INTEGRADORESEMRHKM: " + FH.IntegradoresEmRhkm;
+                        FH.Intervenientes = !string.IsNullOrEmpty(Autorizacao.Intervenientes) ? Autorizacao.Intervenientes : "";
                     };
 
                     FH.UtilizadorModificação = User.Identity.Name;
@@ -546,7 +545,8 @@ namespace Hydra.Such.Portal.Controllers
                             DataHoraModificacao = FH.DataHoraModificação,
                             DataModificacaoTexto = FH.DataHoraModificação == null ? "" : FH.DataHoraModificação.Value.ToString("yyyy-MM-dd"),
                             HoraModificacaoTexto = FH.DataHoraModificação == null ? "" : FH.DataHoraModificação.Value.ToString("HH:mm"),
-                            Eliminada = FH.Eliminada
+                            Eliminada = FH.Eliminada,
+                            Intervenientes = FH.Intervenientes
                         };
                         if (result.Estado == 0 && result.Terminada == true)
                         {
@@ -725,6 +725,11 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (!string.IsNullOrEmpty(folhaDeHorasNo))
                 {
+                    FH.Intervenientes = " CRIADOPOR: " + FH.CriadoPor;
+                    ConfigUtilizadores ConfigUser = DBUserConfigurations.GetByEmployeeNo(idEmployee);
+                    if (ConfigUser != null)
+                        FH.Intervenientes = FH.Intervenientes + " EMPREGADO: " + ConfigUser.IdUtilizador;
+
                     FH = DBFolhasDeHoras.GetListaValidadoresIntegradores(folhaDeHorasNo, idEmployee);
 
                     FH.Validadores = !string.IsNullOrEmpty(FH.Validadores) ? FH.Validadores : "";
@@ -734,6 +739,8 @@ namespace Hydra.Such.Portal.Controllers
                     FH.Responsavel1No = !string.IsNullOrEmpty(FH.Responsavel1No) ? FH.Responsavel1No : "";
                     FH.Responsavel2No = !string.IsNullOrEmpty(FH.Responsavel2No) ? FH.Responsavel2No : "";
                     FH.Responsavel3No = !string.IsNullOrEmpty(FH.Responsavel3No) ? FH.Responsavel3No : "";
+
+                    FH.Intervenientes = !string.IsNullOrEmpty(FH.Intervenientes) ? FH.Intervenientes : "";
 
                     FH.EmpregadoNo = idEmployee;
                     FH.EmpregadoNome = DBNAV2009Employees.GetAll(idEmployee, _config.NAV2009DatabaseName, _config.NAV2009CompanyName).FirstOrDefault().Name;
@@ -1100,13 +1107,31 @@ namespace Hydra.Such.Portal.Controllers
                     if (!string.IsNullOrEmpty(data.EmpregadoNo))
                         data.EmpregadoNome = DBNAV2009Employees.GetAll(data.EmpregadoNo, _config.NAV2009DatabaseName, _config.NAV2009CompanyName).FirstOrDefault().Name;
 
-                    data.Intervenientes = " CRIADOPOR: " + data.CriadoPor;
-                    ConfigUtilizadores ConfigUser = DBUserConfigurations.GetByEmployeeNo(data.EmpregadoNo);
-                    if (ConfigUser != null)
-                        data.Intervenientes = data.Intervenientes + " EMPREGADO: " + ConfigUser.IdUtilizador;
-                    data.Intervenientes = data.Intervenientes + " VALIDADORES: " + data.Validadores;
-                    data.Intervenientes = data.Intervenientes + " INTEGRADORESEMRH: " + data.IntegradoresEmRH;
-                    data.Intervenientes = data.Intervenientes + " INTEGRADORESEMRHKM: " + data.IntegradoresEmRHKM;
+
+                    data.Intervenientes = " CRIADOPOR: ";
+                    if (!string.IsNullOrEmpty(data.CriadoPor))
+                        data.Intervenientes = data.Intervenientes + data.CriadoPor;
+
+                    data.Intervenientes = data.Intervenientes + " EMPREGADO: ";
+                    if (!string.IsNullOrEmpty(data.EmpregadoNo))
+                    {
+                        ConfigUtilizadores ConfigUser = DBUserConfigurations.GetByEmployeeNo(data.EmpregadoNo);
+                        if (ConfigUser != null)
+                            data.Intervenientes = data.Intervenientes + " EMPREGADO: " + ConfigUser.IdUtilizador;
+                    }
+
+                    data.Intervenientes = data.Intervenientes + " VALIDADORES: ";
+                    if (!string.IsNullOrEmpty(data.Validadores))
+                        data.Intervenientes = data.Intervenientes + data.Validadores;
+
+                    data.Intervenientes = data.Intervenientes + " INTEGRADORESEMRH: ";
+                    if (!string.IsNullOrEmpty(data.IntegradoresEmRH))
+                        data.Intervenientes = data.Intervenientes + data.IntegradoresEmRH;
+
+                    data.Intervenientes = data.Intervenientes + " INTEGRADORESEMRHKM: ";
+                    if (!string.IsNullOrEmpty(data.IntegradoresEmRHKM))
+                        data.Intervenientes = data.Intervenientes + data.IntegradoresEmRHKM;
+
 
                     FolhasDeHoras FH = DBFolhasDeHoras.ParseToFolhaHoras(data);
 
@@ -1145,13 +1170,25 @@ namespace Hydra.Such.Portal.Controllers
                     if (!string.IsNullOrEmpty(data.DataChegadaTexto) && !string.IsNullOrEmpty(data.HoraChegadaTexto))
                         data.DataHoraChegada = Convert.ToDateTime(data.DataChegadaTexto + " " + data.HoraChegadaTexto);
 
-                    data.Intervenientes = " CRIADOPOR: " + data.CriadoPor;
-                    ConfigUtilizadores ConfigUser = DBUserConfigurations.GetByEmployeeNo(data.EmpregadoNo);
-                    if (ConfigUser != null)
-                        data.Intervenientes = data.Intervenientes + " EMPREGADO: " + ConfigUser.IdUtilizador;
-                    data.Intervenientes = data.Intervenientes + " VALIDADORES: " + data.Validadores;
-                    data.Intervenientes = data.Intervenientes + " INTEGRADORESEMRH: " + data.IntegradoresEmRH;
-                    data.Intervenientes = data.Intervenientes + " INTEGRADORESEMRHKM: " + data.IntegradoresEmRHKM;
+                    data.Intervenientes = " CRIADOPOR: ";
+                    if (!string.IsNullOrEmpty(data.CriadoPor))
+                        data.Intervenientes = data.Intervenientes + data.CriadoPor;
+                    data.Intervenientes = data.Intervenientes + " EMPREGADO: ";
+                    if (!string.IsNullOrEmpty(data.EmpregadoNo))
+                    {
+                        ConfigUtilizadores ConfigUser = DBUserConfigurations.GetByEmployeeNo(data.EmpregadoNo);
+                        if (ConfigUser != null)
+                            data.Intervenientes = data.Intervenientes + " EMPREGADO: " + ConfigUser.IdUtilizador;
+                    }
+                    data.Intervenientes = data.Intervenientes + " VALIDADORES: ";
+                    if (!string.IsNullOrEmpty(data.Validadores))
+                        data.Intervenientes = data.Intervenientes + data.Validadores;
+                    data.Intervenientes = data.Intervenientes + " INTEGRADORESEMRH: ";
+                    if (!string.IsNullOrEmpty(data.IntegradoresEmRH))
+                        data.Intervenientes = data.Intervenientes + data.IntegradoresEmRH;
+                    data.Intervenientes = data.Intervenientes + " INTEGRADORESEMRHKM: ";
+                    if (!string.IsNullOrEmpty(data.IntegradoresEmRHKM))
+                        data.Intervenientes = data.Intervenientes + data.IntegradoresEmRHKM;
 
                     data.UtilizadorModificacao = User.Identity.Name;
                     if (DBFolhasDeHoras.Update(DBFolhasDeHoras.ParseToFolhaHoras(data)) == null)
@@ -1210,13 +1247,25 @@ namespace Hydra.Such.Portal.Controllers
                     if (!string.IsNullOrEmpty(data.EmpregadoNo))
                         data.EmpregadoNome = DBNAV2009Employees.GetAll(data.EmpregadoNo, _config.NAV2009DatabaseName, _config.NAV2009CompanyName).FirstOrDefault().Name;
 
-                    data.Intervenientes = " CRIADOPOR: " + data.CriadoPor;
-                    ConfigUtilizadores ConfigUser = DBUserConfigurations.GetByEmployeeNo(data.EmpregadoNo);
-                    if (ConfigUser != null)
-                        data.Intervenientes = data.Intervenientes + " EMPREGADO: " + ConfigUser.IdUtilizador;
-                    data.Intervenientes = data.Intervenientes + " VALIDADORES: " + data.Validadores;
-                    data.Intervenientes = data.Intervenientes + " INTEGRADORESEMRH: " + data.IntegradoresEmRH;
-                    data.Intervenientes = data.Intervenientes + " INTEGRADORESEMRHKM: " + data.IntegradoresEmRHKM;
+                    data.Intervenientes = " CRIADOPOR: ";
+                    if (!string.IsNullOrEmpty(data.CriadoPor))
+                        data.Intervenientes = data.Intervenientes + data.CriadoPor;
+                    data.Intervenientes = data.Intervenientes + " EMPREGADO: ";
+                    if (!string.IsNullOrEmpty(data.EmpregadoNo))
+                    {
+                        ConfigUtilizadores ConfigUser = DBUserConfigurations.GetByEmployeeNo(data.EmpregadoNo);
+                        if (ConfigUser != null)
+                            data.Intervenientes = data.Intervenientes + " EMPREGADO: " + ConfigUser.IdUtilizador;
+                    }
+                    data.Intervenientes = data.Intervenientes + " VALIDADORES: ";
+                    if (!string.IsNullOrEmpty(data.Validadores))
+                        data.Intervenientes = data.Intervenientes + data.Validadores;
+                    data.Intervenientes = data.Intervenientes + " INTEGRADORESEMRH: ";
+                    if (!string.IsNullOrEmpty(data.IntegradoresEmRH))
+                        data.Intervenientes = data.Intervenientes + data.IntegradoresEmRH;
+                    data.Intervenientes = data.Intervenientes + " INTEGRADORESEMRHKM: ";
+                    if (!string.IsNullOrEmpty(data.IntegradoresEmRHKM))
+                        data.Intervenientes = data.Intervenientes + data.IntegradoresEmRHKM;
 
                     FolhasDeHoras FH = DBFolhasDeHoras.ParseToFolhaHoras(data);
 
@@ -3108,9 +3157,7 @@ namespace Hydra.Such.Portal.Controllers
                                     data.Responsavel2No = !string.IsNullOrEmpty(Autorizacao.Responsavel2No) ? Autorizacao.Responsavel2No : "";
                                     data.Responsavel3No = !string.IsNullOrEmpty(Autorizacao.Responsavel3No) ? Autorizacao.Responsavel3No : "";
 
-                                    data.Intervenientes = data.Intervenientes + " VALIDADORES: " + data.Validadores;
-                                    data.Intervenientes = data.Intervenientes + " INTEGRADORESEMRH: " + data.IntegradoresEmRH;
-                                    data.Intervenientes = data.Intervenientes + " INTEGRADORESEMRHKM: " + data.IntegradoresEmRHKM;
+                                    data.Intervenientes = !string.IsNullOrEmpty(Autorizacao.Intervenientes) ? Autorizacao.Intervenientes : "";
                                 };
 
                                 data.DataHoraPartida = DateTime.Parse(string.Concat(data.DataPartidaTexto, " ", data.HoraPartidaTexto));
@@ -3282,7 +3329,8 @@ namespace Hydra.Such.Portal.Controllers
                                         DataHoraÚltimoEstado = DateTime.Now, //VALIDAÇÂO
                                         DataHoraModificação = DateTime.Now, //VALIDAÇÂO
                                         UtilizadorModificação = User.Identity.Name, //VALIDAÇÂO
-                                        Eliminada = false
+                                        Eliminada = false,
+                                        Intervenientes = data.Intervenientes
                                     }) != null)
                                     {
                                         result.eReasonCode = 0;
@@ -3732,7 +3780,8 @@ namespace Hydra.Such.Portal.Controllers
                                         DataHoraÚltimoEstado = data.DataHoraUltimoEstado,
                                         UtilizadorModificação = User.Identity.Name, //INTEGRAREMRH
                                         DataHoraModificação = DateTime.Now, //INTEGRAREMRH
-                                        Eliminada = false
+                                        Eliminada = false,
+                                        Intervenientes = data.Intervenientes
                                     }) == null)
                                     {
                                         result.eReasonCode = 7;
@@ -3981,7 +4030,8 @@ namespace Hydra.Such.Portal.Controllers
                                             DataHoraÚltimoEstado = data.DataHoraUltimoEstado,
                                             UtilizadorModificação = User.Identity.Name, //INTEGRAREMRHKM
                                             DataHoraModificação = DateTime.Now, //INTEGRAREMRHKM
-                                            Eliminada = false
+                                            Eliminada = false,
+                                            Intervenientes = data.Intervenientes
                                         }) == null)
                                         {
                                             result.eReasonCode = 101;

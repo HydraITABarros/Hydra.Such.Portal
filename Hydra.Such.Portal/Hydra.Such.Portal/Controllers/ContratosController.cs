@@ -122,6 +122,8 @@ namespace Hydra.Such.Portal.Controllers
             string ifHistoric;
 
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Contratos);
+            UserAccessesViewModel UPermCriarFatura = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.ContratosCriarFatura);
+
             if (UPerm != null && UPerm.Read.Value)
             {
                 Contratos cContract = null;
@@ -151,6 +153,7 @@ namespace Hydra.Such.Portal.Controllers
                 ViewBag.ContractNo = id ?? "";
                 ViewBag.VersionNo = version ?? "";
                 ViewBag.UPermissions = UPerm;
+                ViewBag.UPermissionsCriarFatura = UPermCriarFatura;
                 return View();
             }
             else
@@ -247,7 +250,18 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult AvencaFixa()
         {
-            return View();
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.ContratosAvencaFixa);
+
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                UPerm.Create = false;
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
         }
 
         public JsonResult GetListContractsByArea([FromBody] JObject requestParams)
@@ -1587,6 +1601,9 @@ namespace Hydra.Such.Portal.Controllers
             {
                 ContractsList = DBContracts.GetAllByContractType(ContractType.Oportunity);
                 ContractsList.RemoveAll(x => x.Arquivado.HasValue && !x.Arquivado.Value);
+
+                ContractsList.RemoveAll(x => (x.Arquivado.HasValue && !x.Arquivado.Value) || (!x.Arquivado.HasValue));
+
             }
 
             //Apply User Dimensions Validations
@@ -2892,6 +2909,7 @@ namespace Hydra.Such.Portal.Controllers
                 ViewBag.Archived = hist == "true" ? true : false;
                 ViewBag.ContractNo = id ?? "";
                 ViewBag.VersionNo = version ?? "";
+                ViewBag.reportServerURL = _config.ReportServerURL;
                 ViewBag.UPermissions = UPerm;
                 return View();
             }
@@ -2915,9 +2933,14 @@ namespace Hydra.Such.Portal.Controllers
                 ContractsList = DBContracts.GetAllByContractType(ContractType.Proposal);
 
                 if (Archived == 0)
+                {
                     ContractsList.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
+                }
                 else
-                    ContractsList.RemoveAll(x => x.Arquivado.HasValue && !x.Arquivado.Value);
+                {
+                    //ARQUIVO
+                    ContractsList.RemoveAll(x => (x.Arquivado.HasValue && !x.Arquivado.Value) || (!x.Arquivado.HasValue));
+                }
             }
             else
             {
