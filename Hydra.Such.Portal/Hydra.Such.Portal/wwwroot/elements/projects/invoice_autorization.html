@@ -1250,7 +1250,6 @@
                     this.indeterminate = false;
                 },
                 _invert: function (e) {
-                    debugger;
                     this.inverted = !this.inverted;
 
                     if (this.inverted == true) { //TODAS AS LINHAS SELECIONADAS
@@ -1285,7 +1284,6 @@
                 },
                 // iOS needs indeterminate + checked at the same time
                 _isChecked: function (inverted, indeterminate) {
-                    debugger;
                     return indeterminate || inverted;
                 },
                 _selectItem: function (e) {

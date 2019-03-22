@@ -1576,7 +1576,6 @@
                 },
 
                 _statusMenuItemSelected: function (e) {
-                    debugger;
                     var item = e.detail.value;
 
                     if (item == null)
@@ -2699,7 +2698,6 @@
                 },
 
                 _openProposta: function () {
-                    debugger;
                     //this.$.page_openProposta_ajax.body = JSON.stringify(this.data);
                     //this.$.page_openProposta_ajax.generateRequest();
 
@@ -2725,7 +2723,6 @@
                     });
                 },
                 _openPropostaResponse: function () {
-                    debugger;
                     if (this.openResponse.eReasonCode == 1) {
                         this._openToast(this.openResponse.eMessage);
 
@@ -2736,7 +2733,6 @@
                 },
 
                 _closeProposta: function () {
-                    debugger;
                     //this.$.page_closeProposta_ajax.body = JSON.stringify(this.data);
                     //this.$.page_closeProposta_ajax.generateRequest();
 
@@ -2762,7 +2758,6 @@
                     });
                 },
                 _closePropostaResponse: function () {
-                    debugger;
                     if (this.closeResponse.eReasonCode == 1) {
                         this._openToast(this.closeResponse.eMessage);
 
