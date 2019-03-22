@@ -3307,6 +3307,9 @@ namespace Hydra.Such.Portal.Controllers
                     PreInvoiceToCreate.ValorContrato = Contract.TotalValue ?? 0;
                     PreInvoiceToCreate.Ship_toAddress = Contract.ShippingAddress;
                     PreInvoiceToCreate.Ship_toPostCode = Contract.ShippingZipCode;
+
+
+                    //AMARO DUEDATE
                     if (Contract.DueDate != null && Contract.DueDate != "")
                         PreInvoiceToCreate.DueDate = DateTime.Parse(Contract.DueDate);
 
@@ -3665,6 +3668,7 @@ namespace Hydra.Such.Portal.Controllers
                                 thisHeader.NºOportunidade = contractNo;
                                 thisHeader.NºProposta = newNumeration;
                                 thisHeader.NºDeContrato = newNumeration;
+                                thisHeader.DataEnvioCliente = null;
                                 thisHeader.Estado = 1;
                                 var create = DBContracts.Create(thisHeader).NºDeContrato;
 

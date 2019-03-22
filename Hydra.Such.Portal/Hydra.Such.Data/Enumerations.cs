@@ -210,7 +210,7 @@ namespace Hydra.Such.Data
             [Description("Administração Serviços")]
             AdminServicos = 113,
             [Description("Administração Pedidos Desenvolvimento")]
-            AdminPedidosDEV = 113,
+            AdminPedidosDEV = 114,
         }
 
         public enum Areas

@@ -1679,6 +1679,9 @@
                     }
                 },
                 ready: function () {
+                    this._CLBillable = true;
+                    this._CLCreateContract = true;
+
                     //GET CONTRACT DATA
                     var VersionNo = this._versionno == "" ? 0 : parseInt(this._versionno);
                     this.$.page_databound_ajax.body = JSON.stringify({ "ContractNo": this._contractno, "VersionNo": VersionNo });
@@ -2206,9 +2209,9 @@
                             this._CLDiscountLine = "";
                             this._CLTotalTechnicians = "";
                             this._CLResponsible._clearSelection();
-                            this._CLCreateContract = "";
                             this._CLQuantity = "";
                             this._CLBillable = true;
+                            this._CLCreateContract = true;
 
                             this._CLRegion = this.data.codeRegion;
                             this._CLFunctionalArea = this.data.codeFunctionalArea;

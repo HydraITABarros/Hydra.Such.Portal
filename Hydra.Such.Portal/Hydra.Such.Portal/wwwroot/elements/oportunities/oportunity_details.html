@@ -316,7 +316,7 @@
                                             <vaadin-date-picker label="Data Expiração Prevista da Prestação" id="DueDate" name="DueDate" value="{{data.dueDate}}" disabled="{{ !_permissions.update }}" on-value-changed="_startEndDate"></vaadin-date-picker>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-date-picker label="Data Prevista para a Ajudicação" id="mCustomerShipmentDate" name="CustomerShipmentDate" value="{{data.customerShipmentDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                            <vaadin-date-picker label="Data Prevista para a Adjudicação" id="mCustomerShipmentDate" name="CustomerShipmentDate" value="{{data.customerShipmentDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
                                         </div>
                                         <div class="col-md-3 ">
                                             <vaadin-date-picker label="Data Alteração" id="mProposalChangeDate" name="ProposalChangeDate" value="{{data.proposalChangeDate}}" disabled></vaadin-date-picker>
@@ -1317,6 +1317,9 @@
                 ready: function () {
                     var _self = this;
 
+                    this._CLBillable = true;
+                    this._CLCreateContract = true;
+
                     //GET CONTRACT DATA
                     var VersionNo = this._versionno == "" ? 0 : parseInt(this._versionno);
                     this.$.page_databound_ajax.body = JSON.stringify({ "ContractNo": this._contractno, "VersionNo": VersionNo, "ContractType": 1 });
@@ -1878,9 +1881,10 @@
                             this._CLDiscountLine = "";
                             this._CLTotalTechnicians = "";
                             this.$._CLResponsible._clearSelection();
-                            this._CLCreateContract = "";
                             this._CLQuantity = "";
                             this._CLBillable = true;
+                            this._CLCreateContract = true;
+
                             this._CLRegion = this.data.codeRegion;
                             this._CLFunctionalArea = this.data.codeFunctionalArea;
                             this._CLResponsabilityCenter = this.data.codeResponsabilityCenter;
