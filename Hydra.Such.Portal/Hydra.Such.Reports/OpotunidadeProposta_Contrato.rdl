@@ -26,6 +26,7 @@
         </QueryParameters>
         <CommandType>StoredProcedure</CommandType>
         <CommandText>rpt_Oportunidades_Cabecalho</CommandText>
+        <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
       </Query>
       <Fields>
         <Field Name="NoContrato">
@@ -118,6 +119,10 @@
         </Field>
         <Field Name="Notas">
           <DataField>Notas</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Arquivo">
+          <DataField>Arquivo</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
       </Fields>
@@ -2238,7 +2243,8 @@
               </TablixMembers>
             </TablixRowHierarchy>
             <DataSetName>LINHAS</DataSetName>
-            <Top>8.75278cm</Top>
+            <Top>9.52917cm</Top>
+            <Left>0cm</Left>
             <Height>1.2cm</Height>
             <Width>19cm</Width>
             <ZIndex>46</ZIndex>
@@ -2262,7 +2268,8 @@
             </Style>
           </Tablix>
           <Line Name="Line1">
-            <Top>8.68222cm</Top>
+            <Top>9.35278cm</Top>
+            <Left>0cm</Left>
             <Height>0cm</Height>
             <Width>19cm</Width>
             <ZIndex>47</ZIndex>
@@ -2273,8 +2280,7 @@
             </Style>
           </Line>
           <Line Name="Line2">
-            <Top>10.05861cm</Top>
-            <Left>0cm</Left>
+            <Top>10.90556cm</Top>
             <Height>0cm</Height>
             <Width>19cm</Width>
             <ZIndex>48</ZIndex>
@@ -2334,7 +2340,6 @@
             </Paragraphs>
             <rd:DefaultName>Textbox51</rd:DefaultName>
             <Top>7.37639cm</Top>
-            <Left>0cm</Left>
             <Height>1.2cm</Height>
             <Width>9.405cm</Width>
             <ZIndex>50</ZIndex>
@@ -2348,8 +2353,72 @@
               <PaddingBottom>2pt</PaddingBottom>
             </Style>
           </Textbox>
+          <Textbox Name="Textbox53">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=First(Fields!Arquivo.Value, "CABECALHO")</Value>
+                    <Style>
+                      <FontSize>8pt</FontSize>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Textbox51</rd:DefaultName>
+            <Top>8.57639cm</Top>
+            <Left>4.405cm</Left>
+            <Height>0.6cm</Height>
+            <Width>14.595cm</Width>
+            <ZIndex>51</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
+          <Textbox Name="Textbox55">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>Razão do Arquivo</Value>
+                    <Style>
+                      <FontFamily>Arial</FontFamily>
+                      <FontSize>9pt</FontSize>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Textbox3</rd:DefaultName>
+            <Top>8.57639cm</Top>
+            <Height>0.6cm</Height>
+            <Width>4.405cm</Width>
+            <ZIndex>52</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
         </ReportItems>
-        <Height>10.05861cm</Height>
+        <Height>10.90556cm</Height>
         <Style />
       </Body>
       <Width>19cm</Width>

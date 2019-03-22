@@ -372,16 +372,18 @@
                                         <div class="col-md-3 ">
                                             <vaadin-text-field value="{{data.noVEP}}" id="mNoVEP" name="mNoVEP" label="Nº VEP" maxlength="20" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                         </div>
-
-                                    </div>
-                                    <div class="row break_clear">
                                         <div class="col-md-3 ">
                                             <vaadin-text-field value="{{data.baseValueProcedure}}" id="mBaseValueProcedure" name="mBaseValueProcedure" placeholder="0.0000" pattern="^[0-9]\d*(\.[0-9]{1,4})?$" on-value-changed="_ConvertDecimals" label="Valor Base Procedimento" disabled="{{ !_permissions.update }}">
                                                 <div slot="suffix">€</div>
                                             </vaadin-text-field>
                                         </div>
-                                        <div class="col-md-9 ">
+                                    </div>
+                                    <div class="row break_clear">
+                                        <div class="col-md-6 ">
                                             <such-textarea rows="5" value="{{data.notes}}" id="mNotes" name="mNotes" label="Notas" disabled="{{ !_permissions.update }}"> </such-textarea>
+                                        </div>
+                                        <div class="col-md-6 ">
+                                            <such-textarea rows="5" value="{{data.archiveReason}}" label="Razão Arquivo" id="txtArchiveReason" disabled hidden> </such-textarea>
                                         </div>
                                     </div>
                                     <div class="row break_clear">
@@ -1379,6 +1381,7 @@
                         _self.$._CLServiceClient.disabled = true;
                         _self.$._CLInvoiceGroup.disabled = true;
                         _self.$._CLCreateContract.disabled = true;
+                        _self.$.txtArchiveReason.hidden = false;
 
                         $(_self.$.grid_contractlines).addClass('disabled');
                     }

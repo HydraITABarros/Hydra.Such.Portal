@@ -40,7 +40,8 @@ namespace Hydra.Such.Portal.Services
                     try
                     {
                         //Create new contract and update old
-                        cContract.Notas = cContract.Notas + Environment.NewLine + contractToArchive.ArchiveReason;
+                        cContract.Notas = cContract.Notas;
+                        cContract.RazãoArquivo = contractToArchive.ArchiveReason;
                         cContract.UtilizadorModificação = changedByUserName;
                         cContract.Arquivado = true;
                         DBContracts.Update(cContract);

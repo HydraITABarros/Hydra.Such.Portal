@@ -33,7 +33,11 @@ namespace Hydra.Such.Data.Logic.Project
                         {
                             Code = (string)temp.Code,
                             Name = (string)temp.Name,
+                            Name1 = (string)temp.Name1,
+                            Name2 = (string)temp.Name2,
                             Address = (string)temp.Address,
+                            Address1 = (string)temp.Address1,
+                            Address2 = (string)temp.Address2,
                             ZipCode = (string)temp.ZipCode,
                             City = (string)temp.City,
                             Contact = (string)temp.Contact
@@ -71,7 +75,11 @@ namespace Hydra.Such.Data.Logic.Project
                         {
                             Code = (string)temp.Code,
                             Name = (string)temp.Name,
+                            Name1 = (string)temp.Name1,
+                            Name2 = (string)temp.Name2,
                             Address = (string)temp.Address,
+                            Address1 = (string)temp.Address1,
+                            Address2 = (string)temp.Address2,
                             ZipCode = (string)temp.ZipCode,
                             City = (string)temp.City,
                             Contact = (string)temp.Contact
@@ -117,7 +125,11 @@ namespace Hydra.Such.Data.Logic.Project
                             {
                                 Code = (string)temp.Code,
                                 Name = (string)temp.Name,
+                                Name1 = (string)temp.Name1,
+                                Name2 = (string)temp.Name2,
                                 Address = (string)temp.Address,
+                                Address1 = (string)temp.Address1,
+                                Address2 = (string)temp.Address2,
                                 ZipCode = (string)temp.ZipCode,
                                 City = (string)temp.City,
                                 Contact = (string)temp.Contact
@@ -162,7 +174,11 @@ namespace Hydra.Such.Data.Logic.Project
                             {
                                 Code = (string)temp.Code,
                                 Name = (string)temp.Name,
+                                Name1 = (string)temp.Name1,
+                                Name2 = (string)temp.Name2,
                                 Address = (string)temp.Address,
+                                Address1 = (string)temp.Address1,
+                                Address2 = (string)temp.Address2,
                                 ZipCode = (string)temp.ZipCode,
                                 City = (string)temp.City,
                                 Contact = (string)temp.Contact

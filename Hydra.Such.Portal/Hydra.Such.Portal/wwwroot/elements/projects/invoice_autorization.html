@@ -362,6 +362,7 @@
                                                 <input aria-label="Selecionar Todos" type="checkbox" disabled="[[!_billable]]" on-click="_invert" checked="[[_isChecked(inverted, indeterminate)]]" indeterminate="[[indeterminate]]">
                                             </template>
                                             <template>
+                                                <!--AMARO-->
                                                 <!--<input aria-label="Selecionar" type="checkbox" checked="{{item.selecionada}}" on-change="_selectItem" checked="[[_isSelected(inverted, selected)]]">-->
                                                 <input aria-label="Selecionar" type="checkbox" on-change="_selectItem" checked="[[_isSelected(inverted, selected)]]">
                                             </template>
@@ -1098,6 +1099,7 @@
                         this.openToastError("Não foi possivel obter os movimentos.");
                     }
 
+                    //AMARO
                     var total = 0;
                     var items = this.$.grdProjectMovements.items;
                     if (items.length > 0) {
@@ -1248,11 +1250,42 @@
                     this.indeterminate = false;
                 },
                 _invert: function (e) {
-
+                    debugger;
                     this.inverted = !this.inverted;
+
+                    if (this.inverted == true) { //TODAS AS LINHAS SELECIONADAS
+                        var total = 0;
+                        var items = this.$.grdProjectMovements.items;
+                        if (items.length > 0) {
+                            for (var i = 0; i < items.length; i++) {
+                                if (items[i].totalPrice != null) {
+                                    items[i].selecionada = true;
+                                    this.$.updatelinesSelecionada_ajax.body = JSON.stringify(items[i]);
+                                    this.$.updatelinesSelecionada_ajax.generateRequest();
+
+                                    total = total + items[i].totalPrice;
+                                    this.$.grdProjectMovements.selectItem(items[i]);
+                                }
+                            }
+                        }
+                        this._totalToAuthorize = parseFloat(total).toFixed(2);
+                    }
+                    else {
+                        var total = 0;
+                        var items = this.$.grdProjectMovements.items;
+                        if (items.length > 0) {
+                            for (var i = 0; i < items.length; i++) {
+                                    items[i].selecionada = false;
+                                    this.$.updatelinesSelecionada_ajax.body = JSON.stringify(items[i]);
+                                    this.$.updatelinesSelecionada_ajax.generateRequest();
+                            }
+                        }
+                        this._totalToAuthorize = 0;
+                    }
                 },
                 // iOS needs indeterminate + checked at the same time
                 _isChecked: function (inverted, indeterminate) {
+                    debugger;
                     return indeterminate || inverted;
                 },
                 _selectItem: function (e) {
@@ -1265,9 +1298,9 @@
                                 this.$.grdProjectMovements.selectItem(e.model.item);
 
                                 //AMARO
-                                //e.model.item.selecionada = true;
-                                //this.$.updatelinesSelecionada_ajax.body = JSON.stringify(e.model.item);
-                                //this.$.updatelinesSelecionada_ajax.generateRequest();
+                                e.model.item.selecionada = true;
+                                this.$.updatelinesSelecionada_ajax.body = JSON.stringify(e.model.item);
+                                this.$.updatelinesSelecionada_ajax.generateRequest();
                             //}
                             //else {
                             //    this.openToastError("O valor do Preço unitário tem que ser superior a 0.");
@@ -1285,9 +1318,9 @@
                         this.$.grdProjectMovements.deselectItem(e.model.item);
 
                         //AMARO
-                        //e.model.item.selecionada = false;
-                        //this.$.updatelinesSelecionada_ajax.body = JSON.stringify(e.model.item);
-                        //this.$.updatelinesSelecionada_ajax.generateRequest();
+                        e.model.item.selecionada = false;
+                        this.$.updatelinesSelecionada_ajax.body = JSON.stringify(e.model.item);
+                        this.$.updatelinesSelecionada_ajax.generateRequest();
                     }
                     this.indeterminate = this.$.grdProjectMovements.selectedItems.length > 0;
                 },

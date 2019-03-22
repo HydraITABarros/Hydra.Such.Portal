@@ -3309,9 +3309,19 @@ namespace Hydra.Such.Portal.Controllers
                     PreInvoiceToCreate.Ship_toPostCode = Contract.ShippingZipCode;
 
 
-                    //AMARO DUEDATE
-                    if (Contract.DueDate != null && Contract.DueDate != "")
-                        PreInvoiceToCreate.DueDate = DateTime.Parse(Contract.DueDate);
+                    //AMARO DUEDATE = DataExpiração
+                    PreInvoiceToCreate.DueDate = lastDay;
+                    if (!string.IsNullOrEmpty(Contract.CodePaymentTerms))
+                    {
+                        NAVPaymentTermsViewModels PaymentTerms = DBNAV2017PaymentTerms.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, Contract.CodePaymentTerms).FirstOrDefault();
+                        if (PaymentTerms != null)
+                        {
+                            if (!string.IsNullOrEmpty(PaymentTerms.DueDateCalculation) && Double.TryParse(PaymentTerms.DueDateCalculation, out double num))
+                            {
+                                PreInvoiceToCreate.DueDate = lastDay.AddDays(Convert.ToDouble(PaymentTerms.DueDateCalculation));
+                            }
+                        }
+                    }
 
                     PreInvoiceToCreate.PaymentTermsCode = Contract.CodePaymentTerms;
                    

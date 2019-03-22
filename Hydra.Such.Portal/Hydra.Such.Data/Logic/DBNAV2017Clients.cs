@@ -49,6 +49,8 @@ namespace Hydra.Such.Data.Logic
                             Name = temp.Name.Equals(DBNull.Value) ? "" : (string)temp.Name,
                             VATRegistrationNo_ = temp.VATRegistrationNo.Equals(DBNull.Value) ? "" : (string)temp.VATRegistrationNo,
                             Address = temp.Address.Equals(DBNull.Value) ? "" : (string)temp.Address,
+                            Address1 = temp.Address1.Equals(DBNull.Value) ? "" : (string)temp.Address1,
+                            Address2 = temp.Address2.Equals(DBNull.Value) ? "" : (string)temp.Address2,
                             PostCode = temp.PostCode.Equals(DBNull.Value) ? "" : (string)temp.PostCode,
                             City = temp.City.Equals(DBNull.Value) ? "" : (string)temp.City,
                             CountryRegionCode = temp.CountryRegionCode.Equals(DBNull.Value) ? "" : (string)temp.CountryRegionCode,
