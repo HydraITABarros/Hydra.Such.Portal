@@ -1,0 +1,25 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace Hydra.Such.Data.Evolution.Database
+{
+    public partial class AreaOp
+    {
+        public AreaOp()
+        {
+            Acessorio = new HashSet<Acessorio>();
+            ClientePimp = new HashSet<ClientePimp>();
+            Equipamento = new HashSet<Equipamento>();
+        }
+
+        public int IdAreaOp { get; set; }
+        public string Nome { get; set; }
+        public int IdEquipa { get; set; }
+        public bool? Activo { get; set; }
+
+        public Equipa IdEquipaNavigation { get; set; }
+        public ICollection<Acessorio> Acessorio { get; set; }
+        public ICollection<ClientePimp> ClientePimp { get; set; }
+        public ICollection<Equipamento> Equipamento { get; set; }
+    }
+}
