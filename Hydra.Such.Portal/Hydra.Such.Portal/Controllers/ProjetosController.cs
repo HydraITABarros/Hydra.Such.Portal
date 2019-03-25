@@ -249,7 +249,8 @@ namespace Hydra.Such.Portal.Controllers
                         Utilizador = User.Identity.Name,
                         NameDB = _config.NAVDatabaseName,
                         CompanyName = _config.NAVCompanyName,
-                        ObservacoesAutorizarFaturacao = ""
+                        ObservacoesAutorizarFaturacao = "",
+                        FaturaPrecosIvaIncluido = cProject.FaturaPrecosIvaIncluido
                     };
 
                     string TextoFatura = "";
@@ -626,6 +627,7 @@ namespace Hydra.Such.Portal.Controllers
                     cProject.ChefeProjeto = data.ProjectLeader;
                     cProject.ResponsávelProjeto = data.ProjectResponsible;
                     cProject.UtilizadorModificação = User.Identity.Name;
+                    cProject.FaturaPrecosIvaIncluido = data.FaturaPrecosIvaIncluido;
 
                     DBProjects.Update(cProject);
 

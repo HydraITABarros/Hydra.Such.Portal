@@ -95,6 +95,7 @@ namespace Hydra.Such.Data.Database
         public int? Tipo { get; set; }
         public string NºVep { get; set; }
         public string TextoFatura { get; set; }
+        public bool? FaturaPrecosIvaIncluido { get; set; }
 
         public ObjetosDeServiço ObjetoServiçoNavigation { get; set; }
         public ICollection<LinhasContratos> LinhasContratos { get; set; }

@@ -113,6 +113,8 @@ namespace Hydra.Such.Data.ViewModel.Contracts
         public int Type { get; set; }
         public string NoVEP { get; set; }
         public string TextoFatura { get; set; }
+        public bool? FaturaPrecosIvaIncluido { get; set; }
+
 
         //EXPORTAR PARA EXCEL
         public Object ColunasEXCEL { get; set; }

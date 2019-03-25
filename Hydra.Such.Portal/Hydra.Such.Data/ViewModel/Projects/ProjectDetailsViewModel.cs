@@ -52,5 +52,6 @@ namespace Hydra.Such.Data.ViewModel.Projects
         public string NameDB { get; set; }
         public string CompanyName { get; set; }
         public string ObservacoesAutorizarFaturacao { get; set; }
+        public bool? FaturaPrecosIvaIncluido { get; set; }
     }
 }

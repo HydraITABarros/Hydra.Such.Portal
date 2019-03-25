@@ -2066,6 +2066,8 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("TextoFatura")
                     .HasMaxLength(250);
 
+                entity.Property(e => e.FaturaPrecosIvaIncluido).HasColumnName("FaturaPrecosIvaIncluido");
+
 
                 entity.HasOne(d => d.ObjetoServiçoNavigation)
                     .WithMany(p => p.Contratos)
@@ -7937,6 +7939,8 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.ValidadeDoPedido)
                     .HasColumnName("Validade do Pedido")
                     .HasColumnType("date");
+
+                entity.Property(e => e.FaturaPrecosIvaIncluido).HasColumnName("FaturaPrecosIvaIncluido");
 
                 entity.HasOne(d => d.CódTipoProjetoNavigation)
                     .WithMany(p => p.Projetos)

@@ -187,7 +187,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult DetalhesReqArquivo(string id)
         {
-            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Requisições);
+            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.HistóricoRequisições);
 
             if (userPermissions != null && userPermissions.Read.Value)
             {
