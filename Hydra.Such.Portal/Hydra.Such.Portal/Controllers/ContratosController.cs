@@ -251,7 +251,6 @@ namespace Hydra.Such.Portal.Controllers
         public IActionResult AvencaFixa()
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.ContratosAvencaFixa);
-
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.UPermissions = UPerm;
