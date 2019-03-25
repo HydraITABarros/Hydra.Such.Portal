@@ -254,7 +254,6 @@ namespace Hydra.Such.Portal.Controllers
 
             if (UPerm != null && UPerm.Read.Value)
             {
-                UPerm.Create = false;
                 ViewBag.UPermissions = UPerm;
                 return View();
             }
