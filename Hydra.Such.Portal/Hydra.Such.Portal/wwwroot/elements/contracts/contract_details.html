@@ -786,6 +786,7 @@
                                         <div class="col-md-3 ">
                                             <vaadin-text-field value="{{data.displacementFee}}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" error-message="Valor inválido" id="mDisplacementFee" name="mDisplacementFee" label="Taxa Deslocação" disabled="{{ _lockFields }}"> </vaadin-text-field>
                                         </div>
+
                                         <div class="col-md-3 ">
                                             <vaadin-combo-box items="[[CBInvoicePeriods]]" id="mInvoicePeriods" item-value-path="id" item-label-path="value" value="{{data.invocePeriod}}" label="Período Fatura" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório">
                                                 <template>
