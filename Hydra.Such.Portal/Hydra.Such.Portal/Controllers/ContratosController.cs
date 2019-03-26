@@ -3814,7 +3814,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 if(temp.DataRegistoDiario != null)
                 {
-                    temp.DataRegistoDiarioSTR = temp.DataRegistoDiario.Value.ToShortDateString() != "1/1/1753" ? temp.DataRegistoDiario.Value.ToString("yyyy-MM-dd") : "";
+                    temp.DataRegistoDiarioSTR = temp.DataRegistoDiario.Value.Year != 1753 ? temp.DataRegistoDiario.Value.ToString("yyyy-MM-dd") : "";
                 }
             }
             return Json(result);

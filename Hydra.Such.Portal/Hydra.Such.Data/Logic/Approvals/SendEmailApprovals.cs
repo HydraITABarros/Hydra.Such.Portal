@@ -33,7 +33,7 @@ namespace Hydra.Such.Data.Logic.Approvals
 
                 if (e.Error != null)
                 {
-                    EmailApproval.ObservaçõesEnvio = "Não foi possível enviar a mensagem " + DateTime.Now.ToString();
+                    EmailApproval.ObservaçõesEnvio = "ERRO: " + e.Error.Message.ToString() +  "Não foi possível enviar a mensagem " + DateTime.Now.ToString();
                     DBApprovalEmails.Update(EmailApproval);
                 }
             }

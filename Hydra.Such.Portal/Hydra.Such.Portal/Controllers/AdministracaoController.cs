@@ -7005,10 +7005,99 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
-
-
-
         #endregion
+
+
+        [HttpPost]
+        public JsonResult TesteARomao()
+        {
+            List<string> UsersToNotify = new List<string>();
+            UsersToNotify.Add("ARomao@such.pt");
+
+
+            UsersToNotify = UsersToNotify.Distinct().ToList();
+            UsersToNotify.ForEach(e =>
+            {
+                EmailsAprovações EmailApproval = new EmailsAprovações()
+                {
+                    NºMovimento = 30455,
+                    EmailDestinatário = e,
+                    NomeDestinatário = e,
+                    Assunto = string.IsNullOrEmpty(" - TESTE AROMAO") ? "eSUCH - Aprovação Pendente" : "eSUCH - Aprovação Pendente" + " - TESTE AROMAO",
+                    DataHoraEmail = DateTime.Now,
+                    TextoEmail = "Existe uma nova tarefa pendente da sua aprovação no eSUCH!",
+                    Enviado = false
+                };
+
+
+                SendEmailApprovals Email = new SendEmailApprovals
+                {
+                    Subject = string.IsNullOrEmpty(" - TESTE AROMAO") ? "eSUCH - Aprovação Pendente" : "eSUCH - Aprovação Pendente" + " - TESTE AROMAO",
+                    From = "CRodrigues@such.pt"
+                };
+
+                Email.To.Add(e);
+
+                //Email.Body = MakeEmailBodyContent("Existe uma nova tarefa pendente da sua aprovação no eSUCH!");
+                Email.Body = "Existe uma nova tarefa pendente da sua aprovação no eSUCH!";
+                EmailApproval.TextoEmail = Email.Body;
+
+                //Email.IsBodyHtml = true;
+                Email.IsBodyHtml = false;
+                Email.EmailApproval = EmailApproval;
+
+                Email.SendEmail();
+            });
+
+            return Json(true);
+        }
+        public static string MakeEmailBodyContent(string BodyText)
+        {
+            string Body = @"<html>" +
+                                "<head>" +
+                                    "<style>" +
+                                        "table{border:0;} " +
+                                        "td{width:600px; vertical-align: top;}" +
+                                    "</style>" +
+                                "</head>" +
+                                "<body>" +
+                                    "<table>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "Caro (a)," +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr><td>&nbsp;</td></tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                BodyText +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "&nbsp;" +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "Com os melhores cumprimentos," +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "<i>SUCH - Serviço de Utilização Comum dos Hospitais</i>" +
+                                            "</td>" +
+                                        "</tr>" +
+                                    "</table>" +
+                                "</body>" +
+                            "</html>";
+
+            return Body;
+        }
+
+
+
+
 
     }
 }

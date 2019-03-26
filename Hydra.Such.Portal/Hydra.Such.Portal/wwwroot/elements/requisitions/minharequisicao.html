@@ -140,6 +140,9 @@
         <!--<iron-ajax url="/PopulateDropdowns/GetEmployees" id="ajax_employees_options" last-response="{{cboEmployees}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
         <iron-ajax url="/PopulateDropdowns/GetLocalMarketRegions" last-response="{{CBLocalMarketRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetViaturas" last-response="{{CBVehicle}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetRegionCode" id="page_GetRegionCode_ajax" last-response="{{LProjectRegionCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" id="page_GetFunctionalAreaCode_ajax" last-response="{{LProjectFunctionalAreaCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" id="page_GetResponsabilityCenterCode_ajax" last-response="{{LProjectResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
 
 
@@ -339,6 +342,14 @@
                    on-response="_deletedAttachResponse"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/PreRequisicoes/GetProjectDim"
+                   last-response="{{ProjectDims}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_getProject_ajax"
+                   on-response="_getProjectDimsResponse"
+                   content-type="application/json"></iron-ajax>
+
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" id="btnGoBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
 
@@ -394,6 +405,7 @@
                                         </div>
                                         <div class="col-lg-3">
                                             <such-selectbox id="CBHeaderProjects" name="CBHeaderProjects" value="{{Requisition.projectNo}}" label="Nº Ordem/Projeto" disabled="{{ !_permissions.update }}"
+                                                            on-value-changed="_setProjectDim"
                                                             items="[[Projects]]"
                                                             text-path="no"
                                                             value-path="no"
@@ -402,11 +414,19 @@
                                         </div>
 
                                         <div class="col-lg-3">
-                                            <vaadin-combo-box items="[[CBVehicle]]" id="Vehicle" item-value-path="id" item-label-path="id" value="{{Requisition.vehicle}}" label="Viatura" disabled="{{ !_permissions.update }}" on-value-changed="_GetNoProjetoCabecalho">
-                                                <template>
-                                                    <b>[[item.id]]</b>
-                                                </template>
-                                            </vaadin-combo-box>
+                                            <!--<vaadin-combo-box items="[[CBVehicle]]" id="Vehicle" item-value-path="id" item-label-path="id" value="{{Requisition.vehicle}}" label="Viatura" disabled="{{ !_permissions.update }}" on-value-changed="_GetNoProjetoCabecalho">
+                                            <template>
+                                                <b>[[item.id]]</b>
+                                            </template>
+                                        </vaadin-combo-box>-->
+                                            <such-selectbox id="Vehicle" name="Vehicle" label="Viatura" value="{{Requisition.vehicle}}"
+                                                            on-value-changed="_GetNoProjetoCabecalho"
+                                                            items="[[CBVehicle]]"
+                                                            text-path="id"
+                                                            value-path="id"
+                                                            fields='[{"field":"id", "name":"Matrícula"}]'
+                                                            disabled="{{ !_permissions.update }}">
+                                            </such-selectbox>
                                         </div>
                                     </div>
 
@@ -676,13 +696,13 @@
                                                        timeout=15000>
                                         </vaadin-upload>
                                         <!--<vaadin-upload id="UploadRequest"
-                                                       target="/GestaoRequisicoes/FileUpload/{{_requisitionid}}/{{_lineno}}"
-                                                       accept="application/vnd.ms-outlook, text/plain, application/pdf, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.template, image/jpeg, image/png, image/gif"
-                                                       method="POST"
-                                                       headers="{'Accept': 'application/json'}"
-                                                       hidden="{{ !_permissions.update }}"
-                                                       timeout=15000>
-                                        </vaadin-upload>-->
+                                                   target="/GestaoRequisicoes/FileUpload/{{_requisitionid}}/{{_lineno}}"
+                                                   accept="application/vnd.ms-outlook, text/plain, application/pdf, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.template, image/jpeg, image/png, image/gif"
+                                                   method="POST"
+                                                   headers="{'Accept': 'application/json'}"
+                                                   hidden="{{ !_permissions.update }}"
+                                                   timeout=15000>
+                                    </vaadin-upload>-->
                                         <!--</template>-->
                                     </div>
                                     <div class="row break_clear">
@@ -1781,6 +1801,9 @@
                     },
                     _requisitionstatesenum: {
                         type: Array
+                    },
+                    projectNo: {
+                        observer: '_setProjectDim'
                     },
                     _sendPrePurchaseFilterActive: {
                         type: Boolean,
@@ -3059,6 +3082,85 @@
                         }
                     }
                 },
+
+                _setProjectDim: function (e) {
+                    var projectNo = this.$.CBHeaderProjects.value;
+                    if (projectNo != "") {
+                        this.$.page_getProject_ajax.body = JSON.stringify(projectNo);
+                        this.$.page_getProject_ajax.generateRequest();
+                    }
+                    else {
+                        this.$._CLRegion.value = "";
+                        this.$._CLRegion.valueText = "";
+                        this.$.RegionCode.value = "";
+                        this.$.RegionCode.valueText = "";
+
+                        this.$._CLFunctionalAreaCode.value = "";
+                        this.$._CLFunctionalAreaCode.valueText = "";
+                        this.$.FunctionalAreaCode.value = "";
+                        this.$.FunctionalAreaCode.valueText = "";
+
+                        this.$._CLResponsabilityCenterCode.value = "";
+                        this.$._CLResponsabilityCenterCode.valueText = "";
+                        this.$.ResponsabilityCenterCode.value = "";
+                        this.$.ResponsabilityCenterCode.valueText = "";
+                    }
+                },
+                _getProjectDimsResponse: function (e) {
+                    if (e.detail.status === 200) {
+                        this.$.page_GetRegionCode_ajax.generateRequest();
+                        this.$.page_GetResponsabilityCenterCode_ajax.generateRequest();
+                        this.$.page_GetFunctionalAreaCode_ajax.generateRequest();
+
+                        if (this.ProjectDims.regionCode != "") {
+                            this.$._CLRegion.value = this.ProjectDims.regionCode;
+
+                            this.$.RegionCode.value = this.ProjectDims.regionCode;
+                        }
+                        else {
+                            this.$._CLRegion.value = "";
+                            this.$._CLRegion.valueText = "";
+
+                            this.$.RegionCode.value = "";
+                            this.$.RegionCode.valueText = "";
+                        }
+
+                        if (this.ProjectDims.functionalAreaCode != "") {
+                            this.$._CLFunctionalAreaCode.value = this.ProjectDims.functionalAreaCode;
+
+                            this.$.FunctionalAreaCode.value = this.ProjectDims.functionalAreaCode;
+                            this._PopulatePurchaseLines();
+                        }
+                        else {
+                            this.$._CLFunctionalAreaCode.value = "";
+                            this.$._CLFunctionalAreaCode.valueText = "";
+
+                            this.$.FunctionalAreaCode.value = "";
+                            this.$.FunctionalAreaCode.valueText = "";
+                        }
+
+                        if (this.ProjectDims.responsabilityCenterCode != "") {
+                            this.$._CLResponsabilityCenterCode.value = this.ProjectDims.responsabilityCenterCode;
+
+                            this.$.ResponsabilityCenterCode.value = this.ProjectDims.responsabilityCenterCode;
+                        }
+                        else {
+                            this.$._CLResponsabilityCenterCode.value = "";
+                            this.$._CLResponsabilityCenterCode.valueText = "";
+
+                            this.$.ResponsabilityCenterCode.value = "";
+                            this.$.ResponsabilityCenterCode.valueText = "";
+                        }
+
+                        this.data.contractType = 3;
+                        this.$.page_databoundNoMessage_ajax.url = "/PreRequisicoes/UpdatePreRequesition";
+                        this.$.page_databoundNoMessage_ajax.body = JSON.stringify(this.data);
+                        this.$.page_databoundNoMessage_ajax.generateRequest();
+                    }
+                },
+
+
+
 
             });
         });
