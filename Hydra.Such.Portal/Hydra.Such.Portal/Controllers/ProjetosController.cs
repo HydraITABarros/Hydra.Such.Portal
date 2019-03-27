@@ -3547,7 +3547,7 @@ namespace Hydra.Such.Portal.Controllers
                         data.RemoveAll(z => z.Apagar_Linha == true);
                     }
                 }
-                
+
 
                 customersServicesPrices = ctx.PreçosServiçosCliente
                     .Where(x => customersIds.Contains(x.Cliente))

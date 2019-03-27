@@ -569,6 +569,36 @@ namespace Hydra.Such.Portal.Controllers
                     result.InvoiceTexts = new List<ContractInvoiceTextViewModel>();
                 }
 
+                if (result != null && !string.IsNullOrEmpty(result.CodeShippingAddress))
+                {
+                    NAVAddressesViewModel SHIP = DBNAV2017ShippingAddresses.GetByCode(result.CodeShippingAddress, _config.NAVDatabaseName, _config.NAVCompanyName);
+                    if (SHIP != null)
+                    {
+                        result.ShippingName = SHIP.Name;
+                        result.ShippingAddress = SHIP.Address;
+                        result.ShippingZipCode = SHIP.ZipCode;
+                        result.ShippingLocality = SHIP.City;
+                    }
+                }
+                else
+                {
+                    NAVClientsViewModel cli = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, result.ClientNo);
+                    if (cli != null)
+                    {
+                        result.ShippingName = cli.Name;
+                        result.ShippingAddress = cli.Address;
+                        result.ShippingZipCode = cli.PostCode;
+                        result.ShippingLocality = cli.City;
+                    }
+                    else
+                    {
+                        result.ShippingName = "";
+                        result.ShippingAddress = "";
+                        result.ShippingZipCode = "";
+                        result.ShippingLocality = "";
+                    }
+                }
+
                 result.Type = 1; //CONTRATOS
 
                 return Json(result);

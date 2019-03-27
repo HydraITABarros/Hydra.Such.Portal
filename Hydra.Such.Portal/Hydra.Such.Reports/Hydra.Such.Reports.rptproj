@@ -66,6 +66,7 @@
     <Report Include="FolhaCaixa.rdl" />
     <Report Include="FolhaHora.rdl" />
     <Report Include="GuiaTransporteNav.rdl" />
+    <Report Include="LinhasAcordoPrecos.rdl" />
     <Report Include="MovimentosProjetoFaturados.rdl" />
     <Report Include="OpotunidadeProposta_Contrato.rdl" />
     <Report Include="PedidoPagamentoAntecipado.rdl" />

@@ -5203,6 +5203,8 @@ namespace Hydra.Such.Portal.Controllers
             if (userPerm != null && userPerm.Read.Value)
             {
                 ViewBag.UPermissions = userPerm;
+                ViewBag.reportServerURL = _config.ReportServerURL;
+
                 return View();
             }
             else
