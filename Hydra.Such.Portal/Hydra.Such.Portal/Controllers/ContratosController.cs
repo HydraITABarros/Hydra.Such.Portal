@@ -2341,6 +2341,7 @@ namespace Hydra.Such.Portal.Controllers
                     string Month = "";
                     string Year = "";
                     DateTime Lastdate = item.DataDeRegisto.Value;
+                    DateTime DataDocumento = item.DataDeRegisto.Value;
                     Contratos contractLine = DBContracts.GetByIdAvencaFixa(item.NºContrato);
                     DateTime today = DateTime.Now;
                     DateTime StContractDate = today;
@@ -2568,7 +2569,24 @@ namespace Hydra.Such.Portal.Controllers
                         item.CódigoCentroResponsabilidade = contractLine.CódigoCentroResponsabilidade;
                         item.DataRececaoRequisicao = contractLine.DataReceçãoRequisição;
 
-                        Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreateContractInvoice(item, _configws, ContractInvoicePeriod, InvoiceBorrowed);
+
+                        //AMARO DUEDATE = DataExpiração
+                        item.DataDeExpiração = DataDocumento;
+                        string CodTermosPagamento = string.Empty;
+                        if (!string.IsNullOrEmpty(contractLine.CódTermosPagamento))
+                        {
+                            NAVPaymentTermsViewModels PaymentTerms = DBNAV2017PaymentTerms.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, contractLine.CódTermosPagamento).FirstOrDefault();
+                            if (PaymentTerms != null)
+                            {
+                                if (!string.IsNullOrEmpty(PaymentTerms.DueDateCalculation) && Double.TryParse(PaymentTerms.DueDateCalculation, out double num))
+                                {
+                                    item.DataDeExpiração = DataDocumento.AddDays(Convert.ToDouble(PaymentTerms.DueDateCalculation));
+                                    CodTermosPagamento = contractLine.CódTermosPagamento;
+                                }
+                            }
+                        }
+
+                        Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreateContractInvoice(item, _configws, ContractInvoicePeriod, InvoiceBorrowed, CodTermosPagamento);
                         InvoiceHeader.Wait();
 
                         if (InvoiceHeader.IsCompletedSuccessfully && InvoiceHeader != null && InvoiceHeader.Result != null)
@@ -2621,6 +2639,7 @@ namespace Hydra.Such.Portal.Controllers
                             string Month = "";
                             string Year = "";
                             DateTime Lastdate = item.DataDeRegisto.Value;
+                            DateTime DataDocumento = item.DataDeRegisto.Value;
                             Contratos contractLine = DBContracts.GetByIdAvencaFixa(item.NºContrato);
                             DateTime today = (DateTime)contractLine.ÚltimaDataFatura; //DateTime.Now;
                             DateTime StContractDate = today;
@@ -2814,7 +2833,23 @@ namespace Hydra.Such.Portal.Controllers
                                 item.CódigoCentroResponsabilidade = contractLine.CódigoCentroResponsabilidade;
                                 item.DataRececaoRequisicao = contractLine.DataReceçãoRequisição;
 
-                                Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreateContractInvoice(item, _configws, ContractInvoicePeriod, InvoiceBorrowed);
+                                //AMARO DUEDATE = DataExpiração
+                                item.DataDeExpiração = DataDocumento;
+                                string CodTermosPagamento = string.Empty;
+                                if (!string.IsNullOrEmpty(contractLine.CódTermosPagamento))
+                                {
+                                    NAVPaymentTermsViewModels PaymentTerms = DBNAV2017PaymentTerms.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, contractLine.CódTermosPagamento).FirstOrDefault();
+                                    if (PaymentTerms != null)
+                                    {
+                                        if (!string.IsNullOrEmpty(PaymentTerms.DueDateCalculation) && Double.TryParse(PaymentTerms.DueDateCalculation, out double num))
+                                        {
+                                            item.DataDeExpiração = DataDocumento.AddDays(Convert.ToDouble(PaymentTerms.DueDateCalculation));
+                                            CodTermosPagamento = contractLine.CódTermosPagamento;
+                                        }
+                                    }
+                                }
+
+                                Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreateContractInvoice(item, _configws, ContractInvoicePeriod, InvoiceBorrowed, CodTermosPagamento);
                                 InvoiceHeader.Wait();
 
                                 if (InvoiceHeader.IsCompletedSuccessfully && InvoiceHeader != null && InvoiceHeader.Result != null)

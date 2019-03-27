@@ -250,7 +250,7 @@ namespace Hydra.Such.Data.NAV
             }
         }
 
-        public static async Task<WSCreatePreInvoice.Create_Result> CreateContractInvoice(AutorizarFaturaçãoContratos CreateInvoice, NAVWSConfigurations WSConfigurations,string ContractInvoicePeriod, string InvoiceBorrowed)
+        public static async Task<WSCreatePreInvoice.Create_Result> CreateContractInvoice(AutorizarFaturaçãoContratos CreateInvoice, NAVWSConfigurations WSConfigurations,string ContractInvoicePeriod, string InvoiceBorrowed, string CodTermosPagamento)
         {
             DateTime now = DateTime.Now;
             ConfigUtilizadores CUsers = DBUserConfigurations.GetById(CreateInvoice.UtilizadorCriação);
@@ -273,6 +273,10 @@ namespace Hydra.Such.Data.NAV
                     Data_Serv_Prestado = !string.IsNullOrEmpty(InvoiceBorrowed) ? InvoiceBorrowed : "",
                     Responsibility_Center = !string.IsNullOrEmpty(CUsers.CentroDeResponsabilidade) ? CUsers.CentroDeResponsabilidade : "",
                     Posting_No_Series = !string.IsNullOrEmpty(CUsers.NumSerieFaturas) ? CUsers.NumSerieFaturas : "",
+
+                    Due_Date = (DateTime)CreateInvoice.DataDeExpiração,
+                    Due_DateSpecified = true,
+                    Payment_Method_Code = CodTermosPagamento,
 
                     //Amaro
                     Observacoes = !string.IsNullOrEmpty(CreateInvoice.Descrição) ? CreateInvoice.Descrição : "",

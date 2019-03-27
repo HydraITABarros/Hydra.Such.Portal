@@ -3078,10 +3078,11 @@ namespace Hydra.Such.Portal.Controllers
                     if (userDimensionsViewModel.Where(x => x.Dimension == (int)Dimensions.ResponsabilityCenter).Count() > 0)
                         result.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.CodCentroResponsabilidade));
 
+                    List<MovimentosProjectoAutorizados> AllAuthorizedProjectMovements = DBAuthorizedProjectMovements.GetAll("");
                     result.ForEach(x =>
                     {
-                        var movements = DBAuthorizedProjectMovements.GetMovementById(x.GrupoFactura, x.CodProjeto);
-                        if (movements != null)
+                        var movements = AllAuthorizedProjectMovements.Where(y => y.GrupoFactura == x.GrupoFactura && y.CodProjeto == x.CodProjeto).ToList();
+                        if (movements != null && movements.Count() > 0)
                             x.ValorAutorizado = movements.Sum(y => y.PrecoTotal);
                     });
                 }
