@@ -70,6 +70,7 @@
     <Report Include="MovimentosProjetoFaturados.rdl" />
     <Report Include="OpotunidadeProposta_Contrato.rdl" />
     <Report Include="PedidoPagamentoAntecipado.rdl" />
+    <Report Include="PrecosServicosCliente.rdl" />
     <Report Include="Procedimento.rdl" />
     <Report Include="ProjetoMovimentos.rdl" />
     <Report Include="ProjetoPreMovimentos.rdl" />

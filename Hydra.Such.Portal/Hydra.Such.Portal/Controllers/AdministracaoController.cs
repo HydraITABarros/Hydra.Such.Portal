@@ -7013,43 +7013,63 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult TesteARomao()
         {
-            List<string> UsersToNotify = new List<string>();
-            UsersToNotify.Add("ARomao@such.pt");
+            //List<string> UsersToNotify = new List<string>();
+            //UsersToNotify.Add("ARomao@such.pt");
+
+            //UsersToNotify = UsersToNotify.Distinct().ToList();
+            //UsersToNotify.ForEach(e =>
+            //{
+            //    EmailsAprovações EmailApproval = new EmailsAprovações()
+            //    {
+            //        NºMovimento = 30455,
+            //        EmailDestinatário = "ARomao@such.pt",
+            //        NomeDestinatário = "ARomao@such.pt",
+            //        Assunto = "eSUCH - Aprovação Pendente - TESTE AROMAO",
+            //        DataHoraEmail = DateTime.Now,
+            //        TextoEmail = "Existe uma nova tarefa pendente da sua aprovação no eSUCH!",
+            //        Enviado = false
+            //    };
+
+            //    SendEmailApprovals Email = new SendEmailApprovals
+            //    {
+            //        Subject = "eSUCH - Aprovação Pendente - TESTE AROMAO",
+            //        From = "ARomao@such.pt"
+            //    };
+
+            //    Email.To.Add("ARomao@such.pt");
+
+            //    //Email.Body = MakeEmailBodyContent("Existe uma nova tarefa pendente da sua aprovação no eSUCH!");
+            //    Email.Body = "Existe uma nova tarefa pendente da sua aprovação no eSUCH!";
+            //    EmailApproval.TextoEmail = Email.Body;
+
+            //    //Email.IsBodyHtml = true;
+            //    Email.IsBodyHtml = false;
+            //    Email.EmailApproval = EmailApproval;
+
+            //    Email.SendEmail();
+            //});
 
 
-            UsersToNotify = UsersToNotify.Distinct().ToList();
-            UsersToNotify.ForEach(e =>
-            {
-                EmailsAprovações EmailApproval = new EmailsAprovações()
-                {
-                    NºMovimento = 30455,
-                    EmailDestinatário = e,
-                    NomeDestinatário = e,
-                    Assunto = string.IsNullOrEmpty(" - TESTE AROMAO") ? "eSUCH - Aprovação Pendente" : "eSUCH - Aprovação Pendente" + " - TESTE AROMAO",
-                    DataHoraEmail = DateTime.Now,
-                    TextoEmail = "Existe uma nova tarefa pendente da sua aprovação no eSUCH!",
-                    Enviado = false
-                };
 
+            SendEmailApprovals Email = new SendEmailApprovals();
+            Email.Body = "eSUCH - Body - false";
+            Email.DisplayName = "eSUCH - Display Name";
+            Email.From = "ARomao@such.pt";
+            Email.IsBodyHtml = false;
+            Email.Subject = "eSUCH - Subject";
+            Email.To.Add("ARomao@such.pt");
+            Email.UserID = "ARomao@such.pt";
+            Email.SendEmail();
 
-                SendEmailApprovals Email = new SendEmailApprovals
-                {
-                    Subject = string.IsNullOrEmpty(" - TESTE AROMAO") ? "eSUCH - Aprovação Pendente" : "eSUCH - Aprovação Pendente" + " - TESTE AROMAO",
-                    From = "CRodrigues@such.pt"
-                };
+            Email.Body = "eSUCH - Body - true";
+            Email.DisplayName = "eSUCH - Display Name";
+            Email.From = "ARomao@such.pt";
+            Email.IsBodyHtml = true;
+            Email.Subject = "eSUCH - Subject";
+            Email.To.Add("ARomao@such.pt");
+            Email.UserID = "ARomao@such.pt";
+            Email.SendEmail();
 
-                Email.To.Add(e);
-
-                //Email.Body = MakeEmailBodyContent("Existe uma nova tarefa pendente da sua aprovação no eSUCH!");
-                Email.Body = "Existe uma nova tarefa pendente da sua aprovação no eSUCH!";
-                EmailApproval.TextoEmail = Email.Body;
-
-                //Email.IsBodyHtml = true;
-                Email.IsBodyHtml = false;
-                Email.EmailApproval = EmailApproval;
-
-                Email.SendEmail();
-            });
 
             return Json(true);
         }

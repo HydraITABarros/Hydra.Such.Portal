@@ -3936,7 +3936,7 @@ namespace Hydra.Such.Portal.Controllers
             else
             {
                 result.eReasonCode = 2;
-                result.eMessage = "Selecione registos para faturar";
+                result.eMessage = "Não é possivel faturar projetos iguais de grupos diferentes.";
             }
             return Json(result);
         }

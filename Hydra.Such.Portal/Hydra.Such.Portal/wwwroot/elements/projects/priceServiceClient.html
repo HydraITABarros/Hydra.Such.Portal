@@ -42,7 +42,7 @@
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" />
         <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
-        
+
         <iron-ajax url="/PopulateDropdowns/GetMeasureUnits" last-response="{{CBMeasureUnits}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetAllClientsComboGrid" last-response="{{LProjectClients}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetServices" last-response="{{ServiceClient}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -51,7 +51,7 @@
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{RegionData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{FunctionalAreaCodeData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{ResponsabilityCenterData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        
+
         <iron-ajax url="/Projetos/UpdatePriceServiceClient" last-response="{{result}}" id="ajax_update" method="post" on-response="_updateResponse" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Projetos/GetAllPriceServiceClient" last-response="{{Griddate}}" id="ajax_gridList" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Projetos/ExportToExcel" last-response="{{export}}" id="ajax_Export" method="post" handle-as="json" on-response="_ExportResponse" content-type="application/json"></iron-ajax>
@@ -161,6 +161,18 @@
                 font: inherit;
             }
         </style>
+
+        <div class="subMenu">
+            <div class="marginSpace" hidden="{{ disabledFields }}">
+                <div class="marginSpace" hidden="{{ !_permissions.update }}">
+                    <paper-button class="tablinks" id="btnAddNew" disabled="{{ !_permissions.update }}" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                    <paper-button class="tablinks" id="btnCancel" disabled="{{ !_permissions.update }}" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+                    <paper-button class="tablinks" id="btnExport" disabled="{{ !_permissions.update }}" on-tap="_export"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+                    <paper-button class="tablinks" id="btn_imprimir" on-tap="_print" title="Imprimir"><i class="fa fa-print" aria-hidden="true"></i> Imprimir</paper-button>
+                </div>
+            </div>
+        </div>
+
         <div class="row">
             <div class="col-lg-2">
                 <such-selectbox id="piClient" value="{{ClientValue}}" label="Cliente" on-value-changed="_clientChanged"
@@ -585,15 +597,23 @@
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
-        <div class="marginSpace" hidden="{{ disabledFields }}">
-            <div class="marginSpace" hidden="{{ !_permissions.update }}">
-                <paper-button raised id="btnAddNew" disabled="{{ !_permissions.update }}" class="btnEdit" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                <paper-button raised id="btnCancel" disabled="{{ !_permissions.update }}" class="btnRemove" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
-                <paper-button raised id="btnExport" disabled="{{ !_permissions.update }}" class="btnEdit" on-tap="_export"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
-            </div>
+        <!--<div class="marginSpace" hidden="{{ disabledFields }}">
+        <div class="marginSpace" hidden="{{ !_permissions.update }}">
+            <paper-button raised id="btnAddNew" disabled="{{ !_permissions.update }}" class="btnEdit" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+            <paper-button raised id="btnCancel" disabled="{{ !_permissions.update }}" class="btnRemove" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+            <paper-button raised id="btnExport" disabled="{{ !_permissions.update }}" class="btnEdit" on-tap="_export"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
         </div>
+    </div>-->
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+
+        <paper-dialog id="rptDialog" class="dialgoBox" modal>
+            <div class="buttons">
+                <paper-button class="btnRemove" on-tap="_closeRptDialog" title="Fechar"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
+            </div>
+            <iframe id="rptContainer" src="" frameborder="0" style="width: 100%; height: 92%; margin: 0px; padding: 0px"></iframe>
+        </paper-dialog>
+
     </template>
     <script>
         window.addEventListener('WebComponentsReady', function () {
@@ -606,9 +626,9 @@
                     this.openToastError(event.detail.file.name + ' erro: ' + event.detail.error);
                 });
 
-                    upload.addEventListener('file-reject', function (event) {
-                        this.openToastError(event.detail.file.name + ' erro: ' + event.detail.error);
-                    });
+                upload.addEventListener('file-reject', function (event) {
+                    this.openToastError(event.detail.file.name + ' erro: ' + event.detail.error);
+                });
             }
         });
         document.addEventListener('WebComponentsReady', function () {
@@ -1019,6 +1039,26 @@
                     this.$.ToastMessageError.text = message;
                     this.$.ToastMessageError.open();
                 },
+
+                _print: function () {
+                    if ("https://esuch.such.pt/ReportServer/Pages/ReportViewer.aspx?/eSuch/" != "") {
+                        this.$.rptContainer.src = "https://esuch.such.pt/ReportServer/Pages/ReportViewer.aspx?/eSuch/" + "PrecosServicosCliente";
+                        this.$.rptDialog.open();
+                    }
+                    else {
+                        this._showErrorMessage("Não é possivel imprimir. Não foi definido o servidor de relatórios.");
+                    }
+                },
+
+                _closeRptDialog: function () {
+                    this.$.rptContainer.src = "about:blank";
+                    this.$.rptDialog.close();
+                },
+
+
+
+
+
             });
         });
     </script>

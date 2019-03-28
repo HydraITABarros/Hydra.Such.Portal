@@ -2602,16 +2602,18 @@ namespace Hydra.Such.Portal.Controllers
 
                         //AMARO DUEDATE = DataExpiração
                         item.DataDeExpiração = DataDocumento;
-                        string CodTermosPagamento = string.Empty;
+                        string CodTermosPagamento = contractLine.CódTermosPagamento;
                         if (!string.IsNullOrEmpty(contractLine.CódTermosPagamento))
                         {
                             NAVPaymentTermsViewModels PaymentTerms = DBNAV2017PaymentTerms.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, contractLine.CódTermosPagamento).FirstOrDefault();
                             if (PaymentTerms != null)
                             {
-                                if (!string.IsNullOrEmpty(PaymentTerms.DueDateCalculation) && Double.TryParse(PaymentTerms.DueDateCalculation, out double num))
+                                string AUXDueDateCalculation = PaymentTerms.DueDateCalculation;
+                                AUXDueDateCalculation = AUXDueDateCalculation.Substring(0, AUXDueDateCalculation.IndexOf(''));
+
+                                if (!string.IsNullOrEmpty(AUXDueDateCalculation) && Double.TryParse(AUXDueDateCalculation, out double num))
                                 {
-                                    item.DataDeExpiração = DataDocumento.AddDays(Convert.ToDouble(PaymentTerms.DueDateCalculation));
-                                    CodTermosPagamento = contractLine.CódTermosPagamento;
+                                    item.DataDeExpiração = DataDocumento.AddDays(Convert.ToDouble(AUXDueDateCalculation));
                                 }
                             }
                         }
@@ -2865,16 +2867,18 @@ namespace Hydra.Such.Portal.Controllers
 
                                 //AMARO DUEDATE = DataExpiração
                                 item.DataDeExpiração = DataDocumento;
-                                string CodTermosPagamento = string.Empty;
+                                string CodTermosPagamento = contractLine.CódTermosPagamento;
                                 if (!string.IsNullOrEmpty(contractLine.CódTermosPagamento))
                                 {
                                     NAVPaymentTermsViewModels PaymentTerms = DBNAV2017PaymentTerms.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, contractLine.CódTermosPagamento).FirstOrDefault();
                                     if (PaymentTerms != null)
                                     {
-                                        if (!string.IsNullOrEmpty(PaymentTerms.DueDateCalculation) && Double.TryParse(PaymentTerms.DueDateCalculation, out double num))
+                                        string AUXDueDateCalculation = PaymentTerms.DueDateCalculation;
+                                        AUXDueDateCalculation = AUXDueDateCalculation.Substring(0, AUXDueDateCalculation.IndexOf(''));
+
+                                        if (!string.IsNullOrEmpty(AUXDueDateCalculation) && Double.TryParse(AUXDueDateCalculation, out double num))
                                         {
-                                            item.DataDeExpiração = DataDocumento.AddDays(Convert.ToDouble(PaymentTerms.DueDateCalculation));
-                                            CodTermosPagamento = contractLine.CódTermosPagamento;
+                                            item.DataDeExpiração = DataDocumento.AddDays(Convert.ToDouble(AUXDueDateCalculation));
                                         }
                                     }
                                 }

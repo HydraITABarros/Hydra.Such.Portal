@@ -276,7 +276,7 @@ namespace Hydra.Such.Data.NAV
 
                     Due_Date = (DateTime)CreateInvoice.DataDeExpiração,
                     Due_DateSpecified = true,
-                    Payment_Method_Code = CodTermosPagamento,
+                    Payment_Terms_Code = CodTermosPagamento,
 
                     //Amaro
                     Observacoes = !string.IsNullOrEmpty(CreateInvoice.Descrição) ? CreateInvoice.Descrição : "",

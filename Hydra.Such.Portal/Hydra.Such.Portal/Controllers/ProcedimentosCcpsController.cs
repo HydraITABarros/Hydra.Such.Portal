@@ -26,6 +26,7 @@ using Newtonsoft.Json.Linq;
 using Microsoft.AspNetCore.Hosting;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using Hydra.Such.Data;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -162,14 +163,32 @@ namespace Hydra.Such.Portal.Controllers
         // zpgm.< view that will return a Pedidos Simplificados list
         public IActionResult PedidoSimplificado()
         {
-            return View();
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.PedidoSimplificado);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
         }
         // zpgm.>
 
         // zpgm.< view that will return a Pedidos de Aquisição list
         public IActionResult PedidoAquisicao()
         {
-            return View();
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.PedidoAquisição);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
         }
         // zpgm.>
         public IActionResult Detalhes(string id)
