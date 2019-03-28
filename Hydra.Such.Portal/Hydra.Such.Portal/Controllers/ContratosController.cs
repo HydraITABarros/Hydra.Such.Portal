@@ -3379,18 +3379,17 @@ namespace Hydra.Such.Portal.Controllers
 
                     //AMARO DUEDATE = DataExpiração
                     PreInvoiceToCreate.DueDate = lastDay;
-                    if (!string.IsNullOrEmpty(Contract.CodePaymentTerms))
+                    NAVPaymentTermsViewModels PaymentTerms = DBNAV2017PaymentTerms.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, Contract.CodePaymentTerms).FirstOrDefault();
+                    if (PaymentTerms != null)
                     {
-                        NAVPaymentTermsViewModels PaymentTerms = DBNAV2017PaymentTerms.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, Contract.CodePaymentTerms).FirstOrDefault();
-                        if (PaymentTerms != null)
+                        string AUXDueDateCalculation = PaymentTerms.DueDateCalculation;
+                        AUXDueDateCalculation = AUXDueDateCalculation.Substring(0, AUXDueDateCalculation.IndexOf(''));
+
+                        if (!string.IsNullOrEmpty(AUXDueDateCalculation) && Double.TryParse(AUXDueDateCalculation, out double num))
                         {
-                            if (!string.IsNullOrEmpty(PaymentTerms.DueDateCalculation) && Double.TryParse(PaymentTerms.DueDateCalculation, out double num))
-                            {
-                                PreInvoiceToCreate.DueDate = lastDay.AddDays(Convert.ToDouble(PaymentTerms.DueDateCalculation));
-                            }
+                            PreInvoiceToCreate.DueDate = lastDay.AddDays(Convert.ToDouble(AUXDueDateCalculation));
                         }
                     }
-
                     PreInvoiceToCreate.PaymentTermsCode = Contract.CodePaymentTerms;
                    
                     PreInvoiceToCreate.No_Compromisso = Contract.PromiseNo;

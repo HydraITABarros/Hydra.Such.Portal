@@ -101,7 +101,7 @@ namespace Hydra.Such.Data.Logic.Approvals
             Client.SendAsync(MMessage, UserState);
 
 
-            MMessage.Dispose();
+            //MMessage.Dispose();
         }
 
         public void SendEmail_Simple()

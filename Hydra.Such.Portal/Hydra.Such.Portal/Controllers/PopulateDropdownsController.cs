@@ -33,6 +33,7 @@ using Hydra.Such.Portal.Extensions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Hydra.Such.Data.ViewModel.Encomendas;
+using System.Data.SqlClient;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -1403,6 +1404,45 @@ namespace Hydra.Such.Portal.Controllers
             }).ToList();
 
             return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetTipoTrabalhoFHList()
+        {
+            try
+            {
+                List<DDMessageString> result = new List<DDMessageString>();
+                string NoEmployee = string.Empty;
+                NoEmployee = DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo;
+
+                if (!string.IsNullOrEmpty(NoEmployee))
+                {
+                    using (var ctx = new SuchDBContextExtention())
+                    {
+                        var parameters = new[]{
+                        new SqlParameter("@NoEmployee", NoEmployee)
+                    };
+
+                        IEnumerable<dynamic> data = ctx.execStoredProcedure("exec FHTipoTrabalhoByEmployee @NoEmployee", parameters);
+
+                        foreach (dynamic temp in data)
+                        {
+
+                            result.Add(new DDMessageString()
+                            {
+                                id = temp.Code.Equals(DBNull.Value) ? "" : (string)temp.Code,
+                                value = temp.Descricao.Equals(DBNull.Value) ? "" : (string)temp.Descricao
+                            });
+                        }
+                    }
+                }
+
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return Json(null);
+            }
         }
 
         [HttpPost]
