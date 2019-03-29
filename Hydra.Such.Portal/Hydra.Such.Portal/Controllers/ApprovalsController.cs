@@ -858,6 +858,16 @@ namespace Hydra.Such.Portal.Controllers
                                                 result.eReasonCode = 105;
                                                 result.eMessage = "Não Pode validar pois já se encontra validada.";
                                             }
+                                            if (Resultado == 6)
+                                            {
+                                                result.eReasonCode = 106;
+                                                result.eMessage = "Já existem movimentos inseridos na tabela Movimentos De Projeto para esta Folha de Horas.";
+                                            }
+                                            if (Resultado == 7)
+                                            {
+                                                result.eReasonCode = 107;
+                                                result.eMessage = "Já existem movimentos inseridos na tabela Job Ledger Entry para esta Folha de Horas.";
+                                            }
                                         }
                                     }
                                 }

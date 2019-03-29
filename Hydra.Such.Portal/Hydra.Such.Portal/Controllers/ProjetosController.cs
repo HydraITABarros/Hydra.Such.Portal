@@ -3078,10 +3078,11 @@ namespace Hydra.Such.Portal.Controllers
                     if (userDimensionsViewModel.Where(x => x.Dimension == (int)Dimensions.ResponsabilityCenter).Count() > 0)
                         result.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.CodCentroResponsabilidade));
 
+                    List<MovimentosProjectoAutorizados> AllAuthorizedProjectMovements = DBAuthorizedProjectMovements.GetAll("");
                     result.ForEach(x =>
                     {
-                        var movements = DBAuthorizedProjectMovements.GetMovementById(x.GrupoFactura, x.CodProjeto);
-                        if (movements != null)
+                        var movements = AllAuthorizedProjectMovements.Where(y => y.GrupoFactura == x.GrupoFactura && y.CodProjeto == x.CodProjeto).ToList();
+                        if (movements != null && movements.Count() > 0)
                             x.ValorAutorizado = movements.Sum(y => y.PrecoTotal);
                     });
                 }
@@ -3546,7 +3547,7 @@ namespace Hydra.Such.Portal.Controllers
                         data.RemoveAll(z => z.Apagar_Linha == true);
                     }
                 }
-                
+
 
                 customersServicesPrices = ctx.PreçosServiçosCliente
                     .Where(x => customersIds.Contains(x.Cliente))
@@ -3935,7 +3936,7 @@ namespace Hydra.Such.Portal.Controllers
             else
             {
                 result.eReasonCode = 2;
-                result.eMessage = "Selecione registos para faturar";
+                result.eMessage = "Não é possivel faturar projetos iguais de grupos diferentes.";
             }
             return Json(result);
         }

@@ -5203,6 +5203,8 @@ namespace Hydra.Such.Portal.Controllers
             if (userPerm != null && userPerm.Read.Value)
             {
                 ViewBag.UPermissions = userPerm;
+                ViewBag.reportServerURL = _config.ReportServerURL;
+
                 return View();
             }
             else
@@ -7008,22 +7010,14 @@ namespace Hydra.Such.Portal.Controllers
         #endregion
 
 
-        [HttpPost]
         public JsonResult TesteARomao()
         {
-            List<string> UsersToNotify = new List<string>();
-            UsersToNotify.Add("ARomao@such.pt");
-
-
-            UsersToNotify = UsersToNotify.Distinct().ToList();
-            UsersToNotify.ForEach(e =>
-            {
                 EmailsAprovações EmailApproval = new EmailsAprovações()
                 {
-                    NºMovimento = 30455,
-                    EmailDestinatário = e,
-                    NomeDestinatário = e,
-                    Assunto = string.IsNullOrEmpty(" - TESTE AROMAO") ? "eSUCH - Aprovação Pendente" : "eSUCH - Aprovação Pendente" + " - TESTE AROMAO",
+                    NºMovimento = 999999,
+                    EmailDestinatário = "ARomao@such.pt",
+                    NomeDestinatário = "ARomao@such.pt",
+                    Assunto = "eSUCH - Aprovação Pendente",
                     DataHoraEmail = DateTime.Now,
                     TextoEmail = "Existe uma nova tarefa pendente da sua aprovação no eSUCH!",
                     Enviado = false
@@ -7032,24 +7026,20 @@ namespace Hydra.Such.Portal.Controllers
 
                 SendEmailApprovals Email = new SendEmailApprovals
                 {
-                    Subject = string.IsNullOrEmpty(" - TESTE AROMAO") ? "eSUCH - Aprovação Pendente" : "eSUCH - Aprovação Pendente" + " - TESTE AROMAO",
-                    From = "CRodrigues@such.pt"
+                    Subject = "eSUCH - Aprovação Pendente",
+                    From = "ARomao@such.pt"
                 };
 
-                Email.To.Add(e);
+                Email.To.Add("ARomao@such.pt");
 
-                //Email.Body = MakeEmailBodyContent("Existe uma nova tarefa pendente da sua aprovação no eSUCH!");
-                Email.Body = "Existe uma nova tarefa pendente da sua aprovação no eSUCH!";
-                EmailApproval.TextoEmail = Email.Body;
+                Email.Body = MakeEmailBodyContent("Existe uma nova tarefa pendente da sua aprovação no eSUCH!");
 
-                //Email.IsBodyHtml = true;
-                Email.IsBodyHtml = false;
+                Email.IsBodyHtml = true;
                 Email.EmailApproval = EmailApproval;
 
                 Email.SendEmail();
-            });
 
-            return Json(true);
+            return Json(null);
         }
         public static string MakeEmailBodyContent(string BodyText)
         {
@@ -7094,8 +7084,6 @@ namespace Hydra.Such.Portal.Controllers
 
             return Body;
         }
-
-
 
 
 

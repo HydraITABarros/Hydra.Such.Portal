@@ -1494,7 +1494,7 @@
                 },
 
                 _exportDetalhesAutorizacaoEXCEL: function () {
-                    var lista = this.$.projectInvoiceAutorization._filter(this.$.grdProjectLines._filter(this.resultlines));
+                    var lista = this.$.grdProjectLines._filter(this.resultlines);
 
                     if (lista != null && lista.length > 0) {
                         this.$.ajax_ExportDetalhesAutorizacao.body = JSON.stringify(lista);

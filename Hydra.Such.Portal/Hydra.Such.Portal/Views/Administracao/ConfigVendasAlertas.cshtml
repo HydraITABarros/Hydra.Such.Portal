@@ -78,11 +78,9 @@
         </iron-ajax>
 
         <iron-ajax url="/Administracao/TesteARomao"
-                   last-response="{{result}}"
                    method="post"
                    handle-as="json"
-                   id="ajax_testeaARomao"
-                   on-response="_testeARomaoResponse"
+                   id="page_testeARomao_ajax"
                    content-type="application/json">
         </iron-ajax>
 
@@ -91,7 +89,7 @@
             <paper-button id="btnAddNew" class="tablinks" on-tap="_update" disabled="{{ _permissionsUpdate }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
             <paper-button id="btnCancel" class="tablinks" on-tap="_cancel" disabled="{{ _permissionsUpdate }}"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
 
-            @*<paper-button id="btnCancel" class="tablinks" on-tap="_testeARomao"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; TESTE ARomao</paper-button>*@
+            @*<paper-button id="btnTesteARomao" class="tablinks" on-tap="_testeARomao"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Teste ARomao</paper-button>*@
         </div>
 
         <div class="panel-body">
@@ -229,18 +227,9 @@
                 },
 
                 _testeARomao: function () {
-                    this.$.ajax_testeaARomao.generateRequest();
+                    this.$.page_testeARomao_ajax.generateRequest();
                 },
-                _testeARomaoResponse: function (e) {
-                    var self = this;
-                    if (e.detail.status === 200) {
 
-                        this.openToast('SUCESSO!');
-                    }
-                    else {
-                        this.openToastError('ERRO!');
-                    }
-                },
 
             });
         });
