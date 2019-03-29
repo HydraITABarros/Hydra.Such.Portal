@@ -24,7 +24,9 @@ namespace Hydra.Such.Data.Database
         public DateTime? DataHoraCriacao { get; set; }
         public string UtilizadorModificacao { get; set; }
         public DateTime? DataHoraModificacao { get; set; }
+        public int? IdLote { get; set; }
 
         public ProcedimentosCcp NoNavigation { get; set; }
+        public LoteProcedimentoCcp LoteProcedimentoNavigation { get; set; }
     }
 }

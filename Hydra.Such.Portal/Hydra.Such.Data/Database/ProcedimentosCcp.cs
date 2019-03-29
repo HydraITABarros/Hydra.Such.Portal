@@ -14,6 +14,8 @@ namespace Hydra.Such.Data.Database
             NotasProcedimentosCcp = new HashSet<NotasProcedimentosCcp>();
             RegistoDeAtas = new HashSet<RegistoDeAtas>();
             WorkflowProcedimentosCcp = new HashSet<WorkflowProcedimentosCcp>();
+
+            LotesProcedimento = new HashSet<LoteProcedimentoCcp>();
         }
 
         public string Nº { get; set; }
@@ -135,6 +137,18 @@ namespace Hydra.Such.Data.Database
         public string UtilizadorCriação { get; set; }
         public DateTime? DataHoraModificação { get; set; }
         public string UtilizadorModificação { get; set; }
+
+        #region zpgm.28032019
+        public int? FundamentoLegalTipo { get; set; }
+        public int? ProcedimentoEmLotes { get; set; }
+        public string FundamentacaoPrecoBase { get; set; }
+        public int? VistoAberturaPeloAprovisionamento { get; set; }
+        public int? VistoAdjudicacaoPeloAprovisionamento { get; set; }
+
+        public TipoProcedimentoCcp TipoContratacaoPublica { get; set; }
+        public FundamentoLegalTipoProcedimentoCcp FundamentoLegal { get; set; }
+        public ICollection<LoteProcedimentoCcp> LotesProcedimento { get; set; }
+        #endregion
 
         public TemposPaCcp TemposPaCcp { get; set; }
         public ICollection<ElementosJuri> ElementosJuri { get; set; }

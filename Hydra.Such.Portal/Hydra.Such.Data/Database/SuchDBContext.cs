@@ -162,6 +162,12 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<TabelaLog> TabelaLog { get; set; }
         public virtual DbSet<PedidosDEV> PedidosDEV { get; set; }
 
+        #region zpgm.28032019
+        public virtual DbSet<TipoProcedimentoCcp> TipoProcedimentoCcp { get; set; }
+        public virtual DbSet<FundamentoLegalTipoProcedimentoCcp> FundamentoLegalTipoProcedimentoCcp { get; set; }
+        public virtual DbSet<LoteProcedimentoCcp> LoteProcedimentoCcp { get; set; }
+        #endregion
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -3313,6 +3319,12 @@ namespace Hydra.Such.Data.Database
                     .HasForeignKey(d => d.No)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Fluxo Trabalho Lista Controlo_Procedimentos CCP");
+
+                entity.HasOne(d => d.LoteProcedimentoNavigation)
+                   .WithMany(p => p.Fluxos)
+                   .HasForeignKey(d => d.IdLote)
+                   .OnDelete(DeleteBehavior.ClientSetNull)
+                   .HasConstraintName("FK_FluxoTrabalhoListaControlo_LoteProcedimentoCcp");
             });
 
             modelBuilder.Entity<FolhasDeHoras>(entity =>
@@ -7587,7 +7599,66 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.WorkflowJurídicos).HasColumnName("Workflow Jurídicos");
 
                 entity.Property(e => e.WorkflowJurídicosConfirm).HasColumnName("Workflow Jurídicos Confirm.");
+
+                entity.HasOne(d => d.TipoContratacaoPublica)
+                    .WithMany(p => p.Procedimentos)
+                    .HasForeignKey(d => d.Tipo)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ProcedimentosCCP_TipoProcedimentoCcp");
+
+                entity.HasOne(d => d.FundamentoLegal)
+                    .WithMany(p => p.Procedimentos)
+                    .HasForeignKey(d => d.FundamentoLegalTipo)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ProcedimentosCCP_FundamentoLegalTipoProcedimentoCcp");
             });
+
+            #region zpgm.28032019
+            modelBuilder.Entity<TipoProcedimentoCcp>(entity => {
+                entity.HasKey(e => e.IdTipo);
+
+                entity.ToTable("TipoProcedimentoCcp");
+
+                entity.Property(e => e.IdTipo).ValueGeneratedNever();
+
+                entity.Property(e => e.Abreviatura).HasMaxLength(10);
+
+                entity.Property(e => e.DescricaoTipo).HasMaxLength(250);
+
+            });
+
+            modelBuilder.Entity<FundamentoLegalTipoProcedimentoCcp>(entity => {
+                entity.HasKey(e => new { e.IdTipo, e.IdFundamento });
+
+                entity.ToTable("FundamentoLegalTipoProcedimentoCcp");
+
+                entity.Property(e => e.IdTipo).ValueGeneratedNever();
+
+                entity.Property(e => e.IdFundamento).ValueGeneratedNever();
+
+                entity.HasOne(d => d.TipoNavigation)
+                    .WithMany(p => p.Fundamentos)
+                    .HasForeignKey(d => d.IdTipo)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_FundamentoLegalTipoProcedimentoCcp_TipoProcedimentoCcp");
+            });
+
+            modelBuilder.Entity<LoteProcedimentoCcp>(entity => {
+                entity.HasKey(e => new { e.NoProcedimento, e.IdLote });
+
+                entity.ToTable("LoteProcedimentoCcp");
+
+                entity.Property(e => e.NoProcedimento).ValueGeneratedNever();
+
+                entity.Property(e => e.IdLote).ValueGeneratedNever();
+
+                entity.HasOne(e => e.ProcedimentoNavigation)
+                    .WithMany(p => p.LotesProcedimento)
+                    .HasForeignKey(d => d.NoProcedimento)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_LoteProcedimentoCcp_ProcedimentosCCP");
+            });
+            #endregion
 
             modelBuilder.Entity<ProcedimentosDeConfeção>(entity =>
             {
