@@ -7010,6 +7010,80 @@ namespace Hydra.Such.Portal.Controllers
         #endregion
 
 
+        public JsonResult TesteARomao()
+        {
+                EmailsAprovações EmailApproval = new EmailsAprovações()
+                {
+                    NºMovimento = 999999,
+                    EmailDestinatário = "ARomao@such.pt",
+                    NomeDestinatário = "ARomao@such.pt",
+                    Assunto = "eSUCH - Aprovação Pendente",
+                    DataHoraEmail = DateTime.Now,
+                    TextoEmail = "Existe uma nova tarefa pendente da sua aprovação no eSUCH!",
+                    Enviado = false
+                };
+
+
+                SendEmailApprovals Email = new SendEmailApprovals
+                {
+                    Subject = "eSUCH - Aprovação Pendente",
+                    From = "ARomao@such.pt"
+                };
+
+                Email.To.Add("ARomao@such.pt");
+
+                Email.Body = MakeEmailBodyContent("Existe uma nova tarefa pendente da sua aprovação no eSUCH!");
+
+                Email.IsBodyHtml = true;
+                Email.EmailApproval = EmailApproval;
+
+                Email.SendEmail();
+
+            return Json(null);
+        }
+        public static string MakeEmailBodyContent(string BodyText)
+        {
+            string Body = @"<html>" +
+                                "<head>" +
+                                    "<style>" +
+                                        "table{border:0;} " +
+                                        "td{width:600px; vertical-align: top;}" +
+                                    "</style>" +
+                                "</head>" +
+                                "<body>" +
+                                    "<table>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "Caro (a)," +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr><td>&nbsp;</td></tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                BodyText +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "&nbsp;" +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "Com os melhores cumprimentos," +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "<i>SUCH - Serviço de Utilização Comum dos Hospitais</i>" +
+                                            "</td>" +
+                                        "</tr>" +
+                                    "</table>" +
+                                "</body>" +
+                            "</html>";
+
+            return Body;
+        }
 
 
 

@@ -18,7 +18,7 @@ namespace Hydra.Such.Data.ViewModel
 {
     public class __EmailSetup
     {
-        private const string __Host = "10.19.247.108"; //"10.19.247.98";
+        private const string __Host = "Such-edocweb.such.local"; //"10.19.247.108"; //"10.19.247.98";
         private const string __Username = "server.such.pt";
         private const string __Password = "";
         private const int __Port = 25;

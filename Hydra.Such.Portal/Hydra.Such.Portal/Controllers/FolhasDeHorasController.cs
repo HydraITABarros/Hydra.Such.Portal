@@ -3655,8 +3655,24 @@ namespace Hydra.Such.Portal.Controllers
                                                 }
                                                 else
                                                 {
-                                                    result.eReasonCode = 199;
-                                                    result.eMessage = "Ocorreu um erro no script SQL de Validaçãodo na Folha de Horas.";
+                                                    if (result.eReasonCode == 6)
+                                                    {
+                                                        result.eReasonCode = 106;
+                                                        result.eMessage = "Já existem movimentos inseridos na tabela Movimentos De Projeto para esta Folha de Horas.";
+                                                    }
+                                                    else
+                                                    {
+                                                        if (result.eReasonCode == 7)
+                                                        {
+                                                            result.eReasonCode = 107;
+                                                            result.eMessage = "Já existem movimentos inseridos na tabela Job Ledger Entry para esta Folha de Horas.";
+                                                        }
+                                                        else
+                                                        {
+                                                            result.eReasonCode = 199;
+                                                            result.eMessage = "Ocorreu um erro no script SQL de Validaçãodo na Folha de Horas.";
+                                                        }
+                                                    }
                                                 }
                                             }
                                         }

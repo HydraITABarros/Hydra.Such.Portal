@@ -2310,6 +2310,8 @@
                 },
 
                 _validarFolhaDeHoras: function () {
+                    $(this.$.btn_validarFolhaDeHoras).addClass('disabled');
+
                     if (this._validateFolhaHoras()) {
                         if (this.$.tipoDeslocacao.value == 1) {
                             if (this.$.matricula.validate() & this.$.matricula.value != "") {
@@ -2318,6 +2320,7 @@
                             }
                             else {
                                 this._showErrorMessage("Falta preencher o campo Matrícula.");
+                                $(this.$.btn_validarFolhaDeHoras).removeClass('disabled');
                             }
                         }
                         else {
@@ -2325,9 +2328,14 @@
                             this.$.validarfolhadehoras_ajax.generateRequest();
                         }
                     }
+                    else {
+                        $(this.$.btn_validarFolhaDeHoras).removeClass('disabled');
+                    }
                 },
 
                 _integrarEmRH: function () {
+                    $(this.$.btn_integrarEmRH).addClass('disabled');
+                    
                     if (this._validateFolhaHoras()) {
                         if (this.$.integradorEmRH.value == null | this.$.integradorEmRH.value == "") {
                             if (this.$.tipoDeslocacao.value == 1) {
@@ -2337,6 +2345,7 @@
                                 }
                                 else {
                                     this._showErrorMessage("Falta preencher o campo Matrícula.");
+                                    $(this.$.btn_integrarEmRH).removeClass('disabled');
                                 }
                             }
                             else {
@@ -2346,11 +2355,17 @@
                         }
                         else {
                             this._showErrorMessage("A Integração da Ajuda de Custo já foi feita.");
+                            $(this.$.btn_integrarEmRH).removeClass('disabled');
                         }
+                    }
+                    else {
+                        $(this.$.btn_integrarEmRH).removeClass('disabled');
                     }
                 },
 
                 _integrarEmRHKM: function () {
+                    $(this.$.btn_integrarEmRHKM).addClass('disabled');
+
                     if (this._validateFolhaHoras()) {
                         if (this.$.integradorEmRHKM.value == null | this.$.integradorEmRHKM.value == "") {
                             if (this.$.tipoDeslocacao.value == 1) {
@@ -2360,6 +2375,8 @@
                                 }
                                 else {
                                     this._showErrorMessage("Falta preencher o campo Matrícula.");
+                                    $(this.$.btn_integrarEmRHKM).removeClass('disabled');
+
                                 }
                             }
                             else {
@@ -2369,8 +2386,11 @@
                         }
                         else {
                             this._showErrorMessage("A Integração dos km já foi feita.");
+                            $(this.$.btn_integrarEmRHKM).removeClass('disabled');
                         }
                     }
+                    else {
+                        $(this.$.btn_integrarEmRHKM).removeClass('disabled');                    }
                 },
 
 
@@ -3750,28 +3770,34 @@
                 _validarfolhadehorasResponse: function (e) {
                     if (this.validarFolhaDeHoras.eReasonCode == 0 || this.validarFolhaDeHoras.eReasonCode == 100) {
                         this._showMessage(this.validarFolhaDeHoras.eMessage);
+                        $(this.$.btn_validarFolhaDeHoras).removeClass('disabled');
                         window.history.back();
                         //this.$.page_databound_ajax.generateRequest();
                     } else {
                         this._showErrorMessage(this.validarFolhaDeHoras.eMessage);
+                        $(this.$.btn_validarFolhaDeHoras).removeClass('disabled');
                     };
                 },
 
                 _integraremrhfolhadehorasResponse: function (e) {
                     if (this.integrarEmRHFolhaDeHoras.eReasonCode == 0 || this.integrarEmRHFolhaDeHoras.eReasonCode == 100) {
                         this._showMessage(this.integrarEmRHFolhaDeHoras.eMessage);
+                        $(this.$.btn_integrarEmRH).removeClass('disabled');
                         this.$.page_databound_ajax.generateRequest();
                     } else {
                         this._showErrorMessage(this.integrarEmRHFolhaDeHoras.eMessage);
+                        $(this.$.btn_integrarEmRH).removeClass('disabled');
                     };
                 },
 
                 _integraremrhkmfolhadehorasResponse: function (e) {
                     if (this.integrarEmRHKMFolhaDeHoras.eReasonCode == 0 || this.integrarEmRHKMFolhaDeHoras.eReasonCode == 100) {
                         this._showMessage(this.integrarEmRHKMFolhaDeHoras.eMessage);
+                        $(this.$.btn_integrarEmRHKM).removeClass('disabled');
                         this.$.page_databound_ajax.generateRequest();
                     } else {
                         this._showErrorMessage(this.integrarEmRHKMFolhaDeHoras.eMessage);
+                        $(this.$.btn_integrarEmRHKM).removeClass('disabled');
                     };
                 },
 
