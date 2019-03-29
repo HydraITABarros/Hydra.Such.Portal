@@ -1838,6 +1838,11 @@ namespace Hydra.Such.Portal.Controllers
 
                 foreach (var contractLine in contractLines)
                 {
+                    if (contractLine.NºContrato == "VC070303")
+                    {
+                        Problema = "";
+                    }
+
                     Decimal lineQuantity = 1;
                     int? totalLinesForCurrentInvoiceGroup = contractLines.Where(x => x.NºContrato == contractLine.NºContrato && x.GrupoFatura == contractLine.GrupoFatura).Count();
                     if (ContractNoDuplicate != contractLine.NºContrato || InvoiceGroupDuplicate != contractLine.GrupoFatura)
@@ -1972,7 +1977,8 @@ namespace Hydra.Such.Portal.Controllers
                                                 nextInvoiceDate = LastInvoice;
                                             }
                                         }
-                                        lineQuantity = lineQuantity * MonthDiff;
+                                        //lineQuantity = lineQuantity * MonthDiff;
+                                        lineQuantity = lineQuantity * 1;
                                     }
                                     else
                                     {
@@ -1999,7 +2005,8 @@ namespace Hydra.Such.Portal.Controllers
                                         //MonthDiff = MonthDiff + AddMonth;
                                         invoiceNumber = MonthDiff / 2;
                                         nextInvoiceDate = LastInvoice.AddMonths(2);
-                                        lineQuantity = lineQuantity * MonthDiff;
+                                        //lineQuantity = lineQuantity * MonthDiff;
+                                        lineQuantity = lineQuantity * 2;
                                     }
                                     else
                                     {
@@ -2055,7 +2062,8 @@ namespace Hydra.Such.Portal.Controllers
                                             }
                                             
                                         }
-                                        lineQuantity = lineQuantity * MonthDiff;
+                                        //lineQuantity = lineQuantity * MonthDiff;
+                                        lineQuantity = lineQuantity * 3;
                                     }
                                     else
                                     {
@@ -2096,7 +2104,8 @@ namespace Hydra.Such.Portal.Controllers
                                                 nextInvoiceDate = LastInvoice;
                                             }
                                         }
-                                        lineQuantity = lineQuantity * MonthDiff;
+                                        //lineQuantity = lineQuantity * MonthDiff;
+                                        lineQuantity = lineQuantity * 6;
                                     }
                                     else
                                     {
@@ -2138,7 +2147,8 @@ namespace Hydra.Such.Portal.Controllers
                                             }
                                         }
                                         nextInvoiceDate = LastInvoice.AddMonths(12);
-                                        lineQuantity = lineQuantity * MonthDiff;
+                                        //lineQuantity = lineQuantity * MonthDiff;
+                                        lineQuantity = lineQuantity * 12;
                                     }
                                     else
                                     {
@@ -2298,6 +2308,11 @@ namespace Hydra.Such.Portal.Controllers
                             return Json(false);
                         }
                     }
+                    else
+                    {
+                        if (contractLine.Quantidade.HasValue && item.PeríodoFatura.HasValue)
+                            lineQuantity = Convert.ToDecimal(contractLine.Quantidade * (item.PeríodoFatura == 6 ? 0 : item.PeríodoFatura == 5 ? 12 : item.PeríodoFatura == 4 ? 6 : item.PeríodoFatura));
+                    }
 
                     if (lineQuantity == 0)
                     {
@@ -2305,6 +2320,7 @@ namespace Hydra.Such.Portal.Controllers
                     }
 
                     //Create Contract Lines
+                    //AMARO
                     LinhasFaturaçãoContrato newInvoiceLine = new LinhasFaturaçãoContrato
                     {
                         NºContrato = contractLine.NºContrato,
@@ -3457,7 +3473,7 @@ namespace Hydra.Such.Portal.Controllers
                                         PreInvoiceLinesToCreate.NºContrato = Contract.ContractNo;
                                         PreInvoiceLinesToCreate.NºProjeto = Contract.ContractNo;
                                         PreInvoiceLinesToCreate.CódigoServiço = line.ServiceClientNo;
-                                        PreInvoiceLinesToCreate.Quantidade = line.Quantity * (Contract.InvocePeriod == 6 ? 1 : Contract.InvocePeriod==5 ? 12 : Contract.InvocePeriod==4 ? 6 : Contract.InvocePeriod);
+                                        PreInvoiceLinesToCreate.Quantidade = line.Quantity * (Contract.InvocePeriod == 6 ? 0 : Contract.InvocePeriod==5 ? 12 : Contract.InvocePeriod==4 ? 6 : Contract.InvocePeriod);
                                         PreInvoiceLinesToCreate.PreçoUnitário = line.UnitPrice;
                                         LinhasFaturacao.Add(PreInvoiceLinesToCreate);
                                     }
@@ -3546,7 +3562,7 @@ namespace Hydra.Such.Portal.Controllers
                                         PreInvoiceLinesToCreate.NºContrato = Contract.ContractNo;
                                         PreInvoiceLinesToCreate.NºProjeto = Contract.ContractNo;
                                         PreInvoiceLinesToCreate.CódigoServiço = line.ServiceClientNo;
-                                        PreInvoiceLinesToCreate.Quantidade = line.Quantity * (Contract.InvocePeriod == 6 ? 1 : Contract.InvocePeriod == 5 ? 12 : Contract.InvocePeriod == 4 ? 6 : Contract.InvocePeriod);
+                                        PreInvoiceLinesToCreate.Quantidade = line.Quantity * (Contract.InvocePeriod == 6 ? 0 : Contract.InvocePeriod == 5 ? 12 : Contract.InvocePeriod == 4 ? 6 : Contract.InvocePeriod);
                                         PreInvoiceLinesToCreate.PreçoUnitário = line.UnitPrice;
                                         PreInvoiceLinesToCreate.GrupoFatura = line.InvoiceGroup ?? 0;
                                         LinhasFaturacao.Add(PreInvoiceLinesToCreate);
