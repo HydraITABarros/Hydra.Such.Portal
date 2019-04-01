@@ -44,6 +44,7 @@
 <link rel="import" href="/lib/paper-menu-button/paper-menu-button.html" />
 <!--end ColumnToggle-->
 
+
 <dom-module id="x-pedidocotacaodetails">
     <template>
         <!-- STYLES -->
@@ -736,13 +737,13 @@
                                             </template>
                                         </vaadin-grid-column>
 
-                                        <vaadin-grid-column resizable hidden>
+                                        <vaadin-grid-column resizable>
                                             <template class="header">
                                                 <vaadin-grid-sorter path="dataEnvioAoFornecedor" style="text-align:center;">DataEnvioAoFornecedor</vaadin-grid-sorter>
                                                 <vaadin-grid-filter path="dataEnvioAoFornecedor"></vaadin-grid-filter>
                                             </template>
                                             <template>
-                                                <vaadin-text-field name="tabSelecaoEntidadesdataEnvioAoFornecedor" id="tabSelecaoEntidadesdataEnvioAoFornecedor" value="{{item.dataEnvioAoFornecedor}}" disabled="true"></vaadin-text-field>
+                                                <vaadin-date-picker name="tabSelecaoEntidadesdataEnvioAoFornecedor" id="tabSelecaoEntidadesdataEnvioAoFornecedor" value="{{item.dataEnvioAoFornecedor}}" on-blur="_updateLinhaSeleccaoEntidade_DataRecepcaoProposta" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
                                             </template>
                                         </vaadin-grid-column>
 
