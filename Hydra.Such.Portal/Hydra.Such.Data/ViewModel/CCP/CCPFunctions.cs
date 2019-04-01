@@ -196,7 +196,13 @@ namespace Hydra.Such.Data.ViewModel.CCP
                 DataHoraCriação = ProcedimentoView.DataHoraCriacao,
                 UtilizadorCriação = ProcedimentoView.UtilizadorCriacao,
                 DataHoraModificação = ProcedimentoView.DataHoraModificacao,
-                UtilizadorModificação = ProcedimentoView.UtilizadorModificacao
+                UtilizadorModificação = ProcedimentoView.UtilizadorModificacao,
+
+                FundamentoLegalTipo = ProcedimentoView.FundamentoLegalTipo,
+                ProcedimentoEmLotes = ProcedimentoView.ProcedimentoEmLotes,
+                FundamentacaoPrecoBase = ProcedimentoView.FundamentacaoPrecoBase,
+                VistoAberturaPeloAprovisionamento = ProcedimentoView.VistoAberturaPeloAprovisionamento,
+                VistoAdjudicacaoPeloAprovisionamento = ProcedimentoView.VistoAdjudicacaoPeloAprovisionamento
             };
 
             if (ProcedimentoView.TemposPaCcp != null)
@@ -274,6 +280,10 @@ namespace Hydra.Such.Data.ViewModel.CCP
             {
                 Procedimento.FluxoTrabalhoListaControlo = ProcedimentoView.FluxoTrabalhoListaControlo;
             }
+
+            Procedimento.TipoContratacaoPublica = ProcedimentoView.TipoContratacaoPublica;
+            Procedimento.FundamentoLegal = ProcedimentoView.FundamentoLegal;
+            Procedimento.LotesProcedimento = ProcedimentoView.LotesProcedimento;
 
             return Procedimento;
 

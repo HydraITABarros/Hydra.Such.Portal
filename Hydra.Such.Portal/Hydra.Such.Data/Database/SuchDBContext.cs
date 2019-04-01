@@ -3322,7 +3322,7 @@ namespace Hydra.Such.Data.Database
 
                 entity.HasOne(d => d.LoteProcedimentoNavigation)
                    .WithMany(p => p.Fluxos)
-                   .HasForeignKey(d => d.IdLote)
+                   .HasForeignKey(d => new { d.No, d.IdLote })
                    .OnDelete(DeleteBehavior.ClientSetNull)
                    .HasConstraintName("FK_FluxoTrabalhoListaControlo_LoteProcedimentoCcp");
             });
@@ -7608,9 +7608,10 @@ namespace Hydra.Such.Data.Database
 
                 entity.HasOne(d => d.FundamentoLegal)
                     .WithMany(p => p.Procedimentos)
-                    .HasForeignKey(d => d.FundamentoLegalTipo)
+                    .HasForeignKey(d => new { d.Tipo, d.FundamentoLegalTipo })
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ProcedimentosCCP_FundamentoLegalTipoProcedimentoCcp");
+                
             });
 
             #region zpgm.28032019
@@ -7624,6 +7625,9 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.Abreviatura).HasMaxLength(10);
 
                 entity.Property(e => e.DescricaoTipo).HasMaxLength(250);
+
+                //entity.HasMany(p => p.Procedimentos)
+                //    .WithOne(t => t.TipoContratacaoPublica);
 
             });
 
