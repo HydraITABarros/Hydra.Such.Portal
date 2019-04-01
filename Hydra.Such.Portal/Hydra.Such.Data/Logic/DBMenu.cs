@@ -145,6 +145,7 @@ namespace Hydra.Such.Data.Logic
                     var user = DBUserConfigurations.GetById(userId);
                     if (user == null)
                         throw new Exception();
+                        
 
                     if (user.Administrador && true)
                     {

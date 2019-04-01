@@ -194,6 +194,10 @@ namespace Hydra.Such.Data.Logic.CCP
                     Procedimento.NotasProcedimentosCcp = GetAllNotasProcedimento(Procedimento.Nº);
                     Procedimento.WorkflowProcedimentosCcp = GetAllWorkflowsProcedimento(Procedimento.Nº);
                     Procedimento.FluxoTrabalhoListaControlo = GetAllCheklistControloProcedimento(Procedimento.Nº);
+
+                    Procedimento.TipoContratacaoPublica = _context.TipoProcedimentoCcp.Where(t => t.IdTipo == Procedimento.Tipo).FirstOrDefault();
+                    Procedimento.FundamentoLegal = _context.FundamentoLegalTipoProcedimentoCcp.Where(f => f.IdTipo == Procedimento.Tipo && f.IdFundamento == Procedimento.FundamentoLegalTipo).FirstOrDefault();
+                    Procedimento.LotesProcedimento = GetAllLotesFromProcedimento(Procedimento.Nº);
                 }
                 
                 return Procedimento;
@@ -1684,6 +1688,25 @@ namespace Hydra.Such.Data.Logic.CCP
                 return true;
 
             return false;
+        }
+        #endregion
+
+
+        #region LotesProcedimentos
+        public static List<LoteProcedimentoCcp> GetAllLotesFromProcedimento(string id)
+        {
+            var _context = new SuchDBContext();
+
+            try
+            {
+                return _context.LoteProcedimentoCcp.Where(l => l.NoProcedimento == id).ToList();
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+            
         }
         #endregion
 
