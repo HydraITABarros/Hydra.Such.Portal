@@ -337,7 +337,7 @@ namespace Hydra.Such.Portal.Controllers
                                     else
                                     {
                                         result.eReasonCode = 203;
-                                        result.eMessage = "Ocorreu um erro na conversão dos dados na Requisição.";
+                                        result.eMessage = "Ocorreu um erro na conversão dos dados na Requisição!";
                                     }
                                 }
                                 else
