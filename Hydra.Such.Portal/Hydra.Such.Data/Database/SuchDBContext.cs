@@ -7615,7 +7615,8 @@ namespace Hydra.Such.Data.Database
             });
 
             #region zpgm.28032019
-            modelBuilder.Entity<TipoProcedimentoCcp>(entity => {
+            modelBuilder.Entity<TipoProcedimentoCcp>(entity =>
+            {
                 entity.HasKey(e => e.IdTipo);
 
                 entity.ToTable("TipoProcedimentoCcp");
@@ -7631,7 +7632,8 @@ namespace Hydra.Such.Data.Database
 
             });
 
-            modelBuilder.Entity<FundamentoLegalTipoProcedimentoCcp>(entity => {
+            modelBuilder.Entity<FundamentoLegalTipoProcedimentoCcp>(entity =>
+            {
                 entity.HasKey(e => new { e.IdTipo, e.IdFundamento });
 
                 entity.ToTable("FundamentoLegalTipoProcedimentoCcp");
@@ -7647,7 +7649,8 @@ namespace Hydra.Such.Data.Database
                     .HasConstraintName("FK_FundamentoLegalTipoProcedimentoCcp_TipoProcedimentoCcp");
             });
 
-            modelBuilder.Entity<LoteProcedimentoCcp>(entity => {
+            modelBuilder.Entity<LoteProcedimentoCcp>(entity =>
+            {
                 entity.HasKey(e => new { e.NoProcedimento, e.IdLote });
 
                 entity.ToTable("LoteProcedimentoCcp");
