@@ -8,7 +8,6 @@ namespace Hydra.Such.Data.ViewModel
     {
         public int ID { get; set; }
         public string Servico { get; set; }
-        public Boolean? Activo { get; set; }
         public string CriadoPor { get; set; }
         public DateTime? DataCriacao { get; set; }
         public string DataCriacaoText { get; set; }

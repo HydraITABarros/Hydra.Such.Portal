@@ -7009,6 +7009,146 @@ namespace Hydra.Such.Portal.Controllers
 
         #endregion
 
+        #region Contactos Servicos
+        public IActionResult ContactosServicos(string id)
+        {
+
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminGeral);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.CreatePermissions = !UPerm.Create.Value;
+                ViewBag.UpdatePermissions = !UPerm.Update.Value;
+                ViewBag.DeletePermissions = !UPerm.Delete.Value;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        [HttpPost]
+        public JsonResult GetContactosServicos()
+        {
+            List<ContactosServicos> result = DBContactsServicos.GetAll().Select(x => new ContactosServicos()
+            {
+                ID = x.ID,
+                Servico = x.Servico,
+                CriadoPor = x.CriadoPor,
+                DataCriacao = x.DataCriacao,
+                AlteradoPor = x.AlteradoPor,
+                DataAlteracao = x.DataAlteracao
+            }).ToList();
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateContactosServicos([FromBody] List<ContactosServicos> data)
+        {
+            List<ContactosServicos> results = DBContactsServicos.GetAll();
+            results.RemoveAll(x => data.Any(u => u.ID == x.ID));
+            results.ForEach(x => DBContactsServicos.Delete(x));
+
+            data.ForEach(x =>
+            {
+                ContactosServicos servico = new ContactosServicos()
+                {
+                    Servico = x.Servico
+                };
+                if (x.ID > 0)
+                {
+                    servico.ID = x.ID;
+                    servico.CriadoPor = x.CriadoPor;
+                    servico.DataCriacao = x.DataCriacao;
+                    servico.DataAlteracao = DateTime.Now;
+                    servico.AlteradoPor = User.Identity.Name;
+                    DBContactsServicos.Update(servico);
+                }
+                else
+                {
+                    servico.DataCriacao = DateTime.Now;
+                    servico.CriadoPor = User.Identity.Name;
+                    DBContactsServicos.Create(servico);
+                }
+            });
+            return Json(data);
+        }
+        #endregion
+
+        #region Contactos Funcoes
+        public IActionResult ContactosFuncoes(string id)
+        {
+
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminGeral);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.CreatePermissions = !UPerm.Create.Value;
+                ViewBag.UpdatePermissions = !UPerm.Update.Value;
+                ViewBag.DeletePermissions = !UPerm.Delete.Value;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        [HttpPost]
+        public JsonResult GetContactosFuncoes()
+        {
+            List<ContactosFuncoes> result = DBContactsFuncoes.GetAll().Select(x => new ContactosFuncoes()
+            {
+                ID = x.ID,
+                Funcao = x.Funcao,
+                CriadoPor = x.CriadoPor,
+                DataCriacao = x.DataCriacao,
+                AlteradoPor = x.AlteradoPor,
+                DataAlteracao = x.DataAlteracao
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateContactosFuncoes([FromBody] List<ContactosFuncoes> data)
+        {
+            List<ContactosFuncoes> results = DBContactsFuncoes.GetAll();
+            results.RemoveAll(x => data.Any(u => u.ID == x.ID));
+            results.ForEach(x => DBContactsFuncoes.Delete(x));
+
+            data.ForEach(x =>
+            {
+                ContactosFuncoes funcao = new ContactosFuncoes()
+                {
+                    Funcao = x.Funcao
+                };
+                if (x.ID > 0)
+                {
+                    funcao.ID = x.ID;
+                    funcao.CriadoPor = x.CriadoPor;
+                    funcao.DataCriacao = x.DataCriacao;
+                    funcao.DataAlteracao = DateTime.Now;
+                    funcao.AlteradoPor = User.Identity.Name;
+                    DBContactsFuncoes.Update(funcao);
+                }
+                else
+                {
+                    funcao.DataCriacao = DateTime.Now;
+                    funcao.CriadoPor = User.Identity.Name;
+                    DBContactsFuncoes.Create(funcao);
+                }
+            });
+            return Json(data);
+        }
+        #endregion
+
+
+
+
+
+
+
+
 
         public JsonResult TesteARomao()
         {

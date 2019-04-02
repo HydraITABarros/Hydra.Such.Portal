@@ -1537,6 +1537,30 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetAllContactsServicos()
+        {
+            List<DDMessage> result = DBContactsServicos.GetAll().Select(x => new DDMessage()
+            {
+                id = x.ID,
+                value = x.Servico
+            }).ToList();
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetAllContactsFuncoes()
+        {
+            List<DDMessage> result = DBContactsFuncoes.GetAll().Select(x => new DDMessage()
+            {
+                id = x.ID,
+                value = x.Funcao
+            }).ToList();
+
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetServices()
         {
             List<DDMessageString> result = DBServices.GetAll().Select(x => new DDMessageString()

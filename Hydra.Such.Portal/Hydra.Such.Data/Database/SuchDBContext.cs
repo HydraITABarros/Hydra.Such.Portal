@@ -1766,6 +1766,8 @@ namespace Hydra.Such.Data.Database
             {
                 entity.HasKey(e => e.ID);
 
+                entity.ToTable("Contactos Servicos");
+
                 entity.Property(e => e.Servico).HasMaxLength(500);
 
                 entity.Property(e => e.CriadoPor).HasMaxLength(50);
@@ -1780,6 +1782,8 @@ namespace Hydra.Such.Data.Database
             modelBuilder.Entity<ContactosFuncoes>(entity =>
             {
                 entity.HasKey(e => e.ID);
+
+                entity.ToTable("Contactos Funcoes");
 
                 entity.Property(e => e.Funcao).HasMaxLength(500);
 

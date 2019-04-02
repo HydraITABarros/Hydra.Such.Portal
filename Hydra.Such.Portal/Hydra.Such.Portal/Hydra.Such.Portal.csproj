@@ -82,6 +82,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Update="Views\Administracao\ContactosFuncoes.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\Administracao\ContactosServicos.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Views\Encomendas\DetalhesEncomenda.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>

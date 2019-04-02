@@ -8,7 +8,6 @@ namespace Hydra.Such.Data.Database
     {
         public int ID { get; set; }
         public string Funcao { get; set; }
-        public Boolean? Activo { get; set; }
         public string CriadoPor { get; set; }
         public DateTime? DataCriacao { get; set; }
         public string AlteradoPor { get; set; }

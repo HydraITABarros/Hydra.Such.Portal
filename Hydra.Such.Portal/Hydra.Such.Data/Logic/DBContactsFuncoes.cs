@@ -152,7 +152,6 @@ namespace Hydra.Such.Data.Logic
                 {
                     ID = item.ID,
                     Funcao = item.Funcao,
-                    Activo = item.Activo,
                     CriadoPor = item.CriadoPor,
                     DataCriacao = item.DataCriacao,
                     DataCriacaoText = item.DataCriacao.HasValue ? item.DataCriacao.Value.ToString("yyyy-MM-dd") : "",
@@ -181,7 +180,6 @@ namespace Hydra.Such.Data.Logic
                 {
                     ID = item.ID,
                     Funcao = item.Funcao,
-                    Activo = item.Activo,
                     CriadoPor = item.CriadoPor,
                     DataCriacao = string.IsNullOrEmpty(item.DataCriacaoText) ? (DateTime?)null : DateTime.Parse(item.DataCriacaoText),
                     AlteradoPor = item.AlteradoPor,

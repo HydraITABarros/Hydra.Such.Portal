@@ -3079,11 +3079,15 @@ namespace Hydra.Such.Portal.Controllers
                         result.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.CodCentroResponsabilidade));
 
                     List<MovimentosProjectoAutorizados> AllAuthorizedProjectMovements = DBAuthorizedProjectMovements.GetAll("");
+                    List<NAVClientsViewModel> clients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "").ToList();
+
                     result.ForEach(x =>
                     {
                         var movements = AllAuthorizedProjectMovements.Where(y => y.GrupoFactura == x.GrupoFactura && y.CodProjeto == x.CodProjeto).ToList();
                         if (movements != null && movements.Count() > 0)
                             x.ValorAutorizado = movements.Sum(y => y.PrecoTotal);
+
+                        x.NomeCliente = clients.Where(y => y.No_ == x.CodCliente).FirstOrDefault() != null ? clients.Where(y => y.No_ == x.CodCliente).FirstOrDefault().Name : "";
                     });
                 }
                 return Json(result);
