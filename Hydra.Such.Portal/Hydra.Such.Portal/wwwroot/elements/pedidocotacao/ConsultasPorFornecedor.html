@@ -55,7 +55,7 @@
             </style>
         </custom-style>
 
-        <iron-ajax url="/ConsultaMercado/GetAllConsultasPorFornecedor" last-response="{{result}}" method="post" handle-as="json" id="grid_databound_ajax" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/ConsultaMercado/GetAllConsultasPorFornecedor" last-response="{{result}}" method="post" handle-as="json" id="grid_databound_ajax" on-response="_readyResponse" content-type="application/json"></iron-ajax>
         <iron-ajax url="/ConsultaMercado/ExportToExcel_ConsultasPorFornecedor" last-response="{{export}}" id="ajax_Export" method="post" handle-as="json" on-response="_exportEXCELResponse" content-type="application/json"></iron-ajax>
 
         <div class="subMenu">
@@ -76,13 +76,15 @@
                 </div>
             </paper-menu-button>
             <!--end ColumnToggle-->
+
+            <vaadin-text-field type="text" value="" id="noRegistos" disabled> </vaadin-text-field>
         </div>
 
         <vaadin-grid column-reordering-allowed aria-label="SelecaoEntidadesGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}">
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.numConsultaMercado.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="numConsultaMercado">Nº Consulta Mercado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="numConsultaMercado" value="[[filter.numConsultaMercado]]" />
+                    <vaadin-grid-filter id="filtro" path="numConsultaMercado" value="[[filter.numConsultaMercado]]" on-value-changed="_countNoRegistos" on-blur="_countNoRegistos" />
                 </template>
                 <template>
                     {{item.numConsultaMercado}}
@@ -92,7 +94,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codFornecedor.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codFornecedor">Código Fornecedor</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codFornecedor" value="[[filter.codFornecedor]]" />
+                    <vaadin-grid-filter path="codFornecedor" value="[[filter.codFornecedor]]" on-value-changed="_countNoRegistos" on-blur="_countNoRegistos"/>
                 </template>
                 <template>
                     {{item.codFornecedor}}
@@ -102,7 +104,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.nomeFornecedor.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="nomeFornecedor">Nome Fornecedor</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="nomeFornecedor" value="[[filter.nomeFornecedor]]" />
+                    <vaadin-grid-filter path="nomeFornecedor" value="[[filter.nomeFornecedor]]" on-value-changed="_countNoRegistos" on-blur="_countNoRegistos" />
                 </template>
                 <template>
                     {{item.nomeFornecedor}}
@@ -112,7 +114,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.selecionado_Show.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="selecionado_Show">Selecionado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="selecionado_Show" value="[[filter.selecionado_Show]]" />
+                    <vaadin-grid-filter path="selecionado_Show" value="[[filter.selecionado_Show]]" on-value-changed="_countNoRegistos" on-blur="_countNoRegistos" />
                 </template>
                 <template>
                     {{item.selecionado_Show}}
@@ -122,7 +124,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.preferencial_Show.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="preferencial_Show">Preferencial</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="preferencial_Show" value="[[filter.preferencial_Show]]" />
+                    <vaadin-grid-filter path="preferencial_Show" value="[[filter.preferencial_Show]]" on-value-changed="_countNoRegistos" on-blur="_countNoRegistos" />
                 </template>
                 <template>
                     {{item.preferencial_Show}}
@@ -132,7 +134,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.emailFornecedor.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="emailFornecedor">Email Fornecedor</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="emailFornecedor" value="[[filter.emailFornecedor]]" />
+                    <vaadin-grid-filter path="emailFornecedor" value="[[filter.emailFornecedor]]" on-value-changed="_countNoRegistos" on-blur="_countNoRegistos" />
                 </template>
                 <template>
                     {{item.emailFornecedor}}
@@ -142,7 +144,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dataEnvioAoFornecedor_Show.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="dataEnvioAoFornecedor_Show">Data Envio ao Fornecedor</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataEnvioAoFornecedor_Show" value="[[filter.dataEnvioAoFornecedor_Show]]" />
+                    <vaadin-grid-filter path="dataEnvioAoFornecedor_Show" value="[[filter.dataEnvioAoFornecedor_Show]]" on-value-changed="_countNoRegistos" on-blur="_countNoRegistos" />
                 </template>
                 <template>
                     <div style="text-align:right">
@@ -154,7 +156,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dataRecepcaoProposta_Show.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="dataRecepcaoProposta_Show">Data Recepção Proposta</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataRecepcaoProposta_Show" value="[[filter.dataRecepcaoProposta_Show]]" />
+                    <vaadin-grid-filter path="dataRecepcaoProposta_Show" value="[[filter.dataRecepcaoProposta_Show]]" on-value-changed="_countNoRegistos" on-blur="_countNoRegistos" />
                 </template>
                 <template>
                     <div style="text-align:right">
@@ -166,7 +168,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.utilizadorEnvio.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="utilizadorEnvio">Utilizador Envio</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="utilizadorEnvio" value="[[filter.utilizadorEnvio]]" />
+                    <vaadin-grid-filter path="utilizadorEnvio" value="[[filter.utilizadorEnvio]]" on-value-changed="_countNoRegistos" on-blur="_countNoRegistos" />
                 </template>
                 <template>
                     {{item.utilizadorEnvio}}
@@ -176,7 +178,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.utilizadorRecepcaoProposta.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="utilizadorRecepcaoProposta">Utilizador Recepção Proposta</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="utilizadorRecepcaoProposta" value="[[filter.utilizadorRecepcaoProposta]]" />
+                    <vaadin-grid-filter path="utilizadorRecepcaoProposta" value="[[filter.utilizadorRecepcaoProposta]]" on-value-changed="_countNoRegistos" on-blur="_countNoRegistos" />
                 </template>
                 <template>
                     {{item.utilizadorRecepcaoProposta}}
@@ -186,7 +188,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.prazoResposta.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="prazoResposta">Prazo Resposta</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="prazoResposta" value="[[filter.prazoResposta]]" />
+                    <vaadin-grid-filter path="prazoResposta" value="[[filter.prazoResposta]]" on-value-changed="_countNoRegistos" on-blur="_countNoRegistos" />
                 </template>
                 <template>
                     {{item.prazoResposta}}
@@ -196,7 +198,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dataRespostaEsperada_Show.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="dataRespostaEsperada_Show">Data Resposta Esperada</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataRespostaEsperada_Show" value="[[filter.dataRespostaEsperada_Show]]" />
+                    <vaadin-grid-filter path="dataRespostaEsperada_Show" value="[[filter.dataRespostaEsperada_Show]]" on-value-changed="_countNoRegistos" on-blur="_countNoRegistos" />
                 </template>
                 <template>
                     <div style="text-align:right">
@@ -208,7 +210,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dataPedidoEsclarecimento_Show.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="dataPedidoEsclarecimento_Show">Data Pedido Esclarecimento</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataPedidoEsclarecimento_Show" value="[[filter.dataPedidoEsclarecimento_Show]]" />
+                    <vaadin-grid-filter path="dataPedidoEsclarecimento_Show" value="[[filter.dataPedidoEsclarecimento_Show]]" on-value-changed="_countNoRegistos" on-blur="_countNoRegistos" />
                 </template>
                 <template>
                     <div style="text-align:right">
@@ -220,7 +222,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dataRespostaEsclarecimento_Show.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="dataRespostaEsclarecimento_Show">Data Resposta Esclarecimento</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataRespostaEsclarecimento_Show" value="[[filter.dataRespostaEsclarecimento_Show]]" />
+                    <vaadin-grid-filter path="dataRespostaEsclarecimento_Show" value="[[filter.dataRespostaEsclarecimento_Show]]" on-value-changed="_countNoRegistos" on-blur="_countNoRegistos" />
                 </template>
                 <template>
                     <div style="text-align:right">
@@ -232,7 +234,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dataRespostaDoFornecedor_Show.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="dataRespostaDoFornecedor_Show">Data Resposta do Fornecedor</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataRespostaDoFornecedor_Show" value="[[filter.dataRespostaDoFornecedor_Show]]" />
+                    <vaadin-grid-filter path="dataRespostaDoFornecedor_Show" value="[[filter.dataRespostaDoFornecedor_Show]]" on-value-changed="_countNoRegistos" on-blur="_countNoRegistos" />
                 </template>
                 <template>
                     <div style="text-align:right">
@@ -244,28 +246,17 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.naoRespostaDoFornecedor_Show.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="naoRespostaDoFornecedor_Show">Não Resposta do Fornecedor</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="naoRespostaDoFornecedor_Show" value="[[filter.naoRespostaDoFornecedor_Show]]" />
+                    <vaadin-grid-filter path="naoRespostaDoFornecedor_Show" value="[[filter.naoRespostaDoFornecedor_Show]]" on-value-changed="_countNoRegistos" on-blur="_countNoRegistos" />
                 </template>
                 <template>
                     {{item.naoRespostaDoFornecedor_Show}}
                 </template>
             </vaadin-grid-column>
 
-
-
-
-
-
-
-
-
-
-
-
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dataPedidoCotacaoCriadoEm_Show.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="dataPedidoCotacaoCriadoEm_Show">Pedido Cotação Criado Em</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataPedidoCotacaoCriadoEm_Show" value="[[filter.dataPedidoCotacaoCriadoEm_Show]]" />
+                    <vaadin-grid-filter path="dataPedidoCotacaoCriadoEm_Show" value="[[filter.dataPedidoCotacaoCriadoEm_Show]]" on-value-changed="_countNoRegistos" on-blur="_countNoRegistos" />
                 </template>
                 <template>
                     <div style="text-align:right">
@@ -277,7 +268,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.custoTotalPrevisto.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="custoTotalPrevisto">Valor c/ e/ou s/ IVA da Proposta</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="custoTotalPrevisto" value="[[filter.custoTotalPrevisto]]" />
+                    <vaadin-grid-filter path="custoTotalPrevisto" value="[[filter.custoTotalPrevisto]]" on-value-changed="_countNoRegistos" on-blur="_countNoRegistos" />
                 </template>
                 <template>
                     {{item.custoTotalPrevisto}}
@@ -287,7 +278,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.noRequisicao.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="noRequisicao">Nº Requisição</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="noRequisicao" value="[[filter.noRequisicao]]" />
+                    <vaadin-grid-filter path="noRequisicao" value="[[filter.noRequisicao]]" on-value-changed="_countNoRegistos" on-blur="_countNoRegistos" />
                 </template>
                 <template>
                     {{item.noRequisicao}}
@@ -297,7 +288,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codRegiao.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codRegiao">Cód. Região</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codRegiao" value="[[filter.codRegiao]]" />
+                    <vaadin-grid-filter path="codRegiao" value="[[filter.codRegiao]]" on-value-changed="_countNoRegistos" on-blur="_countNoRegistos" />
                 </template>
                 <template>
                     {{item.codRegiao}}
@@ -307,7 +298,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codArea.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codArea">Cód. Área</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codArea" value="[[filter.codArea]]" />
+                    <vaadin-grid-filter path="codArea" value="[[filter.codArea]]" on-value-changed="_countNoRegistos" on-blur="_countNoRegistos" />
                 </template>
                 <template>
                     {{item.codArea}}
@@ -317,7 +308,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codCresp.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codCresp">Cód. Cresp</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codCresp" value="[[filter.codCresp]]" />
+                    <vaadin-grid-filter path="codCresp" value="[[filter.codCresp]]" on-value-changed="_countNoRegistos" on-blur="_countNoRegistos" />
                 </template>
                 <template>
                     {{item.codCresp}}
@@ -327,7 +318,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dataEnvioPropostaArea_Show.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="dataEnvioPropostaArea_Show">Data Envio Proposta Área</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataEnvioPropostaArea_Show" value="[[filter.dataEnvioPropostaArea_Show]]" />
+                    <vaadin-grid-filter path="dataEnvioPropostaArea_Show" value="[[filter.dataEnvioPropostaArea_Show]]" on-value-changed="_countNoRegistos" on-blur="_countNoRegistos" />
                 </template>
                 <template>
                     {{item.dataEnvioPropostaArea_Show}}
@@ -337,7 +328,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.notaEncomenda_Show.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="notaEncomenda_Show">Nota de Encomenda</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="notaEncomenda_Show" value="[[filter.notaEncomenda_Show]]" />
+                    <vaadin-grid-filter path="notaEncomenda_Show" value="[[filter.notaEncomenda_Show]]" on-value-changed="_countNoRegistos" on-blur="_countNoRegistos" />
                 </template>
                 <template>
                     {{item.notaEncomenda_Show}}
@@ -347,7 +338,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.historico_Show.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="historico_Show">Histórico</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="historico_Show" value="[[filter.historico_Show]]" />
+                    <vaadin-grid-filter path="historico_Show" value="[[filter.historico_Show]]" on-value-changed="_countNoRegistos" on-blur="_countNoRegistos" />
                 </template>
                 <template>
                     {{item.historico_Show}}
@@ -376,6 +367,11 @@
                         value: "Mostrar Histórico"
                     },
                     _historico: {
+                        type: Number,
+                        notify: true,
+                        value: 0
+                    },
+                    _noRegistos: {
                         type: Number,
                         notify: true,
                         value: 0
@@ -459,7 +455,21 @@
                         _this.fixGridToBottom();
                     });
                     $(window).trigger('resize');
+
+
+                    //this.$.filtro.addEventListener('click', e => {
+                    //    this.$.noRegistos.value = "Nº de Registos: " + this.$.grid._filter(this.result).length;
+                    //});
+
+                    //this.$.filtro.addEventListener('click', function (e) {
+                    //    this.$.noRegistos.value = "Nº de Registos: " + this.$.grid._filter(this.result).length;
+                    //});
+
                 },
+                _readyResponse: function (e) {
+                    this.$.noRegistos.value = "Nº de Registos: " + this.$.grid._filter(this.result).length;
+                },
+
 
                 fixGridToBottom: function () {
                     var grid_el = $(this.$.grid);
@@ -480,7 +490,6 @@
                     this.$.ajax_Export.generateRequest();
                 },
                 _exportEXCELResponse: function (e) {
-                    //debugger
                     var FileName = this.export;
                     location.href = '../ConsultaMercado/ExportToExcelDownload_ConsultasPorFornecedor?sFileName=' + FileName;
                 },
@@ -504,10 +513,6 @@
                         "dataRespostaEsclarecimento_Show": { hidden: false, label: "Data Resposta Esclarecimento" },
                         "dataRespostaDoFornecedor_Show": { hidden: false, label: "Data Resposta do Fornecedor" },
                         "naoRespostaDoFornecedor_Show": { hidden: false, label: "Não Resposta do Fornecedor" },
-                                               
-
-
-
                         "dataPedidoCotacaoCriadoEm_Show": { hidden: false, label: "Pedido Cotação Criado Em" },
                         "custoTotalPrevisto": { hidden: false, label: "Valor c / e / ou s/ IVA da Proposta " },
                         "noRequisicao": { hidden: false, label: "Nº Requisição" },
@@ -552,6 +557,14 @@
                 _goBack: function (e) {
                     window.history.back();
                 },
+
+                _countNoRegistos: function () {
+                    var noRegists = this.$.grid._filter(this.result).length;
+                    this.$.noRegistos.value = "Nº de Registos: " + noRegists;
+
+                    //this.$.noRegistos.value = "Nº de Registos: " + this.$.grid._filter(this.result).length;
+                },
+
 
             });
         });

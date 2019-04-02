@@ -739,11 +739,11 @@
 
                                         <vaadin-grid-column resizable>
                                             <template class="header">
-                                                <vaadin-grid-sorter path="dataEnvioAoFornecedor" style="text-align:center;">DataEnvioAoFornecedor</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="dataEnvioAoFornecedor"></vaadin-grid-filter>
+                                                <vaadin-grid-sorter path="dataEnvioAoFornecedor_Show" style="text-align:center;">DataEnvioAoFornecedor</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataEnvioAoFornecedor_Show"></vaadin-grid-filter>
                                             </template>
                                             <template>
-                                                <vaadin-date-picker name="tabSelecaoEntidadesdataEnvioAoFornecedor" id="tabSelecaoEntidadesdataEnvioAoFornecedor" value="{{item.dataEnvioAoFornecedor}}" on-blur="_updateLinhaSeleccaoEntidade_DataRecepcaoProposta" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                                <vaadin-date-picker name="tabSelecaoEntidadesdataEnvioAoFornecedor" id="tabSelecaoEntidadesdataEnvioAoFornecedor" value="{{item.dataEnvioAoFornecedor_Show}}" on-blur="_updateLinhaSeleccaoEntidade_DataRecepcaoProposta" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
                                             </template>
                                         </vaadin-grid-column>
 
