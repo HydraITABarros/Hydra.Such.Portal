@@ -610,7 +610,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             List<DDMessageString> result = DBContacts.GetAll().Select(x => new DDMessageString()
             {
-                id = x.Nº,
+                id = x.No,
                 value = x.Nome
             }).ToList();
             return Json(result);

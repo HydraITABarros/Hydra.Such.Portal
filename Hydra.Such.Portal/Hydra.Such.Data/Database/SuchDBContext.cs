@@ -41,6 +41,8 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<ConsultaMercado> ConsultaMercado { get; set; }
         public virtual DbSet<ConsultaPendentes> ConsultaPendentes { get; set; }
         public virtual DbSet<Contactos> Contactos { get; set; }
+        public virtual DbSet<ContactosServicos> ContactosServicos { get; set; }
+        public virtual DbSet<ContactosFuncoes> ContactosFuncoes { get; set; }
         public virtual DbSet<Contratos> Contratos { get; set; }
         public virtual DbSet<DestinosFinaisResíduos> DestinosFinaisResíduos { get; set; }
         public virtual DbSet<DiárioCafetariaRefeitório> DiárioCafetariaRefeitório { get; set; }
@@ -1729,73 +1731,65 @@ namespace Hydra.Such.Data.Database
 
             modelBuilder.Entity<Contactos>(entity =>
             {
-                entity.HasKey(e => e.Nº);
+                entity.HasKey(e => e.No);
 
-                entity.Property(e => e.Nº)
+                entity.Property(e => e.No)
                     .HasMaxLength(20)
                     .ValueGeneratedNever();
 
-                entity.Property(e => e.Cidade).HasMaxLength(30);
+                entity.Property(e => e.NoCliente).HasMaxLength(20);
 
-                entity.Property(e => e.Cp)
-                    .HasColumnName("CP")
-                    .HasMaxLength(20);
-
-                entity.Property(e => e.CódigoRegião)
-                    .HasColumnName("Código Região")
-                    .HasMaxLength(20);
-
-                entity.Property(e => e.DataHoraCriação)
-                    .HasColumnName("Data/Hora Criação")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.DataHoraModificação)
-                    .HasColumnName("Data/Hora Modificação")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.Email).HasMaxLength(80);
-
-                entity.Property(e => e.EmailContato)
-                    .HasColumnName("Email Contato")
-                    .HasMaxLength(80);
-
-                entity.Property(e => e.Endereço).HasMaxLength(100);
-
-                entity.Property(e => e.FunçãoContato)
-                    .HasColumnName("Função Contato")
-                    .HasMaxLength(30);
-
-                entity.Property(e => e.Nif)
-                    .HasColumnName("NIF")
-                    .HasMaxLength(20);
-
-                entity.Property(e => e.Nome)
-                    .IsRequired()
-                    .HasMaxLength(100);
-
-                entity.Property(e => e.Notas).HasColumnType("text");
-
-                entity.Property(e => e.PessoaContato)
-                    .HasColumnName("Pessoa Contato")
-                    .HasMaxLength(50);
+                entity.Property(e => e.Nome).HasMaxLength(100);
 
                 entity.Property(e => e.Telefone).HasMaxLength(30);
 
-                entity.Property(e => e.TelefoneContato)
-                    .HasColumnName("Telefone Contato")
-                    .HasMaxLength(30);
+                entity.Property(e => e.Telemovel).HasMaxLength(30);
 
-                entity.Property(e => e.TelemovelContato)
-                    .HasColumnName("Telemovel Contato")
-                    .HasMaxLength(30);
+                entity.Property(e => e.Fax).HasMaxLength(30);
 
-                entity.Property(e => e.UtilizadorCriação)
-                    .HasColumnName("Utilizador Criação")
-                    .HasMaxLength(50);
+                entity.Property(e => e.Email).HasMaxLength(80);
 
-                entity.Property(e => e.UtilizadorModificação)
-                    .HasColumnName("Utilizador Modificação")
-                    .HasMaxLength(50);
+                entity.Property(e => e.Pessoa).HasMaxLength(100);
+
+                entity.Property(e => e.Notas).HasColumnType("text");
+
+                entity.Property(e => e.CriadoPor).HasMaxLength(50);
+
+                entity.Property(e => e.DataCriacao).HasColumnType("datetime");
+
+                entity.Property(e => e.AlteradoPor).HasMaxLength(50);
+
+                entity.Property(e => e.DataAlteracao).HasColumnType("datetime");
+            });
+
+            modelBuilder.Entity<ContactosServicos>(entity =>
+            {
+                entity.HasKey(e => e.ID);
+
+                entity.Property(e => e.Servico).HasMaxLength(500);
+
+                entity.Property(e => e.CriadoPor).HasMaxLength(50);
+
+                entity.Property(e => e.DataCriacao).HasColumnType("datetime");
+
+                entity.Property(e => e.AlteradoPor).HasMaxLength(50);
+
+                entity.Property(e => e.DataAlteracao).HasColumnType("datetime");
+            });
+
+            modelBuilder.Entity<ContactosFuncoes>(entity =>
+            {
+                entity.HasKey(e => e.ID);
+
+                entity.Property(e => e.Funcao).HasMaxLength(500);
+
+                entity.Property(e => e.CriadoPor).HasMaxLength(50);
+
+                entity.Property(e => e.DataCriacao).HasColumnType("datetime");
+
+                entity.Property(e => e.AlteradoPor).HasMaxLength(50);
+
+                entity.Property(e => e.DataAlteracao).HasColumnType("datetime");
             });
 
             modelBuilder.Entity<Contratos>(entity =>

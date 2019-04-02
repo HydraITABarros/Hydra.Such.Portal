@@ -7,16 +7,16 @@ using Hydra.Such.Data.ViewModel;
 
 namespace Hydra.Such.Data.Logic
 {
-    public static class DBContacts
+    public static class DBContactsServicos
     {
         #region CRUD
-        public static Contactos GetById(string id)
+        public static ContactosServicos GetById(int id)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.Contactos.Where(x => x.No == id).FirstOrDefault();
+                    return ctx.ContactosServicos.Where(x => x.ID == id).FirstOrDefault();
                 }
             }
             catch (Exception ex)
@@ -25,13 +25,13 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
-        public static List<Contactos> GetAll()
+        public static List<ContactosServicos> GetAll()
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.Contactos.ToList();
+                    return ctx.ContactosServicos.ToList();
                 }
             }
             catch (Exception ex)
@@ -39,16 +39,16 @@ namespace Hydra.Such.Data.Logic
                 return null;
             }
         }
-        
-        
-        public static Contactos Create(Contactos item)
+
+
+        public static ContactosServicos Create(ContactosServicos item)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
                     item.DataCriacao = DateTime.Now;
-                    ctx.Contactos.Add(item);
+                    ctx.ContactosServicos.Add(item);
                     ctx.SaveChanges();
                 }
                 return item;
@@ -59,17 +59,17 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
-        public static List<Contactos> Create(List<Contactos> items)
+        public static List<ContactosServicos> Create(List<ContactosServicos> items)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
                     items.ForEach(x =>
-                        {
-                            x.DataCriacao = DateTime.Now;
-                            ctx.Contactos.Add(x);
-                        });
+                    {
+                        x.DataCriacao = DateTime.Now;
+                        ctx.ContactosServicos.Add(x);
+                    });
                     ctx.SaveChanges();
                 }
 
@@ -81,14 +81,14 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
-        public static Contactos Update(Contactos item)
+        public static ContactosServicos Update(ContactosServicos item)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
                     item.DataAlteracao = DateTime.Now;
-                    ctx.Contactos.Update(item);
+                    ctx.ContactosServicos.Update(item);
                     ctx.SaveChanges();
                 }
 
@@ -101,16 +101,16 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
-        public static bool Delete(string id)
+        public static bool Delete(int id)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    Contactos contact = ctx.Contactos.Where(x => x.No == id).FirstOrDefault();
-                    if (contact != null)
+                    ContactosServicos servico = ctx.ContactosServicos.Where(x => x.ID == id).FirstOrDefault();
+                    if (servico != null)
                     {
-                        ctx.Contactos.Remove(contact);
+                        ctx.ContactosServicos.Remove(servico);
                         ctx.SaveChanges();
                         return true;
                     }
@@ -120,18 +120,18 @@ namespace Hydra.Such.Data.Logic
             return false;
         }
 
-        public static bool Delete(Contactos item)
+        public static bool Delete(ContactosServicos item)
         {
-            return Delete(new List<Contactos> { item });
+            return Delete(new List<ContactosServicos> { item });
         }
 
-        public static bool Delete(List<Contactos> items)
+        public static bool Delete(List<ContactosServicos> items)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    ctx.Contactos.RemoveRange(items);
+                    ctx.ContactosServicos.RemoveRange(items);
                     ctx.SaveChanges();
                 }
                 return true;
@@ -141,61 +141,47 @@ namespace Hydra.Such.Data.Logic
                 return false;
             }
         }
-        
+
         #endregion
 
-        public static ContactViewModel ParseToViewModel(this Contactos item)
+        public static ContactServicosViewModel ParseToViewModel(this ContactosServicos item)
         {
             if (item != null)
             {
-                return new ContactViewModel()
+                return new ContactServicosViewModel()
                 {
-                    No = item.No,
-                    NoCliente = item.NoCliente,
-                    NoServico = item.NoServico,
-                    NoFuncao = item.NoFuncao,
-                    Nome = item.Nome,
-                    Telefone = item.Telefone,
-                    Telemovel = item.Telemovel,
-                    Fax = item.Fax,
-                    Email = item.Email,
-                    Pessoa = item.Pessoa,
-                    Notas = item.Notas,
+                    ID = item.ID,
+                    Servico = item.Servico,
+                    Activo = item.Activo,
                     CriadoPor = item.CriadoPor,
+                    DataCriacao = item.DataCriacao,
                     DataCriacaoText = item.DataCriacao.HasValue ? item.DataCriacao.Value.ToString("yyyy-MM-dd") : "",
                     AlteradoPor = item.AlteradoPor,
+                    DataAlteracao = item.DataAlteracao,
                     DataAlteracaoText = item.DataAlteracao.HasValue ? item.DataAlteracao.Value.ToString("yyyy-MM-dd") : ""
                 };
             }
             return null;
         }
 
-        public static List<ContactViewModel> ParseToViewModel(this List<Contactos> items)
+        public static List<ContactServicosViewModel> ParseToViewModel(this List<ContactosServicos> items)
         {
-            List<ContactViewModel> contacts = new List<ContactViewModel>();
-            if(items != null)
+            List<ContactServicosViewModel> contacts = new List<ContactServicosViewModel>();
+            if (items != null)
                 items.ForEach(x =>
                     contacts.Add(x.ParseToViewModel()));
             return contacts;
         }
 
-        public static Contactos ParseToDB(this ContactViewModel item)
+        public static ContactosServicos ParseToDB(this ContactServicosViewModel item)
         {
             if (item != null)
             {
-                return new Contactos()
+                return new ContactosServicos()
                 {
-                    No = item.No,
-                    NoCliente = item.NoCliente,
-                    NoServico = item.NoServico,
-                    NoFuncao = item.NoFuncao,
-                    Nome = item.Nome,
-                    Telefone = item.Telefone,
-                    Telemovel = item.Telemovel,
-                    Fax = item.Fax,
-                    Email = item.Email,
-                    Pessoa = item.Pessoa,
-                    Notas = item.Notas,
+                    ID = item.ID,
+                    Servico = item.Servico,
+                    Activo = item.Activo,
                     CriadoPor = item.CriadoPor,
                     DataCriacao = string.IsNullOrEmpty(item.DataCriacaoText) ? (DateTime?)null : DateTime.Parse(item.DataCriacaoText),
                     AlteradoPor = item.AlteradoPor,
@@ -205,9 +191,9 @@ namespace Hydra.Such.Data.Logic
             return null;
         }
 
-        public static List<Contactos> ParseToDB(this List<ContactViewModel> items)
+        public static List<ContactosServicos> ParseToDB(this List<ContactServicosViewModel> items)
         {
-            List<Contactos> contacts = new List<Contactos>();
+            List<ContactosServicos> contacts = new List<ContactosServicos>();
             if (items != null)
                 items.ForEach(x =>
                     contacts.Add(x.ParseToDB()));

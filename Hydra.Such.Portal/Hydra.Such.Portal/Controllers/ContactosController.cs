@@ -81,11 +81,11 @@ namespace Hydra.Such.Portal.Controllers
                 ConfiguraçãoNumerações numConf = DBNumerationConfigurations.GetById(contactsNumerationConfId);
 
                 //Validate if id is valid
-                if (!(item.Id == "" || item.Id == null) && !numConf.Manual.Value)
+                if (!(item.No == "" || item.No == null) && !numConf.Manual.Value)
                 {
                     return Json("A numeração configurada para contactos não permite inserção manual.");
                 }
-                else if (item.Id == "" && !numConf.Automático.Value)
+                else if (item.No == "" && !numConf.Automático.Value)
                 {
                     return Json("É obrigatório inserir o Nº de Contacto.");
                 }
@@ -101,8 +101,8 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetById([FromBody] ContactViewModel item)
         {
             ContactViewModel result = new ContactViewModel();
-            if (item != null && !string.IsNullOrEmpty(item.Id))
-                result = DBContacts.GetById(item.Id).ParseToViewModel();
+            if (item != null && !string.IsNullOrEmpty(item.No))
+                result = DBContacts.GetById(item.No).ParseToViewModel();
             return Json(result);
         }
 
@@ -116,19 +116,19 @@ namespace Hydra.Such.Portal.Controllers
                 Configuração conf = DBConfigurations.GetById(1);
                 int entityNumerationConfId = conf.NumeraçãoContactos.Value;
                 
-                if (item.Id == "" || item.Id == null)
+                if (item.No == "" || item.No == null)
                 {
                     autoGenId = true;
-                    item.Id = DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, autoGenId, false);
+                    item.No = DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, autoGenId, false);
                 }
 
-                if (item.Id != null)
+                if (item.No != null)
                 {
                     //Ensure contact Id doesn't exist
-                    var existingContact = DBContacts.GetById(item.Id);
+                    var existingContact = DBContacts.GetById(item.No);
                     if (existingContact == null)
                     {
-                        item.CreateUser = User.Identity.Name;
+                        item.CriadoPor = User.Identity.Name;
 
                         var newItem = DBContacts.Create(item.ParseToDB()).ParseToViewModel();
                         if (newItem != null)
@@ -152,7 +152,7 @@ namespace Hydra.Such.Portal.Controllers
                             if (!createContactTask.IsCompletedSuccessfully)
                             {
                                 //Delete Created Project on Database
-                                DBContacts.Delete(item.Id);
+                                DBContacts.Delete(item.No);
 
                                 item.eReasonCode = 3;
                                 item.eMessage = "Ocorreu um erro ao criar o contacto no NAV.";
@@ -163,7 +163,7 @@ namespace Hydra.Such.Portal.Controllers
                                 ConfiguraçãoNumerações configNumerations = DBNumerationConfigurations.GetById(entityNumerationConfId);
                                 if (configNumerations != null && autoGenId)
                                 {
-                                    configNumerations.ÚltimoNºUsado = item.Id;
+                                    configNumerations.ÚltimoNºUsado = item.No;
                                     configNumerations.UtilizadorModificação = User.Identity.Name;
                                     DBNumerationConfigurations.Update(configNumerations);
                                 }
@@ -180,7 +180,7 @@ namespace Hydra.Such.Portal.Controllers
                     else
                     {
                         item.eReasonCode = 4;
-                        item.eMessage = "Já existe um contacto com o id " + item.Id;
+                        item.eMessage = "Já existe um contacto com o Nº " + item.No;
                     }
                 }
                 else
@@ -197,7 +197,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             if (item != null)
             {
-                item.UpdateUser = User.Identity.Name;
+                item.AlteradoPor = User.Identity.Name;
                 var updatedItem = DBContacts.Update(item.ParseToDB()).ParseToViewModel();
                 if (updatedItem != null)
                 {
@@ -240,7 +240,7 @@ namespace Hydra.Such.Portal.Controllers
             bool sucess = false;
 
             if (item != null)
-                sucess = DBContacts.Delete(item.Id);
+                sucess = DBContacts.Delete(item.No);
 
             return Json(sucess);
         }
@@ -254,9 +254,9 @@ namespace Hydra.Such.Portal.Controllers
 
             result.ForEach(CT =>
             {
-                CT.RegiaoText = !string.IsNullOrEmpty(CT.Regiao) ? AllRegions.Where(x => x.Code == CT.Regiao).FirstOrDefault() != null ? AllRegions.Where(x => x.Code == CT.Regiao).FirstOrDefault().Name : "" : "";
+                CT.ClienteRegiao = !string.IsNullOrEmpty(CT.ClienteRegiao) ? AllRegions.Where(x => x.Code == CT.ClienteRegiao).FirstOrDefault() != null ? AllRegions.Where(x => x.Code == CT.ClienteRegiao).FirstOrDefault().Name : "" : "";
             });
-            return Json(result.OrderByDescending(x => x.Id));
+            return Json(result.OrderByDescending(x => x.No));
         }
 
         //1
@@ -281,81 +281,31 @@ namespace Hydra.Such.Portal.Controllers
                 IRow row = excelSheet.CreateRow(0);
                 int Col = 0;
 
-                if (dp["id"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Nº");
-                    Col = Col + 1;
-                }
-                if (dp["name"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Nome");
-                    Col = Col + 1;
-                }
-                if (dp["address"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Endereço");
-                    Col = Col + 1;
-                }
-                if (dp["zipCode"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Código Postal");
-                    Col = Col + 1;
-                }
-                if (dp["city"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Cidade");
-                    Col = Col + 1;
-                }
-                if (dp["regiaoText"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Região");
-                    Col = Col + 1;
-                }
-                if (dp["phone"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Telefone");
-                    Col = Col + 1;
-                }
-                if (dp["email"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Email");
-                    Col = Col + 1;
-                }
-                if (dp["vATNumber"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("NIF");
-                    Col = Col + 1;
-                }
-                if (dp["personContact"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Pessoa Contato");
-                    Col = Col + 1;
-                }
-                if (dp["phoneContact"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Telefone Contato");
-                    Col = Col + 1;
-                }
-                if (dp["contactFunction"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Função Contato");
-                    Col = Col + 1;
-                }
-                if (dp["mobilePhoneContact"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Telemovel Contato");
-                    Col = Col + 1;
-                }
-                if (dp["emailContact"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Email Contato");
-                    Col = Col + 1;
-                }
-                if (dp["notes"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Notas");
-                    Col = Col + 1;
-                }
+                if (dp["No"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº"); Col = Col + 1; }
+                if (dp["NoCliente"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Cliente"); Col = Col + 1; }
+                if (dp["ClienteNome"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cliente Nome"); Col = Col + 1; }
+                if (dp["ClienteNIF"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cliente NIF"); Col = Col + 1; }
+                if (dp["ClienteEndereco"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cliente Endereço"); Col = Col + 1; }
+                if (dp["ClienteCodigoPostal"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cliente Código Postal"); Col = Col + 1; }
+                if (dp["ClienteCidade"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cliente Cidade"); Col = Col + 1; }
+                if (dp["ClienteRegiao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cliente Região"); Col = Col + 1; }
+                if (dp["ClienteTelefone"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cliente Telefone"); Col = Col + 1; }
+                if (dp["ClienteEmail"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cliente Email"); Col = Col + 1; }
+                if (dp["NoServico"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Serviço"); Col = Col + 1; }
+                if (dp["ServicoNome"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Serviço Nome"); Col = Col + 1; }
+                if (dp["NoFuncao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Função"); Col = Col + 1; }
+                if (dp["FuncaoNome"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Função Nome"); Col = Col + 1; }
+                if (dp["Nome"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nome"); Col = Col + 1; }
+                if (dp["Telefone"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Telefone"); Col = Col + 1; }
+                if (dp["Telemovel"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Telemóvel"); Col = Col + 1; }
+                if (dp["Fax"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Fax"); Col = Col + 1; }
+                if (dp["Email"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Email"); Col = Col + 1; }
+                if (dp["Pessoa"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Pessoa"); Col = Col + 1; }
+                if (dp["Notas"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Notas"); Col = Col + 1; }
+                if (dp["CriadoPor"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Criado Por"); Col = Col + 1; }
+                if (dp["DataCriacaoText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Criação"); Col = Col + 1; }
+                if (dp["AlteradoPor"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Alterado Por"); Col = Col + 1; }
+                if (dp["DataAlteracaoText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Alteração"); Col = Col + 1; }
 
                 if (dp != null)
                 {
@@ -365,81 +315,31 @@ namespace Hydra.Such.Portal.Controllers
                         Col = 0;
                         row = excelSheet.CreateRow(count);
 
-                        if (dp["id"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.Id);
-                            Col = Col + 1;
-                        }
-                        if (dp["name"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.Name);
-                            Col = Col + 1;
-                        }
-                        if (dp["address"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.Address);
-                            Col = Col + 1;
-                        }
-                        if (dp["zipCode"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.ZipCode);
-                            Col = Col + 1;
-                        }
-                        if (dp["city"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.City);
-                            Col = Col + 1;
-                        }
-                        if (dp["regiaoText"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.RegiaoText);
-                            Col = Col + 1;
-                        }
-                        if (dp["phone"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.Phone);
-                            Col = Col + 1;
-                        }
-                        if (dp["email"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.Email);
-                            Col = Col + 1;
-                        }
-                        if (dp["vATNumber"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.VATNumber);
-                            Col = Col + 1;
-                        }
-                        if (dp["personContact"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.PersonContact);
-                            Col = Col + 1;
-                        }
-                        if (dp["phoneContact"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.PhoneContact);
-                            Col = Col + 1;
-                        }
-                        if (dp["contactFunction"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.ContactFunction);
-                            Col = Col + 1;
-                        }
-                        if (dp["mobilePhoneContact"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.MobilePhoneContact);
-                            Col = Col + 1;
-                        }
-                        if (dp["emailContact"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.EmailContact);
-                            Col = Col + 1;
-                        }
-                        if (dp["notes"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.Notes);
-                            Col = Col + 1;
-                        }
+                        if (dp["No"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.No); Col = Col + 1; }
+                        if (dp["NoCliente"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.NoCliente); Col = Col + 1; }
+                        if (dp["ClienteNome"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ClienteNome); Col = Col + 1; }
+                        if (dp["ClienteNIF"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ClienteNIF); Col = Col + 1; }
+                        if (dp["ClienteEndereco"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ClienteEndereco); Col = Col + 1; }
+                        if (dp["ClienteCodigoPostal"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ClienteCodigoPostal); Col = Col + 1; }
+                        if (dp["ClienteCidade"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ClienteCidade); Col = Col + 1; }
+                        if (dp["ClienteRegiao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ClienteRegiao); Col = Col + 1; }
+                        if (dp["ClienteTelefone"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ClienteTelefone); Col = Col + 1; }
+                        if (dp["ClienteEmail"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ClienteEmail); Col = Col + 1; }
+                        if (dp["NoServico"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.NoServico.ToString()); Col = Col + 1; }
+                        if (dp["ServicoNome"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ServicoNome); Col = Col + 1; }
+                        if (dp["NoFuncao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.NoFuncao.ToString()); Col = Col + 1; }
+                        if (dp["FuncaoNome"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.FuncaoNome); Col = Col + 1; }
+                        if (dp["Nome"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Nome); Col = Col + 1; }
+                        if (dp["Telefone"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Telefone); Col = Col + 1; }
+                        if (dp["Telemovel"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Telemovel); Col = Col + 1; }
+                        if (dp["Fax"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Fax); Col = Col + 1; }
+                        if (dp["Email"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Email); Col = Col + 1; }
+                        if (dp["Pessoa"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Pessoa); Col = Col + 1; }
+                        if (dp["Notas"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Notas); Col = Col + 1; }
+                        if (dp["CriadoPor"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CriadoPor); Col = Col + 1; }
+                        if (dp["DataCriacaoText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DataCriacaoText); Col = Col + 1; }
+                        if (dp["AlteradoPor"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.AlteradoPor); Col = Col + 1; }
+                        if (dp["DataAlteracaoText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DataAlteracaoText); Col = Col + 1; }
                         count++;
                     }
                 }
