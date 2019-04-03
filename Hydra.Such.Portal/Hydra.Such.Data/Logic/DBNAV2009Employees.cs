@@ -9,7 +9,7 @@ namespace Hydra.Such.Data.Logic
 {
     public static class DBNAV2009Employees
     {
-        public static List<NAVEmployeeViewModel> GetAll(string resourceNo, string NAVDatabaseName, string NAVCompanyName)
+        public static List<NAVEmployeeViewModel> GetAll(string NoEmpregado, string NAVDatabaseName, string NAVCompanyName)
         {
             try
             {
@@ -19,7 +19,7 @@ namespace Hydra.Such.Data.Logic
                     var parameters = new[]{
                         new SqlParameter("@DBName", NAVDatabaseName),
                         new SqlParameter("@CompanyName", NAVCompanyName),
-                        new SqlParameter("@NoEmpregado", resourceNo),
+                        new SqlParameter("@NoEmpregado", NoEmpregado),
                     };
 
                     IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2009Empregados @DBName, @CompanyName, @NoEmpregado", parameters);
@@ -30,6 +30,12 @@ namespace Hydra.Such.Data.Logic
                         {
                             No = (string)temp.No_,
                             Name = (string)temp.Name,
+                            Regiao = (string)temp.Regiao,
+                            Area = (string)temp.Area,
+                            Cresp = (string)temp.Cresp,
+                            Responsavel1 = (string)temp.Responsavel1,
+                            Responsavel2 = (string)temp.Responsavel2,
+                            Responsavel3 = (string)temp.Responsavel3,
                         });
                     }
                 }

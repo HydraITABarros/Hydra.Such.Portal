@@ -10,6 +10,7 @@ using Hydra.Such.Data.Logic.Project;
 using Microsoft.Extensions.Options;
 using Hydra.Such.Data.ViewModel.ProjectView;
 using Hydra.Such.Data.Logic.Approvals;
+using Hydra.Such.Data.ViewModel;
 
 namespace Hydra.Such.Data.Logic.FolhaDeHora
 {
@@ -84,7 +85,7 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             }
         }
 
-        public static FolhasDeHoras UpdateDetalhes(string NoFolhaHoras)
+        public static FolhasDeHoras UpdateDetalhes(string NoFolhaHoras, string NAV2009DatabaseName, string NAV2009CompanyName)
         {
             try
             {
@@ -111,7 +112,7 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                     ctx.SaveChanges();
                 }
 
-                FolhaDeHorasViewModel FH = GetListaValidadoresIntegradores(NoFolhaHoras, FolhaDeHora.NºEmpregado);
+                FolhaDeHorasViewModel FH = GetListaValidadoresIntegradores(NoFolhaHoras, FolhaDeHora.NºEmpregado, NAV2009DatabaseName, NAV2009CompanyName);
                 using (var ctx = new SuchDBContext())
                 {
                     FolhaDeHora.CódigoRegião = FH.CodigoRegiao;
@@ -1185,7 +1186,7 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             }
         }
 
-        public static FolhaDeHorasViewModel GetListaValidadoresIntegradores(string FolhaHorasNo, string idEmployee)
+        public static FolhaDeHorasViewModel GetListaValidadoresIntegradores(string FolhaHorasNo, string idEmployee, string NAV2009DatabaseName, string NAV2009CompanyName)
         {
             FolhasDeHoras FolhaHoras = new FolhasDeHoras();
             FolhaDeHorasViewModel FH = new FolhaDeHorasViewModel();
@@ -1217,12 +1218,29 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                     {
                         idEmployeePortal = ConfUtilizadores.IdUtilizador == null ? "" : ConfUtilizadores.IdUtilizador;
                     }
+                    else
+                    {
+                        idEmployeePortal = "";
+                    }
 
                     if (idEmployeePortal != null)
                     {
-                        FH.CodigoRegiao = DBUserConfigurations.GetByEmployeeNo(idEmployee) == null ? "" : DBUserConfigurations.GetByEmployeeNo(idEmployee).RegiãoPorDefeito;
-                        FH.CodigoAreaFuncional = DBUserConfigurations.GetByEmployeeNo(idEmployee) == null ? "" : DBUserConfigurations.GetByEmployeeNo(idEmployee).AreaPorDefeito;
-                        FH.CodigoCentroResponsabilidade = DBUserConfigurations.GetByEmployeeNo(idEmployee) == null ? "" : DBUserConfigurations.GetByEmployeeNo(idEmployee).CentroRespPorDefeito;
+                        if (idEmployeePortal != "")
+                        {
+                            FH.CodigoRegiao = DBUserConfigurations.GetByEmployeeNo(idEmployee) == null ? "" : DBUserConfigurations.GetByEmployeeNo(idEmployee).RegiãoPorDefeito;
+                            FH.CodigoAreaFuncional = DBUserConfigurations.GetByEmployeeNo(idEmployee) == null ? "" : DBUserConfigurations.GetByEmployeeNo(idEmployee).AreaPorDefeito;
+                            FH.CodigoCentroResponsabilidade = DBUserConfigurations.GetByEmployeeNo(idEmployee) == null ? "" : DBUserConfigurations.GetByEmployeeNo(idEmployee).CentroRespPorDefeito;
+                        }
+                        else
+                        {
+                            NAVEmployeeViewModel Employee = DBNAV2009Employees.GetAll(idEmployee, NAV2009DatabaseName, NAV2009CompanyName).FirstOrDefault();
+                            if (Employee != null)
+                            {
+                                FH.CodigoRegiao = Employee.Regiao;
+                                FH.CodigoAreaFuncional = Employee.Area;
+                                FH.CodigoCentroResponsabilidade = Employee.Cresp;
+                            }
+                        }
 
                         string Superior;
 

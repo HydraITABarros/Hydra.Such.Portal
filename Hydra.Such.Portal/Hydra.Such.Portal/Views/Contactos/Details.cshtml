@@ -46,14 +46,6 @@
                    on-response="_onNumValidationResponse">
         </iron-ajax>
 
-        <iron-ajax url="/PopulateDropdowns/GetAllRegionCode"
-                   last-response="{{CBRegions}}"
-                   auto
-                   method="post"
-                   handle-as="json"
-                   content-type="application/json">
-        </iron-ajax>
-
         <iron-ajax url="/PopulateDropdowns/GetAllClientsComboGrid"
                    last-response="{{CBClients}}"
                    auto
@@ -97,9 +89,10 @@
             <div class="col-sm-3">
                 <such-selectbox id="ddnoCliente" value="{{contact.noCliente}}" label="Nº Cliente"
                                 items="[[CBClients]]"
-                                text-path="name"
+                                text-path="no_"
                                 value-path="no_"
-                                fields='[{"field":"no_", "name":"Cód. Cliente"}, {"field":"name", "name":"Nome"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Cód. Postal"}, {"field":"city", "name":"Cidade"}, {"field":"country_RegionCode", "name":"Região"}, {"field":"country_RegionCode", "name":"Região"}]'
+                                fields='[{"field":"no_", "name":"Cód. Cliente"}, {"field":"name", "name":"Nome"}, {"field":"vatRegistrationNo_", "name":"NIF"}, {"field":"address", "name":"Endereço"}, {"field":"postCode", "name":"Código Postal"}, {"field":"city", "name":"Cidade"}, {"field":"regionCode", "name":"Região"}, {"field":"phoneNo", "name":"Telefone"}, {"field":"eMail", "name":"Email"}]'
+                                on-value-changed="_getClienteDados"
                                 disabled="{{ !_permissions.update }}">
                 </such-selectbox>
             </div>
@@ -215,6 +208,7 @@
                         value: "@ViewBag.ContactId"
                     }
                 },
+
                 ready: function () {
                     this.$.contact_datasource.body = JSON.stringify({ "no": this._contactId });
                     this.$.contact_datasource.generateRequest();
@@ -223,7 +217,6 @@
                         this._isCreate = true;
 
                     //Inserir
-                    //debugger;
                     if (this._contactId  == "") {
                         $(this.$.btnCreateNew).addClass('hidden');
                         $(this.$.btnCreate).removeClass('hidden');
@@ -236,6 +229,7 @@
                         $(this.$.btnCancel).removeClass('hidden');
                     }
                 },
+
                 _showMessage: function (message) {
                     this.$.ToastMessageSuccess.text = message;
                     this.$.ToastMessageSuccess.open();
@@ -244,16 +238,19 @@
                     this.$.ToastMessageError.text = message;
                     this.$.ToastMessageError.open();
                 },
+
                 _onGetContactByIdResponse: function (e) {
                     if (this.contact == undefined && this._contactId != "") {
                         this._showMessage('Contacto não encontrado');
                     }
                 },
+
                 _redirectToNewContactForm: function (item) {
                     if (item != null) {
                         window.location.href = "/Contactos/Detalhes";
                     }
                 },
+
                 _validateUserInput() {
                     if (this.$.contactName.validate()) {
                         return true;
@@ -261,13 +258,14 @@
                     this._showErrorMessage("Verifique os dados inseridos.");
                     return false;
                 },
-                _createContact: function () {
 
-                    if (this._validateUserInput()) {
+                _createContact: function () {
+                    //if (this._validateUserInput()) {
                         this.$.numValidation_contact_request.body = JSON.stringify(this.contact);
                         this.$.numValidation_contact_request.generateRequest();
-                    }
+                    //}
                 },
+
                 _onNumValidationResponse: function (data) {
                     if (data.detail.status === 200) {
                         if (this.numValidationResponse == "") {
@@ -280,6 +278,7 @@
                         }
                     }
                 },
+
                 _onContactResponse: function (e) {
                     if (e.detail.status === 200)
                     {
@@ -288,6 +287,8 @@
                                 this._contactId = this.contact.Id;
                                 this._isCreate = false;
                                 this._showMessage(this.contact.eMessage);
+
+                                window.location.href = "/Contactos/Detalhes/" + this.$.ddno.value;
                             }
                             else {
                                 this._showErrorMessage(this.contact.eMessage);
@@ -322,11 +323,13 @@
                         }
                     }
                 },
+
                 _updateContact: function () {
                     this.$.create_contact_request.url = "/Contactos/UpdateContact";
                     this.$.create_contact_request.body = JSON.stringify(this.contact);
                     this.$.create_contact_request.generateRequest();
                 },
+
                 _deleteContact: function () {
                     this.$.create_contact_request.url = "/Contactos/DeleteContact";
                     var ajax_request = this.$.create_contact_request;
@@ -334,7 +337,7 @@
                     var contactToDelete = this.contact;
 
                     bootbox.confirm({
-                        message: "Tem a certeza que pretende remover o contacto " + this.contact.id + "?",
+                        message: "Tem a certeza que pretende remover o contacto " + this.$.ddno.value + "?",
                         buttons: {
                             confirm: {
                                 label: 'Sim',
@@ -355,6 +358,36 @@
 
 
                 },
+
+                _getClienteDados: function () {
+                    debugger;
+                    if (this.$.ddnoCliente.value != "") {
+                        var cliente = this.CBClients.find(x => x.no_ == this.$.ddnoCliente.value);
+                        if (cliente != null) {
+                            this.$.ddclienteNome.value = cliente.name;
+                            this.$.ddclienteNIF.value = cliente.vatRegistrationNo_;
+                            this.$.ddclienteEndereco.value = cliente.address;
+                            this.$.ddclienteCodigoPostal.value = cliente.postCode;
+                            this.$.ddclienteCidade.value = cliente.city;
+                            this.$.ddclienteRegiao.value = cliente.regionCode;
+                            this.$.ddclienteTelefone.value = cliente.phoneNo;
+                            this.$.ddclienteEmail.value = cliente.eMail;
+                        }
+                    }
+                    else {
+                        this.$.ddclienteNome.value = "";
+                        this.$.ddclienteNIF.value = "";
+                        this.$.ddclienteEndereco.value = "";
+                        this.$.ddclienteCodigoPostal.value = "";
+                        this.$.ddclienteCidade.value = "";
+                        this.$.ddclienteRegiao.value = "";
+                        this.$.ddclienteTelefone.value = "";
+                        this.$.ddclienteEmail.value = "";
+                    }
+
+                },
+
+
 
                 _goBack: function (e) {
                     window.history.back();

@@ -8,5 +8,11 @@ namespace Hydra.Such.Data.ViewModel
     {
         public string No { get; set; }
         public string Name { get; set; }
+        public string Regiao { get; set; }
+        public string Area { get; set; }
+        public string Cresp { get; set; }
+        public string Responsavel1 { get; set; }
+        public string Responsavel2 { get; set; }
+        public string Responsavel3 { get; set; }
     }
 }

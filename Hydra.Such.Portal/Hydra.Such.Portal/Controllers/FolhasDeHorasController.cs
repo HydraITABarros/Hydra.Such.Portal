@@ -398,7 +398,7 @@ namespace Hydra.Such.Portal.Controllers
                     if (ConfigUser != null)
                         FH.Intervenientes = FH.Intervenientes + " EMPREGADO: " + ConfigUser.IdUtilizador;
 
-                    FolhaDeHorasViewModel Autorizacao = DBFolhasDeHoras.GetListaValidadoresIntegradores(id, User.Identity.Name);
+                    FolhaDeHorasViewModel Autorizacao = DBFolhasDeHoras.GetListaValidadoresIntegradores(id, User.Identity.Name, _config.NAV2009DatabaseName, _config.NAV2009CompanyName);
                     if (Autorizacao != null)
                     {
                         FH.Validadores = !string.IsNullOrEmpty(Autorizacao.Validadores) ? Autorizacao.Validadores : "";
@@ -730,7 +730,7 @@ namespace Hydra.Such.Portal.Controllers
                     if (ConfigUser != null)
                         FH.Intervenientes = FH.Intervenientes + " EMPREGADO: " + ConfigUser.IdUtilizador;
 
-                    FH = DBFolhasDeHoras.GetListaValidadoresIntegradores(folhaDeHorasNo, idEmployee);
+                    FH = DBFolhasDeHoras.GetListaValidadoresIntegradores(folhaDeHorasNo, idEmployee, _config.NAV2009DatabaseName, _config.NAV2009CompanyName);
 
                     FH.Validadores = !string.IsNullOrEmpty(FH.Validadores) ? FH.Validadores : "";
                     FH.IntegradoresEmRH = !string.IsNullOrEmpty(FH.IntegradoresEmRH) ? FH.IntegradoresEmRH : "";
@@ -1440,7 +1440,7 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (result)
                 {
-                    DBFolhasDeHoras.UpdateDetalhes(data.NoFolhaHoras);
+                    DBFolhasDeHoras.UpdateDetalhes(data.NoFolhaHoras, _config.NAV2009DatabaseName, _config.NAV2009CompanyName);
                 }
 
             }
@@ -1543,7 +1543,7 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (result == 0)
                 {
-                    DBFolhasDeHoras.UpdateDetalhes(data.NoFolhaHoras);
+                    DBFolhasDeHoras.UpdateDetalhes(data.NoFolhaHoras, _config.NAV2009DatabaseName, _config.NAV2009CompanyName);
                 }
             }
             catch (Exception ex)
@@ -1602,7 +1602,7 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (result == 0)
                 {
-                    DBFolhasDeHoras.UpdateDetalhes(data.NoFolhaHoras);
+                    DBFolhasDeHoras.UpdateDetalhes(data.NoFolhaHoras, _config.NAV2009DatabaseName, _config.NAV2009CompanyName);
                 }
             }
             catch (Exception ex)
@@ -1626,7 +1626,7 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (result)
                 {
-                    DBFolhasDeHoras.UpdateDetalhes(data.NoFolhaHoras);
+                    DBFolhasDeHoras.UpdateDetalhes(data.NoFolhaHoras, _config.NAV2009DatabaseName, _config.NAV2009CompanyName);
                 }
             }
             catch (Exception ex)
@@ -1721,7 +1721,7 @@ namespace Hydra.Such.Portal.Controllers
 
                         if (result == 1)
                         {
-                            if (DBFolhasDeHoras.UpdateDetalhes(data.NoFolhaHoras) != null)
+                            if (DBFolhasDeHoras.UpdateDetalhes(data.NoFolhaHoras, _config.NAV2009DatabaseName, _config.NAV2009CompanyName) != null)
                                 result = 1;
                             else
                                 result = 3;
@@ -1851,7 +1851,7 @@ namespace Hydra.Such.Portal.Controllers
 
                     if (result == 0)
                     {
-                        DBFolhasDeHoras.UpdateDetalhes(data.NoFolhaHoras);
+                        DBFolhasDeHoras.UpdateDetalhes(data.NoFolhaHoras, _config.NAV2009DatabaseName, _config.NAV2009CompanyName);
                     }
                 }
             }
@@ -1911,7 +1911,7 @@ namespace Hydra.Such.Portal.Controllers
 
                     if (result == 0)
                     {
-                        DBFolhasDeHoras.UpdateDetalhes(data.NoFolhaHoras);
+                        DBFolhasDeHoras.UpdateDetalhes(data.NoFolhaHoras, _config.NAV2009DatabaseName, _config.NAV2009CompanyName);
                     }
                 }
             }
@@ -1936,7 +1936,7 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (result)
                 {
-                    DBFolhasDeHoras.UpdateDetalhes(data.NoFolhaHoras);
+                    DBFolhasDeHoras.UpdateDetalhes(data.NoFolhaHoras, _config.NAV2009DatabaseName, _config.NAV2009CompanyName);
                 }
             }
             catch (Exception ex)
@@ -2200,7 +2200,7 @@ namespace Hydra.Such.Portal.Controllers
 
                     if (result == 0)
                     {
-                        DBFolhasDeHoras.UpdateDetalhes(data.FolhaDeHorasNo);
+                        DBFolhasDeHoras.UpdateDetalhes(data.FolhaDeHorasNo, _config.NAV2009DatabaseName, _config.NAV2009CompanyName);
                     }
                 }
             }
@@ -2254,7 +2254,7 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (result == 0)
                 {
-                    DBFolhasDeHoras.UpdateDetalhes(data.FolhaDeHorasNo);
+                    DBFolhasDeHoras.UpdateDetalhes(data.FolhaDeHorasNo, _config.NAV2009DatabaseName, _config.NAV2009CompanyName);
                 }
             }
             catch (Exception ex)
@@ -2525,7 +2525,7 @@ namespace Hydra.Such.Portal.Controllers
 
                     if (result == 0)
                     {
-                        DBFolhasDeHoras.UpdateDetalhes(data.FolhaDeHorasNo);
+                        DBFolhasDeHoras.UpdateDetalhes(data.FolhaDeHorasNo, _config.NAV2009DatabaseName, _config.NAV2009CompanyName);
                     }
                 }
             }
@@ -2550,7 +2550,7 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (result)
                 {
-                    DBFolhasDeHoras.UpdateDetalhes(data.FolhaDeHorasNo);
+                    DBFolhasDeHoras.UpdateDetalhes(data.FolhaDeHorasNo, _config.NAV2009DatabaseName, _config.NAV2009CompanyName);
                 }
             }
             catch (Exception ex)
@@ -3021,7 +3021,7 @@ namespace Hydra.Such.Portal.Controllers
                         result.eMessage = "Com os dados preenchidos nesta Folha de Horas não é possível calcular Ajudas de Custo.";
                     }
 
-                    FolhasDeHoras dbUpdateResult = DBFolhasDeHoras.UpdateDetalhes(data.FolhaDeHorasNo);
+                    FolhasDeHoras dbUpdateResult = DBFolhasDeHoras.UpdateDetalhes(data.FolhaDeHorasNo, _config.NAV2009DatabaseName, _config.NAV2009CompanyName);
 
                     return Json(result);
                 }
@@ -3146,7 +3146,7 @@ namespace Hydra.Such.Portal.Controllers
                                 if (ConfigUser != null)
                                     data.Intervenientes = data.Intervenientes + " EMPREGADO: " + ConfigUser.IdUtilizador;
 
-                                FolhaDeHorasViewModel Autorizacao = DBFolhasDeHoras.GetListaValidadoresIntegradores(data.FolhaDeHorasNo, data.EmpregadoNo);
+                                FolhaDeHorasViewModel Autorizacao = DBFolhasDeHoras.GetListaValidadoresIntegradores(data.FolhaDeHorasNo, data.EmpregadoNo, _config.NAV2009DatabaseName, _config.NAV2009CompanyName);
                                 if (Autorizacao != null)
                                 {
                                     data.Validadores = !string.IsNullOrEmpty(Autorizacao.Validadores) ? Autorizacao.Validadores : "";

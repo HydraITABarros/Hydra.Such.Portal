@@ -154,29 +154,29 @@ namespace Hydra.Such.Portal.Controllers
                             //Inserted, update item to return
                             item = newItem;
                             
-                            Task<WSContacts.Create_Result> createContactTask = NAVContactsService.CreateAsync(item, _configws);
-                            try
-                            {
-                                createContactTask.Wait();
-                            }
-                            catch (Exception ex)
-                            {
-                                item.eReasonCode = 3;
-                                item.eMessage = "Ocorreu um erro ao criar o contacto no NAV.";
-                                item.eMessages.Add(new TraceInformation(TraceType.Error, ex.Message));
-                            }
+                            //Task<WSContacts.Create_Result> createContactTask = NAVContactsService.CreateAsync(item, _configws);
+                            //try
+                            //{
+                            //    createContactTask.Wait();
+                            //}
+                            //catch (Exception ex)
+                            //{
+                            //    item.eReasonCode = 3;
+                            //    item.eMessage = "Ocorreu um erro ao criar o contacto no NAV.";
+                            //    item.eMessages.Add(new TraceInformation(TraceType.Error, ex.Message));
+                            //}
 
 
-                            if (!createContactTask.IsCompletedSuccessfully)
-                            {
-                                //Delete Created Project on Database
-                                DBContacts.Delete(item.No);
+                            //if (!createContactTask.IsCompletedSuccessfully)
+                            //{
+                            //    //Delete Created Project on Database
+                            //    DBContacts.Delete(item.No);
 
-                                item.eReasonCode = 3;
-                                item.eMessage = "Ocorreu um erro ao criar o contacto no NAV.";
-                            }
-                            else
-                            {
+                            //    item.eReasonCode = 3;
+                            //    item.eMessage = "Ocorreu um erro ao criar o contacto no NAV.";
+                            //}
+                            //else
+                            //{
                                 //Update Last Numeration Used
                                 ConfiguraçãoNumerações configNumerations = DBNumerationConfigurations.GetById(entityNumerationConfId);
                                 if (configNumerations != null && autoGenId)
@@ -187,7 +187,7 @@ namespace Hydra.Such.Portal.Controllers
                                 }
                                 item.eReasonCode = 1;
                                 item.eMessage = "Contacto criado com sucesso.";
-                            }
+                            //}
                         }
                         else
                         {
