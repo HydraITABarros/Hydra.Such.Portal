@@ -3867,6 +3867,7 @@ namespace Hydra.Such.Portal.Controllers
                                     Task<WSCreatePreInvoiceLine.CreateMultiple_Result> TCreatePreInvoiceLine = WSPreInvoiceLine.CreatePreInvoiceLineListProject(header.Items, headerNo, OptionInvoice, _configws);
                                     TCreatePreInvoiceLine.Wait();
 
+
                                     if (TCreatePreInvoiceLine.IsCompletedSuccessfully)
                                     {
                                         execDetails += " Linhas criadas com sucesso.";
@@ -3901,12 +3902,49 @@ namespace Hydra.Such.Portal.Controllers
                                 }
                                 catch (Exception ex)
                                 {
-                                    if (!hasErrors)
-                                        hasErrors = true;
-
-                                    execDetails += " Erro ao criar as linhas: ";
                                     errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                                    result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails + errorMessage));
+
+                                    if (errorMessage.ToLower().Contains("maximum message size quota".ToLower()))
+                                    {
+                                        errorMessage = "";
+
+                                        execDetails += " Linhas criadas com sucesso.";
+                                        //update to Invoiced = true
+                                        using (SuchDBContext ctx = new SuchDBContext())
+                                        {
+                                            itemsToInvoice.ForEach(key =>
+                                            {
+                                                var authorizedProjects = ctx.ProjectosAutorizados
+                                                .Where(x => x.CodProjeto == key.Item1 && x.GrupoFactura == key.Item2)
+                                                .ToList();
+                                            //var authorizedProjectMovements = ctx.MovimentosDeProjeto.Where(x => x.CodProjeto == projectNo && x.GrupoFactura == invoiceGroup);
+
+                                            var projectMovements = ctx.MovimentosDeProjeto
+                                                    .Where(x => x.NºProjeto == key.Item1 && x.GrupoFatura == key.Item2)
+                                                    .ToList();
+
+                                                authorizedProjects.ForEach(x => x.Faturado = true);
+                                            //authorizedProjectMovements.ForEach(x => x.Faturada = true);
+                                            projectMovements.ForEach(x => x.Faturada = true);
+
+                                                ctx.ProjectosAutorizados.UpdateRange(authorizedProjects);
+                                            //ctx.MovimentosProjetoAutorizados.UpdateRange(authorizedProjectMovements);
+                                            ctx.MovimentosDeProjeto.UpdateRange(projectMovements);
+                                            });
+
+                                            ctx.SaveChanges();
+
+                                            result.eMessages.Add(new TraceInformation(TraceType.Success, execDetails));
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (!hasErrors)
+                                            hasErrors = true;
+
+                                        execDetails += " Erro ao criar as linhas: ";
+                                        result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails + errorMessage));
+                                    }
                                 }
                             }
                         }

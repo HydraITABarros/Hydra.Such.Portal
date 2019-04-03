@@ -1756,6 +1756,11 @@ namespace Hydra.Such.Portal.Configurations
             },
              new EnumData
             {
+                Id = 10,
+                Value = "90 dias"
+            },
+             new EnumData
+            {
                 Id = 3,
                 Value = "180 dias"
             },
