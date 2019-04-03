@@ -81,11 +81,11 @@ namespace Hydra.Such.Portal.Controllers
                 ConfiguraçãoNumerações numConf = DBNumerationConfigurations.GetById(contactsNumerationConfId);
 
                 //Validate if id is valid
-                if (!(item.Id == "" || item.Id == null) && !numConf.Manual.Value)
+                if (!(item.No == "" || item.No == null) && !numConf.Manual.Value)
                 {
                     return Json("A numeração configurada para contactos não permite inserção manual.");
                 }
-                else if (item.Id == "" && !numConf.Automático.Value)
+                else if (item.No == "" && !numConf.Automático.Value)
                 {
                     return Json("É obrigatório inserir o Nº de Contacto.");
                 }
@@ -101,8 +101,26 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetById([FromBody] ContactViewModel item)
         {
             ContactViewModel result = new ContactViewModel();
-            if (item != null && !string.IsNullOrEmpty(item.Id))
-                result = DBContacts.GetById(item.Id).ParseToViewModel();
+
+            if (item != null && !string.IsNullOrEmpty(item.No))
+                result = DBContacts.GetById(item.No).ParseToViewModel();
+
+            if (!string.IsNullOrEmpty(result.NoCliente))
+            {
+                NAVClientsViewModel cliente = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, result.NoCliente);
+                if (cliente != null)
+                {
+                    result.ClienteNome = cliente.Name;
+                    result.ClienteNIF = cliente.VATRegistrationNo_;
+                    result.ClienteEndereco = cliente.Address;
+                    result.ClienteCodigoPostal = cliente.PostCode;
+                    result.ClienteCidade = cliente.City;
+                    result.ClienteRegiao = cliente.RegionCode;
+                    result.ClienteTelefone = cliente.PhoneNo;
+                    result.ClienteEmail = cliente.EMail;
+                }
+            }
+
             return Json(result);
         }
 
@@ -116,19 +134,19 @@ namespace Hydra.Such.Portal.Controllers
                 Configuração conf = DBConfigurations.GetById(1);
                 int entityNumerationConfId = conf.NumeraçãoContactos.Value;
                 
-                if (item.Id == "" || item.Id == null)
+                if (item.No == "" || item.No == null)
                 {
                     autoGenId = true;
-                    item.Id = DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, autoGenId, false);
+                    item.No = DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, autoGenId, false);
                 }
 
-                if (item.Id != null)
+                if (item.No != null)
                 {
                     //Ensure contact Id doesn't exist
-                    var existingContact = DBContacts.GetById(item.Id);
+                    var existingContact = DBContacts.GetById(item.No);
                     if (existingContact == null)
                     {
-                        item.CreateUser = User.Identity.Name;
+                        item.CriadoPor = User.Identity.Name;
 
                         var newItem = DBContacts.Create(item.ParseToDB()).ParseToViewModel();
                         if (newItem != null)
@@ -136,40 +154,40 @@ namespace Hydra.Such.Portal.Controllers
                             //Inserted, update item to return
                             item = newItem;
                             
-                            Task<WSContacts.Create_Result> createContactTask = NAVContactsService.CreateAsync(item, _configws);
-                            try
-                            {
-                                createContactTask.Wait();
-                            }
-                            catch (Exception ex)
-                            {
-                                item.eReasonCode = 3;
-                                item.eMessage = "Ocorreu um erro ao criar o contacto no NAV.";
-                                item.eMessages.Add(new TraceInformation(TraceType.Error, ex.Message));
-                            }
+                            //Task<WSContacts.Create_Result> createContactTask = NAVContactsService.CreateAsync(item, _configws);
+                            //try
+                            //{
+                            //    createContactTask.Wait();
+                            //}
+                            //catch (Exception ex)
+                            //{
+                            //    item.eReasonCode = 3;
+                            //    item.eMessage = "Ocorreu um erro ao criar o contacto no NAV.";
+                            //    item.eMessages.Add(new TraceInformation(TraceType.Error, ex.Message));
+                            //}
 
 
-                            if (!createContactTask.IsCompletedSuccessfully)
-                            {
-                                //Delete Created Project on Database
-                                DBContacts.Delete(item.Id);
+                            //if (!createContactTask.IsCompletedSuccessfully)
+                            //{
+                            //    //Delete Created Project on Database
+                            //    DBContacts.Delete(item.No);
 
-                                item.eReasonCode = 3;
-                                item.eMessage = "Ocorreu um erro ao criar o contacto no NAV.";
-                            }
-                            else
-                            {
+                            //    item.eReasonCode = 3;
+                            //    item.eMessage = "Ocorreu um erro ao criar o contacto no NAV.";
+                            //}
+                            //else
+                            //{
                                 //Update Last Numeration Used
                                 ConfiguraçãoNumerações configNumerations = DBNumerationConfigurations.GetById(entityNumerationConfId);
                                 if (configNumerations != null && autoGenId)
                                 {
-                                    configNumerations.ÚltimoNºUsado = item.Id;
+                                    configNumerations.ÚltimoNºUsado = item.No;
                                     configNumerations.UtilizadorModificação = User.Identity.Name;
                                     DBNumerationConfigurations.Update(configNumerations);
                                 }
                                 item.eReasonCode = 1;
                                 item.eMessage = "Contacto criado com sucesso.";
-                            }
+                            //}
                         }
                         else
                         {
@@ -180,7 +198,7 @@ namespace Hydra.Such.Portal.Controllers
                     else
                     {
                         item.eReasonCode = 4;
-                        item.eMessage = "Já existe um contacto com o id " + item.Id;
+                        item.eMessage = "Já existe um contacto com o Nº " + item.No;
                     }
                 }
                 else
@@ -197,7 +215,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             if (item != null)
             {
-                item.UpdateUser = User.Identity.Name;
+                item.AlteradoPor = User.Identity.Name;
                 var updatedItem = DBContacts.Update(item.ParseToDB()).ParseToViewModel();
                 if (updatedItem != null)
                 {
@@ -211,17 +229,17 @@ namespace Hydra.Such.Portal.Controllers
                     item.eMessage = "Ocorreu um erro ao atualizar o contacto.";
                 }
 
-                Task<WSContacts.Update_Result> updateContactTask = NAVContactsService.UpdateAsync(item, _configws);
+                //Task<WSContacts.Update_Result> updateContactTask = NAVContactsService.UpdateAsync(item, _configws);
 
-                try
-                {
-                    updateContactTask.Wait();
-                }
-                catch (Exception ex)
-                {
-                    item.eReasonCode = 4;
-                    item.eMessage = "Ocorreu um erro ao atualizar o contacto no NAV.";
-                }
+                //try
+                //{
+                //    updateContactTask.Wait();
+                //}
+                //catch (Exception ex)
+                //{
+                //    item.eReasonCode = 4;
+                //    item.eMessage = "Ocorreu um erro ao atualizar o contacto no NAV.";
+                //}
             }
             else
             {
@@ -240,7 +258,7 @@ namespace Hydra.Such.Portal.Controllers
             bool sucess = false;
 
             if (item != null)
-                sucess = DBContacts.Delete(item.Id);
+                sucess = DBContacts.Delete(item.No);
 
             return Json(sucess);
         }
@@ -250,13 +268,27 @@ namespace Hydra.Such.Portal.Controllers
         {
             List<ContactViewModel> result = DBContacts.GetAll().ParseToViewModel();
 
-            List<NAVDimValueViewModel> AllRegions = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 1);
+            List<NAVClientsViewModel> AllClients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "");
+            List<ContactosServicos> AllServicos = DBContactsServicos.GetAll();
+            List<ContactosFuncoes> AllFuncoes = DBContactsFuncoes.GetAll();
 
             result.ForEach(CT =>
             {
-                CT.RegiaoText = !string.IsNullOrEmpty(CT.Regiao) ? AllRegions.Where(x => x.Code == CT.Regiao).FirstOrDefault() != null ? AllRegions.Where(x => x.Code == CT.Regiao).FirstOrDefault().Name : "" : "";
+                NAVClientsViewModel cliente = AllClients.Where(x => x.No_ == CT.NoCliente).FirstOrDefault() != null ? AllClients.Where(x => x.No_ == CT.NoCliente).FirstOrDefault() : null;
+                CT.ClienteNome = cliente != null ? cliente.Name : "";
+                CT.ClienteNIF = cliente != null ? cliente.VATRegistrationNo_ : "";
+                CT.ClienteEndereco = cliente != null ? cliente.Address : "";
+                CT.ClienteCodigoPostal = cliente != null ? cliente.PostCode : "";
+                CT.ClienteCidade = cliente != null ? cliente.City : "";
+                CT.ClienteRegiao = cliente != null ? cliente.RegionCode : "";
+                CT.ClienteTelefone = cliente != null ? cliente.PhoneNo : "";
+                CT.ClienteEmail = cliente != null ? cliente.EMail : "";
+
+                CT.ServicoNome = AllServicos.Where(x => x.ID == CT.NoServico).FirstOrDefault() != null ? AllServicos.Where(x => x.ID == CT.NoServico).FirstOrDefault().Servico : "";
+                CT.FuncaoNome = AllFuncoes.Where(x => x.ID == CT.NoFuncao).FirstOrDefault() != null ? AllFuncoes.Where(x => x.ID == CT.NoFuncao).FirstOrDefault().Funcao : "";
             });
-            return Json(result.OrderByDescending(x => x.Id));
+
+            return Json(result.OrderByDescending(x => x.No));
         }
 
         //1
@@ -281,81 +313,27 @@ namespace Hydra.Such.Portal.Controllers
                 IRow row = excelSheet.CreateRow(0);
                 int Col = 0;
 
-                if (dp["id"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Nº");
-                    Col = Col + 1;
-                }
-                if (dp["name"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Nome");
-                    Col = Col + 1;
-                }
-                if (dp["address"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Endereço");
-                    Col = Col + 1;
-                }
-                if (dp["zipCode"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Código Postal");
-                    Col = Col + 1;
-                }
-                if (dp["city"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Cidade");
-                    Col = Col + 1;
-                }
-                if (dp["regiaoText"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Região");
-                    Col = Col + 1;
-                }
-                if (dp["phone"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Telefone");
-                    Col = Col + 1;
-                }
-                if (dp["email"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Email");
-                    Col = Col + 1;
-                }
-                if (dp["vATNumber"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("NIF");
-                    Col = Col + 1;
-                }
-                if (dp["personContact"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Pessoa Contato");
-                    Col = Col + 1;
-                }
-                if (dp["phoneContact"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Telefone Contato");
-                    Col = Col + 1;
-                }
-                if (dp["contactFunction"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Função Contato");
-                    Col = Col + 1;
-                }
-                if (dp["mobilePhoneContact"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Telemovel Contato");
-                    Col = Col + 1;
-                }
-                if (dp["emailContact"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Email Contato");
-                    Col = Col + 1;
-                }
-                if (dp["notes"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Notas");
-                    Col = Col + 1;
-                }
+                if (dp["no"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº"); Col = Col + 1; }
+                if (dp["noCliente"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Cliente"); Col = Col + 1; }
+                if (dp["clienteNome"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cliente Nome"); Col = Col + 1; }
+                if (dp["clienteNIF"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cliente NIF"); Col = Col + 1; }
+                if (dp["clienteEndereco"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cliente Endereço"); Col = Col + 1; }
+                if (dp["clienteCodigoPostal"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cliente Código Postal"); Col = Col + 1; }
+                if (dp["clienteCidade"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cliente Cidade"); Col = Col + 1; }
+                if (dp["clienteRegiao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cliente Região"); Col = Col + 1; }
+                if (dp["clienteTelefone"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cliente Telefone"); Col = Col + 1; }
+                if (dp["clienteEmail"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cliente Email"); Col = Col + 1; }
+                if (dp["noServico"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Serviço"); Col = Col + 1; }
+                if (dp["servicoNome"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Serviço Nome"); Col = Col + 1; }
+                if (dp["noFuncao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Função"); Col = Col + 1; }
+                if (dp["funcaoNome"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Função Nome"); Col = Col + 1; }
+                if (dp["nome"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nome"); Col = Col + 1; }
+                if (dp["telefone"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Telefone"); Col = Col + 1; }
+                if (dp["telemovel"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Telemóvel"); Col = Col + 1; }
+                if (dp["fax"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Fax"); Col = Col + 1; }
+                if (dp["email"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Email"); Col = Col + 1; }
+                if (dp["pessoa"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Pessoa"); Col = Col + 1; }
+                if (dp["notas"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Notas"); Col = Col + 1; }
 
                 if (dp != null)
                 {
@@ -365,81 +343,27 @@ namespace Hydra.Such.Portal.Controllers
                         Col = 0;
                         row = excelSheet.CreateRow(count);
 
-                        if (dp["id"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.Id);
-                            Col = Col + 1;
-                        }
-                        if (dp["name"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.Name);
-                            Col = Col + 1;
-                        }
-                        if (dp["address"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.Address);
-                            Col = Col + 1;
-                        }
-                        if (dp["zipCode"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.ZipCode);
-                            Col = Col + 1;
-                        }
-                        if (dp["city"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.City);
-                            Col = Col + 1;
-                        }
-                        if (dp["regiaoText"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.RegiaoText);
-                            Col = Col + 1;
-                        }
-                        if (dp["phone"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.Phone);
-                            Col = Col + 1;
-                        }
-                        if (dp["email"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.Email);
-                            Col = Col + 1;
-                        }
-                        if (dp["vATNumber"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.VATNumber);
-                            Col = Col + 1;
-                        }
-                        if (dp["personContact"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.PersonContact);
-                            Col = Col + 1;
-                        }
-                        if (dp["phoneContact"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.PhoneContact);
-                            Col = Col + 1;
-                        }
-                        if (dp["contactFunction"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.ContactFunction);
-                            Col = Col + 1;
-                        }
-                        if (dp["mobilePhoneContact"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.MobilePhoneContact);
-                            Col = Col + 1;
-                        }
-                        if (dp["emailContact"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.EmailContact);
-                            Col = Col + 1;
-                        }
-                        if (dp["notes"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.Notes);
-                            Col = Col + 1;
-                        }
+                        if (dp["no"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.No); Col = Col + 1; }
+                        if (dp["noCliente"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.NoCliente); Col = Col + 1; }
+                        if (dp["clienteNome"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ClienteNome); Col = Col + 1; }
+                        if (dp["clienteNIF"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ClienteNIF); Col = Col + 1; }
+                        if (dp["clienteEndereco"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ClienteEndereco); Col = Col + 1; }
+                        if (dp["clienteCodigoPostal"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ClienteCodigoPostal); Col = Col + 1; }
+                        if (dp["clienteCidade"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ClienteCidade); Col = Col + 1; }
+                        if (dp["clienteRegiao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ClienteRegiao); Col = Col + 1; }
+                        if (dp["clienteTelefone"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ClienteTelefone); Col = Col + 1; }
+                        if (dp["clienteEmail"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ClienteEmail); Col = Col + 1; }
+                        if (dp["noServico"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.NoServico.ToString()); Col = Col + 1; }
+                        if (dp["servicoNome"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ServicoNome); Col = Col + 1; }
+                        if (dp["noFuncao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.NoFuncao.ToString()); Col = Col + 1; }
+                        if (dp["funcaoNome"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.FuncaoNome); Col = Col + 1; }
+                        if (dp["nome"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Nome); Col = Col + 1; }
+                        if (dp["telefone"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Telefone); Col = Col + 1; }
+                        if (dp["telemovel"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Telemovel); Col = Col + 1; }
+                        if (dp["fax"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Fax); Col = Col + 1; }
+                        if (dp["email"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Email); Col = Col + 1; }
+                        if (dp["pessoa"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Pessoa); Col = Col + 1; }
+                        if (dp["notas"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Notas); Col = Col + 1; }
                         count++;
                     }
                 }

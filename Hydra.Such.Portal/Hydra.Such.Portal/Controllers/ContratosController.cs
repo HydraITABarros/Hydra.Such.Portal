@@ -1667,7 +1667,7 @@ namespace Hydra.Such.Portal.Controllers
                 x.OrderOriginText = x.OrderOrigin != null ? origemPedido.Where(y => y.Id == x.OrderOrigin).Select(y => y.Value).FirstOrDefault() : "";
                 x.ProvisionUnitText = x.ProvisionUnit != null ? ALLFetcUnit.Where(y => y.Código == x.ProvisionUnit).FirstOrDefault() != null ? ALLFetcUnit.Where(y => y.Código == x.ProvisionUnit).FirstOrDefault().Descrição : "" : "";
                 //x.ContactNoText = DBNAV2017Contacts.GetContactsByType(_config.NAVDatabaseName, _config.NAVCompanyName, x.ContactNo, 0).FirstOrDefault() != null ? DBNAV2017Contacts.GetContactsByType(_config.NAVDatabaseName, _config.NAVCompanyName, x.ContactNo, 0).FirstOrDefault().Name : "";
-                x.ContactNoText = !string.IsNullOrEmpty(x.ContactNo) ? AllContacts.Where(y => y.Nº == x.ContactNo).FirstOrDefault() != null ? AllContacts.Where(y => y.Nº == x.ContactNo).FirstOrDefault().Nome : "" : "";
+                x.ContactNoText = !string.IsNullOrEmpty(x.ContactNo) ? AllContacts.Where(y => y.No == x.ContactNo).FirstOrDefault() != null ? AllContacts.Where(y => y.No == x.ContactNo).FirstOrDefault().Nome : "" : "";
             });
 
             return Json(result);
@@ -1836,9 +1836,14 @@ namespace Hydra.Such.Portal.Controllers
                 string Problema;
                 int? totalInvoiceGroups = contractLines.Where(x => x.NºContrato == item.NºDeContrato).Select(x => x.GrupoFatura).Distinct().Count();
 
+                if (item.NºDeContrato == "VC0500682")
+                {
+                    Problema = "";
+                }
+
                 foreach (var contractLine in contractLines)
                 {
-                    if (contractLine.NºContrato == "VC070303")
+                    if (contractLine.NºContrato == "VC0500682")
                     {
                         Problema = "";
                     }
@@ -1918,7 +1923,7 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         //Se ainda não houver nenhuma fatura do contrato (data ultima fatura vazia) - Tentar obter a data da ultima fatura a partir da Data Inicio do Contrato. 
                         if (nextInvoiceDate.Equals(DateTime.MinValue))
-                            nextInvoiceDate = item.DataInicial.HasValue ? item.DataInicial.Value : lastDay;
+                            nextInvoiceDate = item.DataInicial.HasValue ? item.DataInicial.Value.AddDays(-1) : lastDay;
 
                         //Para a data de faturação, o utilizador insere o ultimo dia do mês. Adicionar um dia para evitar contabilizar o mês selecionado.
                         //TODO: Verificar se existe necessidade de aplicar regra mais sólida 

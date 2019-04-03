@@ -610,7 +610,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             List<DDMessageString> result = DBContacts.GetAll().Select(x => new DDMessageString()
             {
-                id = x.Nº,
+                id = x.No,
                 value = x.Nome
             }).ToList();
             return Json(result);
@@ -1533,6 +1533,30 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetAllClientsComboGrid()
         {
             var result = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "").ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetAllContactsServicos()
+        {
+            List<DDMessage> result = DBContactsServicos.GetAll().Select(x => new DDMessage()
+            {
+                id = x.ID,
+                value = x.Servico
+            }).ToList();
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetAllContactsFuncoes()
+        {
+            List<DDMessage> result = DBContactsFuncoes.GetAll().Select(x => new DDMessage()
+            {
+                id = x.ID,
+                value = x.Funcao
+            }).ToList();
+
             return Json(result);
         }
 

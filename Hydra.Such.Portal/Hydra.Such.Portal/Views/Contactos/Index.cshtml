@@ -1,8 +1,8 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Contactos";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
 <link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
@@ -10,8 +10,6 @@
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
-@*<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-checkbox.html">
-    <link rel="import" href="~/lib/vaadin-checkbox/vaadin-checkbox.html">*@
 <link rel="import" href="~/lib/iron-form/iron-form.html" />
 <link rel="import" href="~/lib/paper-button/paper-button.html" />
 
@@ -30,8 +28,23 @@
         <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
 
-        <iron-ajax id="contacts_grid_datasource" url="/Contactos/GetContacts" last-response="{{Contacts}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax id="deleteContact_ajax" url="/Contactos/DeleteContact" last-response="{{DeleteContactResponse}}" on-response="_deleteContactResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax id="contacts_grid_datasource"
+                   url="/Contactos/GetContacts"
+                   last-response="{{Contacts}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax id="deleteContact_ajax"
+                   url="/Contactos/DeleteContact"
+                   last-response="{{DeleteContactResponse}}"
+                   on-response="_deleteContactResponse"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
 
         <iron-ajax url="/Contactos/ExportToExcel_Contactos"
                    last-response="{{export}}"
@@ -63,164 +76,214 @@
             <!--end ColumnToggle-->
         </div>
 
-        <vaadin-grid id="grdContacts" aria-label="Contacts Table" items="[[Contacts]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
-            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.id.hidden }}">
+        <vaadin-grid id="grdContacts" aria-label="Contacts Table" items="[[Contacts]]" class="grid" active-item="{{activeItem}}" multi-sort="true" column-reordering-allowed>
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.no.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="id">Nº</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="id" />
+                    <vaadin-grid-sorter path="no">Nº</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="no" value="[[filter.no]]" />
                 </template>
                 <template>
-                    {{item.id}}
+                    {{item.no}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.name.hidden }}">
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.noCliente.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="name">Nome</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="name" />
+                    <vaadin-grid-sorter path="noCliente">Nº Cliente</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="noCliente" value="[[filter.noCliente]]" />
                 </template>
                 <template>
-                    {{item.name}}
+                    {{item.noCliente}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.clientNo.hidden }}">
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.clienteNome.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="name">Nº Cliente</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="name" />
+                    <vaadin-grid-sorter path="clienteNome">Cliente Nome</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="clienteNome" value="[[filter.clienteNome]]" />
                 </template>
                 <template>
-                    {{item.clientNo}}
+                    {{item.clienteNome}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.address.hidden }}">
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.clienteNIF.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="address">Endereço</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="address" />
+                    <vaadin-grid-sorter path="clienteNIF">Cliente NIF</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="clienteNIF" value="[[filter.clienteNIF]]" />
                 </template>
                 <template>
-                    {{item.address}}
+                    {{item.clienteNIF}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.zipCode.hidden }}">
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.clienteEndereco.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="zipCode">Código Postal</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="zipCode" />
+                    <vaadin-grid-sorter path="clienteEndereco">Cliente Endereço</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="clienteEndereco" value="[[filter.clienteEndereco]]" />
                 </template>
                 <template>
-                    {{item.zipCode}}
+                    {{item.clienteEndereco}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.city.hidden }}">
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.clienteCodigoPostal.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="city">Cidade</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="city" />
+                    <vaadin-grid-sorter path="clienteCodigoPostal">Cliente Código Postal</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="clienteCodigoPostal" value="[[filter.clienteCodigoPostal]]" />
                 </template>
                 <template>
-                    {{item.city}}
+                    {{item.clienteCodigoPostal}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.regiaoText.hidden }}">
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.clienteCidade.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="regiaoText">Região</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="regiaoText" />
+                    <vaadin-grid-sorter path="clienteCidade">Cliente Cidade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="clienteCidade" value="[[filter.clienteCidade]]" />
                 </template>
                 <template>
-                    {{item.regiaoText}}
+                    {{item.clienteCidade}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.phone.hidden }}">
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.clienteRegiao.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="phone">Telefone</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="phone" />
+                    <vaadin-grid-sorter path="clienteRegiao">Cliente Região</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="clienteRegiao" value="[[filter.clienteRegiao]]" />
                 </template>
                 <template>
-                    {{item.phone}}
+                    {{item.clienteRegiao}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.clienteTelefone.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="clienteTelefone">Cliente Telefone</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="clienteTelefone" value="[[filter.clienteTelefone]]" />
+                </template>
+                <template>
+                    {{item.clienteTelefone}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.clienteEmail.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="clienteEmail">Cliente Email</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="clienteEmail" value="[[filter.clienteEmail]]" />
+                </template>
+                <template>
+                    {{item.clienteEmail}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.noServico.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="noServico">Nº Serviço</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="noServico" value="[[filter.noServico]]" />
+                </template>
+                <template>
+                    {{item.noServico}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.servicoNome.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="servicoNome">Serviço</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="servicoNome" value="[[filter.servicoNome]]" />
+                </template>
+                <template>
+                    {{item.servicoNome}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.noFuncao.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="noFuncao">Nº Função</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="noFuncao" value="[[filter.noFuncao]]" />
+                </template>
+                <template>
+                    {{item.noFuncao}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.funcaoNome.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="funcaoNome">Função</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="funcaoNome" value="[[filter.funcaoNome]]" />
+                </template>
+                <template>
+                    {{item.funcaoNome}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.nome.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="nome">Nome</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="nome" value="[[filter.nome]]" />
+                </template>
+                <template>
+                    {{item.nome}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.telefone.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="telefone">Telefone</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="telefone" value="[[filter.telefone]]" />
+                </template>
+                <template>
+                    {{item.telefone}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.telemovel.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="telemovel">Telemóvel</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="telemovel" value="[[filter.telemovel]]" />
+                </template>
+                <template>
+                    {{item.telemovel}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.fax.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="fax">Fax</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="fax" value="[[filter.fax]]" />
+                </template>
+                <template>
+                    {{item.fax}}
                 </template>
             </vaadin-grid-column>
 
             <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.email.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="email">Email</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="email" />
+                    <vaadin-grid-filter path="email" value="[[filter.email]]" />
                 </template>
                 <template>
                     {{item.email}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.vatNumber.hidden }}">
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.pessoa.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="vatNumber">NIF</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="vatNumber" />
+                    <vaadin-grid-sorter path="pessoa">Pessoa</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="pessoa" value="[[filter.pessoa]]" />
                 </template>
                 <template>
-                    {{item.vatNumber}}
+                    {{item.pessoa}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.personContact.hidden }}">
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.notas.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="personContact">Pessoa Contato</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="personContact" />
+                    <vaadin-grid-sorter path="notas">Notas</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="notas" value="[[filter.notas]]" />
                 </template>
                 <template>
-                    {{item.personContact}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.phoneContact.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="phoneContact">Telefone Contato</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="phoneContact" />
-                </template>
-                <template>
-                    {{item.phoneContact}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.contactFunction.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="contactFunction">Função Contato</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="contactFunction" />
-                </template>
-                <template>
-                    {{item.contactFunction}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.mobilePhoneContact.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="mobilePhoneContact">Telemovel Contato</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="mobilePhoneContact" />
-                </template>
-                <template>
-                    {{item.mobilePhoneContact}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.emailContact.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="emailContact">Email Contato</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="emailContact" />
-                </template>
-                <template>
-                    {{item.emailContact}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.notes.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="notes">Notas</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="notes" />
-                </template>
-                <template>
-                    {{item.notes}}
+                    {{item.notas}}
                 </template>
             </vaadin-grid-column>
 
@@ -237,6 +300,7 @@
                 </vaadin-grid-column>
             </template>
         </vaadin-grid>
+
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
@@ -262,8 +326,19 @@
                             return {};
                         }
                     },
+                    /*FILTROS*/
+                    filter: {
+                        type: Object,
+                        value: {},
+                    },
                 },
+
                 ready: function () {
+                    /*FILTROS*/
+                    window.handleGridListColumnsOrder(this.$.grdContacts, 'contactos-index');
+                    window.grid = this.$.grdContacts;
+                    window._this = this;
+
                     /*ColumnToggle*/
                     this._startColumnToggle();
 
@@ -290,23 +365,37 @@
                     this.$.ToastMessageError.text = message;
                     this.$.ToastMessageError.open();
                 },
+
                 _onContactRowSelected: function (item) {
                     if (item != null) {
-                        window.location.href = "/Contactos/Detalhes/" + item.id;
+                        /*FILTROS*/
+                        var filters = {};
+                        this.$.grdContacts._filters.map(function (value, index) {
+                            filters[value.path] = value.value;
+                        });
+                        window.setGridFilter('contactos-index', filters || {});
+
+                        window.location.href = "/Contactos/Detalhes/" + item.no;
                     }
                 },
+                /*FILTROS*/
+                created: function () {
+                    this.filter = window.getGridFilter('contactos-index');
+                },
+
                 _redirectToNewContactForm: function (item) {
                     if (item != null) {
-                        window.location.href = "/Contactos/Detalhes";
+                        window.location.href = "/Contactos/Detalhes/";
                     }
                 },
+
                 _deleteContact: function (e) {
                     var ajax_request = this.$.deleteContact_ajax;
 
-                    var contactToDelete = e.model.item;//this.activeItem;
+                    var contactToDelete = e.model.item;
 
                     bootbox.confirm({
-                        message: "Tem a certeza que pretende remover o contacto " + contactToDelete.id + "?",
+                        message: "Tem a certeza que pretende remover o contacto " + contactToDelete.no + "?",
                         buttons: {
                             confirm: {
                                 label: 'Sim',
@@ -342,7 +431,6 @@
                     this.$.ajax_Export.body = JSON.stringify(this.Contacts);
                     this.$.ajax_Export.generateRequest();
                 },
-
                 _exportEXCELResponse: function (e) {
                     //debugger
                     var FileName = this.export;
@@ -352,22 +440,27 @@
                 /*start - ColumnToggle*/
                 _startColumnToggle: function () {
                     var columns = {
-                        "id": { hidden: false, label: "Nº" },
-                        "name": { hidden: false, label: "Nome" },
-                        "clientNo": { hidden: false, label: "Nº Cliente" },
-                        "address": { hidden: false, label: "Endereço" },
-                        "zipCode": { hidden: false, label: "Código Postal" },
-                        "city": { hidden: false, label: "Cidade" },
-                        "regiaoText": { hidden: false, label: "Região" },
-                        "phone": { hidden: false, label: "Telefone" },
+                        "no": { hidden: false, label: "Nº" },
+                        "noCliente": { hidden: false, label: "Nº Cliente" },
+                        "clienteNome": { hidden: false, label: "Cliente Nome" },
+                        "clienteNIF": { hidden: false, label: "Cliente NIF" },
+                        "clienteEndereco": { hidden: false, label: "Cliente Endereço" },
+                        "clienteCodigoPostal": { hidden: false, label: "Cliente Código Postal" },
+                        "clienteCidade": { hidden: false, label: "Cliente Cidade" },
+                        "clienteRegiao": { hidden: false, label: "Cliente Região" },
+                        "clienteTelefone": { hidden: false, label: "Cliente Telefone" },
+                        "clienteEmail": { hidden: false, label: "Cliente Email" },
+                        "noServico": { hidden: false, label: "Nº Serviço" },
+                        "servicoNome": { hidden: false, label: "Serviço" },
+                        "noFuncao": { hidden: false, label: "Nº Função" },
+                        "funcaoNome": { hidden: false, label: "Função" },
+                        "nome": { hidden: false, label: "Nome" },
+                        "telefone": { hidden: false, label: "Telefone" },
+                        "telemovel": { hidden: false, label: "Telemóvel" },
+                        "fax": { hidden: false, label: "Fax" },
                         "email": { hidden: false, label: "Email" },
-                        "vATNumber": { hidden: false, label: "NIF" },
-                        "personContact": { hidden: false, label: "Pessoa Contato" },
-                        "phoneContact": { hidden: false, label: "Telefone Contato" },
-                        "contactFunction": { hidden: false, label: "Função Contato" },
-                        "mobilePhoneContact": { hidden: false, label: "Telemovel Contato" },
-                        "emailContact": { hidden: false, label: "Email Contato" },
-                        "notes": { hidden: false, label: "Notas" }
+                        "pessoa": { hidden: false, label: "Pessoa" },
+                        "notas": { hidden: false, label: "Notas" }
                     };
 
                     if (localStorage["contacts.ToggleColumn"]) {

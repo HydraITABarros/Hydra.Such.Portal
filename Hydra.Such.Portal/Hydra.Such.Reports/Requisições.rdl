@@ -5745,7 +5745,7 @@ WHERE        ([Nº Requisição] = @CodRequisicao)</CommandText>
             </Style>
           </Tablix>
         </ReportItems>
-        <Height>2.36in</Height>
+        <Height>4.27667in</Height>
         <Style />
       </Body>
       <Width>65in</Width>

@@ -39,15 +39,15 @@ namespace Hydra.Such.Data.NAV
             {
                 WSContact = new WSContacts.WSContact()
                 {
-                    No = contact.Id,
-                    gName = contact.Name,
-                    City = contact.City,
+                    No = contact.No,
+                    gName = contact.Nome,
+                    City = contact.ClienteCidade,
                     E_Mail = contact.Email,
-                    gAddress = contact.Address,
-                    Mobile_Phone_No = contact.MobilePhoneContact,
-                    Phone_No = contact.Phone,
-                    Post_Code = contact.ZipCode,
-                    VAT_Registration_No = contact.VATNumber,
+                    gAddress = contact.ClienteEndereco,
+                    Mobile_Phone_No = contact.Telemovel,
+                    Phone_No = contact.Telefone,
+                    Post_Code = contact.ClienteCodigoPostal,
+                    VAT_Registration_No = contact.ClienteNIF,
                 }
             };
 
@@ -80,15 +80,15 @@ namespace Hydra.Such.Data.NAV
             {
                 WSContact = new WSContacts.WSContact()
                 {
-                    No = contact.Id,
-                    gName = contact.Name,
-                    City = contact.City,
+                    No = contact.No,
+                    gName = contact.Nome,
+                    City = contact.ClienteCidade,
                     E_Mail = contact.Email,
-                    gAddress = contact.Address,
-                    Mobile_Phone_No = contact.MobilePhoneContact,
-                    Phone_No = contact.Phone,
-                    Post_Code = contact.ZipCode,
-                    VAT_Registration_No = contact.VATNumber,
+                    gAddress = contact.ClienteEndereco,
+                    Mobile_Phone_No = contact.Telemovel,
+                    Phone_No = contact.Telefone,
+                    Post_Code = contact.ClienteCodigoPostal,
+                    VAT_Registration_No = contact.ClienteNIF,
                 }
             };
 
@@ -120,7 +120,7 @@ namespace Hydra.Such.Data.NAV
             ws_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
 
             
-            WSContacts.Read_Result resultRead = await ws_Client.ReadAsync(contact.Id);
+            WSContacts.Read_Result resultRead = await ws_Client.ReadAsync(contact.No);
             
 
             WSContacts.Delete_Result result = await ws_Client.DeleteAsync(resultRead.WSContact.Key);

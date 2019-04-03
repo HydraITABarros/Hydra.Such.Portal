@@ -1,8 +1,8 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Detalhes de Contacto";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
 <link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
 <link rel="import" href="~/lib/vaadin-valo-theme/vaadin-text-field.html">
 <link rel="import" href="~/lib/vaadin-text-field/vaadin-text-field.html">
@@ -19,25 +19,62 @@
         <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
 
-        <iron-ajax method="post" handle-as="json" content-type="application/json" last-response="{{contact}}" id="contact_datasource" url="/Contactos/GetById" on-response="_onGetContactByIdResponse"></iron-ajax>
-        <iron-ajax method="post" handle-as="json" content-type="application/json" last-response="{{contact}}" id="create_contact_request" url="/Contactos/CreateContact" on-response="_onContactResponse"></iron-ajax>
-        <iron-ajax method="post" handle-as="json" content-type="application/json" last-response="{{numValidationResponse}}" id="numValidation_contact_request" url="/Contactos/ValidateNumeration" on-response="_onNumValidationResponse"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetAllRegionCode" last-response="{{CBRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetAllClientsComboGrid" last-response="{{CBClients}}" auto method="post" handle-as="json" content-type="application/json" id="clients_ajax"></iron-ajax>
+        <iron-ajax method="post"
+                   handle-as="json"
+                   content-type="application/json"
+                   last-response="{{contact}}"
+                   id="contact_datasource"
+                   url="/Contactos/GetById"
+                   on-response="_onGetContactByIdResponse">
+        </iron-ajax>
 
-        @*<template is="dom-if" if="{{ !_isCreate }}">
-            <div class="subMenu">
-                <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+        <iron-ajax method="post"
+                   handle-as="json"
+                   content-type="application/json"
+                   last-response="{{contact}}"
+                   id="create_contact_request"
+                   url="/Contactos/CreateContact"
+                   on-response="_onContactResponse">
+        </iron-ajax>
 
-                <template is="dom-if" if="{{ _permissions.create }}">
-                    <paper-button class="tablinks" on-tap="_redirectToNewContactForm"><i class="fa fa-plus" aria-hidden="true" title="Criar Novo"></i>&nbsp; Criar Novo</paper-button>
-                </template>
-            </div>
-        </template>*@
+        <iron-ajax method="post"
+                   handle-as="json"
+                   content-type="application/json"
+                   last-response="{{numValidationResponse}}"
+                   id="numValidation_contact_request"
+                   url="/Contactos/ValidateNumeration"
+                   on-response="_onNumValidationResponse">
+        </iron-ajax>
+
+        <iron-ajax url="/PopulateDropdowns/GetAllClientsComboGrid"
+                   last-response="{{CBClients}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json"
+                   id="clients_ajax">
+        </iron-ajax>
+
+        <iron-ajax url="/PopulateDropdowns/GetAllContactsServicos"
+                   last-response="{{CBServicos}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json"
+                   id="clients_ajax">
+        </iron-ajax>
+
+        <iron-ajax url="/PopulateDropdowns/GetAllContactsFuncoes"
+                   last-response="{{CBFuncoes}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json"
+                   id="clients_ajax">
+        </iron-ajax>
 
         <div class="subMenu">
             <paper-button id="btnGoBack" class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
-
             <paper-button id="btnCreateNew" class="btnEdit tablinks" on-tap="_redirectToNewContactForm" disabled="{{ !_permissions.create }}"><i class="fa fa-plus" aria-hidden="true" title="Criar Novo"></i>&nbsp; Criar Novo</paper-button>
             <paper-button id="btnCreate" class="btnSave tablinks" on-tap="_createContact" disabled="{{ !_permissions.create }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
             <paper-button id="btnUpdate" class="btnSave tablinks" on-tap="_updateContact" disabled="{{ !_permissions.update }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
@@ -45,94 +82,109 @@
         </div>
 
         <div class="row">
-            <div class="col-lg-3">
-                <vaadin-text-field id="contactId" name="contactId" label="Nº" value="{{contact.id}}" disabled></vaadin-text-field>
+            <div class="col-sm-3">
+                <vaadin-text-field id="ddno" label="Nº" value="{{contact.no}}" disabled></vaadin-text-field>
             </div>
-            <div class="col-lg-3">
-                <vaadin-text-field id="contactName" name="contactName" label="Nome" value="{{contact.name}}" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
-            </div>
-            <div class="col-lg-3">
-                <div class="spacer10"></div>
-                <such-selectbox id="clientNo" value="{{contact.clientNo}}" label="Nº Cliente"
+
+            <div class="col-sm-3">
+                <such-selectbox id="ddnoCliente" value="{{contact.noCliente}}" label="Nº Cliente"
                                 items="[[CBClients]]"
-                                text-path="name"
+                                text-path="no_"
                                 value-path="no_"
-                                fields='[{"field":"no_", "name":"Cód. Cliente"}, {"field":"name", "name":"Nome"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Cód. Postal"}, {"field":"city", "name":"Cidade"}, {"field":"country_RegionCode", "name":"Região"}, {"field":"country_RegionCode", "name":"Região"}]'                               
+                                fields='[{"field":"no_", "name":"Cód. Cliente"}, {"field":"name", "name":"Nome"}, {"field":"vatRegistrationNo_", "name":"NIF"}, {"field":"address", "name":"Endereço"}, {"field":"postCode", "name":"Código Postal"}, {"field":"city", "name":"Cidade"}, {"field":"regionCode", "name":"Região"}, {"field":"phoneNo", "name":"Telefone"}, {"field":"eMail", "name":"Email"}]'
+                                on-value-changed="_getClienteDados"
                                 disabled="{{ !_permissions.update }}">
                 </such-selectbox>
-
             </div>
-            <div class="col-lg-3">
-                <vaadin-text-field id="address" name="address" label="Endereço" value="{{contact.address}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+
+            <div class="col-sm-3">
+                <vaadin-text-field id="ddclienteNome" label="Cliente Nome" value="{{contact.clienteNome}}" disabled></vaadin-text-field>
+            </div>
+
+            <div class="col-sm-3">
+                <vaadin-text-field id="ddclienteNIF" label="Cliente NIF" value="{{contact.clienteNIF}}" disabled></vaadin-text-field>
             </div>
         </div>
 
         <div class="row">
-            <div class="col-lg-3">
-                <vaadin-text-field id="zipcode" name="zipcode" label="Código Postal" value="{{contact.zipCode}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+            <div class="col-sm-3">
+                <vaadin-text-field id="ddclienteEndereco" label="Cliente Endereço" value="{{contact.clienteEndereco}}" disabled></vaadin-text-field>
             </div>
-            <div class="col-lg-3">
-                <vaadin-text-field id="city" name="city" label="Cidade" value="{{contact.city}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+
+            <div class="col-sm-3">
+                <vaadin-text-field id="ddclienteCodigoPostal" label="Cliente Código Postal" value="{{contact.clienteCodigoPostal}}" disabled></vaadin-text-field>
             </div>
-            <div class="col-lg-3">
-                <div class="spacer10"></div>
-                <such-selectbox id="codigoRegiao" name="codigoRegiao" value="{{contact.regiao}}" label="Região" disabled="{{ !_permissions.update }}"
-                                items="[[CBRegions]]"
+
+            <div class="col-sm-3">
+                <vaadin-text-field id="ddclienteCidade" label="Cliente Cidade" value="{{contact.clienteCidade}}" disabled></vaadin-text-field>
+            </div>
+
+            <div class="col-sm-3">
+                <vaadin-text-field id="ddclienteRegiao" label="Cliente Região" value="{{contact.clienteRegiao}}" disabled></vaadin-text-field>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-3">
+                <vaadin-text-field id="ddclienteTelefone" label="Cliente Telefone" value="{{contact.clienteTelefone}}" disabled></vaadin-text-field>
+            </div>
+
+            <div class="col-sm-3">
+                <vaadin-text-field id="ddclienteEmail" label="Cliente Email" value="{{contact.clienteEmail}}" disabled></vaadin-text-field>
+            </div>
+
+            <div class="col-sm-3">
+                <such-selectbox id="ddnoServico" value="{{contact.noServico}}" label="Serviço"
+                                items="[[CBServicos]]"
                                 text-path="value"
                                 value-path="id"
-                                fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                                fields='[{"field":"id", "name":"Nº Serviço"}, {"field":"value", "name":"Serviço"}]'
+                                disabled="{{ !_permissions.update }}">
                 </such-selectbox>
             </div>
-            <div class="col-lg-3">
-                <vaadin-text-field id="phone" name="phone" label="Telefone" value="{{contact.phone}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+
+            <div class="col-sm-3">
+                <such-selectbox id="ddnoFuncao" value="{{contact.noFuncao}}" label="Função"
+                                items="[[CBFuncoes]]"
+                                text-path="value"
+                                value-path="id"
+                                fields='[{"field":"id", "name":"Nº Função"}, {"field":"value", "name":"Função"}]'
+                                disabled="{{ !_permissions.update }}">
+                </such-selectbox>
             </div>
         </div>
 
         <div class="row">
-            <div class="col-lg-3">
-                <vaadin-text-field id="email" name="email" label="Email" value="{{contact.email}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+            <div class="col-sm-3">
+                <vaadin-text-field id="ddnome" label="Nome" value="{{contact.nome}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
             </div>
-            <div class="col-lg-3">
-                <vaadin-text-field id="VATNumber" name="VATNumber" label="NIF" value="{{contact.vatNumber}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+
+            <div class="col-sm-3">
+                <vaadin-text-field id="ddtelefone" label="Telefone" value="{{contact.telefone}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
             </div>
-            <div class="col-lg-3">
-                <vaadin-text-field id="PersonContact" name="PersonContact" label="Pessoa Contato" value="{{contact.personContact}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+
+            <div class="col-sm-3">
+                <vaadin-text-field id="ddtelemovel" label="Telemóvel" value="{{contact.telemovel}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
             </div>
-            <div class="col-lg-3">
-                <vaadin-text-field id="PhoneContact" name="PhoneContact" label="Telefone Contato" value="{{contact.phoneContact}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+
+            <div class="col-sm-3">
+                <vaadin-text-field id="ddfax" label="Fax" value="{{contact.fax}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
             </div>
         </div>
 
         <div class="row">
-            <div class="col-lg-3">
-                <vaadin-text-field id="ContactFunction" name="ContactFunction" label="Função Contato" value="{{contact.contactFunction}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
-            </div>
-            <div class="col-lg-3">
-                <vaadin-text-field id="MobilePhoneContact" name="MobilePhoneContact" label="Telemovel Contato" value="{{contact.mobilePhoneContact}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
-            </div>
-            <div class="col-lg-3">
-                <vaadin-text-field id="EmailContact" name="EmailContact" label="Email Contato" value="{{contact.emailContact}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+            <div class="col-sm-3">
+                <vaadin-text-field id="ddemail" label="Email" value="{{contact.email}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
             </div>
 
-            <div class="col-md-6">
-                <div class="spacer10"></div>
-                <such-textarea rows="5" value="{{contact.notes}}" id="notes" name="notes" label="Notas" disabled="{{ !_permissions.update }}"> </such-textarea>
+            <div class="col-sm-3">
+                <vaadin-text-field id="ddpessoa" label="Pessoa" value="{{contact.pessoa}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+            </div>
+
+            <div class="col-sm-6">
+                <such-textarea id="ddnotas" label="Notas" value="{{contact.notas}}" disabled="{{ !_permissions.update }}" rows="5"> </such-textarea>
             </div>
         </div>
-
-        @*<div class="marginSpace">
-            <template is="dom-if" if="{{ _isCreate }}">
-                <paper-button raised id="btnCreate" class="btnSave" on-tap="_createContact"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
-            </template>
-            <template is="dom-if" if="{{ !_isCreate }}">
-                <template is="dom-if" if="{{ _permissions.update }}">
-                    <paper-button raised id="btnUpdate" class="btnSave" on-tap="_updateContact"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                </template>
-                <template is="dom-if" if="{{ _permissions.delete }}">
-                    <paper-button raised id="btnCancel" class="btnRemove" on-tap="_deleteContact"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
-                </template>
-            </template>
-        </div>*@
 
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
@@ -156,15 +208,15 @@
                         value: "@ViewBag.ContactId"
                     }
                 },
+
                 ready: function () {
-                    this.$.contact_datasource.body = JSON.stringify({ "Id": this._contactId });
+                    this.$.contact_datasource.body = JSON.stringify({ "no": this._contactId });
                     this.$.contact_datasource.generateRequest();
 
                     if (this._contactId == "")
                         this._isCreate = true;
 
                     //Inserir
-                    //debugger;
                     if (this._contactId  == "") {
                         $(this.$.btnCreateNew).addClass('hidden');
                         $(this.$.btnCreate).removeClass('hidden');
@@ -177,6 +229,7 @@
                         $(this.$.btnCancel).removeClass('hidden');
                     }
                 },
+
                 _showMessage: function (message) {
                     this.$.ToastMessageSuccess.text = message;
                     this.$.ToastMessageSuccess.open();
@@ -185,16 +238,19 @@
                     this.$.ToastMessageError.text = message;
                     this.$.ToastMessageError.open();
                 },
+
                 _onGetContactByIdResponse: function (e) {
                     if (this.contact == undefined && this._contactId != "") {
                         this._showMessage('Contacto não encontrado');
                     }
                 },
+
                 _redirectToNewContactForm: function (item) {
                     if (item != null) {
                         window.location.href = "/Contactos/Detalhes";
                     }
                 },
+
                 _validateUserInput() {
                     if (this.$.contactName.validate()) {
                         return true;
@@ -202,13 +258,14 @@
                     this._showErrorMessage("Verifique os dados inseridos.");
                     return false;
                 },
-                _createContact: function () {
 
-                    if (this._validateUserInput()) {
+                _createContact: function () {
+                    //if (this._validateUserInput()) {
                         this.$.numValidation_contact_request.body = JSON.stringify(this.contact);
                         this.$.numValidation_contact_request.generateRequest();
-                    }
+                    //}
                 },
+
                 _onNumValidationResponse: function (data) {
                     if (data.detail.status === 200) {
                         if (this.numValidationResponse == "") {
@@ -221,6 +278,7 @@
                         }
                     }
                 },
+
                 _onContactResponse: function (e) {
                     if (e.detail.status === 200)
                     {
@@ -229,6 +287,8 @@
                                 this._contactId = this.contact.Id;
                                 this._isCreate = false;
                                 this._showMessage(this.contact.eMessage);
+
+                                window.location.href = "/Contactos/Detalhes/" + this.$.ddno.value;
                             }
                             else {
                                 this._showErrorMessage(this.contact.eMessage);
@@ -263,13 +323,13 @@
                         }
                     }
                 },
+
                 _updateContact: function () {
-                    if (this._validateUserInput()) {
-                        this.$.create_contact_request.url = "/Contactos/UpdateContact";
-                        this.$.create_contact_request.body = JSON.stringify(this.contact);
-                        this.$.create_contact_request.generateRequest();
-                    }
+                    this.$.create_contact_request.url = "/Contactos/UpdateContact";
+                    this.$.create_contact_request.body = JSON.stringify(this.contact);
+                    this.$.create_contact_request.generateRequest();
                 },
+
                 _deleteContact: function () {
                     this.$.create_contact_request.url = "/Contactos/DeleteContact";
                     var ajax_request = this.$.create_contact_request;
@@ -277,7 +337,7 @@
                     var contactToDelete = this.contact;
 
                     bootbox.confirm({
-                        message: "Tem a certeza que pretende remover o contacto " + this.contact.id + "?",
+                        message: "Tem a certeza que pretende remover o contacto " + this.$.ddno.value + "?",
                         buttons: {
                             confirm: {
                                 label: 'Sim',
@@ -298,6 +358,36 @@
 
 
                 },
+
+                _getClienteDados: function () {
+                    debugger;
+                    if (this.$.ddnoCliente.value != "") {
+                        var cliente = this.CBClients.find(x => x.no_ == this.$.ddnoCliente.value);
+                        if (cliente != null) {
+                            this.$.ddclienteNome.value = cliente.name;
+                            this.$.ddclienteNIF.value = cliente.vatRegistrationNo_;
+                            this.$.ddclienteEndereco.value = cliente.address;
+                            this.$.ddclienteCodigoPostal.value = cliente.postCode;
+                            this.$.ddclienteCidade.value = cliente.city;
+                            this.$.ddclienteRegiao.value = cliente.regionCode;
+                            this.$.ddclienteTelefone.value = cliente.phoneNo;
+                            this.$.ddclienteEmail.value = cliente.eMail;
+                        }
+                    }
+                    else {
+                        this.$.ddclienteNome.value = "";
+                        this.$.ddclienteNIF.value = "";
+                        this.$.ddclienteEndereco.value = "";
+                        this.$.ddclienteCodigoPostal.value = "";
+                        this.$.ddclienteCidade.value = "";
+                        this.$.ddclienteRegiao.value = "";
+                        this.$.ddclienteTelefone.value = "";
+                        this.$.ddclienteEmail.value = "";
+                    }
+
+                },
+
+
 
                 _goBack: function (e) {
                     window.history.back();

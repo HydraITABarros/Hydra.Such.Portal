@@ -1553,7 +1553,7 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                 Preferencial = ObjectToTransform.Preferencial,
                 Selecionado = ObjectToTransform.Selecionado,
                 EmailFornecedor = ObjectToTransform.EmailFornecedor,
-                DataEnvioAoFornecedor = ObjectToTransform.DataEnvioAoFornecedor,
+                DataEnvioAoFornecedor = !string.IsNullOrEmpty(ObjectToTransform.DataEnvioAoFornecedor_Show) ? DateTime.Parse(ObjectToTransform.DataEnvioAoFornecedor_Show) : (DateTime?)null,
                 //DataRecepcaoProposta = ObjectToTransform.DataRecepcaoProposta,
                 //DataRecepcaoProposta = ObjectToTransform.DataRecepcaoProposta_Show != string.Empty ? DateTime.Parse(ObjectToTransform.DataRecepcaoProposta_Show) : (DateTime?)null,
                 DataRecepcaoProposta = ObjectToTransform.DataRecepcaoProposta_Show != null ? ObjectToTransform.DataRecepcaoProposta_Show != string.Empty ? DateTime.Parse(ObjectToTransform.DataRecepcaoProposta_Show) : (DateTime?)null : (DateTime?)null,
