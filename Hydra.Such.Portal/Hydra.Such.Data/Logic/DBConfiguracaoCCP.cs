@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 
 using Hydra.Such.Data.ViewModel.CCP;
+using System.Diagnostics;
 
 namespace Hydra.Such.Data.Logic
 {
@@ -169,6 +170,119 @@ namespace Hydra.Such.Data.Logic
 
                 return false;
             }
+        }
+        #endregion
+
+        #region Configuração Tipos Procedimento
+        public static TipoProcedimentoCcp GetTypeById(int id)
+        {
+            try
+            {
+                   using(var _ctx = new SuchDBContext())
+                {
+                    TipoProcedimentoCcp tipo   = _ctx.TipoProcedimentoCcp.Where(t => t.IdTipo == id).FirstOrDefault();
+                    
+                    tipo.Fundamentos = _ctx.FundamentoLegalTipoProcedimentoCcp.Where(f => f.IdTipo == id).ToList();
+
+                    /* 
+                     * /!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\
+                     *  zpgm.    This loop is needed to overcome the exception:
+                     *      (...)
+                     *          Newtonsoft.Json.JsonSerializationException: 
+                     *          Self referencing loop detected for property 'tipoNavigation' with type 'Hydra.Such.Data.Database.TipoProcedimentoCcp'. Path 'fundamentos[0]'.
+                     *      (...)
+                     * /!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\     
+                     */
+                    foreach (var f in tipo.Fundamentos)
+                    {
+                        f.TipoNavigation = null;
+                    }
+                    return tipo;
+                }
+            }
+            catch (Exception ex)
+            {
+                //Debug.Write(ex.Message);
+                return null;
+            }
+        }
+
+        public static List<TipoProcedimentoCcp> GetAllTypes(bool onlyActives)
+        {
+            SuchDBContext _context = new SuchDBContext();
+
+            try
+            {
+                List<TipoProcedimentoCcp> types = _context.TipoProcedimentoCcp.ToList();
+                if (onlyActives)
+                {
+                    return types.Where(t => t.Activo == true).ToList();
+                }
+
+                return types;
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
+        public static bool __CreateReason(FundamentoLegalTipoProcedimentoCcp fundamento)
+        {
+            if (fundamento == null)
+                return false;
+
+            SuchDBContext _context = new SuchDBContext();
+            try
+            {
+                FundamentoLegalTipoProcedimentoCcp LastFundamento = _context.FundamentoLegalTipoProcedimentoCcp
+                    .Where(f => f.IdTipo == fundamento.IdTipo)
+                    .OrderBy(t => t.IdTipo)
+                    .ThenBy(f => f.IdFundamento)
+                    .LastOrDefault();
+
+                if(LastFundamento == null)
+                {
+                    fundamento.IdFundamento = 1;
+                }
+                else
+                {
+                    fundamento.IdFundamento = LastFundamento.IdFundamento + 1;
+                }
+
+                _context.Add(fundamento);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+            return true;
+        }
+        public static bool __CreateType(TipoProcedimentoCcp tipo)
+        {
+            SuchDBContext _context = new SuchDBContext();
+
+            try
+            {
+                TipoProcedimentoCcp LastTipo = _context.TipoProcedimentoCcp.OrderBy(t => t.IdTipo).LastOrDefault();
+                if (LastTipo == null)
+                    tipo.IdTipo = 1;
+                else
+                    tipo.IdTipo = LastTipo.IdTipo + 1;
+
+                _context.TipoProcedimentoCcp.Add(tipo);
+                _context.SaveChanges();
+
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+            return true;
         }
         #endregion
 

@@ -140,10 +140,10 @@ namespace Hydra.Such.Data.Database
 
         #region zpgm.28032019
         public int? FundamentoLegalTipo { get; set; }
-        public int? ProcedimentoEmLotes { get; set; }
+        public bool? ProcedimentoEmLotes { get; set; }
         public string FundamentacaoPrecoBase { get; set; }
-        public int? VistoAberturaPeloAprovisionamento { get; set; }
-        public int? VistoAdjudicacaoPeloAprovisionamento { get; set; }
+        public bool? VistoAberturaPeloAprovisionamento { get; set; }
+        public bool? VistoAdjudicacaoPeloAprovisionamento { get; set; }
 
         public TipoProcedimentoCcp TipoContratacaoPublica { get; set; }
         public FundamentoLegalTipoProcedimentoCcp FundamentoLegal { get; set; }
