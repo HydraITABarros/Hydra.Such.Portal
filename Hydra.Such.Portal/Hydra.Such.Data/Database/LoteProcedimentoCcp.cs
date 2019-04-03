@@ -20,6 +20,11 @@ namespace Hydra.Such.Data.Database
         public DateTime? DataNotificacao { get; set; }
         public TimeSpan? HoraNotificacao { get; set; }
 
+        public string UtilizadorCriacao { get; set; }
+        public DateTime? DataCriacao { get; set; }
+        public string UtilizadorModificacao { get; set; }
+        public DateTime? DataModificacao { get; set; }
+
         public ProcedimentosCcp ProcedimentoNavigation { get; set; }
         public ICollection<FluxoTrabalhoListaControlo> Fluxos { get; set; }
 

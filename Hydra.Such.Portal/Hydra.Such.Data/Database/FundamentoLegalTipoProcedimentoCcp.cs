@@ -9,7 +9,12 @@ namespace Hydra.Such.Data.Database
         public int IdTipo { get; set; }
         public int IdFundamento { get; set; }
         public string DescricaoFundamento { get; set; }
+        public bool? Activo { get; set; }
 
+        public string UtilizadorCriacao { get; set; }
+        public DateTime? DataCriacao { get; set; }
+        public string UtilizadorModificacao { get; set; }
+        public DateTime? DataModificacao { get; set; }
         public TipoProcedimentoCcp TipoNavigation { get; set; }
         public ICollection<ProcedimentosCcp> Procedimentos { get; set; }
     }

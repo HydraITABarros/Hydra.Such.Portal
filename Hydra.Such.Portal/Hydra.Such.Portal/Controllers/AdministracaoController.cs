@@ -6464,6 +6464,37 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
+        public IActionResult ConfiguracaoTiposProcedimento(int id)
+        {
+            UserAccessesViewModel userPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminGeral);
+            if (userPerm != null && userPerm.Read.Value)
+            {
+                ViewBag.UPermissions = userPerm;
+                ViewBag.No = id; 
+                ViewBag.reportServerURL = _config.ReportServerURL;
+
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        public IActionResult ListaTiposProcedimento()
+        {
+            UserAccessesViewModel userPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminGeral);
+            if (userPerm != null && userPerm.Read.Value)
+            {
+                ViewBag.UPermissions = userPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
         [HttpPost]
         public JsonResult GetConfiguracaoCCP()
         {
@@ -6545,6 +6576,52 @@ namespace Hydra.Such.Portal.Controllers
             }
 
             return Json(DBConfiguracaoCCP.DeleteConfiguracaoTempo(data.Tipo));
+        }
+
+        [HttpPost]
+        public JsonResult GetTiposProcedimento()
+        {
+            List<TipoProcedimentoCcp> tipos = DBConfiguracaoCCP.GetAllTypes(false);
+            return Json(tipos);
+        }
+
+        [HttpPost]
+        public JsonResult GetTipoProcedimentoDetails([FromBody] JObject param)
+        {
+            try
+            {
+                if (param["id"] == null)
+                    return Json(null);
+
+                int id = (int)param["id"];
+
+                TipoProcedimentoCcp result = DBConfiguracaoCCP.GetTypeById(id);
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+
+               return Json(null);
+            }
+
+            
+        }
+        public JsonResult CreateTipo()
+        {
+            TipoProcedimentoCcp newTipo = new TipoProcedimentoCcp() {
+                Abreviatura = "",
+                DescricaoTipo="",
+                UtilizadorCriacao = User.Identity.Name,
+                DataCriacao = DateTime.Now
+            };
+
+            if (!DBConfiguracaoCCP.__CreateType(newTipo))
+                return (Json(null));
+
+            if (newTipo != null)
+                return Json(newTipo.IdTipo);
+
+            return Json(null);
         }
         #endregion
 

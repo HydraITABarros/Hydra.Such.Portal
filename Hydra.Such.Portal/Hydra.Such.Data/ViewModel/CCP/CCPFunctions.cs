@@ -283,7 +283,8 @@ namespace Hydra.Such.Data.ViewModel.CCP
 
             Procedimento.TipoContratacaoPublica = ProcedimentoView.TipoContratacaoPublica;
             Procedimento.FundamentoLegal = ProcedimentoView.FundamentoLegal;
-            Procedimento.LotesProcedimento = ProcedimentoView.LotesProcedimento;
+            if(ProcedimentoView.LotesProcedimento != null && ProcedimentoView.LotesProcedimento.Count > 0)
+                Procedimento.LotesProcedimento = ProcedimentoView.LotesProcedimento;
 
             return Procedimento;
 
@@ -453,7 +454,13 @@ namespace Hydra.Such.Data.ViewModel.CCP
                 DtInicio_AcordoPreco_Show = AP != null ? AP.DtInicio.ToString() : string.Empty,
                 DtFim_AcordoPreco_Show = AP != null ? AP.DtFim.ToString() : string.Empty,
                 ValorTotal_AcordoPreco_Show = AP != null ? AP.ValorTotal.ToString() : string.Empty,
-                NoProcedimento_Show = AP != null ? AP.NoProcedimento : string.Empty
+                NoProcedimento_Show = AP != null ? AP.NoProcedimento : string.Empty,
+
+                FundamentoLegalTipo = Procedimento.FundamentoLegalTipo,
+                ProcedimentoEmLotes = Procedimento.ProcedimentoEmLotes,
+                FundamentacaoPrecoBase = Procedimento.FundamentacaoPrecoBase,
+                VistoAberturaPeloAprovisionamento = Procedimento.VistoAberturaPeloAprovisionamento,
+                VistoAdjudicacaoPeloAprovisionamento = Procedimento.VistoAdjudicacaoPeloAprovisionamento
             };
 
             if (Procedimento.TemposPaCcp != null)
@@ -519,6 +526,11 @@ namespace Hydra.Such.Data.ViewModel.CCP
 
             ProcedimentoView.ListaReq_Show = ListaRequisicoes;
             // FIM Lista de Requisições
+
+            ProcedimentoView.TipoContratacaoPublica = Procedimento.TipoContratacaoPublica;
+            ProcedimentoView.FundamentoLegal = Procedimento.FundamentoLegal;
+            if(Procedimento.LotesProcedimento!=null && Procedimento.LotesProcedimento.Count > 0)
+                ProcedimentoView.LotesProcedimento = Procedimento.LotesProcedimento;
 
             return ProcedimentoView;
         }

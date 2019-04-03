@@ -7618,6 +7618,7 @@ namespace Hydra.Such.Data.Database
             modelBuilder.Entity<TipoProcedimentoCcp>(entity =>
             {
                 entity.HasKey(e => e.IdTipo);
+                entity.HasIndex(e => e.Abreviatura).IsUnique();
 
                 entity.ToTable("TipoProcedimentoCcp");
 
