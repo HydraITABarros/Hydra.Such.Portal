@@ -34,6 +34,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Hydra.Such.Data.ViewModel.Encomendas;
 using System.Data.SqlClient;
+using Hydra.Such.Data.ViewModel.FH;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -1407,25 +1408,26 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetTipoTrabalhoFHList()
+        public JsonResult GetTipoTrabalhoFHList([FromBody] FolhaDeHorasViewModel data)
         {
             try
             {
                 List<DDMessageString> result = new List<DDMessageString>();
-                string NoEmployee = string.Empty;
-                NoEmployee = DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo;
+                //NoEmployee = DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo;
 
-                if (!string.IsNullOrEmpty(NoEmployee))
+                string employee = data.EmpregadoNo;
+
+                if (!string.IsNullOrEmpty(employee))
                 {
                     using (var ctx = new SuchDBContextExtention())
                     {
                         var parameters = new[]{
-                        new SqlParameter("@NoEmployee", NoEmployee)
+                        new SqlParameter("@NoEmployee", employee)
                     };
 
-                        IEnumerable<dynamic> data = ctx.execStoredProcedure("exec FHTipoTrabalhoByEmployee @NoEmployee", parameters);
+                        IEnumerable<dynamic> tipos = ctx.execStoredProcedure("exec FHTipoTrabalhoByEmployee @NoEmployee", parameters);
 
-                        foreach (dynamic temp in data)
+                        foreach (dynamic temp in tipos)
                         {
 
                             result.Add(new DDMessageString()
