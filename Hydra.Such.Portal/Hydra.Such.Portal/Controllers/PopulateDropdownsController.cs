@@ -2683,6 +2683,14 @@ namespace Hydra.Such.Portal.Controllers
             List<EnumData> result = EnumerablesFixed.TipoLinhaGuiaTransporte;
             return Json(result);
         }
+
+        //PEDIDOS DE DESENVOLVIMENTO
+        [HttpPost]
+        public JsonResult Get_DEV_Estados()
+        {
+            List<EnumData> result = EnumerablesFixed.DEV_Estados;
+            return Json(result);
+        }
     }
 
 

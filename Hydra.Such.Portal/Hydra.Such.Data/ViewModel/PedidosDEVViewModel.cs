@@ -13,15 +13,20 @@ namespace Hydra.Such.Data.ViewModel
         public string URL { get; set; }
         public int? Estado { get; set; }
         public DateTime? DataEstado { get; set; }
+        public string DataEstadoText { get; set; }
         public DateTime? DataPedido { get; set; }
+        public string DataPedidoText { get; set; }
         public string PedidoPor { get; set; }
-        public DateTime DataConclusao { get; set; }
+        public DateTime? DataConclusao { get; set; }
+        public string DataConclusaoText { get; set; }
         public string Intervenientes { get; set; }
         public int? NoHorasPrevistas { get; set; }
         public int? NoHorasRealizadas { get; set; }
         public string CriadoPor { get; set; }
         public DateTime? DataCriacao { get; set; }
+        public string DataCriacaoText { get; set; }
         public string AlteradoPor { get; set; }
         public DateTime? DataAlteracao { get; set; }
+        public string DataAlteracaoText { get; set; }
     }
 }

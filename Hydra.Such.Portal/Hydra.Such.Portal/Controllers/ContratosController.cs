@@ -2384,7 +2384,13 @@ namespace Hydra.Such.Portal.Controllers
             List<AutorizarFaturaçãoContratos> contractList = new List<AutorizarFaturaçãoContratos>();
             foreach (FaturacaoContratosViewModel itm in data)
             {
-                List<AutorizarFaturaçãoContratos> contract_List = DBAuthorizeInvoiceContracts.GetAllByContGroup(itm.ContractNo/*,itm.InvoiceGroupValue*/);
+                List<AutorizarFaturaçãoContratos> contract_List = new List<AutorizarFaturaçãoContratos>();
+
+                if (itm.InvoiceGroupValue > 0)
+                    contract_List = DBAuthorizeInvoiceContracts.GetAllByContGroup(itm.ContractNo).Where(x => x.GrupoFatura == itm.InvoiceGroupValue).ToList() ;
+                else
+                    contract_List = DBAuthorizeInvoiceContracts.GetAllByContGroup(itm.ContractNo);
+
                 if (contract_List != null && contract_List.Count > 0)
                 {
                     foreach (AutorizarFaturaçãoContratos item in contract_List)
@@ -2625,13 +2631,36 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         obs = "";
 
+                        //AMARO 04/05/219
+                        List<RequisiçõesClienteContrato> ListaContratos = new List<RequisiçõesClienteContrato>();
+                        RequisiçõesClienteContrato Reqcontract = new RequisiçõesClienteContrato();
+                        if (contractLine.ÚltimaDataFatura == null)
+                        {
+                            contractLine.ÚltimaDataFatura = Lastdate;
+
+                            ListaContratos = DBContractClientRequisition.GetByContract(contractLine.NºDeContrato);
+
+                            Reqcontract = ListaContratos.Find(x => x.GrupoFatura == item.GrupoFatura
+                                && x.DataInícioCompromisso <= contractLine.ÚltimaDataFatura
+                                && x.DataFimCompromisso >= contractLine.ÚltimaDataFatura);
+                        }
+                        else
+                        {
+                            ListaContratos = DBContractClientRequisition.GetByContract(contractLine.NºDeContrato);
+
+                            Reqcontract = ListaContratos.Find(x => x.GrupoFatura == item.GrupoFatura
+                                && x.DataInícioCompromisso <= contractLine.ÚltimaDataFatura
+                                && x.DataFimCompromisso >= contractLine.ÚltimaDataFatura);
+                        }
+                        item.NoRequisicaoDoCliente = Reqcontract != null ? Reqcontract.NºRequisiçãoCliente : contractLine.NºRequisiçãoDoCliente;
+                        item.NoCompromisso = Reqcontract != null ? Reqcontract.NºCompromisso : contractLine.NºCompromisso;
+                        item.DataRececaoRequisicao = Reqcontract != null ? Reqcontract.DataRequisição : contractLine.DataReceçãoRequisição;
+
+
                         item.NºContrato = contractLine.NºDeContrato;
-                        item.NoRequisicaoDoCliente = contractLine.NºRequisiçãoDoCliente;
-                        item.NoCompromisso = contractLine.NºCompromisso;
                         item.CódigoRegião = contractLine.CódigoRegião;
                         item.CódigoÁreaFuncional = contractLine.CódigoÁreaFuncional;
                         item.CódigoCentroResponsabilidade = contractLine.CódigoCentroResponsabilidade;
-                        item.DataRececaoRequisicao = contractLine.DataReceçãoRequisição;
 
 
                         //AMARO DUEDATE = DataExpiração
@@ -2891,13 +2920,35 @@ namespace Hydra.Such.Portal.Controllers
                                 }
                                 obs = "";
 
+                                //AMARO 04/05/219
+                                List<RequisiçõesClienteContrato> ListaContratos = new List<RequisiçõesClienteContrato>();
+                                RequisiçõesClienteContrato Reqcontract = new RequisiçõesClienteContrato();
+                                if (contractLine.ÚltimaDataFatura == null)
+                                {
+                                    contractLine.ÚltimaDataFatura = Lastdate;
+
+                                    ListaContratos = DBContractClientRequisition.GetByContract(contractLine.NºDeContrato);
+
+                                    Reqcontract = ListaContratos.Find(x => x.GrupoFatura == item.GrupoFatura
+                                        && x.DataInícioCompromisso <= contractLine.ÚltimaDataFatura
+                                        && x.DataFimCompromisso >= contractLine.ÚltimaDataFatura);
+                                }
+                                else
+                                {
+                                    ListaContratos = DBContractClientRequisition.GetByContract(contractLine.NºDeContrato);
+
+                                    Reqcontract = ListaContratos.Find(x => x.GrupoFatura == item.GrupoFatura
+                                        && x.DataInícioCompromisso <= contractLine.ÚltimaDataFatura
+                                        && x.DataFimCompromisso >= contractLine.ÚltimaDataFatura);
+                                }
+                                item.NoRequisicaoDoCliente = Reqcontract != null ? Reqcontract.NºRequisiçãoCliente : contractLine.NºRequisiçãoDoCliente;
+                                item.NoCompromisso = Reqcontract != null ? Reqcontract.NºCompromisso : contractLine.NºCompromisso;
+                                item.DataRececaoRequisicao = Reqcontract != null ? Reqcontract.DataRequisição : contractLine.DataReceçãoRequisição;
+
                                 item.NºContrato = contractLine.NºDeContrato;
-                                item.NoRequisicaoDoCliente = contractLine.NºRequisiçãoDoCliente;
-                                item.NoCompromisso = contractLine.NºCompromisso;
                                 item.CódigoRegião = contractLine.CódigoRegião;
                                 item.CódigoÁreaFuncional = contractLine.CódigoÁreaFuncional;
                                 item.CódigoCentroResponsabilidade = contractLine.CódigoCentroResponsabilidade;
-                                item.DataRececaoRequisicao = contractLine.DataReceçãoRequisição;
 
                                 //AMARO DUEDATE = DataExpiração
                                 item.DataDeExpiração = DataDocumento;

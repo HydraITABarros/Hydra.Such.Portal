@@ -32,8 +32,8 @@
                    content-type="application/json">
         </iron-ajax>
 
-        <iron-ajax url="/PedidosDEV/DeletePedidosDEV"
-                   last-response="{{PedidosDEVDeleted}}"
+        <iron-ajax url="/PedidosDEV/DeletePedidoDEV"
+                   last-response="{{pedidosDEVDeleted}}"
                    method="post"
                    handle-as="json"
                    id="page_deletePedidosDEV_ajax"
@@ -99,21 +99,21 @@
 
             <vaadin-grid-column resizable width="150px">
                 <template class="header">
-                    <vaadin-grid-sorter path="dataEstado">Data do Estado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataEstado" />
+                    <vaadin-grid-sorter path="dataEstadoText">Data do Estado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataEstadoText" />
                 </template>
                 <template>
-                    {{item.dataEstado}}
+                    {{item.dataEstadoText}}
                 </template>
             </vaadin-grid-column>
 
             <vaadin-grid-column resizable width="150px">
                 <template class="header">
-                    <vaadin-grid-sorter path="dataPedido">Data do Pedido</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataPedido" />
+                    <vaadin-grid-sorter path="dataPedidoText">Data do Pedido</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataPedidoText" />
                 </template>
                 <template>
-                    {{item.dataPedido}}
+                    {{item.dataPedidoText}}
                 </template>
             </vaadin-grid-column>
 
@@ -129,11 +129,11 @@
 
             <vaadin-grid-column resizable width="150px">
                 <template class="header">
-                    <vaadin-grid-sorter path="dataConclusao">Data da Conclusão</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataConclusao" />
+                    <vaadin-grid-sorter path="dataConclusaoText">Data da Conclusão</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataConclusaoText" />
                 </template>
                 <template>
-                    {{item.dataConclusao}}
+                    {{item.dataConclusaoText}}
                 </template>
             </vaadin-grid-column>
 
@@ -179,11 +179,11 @@
 
             <vaadin-grid-column resizable width="150px">
                 <template class="header">
-                    <vaadin-grid-sorter path="dataCriacao">Data de Criacao</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataCriacao" />
+                    <vaadin-grid-sorter path="dataCriacaoText">Data de Criacao</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataCriacaoText" />
                 </template>
                 <template>
-                    {{item.dataCriacao}}
+                    {{item.dataCriacaoText}}
                 </template>
             </vaadin-grid-column>
 
@@ -199,11 +199,11 @@
 
             <vaadin-grid-column resizable width="150px">
                 <template class="header">
-                    <vaadin-grid-sorter path="dataAlteracao">Data de Alteração</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataAlteracao" />
+                    <vaadin-grid-sorter path="dataAlteracaoText">Data de Alteração</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataAlteracaoText" />
                 </template>
                 <template>
-                    {{item.dataAlteracao}}
+                    {{item.dataAlteracaoText}}
                 </template>
             </vaadin-grid-column>
 
@@ -239,20 +239,17 @@
 
                 //Mostra Mensagens
                 _showMessage: function (message) {
-                    //debugger;
                     this.$.ToastMessageSuccess.text = message;
                     this.$.ToastMessageSuccess.open();
                 },
 
                 //Mostra Mensagens de Erro
                 _showErrorMessage: function (message) {
-                    //debugger;
                     this.$.ToastMessageError.text = message;
                     this.$.ToastMessageError.open();
                 },
 
                 ready: function () {
-                    //debugger;
                     this.$.grid_databound_ajax.body = JSON.stringify();
                     this.$.grid_databound_ajax.generateRequest();
 
@@ -275,7 +272,7 @@
 
                 _rowSelected: function (item) {
                     if (item != null) {
-                        window.location.href = "/Administracao/PedidosDEV/" + item.noProcedimento;
+                        window.location.href = "/Administracao/PedidosDEV/" + item.id;
                     }
                 },
 
@@ -284,9 +281,7 @@
                 },
 
                 _delete: function (e) {
-                    debugger;
-                    var procedimento = e.model.item.noProcedimento;
-
+                    var pedidoDEV = e.model.item.id;
                     var ajax_request = this.$.page_deletePedidosDEV_ajax;
 
                     bootbox.confirm({
@@ -303,35 +298,23 @@
                         },
                         callback: function (deletePedidosDEV) {
                             if (deletePedidosDEV) {
-                                ajax_request.body = JSON.stringify({
-                                    noProcedimento: procedimento
-                                });
+                                ajax_request.body = JSON.stringify({ id: pedidoDEV });
                                 ajax_request.generateRequest();
                                 this.$.pedidosDEVTabela.clearCache();
                             }
                         }
                     });
                 },
-
                 _deletePedidosDEVResponse: function (e) {
-                    debugger;
-                    var self = this;
-
                     setTimeout(function () {
                         bootbox.hideAll();
                     }, 0);
 
-                    if (this.PedidosDEVDeleted == 0) {
-                        this._showMessage('O Pedido de Desenvolvimento foi removido com sucesso.');
+                    if (this.pedidosDEVDeleted.eReasonCode == 0) {
+                        this._showMessage(this.pedidosDEVDeleted.eMessage);
                         this.$.grid_databound_ajax.generateRequest();
                     } else {
-                        if (this.PedidosDEVDeleted == 1) {
-                            this._showErrorMessage('Ocorreu um erro ao eliminar o Pedido de Desenvolvimento.');
-                        } else {
-                            if (this.PedidosDEVDeleted == 99) {
-                                this._showErrorMessage('Ocorreu um erro!!!');
-                            }
-                        }
+                        this._showErrorMessage(this.pedidosDEVDeleted.eMessage);
                     }
                 },
 
