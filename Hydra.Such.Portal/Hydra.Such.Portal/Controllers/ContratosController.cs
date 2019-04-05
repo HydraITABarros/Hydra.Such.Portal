@@ -2253,35 +2253,44 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             Problema += " Valor Não Disponível";
                         }
-                        if(item.NºRequisiçãoDoCliente==null || item.NºRequisiçãoDoCliente == "")
+
+
+                        List<RequisiçõesClienteContrato> ListaContratos = new List<RequisiçõesClienteContrato>();
+                        RequisiçõesClienteContrato Reqcontract = new RequisiçõesClienteContrato();
+                        //if(item.NºRequisiçãoDoCliente==null || item.NºRequisiçãoDoCliente == "")
+                        //{
+                        if (item.ÚltimaDataFatura == null)
                         {
-                            if (item.ÚltimaDataFatura == null)
+                            //AMARO 04/03/2019
+                            item.ÚltimaDataFatura = nextInvoiceDate;
+
+                            ListaContratos = DBContractClientRequisition.GetByContract(item.NºDeContrato);
+
+                            Reqcontract = ListaContratos.Find(x => x.GrupoFatura == contractLine.GrupoFatura
+                                && x.DataInícioCompromisso <= item.ÚltimaDataFatura
+                                && x.DataFimCompromisso >= item.ÚltimaDataFatura);
+
+                            if (Reqcontract == null && string.IsNullOrEmpty(item.NºRequisiçãoDoCliente))
                             {
-                                //AMARO 04/03/2019
-                                item.ÚltimaDataFatura = nextInvoiceDate;
-                                List<RequisiçõesClienteContrato> ListaContratos = DBContractClientRequisition.GetByContract(item.NºDeContrato);
-                                RequisiçõesClienteContrato Reqcontract = ListaContratos.Find(x => x.GrupoFatura == contractLine.GrupoFatura
-                                    && x.DataInícioCompromisso <= item.ÚltimaDataFatura
-                                    && x.DataFimCompromisso >= item.ÚltimaDataFatura);
-                                if (Reqcontract == null)
-                                {
-                                    Problema += " Falta Nota Encomenda";
-                                }
-                                
-                                //CÓDIGO ORIGINAL
-                                //Problema += " Falta Nota Encomenda";
+                                Problema += " Falta Nota Encomenda";
                             }
-                            else
-                            {
-                                List<RequisiçõesClienteContrato> ListaContratos = DBContractClientRequisition.GetByContract(item.NºDeContrato);
-                                RequisiçõesClienteContrato Reqcontract = ListaContratos.Find(x => x.GrupoFatura == contractLine.GrupoFatura
-                                    && x.DataInícioCompromisso <= item.ÚltimaDataFatura
-                                    && x.DataFimCompromisso >= item.ÚltimaDataFatura);
-                                if(Reqcontract == null ) {
-                                    Problema += " Falta Nota Encomenda";
-                                }
+                                
+                            //CÓDIGO ORIGINAL
+                            //Problema += " Falta Nota Encomenda";
+                        }
+                        else
+                        {
+                            ListaContratos = DBContractClientRequisition.GetByContract(item.NºDeContrato);
+
+                            Reqcontract = ListaContratos.Find(x => x.GrupoFatura == contractLine.GrupoFatura
+                                && x.DataInícioCompromisso <= item.ÚltimaDataFatura
+                                && x.DataFimCompromisso >= item.ÚltimaDataFatura);
+
+                            if (Reqcontract == null && string.IsNullOrEmpty(item.NºRequisiçãoDoCliente)) {
+                                Problema += " Falta Nota Encomenda";
                             }
                         }
+                        //}
                         #endregion
 
                         AutorizarFaturaçãoContratos newInvoiceContract = new AutorizarFaturaçãoContratos
@@ -2300,9 +2309,13 @@ namespace Hydra.Such.Portal.Controllers
                             DataPróximaFatura = nextInvoiceDate,
                             DataDeRegisto = lastDay,
                             Estado = item.Estado,
-                            Situação=Problema,
+                            Situação = Problema,
                             DataHoraCriação = DateTime.Now,
-                            UtilizadorCriação = User.Identity.Name
+                            UtilizadorCriação = User.Identity.Name,
+
+                            NoRequisicaoDoCliente = Reqcontract != null ? Reqcontract.NºRequisiçãoCliente : item.NºRequisiçãoDoCliente,
+                            DataRececaoRequisicao = Reqcontract != null ? Reqcontract.DataRequisição : item.DataReceçãoRequisição,
+                            NoCompromisso = Reqcontract != null ? Reqcontract.NºCompromisso : item.NºCompromisso,
                         };
                         try
                         {

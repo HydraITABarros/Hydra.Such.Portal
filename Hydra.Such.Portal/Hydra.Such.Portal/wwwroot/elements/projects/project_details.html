@@ -792,12 +792,23 @@
                         this.$.ShippingContact.value = selItem.contact;
                     }
                     else {
+                        var cliItem = this.LProjectClients != null ? this.LProjectClients.find(x => x.no_ == this.data.clientNo) : null;
 
-                        this.$.ShippingName.value = "";
-                        this.$.ShippingAddress.value = "";
-                        this.$.ShippingPostalCode.value = "";
-                        this.$.ShippingLocality.value = "";
-                        this.$.ShippingContact.value = "";
+                        if (cliItem != null) {
+                            //Fill Data
+                            this.$.ShippingName.value = cliItem.name;
+                            this.$.ShippingAddress.value = cliItem.address;
+                            this.$.ShippingPostalCode.value = cliItem.postCode;
+                            this.$.ShippingLocality.value = cliItem.city;
+                            this.$.ShippingContact.value = cliItem.phoneNo;
+                        }
+                        else {
+                            this.$.ShippingName.value = "";
+                            this.$.ShippingAddress.value = "";
+                            this.$.ShippingPostalCode.value = "";
+                            this.$.ShippingLocality.value = "";
+                            this.$.ShippingContact.value = "";
+                        }
                     }
                 },
 

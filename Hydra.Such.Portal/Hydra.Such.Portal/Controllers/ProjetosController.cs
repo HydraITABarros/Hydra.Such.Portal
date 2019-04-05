@@ -274,12 +274,11 @@ namespace Hydra.Such.Portal.Controllers
                         }
                     }
 
-                    Contratos cont = DBContracts.GetByIdLastVersion(result.ContractNo);
                     NAVClientsViewModel cli = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, result.ClientNo);
 
-                    if (result != null && !string.IsNullOrEmpty(result.ShippingAddressCode))
+                    if (result != null && !string.IsNullOrEmpty(result.ClientNo) && !string.IsNullOrEmpty(result.ShippingAddressCode))
                     {
-                        NAVAddressesViewModel SHIP = DBNAV2017ShippingAddresses.GetByCode(result.ShippingAddressCode, _config.NAVDatabaseName, _config.NAVCompanyName);
+                        NAVAddressesViewModel SHIP = DBNAV2017ShippingAddresses.GetByClientAndCode(result.ClientNo, result.ShippingAddressCode, _config.NAVDatabaseName, _config.NAVCompanyName);
                         if (SHIP != null)
                         {
                             result.ShippingName = SHIP.Name;
@@ -291,28 +290,13 @@ namespace Hydra.Such.Portal.Controllers
                     }
                     else
                     {
-                        if (cont != null && !string.IsNullOrEmpty(cont.EnvioAEndereço))
+                        if (cli != null)
                         {
-                            NAVAddressesViewModel SHIP = DBNAV2017ShippingAddresses.GetByCode(cont.EnvioAEndereço, _config.NAVDatabaseName, _config.NAVCompanyName);
-                            if (SHIP != null)
-                            {
-                                result.ShippingName = SHIP.Name;
-                                result.ShippingAddress = SHIP.Address;
-                                result.ShippingPostalCode = SHIP.ZipCode;
-                                result.ShippingLocality = SHIP.City;
-                                result.ShippingContact = SHIP.Contact;
-                            }
-                        }
-                        else
-                        {
-                            if (cli != null)
-                            {
-                                result.ShippingName = cli.Name;
-                                result.ShippingAddress = cli.Address;
-                                result.ShippingPostalCode = cli.PostCode;
-                                result.ShippingLocality = cli.City;
-                                result.ShippingContact = cli.PhoneNo;
-                            }
+                            result.ShippingName = cli.Name;
+                            result.ShippingAddress = cli.Address;
+                            result.ShippingPostalCode = cli.PostCode;
+                            result.ShippingLocality = cli.City;
+                            result.ShippingContact = cli.PhoneNo;
                         }
                     }
 
