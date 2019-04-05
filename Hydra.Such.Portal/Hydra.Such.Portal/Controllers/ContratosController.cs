@@ -2736,12 +2736,13 @@ namespace Hydra.Such.Portal.Controllers
                             DateTime Lastdate = item.DataDeRegisto.Value;
                             DateTime DataDocumento = item.DataDeRegisto.Value;
                             Contratos contractLine = DBContracts.GetByIdAvencaFixa(item.NºContrato);
-                            DateTime today = (DateTime)contractLine.ÚltimaDataFatura; //DateTime.Now;
+                            DateTime today = contractLine.ÚltimaDataFatura != null ?(DateTime)contractLine.ÚltimaDataFatura : Convert.ToDateTime(contractLine.DataInicial).AddDays(-1); //DateTime.Now;
                             DateTime StContractDate = today;
 
                             if (contractLine.DataInicial != null && contractLine.DataExpiração != null)// && item.DataPróximaFatura == null)
                             {
-                                today = (DateTime)contractLine.ÚltimaDataFatura;
+                                //today = (DateTime)contractLine.ÚltimaDataFatura;
+                                today = contractLine.ÚltimaDataFatura != null ? (DateTime)contractLine.ÚltimaDataFatura : Convert.ToDateTime(contractLine.DataInicial).AddDays(-1);
 
                                 //Mensal 
                                 if (contractLine.PeríodoFatura == 1)
