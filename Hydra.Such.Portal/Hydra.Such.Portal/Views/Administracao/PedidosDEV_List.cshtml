@@ -3,17 +3,28 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
-<link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
-<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
-<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
-<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
-<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
-<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-checkbox.html">
-<link rel="import" href="~/lib/vaadin-checkbox/vaadin-checkbox.html">
-<link rel="import" href="~/lib/iron-form/iron-form.html" />
-<link rel="import" href="~/lib/paper-button/paper-button.html" />
-<link rel="import" href="~/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html" />
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/paper-input/paper-input.html" />
+<link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/datetime-picker-master/date-picker.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="/lib/paper-input/paper-textarea.html" />
+
+<!--start ColumnToggle-->
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-icons/iron-icons.html" />
+<link rel="import" href="/lib/iron-behaviors/iron-button-state.html" />
+<link rel="import" href="/lib/paper-menu-button/paper-menu-button.html" />
+<!--end ColumnToggle-->
 
 <x-pedidosdevlist></x-pedidosdevlist>
 <dom-module id="x-pedidosdevlist">
@@ -22,6 +33,31 @@
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
+
+        <custom-style>
+            <style is="custom-style">
+                input[readonly] {
+                    border: 2px solid transparent;
+                }
+
+                input {
+                    font: inherit;
+                }
+
+                .grid {
+                    font-size: 13px;
+                }
+
+                    .grid input {
+                        border: none;
+                        padding-left: 5px;
+                    }
+
+                paper-input {
+                    max-width: 200px !important;
+                }
+            </style>
+        </custom-style>
 
         <iron-ajax url="/PedidosDEV/GetListPedidosDEV"
                    last-response="{{result}}"
@@ -41,181 +77,208 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/PedidosDEV/ExportToExcel_PedidosDEV"
+                   last-response="{{export}}"
+                   id="ajax_Export"
+                   method="post"
+                   handle-as="json"
+                   on-response="_exportEXCELResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
         <div class="subMenu">
             <paper-button id="btnGoBack" class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Voltar</paper-button>
-            <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+            <paper-button id="btnNovo" class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Novo Pedido</paper-button>
+            <paper-button class="tablinks" on-tap="_showBloqueados"><i class="fa fa-archive" aria-hidden="true"></i>&nbsp;{{_showHistory}}</paper-button>
+            <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+
+            <!--start ColumnToggle-->
+            <paper-menu-button class="column-toggle" no-animations id="gridOpcaoGeral">
+                <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
+                <div class="list-group" slot="dropdown-content">
+                    <template is="dom-repeat" items="[[ _toArray(_columns)]]" id="columnsList">
+                        <a href="javascript:void(0);" on-tap="_toggleColumn" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClass( item.key ) ]]">
+                            {{ item.value.label }}
+                        </a>
+                        <hr />
+                    </template>
+                </div>
+            </paper-menu-button>
+            <!--end ColumnToggle-->
         </div>
 
         <vaadin-grid column-reordering-allowed id="pedidosDEVTabela" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
-            <vaadin-grid-column resizable width="150px">
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.id.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="id">ID</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="id" />
+                    <vaadin-grid-filter path="id" value="[[filter.id]]" />
                 </template>
                 <template>
                     {{item.id}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable width="150px">
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.processo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="processo">Processo</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="processo" />
+                    <vaadin-grid-filter path="processo" value="[[filter.processo]]" />
                 </template>
                 <template>
                     {{item.processo}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable width="150px">
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.descricao.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="descricao">Descrição</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="descricao" />
+                    <vaadin-grid-filter path="descricao" value="[[filter.descricao]]" />
                 </template>
                 <template>
                     {{item.descricao}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable width="150px">
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.url.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="url">Link da Página</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="url" />
+                    <vaadin-grid-filter path="url" value="[[filter.url]]" />
                 </template>
                 <template>
                     {{item.url}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable width="150px">
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.estadoText.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="estado">Estado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="estado" />
+                    <vaadin-grid-sorter path="estadoText">Estado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="estadoText" value="[[filter.estadoText]]" />
                 </template>
                 <template>
-                    {{item.estado}}
+                    {{item.estadoText}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable width="150px">
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.dataEstadoText.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="dataEstadoText">Data do Estado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataEstadoText" />
+                    <vaadin-grid-filter path="dataEstadoText" value="[[filter.dataEstadoText]]" />
                 </template>
                 <template>
                     {{item.dataEstadoText}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable width="150px">
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.dataPedidoText.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="dataPedidoText">Data do Pedido</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataPedidoText" />
+                    <vaadin-grid-filter path="dataPedidoText" value="[[filter.dataPedidoText]]" />
                 </template>
                 <template>
                     {{item.dataPedidoText}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable width="150px">
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.pedidoPor.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="pedidoPor">Pedido Por</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="pedidoPor" />
+                    <vaadin-grid-filter path="pedidoPor" value="[[filter.pedidoPor]]" />
                 </template>
                 <template>
                     {{item.pedidoPor}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable width="150px">
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.dataConclusaoText.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="dataConclusaoText">Data da Conclusão</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataConclusaoText" />
+                    <vaadin-grid-filter path="dataConclusaoText" value="[[filter.dataConclusaoText]]" />
                 </template>
                 <template>
                     {{item.dataConclusaoText}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable width="150px">
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.intervenientes.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="intervenientes">Intervenientes</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="intervenientes" />
+                    <vaadin-grid-filter path="intervenientes" value="[[filter.intervenientes]]" />
                 </template>
                 <template>
                     {{item.intervenientes}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable width="150px">
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.noHorasPrevistas.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="noHorasPrevistas">Nº de Horas Previstas</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="noHorasPrevistas" />
+                    <vaadin-grid-filter path="noHorasPrevistas" value="[[filter.noHorasPrevistas]]" />
                 </template>
                 <template>
                     {{item.noHorasPrevistas}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable width="150px">
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.noHorasRealizadas.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="noHorasRealizadas">Nº de Horas Realizadas</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="noHorasRealizadas" />
+                    <vaadin-grid-filter path="noHorasRealizadas" value="[[filter.noHorasRealizadas]]" />
                 </template>
                 <template>
                     {{item.noHorasRealizadas}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable width="150px">
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.criadoPor.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="criadoPor">Criado Por</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="criadoPor" />
+                    <vaadin-grid-filter path="criadoPor" value="[[filter.criadoPor]]" />
                 </template>
                 <template>
                     {{item.criadoPor}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable width="150px">
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.dataCriacaoText.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="dataCriacaoText">Data de Criacao</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataCriacaoText" />
+                    <vaadin-grid-filter path="dataCriacaoText" value="[[filter.dataCriacaoText]]" />
                 </template>
                 <template>
                     {{item.dataCriacaoText}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable width="150px">
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.alteradoPor.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="alteradoPor">Alterado Por</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="alteradoPor" />
+                    <vaadin-grid-filter path="alteradoPor" value="[[filter.alteradoPor]]" />
                 </template>
                 <template>
                     {{item.alteradoPor}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable width="150px">
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.dataAlteracaoText.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="dataAlteracaoText">Data de Alteração</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataAlteracaoText" />
+                    <vaadin-grid-filter path="dataAlteracaoText" value="[[filter.dataAlteracaoText]]" />
                 </template>
                 <template>
                     {{item.dataAlteracaoText}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable width="150px">
-                <template class="header">
-                </template>
-                <template>
-                    <center>
-                        <paper-button id="btn_deletePedidosDEV" class="btnRemove tableBtn" raised on-tap="_delete" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
-                    </center>
-                </template>
-            </vaadin-grid-column>
+            <template is="dom-if" if="{{ _permissionsDelete }}">
+                <vaadin-grid-column resizable width="150px">
+                    <template class="header">
+                    </template>
+                    <template>
+                        <center>
+                            <paper-button id="btn_deletePedidosDEV" class="btnRemove tableBtn" raised on-tap="_delete" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                        </center>
+                    </template>
+                </vaadin-grid-column>
+            </template>
         </vaadin-grid>
 
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
@@ -223,12 +286,69 @@
     </template>
 
     <script>
+        var ReadValue = true, CreateValue = true, UpdateValue = true, DeleteValue = true;
+        /**/
+        if ('@Html.Raw(Json.Serialize(ViewBag.ReadPermissions))' == "false") {
+            /**/
+            ReadValue = false;
+        }
+        /**/
+        if ('@Html.Raw(Json.Serialize(ViewBag.CreatePermissions))' == "false") {
+            /**/
+            CreateValue = false;
+        }
+        /**/
+        if ('@Html.Raw(Json.Serialize(ViewBag.UpdatePermissions))' == "false") {
+            /**/
+            UpdateValue = false;
+        }
+        /**/
+        if ('@Html.Raw(Json.Serialize(ViewBag.DeletePermissions))' == "false") {
+            /**/
+            DeleteValue = false;
+        }
+
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
                 is: 'x-pedidosdevlist',
                 properties: {
                     activeItem: {
                         observer: '_rowSelected'
+                    },
+                    _permissionsRead: {
+                        type: Boolean,
+                        value: ReadValue
+                    },
+                    _permissionsCreate: {
+                        type: Boolean,
+                        value: CreateValue
+                    },
+                    _permissionsUpdate: {
+                        type: Boolean,
+                        value: UpdateValue
+                    },
+                    _permissionsDelete: {
+                        type: Boolean,
+                        value: DeleteValue
+                    },
+                    _archived: {
+                        type: Number,
+                        value: 0
+                    },
+                    _showHistory: {
+                        type: String,
+                        value: "Exibir Bloqueados"
+                    },
+                    _columns: {
+                        type: Object,
+                        value: function () {
+                            return {};
+                        }
+                    },
+                    /*FILTROS*/
+                    filter: {
+                        type: Object,
+                        value: {},
                     },
 
                     _filterActive: {
@@ -250,10 +370,16 @@
                 },
 
                 ready: function () {
-                    this.$.grid_databound_ajax.body = JSON.stringify();
+                    this.$.grid_databound_ajax.body = JSON.stringify({ "Archived": this._archived });
                     this.$.grid_databound_ajax.generateRequest();
 
-                    window.handleGridListColumnsOrder(this.$.pedidosDEVTabela, 'admin-pedidosdev-list');
+                    /*FILTROS*/
+                    window.handleGridListColumnsOrder(this.$.pedidosDEVTabela, 'administracao-pedidosdevlist');
+                    window.grid = this.$.pedidosDEVTabela;
+                    window._this = this;
+
+                    /*ColumnToggle*/
+                    this._startColumnToggle();
 
                     var _this = this;
                     $(window).resize(function () {
@@ -267,21 +393,53 @@
                     var parentHeight = $(this).offsetParent().height();
                     var offsetTop = $(this).offset().top;
                     var height = parentHeight - offsetTop;
-                    $(this.$.pedidosDEVTabela).height(height);
+                    grid_el.height(height);
                 },
 
                 _rowSelected: function (item) {
+                    this.$.pedidosDEVTabela.selectedItems = item ? [item] : [];
                     if (item != null) {
+                        /*FILTROS*/
+                        var filters = {};
+                        this.$.pedidosDEVTabela._filters.map(function (value, index) {
+                            filters[value.path] = value.value;
+                        });
+                        window.setGridFilter('administracao-pedidosdevlist', filters || {});
+
                         window.location.href = "/Administracao/PedidosDEV/" + item.id;
                     }
+                },
+                /*FILTROS*/
+                created: function () {
+                    this.filter = window.getGridFilter('administracao-pedidosdevlist');
                 },
 
                 _create: function () {
                     window.location.href = "/Administracao/PedidosDEV/0";
                 },
 
-                _delete: function (e) {
-                    var pedidoDEV = e.model.item.id;
+                _showBloqueados: function (item) {
+                    if (item != null) {
+                        this._archived = this._archived == 1 ? 0 : 1;
+
+                        if (this._archived == 1) {
+                            this._showHistory = "Exibir ativos";
+                            this._isHistoric = "true";
+                            this._isHistoricVisible = true;
+                        } else {
+                            this._showHistory = "Exibir bloqueados";
+                            this._isHistoric = "false";
+                            this._isHistoricVisible = false;
+                        }
+
+                        this.$.grid_databound_ajax.body = JSON.stringify({ "Archived": this._archived });
+                        this.$.grid_databound_ajax.generateRequest();
+                    }
+                },
+
+                _delete: function (data) {
+                    data.preventDefault();
+                    var pedidoDEV = data.model.item.id;
                     var ajax_request = this.$.page_deletePedidosDEV_ajax;
 
                     bootbox.confirm({
@@ -310,8 +468,10 @@
                         bootbox.hideAll();
                     }, 0);
 
-                    if (this.pedidosDEVDeleted.eReasonCode == 0) {
+                    if (this.pedidosDEVDeleted.eReasonCode == 1) {
                         this._showMessage(this.pedidosDEVDeleted.eMessage);
+
+                        this.$.grid_databound_ajax.body = JSON.stringify({ "Archived": this._archived });
                         this.$.grid_databound_ajax.generateRequest();
                     } else {
                         this._showErrorMessage(this.pedidosDEVDeleted.eMessage);
@@ -321,6 +481,78 @@
                 _goBack: function (e) {
                     window.history.back();
                 },
+
+                _exportEXCEL: function () {
+                    var result = this.$.pedidosDEVTabela._filter(this.result);
+                    result[0].ColunasEXCEL = this._columns;
+
+                    this.$.ajax_Export.body = JSON.stringify(result);
+                    this.$.ajax_Export.generateRequest();
+                },
+
+                _exportEXCELResponse: function (e) {
+                    var FileName = this.export;
+                    location.href = '../PedidosDEV/ExportToExcelDownload_PedidosDEV?sFileName=' + FileName;
+                },
+
+
+                /*start - ColumnToggle*/
+                _startColumnToggle: function () {
+                    var columns = {
+                        "id": { hidden: false, label: "ID" },
+                        "processo": { hidden: false, label: "Processo" },
+                        "descricao": { hidden: false, label: "Descrição" },
+                        "url": { hidden: false, label: "Link da Página" },
+                        "estadoText": { hidden: false, label: "Estado" },
+                        "dataEstadoText": { hidden: false, label: "Data do Estado" },
+                        "dataPedidoText": { hidden: false, label: "Data do Pedido" },
+                        "pedidoPor": { hidden: false, label: "Pedido Por" },
+                        "dataConclusaoText": { hidden: false, label: "Data da Conclusão" },
+                        "intervenientes": { hidden: false, label: "Intervenientes" },
+                        "noHorasPrevistas": { hidden: false, label: "Nº de Horas Previstas" },
+                        "noHorasRealizadas": { hidden: false, label: "Nº de Horas Realizadas" },
+                        "criadoPor": { hidden: false, label: "Criado Por" },
+                        "dataCriacaoText": { hidden: false, label: "Data de Criacao" },
+                        "alteradoPor": { hidden: false, label: "Alterado Por" },
+                        "dataAlteracaoText": { hidden: false, label: "Data de Alteração" }
+                    };
+
+                    if (localStorage["pedidosdevlist.ToggleColumn"]) {
+                        var keys = Object.keys(columns);
+                        var storedColumns = JSON.parse(localStorage["pedidosdevlist.ToggleColumn"]);
+                        for (var i = 0; i < keys.length; i++) {
+                            columns[keys[i]] = storedColumns[keys[i]];
+                        }
+                    };
+                    this._columns = columns;
+                },
+
+                _toggleColumn: function (event) {
+                    var columnIndex = JSON.parse(event.target.dataset.item).key;
+                    event.path[0].classList.toggle("selected");
+                    this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
+                    if (typeof (Storage) !== "undefined") {
+                        localStorage["pedidosdevlist.ToggleColumn"] = JSON.stringify(this._columns);
+                    }
+                },
+
+                _getColumnItemClass: function (columnIndex) {
+                    return !this._columns[columnIndex].hidden ? "selected" : "";
+                },
+
+                _toArray: function (obj) {
+                    return Object.keys(obj).map(function (key) {
+                        return {
+                            key: key,
+                            value: obj[key]
+                        };
+                    });
+                },
+                /* end - ColumnToggle */
+
+
+
+
             });
         });
     </script>

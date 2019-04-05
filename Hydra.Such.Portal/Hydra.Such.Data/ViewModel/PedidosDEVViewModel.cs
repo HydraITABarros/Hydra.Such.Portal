@@ -12,6 +12,7 @@ namespace Hydra.Such.Data.ViewModel
         public string Descricao { get; set; }
         public string URL { get; set; }
         public int? Estado { get; set; }
+        public string EstadoText { get; set; }
         public DateTime? DataEstado { get; set; }
         public string DataEstadoText { get; set; }
         public DateTime? DataPedido { get; set; }
@@ -28,5 +29,8 @@ namespace Hydra.Such.Data.ViewModel
         public string AlteradoPor { get; set; }
         public DateTime? DataAlteracao { get; set; }
         public string DataAlteracaoText { get; set; }
+
+        //EXPORTAR PARA EXCEL
+        public Object ColunasEXCEL { get; set; }
     }
 }

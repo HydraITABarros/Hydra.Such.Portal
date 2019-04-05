@@ -5,20 +5,43 @@ using Hydra.Such.Data.Logic;
 using Hydra.Such.Data.Database;
 using Hydra.Such.Data;
 using System;
+using Hydra.Such.Portal.Configurations;
+using Newtonsoft.Json.Linq;
+using Hydra.Such.Data.NAV;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Options;
+using System.Threading.Tasks;
+using System.IO;
+using NPOI.XSSF.UserModel;
+using NPOI.SS.UserModel;
 
 namespace Hydra.Such.Portal.Controllers
 {
     public class PedidosDEVController : Controller
     {
+        private readonly NAVConfigurations _config;
+        private readonly NAVWSConfigurations _configws;
+        private readonly GeneralConfigurations _generalConfig;
+        private readonly IHostingEnvironment _hostingEnvironment;
+
+        public PedidosDEVController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs, IOptions<GeneralConfigurations> appSettingsGeneral, IHostingEnvironment _hostingEnvironment)
+        {
+            _config = appSettings.Value;
+            _configws = NAVWSConfigs.Value;
+            _generalConfig = appSettingsGeneral.Value;
+            this._hostingEnvironment = _hostingEnvironment;
+        }
+
         public IActionResult PedidosDEV_List()
         {
             UserAccessesViewModel userPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminPedidosDEV);
 
             if (userPerm != null && userPerm.Read.Value)
             {
-                ViewBag.CreatePermissions = !userPerm.Create.Value;
-                ViewBag.UpdatePermissions = !userPerm.Update.Value;
-                ViewBag.DeletePermissions = !userPerm.Delete.Value;
+                ViewBag.ReadPermissions = userPerm.Read.Value;
+                ViewBag.CreatePermissions = userPerm.Create.Value;
+                ViewBag.UpdatePermissions = userPerm.Update.Value;
+                ViewBag.DeletePermissions = userPerm.Delete.Value;
                 return View();
             }
             else
@@ -34,6 +57,7 @@ namespace Hydra.Such.Portal.Controllers
             UserAccessesViewModel userPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminPedidosDEV);
             if (userPerm != null && userPerm.Read.Value)
             {
+                ViewBag.ReadPermissions = !userPerm.Read.Value;
                 ViewBag.CreatePermissions = !userPerm.Create.Value;
                 ViewBag.UpdatePermissions = !userPerm.Update.Value;
                 ViewBag.DeletePermissions = !userPerm.Delete.Value;
@@ -46,9 +70,25 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetListPedidosDEV()
+        public JsonResult GetListPedidosDEV([FromBody] JObject requestParams)
         {
+            int Archived = int.Parse(requestParams["Archived"].ToString());
+
+            List<EnumData> AllEstados = EnumerablesFixed.DEV_Estados;
             List<PedidosDEVViewModel> result = DBPedidosDEV.GetAll().ParseToViewModel();
+
+            if (Archived == 1)
+            {
+                result.RemoveAll(x => x.Estado == 0 || x.Estado == 1 || x.Estado == 3 || x.Estado == 4);
+            }
+            else
+            {
+                result.RemoveAll(x => x.Estado == 2 || x.Estado == 5);
+            }
+
+            result.ForEach(x => {
+                x.EstadoText = x.Estado.HasValue ? AllEstados.Find(y => y.Id == x.Estado).Value : "";
+            });
 
             return Json(result);
         }
@@ -216,6 +256,87 @@ namespace Hydra.Such.Portal.Controllers
             return Json(data);
         }
 
+        [HttpPost]
+        public async Task<JsonResult> ExportToExcel_PedidosDEV([FromBody] List<PedidosDEVViewModel> Lista)
+        {
+            JObject dp = (JObject)Lista[0].ColunasEXCEL;
+
+            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + "_ExportEXCEL.xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Pedidos Desenvolvimento");
+                IRow row = excelSheet.CreateRow(0);
+                int Col = 0;
+
+                if (dp["id"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("ID"); Col = Col + 1; }
+                if (dp["processo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Processo"); Col = Col + 1; }
+                if (dp["descricao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Descrição"); Col = Col + 1; }
+                if (dp["url"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Link da Página"); Col = Col + 1; }
+                if (dp["estadoText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Estado"); Col = Col + 1; }
+                if (dp["dataEstadoText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data do Estado"); Col = Col + 1; }
+                if (dp["dataPedidoText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data do Pedido"); Col = Col + 1; }
+                if (dp["pedidoPor"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Pedido Por"); Col = Col + 1; }
+                if (dp["dataConclusaoText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data da Conclusão"); Col = Col + 1; }
+                if (dp["intervenientes"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Intervenientes"); Col = Col + 1; }
+                if (dp["noHorasPrevistas"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº de Horas Previstas"); Col = Col + 1; }
+                if (dp["noHorasRealizadas"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº de Horas Realizadas"); Col = Col + 1; }
+                if (dp["criadoPor"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Criado Por"); Col = Col + 1; }
+                if (dp["dataCriacaoText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data de Criacao"); Col = Col + 1; }
+                if (dp["alteradoPor"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Alterado Por"); Col = Col + 1; }
+                if (dp["dataAlteracaoText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data de Alteração"); Col = Col + 1; }
+
+                if (dp != null)
+                {
+                    int count = 1;
+                    foreach (PedidosDEVViewModel item in Lista)
+                    {
+                        Col = 0;
+                        row = excelSheet.CreateRow(count);
+
+                        if (dp["id"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ID); Col = Col + 1; }
+                        if (dp["processo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Processo); Col = Col + 1; }
+                        if (dp["descricao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Descricao); Col = Col + 1; }
+                        if (dp["url"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.URL); Col = Col + 1; }
+                        if (dp["estadoText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.EstadoText); Col = Col + 1; }
+                        if (dp["dataEstadoText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DataEstadoText); Col = Col + 1; }
+                        if (dp["dataPedidoText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DataPedidoText); Col = Col + 1; }
+                        if (dp["pedidoPor"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.PedidoPor); Col = Col + 1; }
+                        if (dp["dataConclusaoText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DataConclusaoText); Col = Col + 1; }
+                        if (dp["intervenientes"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Intervenientes); Col = Col + 1; }
+                        if (dp["noHorasPrevistas"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.NoHorasPrevistas.ToString()); Col = Col + 1; }
+                        if (dp["noHorasRealizadas"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.NoHorasRealizadas.ToString()); Col = Col + 1; }
+                        if (dp["criadoPor"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CriadoPor); Col = Col + 1; }
+                        if (dp["dataCriacaoText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DataCriacaoText); Col = Col + 1; }
+                        if (dp["alteradoPor"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.AlteradoPor); Col = Col + 1; }
+                        if (dp["dataAlteracaoText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DataAlteracaoText); Col = Col + 1; }
+
+                        count++;
+                    }
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+        }
+
+        public IActionResult ExportToExcelDownload_PedidosDEV(string sFileName)
+        {
+            sFileName = @"/Upload/temp/" + sFileName;
+            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Pedidos Desenvolvimento.xlsx");
+        }
 
 
 

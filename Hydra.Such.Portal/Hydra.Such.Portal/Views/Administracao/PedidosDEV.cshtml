@@ -12,7 +12,6 @@
 <link rel="import" href="/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
 
-<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
 <link rel="import" href="/lib/datetime-picker-master/datetime-picker.html">
 <link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
@@ -26,22 +25,11 @@
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html">
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html">
 
-<link rel="import" href="/lib/vaadin-upload/vaadin-upload-file.html">
-<link rel="import" href="/lib/vaadin-upload/vaadin-upload.html">
-
 <link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html" />
 
 <link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
 <link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
-
-<!--ACORDEÃO-->
-<link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
-<link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
-
-<!--SUCH-->
-<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
-<link rel="import" href="/lib/such-textarea/such-textarea.html">
 
 <x-group-cont-product></x-group-cont-product>
 
@@ -196,7 +184,7 @@
             }
             else
             {
-                <paper-button id="btnUpdate" class="tablinks" on-tap="_updatePedidoDEV" disabled="{{ _permissionsUpdate }}"><i class="fa fa-check" aria-hidden="true"></i> Atualizar Pedido</paper-button>
+                <paper-button id="btnUpdate" class="tablinks" on-tap="_updatePedidoDEV" disabled="{{ _permissionsUpdate }}"><i class="fa fa-save" aria-hidden="true"></i> Gravar Pedido</paper-button>
             }
         </div>
 
@@ -207,11 +195,11 @@
                 </div>
 
                 <div class="col-sm-6">
-                    <vaadin-text-field id="pedidosDEVProcesso" value="{{data.processo}}" label="Processo" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+                    <vaadin-text-field id="pedidosDEVProcesso" value="{{data.processo}}" label="Processo" maxlength="2000" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
                 </div>
 
                 <div class="col-sm-2">
-                    <vaadin-combo-box items="[[ListEstados]]" id="pedidosDEVEstado" item-value-path="id" item-label-path="value" value="{{data.estado}}" label="Estado" disabled="{{ _permissionsCreate }}">
+                    <vaadin-combo-box items="[[ListEstados]]" id="pedidosDEVEstado" item-value-path="id" item-label-path="value" value="{{data.estado}}" label="Estado" disabled="{{ _permissionsUpdate }}">
                         <template>
                             <table>
                                 <tr>
@@ -229,39 +217,39 @@
 
             <div class="row break_clear">
                 <div class="col-sm-12">
-                    <such-textarea id="pedidosDEVDescricao" value="{{data.descricao}}" label="Descrição" rows="5" disabled="{{ _permissionsCreate }}"></such-textarea>
+                    <such-textarea id="pedidosDEVDescricao" value="{{data.descricao}}" label="Descrição" rows="5" maxlength="2000" disabled="{{ _permissionsUpdate }}"></such-textarea>
                 </div>
             </div>
 
             <div class="row break_clear">
                 <div class="col-sm-4">
-                    <vaadin-text-field id="pedidosDEVURL" value="{{data.url}}" label="Link da Página" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+                    <vaadin-text-field id="pedidosDEVURL" value="{{data.url}}" label="Link da Página" maxlength="2000" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
                 </div>
 
                 <div class="col-sm-4">
-                    <vaadin-text-field id="pedidosDEVPedidoPor" value="{{data.pedidoPor}}" label="Pedido Por" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+                    <vaadin-text-field id="pedidosDEVPedidoPor" value="{{data.pedidoPor}}" label="Pedido Por" maxlength="2000" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
                 </div>
 
                 <div class="col-sm-2">
-                    <vaadin-date-picker id="pedidosDEVDataPedido" value="{{data.dataPedidoText}}" label="Data do Pedido" disabled="{{ _permissionsCreate }}"></vaadin-date-picker>
+                    <vaadin-date-picker id="pedidosDEVDataPedido" value="{{data.dataPedidoText}}" label="Data do Pedido" disabled="{{ _permissionsUpdate }}"></vaadin-date-picker>
                 </div>
 
                 <div class="col-sm-2">
-                    <vaadin-date-picker id="pedidosDEVDataConclusao" value="{{data.dataConclusaoText}}" label="Data da Conclusão" disabled="{{ _permissionsCreate }}"></vaadin-date-picker>
+                    <vaadin-date-picker id="pedidosDEVDataConclusao" value="{{data.dataConclusaoText}}" label="Data da Conclusão" disabled="{{ _permissionsUpdate }}"></vaadin-date-picker>
                 </div>
             </div>
 
             <div class="row break_clear">
                 <div class="col-sm-8">
-                    <vaadin-text-field id="pedidosDEVIntervenientes" value="{{data.intervenientes}}" label="Intervenientes" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+                    <vaadin-text-field id="pedidosDEVIntervenientes" value="{{data.intervenientes}}" label="Intervenientes" maxlength="2000" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
                 </div>
 
                 <div class="col-sm-2">
-                    <vaadin-text-field id="pedidosDEVNoHorasPrevistas" value="{{data.noHorasPrevistas}}" label="Nº de Horas Previstas" type="number" class="alignRight" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+                    <vaadin-text-field id="pedidosDEVNoHorasPrevistas" value="{{data.noHorasPrevistas}}" label="Nº de Horas Previstas" type="number" class="alignRight" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
                 </div>
 
                 <div class="col-sm-2">
-                    <vaadin-text-field id="pedidosDEVNoHorasRealizadas" value="{{data.noHorasRealizadas}}" label="Nº de Horas Realizadas" type="number" class="alignRight" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+                    <vaadin-text-field id="pedidosDEVNoHorasRealizadas" value="{{data.noHorasRealizadas}}" label="Nº de Horas Realizadas" type="number" class="alignRight" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
                 </div>
             </div>
         </div>
@@ -271,7 +259,12 @@
     </template>
 
     <script>
-        var CreateValue = true, UpdateValue = true, DeleteValue = true;
+        var ReadValue = true, CreateValue = true, UpdateValue = true, DeleteValue = true;
+        /**/
+        if ('@Html.Raw(Json.Serialize(ViewBag.ReadPermissions))' == "false") {
+            /**/
+            ReadValue = false;
+        }
         /**/
         if ('@Html.Raw(Json.Serialize(ViewBag.CreatePermissions))' == "false") {
             /**/
@@ -293,13 +286,17 @@
                 Polymer({
                     is: 'x-group-cont-product',
                     properties: {
-                        _permissionsUpdate: {
+                        _permissionsRead: {
                             type: Boolean,
-                            value: UpdateValue
+                            value: ReadValue
                         },
                         _permissionsCreate: {
                             type: Boolean,
                             value: CreateValue
+                        },
+                        _permissionsUpdate: {
+                            type: Boolean,
+                            value: UpdateValue
                         },
                         _permissionsDelete: {
                             type: Boolean,
@@ -395,7 +392,7 @@
                         }
 
                         if (_self.data.estado == 2 || _self.data.estado == 5) { //2 = Recusado  5 = Concluído
-                            $(_self.$.btnUpdate).addClass('disabled');
+                            (_self.$.btnUpdate).hidden = true;
 
                             _self.$.pedidosDEVProcesso.disabled = true;
                             _self.$.pedidosDEVEstado.disabled = true;
@@ -409,10 +406,6 @@
                             _self.$.pedidosDEVNoHorasRealizadas.disabled = true;
                         }
                     },
-
-
-
-
 
 
                 });
