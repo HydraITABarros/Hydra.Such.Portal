@@ -146,11 +146,11 @@
             </paper-collapse-item>
         </paper-collapse-group>
 
-        <vaadin-grid id="gridProdutos" aria-label="gridProdutos" items="[[result]]" class="grid" multi-sort="true" active-item="{{activeItem}}">
+        <vaadin-grid column-reordering-allowed id="gridProdutos" aria-label="gridProdutos" items="[[result]]" class="grid" multi-sort="true" active-item="{{activeItem}}">
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.no.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="no">Nº</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="no" />
+                    <vaadin-grid-filter path="no" value="[[filter.no]]" />
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.no}}" disabled></vaadin-text-field>
@@ -160,7 +160,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.descricao.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="descricao">Descrição</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="descricao" />
+                    <vaadin-grid-filter path="descricao" value="[[filter.descricao]]" />
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.descricao}}" disabled></vaadin-text-field>
@@ -170,7 +170,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.descricao2.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="descricao2">Descrição 2</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="descricao2" />
+                    <vaadin-grid-filter path="descricao2" value="[[filter.descricao2]]" />
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.descricao2}}" disabled></vaadin-text-field>
@@ -180,7 +180,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.listaDeMateriaisText.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="listaDeMateriaisText">Lista de Materiais</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="listaDeMateriaisText" />
+                    <vaadin-grid-filter path="listaDeMateriaisText" value="[[filter.listaDeMateriaisText]]" />
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.listaDeMateriaisText}}" disabled></vaadin-text-field>
@@ -190,7 +190,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.unidadeMedidaBase.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="unidadeMedidaBase">Unidade Medida Base</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="unidadeMedidaBase" />
+                    <vaadin-grid-filter path="unidadeMedidaBase" value="[[filter.unidadeMedidaBase]]" />
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.unidadeMedidaBase}}" disabled></vaadin-text-field>
@@ -200,7 +200,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.noPrateleira.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="noPrateleira">Nº Prateleira</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="noPrateleira" />
+                    <vaadin-grid-filter path="noPrateleira" value="[[filter.noPrateleira]]" />
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.noPrateleira}}" disabled></vaadin-text-field>
@@ -210,7 +210,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.precoUnitario.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="precoUnitario">Preço Unitário</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="precoUnitario" />
+                    <vaadin-grid-filter path="precoUnitario" value="[[filter.precoUnitario]]" />
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.precoUnitario}}" disabled></vaadin-text-field>
@@ -220,7 +220,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.custoUnitario.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="custoUnitario">Custo Unitário</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="custoUnitario" />
+                    <vaadin-grid-filter path="custoUnitario" value="[[filter.custoUnitario]]" />
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.custoUnitario}}" disabled></vaadin-text-field>
@@ -230,7 +230,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.inventario.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="inventario">Inventário</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="inventario" />
+                    <vaadin-grid-filter path="inventario" value="[[filter.inventario]]" />
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.inventario}}" disabled></vaadin-text-field>
@@ -240,7 +240,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.valorEnergetico.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="valorEnergetico">Valor Energético</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="valorEnergetico" />
+                    <vaadin-grid-filter path="valorEnergetico" value="[[filter.valorEnergetico]]" />
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.valorEnergetico}}" disabled></vaadin-text-field>
@@ -250,7 +250,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.valorEnergetico100g.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="valorEnergetico100g">Valor Energético 100g</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="valorEnergetico100g" />
+                    <vaadin-grid-filter path="valorEnergetico100g" value="[[filter.valorEnergetico100g]]" />
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.valorEnergetico100g}}" disabled></vaadin-text-field>
@@ -260,7 +260,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.proteinas.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="proteinas">Proteínas</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="proteinas" />
+                    <vaadin-grid-filter path="proteinas" value="[[filter.proteinas]]" />
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.proteinas}}" disabled></vaadin-text-field>
@@ -270,7 +270,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.proteinas100g.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="proteinas100g">Proteínas 100g</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="proteinas100g" />
+                    <vaadin-grid-filter path="proteinas100g" value="[[filter.proteinas100g]]" />
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.proteinas100g}}" disabled></vaadin-text-field>
@@ -280,7 +280,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.glicidos.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="glicidos">Glícidos</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="glicidos" />
+                    <vaadin-grid-filter path="glicidos" value="[[filter.glicidos]]" />
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.glicidos}}" disabled></vaadin-text-field>
@@ -290,7 +290,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.glicidos100g.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="glicidos100g">Glícidos 100g</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="glicidos100g" />
+                    <vaadin-grid-filter path="glicidos100g" value="[[filter.glicidos100g]]" />
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.glicidos100g}}" disabled></vaadin-text-field>
@@ -300,7 +300,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.lipidos.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="lipidos">Lípidos</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="lipidos" />
+                    <vaadin-grid-filter path="lipidos" value="[[filter.lipidos]]" />
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.lipidos}}" disabled></vaadin-text-field>
@@ -310,7 +310,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.lipidos100g.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="lipidos100g">Lípidos 100g</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="lipidos100g" />
+                    <vaadin-grid-filter path="lipidos100g" value="[[filter.lipidos100g]]" />
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.lipidos100g}}" disabled></vaadin-text-field>
@@ -320,7 +320,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.fibraAlimentar.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="fibraAlimentar">Fibra Alimentar</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="fibraAlimentar" />
+                    <vaadin-grid-filter path="fibraAlimentar" value="[[filter.fibraAlimentar]]" />
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.fibraAlimentar}}" disabled></vaadin-text-field>
@@ -330,7 +330,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.fibraAlimentar100g.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="fibraAlimentar100g">Fibra Alimentar 100g</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="fibraAlimentar100g" />
+                    <vaadin-grid-filter path="fibraAlimentar100g" value="[[filter.fibraAlimentar100g]]" />
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.fibraAlimentar100g}}" disabled></vaadin-text-field>
@@ -340,7 +340,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.quantUnidadeMedida.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="quantUnidadeMedida">Quantidade Unidade Medida</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="quantUnidadeMedida" />
+                    <vaadin-grid-filter path="quantUnidadeMedida" value="[[filter.quantUnidadeMedida]]" />
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.quantUnidadeMedida}}" disabled></vaadin-text-field>
@@ -350,7 +350,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.gramasPorQuantUnidMedida.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="gramasPorQuantUnidMedida">Gramas Por Quantidade Medida</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="gramasPorQuantUnidMedida" />
+                    <vaadin-grid-filter path="gramasPorQuantUnidMedida" value="[[filter.gramasPorQuantUnidMedida]]" />
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.gramasPorQuantUnidMedida}}" disabled></vaadin-text-field>
@@ -360,7 +360,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.tipoRefeicao.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="tipoRefeicao">Tipo Refeição</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="tipoRefeicao" />
+                    <vaadin-grid-filter path="tipoRefeicao" value="[[filter.tipoRefeicao]]" />
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.tipoRefeicao}}" disabled></vaadin-text-field>
@@ -370,7 +370,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.descricaoRefeicao.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="descricaoRefeicao">Descrição Refeição</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="descricaoRefeicao" />
+                    <vaadin-grid-filter path="descricaoRefeicao" value="[[filter.descricaoRefeicao]]" />
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.descricaoRefeicao}}" disabled></vaadin-text-field>
@@ -380,7 +380,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.tarasText.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="tarasText">Taras</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="tarasText" />
+                    <vaadin-grid-filter path="tarasText" value="[[filter.tarasText]]" />
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.tarasText}}" disabled></vaadin-text-field>
@@ -390,7 +390,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.acidosGordosSaturados.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="acidosGordosSaturados">Ácidos Gordos Saturados</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="acidosGordosSaturados" />
+                    <vaadin-grid-filter path="acidosGordosSaturados" value="[[filter.acidosGordosSaturados]]" />
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.acidosGordosSaturados}}" disabled></vaadin-text-field>
@@ -400,7 +400,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.acucares.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="acucares">Açucares</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="acucares" />
+                    <vaadin-grid-filter path="acucares" value="[[filter.acucares]]" />
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.acucares}}" disabled></vaadin-text-field>
@@ -410,7 +410,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.sal.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="sal">Sal</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="sal" />
+                    <vaadin-grid-filter path="sal" value="[[filter.sal]]" />
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.sal}}" disabled></vaadin-text-field>
@@ -420,7 +420,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.cereaisText.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="cereaisText">Cereais</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="cereaisText" />
+                    <vaadin-grid-filter path="cereaisText" value="[[filter.cereaisText]]" />
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.cereaisText}}" disabled></vaadin-text-field>
@@ -430,7 +430,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.crustaceosText.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="crustaceosText">Crustáceos</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="crustaceosText" />
+                    <vaadin-grid-filter path="crustaceosText" value="[[filter.crustaceosText]]" />
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.crustaceosText}}" disabled></vaadin-text-field>
@@ -440,7 +440,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.ovosText.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="ovosText">Ovos</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="ovosText" />
+                    <vaadin-grid-filter path="ovosText" value="[[filter.ovosText]]" />
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.ovosText}}" disabled></vaadin-text-field>
@@ -450,7 +450,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.peixesText.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="peixesText">Peixes</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="peixesText" />
+                    <vaadin-grid-filter path="peixesText" value="[[filter.peixesText]]" />
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.peixesText}}" disabled></vaadin-text-field>
@@ -460,7 +460,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.amendoinsText.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="amendoinsText">Amendoins</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="amendoinsText" />
+                    <vaadin-grid-filter path="amendoinsText" value="[[filter.amendoinsText]]" />
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.amendoinsText}}" disabled></vaadin-text-field>
@@ -470,7 +470,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.sojaText.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="sojaText">Soja</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="sojaText" />
+                    <vaadin-grid-filter path="sojaText" value="[[filter.sojaText]]" />
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.sojaText}}" disabled></vaadin-text-field>
@@ -480,7 +480,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.leiteText.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="leiteText">Leite</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="leiteText" />
+                    <vaadin-grid-filter path="leiteText" value="[[filter.leiteText]]" />
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.leiteText}}" disabled></vaadin-text-field>
@@ -490,7 +490,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.frutasDeCascaRijaText.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="frutasDeCascaRijaText">Frutas De Casca Rija</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="frutasDeCascaRijaText" />
+                    <vaadin-grid-filter path="frutasDeCascaRijaText" value="[[filter.frutasDeCascaRijaText]]" />
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.frutasDeCascaRijaText}}" disabled></vaadin-text-field>
@@ -500,7 +500,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.aipoText.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="aipoText">Aipo</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="aipoText" />
+                    <vaadin-grid-filter path="aipoText" value="[[filter.aipoText]]" />
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.aipoText}}" disabled></vaadin-text-field>
@@ -510,7 +510,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.mostardaText.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="mostardaText">Mostarda</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="mostardaText" />
+                    <vaadin-grid-filter path="mostardaText" value="[[filter.mostardaText]]" />
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.mostardaText}}" disabled></vaadin-text-field>
@@ -520,7 +520,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.sementesDeSesamoText.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="sementesDeSesamoText">Sementes De Sésamo</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="sementesDeSesamoText" />
+                    <vaadin-grid-filter path="sementesDeSesamoText" value="[[filter.sementesDeSesamoText]]" />
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.sementesDeSesamoText}}" disabled></vaadin-text-field>
@@ -530,7 +530,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dioxidoDeEnxofreESulfitosText.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="dioxidoDeEnxofreESulfitosText">Dióxido De Enxofre E Sulfitos</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dioxidoDeEnxofreESulfitosText" />
+                    <vaadin-grid-filter path="dioxidoDeEnxofreESulfitosText" value="[[filter.dioxidoDeEnxofreESulfitosText]]" />
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.dioxidoDeEnxofreESulfitosText}}" disabled></vaadin-text-field>
@@ -540,7 +540,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.tremocoText.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="tremocoText">Tremoço</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="tremocoText" />
+                    <vaadin-grid-filter path="tremocoText" value="[[filter.tremocoText]]" />
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.tremocoText}}" disabled></vaadin-text-field>
@@ -550,7 +550,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.moluscosText.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="moluscosText">Moluscos</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="moluscosText" />
+                    <vaadin-grid-filter path="moluscosText" value="[[filter.moluscosText]]" />
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.moluscosText}}" disabled></vaadin-text-field>
@@ -560,7 +560,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.tipoText.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="tipoText">Tipo</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="tipoText" />
+                    <vaadin-grid-filter path="tipoText" value="[[filter.tipoText]]" />
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.tipoText}}" disabled></vaadin-text-field>
@@ -570,7 +570,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.vitaminaA.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="vitaminaA">Vitamina A</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="vitaminaA" />
+                    <vaadin-grid-filter path="vitaminaA" value="[[filter.vitaminaA]]" />
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.vitaminaA}}" disabled></vaadin-text-field>
@@ -580,7 +580,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.vitaminaD.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="vitaminaD">Vitamina D</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="vitaminaD" />
+                    <vaadin-grid-filter path="vitaminaD" value="[[filter.vitaminaD]]" />
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.vitaminaD}}" disabled></vaadin-text-field>
@@ -590,7 +590,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.colesterol.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="colesterol">Colesterol</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="colesterol" />
+                    <vaadin-grid-filter path="colesterol" value="[[filter.colesterol]]" />
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.colesterol}}" disabled></vaadin-text-field>
@@ -600,7 +600,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.sodio.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="sodio">Sódio</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="sodio" />
+                    <vaadin-grid-filter path="sodio" value="[[filter.sodio]]" />
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.sodio}}" disabled></vaadin-text-field>
@@ -610,7 +610,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.potacio.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="potacio">Potácio</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="potacio" />
+                    <vaadin-grid-filter path="potacio" value="[[filter.potacio]]" />
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.potacio}}" disabled></vaadin-text-field>
@@ -620,7 +620,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.calcio.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="calcio">Cálcio</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="calcio" />
+                    <vaadin-grid-filter path="calcio" value="[[filter.calcio]]" />
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.calcio}}" disabled></vaadin-text-field>
@@ -630,7 +630,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.ferro.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="ferro">Ferro</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="ferro" />
+                    <vaadin-grid-filter path="ferro" value="[[filter.ferro]]" />
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.ferro}}" disabled></vaadin-text-field>
@@ -640,7 +640,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.edivel.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="edivel">Edível</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="edivel" />
+                    <vaadin-grid-filter path="edivel" value="[[filter.edivel]]" />
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.edivel}}" disabled></vaadin-text-field>
@@ -650,7 +650,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.alcool.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="alcool">Alcool</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="alcool" />
+                    <vaadin-grid-filter path="alcool" value="[[filter.alcool]]" />
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.alcool}}" disabled></vaadin-text-field>
@@ -694,9 +694,19 @@
                             return {};
                         }
                     },
+                    /*FILTROS*/
+                    filter: {
+                        type: Object,
+                        value: {},
+                    },
                 },
 
                 ready: function () {
+                    /*FILTROS*/
+                    window.handleGridListColumnsOrder(this.$.gridProdutos, 'produtos-list');
+                    window.grid = this.$.gridProdutos;
+                    window._this = this;
+
                     /*ColumnToggle*/
                     this._startColumnToggle();
 
@@ -718,8 +728,19 @@
                 _rowSelected: function (item) {
                     //debugger;
                     if (item != null) {
+                        /*FILTROS*/
+                        var filters = {};
+                        this.$.gridProdutos._filters.map(function (value, index) {
+                            filters[value.path] = value.value;
+                        });
+                        window.setGridFilter('produtos-list', filters || {});
+
                         window.location.href = "/Produtos/Detalhes/" + item.no;
                     }
+                },
+                /*FILTROS*/
+                created: function () {
+                    this.filter = window.getGridFilter('produtos-list');
                 },
 
                 openToast: function (message) {
@@ -775,9 +796,13 @@
 
                 _exportEXCEL: function () {
                     //debugger;
-                    this.result[0].ColunasEXCEL = this._columns;
+                    //this.result[0].ColunasEXCEL = this._columns;
+                    //this.$.ajax_Export.body = JSON.stringify(this.result);
 
-                    this.$.ajax_Export.body = JSON.stringify(this.result);
+                    var result = this.$.gridProdutos._filter(this.result);
+                    result[0].ColunasEXCEL = this._columns;
+
+                    this.$.ajax_Export.body = JSON.stringify(result);
                     this.$.ajax_Export.generateRequest();
                 },
 

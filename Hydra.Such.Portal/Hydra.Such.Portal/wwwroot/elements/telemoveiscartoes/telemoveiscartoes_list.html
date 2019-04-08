@@ -90,11 +90,11 @@
             <!--end ColumnToggle-->
         </div>
 
-        <vaadin-grid aria-label="CartoesGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+        <vaadin-grid column-reordering-allowed aria-label="CartoesGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.numCartao.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="numCartao">Nº Cartão</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="numCartao" />
+                    <vaadin-grid-filter path="numCartao" value="[[filter.numCartao]]" />
                 </template>
                 <template>
                     {{item.numCartao}}
@@ -103,7 +103,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.tipoServico_Show.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="tipoServico_Show">Tipo Serviço</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="tipoServico_Show" />
+                    <vaadin-grid-filter path="tipoServico_Show" value="[[filter.tipoServico_Show]]" />
                 </template>
                 <template>
                     {{item.tipoServico_Show}}
@@ -112,7 +112,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.estado_Show.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="estado_Show">Estado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="estado_Show" />
+                    <vaadin-grid-filter path="estado_Show" value="[[filter.estado_Show]]" />
                 </template>
                 <template>
                     {{item.estado_Show}}
@@ -121,7 +121,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.contaSuch.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="contaSuch">Conta SUCH</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="contaSuch" />
+                    <vaadin-grid-filter path="contaSuch" value="[[filter.contaSuch]]" />
                 </template>
                 <template>
                     {{item.contaSuch}}
@@ -130,7 +130,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codRegiao.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codRegiao">Código Região</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codRegiao" />
+                    <vaadin-grid-filter path="codRegiao" value="[[filter.codRegiao]]" />
                 </template>
                 <template>
                     {{item.codRegiao}}
@@ -139,7 +139,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codAreaFuncional.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codAreaFuncional">Código Área Funcional</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codAreaFuncional" />
+                    <vaadin-grid-filter path="codAreaFuncional" value="[[filter.codAreaFuncional]]" />
                 </template>
                 <template>
                     {{item.codAreaFuncional}}
@@ -148,7 +148,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codCentroResponsabilidade.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codCentroResponsabilidade">Código Centro Responsabilidade</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codCentroResponsabilidade" />
+                    <vaadin-grid-filter path="codCentroResponsabilidade" value="[[filter.codCentroResponsabilidade]]" />
                 </template>
                 <template>
                     {{item.codCentroResponsabilidade}}
@@ -176,12 +176,28 @@
                         value: function () {
                             return {};
                         }
-                    }
+                    },
+                    /*FILTROS*/
+                    filter: {
+                        type: Object,
+                        value: {},
+                    },
                 },
                 _rowSelected: function (item) {
                     if (item != null) {
+                        /*FILTROS*/
+                        var filters = {};
+                        this.$.grid._filters.map(function (value, index) {
+                            filters[value.path] = value.value;
+                        });
+                        window.setGridFilter('telemoveiscartoes-telemoveiscartoeslist', filters || {});
+
                         window.location.href = "/TelemoveisCartoes/DetalheTelemoveisCartoes/?numCartao=" + item.numCartao;
                     }
+                },
+                /*FILTROS*/
+                created: function () {
+                    this.filter = window.getGridFilter('telemoveiscartoes-telemoveiscartoeslist');
                 },
                 _create: function (item) {
                     if (item != null) {
@@ -191,6 +207,11 @@
                 ready: function () {
                     this.$.grid_databound_ajax.body = JSON.stringify(this._areaid);
                     this.$.grid_databound_ajax.generateRequest();
+
+                    /*FILTROS*/
+                    window.handleGridListColumnsOrder(this.$.grid, 'telemoveiscartoes-telemoveiscartoeslist');
+                    window.grid = this.$.grid;
+                    window._this = this;
 
                     /*ColumnToggle*/
                     this._startColumnToggle();
@@ -212,9 +233,13 @@
 
                 _exportEXCEL: function () {
                     //debugger;
-                    this.result[0].ColunasEXCEL = this._columns;
+                    //this.result[0].ColunasEXCEL = this._columns;
+                    //this.$.ajax_Export.body = JSON.stringify(this.result);
 
-                    this.$.ajax_Export.body = JSON.stringify(this.result);
+                    var result = this.$.grid._filter(this.result);
+                    result[0].ColunasEXCEL = this._columns;
+
+                    this.$.ajax_Export.body = JSON.stringify(result);
                     this.$.ajax_Export.generateRequest();
                 },
 

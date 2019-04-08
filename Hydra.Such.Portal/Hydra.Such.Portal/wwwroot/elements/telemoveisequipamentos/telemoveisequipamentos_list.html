@@ -90,11 +90,11 @@
             <!--end ColumnToggle-->
         </div>
 
-        <vaadin-grid aria-label="TelemoveisGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+        <vaadin-grid column-reordering-allowed aria-label="TelemoveisGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.imei.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="imei">IMEI / Nº Série</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="imei" />
+                    <vaadin-grid-filter path="imei" value="[[filter.imei]]" />
                 </template>
                 <template>
                     {{item.imei}}
@@ -103,7 +103,7 @@
             <vaadin-grid-column width="150px" resizable hidden>
                 <template class="header">
                     <vaadin-grid-sorter path="tipo">Tipo</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="tipo" />
+                    <vaadin-grid-filter path="tipo" value="[[filter.tipo]]" />
                 </template>
                 <template>
                     {{item.tipo}}
@@ -112,7 +112,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.tipo_Show.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="tipo_Show">Tipo</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="tipo_Show" />
+                    <vaadin-grid-filter path="tipo_Show" value="[[filter.tipo_Show]]" />
                 </template>
                 <template>
                     {{item.tipo_Show}}
@@ -121,7 +121,7 @@
             <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.marca.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="marca">Marca</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="marca" />
+                    <vaadin-grid-filter path="marca" value="[[filter.marca]]" />
                 </template>
                 <template>
                     {{item.marca}}
@@ -130,7 +130,7 @@
             <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.modelo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="modelo">Modelo</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="modelo" />
+                    <vaadin-grid-filter path="modelo" value="[[filter.modelo]]" />
                 </template>
                 <template>
                     {{item.modelo}}
@@ -139,7 +139,7 @@
             <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.estado_Show.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="estado_Show">Estado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="estado_Show" />
+                    <vaadin-grid-filter path="estado_Show" value="[[filter.estado_Show]]" />
                 </template>
                 <template>
                     {{item.estado_Show}}
@@ -148,7 +148,7 @@
             <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.cor.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="cor">Cor</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="cor" />
+                    <vaadin-grid-filter path="cor" value="[[filter.cor]]" />
                 </template>
                 <template>
                     {{item.cor}}
@@ -157,7 +157,7 @@
             <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.observacoes.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="observacoes">Observações</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="observacoes" />
+                    <vaadin-grid-filter path="observacoes" value="[[filter.observacoes]]" />
                 </template>
                 <template>
                     {{item.observacoes}}
@@ -166,7 +166,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.devolvido_Show.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="devolvido_Show">Devolvido</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="devolvido_Show" />
+                    <vaadin-grid-filter path="devolvido_Show" value="[[filter.devolvido_Show]]" />
                 </template>
                 <template>
                     {{item.devolvido_Show}}
@@ -175,7 +175,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.utilizador.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="utilizador">Utilizador</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="utilizador" />
+                    <vaadin-grid-filter path="utilizador" value="[[filter.utilizador]]" />
                 </template>
                 <template>
                     {{item.utilizador}}
@@ -184,7 +184,7 @@
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.dataAlteracao_Show.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="dataAlteracao_Show">Data Alteração</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataAlteracao_Show" />
+                    <vaadin-grid-filter path="dataAlteracao_Show" value="[[filter.dataAlteracao_Show]]" />
                 </template>
                 <template>
                     {{item.dataAlteracao_Show}}
@@ -213,12 +213,28 @@
                         value: function () {
                             return {};
                         }
-                    }
+                    },
+                    /*FILTROS*/
+                    filter: {
+                        type: Object,
+                        value: {},
+                    },
                 },
                 _rowSelected: function (item) {
                     if (item != null) {
+                        /*FILTROS*/
+                        var filters = {};
+                        this.$.grid._filters.map(function (value, index) {
+                            filters[value.path] = value.value;
+                        });
+                        window.setGridFilter('telemoveisequipamentos-telemoveisequipamentoslist', filters || {});
+
                         window.location.href = "/TelemoveisEquipamentos/DetalheTelemoveisEquipamentos/?tipo=" + item.tipo + "&imei=" + item.imei;
                     }
+                },
+                /*FILTROS*/
+                created: function () {
+                    this.filter = window.getGridFilter('telemoveisequipamentos-telemoveisequipamentoslist');
                 },
                 _create: function (item) {
                     if (item != null) {
@@ -228,6 +244,11 @@
                 ready: function () {
                     this.$.grid_databound_ajax.body = JSON.stringify(this._areaid);
                     this.$.grid_databound_ajax.generateRequest();
+
+                    /*FILTROS*/
+                    window.handleGridListColumnsOrder(this.$.grid, 'telemoveisequipamentos-telemoveisequipamentoslist');
+                    window.grid = this.$.grid;
+                    window._this = this;
 
                     /*ColumnToggle*/
                     this._startColumnToggle();
@@ -249,9 +270,13 @@
 
                 _exportEXCEL: function () {
                     //debugger;
-                    this.result[0].ColunasEXCEL = this._columns;
+                    //this.result[0].ColunasEXCEL = this._columns;
+                    //this.$.ajax_Export.body = JSON.stringify(this.result);
 
-                    this.$.ajax_Export.body = JSON.stringify(this.result);
+                    var result = this.$.grid._filter(this.result);
+                    result[0].ColunasEXCEL = this._columns;
+
+                    this.$.ajax_Export.body = JSON.stringify(result);
                     this.$.ajax_Export.generateRequest();
                 },
 
