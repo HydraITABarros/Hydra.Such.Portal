@@ -109,7 +109,7 @@
         </div>
 
         @*<h2 class="separator">Autorizar Faturação Contratos</h2>*@
-        <vaadin-grid id="avencaFixaTable" selected-items={{selectedItems}} active-item="{{selectedItem}}" aria-label="Tabela Avença Fixa" items="[[result]]" class="editGrid">
+        <vaadin-grid column-reordering-allowed id="avencaFixaTable" selected-items={{selectedItems}} active-item="{{selectedItem}}" aria-label="Tabela Avença Fixa" items="[[result]]" class="editGrid">
             <vaadin-grid-selection-column id="selectColumn" resizable hidden="{{ _NotshowColCheckBox }}">
             </vaadin-grid-selection-column>
 
@@ -126,7 +126,7 @@
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.contractNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="contractNo">Nº Contrato</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="contractNo"></vaadin-grid-filter>
+                    <vaadin-grid-filter path="contractNo" value="[[filter.contractNo]]"></vaadin-grid-filter>
                 </template>
                 <template>
                     {{item.contractNo}}
@@ -135,7 +135,7 @@
             <vaadin-grid-column width="160px" resizable hidden="{{checked}}" hidden$="{{ _columns.situation.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="situation">Situação</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="situation"></vaadin-grid-filter>
+                    <vaadin-grid-filter path="situation" value="[[filter.situation]]"></vaadin-grid-filter>
                 </template>
                 <template>
                     {{item.situation}}
@@ -144,7 +144,7 @@
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.description.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="description"></vaadin-grid-filter>
+                    <vaadin-grid-filter path="description" value="[[filter.description]]"></vaadin-grid-filter>
                 </template>
                 <template>
                     {{item.description}}
@@ -153,7 +153,7 @@
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.clientNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="clientNo">Nº Cliente</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="clientNo"></vaadin-grid-filter>
+                    <vaadin-grid-filter path="clientNo" value="[[filter.clientNo]]"></vaadin-grid-filter>
                 </template>
                 <template>
                     {{item.clientNo}}
@@ -162,7 +162,7 @@
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.clientName.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="clientName">Nome Cliente</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="clientName"></vaadin-grid-filter>
+                    <vaadin-grid-filter path="clientName" value="[[filter.clientName]]"></vaadin-grid-filter>
                 </template>
                 <template>
                     {{item.clientName}}
@@ -172,7 +172,7 @@
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.invoiceValue.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="invoiceValue">Valor da Fatura</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="invoiceValue"></vaadin-grid-filter>
+                    <vaadin-grid-filter path="invoiceValue" value="[[filter.invoiceValue]]"></vaadin-grid-filter>
                 </template>
                 <template>
                     {{item.invoiceValue}}€
@@ -181,7 +181,7 @@
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.numberOfInvoices.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="numberOfInvoices">Nº Faturas a Emitir</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="numberOfInvoices"></vaadin-grid-filter>
+                    <vaadin-grid-filter path="numberOfInvoices" value="[[filter.numberOfInvoices]]"></vaadin-grid-filter>
                 </template>
                 <template>
                     {{item.numberOfInvoices}}
@@ -190,7 +190,7 @@
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.invoiceTotal.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="invoiceTotal">Total a Faturar</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="invoiceTotal"></vaadin-grid-filter>
+                    <vaadin-grid-filter path="invoiceTotal" value="[[filter.invoiceTotal]]"></vaadin-grid-filter>
                 </template>
                 <template>
                     {{item.invoiceTotal}}€
@@ -199,7 +199,7 @@
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.contractValue.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="contractValue">Valor do Contrato</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="contractValue"></vaadin-grid-filter>
+                    <vaadin-grid-filter path="contractValue" value="[[filter.contractValue]]"></vaadin-grid-filter>
                 </template>
                 <template>
                     {{item.contractValue}}
@@ -208,7 +208,7 @@
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.valueToInvoice.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="valueToInvoice">Valor por Faturar</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="valueToInvoice"></vaadin-grid-filter>
+                    <vaadin-grid-filter path="valueToInvoice" value="[[filter.valueToInvoice]]"></vaadin-grid-filter>
                 </template>
                 <template>
                     {{item.valueToInvoice}}
@@ -217,7 +217,7 @@
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.billedValue.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="billedValue">Valor Faturado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="billedValue"></vaadin-grid-filter>
+                    <vaadin-grid-filter path="billedValue" value="[[filter.billedValue]]"></vaadin-grid-filter>
                 </template>
                 <template>
                     {{item.billedValue}}
@@ -226,7 +226,7 @@
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.regionCode.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="regionCode">Cód. Região</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="regionCode"></vaadin-grid-filter>
+                    <vaadin-grid-filter path="regionCode" value="[[filter.regionCode]]"></vaadin-grid-filter>
                 </template>
                 <template>
                     [[ _parseRegionCode(item.regionCode) ]]
@@ -235,7 +235,7 @@
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.functionalAreaCode.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="functionalAreaCode">Cód. Área Funcional</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="functionalAreaCode"></vaadin-grid-filter>
+                    <vaadin-grid-filter path="functionalAreaCode" value="[[filter.functionalAreaCode]]"></vaadin-grid-filter>
                 </template>
                 <template>
                     [[ _parseFuncAreaCode(item.functionalAreaCode) ]]
@@ -244,7 +244,7 @@
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.responsabilityCenterCode.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="responsabilityCenterCode">Cód. Centro Responsabilidade</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="responsabilityCenterCode"></vaadin-grid-filter>
+                    <vaadin-grid-filter path="responsabilityCenterCode" value="[[filter.responsabilityCenterCode]]"></vaadin-grid-filter>
                 </template>
                 <template>
                     [[ _parseRepCenterCode(item.responsabilityCenterCode) ]]
@@ -253,7 +253,7 @@
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.startDate.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="startDate">Data Inicial</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="startDate"></vaadin-grid-filter>
+                    <vaadin-grid-filter path="startDate" value="[[filter.startDate]]"></vaadin-grid-filter>
                 </template>
                 <template>
                     {{item.startDate}}
@@ -262,7 +262,7 @@
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.expiryDate.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="expiryDate">Data Expiração</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="expiryDate"></vaadin-grid-filter>
+                    <vaadin-grid-filter path="expiryDate" value="[[filter.expiryDate]]"></vaadin-grid-filter>
                 </template>
                 <template>
                     {{item.expiryDate}}
@@ -271,7 +271,7 @@
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.registerDate.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="registerDate">Data Próxima Fatura</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="registerDate"></vaadin-grid-filter>
+                    <vaadin-grid-filter path="registerDate" value="[[filter.registerDate]]"></vaadin-grid-filter>
                 </template>
                 <template>
                     {{item.registerDate}}
@@ -280,7 +280,7 @@
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.invoicePeriod.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="invoicePeriod">Período Fatura</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="invoicePeriod"></vaadin-grid-filter>
+                    <vaadin-grid-filter path="invoicePeriod" value="[[filter.invoicePeriod]]"></vaadin-grid-filter>
                 </template>
                 <template>
                     [[ _parseinvoicePeriod(item.invoicePeriod) ]]
@@ -289,7 +289,7 @@
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.invoiceGroupValue.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="invoiceGroupValue">Grupo Fatura</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="invoiceGroupValue"></vaadin-grid-filter>
+                    <vaadin-grid-filter path="invoiceGroupValue" value="[[filter.invoiceGroupValue]]"></vaadin-grid-filter>
                 </template>
                 <template>
                     {{item.invoiceGroupValue}}
@@ -298,7 +298,7 @@
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.invoiceGroupCount.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="invoiceGroupCount">Quantidade de Linhas Agrupadas</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="invoiceGroupCount"></vaadin-grid-filter>
+                    <vaadin-grid-filter path="invoiceGroupCount" value="[[filter.invoiceGroupCount]]"></vaadin-grid-filter>
                 </template>
                 <template>
                     {{item.invoiceGroupCount}}
@@ -308,7 +308,7 @@
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.document_No.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="document_No">Nº</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="document_No"></vaadin-grid-filter>
+                    <vaadin-grid-filter path="document_No" value="[[filter.document_No]]"></vaadin-grid-filter>
                 </template>
                 <template>
                     {{item.document_No}}
@@ -377,6 +377,11 @@
                             return {};
                         }
                     },
+                    /*FILTROS*/
+                    filter: {
+                        type: Object,
+                        value: {},
+                    },
                     _hasErrors: {
                         type: Boolean,
                         value: false
@@ -384,6 +389,10 @@
 
                 },
 
+                /*FILTROS*/
+                created: function () {
+                    this.filter = window.getGridFilter('contratos-avencafixa');
+                },
                 ready: function () {
                     this._permissions = @Html.Raw(Json.Serialize(@ViewBag.UPermissions));
                     var date = new Date();
@@ -399,6 +408,11 @@
                     //this.selectedItems = [];
                     //this._NotshowColCheckBox = false;
                     //this.$.ajax_getall.generateRequest();
+
+                    /*FILTROS*/
+                    window.handleGridListColumnsOrder(this.$.avencaFixaTable, 'contratos-avencafixa');
+                    window.grid = this.$.avencaFixaTable;
+                    window._this = this;
 
                     /*ColumnToggle*/
                     this._startColumnToggle();
@@ -485,6 +499,13 @@
                         //var version = e.model.item.versionNo;
 
                         if (contractNo != null) {
+                            /*FILTROS*/
+                            var filters = {};
+                            this.$.avencaFixaTable._filters.map(function (value, index) {
+                                filters[value.path] = value.value;
+                            });
+                            window.setGridFilter('contratos-avencafixa', filters || {});
+
                             window.location.href = "/Contratos/DetalhesContrato/" + contractNo;// + "?version=" + item.versionNo + "&" + "isHistoric=false";
                         }
                     }

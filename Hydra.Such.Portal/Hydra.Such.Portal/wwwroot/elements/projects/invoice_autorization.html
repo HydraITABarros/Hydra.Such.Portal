@@ -355,7 +355,7 @@
                                     </div>
                                 </div>
                                 <div class="row break_clear">
-                                    <vaadin-grid id="grdProjectMovements" selected-items={{selectedItems}} active-item="{{selectedItem}}" aria-label="Tabela Autorização Faturação" items="[[result.value]]" inverted$="[[inverted]]" class="editGrid">
+                                    <vaadin-grid column-reordering-allowed id="grdProjectMovements" selected-items={{selectedItems}} active-item="{{selectedItem}}" aria-label="Tabela Autorização Faturação" items="[[result.value]]" inverted$="[[inverted]]" class="editGrid">
 
                                         <vaadin-grid-column width="60px" flex-grow="0">
                                             <template class="header">
@@ -1206,37 +1206,61 @@
                     var erro = 0
                     this._totalToAuthorize = 0.0;
                     if (inverted) {
-                        var items = this.$.grdProjectMovements.items;
-                        
-                        for (i = 0; i < items.length; i++) {
-                            if (items[i].quantity != null && items[i].quantity != 0) {
-                                //if (items[i].unitPrice != null && items[i].unitPrice > 0) {
-                                    if (items[i].totalPrice != null && this._totalToAuthorize != null)
-                                        this._totalToAuthorize = (parseFloat(this._totalToAuthorize) + parseFloat(items[i].totalPrice)).toFixed(2);
-                                    items[i].autorizatedInvoice2 = true;
 
+                        var gridfilter = this.$.grdProjectMovements._filter(this.result.value);
+                        for (i = 0; i < gridfilter.length; i++) {
+                            if (gridfilter[i].quantity != null && gridfilter[i].quantity != 0) {
+                                if (gridfilter[i].totalPrice != null && this._totalToAuthorize != null)
+                                    this._totalToAuthorize = (parseFloat(this._totalToAuthorize) + parseFloat(gridfilter[i].totalPrice)).toFixed(2);
+                                gridfilter[i].autorizatedInvoice2 = true;
 
-                                    this.$.grdProjectMovements.selectItem(items[i]);
-                                //}
-                                //else {
-                                //    erro = 1;
-                                //}
+                                this.$.grdProjectMovements.selectItem(gridfilter[i]);
                             }
                             else {
                                 erro = 1;
                             }
                         }
-                        var checkBoxes = this.$.grdProjectMovements.querySelectorAll("input[aria-label='Selecionar']");
-                        for (i = 0; i < checkBoxes.length; i++) {
-                            if (items[i].quantity != null && items[i].quantity != 0) {
-                                if (items[i].unitPrice != null && items[i].unitPrice > 0) {
-                                    checkBoxes[i].checked = true;
+
+                        //var checkBoxes = this.$.gridfilter.querySelectorAll("input[aria-label='Selecionar']");
+                        for (i = 0; i < gridfilter.length; i++) {
+                            if (gridfilter[i].quantity != null && gridfilter[i].quantity != 0) {
+                                if (gridfilter[i].unitPrice != null && gridfilter[i].unitPrice > 0) {
+                                    gridfilter[i].checked = true;
                                 }
                             }
                         }
                         if (erro == 1) {
                             this.openToastError("Existem linhas em que o valor da Quantidade igual a 0.");
                         }
+
+
+
+
+
+                        //var items = this.$.grdProjectMovements.items;
+                        //for (i = 0; i < items.length; i++) {
+                        //    if (items[i].quantity != null && items[i].quantity != 0) {
+                        //            if (items[i].totalPrice != null && this._totalToAuthorize != null)
+                        //                this._totalToAuthorize = (parseFloat(this._totalToAuthorize) + parseFloat(items[i].totalPrice)).toFixed(2);
+                        //            items[i].autorizatedInvoice2 = true;
+
+                        //            this.$.grdProjectMovements.selectItem(items[i]);
+                        //    }
+                        //    else {
+                        //        erro = 1;
+                        //    }
+                        //}
+                        //var checkBoxes = this.$.grdProjectMovements.querySelectorAll("input[aria-label='Selecionar']");
+                        //for (i = 0; i < checkBoxes.length; i++) {
+                        //    if (items[i].quantity != null && items[i].quantity != 0) {
+                        //        if (items[i].unitPrice != null && items[i].unitPrice > 0) {
+                        //            checkBoxes[i].checked = true;
+                        //        }
+                        //    }
+                        //}
+                        //if (erro == 1) {
+                        //    this.openToastError("Existem linhas em que o valor da Quantidade igual a 0.");
+                        //}
                     }
                     else {
                         this.$.grdProjectMovements.selectedItems = [];
@@ -1254,24 +1278,40 @@
 
                     if (this.inverted == true) { //TODAS AS LINHAS SELECIONADAS
                         var total = 0;
-                        var items = this.$.grdProjectMovements.items;
-                        if (items.length > 0) {
-                            for (var i = 0; i < items.length; i++) {
-                                if (items[i].totalPrice != null) {
-                                    items[i].selecionada = true;
-                                    this.$.updatelinesSelecionada_ajax.body = JSON.stringify(items[i]);
+
+                        var gridfilter = this.$.grdProjectMovements._filter(this.result.value);
+                        if (gridfilter.length > 0) {
+                            for (var i = 0; i < gridfilter.length; i++) {
+                                if (gridfilter[i].totalPrice != null) {
+                                    gridfilter[i].selecionada = true;
+                                    this.$.updatelinesSelecionada_ajax.body = JSON.stringify(gridfilter[i]);
                                     this.$.updatelinesSelecionada_ajax.generateRequest();
 
-                                    total = total + items[i].totalPrice;
-                                    this.$.grdProjectMovements.selectItem(items[i]);
+                                    total = total + gridfilter[i].totalPrice;
+                                    this.$.grdProjectMovements.selectItem(gridfilter[i]);
                                 }
                             }
                         }
+
+                        //var items = this.$.grdProjectMovements.items;
+                        //if (items.length > 0) {
+                        //    for (var i = 0; i < items.length; i++) {
+                        //        if (items[i].totalPrice != null) {
+                        //            items[i].selecionada = true;
+                        //            this.$.updatelinesSelecionada_ajax.body = JSON.stringify(items[i]);
+                        //            this.$.updatelinesSelecionada_ajax.generateRequest();
+
+                        //            total = total + items[i].totalPrice;
+                        //            this.$.grdProjectMovements.selectItem(items[i]);
+                        //        }
+                        //    }
+                        //}
                         this._totalToAuthorize = parseFloat(total).toFixed(2);
                     }
                     else {
                         var total = 0;
                         var items = this.$.grdProjectMovements.items;
+
                         if (items.length > 0) {
                             for (var i = 0; i < items.length; i++) {
                                     items[i].selecionada = false;
@@ -1340,9 +1380,13 @@
                 },
 
                 _exportEXCEL: function () {
-                    this.result.value[0].ColunasEXCEL = this._columns;
+                    //this.result.value[0].ColunasEXCEL = this._columns;
+                    //this.$.ajax_Export.body = JSON.stringify(this.result.value);
 
-                    this.$.ajax_Export.body = JSON.stringify(this.result.value);
+                    var result = this.$.grdProjectMovements._filter(this.result.value);
+                    result[0].ColunasEXCEL = this._columns;
+
+                    this.$.ajax_Export.body = JSON.stringify(result);
                     this.$.ajax_Export.generateRequest();
                 },
 

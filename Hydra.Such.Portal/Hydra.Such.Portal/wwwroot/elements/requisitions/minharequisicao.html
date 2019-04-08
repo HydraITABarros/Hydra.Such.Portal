@@ -790,8 +790,8 @@
                                                         text-path="code"
                                                         value-path="code"
                                                         fields='[{"field":"code", "name":"Cód. Produto"}, {"field":"name", "name":"Descrição"}, {"field":"name2", "name":"Descrição 2"}, {"field":"measureUnit", "name":"Unidade de Medida"}, {"field":"itemCategoryCode", "name":"Cód. Categoria"}, {"field":"productGroupCode", "name":"Cód. Grupo"}]'
-                                                        disabled="{{ !_permissions.update }}">
-                                            <!--on-value-changed="_onProductChanged">-->
+                                                        disabled="{{ !_permissions.update }}"
+                                                        on-value-changed="_onProductChanged">
                                         </such-selectbox>
                                     </div>
                                     <div class="col-lg-3">
@@ -2750,9 +2750,9 @@
                     }
                 },
                 _onProductChanged: function (e) {
+                    debugger;
                     if (e != "") {
                         var item = this.Products.find(x => x.code == e.detail.value);
-                        //var item = this.Products.find(x => x.code == e);
                         if (item != null) {
                             this.$.txtProductDesciption.value = item.name;
                             this.$.txtProductDesciption2.value = item.name2;
