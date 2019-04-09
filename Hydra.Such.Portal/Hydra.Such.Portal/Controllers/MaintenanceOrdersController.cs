@@ -23,14 +23,14 @@ using Microsoft.AspNet.OData.Extensions;
 namespace Hydra.Such.Portal.Controllers
 {
     //[Authorize]
-    [Route("Manutencao")]
-    public class MaintenanceOrderController : Controller
+    [Route("ordens-de-manutencao")]
+    public class MaintenanceOrdersController : Controller
     {
         protected IRepository<MaintenanceOrder, string> repository;
         protected EvolutionWEBContext evolutionWEBContext;
         private readonly ISession session;
 
-        public MaintenanceOrderController(IRepository<MaintenanceOrder, string> repository, EvolutionWEBContext evolutionWEBContext, IOptions<NAVWSConfigurations> NAVWSConfigs, IHttpContextAccessor httpContextAccessor)
+        public MaintenanceOrdersController(IRepository<MaintenanceOrder, string> repository, EvolutionWEBContext evolutionWEBContext, IOptions<NAVWSConfigurations> NAVWSConfigs, IHttpContextAccessor httpContextAccessor)
         {
             session = httpContextAccessor.HttpContext.Session;
             this.repository = repository;
@@ -45,6 +45,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         //[Authorize]
+        // Todo adds custom authorize filter (eSuchAuthorizationFilter)  (info: Authentication -> Authorization)
         [Route("getAll")]
         public PageResult<dynamic> GetAll(ODataQueryOptions<MaintenanceOrder> queryOptions)
         {
