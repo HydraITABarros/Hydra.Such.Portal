@@ -2713,6 +2713,11 @@ namespace Hydra.Such.Portal.Configurations
             new EnumData
             {
                 Id = 5,
+                Value = "Testes"
+            },
+            new EnumData
+            {
+                Id = 6,
                 Value = "Concluído"
             }
         };

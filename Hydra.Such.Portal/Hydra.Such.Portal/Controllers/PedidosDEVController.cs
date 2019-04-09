@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using System.IO;
 using NPOI.XSSF.UserModel;
 using NPOI.SS.UserModel;
+using System.Linq;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -79,18 +80,18 @@ namespace Hydra.Such.Portal.Controllers
 
             if (Archived == 1)
             {
-                result.RemoveAll(x => x.Estado == 0 || x.Estado == 1 || x.Estado == 3 || x.Estado == 4);
+                result.RemoveAll(x => x.Estado == 0 || x.Estado == 1 || x.Estado == 3 || x.Estado == 4 || x.Estado == 5);
             }
             else
             {
-                result.RemoveAll(x => x.Estado == 2 || x.Estado == 5);
+                result.RemoveAll(x => x.Estado == 2 || x.Estado == 6);
             }
 
             result.ForEach(x => {
                 x.EstadoText = x.Estado.HasValue ? AllEstados.Find(y => y.Id == x.Estado).Value : "";
             });
 
-            return Json(result);
+            return Json(result.OrderByDescending(x => x.ID));
         }
 
         [HttpPost]
@@ -186,6 +187,15 @@ namespace Hydra.Such.Portal.Controllers
                     if (DEV.Estado != DEV_OLD.Estado)
                     {
                         DEV.DataEstado = DateTime.Now;
+                    }
+
+                    if (DEV.Estado == 6 && !DEV.DataConclusao.HasValue) //6 = Concluído
+                    {
+                        DEV.DataConclusao = DateTime.Now;
+                    }
+                    if (DEV.Estado != 6 && DEV.DataConclusao.HasValue) //6 = Concluído
+                    {
+                        DEV.DataConclusao = null;
                     }
 
                     if (DEV != null)

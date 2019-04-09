@@ -252,6 +252,24 @@
                     <vaadin-text-field id="pedidosDEVNoHorasRealizadas" value="{{data.noHorasRealizadas}}" label="Nº de Horas Realizadas" type="number" class="alignRight" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
                 </div>
             </div>
+
+            <div class="row break_clear">
+                <div class="col-sm-3">
+                    <vaadin-text-field id="pedidosDEVCriadoPor" value="{{data.criadoPor}}" label="Criado Por" disabled></vaadin-text-field>
+                </div>
+
+                <div class="col-sm-3">
+                    <vaadin-date-picker id="pedidosDEVDataCriacaoText" value="{{data.dataCriacaoText}}" label="Data de Criação" disabled></vaadin-date-picker>
+                </div>
+
+                <div class="col-sm-3">
+                    <vaadin-text-field id="pedidosDEVAlteradoPor" value="{{data.alteradoPor}}" label="Alterado Por" disabled></vaadin-text-field>
+                </div>
+
+                <div class="col-sm-3">
+                    <vaadin-date-picker id="pedidosDEVDataAlteracaoText" value="{{data.dataAlteracaoText}}" label="Data de Alteração" disabled></vaadin-date-picker>
+                </div>
+            </div>
         </div>
 
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
@@ -344,7 +362,7 @@
                     },
 
                     _updatePedidoDEV: function () {
-                        if (this.data.estado != 2 && this.data.estado != 5) { //2 = Recusado  5 = Concluído
+                        if (this.data.estado != 2 && this.data.estado != 6) { //2 = Recusado  6 = Concluído
                             this.$.ajax_UpdatePedidoDesenvolvimento.body = JSON.stringify(this.data);
                             this.$.ajax_UpdatePedidoDesenvolvimento.generateRequest();
                         }
@@ -391,7 +409,7 @@
                             _self.$.pedidosDEVEstado.disabled = true;
                         }
 
-                        if (_self.data.estado == 2 || _self.data.estado == 5) { //2 = Recusado  5 = Concluído
+                        if (_self.data.estado == 2 || _self.data.estado == 6) { //2 = Recusado  6 = Concluído
                             (_self.$.btnUpdate).hidden = true;
 
                             _self.$.pedidosDEVProcesso.disabled = true;
