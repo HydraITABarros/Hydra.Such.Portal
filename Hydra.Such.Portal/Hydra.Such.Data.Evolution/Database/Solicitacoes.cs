@@ -35,9 +35,9 @@ namespace Hydra.Such.Data.Evolution.Database
         public string NumInventario { get; set; }
         public int? Equipa { get; set; }
         public int? IdContratoLinha { get; set; }
-        public bool? Prevencao { get; set; }
-        public bool? Orcamentar { get; set; }
-        public bool? ManutencaoPreventiva { get; set; }
+        public bool Prevencao { get; set; }
+        public bool Orcamentar { get; set; }
+        public bool ManutencaoPreventiva { get; set; }
         public DateTime? DataFecho { get; set; }
     }
 }

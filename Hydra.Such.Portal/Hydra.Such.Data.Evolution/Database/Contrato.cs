@@ -41,14 +41,17 @@ namespace Hydra.Such.Data.Evolution.Database
         public DateTime? DataUltimaFatura { get; set; }
         public bool? ContratoAvencaFixa { get; set; }
         public decimal? ValorTotalProposta { get; set; }
+        public string NumProposta { get; set; }
+        public string NumCompromisso { get; set; }
+        public int? EstadoAlteracao { get; set; }
 
-        public Cliente IdClienteNavigation { get; set; }
-        public ContratoEstado IdEstadoNavigation { get; set; }
-        public ContratoTipo IdTipoContratoNavigation { get; set; }
-        public ICollection<ClientePimp> ClientePimp { get; set; }
-        public ICollection<ContratoAssTipoRequisito> ContratoAssTipoRequisito { get; set; }
-        public ICollection<EquipPimp> EquipPimp { get; set; }
-        public ICollection<Equipamento> Equipamento { get; set; }
-        public ICollection<OrdemManutencao> OrdemManutencao { get; set; }
+        public virtual Cliente IdClienteNavigation { get; set; }
+        public virtual ContratoEstado IdEstadoNavigation { get; set; }
+        public virtual ContratoTipo IdTipoContratoNavigation { get; set; }
+        public virtual ICollection<ClientePimp> ClientePimp { get; set; }
+        public virtual ICollection<ContratoAssTipoRequisito> ContratoAssTipoRequisito { get; set; }
+        public virtual ICollection<EquipPimp> EquipPimp { get; set; }
+        public virtual ICollection<Equipamento> Equipamento { get; set; }
+        public virtual ICollection<OrdemManutencao> OrdemManutencao { get; set; }
     }
 }

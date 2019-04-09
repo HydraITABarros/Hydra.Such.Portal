@@ -13,6 +13,6 @@ namespace Hydra.Such.Data.Evolution.Database
         public int IdOrigemAvaria { get; set; }
         public string OrigemAvaria1 { get; set; }
 
-        public ICollection<OrdemManutencao> OrdemManutencao { get; set; }
+        public virtual ICollection<OrdemManutencao> OrdemManutencao { get; set; }
     }
 }

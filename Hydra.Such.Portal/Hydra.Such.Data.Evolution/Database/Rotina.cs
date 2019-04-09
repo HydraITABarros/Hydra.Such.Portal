@@ -18,10 +18,10 @@ namespace Hydra.Such.Data.Evolution.Database
         public string Nome { get; set; }
         public string Tipo { get; set; }
 
-        public ICollection<EquipPimp> EquipPimp { get; set; }
-        public ICollection<InstituicaoPimp> InstituicaoPimp { get; set; }
-        public ICollection<OrdemManutencaoEquipamentos> OrdemManutencaoEquipamentos { get; set; }
-        public ICollection<OrdemManutencaoLinha> OrdemManutencaoLinha { get; set; }
-        public ICollection<SolicitacoesLinha> SolicitacoesLinha { get; set; }
+        public virtual ICollection<EquipPimp> EquipPimp { get; set; }
+        public virtual ICollection<InstituicaoPimp> InstituicaoPimp { get; set; }
+        public virtual ICollection<OrdemManutencaoEquipamentos> OrdemManutencaoEquipamentos { get; set; }
+        public virtual ICollection<OrdemManutencaoLinha> OrdemManutencaoLinha { get; set; }
+        public virtual ICollection<SolicitacoesLinha> SolicitacoesLinha { get; set; }
     }
 }

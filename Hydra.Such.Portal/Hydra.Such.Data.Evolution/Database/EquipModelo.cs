@@ -17,8 +17,8 @@ namespace Hydra.Such.Data.Evolution.Database
         public int IdModelos { get; set; }
         public bool? Activo { get; set; }
 
-        public EquipCategoria IdCategoriaNavigation { get; set; }
-        public ICollection<Acessorio> Acessorio { get; set; }
-        public ICollection<Equipamento> Equipamento { get; set; }
+        public virtual EquipCategoria IdCategoriaNavigation { get; set; }
+        public virtual ICollection<Acessorio> Acessorio { get; set; }
+        public virtual ICollection<Equipamento> Equipamento { get; set; }
     }
 }

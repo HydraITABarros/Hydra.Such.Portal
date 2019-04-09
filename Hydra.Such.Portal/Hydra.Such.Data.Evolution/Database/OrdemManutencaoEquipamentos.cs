@@ -14,11 +14,11 @@ namespace Hydra.Such.Data.Evolution.Database
         public int? IdEquipEstado { get; set; }
         public int? TempoEntreAvarias { get; set; }
 
-        public Cliente ClienteNavigation { get; set; }
-        public EquipEstado IdEquipEstadoNavigation { get; set; }
-        public Equipamento IdEquipamentoNavigation { get; set; }
-        public OrdemManutencao IdOmNavigation { get; set; }
-        public Rotina IdRotinaNavigation { get; set; }
-        public Servico ServicoNavigation { get; set; }
+        public virtual Cliente ClienteNavigation { get; set; }
+        public virtual EquipEstado IdEquipEstadoNavigation { get; set; }
+        public virtual Equipamento IdEquipamentoNavigation { get; set; }
+        public virtual OrdemManutencao IdOmNavigation { get; set; }
+        public virtual Rotina IdRotinaNavigation { get; set; }
+        public virtual Servico ServicoNavigation { get; set; }
     }
 }

@@ -64,19 +64,19 @@ namespace Hydra.Such.Data.Evolution.Database
         public bool? ResponsavelProjecto { get; set; }
         public string UserRespProjecto { get; set; }
 
-        public NivelAcessoTipo NivelAcessoNavigation { get; set; }
-        public ICollection<Chat> ChatIdUserDestinoNavigation { get; set; }
-        public ICollection<Chat> ChatIdUserEnvioNavigation { get; set; }
-        public ICollection<ChatUsersOn> ChatUsersOn { get; set; }
-        public ICollection<ClientePimp> ClientePimpIdUtilizadorAlteracaoNavigation { get; set; }
-        public ICollection<ClientePimp> ClientePimpIdUtilizadorInsercaoNavigation { get; set; }
-        public ICollection<ClientePimp> ClientePimpTecnicoNavigation { get; set; }
-        public ICollection<EquipPimp> EquipPimpIdUtilizadorAlteracaoNavigation { get; set; }
-        public ICollection<EquipPimp> EquipPimpTecnicoNavigation { get; set; }
-        public ICollection<OrdemManutencao> OrdemManutencao { get; set; }
-        public ICollection<UtilizadorCompetencias> UtilizadorCompetencias { get; set; }
-        public ICollection<UtilizadorFormacao> UtilizadorFormacao { get; set; }
-        public ICollection<UtilizadorHabilitacoes> UtilizadorHabilitacoes { get; set; }
-        public ICollection<UtilizadorPermissao> UtilizadorPermissao { get; set; }
+        public virtual NivelAcessoTipo NivelAcessoNavigation { get; set; }
+        public virtual ICollection<Chat> ChatIdUserDestinoNavigation { get; set; }
+        public virtual ICollection<Chat> ChatIdUserEnvioNavigation { get; set; }
+        public virtual ICollection<ChatUsersOn> ChatUsersOn { get; set; }
+        public virtual ICollection<ClientePimp> ClientePimpIdUtilizadorAlteracaoNavigation { get; set; }
+        public virtual ICollection<ClientePimp> ClientePimpIdUtilizadorInsercaoNavigation { get; set; }
+        public virtual ICollection<ClientePimp> ClientePimpTecnicoNavigation { get; set; }
+        public virtual ICollection<EquipPimp> EquipPimpIdUtilizadorAlteracaoNavigation { get; set; }
+        public virtual ICollection<EquipPimp> EquipPimpTecnicoNavigation { get; set; }
+        public virtual ICollection<OrdemManutencao> OrdemManutencao { get; set; }
+        public virtual ICollection<UtilizadorCompetencias> UtilizadorCompetencias { get; set; }
+        public virtual ICollection<UtilizadorFormacao> UtilizadorFormacao { get; set; }
+        public virtual ICollection<UtilizadorHabilitacoes> UtilizadorHabilitacoes { get; set; }
+        public virtual ICollection<UtilizadorPermissao> UtilizadorPermissao { get; set; }
     }
 }

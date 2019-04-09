@@ -32,7 +32,7 @@ namespace Hydra.Such.Data.Evolution.Database
         public decimal? PrecoAquisicao { get; set; }
         public string Localizacao { get; set; }
         public int? IdPeriodicidade { get; set; }
-        public bool? AssociadoContrato { get; set; }
+        public bool AssociadoContrato { get; set; }
         public int InseridoPor { get; set; }
         public DateTime DataInsercao { get; set; }
         public bool? PorValidar { get; set; }
@@ -50,7 +50,7 @@ namespace Hydra.Such.Data.Evolution.Database
         public bool? IncluiMc { get; set; }
         public int? MpPlaneadas { get; set; }
         public DateTime? DataInactivacao { get; set; }
-        public bool? Instalacao { get; set; }
+        public bool Instalacao { get; set; }
         public int? Criticidade { get; set; }
         public bool? Abatido { get; set; }
         public string Sala { get; set; }

@@ -27,14 +27,14 @@ namespace Hydra.Such.Data.Evolution.Database
         public bool? Replicado { get; set; }
         public int? IdEquipa { get; set; }
 
-        public Cliente IdClienteNavigation { get; set; }
-        public Contrato IdContratoNavigation { get; set; }
-        public Equipa IdEquipaNavigation { get; set; }
-        public Equipamento IdEquipamentoNavigation { get; set; }
-        public Rotina IdRotinaNavigation { get; set; }
-        public Utilizador IdUtilizadorAlteracaoNavigation { get; set; }
-        public PlanoExecutado PlanoExecutadoNavigation { get; set; }
-        public EquipEstado ResultadoPimpNavigation { get; set; }
-        public Utilizador TecnicoNavigation { get; set; }
+        public virtual Cliente IdClienteNavigation { get; set; }
+        public virtual Contrato IdContratoNavigation { get; set; }
+        public virtual Equipa IdEquipaNavigation { get; set; }
+        public virtual Equipamento IdEquipamentoNavigation { get; set; }
+        public virtual Rotina IdRotinaNavigation { get; set; }
+        public virtual Utilizador IdUtilizadorAlteracaoNavigation { get; set; }
+        public virtual PlanoExecutado PlanoExecutadoNavigation { get; set; }
+        public virtual EquipEstado ResultadoPimpNavigation { get; set; }
+        public virtual Utilizador TecnicoNavigation { get; set; }
     }
 }

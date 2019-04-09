@@ -26,12 +26,12 @@ namespace Hydra.Such.Data.Evolution.Database
         public int? IdFornecedor { get; set; }
         public string Observacao { get; set; }
 
-        public Area IdAreaNavigation { get; set; }
-        public AreaOp IdAreaOpNavigation { get; set; }
-        public Equipa IdEquipaNavigation { get; set; }
-        public EquipMarca IdMarcaNavigation { get; set; }
-        public EquipModelo IdModeloNavigation { get; set; }
-        public Regiao IdRegiaoNavigation { get; set; }
-        public ICollection<EquipamentoAcessorio> EquipamentoAcessorio { get; set; }
+        public virtual Area IdAreaNavigation { get; set; }
+        public virtual AreaOp IdAreaOpNavigation { get; set; }
+        public virtual Equipa IdEquipaNavigation { get; set; }
+        public virtual EquipMarca IdMarcaNavigation { get; set; }
+        public virtual EquipModelo IdModeloNavigation { get; set; }
+        public virtual Regiao IdRegiaoNavigation { get; set; }
+        public virtual ICollection<EquipamentoAcessorio> EquipamentoAcessorio { get; set; }
     }
 }

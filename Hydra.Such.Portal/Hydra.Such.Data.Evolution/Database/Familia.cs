@@ -14,6 +14,6 @@ namespace Hydra.Such.Data.Evolution.Database
         public string Familia1 { get; set; }
         public string SubFamilia { get; set; }
 
-        public ICollection<EquipCategoria> EquipCategoria { get; set; }
+        public virtual ICollection<EquipCategoria> EquipCategoria { get; set; }
     }
 }

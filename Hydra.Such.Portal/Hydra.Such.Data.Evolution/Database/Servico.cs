@@ -22,10 +22,10 @@ namespace Hydra.Such.Data.Evolution.Database
         public string Morada { get; set; }
         public string NoNavision { get; set; }
 
-        public Instituicao InstituicaoNavigation { get; set; }
-        public ICollection<Contactos> Contactos { get; set; }
-        public ICollection<Equipamento> Equipamento { get; set; }
-        public ICollection<OrdemManutencao> OrdemManutencao { get; set; }
-        public ICollection<OrdemManutencaoEquipamentos> OrdemManutencaoEquipamentos { get; set; }
+        public virtual Instituicao InstituicaoNavigation { get; set; }
+        public virtual ICollection<Contactos> Contactos { get; set; }
+        public virtual ICollection<Equipamento> Equipamento { get; set; }
+        public virtual ICollection<OrdemManutencao> OrdemManutencao { get; set; }
+        public virtual ICollection<OrdemManutencaoEquipamentos> OrdemManutencaoEquipamentos { get; set; }
     }
 }

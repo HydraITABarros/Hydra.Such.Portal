@@ -23,6 +23,6 @@ namespace Hydra.Such.Data.Evolution.Database
         public string Nif { get; set; }
         public bool? Activo { get; set; }
 
-        public ICollection<Equipamento> Equipamento { get; set; }
+        public virtual ICollection<Equipamento> Equipamento { get; set; }
     }
 }

@@ -14,6 +14,6 @@ namespace Hydra.Such.Data.Evolution.Database
         public string TipoObra1 { get; set; }
         public string Descricao { get; set; }
 
-        public ICollection<OrdemManutencao> OrdemManutencao { get; set; }
+        public virtual ICollection<OrdemManutencao> OrdemManutencao { get; set; }
     }
 }

@@ -20,10 +20,10 @@ namespace Hydra.Such.Data.Evolution.Database
         public bool? Emm { get; set; }
         public int? IdTipo { get; set; }
 
-        public Familia IdFamiliaNavigation { get; set; }
-        public Grupo IdGrupoNavigation { get; set; }
-        public EquipTipo IdTipoNavigation { get; set; }
-        public ICollection<EquipModelo> EquipModelo { get; set; }
-        public ICollection<Equipamento> Equipamento { get; set; }
+        public virtual Familia IdFamiliaNavigation { get; set; }
+        public virtual Grupo IdGrupoNavigation { get; set; }
+        public virtual EquipTipo IdTipoNavigation { get; set; }
+        public virtual ICollection<EquipModelo> EquipModelo { get; set; }
+        public virtual ICollection<Equipamento> Equipamento { get; set; }
     }
 }

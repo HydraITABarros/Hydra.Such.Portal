@@ -10,7 +10,7 @@ namespace Hydra.Such.Data.Evolution.Database
         public int IdEquipParametro { get; set; }
         public decimal? Valor { get; set; }
 
-        public EquipParametro IdEquipParametroNavigation { get; set; }
-        public Equipamento IdEquipamentoNavigation { get; set; }
+        public virtual EquipParametro IdEquipParametroNavigation { get; set; }
+        public virtual Equipamento IdEquipamentoNavigation { get; set; }
     }
 }

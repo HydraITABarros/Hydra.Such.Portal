@@ -12,6 +12,6 @@ namespace Hydra.Such.Data.Evolution.Database
         public string Descritivo { get; set; }
         public string Tabela { get; set; }
 
-        public Accao IdAccaoNavigation { get; set; }
+        public virtual Accao IdAccaoNavigation { get; set; }
     }
 }

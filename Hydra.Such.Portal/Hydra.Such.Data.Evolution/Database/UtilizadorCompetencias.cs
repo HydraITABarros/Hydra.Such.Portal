@@ -13,6 +13,6 @@ namespace Hydra.Such.Data.Evolution.Database
         public string NumCarteira { get; set; }
         public string Observacao { get; set; }
 
-        public Utilizador IdUtilizadorNavigation { get; set; }
+        public virtual Utilizador IdUtilizadorNavigation { get; set; }
     }
 }

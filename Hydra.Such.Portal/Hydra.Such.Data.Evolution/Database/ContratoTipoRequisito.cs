@@ -14,6 +14,6 @@ namespace Hydra.Such.Data.Evolution.Database
         public string Grupo { get; set; }
         public string Descricao { get; set; }
 
-        public ICollection<ContratoAssTipoRequisito> ContratoAssTipoRequisito { get; set; }
+        public virtual ICollection<ContratoAssTipoRequisito> ContratoAssTipoRequisito { get; set; }
     }
 }

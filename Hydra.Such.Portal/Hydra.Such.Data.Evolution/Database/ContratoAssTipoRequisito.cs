@@ -9,7 +9,7 @@ namespace Hydra.Such.Data.Evolution.Database
         public string IdContrato { get; set; }
         public int IdTipoRequisito { get; set; }
 
-        public Contrato IdContratoNavigation { get; set; }
-        public ContratoTipoRequisito IdTipoRequisitoNavigation { get; set; }
+        public virtual Contrato IdContratoNavigation { get; set; }
+        public virtual ContratoTipoRequisito IdTipoRequisitoNavigation { get; set; }
     }
 }

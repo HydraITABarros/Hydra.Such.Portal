@@ -13,6 +13,6 @@ namespace Hydra.Such.Data.Evolution.Database
         public int IdAccao { get; set; }
         public string Nome { get; set; }
 
-        public ICollection<Logs> Logs { get; set; }
+        public virtual ICollection<Logs> Logs { get; set; }
     }
 }

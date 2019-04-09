@@ -13,6 +13,6 @@ namespace Hydra.Such.Data.Evolution.Database
         public int IdEstado { get; set; }
         public string Nome { get; set; }
 
-        public ICollection<Contrato> Contrato { get; set; }
+        public virtual ICollection<Contrato> Contrato { get; set; }
     }
 }

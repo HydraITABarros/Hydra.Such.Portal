@@ -21,7 +21,7 @@ namespace Hydra.Such.Data.Evolution.Database
         public int? Mes { get; set; }
         public int? Dia { get; set; }
 
-        public OrdemManutencaoEstadoMaterial IdEstadoMaterialNavigation { get; set; }
-        public OrdemManutencao IdOmNavigation { get; set; }
+        public virtual OrdemManutencaoEstadoMaterial IdEstadoMaterialNavigation { get; set; }
+        public virtual OrdemManutencao IdOmNavigation { get; set; }
     }
 }

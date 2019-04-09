@@ -30,7 +30,9 @@ namespace Hydra.Such.Data.Evolution.Database
         public string EquipaNav { get; set; }
         public decimal? NumTecnicosNav { get; set; }
         public int? LinhaNum { get; set; }
+        public int? NumVersao { get; set; }
+        public decimal? Quantidade { get; set; }
 
-        public ICollection<ClientePimp> ClientePimp { get; set; }
+        public virtual ICollection<ClientePimp> ClientePimp { get; set; }
     }
 }

@@ -13,6 +13,6 @@ namespace Hydra.Such.Data.Evolution.Database
         public int IdTipo { get; set; }
         public string Designacao { get; set; }
 
-        public ICollection<EquipCategoria> EquipCategoria { get; set; }
+        public virtual ICollection<EquipCategoria> EquipCategoria { get; set; }
     }
 }

@@ -10,6 +10,6 @@ namespace Hydra.Such.Data.Evolution.Database
         public string ContentType { get; set; }
         public byte[] Ficheiro { get; set; }
 
-        public Cliente IdNavigation { get; set; }
+        public virtual Cliente IdNavigation { get; set; }
     }
 }

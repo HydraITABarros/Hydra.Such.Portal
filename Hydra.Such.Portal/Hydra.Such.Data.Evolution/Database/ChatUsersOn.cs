@@ -8,6 +8,6 @@ namespace Hydra.Such.Data.Evolution.Database
         public int IdChatOn { get; set; }
         public int IdUser { get; set; }
 
-        public Utilizador IdUserNavigation { get; set; }
+        public virtual Utilizador IdUserNavigation { get; set; }
     }
 }

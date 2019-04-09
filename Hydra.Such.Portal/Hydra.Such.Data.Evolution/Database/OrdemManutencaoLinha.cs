@@ -13,8 +13,8 @@ namespace Hydra.Such.Data.Evolution.Database
         public int? IdRotina { get; set; }
         public int? Tbf { get; set; }
 
-        public EquipEstado IdEquipEstadoNavigation { get; set; }
-        public Equipamento IdEquipamentoNavigation { get; set; }
-        public Rotina IdRotinaNavigation { get; set; }
+        public virtual EquipEstado IdEquipEstadoNavigation { get; set; }
+        public virtual Equipamento IdEquipamentoNavigation { get; set; }
+        public virtual Rotina IdRotinaNavigation { get; set; }
     }
 }

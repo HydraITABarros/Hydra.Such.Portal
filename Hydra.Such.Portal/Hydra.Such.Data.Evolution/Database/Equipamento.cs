@@ -44,7 +44,7 @@ namespace Hydra.Such.Data.Evolution.Database
         public decimal? PrecoAquisicao { get; set; }
         public string Localizacao { get; set; }
         public int? IdPeriodicidade { get; set; }
-        public bool? AssociadoContrato { get; set; }
+        public bool AssociadoContrato { get; set; }
         public int InseridoPor { get; set; }
         public DateTime DataInsercao { get; set; }
         public bool? PorValidar { get; set; }
@@ -62,31 +62,31 @@ namespace Hydra.Such.Data.Evolution.Database
         public bool? IncluiMc { get; set; }
         public int? MpPlaneadas { get; set; }
         public DateTime? DataInactivacao { get; set; }
-        public bool? Instalacao { get; set; }
+        public bool Instalacao { get; set; }
         public int? Criticidade { get; set; }
         public bool? Abatido { get; set; }
         public string Sala { get; set; }
         public string DesignacaoComplementar2 { get; set; }
         public bool? SubContratar { get; set; }
 
-        public EquipCategoria CategoriaNavigation { get; set; }
-        public Area IdAreaNavigation { get; set; }
-        public AreaOp IdAreaOpNavigation { get; set; }
-        public Cliente IdClienteNavigation { get; set; }
-        public Contrato IdContratoNavigation { get; set; }
-        public Equipa IdEquipaNavigation { get; set; }
-        public Fornecedor IdFornecedorNavigation { get; set; }
-        public Regiao IdRegiaoNavigation { get; set; }
-        public Servico IdServicoNavigation { get; set; }
-        public EquipMarca MarcaNavigation { get; set; }
-        public EquipModelo ModeloNavigation { get; set; }
-        public ICollection<EquipDadosTecnicos> EquipDadosTecnicos { get; set; }
-        public ICollection<EquipDependente> EquipDependenteIdEquipPrincipalNavigation { get; set; }
-        public ICollection<EquipDependente> EquipDependenteIdEquipSecundarioNavigation { get; set; }
-        public ICollection<EquipPimp> EquipPimp { get; set; }
-        public ICollection<EquipamentoAcessorio> EquipamentoAcessorio { get; set; }
-        public ICollection<OrdemManutencaoEquipamentos> OrdemManutencaoEquipamentos { get; set; }
-        public ICollection<OrdemManutencaoLinha> OrdemManutencaoLinha { get; set; }
-        public ICollection<SolicitacoesLinha> SolicitacoesLinha { get; set; }
+        public virtual EquipCategoria CategoriaNavigation { get; set; }
+        public virtual Area IdAreaNavigation { get; set; }
+        public virtual AreaOp IdAreaOpNavigation { get; set; }
+        public virtual Cliente IdClienteNavigation { get; set; }
+        public virtual Contrato IdContratoNavigation { get; set; }
+        public virtual Equipa IdEquipaNavigation { get; set; }
+        public virtual Fornecedor IdFornecedorNavigation { get; set; }
+        public virtual Regiao IdRegiaoNavigation { get; set; }
+        public virtual Servico IdServicoNavigation { get; set; }
+        public virtual EquipMarca MarcaNavigation { get; set; }
+        public virtual EquipModelo ModeloNavigation { get; set; }
+        public virtual ICollection<EquipDadosTecnicos> EquipDadosTecnicos { get; set; }
+        public virtual ICollection<EquipDependente> EquipDependenteIdEquipPrincipalNavigation { get; set; }
+        public virtual ICollection<EquipDependente> EquipDependenteIdEquipSecundarioNavigation { get; set; }
+        public virtual ICollection<EquipPimp> EquipPimp { get; set; }
+        public virtual ICollection<EquipamentoAcessorio> EquipamentoAcessorio { get; set; }
+        public virtual ICollection<OrdemManutencaoEquipamentos> OrdemManutencaoEquipamentos { get; set; }
+        public virtual ICollection<OrdemManutencaoLinha> OrdemManutencaoLinha { get; set; }
+        public virtual ICollection<SolicitacoesLinha> SolicitacoesLinha { get; set; }
     }
 }

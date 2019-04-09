@@ -22,13 +22,13 @@ namespace Hydra.Such.Data.Evolution.Database
         public int? IdArea { get; set; }
         public int? IdRegiao { get; set; }
 
-        public Area IdAreaNavigation { get; set; }
-        public Regiao IdRegiaoNavigation { get; set; }
-        public ICollection<Acessorio> Acessorio { get; set; }
-        public ICollection<AreaOp> AreaOp { get; set; }
-        public ICollection<ClientePimp> ClientePimp { get; set; }
-        public ICollection<EquipPimp> EquipPimp { get; set; }
-        public ICollection<Equipamento> Equipamento { get; set; }
-        public ICollection<InstituicaoPimp> InstituicaoPimp { get; set; }
+        public virtual Area IdAreaNavigation { get; set; }
+        public virtual Regiao IdRegiaoNavigation { get; set; }
+        public virtual ICollection<Acessorio> Acessorio { get; set; }
+        public virtual ICollection<AreaOp> AreaOp { get; set; }
+        public virtual ICollection<ClientePimp> ClientePimp { get; set; }
+        public virtual ICollection<EquipPimp> EquipPimp { get; set; }
+        public virtual ICollection<Equipamento> Equipamento { get; set; }
+        public virtual ICollection<InstituicaoPimp> InstituicaoPimp { get; set; }
     }
 }

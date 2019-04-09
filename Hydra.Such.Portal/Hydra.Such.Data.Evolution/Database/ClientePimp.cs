@@ -31,14 +31,14 @@ namespace Hydra.Such.Data.Evolution.Database
         public int? IdInstituicao { get; set; }
         public int? IdServico { get; set; }
 
-        public Area IdAreaNavigation { get; set; }
-        public AreaOp IdAreaOpNavigation { get; set; }
-        public ContratoLinha IdContratoLinhaNavigation { get; set; }
-        public Contrato IdContratoNavigation { get; set; }
-        public Equipa IdEquipaNavigation { get; set; }
-        public Regiao IdRegiaoNavigation { get; set; }
-        public Utilizador IdUtilizadorAlteracaoNavigation { get; set; }
-        public Utilizador IdUtilizadorInsercaoNavigation { get; set; }
-        public Utilizador TecnicoNavigation { get; set; }
+        public virtual Area IdAreaNavigation { get; set; }
+        public virtual AreaOp IdAreaOpNavigation { get; set; }
+        public virtual ContratoLinha IdContratoLinhaNavigation { get; set; }
+        public virtual Contrato IdContratoNavigation { get; set; }
+        public virtual Equipa IdEquipaNavigation { get; set; }
+        public virtual Regiao IdRegiaoNavigation { get; set; }
+        public virtual Utilizador IdUtilizadorAlteracaoNavigation { get; set; }
+        public virtual Utilizador IdUtilizadorInsercaoNavigation { get; set; }
+        public virtual Utilizador TecnicoNavigation { get; set; }
     }
 }

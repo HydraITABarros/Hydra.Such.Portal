@@ -13,6 +13,6 @@ namespace Hydra.Such.Data.Evolution.Database
         public int IdEstadoMaterial { get; set; }
         public string Nome { get; set; }
 
-        public ICollection<OrdemManutencaoMateriais> OrdemManutencaoMateriais { get; set; }
+        public virtual ICollection<OrdemManutencaoMateriais> OrdemManutencaoMateriais { get; set; }
     }
 }

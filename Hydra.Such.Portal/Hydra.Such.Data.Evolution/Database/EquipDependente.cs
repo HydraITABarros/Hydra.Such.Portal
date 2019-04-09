@@ -9,7 +9,7 @@ namespace Hydra.Such.Data.Evolution.Database
         public int IdEquipPrincipal { get; set; }
         public int IdEquipSecundario { get; set; }
 
-        public Equipamento IdEquipPrincipalNavigation { get; set; }
-        public Equipamento IdEquipSecundarioNavigation { get; set; }
+        public virtual Equipamento IdEquipPrincipalNavigation { get; set; }
+        public virtual Equipamento IdEquipSecundarioNavigation { get; set; }
     }
 }

@@ -12,6 +12,6 @@ namespace Hydra.Such.Data.Evolution.Database
         public string Area { get; set; }
         public string AreaOp { get; set; }
 
-        public Utilizador IdUserNavigation { get; set; }
+        public virtual Utilizador IdUserNavigation { get; set; }
     }
 }

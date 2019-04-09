@@ -14,9 +14,9 @@ namespace Hydra.Such.Data.Evolution.Database
         public string Contacto { get; set; }
         public string Email { get; set; }
 
-        public Cliente ClienteNavigation { get; set; }
-        public Instituicao InstituicaoNavigation { get; set; }
-        public Servico ServicoNavigation { get; set; }
-        public TipoDeContacto TipoContactoNavigation { get; set; }
+        public virtual Cliente ClienteNavigation { get; set; }
+        public virtual Instituicao InstituicaoNavigation { get; set; }
+        public virtual Servico ServicoNavigation { get; set; }
+        public virtual TipoDeContacto TipoContactoNavigation { get; set; }
     }
 }

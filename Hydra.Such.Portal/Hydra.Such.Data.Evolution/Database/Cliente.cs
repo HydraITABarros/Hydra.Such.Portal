@@ -35,14 +35,14 @@ namespace Hydra.Such.Data.Evolution.Database
         public string CrespNav { get; set; }
         public int? Blocked { get; set; }
 
-        public Regiao IdRegiaoNavigation { get; set; }
-        public LogoClientes LogoClientes { get; set; }
-        public ICollection<Contactos> Contactos { get; set; }
-        public ICollection<Contrato> Contrato { get; set; }
-        public ICollection<EquipPimp> EquipPimp { get; set; }
-        public ICollection<Equipamento> Equipamento { get; set; }
-        public ICollection<Instituicao> Instituicao { get; set; }
-        public ICollection<OrdemManutencao> OrdemManutencao { get; set; }
-        public ICollection<OrdemManutencaoEquipamentos> OrdemManutencaoEquipamentos { get; set; }
+        public virtual Regiao IdRegiaoNavigation { get; set; }
+        public virtual LogoClientes LogoClientes { get; set; }
+        public virtual ICollection<Contactos> Contactos { get; set; }
+        public virtual ICollection<Contrato> Contrato { get; set; }
+        public virtual ICollection<EquipPimp> EquipPimp { get; set; }
+        public virtual ICollection<Equipamento> Equipamento { get; set; }
+        public virtual ICollection<Instituicao> Instituicao { get; set; }
+        public virtual ICollection<OrdemManutencao> OrdemManutencao { get; set; }
+        public virtual ICollection<OrdemManutencaoEquipamentos> OrdemManutencaoEquipamentos { get; set; }
     }
 }

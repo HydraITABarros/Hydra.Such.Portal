@@ -26,23 +26,23 @@ namespace Hydra.Such.Data.Evolution.Database
         public int? ModuloEmm { get; set; }
         public int? ModuloSolicitacoes { get; set; }
 
-        public Acessos ModuloClientesNavigation { get; set; }
-        public Acessos ModuloContratosNavigation { get; set; }
-        public Acessos ModuloDadosEstatisticosNavigation { get; set; }
-        public Acessos ModuloEmmNavigation { get; set; }
-        public Acessos ModuloFichaEquipNavigation { get; set; }
-        public Acessos ModuloFolhaObraNavigation { get; set; }
-        public Acessos ModuloFormacoesCompetenciasNavigation { get; set; }
-        public Acessos ModuloFornecedoresNavigation { get; set; }
-        public Acessos ModuloHabilitacoesNavigation { get; set; }
-        public Acessos ModuloInstituicoesNavigation { get; set; }
-        public Acessos ModuloPlaneamentoNavigation { get; set; }
-        public Acessos ModuloRegistoDiarioNavigation { get; set; }
-        public Acessos ModuloReplicarPlaneamentoNavigation { get; set; }
-        public Acessos ModuloRequisicoesNavigation { get; set; }
-        public Acessos ModuloServicosNavigation { get; set; }
-        public Acessos ModuloSolicitacoesNavigation { get; set; }
-        public Acessos ModuloUtilizadoresNavigation { get; set; }
-        public NivelAcessoTipo NivelAcessoNavigation { get; set; }
+        public virtual Acessos ModuloClientesNavigation { get; set; }
+        public virtual Acessos ModuloContratosNavigation { get; set; }
+        public virtual Acessos ModuloDadosEstatisticosNavigation { get; set; }
+        public virtual Acessos ModuloEmmNavigation { get; set; }
+        public virtual Acessos ModuloFichaEquipNavigation { get; set; }
+        public virtual Acessos ModuloFolhaObraNavigation { get; set; }
+        public virtual Acessos ModuloFormacoesCompetenciasNavigation { get; set; }
+        public virtual Acessos ModuloFornecedoresNavigation { get; set; }
+        public virtual Acessos ModuloHabilitacoesNavigation { get; set; }
+        public virtual Acessos ModuloInstituicoesNavigation { get; set; }
+        public virtual Acessos ModuloPlaneamentoNavigation { get; set; }
+        public virtual Acessos ModuloRegistoDiarioNavigation { get; set; }
+        public virtual Acessos ModuloReplicarPlaneamentoNavigation { get; set; }
+        public virtual Acessos ModuloRequisicoesNavigation { get; set; }
+        public virtual Acessos ModuloServicosNavigation { get; set; }
+        public virtual Acessos ModuloSolicitacoesNavigation { get; set; }
+        public virtual Acessos ModuloUtilizadoresNavigation { get; set; }
+        public virtual NivelAcessoTipo NivelAcessoNavigation { get; set; }
     }
 }

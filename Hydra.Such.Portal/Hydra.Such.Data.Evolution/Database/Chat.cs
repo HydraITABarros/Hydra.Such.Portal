@@ -10,9 +10,9 @@ namespace Hydra.Such.Data.Evolution.Database
         public int IdUserDestino { get; set; }
         public DateTime DataMensagem { get; set; }
         public string Mensagem { get; set; }
-        public bool? Lida { get; set; }
+        public bool Lida { get; set; }
 
-        public Utilizador IdUserDestinoNavigation { get; set; }
-        public Utilizador IdUserEnvioNavigation { get; set; }
+        public virtual Utilizador IdUserDestinoNavigation { get; set; }
+        public virtual Utilizador IdUserEnvioNavigation { get; set; }
     }
 }

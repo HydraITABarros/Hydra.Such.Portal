@@ -12,6 +12,6 @@ namespace Hydra.Such.Data.Evolution.Database
         public string Entidade { get; set; }
         public string Observacao { get; set; }
 
-        public Utilizador IdUtilizadorNavigation { get; set; }
+        public virtual Utilizador IdUtilizadorNavigation { get; set; }
     }
 }

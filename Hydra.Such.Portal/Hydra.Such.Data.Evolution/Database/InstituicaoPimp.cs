@@ -21,9 +21,9 @@ namespace Hydra.Such.Data.Evolution.Database
         public int? ResultadoPimp { get; set; }
         public bool? Replicado { get; set; }
 
-        public Equipa IdEquipaNavigation { get; set; }
-        public Instituicao IdInstituicaoNavigation { get; set; }
-        public Rotina IdRotinaNavigation { get; set; }
-        public PlanoExecutado PlanoExecutadoNavigation { get; set; }
+        public virtual Equipa IdEquipaNavigation { get; set; }
+        public virtual Instituicao IdInstituicaoNavigation { get; set; }
+        public virtual Rotina IdRotinaNavigation { get; set; }
+        public virtual PlanoExecutado PlanoExecutadoNavigation { get; set; }
     }
 }

@@ -14,6 +14,6 @@ namespace Hydra.Such.Data.Evolution.Database
         public string Parametro { get; set; }
         public string Unidades { get; set; }
 
-        public ICollection<EquipDadosTecnicos> EquipDadosTecnicos { get; set; }
+        public virtual ICollection<EquipDadosTecnicos> EquipDadosTecnicos { get; set; }
     }
 }

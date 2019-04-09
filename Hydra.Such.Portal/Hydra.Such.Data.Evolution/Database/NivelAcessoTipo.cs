@@ -13,7 +13,7 @@ namespace Hydra.Such.Data.Evolution.Database
         public int Id { get; set; }
         public string NivelAcesso { get; set; }
 
-        public PermissoesDefault PermissoesDefault { get; set; }
-        public ICollection<Utilizador> Utilizador { get; set; }
+        public virtual PermissoesDefault PermissoesDefault { get; set; }
+        public virtual ICollection<Utilizador> Utilizador { get; set; }
     }
 }

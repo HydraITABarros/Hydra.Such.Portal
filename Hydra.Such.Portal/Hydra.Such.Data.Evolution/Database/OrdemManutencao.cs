@@ -36,16 +36,16 @@ namespace Hydra.Such.Data.Evolution.Database
         public string DescAvaria { get; set; }
         public string Relatorio { get; set; }
 
-        public Cliente ClienteNavigation { get; set; }
-        public Contrato ContratoNavigation { get; set; }
-        public EstadoObra IdEstadoObraNavigation { get; set; }
-        public OrigemAvaria IdOrigemAvariaNavigation { get; set; }
-        public TipoContacto IdTipoContactoNavigation { get; set; }
-        public TipoObra IdTipoObraNavigation { get; set; }
-        public Instituicao InstituicaoNavigation { get; set; }
-        public Utilizador RegistadoPorNavigation { get; set; }
-        public Servico ServicoNavigation { get; set; }
-        public ICollection<OrdemManutencaoEquipamentos> OrdemManutencaoEquipamentos { get; set; }
-        public ICollection<OrdemManutencaoMateriais> OrdemManutencaoMateriais { get; set; }
+        public virtual Cliente ClienteNavigation { get; set; }
+        public virtual Contrato ContratoNavigation { get; set; }
+        public virtual EstadoObra IdEstadoObraNavigation { get; set; }
+        public virtual OrigemAvaria IdOrigemAvariaNavigation { get; set; }
+        public virtual TipoContacto IdTipoContactoNavigation { get; set; }
+        public virtual TipoObra IdTipoObraNavigation { get; set; }
+        public virtual Instituicao InstituicaoNavigation { get; set; }
+        public virtual Utilizador RegistadoPorNavigation { get; set; }
+        public virtual Servico ServicoNavigation { get; set; }
+        public virtual ICollection<OrdemManutencaoEquipamentos> OrdemManutencaoEquipamentos { get; set; }
+        public virtual ICollection<OrdemManutencaoMateriais> OrdemManutencaoMateriais { get; set; }
     }
 }
