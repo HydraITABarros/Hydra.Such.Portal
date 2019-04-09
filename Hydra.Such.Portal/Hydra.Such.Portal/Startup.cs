@@ -49,15 +49,21 @@ namespace Hydra.Such.Portal
 
             services.AddOData();
 
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddReact();
+            services.AddMvc(options => {
+                options.Filters.Add(new NavigationFilter());
+            });
+
             // Make sure a JS engine is registered, or you will get an error!
             services.AddJsEngineSwitcher(options => options.DefaultEngineName = ChakraCoreJsEngine.EngineName)
               .AddChakraCore();
 
+            services.AddReact();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
             services.AddMvc(options => {
                 options.Filters.Add(new NavigationFilter());
             });
+
             services.Configure<FormOptions>(x =>
             {
                 x.ValueLengthLimit = int.MaxValue;
@@ -124,6 +130,14 @@ namespace Hydra.Such.Portal
             // Initialise ReactJS.NET. Must be before static files.
             app.UseReact(config =>
             {
+                config
+                     .SetReuseJavaScriptEngines(true)
+                     .SetLoadBabel(false)
+                     .SetLoadReact(false)
+                     .AddScriptWithoutTransform("~/dist/runtime.js")
+                     .AddScriptWithoutTransform("~/dist/vendor.js")
+                     .AddScriptWithoutTransform("~/dist/components.js");
+
                 // If you want to use server-side rendering of React components,
                 // add all the necessary JavaScript files here. This includes
                 // your components as well as all of their dependencies.
