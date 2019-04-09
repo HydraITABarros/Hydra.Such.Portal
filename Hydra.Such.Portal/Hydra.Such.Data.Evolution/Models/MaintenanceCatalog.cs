@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace Hydra.Such.Data.Evolution.Database
 {
     [ModelMetadataType(typeof(IMaintenanceCatalog))]
-    public partial class MaintenanceCatalog : IMaintenanceCatalog
+    public partial class MaintenanceCatalog
     {
     }
 

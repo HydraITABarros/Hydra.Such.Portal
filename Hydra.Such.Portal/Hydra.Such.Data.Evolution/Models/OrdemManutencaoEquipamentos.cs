@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace Hydra.Such.Data.Evolution.Database
 {
     [ModelMetadataType(typeof(IOrdemManutencaoEquipamentos))]
-    public partial class OrdemManutencaoEquipamentos : IOrdemManutencaoEquipamentos
+    public partial class OrdemManutencaoEquipamentos
     { }
 
     public interface IOrdemManutencaoEquipamentos
@@ -18,12 +18,5 @@ namespace Hydra.Such.Data.Evolution.Database
         int? IdRotina { get; set; }
         int? IdEquipEstado { get; set; }
         int? TempoEntreAvarias { get; set; }
-
-        Cliente ClienteNavigation { get; set; }
-        EquipEstado IdEquipEstadoNavigation { get; set; }
-        Equipamento IdEquipamentoNavigation { get; set; }
-        OrdemManutencao IdOmNavigation { get; set; }
-        Rotina IdRotinaNavigation { get; set; }
-        Servico ServicoNavigation { get; set; }
     }
 }

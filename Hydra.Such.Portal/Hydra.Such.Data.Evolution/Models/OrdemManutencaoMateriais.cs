@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace Hydra.Such.Data.Evolution.Database
 {
     [ModelMetadataType(typeof(IOrdemManutencaoMateriais))]
-    public partial class OrdemManutencaoMateriais : IOrdemManutencaoMateriais
+    public partial class OrdemManutencaoMateriais
     { }
 
     public interface IOrdemManutencaoMateriais

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace Hydra.Such.Data.Evolution.Database
 {
     [ModelMetadataType(typeof(IMaintenanceHeaderComments))]
-    public partial class MaintenanceHeaderComments : IMaintenanceHeaderComments
+    public partial class MaintenanceHeaderComments 
     {
     }
 

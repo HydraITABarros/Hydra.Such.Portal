@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 namespace Hydra.Such.Data.Evolution.Database
 {
     [ModelMetadataType(typeof(IMaintenanceOrder))]
-    public partial class MaintenanceOrder : IMaintenanceOrder
+    public partial class MaintenanceOrder
     {
     }
 

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace Hydra.Such.Data.Evolution.Database
 {
     [ModelMetadataType(typeof(IMaintenanceOrderBackup))]
-    public partial class MaintenanceOrderBackup : IMaintenanceOrderBackup
+    public partial class MaintenanceOrderBackup
     {
     }
 
