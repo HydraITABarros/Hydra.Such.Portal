@@ -44,11 +44,23 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="wwwroot\**" />
+    <Content Include="wwwroot\elements\**" />
+    <Content Include="wwwroot\fonts\**" />
+    <Content Include="wwwroot\js\**" />
+    <Content Include="wwwroot\css\**" />
+    
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="DotNetCore.NPOI" Version="1.2.1" />
     <PackageReference Include="EPPlus" Version="4.5.3.1" />
+    <PackageReference Include="JavaScriptEngineSwitcher.ChakraCore" Version="3.0.7" />
+    <PackageReference Include="JavaScriptEngineSwitcher.Extensions.MsDependencyInjection" Version="3.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.2.3" />
     <PackageReference Include="Microsoft.AspNetCore.OData" Version="7.1.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
+    <PackageReference Include="React.AspNet" Version="4.1.1" />
     <PackageReference Include="SharpRepository.EfCoreRepository" Version="2.0.2.2" />
     <PackageReference Include="SharpRepository.Ioc.Microsoft.DependencyInjection" Version="2.0.2.2" />
   </ItemGroup>
