@@ -43,12 +43,12 @@
     <Content Remove="wwwroot\Upload\hydra08%40such.pt_Novo Documento de Texto.txt" />
   </ItemGroup>
 
-  <ItemGroup>
+  <!--<ItemGroup>
     <Content Include="wwwroot\elements\**" />
     <Content Include="wwwroot\fonts\**" />
     <Content Include="wwwroot\js\**" />
     <Content Include="wwwroot\css\**" />
-  </ItemGroup>
+  </ItemGroup>-->
 
   <ItemGroup>
     <PackageReference Include="DotNetCore.NPOI" Version="1.2.1" />
