@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
@@ -44,12 +44,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="wwwroot\**" />
     <Content Include="wwwroot\elements\**" />
     <Content Include="wwwroot\fonts\**" />
     <Content Include="wwwroot\js\**" />
     <Content Include="wwwroot\css\**" />
-    
   </ItemGroup>
 
   <ItemGroup>
@@ -79,6 +77,7 @@
     <Folder Include="Areas\Compras\Models\" />
     <Folder Include="Areas\Nutricao\Data\" />
     <Folder Include="Areas\Nutricao\Models\" />
+    <Folder Include="wwwroot\fonts\" />
     <Folder Include="wwwroot\images\" />
     <Folder Include="wwwroot\Infinity\" />
     <Folder Include="wwwroot\lib\paper-menu-master\.github\" />
