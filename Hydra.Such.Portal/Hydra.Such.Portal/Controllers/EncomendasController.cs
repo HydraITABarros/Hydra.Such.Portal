@@ -399,16 +399,27 @@ namespace Hydra.Such.Portal.Controllers
                     data.UtilizadorCriacao = User.Identity.Name;
                     data.DataCriacao = DateTime.Now;
 
-                    if (DBPedidoPagamento.Create(DBPedidoPagamento.ParseToDB(data)) != null)
+                    List<PedidosPagamento> PedidoDisponivel = DBPedidoPagamento.GetAllPedidosPagamento().Where(x => x.CodigoFornecedor == data.CodigoFornecedor &&
+                                                                                                        x.Estado == 6 &&
+                                                                                                        x.DataDisponibilizacao < DateTime.Now.AddDays(-30)).ToList();
+                    if (PedidoDisponivel != null && PedidoDisponivel.Count() > 0)
                     {
-                        data = DBPedidoPagamento.ParseToViewModel(DBPedidoPagamento.GetAllPedidosPagamento().Where(x => x.UserPedido.ToLower() == User.Identity.Name.ToLower()).LastOrDefault());
-                        data.eReasonCode = 1;
-                        data.eMessage = "Foi criado com sucesso o Pedido de Pagemento.";
+                        data.eReasonCode = 3;
+                        data.eMessage = "Não pode criar o Pedido de Pagamento, pois já existe um Pedido de Pagamento para este Fornecedor no estado Disponível há mais de 30 dias.";
                     }
                     else
                     {
-                        data.eReasonCode = 2;
-                        data.eMessage = "Ocorreu um erro na criação do Pedido de Pagemento.";
+                        if (DBPedidoPagamento.Create(DBPedidoPagamento.ParseToDB(data)) != null)
+                        {
+                            data = DBPedidoPagamento.ParseToViewModel(DBPedidoPagamento.GetAllPedidosPagamento().Where(x => x.UserPedido.ToLower() == User.Identity.Name.ToLower()).LastOrDefault());
+                            data.eReasonCode = 1;
+                            data.eMessage = "Foi criado com sucesso o Pedido de Pagemento.";
+                        }
+                        else
+                        {
+                            data.eReasonCode = 2;
+                            data.eMessage = "Ocorreu um erro na criação do Pedido de Pagemento.";
+                        }
                     }
                 }
             }
