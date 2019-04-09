@@ -304,3 +304,4 @@ __pycache__/
 /Hydra.Such.Portal/Hydra.Such.Portal/wwwroot/Upload/14145557 (1).pdf
 /Hydra.Such.Portal/Hydra.Such.Portal/wwwroot/Upload/Compra TicketLine_2018102218929.pdf
 /Hydra.Such.Portal/Hydra.Such.Portal/wwwroot/Upload
+*.DS_Store
