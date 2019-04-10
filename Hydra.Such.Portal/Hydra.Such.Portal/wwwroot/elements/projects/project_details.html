@@ -136,8 +136,9 @@
                     <paper-button id="btnProjectAdd" class="tablinks" on-tap="_terminarProject"><i class="fa fa-remove" aria-hidden="true"></i>&nbsp; Terminar</paper-button>
                 </template>
 
+                <paper-button id="btnProjectMovements" class="tablinks" on-tap="_OpenProjectMovements"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Movimentos do Projeto</paper-button>
+
                 <template is="dom-if" if="{{ data.verMenu }}">
-                    <paper-button id="btnProjectMovements" class="tablinks" on-tap="_OpenProjectMovements"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Movimentos do Projeto</paper-button>
                     <paper-button id="btnPreProjectMovements" class="tablinks" on-tap="_OpenPreProjectMovements"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Pré-Movimentos Projeto</paper-button>
 
                     <template is="dom-if" if="{{ !_projectClosed }}">

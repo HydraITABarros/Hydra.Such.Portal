@@ -1,4 +1,5 @@
 ﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -575,47 +576,46 @@ namespace Hydra.Such.Portal.Controllers
             {
                 try
                 {
-                    Projetos cProject = new Projetos();
+                    //Projetos cProject = new Projetos();
 
-                    cProject.NºProjeto = data.ProjectNo;
-                    cProject.Área = data.Area;
-                    cProject.Descrição = data.Description;
-                    cProject.NºCliente = data.ClientNo;
-                    cProject.Data = data.Date != "" && data.Date != null ? DateTime.Parse(data.Date) : (DateTime?)null;
-                    cProject.Estado = data.Status;
-                    cProject.CódigoRegião = data.RegionCode;
-                    cProject.CódigoÁreaFuncional = data.FunctionalAreaCode;
-                    cProject.CódigoCentroResponsabilidade = data.ResponsabilityCenterCode;
-                    cProject.Faturável = data.Billable;
-                    cProject.NºContrato = data.ContractNo;
-                    cProject.CódEndereçoEnvio = data.ShippingAddressCode;
-                    cProject.EnvioANome = data.ShippingName;
-                    cProject.EnvioAEndereço = data.ShippingAddress;
-                    cProject.EnvioACódPostal = data.ShippingPostalCode;
-                    cProject.EnvioALocalidade = data.ShippingLocality;
-                    cProject.EnvioAContato = data.ShippingContact;
-                    cProject.CódTipoProjeto = data.ProjectTypeCode;
-                    cProject.NossaProposta = data.OurProposal;
-                    cProject.CódObjetoServiço = data.ServiceObjectCode;
-                    cProject.NºCompromisso = data.CommitmentCode;
-                    cProject.GrupoContabObra = "PROJETO";
-                    cProject.TipoGrupoContabProjeto = data.GroupContabProjectType;
-                    //cProject.TipoGrupoContabOmProjeto = data.GroupContabOMProjectType;
-                    cProject.PedidoDoCliente = data.ClientRequest;
-                    cProject.DataDoPedido = data.RequestDate != "" && data.RequestDate != null ? DateTime.Parse(data.RequestDate) : (DateTime?)null;
-                    cProject.ValidadeDoPedido = data.RequestValidity;
-                    cProject.DescriçãoDetalhada = data.DetailedDescription;
-                    cProject.CategoriaProjeto = data.ProjectCategory;
-                    cProject.NºContratoOrçamento = data.BudgetContractNo;
-                    cProject.ProjetoInterno = data.InternalProject;
-                    cProject.ChefeProjeto = data.ProjectLeader;
-                    cProject.ResponsávelProjeto = data.ProjectResponsible;
-                    cProject.UtilizadorModificação = User.Identity.Name;
-                    cProject.FaturaPrecosIvaIncluido = data.FaturaPrecosIvaIncluido;
+                    //cProject.NºProjeto = data.ProjectNo;
+                    //cProject.Área = data.Area;
+                    //cProject.Descrição = data.Description;
+                    //cProject.NºCliente = data.ClientNo;
+                    //cProject.Data = data.Date != "" && data.Date != null ? DateTime.Parse(data.Date) : (DateTime?)null;
+                    //cProject.Estado = data.Status;
+                    //cProject.CódigoRegião = data.RegionCode;
+                    //cProject.CódigoÁreaFuncional = data.FunctionalAreaCode;
+                    //cProject.CódigoCentroResponsabilidade = data.ResponsabilityCenterCode;
+                    //cProject.Faturável = data.Billable;
+                    //cProject.NºContrato = data.ContractNo;
+                    //cProject.CódEndereçoEnvio = data.ShippingAddressCode;
+                    //cProject.EnvioANome = data.ShippingName;
+                    //cProject.EnvioAEndereço = data.ShippingAddress;
+                    //cProject.EnvioACódPostal = data.ShippingPostalCode;
+                    //cProject.EnvioALocalidade = data.ShippingLocality;
+                    //cProject.EnvioAContato = data.ShippingContact;
+                    //cProject.CódTipoProjeto = data.ProjectTypeCode;
+                    //cProject.NossaProposta = data.OurProposal;
+                    //cProject.CódObjetoServiço = data.ServiceObjectCode;
+                    //cProject.NºCompromisso = data.CommitmentCode;
+                    //cProject.GrupoContabObra = "PROJETO";
+                    //cProject.TipoGrupoContabProjeto = data.GroupContabProjectType;
+                    //cProject.PedidoDoCliente = data.ClientRequest;
+                    //cProject.DataDoPedido = data.RequestDate != "" && data.RequestDate != null ? DateTime.Parse(data.RequestDate) : (DateTime?)null;
+                    //cProject.ValidadeDoPedido = data.RequestValidity;
+                    //cProject.DescriçãoDetalhada = data.DetailedDescription;
+                    //cProject.CategoriaProjeto = data.ProjectCategory;
+                    //cProject.NºContratoOrçamento = data.BudgetContractNo;
+                    //cProject.ProjetoInterno = data.InternalProject;
+                    //cProject.ChefeProjeto = data.ProjectLeader;
+                    //cProject.ResponsávelProjeto = data.ProjectResponsible;
+                    //cProject.UtilizadorModificação = User.Identity.Name;
+                    //cProject.FaturaPrecosIvaIncluido = data.FaturaPrecosIvaIncluido;
 
-                    DBProjects.Update(cProject);
+                    //DBProjects.Update(cProject);
 
-                    data.eReasonCode = 1;
+                    //data.eReasonCode = 1;
 
 
                     //Read NAV Project Key
@@ -657,6 +657,49 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 data.eReasonCode = 3;
                                 data.eMessage = "Ocorreu um erro ao atualizar o projeto no NAV.";
+                            }
+                            else
+                            {
+                                Projetos cProject = new Projetos();
+
+                                cProject.NºProjeto = data.ProjectNo;
+                                cProject.Área = data.Area;
+                                cProject.Descrição = data.Description;
+                                cProject.NºCliente = data.ClientNo;
+                                cProject.Data = data.Date != "" && data.Date != null ? DateTime.Parse(data.Date) : (DateTime?)null;
+                                cProject.Estado = data.Status;
+                                cProject.CódigoRegião = data.RegionCode;
+                                cProject.CódigoÁreaFuncional = data.FunctionalAreaCode;
+                                cProject.CódigoCentroResponsabilidade = data.ResponsabilityCenterCode;
+                                cProject.Faturável = data.Billable;
+                                cProject.NºContrato = data.ContractNo;
+                                cProject.CódEndereçoEnvio = data.ShippingAddressCode;
+                                cProject.EnvioANome = data.ShippingName;
+                                cProject.EnvioAEndereço = data.ShippingAddress;
+                                cProject.EnvioACódPostal = data.ShippingPostalCode;
+                                cProject.EnvioALocalidade = data.ShippingLocality;
+                                cProject.EnvioAContato = data.ShippingContact;
+                                cProject.CódTipoProjeto = data.ProjectTypeCode;
+                                cProject.NossaProposta = data.OurProposal;
+                                cProject.CódObjetoServiço = data.ServiceObjectCode;
+                                cProject.NºCompromisso = data.CommitmentCode;
+                                cProject.GrupoContabObra = "PROJETO";
+                                cProject.TipoGrupoContabProjeto = data.GroupContabProjectType;
+                                cProject.PedidoDoCliente = data.ClientRequest;
+                                cProject.DataDoPedido = data.RequestDate != "" && data.RequestDate != null ? DateTime.Parse(data.RequestDate) : (DateTime?)null;
+                                cProject.ValidadeDoPedido = data.RequestValidity;
+                                cProject.DescriçãoDetalhada = data.DetailedDescription;
+                                cProject.CategoriaProjeto = data.ProjectCategory;
+                                cProject.NºContratoOrçamento = data.BudgetContractNo;
+                                cProject.ProjetoInterno = data.InternalProject;
+                                cProject.ChefeProjeto = data.ProjectLeader;
+                                cProject.ResponsávelProjeto = data.ProjectResponsible;
+                                cProject.UtilizadorModificação = User.Identity.Name;
+                                cProject.FaturaPrecosIvaIncluido = data.FaturaPrecosIvaIncluido;
+
+                                DBProjects.Update(cProject);
+
+                                data.eReasonCode = 1;
                             }
                         }
                     }
@@ -3787,7 +3830,11 @@ namespace Hydra.Such.Portal.Controllers
                                 }
                             }
 
-                            Task<WSCreatePreInvoice.Create_Result> TCreatePreInvoice = WSPreInvoice.CreatePreInvoice(header, _configws, dataFormulario, projeto, Ship);
+                            if (proj.FaturaPrecosIvaIncluido == true)
+                                header.FaturaPrecosIvaIncluido = true;
+
+                            Task<WSCreatePreInvoiceNEW.Create_Result> TCreatePreInvoice = WSPreInvoice.CreatePreInvoiceNEW(header, _configws, dataFormulario, projeto, Ship);
+                            //Task<WSCreatePreInvoice.Create_Result> TCreatePreInvoice = WSPreInvoice.CreatePreInvoice(header, _configws, dataFormulario, projeto, Ship);
                             TCreatePreInvoice.Wait();
 
                             if (TCreatePreInvoice.IsCompletedSuccessfully)
@@ -3846,6 +3893,12 @@ namespace Hydra.Such.Portal.Controllers
                                                 header.Items.Add(wasteLineToAdd);
                                             }
                                         });
+                                    }
+
+                                    foreach (var item in header.Items)
+                                    {
+                                        if (proj.FaturaPrecosIvaIncluido == true)
+                                            item.UnitPrice = item.UnitPrice * (decimal)1.23;
                                     }
 
                                     Task<WSCreatePreInvoiceLine.CreateMultiple_Result> TCreatePreInvoiceLine = WSPreInvoiceLine.CreatePreInvoiceLineListProject(header.Items, headerNo, OptionInvoice, _configws);
