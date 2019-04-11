@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Security.Claims;
-using System.Security.Claims;
 using System.Web;
 
 namespace Hydra.Such.Portal.Filters

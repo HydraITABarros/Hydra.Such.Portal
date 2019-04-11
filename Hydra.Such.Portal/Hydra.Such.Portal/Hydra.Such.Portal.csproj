@@ -30,6 +30,17 @@
     <None Remove="wwwroot\lib\paper-multi-select\paper-checkbox\**" />
     <None Remove="wwwroot\lib\vaadin-time-picker-master\bower_components\**" />
     <None Remove="__Notes\**" />
+    <Content Remove="package.json" />
+    <Content Remove="Views\Shared\_Layout %28copy%29.cshtml" />
+    <Content Remove="Views\Shared\_LayoutReact.cshtml" />
+    <None Remove="yarn.lock" />
+    <Content Remove="wwwroot\react-components\app.js" />
+    <Content Remove="wwwroot\react-components\es6codelib.js" />
+    <Content Remove="wwwroot\react-components\fetchdata.js" />
+    <Content Remove="wwwroot\react-components\lib.js" />
+    <Content Remove="wwwroot\react-components\reactcomponent.js" />
+    <None Remove=".babelrc" />
+    <Content Remove="wwwroot\css\site.css" />
   </ItemGroup>
 
   <ItemGroup>
@@ -61,6 +72,14 @@
     <PackageReference Include="React.AspNet" Version="4.1.1" />
     <PackageReference Include="SharpRepository.EfCoreRepository" Version="2.0.2.2" />
     <PackageReference Include="SharpRepository.Ioc.Microsoft.DependencyInjection" Version="2.0.2.2" />
+    <PackageReference Include="JavaScriptEngineSwitcher.ChakraCore.Native.osx-x64" Version="3.0.7" />
+    <PackageReference Include="JavaScriptEngineSwitcher.ChakraCore.Native.win-x64" Version="3.0.7" />
+    <PackageReference Include="React.Core" Version="4.1.1" />
+    <PackageReference Include="React.Router" Version="4.1.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+    <PackageReference Include="Newtonsoft.Json.Schema" Version="3.0.10" />
+    <PackageReference Include="NJsonSchema" Version="9.13.28" />
+    <PackageReference Include="Manatee.Json" Version="10.1.2" />
   </ItemGroup>
 
   <ItemGroup>
@@ -85,6 +104,7 @@
     <Folder Include="wwwroot\lib\paper-menu-master\test\" />
     <Folder Include="wwwroot\reports\" />
     <Folder Include="wwwroot\Upload\" />
+    <Folder Include="wwwroot\react-components\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -105,6 +125,15 @@
     </Content>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="package.json" />
+    <None Include="wwwroot\react-components\app.js" />
+    <None Include="wwwroot\react-components\es6codelib.js" />
+    <None Include="wwwroot\react-components\fetchdata.js" />
+    <None Include="wwwroot\react-components\lib.js" />
+    <None Include="wwwroot\react-components\reactcomponent.js" />
+    <None Include="wwwroot\css\site.css" />
+  </ItemGroup>
   <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JSONSchema="" /></VisualStudio></ProjectExtensions>
 
 </Project>
