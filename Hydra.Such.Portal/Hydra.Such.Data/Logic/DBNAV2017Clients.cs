@@ -78,7 +78,8 @@ namespace Hydra.Such.Data.Logic
                             NoSeries = temp.NoSeries.Equals(DBNull.Value) ? "" : (string)temp.NoSeries,
                             PhoneNo = temp.PhoneNo.Equals(DBNull.Value) ? "" : (string)temp.PhoneNo,
                             TaxaAprovisionamento = (decimal)temp.TaxaAprovisionamento,
-                            TipoCliente = (Tipo_Cliente)temp.TipoCliente
+                            TipoCliente = (Tipo_Cliente)temp.TipoCliente,
+                            VATBusinessPostingGroup = temp.VATBusinessPostingGroup.Equals(DBNull.Value) ? "" : (string)temp.VATBusinessPostingGroup
                         });
                     }
                     return result;

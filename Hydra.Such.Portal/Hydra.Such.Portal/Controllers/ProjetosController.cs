@@ -653,7 +653,7 @@ namespace Hydra.Such.Portal.Controllers
                                 statusL = false;
                             }
 
-                            if (!TUpdateNavProj.IsCompletedSuccessfully && statusL)
+                            if (!TUpdateNavProj.IsCompletedSuccessfully || statusL == false)
                             {
                                 data.eReasonCode = 3;
                                 data.eMessage = "Ocorreu um erro ao atualizar o projeto no NAV.";
@@ -3895,10 +3895,54 @@ namespace Hydra.Such.Portal.Controllers
                                         });
                                     }
 
+                                    string Cliente = string.Empty;
+                                    string GrupoIVA = string.Empty;
+                                    string GrupoCliente = string.Empty;
+                                    decimal IVA = new decimal();
                                     foreach (var item in header.Items)
                                     {
+                                        Cliente = item.InvoiceToClientNo;
+                                        GrupoIVA = string.Empty;
+                                        GrupoCliente = string.Empty;
+                                        IVA = 0;
+
                                         if (proj.FaturaPrecosIvaIncluido == true)
-                                            item.UnitPrice = item.UnitPrice * (decimal)1.23;
+                                        {
+                                            if (!string.IsNullOrEmpty(item.Code))
+                                            {
+                                                NAVResourcesViewModel Resource = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, item.Code, "", 0, "").FirstOrDefault();
+                                                if (Resource != null)
+                                                    GrupoIVA = Resource.VATProductPostingGroup;
+                                                else
+                                                {
+                                                    execDetails += " Erro ao criar a fatura: Não foi possível encontrar o recurso Nº: " + item.Code;
+                                                    result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails));
+                                                    return Json(result);
+                                                }
+
+                                                if (!string.IsNullOrEmpty(Cliente) && !string.IsNullOrEmpty(GrupoIVA))
+                                                {
+                                                    NAVClientsViewModel cliente = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, Cliente);
+                                                    if (cliente != null)
+                                                        GrupoCliente = cliente.VATBusinessPostingGroup;
+                                                    else
+                                                    {
+                                                        execDetails += " Erro ao criar a fatura: Não foi possível encontrar o cliente Nº: " + Cliente;
+                                                        result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails));
+                                                        return Json(result);
+                                                    }
+
+                                                    if (!string.IsNullOrEmpty(GrupoCliente))
+                                                        IVA = DBNAV2017VATPostingSetup.GetIVA(_config.NAVDatabaseName, _config.NAVCompanyName, GrupoCliente, GrupoIVA);
+
+                                                    if (IVA > 0)
+                                                        IVA = (IVA / 100) + 1;
+                                                }
+                                            }
+
+                                            if (IVA > 0)
+                                                item.UnitPrice = item.UnitPrice * IVA;
+                                        }
                                     }
 
                                     Task<WSCreatePreInvoiceLine.CreateMultiple_Result> TCreatePreInvoiceLine = WSPreInvoiceLine.CreatePreInvoiceLineListProject(header.Items, headerNo, OptionInvoice, _configws);

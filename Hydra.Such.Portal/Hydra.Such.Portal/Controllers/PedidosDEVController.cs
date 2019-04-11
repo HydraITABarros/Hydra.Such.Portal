@@ -15,6 +15,10 @@ using System.IO;
 using NPOI.XSSF.UserModel;
 using NPOI.SS.UserModel;
 using System.Linq;
+using Hydra.Such.Data.Logic.Approvals;
+using System.Net.Mail;
+using System.Net;
+
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -143,6 +147,29 @@ namespace Hydra.Such.Portal.Controllers
                             data.ID = DEV.ID;
                             data.eReasonCode = 1;
                             data.eMessage = "Pedido de Desenvolvimento criado com sucesso.";
+
+                            //Envio automático de Email para ARomao@such.pt para conhecimento de novo Pedido
+                            EmailsAprovações EmailApproval = new EmailsAprovações()
+                            {
+                                NºMovimento = data.ID,
+                                EmailDestinatário = "ARomao@such.pt",
+                                NomeDestinatário = "Amaro Romão",
+                                Assunto = "e-SUCH - Foi criado um novo Pedido de Desenvolvimento",
+                                DataHoraEmail = DateTime.Now,
+                                TextoEmail = "Foi criado um novo Pedido de Desenvolvimento com o Nº " + data.ID.ToString() + " no Portal e-SUCH, com a seguinte descrição:" + Environment.NewLine + data.Descricao,
+                                Enviado = false
+                            };
+                            SendEmailApprovals Email = new SendEmailApprovals
+                            {
+                                Subject = "e-SUCH - Foi criado um novo Pedido de Desenvolvimento",
+                                From = "esuch@such.pt",
+                                Body = "Foi criado um novo Pedido de Desenvolvimento com o Nº " + data.ID.ToString() + " no Portal e-SUCH, com a seguinte descrição:" + Environment.NewLine + data.Descricao,
+                                IsBodyHtml = false,
+                                DisplayName = "e-SUCH",
+                                EmailApproval = EmailApproval
+                            };
+                            Email.To.Add("ARomao@such.pt");
+                            Email.SendEmail();
                         }
                         else
                         {

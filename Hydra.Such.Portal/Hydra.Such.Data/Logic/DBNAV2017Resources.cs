@@ -76,7 +76,8 @@ namespace Hydra.Such.Data.Logic
                             ResourceGroup = (string)temp.Resource_Group_No,
                             WasteRate = (int)temp.WasteRate,
                             UnitPrice = (decimal)temp.UnitPrice,
-                            UnitCost = (decimal)temp.UnitCost
+                            UnitCost = (decimal)temp.UnitCost,
+                            VATProductPostingGroup = (string)temp.VATProductPostingGroup
                         });
                     }
                 }
