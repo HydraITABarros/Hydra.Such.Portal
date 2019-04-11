@@ -33,6 +33,7 @@ namespace Hydra.Such.Data.Logic
                             Name = (string)temp.Name,
                             Address = (string)temp.Address,
                             VATBusinessPostingGroup = (string)temp.VATBusinessPostingGroup,
+                            Blocked = (int)temp.Blocked,
                         });
                     }
                 }

@@ -655,8 +655,18 @@ namespace Hydra.Such.Portal.Controllers
 
                             if (!TUpdateNavProj.IsCompletedSuccessfully || statusL == false)
                             {
-                                data.eReasonCode = 3;
-                                data.eMessage = "Ocorreu um erro ao atualizar o projeto no NAV.";
+                                Projetos OLD_Proj = DBProjects.GetById(data.ProjectNo);
+
+                                if (OLD_Proj != null && OLD_Proj.NºCliente != data.ClientNo)
+                                {
+                                    data.eReasonCode = 3;
+                                    data.eMessage = "Não é possível alterar o cliente deste projeto.";
+                                }
+                                else
+                                {
+                                    data.eReasonCode = 3;
+                                    data.eMessage = "Ocorreu um erro ao atualizar o projeto no NAV.";
+                                }
                             }
                             else
                             {
@@ -3895,19 +3905,19 @@ namespace Hydra.Such.Portal.Controllers
                                         });
                                     }
 
-                                    string Cliente = string.Empty;
-                                    string GrupoIVA = string.Empty;
-                                    string GrupoCliente = string.Empty;
-                                    decimal IVA = new decimal();
-                                    foreach (var item in header.Items)
+                                    if (proj.FaturaPrecosIvaIncluido == true)
                                     {
-                                        Cliente = item.InvoiceToClientNo;
-                                        GrupoIVA = string.Empty;
-                                        GrupoCliente = string.Empty;
-                                        IVA = 0;
-
-                                        if (proj.FaturaPrecosIvaIncluido == true)
+                                        string Cliente = string.Empty;
+                                        string GrupoIVA = string.Empty;
+                                        string GrupoCliente = string.Empty;
+                                        decimal IVA = new decimal();
+                                        foreach (var item in header.Items)
                                         {
+                                            Cliente = item.InvoiceToClientNo;
+                                            GrupoIVA = string.Empty;
+                                            GrupoCliente = string.Empty;
+                                            IVA = 0;
+
                                             if (!string.IsNullOrEmpty(item.Code))
                                             {
                                                 NAVResourcesViewModel Resource = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, item.Code, "", 0, "").FirstOrDefault();
@@ -3916,6 +3926,7 @@ namespace Hydra.Such.Portal.Controllers
                                                 else
                                                 {
                                                     execDetails += " Erro ao criar a fatura: Não foi possível encontrar o recurso Nº: " + item.Code;
+                                                    result.eReasonCode = 2;
                                                     result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails));
                                                     return Json(result);
                                                 }
@@ -3928,6 +3939,7 @@ namespace Hydra.Such.Portal.Controllers
                                                     else
                                                     {
                                                         execDetails += " Erro ao criar a fatura: Não foi possível encontrar o cliente Nº: " + Cliente;
+                                                        result.eReasonCode = 2;
                                                         result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails));
                                                         return Json(result);
                                                     }

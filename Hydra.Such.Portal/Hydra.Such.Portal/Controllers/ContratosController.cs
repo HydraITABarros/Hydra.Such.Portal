@@ -2696,6 +2696,58 @@ namespace Hydra.Such.Portal.Controllers
 
                             if (itemList.Count > 0)
                             {
+                                if (contractLine.FaturaPrecosIvaIncluido == true)
+                                {
+                                    string Cliente = string.Empty;
+                                    string GrupoIVA = string.Empty;
+                                    string GrupoCliente = string.Empty;
+                                    decimal IVA = new decimal();
+                                    foreach (var linha in itemList)
+                                    {
+                                        Cliente = contractLine.NºCliente;
+                                        GrupoIVA = string.Empty;
+                                        GrupoCliente = string.Empty;
+                                        IVA = 0;
+
+                                        if (!string.IsNullOrEmpty(linha.Código))
+                                        {
+                                            NAVResourcesViewModel Resource = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, linha.Código, "", 0, "").FirstOrDefault();
+                                            if (Resource != null)
+                                                GrupoIVA = Resource.VATProductPostingGroup;
+                                            else
+                                            {
+                                                execDetails += " Erro ao contabilizar: Não foi possível encontrar o recurso Nº: " + linha.Código + " para o Nº de contrato: " + contractLine.NºContrato;
+                                                result.eReasonCode = 2;
+                                                result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails));
+                                                return Json(result);
+                                            }
+
+                                            if (!string.IsNullOrEmpty(Cliente) && !string.IsNullOrEmpty(GrupoIVA))
+                                            {
+                                                NAVClientsViewModel cliente = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, Cliente);
+                                                if (cliente != null)
+                                                    GrupoCliente = cliente.VATBusinessPostingGroup;
+                                                else
+                                                {
+                                                    execDetails += " Erro ao contabilizar: Não foi possível encontrar o cliente Nº: " + Cliente + " para o Nº de contrato: " + contractLine.NºContrato;
+                                                    result.eReasonCode = 2;
+                                                    result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails));
+                                                    return Json(result);
+                                                }
+
+                                                if (!string.IsNullOrEmpty(GrupoCliente))
+                                                    IVA = DBNAV2017VATPostingSetup.GetIVA(_config.NAVDatabaseName, _config.NAVCompanyName, GrupoCliente, GrupoIVA);
+
+                                                if (IVA > 0)
+                                                    IVA = (IVA / 100) + 1;
+                                            }
+                                        }
+
+                                        if (IVA > 0)
+                                            linha.PreçoUnitário = linha.PreçoUnitário * IVA;
+                                    }
+                                }
+
                                 try
                                 {
                                     Task<WSCreatePreInvoiceLine.CreateMultiple_Result> InvoiceLines = WSPreInvoiceLine.CreatePreInvoiceLineList(itemList, InvoiceHeaderNo, _configws);
@@ -2979,6 +3031,58 @@ namespace Hydra.Such.Portal.Controllers
 
                                     if (itemList.Count > 0)
                                     {
+                                        if (contractLine.FaturaPrecosIvaIncluido == true)
+                                        {
+                                            string Cliente = string.Empty;
+                                            string GrupoIVA = string.Empty;
+                                            string GrupoCliente = string.Empty;
+                                            decimal IVA = new decimal();
+                                            foreach (var linha in itemList)
+                                            {
+                                                Cliente = contractLine.NºCliente;
+                                                GrupoIVA = string.Empty;
+                                                GrupoCliente = string.Empty;
+                                                IVA = 0;
+
+                                                if (!string.IsNullOrEmpty(linha.Código))
+                                                {
+                                                    NAVResourcesViewModel Resource = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, linha.Código, "", 0, "").FirstOrDefault();
+                                                    if (Resource != null)
+                                                        GrupoIVA = Resource.VATProductPostingGroup;
+                                                    else
+                                                    {
+                                                        execDetails += " Erro ao contabilizar: Não foi possível encontrar o recurso Nº: " + linha.Código + " para o Nº de contrato: " + contractLine.NºContrato;
+                                                        result.eReasonCode = 2;
+                                                        result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails));
+                                                        return Json(result);
+                                                    }
+
+                                                    if (!string.IsNullOrEmpty(Cliente) && !string.IsNullOrEmpty(GrupoIVA))
+                                                    {
+                                                        NAVClientsViewModel cliente = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, Cliente);
+                                                        if (cliente != null)
+                                                            GrupoCliente = cliente.VATBusinessPostingGroup;
+                                                        else
+                                                        {
+                                                            execDetails += " Erro ao contabilizar: Não foi possível encontrar o cliente Nº: " + Cliente + " para o Nº de contrato: " + contractLine.NºContrato;
+                                                            result.eReasonCode = 2;
+                                                            result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails));
+                                                            return Json(result);
+                                                        }
+
+                                                        if (!string.IsNullOrEmpty(GrupoCliente))
+                                                            IVA = DBNAV2017VATPostingSetup.GetIVA(_config.NAVDatabaseName, _config.NAVCompanyName, GrupoCliente, GrupoIVA);
+
+                                                        if (IVA > 0)
+                                                            IVA = (IVA / 100) + 1;
+                                                    }
+                                                }
+
+                                                if (IVA > 0)
+                                                    linha.PreçoUnitário = linha.PreçoUnitário * IVA;
+                                            }
+                                        }
+
                                         try
                                         {
                                             Task<WSCreatePreInvoiceLine.CreateMultiple_Result> InvoiceLines = WSPreInvoiceLine.CreatePreInvoiceLineList(itemList, InvoiceHeaderNo, _configws);
@@ -3548,6 +3652,59 @@ namespace Hydra.Such.Portal.Controllers
                                         LinhasFaturacao.Add(PreInvoiceLinesToCreate);
                                     }
                                 }
+
+                                if (Contract.FaturaPrecosIvaIncluido == true)
+                                {
+                                    string Cliente = string.Empty;
+                                    string GrupoIVA = string.Empty;
+                                    string GrupoCliente = string.Empty;
+                                    decimal IVA = new decimal();
+                                    foreach (var item in LinhasFaturacao)
+                                    {
+                                        Cliente = Contract.ClientNo;
+                                        GrupoIVA = string.Empty;
+                                        GrupoCliente = string.Empty;
+                                        IVA = 0;
+
+                                        if (!string.IsNullOrEmpty(item.Código))
+                                        {
+                                            NAVResourcesViewModel Resource = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, item.Código, "", 0, "").FirstOrDefault();
+                                            if (Resource != null)
+                                                GrupoIVA = Resource.VATProductPostingGroup;
+                                            else
+                                            {
+                                                execDetails += " Erro ao criar a fatura: Não foi possível encontrar o recurso Nº: " + item.Código;
+                                                result.eReasonCode = 2;
+                                                result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails));
+                                                return Json(result);
+                                            }
+
+                                            if (!string.IsNullOrEmpty(Cliente) && !string.IsNullOrEmpty(GrupoIVA))
+                                            {
+                                                NAVClientsViewModel cliente = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, Cliente);
+                                                if (cliente != null)
+                                                    GrupoCliente = cliente.VATBusinessPostingGroup;
+                                                else
+                                                {
+                                                    execDetails += " Erro ao criar a fatura: Não foi possível encontrar o cliente Nº: " + Cliente;
+                                                    result.eReasonCode = 2;
+                                                    result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails));
+                                                    return Json(result);
+                                                }
+
+                                                if (!string.IsNullOrEmpty(GrupoCliente))
+                                                    IVA = DBNAV2017VATPostingSetup.GetIVA(_config.NAVDatabaseName, _config.NAVCompanyName, GrupoCliente, GrupoIVA);
+
+                                                if (IVA > 0)
+                                                    IVA = (IVA / 100) + 1;
+                                            }
+                                        }
+
+                                        if (IVA > 0)
+                                            item.PreçoUnitário = item.PreçoUnitário * IVA;
+                                    }
+                                }
+
                                 try
                                 {
                                     Task<WSCreatePreInvoiceLine.CreateMultiple_Result> InvoiceLines = WSPreInvoiceLine.CreatePreInvoiceLineList(LinhasFaturacao, cod, _configws);
@@ -3571,7 +3728,6 @@ namespace Hydra.Such.Portal.Controllers
                             }
 
                         }
-
                     }
                     else
                     {
@@ -3638,6 +3794,59 @@ namespace Hydra.Such.Portal.Controllers
                                         LinhasFaturacao.Add(PreInvoiceLinesToCreate);
                                     }
                                 }
+
+                                if (Contract.FaturaPrecosIvaIncluido == true)
+                                {
+                                    string Cliente = string.Empty;
+                                    string GrupoIVA = string.Empty;
+                                    string GrupoCliente = string.Empty;
+                                    decimal IVA = new decimal();
+                                    foreach (var item in LinhasFaturacao)
+                                    {
+                                        Cliente = Contract.ClientNo;
+                                        GrupoIVA = string.Empty;
+                                        GrupoCliente = string.Empty;
+                                        IVA = 0;
+
+                                        if (!string.IsNullOrEmpty(item.Código))
+                                        {
+                                            NAVResourcesViewModel Resource = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, item.Código, "", 0, "").FirstOrDefault();
+                                            if (Resource != null)
+                                                GrupoIVA = Resource.VATProductPostingGroup;
+                                            else
+                                            {
+                                                execDetails += " Erro ao criar a fatura: Não foi possível encontrar o recurso Nº: " + item.Código;
+                                                result.eReasonCode = 2;
+                                                result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails));
+                                                return Json(result);
+                                            }
+
+                                            if (!string.IsNullOrEmpty(Cliente) && !string.IsNullOrEmpty(GrupoIVA))
+                                            {
+                                                NAVClientsViewModel cliente = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, Cliente);
+                                                if (cliente != null)
+                                                    GrupoCliente = cliente.VATBusinessPostingGroup;
+                                                else
+                                                {
+                                                    execDetails += " Erro ao criar a fatura: Não foi possível encontrar o cliente Nº: " + Cliente;
+                                                    result.eReasonCode = 2;
+                                                    result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails));
+                                                    return Json(result);
+                                                }
+
+                                                if (!string.IsNullOrEmpty(GrupoCliente))
+                                                    IVA = DBNAV2017VATPostingSetup.GetIVA(_config.NAVDatabaseName, _config.NAVCompanyName, GrupoCliente, GrupoIVA);
+
+                                                if (IVA > 0)
+                                                    IVA = (IVA / 100) + 1;
+                                            }
+                                        }
+
+                                        if (IVA > 0)
+                                            item.PreçoUnitário = item.PreçoUnitário * IVA;
+                                    }
+                                }
+
                                 try
                                 {
                                     Task<WSCreatePreInvoiceLine.CreateMultiple_Result> InvoiceLines = WSPreInvoiceLine.CreatePreInvoiceLineList(LinhasFaturacao, cod, _configws);

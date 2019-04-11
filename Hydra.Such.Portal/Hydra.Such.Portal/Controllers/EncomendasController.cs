@@ -269,7 +269,7 @@ namespace Hydra.Such.Portal.Controllers
                     var details = DBNAV2017Encomendas.GetDetailsByNo(_config.NAVDatabaseName, _config.NAVCompanyName, id, "C%");
                     var lines = DBNAV2017Encomendas.ListLinesByNo(_config.NAVDatabaseName, _config.NAVCompanyName, id, "C%");
                     var vendor = DBNAV2017VendorBankAccount.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName, details.PayToVendorNo);
-                    var pedidos = DBPedidoPagamento.GetAllPedidosPagamentoByEncomenda(id);
+                    var pedidos = DBPedidoPagamento.GetAllPedidosPagamentoByEncomenda(id).Where(x => x.UserArquivo.ToLower() != "esuch@such.pt".ToLower());
 
                     PedidosPagamentoViewModel Pedido = new PedidosPagamentoViewModel();
 
@@ -399,26 +399,35 @@ namespace Hydra.Such.Portal.Controllers
                     data.UtilizadorCriacao = User.Identity.Name;
                     data.DataCriacao = DateTime.Now;
 
-                    List<PedidosPagamento> PedidoDisponivel = DBPedidoPagamento.GetAllPedidosPagamento().Where(x => x.CodigoFornecedor == data.CodigoFornecedor &&
-                                                                                                        x.Estado == 6 &&
-                                                                                                        x.DataDisponibilizacao < DateTime.Now.AddDays(-30)).ToList();
-                    if (PedidoDisponivel != null && PedidoDisponivel.Count() > 0)
+                    NAVSupplierViewModels Fornecedor = DBNAV2017Supplier.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, data.CodigoFornecedor).FirstOrDefault();
+                    if (Fornecedor.Blocked == 1)
                     {
-                        data.eReasonCode = 3;
-                        data.eMessage = "Não pode criar o Pedido de Pagamento, pois já existe um Pedido de Pagamento para este Fornecedor no estado Disponível há mais de 30 dias.";
+                        data.eReasonCode = 4;
+                        data.eMessage = "Não pode criar o Pedido de Pagamento, pois o fornecedor está bloqueado.";
                     }
                     else
                     {
-                        if (DBPedidoPagamento.Create(DBPedidoPagamento.ParseToDB(data)) != null)
+                        List<NAV2017VendorLedgerEntryViewModel> AllMOV = DBNAV2017VendorLedgerEntry.GetMovFornecedores(_config.NAVDatabaseName, _config.NAVCompanyName);
+                        AllMOV = AllMOV.Where(x => x.VendorNo == data.Fornecedor && x.DocumentType == 1 && x.Open == 1 && x.PostingDate < DateTime.Now.AddDays(-30)).ToList();
+
+                        if (AllMOV != null && AllMOV.Count() > 0)
                         {
-                            data = DBPedidoPagamento.ParseToViewModel(DBPedidoPagamento.GetAllPedidosPagamento().Where(x => x.UserPedido.ToLower() == User.Identity.Name.ToLower()).LastOrDefault());
-                            data.eReasonCode = 1;
-                            data.eMessage = "Foi criado com sucesso o Pedido de Pagemento.";
+                            data.eReasonCode = 3;
+                            data.eMessage = "Não pode criar o Pedido de Pagamento, pois já existe um Pedido de Pagamento para este Fornecedor no estado Disponível há mais de 30 dias.";
                         }
                         else
                         {
-                            data.eReasonCode = 2;
-                            data.eMessage = "Ocorreu um erro na criação do Pedido de Pagemento.";
+                            if (DBPedidoPagamento.Create(DBPedidoPagamento.ParseToDB(data)) != null)
+                            {
+                                data = DBPedidoPagamento.ParseToViewModel(DBPedidoPagamento.GetAllPedidosPagamento().Where(x => x.UserPedido.ToLower() == User.Identity.Name.ToLower()).LastOrDefault());
+                                data.eReasonCode = 1;
+                                data.eMessage = "Foi criado com sucesso o Pedido de Pagemento.";
+                            }
+                            else
+                            {
+                                data.eReasonCode = 2;
+                                data.eMessage = "Ocorreu um erro na criação do Pedido de Pagemento.";
+                            }
                         }
                     }
                 }
