@@ -1087,13 +1087,29 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult GetEmployees_FH()
         {
-            List<DDMessageRelated> result = DBNAV2009Employees.GetAll("", _config.NAV2009DatabaseName, _config.NAV2009CompanyName).Select(x => new DDMessageRelated()
+            List<NAVEmployeeViewModel> allEmployees = new List<NAVEmployeeViewModel>();
+            allEmployees = DBNAV2009Employees.GetAll("", _config.NAV2009DatabaseName, _config.NAV2009CompanyName);
+
+            List<DDMessageRelated> result = new List<DDMessageRelated>();
+            if (allEmployees != null && allEmployees.Count() > 0)
             {
-                id = x.No,
-                value = x.No + " - " + x.Name,
-                extra = x.Name,
-            }).ToList();
+                result = allEmployees.Select(x => new DDMessageRelated()
+                {
+                    id = !string.IsNullOrEmpty(x.No) ? x.No : "",
+                    value = x.No + " - " + x.Name,
+                    extra = !string.IsNullOrEmpty(x.Name) ? x.Name : "",
+                }).ToList();
+            }
             return Json(result);
+
+
+            //List<DDMessageRelated> result = DBNAV2009Employees.GetAll("", _config.NAV2009DatabaseName, _config.NAV2009CompanyName).Select(x => new DDMessageRelated()
+            //{
+            //    id = !string.IsNullOrEmpty(x.No) ? x.No : "",
+            //    value = x.No + " - " + x.Name,
+            //    extra = !string.IsNullOrEmpty(x.Name) ? x.Name : "",
+            //}).ToList();
+            //return Json(result);
         }
 
         /// <summary>

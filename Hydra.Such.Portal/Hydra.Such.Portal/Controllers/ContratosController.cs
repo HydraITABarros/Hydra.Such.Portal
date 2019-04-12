@@ -2681,7 +2681,13 @@ namespace Hydra.Such.Portal.Controllers
                             }
                         }
 
-                        Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreateContractInvoice(item, _configws, ContractInvoicePeriod, InvoiceBorrowed, CodTermosPagamento);
+                        if (contractLine.FaturaPrecosIvaIncluido == true)
+                            item.PricesIncludingVAT = true;
+                        else
+                            item.PricesIncludingVAT = false;
+
+                        Task<WSCreatePreInvoiceNEW.Create_Result> InvoiceHeader = WSPreInvoice.CreateContractInvoiceNEW(item, _configws, ContractInvoicePeriod, InvoiceBorrowed, CodTermosPagamento);
+                        //Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreateContractInvoice(item, _configws, ContractInvoicePeriod, InvoiceBorrowed, CodTermosPagamento);
                         InvoiceHeader.Wait();
 
                         if (InvoiceHeader.IsCompletedSuccessfully && InvoiceHeader != null && InvoiceHeader.Result != null)
@@ -3021,7 +3027,13 @@ namespace Hydra.Such.Portal.Controllers
                                     }
                                 }
 
-                                Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreateContractInvoice(item, _configws, ContractInvoicePeriod, InvoiceBorrowed, CodTermosPagamento);
+                                if (contractLine.FaturaPrecosIvaIncluido == true)
+                                    item.PricesIncludingVAT = true;
+                                else
+                                    item.PricesIncludingVAT = false;
+
+                                Task<WSCreatePreInvoiceNEW.Create_Result> InvoiceHeader = WSPreInvoice.CreateContractInvoiceNEW(item, _configws, ContractInvoicePeriod, InvoiceBorrowed, CodTermosPagamento);
+                                //Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreateContractInvoice(item, _configws, ContractInvoicePeriod, InvoiceBorrowed, CodTermosPagamento);
                                 InvoiceHeader.Wait();
 
                                 if (InvoiceHeader.IsCompletedSuccessfully && InvoiceHeader != null && InvoiceHeader.Result != null)
@@ -3763,8 +3775,13 @@ namespace Hydra.Such.Portal.Controllers
                             }
                             obs = "";
 
+                            if (Contract.FaturaPrecosIvaIncluido == true)
+                                PreInvoiceToCreate.PricesIncludingVAT = 1;
+                            else
+                                PreInvoiceToCreate.PricesIncludingVAT = 0;
 
-                            Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreatePreInvoiceHeader(PreInvoiceToCreate, _configws);
+                            Task<WSCreatePreInvoiceNEW.Create_Result> InvoiceHeader = WSPreInvoice.CreatePreInvoiceHeaderNEW(PreInvoiceToCreate, _configws);
+                            //Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreatePreInvoiceHeader(PreInvoiceToCreate, _configws);
                             InvoiceHeader.Wait();
                             if (InvoiceHeader.IsCompletedSuccessfully && InvoiceHeader.Result != null)
                             {

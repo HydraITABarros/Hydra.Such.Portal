@@ -507,6 +507,9 @@
                     _permissions: {
                         type: Array
                     },
+                    _permissionsrh: {
+                        type: Array
+                    },
                     _todas: {
                         type: Number,
                         notify: true,
@@ -651,13 +654,12 @@
                 },
 
                 _responseGetListFolhasDeHoras: function (e) {
-                    if (this.result != null && this.result != undefined && this.result.length > 0) {
-                        if (this.result[0].mostrarReportAjCustosRH == true) {
-                            this.$.btn_imprimirFH.hidden = false;
-                        }
-                        else {
-                            this.$.btn_imprimirFH.hidden = true;
-                        }
+                    debugger;
+                    if (this._permissionsrh.read == true) {
+                        this.$.btn_imprimirFH.hidden = false;
+                    }
+                    else {
+                        this.$.btn_imprimirFH.hidden = true;
                     }
                 },
 

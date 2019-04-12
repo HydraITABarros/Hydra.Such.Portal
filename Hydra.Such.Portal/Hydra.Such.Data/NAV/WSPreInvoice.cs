@@ -250,6 +250,75 @@ namespace Hydra.Such.Data.NAV
             }
         }
 
+        public static async Task<WSCreatePreInvoiceNEW.Create_Result> CreatePreInvoiceHeaderNEW(NAVSalesHeaderViewModel PreInvoiceToCreate, NAVWSConfigurations WSConfigurations)
+        {
+            WSCreatePreInvoiceNEW.Create NAVCreate = new WSCreatePreInvoiceNEW.Create()
+            {
+
+                WSPreInvoice = new WSCreatePreInvoiceNEW.WSPreInvoice()
+                {
+                    Sell_to_Customer_No = PreInvoiceToCreate.Sell_toCustomerNo,
+                    Document_Date = PreInvoiceToCreate.DocumentDate,
+                    Shipment_Date = PreInvoiceToCreate.ShipmentDate,
+                    Periodo_de_Fact_Contrato = PreInvoiceToCreate.PeriododeFact_Contrato,
+                    Valor_Contrato = PreInvoiceToCreate.ValorContrato,
+                    Ship_to_Address = PreInvoiceToCreate.Ship_toAddress,
+                    Ship_to_Post_Code = PreInvoiceToCreate.Ship_toPostCode,
+                    Currency_Code = PreInvoiceToCreate.CurrencyCode,
+                    Due_Date = PreInvoiceToCreate.DueDate,
+                    Payment_Terms_Code = PreInvoiceToCreate.PaymentTermsCode,
+                    Payment_Method_Code = PreInvoiceToCreate.PaymentMethodCode,
+                    Responsibility_Center = PreInvoiceToCreate.ResponsibilityCenter,
+                    Posting_No_Series = PreInvoiceToCreate.PostingNoSeries,
+                    No_Compromisso = PreInvoiceToCreate.No_Compromisso,
+                    Codigo_Pedido = PreInvoiceToCreate.CodigoPedido,
+                    Data_Encomenda = PreInvoiceToCreate.DataEncomenda,
+                    Data_Serv_Prestado = PreInvoiceToCreate.DataServ_Prestado,
+                    Observacoes = PreInvoiceToCreate.Observacoes,
+                    Contract_No = PreInvoiceToCreate.ContractNo,
+                    Document_Type = WSCreatePreInvoiceNEW.Document_Type.Invoice,
+                    Factura_CAF = PreInvoiceToCreate.FacturaCAF,
+                    User_pre_registo_2009 = PreInvoiceToCreate.Userpreregisto2009,
+                    Posting_Date = PreInvoiceToCreate.PostingDate,
+                    Document_TypeSpecified = true,
+                    Posting_DateSpecified = true,
+                    Shipment_DateSpecified = true,
+                    Shipment_Start_TimeSpecified = true,
+                    ReportID_OriginalSpecified = true,
+                    Valor_ContratoSpecified = true,
+                    Document_DateSpecified = true,
+                    Factura_CAFSpecified = true,
+                    Due_DateSpecified = true,
+                    Order_DateSpecified = true,
+                    Data_EncomendaSpecified = true,
+
+                    //Dimensions
+                    ResponsabilityCenterCode20 = PreInvoiceToCreate.ResponsabilityCenterCode20,
+                    FunctionAreaCode20 = PreInvoiceToCreate.FunctionAreaCode20,
+                    RegionCode20 = PreInvoiceToCreate.RegionCode20,
+
+                    Prices_Including_VAT = PreInvoiceToCreate.PricesIncludingVAT == 1 ? true : false,
+                    Prices_Including_VATSpecified = true
+                }
+            };
+
+            //Configure NAV Client
+            EndpointAddress WS_URL = new EndpointAddress(WSConfigurations.WS_PreInvoice_URL.Replace("Company", WSConfigurations.WS_User_Company));
+            WSCreatePreInvoiceNEW.WSPreInvoice_PortClient WS_Client = new WSCreatePreInvoiceNEW.WSPreInvoice_PortClient(navWSBinding, WS_URL);
+            WS_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
+            WS_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
+
+            try
+            {
+                WSCreatePreInvoiceNEW.Create_Result result = await WS_Client.CreateAsync(NAVCreate);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public static async Task<WSCreatePreInvoice.Create_Result> CreateContractInvoice(AutorizarFaturaçãoContratos CreateInvoice, NAVWSConfigurations WSConfigurations,string ContractInvoicePeriod, string InvoiceBorrowed, string CodTermosPagamento)
         {
             DateTime now = DateTime.Now;
@@ -310,6 +379,68 @@ namespace Hydra.Such.Data.NAV
             }
         }
 
+        public static async Task<WSCreatePreInvoiceNEW.Create_Result> CreateContractInvoiceNEW(AutorizarFaturaçãoContratos CreateInvoice, NAVWSConfigurations WSConfigurations, string ContractInvoicePeriod, string InvoiceBorrowed, string CodTermosPagamento)
+        {
+            DateTime now = DateTime.Now;
+            ConfigUtilizadores CUsers = DBUserConfigurations.GetById(CreateInvoice.UtilizadorCriação);
+            WSCreatePreInvoiceNEW.Create NAVCreate = new WSCreatePreInvoiceNEW.Create()
+            {
+                WSPreInvoice = new WSCreatePreInvoiceNEW.WSPreInvoice()
+                {
+                    Sell_to_Customer_No = !string.IsNullOrEmpty(CreateInvoice.NºCliente) ? CreateInvoice.NºCliente : "",
+                    Document_Date = DateTime.Today,
+                    Document_DateSpecified = true,
+                    Shipment_Date = now,
+                    Shipment_DateSpecified = true,
+                    Shipment_Start_Time = now.AddHours(1),
+                    Shipment_Start_TimeSpecified = true,
+                    Document_Type = WSCreatePreInvoiceNEW.Document_Type.Invoice,
+                    Document_TypeSpecified = true,
+                    Posting_Date = CreateInvoice.DataDeRegisto ?? DateTime.Now,
+                    Posting_DateSpecified = true,
+                    Periodo_de_Fact_Contrato = !string.IsNullOrEmpty(ContractInvoicePeriod) ? ContractInvoicePeriod : "",
+                    Data_Serv_Prestado = !string.IsNullOrEmpty(InvoiceBorrowed) ? InvoiceBorrowed : "",
+                    Responsibility_Center = !string.IsNullOrEmpty(CUsers.CentroDeResponsabilidade) ? CUsers.CentroDeResponsabilidade : "",
+                    Posting_No_Series = !string.IsNullOrEmpty(CUsers.NumSerieFaturas) ? CUsers.NumSerieFaturas : "",
+
+                    Due_Date = (DateTime)CreateInvoice.DataDeExpiração,
+                    Due_DateSpecified = true,
+                    Payment_Terms_Code = CodTermosPagamento,
+
+                    //Amaro
+                    Observacoes = !string.IsNullOrEmpty(CreateInvoice.Descrição) ? CreateInvoice.Descrição : "",
+                    Contract_No = !string.IsNullOrEmpty(CreateInvoice.NºContrato) ? CreateInvoice.NºContrato : "",
+                    Factura_CAF = true,
+                    Factura_CAFSpecified = true,
+                    Codigo_Pedido = !string.IsNullOrEmpty(CreateInvoice.NoRequisicaoDoCliente) ? CreateInvoice.NoRequisicaoDoCliente : "",
+                    No_Compromisso = !string.IsNullOrEmpty(CreateInvoice.NoCompromisso) ? CreateInvoice.NoCompromisso : "",
+                    Data_Encomenda = CreateInvoice.DataRececaoRequisicao ?? DateTime.MinValue,
+                    Data_EncomendaSpecified = true,
+                    RegionCode20 = !string.IsNullOrEmpty(CreateInvoice.CódigoRegião) ? CreateInvoice.CódigoRegião : "",
+                    FunctionAreaCode20 = !string.IsNullOrEmpty(CreateInvoice.CódigoÁreaFuncional) ? CreateInvoice.CódigoÁreaFuncional : "",
+                    ResponsabilityCenterCode20 = !string.IsNullOrEmpty(CreateInvoice.CódigoCentroResponsabilidade) ? CreateInvoice.CódigoCentroResponsabilidade : "",
+
+                    Prices_Including_VAT = CreateInvoice.PricesIncludingVAT.HasValue ? (bool)CreateInvoice.PricesIncludingVAT : false,
+                    Prices_Including_VATSpecified = true
+                }
+            };
+
+            // Configure NAV Client
+            EndpointAddress WS_URL = new EndpointAddress(WSConfigurations.WS_PreInvoice_URL.Replace("Company", WSConfigurations.WS_User_Company));
+            WSCreatePreInvoiceNEW.WSPreInvoice_PortClient WS_Client = new WSCreatePreInvoiceNEW.WSPreInvoice_PortClient(navWSBinding, WS_URL);
+            WS_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
+            WS_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
+
+            try
+            {
+                WSCreatePreInvoiceNEW.Create_Result result = await WS_Client.CreateAsync(NAVCreate);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
 
         public static async Task<WSCreatePreInvoice.CreateMultiple_Result> CreateMultipleContractInvoice(List<AutorizarFaturaçãoContratos> CreateList, NAVWSConfigurations WSConfigurations)
         {
