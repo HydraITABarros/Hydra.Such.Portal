@@ -3843,8 +3843,7 @@ namespace Hydra.Such.Portal.Controllers
                             if (proj.FaturaPrecosIvaIncluido == true)
                                 header.FaturaPrecosIvaIncluido = true;
 
-                            Task<WSCreatePreInvoiceNEW.Create_Result> TCreatePreInvoice = WSPreInvoice.CreatePreInvoiceNEW(header, _configws, dataFormulario, projeto, Ship);
-                            //Task<WSCreatePreInvoice.Create_Result> TCreatePreInvoice = WSPreInvoice.CreatePreInvoice(header, _configws, dataFormulario, projeto, Ship);
+                            Task<WSCreatePreInvoice.Create_Result> TCreatePreInvoice = WSPreInvoice.CreatePreInvoice(header, _configws, dataFormulario, projeto, Ship);
                             TCreatePreInvoice.Wait();
 
                             if (TCreatePreInvoice.IsCompletedSuccessfully)
