@@ -4184,6 +4184,14 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        public JsonResult GetNotasCreditoRegistadas([FromBody] string contractNo)
+        {
+            List<NAVContractInvoiceHeaderViewModel> result = new List<NAVContractInvoiceHeaderViewModel>();
+            result = DBNAV2017ContractDetails.GetNotasCreditoRegistadas(contractNo, _config.NAVDatabaseName, _config.NAVCompanyName);
+
+            return Json(result);
+        }
+
         public JsonResult GetInvoiceLinesList([FromBody] string contractNo)
         {
             List<NAVContractInvoiceLinesViewModel> result = new List<NAVContractInvoiceLinesViewModel>();
@@ -4191,6 +4199,20 @@ namespace Hydra.Such.Portal.Controllers
             foreach(var temp in result)
             {
                 if(temp.DataRegistoDiario != null)
+                {
+                    temp.DataRegistoDiarioSTR = temp.DataRegistoDiario.Value.Year != 1753 ? temp.DataRegistoDiario.Value.ToString("yyyy-MM-dd") : "";
+                }
+            }
+            return Json(result);
+        }
+
+        public JsonResult GetNotasdeCreditoLinesList([FromBody] string contractNo)
+        {
+            List<NAVContractInvoiceLinesViewModel> result = new List<NAVContractInvoiceLinesViewModel>();
+            result = DBNAV2017ContractDetails.GetNotasdeCreditoLinesByNo(contractNo, _config.NAVDatabaseName, _config.NAVCompanyName);
+            foreach (var temp in result)
+            {
+                if (temp.DataRegistoDiario != null)
                 {
                     temp.DataRegistoDiarioSTR = temp.DataRegistoDiario.Value.Year != 1753 ? temp.DataRegistoDiario.Value.ToString("yyyy-MM-dd") : "";
                 }

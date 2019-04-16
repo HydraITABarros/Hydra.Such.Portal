@@ -231,11 +231,25 @@
                    id="get_invoiceheaderList_ajax"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/Contratos/GetNotasCreditoRegistadas"
+                   last-response="{{invoiceList}}"
+                   method="post"
+                   handle-as="json"
+                   id="get_NotasCreditoRegistadasList_ajax"
+                   content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/Contratos/GetInvoiceLinesList"
                    last-response="{{invoiceLinesList}}"
                    method="post"
                    handle-as="json"
                    id="get_invoiceheaderLinesList_ajax"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Contratos/GetNotasdeCreditoLinesList"
+                   last-response="{{invoiceLinesList}}"
+                   method="post"
+                   handle-as="json"
+                   id="get_notasdeCreditoLinesList_ajax"
                    content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/Contratos/DeleteClientRequisition"
@@ -729,10 +743,10 @@
                                     <div class="row break_clear">
                                         <div class="col-md-3 ">
                                             <!--<vaadin-combo-box items="[[CBShippingAddresses]]" item-value-path="id" item-label-path="value" id="codeShippingAddress" value="{{data.codeShippingAddress}}" label="Cód. Endereço Envio" on-value-changed="_getAddressByCode" disabled="{{ _lockFields }}">
-                                                <template>
-                                                    <b>[[item.value]]</b>
-                                                </template>
-                                            </vaadin-combo-box>-->
+                                            <template>
+                                                <b>[[item.value]]</b>
+                                            </template>
+                                        </vaadin-combo-box>-->
                                             <such-selectbox id="codeShippingAddress" value="{{data.codeShippingAddress}}" label="Cód. Endereço Envio"
                                                             items="[[CBShippingAddresses]]"
                                                             text-path="id"
@@ -829,32 +843,44 @@
                                                                 <div class="input-group">
                                                                     <vaadin-text-field value="{{dataNav.nBilledInvoices}}" id="_IRnBilledInvoices" name="_IRnBilledInvoices" label="Nº Faturas Registadas" disabled style="text-align:right"> </vaadin-text-field>
                                                                     <span class="input-group-btn">
-                                                                        <paper-button disabled="{{ _isCreate }}" class="btn btnSave tableBtn" raised on-tap="_openInvoiceList" title="Ver Faturas"><i class="fa fa-file-archive-o" aria-hidden="true"></i></paper-button>
+                                                                        <paper-button disabled="{{ _isCreate }}" class="btn btnSave" raised on-tap="_openInvoiceList" title="Ver Faturas"><i class="fa fa-file-archive-o" aria-hidden="true"></i></paper-button>
                                                                     </span>
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-3">
-                                                                <vaadin-text-field value="{{dataNav.nCreditNotes}}" id="_NCreditNotes" name="_NCreditNotes" label="N Notas Crédito Registadas" disabled style="text-align:right"> </vaadin-text-field>
+                                                                <div class="input-group">
+                                                                    <vaadin-text-field value="{{dataNav.nCreditNotes}}" id="_NCreditNotes" name="_NCreditNotes" label="N Notas Crédito Registadas" disabled style="text-align:right"> </vaadin-text-field>
+                                                                    <span class="input-group-btn">
+                                                                        <paper-button disabled="{{ _isCreate }}" class="btn btnSave" raised on-tap="_openNotasCreditoRegistadasList" title="Ver Notas Crédito Registadas"><i class="fa fa-file-archive-o" aria-hidden="true"></i></paper-button>
+                                                                    </span>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                         <div class="row">
                                                             <div class="col-md-3">
-                                                                <div class="input-group">
-                                                                    <vaadin-text-field value="{{dataNav.vBilled}}" id="_NBilled" name="_NBilled" label="Valor Faturado" disabled placeholder="0.0000" pattern="^[0-9]\d*(\.[0-9]{1,4})?$" style="text-align:right"><div slot="suffix">€</div></vaadin-text-field>
-                                                                    <span class="input-group-btn">
-                                                                        <paper-button disabled="{{ _isCreate }}" class="btn btnSave tableBtn" raised on-tap="_openInvoiceLinesList" title="Ver Linhas Fatura"><i class="fa fa-file-archive-o" aria-hidden="true"></i></paper-button>
-                                                                    </span>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <vaadin-text-field value="{{dataNav.vCreditNotes}}" id="_VCreditNotes" name="_VCreditNotes" label="Valor Notas de Crédito" disabled placeholder="0.0000" pattern="^[0-9]\d*(\.[0-9]{1,4})?$" style="text-align:right"><div slot="suffix">€</div></vaadin-text-field>
-                                                            </div>
-                                                            <div class="col-md-3">
                                                                 <vaadin-text-field value="{{dataNav.vPeriod}}" id="_VPeriod" name="_VPeriod" label="Valor do Período" disabled placeholder="0.0000" pattern="^[0-9]\d*(\.[0-9]{1,4})?$" style="text-align:right"><div slot="suffix">€</div></vaadin-text-field>
                                                             </div>
 
-                                                        </div>
+                                                            <div class="col-md-3">
+                                                                <div class="input-group">
+                                                                    <vaadin-text-field value="{{dataNav.vBilled}}" id="_NBilled" name="_NBilled" label="Valor Faturado" disabled placeholder="0.0000" pattern="^[0-9]\d*(\.[0-9]{1,4})?$" style="text-align:right"><div slot="suffix">€</div></vaadin-text-field>
+                                                                    <span class="input-group-btn">
+                                                                        <paper-button disabled="{{ _isCreate }}" class="btn btnSave" raised on-tap="_openInvoiceLinesList" title="Ver Linhas Fatura"><i class="fa fa-file-archive-o" aria-hidden="true"></i></paper-button>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
 
+                                                            <div class="col-md-3">
+                                                                <div class="input-group">
+                                                                    <vaadin-text-field value="{{dataNav.vCreditNotes}}" id="_VCreditNotes" name="_VCreditNotes" label="Valor Notas de Crédito" disabled placeholder="0.0000" pattern="^[0-9]\d*(\.[0-9]{1,4})?$" style="text-align:right"><div slot="suffix">€</div></vaadin-text-field>
+
+                                                                    <span class="input-group-btn">
+                                                                        <paper-button disabled="{{ _isCreate }}" class="btn btnSave" raised on-tap="_openNotasdeCreditoList" title="Ver Notas de Crédito"><i class="fa fa-file-archive-o" aria-hidden="true"></i></paper-button>
+                                                                    </span>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </paper-collapse-item>
                                             </paper-collapse-group>
@@ -946,14 +972,14 @@
                                                                 </template>
                                                                 <template>
                                                                     <!--<vaadin-combo-box items="[[CBProjects]]" item-value-path="id" item-label-path="value" id="_IRGridProjectNo" name="_IRGridProjectNo" value="{{item.projectNo}}" disabled="{{ _lockFields }}">
-                                                                        <template>
-                                                                            <paper-icon-item>
-                                                                                <paper-item-body two-line>
-                                                                                    <div>[[item.value]]</div>
-                                                                                </paper-item-body>
-                                                                            </paper-icon-item>
-                                                                        </template>
-                                                                    </vaadin-combo-box>-->
+                                                                    <template>
+                                                                        <paper-icon-item>
+                                                                            <paper-item-body two-line>
+                                                                                <div>[[item.value]]</div>
+                                                                            </paper-item-body>
+                                                                        </paper-icon-item>
+                                                                    </template>
+                                                                </vaadin-combo-box>-->
                                                                     <such-selectbox id="_IRGridProjectNo" name="_IRGridProjectNo" value="{{item.projectNo}}" disabled="{{ _lockFields }}"
                                                                                     items="[[CBProjects]]"
                                                                                     text-path="id"
@@ -3142,11 +3168,26 @@
 
                 },
 
+                _openNotasCreditoRegistadasList: function (e) {
+                    this.$.dlgContratInvoiceList.open();
+
+                    this.$.get_NotasCreditoRegistadasList_ajax.body = JSON.stringify(this.data.contractNo);
+                    this.$.get_NotasCreditoRegistadasList_ajax.generateRequest();
+
+                },
+
                 _openInvoiceLinesList: function (e) {
                     this.$.dlgContratInvoiceLinesList.open();
 
                     this.$.get_invoiceheaderLinesList_ajax.body = JSON.stringify(this.data.contractNo);
                     this.$.get_invoiceheaderLinesList_ajax.generateRequest();
+                },
+
+                _openNotasdeCreditoList: function (e) {
+                    this.$.dlgContratInvoiceLinesList.open();
+
+                    this.$.get_notasdeCreditoLinesList_ajax.body = JSON.stringify(this.data.contractNo);
+                    this.$.get_notasdeCreditoLinesList_ajax.generateRequest();
                 },
 
                 _deleteFiles: function (e) {
