@@ -194,7 +194,6 @@
                             <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
-                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                     <TablixCell>
@@ -408,11 +407,11 @@
                   </TablixCells>
                 </TablixRow>
                 <TablixRow>
-                  <Height>0.5cm</Height>
+                  <Height>0.6cm</Height>
                   <TablixCells>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="DescricaoGrupoServico">
+                        <Textbox Name="DescricaoGrupoServico1">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
@@ -431,7 +430,7 @@
                               </Style>
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>DescricaoGrupoServico</rd:DefaultName>
+                          <rd:DefaultName>DescricaoGrupoServico1</rd:DefaultName>
                           <Style>
                             <Border>
                               <Color>White</Color>
@@ -1567,14 +1566,14 @@
                   <TablixHeader>
                     <Size>0.07938cm</Size>
                     <CellContents>
-                      <Textbox Name="Textbox6">
+                      <Textbox Name="Textbox2">
                         <CanGrow>true</CanGrow>
                         <KeepTogether>true</KeepTogether>
                         <Paragraphs>
                           <Paragraph>
                             <TextRuns>
                               <TextRun>
-                                <Value>Servico</Value>
+                                <Value>Grupo Servico</Value>
                                 <Style>
                                   <FontFamily>Arial</FontFamily>
                                   <FontSize>8pt</FontSize>
@@ -1587,7 +1586,7 @@
                             </Style>
                           </Paragraph>
                         </Paragraphs>
-                        <rd:DefaultName>Textbox6</rd:DefaultName>
+                        <rd:DefaultName>Textbox2</rd:DefaultName>
                         <Visibility>
                           <Hidden>true</Hidden>
                         </Visibility>
@@ -1657,30 +1656,29 @@
                       </TablixMembers>
                     </TablixMember>
                   </TablixMembers>
-                  <KeepWithGroup>After</KeepWithGroup>
                 </TablixMember>
                 <TablixMember>
-                  <Group Name="Servico">
+                  <Group Name="GrupoServico">
                     <GroupExpressions>
-                      <GroupExpression>=Fields!Servico.Value</GroupExpression>
+                      <GroupExpression>=Fields!GrupoServico.Value</GroupExpression>
                     </GroupExpressions>
                   </Group>
                   <SortExpressions>
                     <SortExpression>
-                      <Value>=Fields!Servico.Value</Value>
+                      <Value>=Fields!GrupoServico.Value</Value>
                     </SortExpression>
                   </SortExpressions>
                   <TablixHeader>
                     <Size>0.07938cm</Size>
                     <CellContents>
-                      <Textbox Name="Servico1">
+                      <Textbox Name="GrupoServico">
                         <CanGrow>true</CanGrow>
                         <KeepTogether>true</KeepTogether>
                         <Paragraphs>
                           <Paragraph>
                             <TextRuns>
                               <TextRun>
-                                <Value>=Fields!Servico.Value</Value>
+                                <Value>=Fields!GrupoServico.Value</Value>
                                 <Style>
                                   <FontFamily>Arial</FontFamily>
                                   <FontSize>8pt</FontSize>
@@ -1690,7 +1688,6 @@
                             <Style />
                           </Paragraph>
                         </Paragraphs>
-                        <rd:DefaultName>Servico1</rd:DefaultName>
                         <Visibility>
                           <Hidden>true</Hidden>
                         </Visibility>
@@ -1708,6 +1705,46 @@
                     </CellContents>
                   </TablixHeader>
                   <TablixMembers>
+                    <TablixMember>
+                      <TablixHeader>
+                        <Size>0.07938cm</Size>
+                        <CellContents>
+                          <Textbox Name="Textbox14">
+                            <CanGrow>true</CanGrow>
+                            <KeepTogether>true</KeepTogether>
+                            <Paragraphs>
+                              <Paragraph>
+                                <TextRuns>
+                                  <TextRun>
+                                    <Value />
+                                    <Style>
+                                      <FontFamily>Arial</FontFamily>
+                                      <FontSize>8pt</FontSize>
+                                    </Style>
+                                  </TextRun>
+                                </TextRuns>
+                                <Style />
+                              </Paragraph>
+                            </Paragraphs>
+                            <rd:DefaultName>Textbox14</rd:DefaultName>
+                            <Visibility>
+                              <Hidden>true</Hidden>
+                            </Visibility>
+                            <Style>
+                              <Border>
+                                <Color>White</Color>
+                                <Style>None</Style>
+                              </Border>
+                              <PaddingLeft>2pt</PaddingLeft>
+                              <PaddingRight>2pt</PaddingRight>
+                              <PaddingTop>2pt</PaddingTop>
+                              <PaddingBottom>2pt</PaddingBottom>
+                            </Style>
+                          </Textbox>
+                        </CellContents>
+                      </TablixHeader>
+                      <KeepWithGroup>After</KeepWithGroup>
+                    </TablixMember>
                     <TablixMember>
                       <Group Name="Recurso">
                         <GroupExpressions>
@@ -1761,7 +1798,6 @@
                           <Group Name="Details1" />
                           <TablixMembers>
                             <TablixMember />
-                            <TablixMember />
                           </TablixMembers>
                         </TablixMember>
                         <TablixMember>
@@ -1778,7 +1814,7 @@
                   <TablixHeader>
                     <Size>0.07938cm</Size>
                     <CellContents>
-                      <Textbox Name="Textbox10">
+                      <Textbox Name="Textbox8">
                         <CanGrow>true</CanGrow>
                         <KeepTogether>true</KeepTogether>
                         <Paragraphs>
@@ -1795,7 +1831,10 @@
                             <Style />
                           </Paragraph>
                         </Paragraphs>
-                        <rd:DefaultName>Textbox10</rd:DefaultName>
+                        <rd:DefaultName>Textbox8</rd:DefaultName>
+                        <Visibility>
+                          <Hidden>true</Hidden>
+                        </Visibility>
                         <Style>
                           <Border>
                             <Color>White</Color>
@@ -1832,6 +1871,9 @@
                               </Paragraph>
                             </Paragraphs>
                             <rd:DefaultName>Textbox11</rd:DefaultName>
+                            <Visibility>
+                              <Hidden>true</Hidden>
+                            </Visibility>
                             <Style>
                               <Border>
                                 <Color>White</Color>
@@ -1847,7 +1889,6 @@
                       </TablixHeader>
                     </TablixMember>
                   </TablixMembers>
-                  <KeepWithGroup>Before</KeepWithGroup>
                 </TablixMember>
               </TablixMembers>
             </TablixRowHierarchy>
@@ -1865,8 +1906,8 @@
             </SortExpressions>
             <Top>0.03528cm</Top>
             <Left>0.00001cm</Left>
-            <Height>3.3cm</Height>
-            <Width>18.99999cm</Width>
+            <Height>3.4cm</Height>
+            <Width>18.99998cm</Width>
             <Style>
               <Border>
                 <Color>White</Color>
@@ -1875,7 +1916,7 @@
             </Style>
           </Tablix>
         </ReportItems>
-        <Height>1.3131in</Height>
+        <Height>1.35247in</Height>
         <Style />
       </Body>
       <Width>19cm</Width>
@@ -2078,6 +2119,27 @@
       <DataType>String</DataType>
       <Hidden>true</Hidden>
     </ReportParameter>
+    <ReportParameter Name="Data">
+      <DataType>DateTime</DataType>
+      <Prompt>Data</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="Servico">
+      <DataType>String</DataType>
+      <DefaultValue>
+        <Values>
+          <Value>=""</Value>
+        </Values>
+      </DefaultValue>
+      <AllowBlank>true</AllowBlank>
+      <Prompt>Serviço</Prompt>
+      <ValidValues>
+        <DataSetReference>
+          <DataSetName>Servicos</DataSetName>
+          <ValueField>Servico</ValueField>
+          <LabelField>ServicoDescricao</LabelField>
+        </DataSetReference>
+      </ValidValues>
+    </ReportParameter>
     <ReportParameter Name="Recurso">
       <DataType>String</DataType>
       <DefaultValue>
@@ -2094,10 +2156,6 @@
           <LabelField>RecursoDescricao</LabelField>
         </DataSetReference>
       </ValidValues>
-    </ReportParameter>
-    <ReportParameter Name="Data">
-      <DataType>DateTime</DataType>
-      <Prompt>Data</Prompt>
     </ReportParameter>
     <ReportParameter Name="MostrarPrecoUnitario">
       <DataType>String</DataType>
@@ -2120,23 +2178,6 @@
         </ParameterValues>
       </ValidValues>
     </ReportParameter>
-    <ReportParameter Name="Servico">
-      <DataType>String</DataType>
-      <DefaultValue>
-        <Values>
-          <Value>=""</Value>
-        </Values>
-      </DefaultValue>
-      <AllowBlank>true</AllowBlank>
-      <Prompt>Servico</Prompt>
-      <ValidValues>
-        <DataSetReference>
-          <DataSetName>Servicos</DataSetName>
-          <ValueField>Servico</ValueField>
-          <LabelField>ServicoDescricao</LabelField>
-        </DataSetReference>
-      </ValidValues>
-    </ReportParameter>
   </ReportParameters>
   <ReportParametersLayout>
     <GridLayoutDefinition>
@@ -2149,23 +2190,23 @@
           <ParameterName>NoProjeto</ParameterName>
         </CellDefinition>
         <CellDefinition>
-          <ColumnIndex>0</ColumnIndex>
-          <RowIndex>1</RowIndex>
-          <ParameterName>Servico</ParameterName>
-        </CellDefinition>
-        <CellDefinition>
-          <ColumnIndex>1</ColumnIndex>
-          <RowIndex>0</RowIndex>
-          <ParameterName>Recurso</ParameterName>
-        </CellDefinition>
-        <CellDefinition>
           <ColumnIndex>2</ColumnIndex>
           <RowIndex>0</RowIndex>
-          <ParameterName>Data</ParameterName>
+          <ParameterName>Servico</ParameterName>
         </CellDefinition>
         <CellDefinition>
           <ColumnIndex>3</ColumnIndex>
           <RowIndex>0</RowIndex>
+          <ParameterName>Recurso</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>1</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>Data</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>0</ColumnIndex>
+          <RowIndex>1</RowIndex>
           <ParameterName>MostrarPrecoUnitario</ParameterName>
         </CellDefinition>
       </CellDefinitions>

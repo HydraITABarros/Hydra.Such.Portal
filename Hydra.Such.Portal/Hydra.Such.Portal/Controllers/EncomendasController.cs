@@ -872,6 +872,31 @@ namespace Hydra.Such.Portal.Controllers
         {
             ErrorHandler result = new ErrorHandler();
 
+            if (data != null && data.Count() > 0)
+            {
+                List<PedidosPagamentoViewModel> GroupFornecedor = data.GroupBy(x =>
+                x.NoPedido,
+                x => x,
+                (key, items) => new PedidosPagamentoViewModel
+                {
+                    NoPedido = key,
+                    CodigoFornecedor = data.Where(f => f.NoPedido == key).FirstOrDefault().CodigoFornecedor,
+                    Fornecedor = data.Where(f => f.NoPedido == key).FirstOrDefault().Fornecedor,
+                    //Valor = data.Where(f => f.NoPedido == key).Sum().Valor
+
+                }).ToList();
+
+
+
+
+
+
+
+
+
+            }
+
+
             return Json(result);
         }
 
