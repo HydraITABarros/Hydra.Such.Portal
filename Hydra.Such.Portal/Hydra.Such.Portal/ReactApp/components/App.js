@@ -18,7 +18,7 @@ const App = () => {
         <ThemeProvider theme={theme}>
             <Switch>
                 {/* <Route path="/" component={HomePage} exact /> */}
-                <Route component={Template} />
+                {/* <Route component={Template} /> */}
                 <Route path="/ordens-de-manutencao" component={OrdensDeManutencao} />
                 {/* <Route component={NotFoundPage} /> */}
             </Switch>

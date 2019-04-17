@@ -34,12 +34,6 @@
     <Content Remove="Views\Shared\_Layout %28copy%29.cshtml" />
     <Content Remove="Views\Shared\_LayoutReact.cshtml" />
     <None Remove="yarn.lock" />
-    <Content Remove="wwwroot\react-components\app.js" />
-    <Content Remove="wwwroot\react-components\es6codelib.js" />
-    <Content Remove="wwwroot\react-components\fetchdata.js" />
-    <Content Remove="wwwroot\react-components\lib.js" />
-    <Content Remove="wwwroot\react-components\reactcomponent.js" />
-    <None Remove=".babelrc" />
     <Content Remove="wwwroot\css\site.css" />
   </ItemGroup>
 
@@ -105,6 +99,9 @@
     <Folder Include="wwwroot\reports\" />
     <Folder Include="wwwroot\Upload\" />
     <Folder Include="wwwroot\react-components\" />
+    <Folder Include="wwwroot\react-components\pages\" />
+    <Folder Include="wwwroot\react-components\atoms\" />
+    <Folder Include="wwwroot\react-components\molecules\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -127,11 +124,6 @@
 
   <ItemGroup>
     <None Include="package.json" />
-    <None Include="wwwroot\react-components\app.js" />
-    <None Include="wwwroot\react-components\es6codelib.js" />
-    <None Include="wwwroot\react-components\fetchdata.js" />
-    <None Include="wwwroot\react-components\lib.js" />
-    <None Include="wwwroot\react-components\reactcomponent.js" />
     <None Include="wwwroot\css\site.css" />
   </ItemGroup>
   <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JSONSchema="" /></VisualStudio></ProjectExtensions>
