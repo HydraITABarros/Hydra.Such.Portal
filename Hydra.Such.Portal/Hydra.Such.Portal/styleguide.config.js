@@ -1,7 +1,7 @@
 const path = require('path');
 
 module.exports = {
-    components: 'ReactApp/components/**/**/index.js',
+    components: ['ReactApp/components/atoms/**/index.js', 'ReactApp/components/molecules/**/index.js', 'ReactApp/components/organisms/**/index.js'],
     theme: {
         baseBackground: '#fdfdfc',
         link: '#274e75',
