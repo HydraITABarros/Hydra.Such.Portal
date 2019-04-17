@@ -67,11 +67,11 @@ const styles = ({ font, base, light, link, baseBackground, mq, space, fontFamily
 });
 
 export function StyleGuideRenderer({ classes, title, homepageUrl, children }) {
-    children.title = title;
+    console.log(children);
     return (
         <div className={classes.root}>
-
             <main className={classes.content}>
+                <Markdown text={"\u00a0" + title} />
                 {children}
                 <footer className={classes.footer}>
                     <Markdown text={`Created with [React Styleguidist](${homepageUrl}) ❤️`} />
