@@ -3491,6 +3491,8 @@ namespace Hydra.Such.Portal.Controllers
             bool registado = false;
             ErrorHandler result = new ErrorHandler();
             ContractViewModel Contract = null;
+            List<int> groups = new List<int>();
+
             if (requestParams["Contrato"].ToString() != null && requestParams["LinhasContrato"].ToString() != null)
             {
               
@@ -3505,7 +3507,6 @@ namespace Hydra.Such.Portal.Controllers
                 Contract = JsonConvert.DeserializeObject<ContractViewModel>(requestParams["Contrato"].ToString());
                 List<ContractLineViewModel> ContractLines = JsonConvert.DeserializeObject<List<ContractLineViewModel>>(requestParams["LinhasContrato"].ToString());
                 string groupInvoice = requestParams["GrupoFatura"].ToString();
-                List<int> groups = new List<int>();
                 bool createGroup = true;
                 if (groupInvoice != null && groupInvoice != "")
                 {
@@ -3895,11 +3896,42 @@ namespace Hydra.Such.Portal.Controllers
             }
             else
             {
-                if(Contract != null && registado)
-                    DBContracts.Update(DBContracts.ParseToDB(Contract));
+                if (Contract != null && registado)
+                {
+                    if (groups != null && groups.Count() > 0)
+                    {
+                        foreach (int group in groups)
+                        {
+                            //GET CLIENT REQUISITIONS
+                            RequisiçõesClienteContrato ClientRequisition = DBContractClientRequisition.GetByContractAndGroup(Contract.ContractNo, group);
+                            if (ClientRequisition != null)
+                            {
+                                ClientRequisition.DataÚltimaFatura = Convert.ToDateTime(Contract.LastInvoiceDate);
+                                if (DBContractClientRequisition.Update(ClientRequisition) != null)
+                                    return Json(registado);
+                                else
+                                {
+                                    result.eReasonCode = 5;
+                                    result.eMessage = "Ocorreu um erro ao atualizar a Requisição de Cliente.";
+                                    return Json(result);
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        DBContracts.Update(DBContracts.ParseToDB(Contract));
 
-                return Json(registado);
+                        return Json(registado);
+                    }
+                }
+
+                //if (Contract != null && registado)
+                //    DBContracts.Update(DBContracts.ParseToDB(Contract));
+
+                //return Json(registado);
             }
+            return Json(registado);
         }
 
         public JsonResult ExitSalesHeader([FromBody] JObject requestParams)
