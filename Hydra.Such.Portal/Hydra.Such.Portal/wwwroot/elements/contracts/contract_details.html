@@ -2166,6 +2166,37 @@
                     this.$.ToastMessageError.open();
                 },
                 _validateData: function () {
+                    if (this.$.mClients.value == "" || this.$.mClients.value == undefined) {
+                        this.$.mClients.validate();
+                        this._openToastError("É obrigatória seleção de um Nº Cliente.");
+                        return false;
+                    }
+                    if (this.$.mFeeUnits.value == "" || this.$.mFeeUnits.value == undefined) {
+                        this.$.mFeeUnits.validate();
+                        this._openToastError("É obrigatória seleção de uma unidade de prestação.");
+                        return false;
+                    }
+                    if (this.$.mPaymentTerms.value == "" || this.$.mPaymentTerms.value == undefined) {
+                        this.$.mPaymentTerms.validate();
+                        this._openToastError("É obrigatório o método de pagamento");
+                        return false;
+                    }
+                    if (this.$.mCodeRegion.value == "" || this.$.mCodeRegion.value == undefined) {
+                        this.$.mCodeRegion.validate();
+                        this._openToastError("É obrigatória seleção de Cód. Região.");
+                        return false;
+                    }
+                    if (this.$.mBillingTypes.value == "" || this.$.mBillingTypes.value == undefined) {
+                        this.$.mBillingTypes.validate();
+                        this._openToastError("É obrigatória seleção do Tipo Faturação.");
+                        return false;
+                    }
+                    if (this.$.mInvoicePeriods.value == "" || this.$.mInvoicePeriods.value == undefined) {
+                        this.$.mInvoicePeriods.validate();
+                        this._openToastError("É obrigatória seleção do Período Fatura.");
+                        return false;
+                    }
+
                     if (this.$.contractNo.validate() &
                         this.$.mDescription.validate() &
                         //this.$.mClients.validate() &
@@ -2198,26 +2229,6 @@
                         this.$.mDisplacementFee.validate() &
                         this.$.mInvoicePeriods.validate()) {
 
-                        if (this.$.mClients.value == "" || this.$.mClients.value == undefined) {
-                            this.$.mClients.validate();
-                            this._openToastError("É obrigatória seleção de um Nº Cliente.");
-                            return false;
-                        }
-                        if (this.$.mFeeUnits.value == "" || this.$.mFeeUnits.value == undefined) {
-                            this.$.mFeeUnits.validate();
-                            this._openToastError("É obrigatória seleção de uma unidade de prestação.");
-                            return false;
-                        }
-                        if (this.$.mPaymentTerms.value == "" || this.$.mPaymentTerms.value == undefined) {
-                            this.$.mPaymentTerms.validate();
-                            this._openToastError("É obrigatório o método de pagamento");
-                            return false;
-                        }
-                        if (this.$.mCodeRegion.value == "" || this.$.mCodeRegion.value == undefined) {
-                            this.$.mCodeRegion.validate();
-                            this._openToastError("É obrigatória seleção de Cód. Região.");
-                            return false;
-                        }
                         return true;
                     }
                     this._openToastError("Verifique os dados inseridos.");

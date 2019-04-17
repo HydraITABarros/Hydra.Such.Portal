@@ -2574,16 +2574,47 @@ namespace Hydra.Such.Portal.Controllers
                             }
                         }
                         Lastdate = (new DateTime(Lastdate.Year, Lastdate.Month, 1)).AddMonths(1).AddDays(-1);
-                        //actualiar data ultima fatura para o fim do mes
                         contractLine.ÚltimaDataFatura = Lastdate;
-                        //Estado Pendente
-                        //11-12-2018 ARomao@such.pt
-                        //A pedido do Marco Marcelo o contrato nunca pode mudar de estado
-                        //contractLine.Estado = 3;
-
-                        //AMARO TEMP DESCOMENTAR
                         DBContracts.Update(contractLine);
 
+                        //if (result.eMessages.Count > 0)
+                        //{
+                        //    return Json(result);
+                        //}
+                        //else
+                        //{
+                        //    if (contractLine != null)
+                        //    {
+                        //        if (contractList != null && contractList.Count() > 0)
+                        //        {
+                        //            foreach (var cont in contractList)
+                        //            {
+                        //                //GET CLIENT REQUISITIONS
+                        //                RequisiçõesClienteContrato ClientRequisition = DBContractClientRequisition.GetByContractAndGroup(contractLine.NºContrato, cont.GrupoFatura);
+                        //                if (ClientRequisition != null)
+                        //                {
+                        //                    ClientRequisition.DataÚltimaFatura = Lastdate;
+                        //                    if (DBContractClientRequisition.Update(ClientRequisition) == null)
+                        //                    {
+                        //                        result.eReasonCode = 5;
+                        //                        result.eMessage = "Ocorreu um erro ao atualizar a Requisição de Cliente.";
+                        //                        return Json(result);
+                        //                    }
+                        //                }
+                        //            }
+                        //        }
+                        //        else
+                        //        {
+                        //            contractLine.ÚltimaDataFatura = Lastdate;
+                        //            if (DBContracts.Update(contractLine) == null)
+                        //            {
+                        //                result.eReasonCode = 5;
+                        //                result.eMessage = "Ocorreu um erro ao atualizar o Contrato.";
+                        //                return Json(result);
+                        //            }
+                        //        }
+                        //    }
+                        //}
                     }
 
                     if (item.Situação == "" || item.Situação == null)
@@ -2935,6 +2966,46 @@ namespace Hydra.Such.Portal.Controllers
                                 ContractInvoicePeriod = Lastdate.ToString("dd/MM/yy");
                                 contractLine.ÚltimaDataFatura = Lastdate;
                                 DBContracts.Update(contractLine);
+
+
+                                //if (result.eMessages.Count > 0)
+                                //{
+                                //    return Json(result);
+                                //}
+                                //else
+                                //{
+                                //    if (contractLine != null)
+                                //    {
+                                //        if (contractList != null && contractList.Count() > 0)
+                                //        {
+                                //            foreach (var cont in contractList)
+                                //            {
+                                //                //GET CLIENT REQUISITIONS
+                                //                RequisiçõesClienteContrato ClientRequisition = DBContractClientRequisition.GetByContractAndGroup(contractLine.NºContrato, cont.GrupoFatura);
+                                //                if (ClientRequisition != null)
+                                //                {
+                                //                    ClientRequisition.DataÚltimaFatura = Lastdate;
+                                //                    if (DBContractClientRequisition.Update(ClientRequisition) == null)
+                                //                    {
+                                //                        result.eReasonCode = 5;
+                                //                        result.eMessage = "Ocorreu um erro ao atualizar a Requisição de Cliente.";
+                                //                        return Json(result);
+                                //                    }
+                                //                }
+                                //            }
+                                //        }
+                                //        else
+                                //        {
+                                //            contractLine.ÚltimaDataFatura = Lastdate;
+                                //            if (DBContracts.Update(contractLine) == null)
+                                //            {
+                                //                result.eReasonCode = 5;
+                                //                result.eMessage = "Ocorreu um erro ao atualizar o Contrato.";
+                                //                return Json(result);
+                                //            }
+                                //        }
+                                //    }
+                                //}
                             }
 
                             if (item.Situação == "" || item.Situação == null)
@@ -3896,42 +3967,41 @@ namespace Hydra.Such.Portal.Controllers
             }
             else
             {
-                if (Contract != null && registado)
-                {
-                    if (groups != null && groups.Count() > 0)
-                    {
-                        foreach (int group in groups)
-                        {
-                            //GET CLIENT REQUISITIONS
-                            RequisiçõesClienteContrato ClientRequisition = DBContractClientRequisition.GetByContractAndGroup(Contract.ContractNo, group);
-                            if (ClientRequisition != null)
-                            {
-                                ClientRequisition.DataÚltimaFatura = Convert.ToDateTime(Contract.LastInvoiceDate);
-                                if (DBContractClientRequisition.Update(ClientRequisition) != null)
-                                    return Json(registado);
-                                else
-                                {
-                                    result.eReasonCode = 5;
-                                    result.eMessage = "Ocorreu um erro ao atualizar a Requisição de Cliente.";
-                                    return Json(result);
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        DBContracts.Update(DBContracts.ParseToDB(Contract));
-
-                        return Json(registado);
-                    }
-                }
-
                 //if (Contract != null && registado)
-                //    DBContracts.Update(DBContracts.ParseToDB(Contract));
+                //{
+                //    if (groups != null && groups.Count() > 0)
+                //    {
+                //        foreach (int group in groups)
+                //        {
+                //            //GET CLIENT REQUISITIONS
+                //            RequisiçõesClienteContrato ClientRequisition = DBContractClientRequisition.GetByContractAndGroup(Contract.ContractNo, group);
+                //            if (ClientRequisition != null)
+                //            {
+                //                ClientRequisition.DataÚltimaFatura = !string.IsNullOrEmpty(Contract.LastInvoiceDate) ? Convert.ToDateTime(Contract.LastInvoiceDate) : (DateTime?)null;
+                //                if (DBContractClientRequisition.Update(ClientRequisition) != null)
+                //                    return Json(registado);
+                //                else
+                //                {
+                //                    result.eReasonCode = 5;
+                //                    result.eMessage = "Ocorreu um erro ao atualizar a Requisição de Cliente.";
+                //                    return Json(result);
+                //                }
+                //            }
+                //        }
+                //    }
+                //    else
+                //    {
+                //        DBContracts.Update(DBContracts.ParseToDB(Contract));
 
-                //return Json(registado);
+                //        return Json(registado);
+                //    }
+                //}
+
+                if (Contract != null && registado)
+                    DBContracts.Update(DBContracts.ParseToDB(Contract));
+
+                return Json(registado);
             }
-            return Json(registado);
         }
 
         public JsonResult ExitSalesHeader([FromBody] JObject requestParams)
