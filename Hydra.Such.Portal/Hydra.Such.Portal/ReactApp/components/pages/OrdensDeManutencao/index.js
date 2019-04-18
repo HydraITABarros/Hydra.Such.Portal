@@ -5,6 +5,8 @@ import {
     PageTemplate, Organism, Button
 } from 'components'
 
+import Tralha from 'components/atoms/Button'
+
 const OrdensDeManutencao = () => {
     return (
         <PageTemplate
@@ -12,6 +14,7 @@ const OrdensDeManutencao = () => {
             hero={<div>Hero</div>}
             footer={<div>Footer</div>} >
             <div> Page Content </div>
+            <Tralha>teste</Tralha>
         </PageTemplate>
     )
 }
