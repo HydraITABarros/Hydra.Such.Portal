@@ -1,5 +1,3 @@
-MButton example:
-
 ```js
 <div>
     <Button variant="contained"  m={0.5}>Default</Button>
