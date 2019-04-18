@@ -32,7 +32,7 @@ namespace Hydra.Such.Data.Database
         public DateTime? DataRececaoRequisicao { get; set; }
         public string NoCompromisso { get; set; }
         public string TextoFatura { get; set; }
-        public bool? PricesIncludingVAT { get; set; }
+        //public bool? PricesIncludingVAT { get; set; }
         
     }
 }

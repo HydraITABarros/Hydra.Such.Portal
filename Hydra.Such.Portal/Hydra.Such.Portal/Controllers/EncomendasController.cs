@@ -473,8 +473,8 @@ namespace Hydra.Such.Portal.Controllers
                     }
 
                     ConfigUtilizadores Utilizador = DBUserConfigurations.GetById(User.Identity.Name);
-                    string Aprovador1 = Utilizador.AprovadorPedidoPag1;
-                    string Aprovador2 = Utilizador.AprovadorPedidoPag2;
+                    string Aprovador1 = !string.IsNullOrEmpty(Utilizador.AprovadorPedidoPag1) ? Utilizador.AprovadorPedidoPag1 : "";
+                    string Aprovador2 = !string.IsNullOrEmpty(Utilizador.AprovadorPedidoPag2) ? Utilizador.AprovadorPedidoPag2 : "";
 
                     if (string.IsNullOrEmpty(Aprovador1) && string.IsNullOrEmpty(Aprovador2))
                     {
@@ -483,7 +483,7 @@ namespace Hydra.Such.Portal.Controllers
                         return Json(data);
                     }
 
-                    data.Aprovadores = "-" + Aprovador1 + "-" + Aprovador1 + "-";
+                    data.Aprovadores = "-" + Aprovador1 + "-" + Aprovador2 + "-";
                     data.DataEnvioAprovacao = DateTime.Now;
                     data.Estado = 2; //"Em Aprovação"
                     data.UtilizadorModificacao = User.Identity.Name;

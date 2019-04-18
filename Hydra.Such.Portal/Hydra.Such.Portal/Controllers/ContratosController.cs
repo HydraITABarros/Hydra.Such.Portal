@@ -2379,6 +2379,7 @@ namespace Hydra.Such.Portal.Controllers
             string errorMessage = string.Empty;
             bool hasErrors = false;
             ErrorHandler result = new ErrorHandler();
+            bool PricesIncludingVAT = false;
 
             List<LinhasFaturaçãoContrato> lineList = DBInvoiceContractLines.GetAll();
             List<AutorizarFaturaçãoContratos> contractList = new List<AutorizarFaturaçãoContratos>();
@@ -2619,7 +2620,6 @@ namespace Hydra.Such.Portal.Controllers
 
                     if (item.Situação == "" || item.Situação == null)
                     {
-
                         Task<WSCreateNAVProject.Read_Result> Project = WSProject.GetNavProject(item.NºContrato, _configws);
                         Project.Wait();
                         if (Project.IsCompletedSuccessfully && Project.Result.WSJob == null)
@@ -2713,11 +2713,11 @@ namespace Hydra.Such.Portal.Controllers
                         }
 
                         if (contractLine.FaturaPrecosIvaIncluido == true)
-                            item.PricesIncludingVAT = true;
+                            PricesIncludingVAT = true;
                         else
-                            item.PricesIncludingVAT = false;
+                            PricesIncludingVAT = false;
 
-                        Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreateContractInvoice(item, _configws, ContractInvoicePeriod, InvoiceBorrowed, CodTermosPagamento);
+                        Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreateContractInvoice(item, _configws, ContractInvoicePeriod, InvoiceBorrowed, CodTermosPagamento, PricesIncludingVAT);
                         InvoiceHeader.Wait();
 
                         if (InvoiceHeader.IsCompletedSuccessfully && InvoiceHeader != null && InvoiceHeader.Result != null)
@@ -3098,12 +3098,12 @@ namespace Hydra.Such.Portal.Controllers
                                 }
 
                                 if (contractLine.FaturaPrecosIvaIncluido == true)
-                                    item.PricesIncludingVAT = true;
+                                    PricesIncludingVAT = true;
                                 else
-                                    item.PricesIncludingVAT = false;
+                                    PricesIncludingVAT = false;
 
                                 //Task<WSCreatePreInvoiceNEW.Create_Result> InvoiceHeader = WSPreInvoice.CreateContractInvoiceNEW(item, _configws, ContractInvoicePeriod, InvoiceBorrowed, CodTermosPagamento);
-                                Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreateContractInvoice(item, _configws, ContractInvoicePeriod, InvoiceBorrowed, CodTermosPagamento);
+                                Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreateContractInvoice(item, _configws, ContractInvoicePeriod, InvoiceBorrowed, CodTermosPagamento, PricesIncludingVAT);
                                 InvoiceHeader.Wait();
 
                                 if (InvoiceHeader.IsCompletedSuccessfully && InvoiceHeader != null && InvoiceHeader.Result != null)
@@ -3556,6 +3556,7 @@ namespace Hydra.Such.Portal.Controllers
             }
             return lastDate;
         }
+
         [HttpPost]
         public JsonResult CreateInvoiceHeaderFromContract([FromBody] JObject requestParams, string dateCont )
         {
@@ -3563,32 +3564,37 @@ namespace Hydra.Such.Portal.Controllers
             ErrorHandler result = new ErrorHandler();
             ContractViewModel Contract = null;
             List<int> groups = new List<int>();
+            int Codgroup = 0;
+            string obs = "";
+            string execDetails = string.Empty;
+            string errorMessage = string.Empty;
+            bool hasErrors = false;
+            DateTime DataInicioFatura = DateTime.MinValue;
+            DateTime DataFimFatura = DateTime.MinValue;
+            RequisiçõesClienteContrato ClientRequisition = new RequisiçõesClienteContrato();
+            List<RequisiçõesClienteContrato> ClientRequisitionByContract = new List<RequisiçõesClienteContrato>();
+            List<RequisiçõesClienteContrato> ClientRequisitionByContractAndGroup = new List<RequisiçõesClienteContrato>();
+            List<RequisiçõesClienteContrato> ClientRequisitionByContractAndGroupAndDate = new List<RequisiçõesClienteContrato>();
+
 
             if (requestParams["Contrato"].ToString() != null && requestParams["LinhasContrato"].ToString() != null)
             {
-              
                 DateTime lastDay = Convert.ToDateTime(dateCont);
-
-                string obs = "";
-                string execDetails = string.Empty;
-                string errorMessage = string.Empty;
-                bool hasErrors = false;
-                
-
                 Contract = JsonConvert.DeserializeObject<ContractViewModel>(requestParams["Contrato"].ToString());
                 List<ContractLineViewModel> ContractLines = JsonConvert.DeserializeObject<List<ContractLineViewModel>>(requestParams["LinhasContrato"].ToString());
                 string groupInvoice = requestParams["GrupoFatura"].ToString();
+
                 bool createGroup = true;
                 if (groupInvoice != null && groupInvoice != "")
                 {
-                    int Codgroup = Convert.ToInt32(groupInvoice);
-                    if(ContractLines.Find(x => x.InvoiceGroup == Codgroup) == null)
+                    Codgroup = Convert.ToInt32(groupInvoice);
+                    if (ContractLines.Find(x => x.InvoiceGroup == Codgroup) == null)
                     {
                         createGroup = false;
                     }
-                   
                 }
-                if (createGroup==true) {
+
+                if (createGroup == true) {
                     //Create Project if existe
                     ConfigUtilizadores userConfig = DBUserConfigurations.GetById(User.Identity.Name);
                     Task<WSCreateNAVProject.Read_Result> Project = WSProject.GetNavProject(Contract.ContractNo, _configws);
@@ -3616,75 +3622,109 @@ namespace Hydra.Such.Portal.Controllers
                             return Json(result);
                         }
                     }
-                 
-                    DateTime dataInicio;
-                    DateTime dataFim;
-                    if (Contract.LastInvoiceDate != null && Contract.LastInvoiceDate != "")
-                    {
-                        dataInicio = Convert.ToDateTime(Contract.LastInvoiceDate);
-                        dataInicio = dataInicio.AddDays(1);
-                    }
-                    else
-                        dataInicio = Convert.ToDateTime(Contract.StartData);
-                 
-                    dataFim = getDatePeriodPayment(dataInicio, Contract.InvocePeriod ?? 0);
 
-                    //UPDATE LASTINVOICEDATE
-                    Contract.LastInvoiceDate = dataFim.ToString("dd/MM/yyyy");
-                    //DBContracts.Update(DBContracts.ParseToDB(Contract));
-
-                    //CREATE SALES HEADER
-                    //AMARO
-                    NAVSalesHeaderViewModel PreInvoiceToCreate = new NAVSalesHeaderViewModel();
-                    PreInvoiceToCreate.PeriododeFact_Contrato = dataInicio.ToString("dd/MM/yyyy") + " a " + dataFim.ToString("dd/MM/yyyy");
-                    string mes = dataFim.ToString("MMMM");
-                    PreInvoiceToCreate.DataServ_Prestado = String.Format("{0}/{1}", mes.ToUpper(), dataFim.Year);
-                    
-                    PreInvoiceToCreate.Sell_toCustomerNo = Contract.ClientNo;
-                    PreInvoiceToCreate.DocumentDate = lastDay;
-                    if (Contract.CustomerShipmentDate != null && Contract.CustomerShipmentDate != "")
-                        PreInvoiceToCreate.ShipmentDate = DateTime.Parse(Contract.CustomerShipmentDate);
-
-                    PreInvoiceToCreate.ValorContrato = Contract.TotalValue ?? 0;
-                    PreInvoiceToCreate.Ship_toAddress = Contract.ShippingAddress;
-                    PreInvoiceToCreate.Ship_toPostCode = Contract.ShippingZipCode;
-
-
-                    //AMARO DUEDATE = DataExpiração
-                    PreInvoiceToCreate.DueDate = lastDay;
-                    NAVPaymentTermsViewModels PaymentTerms = DBNAV2017PaymentTerms.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, Contract.CodePaymentTerms).FirstOrDefault();
-                    if (PaymentTerms != null)
-                    {
-                        string AUXDueDateCalculation = PaymentTerms.DueDateCalculation;
-                        AUXDueDateCalculation = AUXDueDateCalculation.Substring(0, AUXDueDateCalculation.IndexOf(''));
-
-                        if (!string.IsNullOrEmpty(AUXDueDateCalculation) && Double.TryParse(AUXDueDateCalculation, out double num))
-                        {
-                            PreInvoiceToCreate.DueDate = lastDay.AddDays(Convert.ToDouble(AUXDueDateCalculation));
-                        }
-                    }
-                    PreInvoiceToCreate.PaymentTermsCode = Contract.CodePaymentTerms;
-                   
-                    PreInvoiceToCreate.No_Compromisso = Contract.PromiseNo;
-                    PreInvoiceToCreate.CodigoPedido = Contract.ClientRequisitionNo;
-                    if (Contract.ReceiptDateRequisition != null && Contract.ReceiptDateRequisition != "")
-                        PreInvoiceToCreate.DataEncomenda = DateTime.Parse(Contract.ReceiptDateRequisition);
-
-                
-                    PreInvoiceToCreate.ContractNo = Contract.ContractNo;
-                    PreInvoiceToCreate.FacturaCAF = false;
-                    PreInvoiceToCreate.Userpreregisto2009 = User.Identity.Name;
-                    PreInvoiceToCreate.PostingDate = lastDay;
-                    PreInvoiceToCreate.ResponsabilityCenterCode20 = Contract.CodeResponsabilityCenter;
-                    PreInvoiceToCreate.FunctionAreaCode20 = Contract.CodeFunctionalArea;
-                    PreInvoiceToCreate.RegionCode20 = Contract.CodeRegion;
-
-                    PreInvoiceToCreate.ResponsibilityCenter = userConfig.CentroDeResponsabilidade;
-                    PreInvoiceToCreate.PostingNoSeries = userConfig.NumSerieFaturas;
-
+                    //Escolheu Grupo de fatura = Só trata de 1 grupo
                     if (groupInvoice != null && groupInvoice != "")
                     {
-                        int Codgroup = Convert.ToInt32(groupInvoice);
+                        //Obter a Data de Fim para a nova fatura
+                        ClientRequisitionByContract = DBContractClientRequisition.GetAll().Where(x => x.NºContrato == Contract.ContractNo).ToList();
+                        if (ClientRequisitionByContract == null || ClientRequisitionByContract.Count() == 0)
+                        {
+                            DataFimFatura = !string.IsNullOrEmpty(Contract.LastInvoiceDate) ? Convert.ToDateTime(Contract.LastInvoiceDate) : !string.IsNullOrEmpty(Contract.ContractStartDate) ? Convert.ToDateTime(Contract.ContractStartDate) : DateTime.MinValue;
+                        }
+                        else
+                        {
+                            ClientRequisitionByContractAndGroup = DBContractClientRequisition.GetAll().Where(x => x.NºContrato == Contract.ContractNo && x.GrupoFatura == int.Parse(groupInvoice)).ToList();
+                            if (ClientRequisitionByContractAndGroup != null && ClientRequisitionByContractAndGroup.Count() > 0)
+                            {
+                                DataFimFatura = ClientRequisitionByContractAndGroup.OrderByDescending(x => x.DataÚltimaFatura).FirstOrDefault().DataÚltimaFatura.HasValue ? (DateTime)ClientRequisitionByContractAndGroup.OrderByDescending(x => x.DataÚltimaFatura).FirstOrDefault().DataÚltimaFatura : DateTime.MinValue;
+                                if (DataFimFatura == DateTime.MinValue)
+                                {
+                                    DataFimFatura = !string.IsNullOrEmpty(Contract.StartData) ? Convert.ToDateTime(Contract.StartData) : DateTime.MinValue;
+                                }
+                            }
+                        }
+
+                        if (DataFimFatura != DateTime.MinValue)
+                        {
+                            DataInicioFatura = DataFimFatura.AddDays(1);
+                            if (DataFimFatura.Day == 1)
+                            {
+                                DataFimFatura = getDatePeriodPayment(DataFimFatura, Contract.InvocePeriod ?? 0);
+
+                            }
+                            else
+                            {
+                                DataFimFatura = new DateTime(DataFimFatura.Year, DataFimFatura.Month, 1).AddMonths(1);
+                                DataFimFatura = getDatePeriodPayment(DataFimFatura, Contract.InvocePeriod ?? 0);
+                            }
+
+                            if (ClientRequisitionByContractAndGroup != null && ClientRequisitionByContractAndGroup.Count() > 0)
+                            {
+                                ClientRequisitionByContractAndGroupAndDate = DBContractClientRequisition.GetAll().Where(x => x.NºContrato == Contract.ContractNo && x.GrupoFatura == int.Parse(groupInvoice) && x.DataInícioCompromisso <= DataFimFatura && x.DataFimCompromisso >= DataFimFatura).ToList();
+
+                                if (ClientRequisitionByContractAndGroupAndDate == null || ClientRequisitionByContractAndGroupAndDate.Count() == 0)
+                                {
+                                    result.eReasonCode = 3;
+                                    result.eMessage = "Não existem Requisições de Cliente válidas para a data da fatura.";
+                                    return Json(result);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            result.eReasonCode = 3;
+                            result.eMessage = "Não foi encontrada uma data de inicio para a para o grupo de fatura escolhido.";
+                            return Json(result);
+                        }
+                        Contract.LastInvoiceDate = DataFimFatura.ToString("dd/MM/yyyy");
+
+
+                        //CREATE SALES HEADER
+                        NAVSalesHeaderViewModel PreInvoiceToCreate = new NAVSalesHeaderViewModel();
+                        PreInvoiceToCreate.PeriododeFact_Contrato = DataInicioFatura.ToString("dd/MM/yyyy") + " a " + DataFimFatura.ToString("dd/MM/yyyy");
+                        string mes = DataFimFatura.ToString("MMMM");
+                        PreInvoiceToCreate.DataServ_Prestado = String.Format("{0}/{1}", mes.ToUpper(), DataFimFatura.Year);
+                    
+                        PreInvoiceToCreate.Sell_toCustomerNo = Contract.ClientNo;
+                        PreInvoiceToCreate.DocumentDate = lastDay;
+                        if (Contract.CustomerShipmentDate != null && Contract.CustomerShipmentDate != "")
+                            PreInvoiceToCreate.ShipmentDate = DateTime.Parse(Contract.CustomerShipmentDate);
+
+                        PreInvoiceToCreate.ValorContrato = Contract.TotalValue ?? 0;
+                        PreInvoiceToCreate.Ship_toAddress = Contract.ShippingAddress;
+                        PreInvoiceToCreate.Ship_toPostCode = Contract.ShippingZipCode;
+                        PreInvoiceToCreate.DueDate = lastDay;
+
+                        NAVPaymentTermsViewModels PaymentTerms = DBNAV2017PaymentTerms.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, Contract.CodePaymentTerms).FirstOrDefault();
+                        if (PaymentTerms != null)
+                        {
+                            string AUXDueDateCalculation = PaymentTerms.DueDateCalculation;
+                            AUXDueDateCalculation = AUXDueDateCalculation.Substring(0, AUXDueDateCalculation.IndexOf(''));
+
+                            if (!string.IsNullOrEmpty(AUXDueDateCalculation) && Double.TryParse(AUXDueDateCalculation, out double num))
+                            {
+                                PreInvoiceToCreate.DueDate = lastDay.AddDays(Convert.ToDouble(AUXDueDateCalculation));
+                            }
+                        }
+                        PreInvoiceToCreate.PaymentTermsCode = Contract.CodePaymentTerms;
+                   
+                        PreInvoiceToCreate.No_Compromisso = Contract.PromiseNo;
+                        PreInvoiceToCreate.CodigoPedido = Contract.ClientRequisitionNo;
+                        if (Contract.ReceiptDateRequisition != null && Contract.ReceiptDateRequisition != "")
+                            PreInvoiceToCreate.DataEncomenda = DateTime.Parse(Contract.ReceiptDateRequisition);
+
+                        PreInvoiceToCreate.ContractNo = Contract.ContractNo;
+                        PreInvoiceToCreate.FacturaCAF = false;
+                        PreInvoiceToCreate.Userpreregisto2009 = User.Identity.Name;
+                        PreInvoiceToCreate.PostingDate = lastDay;
+                        PreInvoiceToCreate.ResponsabilityCenterCode20 = Contract.CodeResponsabilityCenter;
+                        PreInvoiceToCreate.FunctionAreaCode20 = Contract.CodeFunctionalArea;
+                        PreInvoiceToCreate.RegionCode20 = Contract.CodeRegion;
+                        PreInvoiceToCreate.ResponsibilityCenter = userConfig.CentroDeResponsabilidade;
+                        PreInvoiceToCreate.PostingNoSeries = userConfig.NumSerieFaturas;
+
+                        Codgroup = Convert.ToInt32(groupInvoice);
                         if (ContractLines.Find(x => x.InvoiceGroup == Codgroup) != null)
                         {
                             foreach (ContractInvoiceTextViewModel texts in Contract.InvoiceTexts)
@@ -3704,6 +3744,14 @@ namespace Hydra.Such.Portal.Controllers
                             }
                             obs = "";
 
+                            //Obter os Campos das Requisições de Cliente
+                            ClientRequisition = DBContractClientRequisition.GetAll().Where(x => x.NºContrato == Contract.ContractNo && x.GrupoFatura == Codgroup && x.DataInícioCompromisso <= Convert.ToDateTime(Contract.LastInvoiceDate) && x.DataFimCompromisso >= Convert.ToDateTime(Contract.LastInvoiceDate)).FirstOrDefault();
+                            if (ClientRequisition != null)
+                            {
+                                PreInvoiceToCreate.No_Compromisso = !string.IsNullOrEmpty(ClientRequisition.NºCompromisso) ? ClientRequisition.NºCompromisso : "";
+                                PreInvoiceToCreate.DataEncomenda = (DateTime)ClientRequisition.DataRequisição;
+                                PreInvoiceToCreate.CodigoPedido = !string.IsNullOrEmpty(ClientRequisition.NºRequisiçãoCliente) ? ClientRequisition.NºRequisiçãoCliente : "";
+                            }
 
                             Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreatePreInvoiceHeader(PreInvoiceToCreate, _configws);
                             InvoiceHeader.Wait();
@@ -3814,6 +3862,7 @@ namespace Hydra.Such.Portal.Controllers
                     }
                     else
                     {
+                        //Não escolheu grupo de fatura = TODOS OS GRUPOS
                         foreach (ContractLineViewModel line in ContractLines)
                         {
                             if (!line.InvoiceGroup.HasValue)
@@ -3827,7 +3876,104 @@ namespace Hydra.Such.Portal.Controllers
 
                         foreach (int group in groups)
                         {
+                            //Obter a Data de Fim para a nova fatura
+                            ClientRequisitionByContract = DBContractClientRequisition.GetAll().Where(x => x.NºContrato == Contract.ContractNo).ToList();
+                            if (ClientRequisitionByContract == null || ClientRequisitionByContract.Count() == 0)
+                            {
+                                DataFimFatura = !string.IsNullOrEmpty(Contract.LastInvoiceDate) ? Convert.ToDateTime(Contract.LastInvoiceDate) : !string.IsNullOrEmpty(Contract.ContractStartDate) ? Convert.ToDateTime(Contract.ContractStartDate) : DateTime.MinValue;
+                            }
+                            else
+                            {
+                                ClientRequisitionByContractAndGroup = DBContractClientRequisition.GetAll().Where(x => x.NºContrato == Contract.ContractNo && x.GrupoFatura == group).ToList();
+                                if (ClientRequisitionByContractAndGroup != null && ClientRequisitionByContractAndGroup.Count() > 0)
+                                {
+                                    DataFimFatura = ClientRequisitionByContractAndGroup.OrderByDescending(x => x.DataÚltimaFatura).FirstOrDefault().DataÚltimaFatura.HasValue ? (DateTime)ClientRequisitionByContractAndGroup.OrderByDescending(x => x.DataÚltimaFatura).FirstOrDefault().DataÚltimaFatura : DateTime.MinValue;
+                                    if (DataFimFatura == DateTime.MinValue)
+                                    {
+                                        DataFimFatura = !string.IsNullOrEmpty(Contract.StartData) ? Convert.ToDateTime(Contract.StartData) : DateTime.MinValue;
+                                    }
+                                }
+                            }
+
+                            if (DataFimFatura != DateTime.MinValue)
+                            {
+                                DataInicioFatura = DataFimFatura.AddDays(1);
+                                if (DataFimFatura.Day == 1)
+                                {
+                                    DataFimFatura = getDatePeriodPayment(DataFimFatura, Contract.InvocePeriod ?? 0);
+
+                                }
+                                else
+                                {
+                                    DataFimFatura = new DateTime(DataFimFatura.Year, DataFimFatura.Month, 1).AddMonths(1);
+                                    DataFimFatura = getDatePeriodPayment(DataFimFatura, Contract.InvocePeriod ?? 0);
+                                }
+
+                                if (ClientRequisitionByContractAndGroup != null && ClientRequisitionByContractAndGroup.Count() > 0)
+                                {
+                                    ClientRequisitionByContractAndGroupAndDate = DBContractClientRequisition.GetAll().Where(x => x.NºContrato == Contract.ContractNo && x.GrupoFatura == group && x.DataInícioCompromisso <= DataFimFatura && x.DataFimCompromisso >= DataFimFatura).ToList();
+
+                                    if (ClientRequisitionByContractAndGroupAndDate == null || ClientRequisitionByContractAndGroupAndDate.Count() == 0)
+                                    {
+                                        result.eReasonCode = 3;
+                                        result.eMessage = "Não existem Requisições de Cliente válidas para a data da fatura.";
+                                        return Json(result);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                result.eReasonCode = 3;
+                                result.eMessage = "Não foi encontrada uma data de inicio para a para o grupo de fatura escolhido.";
+                                return Json(result);
+                            }
+                            Contract.LastInvoiceDate = DataFimFatura.ToString("dd/MM/yyyy");
+
+
                             //CREATE SALES HEADER
+                            NAVSalesHeaderViewModel PreInvoiceToCreate = new NAVSalesHeaderViewModel();
+                            PreInvoiceToCreate.PeriododeFact_Contrato = DataInicioFatura.ToString("dd/MM/yyyy") + " a " + DataFimFatura.ToString("dd/MM/yyyy");
+                            string mes = DataFimFatura.ToString("MMMM");
+                            PreInvoiceToCreate.DataServ_Prestado = String.Format("{0}/{1}", mes.ToUpper(), DataFimFatura.Year);
+
+                            PreInvoiceToCreate.Sell_toCustomerNo = Contract.ClientNo;
+                            PreInvoiceToCreate.DocumentDate = lastDay;
+                            if (Contract.CustomerShipmentDate != null && Contract.CustomerShipmentDate != "")
+                                PreInvoiceToCreate.ShipmentDate = DateTime.Parse(Contract.CustomerShipmentDate);
+
+                            PreInvoiceToCreate.ValorContrato = Contract.TotalValue ?? 0;
+                            PreInvoiceToCreate.Ship_toAddress = Contract.ShippingAddress;
+                            PreInvoiceToCreate.Ship_toPostCode = Contract.ShippingZipCode;
+                            PreInvoiceToCreate.DueDate = lastDay;
+
+                            NAVPaymentTermsViewModels PaymentTerms = DBNAV2017PaymentTerms.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, Contract.CodePaymentTerms).FirstOrDefault();
+                            if (PaymentTerms != null)
+                            {
+                                string AUXDueDateCalculation = PaymentTerms.DueDateCalculation;
+                                AUXDueDateCalculation = AUXDueDateCalculation.Substring(0, AUXDueDateCalculation.IndexOf(''));
+
+                                if (!string.IsNullOrEmpty(AUXDueDateCalculation) && Double.TryParse(AUXDueDateCalculation, out double num))
+                                {
+                                    PreInvoiceToCreate.DueDate = lastDay.AddDays(Convert.ToDouble(AUXDueDateCalculation));
+                                }
+                            }
+                            PreInvoiceToCreate.PaymentTermsCode = Contract.CodePaymentTerms;
+
+                            PreInvoiceToCreate.No_Compromisso = Contract.PromiseNo;
+                            PreInvoiceToCreate.CodigoPedido = Contract.ClientRequisitionNo;
+                            if (Contract.ReceiptDateRequisition != null && Contract.ReceiptDateRequisition != "")
+                                PreInvoiceToCreate.DataEncomenda = DateTime.Parse(Contract.ReceiptDateRequisition);
+
+                            PreInvoiceToCreate.ContractNo = Contract.ContractNo;
+                            PreInvoiceToCreate.FacturaCAF = false;
+                            PreInvoiceToCreate.Userpreregisto2009 = User.Identity.Name;
+                            PreInvoiceToCreate.PostingDate = lastDay;
+                            PreInvoiceToCreate.ResponsabilityCenterCode20 = Contract.CodeResponsabilityCenter;
+                            PreInvoiceToCreate.FunctionAreaCode20 = Contract.CodeFunctionalArea;
+                            PreInvoiceToCreate.RegionCode20 = Contract.CodeRegion;
+                            PreInvoiceToCreate.ResponsibilityCenter = userConfig.CentroDeResponsabilidade;
+                            PreInvoiceToCreate.PostingNoSeries = userConfig.NumSerieFaturas;
+
                             foreach (ContractInvoiceTextViewModel texts in Contract.InvoiceTexts)
                             {
                                 if (texts.InvoiceGroup == Convert.ToInt32(group))
@@ -3850,6 +3996,15 @@ namespace Hydra.Such.Portal.Controllers
                                 PreInvoiceToCreate.PricesIncludingVAT = 1;
                             else
                                 PreInvoiceToCreate.PricesIncludingVAT = 0;
+
+                            //Obter os Campos das Requisições de Cliente
+                            ClientRequisition = DBContractClientRequisition.GetAll().Where(x => x.NºContrato == Contract.ContractNo && x.GrupoFatura == group && x.DataInícioCompromisso <= Convert.ToDateTime(Contract.LastInvoiceDate) && x.DataFimCompromisso >= Convert.ToDateTime(Contract.LastInvoiceDate)).FirstOrDefault();
+                            if (ClientRequisition != null)
+                            {
+                                PreInvoiceToCreate.No_Compromisso = !string.IsNullOrEmpty(ClientRequisition.NºCompromisso) ? ClientRequisition.NºCompromisso : "";
+                                PreInvoiceToCreate.DataEncomenda = (DateTime)ClientRequisition.DataRequisição;
+                                PreInvoiceToCreate.CodigoPedido = !string.IsNullOrEmpty(ClientRequisition.NºRequisiçãoCliente) ? ClientRequisition.NºRequisiçãoCliente : "";
+                            }
 
                             Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreatePreInvoiceHeader(PreInvoiceToCreate, _configws);
                             InvoiceHeader.Wait();
@@ -3967,35 +4122,35 @@ namespace Hydra.Such.Portal.Controllers
             }
             else
             {
-                //if (Contract != null && registado)
-                //{
-                //    if (groups != null && groups.Count() > 0)
-                //    {
-                //        foreach (int group in groups)
-                //        {
-                //            //GET CLIENT REQUISITIONS
-                //            RequisiçõesClienteContrato ClientRequisition = DBContractClientRequisition.GetByContractAndGroup(Contract.ContractNo, group);
-                //            if (ClientRequisition != null)
-                //            {
-                //                ClientRequisition.DataÚltimaFatura = !string.IsNullOrEmpty(Contract.LastInvoiceDate) ? Convert.ToDateTime(Contract.LastInvoiceDate) : (DateTime?)null;
-                //                if (DBContractClientRequisition.Update(ClientRequisition) != null)
-                //                    return Json(registado);
-                //                else
-                //                {
-                //                    result.eReasonCode = 5;
-                //                    result.eMessage = "Ocorreu um erro ao atualizar a Requisição de Cliente.";
-                //                    return Json(result);
-                //                }
-                //            }
-                //        }
-                //    }
-                //    else
-                //    {
-                //        DBContracts.Update(DBContracts.ParseToDB(Contract));
+                if (Contract != null && registado)
+                {
+                    if (groups != null && groups.Count() > 0)
+                    {
+                        foreach (int group in groups)
+                        {
+                            //GET CLIENT REQUISITIONS
+                            ClientRequisition = DBContractClientRequisition.GetAll().Where(x => x.NºContrato == Contract.ContractNo && x.GrupoFatura == group && x.DataInícioCompromisso <= Convert.ToDateTime(Contract.LastInvoiceDate) && x.DataFimCompromisso >= Convert.ToDateTime(Contract.LastInvoiceDate)).FirstOrDefault();
+                            if (ClientRequisition != null)
+                            {
+                                ClientRequisition.DataÚltimaFatura = !string.IsNullOrEmpty(Contract.LastInvoiceDate) ? Convert.ToDateTime(Contract.LastInvoiceDate) : (DateTime?)null;
+                                if (DBContractClientRequisition.Update(ClientRequisition) != null)
+                                    return Json(registado);
+                                else
+                                {
+                                    result.eReasonCode = 5;
+                                    result.eMessage = "Ocorreu um erro ao atualizar a Requisição de Cliente.";
+                                    return Json(result);
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        DBContracts.Update(DBContracts.ParseToDB(Contract));
 
-                //        return Json(registado);
-                //    }
-                //}
+                        return Json(registado);
+                    }
+                }
 
                 if (Contract != null && registado)
                     DBContracts.Update(DBContracts.ParseToDB(Contract));

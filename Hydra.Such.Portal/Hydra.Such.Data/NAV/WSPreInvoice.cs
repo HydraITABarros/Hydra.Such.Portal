@@ -256,7 +256,7 @@ namespace Hydra.Such.Data.NAV
             }
         }
 
-        public static async Task<WSCreatePreInvoice.Create_Result> CreateContractInvoice(AutorizarFaturaçãoContratos CreateInvoice, NAVWSConfigurations WSConfigurations,string ContractInvoicePeriod, string InvoiceBorrowed, string CodTermosPagamento)
+        public static async Task<WSCreatePreInvoice.Create_Result> CreateContractInvoice(AutorizarFaturaçãoContratos CreateInvoice, NAVWSConfigurations WSConfigurations,string ContractInvoicePeriod, string InvoiceBorrowed, string CodTermosPagamento, bool PricesIncludingVAT)
         {
             DateTime now = DateTime.Now;
             ConfigUtilizadores CUsers = DBUserConfigurations.GetById(CreateInvoice.UtilizadorCriação);
@@ -297,7 +297,7 @@ namespace Hydra.Such.Data.NAV
                     FunctionAreaCode20 = !string.IsNullOrEmpty(CreateInvoice.CódigoÁreaFuncional) ? CreateInvoice.CódigoÁreaFuncional : "",
                     ResponsabilityCenterCode20 = !string.IsNullOrEmpty(CreateInvoice.CódigoCentroResponsabilidade) ? CreateInvoice.CódigoCentroResponsabilidade : "",
 
-                    Prices_Including_VAT = CreateInvoice.PricesIncludingVAT.HasValue ? (bool)CreateInvoice.PricesIncludingVAT : false,
+                    Prices_Including_VAT = PricesIncludingVAT,
                     Prices_Including_VATSpecified = true
                 }
             };
