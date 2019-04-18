@@ -4,8 +4,8 @@ import styled, { css, theme } from 'styled-components'
 
 import MuiButton from '@material-ui/core/Button';
 
-const _default = css`&& {
-      color : ${props => props.theme.palette.primary};
+const styles = css`&& {
+     
     }
 `
 
