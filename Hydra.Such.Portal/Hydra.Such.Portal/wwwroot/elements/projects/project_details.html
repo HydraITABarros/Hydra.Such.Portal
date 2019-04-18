@@ -133,13 +133,13 @@
 
                 <template is="dom-if" if="{{ _permissions.create }}">
                     <paper-button id="btnProjectAdd" class="tablinks" on-tap="_createNewProject"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
-                    <paper-button id="btnProjectAdd" class="tablinks" on-tap="_terminarProject"><i class="fa fa-remove" aria-hidden="true"></i>&nbsp; Terminar</paper-button>
                 </template>
 
                 <paper-button id="btnProjectMovements" class="tablinks" on-tap="_OpenProjectMovements"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Movimentos do Projeto</paper-button>
 
                 <template is="dom-if" if="{{ data.verMenu }}">
                     <paper-button id="btnPreProjectMovements" class="tablinks" on-tap="_OpenPreProjectMovements"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Pré-Movimentos Projeto</paper-button>
+                    <paper-button id="btnProjectAdd" class="tablinks" on-tap="_terminarProject"><i class="fa fa-remove" aria-hidden="true"></i>&nbsp; Terminar</paper-button>
 
                     <template is="dom-if" if="{{ !_projectClosed }}">
                         <paper-button id="btnProjectDiary" class="tablinks" on-tap="_OpenProjectDiary"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Diário de Projeto</paper-button>
