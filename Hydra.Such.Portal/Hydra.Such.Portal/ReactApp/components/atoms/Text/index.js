@@ -4,88 +4,83 @@ import styled, { css, theme } from 'styled-components'
 import _theme from '../../themes/default'
 import MuiButton from '@material-ui/core/Button';
 
-const HtmlTag = styled.div` 
-    display: inline-block;
-    padding-right: 40px;
-`
-const H1 = styled.div` 
+
+const Title = styled.h1`
     font-family: ${_theme.fonts.primary};
+    font-style: normal;
     font-weight: 200;
     font-size: 48px;
-    padding-bottom: 20px;
+    line-height: 56px;
+    color: ${props => props.color || _theme.palette.primary.default};
+
 `
-const H2 = styled.div` 
+const Header = styled.h2`
     font-family: ${_theme.fonts.primary};
-    font-weight: 200;
+    font-style: normal;
+    font-weight: 300;
     font-size: 24px;
-    padding-bottom: 20px;
+    line-height: 32px;
+    color: ${props => props.color || _theme.palette.primary.default};
 `
-const H3 = styled.div` 
+const SubHeader = styled.h3`
     font-family: ${_theme.fonts.primary};
+    font-style: normal;
     font-weight: 700;
     font-size: 18px;
-    padding-bottom: 20px;
+    line-height: 24px;
+    color: ${props => props.color || _theme.palette.primary.default};
 `
-const PTag = styled.div` 
+const Paragraph = styled.p`
     font-family: ${_theme.fonts.primary};
+    font-style: normal;
     font-weight: 400;
     font-size: 14px;
-    padding-bottom: 20px;
+    line-height: 24px;
+    color: ${props => props.color || _theme.palette.primary.default};
+     
 `
-const Label = styled.div` 
+const Bold = styled.b`
     font-family: ${_theme.fonts.primary};
+    font-style: normal;
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 24px;
+    color: ${props => props.color || _theme.palette.primary.default};
+     
+`
+const Label = styled.label`
+    font-family: ${_theme.fonts.primary};
+    font-style: normal;
     font-weight: 700;
     font-size: 12px;
-    text-transform: uppercase;
-    padding-bottom: 20px;
+    line-height: 16px;
+    text-transform: uppercase; 
+    color: ${props => props.color || _theme.palette.primary.medium};    
 `
-const Texto = styled.div` 
+const Default = styled.span`
     font-family: ${_theme.fonts.primary};
     font-weight: 200;
-    font-size: 48px;
+    font-size: 14px;
+    line-height: 24px;
+    color: ${props => props.color || _theme.palette.primary.default};     
 `
-const Text = ({ type, ...props }) => {
-console.log(_theme);
-    
-    return(
-    <div>   
-        <HtmlTag>
-            <span class="rsg--para-11">html tag</span>
-            <H1 color={_theme.fonts.primary}>h1</H1>
-            <H2 color={_theme.fonts.primary}>h2</H2>
-            <H3 color={_theme.fonts.primary}>h3</H3>
-            <PTag color={_theme.fonts.primary}>p</PTag>
-            <Label color={_theme.fonts.primary}>label</Label>
-        </HtmlTag>
 
-        <HtmlTag>
-            <span class="rsg--para-11">font / weight</span>
-            <H1 color={_theme.fonts.primary}>Inter Extra Light</H1>
-            <H2 color={_theme.fonts.primary}>Inter Light</H2>
-            <H3 color={_theme.fonts.primary}>Inter Light</H3>
-            <PTag color={_theme.fonts.primary}>Inter Regular</PTag>
-            <Label color={_theme.fonts.primary}>Inter Regular</Label>
-        </HtmlTag>
+const Text = ({ ...props }) => {
 
-        <HtmlTag>
-            <span class="rsg--para-11">size</span>
-            <H1 color={_theme.fonts.primary}>48px</H1>
-            <H2 color={_theme.fonts.primary}>24px</H2>
-            <H3 color={_theme.fonts.primary}>18px</H3>
-            <PTag color={_theme.fonts.primary}>14px</PTag>
-            <Label color={_theme.fonts.primary}>12px</Label>
-        </HtmlTag>
-
-        <HtmlTag>
-            <span class="rsg--para-11">line-height</span>
-            <H1 color={_theme.fonts.primary}>58px</H1>
-            <H2 color={_theme.fonts.primary}>32px</H2>
-            <H3 color={_theme.fonts.primary}>24px</H3>
-            <PTag color={_theme.fonts.primary}>24px</PTag>
-            <Label color={_theme.fonts.primary}>16px</Label>
-        </HtmlTag>
-    </div>
-    )
+    if (props.h1) {
+        return <Title {...props} />
+    } else if (props.h2) {
+        return <Header {...props} />
+    } else if (props.h3) {
+        return <SubHeader {...props} />
+    } else if (props.p) {
+        return <Paragraph {...props} />
+    } else if (props.b) {
+        return <Bold {...props} />
+    } else if (props.label) {
+        return <Label {...props} />
+    }
+    return <Default {...props} />
 }
 
 export default Text;
