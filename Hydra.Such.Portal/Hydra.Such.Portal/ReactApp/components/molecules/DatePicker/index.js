@@ -17,15 +17,23 @@ const styles = css`&& {
     }
     .DayPicker-Caption {
         text-align: center;
+        margin-bottom: 1.2em;
         div {
             font-weight: 100;
             font-size: 18px;
         }
     }
+    .DayPicker-Month {
+        margin-right: 0;
+        margin-left: 0;
+        margin-right: 1em;
+        margin-left: 1em;
+    }
+
     && .DayPicker-Day {
         font-weight: 100;
         font-size: 14px;
-        padding: 0.35em 0.6em;
+        padding: 0.35em 0.8em;
         position: relative;
         &:not(.DayPicker-Day--disabled):not(.DayPicker-Day--selected):not(.DayPicker-Day--outside) {
             &:hover {
@@ -40,11 +48,13 @@ const styles = css`&& {
     }
     
     .DayPicker-NavButton--prev {
-        left: 1.2em;
+        left: 1.3em;
+        top: .9em;
         right: auto;
     }
     .DayPicker-NavButton--next {
-        right: 1.2em;
+        right: 1.3em;
+        top: .9em;
     }
     .DayPicker-Weekday {
         font-weight: 700;
@@ -126,9 +136,10 @@ const CustomDayPicker = styled(DayPicker)`${styles}`
 
 const locale = "pt";
 const MONTHS = { pt: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'] };
+const MONTHS_SHORT = { pt: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'] };
 const WEEKDAYS_LONG = { pt: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'] };
 const WEEKDAYS_SHORT = { pt: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'] };
-const langProps = { locale, months: MONTHS[locale], weekdaysLong: WEEKDAYS_LONG[locale], weekdaysShort: WEEKDAYS_SHORT[locale] }
+const langProps = { locale, months: MONTHS_SHORT[locale], weekdaysLong: WEEKDAYS_LONG[locale], weekdaysShort: WEEKDAYS_SHORT[locale] }
 
 class DatePicker extends React.Component {
     static defaultProps = {
