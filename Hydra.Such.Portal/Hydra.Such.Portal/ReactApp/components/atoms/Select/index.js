@@ -5,7 +5,7 @@ import MuiSelect from '@material-ui/core/Select';
 import { OutlinedInput } from 'components';
 
 const styles = css`&& {
-
+        text-align: left;
     }
 `
 
