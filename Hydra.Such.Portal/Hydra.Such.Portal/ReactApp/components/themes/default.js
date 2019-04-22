@@ -14,7 +14,7 @@ theme.palette = {
         keylines: '#E4E7EB'
     },
     secondary:{
-        default: '#F35627', 
+        default: '#F9703E', 
         light: '#FFE8D9'
     },
     bg:{
@@ -33,12 +33,23 @@ theme.palette = {
 theme.reversePalette = reversePalette(theme.palette)
 
 theme.fonts = {
-    primary: "'Inter var', Helvetica, sans-serif",
+    primary: "Inter, Helvetica, sans-serif",
     data: "'Berthold Akzidenz Grotesk', Helvetica, sans-serif",
 }
 
 theme.sizes = {
 
 }
+
+theme.padding = {
+    8: '8px',
+    16: '16px',
+    24: '24px',
+}
+
+theme.radius = {
+    primary: '6px',
+}
+
 
 export default theme
