@@ -1,13 +1,14 @@
 ```js
+
+import AddIcon from '@material-ui/icons/Add';
+import DeleteIcon from '@material-ui/icons/Delete';
+
 <div>
-    <Button variant="contained"  m={0.5}>Default</Button>
-    <Button variant="contained" color="primary" className={"padding"}>Primary</Button>
-    <Button variant="contained" color="secondary">Secondary</Button>
-    <Button variant="contained" color="secondary" disabled>Disabled</Button>
-    <Button variant="contained" href="#contained-buttons">Link</Button>
-    <input accept="image/*" id="contained-button-file" multiple type="file" />
-    <label htmlFor="contained-button-file">
-        <Button variant="contained" component="span">Upload</Button>
-    </label>
+    <Button primary>Primary</Button>{"\u00a0","\u00a0","\u00a0"}
+    <Button default>Default</Button>{"\u00a0","\u00a0","\u00a0"}
+    <Button icon={<DeleteIcon />}>Default</Button>{"\u00a0","\u00a0","\u00a0"}
+    <Button link>Text Link</Button>{"\u00a0","\u00a0","\u00a0"}
+    <Button round><AddIcon /></Button>{"\u00a0","\u00a0","\u00a0"}
+    <Button round><DeleteIcon /></Button>
 </div>
 ```
