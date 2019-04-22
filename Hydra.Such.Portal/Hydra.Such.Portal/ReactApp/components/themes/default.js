@@ -7,27 +7,38 @@ const theme = {}
 
 theme.palette = {
     primary:{ 
-        default: '#2196f3',
-        dark: '#1976d2',
-        light: '#71bcf7',
-        lightness: '#c2e2fb'
+        default: '#323F4B',
+        dark: '#52606D',
+        medium: '#7B8794',
+        light: '#CBD2D9',
+        keylines: '#E4E7EB'
     },
-    secondary: ['#c2185b', '#e91e63', '#f06292', '#f8bbd0'],
-    alert: ['#ffa000', '#ffc107', '#ffd761', '#ffecb3'],
-    search: ['#388e3c', '#4caf50', '#7cc47f', '#c8e6c9'],
-    white: ['#fff', '#fff', '#eee'],
-    grayscale: ['#212121', '#414141', '#616161', '#9e9e9e', '#bdbdbd', '#e0e0e0', '#eeeeee', '#ffffff', ],
+    secondary:{
+        default: '#F35627', 
+        light: '#FFE8D9'
+    },
+    bg:{
+        white: '#FFFFFF', 
+        grey: '#F5F7FA'
+    },
+    alert:{
+        bad: '#D64545', 
+        good: '#57AE5B'
+    },
+    search:'#FCEE21'
+    ,
+    white:'#FFFFFF'
 }
 
 theme.reversePalette = reversePalette(theme.palette)
 
 theme.fonts = {
-    primary: 'Helvetica Neue, Helvetica, Roboto, sans-serif',
-    pre: 'Consolas, Liberation Mono, Menlo, Courier, monospace',
-    quote: 'Georgia, serif',
+    primary: "'Inter var', Helvetica, sans-serif",
+    data: "'Berthold Akzidenz Grotesk', Helvetica, sans-serif",
 }
 
 theme.sizes = {
+
 }
 
 export default theme
