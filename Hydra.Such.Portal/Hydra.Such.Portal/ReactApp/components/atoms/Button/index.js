@@ -2,15 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled, { css, theme } from 'styled-components';
 import MuiButton from '@material-ui/core/Button';
-import SaveIcon from '@material-ui/icons/Save';
-import DeleteIcon from '@material-ui/icons/Delete';
 import _theme from '../../themes/default';
 import {Text} from 'components';
 import Color from 'color';
 
+const buttonTextPadding = {
+    padding: '8px 24px',
+}
+
 const sharedStyles = css`&& {
     text-transform: none; 
-    padding: ${_theme.padding[8]} ${_theme.padding[24]};
+    padding: ${buttonTextPadding.padding};
     box-shadow: 1px 1px 2px 0px ${Color(_theme.palette.primary.default).alpha(0.3).toString()}; 
     border-radius: ${_theme.radius.primary};
 }
@@ -58,7 +60,7 @@ const buttonRound = css`&& {
     padding: 0;     
     text-transform: none; 
     box-shadow: 1px 1px 2px 0px ${Color(_theme.palette.primary.default).alpha(0.3).toString()}; 
-    border-radius: 50%;
+    border-radius: ${_theme.radius.round};
     background-color: ${_theme.palette.white};
     color: ${_theme.palette.primary.medium};
     b {
@@ -67,11 +69,25 @@ const buttonRound = css`&& {
     }
 }
 `
-
+const buttonOutline = css`&& {
+    background-color: ${_theme.palette.white};
+    color: ${_theme.palette.secondary.default};
+    text-transform: none; 
+    padding: ${buttonTextPadding.padding};
+    box-shadow: none; 
+    border: 2px solid ${_theme.palette.secondary.default};
+    border-radius: ${_theme.radius.primary};
+    b {
+        color: ${_theme.palette.secondary.default};
+        }
+}
+`
 const ButtonPrimary = styled(MuiButton)`${sharedStyles}${buttonPrimary}`;
 const ButtonDefault = styled(MuiButton)`${sharedStyles}${buttonDefault}`;
 const ButtonIcon = styled(MuiButton)`${sharedStyles}${buttonIcon}`;
 const ButtonRound = styled(MuiButton)`${buttonRound}`;
+const ButtonOutline = styled(MuiButton)`${buttonOutline}`;
+
 
 
 const Button = ({ type, ...props }) => {
@@ -97,7 +113,11 @@ const Button = ({ type, ...props }) => {
         return <ButtonRound src="javascript:void(0)" {...props} ></ButtonRound>
     } if (href) {
         return <ButtonRound {...props} />
-    } 
+    } else if (props.outline) {
+        return <ButtonOutline variant="contained" {...props} ><Text b>{props.children}</Text></ButtonOutline>
+    } if (href) {
+        return <ButtonOutline {...props} />
+    }
     return <ButtonPrimary {...props} type={type} />
 }
 
