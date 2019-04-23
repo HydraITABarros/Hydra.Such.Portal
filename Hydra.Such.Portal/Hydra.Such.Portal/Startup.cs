@@ -28,6 +28,8 @@ using JavaScriptEngineSwitcher.ChakraCore;
 using JavaScriptEngineSwitcher.Extensions.MsDependencyInjection;
 using React.AspNet;
 using Microsoft.AspNetCore.SpaServices.Webpack;
+using Hydra.Such.Data.Evolution.Repositories;
+using SharpRepository.Repository;
 
 namespace Hydra.Such.Portal
 {
@@ -97,6 +99,9 @@ namespace Hydra.Such.Portal
 
             /*sharpRepository for evolution database - IoC*/
             services.AddDbContext<EvolutionWEBContext>(options => options.UseSqlServer(Configuration.GetConnectionString("EvolutionConnection")), ServiceLifetime.Transient);
+
+            services.AddTransient<MaintnenceOrdersRepository>(r => new MaintnenceOrdersRepository(RepositoryFactory.BuildSharpRepositoryConfiguation(Configuration.GetSection("sharpRepository"))));
+
             return services.UseSharpRepository(Configuration.GetSection("sharpRepository"));
         }
 
