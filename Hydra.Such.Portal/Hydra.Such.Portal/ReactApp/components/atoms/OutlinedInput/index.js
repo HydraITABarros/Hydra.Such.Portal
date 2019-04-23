@@ -1,6 +1,6 @@
 import React from 'react'
 import styled, { css, theme } from 'styled-components'
-
+import _theme from '../../themes/default';
 import MuiOutlinedInput from '@material-ui/core/OutlinedInput';
 
 const styles = css`&& {
@@ -8,7 +8,7 @@ const styles = css`&& {
             padding: 11px 15px;
         }
         fieldset {
-            border-radius: 5px;
+            border-radius: ${_theme.radius.primary};
         }
         [role="button"] {
             padding: 11px 35px 11px 15px;
