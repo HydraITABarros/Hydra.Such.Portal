@@ -2,13 +2,28 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Hydra.Such.Data.Evolution.Database
 {
     [ModelMetadataType(typeof(IMaintenanceOrder))]
     public partial class MaintenanceOrder
     {
+        [NotMapped]
+        public bool IsPreventive
+        {
+            get { return this.OrderType == "DMNCATE" || this.OrderType == "DMNANU" || this.OrderType == "DMNDBI" || this.OrderType == "DMNCREE" || this.OrderType == "CTTCAT"; }
+        }
+
+        
+        [NotMapped]
+        public bool IsToExecute
+        {
+            get { return this.FinishingDate.ToString() == "1753-01-01 00:00:00.000"; }
+        }
     }
+
+
 
     public interface IMaintenanceOrder
     {
