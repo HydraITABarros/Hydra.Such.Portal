@@ -31,14 +31,14 @@ namespace Hydra.Such.Portal.Controllers
     public class MaintenanceOrdersController : Controller
     {
 
-        protected IRepository<MaintenanceOrder, string> repository;
+        protected MaintnenceOrdersRepository maintnenceOrdersRepository;
         protected EvolutionWEBContext evolutionWEBContext;
         private readonly ISession session;
 
-        public MaintenanceOrdersController(IRepository<MaintenanceOrder, string> repository, EvolutionWEBContext evolutionWEBContext, IOptions<NAVWSConfigurations> NAVWSConfigs, IHttpContextAccessor httpContextAccessor)
+        public MaintenanceOrdersController(MaintnenceOrdersRepository repository, EvolutionWEBContext evolutionWEBContext, IOptions<NAVWSConfigurations> NAVWSConfigs, IHttpContextAccessor httpContextAccessor)
         {
             session = httpContextAccessor.HttpContext.Session;
-            this.repository = repository;
+            this.maintnenceOrdersRepository = repository;
             this.evolutionWEBContext = evolutionWEBContext;
         }
 
@@ -48,6 +48,85 @@ namespace Hydra.Such.Portal.Controllers
         {
             return View();
         }
+
+        
+        [Route("all"), HttpGet]
+        public ActionResult GetAll (ODataQueryOptions<MaintenanceOrder> queryOptions, DateTime? from, DateTime? to, int idCliente)
+        {
+            if(from== null || to == null) {  return NotFound(); }
+            
+            var pageSize = 100;
+
+            IQueryable results = queryOptions.ApplyTo(maintnenceOrdersRepository.AsQueryable().Where(o => o.OrderDate >= from && o.OrderDate <= to && o.IsToExecute), new ODataQuerySettings { PageSize = pageSize });
+            var list = results.Cast<dynamic>().AsEnumerable();
+            var total = Request.ODataFeature().TotalCount;
+            var nextLink = Request.GetNextPageLink(pageSize);
+
+            var result = new PageResult<dynamic>(list, nextLink, total);
+
+            var query = maintnenceOrdersRepository.AsQueryable().Where(o => o.OrderDate >= from && o.OrderDate <= to && o.IdClienteEvolution == idCliente).Select(m => new { m.IsToExecute, m.IsPreventive }).ToList();
+
+            var ordersCounts = new {
+                preventive = query.Where(o => o.IsPreventive).Count(),
+                preventiveToExecute = query.Where(n => n.IsPreventive && n.IsToExecute).Count(),
+                curative = query.Where(o => !o.IsPreventive).Count(),
+                curativeToExecute = query.Where(n => !n.IsPreventive && n.IsToExecute).Count(),
+            };
+          
+            return Json(new {
+                result,
+                ordersCounts,
+                range = new { from,to}
+            }); 
+        }
+
+
+
+        [Route("{orderId}/tecnicals"), HttpGet]
+        public ActionResult GetTecnicalls(string orderId)
+        {
+            var order = maintnenceOrdersRepository.AsQueryable().Where(t => t.No == orderId)
+                .Select(o => new { o.IdTecnico1, o.IdTecnico2, o.IdTecnico3, o.IdTecnico4, o.IdTecnico5 }).FirstOrDefault();
+           
+            int?[] technicalsIds = new int?[5];
+            technicalsIds[0] = order.IdTecnico1;
+            technicalsIds[1] = order.IdTecnico2;
+            technicalsIds[2] = order.IdTecnico3;
+            technicalsIds[3] = order.IdTecnico4;
+            technicalsIds[4] = order.IdTecnico5;
+
+            var technicals = evolutionWEBContext.Utilizador.Where(u => technicalsIds.Contains(u.Id) && u.Activo == true)
+                .Select(u=> new { u.Id, u.Nome, u.NivelAcesso, u.Code1, u.Code2, u.Code3, u.SuperiorHierarquico, u.ChefeProjecto, u.ResponsavelProjecto } ).ToList();
+
+            return Json(technicals);
+        }
+
+
+        [Route("{orderId}/all/{technicalid}"), HttpPut]
+        public ActionResult TecnicallsPut(string orderId, int technicalid)
+        {
+
+            return Json(new { });
+        }
+
+
+        [Route("{orderId}/all/{technicalid}"), HttpDelete]
+        public ActionResult TecnicallsDelete(string orderId, int technicalid)
+        {
+
+            return Json(new { });
+        }
+
+
+
+
+
+
+
+
+
+
+
 
         //[Authorize]
         // Todo adds custom authorize filter (eSuchAuthorizationFilter)  (info: Authentication -> Authorization)
