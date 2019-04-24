@@ -57,14 +57,15 @@ namespace Hydra.Such.Portal.Controllers
             
             var pageSize = 100;
 
-            IQueryable results = queryOptions.ApplyTo(maintnenceOrdersRepository.AsQueryable().Where(o => o.OrderDate >= from && o.OrderDate <= to && o.IsToExecute), new ODataQuerySettings { PageSize = pageSize });
+            IQueryable results = queryOptions.ApplyTo(maintnenceOrdersRepository.AsQueryable().Where(o => o.OrderDate >= from && o.OrderDate <= to), new ODataQuerySettings { PageSize = pageSize });
             var list = results.Cast<dynamic>().AsEnumerable();
             var total = Request.ODataFeature().TotalCount;
             var nextLink = Request.GetNextPageLink(pageSize);
 
-            var result = new PageResult<dynamic>(list, nextLink, total);
+            var result = new PageResult<dynamic>(list, nextLink, total);  
 
-            var query = maintnenceOrdersRepository.AsQueryable().Where(o => o.OrderDate >= from && o.OrderDate <= to && o.IdClienteEvolution == idCliente).Select(m => new { m.IsToExecute, m.IsPreventive }).ToList();
+            var query = maintnenceOrdersRepository.AsQueryable().Where(o => o.OrderDate >= from && o.OrderDate <= to)
+                .Select(m => new {m.IsToExecute, m.IsPreventive }).ToList();
 
             var ordersCounts = new {
                 preventive = query.Where(o => o.IsPreventive).Count(),
@@ -80,51 +81,65 @@ namespace Hydra.Such.Portal.Controllers
             }); 
         }
 
-
-
-        [Route("{orderId}/tecnicals"), HttpGet]
-        public ActionResult GetTecnicalls(string orderId)
+        
+        [Route("technicals"), HttpGet]
+        public ActionResult GetTecnicalls(string local, string orderId, string technicalid)
         {
-            var order = maintnenceOrdersRepository.AsQueryable().Where(t => t.No == orderId)
-                .Select(o => new { o.IdTecnico1, o.IdTecnico2, o.IdTecnico3, o.IdTecnico4, o.IdTecnico5 }).FirstOrDefault();
-           
-            int?[] technicalsIds = new int?[5];
-            technicalsIds[0] = order.IdTecnico1;
-            technicalsIds[1] = order.IdTecnico2;
-            technicalsIds[2] = order.IdTecnico3;
-            technicalsIds[3] = order.IdTecnico4;
-            technicalsIds[4] = order.IdTecnico5;
+           if ((local == null || local == "") && (orderId == null|| orderId == "") && (technicalid == null || technicalid == "")) { return NotFound(); }
 
-            var technicals = evolutionWEBContext.Utilizador.Where(u => technicalsIds.Contains(u.Id) && u.Activo == true)
-                .Select(u=> new { u.Id, u.Nome, u.NivelAcesso, u.Code1, u.Code2, u.Code3, u.SuperiorHierarquico, u.ChefeProjecto, u.ResponsavelProjecto } ).ToList();
+           IQueryable<Utilizador> technicals;
+           if (technicalid != null && technicalid != "" )
+           {
+                technicals = evolutionWEBContext.Utilizador.Where(u => u.NumMec == technicalid);
+                return Json(new { technicals });
+           }
 
-            return Json(technicals);
+           if (orderId != null && orderId != "")
+           {
+                var order = maintnenceOrdersRepository.AsQueryable().Where(m => m.No == orderId).FirstOrDefault();
+                var technicalsId = new List<int>();
+
+                for (int i = 1; i <= 5; i++)
+                {
+                    var prop = order.GetType().GetProperty("IdTecnico" + i.ToString());
+                    int? name = (int?)(prop.GetValue(order, null));
+                    if(name != null)
+                    {
+                        technicalsId.Add((int)name);
+                    }
+                }
+
+                technicals = evolutionWEBContext.Utilizador.Where(u => technicalsId.Contains(u.Id));
+                return Json(new { technicals });
+            }
+
+            technicals = evolutionWEBContext.Utilizador.Where(a => a.Code1 == local);
+            return Json(new { technicals });
         }
+        
 
 
-        [Route("{orderId}/all/{technicalid}"), HttpPut]
-        public ActionResult TecnicallsPut(string orderId, int technicalid)
+        [Route("technicals"), HttpPut]
+        public ActionResult TecnicallsPut(string orderId, string[] technicalsid)
         {
+            if (orderId == null || orderId == "" || technicalsid == null) { return NotFound(); }
 
-            return Json(new { });
+            var orderToUpdate = maintnenceOrdersRepository.AsQueryable().Where(m => m.No == orderId).FirstOrDefault();
+
+            if (orderToUpdate == null) { return NotFound(); }
+
+            var technicalsToUpdate = evolutionWEBContext.Utilizador.Where(u => technicalsid.Contains(u.NumMec)).ToArray();
+
+            orderToUpdate.IdTecnico1 = technicalsToUpdate[0] != null ? (int?)technicalsToUpdate[0].Id : null;
+            orderToUpdate.IdTecnico2 = technicalsToUpdate[1] != null ? (int?)technicalsToUpdate[1].Id : null;
+            orderToUpdate.IdTecnico3 = technicalsToUpdate[2] != null ? (int?)technicalsToUpdate[2].Id : null;
+            orderToUpdate.IdTecnico4 = technicalsToUpdate[3] != null ? (int?)technicalsToUpdate[3].Id : null;
+            orderToUpdate.IdTecnico5 = technicalsToUpdate[4] != null ? (int?)technicalsToUpdate[4].Id : null;
+
+            evolutionWEBContext.SaveChanges();
+            
+            return Json(orderToUpdate);
         }
-
-
-        [Route("{orderId}/all/{technicalid}"), HttpDelete]
-        public ActionResult TecnicallsDelete(string orderId, int technicalid)
-        {
-
-            return Json(new { });
-        }
-
-
-
-
-
-
-
-
-
 
 
 
@@ -134,7 +149,7 @@ namespace Hydra.Such.Portal.Controllers
         public PageResult<dynamic> GetAll(ODataQueryOptions<MaintenanceOrder> queryOptions)
         {
             var pageSize = 100;
-            IQueryable results = queryOptions.ApplyTo(repository.AsQueryable(), new ODataQuerySettings { PageSize = pageSize });
+            IQueryable results = queryOptions.ApplyTo(maintnenceOrdersRepository.AsQueryable(), new ODataQuerySettings { PageSize = pageSize });
             var list = results.Cast<dynamic>().AsEnumerable();
             var total = Request.ODataFeature().TotalCount;
             var nextLink = Request.GetNextPageLink(pageSize);

@@ -19,7 +19,7 @@ namespace Hydra.Such.Data.Evolution.Database
         [NotMapped]
         public bool IsToExecute
         {
-            get { return this.FinishingDate.ToString() == "1753-01-01 00:00:00.000"; }
+            get { return this.FinishingDate == new DateTime (1753,1,1); }
         }
     }
 
