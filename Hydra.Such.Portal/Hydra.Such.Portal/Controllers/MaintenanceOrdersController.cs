@@ -120,15 +120,15 @@ namespace Hydra.Such.Portal.Controllers
 
 
         [Route("technicals"), HttpPut]
-        public ActionResult TecnicallsPut(string orderId, string[] technicalsid)
+        public ActionResult TecnicallsPut([FromBody] UpdateTechnicalsModel data)
         {
-            if (orderId == null || orderId == "" || technicalsid == null) { return NotFound(); }
+            if (data.orderId == null || data.orderId == "" || data.technicalsId == null) { return NotFound(); }
 
-            var orderToUpdate = maintnenceOrdersRepository.AsQueryable().Where(m => m.No == orderId).FirstOrDefault();
+            var orderToUpdate = maintnenceOrdersRepository.AsQueryable().Where(m => m.No == data.orderId).FirstOrDefault();
 
             if (orderToUpdate == null) { return NotFound(); }
 
-            var technicalsToUpdate = evolutionWEBContext.Utilizador.Where(u => technicalsid.Contains(u.NumMec)).ToArray();
+            var technicalsToUpdate = evolutionWEBContext.Utilizador.Where(u => data.technicalsId.Contains(u.NumMec)).ToArray();
 
             orderToUpdate.IdTecnico1 = technicalsToUpdate.Count() > 0 ? (int?)technicalsToUpdate[0].Id : null;
             orderToUpdate.IdTecnico2 = technicalsToUpdate.Count() > 1 ? (int?)technicalsToUpdate[1].Id : null;
@@ -148,6 +148,13 @@ namespace Hydra.Such.Portal.Controllers
             
             
             return Json(orderToUpdate);
+        }
+
+
+        public class UpdateTechnicalsModel
+        {
+            public string orderId;
+            public string[] technicalsId;
         }
 
 
