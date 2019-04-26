@@ -1,11 +1,18 @@
 import React from 'react'
 import styled, { css, theme } from 'styled-components'
+import _theme from '../../themes/default'
 
 import MuiSelect from '@material-ui/core/Select';
 import { OutlinedInput } from 'components';
 
 const styles = css`&& {
         text-align: left;
+        font-family: ${_theme.fonts.primary};
+        font-style: normal;
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 24px;
+        color: ${props => props.color || _theme.palette.primary.default};
     }
 `
 
