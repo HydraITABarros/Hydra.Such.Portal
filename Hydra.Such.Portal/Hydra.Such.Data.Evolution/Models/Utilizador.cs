@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -6,25 +7,19 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Hydra.Such.Data.Evolution.Database
 {
-    [ModelMetadataType(typeof(IMaintenanceOrder))]
-    using System;
-    using System.Collections.Generic;
-
-    namespace Hydra.Such.Data.Evolution.Database
+    
+    [ModelMetadataType(typeof(IUtilizador))]
+    public partial class Utilizador: IUtilizador
     {
-        [ModelMetadataType(typeof(IUtilizador))]
-        public partial class Utilizador
-        {
            
-        }
     }
-
 
     public interface IUtilizador
     {
         int Id { get; set; }
         string Nome { get; set; }
         string Username { get; set; }
+        [JsonIgnore]
         string Password { get; set; }
         string Email { get; set; }
         string TelefoneGeral { get; set; }
