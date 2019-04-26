@@ -64,6 +64,22 @@ const Default = styled.span`
     line-height: 24px;
     color: ${props => props.color || _theme.palette.primary.default};     
 `
+const DataBig = styled.span`
+    font-family: ${_theme.fonts.data};
+    font-style: light;
+    font-weight: 300;
+    font-size: 104px;
+    line-height: 104px;
+    color: ${props => props.color || _theme.palette.primary.dark};    
+`
+const DataSmall = styled.span`
+    font-family: ${_theme.fonts.data};
+    font-style: light;
+    font-weight: 300;
+    font-size: 32px;
+    line-height: 32px;
+    color: ${props => props.color || _theme.palette.primary.dark};    
+`
 
 const Text = ({ ...props }) => {
 
@@ -79,6 +95,10 @@ const Text = ({ ...props }) => {
         return <Bold {...props} />
     } else if (props.label) {
         return <Label {...props} />
+    } else if (props.dataBig) {
+        return <DataBig {...props} />
+    } else if (props.dataSmall) {
+        return <DataSmall {...props} />
     }
     return <Default {...props} />
 }
