@@ -130,13 +130,22 @@ namespace Hydra.Such.Portal.Controllers
 
             var technicalsToUpdate = evolutionWEBContext.Utilizador.Where(u => technicalsid.Contains(u.NumMec)).ToArray();
 
-            orderToUpdate.IdTecnico1 = technicalsToUpdate[0] != null ? (int?)technicalsToUpdate[0].Id : null;
-            orderToUpdate.IdTecnico2 = technicalsToUpdate[1] != null ? (int?)technicalsToUpdate[1].Id : null;
-            orderToUpdate.IdTecnico3 = technicalsToUpdate[2] != null ? (int?)technicalsToUpdate[2].Id : null;
-            orderToUpdate.IdTecnico4 = technicalsToUpdate[3] != null ? (int?)technicalsToUpdate[3].Id : null;
-            orderToUpdate.IdTecnico5 = technicalsToUpdate[4] != null ? (int?)technicalsToUpdate[4].Id : null;
+            orderToUpdate.IdTecnico1 = technicalsToUpdate.Count() > 0 ? (int?)technicalsToUpdate[0].Id : null;
+            orderToUpdate.IdTecnico2 = technicalsToUpdate.Count() > 1 ? (int?)technicalsToUpdate[1].Id : null;
+            orderToUpdate.IdTecnico3 = technicalsToUpdate.Count() > 2 ? (int?)technicalsToUpdate[2].Id : null;
+            orderToUpdate.IdTecnico4 = technicalsToUpdate.Count() > 3 ? (int?)technicalsToUpdate[3].Id : null;
+            orderToUpdate.IdTecnico5 = technicalsToUpdate.Count() > 4 ? (int?)technicalsToUpdate[4].Id : null;
 
-            evolutionWEBContext.SaveChanges();
+            try
+            {
+                evolutionWEBContext.Update(orderToUpdate);
+                evolutionWEBContext.SaveChanges();
+            }
+            catch (Exception)
+            {
+                return Json(0);
+            }
+            
             
             return Json(orderToUpdate);
         }
