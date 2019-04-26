@@ -34,8 +34,9 @@ theme.reversePalette = reversePalette(theme.palette)
 
 theme.fonts = {
     primary: "Inter, Helvetica, sans-serif",
-    data: "'Berthold Akzidenz Grotesk', Helvetica, sans-serif",
+    data: "'Open Sans Condensed Light', Helvetica, sans-serif",
 }
+
 
 theme.sizes = {
 
@@ -49,6 +50,7 @@ theme.padding = {
 
 theme.radius = {
     primary: '6px',
+    round: '50%',
 }
 
 
