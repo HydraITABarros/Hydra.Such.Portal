@@ -32,7 +32,8 @@ module.exports = {
         new BrowserSyncPlugin(),
         new webpack.DefinePlugin({
             NODE_ENV: process.env.NODE_ENV,
-            PUBLIC_PATH: publicPath.replace(/\/$/, '')
+            PUBLIC_PATH: publicPath.replace(/\/$/, ''),
+            'process.env.ASSETS_PATH': JSON.stringify(process.env.ASSETS_PATH)
         })
     ],
     resolve: {
@@ -55,29 +56,29 @@ module.exports = {
     },
     module: {
         rules: [{
-                test: /\.(css|scss)$/,
-                use: ["style-loader", // creates style nodes from JS strings 
-                    "css-loader", // translates CSS into CommonJS
-                    "sass-loader" // compiles Sass to CSS, using Node Sass by default
-                ]
-            },
-            {
-                test: /\.(jpg|jpeg|png|gif|mp3|svg)$/,
-                loaders: ['file-loader']
-            },
-            //{ test: /\.css$/, use: extractCSS.extract(['css-loader?minimize']) },
-            //{ test: /\.js?$/, use: { loader: 'babel-loader', options: { presets: ['@babel/preset-react', '@babel/preset-env'] } } },
-            {
-                test: /\.js$/,
-                exclude: /(node_modules)/,
-                use: {
-                    loader: 'babel-loader',
-                    options: {
-                        presets: ['@babel/preset-react', '@babel/preset-env'],
-                        plugins: ["@babel/plugin-proposal-class-properties"]
-                    }
+            test: /\.(css|scss)$/,
+            use: ["style-loader", // creates style nodes from JS strings 
+                "css-loader", // translates CSS into CommonJS
+                "sass-loader" // compiles Sass to CSS, using Node Sass by default
+            ]
+        },
+        {
+            test: /\.(jpg|jpeg|png|gif|mp3|svg)$/,
+            loaders: ['file-loader']
+        },
+        //{ test: /\.css$/, use: extractCSS.extract(['css-loader?minimize']) },
+        //{ test: /\.js?$/, use: { loader: 'babel-loader', options: { presets: ['@babel/preset-react', '@babel/preset-env'] } } },
+        {
+            test: /\.js$/,
+            exclude: /(node_modules)/,
+            use: {
+                loader: 'babel-loader',
+                options: {
+                    presets: ['@babel/preset-react', '@babel/preset-env'],
+                    plugins: ["@babel/plugin-proposal-class-properties"]
                 }
             }
+        }
         ]
     },
     devtool: "inline-source-map"

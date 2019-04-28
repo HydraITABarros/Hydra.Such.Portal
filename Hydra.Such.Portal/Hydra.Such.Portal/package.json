@@ -7,7 +7,7 @@
         "test": "echo \"Error: no test specified\" && exit 1",
         "wbp": "webpack",
         "dev": "webpack --mode development --watch",
-        "styleguide": "styleguidist server",
+        "styleguide": "ASSETS_PATH='/wwwroot' styleguidist server ",
         "styleguide:build": "styleguidist build"
     },
     "keywords": [],
@@ -99,6 +99,7 @@
         "lodash": "^4.17.11",
         "material-ui": "^0.20.2",
         "moment": "^2.24.0",
+        "node-uuid": "^1.4.8",
         "prop-types": "^15.6.2",
         "rc-progress": "^2.3.0",
         "react": "^16.8.5",
