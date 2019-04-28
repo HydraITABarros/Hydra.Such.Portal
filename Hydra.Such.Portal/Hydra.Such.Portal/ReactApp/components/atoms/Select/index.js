@@ -11,8 +11,11 @@ const styles = css`&& {
         font-style: normal;
         font-weight: 400;
         font-size: 14px;
-        line-height: 24px;
+        line-height: 18px;
         color: ${props => props.color || _theme.palette.primary.default};
+        svg {
+            top: 0;
+        }
     }
 `
 
@@ -40,6 +43,5 @@ class Select extends React.Component {
         );
     }
 }
-
 
 export default Select;
