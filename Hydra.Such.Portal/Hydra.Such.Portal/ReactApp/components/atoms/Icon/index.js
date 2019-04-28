@@ -3,14 +3,16 @@ import PropTypes from 'prop-types';
 import styled, { css, theme, injectGlobal } from 'styled-components';
 import _theme from '../../themes/default';
 
-injectGlobal `
+const assetsPath = process.env.ASSETS_PATH || '';
+
+injectGlobal`
     @font-face {
         font-family: 'eSuch';
-        src:  url('./fonts/eSuch.eot?x1kme9');
-        src:  url('./fonts/eSuch.eot?x1kme9#iefix') format('embedded-opentype'),
-            url('./fonts/eSuch.ttf?x1kme9') format('truetype'),
-            url('./fonts/eSuch.woff?x1kme9') format('woff'),
-            url('./fonts/eSuch.svg?x1kme9#eSuch') format('svg');
+        src:  url( '${assetsPath}/fonts/eSuch.eot?x1kme9');
+        src:  url('${assetsPath}/fonts/eSuch.eot?x1kme9#iefix') format('embedded-opentype'),
+            url('${assetsPath}/fonts/eSuch.ttf?x1kme9') format('truetype'),
+            url('${assetsPath}/fonts/eSuch.woff?x1kme9') format('woff'),
+            url('${assetsPath}/fonts/eSuch.svg?x1kme9#eSuch') format('svg');
         font-weight: normal;
         font-style: normal;
 }
@@ -147,7 +149,7 @@ const IconFont = styled.span`
 // ['add','approved','archive','arrow-down','arrow-left','arrow-right','arrow-up','attach','calendar','comments','curativa','decline','download','equipamentos','eye','folder','happy','lock','material','meter','no-wifi','observation','open','preventiva','print','remove','report-menu','report','row-menu','sad','search','share','signature','tecnico','tool','validation','warning']
 
 const Icon = ({ type, ...props }) => {
-    return <IconFont className={"icon-"+ Object.keys(props)[0]} {...props}/>
+    return <IconFont className={"icon-" + Object.keys(props)[0]} {...props} />
 }
 
 export default Icon;

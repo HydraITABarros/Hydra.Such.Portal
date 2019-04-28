@@ -1,9 +1,11 @@
-```jsx
+
 <style>
-    .icon {
+    [class*="icon-"] {
+        padding: 9px;
+        display: inline-block;
     }
 </style>
-
+```jsx
 <div>
     <Icon add />
     <Icon approved />
