@@ -6,6 +6,7 @@ import MuiOutlinedInput from '@material-ui/core/OutlinedInput';
 const styles = css`&& {
         input {
             padding: 11px 15px;
+            line-height: 13px;
         }
         fieldset {
             border-radius: ${_theme.radius.primary};
