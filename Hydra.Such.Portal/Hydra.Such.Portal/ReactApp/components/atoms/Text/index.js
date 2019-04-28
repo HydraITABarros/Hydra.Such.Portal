@@ -68,8 +68,10 @@ const DataBig = styled.span`
     font-family: ${_theme.fonts.data};
     font-style: light;
     font-weight: 300;
-    font-size: 104px;
-    line-height: 104px;
+    /* font-size: 104px; */
+    font-size: 97px;
+    /* line-height: 104px; */
+    line-height: 97px;
     color: ${props => props.color || _theme.palette.primary.dark};    
 `
 const DataSmall = styled.span`
