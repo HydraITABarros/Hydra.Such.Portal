@@ -7,6 +7,9 @@ import {
 import CircularProgress from '@material-ui/core/CircularProgress';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
+import d3teste from './d3teste';
+import ReactTooltip from 'react-tooltip';
+
 
 
 const fetchTechnicals = ({ orderId, technicalId, local }, cb) => {
@@ -31,7 +34,7 @@ const updateTechnicals = ({ orderId, technicalsId }, cb) => {
         });
 }
 
-//updateTechnicals({ orderId: "OM1901562", technicalsId: ["42664", "105590","106624"] });
+//updateTechnicals({ orderId: "OM1901562", technicalsId: ["42664", "105590", "106624"] });
 
 
 class OrdensDeManutencao extends Component {
@@ -48,11 +51,12 @@ class OrdensDeManutencao extends Component {
         },
         ordersCounts: {
             preventive: null,
-            preventiveToExecute:null,
-            curative:null,
-            curativeToExecute:null,
+            preventiveToExecute: null,
+            curative: null,
+            curativeToExecute: null,
         },
-        maintenenceOrders:[]
+        tooltipReady: false,
+        maintenenceOrders: []
     }
 
     fetchTechnicals({ orderId, technicalId, local }, cb) {
@@ -76,30 +80,25 @@ class OrdensDeManutencao extends Component {
                 var list = data.result.items;
 
                 list = list.map(item => {
-                    item.technicals = [];
-
-                    console.log(item);
                     this.fetchTechnicals({ orderId: item.no }, (err, result) => {
-                        item.technicals = result.technicals;
-                        //this.setState({ maintenenceOrders: list });
+                        item.technicals = result.data.technicals;
+                        this.setState({ maintenenceOrders: list });
                     });
                     return item;
                 });
-
                 this.setState({ ordersCounts: data.ordersCounts, maintenenceOrders: list });
-
             }
         }).catch(function (error) {
         }).then(() => {
             this.setState({ isLoading: false });
-        }); 
-    }   
+        });
+    }
 
 
 
     constructor(props) {
         super(props);
-        this.fetchMaintenenceOrders({ from:"2019-01-01", to: "2019-01-02" });
+        this.fetchMaintenenceOrders({ from: "2019-01-01", to: "2019-01-02" });
 
         //fetchTechnicals({ orderId: "OM1209462" }, function (err, result) {
         //    console.log('fetchTechnicals', result.data)
@@ -116,6 +115,11 @@ class OrdensDeManutencao extends Component {
 
     }
 
+    componentDidMount() {
+        d3teste(".d3-component");
+        this.setState({ tooltipReady: true });
+    }
+
     render() {
         const { isLoading, ordersCounts, maintenenceOrders } = this.state;
         var teste = maintenenceOrders.length;
@@ -127,7 +131,7 @@ class OrdensDeManutencao extends Component {
                 footer={<div>Footer</div>} >
 
                 {isLoading ? <CircularProgress /> :
-                    
+
                     <div>
                         <p>curative: {ordersCounts.curative}</p>
                         <p>curativeToExecute: {ordersCounts.curativeToExecute}</p>
@@ -136,12 +140,13 @@ class OrdensDeManutencao extends Component {
 
                         <List>
                             {maintenenceOrders.map((item, index) => {
-                                return(
+                                return (
                                     <ListItem key={index}>
                                         {item.customerCity}
                                         {item.nome}
-                                        {item.technicals && item.technicals[0] ? item.technicals[0].nome : '' }
-                                       
+
+                                        <small> {item.technicals && item.technicals[0] ? item.technicals[0].nome : ''}</small>
+
                                     </ListItem>
                                 )
                             })}
@@ -149,7 +154,12 @@ class OrdensDeManutencao extends Component {
                     </div>
 
                 }
-                
+
+
+                <div className="d3-component" ></div>
+
+                {this.state.tooltipReady ? <ReactTooltip /> : ''}
+
 
             </PageTemplate>
         )
