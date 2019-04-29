@@ -1,6 +1,7 @@
 
 ```js
 <div>
-    <CheckBox>Outlined Input</CheckBox>
+    <CheckBox />
+    <CheckBox />
 </div>
 ```

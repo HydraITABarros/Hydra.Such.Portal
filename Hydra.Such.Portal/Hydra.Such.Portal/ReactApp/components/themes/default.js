@@ -6,28 +6,28 @@ import {
 const theme = {}
 
 theme.palette = {
-    primary:{ 
+    primary: {
         default: '#323F4B',
         dark: '#52606D',
         medium: '#7B8794',
         light: '#CBD2D9',
         keylines: '#E4E7EB'
     },
-    secondary:{
-        default: '#F9703E', 
+    secondary: {
+        default: '#F9703E',
         light: '#FFE8D9'
     },
-    bg:{
-        white: '#FFFFFF', 
+    bg: {
+        white: '#FFFFFF',
         grey: '#F5F7FA'
     },
-    alert:{
-        bad: '#D64545', 
+    alert: {
+        bad: '#D64545',
         good: '#57AE5B'
     },
-    search:'#FCEE21'
+    search: '#FCEE21'
     ,
-    white:'#FFFFFF'
+    white: '#FFFFFF'
 }
 
 theme.reversePalette = reversePalette(theme.palette)
