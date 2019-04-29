@@ -5,7 +5,11 @@
         display: inline-block;
     }
 </style>
+
+
 ```jsx
+
+
 <div>
     <Icon add />
     <Icon approved />
@@ -44,5 +48,7 @@
     <Icon tool />
     <Icon validation />
     <Icon warning />
+    <Icon circle />
+    <Icon obsv />
 </div>
 ```

@@ -144,6 +144,13 @@ const IconFont = styled.span`
     &.icon-warning:before {
     content: "\\e925";
     }
+    &.icon-obsv:before {
+    content: "\\e926";
+    }
+    &.icon-circle:before {
+    content: "\\e924";
+    }
+
 `
 
 // ['add','approved','archive','arrow-down','arrow-left','arrow-right','arrow-up','attach','calendar','comments','curativa','decline','download','equipamentos','eye','folder','happy','lock','material','meter','no-wifi','observation','open','preventiva','print','remove','report-menu','report','row-menu','sad','search','share','signature','tecnico','tool','validation','warning']
