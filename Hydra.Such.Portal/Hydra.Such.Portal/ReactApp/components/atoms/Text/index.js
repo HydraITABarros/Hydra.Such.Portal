@@ -1,9 +1,19 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import styled, { css, theme } from 'styled-components'
+import styled, { css, theme, injectGlobal } from 'styled-components'
 import _theme from '../../themes/default'
 import MuiButton from '@material-ui/core/Button';
 
+const assetsPath = process.env.ASSETS_PATH || '';
+
+injectGlobal`
+    @font-face {
+            font-family: 'Open Sans Condensed';
+            src:  url('${assetsPath}/fonts/OpenSansCondensed-Light.ttf?x1kme9') format('truetype');
+            font-weight: 300;
+            font-style: normal;
+    }
+`
 
 const Title = styled.h1`
     font-family: ${_theme.fonts.primary};
@@ -68,10 +78,8 @@ const DataBig = styled.span`
     font-family: ${_theme.fonts.data};
     font-style: light;
     font-weight: 300;
-    /* font-size: 104px; */
-    font-size: 97px;
-    /* line-height: 104px; */
-    line-height: 97px;
+    font-size: 104px;
+    line-height: 104px;
     color: ${props => props.color || _theme.palette.primary.dark};    
 `
 const DataSmall = styled.span`
