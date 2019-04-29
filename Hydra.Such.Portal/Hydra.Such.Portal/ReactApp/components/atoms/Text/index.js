@@ -8,7 +8,7 @@ const assetsPath = process.env.ASSETS_PATH || '';
 
 injectGlobal`
     @font-face {
-            font-family: 'Open Sans Condensed';
+            font-family: 'Open Sans Condensed Light';
             src:  url('${assetsPath}/fonts/OpenSansCondensed-Light.ttf?x1kme9') format('truetype');
             font-weight: 300;
             font-style: normal;
