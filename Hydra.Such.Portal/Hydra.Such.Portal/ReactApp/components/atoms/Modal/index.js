@@ -56,9 +56,48 @@ class Modal extends React.Component {
 
     }
 }
-const DialogTitle = MuiDialogTitle;
-const DialogContent = MuiDialogContent;
-const DialogActions = MuiDialogActions;
+
+const styles = css`&& {
+    h2 {
+        margin: 0;        
+    }
+
+    hr {
+    }
+
+    &[class*="MuiPaper-rounded"]{
+        border-radius: 0;
+        }
+    
+    &[class*="MuiDialogTitle-root"]{
+        padding: 48px 40px 0 40px;
+        margin: 0;
+        }   
+        
+    &[class*="Modal__DialogContent"]{
+        padding: 0px 40px 0 40px;
+        margin: 0;
+        }
+
+    &[class*="MuiDialogActions-root"]{
+        padding: 8px 40px 40px 40px;
+        margin: 0;
+        }
+        
+}
+`
+
+const dialogTitle = css`&& {
+    [class*="icon-"] {
+        padding: 0;
+    }
+}
+`
+
+
+const DialogTitle = styled(MuiDialogTitle)`${dialogTitle}${styles}`;
+const DialogContent = styled(MuiDialogContent)`${styles}`;
+const DialogActions = styled(MuiDialogActions)`${styles}`;
 
 export {
     Modal,
