@@ -5,6 +5,10 @@ import MuiCheckbox from '@material-ui/core/Checkbox';
 import { Icon } from 'components';
 
 const styles = css`&& {
+    padding: 0;
+    &[class*="MuiCheckbox-checked"]{
+        color: ${_theme.palette.alert.good};
+        }
     }
 `
 
@@ -12,7 +16,7 @@ const DefaultCheckBox = styled(MuiCheckbox)`${styles}`;
 
 const CheckBox = ({ ...props }) => {
 
-    return <DefaultCheckBox checkedIcon={<Icon validation />} icon={<Icon warning />} {...props} />
+    return <DefaultCheckBox checkedIcon={<Icon validation />} icon={<Icon circle />} {...props} />
 }
 
 export default CheckBox;
