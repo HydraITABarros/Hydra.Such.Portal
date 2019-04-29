@@ -54,6 +54,9 @@ namespace Hydra.Such.Portal
 
             services.AddMvc(options => {
                 options.Filters.Add(new NavigationFilter());
+            }).AddJsonOptions(options => {
+                options.SerializerSettings.ContractResolver =
+                    new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver();
             });
 
             services.Configure<FormOptions>(x =>
