@@ -156,7 +156,7 @@ const IconFont = styled.span`
 // ['add','approved','archive','arrow-down','arrow-left','arrow-right','arrow-up','attach','calendar','comments','curativa','decline','download','equipamentos','eye','folder','happy','lock','material','meter','no-wifi','observation','open','preventiva','print','remove','report-menu','report','row-menu','sad','search','share','signature','tecnico','tool','validation','warning']
 
 const Icon = ({ type, ...props }) => {
-    return <IconFont className={"icon-" + Object.keys(props)[0]} {...props} />
+    return <IconFont {...props} className={"icon-" + Object.keys(props)[0] + " " + props.className} />
 }
 
 export default Icon;
