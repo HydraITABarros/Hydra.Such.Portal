@@ -27,7 +27,7 @@ const Title = styled.h1`
 const Header = styled.h2`
     font-family: ${_theme.fonts.primary};
     font-style: normal;
-    font-weight: 300;
+    font-weight: 400;
     font-size: 24px;
     line-height: 32px;
     color: ${props => props.color || _theme.palette.primary.default};

@@ -3,13 +3,13 @@
     "version": "1.0.0",
     "description": "",
     "main": "index.js",
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
-        "wbp": "webpack",
-        "dev": "webpack --mode development --watch",
-        "styleguide": "ASSETS_PATH='/wwwroot' styleguidist server ",
-        "styleguide:build": "styleguidist build"
-    },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "wbp": "webpack",
+    "dev": "webpack --mode development --watch",
+    "styleguide": "ASSETS_PATH='/wwwroot' & styleguidist server",
+    "styleguide:build": "styleguidist build"
+  },
     "keywords": [],
     "author": "andre.pinheiro.bastos@gmail.com",
     "license": "ISC",

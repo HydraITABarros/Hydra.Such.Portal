@@ -42,8 +42,8 @@ class OrdensDeManutencao extends Component {
     state = {
         isLoading: true,
         client: {
-            "Id": null,
-            "Name": null
+            "id": null,
+            "name": null
         },
         calender: {
             "from": null,
@@ -53,7 +53,7 @@ class OrdensDeManutencao extends Component {
             preventive: null,
             preventiveToExecute: null,
             curative: null,
-            curativeToExecute: null,
+            curativeToExecute: null
         },
         tooltipReady: false,
         maintenenceOrders: []
@@ -72,16 +72,18 @@ class OrdensDeManutencao extends Component {
 
     fetchMaintenenceOrders({ from, to }, cb) {
         axios.get('/ordens-de-manutencao/all', {
-            params: { from, to }
+            params: {
+                from, to, $select: 'no, description, customerName, orderType, idTecnico1, idTecnico2, idTecnico3, idTecnico4, idTecnico5'}
         }).then((result) => {
             var data = result.data;
-
+       
             if (data.ordersCounts && data.result && data.result.items) {
                 var list = data.result.items;
 
                 list = list.map(item => {
                     this.fetchTechnicals({ orderId: item.no }, (err, result) => {
-                        item.technicals = result.data.technicals;
+                        if (err) return;
+                            item.technicals = result.data.technicals;
                         this.setState({ maintenenceOrders: list });
                     });
                     return item;
@@ -98,7 +100,7 @@ class OrdensDeManutencao extends Component {
 
     constructor(props) {
         super(props);
-        this.fetchMaintenenceOrders({ from: "2019-01-01", to: "2019-01-02" });
+        this.fetchMaintenenceOrders({ from: "2019-04-17", to: "2019-04-18" });
 
         //fetchTechnicals({ orderId: "OM1209462" }, function (err, result) {
         //    console.log('fetchTechnicals', result.data)
@@ -138,14 +140,23 @@ class OrdensDeManutencao extends Component {
                         <p>preventive: {ordersCounts.preventive}</p>
                         <p>preventiveToExecute: {ordersCounts.preventiveToExecute}</p>
 
+                       
+
                         <List>
                             {maintenenceOrders.map((item, index) => {
                                 return (
                                     <ListItem key={index}>
-                                        {item.customerCity}
-                                        {item.nome}
+                                        {item.description}
+                                        {item.customerName}
+                                        
+                                        {item.IsPreventive + ' '}
+                                        {item.idTecnico1 + ' '}
+                                        {item.idTecnico2 + ' '}
+                                        {item.idTecnico3 + ' '}
+                                        {item.idTecnico4 + ' '}
+                                        {item.idTecnico5 + ' '}
 
-                                        <small> {item.technicals && item.technicals[0] ? item.technicals[0].nome : ''}</small>
+                                        {/*<small> {item.technicals && item.technicals[0] ? item.technicals[0].nome : ''}</small>*/}
 
                                     </ListItem>
                                 )

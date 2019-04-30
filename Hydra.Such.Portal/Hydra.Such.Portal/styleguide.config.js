@@ -1,5 +1,7 @@
 const path = require('path');
 
+process.env.ASSETS_PATH = '/wwwroot';
+
 module.exports = {
     components: ['ReactApp/components/atoms/**/index.js', 'ReactApp/components/molecules/**/index.js', 'ReactApp/components/organisms/**/index.js'],
     theme: {
