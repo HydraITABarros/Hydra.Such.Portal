@@ -5,7 +5,7 @@ import MuiCheckbox from '@material-ui/core/Checkbox';
 import { Icon } from 'components';
 
 const styles = css`&& {
-    padding: 0;
+    padding: 8px;
     &[class*="MuiCheckbox-checked"]{
         color: ${_theme.palette.alert.good};
         }
