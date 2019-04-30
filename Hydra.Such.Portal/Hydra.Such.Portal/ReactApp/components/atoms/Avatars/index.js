@@ -3,7 +3,7 @@ import styled, { css, theme } from 'styled-components';
 import _theme from '../../themes/default';
 import Color from 'color';
 import { Text } from 'components';
-import { Button } from 'components';
+import  Button  from '../Button';
 
 const avatarPhoto = css`&& {
     display: inline-block;
