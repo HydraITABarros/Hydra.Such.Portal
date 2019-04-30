@@ -29,6 +29,7 @@ const Icon = styled.span`
     bottom: 0;
     margin: auto;
     text-shadow: 0 0 1px ${props => props.color};
+    padding: 9px;
 `
 
 const Hidden = styled(ReactTooltip)`${tooltip}`;
