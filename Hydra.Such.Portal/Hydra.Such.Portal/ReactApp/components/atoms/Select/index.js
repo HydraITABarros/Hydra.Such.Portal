@@ -3,7 +3,7 @@ import styled, { css, theme } from 'styled-components'
 import _theme from '../../themes/default'
 
 import MuiSelect from '@material-ui/core/Select';
-import { OutlinedInput } from 'components';
+import { Input, Icon } from 'components';
 
 const styles = css`&& {
         text-align: left;
@@ -15,6 +15,14 @@ const styles = css`&& {
         color: ${props => props.color || _theme.palette.primary.default};
         svg {
             top: 0;
+        }
+        [class*="icon-"] {
+            position: absolute;
+            top: 0;
+            right: 0;
+            font-size: 24px;
+            padding: 9px;
+            pointer-events: none;
         }
     }
 `
@@ -39,7 +47,7 @@ class Select extends React.Component {
 
     render() {
         return (
-            <DefaultSelect value={this.state.value || 0} input={<OutlinedInput />}  {...this.props} onChange={this.onChangeHandler} >{this.props.children}</DefaultSelect>
+            <DefaultSelect IconComponent={() => <Icon arrow-down />} value={this.state.value || 0} input={<Input />}  {...this.props} onChange={this.onChangeHandler} >{this.props.children}</DefaultSelect>
         );
     }
 }
