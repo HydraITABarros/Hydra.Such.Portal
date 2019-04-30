@@ -10,16 +10,25 @@ namespace Hydra.Such.Data.Evolution.Database
     public partial class MaintenanceOrder
     {
         [NotMapped]
-        public bool IsPreventive
+        public bool IsPreventive 
         {
-            get { return this.OrderType == "DMNCATE" || this.OrderType == "DMNANU" || this.OrderType == "DMNDBI" || this.OrderType == "DMNCREE" || this.OrderType == "CTTCAT"; }
+            get { return GetIsPreventive(OrderType); }
         }
 
-        
+        public static bool GetIsPreventive(String _OrderType)
+        {
+            return _OrderType == "DMNCATE" || _OrderType == "DMNANU" || _OrderType == "DMNDBI" || _OrderType == "DMNCREE" || _OrderType == "CTTCAT";
+        }
+
         [NotMapped]
         public bool IsToExecute
         {
-            get { return this.FinishingDate == new DateTime (1753,1,1); }
+            get { return GetIsToExecute(FinishingDate ?? new DateTime(1000,1,1)); }
+        }
+
+        public static bool GetIsToExecute(DateTime _FinishingDate)
+        {
+            return _FinishingDate == new DateTime(1753, 1, 1);
         }
     }
 
