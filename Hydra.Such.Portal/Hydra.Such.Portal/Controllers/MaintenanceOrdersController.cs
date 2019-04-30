@@ -23,6 +23,10 @@ using NJsonSchema;
 using NJsonSchema.Generation;
 using Manatee.Json.Schema;
 using System.Text.RegularExpressions;
+using System.Dynamic;
+using System.Collections;
+using Hydra.Such.Portal.Extensions;
+using Newtonsoft.Json;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -49,9 +53,12 @@ namespace Hydra.Such.Portal.Controllers
             return View();
         }
 
-        
+
+
+     
+
         [Route("all"), HttpGet]
-        public ActionResult GetAll (ODataQueryOptions<MaintenanceOrder> queryOptions, DateTime? from, DateTime? to, int idCliente)
+        public ActionResult GetAll(ODataQueryOptions<MaintenanceOrder> queryOptions, DateTime? from, DateTime? to, int idCliente)
         {
             if(from== null || to == null) {  return NotFound(); }
             
@@ -62,18 +69,27 @@ namespace Hydra.Such.Portal.Controllers
             var total = Request.ODataFeature().TotalCount;
             var nextLink = Request.GetNextPageLink(pageSize);
 
-            var result = new PageResult<dynamic>(list, nextLink, total);  
+
+            var serializedList = JsonConvert.SerializeObject(list);
+            var deserializedList = JsonConvert.DeserializeObject<List<ExpandoObject>>(serializedList);
+            deserializedList.ForEach(item =>
+            {
+                var value = item.FirstOrDefault(i => i.Key == "OrderType").Value;
+                item.TryAdd("IsPreventive", MaintenanceOrder.GetIsPreventive( value == null ? "" : value.ToString() ));
+            });
+
+            var result = new PageResult<dynamic>(deserializedList, nextLink, total);
 
             var query = maintnenceOrdersRepository.AsQueryable().Where(o => o.OrderDate >= from && o.OrderDate <= to)
                 .Select(m => new {m.IsToExecute, m.IsPreventive }).ToList();
-
             var ordersCounts = new {
                 preventive = query.Where(o => o.IsPreventive).Count(),
                 preventiveToExecute = query.Where(n => n.IsPreventive && n.IsToExecute).Count(),
                 curative = query.Where(o => !o.IsPreventive).Count(),
-                curativeToExecute = query.Where(n => !n.IsPreventive && n.IsToExecute).Count(),
+                curativeToExecute = query.Where(n => !n.IsPreventive && n.IsToExecute).Count()
             };
-          
+
+            
             return Json(new {
                 result,
                 ordersCounts,
@@ -149,7 +165,6 @@ namespace Hydra.Such.Portal.Controllers
             
             return Json(orderToUpdate);
         }
-
 
         public class UpdateTechnicalsModel
         {
