@@ -100,6 +100,7 @@ class OrdensDeManutencao extends Component {
 
     constructor(props) {
         super(props);
+
         this.fetchMaintenenceOrders({ from: "2019-04-17", to: "2019-04-18" });
 
         //fetchTechnicals({ orderId: "OM1209462" }, function (err, result) {
@@ -123,8 +124,7 @@ class OrdensDeManutencao extends Component {
     }
 
     render() {
-        const { isLoading, ordersCounts, maintenenceOrders } = this.state;
-        var teste = maintenenceOrders.length;
+        const { isLoading, ordersCounts, maintenenceOrders, result } = this.state;
 
         return (
             <PageTemplate
@@ -135,27 +135,25 @@ class OrdensDeManutencao extends Component {
                 {isLoading ? <CircularProgress /> :
 
                     <div>
+
                         <p>curative: {ordersCounts.curative}</p>
                         <p>curativeToExecute: {ordersCounts.curativeToExecute}</p>
                         <p>preventive: {ordersCounts.preventive}</p>
                         <p>preventiveToExecute: {ordersCounts.preventiveToExecute}</p>
 
-                       
-
                         <List>
                             {maintenenceOrders.map((item, index) => {
                                 return (
                                     <ListItem key={index}>
+                                        {item.calender}
+                                        {item.isPreventive + ' '}
                                         {item.description}
-                                        {item.customerName}
-                                        
-                                        {item.IsPreventive + ' '}
+                                        {item.customerName}                   
                                         {item.idTecnico1 + ' '}
                                         {item.idTecnico2 + ' '}
                                         {item.idTecnico3 + ' '}
                                         {item.idTecnico4 + ' '}
                                         {item.idTecnico5 + ' '}
-
                                         {/*<small> {item.technicals && item.technicals[0] ? item.technicals[0].nome : ''}</small>*/}
 
                                     </ListItem>
