@@ -2,10 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-
 using Hydra.Such.Data.ViewModel.CCP;
-using System.Diagnostics;
+
+using Microsoft.Extensions.Logging;
 
 namespace Hydra.Such.Data.Logic
 {
@@ -261,12 +260,34 @@ namespace Hydra.Such.Data.Logic
 
             return true;
         }
-        public static bool __CreateType(TipoProcedimentoCcp tipo)
+
+        public static bool __UpdateReason(FundamentoLegalTipoProcedimentoCcp fundamento)
         {
-            SuchDBContext _context = new SuchDBContext();
+            if(fundamento==null)
+                return false;
 
             try
             {
+                using (var _context = new SuchDBContext())
+                {
+                    _context.Update(fundamento);
+                    _context.SaveChanges();
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+
+                return false;
+            }
+        }
+        public static bool __CreateType(TipoProcedimentoCcp tipo)
+        {
+            try
+            {
+                SuchDBContext _context = new SuchDBContext();
+
                 TipoProcedimentoCcp LastTipo = _context.TipoProcedimentoCcp.OrderBy(t => t.IdTipo).LastOrDefault();
                 if (LastTipo == null)
                     tipo.IdTipo = 1;
@@ -283,6 +304,35 @@ namespace Hydra.Such.Data.Logic
             }
 
             return true;
+        }
+
+        public static bool __UpdateType(TipoProcedimentoCcp tipo)
+        {
+            if (tipo == null)
+                return false;
+
+            try
+            {
+                SuchDBContext _context = new SuchDBContext();
+                _context.Update(tipo);
+                //_context.SaveChanges();
+
+                if(tipo.Fundamentos != null && tipo.Fundamentos.Count > 0)
+                {
+                    foreach (var f in tipo.Fundamentos)
+                    {
+                        _context.Update(f);
+                    }
+
+                }
+                _context.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+
+                return false;
+            }
         }
         #endregion
 
