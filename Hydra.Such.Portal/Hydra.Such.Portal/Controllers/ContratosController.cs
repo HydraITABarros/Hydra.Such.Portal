@@ -2253,35 +2253,44 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             Problema += " Valor Não Disponível";
                         }
-                        if(item.NºRequisiçãoDoCliente==null || item.NºRequisiçãoDoCliente == "")
+
+
+                        List<RequisiçõesClienteContrato> ListaContratos = new List<RequisiçõesClienteContrato>();
+                        RequisiçõesClienteContrato Reqcontract = new RequisiçõesClienteContrato();
+                        //if(item.NºRequisiçãoDoCliente==null || item.NºRequisiçãoDoCliente == "")
+                        //{
+                        if (item.ÚltimaDataFatura == null)
                         {
-                            if (item.ÚltimaDataFatura == null)
+                            //AMARO 04/03/2019
+                            item.ÚltimaDataFatura = nextInvoiceDate;
+
+                            ListaContratos = DBContractClientRequisition.GetByContract(item.NºDeContrato);
+
+                            Reqcontract = ListaContratos.Find(x => x.GrupoFatura == contractLine.GrupoFatura
+                                && x.DataInícioCompromisso <= item.ÚltimaDataFatura
+                                && x.DataFimCompromisso >= item.ÚltimaDataFatura);
+
+                            if (Reqcontract == null && string.IsNullOrEmpty(item.NºRequisiçãoDoCliente))
                             {
-                                //AMARO 04/03/2019
-                                item.ÚltimaDataFatura = nextInvoiceDate;
-                                List<RequisiçõesClienteContrato> ListaContratos = DBContractClientRequisition.GetByContract(item.NºDeContrato);
-                                RequisiçõesClienteContrato Reqcontract = ListaContratos.Find(x => x.GrupoFatura == contractLine.GrupoFatura
-                                    && x.DataInícioCompromisso <= item.ÚltimaDataFatura
-                                    && x.DataFimCompromisso >= item.ÚltimaDataFatura);
-                                if (Reqcontract == null)
-                                {
-                                    Problema += " Falta Nota Encomenda";
-                                }
-                                
-                                //CÓDIGO ORIGINAL
-                                //Problema += " Falta Nota Encomenda";
+                                Problema += " Falta Nota Encomenda";
                             }
-                            else
-                            {
-                                List<RequisiçõesClienteContrato> ListaContratos = DBContractClientRequisition.GetByContract(item.NºDeContrato);
-                                RequisiçõesClienteContrato Reqcontract = ListaContratos.Find(x => x.GrupoFatura == contractLine.GrupoFatura
-                                    && x.DataInícioCompromisso <= item.ÚltimaDataFatura
-                                    && x.DataFimCompromisso >= item.ÚltimaDataFatura);
-                                if(Reqcontract == null ) {
-                                    Problema += " Falta Nota Encomenda";
-                                }
+                                
+                            //CÓDIGO ORIGINAL
+                            //Problema += " Falta Nota Encomenda";
+                        }
+                        else
+                        {
+                            ListaContratos = DBContractClientRequisition.GetByContract(item.NºDeContrato);
+
+                            Reqcontract = ListaContratos.Find(x => x.GrupoFatura == contractLine.GrupoFatura
+                                && x.DataInícioCompromisso <= item.ÚltimaDataFatura
+                                && x.DataFimCompromisso >= item.ÚltimaDataFatura);
+
+                            if (Reqcontract == null && string.IsNullOrEmpty(item.NºRequisiçãoDoCliente)) {
+                                Problema += " Falta Nota Encomenda";
                             }
                         }
+                        //}
                         #endregion
 
                         AutorizarFaturaçãoContratos newInvoiceContract = new AutorizarFaturaçãoContratos
@@ -2300,9 +2309,13 @@ namespace Hydra.Such.Portal.Controllers
                             DataPróximaFatura = nextInvoiceDate,
                             DataDeRegisto = lastDay,
                             Estado = item.Estado,
-                            Situação=Problema,
+                            Situação = Problema,
                             DataHoraCriação = DateTime.Now,
-                            UtilizadorCriação = User.Identity.Name
+                            UtilizadorCriação = User.Identity.Name,
+
+                            NoRequisicaoDoCliente = Reqcontract != null ? Reqcontract.NºRequisiçãoCliente : item.NºRequisiçãoDoCliente,
+                            DataRececaoRequisicao = Reqcontract != null ? Reqcontract.DataRequisição : item.DataReceçãoRequisição,
+                            NoCompromisso = Reqcontract != null ? Reqcontract.NºCompromisso : item.NºCompromisso,
                         };
                         try
                         {
@@ -2366,12 +2379,19 @@ namespace Hydra.Such.Portal.Controllers
             string errorMessage = string.Empty;
             bool hasErrors = false;
             ErrorHandler result = new ErrorHandler();
+            bool PricesIncludingVAT = false;
 
             List<LinhasFaturaçãoContrato> lineList = DBInvoiceContractLines.GetAll();
             List<AutorizarFaturaçãoContratos> contractList = new List<AutorizarFaturaçãoContratos>();
             foreach (FaturacaoContratosViewModel itm in data)
             {
-                List<AutorizarFaturaçãoContratos> contract_List = DBAuthorizeInvoiceContracts.GetAllByContGroup(itm.ContractNo/*,itm.InvoiceGroupValue*/);
+                List<AutorizarFaturaçãoContratos> contract_List = new List<AutorizarFaturaçãoContratos>();
+
+                if (itm.InvoiceGroupValue > 0)
+                    contract_List = DBAuthorizeInvoiceContracts.GetAllByContGroup(itm.ContractNo).Where(x => x.GrupoFatura == itm.InvoiceGroupValue).ToList() ;
+                else
+                    contract_List = DBAuthorizeInvoiceContracts.GetAllByContGroup(itm.ContractNo);
+
                 if (contract_List != null && contract_List.Count > 0)
                 {
                     foreach (AutorizarFaturaçãoContratos item in contract_List)
@@ -2555,21 +2575,51 @@ namespace Hydra.Such.Portal.Controllers
                             }
                         }
                         Lastdate = (new DateTime(Lastdate.Year, Lastdate.Month, 1)).AddMonths(1).AddDays(-1);
-                        //actualiar data ultima fatura para o fim do mes
                         contractLine.ÚltimaDataFatura = Lastdate;
-                        //Estado Pendente
-                        //11-12-2018 ARomao@such.pt
-                        //A pedido do Marco Marcelo o contrato nunca pode mudar de estado
-                        //contractLine.Estado = 3;
-
-                        //AMARO TEMP DESCOMENTAR
                         DBContracts.Update(contractLine);
 
+                        //if (result.eMessages.Count > 0)
+                        //{
+                        //    return Json(result);
+                        //}
+                        //else
+                        //{
+                        //    if (contractLine != null)
+                        //    {
+                        //        if (contractList != null && contractList.Count() > 0)
+                        //        {
+                        //            foreach (var cont in contractList)
+                        //            {
+                        //                //GET CLIENT REQUISITIONS
+                        //                RequisiçõesClienteContrato ClientRequisition = DBContractClientRequisition.GetByContractAndGroup(contractLine.NºContrato, cont.GrupoFatura);
+                        //                if (ClientRequisition != null)
+                        //                {
+                        //                    ClientRequisition.DataÚltimaFatura = Lastdate;
+                        //                    if (DBContractClientRequisition.Update(ClientRequisition) == null)
+                        //                    {
+                        //                        result.eReasonCode = 5;
+                        //                        result.eMessage = "Ocorreu um erro ao atualizar a Requisição de Cliente.";
+                        //                        return Json(result);
+                        //                    }
+                        //                }
+                        //            }
+                        //        }
+                        //        else
+                        //        {
+                        //            contractLine.ÚltimaDataFatura = Lastdate;
+                        //            if (DBContracts.Update(contractLine) == null)
+                        //            {
+                        //                result.eReasonCode = 5;
+                        //                result.eMessage = "Ocorreu um erro ao atualizar o Contrato.";
+                        //                return Json(result);
+                        //            }
+                        //        }
+                        //    }
+                        //}
                     }
 
                     if (item.Situação == "" || item.Situação == null)
                     {
-
                         Task<WSCreateNAVProject.Read_Result> Project = WSProject.GetNavProject(item.NºContrato, _configws);
                         Project.Wait();
                         if (Project.IsCompletedSuccessfully && Project.Result.WSJob == null)
@@ -2612,13 +2662,36 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         obs = "";
 
+                        //AMARO 04/05/219
+                        List<RequisiçõesClienteContrato> ListaContratos = new List<RequisiçõesClienteContrato>();
+                        RequisiçõesClienteContrato Reqcontract = new RequisiçõesClienteContrato();
+                        if (contractLine.ÚltimaDataFatura == null)
+                        {
+                            contractLine.ÚltimaDataFatura = Lastdate;
+
+                            ListaContratos = DBContractClientRequisition.GetByContract(contractLine.NºDeContrato);
+
+                            Reqcontract = ListaContratos.Find(x => x.GrupoFatura == item.GrupoFatura
+                                && x.DataInícioCompromisso <= contractLine.ÚltimaDataFatura
+                                && x.DataFimCompromisso >= contractLine.ÚltimaDataFatura);
+                        }
+                        else
+                        {
+                            ListaContratos = DBContractClientRequisition.GetByContract(contractLine.NºDeContrato);
+
+                            Reqcontract = ListaContratos.Find(x => x.GrupoFatura == item.GrupoFatura
+                                && x.DataInícioCompromisso <= contractLine.ÚltimaDataFatura
+                                && x.DataFimCompromisso >= contractLine.ÚltimaDataFatura);
+                        }
+                        item.NoRequisicaoDoCliente = Reqcontract != null ? Reqcontract.NºRequisiçãoCliente : contractLine.NºRequisiçãoDoCliente;
+                        item.NoCompromisso = Reqcontract != null ? Reqcontract.NºCompromisso : contractLine.NºCompromisso;
+                        item.DataRececaoRequisicao = Reqcontract != null ? Reqcontract.DataRequisição : contractLine.DataReceçãoRequisição;
+
+
                         item.NºContrato = contractLine.NºDeContrato;
-                        item.NoRequisicaoDoCliente = contractLine.NºRequisiçãoDoCliente;
-                        item.NoCompromisso = contractLine.NºCompromisso;
                         item.CódigoRegião = contractLine.CódigoRegião;
                         item.CódigoÁreaFuncional = contractLine.CódigoÁreaFuncional;
                         item.CódigoCentroResponsabilidade = contractLine.CódigoCentroResponsabilidade;
-                        item.DataRececaoRequisicao = contractLine.DataReceçãoRequisição;
 
 
                         //AMARO DUEDATE = DataExpiração
@@ -2639,7 +2712,12 @@ namespace Hydra.Such.Portal.Controllers
                             }
                         }
 
-                        Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreateContractInvoice(item, _configws, ContractInvoicePeriod, InvoiceBorrowed, CodTermosPagamento);
+                        if (contractLine.FaturaPrecosIvaIncluido == true)
+                            PricesIncludingVAT = true;
+                        else
+                            PricesIncludingVAT = false;
+
+                        Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreateContractInvoice(item, _configws, ContractInvoicePeriod, InvoiceBorrowed, CodTermosPagamento, PricesIncludingVAT);
                         InvoiceHeader.Wait();
 
                         if (InvoiceHeader.IsCompletedSuccessfully && InvoiceHeader != null && InvoiceHeader.Result != null)
@@ -2654,6 +2732,58 @@ namespace Hydra.Such.Portal.Controllers
 
                             if (itemList.Count > 0)
                             {
+                                if (contractLine.FaturaPrecosIvaIncluido == true)
+                                {
+                                    string Cliente = string.Empty;
+                                    string GrupoIVA = string.Empty;
+                                    string GrupoCliente = string.Empty;
+                                    decimal IVA = new decimal();
+                                    foreach (var linha in itemList)
+                                    {
+                                        Cliente = contractLine.NºCliente;
+                                        GrupoIVA = string.Empty;
+                                        GrupoCliente = string.Empty;
+                                        IVA = 0;
+
+                                        if (!string.IsNullOrEmpty(linha.Código))
+                                        {
+                                            NAVResourcesViewModel Resource = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, linha.Código, "", 0, "").FirstOrDefault();
+                                            if (Resource != null)
+                                                GrupoIVA = Resource.VATProductPostingGroup;
+                                            else
+                                            {
+                                                execDetails += " Erro ao contabilizar: Não foi possível encontrar o recurso Nº: " + linha.Código + " para o Nº de contrato: " + contractLine.NºContrato;
+                                                result.eReasonCode = 2;
+                                                result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails));
+                                                return Json(result);
+                                            }
+
+                                            if (!string.IsNullOrEmpty(Cliente) && !string.IsNullOrEmpty(GrupoIVA))
+                                            {
+                                                NAVClientsViewModel cliente = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, Cliente);
+                                                if (cliente != null)
+                                                    GrupoCliente = cliente.VATBusinessPostingGroup;
+                                                else
+                                                {
+                                                    execDetails += " Erro ao contabilizar: Não foi possível encontrar o cliente Nº: " + Cliente + " para o Nº de contrato: " + contractLine.NºContrato;
+                                                    result.eReasonCode = 2;
+                                                    result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails));
+                                                    return Json(result);
+                                                }
+
+                                                if (!string.IsNullOrEmpty(GrupoCliente))
+                                                    IVA = DBNAV2017VATPostingSetup.GetIVA(_config.NAVDatabaseName, _config.NAVCompanyName, GrupoCliente, GrupoIVA);
+
+                                                if (IVA > 0)
+                                                    IVA = (IVA / 100) + 1;
+                                            }
+                                        }
+
+                                        if (IVA > 0)
+                                            linha.PreçoUnitário = linha.PreçoUnitário * IVA;
+                                    }
+                                }
+
                                 try
                                 {
                                     Task<WSCreatePreInvoiceLine.CreateMultiple_Result> InvoiceLines = WSPreInvoiceLine.CreatePreInvoiceLineList(itemList, InvoiceHeaderNo, _configws);
@@ -2694,12 +2824,13 @@ namespace Hydra.Such.Portal.Controllers
                             DateTime Lastdate = item.DataDeRegisto.Value;
                             DateTime DataDocumento = item.DataDeRegisto.Value;
                             Contratos contractLine = DBContracts.GetByIdAvencaFixa(item.NºContrato);
-                            DateTime today = (DateTime)contractLine.ÚltimaDataFatura; //DateTime.Now;
+                            DateTime today = contractLine.ÚltimaDataFatura != null ?(DateTime)contractLine.ÚltimaDataFatura : Convert.ToDateTime(contractLine.DataInicial).AddDays(-1); //DateTime.Now;
                             DateTime StContractDate = today;
 
                             if (contractLine.DataInicial != null && contractLine.DataExpiração != null)// && item.DataPróximaFatura == null)
                             {
-                                today = (DateTime)contractLine.ÚltimaDataFatura;
+                                //today = (DateTime)contractLine.ÚltimaDataFatura;
+                                today = contractLine.ÚltimaDataFatura != null ? (DateTime)contractLine.ÚltimaDataFatura : Convert.ToDateTime(contractLine.DataInicial).AddDays(-1);
 
                                 //Mensal 
                                 if (contractLine.PeríodoFatura == 1)
@@ -2835,6 +2966,46 @@ namespace Hydra.Such.Portal.Controllers
                                 ContractInvoicePeriod = Lastdate.ToString("dd/MM/yy");
                                 contractLine.ÚltimaDataFatura = Lastdate;
                                 DBContracts.Update(contractLine);
+
+
+                                //if (result.eMessages.Count > 0)
+                                //{
+                                //    return Json(result);
+                                //}
+                                //else
+                                //{
+                                //    if (contractLine != null)
+                                //    {
+                                //        if (contractList != null && contractList.Count() > 0)
+                                //        {
+                                //            foreach (var cont in contractList)
+                                //            {
+                                //                //GET CLIENT REQUISITIONS
+                                //                RequisiçõesClienteContrato ClientRequisition = DBContractClientRequisition.GetByContractAndGroup(contractLine.NºContrato, cont.GrupoFatura);
+                                //                if (ClientRequisition != null)
+                                //                {
+                                //                    ClientRequisition.DataÚltimaFatura = Lastdate;
+                                //                    if (DBContractClientRequisition.Update(ClientRequisition) == null)
+                                //                    {
+                                //                        result.eReasonCode = 5;
+                                //                        result.eMessage = "Ocorreu um erro ao atualizar a Requisição de Cliente.";
+                                //                        return Json(result);
+                                //                    }
+                                //                }
+                                //            }
+                                //        }
+                                //        else
+                                //        {
+                                //            contractLine.ÚltimaDataFatura = Lastdate;
+                                //            if (DBContracts.Update(contractLine) == null)
+                                //            {
+                                //                result.eReasonCode = 5;
+                                //                result.eMessage = "Ocorreu um erro ao atualizar o Contrato.";
+                                //                return Json(result);
+                                //            }
+                                //        }
+                                //    }
+                                //}
                             }
 
                             if (item.Situação == "" || item.Situação == null)
@@ -2878,13 +3049,35 @@ namespace Hydra.Such.Portal.Controllers
                                 }
                                 obs = "";
 
+                                //AMARO 04/05/219
+                                List<RequisiçõesClienteContrato> ListaContratos = new List<RequisiçõesClienteContrato>();
+                                RequisiçõesClienteContrato Reqcontract = new RequisiçõesClienteContrato();
+                                if (contractLine.ÚltimaDataFatura == null)
+                                {
+                                    contractLine.ÚltimaDataFatura = Lastdate;
+
+                                    ListaContratos = DBContractClientRequisition.GetByContract(contractLine.NºDeContrato);
+
+                                    Reqcontract = ListaContratos.Find(x => x.GrupoFatura == item.GrupoFatura
+                                        && x.DataInícioCompromisso <= contractLine.ÚltimaDataFatura
+                                        && x.DataFimCompromisso >= contractLine.ÚltimaDataFatura);
+                                }
+                                else
+                                {
+                                    ListaContratos = DBContractClientRequisition.GetByContract(contractLine.NºDeContrato);
+
+                                    Reqcontract = ListaContratos.Find(x => x.GrupoFatura == item.GrupoFatura
+                                        && x.DataInícioCompromisso <= contractLine.ÚltimaDataFatura
+                                        && x.DataFimCompromisso >= contractLine.ÚltimaDataFatura);
+                                }
+                                item.NoRequisicaoDoCliente = Reqcontract != null ? Reqcontract.NºRequisiçãoCliente : contractLine.NºRequisiçãoDoCliente;
+                                item.NoCompromisso = Reqcontract != null ? Reqcontract.NºCompromisso : contractLine.NºCompromisso;
+                                item.DataRececaoRequisicao = Reqcontract != null ? Reqcontract.DataRequisição : contractLine.DataReceçãoRequisição;
+
                                 item.NºContrato = contractLine.NºDeContrato;
-                                item.NoRequisicaoDoCliente = contractLine.NºRequisiçãoDoCliente;
-                                item.NoCompromisso = contractLine.NºCompromisso;
                                 item.CódigoRegião = contractLine.CódigoRegião;
                                 item.CódigoÁreaFuncional = contractLine.CódigoÁreaFuncional;
                                 item.CódigoCentroResponsabilidade = contractLine.CódigoCentroResponsabilidade;
-                                item.DataRececaoRequisicao = contractLine.DataReceçãoRequisição;
 
                                 //AMARO DUEDATE = DataExpiração
                                 item.DataDeExpiração = DataDocumento;
@@ -2904,7 +3097,13 @@ namespace Hydra.Such.Portal.Controllers
                                     }
                                 }
 
-                                Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreateContractInvoice(item, _configws, ContractInvoicePeriod, InvoiceBorrowed, CodTermosPagamento);
+                                if (contractLine.FaturaPrecosIvaIncluido == true)
+                                    PricesIncludingVAT = true;
+                                else
+                                    PricesIncludingVAT = false;
+
+                                //Task<WSCreatePreInvoiceNEW.Create_Result> InvoiceHeader = WSPreInvoice.CreateContractInvoiceNEW(item, _configws, ContractInvoicePeriod, InvoiceBorrowed, CodTermosPagamento);
+                                Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreateContractInvoice(item, _configws, ContractInvoicePeriod, InvoiceBorrowed, CodTermosPagamento, PricesIncludingVAT);
                                 InvoiceHeader.Wait();
 
                                 if (InvoiceHeader.IsCompletedSuccessfully && InvoiceHeader != null && InvoiceHeader.Result != null)
@@ -2914,6 +3113,58 @@ namespace Hydra.Such.Portal.Controllers
 
                                     if (itemList.Count > 0)
                                     {
+                                        if (contractLine.FaturaPrecosIvaIncluido == true)
+                                        {
+                                            string Cliente = string.Empty;
+                                            string GrupoIVA = string.Empty;
+                                            string GrupoCliente = string.Empty;
+                                            decimal IVA = new decimal();
+                                            foreach (var linha in itemList)
+                                            {
+                                                Cliente = contractLine.NºCliente;
+                                                GrupoIVA = string.Empty;
+                                                GrupoCliente = string.Empty;
+                                                IVA = 0;
+
+                                                if (!string.IsNullOrEmpty(linha.Código))
+                                                {
+                                                    NAVResourcesViewModel Resource = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, linha.Código, "", 0, "").FirstOrDefault();
+                                                    if (Resource != null)
+                                                        GrupoIVA = Resource.VATProductPostingGroup;
+                                                    else
+                                                    {
+                                                        execDetails += " Erro ao contabilizar: Não foi possível encontrar o recurso Nº: " + linha.Código + " para o Nº de contrato: " + contractLine.NºContrato;
+                                                        result.eReasonCode = 2;
+                                                        result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails));
+                                                        return Json(result);
+                                                    }
+
+                                                    if (!string.IsNullOrEmpty(Cliente) && !string.IsNullOrEmpty(GrupoIVA))
+                                                    {
+                                                        NAVClientsViewModel cliente = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, Cliente);
+                                                        if (cliente != null)
+                                                            GrupoCliente = cliente.VATBusinessPostingGroup;
+                                                        else
+                                                        {
+                                                            execDetails += " Erro ao contabilizar: Não foi possível encontrar o cliente Nº: " + Cliente + " para o Nº de contrato: " + contractLine.NºContrato;
+                                                            result.eReasonCode = 2;
+                                                            result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails));
+                                                            return Json(result);
+                                                        }
+
+                                                        if (!string.IsNullOrEmpty(GrupoCliente))
+                                                            IVA = DBNAV2017VATPostingSetup.GetIVA(_config.NAVDatabaseName, _config.NAVCompanyName, GrupoCliente, GrupoIVA);
+
+                                                        if (IVA > 0)
+                                                            IVA = (IVA / 100) + 1;
+                                                    }
+                                                }
+
+                                                if (IVA > 0)
+                                                    linha.PreçoUnitário = linha.PreçoUnitário * IVA;
+                                            }
+                                        }
+
                                         try
                                         {
                                             Task<WSCreatePreInvoiceLine.CreateMultiple_Result> InvoiceLines = WSPreInvoiceLine.CreatePreInvoiceLineList(itemList, InvoiceHeaderNo, _configws);
@@ -3305,38 +3556,45 @@ namespace Hydra.Such.Portal.Controllers
             }
             return lastDate;
         }
+
         [HttpPost]
         public JsonResult CreateInvoiceHeaderFromContract([FromBody] JObject requestParams, string dateCont )
         {
             bool registado = false;
             ErrorHandler result = new ErrorHandler();
             ContractViewModel Contract = null;
+            List<int> groups = new List<int>();
+            int Codgroup = 0;
+            string obs = "";
+            string execDetails = string.Empty;
+            string errorMessage = string.Empty;
+            bool hasErrors = false;
+            DateTime DataInicioFatura = DateTime.MinValue;
+            DateTime DataFimFatura = DateTime.MinValue;
+            RequisiçõesClienteContrato ClientRequisition = new RequisiçõesClienteContrato();
+            List<RequisiçõesClienteContrato> ClientRequisitionByContract = new List<RequisiçõesClienteContrato>();
+            List<RequisiçõesClienteContrato> ClientRequisitionByContractAndGroup = new List<RequisiçõesClienteContrato>();
+            List<RequisiçõesClienteContrato> ClientRequisitionByContractAndGroupAndDate = new List<RequisiçõesClienteContrato>();
+
+
             if (requestParams["Contrato"].ToString() != null && requestParams["LinhasContrato"].ToString() != null)
             {
-              
                 DateTime lastDay = Convert.ToDateTime(dateCont);
-
-                string obs = "";
-                string execDetails = string.Empty;
-                string errorMessage = string.Empty;
-                bool hasErrors = false;
-                
-
                 Contract = JsonConvert.DeserializeObject<ContractViewModel>(requestParams["Contrato"].ToString());
                 List<ContractLineViewModel> ContractLines = JsonConvert.DeserializeObject<List<ContractLineViewModel>>(requestParams["LinhasContrato"].ToString());
                 string groupInvoice = requestParams["GrupoFatura"].ToString();
-                List<int> groups = new List<int>();
+
                 bool createGroup = true;
                 if (groupInvoice != null && groupInvoice != "")
                 {
-                    int Codgroup = Convert.ToInt32(groupInvoice);
-                    if(ContractLines.Find(x => x.InvoiceGroup == Codgroup) == null)
+                    Codgroup = Convert.ToInt32(groupInvoice);
+                    if (ContractLines.Find(x => x.InvoiceGroup == Codgroup) == null)
                     {
                         createGroup = false;
                     }
-                   
                 }
-                if (createGroup==true) {
+
+                if (createGroup == true) {
                     //Create Project if existe
                     ConfigUtilizadores userConfig = DBUserConfigurations.GetById(User.Identity.Name);
                     Task<WSCreateNAVProject.Read_Result> Project = WSProject.GetNavProject(Contract.ContractNo, _configws);
@@ -3364,75 +3622,109 @@ namespace Hydra.Such.Portal.Controllers
                             return Json(result);
                         }
                     }
-                 
-                    DateTime dataInicio;
-                    DateTime dataFim;
-                    if (Contract.LastInvoiceDate != null && Contract.LastInvoiceDate != "")
-                    {
-                        dataInicio = Convert.ToDateTime(Contract.LastInvoiceDate);
-                        dataInicio = dataInicio.AddDays(1);
-                    }
-                    else
-                        dataInicio = Convert.ToDateTime(Contract.StartData);
-                 
-                    dataFim = getDatePeriodPayment(dataInicio, Contract.InvocePeriod ?? 0);
 
-                    //UPDATE LASTINVOICEDATE
-                    Contract.LastInvoiceDate = dataFim.ToString("dd/MM/yyyy");
-                    //DBContracts.Update(DBContracts.ParseToDB(Contract));
-
-                    //CREATE SALES HEADER
-                    //AMARO
-                    NAVSalesHeaderViewModel PreInvoiceToCreate = new NAVSalesHeaderViewModel();
-                    PreInvoiceToCreate.PeriododeFact_Contrato = dataInicio.ToString("dd/MM/yyyy") + " a " + dataFim.ToString("dd/MM/yyyy");
-                    string mes = dataFim.ToString("MMMM");
-                    PreInvoiceToCreate.DataServ_Prestado = String.Format("{0}/{1}", mes.ToUpper(), dataFim.Year);
-                    
-                    PreInvoiceToCreate.Sell_toCustomerNo = Contract.ClientNo;
-                    PreInvoiceToCreate.DocumentDate = lastDay;
-                    if (Contract.CustomerShipmentDate != null && Contract.CustomerShipmentDate != "")
-                        PreInvoiceToCreate.ShipmentDate = DateTime.Parse(Contract.CustomerShipmentDate);
-
-                    PreInvoiceToCreate.ValorContrato = Contract.TotalValue ?? 0;
-                    PreInvoiceToCreate.Ship_toAddress = Contract.ShippingAddress;
-                    PreInvoiceToCreate.Ship_toPostCode = Contract.ShippingZipCode;
-
-
-                    //AMARO DUEDATE = DataExpiração
-                    PreInvoiceToCreate.DueDate = lastDay;
-                    NAVPaymentTermsViewModels PaymentTerms = DBNAV2017PaymentTerms.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, Contract.CodePaymentTerms).FirstOrDefault();
-                    if (PaymentTerms != null)
-                    {
-                        string AUXDueDateCalculation = PaymentTerms.DueDateCalculation;
-                        AUXDueDateCalculation = AUXDueDateCalculation.Substring(0, AUXDueDateCalculation.IndexOf(''));
-
-                        if (!string.IsNullOrEmpty(AUXDueDateCalculation) && Double.TryParse(AUXDueDateCalculation, out double num))
-                        {
-                            PreInvoiceToCreate.DueDate = lastDay.AddDays(Convert.ToDouble(AUXDueDateCalculation));
-                        }
-                    }
-                    PreInvoiceToCreate.PaymentTermsCode = Contract.CodePaymentTerms;
-                   
-                    PreInvoiceToCreate.No_Compromisso = Contract.PromiseNo;
-                    PreInvoiceToCreate.CodigoPedido = Contract.ClientRequisitionNo;
-                    if (Contract.ReceiptDateRequisition != null && Contract.ReceiptDateRequisition != "")
-                        PreInvoiceToCreate.DataEncomenda = DateTime.Parse(Contract.ReceiptDateRequisition);
-
-                
-                    PreInvoiceToCreate.ContractNo = Contract.ContractNo;
-                    PreInvoiceToCreate.FacturaCAF = false;
-                    PreInvoiceToCreate.Userpreregisto2009 = User.Identity.Name;
-                    PreInvoiceToCreate.PostingDate = lastDay;
-                    PreInvoiceToCreate.ResponsabilityCenterCode20 = Contract.CodeResponsabilityCenter;
-                    PreInvoiceToCreate.FunctionAreaCode20 = Contract.CodeFunctionalArea;
-                    PreInvoiceToCreate.RegionCode20 = Contract.CodeRegion;
-
-                    PreInvoiceToCreate.ResponsibilityCenter = userConfig.CentroDeResponsabilidade;
-                    PreInvoiceToCreate.PostingNoSeries = userConfig.NumSerieFaturas;
-
+                    //Escolheu Grupo de fatura = Só trata de 1 grupo
                     if (groupInvoice != null && groupInvoice != "")
                     {
-                        int Codgroup = Convert.ToInt32(groupInvoice);
+                        //Obter a Data de Fim para a nova fatura
+                        ClientRequisitionByContract = DBContractClientRequisition.GetAll().Where(x => x.NºContrato == Contract.ContractNo).ToList();
+                        if (ClientRequisitionByContract == null || ClientRequisitionByContract.Count() == 0)
+                        {
+                            DataFimFatura = !string.IsNullOrEmpty(Contract.LastInvoiceDate) ? Convert.ToDateTime(Contract.LastInvoiceDate) : !string.IsNullOrEmpty(Contract.ContractStartDate) ? Convert.ToDateTime(Contract.ContractStartDate) : DateTime.MinValue;
+                        }
+                        else
+                        {
+                            ClientRequisitionByContractAndGroup = DBContractClientRequisition.GetAll().Where(x => x.NºContrato == Contract.ContractNo && x.GrupoFatura == int.Parse(groupInvoice)).ToList();
+                            if (ClientRequisitionByContractAndGroup != null && ClientRequisitionByContractAndGroup.Count() > 0)
+                            {
+                                DataFimFatura = ClientRequisitionByContractAndGroup.OrderByDescending(x => x.DataÚltimaFatura).FirstOrDefault().DataÚltimaFatura.HasValue ? (DateTime)ClientRequisitionByContractAndGroup.OrderByDescending(x => x.DataÚltimaFatura).FirstOrDefault().DataÚltimaFatura : DateTime.MinValue;
+                                if (DataFimFatura == DateTime.MinValue)
+                                {
+                                    DataFimFatura = !string.IsNullOrEmpty(Contract.StartData) ? Convert.ToDateTime(Contract.StartData) : DateTime.MinValue;
+                                }
+                            }
+                        }
+
+                        if (DataFimFatura != DateTime.MinValue)
+                        {
+                            DataInicioFatura = DataFimFatura.AddDays(1);
+                            if (DataFimFatura.Day == 1)
+                            {
+                                DataFimFatura = getDatePeriodPayment(DataFimFatura, Contract.InvocePeriod ?? 0);
+
+                            }
+                            else
+                            {
+                                DataFimFatura = new DateTime(DataFimFatura.Year, DataFimFatura.Month, 1).AddMonths(1);
+                                DataFimFatura = getDatePeriodPayment(DataFimFatura, Contract.InvocePeriod ?? 0);
+                            }
+
+                            if (ClientRequisitionByContractAndGroup != null && ClientRequisitionByContractAndGroup.Count() > 0)
+                            {
+                                ClientRequisitionByContractAndGroupAndDate = DBContractClientRequisition.GetAll().Where(x => x.NºContrato == Contract.ContractNo && x.GrupoFatura == int.Parse(groupInvoice) && x.DataInícioCompromisso <= DataFimFatura && x.DataFimCompromisso >= DataFimFatura).ToList();
+
+                                if (ClientRequisitionByContractAndGroupAndDate == null || ClientRequisitionByContractAndGroupAndDate.Count() == 0)
+                                {
+                                    result.eReasonCode = 3;
+                                    result.eMessage = "Não existem Requisições de Cliente válidas para a data da fatura.";
+                                    return Json(result);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            result.eReasonCode = 3;
+                            result.eMessage = "Não foi encontrada uma data de inicio para a para o grupo de fatura escolhido.";
+                            return Json(result);
+                        }
+                        Contract.LastInvoiceDate = DataFimFatura.ToString("dd/MM/yyyy");
+
+
+                        //CREATE SALES HEADER
+                        NAVSalesHeaderViewModel PreInvoiceToCreate = new NAVSalesHeaderViewModel();
+                        PreInvoiceToCreate.PeriododeFact_Contrato = DataInicioFatura.ToString("dd/MM/yyyy") + " a " + DataFimFatura.ToString("dd/MM/yyyy");
+                        string mes = DataFimFatura.ToString("MMMM");
+                        PreInvoiceToCreate.DataServ_Prestado = String.Format("{0}/{1}", mes.ToUpper(), DataFimFatura.Year);
+                    
+                        PreInvoiceToCreate.Sell_toCustomerNo = Contract.ClientNo;
+                        PreInvoiceToCreate.DocumentDate = lastDay;
+                        if (Contract.CustomerShipmentDate != null && Contract.CustomerShipmentDate != "")
+                            PreInvoiceToCreate.ShipmentDate = DateTime.Parse(Contract.CustomerShipmentDate);
+
+                        PreInvoiceToCreate.ValorContrato = Contract.TotalValue ?? 0;
+                        PreInvoiceToCreate.Ship_toAddress = Contract.ShippingAddress;
+                        PreInvoiceToCreate.Ship_toPostCode = Contract.ShippingZipCode;
+                        PreInvoiceToCreate.DueDate = lastDay;
+
+                        NAVPaymentTermsViewModels PaymentTerms = DBNAV2017PaymentTerms.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, Contract.CodePaymentTerms).FirstOrDefault();
+                        if (PaymentTerms != null)
+                        {
+                            string AUXDueDateCalculation = PaymentTerms.DueDateCalculation;
+                            AUXDueDateCalculation = AUXDueDateCalculation.Substring(0, AUXDueDateCalculation.IndexOf(''));
+
+                            if (!string.IsNullOrEmpty(AUXDueDateCalculation) && Double.TryParse(AUXDueDateCalculation, out double num))
+                            {
+                                PreInvoiceToCreate.DueDate = lastDay.AddDays(Convert.ToDouble(AUXDueDateCalculation));
+                            }
+                        }
+                        PreInvoiceToCreate.PaymentTermsCode = Contract.CodePaymentTerms;
+                   
+                        PreInvoiceToCreate.No_Compromisso = Contract.PromiseNo;
+                        PreInvoiceToCreate.CodigoPedido = Contract.ClientRequisitionNo;
+                        if (Contract.ReceiptDateRequisition != null && Contract.ReceiptDateRequisition != "")
+                            PreInvoiceToCreate.DataEncomenda = DateTime.Parse(Contract.ReceiptDateRequisition);
+
+                        PreInvoiceToCreate.ContractNo = Contract.ContractNo;
+                        PreInvoiceToCreate.FacturaCAF = false;
+                        PreInvoiceToCreate.Userpreregisto2009 = User.Identity.Name;
+                        PreInvoiceToCreate.PostingDate = lastDay;
+                        PreInvoiceToCreate.ResponsabilityCenterCode20 = Contract.CodeResponsabilityCenter;
+                        PreInvoiceToCreate.FunctionAreaCode20 = Contract.CodeFunctionalArea;
+                        PreInvoiceToCreate.RegionCode20 = Contract.CodeRegion;
+                        PreInvoiceToCreate.ResponsibilityCenter = userConfig.CentroDeResponsabilidade;
+                        PreInvoiceToCreate.PostingNoSeries = userConfig.NumSerieFaturas;
+
+                        Codgroup = Convert.ToInt32(groupInvoice);
                         if (ContractLines.Find(x => x.InvoiceGroup == Codgroup) != null)
                         {
                             foreach (ContractInvoiceTextViewModel texts in Contract.InvoiceTexts)
@@ -3452,6 +3744,14 @@ namespace Hydra.Such.Portal.Controllers
                             }
                             obs = "";
 
+                            //Obter os Campos das Requisições de Cliente
+                            ClientRequisition = DBContractClientRequisition.GetAll().Where(x => x.NºContrato == Contract.ContractNo && x.GrupoFatura == Codgroup && x.DataInícioCompromisso <= Convert.ToDateTime(Contract.LastInvoiceDate) && x.DataFimCompromisso >= Convert.ToDateTime(Contract.LastInvoiceDate)).FirstOrDefault();
+                            if (ClientRequisition != null)
+                            {
+                                PreInvoiceToCreate.No_Compromisso = !string.IsNullOrEmpty(ClientRequisition.NºCompromisso) ? ClientRequisition.NºCompromisso : "";
+                                PreInvoiceToCreate.DataEncomenda = (DateTime)ClientRequisition.DataRequisição;
+                                PreInvoiceToCreate.CodigoPedido = !string.IsNullOrEmpty(ClientRequisition.NºRequisiçãoCliente) ? ClientRequisition.NºRequisiçãoCliente : "";
+                            }
 
                             Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreatePreInvoiceHeader(PreInvoiceToCreate, _configws);
                             InvoiceHeader.Wait();
@@ -3470,7 +3770,7 @@ namespace Hydra.Such.Portal.Controllers
                                         PreInvoiceLinesToCreate.Tipo = line.Type.Value.ToString();
                                         PreInvoiceLinesToCreate.Código = line.Code;
                                         PreInvoiceLinesToCreate.Descrição = line.Description;
-                                        PreInvoiceLinesToCreate.Descricao2 = !string.IsNullOrEmpty(line.Description2) && line.Description2.Length > 50 ?  line.Description2.Substring(1, 50) : !string.IsNullOrEmpty(line.Description2) ? line.Description2 : "";
+                                        PreInvoiceLinesToCreate.Descricao2 = !string.IsNullOrEmpty(line.Description2) && line.Description2.Length > 50 ?  line.Description2.Substring(0, 49) : !string.IsNullOrEmpty(line.Description2) ? line.Description2 : "";
                                         PreInvoiceLinesToCreate.CódUnidadeMedida = line.CodeMeasureUnit;
                                         PreInvoiceLinesToCreate.CódigoÁreaFuncional = line.CodeFunctionalArea;
                                         PreInvoiceLinesToCreate.CódigoRegião = line.CodeRegion;
@@ -3483,6 +3783,59 @@ namespace Hydra.Such.Portal.Controllers
                                         LinhasFaturacao.Add(PreInvoiceLinesToCreate);
                                     }
                                 }
+
+                                if (Contract.FaturaPrecosIvaIncluido == true)
+                                {
+                                    string Cliente = string.Empty;
+                                    string GrupoIVA = string.Empty;
+                                    string GrupoCliente = string.Empty;
+                                    decimal IVA = new decimal();
+                                    foreach (var item in LinhasFaturacao)
+                                    {
+                                        Cliente = Contract.ClientNo;
+                                        GrupoIVA = string.Empty;
+                                        GrupoCliente = string.Empty;
+                                        IVA = 0;
+
+                                        if (!string.IsNullOrEmpty(item.Código))
+                                        {
+                                            NAVResourcesViewModel Resource = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, item.Código, "", 0, "").FirstOrDefault();
+                                            if (Resource != null)
+                                                GrupoIVA = Resource.VATProductPostingGroup;
+                                            else
+                                            {
+                                                execDetails += " Erro ao criar a fatura: Não foi possível encontrar o recurso Nº: " + item.Código;
+                                                result.eReasonCode = 2;
+                                                result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails));
+                                                return Json(result);
+                                            }
+
+                                            if (!string.IsNullOrEmpty(Cliente) && !string.IsNullOrEmpty(GrupoIVA))
+                                            {
+                                                NAVClientsViewModel cliente = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, Cliente);
+                                                if (cliente != null)
+                                                    GrupoCliente = cliente.VATBusinessPostingGroup;
+                                                else
+                                                {
+                                                    execDetails += " Erro ao criar a fatura: Não foi possível encontrar o cliente Nº: " + Cliente;
+                                                    result.eReasonCode = 2;
+                                                    result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails));
+                                                    return Json(result);
+                                                }
+
+                                                if (!string.IsNullOrEmpty(GrupoCliente))
+                                                    IVA = DBNAV2017VATPostingSetup.GetIVA(_config.NAVDatabaseName, _config.NAVCompanyName, GrupoCliente, GrupoIVA);
+
+                                                if (IVA > 0)
+                                                    IVA = (IVA / 100) + 1;
+                                            }
+                                        }
+
+                                        if (IVA > 0)
+                                            item.PreçoUnitário = item.PreçoUnitário * IVA;
+                                    }
+                                }
+
                                 try
                                 {
                                     Task<WSCreatePreInvoiceLine.CreateMultiple_Result> InvoiceLines = WSPreInvoiceLine.CreatePreInvoiceLineList(LinhasFaturacao, cod, _configws);
@@ -3506,10 +3859,10 @@ namespace Hydra.Such.Portal.Controllers
                             }
 
                         }
-
                     }
                     else
                     {
+                        //Não escolheu grupo de fatura = TODOS OS GRUPOS
                         foreach (ContractLineViewModel line in ContractLines)
                         {
                             if (!line.InvoiceGroup.HasValue)
@@ -3523,7 +3876,104 @@ namespace Hydra.Such.Portal.Controllers
 
                         foreach (int group in groups)
                         {
+                            //Obter a Data de Fim para a nova fatura
+                            ClientRequisitionByContract = DBContractClientRequisition.GetAll().Where(x => x.NºContrato == Contract.ContractNo).ToList();
+                            if (ClientRequisitionByContract == null || ClientRequisitionByContract.Count() == 0)
+                            {
+                                DataFimFatura = !string.IsNullOrEmpty(Contract.LastInvoiceDate) ? Convert.ToDateTime(Contract.LastInvoiceDate) : !string.IsNullOrEmpty(Contract.ContractStartDate) ? Convert.ToDateTime(Contract.ContractStartDate) : DateTime.MinValue;
+                            }
+                            else
+                            {
+                                ClientRequisitionByContractAndGroup = DBContractClientRequisition.GetAll().Where(x => x.NºContrato == Contract.ContractNo && x.GrupoFatura == group).ToList();
+                                if (ClientRequisitionByContractAndGroup != null && ClientRequisitionByContractAndGroup.Count() > 0)
+                                {
+                                    DataFimFatura = ClientRequisitionByContractAndGroup.OrderByDescending(x => x.DataÚltimaFatura).FirstOrDefault().DataÚltimaFatura.HasValue ? (DateTime)ClientRequisitionByContractAndGroup.OrderByDescending(x => x.DataÚltimaFatura).FirstOrDefault().DataÚltimaFatura : DateTime.MinValue;
+                                    if (DataFimFatura == DateTime.MinValue)
+                                    {
+                                        DataFimFatura = !string.IsNullOrEmpty(Contract.StartData) ? Convert.ToDateTime(Contract.StartData) : DateTime.MinValue;
+                                    }
+                                }
+                            }
+
+                            if (DataFimFatura != DateTime.MinValue)
+                            {
+                                DataInicioFatura = DataFimFatura.AddDays(1);
+                                if (DataFimFatura.Day == 1)
+                                {
+                                    DataFimFatura = getDatePeriodPayment(DataFimFatura, Contract.InvocePeriod ?? 0);
+
+                                }
+                                else
+                                {
+                                    DataFimFatura = new DateTime(DataFimFatura.Year, DataFimFatura.Month, 1).AddMonths(1);
+                                    DataFimFatura = getDatePeriodPayment(DataFimFatura, Contract.InvocePeriod ?? 0);
+                                }
+
+                                if (ClientRequisitionByContractAndGroup != null && ClientRequisitionByContractAndGroup.Count() > 0)
+                                {
+                                    ClientRequisitionByContractAndGroupAndDate = DBContractClientRequisition.GetAll().Where(x => x.NºContrato == Contract.ContractNo && x.GrupoFatura == group && x.DataInícioCompromisso <= DataFimFatura && x.DataFimCompromisso >= DataFimFatura).ToList();
+
+                                    if (ClientRequisitionByContractAndGroupAndDate == null || ClientRequisitionByContractAndGroupAndDate.Count() == 0)
+                                    {
+                                        result.eReasonCode = 3;
+                                        result.eMessage = "Não existem Requisições de Cliente válidas para a data da fatura.";
+                                        return Json(result);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                result.eReasonCode = 3;
+                                result.eMessage = "Não foi encontrada uma data de inicio para a para o grupo de fatura escolhido.";
+                                return Json(result);
+                            }
+                            Contract.LastInvoiceDate = DataFimFatura.ToString("dd/MM/yyyy");
+
+
                             //CREATE SALES HEADER
+                            NAVSalesHeaderViewModel PreInvoiceToCreate = new NAVSalesHeaderViewModel();
+                            PreInvoiceToCreate.PeriododeFact_Contrato = DataInicioFatura.ToString("dd/MM/yyyy") + " a " + DataFimFatura.ToString("dd/MM/yyyy");
+                            string mes = DataFimFatura.ToString("MMMM");
+                            PreInvoiceToCreate.DataServ_Prestado = String.Format("{0}/{1}", mes.ToUpper(), DataFimFatura.Year);
+
+                            PreInvoiceToCreate.Sell_toCustomerNo = Contract.ClientNo;
+                            PreInvoiceToCreate.DocumentDate = lastDay;
+                            if (Contract.CustomerShipmentDate != null && Contract.CustomerShipmentDate != "")
+                                PreInvoiceToCreate.ShipmentDate = DateTime.Parse(Contract.CustomerShipmentDate);
+
+                            PreInvoiceToCreate.ValorContrato = Contract.TotalValue ?? 0;
+                            PreInvoiceToCreate.Ship_toAddress = Contract.ShippingAddress;
+                            PreInvoiceToCreate.Ship_toPostCode = Contract.ShippingZipCode;
+                            PreInvoiceToCreate.DueDate = lastDay;
+
+                            NAVPaymentTermsViewModels PaymentTerms = DBNAV2017PaymentTerms.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, Contract.CodePaymentTerms).FirstOrDefault();
+                            if (PaymentTerms != null)
+                            {
+                                string AUXDueDateCalculation = PaymentTerms.DueDateCalculation;
+                                AUXDueDateCalculation = AUXDueDateCalculation.Substring(0, AUXDueDateCalculation.IndexOf(''));
+
+                                if (!string.IsNullOrEmpty(AUXDueDateCalculation) && Double.TryParse(AUXDueDateCalculation, out double num))
+                                {
+                                    PreInvoiceToCreate.DueDate = lastDay.AddDays(Convert.ToDouble(AUXDueDateCalculation));
+                                }
+                            }
+                            PreInvoiceToCreate.PaymentTermsCode = Contract.CodePaymentTerms;
+
+                            PreInvoiceToCreate.No_Compromisso = Contract.PromiseNo;
+                            PreInvoiceToCreate.CodigoPedido = Contract.ClientRequisitionNo;
+                            if (Contract.ReceiptDateRequisition != null && Contract.ReceiptDateRequisition != "")
+                                PreInvoiceToCreate.DataEncomenda = DateTime.Parse(Contract.ReceiptDateRequisition);
+
+                            PreInvoiceToCreate.ContractNo = Contract.ContractNo;
+                            PreInvoiceToCreate.FacturaCAF = false;
+                            PreInvoiceToCreate.Userpreregisto2009 = User.Identity.Name;
+                            PreInvoiceToCreate.PostingDate = lastDay;
+                            PreInvoiceToCreate.ResponsabilityCenterCode20 = Contract.CodeResponsabilityCenter;
+                            PreInvoiceToCreate.FunctionAreaCode20 = Contract.CodeFunctionalArea;
+                            PreInvoiceToCreate.RegionCode20 = Contract.CodeRegion;
+                            PreInvoiceToCreate.ResponsibilityCenter = userConfig.CentroDeResponsabilidade;
+                            PreInvoiceToCreate.PostingNoSeries = userConfig.NumSerieFaturas;
+
                             foreach (ContractInvoiceTextViewModel texts in Contract.InvoiceTexts)
                             {
                                 if (texts.InvoiceGroup == Convert.ToInt32(group))
@@ -3542,6 +3992,19 @@ namespace Hydra.Such.Portal.Controllers
                             }
                             obs = "";
 
+                            if (Contract.FaturaPrecosIvaIncluido == true)
+                                PreInvoiceToCreate.PricesIncludingVAT = 1;
+                            else
+                                PreInvoiceToCreate.PricesIncludingVAT = 0;
+
+                            //Obter os Campos das Requisições de Cliente
+                            ClientRequisition = DBContractClientRequisition.GetAll().Where(x => x.NºContrato == Contract.ContractNo && x.GrupoFatura == group && x.DataInícioCompromisso <= Convert.ToDateTime(Contract.LastInvoiceDate) && x.DataFimCompromisso >= Convert.ToDateTime(Contract.LastInvoiceDate)).FirstOrDefault();
+                            if (ClientRequisition != null)
+                            {
+                                PreInvoiceToCreate.No_Compromisso = !string.IsNullOrEmpty(ClientRequisition.NºCompromisso) ? ClientRequisition.NºCompromisso : "";
+                                PreInvoiceToCreate.DataEncomenda = (DateTime)ClientRequisition.DataRequisição;
+                                PreInvoiceToCreate.CodigoPedido = !string.IsNullOrEmpty(ClientRequisition.NºRequisiçãoCliente) ? ClientRequisition.NºRequisiçãoCliente : "";
+                            }
 
                             Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreatePreInvoiceHeader(PreInvoiceToCreate, _configws);
                             InvoiceHeader.Wait();
@@ -3559,7 +4022,7 @@ namespace Hydra.Such.Portal.Controllers
                                         PreInvoiceLinesToCreate.Tipo = line.Type.Value.ToString();
                                         PreInvoiceLinesToCreate.Código = line.Code;
                                         PreInvoiceLinesToCreate.Descrição = line.Description;
-                                        PreInvoiceLinesToCreate.Descricao2 = !string.IsNullOrEmpty(line.Description2) && line.Description2.Length > 50 ? line.Description2.Substring(1, 50) : string.IsNullOrEmpty(line.Description2) ? "" : line.Description2;
+                                        PreInvoiceLinesToCreate.Descricao2 = !string.IsNullOrEmpty(line.Description2) && line.Description2.Length > 50 ? line.Description2.Substring(0, 49) : string.IsNullOrEmpty(line.Description2) ? "" : line.Description2;
                                         PreInvoiceLinesToCreate.CódUnidadeMedida = line.CodeMeasureUnit;
                                         PreInvoiceLinesToCreate.CódigoÁreaFuncional = line.CodeFunctionalArea;
                                         PreInvoiceLinesToCreate.CódigoRegião = line.CodeRegion;
@@ -3573,6 +4036,59 @@ namespace Hydra.Such.Portal.Controllers
                                         LinhasFaturacao.Add(PreInvoiceLinesToCreate);
                                     }
                                 }
+
+                                if (Contract.FaturaPrecosIvaIncluido == true)
+                                {
+                                    string Cliente = string.Empty;
+                                    string GrupoIVA = string.Empty;
+                                    string GrupoCliente = string.Empty;
+                                    decimal IVA = new decimal();
+                                    foreach (var item in LinhasFaturacao)
+                                    {
+                                        Cliente = Contract.ClientNo;
+                                        GrupoIVA = string.Empty;
+                                        GrupoCliente = string.Empty;
+                                        IVA = 0;
+
+                                        if (!string.IsNullOrEmpty(item.Código))
+                                        {
+                                            NAVResourcesViewModel Resource = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, item.Código, "", 0, "").FirstOrDefault();
+                                            if (Resource != null)
+                                                GrupoIVA = Resource.VATProductPostingGroup;
+                                            else
+                                            {
+                                                execDetails += " Erro ao criar a fatura: Não foi possível encontrar o recurso Nº: " + item.Código;
+                                                result.eReasonCode = 2;
+                                                result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails));
+                                                return Json(result);
+                                            }
+
+                                            if (!string.IsNullOrEmpty(Cliente) && !string.IsNullOrEmpty(GrupoIVA))
+                                            {
+                                                NAVClientsViewModel cliente = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, Cliente);
+                                                if (cliente != null)
+                                                    GrupoCliente = cliente.VATBusinessPostingGroup;
+                                                else
+                                                {
+                                                    execDetails += " Erro ao criar a fatura: Não foi possível encontrar o cliente Nº: " + Cliente;
+                                                    result.eReasonCode = 2;
+                                                    result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails));
+                                                    return Json(result);
+                                                }
+
+                                                if (!string.IsNullOrEmpty(GrupoCliente))
+                                                    IVA = DBNAV2017VATPostingSetup.GetIVA(_config.NAVDatabaseName, _config.NAVCompanyName, GrupoCliente, GrupoIVA);
+
+                                                if (IVA > 0)
+                                                    IVA = (IVA / 100) + 1;
+                                            }
+                                        }
+
+                                        if (IVA > 0)
+                                            item.PreçoUnitário = item.PreçoUnitário * IVA;
+                                    }
+                                }
+
                                 try
                                 {
                                     Task<WSCreatePreInvoiceLine.CreateMultiple_Result> InvoiceLines = WSPreInvoiceLine.CreatePreInvoiceLineList(LinhasFaturacao, cod, _configws);
@@ -3606,7 +4122,37 @@ namespace Hydra.Such.Portal.Controllers
             }
             else
             {
-                if(Contract != null && registado)
+                if (Contract != null && registado)
+                {
+                    if (groups != null && groups.Count() > 0)
+                    {
+                        foreach (int group in groups)
+                        {
+                            //GET CLIENT REQUISITIONS
+                            ClientRequisition = DBContractClientRequisition.GetAll().Where(x => x.NºContrato == Contract.ContractNo && x.GrupoFatura == group && x.DataInícioCompromisso <= Convert.ToDateTime(Contract.LastInvoiceDate) && x.DataFimCompromisso >= Convert.ToDateTime(Contract.LastInvoiceDate)).FirstOrDefault();
+                            if (ClientRequisition != null)
+                            {
+                                ClientRequisition.DataÚltimaFatura = !string.IsNullOrEmpty(Contract.LastInvoiceDate) ? Convert.ToDateTime(Contract.LastInvoiceDate) : (DateTime?)null;
+                                if (DBContractClientRequisition.Update(ClientRequisition) != null)
+                                    return Json(registado);
+                                else
+                                {
+                                    result.eReasonCode = 5;
+                                    result.eMessage = "Ocorreu um erro ao atualizar a Requisição de Cliente.";
+                                    return Json(result);
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        DBContracts.Update(DBContracts.ParseToDB(Contract));
+
+                        return Json(registado);
+                    }
+                }
+
+                if (Contract != null && registado)
                     DBContracts.Update(DBContracts.ParseToDB(Contract));
 
                 return Json(registado);
@@ -3895,6 +4441,14 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        public JsonResult GetNotasCreditoRegistadas([FromBody] string contractNo)
+        {
+            List<NAVContractInvoiceHeaderViewModel> result = new List<NAVContractInvoiceHeaderViewModel>();
+            result = DBNAV2017ContractDetails.GetNotasCreditoRegistadas(contractNo, _config.NAVDatabaseName, _config.NAVCompanyName);
+
+            return Json(result);
+        }
+
         public JsonResult GetInvoiceLinesList([FromBody] string contractNo)
         {
             List<NAVContractInvoiceLinesViewModel> result = new List<NAVContractInvoiceLinesViewModel>();
@@ -3902,6 +4456,20 @@ namespace Hydra.Such.Portal.Controllers
             foreach(var temp in result)
             {
                 if(temp.DataRegistoDiario != null)
+                {
+                    temp.DataRegistoDiarioSTR = temp.DataRegistoDiario.Value.Year != 1753 ? temp.DataRegistoDiario.Value.ToString("yyyy-MM-dd") : "";
+                }
+            }
+            return Json(result);
+        }
+
+        public JsonResult GetNotasdeCreditoLinesList([FromBody] string contractNo)
+        {
+            List<NAVContractInvoiceLinesViewModel> result = new List<NAVContractInvoiceLinesViewModel>();
+            result = DBNAV2017ContractDetails.GetNotasdeCreditoLinesByNo(contractNo, _config.NAVDatabaseName, _config.NAVCompanyName);
+            foreach (var temp in result)
+            {
+                if (temp.DataRegistoDiario != null)
                 {
                     temp.DataRegistoDiarioSTR = temp.DataRegistoDiario.Value.Year != 1753 ? temp.DataRegistoDiario.Value.ToString("yyyy-MM-dd") : "";
                 }

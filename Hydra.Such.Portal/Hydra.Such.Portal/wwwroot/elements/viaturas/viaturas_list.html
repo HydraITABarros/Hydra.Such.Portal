@@ -92,11 +92,11 @@
             <!--end ColumnToggle-->
         </div>
 
-        <vaadin-grid id="grdViaturasGrid" aria-label="ViaturasGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+        <vaadin-grid column-reordering-allowed id="grdViaturasGrid" aria-label="ViaturasGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.matricula.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="matricula">Matrícula</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="matricula" />
+                    <vaadin-grid-filter path="matricula" value="[[filter.matricula]]" />
                 </template>
                 <template>
                     {{item.matricula}}
@@ -106,7 +106,7 @@
             <vaadin-grid-column width="130px" resizable hidden$="{{ _columns.dataMatricula.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="dataMatricula">Data Matrícula</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataMatricula" />
+                    <vaadin-grid-filter path="dataMatricula" value="[[filter.dataMatricula]]" />
                 </template>
                 <template>
                     {{item.dataMatricula}}
@@ -116,7 +116,7 @@
             <vaadin-grid-column width="90px" resizable hidden$="{{ _columns.estadoDescricao.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="estadoDescricao">Estado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="estadoDescricao" />
+                    <vaadin-grid-filter path="estadoDescricao" value="[[filter.estadoDescricao]]" />
                 </template>
                 <template>
                     {{item.estadoDescricao}}
@@ -126,7 +126,7 @@
             <vaadin-grid-column width="90px" resizable hidden$="{{ _columns.noProjeto.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="noProjeto">Nº Projeto</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="noProjeto" />
+                    <vaadin-grid-filter path="noProjeto" value="[[filter.noProjeto]]" />
                 </template>
                 <template>
                     {{item.noProjeto}}
@@ -136,7 +136,7 @@
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.tipoViatura.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="tipoViatura.descricao">Tipo Viatura</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="tipoViatura.descricao" />
+                    <vaadin-grid-filter path="tipoViatura.descricao" value="[[filter.tipoViatura]]" />
                 </template>
                 <template>
                     {{item.tipoViatura.descricao}}
@@ -146,7 +146,7 @@
             <vaadin-grid-column width="130px" resizable hidden$="{{ _columns.codigoMarca.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codigoMarca">Código Marca</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codigoMarca" />
+                    <vaadin-grid-filter path="codigoMarca" value="[[filter.codigoMarca]]" />
                 </template>
                 <template>
                     {{item.codigoMarca}}
@@ -156,7 +156,7 @@
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.marca.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="marca.descricao">Marca</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="marca.descricao" />
+                    <vaadin-grid-filter path="marca.descricao" value="[[filter.marca]]" />
                 </template>
                 <template>
                     {{item.marca.descricao}}
@@ -166,7 +166,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codigoModelo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codigoModelo">Código Modelo</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codigoModelo" />
+                    <vaadin-grid-filter path="codigoModelo" value="[[filter.codigoModelo]]" />
                 </template>
                 <template>
                     {{item.codigoModelo}}
@@ -176,7 +176,7 @@
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.modelo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="modelo.descricao">Modelo</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="modelo.descricao" />
+                    <vaadin-grid-filter path="modelo.descricao" value="[[filter.modelo]]" />
                 </template>
                 <template>
                     {{item.modelo.descricao}}
@@ -186,7 +186,7 @@
             <vaadin-grid-column width="130px" resizable hidden$="{{ _columns.codigoRegiao.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codigoRegiao">Código Região</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codigoRegiao" />
+                    <vaadin-grid-filter path="codigoRegiao" value="[[filter.codigoRegiao]]" />
                 </template>
                 <template>
                     {{item.codigoRegiao}}
@@ -196,7 +196,7 @@
             <vaadin-grid-column width="180px" resizable hidden$="{{ _columns.codigoAreaFuncional.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codigoAreaFuncional">Código Área Funcional</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codigoAreaFuncional" />
+                    <vaadin-grid-filter path="codigoAreaFuncional" value="[[filter.codigoAreaFuncional]]" />
                 </template>
                 <template>
                     {{item.codigoAreaFuncional}}
@@ -206,7 +206,7 @@
             <vaadin-grid-column width="240px" resizable hidden$="{{ _columns.codigoCentroResponsabilidade.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codigoCentroResponsabilidade">Código Centro Responsabilidade</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codigoCentroResponsabilidade" />
+                    <vaadin-grid-filter path="codigoCentroResponsabilidade" value="[[filter.codigoCentroResponsabilidade]]" />
                 </template>
                 <template>
                     {{item.codigoCentroResponsabilidade}}
@@ -216,7 +216,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.utilizadorCriacao.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="utilizadorCriacao">Utilizador Criação</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="utilizadorCriacao" />
+                    <vaadin-grid-filter path="utilizadorCriacao" value="[[filter.utilizadorCriacao]]" />
                 </template>
                 <template>
                     {{item.utilizadorCriacao}}
@@ -226,7 +226,7 @@
             <vaadin-grid-column width="190px" resizable hidden$="{{ _columns.dataHoraModificacao.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="dataHoraModificacao">Data/Hora Modificação</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataHoraModificacao" />
+                    <vaadin-grid-filter path="dataHoraModificacao" value="[[filter.dataHoraModificacao]]" />
                 </template>
                 <template>
                     {{item.dataHoraModificacao}}
@@ -236,7 +236,7 @@
             <vaadin-grid-column width="190px" resizable hidden$="{{ _columns.utilizadorModificacao.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="utilizadorModificacao">Utilizador Modificação</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="utilizadorModificacao" />
+                    <vaadin-grid-filter path="utilizadorModificacao" value="[[filter.utilizadorModificacao]]" />
                 </template>
                 <template>
                     {{item.utilizadorModificacao}}
@@ -267,12 +267,28 @@
                         value: function () {
                             return {};
                         }
-                    }
+                    },
+                    /*FILTROS*/
+                    filter: {
+                        type: Object,
+                        value: {},
+                    },
                 },
                 _rowSelected: function (item) {
                     if (item != null) {
+                        /*FILTROS*/
+                        var filters = {};
+                        this.$.grdViaturasGrid._filters.map(function (value, index) {
+                            filters[value.path] = value.value;
+                        });
+                        window.setGridFilter('viaturas-viaturaslist', filters || {});
+
                         window.location.href = "/Viaturas/DetalhesViatura/" + item.matricula;
                     }
+                },
+                /*FILTROS*/
+                created: function () {
+                    this.filter = window.getGridFilter('viaturas-viaturaslist');
                 },
                 _create: function (item) {
                     if (item != null) {
@@ -282,6 +298,11 @@
                 ready: function () {
                     this.$.grid_databound_ajax.body = JSON.stringify(this._areaid);
                     this.$.grid_databound_ajax.generateRequest();
+
+                    /*FILTROS*/
+                    window.handleGridListColumnsOrder(this.$.grdViaturasGrid, 'viaturas-viaturaslist');
+                    window.grid = this.$.grdViaturasGrid;
+                    window._this = this;
 
                     /*ColumnToggle*/
                     this._startColumnToggle();

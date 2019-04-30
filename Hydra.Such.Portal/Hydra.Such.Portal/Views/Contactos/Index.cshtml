@@ -177,7 +177,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.noServico.hidden }}">
+            @*<vaadin-grid-column resizable width="150px" hidden$="{{ _columns.noServico.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="noServico">Nº Serviço</vaadin-grid-sorter>
                     <vaadin-grid-filter path="noServico" value="[[filter.noServico]]" />
@@ -185,7 +185,7 @@
                 <template>
                     {{item.noServico}}
                 </template>
-            </vaadin-grid-column>
+            </vaadin-grid-column>*@
 
             <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.servicoNome.hidden }}">
                 <template class="header">
@@ -197,7 +197,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.noFuncao.hidden }}">
+            @*<vaadin-grid-column resizable width="150px" hidden$="{{ _columns.noFuncao.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="noFuncao">Nº Função</vaadin-grid-sorter>
                     <vaadin-grid-filter path="noFuncao" value="[[filter.noFuncao]]" />
@@ -205,7 +205,7 @@
                 <template>
                     {{item.noFuncao}}
                 </template>
-            </vaadin-grid-column>
+            </vaadin-grid-column>*@
 
             <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.funcaoNome.hidden }}">
                 <template class="header">
@@ -426,9 +426,13 @@
 
                 _exportEXCEL: function () {
                     //debugger;
-                    this.Contacts[0].ColunasEXCEL = this._columns;
+                    //this.Contacts[0].ColunasEXCEL = this._columns;
+                    //this.$.ajax_Export.body = JSON.stringify(this.Contacts);
 
-                    this.$.ajax_Export.body = JSON.stringify(this.Contacts);
+                    var result = this.$.grdContacts._filter(this.Contacts);
+                    result[0].ColunasEXCEL = this._columns;
+
+                    this.$.ajax_Export.body = JSON.stringify(result);
                     this.$.ajax_Export.generateRequest();
                 },
                 _exportEXCELResponse: function (e) {
@@ -450,9 +454,9 @@
                         "clienteRegiao": { hidden: false, label: "Cliente Região" },
                         "clienteTelefone": { hidden: false, label: "Cliente Telefone" },
                         "clienteEmail": { hidden: false, label: "Cliente Email" },
-                        "noServico": { hidden: false, label: "Nº Serviço" },
+                        //"noServico": { hidden: false, label: "Nº Serviço" },
                         "servicoNome": { hidden: false, label: "Serviço" },
-                        "noFuncao": { hidden: false, label: "Nº Função" },
+                        //"noFuncao": { hidden: false, label: "Nº Função" },
                         "funcaoNome": { hidden: false, label: "Função" },
                         "nome": { hidden: false, label: "Nome" },
                         "telefone": { hidden: false, label: "Telefone" },

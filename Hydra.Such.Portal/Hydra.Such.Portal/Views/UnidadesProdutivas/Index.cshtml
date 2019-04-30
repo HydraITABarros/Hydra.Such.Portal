@@ -70,11 +70,11 @@
             <!--end ColumnToggle-->
         </div>
 
-        <vaadin-grid id="grdProductivityUnitsTable" aria-label="ProductivityUnitsTable" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+        <vaadin-grid column-reordering-allowed id="grdProductivityUnitsTable" aria-label="ProductivityUnitsTable" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="50px" resizable hidden$="{{ _columns.productivityUnitNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="productivityUnitNo">Nº Unidade Produtiva</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="productivityUnitNo" />
+                    <vaadin-grid-filter path="productivityUnitNo" value="[[filter.productivityUnitNo]]" />
                 </template>
                 <template>
                     {{item.productivityUnitNo}}
@@ -84,7 +84,7 @@
             <vaadin-grid-column width="350px" resizable hidden$="{{ _columns.description.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="description" />
+                    <vaadin-grid-filter path="description" value="[[filter.description]]" />
                 </template>
                 <template>
                     {{item.description}}
@@ -94,7 +94,7 @@
             <vaadin-grid-column width="50px" resizable hidden$="{{ _columns.codeRegion.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codeRegion">Região</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codeRegion" />
+                    <vaadin-grid-filter path="codeRegion" value="[[filter.codeRegion]]" />
                 </template>
                 <template>
                     {{item.codeRegion}}
@@ -104,7 +104,7 @@
             <vaadin-grid-column width="50px" resizable hidden$="{{ _columns.codeFunctionalArea.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codeFunctionalArea">Área Funcional</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codeFunctionalArea" />
+                    <vaadin-grid-filter path="codeFunctionalArea" value="[[filter.codeFunctionalArea]]" />
                 </template>
                 <template>
                     {{item.codeFunctionalArea}}
@@ -114,7 +114,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codeResponsabilityCenter.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codeResponsabilityCenter">Centro Responsabilidade</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codeResponsabilityCenter" />
+                    <vaadin-grid-filter path="codeResponsabilityCenter" value="[[filter.codeResponsabilityCenter]]" />
                 </template>
                 <template>
                     {{item.codeResponsabilityCenter}}
@@ -124,7 +124,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.startDateExploration.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="startDateExploration">Data Inicio Exploração</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="startDateExploration" />
+                    <vaadin-grid-filter path="startDateExploration" value="[[filter.startDateExploration]]" />
                 </template>
                 <template>
                     {{item.startDateExploration}}
@@ -134,7 +134,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.endDateExploration.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="endDateExploration">Data Fim Exploração</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="endDateExploration" />
+                    <vaadin-grid-filter path="endDateExploration" value="[[filter.endDateExploration]]" />
                 </template>
                 <template>
                     {{item.endDateExploration}}
@@ -144,7 +144,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.projectKitchen.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="projectKitchen">Proj. Cozinha</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="projectKitchen" />
+                    <vaadin-grid-filter path="projectKitchen" value="[[filter.projectKitchen]]" />
                 </template>
                 <template>
                     {{item.projectKitchen}}
@@ -154,7 +154,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.projectSubsidiaries.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="projectSubsidiaries">Proj. Mat. Subsidiárias</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="projectSubsidiaries" />
+                    <vaadin-grid-filter path="projectSubsidiaries" value="[[filter.projectSubsidiaries]]" />
                 </template>
                 <template>
                     {{item.projectSubsidiaries}}
@@ -185,9 +185,19 @@
                             return {};
                         }
                     },
+                    /*FILTROS*/
+                    filter: {
+                        type: Object,
+                        value: {},
+                    },
                 },
                 ready: function () {
                     this.$.grid_databound.generateRequest();
+
+                    /*FILTROS*/
+                    window.handleGridListColumnsOrder(this.$.grdProductivityUnitsTable, 'unidadesprodutivas-index');
+                    window.grid = this.$.grdProductivityUnitsTable;
+                    window._this = this;
 
                     /*ColumnToggle*/
                     this._startColumnToggle();
@@ -207,8 +217,19 @@
                 },
                 _rowSelected: function (item) {
                     if (item != null) {
+                        /*FILTROS*/
+                        var filters = {};
+                        this.$.grdProductivityUnitsTable._filters.map(function (value, index) {
+                            filters[value.path] = value.value;
+                        });
+                        window.setGridFilter('unidadesprodutivas-index', filters || {});
+
                         window.location.href = "/UnidadesProdutivas/Detalhes/" + item.productivityUnitNo;
                     }
+                },
+                /*FILTROS*/
+                created: function () {
+                    this.filter = window.getGridFilter('unidadesprodutivas-index');
                 },
                 _create: function (item) {
                     if (item != null) {
@@ -218,9 +239,13 @@
 
                 _exportEXCEL: function () {
                     //debugger;
-                    this.result[0].ColunasEXCEL = this._columns;
+                    //this.result[0].ColunasEXCEL = this._columns;
+                    //this.$.ajax_Export.body = JSON.stringify(this.result);
 
-                    this.$.ajax_Export.body = JSON.stringify(this.result);
+                    var result = this.$.grdProductivityUnitsTable._filter(this.result);
+                    result[0].ColunasEXCEL = this._columns;
+
+                    this.$.ajax_Export.body = JSON.stringify(result);
                     this.$.ajax_Export.generateRequest();
                 },
 

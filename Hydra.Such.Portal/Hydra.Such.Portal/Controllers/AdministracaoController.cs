@@ -7122,9 +7122,10 @@ namespace Hydra.Such.Portal.Controllers
 
             if (userPerm != null && userPerm.Read.Value)
             {
-                ViewBag.CreatePermissions = !userPerm.Create.Value;
-                ViewBag.UpdatePermissions = !userPerm.Update.Value;
-                ViewBag.DeletePermissions = !userPerm.Delete.Value;
+                ViewBag.ReadPermissions = userPerm.Read.Value;
+                ViewBag.CreatePermissions = userPerm.Create.Value;
+                ViewBag.UpdatePermissions = userPerm.Update.Value;
+                ViewBag.DeletePermissions = userPerm.Delete.Value;
                 return View();
             }
             else
@@ -7140,6 +7141,7 @@ namespace Hydra.Such.Portal.Controllers
             UserAccessesViewModel userPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminPedidosDEV);
             if (userPerm != null && userPerm.Read.Value)
             {
+                ViewBag.ReadPermissions = !userPerm.Read.Value;
                 ViewBag.CreatePermissions = !userPerm.Create.Value;
                 ViewBag.UpdatePermissions = !userPerm.Update.Value;
                 ViewBag.DeletePermissions = !userPerm.Delete.Value;
@@ -7150,7 +7152,6 @@ namespace Hydra.Such.Portal.Controllers
                 return RedirectToAction("AccessDenied", "Error");
             }
         }
-
         #endregion
 
         #region Contactos Servicos

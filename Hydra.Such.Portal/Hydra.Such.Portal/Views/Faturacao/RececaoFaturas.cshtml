@@ -183,7 +183,7 @@
             <!--end ColumnToggle-->
         </div>
 
-        <vaadin-grid id="grdgrdBillingReceptions" aria-label="grdBillingReceptions" items="[[BillingReceptions]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+        <vaadin-grid column-reordering-allowed id="grid" aria-label="grdBillingReceptions" items="[[BillingReceptions]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column resizable hidden$="{{ _columns.id.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="id">Nº</vaadin-grid-sorter>
@@ -746,8 +746,8 @@
                 },
                 ready: function () {
                     /*FILTROS*/
-                    window.handleGridListColumnsOrder(this.$.grdgrdBillingReceptions, 'faturacao-rececaofaturas');
-                    window.grdgrdBillingReceptions = this.$.grdgrdBillingReceptions;
+                    window.handleGridListColumnsOrder(this.$.grid, 'faturacao-rececaofaturas');
+                    window.grid = this.$.grid;
                     window._this = this;
 
                     /*ColumnToggle*/
@@ -761,7 +761,7 @@
                 },
 
                 fixGridToBottom: function () {
-                    var grid_el = $(this.$.grdgrdBillingReceptions);
+                    var grid_el = $(this.$.grid);
                     var parentHeight = $(this).offsetParent().height();
                     var offsetTop = $(this).offset().top;
                     var height = parentHeight - offsetTop;
@@ -772,7 +772,7 @@
                     if (item != null) {
                         /*FILTROS*/
                         var filters = {};
-                        this.$.grdgrdBillingReceptions._filters.map(function (value, index) {
+                        this.$.grid._filters.map(function (value, index) {
                             filters[value.path] = value.value;
                         });
                         window.setGridFilter('faturacao-rececaofaturas', filters || {});
@@ -819,7 +819,7 @@
                     //this.BillingReceptions[0].ColunasEXCEL = this._columns;
                     //this.$.ajax_Export.body = JSON.stringify(this.BillingReceptions);
 
-                    var result = this.$.grdgrdBillingReceptions._filter(this.BillingReceptions);
+                    var result = this.$.grid._filter(this.BillingReceptions);
                     result[0].ColunasEXCEL = this._columns;
 
                     this.$.ajax_Export.body = JSON.stringify(result);

@@ -13,5 +13,6 @@ namespace Hydra.Such.Data.ViewModel
         public int WasteRate { get; set; }
         public decimal UnitPrice { get; set; }
         public decimal UnitCost { get; set; }
-}
+        public string VATProductPostingGroup { get; set; }
+    }
 }

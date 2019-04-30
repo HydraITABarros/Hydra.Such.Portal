@@ -289,7 +289,7 @@
                                                             <vaadin-text-field value="{{data.county}}" maxlength="30" id="county" name="county" label="Distrito" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
                                                         </div>
                                                         <div class="col-lg-3">
-                                                            <vaadin-combo-box items='[{"value":"PT"}]' id="country_Region_Code" label="Código Pais/Região" disabled="{{ !_permissions.update }}" item-value-path="value" item-label-path="value" value="{{item.country_Region_Code}}">
+                                                            <vaadin-combo-box items='[{"value":"PT"}]' id="country_Region_Code" label="Código Pais/Região" disabled="{{ !_permissions.update }}" item-value-path="value" item-label-path="value" value="{{data.country_Region_Code}}">
                                                                 <template>
                                                                     &nbsp;[[item.value]]&nbsp;
                                                                 </template>
@@ -303,7 +303,7 @@
 
                                                         <div class="col-lg-3">
                                                             <!--<vaadin-text-field pattern="^(?:\s*\d){9}$" value="{{data.phone_No}}" onKeyDown="forceNumericWithMaxLength(this,event,9, true)" onblur="trimPhone(this,event)" disabled="{{ !_permissions.update }}" id="phone_No" name="phone_No" label="Telefone" required></vaadin-text-field>-->
-                                                            <vaadin-text-field value="{{data.phone_No}}" maxlength="30" disabled="{{ !_permissions.update }}" id="phone_No" name="phone_No" label="Telefone" required></vaadin-text-field>
+                                                            <vaadin-text-field value="{{data.phone_No}}" maxlength="30" disabled="{{ !_permissions.update }}" id="phone_No" name="phone_No" label="Telefone" required error-message="Este campo é obrigatório"></vaadin-text-field>
                                                         </div>
                                                         <div class="col-lg-3">
                                                             <vaadin-text-field value="{{data.e_Mail}}"  maxlength="80" id="e_Mail" name="e_Mail" label="Email" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
@@ -1495,25 +1495,55 @@
                     this.$.ToastMessageError.open();
                 },
                 _validateData: function () {
-                    // TODO: cliente details _validateData [abastos]
-                    var polymerDom = Polymer.dom(this.root);
-                    var errors = 0;
-                    var formSelector = "vaadin-text-field, vaadin-date-picker, vaadin-combo-box";
-                    var formFields = polymerDom.querySelectorAll(formSelector);
-
-                    formFields.forEach(function (element) {
-
-                        if (element.name && element.name.indexOf('shipping') < 0 && !element.validate()) {
-                            errors++
-                        };
-                    });
-
-                    if (errors > 0) {
-                        this._openToastError("Verifique os dados inseridos.");
+                    if (this.$.name.value == undefined || this.$.name.value == null || this.$.name.value == "") {
+                        this._openToastError("O campo Nome é de preenchimento obrigatório.");
                         return false;
                     }
-
+                    if (this.$.address.value == undefined || this.$.address.value == null || this.$.address.value == "") {
+                        this._openToastError("O campo Endereço é de preenchimento obrigatório.");
+                        return false;
+                    }
+                    if (this.$.post_Code.value == undefined || this.$.post_Code.value == null || this.$.post_Code.value == "") {
+                        this._openToastError("O campo Código Postal é de preenchimento obrigatório.");
+                        return false;
+                    }
+                    if (this.$.city.value == undefined || this.$.city.value == null || this.$.city.value == "") {
+                        this._openToastError("O campo Cidade é de preenchimento obrigatório.");
+                        return false;
+                    }
+                    if (this.$.county.value == undefined || this.$.county.value == null || this.$.county.value == "") {
+                        this._openToastError("O campo Distrito é de preenchimento obrigatório.");
+                        return false;
+                    }
+                    if (this.$.phone_No.value == undefined || this.$.phone_No.value == null || this.$.phone_No.value == "") {
+                        this._openToastError("O campo Telefone é de preenchimento obrigatório.");
+                        return false;
+                    }
+                    if (this.$.vaT_Registration_No.value == undefined || this.$.vaT_Registration_No.value == null || this.$.vaT_Registration_No.value == "") {
+                        this._openToastError("O campo Nº Contribuinte é de preenchimento obrigatório.");
+                        return false;
+                    }
                     return true;
+
+                    // TODO: cliente details _validateData [abastos]
+                    //var polymerDom = Polymer.dom(this.root);
+                    //var errors = 0;
+                    //var formSelector = "vaadin-text-field, vaadin-date-picker, vaadin-combo-box";
+                    //var formFields = polymerDom.querySelectorAll(formSelector);
+
+                    //formFields.forEach(function (element) {
+
+                    //    if (element.name && element.name.indexOf('shipping') < 0 && !element.validate()) {
+                    //        errors++
+                    //    };
+                    //});
+
+                    //if (errors > 0) {
+                    //    this._openToastError("Verifique os dados inseridos.");
+                    //    return false;
+                    //}
+
+                    //return true;
                 },
                 _validateShippingData: function () {
 

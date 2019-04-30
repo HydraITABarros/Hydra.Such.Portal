@@ -323,10 +323,10 @@ namespace Hydra.Such.Portal.Controllers
                 if (dp["clienteRegiao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cliente Região"); Col = Col + 1; }
                 if (dp["clienteTelefone"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cliente Telefone"); Col = Col + 1; }
                 if (dp["clienteEmail"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cliente Email"); Col = Col + 1; }
-                if (dp["noServico"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Serviço"); Col = Col + 1; }
-                if (dp["servicoNome"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Serviço Nome"); Col = Col + 1; }
-                if (dp["noFuncao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Função"); Col = Col + 1; }
-                if (dp["funcaoNome"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Função Nome"); Col = Col + 1; }
+                //if (dp["noServico"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Serviço"); Col = Col + 1; }
+                if (dp["servicoNome"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Serviço"); Col = Col + 1; }
+                //if (dp["noFuncao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Função"); Col = Col + 1; }
+                if (dp["funcaoNome"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Função"); Col = Col + 1; }
                 if (dp["nome"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nome"); Col = Col + 1; }
                 if (dp["telefone"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Telefone"); Col = Col + 1; }
                 if (dp["telemovel"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Telemóvel"); Col = Col + 1; }
@@ -353,9 +353,9 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["clienteRegiao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ClienteRegiao); Col = Col + 1; }
                         if (dp["clienteTelefone"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ClienteTelefone); Col = Col + 1; }
                         if (dp["clienteEmail"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ClienteEmail); Col = Col + 1; }
-                        if (dp["noServico"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.NoServico.ToString()); Col = Col + 1; }
+                        //if (dp["noServico"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.NoServico.ToString()); Col = Col + 1; }
                         if (dp["servicoNome"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ServicoNome); Col = Col + 1; }
-                        if (dp["noFuncao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.NoFuncao.ToString()); Col = Col + 1; }
+                        //if (dp["noFuncao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.NoFuncao.ToString()); Col = Col + 1; }
                         if (dp["funcaoNome"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.FuncaoNome); Col = Col + 1; }
                         if (dp["nome"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Nome); Col = Col + 1; }
                         if (dp["telefone"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Telefone); Col = Col + 1; }

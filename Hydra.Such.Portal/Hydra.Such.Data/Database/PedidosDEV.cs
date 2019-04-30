@@ -13,7 +13,7 @@ namespace Hydra.Such.Data.Database
         public DateTime? DataEstado { get; set; }
         public DateTime? DataPedido { get; set; }
         public string PedidoPor { get; set; }
-        public DateTime DataConclusao { get; set; }
+        public DateTime? DataConclusao { get; set; }
         public string Intervenientes { get; set; }
         public int? NoHorasPrevistas { get; set; }
         public int? NoHorasRealizadas { get; set; }

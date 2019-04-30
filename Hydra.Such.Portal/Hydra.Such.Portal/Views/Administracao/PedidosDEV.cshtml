@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "Acordo de Preços";
+    ViewData["Title"] = "Pedido de Desenvolvimento";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -12,7 +12,6 @@
 <link rel="import" href="/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
 
-<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
 <link rel="import" href="/lib/datetime-picker-master/datetime-picker.html">
 <link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
@@ -26,22 +25,11 @@
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html">
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html">
 
-<link rel="import" href="/lib/vaadin-upload/vaadin-upload-file.html">
-<link rel="import" href="/lib/vaadin-upload/vaadin-upload.html">
-
 <link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html" />
 
 <link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
 <link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
-
-<!--ACORDEÃO-->
-<link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
-<link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
-
-<!--SUCH-->
-<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
-<link rel="import" href="/lib/such-textarea/such-textarea.html">
 
 <x-group-cont-product></x-group-cont-product>
 
@@ -149,191 +137,137 @@
         </style>
 
         <!-- DROPDOWNS POPULATE -->
-        <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{LLinhasRegiao}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{LLinhasArea}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{LLinhasCresp}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetNAVVendorComboGrid" last-response="{{CBVendor}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetProductsForCurrentUser" last-response="{{CBItems}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetLocations" last-response="{{CBLocations}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/Get_AP_FormaEntrega" last-response="{{LLinhasFormaEntrega}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/Get_AP_TipoPreco" last-response="{{LLinhasTipoPreco}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/Get_DEV_Estados" last-response="{{ListEstados}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/Administracao/GetAcordoPrecosConfigData"
+        <iron-ajax url="/PedidosDEV/GetPedidoDesenvolvimento"
                    last-response="{{data}}"
                    method="post"
                    handle-as="json"
-                   id="page_databound_ajax"
+                   id="ajax_GetPedidoDesenvolvimento"
+                   on-response="_getDEVResponse"
                    content-type="application/json">
         </iron-ajax>
 
-        <iron-ajax url="/Administracao/CreateAcordoPrecos"
-                   last-response="{{_createResult}}"
+        <iron-ajax url="/PedidosDEV/CreatePedidoDesenvolvimento"
+                   last-response="{{createDEV}}"
                    method="post"
-                   on-response="_createAcordoPrecos_Response"
                    handle-as="json"
-                   id="ajax_acordoPrecos_create"
+                   on-response="_createDEVResponse"
+                   id="ajax_CreatePedidoDesenvolvimento"
                    content-type="application/json">
         </iron-ajax>
 
-        <iron-ajax url="/Administracao/CreateLinhaAcordoPrecos"
-                   last-response="{{_createResult}}"
+        <iron-ajax url="/PedidosDEV/UpdatePedidoDesenvolvimento"
+                   last-response="{{updateDEV}}"
                    method="post"
-                   on-response="_createLinhaAcordoPrecos_Response"
                    handle-as="json"
-                   id="ajax_linhaAcordoPrecos_create"
+                   on-response="_updateDEVResponse"
+                   id="ajax_UpdatePedidoDesenvolvimento"
                    content-type="application/json">
         </iron-ajax>
 
-        <iron-ajax url="/Administracao/CreateFornecedorAcordoPrecos"
-                   last-response="{{_createResult}}"
-                   method="post"
-                   on-response="_createFornecedorResponse"
-                   handle-as="json"
-                   id="ajax_fornecedor_create"
-                   content-type="application/json">
-        </iron-ajax>
-
-        <iron-ajax url="/Administracao/VerificarNoProcedimento"
-                   last-response="{{_verificarNoProcedimento_Result}}"
-                   method="post"
-                   on-response="_validarNoProcedimento_Response"
-                   handle-as="json"
-                   id="ajax_verificarNoProcedimento"
-                   content-type="application/json">
-        </iron-ajax>
-
-        <iron-ajax url="/Administracao/DeleteLinha"
-                   last-response="{{LinhaDeleted}}"
+        <iron-ajax url="/PedidosDEV/DeletePedidoDesenvolvimento"
+                   last-response="{{deletedDEV}}"
                    method="post"
                    handle-as="json"
-                   id="page_deleteLinha_ajax"
-                   on-response="_deleteLinhaResponse"
-                   content-type="application/json">
-        </iron-ajax>
-
-        <iron-ajax url="/Administracao/DeleteFornecedor"
-                   last-response="{{FornecedorDeleted}}"
-                   method="post"
-                   handle-as="json"
-                   id="page_deleteFornecedor_ajax"
-                   on-response="_deleteFornecedorResponse"
-                   content-type="application/json">
-        </iron-ajax>
-
-        <iron-ajax url="/Administracao/DeleteAnexosErros"
-                   last-response="{{AnexosErrosDeleted}}"
-                   method="post"
-                   handle-as="json"
-                   id="page_deleteAnexosErros_ajax"
-                   on-response="_deleteFileAnexosErrosResponse"
-                   content-type="application/json">
-        </iron-ajax>
-
-        <iron-ajax url="/Administracao/ExportToExcel_AcordoPrecos"
-                   last-response="{{export}}"
-                   id="ajax_Export"
-                   method="post"
-                   handle-as="json"
-                   on-response="_ExportResponse"
-                   content-type="application/json">
-        </iron-ajax>
-
-        <iron-ajax url="/Administracao/UpdateCreate_AcordoPrecos"
-                   last-response="{{result}}"
-                   method="post"
-                   on-response="_updateCreateResponse"
-                   handle-as="json"
-                   id="ajax_updateCreate"
-                   content-type="application/json">
-        </iron-ajax>
-
-        <iron-ajax url="/Administracao/UpdateLinhaAcordoPreco"
-                   last-response="{{linhaAcordoPrecoUpdated}}"
-                   method="post"
-                   handle-as="json"
-                   id="page_updateLinhaAcordoPreco_ajax"
-                   on-response="_updateLinhaLinhaAcordoPrecoResponse"
+                   on-response="_deleteDEVResponse"
+                   id="ajax_DeletePedidoDesenvolvimento"
                    content-type="application/json">
         </iron-ajax>
 
         <div class="subMenu">
             <paper-button id="btnGoBack" class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
-            @if (ViewBag.NoPedidoDEV == "0") {
-            <paper-button id="btnAddNew" class="tablinks" on-tap="_createPedidosDEV" disabled="{{ _permissionsCreate }}"><i class="fa fa-check" aria-hidden="true"></i> Criar Novo Pedido</paper-button> }
+
+            @if (ViewBag.NoPedidoDEV == "0")
+            {
+                <paper-button id="btnCreate" class="tablinks" on-tap="_createPedidoDEV" disabled="{{ _permissionsCreate }}"><i class="fa fa-check" aria-hidden="true"></i> Criar Novo Pedido</paper-button>
+            }
+            else
+            {
+                <paper-button id="btnUpdate" class="tablinks" on-tap="_updatePedidoDEV" disabled="{{ _permissionsUpdate }}"><i class="fa fa-save" aria-hidden="true"></i> Gravar Pedido</paper-button>
+            }
         </div>
 
         <div class="panel-body">
             <div class="row break_clear">
-                <div class="col-sm-3" hidden>
-                    <vaadin-text-field id="pedidosDEVID" value="{{data.id}}" label="ID" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
-                </div>
-
-                <div class="col-sm-3">
-                    <vaadin-text-field id="pedidosDEVProcesso" value="{{data.processo}}" label="Processo" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
-                </div>
-
-                <div class="col-sm-9">
-                    <such-textarea id="pedidosDEVDescricao" value="{{data.descricao}}" label="Descrição" rows="5" disabled="{{ _permissionsCreate }}"></such-textarea>
-                </div>
-            </div>
-
-            <div class="row break_clear">
-                <div class="col-sm-3">
-                    <vaadin-text-field id="pedidosDEVURL" value="{{data.url}}" label="Link da Página" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
-                </div>
-
-                <div class="col-sm-3">
-                    <vaadin-text-field id="pedidosDEVEstado" value="{{data.estado}}" label="Estado" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
-                </div>
-
-                <div class="col-sm-3">
-                    <vaadin-date-picker id="pedidosDEVDataEstado" value="{{data.dataEstado}}" label="Data do Estado" disabled="{{ _permissionsCreate }}"></vaadin-date-picker>
-                </div>
-
-                <div class="col-sm-3">
-                    <vaadin-date-picker id="pedidosDEVDataPedido" value="{{data.dataPedido}}" label="Data do Pedido" disabled="{{ _permissionsCreate }}"></vaadin-date-picker>
-                </div>
-
-            </div>
-
-            <div class="row break_clear">
-                <div class="col-sm-3">
-                    <vaadin-text-field id="pedidosDEVPedidoPor" value="{{data.pedidoPor}}" label="Pedido Por" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
-                </div>
-
-                <div class="col-sm-3">
-                    <vaadin-date-picker id="pedidosDEVDataConclusao" value="{{data.dataConclusao}}" label="Data da Conclusão" disabled="{{ _permissionsCreate }}"></vaadin-date-picker>
+                <div class="col-sm-2">
+                    <vaadin-text-field id="pedidosDEVID" value="{{data.id}}" label="ID" disabled></vaadin-text-field>
                 </div>
 
                 <div class="col-sm-6">
-                    <vaadin-text-field id="pedidosDEVIntervenientes" value="{{data.intervenientes}}" label="Intervenientes" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+                    <vaadin-text-field id="pedidosDEVProcesso" value="{{data.processo}}" label="Processo" maxlength="2000" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
                 </div>
 
+                <div class="col-sm-2">
+                    <vaadin-combo-box items="[[ListEstados]]" id="pedidosDEVEstado" item-value-path="id" item-label-path="value" value="{{data.estado}}" label="Estado" disabled="{{ _permissionsUpdate }}">
+                        <template>
+                            <table>
+                                <tr>
+                                    <td width="100%"> <b>[[item.value]]</b></td>
+                                </tr>
+                            </table>
+                        </template>
+                    </vaadin-combo-box>
+                </div>
+
+                <div class="col-sm-2">
+                    <vaadin-date-picker id="pedidosDEVDataEstado" value="{{data.dataEstadoText}}" label="Data do Estado" disabled></vaadin-date-picker>
+                </div>
             </div>
 
             <div class="row break_clear">
-                <div class="col-sm-2">
-                    <vaadin-text-field id="pedidosDEVNoHorasPrevistas" value="{{data.noHorasPrevistas}}" label="Nº de Horas Previstas" type="number" class="alignRight" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+                <div class="col-sm-12">
+                    <such-textarea id="pedidosDEVDescricao" value="{{data.descricao}}" label="Descrição" rows="5" maxlength="2000" disabled="{{ _permissionsUpdate }}"></such-textarea>
+                </div>
+            </div>
+
+            <div class="row break_clear">
+                <div class="col-sm-4">
+                    <vaadin-text-field id="pedidosDEVURL" value="{{data.url}}" label="Link da Página" maxlength="2000" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
+                </div>
+
+                <div class="col-sm-4">
+                    <vaadin-text-field id="pedidosDEVPedidoPor" value="{{data.pedidoPor}}" label="Pedido Por" maxlength="2000" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
                 </div>
 
                 <div class="col-sm-2">
-                    <vaadin-text-field id="pedidosDEVNoHorasRealizadas" value="{{data.noHorasRealizadas}}" label="Nº de Horas Realizadas" type="number" class="alignRight" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+                    <vaadin-date-picker id="pedidosDEVDataPedido" value="{{data.dataPedidoText}}" label="Data do Pedido" disabled="{{ _permissionsUpdate }}"></vaadin-date-picker>
                 </div>
 
                 <div class="col-sm-2">
+                    <vaadin-date-picker id="pedidosDEVDataConclusao" value="{{data.dataConclusaoText}}" label="Data da Conclusão" disabled="{{ _permissionsUpdate }}"></vaadin-date-picker>
+                </div>
+            </div>
+
+            <div class="row break_clear">
+                <div class="col-sm-8">
+                    <vaadin-text-field id="pedidosDEVIntervenientes" value="{{data.intervenientes}}" label="Intervenientes" maxlength="2000" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
+                </div>
+
+                <div class="col-sm-2">
+                    <vaadin-text-field id="pedidosDEVNoHorasPrevistas" value="{{data.noHorasPrevistas}}" label="Nº de Horas Previstas" type="number" class="alignRight" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
+                </div>
+
+                <div class="col-sm-2">
+                    <vaadin-text-field id="pedidosDEVNoHorasRealizadas" value="{{data.noHorasRealizadas}}" label="Nº de Horas Realizadas" type="number" class="alignRight" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
+                </div>
+            </div>
+
+            <div class="row break_clear">
+                <div class="col-sm-3">
                     <vaadin-text-field id="pedidosDEVCriadoPor" value="{{data.criadoPor}}" label="Criado Por" disabled></vaadin-text-field>
                 </div>
 
-                <div class="col-sm-2">
-                    <vaadin-date-picker id="pedidosDEVDataCriacao" value="{{data.dataCriacao}}" label="Data de Criação" disabled></vaadin-date-picker>
+                <div class="col-sm-3">
+                    <vaadin-date-picker id="pedidosDEVDataCriacaoText" value="{{data.dataCriacaoText}}" label="Data de Criação" disabled></vaadin-date-picker>
                 </div>
 
-                <div class="col-sm-2">
+                <div class="col-sm-3">
                     <vaadin-text-field id="pedidosDEVAlteradoPor" value="{{data.alteradoPor}}" label="Alterado Por" disabled></vaadin-text-field>
                 </div>
 
-                <div class="col-sm-2">
-                    <vaadin-date-picker id="pedidosDEVDataAlteracao" value="{{data.dataAlteracao}}" label="Data de Alteração" disabled></vaadin-date-picker>
+                <div class="col-sm-3">
+                    <vaadin-date-picker id="pedidosDEVDataAlteracaoText" value="{{data.dataAlteracaoText}}" label="Data de Alteração" disabled></vaadin-date-picker>
                 </div>
             </div>
         </div>
@@ -343,7 +277,12 @@
     </template>
 
     <script>
-        var CreateValue = true, UpdateValue = true, DeleteValue = true;
+        var ReadValue = true, CreateValue = true, UpdateValue = true, DeleteValue = true;
+        /**/
+        if ('@Html.Raw(Json.Serialize(ViewBag.ReadPermissions))' == "false") {
+            /**/
+            ReadValue = false;
+        }
         /**/
         if ('@Html.Raw(Json.Serialize(ViewBag.CreatePermissions))' == "false") {
             /**/
@@ -365,13 +304,17 @@
                 Polymer({
                     is: 'x-group-cont-product',
                     properties: {
-                        _permissionsUpdate: {
+                        _permissionsRead: {
                             type: Boolean,
-                            value: UpdateValue
+                            value: ReadValue
                         },
                         _permissionsCreate: {
                             type: Boolean,
                             value: CreateValue
+                        },
+                        _permissionsUpdate: {
+                            type: Boolean,
+                            value: UpdateValue
                         },
                         _permissionsDelete: {
                             type: Boolean,
@@ -380,8 +323,11 @@
                     },
 
                     ready: function () {
-                        this.$.page_databound_ajax.body = JSON.stringify({ "ID": "@ViewBag.NoPedidoDEV" });
-                        this.$.page_databound_ajax.generateRequest();
+                        this.$.ajax_GetPedidoDesenvolvimento.body = JSON.stringify({ "ID": "@ViewBag.NoPedidoDEV" });
+                        this.$.ajax_GetPedidoDesenvolvimento.generateRequest();
+                    },
+                    _getDEVResponse: function (e) {
+                        this._setFieldsEditability();
                     },
 
                     //Mostra Mensagens
@@ -396,248 +342,89 @@
                         this.$.ToastMessageError.open();
                     },
 
-                    _validateData: function (container) {
-                        var polymerDom = Polymer.dom(this.$[container]);
-                        var errors = 0;
-                        var formSelector = "vaadin-text-field, vaadin-date-picker, vaadin-combo-box";
-                        var formFields = polymerDom.querySelectorAll(formSelector);
-
-                        formFields.forEach(function (element) {
-                            if (!element.validate()) {
-                                errors++;
-                            }
-                        });
-
-                        if (errors > 0) {
-                            this._showErrorMessage('Verifique os dados inseridos.');
-                            return false;
-                        }
-
-                        return true;
-                    },
-
-                    _createAcordoPrecos: function () {
-                        if (this._validateData("acordoPrecosCreate")) {
-                            this.$.ajax_acordoPrecos_create.body = JSON.stringify({
-                                noProcedimento: this.$.acordoPrecosNoProcedimento.value,
-                                dtInicio: this.$.acordoPrecosDtInicio.value,
-                                dtFim: this.$.acordoPrecosDtFim.value,
-                                valorTotal: this.$.acordoPrecosValorTotal.value
-                            });
-                            this.$.ajax_acordoPrecos_create.generateRequest();
-                        }
-                    },
-                    _createAcordoPrecos_Response: function (e) {
-                        if (this._createResult == 0) {
-                            this.$.linhasNoProcedimento.value = this.$.acordoPrecosNoProcedimento.value;
-                            this.$.fornecedorNoProcedimento.value = this.$.acordoPrecosNoProcedimento.value;
-                            this._showMessage('Acordo de Preços criado com sucesso.');
-                        }
-
-                        if (this._createResult == 1) {
-                            this.$.linhasNoProcedimento.value = "";
-                            this._showErrorMessage('Ocorreu um erro ao criar o Acordo de Preços.');
-                        }
-                    },
-
-
-                    _deleteFornecedor: function (e) {
-                        var noProcedimento = e.model.item.noProcedimento;
-                        var noFornecedor = e.model.item.noFornecedor;
-
-                        var ajax_request = this.$.page_deleteFornecedor_ajax;
-
-                        bootbox.confirm({
-                            message: "Tem a certeza que pretende remover o Fornecedor?",
-                            buttons: {
-                                confirm: {
-                                    label: 'Sim',
-                                    className: 'btn-success'
-                                },
-                                cancel: {
-                                    label: 'Não',
-                                    className: 'btn-danger'
-                                }
-                            },
-                            callback: function (deleteFornecedor) {
-                                if (deleteFornecedor) {
-                                    ajax_request.body = JSON.stringify({
-                                        noProcedimento: noProcedimento,
-                                        noFornecedor: noFornecedor
-                                    });
-                                    ajax_request.generateRequest();
-                                    this.$.tabFornecedores.clearCache();
-                                }
-                            }
-                        });
-                    },
-
-                    _deleteFornecedorResponse: function (e) {
-                        var self = this;
-
-                        setTimeout(function () {
-                            bootbox.hideAll();
-                        }, 0);
-
-                        if (this.FornecedorDeleted == 0) {
-                            this.$.page_databound_ajax.generateRequest();
-                            this._showMessage('O Fornecedor foi removido com sucesso.');
-                        } else {
-                            if (this.FornecedorDeleted == 1) {
-                                this._showErrorMessage('Ocorreu um erro ao eliminar o Fornecedor.');
-                            } else {
-                                if (this.FornecedorDeleted == 99) {
-                                    this._showErrorMessage('Ocorreu um erro!!!');
-                                }
-                            }
-                        };
-                    },
-
-                    _refreshAnexosErros: function (e) {
-                        this.$.page_databound_ajax.body = JSON.stringify({ "NoPedidoDEV": "@ViewBag.NoPedidoDEV" });
-                        this.$.page_databound_ajax.generateRequest();
-                    },
-
-                    _deleteFileAnexosErros: function (e) {
-                        var code = e.model.item.codeTexto;
-
-                        var ajax_request = this.$.page_deleteAnexosErros_ajax;
-
-                        bootbox.confirm({
-                            message: "Tem a certeza que pretende remover o Anexo?",
-                            buttons: {
-                                confirm: {
-                                    label: 'Sim',
-                                    className: 'btn-success'
-                                },
-                                cancel: {
-                                    label: 'Não',
-                                    className: 'btn-danger'
-                                }
-                            },
-                            callback: function (deleteAnexosErros) {
-                                if (deleteAnexosErros) {
-                                    ajax_request.body = JSON.stringify({
-                                        codeTexto: code
-                                    });
-                                    ajax_request.generateRequest();
-                                    this.$.tabAnexosErros.clearCache();
-                                }
-                            }
-                        });
-                    },
-
-                    _deleteFileAnexosErrosResponse: function (e) {
-                        var self = this;
-
-                        setTimeout(function () {
-                            bootbox.hideAll();
-                        }, 0);
-
-                        if (this.AnexosErrosDeleted == 0) {
-                            this.$.page_databound_ajax.generateRequest();
-                            this._showMessage('O Anexo foi removido com sucesso.');
-                        } else {
-                            if (this.AnexosErrosDeleted == 1) {
-                                this._showErrorMessage('Ocorreu um erro ao eliminar o Anexo.');
-                            } else {
-                                if (this.AnexosErrosDeleted == 99) {
-                                    this._showErrorMessage('Ocorreu um erro!!!');
-                                }
-                            }
-                        };
-                    },
-
                     _goBack: function (e) {
                         window.history.back();
                     },
 
-                    _export: function () {
-                        console.log(this.data);
-                        var data = JSON.stringify(this.data);
-                        var dataObj = JSON.parse(data);
-                        dataObj.linhasAcordoPrecos = this.$.tabLinhas._filter(this.data.linhasAcordoPrecos);
-
-                        this.$.ajax_Export.body = JSON.stringify(dataObj);
-                        this.$.ajax_Export.generateRequest();
-                        this.$.tabLinhas.clearCache();
+                    _createPedidoDEV: function () {
+                        this.$.ajax_CreatePedidoDesenvolvimento.body = JSON.stringify(this.data);
+                        this.$.ajax_CreatePedidoDesenvolvimento.generateRequest();
                     },
+                    _createDEVResponse: function (e) {
+                        if (this.createDEV.eReasonCode == 1) {
+                            this._showMessage(this.createDEV.eMessage);
 
-                    _ExportResponse: function (e) {
-                        var FileName = this.export;
-                        location.href = '../ExportToExcelDownload_AcordoPrecos?sFileName=' + FileName;
-                    },
-
-                    _addExcel: function () {
-                        var urlFile = "/Administracao/OnPostImport_AcordoPrecos";
-                        var toastSuccess = this.$.ToastMessageSuccess;
-                        var toastError = this.$.ToastMessageError;
-                        var data = new FormData();
-                        var uploadFile = this.$.UploadRequest.files;
-                        var ajaxImport = this.$.ajax_updateCreate;
-                        var vaadinGrid = this.$.tabLinhas;
-                        for (var i = 0; i < uploadFile.length; i++) {
-                            data.append(uploadFile[i].name, uploadFile[i]);
-                        }
-                        $.ajax({
-                            type: "POST",
-                            url: urlFile,
-                            contentType: false,
-                            processData: false,
-                            data: data,
-                            success: function (ListToCreate) {
-                                ajaxImport.body = JSON.stringify(ListToCreate);
-                                ajaxImport.generateRequest();
-                                vaadinGrid.clearCache();
-                                toastSuccess.text = "Tabela atualizada com sucesso, faça atualizar para mostrar os novos dados.";
-                                toastSuccess.open();
-                            },
-                            error: function () {
-                                toastError.text = "Ocorreu um problema ao fazer o upload do(s) Ficheiro(s).";
-                                toastError.open();
-                            }
-                        });
-                    },
-
-                    _refresh: function () {
-                        this.$.page_databound_ajax.body = JSON.stringify({ "NoPedidoDEV": "@ViewBag.NoPedidoDEV" });
-                        this.$.page_databound_ajax.generateRequest();
-                    },
-
-                    _updateCreateResponse: function (e) {
-                        var self = this;
-                        if (e.detail.status === 200) {
-                            this.$.ajax_GetAll.generateRequest();
+                            window.location.href = "/Administracao/PedidosDEV/" + this.createDEV.id;
                         }
                         else {
-                            this._showErrorMessage("Occorreu um erro ao atualizar a Tabela.");
+                            this._showErrorMessage(this.createDEV.eMessage);
                         }
                     },
 
-                    _updateLinhaAcordoPreco: function (e) {
-                        debugger;
-                        var index = this.data.linhasAcordoPrecos.indexOf(e.model.item);
+                    _updatePedidoDEV: function () {
+                        if (this.data.estado != 2 && this.data.estado != 6) { //2 = Recusado  6 = Concluído
+                            this.$.ajax_UpdatePedidoDesenvolvimento.body = JSON.stringify(this.data);
+                            this.$.ajax_UpdatePedidoDesenvolvimento.generateRequest();
+                        }
+                        else {
+                            var _self = this;
+                            var ajax_request = _self.$.ajax_UpdatePedidoDesenvolvimento;
 
-                        this.$.page_updateLinhaAcordoPreco_ajax.body = JSON.stringify({
-                            noProcedimento: e.model.item.noProcedimento,
-                            noFornecedor: e.model.item.noFornecedor,
-                            codProduto: e.model.item.codProduto,
-                            dtValidadeInicio: e.model.item.dtValidadeInicio,
-                            cresp: e.model.item.cresp,
-                            localizacao: e.model.item.localizacao,
-                            dtValidadeFim: e.model.item.dtValidadeFimTexto
-                        });
-                        this.$.page_updateLinhaAcordoPreco_ajax.generateRequest();
-                        this.$.tabLinhas.clearCache();
-                    },
-                    _updateLinhaLinhaAcordoPrecoResponse: function (e) {
-                        var self = this;
-                        if (this.linhaAcordoPrecoUpdated.eReasonCode == 1) {
-                            this._showMessage(this.linhaAcordoPrecoUpdated.eMessage);
-                        } else {
-                            this._showErrorMessage(this.linhaAcordoPrecoUpdated.eMessage);
+                            bootbox.confirm({
+                                message: "O Pedido de Desenvolvimento irá ficar bloqueado, tem a certeza que deseja continuar?",
+                                buttons: {
+                                    confirm: {
+                                        label: 'Sim',
+                                        className: 'btn-success'
+                                    },
+                                    cancel: {
+                                        label: 'Não',
+                                        className: 'btn-danger'
+                                    }
+                                },
+                                callback: function (updateDEV) {
+                                    if (updateDEV) {
+                                        ajax_request.body = JSON.stringify(_self.data);
+                                        ajax_request.generateRequest();
+                                    }
+                                }
+                            });
                         }
                     },
+                    _updateDEVResponse: function (e) {
+                        if (this.updateDEV.eReasonCode == 1) {
+                            this._showMessage(this.updateDEV.eMessage);
+
+                            window.location.href = "/Administracao/PedidosDEV/" + this.data.id;
+                        }
+                        else {
+                            this._showErrorMessage(this.updateDEV.eMessage);
+                        }
+                    },
+
+                    _setFieldsEditability() {
+                        var _self = this;
+
+                        if (_self.data.id == 0 && _self.data.estado == 0) { //0 = Pedido
+                            _self.$.pedidosDEVEstado.disabled = true;
+                        }
+
+                        if (_self.data.estado == 2 || _self.data.estado == 6) { //2 = Recusado  6 = Concluído
+                            (_self.$.btnUpdate).hidden = true;
+
+                            _self.$.pedidosDEVProcesso.disabled = true;
+                            _self.$.pedidosDEVEstado.disabled = true;
+                            _self.$.pedidosDEVDescricao.disabled = true;
+                            _self.$.pedidosDEVURL.disabled = true;
+                            _self.$.pedidosDEVPedidoPor.disabled = true;
+                            _self.$.pedidosDEVDataPedido.disabled = true;
+                            _self.$.pedidosDEVDataConclusao.disabled = true;
+                            _self.$.pedidosDEVIntervenientes.disabled = true;
+                            _self.$.pedidosDEVNoHorasPrevistas.disabled = true;
+                            _self.$.pedidosDEVNoHorasRealizadas.disabled = true;
+                        }
+                    },
+
 
                 });
             });

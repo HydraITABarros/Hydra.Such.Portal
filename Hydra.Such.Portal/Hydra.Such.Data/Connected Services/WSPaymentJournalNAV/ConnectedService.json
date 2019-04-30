@@ -1,12 +1,9 @@
 ﻿{
   "ProviderId": "Microsoft.VisualStudio.ConnectedService.Wcf",
   "Version": "15.0.20628.921",
-  "GettingStartedDocument": {
-    "Uri": "https://go.microsoft.com/fwlink/?linkid=858517"
-  },
   "ExtendedData": {
-    "Uri": "http://10.101.1.11:7047/DynamicsNAV100/WS/SUCH/Page/WSPreInvoice",
-    "Namespace": "WSCreatePreInvoice",
+    "Uri": "http://10.101.1.11:7047/DynamicsNAV100/WS/SUCH/Page/WSPaymentJournal",
+    "Namespace": "WSPaymentJournalNAV",
     "SelectedAccessLevelForGeneratedClass": "Public",
     "GenerateMessageContract": false,
     "ReuseTypesinReferencedAssemblies": true,
@@ -21,7 +18,7 @@
     },
     "CheckedReferencedAssemblies": [],
     "InstanceId": null,
-    "Name": "WSCreatePreInvoice",
+    "Name": "WSPaymentJournalNAV",
     "Metadata": {}
   }
 }

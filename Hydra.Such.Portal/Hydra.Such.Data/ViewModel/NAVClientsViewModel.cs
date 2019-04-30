@@ -42,5 +42,6 @@ namespace Hydra.Such.Data.ViewModel
         public bool ClienteInterno { get; set; }
         public string NoFornecedorAssoc { get; set; }
         public Blocked Blocked { get; set; }
+        public string VATBusinessPostingGroup { get; set; }
     }
 }

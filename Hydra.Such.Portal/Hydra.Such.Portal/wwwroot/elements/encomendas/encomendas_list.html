@@ -208,7 +208,7 @@
             <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.no.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="no">Nº</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="no" />
+                    <vaadin-grid-filter path="no" value="[[filter.no]]" />
                 </template>
                 <template>
                     {{item.no}}
@@ -217,7 +217,7 @@
             <vaadin-grid-column width="170px" resizable hidden$="{{ _columns.payToVendorNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="payToVendorNo">Código Fornecedor</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="payToVendorNo" />
+                    <vaadin-grid-filter path="payToVendorNo" value="[[filter.payToVendorNo]]" />
                 </template>
                 <template>
                     {{item.payToVendorNo}}
@@ -226,7 +226,7 @@
             <vaadin-grid-column width="220px" resizable hidden$="{{ _columns.payToName.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="payToName">Nome Fornecedor</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="payToName" />
+                    <vaadin-grid-filter path="payToName" value="[[filter.payToName]]" />
                 </template>
                 <template>
                     {{item.payToName}}
@@ -235,7 +235,7 @@
             <vaadin-grid-column width="220px" resizable hidden$="{{ _columns.yourReference.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="yourReference">Sua Referência</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="yourReference" />
+                    <vaadin-grid-filter path="yourReference" value="[[filter.yourReference]]" />
                 </template>
                 <template>
                     {{item.yourReference}}
@@ -245,7 +245,7 @@
             <vaadin-grid-column width="170px" resizable hidden$="{{ _columns.orderDate.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="orderDate">Data da Encomenda</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="orderDate" />
+                    <vaadin-grid-filter path="orderDate" value="[[filter.orderDate]]" />
                 </template>
                 <template>
                     {{item.orderDate}}
@@ -254,7 +254,7 @@
             <vaadin-grid-column width="220px" resizable hidden$="{{ _columns.noConsulta.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="noConsulta">Nº Consulta Mercado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="noConsulta" />
+                    <vaadin-grid-filter path="noConsulta" value="[[filter.noConsulta]]" />
                 </template>
                 <template>
                     {{item.noConsulta}}
@@ -264,7 +264,7 @@
             <vaadin-grid-column width="220px" resizable hidden$="{{ _columns.vlrRececionadoComIVA.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="vlrRececionadoComIVA">Vlr rececionado com IVA</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="vlrRececionadoComIVA" />
+                    <vaadin-grid-filter path="vlrRececionadoComIVA" value="[[filter.vlrRececionadoComIVA]]" />
                 </template>
                 <template>
                     <div class="text-right">
@@ -276,7 +276,7 @@
             <vaadin-grid-column width="220px" resizable hidden$="{{ _columns.vlrRececionadoSemIVA.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="vlrRececionadoSemIVA">Vlr rececionado sem IVA</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="vlrRececionadoSemIVA" />
+                    <vaadin-grid-filter path="vlrRececionadoSemIVA" value="[[filter.vlrRececionadoSemIVA]]" />
                 </template>
                 <template>
                     <div class="text-right">
@@ -288,7 +288,7 @@
             <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.total.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="total">Total</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="total" />
+                    <vaadin-grid-filter path="total" value="[[filter.total]]" />
                 </template>
                 <template>
                     <div class="text-right">
@@ -300,7 +300,7 @@
             <vaadin-grid-column width="170px" resizable hidden$="{{ _columns.expectedReceiptDate.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="expectedReceiptDate">Data Recepção Esperada</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="expectedReceiptDate" />
+                    <vaadin-grid-filter path="expectedReceiptDate" value="[[filter.expectedReceiptDate]]" />
                 </template>
                 <template>
                     {{item.expectedReceiptDate}}
@@ -310,7 +310,7 @@
             <vaadin-grid-column width="220px" resizable hidden$="{{ _columns.requisitionNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="requisitionNo">Nº Requisição</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="requisitionNo" />
+                    <vaadin-grid-filter path="requisitionNo" value="[[filter.requisitionNo]]" />
                 </template>
                 <template>
                     {{item.requisitionNo}}
@@ -320,7 +320,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.regionId.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="regionId">Cód. Região</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="regionId" />
+                    <vaadin-grid-filter path="regionId" value="[[filter.regionId]]" />
                 </template>
                 <template>
                     {{item.regionId}}
@@ -329,7 +329,7 @@
             <vaadin-grid-column width="170px" resizable hidden$="{{ _columns.functionalAreaId.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="functionalAreaId">Cód. Área Funcional</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="functionalAreaId" />
+                    <vaadin-grid-filter path="functionalAreaId" value="[[filter.functionalAreaId]]" />
                 </template>
                 <template>
                     {{item.functionalAreaId}}
@@ -338,7 +338,7 @@
             <vaadin-grid-column width="220px" resizable hidden$="{{ _columns.respCenterId.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="respCenterId">Cód. Centro de Responsabilidade</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="respCenterId" />
+                    <vaadin-grid-filter path="respCenterId" value="[[filter.respCenterId]]" />
                 </template>
                 <template>
                     {{item.respCenterId}}
@@ -348,7 +348,7 @@
             <vaadin-grid-column width="130px" resizable hidden$="{{ _columns.hasAnAdvance.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="hasAnAdvance">Adiantamento</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="hasAnAdvance" />
+                    <vaadin-grid-filter path="hasAnAdvance" value="[[filter.hasAnAdvance]]" />
                 </template>
                 <template>
                     [[_formatBoolValue(item.hasAnAdvance)]]
@@ -383,6 +383,11 @@
                             return {};
                         }
                     },
+                    /*FILTROS*/
+                    filter: {
+                        type: Object,
+                        value: {},
+                    },
                     loaded: {
                         type: Boolean,
                         value: false
@@ -407,18 +412,33 @@
                     fornecedor: {
                         type: String,
                         value: ""
-                    }
+                    },
                 },
                 _rowSelected: function (item) {
                     if (item != null) {
+                        /*FILTROS*/
+                        var filters = {};
+                        this.$.grid._filters.map(function (value, index) {
+                            filters[value.path] = value.value;
+                        });
+                        window.setGridFilter('encomendas-encomendaslist', filters || {});
+
                         window.location.href = "Encomendas/DetalhesEncomenda/" + item.no;
                     }
                 },
+                /*FILTROS*/
+                created: function () {
+                    this.filter = window.getGridFilter('encomendas-encomendaslist');
+                },
                 ready: function () {
-
                     //this.$.grid_databound_ajax.generateRequest();
-
                     window.handleGridListColumnsOrder(this.$.grid, 'encomendas');
+
+                    /*FILTROS*/
+                    window.handleGridListColumnsOrder(this.$.grid, 'encomendas-encomendaslist');
+                    window.grid = this.$.grid;
+                    window._this = this;
+
                     /*ColumnToggle*/
                     this._startColumnToggle();
 
@@ -444,9 +464,13 @@
                 },
 
                 _exportEXCEL: function () {
-                    this.result[0].ColunasEXCEL = this._columns;
+                    //this.result[0].ColunasEXCEL = this._columns;
+                    //this.$.ajax_Export.body = JSON.stringify(this.$.grid._filter(this.$.grid.items));
 
-                    this.$.ajax_Export.body = JSON.stringify(this.$.grid._filter(this.$.grid.items));
+                    var result = this.$.grid._filter(this.result);
+                    result[0].ColunasEXCEL = this._columns;
+
+                    this.$.ajax_Export.body = JSON.stringify(result);
                     this.$.ajax_Export.generateRequest();
                 },
 

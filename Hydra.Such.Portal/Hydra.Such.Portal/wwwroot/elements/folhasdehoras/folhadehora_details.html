@@ -147,7 +147,8 @@
         <iron-ajax url="/PopulateDropdowns/GetProjectList" last-response="{{LFolhaDeHoraProjectNo}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProjectNavList_FH" last-response="{{LFolhaDeHoraNavProjectNo}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <!--<iron-ajax url="/PopulateDropdowns/GetTipoTrabalhoList" last-response="{{LFolhaDeHoraTipoTrabalhoNo}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
-        <iron-ajax url="/PopulateDropdowns/GetTipoTrabalhoFHList" last-response="{{LFolhaDeHoraTipoTrabalhoNo}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <!--<iron-ajax url="/PopulateDropdowns/GetTipoTrabalhoFHList" last-response="{{LFolhaDeHoraTipoTrabalhoNo}}" id="page_GetTipoTrabalhoFH_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
+        <iron-ajax url="/PopulateDropdowns/GetTipoTrabalhoFHList" last-response="{{LFolhaDeHoraTipoTrabalhoNo}}" method="post" handle-as="json" id="page_GetTipoTrabalhoFH_ajax" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFolhaDeHoraDisplacementOutsideCity" last-response="{{LFolhaDeHoraDisplacementOutsideCity}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetUtilizadores" last-response="{{LFolhaDeHoraValidators}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFolhaDeHoraPercursoOrigemDestino" last-response="{{LFolhaDeHoraPercursoOrigemDestino}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -445,6 +446,7 @@
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
             <paper-button id="btn_calcularAjudasCusto" class="tablinks" on-tap="_calcularAjudasCusto" disabled="{{ !_permissions.create }}" title="Calcular Aj. Custo"><i class="fa fa-check-square" aria-hidden="true"></i> Calcular Aj. Custo</paper-button>
+            <paper-button id="btn_terminarFolhaDeHoras" class="tablinks" on-tap="_btnTerminarFolhaDeHoras" disabled="{{ !_permissions.create }}" title="Terminar" style="background-color:deepskyblue"><i class="fa fa-check-square" aria-hidden="true"></i> Terminar</paper-button>
             <paper-button id="btn_validarFolhaDeHoras" class="tablinks" on-tap="_validarFolhaDeHoras" disabled="{{ !_permissions.create }}" title="Validar"><i class="fa fa-check-square" aria-hidden="true"></i> Validar</paper-button>
             <paper-button id="btn_integrarEmRH" class="tablinks" on-tap="_integrarEmRH" disabled="{{ !_permissions.create }}" title="Integrar Aj. Custo"><i class="fa fa-check-square" aria-hidden="true"></i> Integrar Aj. Custo</paper-button>
             <paper-button id="btn_integrarEmRHKM" class="tablinks" on-tap="_integrarEmRHKM" disabled="{{ !_permissions.create }}" title="Integrar km"><i class="fa fa-check-square" aria-hidden="true"></i> Integrar km</paper-button>
@@ -2309,6 +2311,63 @@
                     }
                 },
 
+                _btnTerminarFolhaDeHoras: function () {
+                    var _self = this;
+                    var ok = 0;
+
+                    _self.chkTerminada = true;
+
+                    if (_self.chkTerminada == true) {
+                        if (_self._validateFolhaHoras()) {
+                            if (_self.$.tipoDeslocacao.value == 1) {
+                                if (_self.$.matricula.validate() & _self.$.matricula.value != "") {
+                                    ok = 1;
+                                }
+                                else {
+                                    _self._showErrorMessage("Falta preencher o campo Matrícula.");
+                                }
+                            }
+                            else {
+                                ok = 1;
+                            }
+                        }
+                    }
+
+                    if (ok == 1) {
+                        _self.chkTerminada = true;
+                        _self.data.terminada = true;
+                        var ajax_request = _self.$.terminarfolhadehoras_ajax;
+                        ajax_request.body = JSON.stringify(_self.data)
+
+                        bootbox.confirm({
+                            message: "Tem a certeza que pretende Terminar a Folha de Horas?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (terminarFolhaHoras) {
+                                if (terminarFolhaHoras) {
+                                    ajax_request.generateRequest();
+                                }
+                                else {
+                                    _self.chkTerminada = false;
+                                    _self.data.terminada = false;
+                                }
+                            }
+                        });
+                    }
+                    else {
+                        _self.chkTerminada = false;
+                        _self.data.terminada = false;
+                    }
+                },
+
                 _validarFolhaDeHoras: function () {
                     $(this.$.btn_validarFolhaDeHoras).addClass('disabled');
 
@@ -2837,7 +2896,6 @@
 
                 //AJUDAS DE CUSTO
                 _calcularAjudasCusto: function () {
-                    debugger;
                     if (this._validateFolhaHoras()) {
                         if (this.$.tipoDeslocacao.value == 1) {
                             if (this.$.matricula.validate() & this.$.matricula.value != "") {
@@ -3501,6 +3559,9 @@
 
                             this.$.percursoProjeto.value = this.$.projetoNo.value;
                             this.$.ajudaProjeto.value = this.$.projetoNo.value;
+
+                            this.$.page_GetTipoTrabalhoFH_ajax.body = JSON.stringify(self.data);
+                            this.$.page_GetTipoTrabalhoFH_ajax.generateRequest();
 
                         } else if (data.detail.url.indexOf("Create") !== -1) {
                             this._createResponseProcessor();
@@ -4294,6 +4355,9 @@
                         this.data.empregadoNo = this.$.empregadoNo.value;
                         this.$.getEmpoyeeNAV_ajax.body = JSON.stringify(this.data);
                         this.$.getEmpoyeeNAV_ajax.generateRequest();
+
+                        this.$.page_GetTipoTrabalhoFH_ajax.body = JSON.stringify(this.data);
+                        this.$.page_GetTipoTrabalhoFH_ajax.generateRequest();
                     };
                 },
 
@@ -4456,6 +4520,7 @@
                         $(_self.$.btn_updateFH2).addClass('disabled');
                         if (data.mostrarBotoes == false) {
                             $(_self.$.btn_calcularAjudasCusto).addClass('disabled');
+                            $(_self.$.btn_terminarFolhaDeHoras).addClass('disabled');
                             $(_self.$.btn_createPercurso).addClass('disabled');
                             $(_self.$.btn_createAjuda).addClass('disabled');
                             $(_self.$.btn_createMaoDeObra).addClass('disabled');
@@ -4470,6 +4535,7 @@
 
                     if (data.estado == 1) { //VALIDADO
                         $(_self.$.btn_calcularAjudasCusto).addClass('disabled');
+                        $(_self.$.btn_terminarFolhaDeHoras).addClass('disabled');
                         $(_self.$.btn_validarFolhaDeHoras).addClass('disabled');
                         $(_self.$.btn_updateFH1).addClass('disabled');
                         $(_self.$.btn_delete).addClass('disabled');
@@ -4487,6 +4553,7 @@
 
                     if (data.estado == 2) { //REGISTADO
                         $(_self.$.btn_calcularAjudasCusto).addClass('disabled');
+                        $(_self.$.btn_terminarFolhaDeHoras).addClass('disabled');
                         $(_self.$.btn_validarFolhaDeHoras).addClass('disabled');
                         $(_self.$.btn_integrarEmRH).addClass('disabled');
                         $(_self.$.btn_integrarEmRHKM).addClass('disabled');

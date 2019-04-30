@@ -161,11 +161,11 @@
             <!--end ColumnToggle-->
         </div>
 
-        <vaadin-grid aria-label="ContractsGrid" items="[[result]]" id="gridContracts" class="grid" active-item="{{activeItem}}" multi-sort="true">
+        <vaadin-grid column-reordering-allowed aria-label="ContractsGrid" items="[[result]]" id="gridContracts" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.contractNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="contractNo">Nº Contrato</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="contractNo" />
+                    <vaadin-grid-filter path="contractNo" value="[[filter.contractNo]]" />
                 </template>
                 <template>
                     {{item.contractNo}}
@@ -174,7 +174,7 @@
             <vaadin-grid-column width="120px" resizable hidden>
                 <template class="header">
                     <vaadin-grid-sorter path="oportunityNo">Nº Oportunidade</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="oportunityNo" />
+                    <vaadin-grid-filter path="oportunityNo" value="[[filter.oportunityNo]]" />
                 </template>
                 <template>
                     {{item.oportunityNo}}
@@ -183,7 +183,7 @@
             <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.type.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="type">Tipo</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="type" />
+                    <vaadin-grid-filter path="type" value="[[filter.type]]" />
                 </template>
                 <template>
                     [[ _clType(item.type) ]]
@@ -192,7 +192,7 @@
             <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.startData.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="startData">Data Inicio</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="startData" />
+                    <vaadin-grid-filter path="startData" value="[[filter.startData]]" />
                 </template>
                 <template>
                     {{item.startData}}
@@ -201,7 +201,7 @@
             <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.dueDate.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="dueDate">Data Fim</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dueDate" />
+                    <vaadin-grid-filter path="dueDate" value="[[filter.dueDate]]" />
                 </template>
                 <template>
                     {{item.dueDate}}
@@ -210,7 +210,7 @@
             <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.clientNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="clientNo">Nº Cliente</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="clientNo" />
+                    <vaadin-grid-filter path="clientNo" value="[[filter.clientNo]]" />
                 </template>
                 <template>
                     {{item.clientNo}}
@@ -219,7 +219,7 @@
             <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.clientName.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="clientName">Nome Cliente</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="clientName" />
+                    <vaadin-grid-filter path="clientName" value="[[filter.clientName]]" />
                 </template>
                 <template>
                     {{item.clientName}}
@@ -228,7 +228,7 @@
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.description.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="description">Âmbito dos Serviços</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="description" />
+                    <vaadin-grid-filter path="description" value="[[filter.description]]" />
                 </template>
                 <template>
                     {{item.description}}
@@ -237,7 +237,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.statusDescription.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="statusDescription">Estado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="statusDescription" />
+                    <vaadin-grid-filter path="statusDescription" value="[[filter.statusDescription]]" />
                 </template>
                 <template>
                     {{item.statusDescription}}
@@ -246,7 +246,7 @@
             <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.codeRegion.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codeRegion">Cód. Região</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codeRegion" />
+                    <vaadin-grid-filter path="codeRegion" value="[[filter.codeRegion]]" />
                 </template>
                 <template>
                     {{item.codeRegion}}
@@ -255,7 +255,7 @@
             <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.codeFunctionalArea.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codeFunctionalArea">Cód. Área Funcional</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codeFunctionalArea" />
+                    <vaadin-grid-filter path="codeFunctionalArea" value="[[filter.codeFunctionalArea]]" />
                 </template>
                 <template>
                     {{item.codeFunctionalArea}}
@@ -264,7 +264,7 @@
             <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.codeResponsabilityCenter.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codeResponsabilityCenter">Cód. Centro Responsabilidade</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codeResponsabilityCenter" />
+                    <vaadin-grid-filter path="codeResponsabilityCenter" value="[[filter.codeResponsabilityCenter]]" />
                 </template>
                 <template>
                     {{item.codeResponsabilityCenter}}
@@ -273,7 +273,7 @@
             <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.versionNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="versionNo">Nº Versão</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="versionNo" />
+                    <vaadin-grid-filter path="versionNo" value="[[filter.versionNo]]" />
                 </template>
                 <template>
                     {{item.versionNo}}
@@ -344,11 +344,27 @@
                             return {};
                         }
                     },
+                    /*FILTROS*/
+                    filter: {
+                        type: Object,
+                        value: {},
+                    },
                 },
                 _rowSelected: function (item) {
                     if (item != null) {
+                        /*FILTROS*/
+                        var filters = {};
+                        this.$.gridContracts._filters.map(function (value, index) {
+                            filters[value.path] = value.value;
+                        });
+                        window.setGridFilter('contracts-contractquotaslist', filters || {});
+
                         window.location.href = "DetalhesContratoQuotas/" + item.contractNo + "?version=" + item.versionNo + "&" + "isHistoric=" + this._isHistoric;
                     }
+                },
+                /*FILTROS*/
+                created: function () {
+                    this.filter = window.getGridFilter('contracts-contractquotaslist');
                 },
                 _create: function (item) {
                     if (item != null) {
@@ -362,6 +378,11 @@
 
                     this.$.grid_databound_ajax.body = JSON.stringify({ "Archived": this._archived, "ContractNo": this._contractno });
                     this.$.grid_databound_ajax.generateRequest();
+
+                    /*FILTROS*/
+                    window.handleGridListColumnsOrder(this.$.gridContracts, 'contracts-contractquotaslist');
+                    window.grid = this.$.gridContracts;
+                    window._this = this;
 
                     /*ColumnToggle*/
                     this._startColumnToggle();
@@ -469,9 +490,13 @@
 
                 _exportEXCEL: function () {
                     //debugger;
-                    this.result[0].ColunasEXCEL = this._columns;
+                    //this.result[0].ColunasEXCEL = this._columns;
+                    //this.$.ajax_Export.body = JSON.stringify(this.result);
 
-                    this.$.ajax_Export.body = JSON.stringify(this.result);
+                    var result = this.$.gridContracts._filter(this.result);
+                    result[0].ColunasEXCEL = this._columns;
+
+                    this.$.ajax_Export.body = JSON.stringify(result);
                     this.$.ajax_Export.generateRequest();
                 },
 

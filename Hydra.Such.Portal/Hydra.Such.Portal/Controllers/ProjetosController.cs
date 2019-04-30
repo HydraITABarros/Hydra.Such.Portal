@@ -1,4 +1,5 @@
 ﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -274,12 +275,11 @@ namespace Hydra.Such.Portal.Controllers
                         }
                     }
 
-                    Contratos cont = DBContracts.GetByIdLastVersion(result.ContractNo);
                     NAVClientsViewModel cli = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, result.ClientNo);
 
-                    if (result != null && !string.IsNullOrEmpty(result.ShippingAddressCode))
+                    if (result != null && !string.IsNullOrEmpty(result.ClientNo) && !string.IsNullOrEmpty(result.ShippingAddressCode))
                     {
-                        NAVAddressesViewModel SHIP = DBNAV2017ShippingAddresses.GetByCode(result.ShippingAddressCode, _config.NAVDatabaseName, _config.NAVCompanyName);
+                        NAVAddressesViewModel SHIP = DBNAV2017ShippingAddresses.GetByClientAndCode(result.ClientNo, result.ShippingAddressCode, _config.NAVDatabaseName, _config.NAVCompanyName);
                         if (SHIP != null)
                         {
                             result.ShippingName = SHIP.Name;
@@ -291,28 +291,13 @@ namespace Hydra.Such.Portal.Controllers
                     }
                     else
                     {
-                        if (cont != null && !string.IsNullOrEmpty(cont.EnvioAEndereço))
+                        if (cli != null)
                         {
-                            NAVAddressesViewModel SHIP = DBNAV2017ShippingAddresses.GetByCode(cont.EnvioAEndereço, _config.NAVDatabaseName, _config.NAVCompanyName);
-                            if (SHIP != null)
-                            {
-                                result.ShippingName = SHIP.Name;
-                                result.ShippingAddress = SHIP.Address;
-                                result.ShippingPostalCode = SHIP.ZipCode;
-                                result.ShippingLocality = SHIP.City;
-                                result.ShippingContact = SHIP.Contact;
-                            }
-                        }
-                        else
-                        {
-                            if (cli != null)
-                            {
-                                result.ShippingName = cli.Name;
-                                result.ShippingAddress = cli.Address;
-                                result.ShippingPostalCode = cli.PostCode;
-                                result.ShippingLocality = cli.City;
-                                result.ShippingContact = cli.PhoneNo;
-                            }
+                            result.ShippingName = cli.Name;
+                            result.ShippingAddress = cli.Address;
+                            result.ShippingPostalCode = cli.PostCode;
+                            result.ShippingLocality = cli.City;
+                            result.ShippingContact = cli.PhoneNo;
                         }
                     }
 
@@ -591,47 +576,46 @@ namespace Hydra.Such.Portal.Controllers
             {
                 try
                 {
-                    Projetos cProject = new Projetos();
+                    //Projetos cProject = new Projetos();
 
-                    cProject.NºProjeto = data.ProjectNo;
-                    cProject.Área = data.Area;
-                    cProject.Descrição = data.Description;
-                    cProject.NºCliente = data.ClientNo;
-                    cProject.Data = data.Date != "" && data.Date != null ? DateTime.Parse(data.Date) : (DateTime?)null;
-                    cProject.Estado = data.Status;
-                    cProject.CódigoRegião = data.RegionCode;
-                    cProject.CódigoÁreaFuncional = data.FunctionalAreaCode;
-                    cProject.CódigoCentroResponsabilidade = data.ResponsabilityCenterCode;
-                    cProject.Faturável = data.Billable;
-                    cProject.NºContrato = data.ContractNo;
-                    cProject.CódEndereçoEnvio = data.ShippingAddressCode;
-                    cProject.EnvioANome = data.ShippingName;
-                    cProject.EnvioAEndereço = data.ShippingAddress;
-                    cProject.EnvioACódPostal = data.ShippingPostalCode;
-                    cProject.EnvioALocalidade = data.ShippingLocality;
-                    cProject.EnvioAContato = data.ShippingContact;
-                    cProject.CódTipoProjeto = data.ProjectTypeCode;
-                    cProject.NossaProposta = data.OurProposal;
-                    cProject.CódObjetoServiço = data.ServiceObjectCode;
-                    cProject.NºCompromisso = data.CommitmentCode;
-                    cProject.GrupoContabObra = "PROJETO";
-                    cProject.TipoGrupoContabProjeto = data.GroupContabProjectType;
-                    //cProject.TipoGrupoContabOmProjeto = data.GroupContabOMProjectType;
-                    cProject.PedidoDoCliente = data.ClientRequest;
-                    cProject.DataDoPedido = data.RequestDate != "" && data.RequestDate != null ? DateTime.Parse(data.RequestDate) : (DateTime?)null;
-                    cProject.ValidadeDoPedido = data.RequestValidity;
-                    cProject.DescriçãoDetalhada = data.DetailedDescription;
-                    cProject.CategoriaProjeto = data.ProjectCategory;
-                    cProject.NºContratoOrçamento = data.BudgetContractNo;
-                    cProject.ProjetoInterno = data.InternalProject;
-                    cProject.ChefeProjeto = data.ProjectLeader;
-                    cProject.ResponsávelProjeto = data.ProjectResponsible;
-                    cProject.UtilizadorModificação = User.Identity.Name;
-                    cProject.FaturaPrecosIvaIncluido = data.FaturaPrecosIvaIncluido;
+                    //cProject.NºProjeto = data.ProjectNo;
+                    //cProject.Área = data.Area;
+                    //cProject.Descrição = data.Description;
+                    //cProject.NºCliente = data.ClientNo;
+                    //cProject.Data = data.Date != "" && data.Date != null ? DateTime.Parse(data.Date) : (DateTime?)null;
+                    //cProject.Estado = data.Status;
+                    //cProject.CódigoRegião = data.RegionCode;
+                    //cProject.CódigoÁreaFuncional = data.FunctionalAreaCode;
+                    //cProject.CódigoCentroResponsabilidade = data.ResponsabilityCenterCode;
+                    //cProject.Faturável = data.Billable;
+                    //cProject.NºContrato = data.ContractNo;
+                    //cProject.CódEndereçoEnvio = data.ShippingAddressCode;
+                    //cProject.EnvioANome = data.ShippingName;
+                    //cProject.EnvioAEndereço = data.ShippingAddress;
+                    //cProject.EnvioACódPostal = data.ShippingPostalCode;
+                    //cProject.EnvioALocalidade = data.ShippingLocality;
+                    //cProject.EnvioAContato = data.ShippingContact;
+                    //cProject.CódTipoProjeto = data.ProjectTypeCode;
+                    //cProject.NossaProposta = data.OurProposal;
+                    //cProject.CódObjetoServiço = data.ServiceObjectCode;
+                    //cProject.NºCompromisso = data.CommitmentCode;
+                    //cProject.GrupoContabObra = "PROJETO";
+                    //cProject.TipoGrupoContabProjeto = data.GroupContabProjectType;
+                    //cProject.PedidoDoCliente = data.ClientRequest;
+                    //cProject.DataDoPedido = data.RequestDate != "" && data.RequestDate != null ? DateTime.Parse(data.RequestDate) : (DateTime?)null;
+                    //cProject.ValidadeDoPedido = data.RequestValidity;
+                    //cProject.DescriçãoDetalhada = data.DetailedDescription;
+                    //cProject.CategoriaProjeto = data.ProjectCategory;
+                    //cProject.NºContratoOrçamento = data.BudgetContractNo;
+                    //cProject.ProjetoInterno = data.InternalProject;
+                    //cProject.ChefeProjeto = data.ProjectLeader;
+                    //cProject.ResponsávelProjeto = data.ProjectResponsible;
+                    //cProject.UtilizadorModificação = User.Identity.Name;
+                    //cProject.FaturaPrecosIvaIncluido = data.FaturaPrecosIvaIncluido;
 
-                    DBProjects.Update(cProject);
+                    //DBProjects.Update(cProject);
 
-                    data.eReasonCode = 1;
+                    //data.eReasonCode = 1;
 
 
                     //Read NAV Project Key
@@ -669,10 +653,63 @@ namespace Hydra.Such.Portal.Controllers
                                 statusL = false;
                             }
 
-                            if (!TUpdateNavProj.IsCompletedSuccessfully && statusL)
+                            if (!TUpdateNavProj.IsCompletedSuccessfully || statusL == false)
                             {
-                                data.eReasonCode = 3;
-                                data.eMessage = "Ocorreu um erro ao atualizar o projeto no NAV.";
+                                Projetos OLD_Proj = DBProjects.GetById(data.ProjectNo);
+
+                                if (OLD_Proj != null && OLD_Proj.NºCliente != data.ClientNo)
+                                {
+                                    data.eReasonCode = 3;
+                                    data.eMessage = "Não é possível alterar o cliente deste projeto.";
+                                }
+                                else
+                                {
+                                    data.eReasonCode = 3;
+                                    data.eMessage = "Ocorreu um erro ao atualizar o projeto no NAV.";
+                                }
+                            }
+                            else
+                            {
+                                Projetos cProject = new Projetos();
+
+                                cProject.NºProjeto = data.ProjectNo;
+                                cProject.Área = data.Area;
+                                cProject.Descrição = data.Description;
+                                cProject.NºCliente = data.ClientNo;
+                                cProject.Data = data.Date != "" && data.Date != null ? DateTime.Parse(data.Date) : (DateTime?)null;
+                                cProject.Estado = data.Status;
+                                cProject.CódigoRegião = data.RegionCode;
+                                cProject.CódigoÁreaFuncional = data.FunctionalAreaCode;
+                                cProject.CódigoCentroResponsabilidade = data.ResponsabilityCenterCode;
+                                cProject.Faturável = data.Billable;
+                                cProject.NºContrato = data.ContractNo;
+                                cProject.CódEndereçoEnvio = data.ShippingAddressCode;
+                                cProject.EnvioANome = data.ShippingName;
+                                cProject.EnvioAEndereço = data.ShippingAddress;
+                                cProject.EnvioACódPostal = data.ShippingPostalCode;
+                                cProject.EnvioALocalidade = data.ShippingLocality;
+                                cProject.EnvioAContato = data.ShippingContact;
+                                cProject.CódTipoProjeto = data.ProjectTypeCode;
+                                cProject.NossaProposta = data.OurProposal;
+                                cProject.CódObjetoServiço = data.ServiceObjectCode;
+                                cProject.NºCompromisso = data.CommitmentCode;
+                                cProject.GrupoContabObra = "PROJETO";
+                                cProject.TipoGrupoContabProjeto = data.GroupContabProjectType;
+                                cProject.PedidoDoCliente = data.ClientRequest;
+                                cProject.DataDoPedido = data.RequestDate != "" && data.RequestDate != null ? DateTime.Parse(data.RequestDate) : (DateTime?)null;
+                                cProject.ValidadeDoPedido = data.RequestValidity;
+                                cProject.DescriçãoDetalhada = data.DetailedDescription;
+                                cProject.CategoriaProjeto = data.ProjectCategory;
+                                cProject.NºContratoOrçamento = data.BudgetContractNo;
+                                cProject.ProjetoInterno = data.InternalProject;
+                                cProject.ChefeProjeto = data.ProjectLeader;
+                                cProject.ResponsávelProjeto = data.ProjectResponsible;
+                                cProject.UtilizadorModificação = User.Identity.Name;
+                                cProject.FaturaPrecosIvaIncluido = data.FaturaPrecosIvaIncluido;
+
+                                DBProjects.Update(cProject);
+
+                                data.eReasonCode = 1;
                             }
                         }
                     }
@@ -3803,6 +3840,9 @@ namespace Hydra.Such.Portal.Controllers
                                 }
                             }
 
+                            if (proj.FaturaPrecosIvaIncluido == true)
+                                header.FaturaPrecosIvaIncluido = true;
+
                             Task<WSCreatePreInvoice.Create_Result> TCreatePreInvoice = WSPreInvoice.CreatePreInvoice(header, _configws, dataFormulario, projeto, Ship);
                             TCreatePreInvoice.Wait();
 
@@ -3864,8 +3904,61 @@ namespace Hydra.Such.Portal.Controllers
                                         });
                                     }
 
+                                    if (proj.FaturaPrecosIvaIncluido == true)
+                                    {
+                                        string Cliente = string.Empty;
+                                        string GrupoIVA = string.Empty;
+                                        string GrupoCliente = string.Empty;
+                                        decimal IVA = new decimal();
+                                        foreach (var item in header.Items)
+                                        {
+                                            Cliente = item.InvoiceToClientNo;
+                                            GrupoIVA = string.Empty;
+                                            GrupoCliente = string.Empty;
+                                            IVA = 0;
+
+                                            if (!string.IsNullOrEmpty(item.Code))
+                                            {
+                                                NAVResourcesViewModel Resource = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, item.Code, "", 0, "").FirstOrDefault();
+                                                if (Resource != null)
+                                                    GrupoIVA = Resource.VATProductPostingGroup;
+                                                else
+                                                {
+                                                    execDetails += " Erro ao criar a fatura: Não foi possível encontrar o recurso Nº: " + item.Code;
+                                                    result.eReasonCode = 2;
+                                                    result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails));
+                                                    return Json(result);
+                                                }
+
+                                                if (!string.IsNullOrEmpty(Cliente) && !string.IsNullOrEmpty(GrupoIVA))
+                                                {
+                                                    NAVClientsViewModel cliente = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, Cliente);
+                                                    if (cliente != null)
+                                                        GrupoCliente = cliente.VATBusinessPostingGroup;
+                                                    else
+                                                    {
+                                                        execDetails += " Erro ao criar a fatura: Não foi possível encontrar o cliente Nº: " + Cliente;
+                                                        result.eReasonCode = 2;
+                                                        result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails));
+                                                        return Json(result);
+                                                    }
+
+                                                    if (!string.IsNullOrEmpty(GrupoCliente))
+                                                        IVA = DBNAV2017VATPostingSetup.GetIVA(_config.NAVDatabaseName, _config.NAVCompanyName, GrupoCliente, GrupoIVA);
+
+                                                    if (IVA > 0)
+                                                        IVA = (IVA / 100) + 1;
+                                                }
+                                            }
+
+                                            if (IVA > 0)
+                                                item.UnitPrice = item.UnitPrice * IVA;
+                                        }
+                                    }
+
                                     Task<WSCreatePreInvoiceLine.CreateMultiple_Result> TCreatePreInvoiceLine = WSPreInvoiceLine.CreatePreInvoiceLineListProject(header.Items, headerNo, OptionInvoice, _configws);
                                     TCreatePreInvoiceLine.Wait();
+
 
                                     if (TCreatePreInvoiceLine.IsCompletedSuccessfully)
                                     {
@@ -3901,12 +3994,49 @@ namespace Hydra.Such.Portal.Controllers
                                 }
                                 catch (Exception ex)
                                 {
-                                    if (!hasErrors)
-                                        hasErrors = true;
-
-                                    execDetails += " Erro ao criar as linhas: ";
                                     errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                                    result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails + errorMessage));
+
+                                    if (errorMessage.ToLower().Contains("maximum message size quota".ToLower()))
+                                    {
+                                        errorMessage = "";
+
+                                        execDetails += " Linhas criadas com sucesso.";
+                                        //update to Invoiced = true
+                                        using (SuchDBContext ctx = new SuchDBContext())
+                                        {
+                                            itemsToInvoice.ForEach(key =>
+                                            {
+                                                var authorizedProjects = ctx.ProjectosAutorizados
+                                                .Where(x => x.CodProjeto == key.Item1 && x.GrupoFactura == key.Item2)
+                                                .ToList();
+                                            //var authorizedProjectMovements = ctx.MovimentosDeProjeto.Where(x => x.CodProjeto == projectNo && x.GrupoFactura == invoiceGroup);
+
+                                            var projectMovements = ctx.MovimentosDeProjeto
+                                                    .Where(x => x.NºProjeto == key.Item1 && x.GrupoFatura == key.Item2)
+                                                    .ToList();
+
+                                                authorizedProjects.ForEach(x => x.Faturado = true);
+                                            //authorizedProjectMovements.ForEach(x => x.Faturada = true);
+                                            projectMovements.ForEach(x => x.Faturada = true);
+
+                                                ctx.ProjectosAutorizados.UpdateRange(authorizedProjects);
+                                            //ctx.MovimentosProjetoAutorizados.UpdateRange(authorizedProjectMovements);
+                                            ctx.MovimentosDeProjeto.UpdateRange(projectMovements);
+                                            });
+
+                                            ctx.SaveChanges();
+
+                                            result.eMessages.Add(new TraceInformation(TraceType.Success, execDetails));
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (!hasErrors)
+                                            hasErrors = true;
+
+                                        execDetails += " Erro ao criar as linhas: ";
+                                        result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails + errorMessage));
+                                    }
                                 }
                             }
                         }

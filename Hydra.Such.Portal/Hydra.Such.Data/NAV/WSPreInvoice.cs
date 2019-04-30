@@ -100,7 +100,10 @@ namespace Hydra.Such.Data.NAV
                     Ship_to_County = preInvoiceToCreate.Ship_to_County,
                     Ship_to_Name = preInvoiceToCreate.Ship_to_Name,
                     Ship_to_Name_2 = preInvoiceToCreate.Ship_to_Name_2,
-                    Ship_to_Post_Code = preInvoiceToCreate.Ship_to_Post_Code
+                    Ship_to_Post_Code = preInvoiceToCreate.Ship_to_Post_Code,
+
+                    Prices_Including_VAT = preInvoiceToCreate.FaturaPrecosIvaIncluido.HasValue ? (bool)preInvoiceToCreate.FaturaPrecosIvaIncluido : false,
+                    Prices_Including_VATSpecified = true
                 }
 
             };
@@ -136,6 +139,7 @@ namespace Hydra.Such.Data.NAV
             invoiceHeader.CodTermosPagamento = billingHeader.CodTermosPagamento;
             invoiceHeader.CodMetodoPagamento = billingHeader.CodMetodoPagamento;
             invoiceHeader.CreateUser = billingHeader.CreateUser;
+            invoiceHeader.FaturaPrecosIvaIncluido = billingHeader.FaturaPrecosIvaIncluido.HasValue ? (bool)billingHeader.FaturaPrecosIvaIncluido : false;
 
             return await CreatePreInvoice(invoiceHeader, WSConfigurations);
 
@@ -176,6 +180,8 @@ namespace Hydra.Such.Data.NAV
             invoiceHeader.Ship_to_Name = Ship.Ship_to_Name;
             invoiceHeader.Ship_to_Name_2 = Ship.Ship_to_Name_2;
             invoiceHeader.Ship_to_Post_Code = Ship.Ship_to_Post_Code;
+
+            invoiceHeader.FaturaPrecosIvaIncluido = billingHeader.FaturaPrecosIvaIncluido.HasValue ? (bool)billingHeader.FaturaPrecosIvaIncluido : false;
 
             return await CreatePreInvoice(invoiceHeader, WSConfigurations);
 
@@ -227,9 +233,9 @@ namespace Hydra.Such.Data.NAV
                     ResponsabilityCenterCode20 = PreInvoiceToCreate.ResponsabilityCenterCode20,
                     FunctionAreaCode20 = PreInvoiceToCreate.FunctionAreaCode20,
                     RegionCode20 = PreInvoiceToCreate.RegionCode20,
-                   
-                   
 
+                    Prices_Including_VAT = PreInvoiceToCreate.PricesIncludingVAT == 1 ? true : false,
+                    Prices_Including_VATSpecified = true
                 }
             };
 
@@ -250,7 +256,7 @@ namespace Hydra.Such.Data.NAV
             }
         }
 
-        public static async Task<WSCreatePreInvoice.Create_Result> CreateContractInvoice(AutorizarFaturaçãoContratos CreateInvoice, NAVWSConfigurations WSConfigurations,string ContractInvoicePeriod, string InvoiceBorrowed, string CodTermosPagamento)
+        public static async Task<WSCreatePreInvoice.Create_Result> CreateContractInvoice(AutorizarFaturaçãoContratos CreateInvoice, NAVWSConfigurations WSConfigurations,string ContractInvoicePeriod, string InvoiceBorrowed, string CodTermosPagamento, bool PricesIncludingVAT)
         {
             DateTime now = DateTime.Now;
             ConfigUtilizadores CUsers = DBUserConfigurations.GetById(CreateInvoice.UtilizadorCriação);
@@ -290,6 +296,9 @@ namespace Hydra.Such.Data.NAV
                     RegionCode20 = !string.IsNullOrEmpty(CreateInvoice.CódigoRegião) ? CreateInvoice.CódigoRegião : "",
                     FunctionAreaCode20 = !string.IsNullOrEmpty(CreateInvoice.CódigoÁreaFuncional) ? CreateInvoice.CódigoÁreaFuncional : "",
                     ResponsabilityCenterCode20 = !string.IsNullOrEmpty(CreateInvoice.CódigoCentroResponsabilidade) ? CreateInvoice.CódigoCentroResponsabilidade : "",
+
+                    Prices_Including_VAT = PricesIncludingVAT,
+                    Prices_Including_VATSpecified = true
                 }
             };
 
@@ -309,7 +318,6 @@ namespace Hydra.Such.Data.NAV
                 return null;
             }
         }
-
 
         public static async Task<WSCreatePreInvoice.CreateMultiple_Result> CreateMultipleContractInvoice(List<AutorizarFaturaçãoContratos> CreateList, NAVWSConfigurations WSConfigurations)
         {
@@ -340,9 +348,6 @@ namespace Hydra.Such.Data.NAV
             }
         }
 
-      
-
-
         public static async Task<WSCreatePreInvoice.Delete_Result> DeletePreInvoiceLineList(String HeaderNo, NAVWSConfigurations WSConfigurations)
         {
 
@@ -362,5 +367,6 @@ namespace Hydra.Such.Data.NAV
                 return null;
             }
         }
+
     }
 }

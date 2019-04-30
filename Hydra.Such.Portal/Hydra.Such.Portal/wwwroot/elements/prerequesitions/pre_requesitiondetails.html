@@ -181,7 +181,7 @@
                    last-response="{{uploads}}"
                    method="post"
                    handle-as="json"
-                   id="page_update_ajax"
+                   id="page_LoadAttachments_ajax"
                    on-response="_loadAttachResponse"
                    content-type="application/json"></iron-ajax>
 
@@ -689,7 +689,7 @@
                                         <!--</template>-->
                                     </div>
                                     <div class="row break_clear">
-                                        <vaadin-grid aria-label="ReqUpdateGrid" items="[[uploads]]" class="grid" multi-sort="true">
+                                        <vaadin-grid id="gridAnexos" aria-label="ReqUpdateGrid" items="[[uploads]]" class="grid" multi-sort="true">
 
                                             <vaadin-grid-column width="70%" resizable>
                                                 <template class="header">
@@ -1716,7 +1716,7 @@
 
                                 e.detail.xhr.requestURL;
                                 var dd = document.querySelector("x-prerequisitions");
-                                dd.$.page_update_ajax.generateRequest();
+                                dd.$.page_LoadAttachments_ajax.generateRequest();
                             }
                             else {
                                 var msg = document.querySelector("x-prerequisitions");
@@ -1729,14 +1729,14 @@
                     //        if (e.detail.xhr.status == 200) {
                     //            e.detail.xhr.requestURL;
                     //            var dd = document.querySelector("x-prerequisitions");
-                    //            dd.$.page_update_ajax.generateRequest();
+                    //            dd.$.page_LoadAttachments_ajax.generateRequest();
                     //        }
                     //    });
                     //}
 
                     if (this._isCreate == false) {
-                        this.$.page_update_ajax.body = JSON.stringify({ "id": this._prerequesitionno });
-                        this.$.page_update_ajax.generateRequest();
+                        this.$.page_LoadAttachments_ajax.body = JSON.stringify({ "id": this._prerequesitionno });
+                        this.$.page_LoadAttachments_ajax.generateRequest();
                     }
 
                 },
@@ -2007,8 +2007,8 @@
                     if (this.deleted_files.eReasonCode === 1) {
                         this._openToast("Anexo eliminado com sucesso.");
 
-                        this.$.page_update_ajax.body = JSON.stringify({ "id": this._prerequesitionno });
-                        this.$.page_update_ajax.generateRequest();
+                        this.$.page_LoadAttachments_ajax.body = JSON.stringify({ "id": this._prerequesitionno });
+                        this.$.page_LoadAttachments_ajax.generateRequest();
 
                     } else if (this.deleted_files.eReasonCode === 2) {
                         this._openToastError("Ocorreu um erro ao eliminar o anexo.");
@@ -2016,8 +2016,12 @@
                 },
 
                 _loadAttachResponse: function (e) {
-                    this.$.page_databound_ajax.body = JSON.stringify({ "PreRequesitionsNo": this._prerequesitionno });
-                    this.$.page_databound_ajax.generateRequest();
+                    if (this.uploads.length > 0) {
+                        this.$.AttachmentId.checked = true;
+                    }
+                    else {
+                        this.$.AttachmentId.checked = false;
+                    }
                 },
 
                 _onSearchTermChanged: function (value) {
@@ -2924,7 +2928,6 @@
                         this.$.page_GetProductLocation_ajax.body = JSON.stringify({ code: this.$._Products.value });
                         this.$.page_GetProductLocation_ajax.params = { "area": this.$.FunctionalAreaCode.valueText };
                         this.$.page_GetProductLocation_ajax.generateRequest();
-
                     }
                     else {
                         this.$._Description.value = "";
@@ -3030,8 +3033,8 @@
 
                 //    if (e != null) {
                 //        this.$.dialogAttach.open();
-                //        this.$.page_update_ajax.body = JSON.stringify({ "id": this._prerequesitionno, "linha": this._lineno });
-                //        this.$.page_update_ajax.generateRequest();
+                //        this.$.page_LoadAttachments_ajax.body = JSON.stringify({ "id": this._prerequesitionno, "linha": this._lineno });
+                //        this.$.page_LoadAttachments_ajax.generateRequest();
                 //    }
                 //},
                 _ConvertDecimals: function (e) {

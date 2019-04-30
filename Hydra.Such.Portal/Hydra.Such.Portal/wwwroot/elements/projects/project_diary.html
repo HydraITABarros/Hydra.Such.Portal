@@ -237,7 +237,7 @@
                     </such-selectbox>
                 </div>
                 <div class="col-lg-4">
-                    <vaadin-text-field id="piDescription" label="Descrição" value="{{description}}" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                    <vaadin-text-field id="piDescription" label="Descrição" maxlength="100" value="{{description}}" disabled="{{ !_permissions.create }}"></vaadin-text-field>
                 </div>
             </div>
             <div class="row">
@@ -329,10 +329,10 @@
                     </such-selectbox>
                 </div>
                 <div class="col-lg-2" disabled="{{ !_permissions.create }}">
-                    <vaadin-text-field id="piResidueGuideNo" label="Nº Guia Resíduo" value="{{residueguide}}"></vaadin-text-field>
+                    <vaadin-text-field id="piResidueGuideNo" label="Nº Guia Resíduo" maxlength="80" value="{{residueguide}}"></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-text-field id="piExternalGuideNo" label="Nº Guia Externa" value="{{externalguide}}" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                    <vaadin-text-field id="piExternalGuideNo" label="Nº Guia Externa" maxlength="80" value="{{externalguide}}" disabled="{{ !_permissions.create }}"></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
                     <such-selectbox id="ServiceClientCode" name="piCodeResponsabilityCenter" value="{{ddServiceClientCode}}" label="Cód. Serviço Cliente" disabled="{{ !_permissions.create }}"
@@ -494,7 +494,7 @@
                 </template>
                 <template>
                     <template is="dom-if" if="{{ item.selected }}">
-                        <vaadin-text-field id="description" disabled="{{ !_permissions.update }}" value="{{item.description}}"></vaadin-text-field>
+                        <vaadin-text-field id="description" disabled="{{ !_permissions.update }}" maxlength="100" value="{{item.description}}"></vaadin-text-field>
                     </template>
                     <template is="dom-if" if="{{ !item.selected }}">
                         {{item.description}}
@@ -730,7 +730,7 @@
                 </template>
                 <template>
                     <template is="dom-if" if="{{ item.selected }}">
-                        <vaadin-text-field id="residueGuideNo" disabled="{{ !_permissions.update }}" value="{{item.residueGuideNo}}"></vaadin-text-field>
+                        <vaadin-text-field id="residueGuideNo" disabled="{{ !_permissions.update }}" maxlength="80" value="{{item.residueGuideNo}}"></vaadin-text-field>
                     </template>
                     <template is="dom-if" if="{{ !item.selected }}">
                         {{item.residueGuideNo}}
@@ -745,7 +745,7 @@
                 </template>
                 <template>
                     <template is="dom-if" if="{{ item.selected }}">
-                        <vaadin-text-field id="externalGuideNo" disabled="{{ !_permissions.update }}" value="{{item.externalGuideNo}}"></vaadin-text-field>
+                        <vaadin-text-field id="externalGuideNo" disabled="{{ !_permissions.update }}" maxlength="80" value="{{item.externalGuideNo}}"></vaadin-text-field>
                     </template>
                     <template is="dom-if" if="{{ !item.selected }}">
                         {{item.externalGuideNo}}

@@ -269,7 +269,7 @@ namespace Hydra.Such.Portal.Controllers
                     var details = DBNAV2017Encomendas.GetDetailsByNo(_config.NAVDatabaseName, _config.NAVCompanyName, id, "C%");
                     var lines = DBNAV2017Encomendas.ListLinesByNo(_config.NAVDatabaseName, _config.NAVCompanyName, id, "C%");
                     var vendor = DBNAV2017VendorBankAccount.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName, details.PayToVendorNo);
-                    var pedidos = DBPedidoPagamento.GetAllPedidosPagamentoByEncomenda(id);
+                    var pedidos = DBPedidoPagamento.GetAllPedidosPagamentoByEncomenda(id).Where(x => x.UserArquivo.ToLower() != "esuch@such.pt".ToLower());
 
                     PedidosPagamentoViewModel Pedido = new PedidosPagamentoViewModel();
 
@@ -399,16 +399,36 @@ namespace Hydra.Such.Portal.Controllers
                     data.UtilizadorCriacao = User.Identity.Name;
                     data.DataCriacao = DateTime.Now;
 
-                    if (DBPedidoPagamento.Create(DBPedidoPagamento.ParseToDB(data)) != null)
+                    NAVSupplierViewModels Fornecedor = DBNAV2017Supplier.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, data.CodigoFornecedor).FirstOrDefault();
+                    if (Fornecedor.Blocked == 1)
                     {
-                        data = DBPedidoPagamento.ParseToViewModel(DBPedidoPagamento.GetAllPedidosPagamento().Where(x => x.UserPedido.ToLower() == User.Identity.Name.ToLower()).LastOrDefault());
-                        data.eReasonCode = 1;
-                        data.eMessage = "Foi criado com sucesso o Pedido de Pagemento.";
+                        data.eReasonCode = 4;
+                        data.eMessage = "Não pode criar o Pedido de Pagamento, pois o fornecedor está bloqueado.";
                     }
                     else
                     {
-                        data.eReasonCode = 2;
-                        data.eMessage = "Ocorreu um erro na criação do Pedido de Pagemento.";
+                        List<NAV2017VendorLedgerEntryViewModel> AllMOV = DBNAV2017VendorLedgerEntry.GetMovFornecedores(_config.NAVDatabaseName, _config.NAVCompanyName);
+                        AllMOV = AllMOV.Where(x => x.VendorNo == data.Fornecedor && x.DocumentType == 1 && x.Open == 1 && x.PostingDate < DateTime.Now.AddDays(-30)).ToList();
+
+                        if (AllMOV != null && AllMOV.Count() > 0)
+                        {
+                            data.eReasonCode = 3;
+                            data.eMessage = "Não pode criar o Pedido de Pagamento, pois já existe um Pedido de Pagamento para este Fornecedor no estado Disponível há mais de 30 dias.";
+                        }
+                        else
+                        {
+                            if (DBPedidoPagamento.Create(DBPedidoPagamento.ParseToDB(data)) != null)
+                            {
+                                data = DBPedidoPagamento.ParseToViewModel(DBPedidoPagamento.GetAllPedidosPagamento().Where(x => x.UserPedido.ToLower() == User.Identity.Name.ToLower()).LastOrDefault());
+                                data.eReasonCode = 1;
+                                data.eMessage = "Foi criado com sucesso o Pedido de Pagemento.";
+                            }
+                            else
+                            {
+                                data.eReasonCode = 2;
+                                data.eMessage = "Ocorreu um erro na criação do Pedido de Pagemento.";
+                            }
+                        }
                     }
                 }
             }
@@ -453,8 +473,8 @@ namespace Hydra.Such.Portal.Controllers
                     }
 
                     ConfigUtilizadores Utilizador = DBUserConfigurations.GetById(User.Identity.Name);
-                    string Aprovador1 = Utilizador.AprovadorPedidoPag1;
-                    string Aprovador2 = Utilizador.AprovadorPedidoPag2;
+                    string Aprovador1 = !string.IsNullOrEmpty(Utilizador.AprovadorPedidoPag1) ? Utilizador.AprovadorPedidoPag1 : "";
+                    string Aprovador2 = !string.IsNullOrEmpty(Utilizador.AprovadorPedidoPag2) ? Utilizador.AprovadorPedidoPag2 : "";
 
                     if (string.IsNullOrEmpty(Aprovador1) && string.IsNullOrEmpty(Aprovador2))
                     {
@@ -463,7 +483,7 @@ namespace Hydra.Such.Portal.Controllers
                         return Json(data);
                     }
 
-                    data.Aprovadores = "-" + Aprovador1 + "-" + Aprovador1 + "-";
+                    data.Aprovadores = "-" + Aprovador1 + "-" + Aprovador2 + "-";
                     data.DataEnvioAprovacao = DateTime.Now;
                     data.Estado = 2; //"Em Aprovação"
                     data.UtilizadorModificacao = User.Identity.Name;
@@ -850,7 +870,73 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult CriarTransferenciaPedidoPagamento([FromBody] List<PedidosPagamentoViewModel> data)
         {
+            string execDetails = string.Empty;
+            string errorMessage = string.Empty;
+            bool hasErrors = false;
             ErrorHandler result = new ErrorHandler();
+
+            if (data != null && data.Count() > 0)
+            {
+                List<PedidosPagamentoViewModel> GroupFornecedor = data.GroupBy(x =>
+                x.CodigoFornecedor,
+                x => x,
+                (key, items) => new PedidosPagamentoViewModel
+                {
+                    CodigoFornecedor = key,
+                    NoPedido = data.Where(f => f.CodigoFornecedor == key).FirstOrDefault().NoPedido,
+                    Fornecedor = data.Where(f => f.CodigoFornecedor == key).FirstOrDefault().Fornecedor,
+                    Valor = data.Where(f => f.CodigoFornecedor == key).Sum(y => y.Valor),
+
+                }).ToList();
+
+                if (GroupFornecedor != null && GroupFornecedor.Count() > 0)
+                {
+                    int lineNo = 10000;
+                    try
+                    {
+                        GroupFornecedor.ForEach(pedido =>
+                        {
+                            WSPaymentJournalNAV.WSPaymentJournal PaymentJournal = new WSPaymentJournalNAV.WSPaymentJournal()
+                            {
+                                Journal_Template_Name = "PAGAMENTOS",
+                                Line_No = lineNo,
+                                Account_Type = WSPaymentJournalNAV.Account_Type.Vendor,
+                                Account_No = pedido.CodigoFornecedor,
+                                Description = pedido.Fornecedor,
+                                Posting_Date = DateTime.Now,
+                                Document_Type = WSPaymentJournalNAV.Document_Type.Payment,
+                                Amount = (decimal)pedido.Valor,
+                                Journal_Batch_Name = "SEPA-ADIAN"
+                            };
+
+                            Task<WSPaymentJournalNAV.Create_Result> createPaymentJournal = WSPaymentJournal.CreatePaymentJournalNAV(PaymentJournal, _configws);
+                            createPaymentJournal.Wait();
+
+                            if (createPaymentJournal.IsCompletedSuccessfully && createPaymentJournal.Result.WSPaymentJournal == null)
+                            {
+                                result.eReasonCode = 1;
+                                result.eMessage = " Transferência criada com sucesso.";
+                            }
+                            else
+                            {
+                                result.eReasonCode = 2;
+                                result.eMessage = " Erro ao criar a Transferência.";
+                            }
+
+                            lineNo = lineNo + 10000;
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        if (!hasErrors)
+                            hasErrors = true;
+
+                        result.eReasonCode = 2;
+                        result.eMessage = " Erro ao criar a Transferência.";
+                        return Json(result);
+                    }
+                }
+            }
 
             return Json(result);
         }

@@ -75,11 +75,11 @@
 
 
         </div>
-        <vaadin-grid aria-label="GuiasGrid" id="guiasTransporteGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+        <vaadin-grid column-reordering-allowed aria-label="GuiasGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="110px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="noGuiaTransporte">Nº</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="noGuiaTransporte" />
+                    <vaadin-grid-filter path="noGuiaTransporte" value="[[filter.noGuiaTransporte]]" />
                 </template>
                 <template>
                     {{item.noGuiaTransporte}}
@@ -88,7 +88,7 @@
             <vaadin-grid-column width="110px" resizable hidden="{{ !_historico }}">
                 <template class="header">
                     <vaadin-grid-sorter path="noGuiaOriginalInterface">Nº Guia Original</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="noGuiaOriginalInterface" />
+                    <vaadin-grid-filter path="noGuiaOriginalInterface" value="[[filter.noGuiaOriginalInterface]]" />
                 </template>
                 <template>
                     {{ item.noGuiaOriginalInterface }}
@@ -97,7 +97,7 @@
             <vaadin-grid-column width="110px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="dataGuia">Data Guia</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataGuia" />
+                    <vaadin-grid-filter path="dataGuia" value="[[filter.dataGuia]]" />
                 </template>
                 <template>
                     {{item.dataGuia}}
@@ -106,7 +106,7 @@
             <vaadin-grid-column width="110px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="noProjecto">Nº Projecto</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="noProjecto" />
+                    <vaadin-grid-filter path="noProjecto" value="[[filter.noProjecto]]" />
                 </template>
                 <template>
                     {{item.noProjecto}}
@@ -115,7 +115,7 @@
             <vaadin-grid-column width="110px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="utilizador">Utilizador</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="utilizador" />
+                    <vaadin-grid-filter path="utilizador" value="[[filter.utilizador]]" />
                 </template>
                 <template>
                     {{item.utilizador}}
@@ -124,7 +124,7 @@
             <vaadin-grid-column width="110px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="noCliente">Nº Cliente</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="noCliente" />
+                    <vaadin-grid-filter path="noCliente" value="[[filter.noCliente]]" />
                 </template>
                 <template>
                     {{item.noCliente}}
@@ -133,7 +133,7 @@
             <vaadin-grid-column width="110px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="nomeCliente">Nome Cliente</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="nomeCliente" />
+                    <vaadin-grid-filter path="nomeCliente" value="[[filter.nomeCliente]]" />
                 </template>
                 <template>
                     {{item.nomeCliente}}
@@ -142,7 +142,7 @@
             <vaadin-grid-column width="110px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="noRequisicao">Nº Requisição</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="noRequisicao" />
+                    <vaadin-grid-filter path="noRequisicao" value="[[filter.noRequisicao]]" />
                 </template>
                 <template>
                     {{item.noRequisicao}}
@@ -151,7 +151,7 @@
             <vaadin-grid-column width="110px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="globalDimension1Code">Região</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="globalDimension1Code" />
+                    <vaadin-grid-filter path="globalDimension1Code" value="[[filter.globalDimension1Code]]" />
                 </template>
                 <template>
                     {{item.globalDimension1Code}}
@@ -160,7 +160,7 @@
             <vaadin-grid-column width="110px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="globalDimension2Code">Área Funcional</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="globalDimension2Code" />
+                    <vaadin-grid-filter path="globalDimension2Code" value="[[filter.globalDimension2Code]]" />
                 </template>
                 <template>
                     {{item.globalDimension2Code}}
@@ -204,7 +204,12 @@
                         value: function () {
                             return {};
                         }
-                    }
+                    },
+                    /*FILTROS*/
+                    filter: {
+                        type: Object,
+                        value: {},
+                    },
                 },
                 _openToast: function (message) {
                   
@@ -239,8 +244,12 @@
                         this._showHistoryMessage = "Mostrar Ativos";
                     }
 
+                    /*FILTROS*/
+                    window.handleGridListColumnsOrder(this.$.grid, 'guiastransporte-guiastransportenav');
+                    window.grid = this.$.grid;
+                    window._this = this;
+
                     var _this = this;
-                    
                     var gridToBottomTimeout;
                     $(window).resize(function () {
                         _this.fixGridToBottom();
@@ -249,24 +258,42 @@
                 },
 
                 fixGridToBottom: function () {
-                    var grid_el = $(this.$.guiasTransporteGrid);
+                    var grid_el = $(this.$.grid);
                     var parentHeight = $(this).offsetParent().height();
                     var windowHeight = $(window).height();
                     var paddingTop = $(this).offsetParent().css('padding-top').replace("px", "");
                     var offsetTop = $(this).offset().top;
                     var height = windowHeight - offsetTop - paddingTop;
-                    $(this.$.guiasTransporteGrid).height(height);
+                    $(this.$.grid).height(height);
                 },
 
                 _rowSelected: function (item) {
                     if (item != null) {
                         if (item.historico) {
+                            /*FILTROS*/
+                            var filters = {};
+                            this.$.grid._filters.map(function (value, index) {
+                                filters[value.path] = value.value;
+                            });
+                            window.setGridFilter('guiastransporte-guiastransportenav', filters || {});
+
                             window.location.href = "/GuiasTransporteNav/GuiaTransporteDetails/" + item.noGuiaTransporte + "?isHistoric=" + item.historico;
                         } else {
+                            /*FILTROS*/
+                            var filters = {};
+                            this.$.grid._filters.map(function (value, index) {
+                                filters[value.path] = value.value;
+                            });
+                            window.setGridFilter('guiastransporte-guiastransportenav', filters || {});
+
                             window.location.href = "/GuiasTransporteNav/GuiaTransporteDetails/" + item.noGuiaTransporte + "?isHistoric=" + false;
                         }
                         
                     }
+                },
+                /*FILTROS*/
+                created: function () {
+                    this.filter = window.getGridFilter('guiastransporte-guiastransportenav');
                 },
 
                 _showHistory: function (item) {

@@ -34,6 +34,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Hydra.Such.Data.ViewModel.Encomendas;
 using System.Data.SqlClient;
+using Hydra.Such.Data.ViewModel.FH;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -1086,13 +1087,29 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult GetEmployees_FH()
         {
-            List<DDMessageRelated> result = DBNAV2009Employees.GetAll("", _config.NAV2009DatabaseName, _config.NAV2009CompanyName).Select(x => new DDMessageRelated()
+            List<NAVEmployeeViewModel> allEmployees = new List<NAVEmployeeViewModel>();
+            allEmployees = DBNAV2009Employees.GetAll("", _config.NAV2009DatabaseName, _config.NAV2009CompanyName);
+
+            List<DDMessageRelated> result = new List<DDMessageRelated>();
+            if (allEmployees != null && allEmployees.Count() > 0)
             {
-                id = x.No,
-                value = x.No + " - " + x.Name,
-                extra = x.Name,
-            }).ToList();
+                result = allEmployees.Select(x => new DDMessageRelated()
+                {
+                    id = !string.IsNullOrEmpty(x.No) ? x.No : "",
+                    value = x.No + " - " + x.Name,
+                    extra = !string.IsNullOrEmpty(x.Name) ? x.Name : "",
+                }).ToList();
+            }
             return Json(result);
+
+
+            //List<DDMessageRelated> result = DBNAV2009Employees.GetAll("", _config.NAV2009DatabaseName, _config.NAV2009CompanyName).Select(x => new DDMessageRelated()
+            //{
+            //    id = !string.IsNullOrEmpty(x.No) ? x.No : "",
+            //    value = x.No + " - " + x.Name,
+            //    extra = !string.IsNullOrEmpty(x.Name) ? x.Name : "",
+            //}).ToList();
+            //return Json(result);
         }
 
         /// <summary>
@@ -1407,25 +1424,26 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetTipoTrabalhoFHList()
+        public JsonResult GetTipoTrabalhoFHList([FromBody] FolhaDeHorasViewModel data)
         {
             try
             {
                 List<DDMessageString> result = new List<DDMessageString>();
-                string NoEmployee = string.Empty;
-                NoEmployee = DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo;
+                //NoEmployee = DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo;
 
-                if (!string.IsNullOrEmpty(NoEmployee))
+                string employee = data.EmpregadoNo;
+
+                if (!string.IsNullOrEmpty(employee))
                 {
                     using (var ctx = new SuchDBContextExtention())
                     {
                         var parameters = new[]{
-                        new SqlParameter("@NoEmployee", NoEmployee)
+                        new SqlParameter("@NoEmployee", employee)
                     };
 
-                        IEnumerable<dynamic> data = ctx.execStoredProcedure("exec FHTipoTrabalhoByEmployee @NoEmployee", parameters);
+                        IEnumerable<dynamic> tipos = ctx.execStoredProcedure("exec FHTipoTrabalhoByEmployee @NoEmployee", parameters);
 
-                        foreach (dynamic temp in data)
+                        foreach (dynamic temp in tipos)
                         {
 
                             result.Add(new DDMessageString()
@@ -2679,6 +2697,14 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult TiposLinhaGuiaTransporte()
         {
             List<EnumData> result = EnumerablesFixed.TipoLinhaGuiaTransporte;
+            return Json(result);
+        }
+
+        //PEDIDOS DE DESENVOLVIMENTO
+        [HttpPost]
+        public JsonResult Get_DEV_Estados()
+        {
+            List<EnumData> result = EnumerablesFixed.DEV_Estados;
             return Json(result);
         }
     }

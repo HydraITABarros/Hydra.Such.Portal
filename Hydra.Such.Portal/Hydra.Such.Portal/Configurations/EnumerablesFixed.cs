@@ -1756,6 +1756,11 @@ namespace Hydra.Such.Portal.Configurations
             },
              new EnumData
             {
+                Id = 10,
+                Value = "90 dias"
+            },
+             new EnumData
+            {
                 Id = 3,
                 Value = "180 dias"
             },
@@ -2676,6 +2681,47 @@ namespace Hydra.Such.Portal.Configurations
             }
             
         };
+
+        //PEDIDOS DE DESENVOLVIMENTO
+        public static readonly List<EnumData> DEV_Estados = new List<EnumData>()
+        {
+            new EnumData
+            {
+                Id = 0,
+                Value = "Pedido"
+            },
+            new EnumData
+            {
+                Id = 1,
+                Value = "Aceite"
+            },
+            new EnumData
+            {
+                Id = 2,
+                Value = "Recusado"
+            },
+            new EnumData
+            {
+                Id = 3,
+                Value = "Em desenvolvimento"
+            },
+            new EnumData
+            {
+                Id = 4,
+                Value = "Pausa"
+            },
+            new EnumData
+            {
+                Id = 5,
+                Value = "Testes"
+            },
+            new EnumData
+            {
+                Id = 6,
+                Value = "Concluído"
+            }
+        };
+
     }
 
     public class EnumDataString

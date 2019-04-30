@@ -28,14 +28,14 @@ namespace Hydra.Such.Data.Logic
                     {
                         result.Add(new NAVEmployeeViewModel()
                         {
-                            No = (string)temp.No_,
-                            Name = (string)temp.Name,
-                            Regiao = (string)temp.Regiao,
-                            Area = (string)temp.Area,
-                            Cresp = (string)temp.Cresp,
-                            Responsavel1 = (string)temp.Responsavel1,
-                            Responsavel2 = (string)temp.Responsavel2,
-                            Responsavel3 = (string)temp.Responsavel3,
+                            No = temp.No_ != null ? (string)temp.No_ : (string)"",
+                            Name = temp.Name != null ? (string)temp.Name : (string)"",
+                            Regiao = temp.Regiao != null ? (string)temp.Regiao : (string)"",
+                            Area = temp.Area != null ? (string)temp.Area : (string)"",
+                            Cresp = temp.Cresp != null ? (string)temp.Cresp : (string)"",
+                            Responsavel1 = temp.Responsavel1 != null ? (string)temp.Responsavel1 : (string)"",
+                            Responsavel2 = temp.Responsavel2 != null ? (string)temp.Responsavel2 : (string)"",
+                            Responsavel3 = temp.Responsavel3 != null ? (string)temp.Responsavel3 : (string)"",
                         });
                     }
                 }

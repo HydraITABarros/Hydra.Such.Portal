@@ -49,10 +49,12 @@ namespace Hydra.Such.Portal.Controllers
         public IActionResult Index()
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.FolhasHoras); //1, 6);
+            UserAccessesViewModel UPermReportAjCustosRH = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.FHReportAjCustoRH); //65);
 
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.UPermissions = UPerm;
+                ViewBag.UPermissionsRH = UPermReportAjCustosRH;
                 ViewBag.reportServerURL = _config.ReportServerURL;
 
                 return View();
@@ -155,12 +157,11 @@ namespace Hydra.Such.Portal.Controllers
             try
             {
                 UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.FolhasHoras); //1, 6);
-                UserAccessesViewModel UPermReportAjCustosRH = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.FHReportAjCustoRH); //65);
+
+                List<TabelaConfRecursosFh>  AllRecursos = DBTabelaConfRecursosFh.GetAll();
 
                 if (UPerm != null && UPerm.Read.Value)
                 {
-                    ViewBag.UPermissions = UPerm;
-
                     if (HTML.todas == 1)
                     {
                         List<FolhaDeHorasViewModel> result = DBFolhasDeHoras.GetAllByTodas(_config.NAVDatabaseName, _config.NAVCompanyName, User.Identity.Name);
@@ -169,12 +170,11 @@ namespace Hydra.Such.Portal.Controllers
                             result.ForEach(FH =>
                             {
                                 FH.TipoDeslocacaoTexto = FH.TipoDeslocacao == null ? "" : EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault().Value;
-                                FH.CodigoTipoKms = FH.CodigoTipoKms == null ? "" : DBTabelaConfRecursosFh.GetDescricaoByRecurso("1", FH.CodigoTipoKms);
+                                FH.CodigoTipoKms = FH.CodigoTipoKms == null ? "" : AllRecursos.Where(x => x.Tipo == "1" && x.CodRecurso == FH.CodigoTipoKms).FirstOrDefault().Descricao;
                                 FH.DeslocacaoForaConcelho = FH.DeslocacaoForaConcelho == null ? false : FH.DeslocacaoForaConcelho;
                                 FH.DeslocacaoForaConcelhoTexto = FH.DeslocacaoForaConcelho == null ? "" : FH.DeslocacaoForaConcelho == false ? "Não" : "Sim";
                                 FH.Terminada = FH.Terminada == null ? false : FH.Terminada;
                                 FH.TerminadaTexto = FH.Terminada == null ? "" : FH.Terminada == false ? "Não" : "Sim";
-                                FH.MostrarReportAjCustosRH = UPermReportAjCustosRH == null ? false : (bool)UPermReportAjCustosRH.Read;
                             });
                         }
 
@@ -195,12 +195,11 @@ namespace Hydra.Such.Portal.Controllers
                                         FH.Estadotexto = "Não está Terminada";
 
                                     FH.TipoDeslocacaoTexto = FH.TipoDeslocacao == null ? "" : EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault().Value;
-                                    FH.CodigoTipoKms = FH.CodigoTipoKms == null ? "" : DBTabelaConfRecursosFh.GetDescricaoByRecurso("1", FH.CodigoTipoKms);
+                                    FH.CodigoTipoKms = FH.CodigoTipoKms == null ? "" : AllRecursos.Where(x => x.Tipo == "1" && x.CodRecurso == FH.CodigoTipoKms).FirstOrDefault().Descricao;
                                     FH.DeslocacaoForaConcelho = FH.DeslocacaoForaConcelho == null ? false : FH.DeslocacaoForaConcelho;
                                     FH.DeslocacaoForaConcelhoTexto = FH.DeslocacaoForaConcelho == null ? "" : FH.DeslocacaoForaConcelho == false ? "Não" : "Sim";
                                     FH.Terminada = FH.Terminada == null ? false : FH.Terminada;
                                     FH.TerminadaTexto = FH.Terminada == null ? "" : FH.Terminada == false ? "Não" : "Sim";
-                                    FH.MostrarReportAjCustosRH = UPermReportAjCustosRH == null ? false : (bool)UPermReportAjCustosRH.Read;
                                 });
                             }
 
@@ -216,12 +215,11 @@ namespace Hydra.Such.Portal.Controllers
                                     result.ForEach(FH =>
                                     {
                                         FH.TipoDeslocacaoTexto = FH.TipoDeslocacao == null ? "" : EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault().Value;
-                                        FH.CodigoTipoKms = FH.CodigoTipoKms == null ? "" : DBTabelaConfRecursosFh.GetDescricaoByRecurso("1", FH.CodigoTipoKms);
+                                        FH.CodigoTipoKms = FH.CodigoTipoKms == null ? "" : AllRecursos.Where(x => x.Tipo == "1" && x.CodRecurso == FH.CodigoTipoKms).FirstOrDefault().Descricao;
                                         FH.DeslocacaoForaConcelho = FH.DeslocacaoForaConcelho == null ? false : FH.DeslocacaoForaConcelho;
                                         FH.DeslocacaoForaConcelhoTexto = FH.DeslocacaoForaConcelho == null ? "" : FH.DeslocacaoForaConcelho == false ? "Não" : "Sim";
                                         FH.Terminada = FH.Terminada == null ? false : FH.Terminada;
                                         FH.TerminadaTexto = FH.Terminada == null ? "" : FH.Terminada == false ? "Não" : "Sim";
-                                        FH.MostrarReportAjCustosRH = UPermReportAjCustosRH == null ? false : (bool)UPermReportAjCustosRH.Read;
                                     });
                                 }
 
@@ -237,12 +235,11 @@ namespace Hydra.Such.Portal.Controllers
                                         result.ForEach(FH =>
                                         {
                                             FH.TipoDeslocacaoTexto = FH.TipoDeslocacao == null ? "" : EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault().Value;
-                                            FH.CodigoTipoKms = FH.CodigoTipoKms == null ? "" : DBTabelaConfRecursosFh.GetDescricaoByRecurso("1", FH.CodigoTipoKms);
+                                            FH.CodigoTipoKms = FH.CodigoTipoKms == null ? "" : AllRecursos.Where(x => x.Tipo == "1" && x.CodRecurso == FH.CodigoTipoKms).FirstOrDefault().Descricao;
                                             FH.DeslocacaoForaConcelho = FH.DeslocacaoForaConcelho == null ? false : FH.DeslocacaoForaConcelho;
                                             FH.DeslocacaoForaConcelhoTexto = FH.DeslocacaoForaConcelho == null ? "" : FH.DeslocacaoForaConcelho == false ? "Não" : "Sim";
                                             FH.Terminada = FH.Terminada == null ? false : FH.Terminada;
                                             FH.TerminadaTexto = FH.Terminada == null ? "" : FH.Terminada == false ? "Não" : "Sim";
-                                            FH.MostrarReportAjCustosRH = UPermReportAjCustosRH == null ? false : (bool)UPermReportAjCustosRH.Read;
                                         });
                                     }
 
@@ -258,12 +255,11 @@ namespace Hydra.Such.Portal.Controllers
                                             result.ForEach(FH =>
                                             {
                                                 FH.TipoDeslocacaoTexto = FH.TipoDeslocacao == null ? "" : EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault().Value;
-                                                FH.CodigoTipoKms = FH.CodigoTipoKms == null ? "" : DBTabelaConfRecursosFh.GetDescricaoByRecurso("1", FH.CodigoTipoKms);
+                                                FH.CodigoTipoKms = FH.CodigoTipoKms == null ? "" : AllRecursos.Where(x => x.Tipo == "1" && x.CodRecurso == FH.CodigoTipoKms).FirstOrDefault().Descricao;
                                                 FH.DeslocacaoForaConcelho = FH.DeslocacaoForaConcelho == null ? false : FH.DeslocacaoForaConcelho;
                                                 FH.DeslocacaoForaConcelhoTexto = FH.DeslocacaoForaConcelho == null ? "" : FH.DeslocacaoForaConcelho == false ? "Não" : "Sim";
                                                 FH.Terminada = FH.Terminada == null ? false : FH.Terminada;
                                                 FH.TerminadaTexto = FH.Terminada == null ? "" : FH.Terminada == false ? "Não" : "Sim";
-                                                FH.MostrarReportAjCustosRH = UPermReportAjCustosRH == null ? false : (bool)UPermReportAjCustosRH.Read;
                                             });
                                         }
 
@@ -279,12 +275,11 @@ namespace Hydra.Such.Portal.Controllers
                                                 result.ForEach(FH =>
                                                 {
                                                     FH.TipoDeslocacaoTexto = FH.TipoDeslocacao == null ? "" : EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault().Value;
-                                                    FH.CodigoTipoKms = FH.CodigoTipoKms == null ? "" : DBTabelaConfRecursosFh.GetDescricaoByRecurso("1", FH.CodigoTipoKms);
+                                                    FH.CodigoTipoKms = FH.CodigoTipoKms == null ? "" : AllRecursos.Where(x => x.Tipo == "1" && x.CodRecurso == FH.CodigoTipoKms).FirstOrDefault().Descricao;
                                                     FH.DeslocacaoForaConcelho = FH.DeslocacaoForaConcelho == null ? false : FH.DeslocacaoForaConcelho;
                                                     FH.DeslocacaoForaConcelhoTexto = FH.DeslocacaoForaConcelho == null ? "" : FH.DeslocacaoForaConcelho == false ? "Não" : "Sim";
                                                     FH.Terminada = FH.Terminada == null ? false : FH.Terminada;
                                                     FH.TerminadaTexto = FH.Terminada == null ? "" : FH.Terminada == false ? "Não" : "Sim";
-                                                    FH.MostrarReportAjCustosRH = UPermReportAjCustosRH == null ? false : (bool)UPermReportAjCustosRH.Read;
                                                 });
                                             }
 
