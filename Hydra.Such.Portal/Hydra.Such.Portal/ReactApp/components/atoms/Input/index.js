@@ -7,6 +7,10 @@ const styles = css`&& {
         input {
             padding: 11px 15px;
             line-height: 13px;
+            font-family: Inter,Helvetica,sans-serif;
+            font-style: normal;
+            font-weight: 400;
+            font-size: 14px;
         }
         fieldset {
             border-radius: ${_theme.radius.primary};
@@ -14,14 +18,19 @@ const styles = css`&& {
         [role="button"] {
             padding: 11px 35px 11px 15px;
         }
+        &[class*="MuiInputBase-focused"] {
+            fieldset {
+                border-color: ${_theme.palette.secondary.default};
+            }
+        }
     }
 `
 
 const DefaultOutlinedInput = styled(MuiOutlinedInput)`${styles}`;
 
-const OutlinedInput = ({ ...props }) => {
+const Input = ({ ...props }) => {
 
     return <DefaultOutlinedInput fullWidth={props.fullWidth || true} labelWidth={props.labelWidth || 0} {...props} />
 }
 
-export default OutlinedInput;
+export default Input;
