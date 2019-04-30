@@ -68,6 +68,17 @@ const buttonRound = css`&& {
     }
 }
 `
+const buttonSolo = css`&& {   
+    width: 32px;
+    min-width: auto;
+    height: 32px;
+    line-height: 14px;
+    padding: 0;     
+    text-transform: none; 
+    border-radius: ${_theme.radius.round};
+    color: ${_theme.palette.primary.medium};
+}
+`
 const buttonOutline = css`&& {
     background-color: ${_theme.palette.white};
     color: ${_theme.palette.secondary.default};
@@ -85,6 +96,7 @@ const ButtonPrimary = styled(MuiButton)`${sharedStyles}${buttonPrimary}`;
 const ButtonDefault = styled(MuiButton)`${sharedStyles}${buttonDefault}`;
 const ButtonIcon = styled(MuiButton)`${sharedStyles}${buttonIcon}`;
 const ButtonRound = styled(MuiButton)`${buttonRound}`;
+const ButtonSolo = styled(MuiButton)`${buttonSolo}`;
 const ButtonOutline = styled(MuiButton)`${buttonOutline}`;
 
 const Button = ({ ...props }) => {
@@ -98,6 +110,8 @@ const Button = ({ ...props }) => {
         return <Link src="javascript:void(0)" {...props} ><Text b>{props.children}</Text></Link>
     } else if (props.round) {
         return <ButtonRound src="javascript:void(0)" {...props} ></ButtonRound>
+    } else if (props.iconSolo) {
+        return <ButtonSolo src="javascript:void(0)" {...props} ></ButtonSolo>
     } else if (props.outline) {
         return <ButtonOutline variant="contained" {...props} ><Text b>{props.children}</Text></ButtonOutline>
     }

@@ -2,6 +2,7 @@
 
 import MuiAddIcon from '@material-ui/icons/Add';
 import MuiDeleteIcon from '@material-ui/icons/Delete';
+import { Icon } from 'components';
 
 <div>
     <Button primary>Primary</Button>{"\u00a0","\u00a0","\u00a0"}
@@ -10,7 +11,8 @@ import MuiDeleteIcon from '@material-ui/icons/Delete';
     <Button link>Text Link</Button>{"\u00a0","\u00a0","\u00a0"}
     <Button round><MuiAddIcon /></Button>{"\u00a0","\u00a0","\u00a0"}
     <Button round><MuiDeleteIcon /></Button>{"\u00a0","\u00a0","\u00a0"}
-    <Button outline>Outline{"\u00a0","\u00a0"}0/25</Button>
+    <Button outline>Outline{"\u00a0","\u00a0"}0/25</Button>{"\u00a0","\u00a0","\u00a0"}
+    <Button iconSolo><Icon decline /></Button>
 
 </div>
 ```
