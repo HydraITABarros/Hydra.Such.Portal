@@ -6464,13 +6464,29 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
+        //public IActionResult ConfiguracaoTiposProcedimento(int id)
+        //{
+        //    UserAccessesViewModel userPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminGeral);
+        //    if (userPerm != null && userPerm.Read.Value)
+        //    {
+        //        ViewBag.UPermissions = userPerm;
+        //        ViewBag.No = id;
+        //        ViewBag.reportServerURL = _config.ReportServerURL;
+
+        //        return View();
+        //    }
+        //    else
+        //    {
+        //        return RedirectToAction("AccessDenied", "Error");
+        //    }
+        //}
         public IActionResult ConfiguracaoTiposProcedimento(int id)
         {
             UserAccessesViewModel userPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminGeral);
             if (userPerm != null && userPerm.Read.Value)
             {
                 ViewBag.UPermissions = userPerm;
-                ViewBag.No = id; 
+                ViewBag.No = id;
                 ViewBag.reportServerURL = _config.ReportServerURL;
 
                 return View();
@@ -6606,6 +6622,7 @@ namespace Hydra.Such.Portal.Controllers
 
             
         }
+        [HttpPost]
         public JsonResult CreateTipo()
         {
             TipoProcedimentoCcp newTipo = new TipoProcedimentoCcp() {
@@ -6622,6 +6639,56 @@ namespace Hydra.Such.Portal.Controllers
                 return Json(newTipo.IdTipo);
 
             return Json(null);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateTipo([FromBody]TipoProcedimentoCcp data)
+        {
+            if (data == null)
+                return Json(false);
+
+            data.UtilizadorModificacao = User.Identity.Name;
+            data.DataModificacao = DateTime.Now;
+
+            if (data.Fundamentos != null)
+            {
+                foreach(var f in data.Fundamentos)
+                {
+                    if (f.UtilizadorCriacao == null || f.UtilizadorCriacao == "")
+                    {
+                        f.UtilizadorCriacao = User.Identity.Name;
+                        f.DataCriacao = DateTime.Now;
+                    }
+                    else
+                    {
+                        f.UtilizadorModificacao = User.Identity.Name;
+                        f.DataModificacao = DateTime.Now;
+                    }
+                }
+            }
+
+            return Json(DBConfiguracaoCCP.__UpdateType(data));
+        }
+
+        [HttpPost]
+        public JsonResult CreateFundamento([FromBody]FundamentoLegalTipoProcedimentoCcp data)
+        {
+            if (data == null)
+                return Json(false);
+
+            data.UtilizadorCriacao = User.Identity.Name;
+            data.DataCriacao = DateTime.Now;
+
+            return Json(DBConfiguracaoCCP.__CreateReason(data));
+        }
+
+        [HttpPost]
+        public JsonResult UpdateFundamento([FromBody]FundamentoLegalTipoProcedimentoCcp data)
+        {
+            if (data == null)
+                return Json(false);
+
+            return Json(DBConfiguracaoCCP.__UpdateReason(data));
         }
         #endregion
 
