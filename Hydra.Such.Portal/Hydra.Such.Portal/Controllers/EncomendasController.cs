@@ -899,14 +899,14 @@ namespace Hydra.Such.Portal.Controllers
                             WSPaymentJournalNAV.WSPaymentJournal PaymentJournal = new WSPaymentJournalNAV.WSPaymentJournal()
                             {
                                 Journal_Template_Name = "PAGAMENTOS",
+                                Journal_Batch_Name = "SEPA-ADIAN",
                                 Line_No = lineNo,
                                 Account_Type = WSPaymentJournalNAV.Account_Type.Vendor,
                                 Account_No = pedido.CodigoFornecedor,
                                 Description = pedido.Fornecedor,
                                 Posting_Date = DateTime.Now,
                                 Document_Type = WSPaymentJournalNAV.Document_Type.Payment,
-                                Amount = (decimal)pedido.Valor,
-                                Journal_Batch_Name = "SEPA-ADIAN"
+                                Amount = (decimal)pedido.Valor
                             };
 
                             Task<WSPaymentJournalNAV.Create_Result> createPaymentJournal = WSPaymentJournal.CreatePaymentJournalNAV(PaymentJournal, _configws);

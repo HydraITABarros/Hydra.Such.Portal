@@ -569,9 +569,9 @@ namespace Hydra.Such.Portal.Controllers
                     result.InvoiceTexts = new List<ContractInvoiceTextViewModel>();
                 }
 
-                if (result != null && !string.IsNullOrEmpty(result.CodeShippingAddress))
+                if (result != null && !string.IsNullOrEmpty(result.ClientNo) && !string.IsNullOrEmpty(result.CodeShippingAddress))
                 {
-                    NAVAddressesViewModel SHIP = DBNAV2017ShippingAddresses.GetByCode(result.CodeShippingAddress, _config.NAVDatabaseName, _config.NAVCompanyName);
+                    NAVAddressesViewModel SHIP = DBNAV2017ShippingAddresses.GetByClientAndCode(result.ClientNo, result.CodeShippingAddress, _config.NAVDatabaseName, _config.NAVCompanyName);
                     if (SHIP != null)
                     {
                         result.ShippingName = SHIP.Name;
@@ -582,13 +582,16 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    NAVClientsViewModel cli = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, result.ClientNo);
-                    if (cli != null)
+                    if (!string.IsNullOrEmpty(result.ClientNo))
                     {
-                        result.ShippingName = cli.Name;
-                        result.ShippingAddress = cli.Address;
-                        result.ShippingZipCode = cli.PostCode;
-                        result.ShippingLocality = cli.City;
+                        NAVClientsViewModel cli = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, result.ClientNo);
+                        if (cli != null)
+                        {
+                            result.ShippingName = cli.Name;
+                            result.ShippingAddress = cli.Address;
+                            result.ShippingZipCode = cli.PostCode;
+                            result.ShippingLocality = cli.City;
+                        }
                     }
                     else
                     {
@@ -1836,10 +1839,10 @@ namespace Hydra.Such.Portal.Controllers
                 string Problema;
                 int? totalInvoiceGroups = contractLines.Where(x => x.NºContrato == item.NºDeContrato).Select(x => x.GrupoFatura).Distinct().Count();
 
-                if (item.NºDeContrato == "VC0500682")
-                {
-                    Problema = "";
-                }
+                //if (item.NºDeContrato == "VC0500682")
+                //{
+                //    Problema = "";
+                //}
 
                 foreach (var contractLine in contractLines)
                 {
@@ -5756,14 +5759,56 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetAddressData([FromBody] JObject requestParams)
         {
+            NAVAddressesViewModel result = new NAVAddressesViewModel();
+
             if (!string.IsNullOrEmpty(requestParams["clientcode"].ToString()) && !string.IsNullOrEmpty(requestParams["addresscode"].ToString()))
             {
-                NAVAddressesViewModel result = DBNAV2017ShippingAddresses.GetByClientAndCode(requestParams["clientcode"].ToString(), requestParams["addresscode"].ToString(), _config.NAVDatabaseName, _config.NAVCompanyName);
+                NAVAddressesViewModel SHIP = DBNAV2017ShippingAddresses.GetByClientAndCode(requestParams["clientcode"].ToString(), requestParams["addresscode"].ToString(), _config.NAVDatabaseName, _config.NAVCompanyName);
+                if (SHIP != null)
+                {
+                    result.Name = SHIP.Name;
+                    result.Address = SHIP.Address;
+                    result.ZipCode = SHIP.ZipCode;
+                    result.City = SHIP.City;
 
-                return Json(result);
+                    return Json(result);
+                }
             }
+            else
+            {
+                if (!string.IsNullOrEmpty(requestParams["clientcode"].ToString()))
+                {
+                    NAVClientsViewModel cli = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, requestParams["clientcode"].ToString());
+                    if (cli != null)
+                    {
+                        result.Name = cli.Name;
+                        result.Address = cli.Address;
+                        result.ZipCode = cli.PostCode;
+                        result.City = cli.City;
 
-            return Json(null);
+                        return Json(result);
+                    }
+                }
+                else
+                {
+                    result.Name = "";
+                    result.Address = "";
+                    result.ZipCode = "";
+                    result.City = "";
+
+                    return Json(result);
+                }
+            }
+            return Json(result);
+
+            //if (!string.IsNullOrEmpty(requestParams["clientcode"].ToString()) && !string.IsNullOrEmpty(requestParams["addresscode"].ToString()))
+            //{
+            //    NAVAddressesViewModel result = DBNAV2017ShippingAddresses.GetByClientAndCode(requestParams["clientcode"].ToString(), requestParams["addresscode"].ToString(), _config.NAVDatabaseName, _config.NAVCompanyName);
+
+            //    return Json(result);
+            //}
+
+            //return Json(null);
         }
 
     }

@@ -1429,28 +1429,33 @@ namespace Hydra.Such.Portal.Controllers
             try
             {
                 List<DDMessageString> result = new List<DDMessageString>();
-                //NoEmployee = DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo;
-
-                string employee = data.EmpregadoNo;
-
-                if (!string.IsNullOrEmpty(employee))
+                if (data != null)
                 {
-                    using (var ctx = new SuchDBContextExtention())
+                    //NoEmployee = DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo;
+
+                    string employee = data.EmpregadoNo;
+                    string recurso = data.Recurso;
+
+                    if (!string.IsNullOrEmpty(employee) && !string.IsNullOrEmpty(recurso))
                     {
-                        var parameters = new[]{
-                        new SqlParameter("@NoEmployee", employee)
+                        using (var ctx = new SuchDBContextExtention())
+                        {
+                            var parameters = new[]{
+                        new SqlParameter("@NoEmployee", employee),
+                        new SqlParameter("@Recurso", recurso)
                     };
 
-                        IEnumerable<dynamic> tipos = ctx.execStoredProcedure("exec FHTipoTrabalhoByEmployee @NoEmployee", parameters);
+                            IEnumerable<dynamic> tipos = ctx.execStoredProcedure("exec FHTipoTrabalhoByEmployeeV2 @NoEmployee, @Recurso", parameters);
 
-                        foreach (dynamic temp in tipos)
-                        {
-
-                            result.Add(new DDMessageString()
+                            foreach (dynamic temp in tipos)
                             {
-                                id = temp.Code.Equals(DBNull.Value) ? "" : (string)temp.Code,
-                                value = temp.Descricao.Equals(DBNull.Value) ? "" : (string)temp.Descricao
-                            });
+
+                                result.Add(new DDMessageString()
+                                {
+                                    id = temp.Code.Equals(DBNull.Value) ? "" : (string)temp.Code,
+                                    value = temp.Descricao.Equals(DBNull.Value) ? "" : (string)temp.Descricao
+                                });
+                            }
                         }
                     }
                 }
@@ -1922,14 +1927,26 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetRHRecursosFH()
+        public JsonResult GetRHRecursosFH([FromBody] FolhaDeHorasViewModel data)
         {
-            List<DDMessageString> result = DBRHRecursosFH.GetAll().Select(x => new DDMessageString()
+            List<DDMessageString> result = new List<DDMessageString>();
+
+            if (!string.IsNullOrEmpty(data.EmpregadoNo))
             {
-                id = x.FamiliaRecurso,
-                value = x.NomeRecurso
-            }).ToList();
+                result = DBRHRecursosFH.GetAll().Where(x => x.NoEmpregado == data.EmpregadoNo).Select(x => new DDMessageString()
+                {
+                    id = x.Recurso,
+                    value = x.NomeRecurso
+                }).ToList();
+            }
             return Json(result);
+
+            //List<DDMessageString> result = DBRHRecursosFH.GetAll().Select(x => new DDMessageString()
+            //{
+            //    id = x.FamiliaRecurso,
+            //    value = x.NomeRecurso
+            //}).ToList();
+            //return Json(result);
         }
 
         [HttpPost]

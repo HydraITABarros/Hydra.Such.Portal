@@ -148,16 +148,16 @@
         <iron-ajax url="/PopulateDropdowns/GetProjectNavList_FH" last-response="{{LFolhaDeHoraNavProjectNo}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <!--<iron-ajax url="/PopulateDropdowns/GetTipoTrabalhoList" last-response="{{LFolhaDeHoraTipoTrabalhoNo}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
         <!--<iron-ajax url="/PopulateDropdowns/GetTipoTrabalhoFHList" last-response="{{LFolhaDeHoraTipoTrabalhoNo}}" id="page_GetTipoTrabalhoFH_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
-        <iron-ajax url="/PopulateDropdowns/GetTipoTrabalhoFHList" last-response="{{LFolhaDeHoraTipoTrabalhoNo}}" method="post" handle-as="json" id="page_GetTipoTrabalhoFH_ajax" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFolhaDeHoraDisplacementOutsideCity" last-response="{{LFolhaDeHoraDisplacementOutsideCity}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetUtilizadores" last-response="{{LFolhaDeHoraValidators}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFolhaDeHoraPercursoOrigemDestino" last-response="{{LFolhaDeHoraPercursoOrigemDestino}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFolhaDeHoraViaturasMatriculas" last-response="{{LFolhaDeHoraViaturaMatricula}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetRHRecursosFH" last-response="{{LFolhaDeHoraGetRHRecursosFH}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFolhaDeHoraAjudaTipoCusto" last-response="{{LFolhaDeHoraAjudaTipoCusto}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetCodTipoCustoByTipoCusto" last-response="{{LFolhaDeHoraAjudaCodTipoCusto}}" method="post" handle-as="json" id="get_codtipocusto" on-response="_setCodTipoCustoResponse" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFolhaDeHoraAjudaTipoCusto" last-response="{{LFolhaDeHoraAjudaTipoCusto_TAB}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetCodTipoCustoByTipoCusto_ALL" last-response="{{LFolhaDeHoraAjudaCodTipoCusto_ALL}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetTipoTrabalhoFHList" last-response="{{LFolhaDeHoraTipoTrabalhoNo}}" method="post" handle-as="json" id="page_GetTipoTrabalhoFH_ajax" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetRHRecursosFH" last-response="{{LFolhaDeHoraGetRHRecursosFH}}" method="post" handle-as="json" id="page_GetRecursoFH_ajax" content-type="application/json"></iron-ajax>
 
         <!-- FOLHADEHORA CRUDS -->
         <iron-ajax url="/FolhasDeHoras/GetFolhaDeHoraDetails"
@@ -1107,10 +1107,11 @@
                     <paper-collapse-item class="panel-heading" header="Mão de Obra">
                         <div class="panel-body">
                             <div class="row break_clear">
-                                <div class="col-sm-2">
+                                <div class="col-sm-3">
                                     <vaadin-date-picker id="maoDeObraDate" name="maoDeObraDate" label="Data" value="" on-blur="_MaoDeObraDataValidar" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
                                 </div>
-                                <div class="col-sm-2">
+
+                                <div class="col-sm-3">
                                     <such-selectbox id="maoDeObraProjetoNo" label="Nº Obra"
                                                     items="[[LFolhaDeHoraNavProjectNo]]"
                                                     text-path="no"
@@ -1118,6 +1119,18 @@
                                                     fields='[{"field":"no","name":"Nº"},{"field":"description","name":"Descrição"},{"field":"customerName","name":"Nome Cliente"},{"field":"customerNo","name":"Nº Cliente"}, {"field":"regionCode", "name":"Cód. Região"}, {"field":"areaCode", "name":"Cód. Área"}, {"field":"centerResponsibilityCode", "name":"Cód. Cresp"}]'
                                                     on-change="_MaoDeObraProjecto" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                     </such-selectbox>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <vaadin-combo-box items="[[LFolhaDeHoraGetRHRecursosFH]]" id="maoDeObraCodigoRecurso" item-value-path="id" item-label-path="value" label="Recurso" on-change="_MaoDeObraRecurso" disabled="{{ !_permissions.update }}">
+                                        <template>
+                                            <paper-icon-item>
+                                                <paper-item-body two-line>
+                                                    <div>[[item.id]] - [[item.value]]</div>
+                                                </paper-item-body>
+                                            </paper-icon-item>
+                                        </template>
+                                    </vaadin-combo-box>
                                 </div>
 
                                 <div class="col-sm-3">
@@ -1131,8 +1144,10 @@
                                         </template>
                                     </vaadin-combo-box>
                                 </div>
+                            </div>
 
-                                <div class="col-sm-1">
+                            <div class="row break_clear">
+                                <div class="col-sm-2">
                                     <!--<vaadin-text-field id="maoDeObraHoraInicio" label="Hora de Início" on-blur="_MaoDeObraHoraInicioValidar" type="time" maxlength="8" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>-->
                                     <vaadin-time-picker step="1800" id="maoDeObraHoraInicio" label="Hora de Início" on-blur="_MaoDeObraHoraInicioValidar" disabled="{{ !_permissions.update }}" required></vaadin-time-picker>
                                 </div>
@@ -1141,7 +1156,7 @@
                                     <vaadin-checkbox id="maoDeObraHorarioAlmoco" checked="{{chkAlmoco}}" disabled="{{ !_permissions.update }}">Almoço</vaadin-checkbox>
                                 </div>
 
-                                <div class="col-sm-1">
+                                <div class="col-sm-2">
                                     <!--<vaadin-text-field id="maoDeObraHoraFim" label="Hora de Fim" on-blur="_MaoDeObraHoraFimValidar" type="time" maxlength="8" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>-->
                                     <vaadin-time-picker step="1800" id="maoDeObraHoraFim" label="Hora de Fim" on-blur="_MaoDeObraHoraFimValidar" disabled="{{ !_permissions.update }}" required></vaadin-time-picker>
                                 </div>
@@ -1212,19 +1227,29 @@
 
                         <vaadin-grid-column resizable>
                             <template class="header">
+                                <vaadin-grid-sorter path="codigoRecurso" style="text-align:center;">Recurso</vaadin-grid-sorter>
+                                <vaadin-grid-filter path="codigoRecurso"></vaadin-grid-filter>
+                            </template>
+                            <template>
+                                {{item.codigoRecurso}}
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column resizable>
+                            <template class="header">
                                 <vaadin-grid-sorter path="codigoTipoTrabalho" style="text-align:center;">Tp Trabalho</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="codigoTipoTrabalho"></vaadin-grid-filter>
                             </template>
                             <template>
                                 <!--<vaadin-combo-box items="[[LFolhaDeHoraTipoTrabalhoNo]]" id="tabMaoDeObraCodigoTipoTrabalho" item-value-path="id" item-label-path="value" value="{{item.codigoTipoTrabalho}}" on-blur="_updateLinhaMaoDeObra" disabled="true" style="text-align:left;">
-                                <template>
-                                    <paper-icon-item>
-                                        <paper-item-body two-line>
-                                            <div>[[item.value]]</div>
-                                        </paper-item-body>
-                                    </paper-icon-item>
-                                </template>
-                            </vaadin-combo-box>-->
+                <template>
+                    <paper-icon-item>
+                        <paper-item-body two-line>
+                            <div>[[item.value]]</div>
+                        </paper-item-body>
+                    </paper-icon-item>
+                </template>
+            </vaadin-combo-box>-->
                                 {{item.codigoTipoTrabalho}}
                             </template>
                         </vaadin-grid-column>
@@ -1276,14 +1301,14 @@
                             </template>
                             <template>
                                 <!--<vaadin-combo-box items="[[LFolhaDeHoraGetRHRecursosFH]]" id="tabMaoDeObraCodigoFamiliaRecurso" item-value-path="id" item-label-path="value" value="{{item.codigoFamiliaRecurso}}" on-blur="_updateLinhaMaoDeObra" disabled="true" style="text-align:left;">
-                                <template>
-                                    <paper-icon-item>
-                                        <paper-item-body two-line>
-                                            <div>[[item.value]]</div>
-                                        </paper-item-body>
-                                    </paper-icon-item>
-                                </template>
-                            </vaadin-combo-box>-->
+                <template>
+                    <paper-icon-item>
+                        <paper-item-body two-line>
+                            <div>[[item.value]]</div>
+                        </paper-item-body>
+                    </paper-icon-item>
+                </template>
+            </vaadin-combo-box>-->
                                 {{item.codigoFamiliaRecurso}}
                             </template>
                         </vaadin-grid-column>
@@ -2933,24 +2958,25 @@
                                                     codigoRegiao: this.$.codigoRegiao.value,
                                                     codigoArea: this.$.codigoAreaFuncional.value,
                                                     codigoCentroResponsabilidade: this.$.codigoCentroResponsabilidade.value,
+                                                    codigoRecurso: this.$.maoDeObraCodigoRecurso.value,
                                                     codigoTipoTrabalho: this.$.maoDeObraCodigoTipoTrabalho.value,
                                                     horaInicio: this.$.maoDeObraHoraInicio.value,
                                                     horarioAlmoco: this.chkAlmoco,
                                                     horaFim: this.$.maoDeObraHoraFim.value,
                                                     horarioJantar: this.chkJantar,
                                                 });
-                                                //this.$.page_createmaodeobra_ajax.generateRequest();
-                                                //this.$.tabMaoDeObra.clearCache();
-
-                                                this.$.page_updatefolhadehorasnomsg_ajax.body = JSON.stringify(this.data);
-
-                                                var update = this.$.page_updatefolhadehorasnomsg_ajax.generateRequest();
-                                                var linha = this.$.page_createmaodeobra_ajax.generateRequest();
-
-                                                Promise.all([linha.completes, update.completes]).then(function (requests) {
-                                                })
-
+                                                this.$.page_createmaodeobra_ajax.generateRequest();
                                                 this.$.tabMaoDeObra.clearCache();
+
+                                                //this.$.page_updatefolhadehorasnomsg_ajax.body = JSON.stringify(this.data);
+
+                                                //var update = this.$.page_updatefolhadehorasnomsg_ajax.generateRequest();
+                                                //var linha = this.$.page_createmaodeobra_ajax.generateRequest();
+
+                                                //Promise.all([linha.completes, update.completes]).then(function (requests) {
+                                                //})
+
+                                                //this.$.tabMaoDeObra.clearCache();
                                             }
                                             else {
                                                 this._showErrorMessage('Os campos Data e Hora tem que estar contido no período de tempo do Cabeçalho.');
@@ -2990,9 +3016,6 @@
                         var maoDeObraNoLinha = e.model.item.linhaNo;
                         var ajax_request = this.$.page_deletemaodeobra_ajax;
 
-                        this.$.page_updatefolhadehoras_ajax.body = JSON.stringify(this.data);
-                        this.$.page_updatefolhadehoras_ajax.generateRequest();
-
                         bootbox.confirm({
                             message: "Tem a certeza que pretende remover a Mão de Obra?",
                             buttons: {
@@ -3006,7 +3029,7 @@
                                 }
                             },
                             callback: function (deleteMaoDeObra) {
-                                if (deleteMaoDeObra) {
+                                if (deleteMaoDeObra == true) {
                                     ajax_request.body = JSON.stringify({
                                         folhaDeHorasNo: maoDeObraFH,
                                         linhaNo: maoDeObraNoLinha
@@ -3060,6 +3083,7 @@
                 _MaoDeObraData: function () {
                     if (this.$.maoDeObraDate.value != "") {
                         this.$.maoDeObraProjetoNo.value = this.$.projetoNo.value;
+                        this.$.maoDeObraCodigoRecurso.value = "";
                         this.$.maoDeObraCodigoTipoTrabalho.value = "";
                         this.$.maoDeObraHoraInicio.value = "00:00";
                         this.$.maoDeObraHorarioAlmoco.value = "on";
@@ -3068,6 +3092,7 @@
                     }
                     else {
                         this.$.maoDeObraProjetoNo.value = "";
+                        this.$.maoDeObraCodigoRecurso.value = "";
                         this.$.maoDeObraCodigoTipoTrabalho.value = "";
                         this.$.maoDeObraHoraInicio.value = "";
                         this.$.maoDeObraHorarioAlmoco.value = "off";
@@ -3560,8 +3585,11 @@
                             this.$.percursoProjeto.value = this.$.projetoNo.value;
                             this.$.ajudaProjeto.value = this.$.projetoNo.value;
 
-                            this.$.page_GetTipoTrabalhoFH_ajax.body = JSON.stringify(self.data);
-                            this.$.page_GetTipoTrabalhoFH_ajax.generateRequest();
+                            this.$.page_GetRecursoFH_ajax.body = JSON.stringify(self.data);
+                            this.$.page_GetRecursoFH_ajax.generateRequest();
+
+                            //this.$.page_GetTipoTrabalhoFH_ajax.body = JSON.stringify(self.data);
+                            //this.$.page_GetTipoTrabalhoFH_ajax.generateRequest();
 
                         } else if (data.detail.url.indexOf("Create") !== -1) {
                             this._createResponseProcessor();
@@ -4088,15 +4116,21 @@
                 _createMaoDeObraResponse: function (e) {
                     if (this.MaoDeObraCreated == 0) {
                         this._showMessage('Adicionada Mão de Obra com sucesso.');
-                        this.$.page_databound_ajax.generateRequest();
 
                         this.$.maoDeObraDate.value = "";
                         this.$.maoDeObraProjetoNo.valueText = "";
+                        this.$.maoDeObraCodigoRecurso.value = "";
                         this.$.maoDeObraCodigoTipoTrabalho.value = "";
                         this.$.maoDeObraHoraInicio.value = "";
                         this.$.maoDeObraHorarioAlmoco.value = "";
                         this.$.maoDeObraHoraFim.value = "";
                         this.$.maoDeObraHorarioJantar.value = "";
+
+                        this.$.page_updatefolhadehorasnomsg_ajax.body = JSON.stringify(this.data);
+                        this.$.page_updatefolhadehorasnomsg_ajax.generateRequest();
+                        //this.$.tabMaoDeObra.clearCache();
+
+                        this.$.page_databound_ajax.generateRequest();
                     }
                     else {
                         if (this.MaoDeObraCreated == 1 | this.MaoDeObraCreated == 2) {
@@ -4142,6 +4176,10 @@
 
                     if (this.MaoDeObraDeleted) {
                         this._showMessage('Mão de Obra removida com sucesso.');
+
+                        this.$.page_updatefolhadehorasnomsg_ajax.body = JSON.stringify(this.data);
+                        this.$.page_updatefolhadehorasnomsg_ajax.generateRequest();
+
                         this.$.page_databound_ajax.generateRequest();
                     }
                     else {
@@ -4356,8 +4394,11 @@
                         this.$.getEmpoyeeNAV_ajax.body = JSON.stringify(this.data);
                         this.$.getEmpoyeeNAV_ajax.generateRequest();
 
-                        this.$.page_GetTipoTrabalhoFH_ajax.body = JSON.stringify(this.data);
-                        this.$.page_GetTipoTrabalhoFH_ajax.generateRequest();
+                        this.$.page_GetRecursoFH_ajax.body = JSON.stringify(self.data);
+                        this.$.page_GetRecursoFH_ajax.generateRequest();
+
+                        //this.$.page_GetTipoTrabalhoFH_ajax.body = JSON.stringify(this.data);
+                        //this.$.page_GetTipoTrabalhoFH_ajax.generateRequest();
                     };
                 },
 
@@ -4618,6 +4659,7 @@
                         _self.$.ajudaJustificacao.disabled = true;
                         _self.$.maoDeObraDate.disabled = true;
                         _self.$.maoDeObraProjetoNo.disabled = true;
+                        _self.$.maoDeObraCodigoRecurso.disabled = true;
                         _self.$.maoDeObraCodigoTipoTrabalho.disabled = true;
                         _self.$.maoDeObraHoraInicio.disabled = true;
                         _self.$.maoDeObraHorarioAlmoco.disabled = true;
@@ -4669,6 +4711,7 @@
                         _self.$.ajudaJustificacao.disabled = true;
                         _self.$.maoDeObraDate.disabled = true;
                         _self.$.maoDeObraProjetoNo.disabled = true;
+                        _self.$.maoDeObraCodigoRecurso.disabled = true;
                         _self.$.maoDeObraCodigoTipoTrabalho.disabled = true;
                         _self.$.maoDeObraHoraInicio.disabled = true;
                         _self.$.maoDeObraHorarioAlmoco.disabled = true;
@@ -4724,6 +4767,17 @@
                     this.$.page_databound_ajax.body = JSON.stringify(data);
                     this.$.page_databound_ajax.generateRequest();
                 },
+
+                _MaoDeObraRecurso: function () {
+                    if (this.$.maoDeObraCodigoRecurso.value != "") {
+                        this.data.recurso = this.$.maoDeObraCodigoRecurso.value;
+
+                        this.$.page_GetTipoTrabalhoFH_ajax.body = JSON.stringify(this.data);
+                        this.$.page_GetTipoTrabalhoFH_ajax.generateRequest();
+                    }
+                },
+
+
             });
         });
     </script>

@@ -644,6 +644,7 @@ namespace Hydra.Such.Portal.Controllers
                             DateTexto = MaoDeObra.Date.HasValue ? MaoDeObra.Date.Value.ToString("yyyy-MM-dd") : "",
                             ProjetoNo = MaoDeObra.ProjetoNo,
                             EmpregadoNo = MaoDeObra.EmpregadoNo,
+                            CodigoRecurso = MaoDeObra.RecursoNo,
                             CodigoTipoTrabalho = MaoDeObra.CodigoTipoTrabalho,
                             HoraInicio = MaoDeObra.HoraInicio,
                             HoraInicioTexto = MaoDeObra.HoraInicio == "00:00" ? "" : MaoDeObra.HoraInicio,
@@ -2051,7 +2052,7 @@ namespace Hydra.Such.Portal.Controllers
                     MaoDeObra.CodigoCentroResponsabilidade = data.CodigoCentroResponsabilidade;
 
                     //TABELA RHRECURSOSFH
-                    RhRecursosFh Recurso = DBRHRecursosFH.GetAll().Where(x => x.NoEmpregado.ToLower() == data.EmpregadoNo.ToLower()).FirstOrDefault();
+                    RhRecursosFh Recurso = DBRHRecursosFH.GetAll().Where(x => x.NoEmpregado.ToLower() == data.EmpregadoNo.ToLower() && x.Recurso.ToLower() == data.CodigoRecurso.ToLower()).FirstOrDefault();
                     if (Recurso != null)
                     {
                         MaoDeObra.NºRecurso = Recurso.Recurso;

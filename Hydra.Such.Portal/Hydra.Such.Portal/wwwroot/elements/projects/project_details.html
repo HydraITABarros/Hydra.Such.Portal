@@ -336,7 +336,7 @@
                     <div class="col-lg-3">
                         <such-selectbox id="sbClientShippingAddresses" value="{{data.shippingAddressCode}}" label="Cód. Endereço Envio"
                                         items="[[ClientShippingAddresses]]"
-                                        text-path="name"
+                                        text-path="code"
                                         value-path="code"
                                         fields='[{"field":"code", "name":"Cód. Endereço"}, {"field":"name", "name":"Descrição"}, {"field":"address", "name":"Endereço"}, {"field":"zipCode", "name":"Cód. Postal"}, {"field":"city", "name":"Cidade"}, {"field":"contact", "name":"Contacto"}]'
                                         disabled="{{ !_permissions.update }}"

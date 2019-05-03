@@ -289,7 +289,7 @@
                                                             <vaadin-text-field value="{{data.county}}" maxlength="30" id="county" name="county" label="Distrito" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
                                                         </div>
                                                         <div class="col-lg-3">
-                                                            <vaadin-combo-box items='[{"value":"PT"}]' id="country_Region_Code" label="Código Pais/Região" disabled="{{ !_permissions.update }}" item-value-path="value" item-label-path="value" value="{{data.country_Region_Code}}">
+                                                            <vaadin-combo-box items='[{"value":"PT"}]' id="country_Region_Code" label="Código Pais/Região" disabled="{{ !_permissions.update }}" item-value-path="value" item-label-path="value" value="{{data.country_Region_Code}}" required error-message="Este campo é obrigatório">
                                                                 <template>
                                                                     &nbsp;[[item.value]]&nbsp;
                                                                 </template>
@@ -1521,6 +1521,10 @@
                     }
                     if (this.$.vaT_Registration_No.value == undefined || this.$.vaT_Registration_No.value == null || this.$.vaT_Registration_No.value == "") {
                         this._openToastError("O campo Nº Contribuinte é de preenchimento obrigatório.");
+                        return false;
+                    }
+                    if (this.$.country_Region_Code.value == undefined || this.$.country_Region_Code.value == null || this.$.country_Region_Code.value == "") {
+                        this._openToastError("O campo Código Pais/Região é de preenchimento obrigatório.");
                         return false;
                     }
                     return true;

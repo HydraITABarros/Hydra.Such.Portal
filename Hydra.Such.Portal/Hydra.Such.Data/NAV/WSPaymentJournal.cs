@@ -24,9 +24,10 @@ namespace Hydra.Such.Data.NAV
                 WSPaymentJournal = new WSPaymentJournalNAV.WSPaymentJournal()
                 {
                     Journal_Template_Name = PaymentJournalToCreate.Journal_Template_Name,
-                    
+                    Journal_Batch_Name = PaymentJournalToCreate.Journal_Batch_Name,
                     Line_No = PaymentJournalToCreate.Line_No,
                     Line_NoSpecified = true,
+
                     Account_Type = PaymentJournalToCreate.Account_Type,
                     Account_TypeSpecified = true,
                     Account_No = PaymentJournalToCreate.Account_No,
@@ -36,11 +37,10 @@ namespace Hydra.Such.Data.NAV
                     Document_Type = PaymentJournalToCreate.Document_Type,
                     Document_TypeSpecified = true,
                     Amount = PaymentJournalToCreate.Amount,
-                    AmountSpecified = true,
-                    Journal_Batch_Name = PaymentJournalToCreate.Journal_Batch_Name
+                    AmountSpecified = true
                 }
             };
-            NAVCreate.CurrentJnlBatchName = NAVCreate.WSPaymentJournal.Journal_Batch_Name;
+            //NAVCreate.CurrentJnlBatchName = NAVCreate.WSPaymentJournal.Journal_Batch_Name;
 
             //Configure NAV Client
             EndpointAddress WS_URL = new EndpointAddress(WSConfigurations.WS_PaymentJournalNAV_URL.Replace("Company", WSConfigurations.WS_User_Company));

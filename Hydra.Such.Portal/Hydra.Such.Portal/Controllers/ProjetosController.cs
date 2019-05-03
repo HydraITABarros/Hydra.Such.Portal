@@ -2584,28 +2584,29 @@ namespace Hydra.Such.Portal.Controllers
 
                         int invoiceGroup = lastUsed.HasValue ? lastUsed.Value + 1 : 1;
 
-                        ProjectosAutorizados authorizedProject = new ProjectosAutorizados();
-                        authorizedProject.CodProjeto = project.NºProjeto;
-                        authorizedProject.GrupoFactura = invoiceGroup;
-                        authorizedProject.Faturado = false;
-                        authorizedProject.DescricaoGrupo = invoiceGroupDescription;
-                        authorizedProject.NumCompromisso = commitmentNumber;
-                        authorizedProject.CodCliente = project.NºCliente;
-                        authorizedProject.CodContrato = contract?.NºDeContrato;
-                        authorizedProject.CodTermosPagamento = contract != null ? contract.CódTermosPagamento : customer?.PaymentTermsCode;
-                        authorizedProject.CodMetodoPagamento = customer?.PaymentMethodCode;
-                        authorizedProject.CodRegiao = customer.National || customer.InternalClient ? project.CódigoRegião : customer.RegionCode;
-                        authorizedProject.CodAreaFuncional = project.CódigoÁreaFuncional;
-                        authorizedProject.CodCentroResponsabilidade = project.CódigoCentroResponsabilidade;
-                        authorizedProject.PedidoCliente = customerRequestNo;
-                        if (customerRequestDate > DateTime.MinValue)
-                            authorizedProject.DataPedido = customerRequestDate;
-                        authorizedProject.DataAutorizacao = DateTime.Now;
-                        authorizedProject.Utilizador = User.Identity.Name;
-                        authorizedProject.Observacoes = projectObs;
-                        if (serviceDate > DateTime.MinValue)
-                            authorizedProject.DataPrestacaoServico = serviceDate;
-                        authorizedProject.DataServPrestado = billingPeriod;
+                        ProjectosAutorizados authorizedProject = new ProjectosAutorizados
+                        {
+                            CodProjeto = project.NºProjeto,
+                            GrupoFactura = invoiceGroup,
+                            Faturado = false,
+                            DescricaoGrupo = invoiceGroupDescription,
+                            NumCompromisso = commitmentNumber,
+                            CodCliente = project.NºCliente,
+                            CodContrato = contract?.NºDeContrato,
+                            CodTermosPagamento = contract != null ? contract.CódTermosPagamento : customer?.PaymentTermsCode,
+                            CodMetodoPagamento = customer?.PaymentMethodCode,
+                            CodRegiao = customer.National || customer.InternalClient ? project.CódigoRegião : customer.RegionCode,
+                            CodAreaFuncional = project.CódigoÁreaFuncional,
+                            CodCentroResponsabilidade = project.CódigoCentroResponsabilidade,
+                            PedidoCliente = customerRequestNo,
+                            DataAutorizacao = DateTime.Now,
+                            Utilizador = User.Identity.Name,
+                            Observacoes = projectObs,
+                            DataServPrestado = billingPeriod,
+                            DataPedido = customerRequestDate > DateTime.MinValue ? customerRequestDate : (DateTime?)null,
+                            DataPrestacaoServico = serviceDate > DateTime.MinValue ? serviceDate : (DateTime?)null,
+                            CodEnderecoEnvio = !string.IsNullOrEmpty(project.CódEndereçoEnvio) ? project.CódEndereçoEnvio : ""
+                        };
 
                         //Atualizar apenas os campos relativos à autorização. Nos movimentos de projeto atualizar apenas os necessários à listagem/apresentação
                         List<MovimentosProjectoAutorizados> authorizedProjMovements = new List<MovimentosProjectoAutorizados>();

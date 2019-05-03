@@ -12,6 +12,7 @@ namespace Hydra.Such.Data.ViewModel.FH
         public string DateTexto { get; set; }
         public string ProjetoNo { get; set; }
         public string EmpregadoNo { get; set; }
+        public string CodigoRecurso { get; set; }
         public string CodigoTipoTrabalho { get; set; }
         public string HoraInicio { get; set; }
         public string HoraInicioTexto { get; set; }
