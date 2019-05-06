@@ -3665,8 +3665,24 @@ namespace Hydra.Such.Portal.Controllers
                                                         }
                                                         else
                                                         {
-                                                            result.eReasonCode = 199;
-                                                            result.eMessage = "Ocorreu um erro no script SQL de Validaçãodo na Folha de Horas.";
+                                                            if (result.eReasonCode == 8)
+                                                            {
+                                                                result.eReasonCode = 108;
+                                                                result.eMessage = "Não foi possivel obter o ID do Empregado da Folha de Horas.";
+                                                            }
+                                                            else
+                                                            {
+                                                                if (result.eReasonCode == 9)
+                                                                {
+                                                                    result.eReasonCode = 109;
+                                                                    result.eMessage = "Não foi possivel obter o código do Projecto/Ordem da Folha de Horas.";
+                                                                }
+                                                                else
+                                                                {
+                                                                    result.eReasonCode = 199;
+                                                                    result.eMessage = "Ocorreu um erro no script SQL de Validaçãodo na Folha de Horas.";
+                                                                }
+                                                            }
                                                         }
                                                     }
                                                 }

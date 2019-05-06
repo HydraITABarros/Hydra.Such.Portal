@@ -1836,22 +1836,22 @@ namespace Hydra.Such.Portal.Controllers
                 int InvoiceGroupDuplicate = -1;
                 DateTime current = Convert.ToDateTime(dateCont);
                 DateTime lastDay = Convert.ToDateTime(dateCont);
-                string Problema;
+                string Problema = "";
+                Decimal lineQuantity = 1;
                 int? totalInvoiceGroups = contractLines.Where(x => x.NºContrato == item.NºDeContrato).Select(x => x.GrupoFatura).Distinct().Count();
 
-                //if (item.NºDeContrato == "VC0500682")
+                //if (item.NºDeContrato == "VC160053")
                 //{
                 //    Problema = "";
                 //}
 
                 foreach (var contractLine in contractLines)
                 {
-                    if (contractLine.NºContrato == "VC0500682")
-                    {
-                        Problema = "";
-                    }
+                    //if (contractLine.NºContrato == "VC160053")
+                    //{
+                    //    Problema = "";
+                    //}
 
-                    Decimal lineQuantity = 1;
                     int? totalLinesForCurrentInvoiceGroup = contractLines.Where(x => x.NºContrato == contractLine.NºContrato && x.GrupoFatura == contractLine.GrupoFatura).Count();
                     if (ContractNoDuplicate != contractLine.NºContrato || InvoiceGroupDuplicate != contractLine.GrupoFatura)
                     {
@@ -1937,7 +1937,7 @@ namespace Hydra.Such.Portal.Controllers
 
                         if (contractLine.Quantidade != 0)
                         {
-                            lineQuantity = contractLine.Quantidade == null ? 0 : contractLine.Quantidade.Value;
+                            lineQuantity = contractLine.Quantidade == null ? lineQuantity : contractLine.Quantidade.Value;
                         }
 
                         int MonthDiff = 0;
@@ -2332,7 +2332,12 @@ namespace Hydra.Such.Portal.Controllers
                     else
                     {
                         if (contractLine.Quantidade.HasValue && item.PeríodoFatura.HasValue)
+                        {
+                            if (contractLine.Quantidade == 0)
+                                contractLine.Quantidade = lineQuantity;
+
                             lineQuantity = Convert.ToDecimal(contractLine.Quantidade * (item.PeríodoFatura == 6 ? 0 : item.PeríodoFatura == 5 ? 12 : item.PeríodoFatura == 4 ? 6 : item.PeríodoFatura));
+                        }
                     }
 
                     if (lineQuantity == 0)
@@ -3072,7 +3077,14 @@ namespace Hydra.Such.Portal.Controllers
                                     Reqcontract = ListaContratos.Find(x => x.GrupoFatura == item.GrupoFatura
                                         && x.DataInícioCompromisso <= contractLine.ÚltimaDataFatura
                                         && x.DataFimCompromisso >= contractLine.ÚltimaDataFatura);
+
                                 }
+                                if (Reqcontract != null)
+                                {
+                                    Reqcontract.DataÚltimaFatura = contractLine.ÚltimaDataFatura;
+                                    DBContractClientRequisition.Update(Reqcontract);
+                                }
+
                                 item.NoRequisicaoDoCliente = Reqcontract != null ? Reqcontract.NºRequisiçãoCliente : contractLine.NºRequisiçãoDoCliente;
                                 item.NoCompromisso = Reqcontract != null ? Reqcontract.NºCompromisso : contractLine.NºCompromisso;
                                 item.DataRececaoRequisicao = Reqcontract != null ? Reqcontract.DataRequisição : contractLine.DataReceçãoRequisição;
