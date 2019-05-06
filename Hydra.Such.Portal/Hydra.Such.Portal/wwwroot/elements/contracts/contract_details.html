@@ -2460,6 +2460,11 @@
                     if (!this._isCreate) {
                         if (this._validateRequisitionData()) {
 
+                            if (Date.parse(this._CRStartDate) > Date.parse(this._CREndDate)) {
+                                this._openToastError("A data Inicio Compromisso não pode ser superior á data Fim Compromisso.");
+                                return false;
+                            }
+
                             var invGroup = 0;
                             if (this._CRInvoiceGroup != "")
                                 invGroup = this._CRInvoiceGroup;

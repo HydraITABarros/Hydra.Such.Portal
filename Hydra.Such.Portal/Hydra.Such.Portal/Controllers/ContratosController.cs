@@ -840,6 +840,9 @@ namespace Hydra.Such.Portal.Controllers
             {
                 if (data != null)
                 {
+                    data.eReasonCode = 1;
+                    data.eMessage = "Contrato atualizado com sucesso.";
+
                     if (data.ContractNo != null)
                     {
                         //Contratos cContract = DBContracts.ParseToDB(data);
@@ -855,21 +858,11 @@ namespace Hydra.Such.Portal.Controllers
                                 DBContractClientRequisition.GetByContract(ContratoDB.NºDeContrato);
 
                             List<RequisiçõesClienteContrato> RCCToDelete = RCC
-                                .Where(x => !data.ClientRequisitions.Any(
-                                    y => x.NºContrato == y.ContractNo &&
-                                            x.GrupoFatura == y.InvoiceGroup &&
-                                            x.NºProjeto == y.ProjectNo &&
-                                            x.DataInícioCompromisso == DateTime.Parse(y.StartDate))).ToList();
-
-
-                                         //!= "" ? DateTime.Parse(y.StartDate) : (DateTime?)null) &&
-                                         //x.DataFimCompromisso == (y.EndDate != "" ? DateTime.Parse(y.EndDate) : (DateTime?)null) &&
-                                         //x.NºRequisiçãoCliente == y.ClientRequisitionNo &&
-                                         //x.DataRequisição == (y.RequisitionDate != null ? DateTime.Parse(y.RequisitionDate) : (DateTime?)null) &&
-                                         //x.NºCompromisso == y.PromiseNo &&
-                                         //x.GrupoFatura == y.InvoiceGroup &&
-                                         //x.NºProjeto == y.ProjectNo &&
-                                         //x.DataÚltimaFatura == (y.LastInvoiceDate != "" ? DateTime.Parse(y.LastInvoiceDate) : (DateTime?)null))).ToList();
+                            .Where(x => !data.ClientRequisitions.Any(
+                                y => x.NºContrato == y.ContractNo &&
+                                        x.GrupoFatura == y.InvoiceGroup &&
+                                        x.NºProjeto == y.ProjectNo &&
+                                        x.DataInícioCompromisso == DateTime.Parse(y.StartDate))).ToList();
 
                             data.ClientRequisitions.ForEach(y =>
                             {
@@ -881,30 +874,47 @@ namespace Hydra.Such.Portal.Controllers
                                         .FirstOrDefault();
                                 if (RCCO != null)
                                 {
-                                    RCCO.NºContrato = y.ContractNo;
-                                    RCCO.GrupoFatura = y.InvoiceGroup;
-                                    RCCO.NºProjeto = y.ProjectNo;
+                                    if (DateTime.Parse(y.StartDate) <= DateTime.Parse(y.EndDate))
+                                    {
+                                        RCCO.NºContrato = y.ContractNo;
+                                        RCCO.GrupoFatura = y.InvoiceGroup;
+                                        RCCO.NºProjeto = y.ProjectNo;
 
-                                    RCCO.DataInícioCompromisso = DateTime.Parse(y.StartDate);
-                                    RCCO.DataFimCompromisso = y.EndDate != "" ? DateTime.Parse(y.EndDate) : (DateTime?)null;
-                                    RCCO.NºRequisiçãoCliente = y.ClientRequisitionNo;
-                                    RCCO.DataRequisição = y.RequisitionDate != "" ? DateTime.Parse(y.RequisitionDate) : (DateTime?)null;
-                                    RCCO.NºCompromisso = y.PromiseNo;
-                                    RCCO.DataÚltimaFatura = y.LastInvoiceDate != "" ? DateTime.Parse(y.LastInvoiceDate) : (DateTime?)null;
-                                    RCCO.NºFatura = y.InvoiceNo;
-                                    RCCO.ValorFatura = y.InvoiceValue;
-                                    RCCO.UtilizadorModificação = User.Identity.Name;
-                                    DBContractClientRequisition.Update(RCCO);
+                                        RCCO.DataInícioCompromisso = DateTime.Parse(y.StartDate);
+                                        RCCO.DataFimCompromisso = y.EndDate != "" ? DateTime.Parse(y.EndDate) : (DateTime?)null;
+                                        RCCO.NºRequisiçãoCliente = y.ClientRequisitionNo;
+                                        RCCO.DataRequisição = y.RequisitionDate != "" ? DateTime.Parse(y.RequisitionDate) : (DateTime?)null;
+                                        RCCO.NºCompromisso = y.PromiseNo;
+                                        RCCO.DataÚltimaFatura = y.LastInvoiceDate != "" ? DateTime.Parse(y.LastInvoiceDate) : (DateTime?)null;
+                                        RCCO.NºFatura = y.InvoiceNo;
+                                        RCCO.ValorFatura = y.InvoiceValue;
+                                        RCCO.UtilizadorModificação = User.Identity.Name;
+                                        DBContractClientRequisition.Update(RCCO);
+                                    }
+                                    else
+                                    {
+                                        data.eReasonCode = 3;
+                                        data.eMessage = "A data Inicio Compromisso não pode ser superior á data Fim Compromisso.";
+                                    }
                                 }
                                 else
                                 {
-                                    y.CreateUser = User.Identity.Name;
-                                    DBContractClientRequisition.Create(DBContractClientRequisition.ParseToDB(y));
+                                    if (DateTime.Parse(y.StartDate) <= DateTime.Parse(y.EndDate))
+                                    {
+                                        y.CreateUser = User.Identity.Name;
+                                        DBContractClientRequisition.Create(DBContractClientRequisition.ParseToDB(y));
+                                    }
+                                    else
+                                    {
+                                        data.eReasonCode = 4;
+                                        data.eMessage = "A data Inicio Compromisso não pode ser superior á data Fim Compromisso.";
+                                    }
                                 }
                             });
 
                             //Delete Contract Client Requests
-                            RCCToDelete.ForEach(x => DBContractClientRequisition.Delete(x));
+                            if (data.eReasonCode == 1)
+                                RCCToDelete.ForEach(x => DBContractClientRequisition.Delete(x));
 
                             //Create/Update Contract Invoice Texts
                             List<TextoFaturaContrato> CIT = DBContractInvoiceText.GetByContract(ContratoDB.NºContrato);
@@ -937,8 +947,8 @@ namespace Hydra.Such.Portal.Controllers
                             //Delete Contract Invoice Texts
                             CITToDelete.ForEach(x => DBContractInvoiceText.Delete(x));
                         }
-                        data.eReasonCode = 1;
-                        data.eMessage = "Contrato atualizado com sucesso.";
+                        //data.eReasonCode = 1;
+                        //data.eMessage = "Contrato atualizado com sucesso.";
                     }
                 }
             }
@@ -2511,14 +2521,8 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             Lastdate = (new DateTime(Lastdate.Year, Lastdate.Month, 1)).AddMonths(1).AddDays(-1);
                             ContractInvoicePeriod = Lastdate.ToString("dd/MM/yy");
-                            //don't delete for now
-                            //string Month = Lastdate.ToString("MMMM").ToUpper();
-                            //string Year = Lastdate.Year.ToString();
-                            //InvoiceBorrowed = Month+"/"+Year;
-                            //actualiar data ultima fatura para o fim do mes
                             GetReqClientCont.DataÚltimaFatura = Lastdate;
                             DBContractClientRequisition.Update(GetReqClientCont);
-
                         }
                     }
                     else
@@ -2534,24 +2538,7 @@ namespace Hydra.Such.Portal.Controllers
                                     contractLine.PróximoPeríodoFact = contractLine.PróximoPeríodoFact.Replace(" ", "");
                                     if (contractLine.PróximoPeríodoFact.Length == 8)
                                     {
-
                                         ContractInvoicePeriod = contractLine.PróximoPeríodoFact;
-                                        //don't delete for now
-                                        //DateTime? date = Convert.ToDateTime(contractLine.PróximoPeríodoFact);
-                                        //string Month =""; string Year = "";
-                                        //if (date != null)
-                                        //{
-                                        //    Month = date.Value.ToString("MMMM").ToUpper();
-                                        //    Year = date.Value.Year.ToString();
-                                        //}
-                                        //if (String.IsNullOrEmpty(Month) && String.IsNullOrEmpty(Year))
-                                        //{
-                                        //    InvoiceBorrowed = ContractInvoicePeriod;
-                                        //}
-                                        //else
-                                        //{
-                                        //    InvoiceBorrowed = Month + "/" + Year;
-                                        //}
                                     }
                                 }
                                 else if (findDate == 4)
@@ -2561,69 +2548,14 @@ namespace Hydra.Such.Portal.Controllers
                                     if (ProxPerFac.Count() == 2 && proxperFacRep.Length == 17)
                                     {
                                         ContractInvoicePeriod = contractLine.PróximoPeríodoFact;
-                                        //don't delete for now
-                                        //DateTime? date = Convert.ToDateTime(ProxPerFac[1]);
-                                        //string Month = ""; string Year = "";
-                                        //if (date != null)
-                                        //{
-                                        //    Month = date.Value.ToString("MMMM").ToUpper();
-                                        //    Year = date.Value.Year.ToString();
-                                        //}
-                                        //if (String.IsNullOrEmpty(Month) && String.IsNullOrEmpty(Year))
-                                        //{
-                                        //    InvoiceBorrowed = ContractInvoicePeriod;
-                                        //}
-                                        //else
-                                        //{
-                                        //    InvoiceBorrowed = Month + "/" + Year;
-                                        //}
                                     }
 
                                 }
                             }
                         }
                         Lastdate = (new DateTime(Lastdate.Year, Lastdate.Month, 1)).AddMonths(1).AddDays(-1);
-                        contractLine.ÚltimaDataFatura = Lastdate;
+                        //contractLine.ÚltimaDataFatura = Lastdate;
                         DBContracts.Update(contractLine);
-
-                        //if (result.eMessages.Count > 0)
-                        //{
-                        //    return Json(result);
-                        //}
-                        //else
-                        //{
-                        //    if (contractLine != null)
-                        //    {
-                        //        if (contractList != null && contractList.Count() > 0)
-                        //        {
-                        //            foreach (var cont in contractList)
-                        //            {
-                        //                //GET CLIENT REQUISITIONS
-                        //                RequisiçõesClienteContrato ClientRequisition = DBContractClientRequisition.GetByContractAndGroup(contractLine.NºContrato, cont.GrupoFatura);
-                        //                if (ClientRequisition != null)
-                        //                {
-                        //                    ClientRequisition.DataÚltimaFatura = Lastdate;
-                        //                    if (DBContractClientRequisition.Update(ClientRequisition) == null)
-                        //                    {
-                        //                        result.eReasonCode = 5;
-                        //                        result.eMessage = "Ocorreu um erro ao atualizar a Requisição de Cliente.";
-                        //                        return Json(result);
-                        //                    }
-                        //                }
-                        //            }
-                        //        }
-                        //        else
-                        //        {
-                        //            contractLine.ÚltimaDataFatura = Lastdate;
-                        //            if (DBContracts.Update(contractLine) == null)
-                        //            {
-                        //                result.eReasonCode = 5;
-                        //                result.eMessage = "Ocorreu um erro ao atualizar o Contrato.";
-                        //                return Json(result);
-                        //            }
-                        //        }
-                        //    }
-                        //}
                     }
 
                     if (item.Situação == "" || item.Situação == null)
@@ -2691,11 +2623,20 @@ namespace Hydra.Such.Portal.Controllers
                                 && x.DataInícioCompromisso <= contractLine.ÚltimaDataFatura
                                 && x.DataFimCompromisso >= contractLine.ÚltimaDataFatura);
                         }
+                        if (Reqcontract != null)
+                        {
+                            Reqcontract.DataÚltimaFatura = Lastdate;
+                            DBContractClientRequisition.Update(Reqcontract);
+                        }
+                        else
+                        {
+                            contractLine.ÚltimaDataFatura = Lastdate;
+                            DBContracts.Update(contractLine);
+                        }
+
                         item.NoRequisicaoDoCliente = Reqcontract != null ? Reqcontract.NºRequisiçãoCliente : contractLine.NºRequisiçãoDoCliente;
                         item.NoCompromisso = Reqcontract != null ? Reqcontract.NºCompromisso : contractLine.NºCompromisso;
                         item.DataRececaoRequisicao = Reqcontract != null ? Reqcontract.DataRequisição : contractLine.DataReceçãoRequisição;
-
-
                         item.NºContrato = contractLine.NºDeContrato;
                         item.CódigoRegião = contractLine.CódigoRegião;
                         item.CódigoÁreaFuncional = contractLine.CódigoÁreaFuncional;
@@ -2806,9 +2747,7 @@ namespace Hydra.Such.Portal.Controllers
                                     execDetails += " Erro ao criar as linhas: ";
                                     errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
                                     result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails + errorMessage));
-
                                 }
-
                             }
                         }
                         else
@@ -2879,50 +2818,6 @@ namespace Hydra.Such.Portal.Controllers
                                     StContractDate = today;
                                 }
                             }
-                            //else if (item.DataPróximaFatura != null)
-                            //{
-                            //    StContractDate = (DateTime)item.DataPróximaFatura;
-                            //    today = (DateTime)item.DataPróximaFatura;
-
-                            //    //Mensal 
-                            //    if (contractLine.PeríodoFatura == 1)
-                            //    {
-                            //        today = today.AddMonths(-1);
-                            //    }
-                            //    //Bimensal 
-                            //    if (contractLine.PeríodoFatura == 2)
-                            //    {
-                            //        today = today.AddMonths(-2);
-                            //    }
-                            //    //Trimestral 
-                            //    if (contractLine.PeríodoFatura == 3)
-                            //    {
-                            //        today = today.AddMonths(-3);
-                            //    }
-                            //    //Semestral 
-                            //    if (contractLine.PeríodoFatura == 4)
-                            //    {
-                            //        today = today.AddMonths(-6);
-                            //    }
-                            //    //Anual 
-                            //    if (contractLine.PeríodoFatura == 5)
-                            //    {
-                            //        today = today.AddMonths(-12);
-                            //    }
-
-                            //    if (today < contractLine.DataInicial)
-                            //    {
-                            //        StContractDate = (DateTime)contractLine.DataInicial;
-                            //    }
-                            //    else if (today > contractLine.DataExpiração)
-                            //    {
-                            //        StContractDate = (DateTime)contractLine.DataExpiração;
-                            //    }
-                            //    else
-                            //    {
-                            //        StContractDate = today;
-                            //    }
-                            //}
 
                             if (Lastdate != StContractDate)
                             {
@@ -2945,75 +2840,10 @@ namespace Hydra.Such.Portal.Controllers
                             }
                             else
                             {
-                                //if (contractLine != null)
-                                //{
-                                //    if (!String.IsNullOrEmpty(contractLine.PróximoPeríodoFact))
-                                //    {
-                                //        int findDate = contractLine.PróximoPeríodoFact.IndexOf("-");
-                                //        if (findDate == 2)
-                                //        {
-                                //            contractLine.PróximoPeríodoFact = contractLine.PróximoPeríodoFact.Replace(" ", "");
-                                //            if (contractLine.PróximoPeríodoFact.Length == 8)
-                                //            {
-                                //                ContractInvoicePeriod = contractLine.PróximoPeríodoFact;
-                                //            }
-                                //        }
-                                //        else if (findDate == 4)
-                                //        {
-                                //            string proxperFacRep = contractLine.PróximoPeríodoFact.Replace(" ", "");
-                                //            string[] ProxPerFac = proxperFacRep.Split('a');
-                                //            if (ProxPerFac.Count() == 2 && proxperFacRep.Length == 17)
-                                //            {
-                                //                ContractInvoicePeriod = contractLine.PróximoPeríodoFact;
-                                //            }
-
-                                //        }
-                                //    }
-                                //}
                                 Lastdate = (new DateTime(Lastdate.Year, Lastdate.Month, 1)).AddMonths(1).AddDays(-1);
                                 ContractInvoicePeriod = Lastdate.ToString("dd/MM/yy");
-                                contractLine.ÚltimaDataFatura = Lastdate;
+                                //contractLine.ÚltimaDataFatura = Lastdate;
                                 DBContracts.Update(contractLine);
-
-
-                                //if (result.eMessages.Count > 0)
-                                //{
-                                //    return Json(result);
-                                //}
-                                //else
-                                //{
-                                //    if (contractLine != null)
-                                //    {
-                                //        if (contractList != null && contractList.Count() > 0)
-                                //        {
-                                //            foreach (var cont in contractList)
-                                //            {
-                                //                //GET CLIENT REQUISITIONS
-                                //                RequisiçõesClienteContrato ClientRequisition = DBContractClientRequisition.GetByContractAndGroup(contractLine.NºContrato, cont.GrupoFatura);
-                                //                if (ClientRequisition != null)
-                                //                {
-                                //                    ClientRequisition.DataÚltimaFatura = Lastdate;
-                                //                    if (DBContractClientRequisition.Update(ClientRequisition) == null)
-                                //                    {
-                                //                        result.eReasonCode = 5;
-                                //                        result.eMessage = "Ocorreu um erro ao atualizar a Requisição de Cliente.";
-                                //                        return Json(result);
-                                //                    }
-                                //                }
-                                //            }
-                                //        }
-                                //        else
-                                //        {
-                                //            contractLine.ÚltimaDataFatura = Lastdate;
-                                //            if (DBContracts.Update(contractLine) == null)
-                                //            {
-                                //                result.eReasonCode = 5;
-                                //                result.eMessage = "Ocorreu um erro ao atualizar o Contrato.";
-                                //                return Json(result);
-                                //            }
-                                //        }
-                                //    }
-                                //}
                             }
 
                             if (item.Situação == "" || item.Situação == null)
@@ -3081,9 +2911,15 @@ namespace Hydra.Such.Portal.Controllers
                                 }
                                 if (Reqcontract != null)
                                 {
-                                    Reqcontract.DataÚltimaFatura = contractLine.ÚltimaDataFatura;
+                                    Reqcontract.DataÚltimaFatura = Lastdate;
                                     DBContractClientRequisition.Update(Reqcontract);
                                 }
+                                else
+                                {
+                                    contractLine.ÚltimaDataFatura = Lastdate;
+                                    DBContracts.Update(contractLine);
+                                }
+
 
                                 item.NoRequisicaoDoCliente = Reqcontract != null ? Reqcontract.NºRequisiçãoCliente : contractLine.NºRequisiçãoDoCliente;
                                 item.NoCompromisso = Reqcontract != null ? Reqcontract.NºCompromisso : contractLine.NºCompromisso;
