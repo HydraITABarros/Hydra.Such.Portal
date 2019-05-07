@@ -33,6 +33,7 @@
         <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
 
+
         <style>
 
             vaadin-combo-box {
@@ -181,7 +182,6 @@
             <iron-form id="formContract">
                 <div class="panel panel-default">
                     <div class="panel-body">
-
                         <div class="panel panel-default">
                             <div class="panel-body">
                                 <div class="col-md-12 col-md-12 col-lg-12">
@@ -190,11 +190,22 @@
                                             <vaadin-text-field id="idTipo" name="idTipo" label="Código" value="{{ data.idTipo }}" disabled="disabled"></vaadin-text-field>
                                         </div>
                                         <div class="col-md-3">
-                                            <vaadin-text-field id="abreviatura" name="abreviatura" label="Abreviatura" value="{{ data.abreviatura }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                                            <vaadin-text-field id="abreviatura"
+                                                               name="abreviatura"
+                                                               label="Abreviatura"
+                                                               value="{{ data.abreviatura }}"
+                                                               required error-message="Este campo é obrigatório"
+                                                               prevent-invalid-input pattern="[A-Z]+">
+                                            </vaadin-text-field>
                                         </div>
                                         <div class="col-md-8">
-                                            <such-textarea rows="2" value="{{ data.descricaoTipo }}" id="descricaoTipo" name="descricaoTipo" label="Descrição" required error-message="Este campo é obrigatório"></such-textarea>
-                                            <!--<vaadin-text-field id="descricaotipo" name="descricaoTipo" label="Descrição" value="{{ data.descricaoTipo }}"></vaadin-text-field>*@-->
+                                            <!--<such-textarea rows="2" value="{{ data.descricaoTipo }}" id="descricaoTipo" name="descricaoTipo" label="Descrição" required error-message="Este campo é obrigatório"></such-textarea>-->
+                                            <vaadin-text-field id="descricaoTipo" 
+                                                               name="descricaoTipo" 
+                                                               label="Descrição" 
+                                                               value="{{ data.descricaoTipo }}" 
+                                                               required error-message="Este campo é obrigatório">
+                                            </vaadin-text-field>
                                         </div>
                                     </div>
                                     <div class="row break_clear">
@@ -205,7 +216,6 @@
                                 </div>
                             </div>
                         </div>
-
 
                         <paper-collapse-group>
                             <paper-collapse-item class="panel-heading" header="Fundamentos Legais para o Tipo" opened>
@@ -224,7 +234,7 @@
                                 </div>
 
                                 <div class="row break_clear">
-                                    <vaadin-grid aria-label="fundamentosTipoLines" id="gridFundamentosTipo" name="gridFundamentosTipo" items="[[ data.fundamentos ]]" class="grid" multi-sort="true">
+                                    <vaadin-grid aria-label="fundamentosTipoLines" id="gridFundamentosTipo" name="gridFundamentosTipo" items="[[ data.fundamentoLegalTipoProcedimentoCcp ]]" class="grid" multi-sort="true">
                                         <vaadin-grid-column width="5%" style="vertical-align:top">
                                             <template class="header">
                                                 Código
@@ -307,6 +317,10 @@
                 _responseProcessor: function (data) {
                     debugger;;
                     if (data.detail.status === 200) {
+                        if (this.data.idTipo === 0) {
+                            // type 0 is used only in the Procedimento creation
+                            this.$.activo.disabled = true;
+                        }
 
                     }
                 },
@@ -322,8 +336,11 @@
                         return;
                     }
 
+                    var str = this.$.abreviatura.value;
+                    this.$.abreviatura.value = str.toUpperCase();
+                    
                     debugger;;
-                    var _fundamentos = this.data.fundamentos;
+                    var _fundamentos = this.data.fundamentoLegalTipoProcedimentoCcp;
                     if (_fundamentos != null) {
                         for(var i = 0; i < _fundamentos.length; i++) {
                             if (_fundamentos[i].descricaoFundamento == null || _fundamentos[i].descricaoFundamento == "") {
@@ -374,6 +391,10 @@
                         return;
                     }
 
+                    this.$._descricaoFundamento = "";
+                    this.$.descricaoFundamentoToAdd.value = "";
+                    this.$.descricaoFundamentoToAdd.valueText = "";
+
                     this.$.page_databound_ajax.body = JSON.stringify({ "id": this.data.idTipo });
                     this.$.page_databound_ajax.generateRequest();
                 },
@@ -381,7 +402,7 @@
                 _saveFundamento: function (e) {
                     if (this.data != undefined) {
                         debugger;;
-                        var reasonLines = this.data.fundamentos;
+                        var reasonLines = this.data.fundamentoLegalTipoProcedimentoCcp;
                         var index = reasonLines.indexOf(e.model.item);
 
                         var reason = reasonLines[index];

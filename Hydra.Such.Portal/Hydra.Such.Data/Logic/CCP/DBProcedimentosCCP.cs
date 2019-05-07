@@ -195,9 +195,9 @@ namespace Hydra.Such.Data.Logic.CCP
                     Procedimento.WorkflowProcedimentosCcp = GetAllWorkflowsProcedimento(Procedimento.Nº);
                     Procedimento.FluxoTrabalhoListaControlo = GetAllCheklistControloProcedimento(Procedimento.Nº);
 
-                    Procedimento.TipoContratacaoPublica = _context.TipoProcedimentoCcp.Where(t => t.IdTipo == Procedimento.Tipo).FirstOrDefault();
-                    Procedimento.FundamentoLegal = _context.FundamentoLegalTipoProcedimentoCcp.Where(f => f.IdTipo == Procedimento.Tipo && f.IdFundamento == Procedimento.FundamentoLegalTipo).FirstOrDefault();
-                    Procedimento.LotesProcedimento = GetAllLotesFromProcedimento(Procedimento.Nº);
+                    Procedimento.TipoNavigation = _context.TipoProcedimentoCcp.Where(t => t.IdTipo == Procedimento.Tipo).FirstOrDefault();
+                    Procedimento.FundamentoLegalTipoProcedimentoCcp = _context.FundamentoLegalTipoProcedimentoCcp.Where(f => f.IdTipo == Procedimento.Tipo && f.IdFundamento == Procedimento.FundamentoLegalTipo).FirstOrDefault();
+                    Procedimento.LoteProcedimentoCcp = GetAllLotesFromProcedimento(Procedimento.Nº);
                 }
                 
                 return Procedimento;
@@ -214,6 +214,7 @@ namespace Hydra.Such.Data.Logic.CCP
         public static ProcedimentosCcp __CreateProcedimento(ProcedimentoCCPView Procedimento)
         {
             SuchDBContext _context = new SuchDBContext();
+            Procedimento.PrecoBase = Procedimento.PrecoBase == null ? true : true;
             ProcedimentosCcp proc = CCPFunctions.CastProcedimentoCcpViewToProcedimentoCcp(Procedimento);
 
             try
@@ -330,6 +331,7 @@ namespace Hydra.Such.Data.Logic.CCP
                 ProcedimentoCCPView ProcedimentoView = new ProcedimentoCCPView
                 {
                     TipoProcedimento = ProcedimentoType,
+                    PrecoBase = true,
                     UtilizadorCriacao = UserID
 
                 };

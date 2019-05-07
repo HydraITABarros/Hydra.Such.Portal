@@ -6,6 +6,11 @@ namespace Hydra.Such.Data.Database
 {
     public partial class TipoProcedimentoCcp
     {
+        public TipoProcedimentoCcp()
+        {
+            FundamentoLegalTipoProcedimentoCcp = new HashSet<FundamentoLegalTipoProcedimentoCcp>();
+            ProcedimentosCcp = new HashSet<ProcedimentosCcp>();
+        }
         public int IdTipo { get; set; }
         public string Abreviatura { get; set; }
         public string DescricaoTipo { get; set; }
@@ -16,7 +21,7 @@ namespace Hydra.Such.Data.Database
         public string UtilizadorModificacao { get; set; }
         public DateTime? DataModificacao { get; set; }
 
-        public ICollection<FundamentoLegalTipoProcedimentoCcp> Fundamentos { get; set; }
-        public ICollection<ProcedimentosCcp> Procedimentos { get; set; }
+        public ICollection<FundamentoLegalTipoProcedimentoCcp> FundamentoLegalTipoProcedimentoCcp { get; set; }
+        public ICollection<ProcedimentosCcp> ProcedimentosCcp { get; set; }
     }
 }

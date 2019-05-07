@@ -181,21 +181,8 @@ namespace Hydra.Such.Data.Logic
                 {
                     TipoProcedimentoCcp tipo   = _ctx.TipoProcedimentoCcp.Where(t => t.IdTipo == id).FirstOrDefault();
                     
-                    tipo.Fundamentos = _ctx.FundamentoLegalTipoProcedimentoCcp.Where(f => f.IdTipo == id).ToList();
+                    tipo.FundamentoLegalTipoProcedimentoCcp = _ctx.FundamentoLegalTipoProcedimentoCcp.Where(f => f.IdTipo == id).ToList();
 
-                    /* 
-                     * /!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\
-                     *  zpgm.    This loop is needed to overcome the exception:
-                     *      (...)
-                     *          Newtonsoft.Json.JsonSerializationException: 
-                     *          Self referencing loop detected for property 'tipoNavigation' with type 'Hydra.Such.Data.Database.TipoProcedimentoCcp'. Path 'fundamentos[0]'.
-                     *      (...)
-                     * /!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\     
-                     */
-                    foreach (var f in tipo.Fundamentos)
-                    {
-                        f.TipoNavigation = null;
-                    }
                     return tipo;
                 }
             }
@@ -317,9 +304,9 @@ namespace Hydra.Such.Data.Logic
                 _context.Update(tipo);
                 //_context.SaveChanges();
 
-                if(tipo.Fundamentos != null && tipo.Fundamentos.Count > 0)
+                if(tipo.FundamentoLegalTipoProcedimentoCcp != null && tipo.FundamentoLegalTipoProcedimentoCcp.Count > 0)
                 {
-                    foreach (var f in tipo.Fundamentos)
+                    foreach (var f in tipo.FundamentoLegalTipoProcedimentoCcp)
                     {
                         _context.Update(f);
                     }
