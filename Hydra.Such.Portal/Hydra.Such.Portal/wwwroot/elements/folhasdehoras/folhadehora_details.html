@@ -157,7 +157,7 @@
         <iron-ajax url="/PopulateDropdowns/GetFolhaDeHoraAjudaTipoCusto" last-response="{{LFolhaDeHoraAjudaTipoCusto_TAB}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetCodTipoCustoByTipoCusto_ALL" last-response="{{LFolhaDeHoraAjudaCodTipoCusto_ALL}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetTipoTrabalhoFHList" last-response="{{LFolhaDeHoraTipoTrabalhoNo}}" method="post" handle-as="json" id="page_GetTipoTrabalhoFH_ajax" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetRHRecursosFH" last-response="{{LFolhaDeHoraGetRHRecursosFH}}" method="post" handle-as="json" id="page_GetRecursoFH_ajax" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetRHRecursosFH" last-response="{{LFolhaDeHoraGetRHRecursosFH}}" method="post" handle-as="json" id="page_GetRecursoFH_ajax" on-response="_responseRecursoFH" content-type="application/json"></iron-ajax>
 
         <!-- FOLHADEHORA CRUDS -->
         <iron-ajax url="/FolhasDeHoras/GetFolhaDeHoraDetails"
@@ -3083,7 +3083,7 @@
                 _MaoDeObraData: function () {
                     if (this.$.maoDeObraDate.value != "") {
                         this.$.maoDeObraProjetoNo.value = this.$.projetoNo.value;
-                        this.$.maoDeObraCodigoRecurso.value = "";
+                        //this.$.maoDeObraCodigoRecurso.value = "";
                         this.$.maoDeObraCodigoTipoTrabalho.value = "";
                         this.$.maoDeObraHoraInicio.value = "00:00";
                         this.$.maoDeObraHorarioAlmoco.value = "on";
@@ -3092,7 +3092,7 @@
                     }
                     else {
                         this.$.maoDeObraProjetoNo.value = "";
-                        this.$.maoDeObraCodigoRecurso.value = "";
+                        //this.$.maoDeObraCodigoRecurso.value = "";
                         this.$.maoDeObraCodigoTipoTrabalho.value = "";
                         this.$.maoDeObraHoraInicio.value = "";
                         this.$.maoDeObraHorarioAlmoco.value = "off";
@@ -4119,7 +4119,7 @@
 
                         this.$.maoDeObraDate.value = "";
                         this.$.maoDeObraProjetoNo.valueText = "";
-                        this.$.maoDeObraCodigoRecurso.value = "";
+                        //this.$.maoDeObraCodigoRecurso.value = "";
                         this.$.maoDeObraCodigoTipoTrabalho.value = "";
                         this.$.maoDeObraHoraInicio.value = "";
                         this.$.maoDeObraHorarioAlmoco.value = "";
@@ -4394,7 +4394,7 @@
                         this.$.getEmpoyeeNAV_ajax.body = JSON.stringify(this.data);
                         this.$.getEmpoyeeNAV_ajax.generateRequest();
 
-                        this.$.page_GetRecursoFH_ajax.body = JSON.stringify(self.data);
+                        this.$.page_GetRecursoFH_ajax.body = JSON.stringify(this.data);
                         this.$.page_GetRecursoFH_ajax.generateRequest();
 
                         //this.$.page_GetTipoTrabalhoFH_ajax.body = JSON.stringify(this.data);
@@ -4777,6 +4777,21 @@
                     }
                 },
 
+                _responseRecursoFH: function (data) {
+                    if (this.LFolhaDeHoraGetRHRecursosFH.length > 0) {
+                        this.$.maoDeObraCodigoRecurso.value = this.LFolhaDeHoraGetRHRecursosFH[0].id;
+
+                        this.data.recurso = this.$.maoDeObraCodigoRecurso.value;
+                        this.$.page_GetTipoTrabalhoFH_ajax.body = JSON.stringify(this.data);
+                        this.$.page_GetTipoTrabalhoFH_ajax.generateRequest();
+                    }
+                    else {
+                        this.$.maoDeObraCodigoRecurso.id = "";
+                        this.$.maoDeObraCodigoRecurso.value = "";
+                        this.$.maoDeObraCodigoTipoTrabalho.id = ""
+                        this.$.maoDeObraCodigoTipoTrabalho.value = ""
+                    }
+                },
 
             });
         });

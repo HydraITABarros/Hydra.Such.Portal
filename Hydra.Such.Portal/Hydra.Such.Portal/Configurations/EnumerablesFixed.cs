@@ -983,6 +983,11 @@ namespace Hydra.Such.Portal.Configurations
         public static readonly List<EnumData> ContractInvoiceGroups = new List<EnumData>(){
             new EnumData()
             {
+                Id = 0,
+                Value = "0"
+            },
+            new EnumData()
+            {
                 Id = 1,
                 Value = "1"
             },

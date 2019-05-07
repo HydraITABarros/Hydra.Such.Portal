@@ -880,6 +880,16 @@ namespace Hydra.Such.Portal.Controllers
                                                 result.eReasonCode = 107;
                                                 result.eMessage = "Já existem movimentos inseridos na tabela Job Ledger Entry para esta Folha de Horas.";
                                             }
+                                            if (Resultado == 8)
+                                            {
+                                                result.eReasonCode = 108;
+                                                result.eMessage = "Não foi possivel obter o ID do Empregado da Folha de Horas.";
+                                            }
+                                            if (Resultado == 9)
+                                            {
+                                                result.eReasonCode = 109;
+                                                result.eMessage = "Não foi possivel obter o código do Projecto/Ordem da Folha de Horas.";
+                                            }
                                         }
                                     }
                                 }
