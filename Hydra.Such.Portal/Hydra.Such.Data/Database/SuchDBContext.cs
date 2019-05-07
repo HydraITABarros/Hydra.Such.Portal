@@ -3318,10 +3318,10 @@ namespace Hydra.Such.Data.Database
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Fluxo Trabalho Lista Controlo_Procedimentos CCP");
 
-                entity.HasOne(d => d.LoteProcedimentoNavigation)
-                   .WithMany(p => p.Fluxos)
+                entity.HasOne(d => d.LoteProcedimentoCcp)
+                   .WithMany(p => p.FluxoTrabalhoListaControlo)
                    .HasForeignKey(d => new { d.No, d.IdLote })
-                   .OnDelete(DeleteBehavior.ClientSetNull)
+                   //.OnDelete(DeleteBehavior.ClientSetNull)
                    .HasConstraintName("FK_FluxoTrabalhoListaControlo_LoteProcedimentoCcp");
             });
 
@@ -7598,16 +7598,14 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.WorkflowJurídicosConfirm).HasColumnName("Workflow Jurídicos Confirm.");
 
-                entity.HasOne(d => d.TipoContratacaoPublica)
-                    .WithMany(p => p.Procedimentos)
+                entity.HasOne(d => d.TipoNavigation)
+                    .WithMany(p => p.ProcedimentosCcp)
                     .HasForeignKey(d => d.Tipo)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ProcedimentosCCP_TipoProcedimentoCcp");
 
-                entity.HasOne(d => d.FundamentoLegal)
-                    .WithMany(p => p.Procedimentos)
+                entity.HasOne(d => d.FundamentoLegalTipoProcedimentoCcp)
+                    .WithMany(p => p.ProcedimentosCcp)
                     .HasForeignKey(d => new { d.Tipo, d.FundamentoLegalTipo })
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ProcedimentosCCP_FundamentoLegalTipoProcedimentoCcp");
                 
             });
@@ -7616,33 +7614,48 @@ namespace Hydra.Such.Data.Database
             modelBuilder.Entity<TipoProcedimentoCcp>(entity =>
             {
                 entity.HasKey(e => e.IdTipo);
-                entity.HasIndex(e => e.Abreviatura).IsUnique();
 
-                entity.ToTable("TipoProcedimentoCcp");
+                entity.HasIndex(e => e.Abreviatura)
+                    .HasName("IX_Abreviatura")
+                    .IsUnique();
 
                 entity.Property(e => e.IdTipo).ValueGeneratedNever();
 
-                entity.Property(e => e.Abreviatura).HasMaxLength(10);
+                entity.Property(e => e.Abreviatura)
+                    .IsRequired()
+                    .HasMaxLength(10);
 
-                entity.Property(e => e.DescricaoTipo).HasMaxLength(250);
+                entity.Property(e => e.DataCriacao).HasColumnType("datetime");
 
-                //entity.HasMany(p => p.Procedimentos)
-                //    .WithOne(t => t.TipoContratacaoPublica);
+                entity.Property(e => e.DataModificacao).HasColumnType("datetime");
 
+                entity.Property(e => e.DescricaoTipo)
+                    .IsRequired()
+                    .HasMaxLength(250);
+
+                entity.Property(e => e.UtilizadorCriacao).HasMaxLength(100);
+
+                entity.Property(e => e.UtilizadorModificacao).HasMaxLength(100);
             });
 
             modelBuilder.Entity<FundamentoLegalTipoProcedimentoCcp>(entity =>
             {
                 entity.HasKey(e => new { e.IdTipo, e.IdFundamento });
 
-                entity.ToTable("FundamentoLegalTipoProcedimentoCcp");
+                entity.Property(e => e.DataCriacao).HasColumnType("datetime");
 
-                entity.Property(e => e.IdTipo).ValueGeneratedNever();
+                entity.Property(e => e.DataModificacao).HasColumnType("datetime");
 
-                entity.Property(e => e.IdFundamento).ValueGeneratedNever();
+                entity.Property(e => e.DescricaoFundamento)
+                    .IsRequired()
+                    .HasMaxLength(1024);
 
-                entity.HasOne(d => d.TipoNavigation)
-                    .WithMany(p => p.Fundamentos)
+                entity.Property(e => e.UtilizadorCriacao).HasMaxLength(100);
+
+                entity.Property(e => e.UtilizadorModificacao).HasMaxLength(100);
+
+                entity.HasOne(d => d.IdTipoNavigation)
+                    .WithMany(p => p.FundamentoLegalTipoProcedimentoCcp)
                     .HasForeignKey(d => d.IdTipo)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_FundamentoLegalTipoProcedimentoCcp_TipoProcedimentoCcp");
@@ -7652,14 +7665,34 @@ namespace Hydra.Such.Data.Database
             {
                 entity.HasKey(e => new { e.NoProcedimento, e.IdLote });
 
-                entity.ToTable("LoteProcedimentoCcp");
+                entity.Property(e => e.NoProcedimento).HasMaxLength(10);
 
-                entity.Property(e => e.NoProcedimento).ValueGeneratedNever();
+                entity.Property(e => e.DataAdjudicacao).HasColumnType("datetime");
+                
+                entity.Property(e => e.DataCriacao).HasColumnType("datetime");
 
-                entity.Property(e => e.IdLote).ValueGeneratedNever();
+                entity.Property(e => e.DataModificacao).HasColumnType("datetime");
 
-                entity.HasOne(e => e.ProcedimentoNavigation)
-                    .WithMany(p => p.LotesProcedimento)
+                entity.Property(e => e.DataNotificacao).HasColumnType("datetime");
+
+                entity.Property(e => e.HoraAdjudicacao).HasColumnType("datetime");
+
+                entity.Property(e => e.HoraNotificacao).HasColumnType("datetime");
+
+                entity.Property(e => e.UtilizadorAdjudicacao).HasMaxLength(100);
+
+                entity.Property(e => e.UtilizadorCriacao).HasMaxLength(100);
+
+                entity.Property(e => e.UtilizadorModificacao).HasMaxLength(100);
+
+                entity.Property(e => e.UtilizadorNotificacao).HasMaxLength(100);
+
+                entity.Property(e => e.ValorAdjudicacao).HasColumnType("decimal(18, 0)");
+
+                entity.Property(e => e.ValorEstimado).HasColumnType("decimal(18, 0)");
+
+                entity.HasOne(e => e.NoProcedimentoNavigation)
+                    .WithMany(p => p.LoteProcedimentoCcp)
                     .HasForeignKey(d => d.NoProcedimento)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_LoteProcedimentoCcp_ProcedimentosCCP");

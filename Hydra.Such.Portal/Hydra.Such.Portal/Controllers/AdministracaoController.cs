@@ -6650,9 +6650,9 @@ namespace Hydra.Such.Portal.Controllers
             data.UtilizadorModificacao = User.Identity.Name;
             data.DataModificacao = DateTime.Now;
 
-            if (data.Fundamentos != null)
+            if (data.FundamentoLegalTipoProcedimentoCcp != null)
             {
-                foreach(var f in data.Fundamentos)
+                foreach(var f in data.FundamentoLegalTipoProcedimentoCcp)
                 {
                     if (f.UtilizadorCriacao == null || f.UtilizadorCriacao == "")
                     {

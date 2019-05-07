@@ -997,24 +997,30 @@
                             </vaadin-combo-box>
                         </div>
                         <div class="col-sm-3">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <vaadin-text-field type="text" value="{{data.ano}}" id="ano" name="ano" label="Ano" disabled="true"> </vaadin-text-field>
-                                </div>
-                                <div class="col-sm-6">
-                                    <vaadin-text-field type="text" value="{{data.referencia}}" id="referencia" name="referencia" label="Referência" disabled="true"> </vaadin-text-field>
-                                </div>
-                            </div>
+                            
                         </div>
                     </div>
                 </div>
                 <div>
                     <div class="row break_clear">
-                        <div class="col-sm-3">
-                            <vaadin-checkbox checked="{{data.imobilizado}}" required>Imobilizado?</vaadin-checkbox>
-                            <vaadin-checkbox checked="{{data.tratado}}" required>Tratado?</vaadin-checkbox>
+                        <div class="col-sm-6">
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <vaadin-text-field type="text" value="{{data.ano}}" id="ano" name="ano" label="Ano" disabled="true"> </vaadin-text-field>
+                                </div>
+                                <div class="col-sm-3">
+                                    <vaadin-text-field type="text" value="{{data.referencia}}" id="referencia" name="referencia" label="Referência" disabled="true"> </vaadin-text-field>
+                                </div>
+                                <div class="col-sm-3">
+                                    <br />
+                                    <vaadin-checkbox checked="{{data.imobilizado}}" required>Imobilizado?</vaadin-checkbox>
+                                </div>
+                                <div class="col-sm-3">
+                                    <br />
+                                    <vaadin-checkbox checked="{{data.tratado}}" required>Tratado?</vaadin-checkbox>
+                                </div>
+                            </div>
                         </div>
-
                     </div>
                 </div>
 
@@ -1053,8 +1059,14 @@
                                     </div>
 
                                     <div class="row break_clear">
-                                        <div class="col-sm-3">
-                                            <vaadin-combo-box items="[[LBoolValues]]" item-value-path="booleanValue" item-label-path="stringValue" required value="{{data.precoBase}}" id="precoBase" label="Preço Base?">
+                                        <div class="col-sm-1">
+                                            <vaadin-combo-box  id="precoBase" 
+                                                              items="[[LBoolValues]]" 
+                                                              item-value-path="booleanValue" 
+                                                              item-label-path="stringValue" 
+                                                              required value="{{data.precoBase}}" 
+                                                              label="Preço Base?"
+                                                              disabled="disabled">
                                                 <template>
                                                     <paper-icon-item>
                                                         <paper-item-body two-line>
@@ -1064,11 +1076,29 @@
                                                 </template>
                                             </vaadin-combo-box>
                                         </div>
-                                        <div class="col-sm-6">
+                                        <div class="col-sm-2">
                                             <paper-tooltip for="valorPrecoBase" position="top" offset="-1" animation-delay="1">
-                                                Segundo este preceito, o preço base do procedimento é o valor máximo que o SUCH está disposto a pagar. É um limite ao valor das propostas que, se o ultrapassarem, terão que ser excluídas. Se Sim, a area deve indicar o valor do preço base (1).
+                                                Segundo este preceito, o preço base do procedimento é o valor máximo que o SUCH está disposto a pagar. É um limite ao valor das propostas que, se o ultrapassarem, terão que ser excluídas. A Área tem que indicar o valor do preço base (1).
                                             </paper-tooltip>
-                                            <vaadin-text-field type="text" value="{{data.valorPrecoBase}}" id="valorPrecoBase" name="valorPrecoBase" label="Valor Preço Base" maxlength="18" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"> </vaadin-text-field>
+                                            <vaadin-text-field id="valorPrecoBase" 
+                                                               name="valorPrecoBase" 
+                                                               type="text" 
+                                                               value="{{data.valorPrecoBase}}" 
+                                                               label="Valor Preço Base" 
+                                                               maxlength="18" 
+                                                               pattern="[0-9]+([\.][0-9]+)?" 
+                                                               on-value-changed="_ConvertDecimals"
+                                                               required error-message="Este campo é obrigatório">
+                                            </vaadin-text-field>
+                                        </div>
+                                        <div class="col-sm-9">
+                                            <such-textarea id="fundamentacaoPrecoBase" 
+                                                           name="fundamentacaoPrecoBase" 
+                                                           rows="5" 
+                                                           value="{{ data.fundamentacaoPrecoBase }}" 
+                                                           label="Fundamentação Preço Base"
+                                                           required error-message="Este campo é obrigatório">
+                                            </such-textarea>
                                         </div>
                                     </div>
                                     <div class="row break_clear">
@@ -1082,6 +1112,10 @@
                                                     </paper-icon-item>
                                                 </template>
                                             </vaadin-combo-box>
+                                        </div>
+                                        <div class="row break_clear">
+                                            <br />
+                                            <vaadin-checkbox id="procediemntoLotes" checked="{{ data.procedimentoEmLotes }}">Procedimento Em Lotes?</vaadin-checkbox>
                                         </div>
                                     </div>
                                     <!-- Elementos Juri section.b -->
@@ -4270,10 +4304,21 @@
                     if (this.data.precoBase == null) {
                         this._openToast("Preço Base: tem que indicar um valor (Sim/Não)!")
                         return false;
-                    } else if (this.data.precoBase && this.valorPrecoBase == 0) {
+                    } else if (this.data.precoBase && this.$.valorPrecoBase.value <= 0) {
                         this._openToast("Preço Base = Sim: tem que indicar um valor!")
                         return false;
                     }
+
+                    // zpgm.06052019.b
+                    if (this.$.valorPrecoBase.value <= 0) {
+                        this._openToast("Valor Preço Base: tem que indicar um valor!")
+                        return false;
+                    }
+                    if (this.$.fundamentacaoPrecoBase.value == null || this.$.fundamentacaoPrecoBase == "") {
+                        this._openToast("Fundamentação Preço Base: tem que fundamentar o preço indicado!")
+                        return false;
+                    }
+                    // zpgm.06052019.e
 
                     if (this.data.estimativaPreco == null || this.data.estimativaPreco == 0) {
                         this._openToast("Obrigatório definir uma Estimativa de Preço, mesmo que não seja definido Preço Base!");
@@ -6217,7 +6262,7 @@
 
                         _self.$.informacaoTecnica.disabled = (data.estado != 0);
                         _self.$.fundamentacaoAquisicao.disabled = (data.estado != 0);
-                        _self.$.precoBase.disabled = (data.estado != 0);
+                        //_self.$.precoBase.disabled = (data.estado != 0);
                         _self.$.valorPrecoBase.disabled = (data.estado != 0);
                         _self.$.negociacao.disabled = (data.estado != 0);
                         _self.$.prazo.disabled = (data.estado != 0);

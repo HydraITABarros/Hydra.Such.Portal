@@ -281,10 +281,10 @@ namespace Hydra.Such.Data.ViewModel.CCP
                 Procedimento.FluxoTrabalhoListaControlo = ProcedimentoView.FluxoTrabalhoListaControlo;
             }
 
-            Procedimento.TipoContratacaoPublica = ProcedimentoView.TipoContratacaoPublica;
-            Procedimento.FundamentoLegal = ProcedimentoView.FundamentoLegal;
+            Procedimento.TipoNavigation = ProcedimentoView.TipoContratacaoPublica;
+            Procedimento.FundamentoLegalTipoProcedimentoCcp = ProcedimentoView.FundamentoLegal;
             if(ProcedimentoView.LotesProcedimento != null && ProcedimentoView.LotesProcedimento.Count > 0)
-                Procedimento.LotesProcedimento = ProcedimentoView.LotesProcedimento;
+                Procedimento.LoteProcedimentoCcp = ProcedimentoView.LotesProcedimento;
 
             return Procedimento;
 
@@ -527,10 +527,10 @@ namespace Hydra.Such.Data.ViewModel.CCP
             ProcedimentoView.ListaReq_Show = ListaRequisicoes;
             // FIM Lista de Requisições
 
-            ProcedimentoView.TipoContratacaoPublica = Procedimento.TipoContratacaoPublica;
-            ProcedimentoView.FundamentoLegal = Procedimento.FundamentoLegal;
-            if(Procedimento.LotesProcedimento!=null && Procedimento.LotesProcedimento.Count > 0)
-                ProcedimentoView.LotesProcedimento = Procedimento.LotesProcedimento;
+            ProcedimentoView.TipoContratacaoPublica = Procedimento.TipoNavigation;
+            ProcedimentoView.FundamentoLegal = Procedimento.FundamentoLegalTipoProcedimentoCcp;
+            if(Procedimento.LoteProcedimentoCcp!=null && Procedimento.LoteProcedimentoCcp.Count > 0)
+                ProcedimentoView.LotesProcedimento = Procedimento.LoteProcedimentoCcp;
 
             return ProcedimentoView;
         }

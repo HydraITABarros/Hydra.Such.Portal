@@ -27,6 +27,6 @@ namespace Hydra.Such.Data.Database
         public int? IdLote { get; set; }
 
         public ProcedimentosCcp NoNavigation { get; set; }
-        public LoteProcedimentoCcp LoteProcedimentoNavigation { get; set; }
+        public LoteProcedimentoCcp LoteProcedimentoCcp { get; set; }
     }
 }
