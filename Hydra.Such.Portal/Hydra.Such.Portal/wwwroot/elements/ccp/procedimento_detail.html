@@ -305,18 +305,36 @@
                    handle-as="json"
                    content-type="application/json">
         </iron-ajax>
+
         <iron-ajax url="/PopulateDropdowns/GetPocedimentosCcpProcedimentoType"
                    last-response="{{LProcedimentoType}}"
                    auto method="post"
                    handle-as="json"
                    content-type="application/json">
         </iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetProcedimentosCcpType"
+        <!-- zpgm.ALT_CCP_#001.y2019.b -->
+        <!--<iron-ajax url="/PopulateDropdowns/GetProcedimentosCcpType"
+               last-response="{{LType}}"
+               auto method="post"
+               handle-as="json"
+               content-type="application/json">
+    </iron-ajax>-->
+        <iron-ajax url="/ProcedimentosCcps/GetTiposProcedimento"
                    last-response="{{LType}}"
                    auto method="post"
                    handle-as="json"
                    content-type="application/json">
         </iron-ajax>
+
+        <iron-ajax url="/ProcedimentosCcps/GetFundamentosTipoProcedimento"
+                   last-response="{{fundamentosTipo}}"
+                   method="post"
+                   id="ajax_fundamentos_page"
+                   on-response="_fundamentosResponse"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+        <!-- zpgm.ALT_CCP_#001.y2019.e -->
         <iron-ajax url="/PopulateDropdowns/GetProcedimentosCcpStates"
                    last-response="{{LProcedimentoState}}"
                    auto method="post" handle-as="json"
@@ -894,6 +912,8 @@
 
 
         <!-- Header section of the Procedimento details -->
+
+
         <div class="panel panel-default">
             <div class="panel-heading">Cabeçalho</div>
             <div class="panel-body">
@@ -904,18 +924,18 @@
                         </div>
                         <div class="col-sm-3">
                             <!--<vaadin-combo-box items="[[CBRegions]]" id="codigoRegiao" item-value-path="id" item-label-path="value" value="{{data.codigoRegiao}}" label="Cód. Região" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
-                                <template>
-                                    <table width="250px">
-                                        <tr>
-                                            <td width="20%">[[item.id]]</td>
-                                            <td width="80%">
-                                                <b>[[item.value]]</b>
-                                            </td>
-                                        </tr>
+                            <template>
+                                <table width="250px">
+                                    <tr>
+                                        <td width="20%">[[item.id]]</td>
+                                        <td width="80%">
+                                            <b>[[item.value]]</b>
+                                        </td>
+                                    </tr>
 
-                                    </table>
-                                </template>
-                            </vaadin-combo-box>-->
+                                </table>
+                            </template>
+                        </vaadin-combo-box>-->
 
                             <such-selectbox id="codigoRegiao" name="codigoRegiao" value="{{data.codigoRegiao}}" label="Cód. Região" disabled="{{ !_permissions.update }}"
                                             items="[[CBRegions]]"
@@ -928,17 +948,17 @@
                         </div>
                         <div class="col-sm-3">
                             <!--<vaadin-combo-box items="[[CBFunctionalAreas]]" id="codigoAreaFuncional" item-value-path="id" item-label-path="value" value="{{data.codigoAreaFuncional}}" label="Àrea Funcional" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
-                                <template>
-                                    <table width="250px">
-                                        <tr>
-                                            <td width="30%">[[item.id]]</td>
-                                            <td width="70%">
-                                                <b>[[item.value]]</b>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </template>
-                            </vaadin-combo-box>-->
+                            <template>
+                                <table width="250px">
+                                    <tr>
+                                        <td width="30%">[[item.id]]</td>
+                                        <td width="70%">
+                                            <b>[[item.value]]</b>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>-->
 
 
                             <such-selectbox id="codigoAreaFuncional" name="codigoAreaFuncional" value="{{data.codigoAreaFuncional}}" label="Cód. Área Funcional" disabled="{{ !_permissions.update }}"
@@ -951,17 +971,17 @@
                         </div>
                         <div class="col-sm-3">
                             <!--<vaadin-combo-box items="[[CBResponsabilityCenterCodes]]" id="codigoCentroResponsabilidade" item-value-path="id" item-label-path="value" value="{{data.codigoCentroResponsabilidade}}" label="Centro Responsabilidade" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
-                                <template>
-                                    <table width="180px">
-                                        <tr>
-                                            <td width="40%">[[item.id]]</td>
-                                            <td width="60%">
-                                                <b>[[item.value]]</b>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </template>
-                            </vaadin-combo-box>-->
+                            <template>
+                                <table width="180px">
+                                    <tr>
+                                        <td width="40%">[[item.id]]</td>
+                                        <td width="60%">
+                                            <b>[[item.value]]</b>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>-->
 
                             <such-selectbox id="codigoCentroResponsabilidade" name="codigoCentroResponsabilidade" value="{{data.codigoCentroResponsabilidade}}" label="Cód. Centro Respon." disabled="{{ !_permissions.update }}"
                                             items="[[CBResponsabilityCenterCodes]]"
@@ -986,18 +1006,42 @@
                             </vaadin-combo-box>
                         </div>
                         <div class="col-sm-3">
-                            <vaadin-combo-box items="[[LType]]" item-value-path="id" item-label-path="value" required value="{{data.tipo}}" label="Tipo">
-                                <template>
-                                    <paper-icon-item>
-                                        <paper-item-body two-line>
-                                            <div>[[item.value]]</div>
-                                        </paper-item-body>
-                                    </paper-icon-item>
-                                </template>
-                            </vaadin-combo-box>
+                            <!-- zpgm.ALT_CCP_#001.y2019.b -->
+                            <!--<vaadin-combo-box items="[[LType]]" item-value-path="id" item-label-path="value" required value="{{data.tipo}}" label="Tipo">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>-->
+                            <such-selectbox id="tipo"
+                                            name="tipo"
+                                            value="{{data.tipo}}"
+                                            label="Tipo"
+                                            disabled="{{ !_permissions.update }}"
+                                            on-value-changed="_typeChanged"
+                                            items="[[LType]]"
+                                            text-path="descricaoView"
+                                            value-path="idTipo"
+                                            fields='[{"field":"idTipo", "name":"Código"}, {"field":"abreviatura", "name":"Abreviatura"}, {"field":"descricaoTipo", "name":"Descrição"}]'
+                                            required error-message="Este campo é obrigatório">
+                            </such-selectbox>
+                            <!-- zpgm.ALT_CCP_#001.y2019.e -->
                         </div>
                         <div class="col-sm-3">
-                            
+                            <such-selectbox id="fundamentoLegalTipo"
+                                            name="fundamentoLegalTipo"
+                                            value="{{data.fundamentoLegalTipo}}"
+                                            label="Fundamento Legal Tipo Procedimento"
+                                            disabled="{{ !_permissions.update }}"
+                                            items="[[fundamentosTipo]]"
+                                            text-path="descricaoFundamento"
+                                            value-path="idFundamento"
+                                            fields='[{"field":"idFundamento", "name":"Código"}, {"field":"descricaoFundamento", "name":"Descrição"}]'
+                                            required error-message="Este campo é obrigatório">
+                            </such-selectbox>
                         </div>
                     </div>
                 </div>
@@ -1012,11 +1056,11 @@
                                     <vaadin-text-field type="text" value="{{data.referencia}}" id="referencia" name="referencia" label="Referência" disabled="true"> </vaadin-text-field>
                                 </div>
                                 <div class="col-sm-3">
-                                    <br />
+                                    <br /> <br />
                                     <vaadin-checkbox checked="{{data.imobilizado}}" required>Imobilizado?</vaadin-checkbox>
                                 </div>
                                 <div class="col-sm-3">
-                                    <br />
+                                    <br /> <br />
                                     <vaadin-checkbox checked="{{data.tratado}}" required>Tratado?</vaadin-checkbox>
                                 </div>
                             </div>
@@ -1060,11 +1104,11 @@
 
                                     <div class="row break_clear">
                                         <div class="col-sm-1">
-                                            <vaadin-combo-box  id="precoBase" 
-                                                              items="[[LBoolValues]]" 
-                                                              item-value-path="booleanValue" 
-                                                              item-label-path="stringValue" 
-                                                              required value="{{data.precoBase}}" 
+                                            <vaadin-combo-box id="precoBase"
+                                                              items="[[LBoolValues]]"
+                                                              item-value-path="booleanValue"
+                                                              item-label-path="stringValue"
+                                                              required value="{{data.precoBase}}"
                                                               label="Preço Base?"
                                                               disabled="disabled">
                                                 <template>
@@ -1080,22 +1124,22 @@
                                             <paper-tooltip for="valorPrecoBase" position="top" offset="-1" animation-delay="1">
                                                 Segundo este preceito, o preço base do procedimento é o valor máximo que o SUCH está disposto a pagar. É um limite ao valor das propostas que, se o ultrapassarem, terão que ser excluídas. A Área tem que indicar o valor do preço base (1).
                                             </paper-tooltip>
-                                            <vaadin-text-field id="valorPrecoBase" 
-                                                               name="valorPrecoBase" 
-                                                               type="text" 
-                                                               value="{{data.valorPrecoBase}}" 
-                                                               label="Valor Preço Base" 
-                                                               maxlength="18" 
-                                                               pattern="[0-9]+([\.][0-9]+)?" 
+                                            <vaadin-text-field id="valorPrecoBase"
+                                                               name="valorPrecoBase"
+                                                               type="text"
+                                                               value="{{data.valorPrecoBase}}"
+                                                               label="Valor Preço Base"
+                                                               maxlength="18"
+                                                               pattern="[0-9]+([\.][0-9]+)?"
                                                                on-value-changed="_ConvertDecimals"
                                                                required error-message="Este campo é obrigatório">
                                             </vaadin-text-field>
                                         </div>
                                         <div class="col-sm-9">
-                                            <such-textarea id="fundamentacaoPrecoBase" 
-                                                           name="fundamentacaoPrecoBase" 
-                                                           rows="5" 
-                                                           value="{{ data.fundamentacaoPrecoBase }}" 
+                                            <such-textarea id="fundamentacaoPrecoBase"
+                                                           name="fundamentacaoPrecoBase"
+                                                           rows="5"
+                                                           value="{{ data.fundamentacaoPrecoBase }}"
                                                            label="Fundamentação Preço Base"
                                                            required error-message="Este campo é obrigatório">
                                             </such-textarea>
@@ -1114,6 +1158,7 @@
                                             </vaadin-combo-box>
                                         </div>
                                         <div class="row break_clear">
+                                            <!-- zpgm.ALT_CCP_#001.y2019 -->
                                             <br />
                                             <vaadin-checkbox id="procediemntoLotes" checked="{{ data.procedimentoEmLotes }}">Procedimento Em Lotes?</vaadin-checkbox>
                                         </div>
@@ -2536,38 +2581,38 @@
                                 </div>
                             </div>
                             <!--<div class="col-xs-6">
-                                <div class="panel panel-default">
-                                    <div class="panel-heading">Acordos c/ fornecedores</div>
-                                    <div class="panel-body">
-                                        <div class="">
-                                            <div class="row">
-                                                <div class="col-xs-12">
-                                                    <vaadin-text-field type="number" value="{{data.adjudicacaoAcordosNo}}" id="adjudicacaoAcordosNo" name="adjudicacaoAcordosNo" label="Nº Contratos/Acordos"></vaadin-text-field>
-                                                </div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading">Acordos c/ fornecedores</div>
+                                <div class="panel-body">
+                                    <div class="">
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <vaadin-text-field type="number" value="{{data.adjudicacaoAcordosNo}}" id="adjudicacaoAcordosNo" name="adjudicacaoAcordosNo" label="Nº Contratos/Acordos"></vaadin-text-field>
                                             </div>
-                                            <div class="row break_clear">
-                                                <div class="col-sm-6">
-                                                    <vaadin-combo-box value="{{data.fornecedor}}" label="Fornecedor" items="[[cboSupplier]]" item-value-path="id" id="adjudicacaoAcordosFornecedor" item-label-path="value">
-                                                        <template>
-                                                            <paper-icon-item>
-                                                                <paper-item-body two-line>
-                                                                    <div>[[item.value]]</div>
-                                                                </paper-item-body>
-                                                            </paper-icon-item>
-                                                        </template>
-                                                    </vaadin-combo-box>
-                                                </div>
+                                        </div>
+                                        <div class="row break_clear">
+                                            <div class="col-sm-6">
+                                                <vaadin-combo-box value="{{data.fornecedor}}" label="Fornecedor" items="[[cboSupplier]]" item-value-path="id" id="adjudicacaoAcordosFornecedor" item-label-path="value">
+                                                    <template>
+                                                        <paper-icon-item>
+                                                            <paper-item-body two-line>
+                                                                <div>[[item.value]]</div>
+                                                            </paper-item-body>
+                                                        </paper-icon-item>
+                                                    </template>
+                                                </vaadin-combo-box>
                                             </div>
-                                            <div class="row break_clear">
-                                                <div class="col-sm-12">
-                                                    <br />
-                                                    <paper-button raised id="btnNovoAcordoAdjudicacaoAcordos" class="btn--confirm pull-right" on-tap="_novoAcordoAdjudicacaoAcordos">Criar Novo Contrato/Acordo</paper-button>
-                                                </div>
+                                        </div>
+                                        <div class="row break_clear">
+                                            <div class="col-sm-12">
+                                                <br />
+                                                <paper-button raised id="btnNovoAcordoAdjudicacaoAcordos" class="btn--confirm pull-right" on-tap="_novoAcordoAdjudicacaoAcordos">Criar Novo Contrato/Acordo</paper-button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>-->
+                            </div>
+                        </div>-->
                             <div class="col-xs-6">
                                 <div class="panel panel-default">
                                     <div class="panel-heading">Acordo de Preços</div>
@@ -2605,42 +2650,42 @@
                             </div>
                             <div class="clearfix"></div>
                             <!--<div class="col-xs-6">
-                                <div class="panel panel-default">
-                                    <div class="panel-heading">Contratos Fornecedores</div>
-                                    <div class="panel-body">
-                                        <div class="">
-                                            <div class="row">
-                                                <div class="col-xs-12">
-                                                    <vaadin-text-field type="number" value="{{data.adjudicacaoContratosNo}}" id="adjudicacaoContratosNo" name="adjudicacaoContratosNo" label="Nº Contratos"></vaadin-text-field>
-                                                </div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading">Contratos Fornecedores</div>
+                                <div class="panel-body">
+                                    <div class="">
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <vaadin-text-field type="number" value="{{data.adjudicacaoContratosNo}}" id="adjudicacaoContratosNo" name="adjudicacaoContratosNo" label="Nº Contratos"></vaadin-text-field>
                                             </div>
-                                            <div class="row break_clear">
-                                                <div class="col-sm-6">
-                                                    <vaadin-combo-box value="{{data.adjudicacaoContratosFornecedor}}" label="Fornecedor" items="[[cboSupplier]]" item-value-path="id" id="adjudicacaoContratosFornecedor" item-label-path="value">
-                                                        <template>
-                                                            <paper-icon-item>
-                                                                <paper-item-body two-line>
-                                                                    <div>[[item.value]]</div>
-                                                                </paper-item-body>
-                                                            </paper-icon-item>
-                                                        </template>
-                                                    </vaadin-combo-box>
-                                                </div>
-                                                <div class="col-sm-6">
-                                                    <vaadin-text-field type="text" value="{{data.adjudicacaoContratosValor}}" id="adjudicacaoContratosValor" name="adjudicacaoContratosValor" label="Valor Contrato" maxlength="18" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"> </vaadin-text-field>
-                                                </div>
+                                        </div>
+                                        <div class="row break_clear">
+                                            <div class="col-sm-6">
+                                                <vaadin-combo-box value="{{data.adjudicacaoContratosFornecedor}}" label="Fornecedor" items="[[cboSupplier]]" item-value-path="id" id="adjudicacaoContratosFornecedor" item-label-path="value">
+                                                    <template>
+                                                        <paper-icon-item>
+                                                            <paper-item-body two-line>
+                                                                <div>[[item.value]]</div>
+                                                            </paper-item-body>
+                                                        </paper-icon-item>
+                                                    </template>
+                                                </vaadin-combo-box>
                                             </div>
-                                            <div class="row break_clear">
+                                            <div class="col-sm-6">
+                                                <vaadin-text-field type="text" value="{{data.adjudicacaoContratosValor}}" id="adjudicacaoContratosValor" name="adjudicacaoContratosValor" label="Valor Contrato" maxlength="18" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"> </vaadin-text-field>
+                                            </div>
+                                        </div>
+                                        <div class="row break_clear">
 
-                                                <div class="col-sm-12">
-                                                    <br />
-                                                    <paper-button raised id="btnNovoContratoAdjudicacaoAcordos" class="btn--confirm pull-right" on-tap="_novoContratoAdjudicacaoAcordos">Criar Contrato</paper-button>
-                                                </div>
+                                            <div class="col-sm-12">
+                                                <br />
+                                                <paper-button raised id="btnNovoContratoAdjudicacaoAcordos" class="btn--confirm pull-right" on-tap="_novoContratoAdjudicacaoAcordos">Criar Contrato</paper-button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>-->
+                            </div>
+                        </div>-->
                             <div class="col-xs-6">
                                 <div class="panel panel-default">
                                     <div class="panel-heading">Encomendas a Fornecedores</div>
@@ -3600,22 +3645,26 @@
                                 <div class="mb-15"></div>
                             </paper-collapse-item>
                         </paper-collapse-group>
+                        di
                     </div>
 
                 </iron-pages>
 
                 <!-- Save and Create Buttons -->
                 <!--<div id="botoes_accao" class="marginSpace">
-                    <template is="dom-if" if="{{ _isCreate }}">
-                        <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
-                    </template>
-                    <template is="dom-if" if="{{ !_isCreate }}">
-                        <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                        <paper-button raised id="btnCancel" class="btnRemove" on-tap="_delete"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
-                    </template>
-                </div>-->
+                <template is="dom-if" if="{{ _isCreate }}">
+                    <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                </template>
+                <template is="dom-if" if="{{ !_isCreate }}">
+                    <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                    <paper-button raised id="btnCancel" class="btnRemove" on-tap="_delete"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                </template>
+            </div>-->
             </div>
         </div>
+
+
+
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
@@ -3903,7 +3952,7 @@
                             this.$._UnitMeasureCode.value = item.measureUnit;
                         }
                     }
-                    
+
                 },
                 _confirmAndExecuteActionToast: function (_message, _ajaxRequest) {
                     bootbox.confirm({
@@ -4054,6 +4103,7 @@
 
                 //Responses Processors
                 _responseProcessor: function (data) {
+                    debugger;;
                     var self = this;
 
                     if (data.detail.status === 200) {
@@ -4063,6 +4113,19 @@
                                 return;
                             }
 
+                            // zpgm.ALT_CCP_#001.y2019.b
+                            if (self.data.tipo > 0) {
+                                debugger;;
+                                //this.$.ajax_tipo_procedimento.generateRequest();
+                                this.$.tipo.value = self.data.tipo;
+                                this.$.ajax_fundamentos_page.body = JSON.stringify({ "idTipo": self.data.tipo });
+                                this.$.ajax_fundamentos_page.generateRequest();
+
+                                if (self.data.fundamentoLegalTipo > 0) {
+                                    this.$.fundamentoLegalTipo.value = self.data.fundamentoLegalTipo;                                     
+                                }
+                            }
+                            // zpgm.ALT_CCP_#001.y2019.e
                             if (self.data.temposPaCcp != null) {
                                 for (key in self.data.temposPaCcp) {
                                     if (key.includes("estado")) {
@@ -4071,6 +4134,7 @@
                                     }
                                 }
                             }
+
                             self.tempos = self.data.temposPaCcp;
 
                             self._setFieldsEditability(self.data);
@@ -4084,6 +4148,18 @@
                         }
                     } else {
                         self._openToast("Ocorreu um erro ao criar o Procedimento.")
+                    }
+                },
+
+                _fundamentosResponse: function (e) {
+                    debugger;;
+                    if (this.data != undefined) {
+                        if (this.data.fundamentoLegalTipo > 0 && this.fundamentosTipo != null) {
+                            this.$.fundamentoLegalTipo.value = this.data.fundamentoLegalTipo;
+                        } else {
+                            this.$.fundamentoLegalTipo.value = null;
+                            this.$.fundamentoLegalTipo.valueText = "";
+                        }
                     }
                 },
 
@@ -6191,6 +6267,23 @@
                     this.$.rptDialog.close();
                 },
                 // zpgm.MenuFunções.e
+
+                // zpgm.ALT_CCP_#001.y2019.b
+                _typeChanged: function (e) {
+                    if (this.data != undefined) {
+                        var tipoP = this.$.tipo.value;
+
+                        this.data.fundamentoLegalTipo = null;
+                        this.$.fundamentoLegalTipo.value = null;
+                        this.$.fundamentoLegalTipo.valueText = "";
+
+                        if (tipoP > 0) {
+                            this.$.ajax_fundamentos_page.body = JSON.stringify({ "idTipo": tipoP });
+                            this.$.ajax_fundamentos_page.generateRequest();
+                        }
+                    }
+                },
+                // zpgm.ALT_CCP_#001.y2019.e
 
                 _setFieldsEditability(data) {
                     var _self = this;

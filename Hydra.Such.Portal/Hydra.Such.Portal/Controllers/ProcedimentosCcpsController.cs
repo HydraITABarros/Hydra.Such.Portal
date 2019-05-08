@@ -379,7 +379,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             try
             {
-                if (data != null)
+                    if (data != null)
                 {
                     ProcedimentosCcp proc = DBProcedimentosCCP.GetProcedimentoById(data.No);
                     if (proc != null)
@@ -900,6 +900,33 @@ namespace Hydra.Such.Portal.Controllers
         }
         #endregion
 
+        #region zpgm.ALT_CCP_#001.y2019
+        [HttpPost]
+        public JsonResult GetTiposProcedimento()
+        {
+            List<TipoProcedimentoCcp> tipos = DBConfiguracaoCCP.GetAllTypes(false);
+            List<TipoProcedimentoCcpView> result = new List<TipoProcedimentoCcpView>();
+            foreach(var t in tipos)
+            {
+                result.Add(new TipoProcedimentoCcpView(t));
+            }
+
+            return Json(result);
+        }
+        
+        [HttpPost]
+        public JsonResult GetFundamentosTipoProcedimento([FromBody] JObject requestParam)
+        {
+            int idTipo = requestParam["idTipo"] == null ? 0: (int)requestParam["idTipo"];
+
+            if (idTipo == 0)
+                return Json(null);
+
+            List<FundamentoLegalTipoProcedimentoCcp> result = DBConfiguracaoCCP.GetReasonsForType(idTipo);
+
+            return Json(result);
+        }
+        #endregion
         [HttpPost]
         public JsonResult GetUserFeatures()
         {

@@ -6497,6 +6497,7 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
+        #region zpgm.ALT_CCP_#001.y2019
         public IActionResult ListaTiposProcedimento()
         {
             UserAccessesViewModel userPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminGeral);
@@ -6510,6 +6511,8 @@ namespace Hydra.Such.Portal.Controllers
                 return RedirectToAction("AccessDenied", "Error");
             }
         }
+        #endregion
+
 
         [HttpPost]
         public JsonResult GetConfiguracaoCCP()
@@ -6594,6 +6597,7 @@ namespace Hydra.Such.Portal.Controllers
             return Json(DBConfiguracaoCCP.DeleteConfiguracaoTempo(data.Tipo));
         }
 
+        #region zpgm.ALT_CCP_#001.y2019
         [HttpPost]
         public JsonResult GetTiposProcedimento()
         {
@@ -6617,17 +6621,18 @@ namespace Hydra.Such.Portal.Controllers
             catch (Exception ex)
             {
 
-               return Json(null);
+                return Json(null);
             }
 
-            
+
         }
         [HttpPost]
         public JsonResult CreateTipo()
         {
-            TipoProcedimentoCcp newTipo = new TipoProcedimentoCcp() {
+            TipoProcedimentoCcp newTipo = new TipoProcedimentoCcp()
+            {
                 Abreviatura = "",
-                DescricaoTipo="",
+                DescricaoTipo = "",
                 UtilizadorCriacao = User.Identity.Name,
                 DataCriacao = DateTime.Now
             };
@@ -6652,7 +6657,7 @@ namespace Hydra.Such.Portal.Controllers
 
             if (data.FundamentoLegalTipoProcedimentoCcp != null)
             {
-                foreach(var f in data.FundamentoLegalTipoProcedimentoCcp)
+                foreach (var f in data.FundamentoLegalTipoProcedimentoCcp)
                 {
                     if (f.UtilizadorCriacao == null || f.UtilizadorCriacao == "")
                     {
@@ -6690,6 +6695,8 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(DBConfiguracaoCCP.__UpdateReason(data));
         }
+        #endregion
+
         #endregion
 
         #region Config. Mercado Local

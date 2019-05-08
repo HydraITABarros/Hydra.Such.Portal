@@ -172,7 +172,7 @@ namespace Hydra.Such.Data.Logic
         }
         #endregion
 
-        #region Configuração Tipos Procedimento
+        #region zpgm.ALT_CCP_#001.y2019 Configuração Tipos Procedimento
         public static TipoProcedimentoCcp GetTypeById(int id)
         {
             try
@@ -206,6 +206,20 @@ namespace Hydra.Such.Data.Logic
                 }
 
                 return types;
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
+        public static List<FundamentoLegalTipoProcedimentoCcp> GetReasonsForType(int idTipo)
+        {
+            SuchDBContext _context = new SuchDBContext();
+            try
+            {
+                return _context.FundamentoLegalTipoProcedimentoCcp.Where(f => f.IdTipo == idTipo).ToList();
             }
             catch (Exception ex)
             {
