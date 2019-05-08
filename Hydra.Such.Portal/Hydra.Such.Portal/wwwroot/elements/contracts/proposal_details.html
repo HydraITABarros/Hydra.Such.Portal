@@ -2373,24 +2373,58 @@
                 //Parse To Contract
                 _parseToContract: function (param) {
                     if (param != null) {
-                        if (this.data.relatedContract == null || this.data.relatedContract == "") {
-                            if (param.currentTarget.id == "parseContract") {
-                                this.$.parseToContract_ajax.body = JSON.stringify({ "HeaderNo": this._contractno, "VersionNo": this._versionno, "OriginType": 2, "HeaderType": 3, "Parcial": false });
-                                this.$.parseToContract_ajax.generateRequest();
-                            } else {
-                                this.$.parseToContract_ajax.body = JSON.stringify({ "HeaderNo": this._contractno, "VersionNo": this._versionno, "OriginType": 2, "HeaderType": 3, "Parcial": true });
-                                this.$.parseToContract_ajax.generateRequest();
-                            }
+                        var ajax_request = this.$.parseToContract_ajax;
+                        var parametro = param.currentTarget.id;
+                        var headerNo = this._contractno;
+                        var versionNo = this._versionno;
+                        var pergunta = ""
+
+                        if (parametro == "parseContract") {
+                            pergunta = "Tem a certeza que pretende tornar a Proposta em Contrato?";
                         }
-                        //else if (this.data.contractNo == null && this.data.contractNo != "") {
-                        //    this.$.parseToContract_ajax.body = JSON.stringify({ "HeaderNo": this._contractno, "VersionNo": this._versionno, "OriginType": 2, "HeaderType": 3 });
-                        //    this.$.parseToContract_ajax.generateRequest();
-                        //}
                         else {
-                            this._openToastError("Esta proposta já tem um contrato associado.");
+                            pergunta = "Tem a certeza que pretende tornar a Proposta em Contrato Parcial?";
                         }
 
+                        bootbox.confirm({
+                            message: pergunta,
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (result) {
+                                if (result) {
+                                    if (parametro == "parseContract") {
+                                        ajax_request.body = JSON.stringify({ "HeaderNo": headerNo, "VersionNo": versionNo, "OriginType": 2, "HeaderType": 3, "Parcial": false });
+                                        ajax_request.generateRequest();
+                                    } else {
+                                        ajax_request.body = JSON.stringify({ "HeaderNo": headerNo, "VersionNo": versionNo, "OriginType": 2, "HeaderType": 3, "Parcial": true });
+                                        ajax_request.generateRequest();
+                                    }
+                                }
+                            }
+                        });
                     }
+                    //if (param != null) {
+                    //    if (this.data.relatedContract == null || this.data.relatedContract == "") {
+                    //        if (param.currentTarget.id == "parseContract") {
+                    //            this.$.parseToContract_ajax.body = JSON.stringify({ "HeaderNo": this._contractno, "VersionNo": this._versionno, "OriginType": 2, "HeaderType": 3, "Parcial": false });
+                    //            this.$.parseToContract_ajax.generateRequest();
+                    //        } else {
+                    //            this.$.parseToContract_ajax.body = JSON.stringify({ "HeaderNo": this._contractno, "VersionNo": this._versionno, "OriginType": 2, "HeaderType": 3, "Parcial": true });
+                    //            this.$.parseToContract_ajax.generateRequest();
+                    //        }
+                    //    }
+                    //    else {
+                    //        this._openToastError("Esta proposta já tem um contrato associado.");
+                    //    }
+                    //}
                 },
                 _responseParseToContract: function (e) {
                     var self = this;

@@ -163,10 +163,17 @@ namespace Hydra.Such.Data.NAV
 
             try
             {
-                navUpdate.WSCustomer.Regiao_ClienteSpecified = true;
+                navUpdate.WSCustomer.Abrigo_Lei_CompromissoSpecified = true;
                 navUpdate.WSCustomer.BlockedSpecified = true;
-                navUpdate.WSCustomer.Tipo_ClienteSpecified = true;
+                navUpdate.WSCustomer.Cliente_AssociadoSpecified = true;
+                navUpdate.WSCustomer.Cliente_InternoSpecified = true;
+                navUpdate.WSCustomer.Cliente_NacionalSpecified = true;
+                navUpdate.WSCustomer.Data_Cliente_PaiSpecified = true;
+                navUpdate.WSCustomer.Last_Date_ModifiedSpecified = true;
                 navUpdate.WSCustomer.Natureza_ClienteSpecified = true;
+                navUpdate.WSCustomer.Regiao_ClienteSpecified = true;
+                navUpdate.WSCustomer.Taxa_AprovisionamentoSpecified = true;
+                navUpdate.WSCustomer.Tipo_ClienteSpecified = true;
 
                 WSCustomerNAV.Update_Result result = await ws_Client.UpdateAsync(navUpdate);
                 return result;
