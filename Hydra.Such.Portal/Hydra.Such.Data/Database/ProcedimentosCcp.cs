@@ -138,18 +138,21 @@ namespace Hydra.Such.Data.Database
         public DateTime? DataHoraModificação { get; set; }
         public string UtilizadorModificação { get; set; }
 
-        #region zpgm.28032019
+        #region zpgm.ALT_CCP_#001.y2019
         public int? FundamentoLegalTipo { get; set; }
         public bool? ProcedimentoEmLotes { get; set; }
         public string FundamentacaoPrecoBase { get; set; }
         public bool? VistoAberturaPeloAprovisionamento { get; set; }
         public bool? VistoAdjudicacaoPeloAprovisionamento { get; set; }
 
+        [Newtonsoft.Json.JsonIgnore]
         public TipoProcedimentoCcp TipoNavigation { get; set; }
+        //[Newtonsoft.Json.JsonIgnore]
         public FundamentoLegalTipoProcedimentoCcp FundamentoLegalTipoProcedimentoCcp { get; set; }
         public ICollection<LoteProcedimentoCcp> LoteProcedimentoCcp { get; set; }
         #endregion
 
+        [Newtonsoft.Json.JsonIgnore]
         public TemposPaCcp TemposPaCcp { get; set; }
         public ICollection<ElementosJuri> ElementosJuri { get; set; }
         public ICollection<EmailsProcedimentosCcp> EmailsProcedimentosCcp { get; set; }

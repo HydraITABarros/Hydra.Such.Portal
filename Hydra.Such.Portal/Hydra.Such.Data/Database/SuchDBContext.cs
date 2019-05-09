@@ -164,7 +164,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<TabelaLog> TabelaLog { get; set; }
         public virtual DbSet<PedidosDEV> PedidosDEV { get; set; }
 
-        #region zpgm.28032019
+        #region zpgm.ALT_CCP_#001.y2019
         public virtual DbSet<TipoProcedimentoCcp> TipoProcedimentoCcp { get; set; }
         public virtual DbSet<FundamentoLegalTipoProcedimentoCcp> FundamentoLegalTipoProcedimentoCcp { get; set; }
         public virtual DbSet<LoteProcedimentoCcp> LoteProcedimentoCcp { get; set; }
@@ -3318,11 +3318,13 @@ namespace Hydra.Such.Data.Database
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Fluxo Trabalho Lista Controlo_Procedimentos CCP");
 
+                // zpgm.ALT_CCP_#001.y2019.b
                 entity.HasOne(d => d.LoteProcedimentoCcp)
                    .WithMany(p => p.FluxoTrabalhoListaControlo)
                    .HasForeignKey(d => new { d.No, d.IdLote })
                    //.OnDelete(DeleteBehavior.ClientSetNull)
                    .HasConstraintName("FK_FluxoTrabalhoListaControlo_LoteProcedimentoCcp");
+                // zpgm.ALT_CCP_#001.y2019.e
             });
 
             modelBuilder.Entity<FolhasDeHoras>(entity =>
@@ -7597,7 +7599,7 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.WorkflowJurídicos).HasColumnName("Workflow Jurídicos");
 
                 entity.Property(e => e.WorkflowJurídicosConfirm).HasColumnName("Workflow Jurídicos Confirm.");
-
+                // zpgm.ALT_CCP_#001.y2019.b
                 entity.HasOne(d => d.TipoNavigation)
                     .WithMany(p => p.ProcedimentosCcp)
                     .HasForeignKey(d => d.Tipo)
@@ -7607,10 +7609,10 @@ namespace Hydra.Such.Data.Database
                     .WithMany(p => p.ProcedimentosCcp)
                     .HasForeignKey(d => new { d.Tipo, d.FundamentoLegalTipo })
                     .HasConstraintName("FK_ProcedimentosCCP_FundamentoLegalTipoProcedimentoCcp");
-                
+                // zpgm.ALT_CCP_#001.y2019.e
             });
 
-            #region zpgm.28032019
+            #region zpgm.ALT_CCP_#001.y2019
             modelBuilder.Entity<TipoProcedimentoCcp>(entity =>
             {
                 entity.HasKey(e => e.IdTipo);

@@ -195,8 +195,8 @@ namespace Hydra.Such.Data.Logic.CCP
                     Procedimento.WorkflowProcedimentosCcp = GetAllWorkflowsProcedimento(Procedimento.Nº);
                     Procedimento.FluxoTrabalhoListaControlo = GetAllCheklistControloProcedimento(Procedimento.Nº);
 
-                    Procedimento.TipoNavigation = _context.TipoProcedimentoCcp.Where(t => t.IdTipo == Procedimento.Tipo).FirstOrDefault();
-                    Procedimento.FundamentoLegalTipoProcedimentoCcp = _context.FundamentoLegalTipoProcedimentoCcp.Where(f => f.IdTipo == Procedimento.Tipo && f.IdFundamento == Procedimento.FundamentoLegalTipo).FirstOrDefault();
+                    //Procedimento.TipoNavigation = _context.TipoProcedimentoCcp.Where(t => t.IdTipo == Procedimento.Tipo).FirstOrDefault();
+                    //Procedimento.FundamentoLegalTipoProcedimentoCcp = _context.FundamentoLegalTipoProcedimentoCcp.Where(f => f.IdTipo == Procedimento.Tipo && f.IdFundamento == Procedimento.FundamentoLegalTipo).FirstOrDefault();
                     Procedimento.LoteProcedimentoCcp = GetAllLotesFromProcedimento(Procedimento.Nº);
                 }
                 

@@ -281,10 +281,10 @@ namespace Hydra.Such.Data.ViewModel.CCP
                 Procedimento.FluxoTrabalhoListaControlo = ProcedimentoView.FluxoTrabalhoListaControlo;
             }
 
-            Procedimento.TipoNavigation = ProcedimentoView.TipoContratacaoPublica;
-            Procedimento.FundamentoLegalTipoProcedimentoCcp = ProcedimentoView.FundamentoLegal;
-            if(ProcedimentoView.LotesProcedimento != null && ProcedimentoView.LotesProcedimento.Count > 0)
-                Procedimento.LoteProcedimentoCcp = ProcedimentoView.LotesProcedimento;
+            //Procedimento.TipoNavigation = ProcedimentoView.TipoNavigation;
+            //Procedimento.FundamentoLegalTipoProcedimentoCcp = ProcedimentoView.FundamentoLegalTipoProcedimentoCcp;
+            if(ProcedimentoView.LoteProcedimentoCcp != null && ProcedimentoView.LoteProcedimentoCcp.Count > 0)
+                Procedimento.LoteProcedimentoCcp = ProcedimentoView.LoteProcedimentoCcp;
 
             return Procedimento;
 
@@ -300,7 +300,7 @@ namespace Hydra.Such.Data.ViewModel.CCP
             ProcedimentoCCPView ProcedimentoView = new ProcedimentoCCPView()
             {
                 No = Procedimento.Nº,
-                Tipo = Procedimento.Tipo,
+                Tipo = Procedimento.Tipo == null? 0 : Procedimento.Tipo,
                 
                 Tipo_Show = Procedimento.Tipo == 0 ? "" : Procedimento.Tipo == 1 ? "AD" : Procedimento.Tipo == 2 ? "CP" : Procedimento.Tipo == 3 ? "CLPQ" : Procedimento.Tipo == 4 ? "PN" : Procedimento.Tipo == 5 ? "DC" : Procedimento.Tipo == 6 ? "CPI" : "",
 
@@ -527,10 +527,10 @@ namespace Hydra.Such.Data.ViewModel.CCP
             ProcedimentoView.ListaReq_Show = ListaRequisicoes;
             // FIM Lista de Requisições
 
-            ProcedimentoView.TipoContratacaoPublica = Procedimento.TipoNavigation;
-            ProcedimentoView.FundamentoLegal = Procedimento.FundamentoLegalTipoProcedimentoCcp;
+            ProcedimentoView.TipoNavigation = Procedimento.TipoNavigation;
+            ProcedimentoView.FundamentoLegalTipoProcedimentoCcp = Procedimento.FundamentoLegalTipoProcedimentoCcp;
             if(Procedimento.LoteProcedimentoCcp!=null && Procedimento.LoteProcedimentoCcp.Count > 0)
-                ProcedimentoView.LotesProcedimento = Procedimento.LoteProcedimentoCcp;
+                ProcedimentoView.LoteProcedimentoCcp = Procedimento.LoteProcedimentoCcp;
 
             return ProcedimentoView;
         }

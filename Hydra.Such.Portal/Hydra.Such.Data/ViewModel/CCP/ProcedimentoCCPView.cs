@@ -148,16 +148,16 @@ namespace Hydra.Such.Data.ViewModel.CCP
         public ICollection<WorkflowProcedimentosCCPView> WorkflowProcedimentosCcp { get; set; }
         public ICollection<FluxoTrabalhoListaControloCCPView> FluxoTrabalhoListaControlo_Show { get; set; }
 
-        #region zpgm.28032019
+        #region zpgm.ALT_CCP_#001.y2019
         public int? FundamentoLegalTipo { get; set; }
         public bool? ProcedimentoEmLotes { get; set; }
         public string FundamentacaoPrecoBase { get; set; }
         public bool? VistoAberturaPeloAprovisionamento { get; set; }
         public bool? VistoAdjudicacaoPeloAprovisionamento { get; set; }
 
-        public TipoProcedimentoCcp TipoContratacaoPublica { get; set; }
-        public FundamentoLegalTipoProcedimentoCcp FundamentoLegal { get; set; }
-        public ICollection<LoteProcedimentoCcp> LotesProcedimento { get; set; }
+        public TipoProcedimentoCcp TipoNavigation { get; set; }
+        public FundamentoLegalTipoProcedimentoCcp FundamentoLegalTipoProcedimentoCcp { get; set; }
+        public ICollection<LoteProcedimentoCcp> LoteProcedimentoCcp { get; set; }
         #endregion
 
         #region used to map flow control checklist
