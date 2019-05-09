@@ -2998,7 +2998,7 @@ namespace Hydra.Such.Portal.Controllers
         #region Attachments
         [HttpPost]
         [Route("PreRequisicoes/FileUpload")]
-        [Route("PreRequisicoes/FileUpload/{id}/{linha}")]
+        [Route("PreRequisicoes/FileUpload/{id}")]
         public JsonResult FileUpload(string id, int linha)
         {
             try
@@ -3046,43 +3046,18 @@ namespace Hydra.Such.Portal.Controllers
                                 {
                                     System.IO.File.Delete(path);
                                 }
-
-                                //if (DBAttachments.GetAll().Where(x => x.TipoOrigem == 1 && x.NºOrigem == id).Count() > 0)
-                                //{
-                                //    PréRequisição preREQ = DBPreRequesition.GetByNo(id);
-                                //    if (preREQ != null)
-                                //    {
-                                //        preREQ.CabimentoOrçamental = true;
-                                //        preREQ.UtilizadorModificação = User.Identity.Name;
-                                //        DBPreRequesition.Update(preREQ);
-                                //    }
-                                //    else
-                                //    {
-                                //        Requisição REQ = DBRequest.GetById(id);
-                                //        if (REQ != null)
-                                //        {
-                                //            REQ.CabimentoOrçamental = true;
-                                //            REQ.UtilizadorModificação = User.Identity.Name;
-                                //            DBRequest.Update(REQ);
-                                //        }
-                                //    }
-                                //}
                             }
-                        }
-                        else
-                        {
-                            return Json(false);
                         }
                     }
                     catch (Exception ex)
                     {
-                        return Json(false);
+                        throw;
                     }
                 }
             }
             catch (Exception ex)
             {
-                return Json(false);
+                throw;
             }
             return Json(true);
         }
