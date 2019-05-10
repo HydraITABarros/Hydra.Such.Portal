@@ -2177,6 +2177,7 @@ namespace Hydra.Such.Portal.Controllers
             List<NAVLocationsViewModel> LocationList = DBNAV2017Locations.GetAllLocations(_config.NAVDatabaseName, _config.NAVCompanyName);
             List<NAVClientsViewModel> ClientsList = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "");
             List<TiposRefeição> MealList = DBMealTypes.GetAll();
+            List<ClientServicesViewModel> AllServiceGroup = DBClientServices.GetAllServiceGroup(string.Empty, true);
 
             try
             {
@@ -2225,6 +2226,7 @@ namespace Hydra.Such.Portal.Controllers
                     AutorizatedInvoice2Text = x.FaturaçãoAutorizada2.HasValue ? x.FaturaçãoAutorizada2 == true ? "Sim" : "Não" : "Não",
                     AutorizatedInvoiceData = x.DataAutorizaçãoFaturação?.ToString("yyyy-MM-dd"),
                     ServiceGroupCode = x.CódGrupoServiço,
+                    ServiceGroupCodeDescription = AllServiceGroup.Where(y => y.ClientNumber == x.FaturaANºCliente && y.ServiceCode == x.CódGrupoServiço).FirstOrDefault() != null ? AllServiceGroup.Where(y => y.ClientNumber == x.FaturaANºCliente && y.ServiceCode == x.CódGrupoServiço).FirstOrDefault().ServiceDescription : "",
                     ResourceType = x.TipoRecurso,
                     FolhaHoras = x.NºFolhaHoras,
                     InternalRequest = x.RequisiçãoInterna,
@@ -6731,6 +6733,11 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Cód. Grupo Serviço");
                     Col = Col + 1;
                 }
+                if (dp["serviceGroupCodeDescription"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Grupo Serviço");
+                    Col = Col + 1;
+                }
                 if (dp["resourceType"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Tipo Recurso");
@@ -7040,6 +7047,11 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["serviceGroupCode"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.ServiceGroupCode);
+                            Col = Col + 1;
+                        }
+                        if (dp["serviceGroupCodeDescription"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ServiceGroupCodeDescription);
                             Col = Col + 1;
                         }
                         if (dp["resourceType"]["hidden"].ToString() == "False")

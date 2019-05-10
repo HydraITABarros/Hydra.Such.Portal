@@ -38,8 +38,23 @@ namespace Hydra.Such.Data.ViewModel.Contracts
         public string UpdateUser { get; set; }
         public string ProjectNo { get; set; }
 
+        //EXPORTAR PARA EXCEL
+        public Object ColunasEXCEL { get; set; }
 
         //EXTRAS
         public bool Selected { get; set; }
+
+        //DADOS EXTRA DO CONTRATO
+        public string ContratoClienteCode { get; set; }
+        public string ContratoClienteNome { get; set; }
+        public string ContractoEstado { get; set; }
+        public string ContractEndereco { get; set; }
+        public string ContratoCodigoPostal { get; set; }
+        public string ContratoTipo { get; set; }
+        public string ContratoAvencaFixa { get; set; }
+        public string ContratoDataExpiracao { get; set; }
+        public string ContratoTipoFaturacao { get; set; }
+        public string CodeDescription { get; set; }
+        public string ServiceClientName { get; set; }
     }
 }
